@@ -128,4 +128,5 @@ $('#sound-toggle').addEventListener('click',()=>{state.sound=!state.sound;$('#so
 function syncArabicHelpButton(){const b=$('#help-toggle');if(!b)return;b.textContent=state.helpArabic?'العربية ON':'العربية OFF';b.setAttribute('aria-pressed',String(state.helpArabic));b.classList.toggle('enabled',state.helpArabic);}
 $('#help-toggle').addEventListener('click',()=>{state.helpArabic=!state.helpArabic;syncArabicHelpButton();saveState();if(activeGame)renderQuestion();toast(state.helpArabic?'Arabic learning help enabled':'Arabic learning help disabled');});
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeGame();});
+syncArabicHelpButton();
 renderStats();
