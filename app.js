@@ -50,6 +50,50 @@ const GAMES = {
     {q:'“The findings are inconclusive.” This means the findings…',sub:'Choose the exact meaning.',answers:['Prove the hypothesis','Do not lead to a definite conclusion','Are irrelevant','Have been disproved'],correct:1,explain:'Inconclusive evidence does not settle the question either way.',word:['inconclusive','not leading to a definite conclusion']}
   ]}
 };
+const AR_EXPLANATIONS = {
+ vocabulary:[
+  'تعني borrow أن تستعمل شيئًا يملكه شخص آخر ثم تعيده إليه.',
+  'تعني delighted الشعور بسعادة كبيرة أو رضا شديد.',
+  'تُستخدم frequent لوصف شيء يحدث كثيرًا أو بصورة متكررة.',
+  'تعني figure out أن تفهم شيئًا أو تجد حلًا لمشكلة.',
+  'تعني clear أن الشيء سهل الفهم؛ وهذا يناسب الجملة لأن التعليمات لم تُسبب أي ارتباك.'
+ ],
+ grammar:[
+  'مع الضمائر he وshe وit نضيف غالبًا s إلى الفعل في المضارع البسيط: she goes.',
+  'نستخدم الماضي المستمر لحدث كان جاريًا عندما وقع حدث آخر في الماضي.',
+  'الشرط الثاني: if + الماضي البسيط، ثم would + الفعل الأساسي للتحدث عن حالة افتراضية.',
+  'في الإنجليزية القياسية الرسمية تُعامل neither غالبًا كمفرد في هذا التركيب، لذا نستخدم is.',
+  'يتكوّن المستقبل التام من will have + التصريف الثالث، ويصف حدثًا سيكتمل قبل وقت مستقبلي.'
+ ],
+ story:[
+  'صيغة Could you tell me how to get to…? طريقة مهذبة وطبيعية للسؤال عن الاتجاهات.',
+  'التعبير around the corner يعني عادةً أن المكان قريب جدًا، بعد الزاوية أو المنعطف.',
+  'Would you mind repeating that? طلب مهذب من شخص أن يعيد كلامه.',
+  'عبارة I appreciate your help طريقة طبيعية للتعبير عن الامتنان والمساعدة.',
+  'التعبير You can’t miss it يعني أن المكان واضح وسهل العثور عليه.'
+ ],
+ listening:[
+  'Half past three تعني الثالثة والنصف، أي 3:30. وpushed back تعني تأجيل الموعد إلى وقت لاحق.',
+  'Although تُظهر التباين: كان المطر يهطل، ومع ذلك قرروا الذهاب في نزهة.',
+  'No later than Friday تعني أن يوم الجمعة هو آخر موعد مسموح به.',
+  'I’d rather you didn’t… تعبّر عن تفضيل المتحدث ألّا يقوم الشخص بفعل شيء.',
+  'التعبير on the grounds that يقدّم السبب؛ وcostly تعني مكلفًا أو باهظ الثمن.'
+ ],
+ spelling:[
+  'التهجئة الصحيحة هي definitely. تذكّر أنها تحتوي على كلمة finite ضمن ترتيب حروفها.',
+  'التهجئة الصحيحة reliable، ومعناها جدير بالثقة أو يمكن الاعتماد عليه.',
+  'تُكتب confidence بالنهاية -ence، وتعني الثقة أو الإيمان بالقدرة.',
+  'الفعل الصحيح هو improve، ومعناه يجعل الشيء أفضل أو يصبح أفضل.',
+  'التهجئة الصحيحة challenge، وتعني تحديًا أو مهمة صعبة.'
+ ],
+ advanced:[
+  'Plausible تعني معقولًا أو قابلًا للتصديق ظاهريًا، لكنها لا تعني بالضرورة أنه مثبت أو مقنع تمامًا.',
+  'Consequently تدل على النتيجة: لأن الأدلة محدودة، فالاستنتاج مؤقت أو غير نهائي.',
+  'Reluctant تعني مترددًا أو غير راغب؛ ولا تعني بالضرورة الرفض التام.',
+  'Admittedly تُستخدم للاعتراف بنقطة أو قيد قبل إضافة توضيح أو فكرة موازنة.',
+  'Inconclusive تعني أن النتائج لا تسمح بالوصول إلى استنتاج نهائي.'
+ ]
+};
 const $ = s => document.querySelector(s);
 const $$ = s => [...document.querySelectorAll(s)];
 const localDayKey = (date = new Date()) => [date.getFullYear(),String(date.getMonth()+1).padStart(2,'0'),String(date.getDate()).padStart(2,'0')].join('-');
@@ -106,7 +150,7 @@ function selectAnswer(choice){
  if(answered)return;answered=true;const g=GAMES[activeGame],q=g.questions[questionIndex],correct=choice===q.correct;if(correct)gameScore++;gameAnswers.push({correct,choice,correctAnswer:q.correct});
  if(q.word&&correct)gameWords.push(q.word);
  $$('#game-content [data-answer]').forEach((b,i)=>{b.disabled=true;if(i===q.correct)b.classList.add('correct');else if(i===choice)b.classList.add('wrong');});
- const fb=$('#feedback-box');fb.classList.add('show');fb.innerHTML='<strong>'+(correct?'✦ Exactly right!':'Not quite — and that’s okay.')+'</strong>'+escapeHtml(q.explain)+(state.helpArabic?'<div class="arabic-feedback" lang="ar" dir="rtl">'+(correct?'أحسنت! إجابتك صحيحة. اقرأ التفسير الإنجليزي لتثبيت القاعدة أو المعنى.':'لا بأس، الخطأ جزء من التعلّم. الإجابة الصحيحة مميّزة أعلاه؛ قارنها باختيارك ثم اقرأ التفسير.')+'</div>':'');$('#next-question').disabled=false;
+ const fb=$('#feedback-box');fb.classList.add('show');fb.innerHTML='<strong>'+(correct?'✦ Exactly right!':'Not quite — and that’s okay.')+'</strong>'+escapeHtml(q.explain)+(state.helpArabic?'<div class="arabic-feedback" lang="ar" dir="rtl"><strong>'+(correct?'أحسنت!':'معلومة للتعلّم')+'</strong>'+escapeHtml(AR_EXPLANATIONS[activeGame][questionIndex])+'</div>':'');$('#next-question').disabled=false;
 }
 function showResults(){
  const g=GAMES[activeGame],total=g.questions.length,earned=Math.round(g.xp*(.35+.65*gameScore/total));$('#game-progress-bar').style.width='100%';$('#game-step-label').textContent='QUEST COMPLETE';$('#game-xp').textContent='+'+earned+' XP';
