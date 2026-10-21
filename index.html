@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#11101b">
+  <meta name="description" content="Epiphany — a playful journey from your first English words to C2 mastery.">
+  <title>Epiphany — Your English Adventure</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <a class="brand" href="#" aria-label="Epiphany home"><span class="brand-mark">✦</span><span>epiphany<span class="brand-dot">.</span></span></a>
+      <div class="side-label">YOUR JOURNEY</div>
+      <nav class="side-nav" aria-label="Main navigation">
+        <button class="nav-item active" data-view="home"><span class="nav-icon">⌂</span> Adventure home</button>
+        <button class="nav-item" data-view="worlds"><span class="nav-icon">◎</span> Explore worlds</button>
+        <button class="nav-item" data-view="practice"><span class="nav-icon">⚡</span> Quick practice</button>
+        <button class="nav-item" data-view="vocabulary"><span class="nav-icon">▤</span> Word vault</button>
+        <button class="nav-item" data-view="achievements"><span class="nav-icon">♜</span> Achievements</button>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="streak-card"><span class="streak-icon">♨</span><div><strong id="streak-count">0 day streak</strong><small>Little steps add up.</small></div></div>
+        <div class="profile-row"><div class="avatar">E</div><div class="profile-copy"><strong>English explorer</strong><small id="profile-level">A1 · Newcomer</small></div><button class="more-btn" aria-label="Profile options">•••</button></div>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <button class="mobile-menu" id="mobile-menu" aria-label="Open navigation">☰</button>
+        <div class="breadcrumb">MY SPACE <span>/</span> <strong id="breadcrumb-current">ADVENTURE HOME</strong></div>
+        <div class="topbar-right"><span class="status-dot"></span><span class="save-status" id="save-status">Progress saved on this device</span><button class="sound-toggle" id="sound-toggle" aria-label="Toggle sound effects" title="Toggle sound effects">♫</button></div>
+      </header>
+
+      <section class="view active-view" id="home-view">
+        <section class="welcome-row">
+          <div><div class="eyebrow"><span class="sparkle">✦</span> YOUR NEXT CHAPTER STARTS HERE</div><h1>Small steps.<br><span>Big fluency.</span></h1><p class="hero-copy">Your English adventure, built around you. Play a little every day and watch your world get bigger.</p><div class="hero-actions"><button class="btn btn-primary" id="continue-btn">Continue your journey <span>↗</span></button><button class="btn btn-quiet" data-open-view="worlds">Explore the map</button></div></div>
+          <div class="hero-art" aria-label="Illustration of a magical floating island"><div class="orbit orbit-one"></div><div class="orbit orbit-two"></div><div class="planet planet-back"></div><div class="island"><div class="island-top"></div><div class="island-rock"></div><div class="tiny-tree tree-one">♣</div><div class="tiny-tree tree-two">♣</div><div class="portal">✦</div></div><div class="floating-star star-a">✦</div><div class="floating-star star-b">✧</div><div class="floating-star star-c">✦</div><div class="art-caption"><span class="caption-dot"></span> YOUR STORY IS UNFOLDING</div></div>
+        </section>
+
+        <section class="stats-grid" aria-label="Your learning statistics">
+          <article class="stat-card"><div class="stat-top"><span>EXPERIENCE POINTS</span><span class="stat-symbol purple">✦</span></div><div class="stat-number" id="xp-total">0 <small>XP</small></div><div class="stat-foot"><span class="mini-bar"><i id="xp-mini-bar"></i></span><span id="xp-next">Your first quest awaits</span></div></article>
+          <article class="stat-card"><div class="stat-top"><span>QUESTS COMPLETED</span><span class="stat-symbol orange">◈</span></div><div class="stat-number" id="quest-total">0</div><div class="stat-foot"><span class="muted">Every answer moves you forward</span></div></article>
+          <article class="stat-card"><div class="stat-top"><span>WORDS DISCOVERED</span><span class="stat-symbol green">✳</span></div><div class="stat-number" id="word-total">0</div><div class="stat-foot"><span class="muted">Your personal word vault</span></div></article>
+          <article class="stat-card"><div class="stat-top"><span>CURRENT LEVEL</span><span class="stat-symbol blue">⌁</span></div><div class="stat-number" id="level-stat">A1 <small>Newcomer</small></div><div class="stat-foot"><span class="muted">One skill at a time</span></div></article>
+        </section>
+
+        <section class="section-heading"><div><div class="eyebrow">MADE FOR YOUR MOMENTUM</div><h2>Today's quests <span class="heading-star">✳</span></h2><p>Pick a challenge. Earn XP. Keep growing.</p></div><button class="text-link" data-open-view="practice">See all activities <span>→</span></button></section>
+        <section class="quest-grid" id="quest-grid">
+          <button class="quest-card quest-vocab" data-game="vocabulary"><div class="quest-visual"><span class="visual-bubble bubble-one">hello</span><span class="visual-bubble bubble-two">bonjour?</span><span class="visual-orb">Aa</span></div><div class="quest-info"><div class="quest-tags"><span class="tag tag-purple">VOCABULARY</span><span class="quest-time">3 min</span></div><h3>Word collector</h3><p>Gather useful words and unlock their meaning.</p><div class="quest-bottom"><span>+30 XP</span><span class="play-arrow">↗</span></div></div></button>
+          <button class="quest-card quest-grammar" data-game="grammar"><div class="quest-visual"><span class="grammar-line line-one">I <b>am</b> ready.</span><span class="grammar-line line-two">They <b>are</b> here.</span><span class="grammar-check">✓</span></div><div class="quest-info"><div class="quest-tags"><span class="tag tag-orange">GRAMMAR</span><span class="quest-time">4 min</span></div><h3>Sentence shaper</h3><p>Build sentences that sound right, one choice at a time.</p><div class="quest-bottom"><span>+40 XP</span><span class="play-arrow">↗</span></div></div></button>
+          <button class="quest-card quest-story" data-game="story"><div class="quest-visual"><div class="story-sun"></div><div class="story-hill hill-one"></div><div class="story-hill hill-two"></div><span class="story-quote">“Excuse me…”</span></div><div class="quest-info"><div class="quest-tags"><span class="tag tag-green">REAL LIFE</span><span class="quest-time">5 min</span></div><h3>Lost in London</h3><p>Use English to find your way through a mini story.</p><div class="quest-bottom"><span>+50 XP</span><span class="play-arrow">↗</span></div></div></button>
+        </section>
+
+        <section class="lower-grid">
+          <article class="panel progress-panel"><div class="panel-heading"><div><div class="eyebrow">THE LONG GAME</div><h2>Your path to fluency</h2></div><button class="icon-button" data-open-view="worlds" aria-label="Explore levels">↗</button></div><div class="level-track" id="level-track"></div><div class="progress-note"><span class="progress-badge">✦</span><span id="path-note">Your adventure begins at A1. Complete quests to build your skills.</span></div></article>
+          <article class="panel daily-panel"><div class="daily-top"><span class="daily-icon">☼</span><span class="tag tag-gold">DAILY RITUAL</span></div><h2>A little, every day.</h2><p>Consistency beats cramming. Complete two quests today to keep your streak alive.</p><div class="daily-progress"><div><span id="daily-count">0 of 2 quests</span><strong id="daily-percent">0%</strong></div><div class="progress-rail"><i id="daily-bar"></i></div></div><button class="btn btn-outline" id="daily-btn">Start a quick quest <span>→</span></button></article>
+        </section>
+        <footer class="footer"><span>✦ EPIPHANY</span><span>Curiosity is your superpower.</span><span>LEARN · PLAY · GROW</span></footer>
+      </section>
+
+      <section class="view" id="worlds-view"><div class="page-intro"><div class="eyebrow">THE WORLD IS YOUR CLASSROOM</div><h1>Choose your <span>next world.</span></h1><p>Six stages. Countless little discoveries. Move forward as your skills grow.</p></div><div class="world-grid" id="world-grid"></div></section>
+      <section class="view" id="practice-view"><div class="page-intro"><div class="eyebrow">A FEW MINUTES CAN CHANGE A LOT</div><h1>Pick your <span>challenge.</span></h1><p>Mix it up. Every activity trains a different part of your English.</p></div><div class="activity-grid" id="activity-grid"></div></section>
+      <section class="view" id="vocabulary-view"><div class="page-intro"><div class="eyebrow">WORDS YOU'VE MET ALONG THE WAY</div><h1>Your word <span>vault.</span></h1><p>Every new word is a tool you can use in the real world.</p></div><div class="panel vault-panel" id="vault-content"></div></section>
+      <section class="view" id="achievements-view"><div class="page-intro"><div class="eyebrow">PROGRESS WORTH CELEBRATING</div><h1>Look how far <span>you'll go.</span></h1><p>Achievements celebrate effort, not perfection.</p></div><div class="achievement-grid" id="achievement-grid"></div></section>
+    </main>
+  </div>
+
+  <div class="game-overlay" id="game-overlay" aria-hidden="true">
+    <div class="game-modal" role="dialog" aria-modal="true" aria-labelledby="game-title"><div class="game-modal-top"><button class="icon-button" id="close-game" aria-label="Close activity">←</button><div class="game-progress-copy"><span id="game-step-label">QUEST 1 OF 5</span><div class="game-progress"><i id="game-progress-bar"></i></div></div><span class="game-xp">✦ <b id="game-xp">+30 XP</b></span></div><div id="game-content"></div></div>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>
