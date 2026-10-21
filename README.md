@@ -10,7 +10,7 @@ Epiphany is a responsive, game-inspired English learning website designed around
 - Six CEFR worlds: A1, A2, B1, B2, C1, and C2
 - Multiple playable activities: vocabulary, grammar, real-life dialogue, comprehension, spelling, and advanced nuance
 - Immediate answer feedback with explanations
-- Optional Arabic task guidance and feedback, with English kept as the learning language
+- Optional Arabic task guidance and question-specific explanations for all 30 sample questions, with English kept as the learning language
 - Daily quest counter resets using the learner’s local calendar day
 - Streak dates use local time, and completed worlds are tracked before XP-level changes
 - XP and progress saved locally in the browser
