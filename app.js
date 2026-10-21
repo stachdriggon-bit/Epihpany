@@ -52,11 +52,14 @@ const GAMES = {
 };
 const $ = s => document.querySelector(s);
 const $$ = s => [...document.querySelectorAll(s)];
-const defaultState = () => ({xp:0,quests:0,words:[],completed:[],streak:0,lastDay:null,daily:0,level:'A1',sound:true});
+const localDayKey = (date = new Date()) => [date.getFullYear(),String(date.getMonth()+1).padStart(2,'0'),String(date.getDate()).padStart(2,'0')].join('-');
+const defaultState = () => ({xp:0,quests:0,words:[],completed:[],streak:0,lastDay:null,daily:0,level:'A1',sound:true,helpArabic:false});
 let state;
 try { state = {...defaultState(), ...JSON.parse(localStorage.getItem('epiphany-progress') || '{}')}; } catch { state = defaultState(); }
+if (state.lastDay !== localDayKey()) state.daily = 0;
 let activeGame = null, questionIndex = 0, gameScore = 0, gameAnswers = [], answered = false, gameWords = [];
-function saveState(){try{localStorage.setItem('epiphany-progress',JSON.stringify(state));$('#save-status').textContent='Progress saved on this device';}catch{$('#save-status').textContent='Session progress only';}renderStats();}
+function saveState(){try{localStorage.setItem('epiphany-progress',JSON.stringify(state));$('#save-status').textContent='Progress saved on this device';}catch{$('#save-status').textContent='Session progress only';}syncArabicHelpButton();
+renderStats();}
 function currentLevel(){return [...LEVELS].reverse().find(l=>state.xp>=l.xp)||LEVELS[0];}
 function levelIndex(){return LEVELS.findIndex(l=>l.id===currentLevel().id);}
 function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
@@ -92,22 +95,23 @@ function startGame(type){
  const game=GAMES[type];if(!game)return;activeGame=type;questionIndex=0;gameScore=0;gameAnswers=[];gameWords=[];answered=false;
  $('#game-overlay').classList.add('open');$('#game-overlay').setAttribute('aria-hidden','false');document.body.style.overflow='hidden';renderQuestion();
 }
+function arabicGuidance(type){return ({vocabulary:'اختر المعنى الأقرب للكلمة أو العبارة الإنجليزية.',grammar:'اختر الصيغة التي تجعل الجملة صحيحة وطبيعية.',story:'تخيّل أنك في هذا الموقف الحقيقي واختر الرد الأنسب والأكثر تهذيبًا.',listening:'اقرأ الرسالة بعناية وابحث عن معناها أو المعلومة الأساسية.',spelling:'اختر الكلمة المكتوبة بطريقة صحيحة.',advanced:'ركّز على الفروق الدقيقة في المعنى والمنطق بين الخيارات.'})[type]||'خذ وقتك واقرأ الخيارات بهدوء.';}
 function renderQuestion(){
  const g=GAMES[activeGame];const q=g.questions[questionIndex];answered=false;
  $('#game-step-label').textContent='QUEST '+(questionIndex+1)+' OF '+g.questions.length;$('#game-progress-bar').style.width=((questionIndex)/g.questions.length*100)+'%';$('#game-xp').textContent='+'+g.xp+' XP';
- $('#game-content').innerHTML='<div class="game-heading"><div class="game-kicker">'+g.category+' · '+currentLevel().id+'</div><h2>'+g.title+'</h2><p>'+g.desc+'</p></div><div class="question-box"><div class="question-label">CHALLENGE '+(questionIndex+1)+'</div><h3>'+escapeHtml(q.q)+'</h3><p>'+escapeHtml(q.sub)+'</p></div><div class="answer-list">'+q.answers.map((a,i)=>'<button class="answer-option" data-answer="'+i+'"><span class="answer-letter">'+String.fromCharCode(65+i)+'</span><span>'+escapeHtml(a)+'</span></button>').join('')+'</div><div class="feedback-box" id="feedback-box" aria-live="polite"></div><div class="game-footer"><span class="hint">No pressure — learn as you go.</span><button class="btn btn-primary" id="next-question" disabled>'+(questionIndex===g.questions.length-1?'See results':'Continue')+' →</button></div>';
+ $('#game-content').innerHTML='<div class="game-heading"><div class="game-kicker">'+g.category+' · '+currentLevel().id+'</div><h2>'+g.title+'</h2><p>'+g.desc+'</p></div><div class="question-box"><div class="question-label">CHALLENGE '+(questionIndex+1)+'</div><h3>'+escapeHtml(q.q)+'</h3><p>'+escapeHtml(q.sub)+'</p></div>'+(state.helpArabic?'<div class="arabic-help" lang="ar" dir="rtl"><strong>مساعدة بالعربية</strong><span>'+arabicGuidance(activeGame)+'</span></div>':'')+'<div class="answer-list">'+q.answers.map((a,i)=>'<button class="answer-option" data-answer="'+i+'"><span class="answer-letter">'+String.fromCharCode(65+i)+'</span><span>'+escapeHtml(a)+'</span></button>').join('')+'</div><div class="feedback-box" id="feedback-box" aria-live="polite"></div><div class="game-footer"><span class="hint">No pressure — learn as you go.</span><button class="btn btn-primary" id="next-question" disabled>'+(questionIndex===g.questions.length-1?'See results':'Continue')+' →</button></div>';
  $$('#game-content [data-answer]').forEach(b=>b.addEventListener('click',()=>selectAnswer(Number(b.dataset.answer))));$('#next-question').addEventListener('click',()=>{if(questionIndex<g.questions.length-1){questionIndex++;renderQuestion();}else showResults();});
 }
 function selectAnswer(choice){
  if(answered)return;answered=true;const g=GAMES[activeGame],q=g.questions[questionIndex],correct=choice===q.correct;if(correct)gameScore++;gameAnswers.push({correct,choice,correctAnswer:q.correct});
  if(q.word&&correct)gameWords.push(q.word);
  $$('#game-content [data-answer]').forEach((b,i)=>{b.disabled=true;if(i===q.correct)b.classList.add('correct');else if(i===choice)b.classList.add('wrong');});
- const fb=$('#feedback-box');fb.classList.add('show');fb.innerHTML='<strong>'+(correct?'✦ Exactly right!':'Not quite — and that’s okay.')+'</strong>'+escapeHtml(q.explain);$('#next-question').disabled=false;
+ const fb=$('#feedback-box');fb.classList.add('show');fb.innerHTML='<strong>'+(correct?'✦ Exactly right!':'Not quite — and that’s okay.')+'</strong>'+escapeHtml(q.explain)+(state.helpArabic?'<div class="arabic-feedback" lang="ar" dir="rtl">'+(correct?'أحسنت! إجابتك صحيحة. اقرأ التفسير الإنجليزي لتثبيت القاعدة أو المعنى.':'لا بأس، الخطأ جزء من التعلّم. الإجابة الصحيحة مميّزة أعلاه؛ قارنها باختيارك ثم اقرأ التفسير.')+'</div>':'');$('#next-question').disabled=false;
 }
 function showResults(){
  const g=GAMES[activeGame],total=g.questions.length,earned=Math.round(g.xp*(.35+.65*gameScore/total));$('#game-progress-bar').style.width='100%';$('#game-step-label').textContent='QUEST COMPLETE';$('#game-xp').textContent='+'+earned+' XP';
  $('#game-content').innerHTML='<div class="game-result"><div class="result-star">'+(gameScore===total?'✦':'✧')+'</div><div class="game-kicker">QUEST COMPLETE</div><h2>'+(gameScore===total?'Brilliant work!':gameScore>=3?'Look at you, growing!':'Every try teaches you something.')+'</h2><p>You got '+gameScore+' out of '+total+' correct. '+(gameScore===total?'A perfect round — enjoy that feeling.':'Review the explanations and give it another go when you’re ready.')+'</p><div class="result-stats"><div class="result-stat"><strong>+'+earned+'</strong><span>XP EARNED</span></div><div class="result-stat"><strong>'+gameScore+'/'+total+'</strong><span>CORRECT</span></div><div class="result-stat"><strong>'+gameWords.length+'</strong><span>WORDS FOUND</span></div></div><button class="btn btn-primary" id="finish-game">Back to your adventure ↗</button> <button class="btn btn-quiet" id="retry-game">Play again</button></div>';
- state.xp+=earned;state.quests++;state.daily=Math.min(2,state.daily+1);const today=new Date().toISOString().slice(0,10);if(state.lastDay!==today){const yesterday=new Date(Date.now()-86400000).toISOString().slice(0,10);state.streak=state.lastDay===yesterday?(state.streak||0)+1:1;state.lastDay=today;}if(!state.completed.includes(currentLevel().id))state.completed.push(currentLevel().id);
+ const levelAtQuestStart=currentLevel().id;state.xp+=earned;state.quests++;state.daily=Math.min(2,state.daily+1);const today=localDayKey();if(state.lastDay!==today){const yesterday=new Date();yesterday.setDate(yesterday.getDate()-1);const wasYesterday=state.lastDay===localDayKey(yesterday);state.streak=wasYesterday?(state.streak||0)+1:1;state.lastDay=today;}if(!state.completed.includes(levelAtQuestStart))state.completed.push(levelAtQuestStart);
  gameWords.forEach(w=>{if(!state.words.some(existing=>existing[0]===w[0]))state.words.push([...w,currentLevel().id]);});saveState();renderLevels();
  $('#finish-game').addEventListener('click',closeGame);$('#retry-game').addEventListener('click',()=>startGame(activeGame));
 }
@@ -121,5 +125,7 @@ $('#daily-btn').addEventListener('click',()=>startGame(state.daily%2===0?'vocabu
 $('#close-game').addEventListener('click',closeGame);$('#game-overlay').addEventListener('click',e=>{if(e.target.id==='game-overlay')closeGame();});
 $('#mobile-menu').addEventListener('click',()=>$('#sidebar').classList.toggle('mobile-open'));
 $('#sound-toggle').addEventListener('click',()=>{state.sound=!state.sound;$('#sound-toggle').style.color=state.sound?'#b8aaff':'#77738c';toast(state.sound?'Sound effects enabled':'Sound effects muted');saveState();});
+function syncArabicHelpButton(){const b=$('#help-toggle');if(!b)return;b.textContent=state.helpArabic?'العربية ON':'العربية OFF';b.setAttribute('aria-pressed',String(state.helpArabic));b.classList.toggle('enabled',state.helpArabic);}
+$('#help-toggle').addEventListener('click',()=>{state.helpArabic=!state.helpArabic;syncArabicHelpButton();saveState();if(activeGame)renderQuestion();toast(state.helpArabic?'Arabic learning help enabled':'Arabic learning help disabled');});
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeGame();});
 renderStats();
