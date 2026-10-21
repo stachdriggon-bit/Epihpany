@@ -148,3 +148,6 @@ button:focus-visible,a:focus-visible{outline-color:#7567b5}
 .arabic-feedback{border-top-color:#e0d5e8;color:#5c4d76}
 @media(max-width:760px){.sidebar{background:#f4eee4;box-shadow:20px 0 60px #57452c20}.main-content{padding:0 16px}.topbar{gap:8px}.breadcrumb{font-size:8px}.topbar-right{gap:5px}.save-status{display:none}.welcome-row h1,.page-intro h1{letter-spacing:-1.5px}.hero-art{border-radius:22px}.quest-card{border-radius:17px}.panel{padding:17px}.stats-grid{gap:9px}.stat-card{padding:13px 11px}.stat-top{font-size:8px}.stat-number{font-size:25px}}
 @media(prefers-reduced-motion:reduce){.view{animation:none}.quest-card,.btn{transition:none}}
+
+/* Rounded type keeps the interface friendly and less technical. */
+body,button,input,textarea,select{font-family:'Nunito','DM Sans',sans-serif}.brand,.welcome-row h1,.page-intro h1,.quest-info h3,.section-heading h2,.panel h2,.daily-panel h2,.game-heading h2,.question-box h3,.stat-number{font-family:'Nunito','DM Sans',sans-serif}
