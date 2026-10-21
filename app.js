@@ -126,7 +126,7 @@ $('#close-game').addEventListener('click',closeGame);$('#game-overlay').addEvent
 $('#mobile-menu').addEventListener('click',()=>$('#sidebar').classList.toggle('mobile-open'));
 $('#sound-toggle').addEventListener('click',()=>{state.sound=!state.sound;$('#sound-toggle').style.color=state.sound?'#b8aaff':'#77738c';toast(state.sound?'Sound effects enabled':'Sound effects muted');saveState();});
 function syncArabicHelpButton(){const b=$('#help-toggle');if(!b)return;b.textContent=state.helpArabic?'العربية ON':'العربية OFF';b.setAttribute('aria-pressed',String(state.helpArabic));b.classList.toggle('enabled',state.helpArabic);}
-$('#help-toggle').addEventListener('click',()=>{state.helpArabic=!state.helpArabic;syncArabicHelpButton();saveState();if(activeGame)renderQuestion();toast(state.helpArabic?'Arabic learning help enabled':'Arabic learning help disabled');});
+$('#help-toggle').addEventListener('click',()=>{state.helpArabic=!state.helpArabic;syncArabicHelpButton();saveState();if(activeGame&&!answered)renderQuestion();toast(state.helpArabic?'Arabic learning help enabled':'Arabic learning help disabled');});
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeGame();});
 syncArabicHelpButton();
 renderStats();
