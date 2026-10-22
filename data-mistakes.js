@@ -345,11 +345,11 @@ const MISTAKE_QUESTIONS = [
     "level": "B1",
     "trap": "adjective-order",
     "sub": "Choose the best phrase for a report.",
-    "prompt": "The team developed a ___ system.",
+    "prompt": "The team developed an ___ system.",
     "options": [
       "control efficient new",
-      "new efficient control",
-      "new efficient control",
+      "new control efficient",
+      "efficient new control",
       "efficient system new control"
     ],
     "answer": 2,
