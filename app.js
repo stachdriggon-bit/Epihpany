@@ -42,10 +42,11 @@
     spelling:  {label:'Spelling',     tone:'pink',   glyph:'abc',  time:3, blurb:'Sharpen spelling and word recognition.'},
     advanced:  {label:'Advanced',     tone:'ink',    icon:'spark',  time:6, blurb:'Explore precise language and subtle meaning.'},
     mistakes:  {label:'Common mistakes', tone:'coral', glyph:'?!', time:4, blurb:'Learn from common English mistakes.'},
+    spot:      {label:'Spot the Mistake', tone:'coral', glyph:'?!', time:4, blurb:'Tap the one incorrect word.'},
     typing:    {label:'Type It', tone:'sky', glyph:'Aa', time:4, blurb:'Write the missing word from memory.'}
   };
   const ORDER = ['vocabulary', 'spelling', 'grammar', 'story', 'listening', 'advanced', 'mistakes', 'typing'];
-  const UNLOCK = {vocabulary:0, spelling:0, grammar:1, story:2, listening:3, advanced:4, mistakes:0, typing:0};
+  const UNLOCK = {vocabulary:0, spelling:0, grammar:1, story:2, listening:3, advanced:4, mistakes:0, spot:0, typing:0};
   GAMES.mistakes = {title:'Common Mistakes', category:'GRAMMAR', xp:40, desc:'Understand common mistakes made by English learners.', questions:MISTAKE_QUESTIONS.map(q=>({q:q.prompt,sub:q.sub,answers:q.options,correct:q.answer,explain:q.why_en,word:null,level:q.level,ar:q.arabic_hint,id:q.id,trap:q.trap,why_ar:q.why_ar,arabic_hint:q.arabic_hint,aha:null}))};
   GAMES.spot = {title:'Spot the Mistake',category:'GRAMMAR',xp:40,desc:'Tap the one incorrect word in a short text.',questions:SPOT_QUESTIONS.map(q=>({...q,q:q.text,sub:'Tap the one incorrect word.',answers:[q.fix],correct:q.wrongIndex,explain:q.why_en,aha:null,mode:'spot'}))};
   GAMES.typing = {title:'Type It',category:'WRITING',xp:45,desc:'Write the missing word without multiple-choice hints.',questions:TYPING_QUESTIONS.map(q=>({...q,q:q.prompt,sub:'Hint: '+q.hint,answers:q.accept,correct:0,explain:q.why_en,aha:null,mode:'typing'}))};
@@ -62,7 +63,8 @@
     return state.lastDay === dayKey() || state.lastDay === dayKey(y) || (state.lastDay === dayKey(twoDaysAgo) && state.streakFreezes > 0) ? (state.streak || 0) : 0;
   };
   function pickNext() {
-    const ok = ORDER.filter(g => UNLOCK[g] <= levelIndex());
+    const rotation = ['vocabulary', 'spelling', 'grammar', 'story', 'listening', 'advanced', 'mistakes', 'spot', 'typing'];
+    const ok = rotation.filter(g => UNLOCK[g] <= levelIndex());
     return ok[state.quests % ok.length];
   }
 
