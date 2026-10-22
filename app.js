@@ -454,7 +454,7 @@
     s.innerHTML = '<div class="sheet-in">' + html + '</div>';
     requestAnimationFrame(() => {
       s.classList.add('show'); setSheetSpace();
-      const sel = $('#answers .correct'); if (sel) sel.scrollIntoView({block:'nearest', behavior:'smooth'});
+      const sel = $('#answers .correct'); if (sel) sel.scrollIntoView({block:'nearest', behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});
       const b = $('#go-next'); if (b) b.focus({preventScroll: true});
     });
   }
@@ -650,7 +650,9 @@
   }
 
   /* ---------- events ---------- */
+  document.addEventListener('submit', e => { if(e.target && e.target.id==='typing-form'){e.preventDefault();checkTyping();} });
   document.addEventListener('click', e => {
+    if(e.target.closest('#wotd-save')){const box=$('#wotd-card'),w=WOTD_WORDS.find(x=>x.word===box.dataset.word);if(w&&!state.words.some(x=>String(x[0]).toLowerCase()===w.word.toLowerCase())){state.words.push([w.word,w.meaning,w.level]);save();renderAll();toast('Word saved to your vault.');}return;}
     const sb=e.target.closest('[data-speak]'); if(sb){speak(sb.dataset.speak);return;}
     const rb=e.target.closest('[data-review]');
     if(rb){const item=state.review.find(w=>w.word===rb.dataset.word);if(item){item.attempts=(item.attempts||0)+1;
