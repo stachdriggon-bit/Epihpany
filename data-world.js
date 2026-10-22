@@ -29,6 +29,8 @@ const WORLD_DATA = {
     {id:"bridge",name:"bridge",x:9,y:7,emoji:"🌉",solid:false},
     {id:"river",name:"river",x:9,y:6,emoji:"🌊",solid:true},
     {id:"baker",name:"baker",x:13,y:10,emoji:"🧑‍🍳",solid:false,person:true},
+    {id:"bakery",name:"bakery",x:13,y:9,emoji:"🥖",solid:true},
+    {id:"well",name:"well",x:4,y:5,emoji:"🪣",solid:true},
     {id:"door",name:"door",x:10,y:3,emoji:"🚪",solid:false},
     {id:"key",name:"key",x:4,y:9,emoji:"🔑",solid:false,pickup:true},
     {id:"basket",name:"basket",x:16,y:9,emoji:"🧺",solid:false,pickup:true},
