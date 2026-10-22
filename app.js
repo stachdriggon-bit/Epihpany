@@ -100,9 +100,42 @@
   }
 
   /* ---------- rendering: words + trophies ---------- */
+  let speechRequest = 0;
   function speak(text) {
-    if (!('speechSynthesis' in window) || !('SpeechSynthesisUtterance' in window)) { toast('Speech playback is not supported in this browser.'); return; }
-    window.speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(String(text || '')); u.lang='en-US'; u.rate=0.88; window.speechSynthesis.speak(u);
+    const synth = window.speechSynthesis;
+    if (!synth || !('SpeechSynthesisUtterance' in window)) {
+      toast('Speech playback is not supported in this browser.');
+      return;
+    }
+    const phrase = String(text == null ? '' : text).replace(/\\s+/g, ' ').trim();
+    if (!phrase) { toast('There is no word to pronounce.'); return; }
+
+    // Some browsers interrupt a new utterance if cancel() and speak() happen
+    // in the same tick. Defer speaking and prefer an available English voice.
+    const request = ++speechRequest;
+    synth.cancel();
+    const utterance = new SpeechSynthesisUtterance(phrase);
+    utterance.lang = 'en-US';
+    utterance.rate = 0.88;
+    const voices = synth.getVoices ? synth.getVoices() : [];
+    const englishVoice = voices.find(v => /^en-US$/i.test(v.lang))
+      || voices.find(v => /^en-GB$/i.test(v.lang))
+      || voices.find(v => /^en(?:-|$)/i.test(v.lang));
+    if (englishVoice) utterance.voice = englishVoice;
+    utterance.onerror = event => {
+      if (request === speechRequest && event.error !== 'canceled' && event.error !== 'interrupted') {
+        toast('Could not play this pronunciation. Check your browser sound settings and try again.');
+      }
+    };
+    window.setTimeout(() => {
+      if (request !== speechRequest) return;
+      try {
+        if (synth.paused) synth.resume();
+        synth.speak(utterance);
+      } catch {
+        toast('Could not play this pronunciation. Try again.');
+      }
+    }, 80);
   }
   function wordParts(raw, fallback) {
     if (Array.isArray(raw)) return {word:String(raw[0]||''),meaning:String(raw[1]||fallback||'Review this word in context.'),level:String(raw[2]||currentLevel().id)};
