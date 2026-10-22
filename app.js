@@ -726,8 +726,12 @@
   function worldMove(k){
     if(!WORLD||WORLD.mode!=='play')return;let dx=0,dy=0;
     if(k==='ArrowUp'||k.toLowerCase()==='w')dy=-1;else if(k==='ArrowDown'||k.toLowerCase()==='s')dy=1;else if(k==='ArrowLeft'||k.toLowerCase()==='a')dx=-1;else if(k==='ArrowRight'||k.toLowerCase()==='d')dx=1;
-    const x=WORLD.player.x+dx,y=WORLD.player.y+dy;if(!worldPass(x,y)){WORLD.bump=performance.now()+120;worldDraw();return;}
-    const p=WORLD.player;p.fromX=p.vx;p.fromY=p.vy;p.x=x;p.y=y;p.moveAt=performance.now();WORLD.tries++;WORLD.moves++;
+    const p=WORLD.player;
+    const moving=Math.min(1,(performance.now()-(p.moveAt||0))/160);
+    if(p.moveAt&&moving<1){p.queuedKey=k;return;}
+    const x=p.x+dx,y=p.y+dy;
+    if(!worldPass(x,y)){p.queuedKey=null;WORLD.bump=performance.now()+120;worldDraw();return;}
+    p.fromX=p.x;p.fromY=p.y;p.x=x;p.y=y;p.moveAt=performance.now();p.queuedKey=null;WORLD.tries++;WORLD.moves++;
     worldDraw();if(worldEval())worldComplete();
     const hint=$('#world-hint');if(hint)hint.hidden=WORLD.tries<3||WORLD.usedHelp;
   }
@@ -769,19 +773,20 @@
       if(ch==='H'){x.font=tile*.8+'px sans-serif';x.textAlign='center';x.textBaseline='middle';x.fillText('🏠',px+tile/2,py+tile/2);}
     }
     WORLD.objects.forEach(o=>{x.font=tile*.8+'px sans-serif';x.textAlign='center';x.textBaseline='middle';x.fillText(o.emoji,ox+(o.x+.5)*tile,oy+(o.y+.5)*tile);});
-    const p=WORLD.player,elapsed=Math.min(1,(performance.now()-(p.moveAt||0))/120),e=elapsed*elapsed*(3-2*elapsed),px=ox+(p.fromX+(p.x-p.fromX)*e+.5)*tile,py=oy+(p.fromY+(p.y-p.fromY)*e+.5)*tile;
+    const p=WORLD.player,elapsed=Math.min(1,(performance.now()-(p.moveAt||0))/160),e=elapsed*elapsed*(3-2*elapsed),px=ox+(p.fromX+(p.x-p.fromX)*e+.5)*tile,py=oy+(p.fromY+(p.y-p.fromY)*e+.5)*tile;
     x.fillStyle='rgba(0,0,0,.15)';x.beginPath();x.ellipse(px,py+tile*.23,tile*.28,tile*.1,0,0,Math.PI*2);x.fill();
     x.fillStyle=p.color;x.beginPath();x.arc(px,py,tile*.3,0,Math.PI*2);x.fill();x.strokeStyle='#fff';x.lineWidth=2;x.stroke();
     x.fillStyle='#fff';x.beginPath();x.arc(px-tile*.1,py-tile*.06,tile*.07,0,Math.PI*2);x.arc(px+tile*.1,py-tile*.06,tile*.07,0,Math.PI*2);x.fill();
     x.fillStyle='#17203d';x.beginPath();x.arc(px-tile*.08,py-tile*.05,tile*.03,0,Math.PI*2);x.arc(px+tile*.12,py-tile*.05,tile*.03,0,Math.PI*2);x.fill();
     x.fillStyle=WORLD.outfit;x.beginPath();x.arc(px,py+tile*.18,tile*.1,0,Math.PI*2);x.fill();
     if(WORLD.target){x.strokeStyle='rgba(255,197,49,'+(.35+.65*(.5+.5*Math.sin(performance.now()/180)))+')';x.lineWidth=4;x.setLineDash([5,4]);x.strokeRect(ox+WORLD.target.x*tile+3,oy+WORLD.target.y*tile+3,tile-6,tile-6);x.setLineDash([]);}
+    if(p.moveAt&&elapsed>=1&&p.queuedKey){const queued=p.queuedKey;p.queuedKey=null;worldMove(queued);return;}
     if((p.moveAt&&elapsed<1)||WORLD.target)WORLD.raf=requestAnimationFrame(worldDraw);
   }
   function worldStatus(){const h=$('#world-hint');if(h)h.hidden=WORLD.tries<3||WORLD.usedHelp;const s=$('#world-step');if(s)s.textContent=worldTask().check.type==='sequence'?'Step '+(WORLD.step+1)+' of '+worldTask().check.steps.length:'';const carry=$('#world-carry');if(carry)carry.textContent=WORLD.carried?'Carrying '+(WORLD.carried==='key'?'the key':'the basket'):'';}
   function worldRenderPlay(){const t=worldTask();$('#world-game').innerHTML=worldShell('<div class="world-stage"><canvas id="world-canvas" aria-label="Top-down village map"></canvas><div class="world-helpbar"><button data-world-speak>🔊 Listen</button><button data-world-translate>🌐 Translation</button><button id="world-hint" data-world-hint hidden>✨ Show me</button><span id="world-step"></span><span id="world-carry"></span></div><div class="world-mobile-controls"><div class="world-dpad"><button data-world-move="ArrowUp" aria-label="Move up">▲</button><div><button data-world-move="ArrowLeft" aria-label="Move left">◀</button><button data-world-move="ArrowDown" aria-label="Move down">▼</button><button data-world-move="ArrowRight" aria-label="Move right">▶</button></div></div><button class="world-interact" data-world-interact>Space · Interact</button></div></div>');worldStatus();requestAnimationFrame(worldDraw);}
   function startWorld(){if(typeof WORLD_DATA==='undefined'){toast('Village data is not loaded. Refresh and try again.');return;}if(WORLD&&WORLD.raf)cancelAnimationFrame(WORLD.raf);
-    WORLD={mode:'intro',tasks:WORLD_DATA.tasks.slice(),index:0,map:WORLD_DATA.map,objects:WORLD_DATA.objects.map(o=>({...o})),player:{x:WORLD_DATA.start.x,y:WORLD_DATA.start.y,vx:WORLD_DATA.start.x,vy:WORLD_DATA.start.y,fromX:WORLD_DATA.start.x,fromY:WORLD_DATA.start.y,color:'#FFC531',moveAt:0},outfit:'#6C5CE7',showTranslation:!!state.helpArabic,tries:0,usedHelp:false,moves:0,step:0,carried:null,picked:new Set(),given:new Set(),stars:0,progress:{},raf:0};
+    WORLD={mode:'intro',tasks:WORLD_DATA.tasks.slice(),index:0,map:WORLD_DATA.map,objects:WORLD_DATA.objects.map(o=>({...o})),player:{x:WORLD_DATA.start.x,y:WORLD_DATA.start.y,fromX:WORLD_DATA.start.x,fromY:WORLD_DATA.start.y,moveAt:0,queuedKey:null,color:'#FFC531'},outfit:'#6C5CE7',showTranslation:!!state.helpArabic,tries:0,usedHelp:false,moves:0,step:0,carried:null,picked:new Set(),given:new Set(),stars:0,progress:{},raf:0};
     lockPage(true);$$('[data-view]').forEach(b=>b.setAttribute('aria-current',b.dataset.view==='world'?'page':'false'));$('#world-game').hidden=false;$('#world-game').innerHTML='<div class="world-intro"><button class="world-exit" data-world-exit>✕</button><div class="world-intro-art">🌳 🏠 🌉</div><p class="world-kicker">EPIPHANY WORLD</p><h1>Understand. Move. Discover.</h1><p>Read the English instruction and explore a tiny village to complete 10 tasks.</p><h3>Your character</h3><div class="world-color-picks"><button class="is-selected" data-world-color="#FFC531">🟡 Yellow</button><button data-world-color="#7C6CFF">🟣 Purple</button></div><h3>Clothes</h3><div class="world-color-picks"><button class="is-selected" data-world-outfit="#6C5CE7">Purple</button><button data-world-outfit="#168B68">Green</button><button data-world-outfit="#3478D4">Blue</button></div><button class="world-primary" data-world-begin>Start exploring →</button><p class="world-small">Arrow keys / WASD to move · Space to interact</p></div>';}
   function worldComplete(){if(!WORLD||WORLD.mode!=='play')return;const t=worldTask();if(t.check.type==='pickup'){WORLD.carried=null;WORLD.picked.delete(t.check.object);const original=WORLD_DATA.objects.find(o=>o.id===t.check.object);if(original&&!worldObj(original.id))WORLD.objects.push({...original});}const stars=WORLD.usedHelp?(WORLD.moves>7?1:2):3,gain=worldAward(stars,t);WORLD.stars+=stars;WORLD.mode='success';sfx('done');
     $('#world-game').innerHTML=worldShell('<section class="world-success"><div class="world-big-star">★</div><p class="world-kicker">TASK COMPLETE</p><h2>Well done!</h2><div class="world-stars">'+('★'.repeat(stars))+'<span>'+('☆'.repeat(3-stars))+'</span></div><p>+'+gain+' XP earned</p><p class="world-translation" lang="ar" dir="rtl">'+esc(t.ar)+'</p><h3>New words</h3><div class="world-word-list">'+t.words.map(w=>'<span class="world-word-chip"><b>'+esc(w[0])+'</b><small>'+esc(w[1])+'</small></span>').join('')+'</div><button class="world-primary" data-world-next>'+(WORLD.index===WORLD.tasks.length-1?'Finish village':'Next task')+' →</button></section>');}
