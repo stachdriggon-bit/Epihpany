@@ -767,11 +767,11 @@
     if(!WORLD||WORLD.mode!=='play')return;const step=worldStep();if(!step)return;
     if(step.type==='pickup'){
       const o=worldObj(step.object);
-      if(o&&worldDist(WORLD.player,o)<=1){WORLD.carried=o.id;WORLD.picked.add(o.id);WORLD.objects=WORLD.objects.filter(v=>v.id!==o.id);if(worldEval())worldComplete();else worldStatus();worldDraw();return;}
+      if(o&&worldReachableFromPlayer(o)){WORLD.carried=o.id;WORLD.picked.add(o.id);WORLD.objects=WORLD.objects.filter(v=>v.id!==o.id);if(worldEval())worldComplete();else worldStatus();worldDraw();return;}
     }
     if(step.type==='give'){
       const o=worldObj(step.person);
-      if(WORLD.carried===step.item&&o&&worldDist(WORLD.player,o)<=1){WORLD.given.add(step.item);WORLD.carried=null;if(worldEval())worldComplete();else worldStatus();worldDraw();return;}
+      if(WORLD.carried===step.item&&o&&worldReachableFromPlayer(o)){WORLD.given.add(step.item);WORLD.carried=null;if(worldEval())worldComplete();else worldStatus();worldDraw();return;}
     }
     toast('Move next to the item or person, then press Space.');
   }
