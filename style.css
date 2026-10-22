@@ -346,3 +346,75 @@ body.ar-on .ar-only{display:block}
 #res-download{background:#fff}
 @media(max-width:940px){.motivation{grid-template-columns:repeat(2,minmax(0,1fr))}.freeze-card{grid-column:1/-1}}
 @media(max-width:600px){.motivation{grid-template-columns:1fr;gap:14px;margin-top:18px}.freeze-card{grid-column:auto}.challenge-card{padding:19px;border-radius:21px}.challenge-card h2{font-size:24px}}
+
+/* Technical upgrades: dark theme, RTL layout, accessible utility controls */
+.utility-btn{font-size:20px;font-weight:800;line-height:1}
+.top-right .utility-btn{flex:none}
+:focus-visible{outline:3px solid var(--focus);outline-offset:4px}
+button:disabled{opacity:.6}
+body[data-theme="dark"]{
+  --ink:#F2F4FF;--ink-2:#C0C7E0;--ink-3:#929BBE;
+  --ground:#111522;--surface:#1B2030;--line:#343B52;--line-2:#4B5470;
+  --spark:#FFD15A;--spark-hi:#FFE08A;--spark-lo:#DDA52A;
+  --focus:#A99CFF;--violet:#A69BFF;--violet-soft:#302C4C;
+  --coral:#FF9B82;--coral-soft:#482C2C;--mint:#52DDB6;--mint-soft:#1F403B;
+  --sky:#75C8FF;--sky-soft:#1E394C;--pink:#FF8ABC;--pink-soft:#48293A;
+  --navy:#F2F4FF;--navy-soft:#2A3042;--good:#52DDB6;--bad:#FF9B82;
+}
+body[data-theme="dark"] .top{background:rgba(17,21,34,.92)}
+body[data-theme="dark"] .tabs,
+body[data-theme="dark"] .chip,
+body[data-theme="dark"] .icon-btn,
+body[data-theme="dark"] .ar-toggle,
+body[data-theme="dark"] .you,
+body[data-theme="dark"] .track-note,
+body[data-theme="dark"] .tile,
+body[data-theme="dark"] .word,
+body[data-theme="dark"] .trophy,
+body[data-theme="dark"] .answer,
+body[data-theme="dark"] .game,
+body[data-theme="dark"] .placement-card,
+body[data-theme="dark"] .listen-btn,
+body[data-theme="dark"] .review-card,
+body[data-theme="dark"] .stat,
+body[data-theme="dark"] .newword{background:var(--surface);color:var(--ink)}
+body[data-theme="dark"] .btn-ghost,
+body[data-theme="dark"] .challenge-icon{background:#252B3C;color:var(--ink)}
+body[data-theme="dark"] .daily-card{background:#302C4C}
+body[data-theme="dark"] .weekly-card{background:#1F403B}
+body[data-theme="dark"] .freeze-card{background:#3C3524}
+body[data-theme="dark"] .dock{background:rgba(17,21,34,.96)}
+body[data-theme="dark"] .sheet{background:#1F403B;color:var(--ink)}
+body[data-theme="dark"] .sheet.bad{background:#482C2C}
+body[data-theme="dark"] .sheet .arabic{background:#252B3C}
+body[data-theme="dark"] .review-panel{background:linear-gradient(135deg,#302C4C,#1F403B)}
+body[data-theme="dark"] .empty{background:var(--surface)}
+body[data-theme="dark"] .next{color:var(--ink)}
+body[data-theme="dark"] .next-body>p,
+body[data-theme="dark"] .goal p,
+body[data-theme="dark"] .placement-intro,
+body[data-theme="dark"] #placement-content>p{color:var(--ink-2)}
+body[data-theme="dark"] .ring-bg{stroke:#343B52}
+body[data-theme="dark"] .challenge-bonus{background:#1F403B;color:var(--ink)}
+body[data-theme="dark"] .answer.correct{background:#1F403B}
+body[data-theme="dark"] .answer.wrong{background:#482C2C}
+body.ar-on .top-in,body.ar-on .top-right,body.ar-on .tabs{direction:rtl}
+body.ar-on .page,body.ar-on .challenge-card,body.ar-on .you,body.ar-on .block,body.ar-on .review-panel{ text-align:right }
+body.ar-on .lead,body.ar-on .next-body>p{ text-align:right }
+body.ar-on .next-art{border-left:0;border-right:2px solid var(--ink)}
+body.ar-on .tab,body.ar-on .tile,body.ar-on .btn{direction:rtl}
+body.ar-on .meta{direction:rtl}
+@media(max-width:760px){
+  .top-in{gap:6px}
+  .top-right{gap:4px}
+  .top-right .utility-btn{width:34px;height:36px;font-size:17px}
+  .top-right .chip{padding:0 7px}
+}
+@media(max-width:420px){
+  .top-in{padding:0 8px}
+  .logo{font-size:20px;gap:6px}
+  .logo-mark{width:28px;height:28px}
+  .top-right .chip{height:34px;font-size:13px}
+  .top-right .utility-btn{width:30px;height:34px}
+  .ar-toggle{min-width:32px;width:32px}
+}
