@@ -150,7 +150,7 @@
       toast('Speech playback is not supported in this browser.');
       return;
     }
-    const phrase = String(text == null ? '' : text).replace(/\\s+/g, ' ').trim();
+    const phrase = String(text == null ? '' : text).replace(/\s+/g, ' ').trim();
     if (!phrase) { toast('There is no word to pronounce.'); return; }
 
     // Some browsers interrupt a new utterance if cancel() and speak() happen
@@ -460,7 +460,7 @@
     const game = GAMES[G.type], q = G.questions[G.i].q, m = META[G.type];
     G.answered = false; hideSheet(); renderSteps();
     if (G.type === 'spot') {
-      $('#game-body').innerHTML = '<div class="q-meta"><span class="pill">Common mistakes · Spot it</span><span class="q-count">Question '+(G.i+1)+' of '+G.questions.length+'</span></div><h2 class="q-text" id="q-text" tabindex="-1">Tap the incorrect word</h2><p class="q-sub">Only one word is wrong. Read the whole text first.</p><div class="spot-text" id="spot-text" role="group" aria-label="Tap the incorrect word">'+q.text.split(/\\s+/).map((word,i)=>'<button type="button" class="spot-word" data-spot-index="'+i+'" aria-label="Word '+(i+1)+': '+esc(word)+'">'+esc(word)+'</button>').join(' ')+'</div><p class="ar-only arabic" lang="ar" dir="rtl">اضغط على الكلمة الخاطئة الوحيدة.</p>';
+      $('#game-body').innerHTML = '<div class="q-meta"><span class="pill">Common mistakes · Spot it</span><span class="q-count">Question '+(G.i+1)+' of '+G.questions.length+'</span></div><h2 class="q-text" id="q-text" tabindex="-1">Tap the incorrect word</h2><p class="q-sub">Only one word is wrong. Read the whole text first.</p><div class="spot-text" id="spot-text" role="group" aria-label="Tap the incorrect word">'+q.text.split(/\s+/).map((word,i)=>'<button type="button" class="spot-word" data-spot-index="'+i+'" aria-label="Word '+(i+1)+': '+esc(word)+'">'+esc(word)+'</button>').join(' ')+'</div><p class="ar-only arabic" lang="ar" dir="rtl">اضغط على الكلمة الخاطئة الوحيدة.</p>';
       $('#game-scroll').scrollTop=0; $('#q-text').focus({preventScroll:true}); return;
     }
     if (G.type === 'typing') {
@@ -516,8 +516,8 @@
     else {const key='spot-'+q.level;state.weakTraps[key]=(Number(state.weakTraps[key])||0)+1;save();}
     G.results[G.i]=ok?'ok':'no';
     $('#spot-text .spot-word').forEach((b,i)=>{b.disabled=true;if(i===q.wrongIndex)b.classList.add('wrong');});
-    const words=q.text.split(/\\s+/);let corrected;
-    if(/^remove\\s/i.test(q.fix)){corrected=words.filter((_,i)=>i!==q.wrongIndex).join(' ');}
+    const words=q.text.split(/\s+/);let corrected;
+    if(/^remove\s/i.test(q.fix)){corrected=words.filter((_,i)=>i!==q.wrongIndex).join(' ');}
     else {words[q.wrongIndex]=q.fix;corrected=words.join(' ');}
     const correctDisplay=corrected;
     showSheet(ok,'<h3><span class="sheet-mark">'+ic(ok?'check':'x')+'</span>'+(ok?'Exactly right!':'Good try — spot the pattern.')+'</h3><p><strong>Corrected sentence:</strong></p><p class="spot-corrected">'+esc(correctDisplay)+'</p>'+(!ok?'<p class="spot-reveal">You selected: <span class="spot-wrong-word">'+esc(words[index]||'')+'</span></p>':'')+'<p>'+esc(q.why_en)+'</p><p class="arabic ar-only" lang="ar" dir="rtl">'+esc(q.why_ar)+'</p>'+( !ok&&q.aha?'<aside class="aha-note"><span aria-hidden="true">💡</span><div><strong>Aha moment</strong><p>'+esc(q.aha.en)+'</p><p class="arabic ar-only" lang="ar" dir="rtl">'+esc(q.aha.ar)+'</p></div></aside>':'')+'<div class="sheet-actions"><button class="btn" id="go-next">'+(G.i===G.questions.length-1?'See results':'Continue')+ic('arrow')+'</button></div>');
@@ -532,9 +532,9 @@
   function checkTyping() {
     if(!G||G.type!=='typing'||G.answered)return;
     const input=$('#typing-answer'),feedback=$('#typing-feedback');if(!input)return;
-    const q=G.questions[G.i].q,answer=input.value.trim().replace(/\\s+/g,' ').toLowerCase();
+    const q=G.questions[G.i].q,answer=input.value.trim().replace(/\s+/g,' ').toLowerCase();
     if(!answer){feedback.textContent='Type an answer first.';feedback.className='typing-feedback bad';input.focus();return;}
-    const accepted=q.accept.map(x=>String(x).trim().replace(/\\s+/g,' ').toLowerCase());
+    const accepted=q.accept.map(x=>String(x).trim().replace(/\s+/g,' ').toLowerCase());
     if(accepted.includes(answer)){finishTyping(true);return;}
     if(!G.typingRetry&&accepted.some(x=>editDistanceOne(answer,x))){G.typingRetry=true;feedback.textContent='Very close! Check the spelling and try once more — no stars lost.';feedback.className='typing-feedback near';input.select();return;}
     finishTyping(false);
