@@ -385,6 +385,8 @@
   let placement={questions:[],index:0,answers:[]};
   function showPlacement(){if(state.placementDone)return;placement={questions:placementQuestions(),index:0,answers:[]};$('#placement').hidden=false;lockPage(true);renderPlacementQuestion();}
   function renderPlacementQuestion(){const q=placement.questions[placement.index];$('#placement-progress').textContent='Question '+(placement.index+1)+' of '+placement.questions.length;$('#placement-content').innerHTML='<h2>'+esc(q.q)+'</h2><p>'+esc(q.sub||'Choose the best answer.')+'</p><div class="answers">'+q.answers.map((x,i)=>'<button class="answer" data-place-answer="'+i+'"><span class="key">'+(i+1)+'</span><span>'+esc(x)+'</span></button>').join('')+'</div>';}
+  function skipPlacement(){state.placementDone=true;save();$('#placement').hidden=true;lockPage(false);renderAll();toast('Placement skipped. Your starting level is A1 — you can begin playing now.');}
+  $('#placement-skip').addEventListener('click',skipPlacement);
   function answerPlacement(choice){const q=placement.questions[placement.index];placement.answers.push({level:q.placementLevel,ok:choice===q.correct});placement.index++;if(placement.index<placement.questions.length){renderPlacementQuestion();return;}
     const scores=Object.fromEntries(LEVELS.map(l=>[l.id,placement.answers.filter(a=>a.level===l.id&&a.ok).length]));let target=0;for(let i=0;i<LEVELS.length;i++){if(scores[LEVELS[i].id]>=1)target=i;else break;}
     state.level=LEVELS[target].id;state.xp=Math.max(state.xp,LEVELS[target].xp);state.placementDone=true;save();$('#placement').hidden=true;lockPage(false);renderAll();toast('Your starting level is '+LEVELS[target].id+'. You can improve it as you learn.');}
