@@ -199,7 +199,10 @@
 
   function startGame(type) {
     const game = GAMES[type]; if (!game) return;
-    const paired = game.questions.map((q, i) => ({q, ar: (AR_EXPLANATIONS[type] || [])[i] || 'راجع معنى الإجابة الصحيحة وحاول تذكّرها في سياق جديد.'}));
+    const level = currentLevel().id;
+    const levelPool = game.questions.filter(q => q.level === level);
+    const pool = levelPool.length >= 5 ? levelPool : game.questions;
+    const paired = pool.map(q => ({q, ar: q.ar || 'راجع معنى الإجابة الصحيحة وحاول تذكّرها في سياق جديد.'}));
     for (let i = paired.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [paired[i], paired[j]] = [paired[j], paired[i]]; }
     G = {type, questions: paired.slice(0, Math.min(5, paired.length)), i:0, score:0, words:[], answered:false, results:[]};
     const el = $('#game'); el.className = 'game t-' + META[type].tone; el.hidden = false;
