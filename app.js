@@ -15,7 +15,7 @@
   ];
 
   /* ---------- state ---------- */
-  const defaults = () => ({xp:0, quests:0, words:[], review:[], placementDone:false, completed:[], streak:0, lastDay:null, daily:0, level:'A1', sound:true, helpArabic:false, streakFreezes:1, dailyQuestDate:null, dailyQuestProgress:0, dailyQuestClaimed:false, dailyCorrect:0, dailyXp:0, weeklyKey:null, weeklyProgress:0, weeklyClaimed:false});
+  const defaults = () => ({xp:0, quests:0, words:[], review:[], placementDone:false, completed:[], streak:0, lastDay:null, daily:0, level:'A1', sound:true, helpArabic:false, theme:'light', streakFreezes:1, dailyQuestDate:null, dailyQuestProgress:0, dailyQuestClaimed:false, dailyCorrect:0, dailyXp:0, weeklyKey:null, weeklyProgress:0, weeklyClaimed:false});
   let state;
   try { state = {...defaults(), ...JSON.parse(localStorage.getItem('epiphany-progress') || '{}')}; } catch { state = defaults(); }
   if (!Array.isArray(state.review)) state.review = [];
@@ -227,15 +227,95 @@
   /* ---------- settings: Arabic help + sound ---------- */
   function syncSettings() {
     document.body.classList.toggle('ar-on', !!state.helpArabic);
-    $$('#ar-toggle, #game-ar').forEach(b => b.setAttribute('aria-pressed', String(!!state.helpArabic)));
+    document.documentElement.dir = state.helpArabic ? 'rtl' : 'ltr';
+    document.documentElement.lang = state.helpArabic ? 'ar' : 'en';
+    document.body.dir = state.helpArabic ? 'rtl' : 'ltr';
+    $('#ar-toggle, #game-ar').forEach(b => b.setAttribute('aria-pressed', String(!!state.helpArabic)));
     const s = $('#sound-toggle');
     s.setAttribute('aria-pressed', String(!!state.sound));
+    s.setAttribute('aria-label', state.sound ? 'Turn sound effects off' : 'Turn sound effects on');
+    s.title = state.sound ? 'Sound effects on' : 'Sound effects off';
     s.innerHTML = ic(state.sound ? 'sound' : 'mute');
+    const dark = state.theme === 'dark';
+    document.body.dataset.theme = dark ? 'dark' : 'light';
+    const theme = $('#theme-toggle');
+    theme.setAttribute('aria-pressed', String(dark));
+    theme.setAttribute('aria-label', dark ? 'Turn off dark mode' : 'Turn on dark mode');
+    theme.title = dark ? 'Light mode' : 'Dark mode';
+    theme.textContent = dark ? '☼' : '◐';
+    const meta = $('#theme-color-meta');
+    if (meta) meta.content = dark ? '#111522' : '#F5F6FC';
   }
   function toggleArabic() {
     state.helpArabic = !state.helpArabic; save(); syncSettings();
     if (G) { if (G.answered) setSheetSpace(); } else toast(state.helpArabic ? 'Arabic help is on' : 'Arabic help is off');
   }
+  $('#theme-toggle').addEventListener('click', () => {
+    state.theme = state.theme === 'dark' ? 'light' : 'dark';
+    save(); syncSettings();
+  });
+
+  function exportProgress() {
+    const backup = {app:'Epiphany', formatVersion:1, exportedAt:new Date().toISOString(), progress:state};
+    const blob = new Blob([JSON.stringify(backup,null,2)], {type:'application/json'});
+    const url = URL.createObjectURL(blob), a = document.createElement('a');
+    a.href = url; a.download = 'epiphany-progress-' + dayKey() + '.json';
+    document.body.appendChild(a); a.click(); a.remove();
+    URL.revokeObjectURL(url);
+    toast('Progress backup exported. Keep the file somewhere safe.');
+  }
+  $('#export-progress').addEventListener('click', exportProgress);
+  $('#import-progress').addEventListener('click', () => $('#import-file').click());
+  $('#import-file').addEventListener('change', async e => {
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+    try {
+      if (file.size > 2 * 1024 * 1024) throw new Error('This backup file is too large.');
+      const parsed = JSON.parse(await file.text());
+      const incoming = parsed && parsed.app === 'Epiphany' && parsed.formatVersion === 1 ? parsed.progress : null;
+      if (!incoming || typeof incoming !== 'object' || Array.isArray(incoming) ||
+          !Number.isFinite(incoming.xp) || incoming.xp < 0 ||
+          !Array.isArray(incoming.words) || !Array.isArray(incoming.review) ||
+          !Number.isFinite(incoming.quests) || incoming.quests < 0) {
+        throw new Error('This does not look like a valid Epiphany progress backup.');
+      }
+      const merged = {...defaults(), ...incoming};
+      if (!Array.isArray(merged.completed) || !Number.isFinite(merged.streakFreezes)) throw new Error('The backup data is incomplete.');
+      if (!confirm('Import this backup and replace the progress saved on this device? Export your current progress first if you want to keep it.')) return;
+      state = merged;
+      save();
+      toast('Backup imported. Reloading your progress…');
+      window.setTimeout(() => window.location.reload(), 500);
+    } catch (err) {
+      toast(err && err.message ? err.message : 'Could not import this backup file.');
+    } finally {
+      e.target.value = '';
+    }
+  });
+
+  let installPrompt = null;
+  window.addEventListener('beforeinstallprompt', event => {
+    event.preventDefault();
+    installPrompt = event;
+    $('#install-app').hidden = false;
+  });
+  $('#install-app').addEventListener('click', async () => {
+    if (!installPrompt) { toast('Use your browser menu and choose “Install app” or “Add to Home Screen”.'); return; }
+    installPrompt.prompt();
+    await installPrompt.userChoice;
+    installPrompt = null;
+    $('#install-app').hidden = true;
+  });
+  window.addEventListener('appinstalled', () => {
+    $('#install-app').hidden = true;
+    toast('Epiphany was installed successfully.');
+  });
+  if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol)) {
+    window.addEventListener('load', () => navigator.serviceWorker.register('./service-worker.js').catch(() => {
+      toast('Offline mode could not be enabled in this browser.');
+    }));
+  }
+
   $('#ar-toggle').addEventListener('click', toggleArabic);
   $('#game-ar').addEventListener('click', toggleArabic);
   $('#sound-toggle').addEventListener('click', () => {
