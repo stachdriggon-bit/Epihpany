@@ -702,15 +702,43 @@
   let WORLD=null;
   function worldTask(){return WORLD&&WORLD.tasks[WORLD.index];}
   function worldObj(id){return WORLD&&WORLD.objects.find(o=>o.id===id);}
+  // Shared world rules: object footprint, walkability, reach and interaction.
+  // Maps may override these defaults per object without changing movement code.
+  function worldFootprint(o){
+    if(!o)return [];
+    if(Array.isArray(o.footprint)&&o.footprint.length)return o.footprint.map(p=>({x:o.x+p.x,y:o.y+p.y}));
+    return [{x:o.x,y:o.y}];
+  }
   function worldDist(a,b){return Math.abs(a.x-b.x)+Math.abs(a.y-b.y);}
-  function worldNear(id){const o=worldObj(id);return !!o&&worldDist(WORLD.player,o)<=1;}
+  function worldObjectBlocks(o,x,y){
+    if(!o||o.solid===false)return false;
+    return worldFootprint(o).some(p=>p.x===x&&p.y===y);
+  }
+  function worldWalkable(x,y){
+    if(!WORLD||x<0||y<0||x>=WORLD_DATA.width||y>=WORLD_DATA.height)return false;
+    const ch=(WORLD.map[y]||'')[x];
+    if('WH'.includes(ch))return false;
+    return !WORLD.objects.some(o=>worldObjectBlocks(o,x,y));
+  }
+  function worldReachableFromPlayer(o,range){
+    if(!o)return false;
+    const radius=range==null?(o.interactionRange==null?1:o.interactionRange):range;
+    return worldFootprint(o).some(cell=>worldDist(WORLD.player,cell)<=radius);
+  }
+  function worldNear(id){return worldReachableFromPlayer(worldObj(id));}
   function worldCheck(c){
     if(!c)return false;
     if(c.type==='sequence')return WORLD.step>=c.steps.length;
-    if(c.type==='near')return worldNear(c.object);
-    if(c.type==='at'){const o=worldObj(c.object);return !!o&&o.x===WORLD.player.x&&o.y===WORLD.player.y;}
-    if(c.type==='under'||c.type==='behind'){const o=worldObj(c.object);return !!o&&WORLD.player.x===o.x&&WORLD.player.y===o.y+1;}
-    if(c.type==='on'){return (WORLD.map[WORLD.player.y]||'')[WORLD.player.x]==='B';}
+    if(c.type==='near'||c.type==='interact')return worldNear(c.object);
+    if(c.type==='at'){const o=worldObj(c.object);return !!o&&worldFootprint(o).some(p=>p.x===WORLD.player.x&&p.y===WORLD.player.y);}
+    if(c.type==='under'||c.type==='behind'){
+      const o=worldObj(c.object);if(!o)return false;
+      const cells=worldFootprint(o);
+      return cells.some(p=>c.type==='under'
+        ? WORLD.player.x===p.x&&WORLD.player.y===p.y+1
+        : WORLD.player.y===p.y&&WORLD.player.x===p.x+1);
+    }
+    if(c.type==='on'){const o=worldObj(c.object);return !!o&&worldFootprint(o).some(p=>p.x===WORLD.player.x&&p.y===WORLD.player.y);}
     if(c.type==='between'){const a=worldObj(c.objects[0]),b=worldObj(c.objects[1]);return !!a&&!!b&&WORLD.player.y===a.y&&WORLD.player.y===b.y&&WORLD.player.x>Math.min(a.x,b.x)&&WORLD.player.x<Math.max(a.x,b.x);}
     if(c.type==='pickup')return WORLD.carried===c.object||WORLD.picked.has(c.object);
     if(c.type==='give')return WORLD.given.has(c.item);
@@ -722,7 +750,7 @@
     if(t.check.type==='sequence'){while(WORLD.step<t.check.steps.length&&worldCheck(t.check.steps[WORLD.step]))WORLD.step++;return WORLD.step>=t.check.steps.length;}
     return worldCheck(t.check);
   }
-  function worldPass(x,y){if(x<0||y<0||x>=WORLD_DATA.width||y>=WORLD_DATA.height)return false;const ch=(WORLD.map[y]||'')[x];if('WH'.includes(ch))return false;return !WORLD.objects.some(o=>o.solid&&o.x===x&&o.y===y);}
+  function worldPass(x,y){return worldWalkable(x,y);}
   function worldMove(k){
     if(!WORLD||WORLD.mode!=='play')return;let dx=0,dy=0;
     if(k==='ArrowUp'||k.toLowerCase()==='w')dy=-1;else if(k==='ArrowDown'||k.toLowerCase()==='s')dy=1;else if(k==='ArrowLeft'||k.toLowerCase()==='a')dx=-1;else if(k==='ArrowRight'||k.toLowerCase()==='d')dx=1;
