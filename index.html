@@ -2,78 +2,173 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#11101b">
-  <meta name="description" content="Epiphany — a playful journey from your first English words to C2 mastery.">
-  <title>Epiphany — Your English Adventure</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#F5F6FC">
+  <meta name="description" content="Epiphany: short, playful English quests from A1 to C2.">
+  <title>Epiphany: learn English in small, playful quests</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Cairo:wght@500;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%23FFC531'/%3E%3Cpath d='M16 5l2.6 7.4L26 15l-7.4 2.6L16 25l-2.6-7.4L6 15l7.4-2.6z' fill='%23121A3A'/%3E%3C/svg%3E">
   <link rel="stylesheet" href="style.css">
+  <script src="data.js" defer></script>
   <script src="app.js" defer></script>
 </head>
 <body>
-  <div class="app-shell">
-    <aside class="sidebar" id="sidebar">
-      <a class="brand" href="#" aria-label="Epiphany home"><span class="brand-mark">✦</span><span>epiphany<span class="brand-dot">.</span></span></a>
-      <div class="side-label">YOUR JOURNEY</div>
-      <nav class="side-nav" aria-label="Main navigation">
-        <button class="nav-item active" data-view="home"><span class="nav-icon">⌂</span> Adventure home</button>
-        <button class="nav-item" data-view="worlds"><span class="nav-icon">◎</span> Explore worlds</button>
-        <button class="nav-item" data-view="practice"><span class="nav-icon">⚡</span> Quick practice</button>
-        <button class="nav-item" data-view="vocabulary"><span class="nav-icon">▤</span> Word vault</button>
-        <button class="nav-item" data-view="achievements"><span class="nav-icon">♜</span> Achievements</button>
-      </nav>
-      <div class="sidebar-bottom">
-        <div class="streak-card"><span class="streak-icon">♨</span><div><strong id="streak-count">0 day streak</strong><small>Little steps add up.</small></div></div>
-        <div class="profile-row"><div class="avatar">E</div><div class="profile-copy"><strong>English explorer</strong><small id="profile-level">A1 · Newcomer</small></div><button class="more-btn" aria-label="Profile options">•••</button></div>
+
+<svg style="position:absolute;width:0;height:0" aria-hidden="true" focusable="false">
+  <defs>
+    <symbol id="i-spark" viewBox="0 0 24 24"><path d="M12 2l2.4 6.9L21.5 11l-7.1 2.1L12 20l-2.4-6.9L2.5 11l7.1-2.1z" fill="currentColor"/></symbol>
+    <symbol id="i-flame" viewBox="0 0 24 24"><path d="M12 2.5c.9 3.2 5.6 5.6 5.6 10.6a5.6 5.6 0 0 1-11.2 0c0-2 .9-3.6 2.2-4.8.2 1.3.9 2.1 1.8 2.5C10 7.6 10.6 4.9 12 2.5z" fill="currentColor"/></symbol>
+    <symbol id="i-book" viewBox="0 0 24 24"><path d="M5 4.5h11a3 3 0 0 1 3 3V20H8a3 3 0 0 1-3-3V4.5zM5 17a3 3 0 0 1 3-3h11" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/></symbol>
+    <symbol id="i-trophy" viewBox="0 0 24 24"><path d="M8 4h8v5a4 4 0 0 1-8 0V4zM8 6H5a3 3 0 0 0 3 4.2M16 6h3a3 3 0 0 1-3 4.2M12 13v4M8.5 20h7M10 17h4" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/></symbol>
+    <symbol id="i-path" viewBox="0 0 24 24"><path d="M4 11l8-7 8 7v8.5a1 1 0 0 1-1 1h-4.5V15h-5v5.5H5a1 1 0 0 1-1-1z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="10.5" width="14" height="10" rx="2.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8.5 10.5V8a3.5 3.5 0 0 1 7 0v2.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5.5v13l11-6.5z" fill="currentColor"/></symbol>
+    <symbol id="i-sound" viewBox="0 0 24 24"><path d="M4 9.5v5h4l5 4v-13l-5 4z" fill="currentColor"/><path d="M16.5 9a4.2 4.2 0 0 1 0 6M18.8 6.5a7.6 7.6 0 0 1 0 11" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-mute" viewBox="0 0 24 24"><path d="M4 9.5v5h4l5 4v-13l-5 4z" fill="currentColor"/><path d="M16.5 9.5l5 5M21.5 9.5l-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-chat" viewBox="0 0 24 24"><path d="M4 6.5A2.5 2.5 0 0 1 6.5 4h11A2.5 2.5 0 0 1 20 6.5v7a2.5 2.5 0 0 1-2.5 2.5H11l-4.5 4v-4h0A2.5 2.5 0 0 1 4 13.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M15 15l5 5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></symbol>
+    <symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13.5 2.5L5 13.5h6l-1 8 8.5-11h-6z" fill="currentColor"/></symbol>
+    <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M3.5 12h17M12 3.5c2.6 2.5 3.8 5.3 3.8 8.5S14.6 18 12 20.5C9.4 18 8.2 15.2 8.2 12S9.4 6 12 3.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+    <symbol id="i-crown" viewBox="0 0 24 24"><path d="M3.5 8l4.500 4 4-6.500 4 6.500 4.500-4-1.800 11H5.300z" fill="currentColor"/></symbol>
+  </defs>
+</svg>
+
+<header class="top">
+  <div class="top-in">
+    <a class="logo" href="#" id="logo" aria-label="Epiphany, home">
+      <span class="logo-mark"><svg><use href="#i-spark"/></svg></span>
+      <span class="logo-word">epiphany</span>
+    </a>
+
+    <nav class="tabs" aria-label="Main">
+      <button class="tab" data-view="home" aria-current="page"><svg><use href="#i-path"/></svg>Play</button>
+      <button class="tab" data-view="words"><svg><use href="#i-book"/></svg>Words</button>
+      <button class="tab" data-view="trophies"><svg><use href="#i-trophy"/></svg>Trophies</button>
+    </nav>
+
+    <div class="top-right">
+      <span class="chip chip-streak" title="Day streak"><svg><use href="#i-flame"/></svg><b id="chip-streak">0</b><span class="sr-only"> day streak</span></span>
+      <span class="chip chip-xp" title="Total XP"><svg><use href="#i-spark"/></svg><b id="chip-xp">0</b><span class="sr-only"> XP</span></span>
+      <button class="ar-toggle" id="ar-toggle" type="button" aria-pressed="false" title="Arabic help: show hints and explanations in Arabic">
+        <span class="ar-long" lang="ar">العربية</span><span class="ar-short" lang="ar" aria-hidden="true">ع</span><span class="sr-only">Arabic help</span>
+      </button>
+      <button class="icon-btn" id="sound-toggle" type="button" aria-pressed="true" aria-label="Sound effects"><svg><use href="#i-sound"/></svg></button>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+
+  <!-- PLAY -->
+  <section class="view is-active" id="home-view" aria-labelledby="home-title">
+    <div class="page">
+      <div class="intro">
+        <p class="kicker" id="greeting">Good evening</p>
+        <h1 id="home-title" tabindex="-1">Ready for a <span class="hl">spark</span>?</h1>
+        <p class="lead">One short quest a day builds real English.</p>
       </div>
-    </aside>
 
-    <main class="main-content">
-      <header class="topbar">
-        <button class="mobile-menu" id="mobile-menu" aria-label="Open navigation">☰</button>
-        <div class="breadcrumb">MY SPACE <span>/</span> <strong id="breadcrumb-current">ADVENTURE HOME</strong></div>
-        <div class="topbar-right"><span class="status-dot"></span><span class="save-status" id="save-status">Progress saved on this device</span><button class="help-toggle" id="help-toggle" type="button" aria-pressed="false" title="Optional Arabic learning help">العربية OFF</button><button class="sound-toggle" id="sound-toggle" aria-label="Toggle sound effects" title="Toggle sound effects">♫</button></div>
-      </header>
+      <div class="focus">
+        <article class="next" id="next-card">
+          <div class="next-body">
+            <span class="pill" id="next-cat">Vocabulary</span>
+            <h2 id="next-title">Word collector</h2>
+            <p id="next-desc">Choose the meaning that fits best.</p>
+            <ul class="meta">
+              <li id="next-count">5 questions</li>
+              <li id="next-time">3 min</li>
+              <li class="meta-xp" id="next-xp">+30 XP</li>
+            </ul>
+            <button class="btn btn-go" id="next-start" type="button"><svg><use href="#i-play"/></svg>Start quest</button>
+          </div>
+          <div class="next-art" id="next-art" aria-hidden="true"></div>
+        </article>
 
-      <section class="view active-view" id="home-view">
-        <section class="welcome-row">
-          <div><div class="eyebrow"><span class="sparkle">✦</span> YOUR NEXT CHAPTER STARTS HERE</div><h1>Small steps.<br><span>Big fluency.</span></h1><p class="hero-copy">Your English adventure, built around you. Play a little every day and watch your world get bigger.</p><div class="hero-actions"><button class="btn btn-primary" id="continue-btn">Continue your journey <span>↗</span></button><button class="btn btn-quiet" data-open-view="worlds">Explore the map</button></div></div>
-          <div class="hero-art" aria-label="Illustration of a magical floating island"><div class="orbit orbit-one"></div><div class="orbit orbit-two"></div><div class="planet planet-back"></div><div class="island"><div class="island-top"></div><div class="island-rock"></div><div class="tiny-tree tree-one">♣</div><div class="tiny-tree tree-two">♣</div><div class="portal">✦</div></div><div class="floating-star star-a">✦</div><div class="floating-star star-b">✧</div><div class="floating-star star-c">✦</div><div class="art-caption"><span class="caption-dot"></span> YOUR STORY IS UNFOLDING</div></div>
-        </section>
+        <aside class="you" aria-label="Your progress">
+          <div class="goal">
+            <div class="ring" role="img" id="ring" aria-label="Daily goal">
+              <svg viewBox="0 0 80 80"><circle class="ring-bg" cx="40" cy="40" r="33"/><circle class="ring-fg" id="ring-fg" cx="40" cy="40" r="33"/></svg>
+              <span id="ring-text">0/2</span>
+            </div>
+            <div>
+              <h3>Today's goal</h3>
+              <p id="ring-note">Finish 2 quests to keep your streak alive.</p>
+            </div>
+          </div>
+          <div class="level">
+            <div class="level-head"><strong id="lv-name">A1 · Newcomer</strong><span id="lv-next">180 XP to A2</span></div>
+            <div class="bar" role="progressbar" aria-label="Progress to next level" aria-valuemin="0" aria-valuemax="100" id="lv-bar-wrap"><i id="lv-bar"></i></div>
+          </div>
+        </aside>
+      </div>
 
-        <section class="stats-grid" aria-label="Your learning statistics">
-          <article class="stat-card"><div class="stat-top"><span>EXPERIENCE POINTS</span><span class="stat-symbol purple">✦</span></div><div class="stat-number" id="xp-total">0 <small>XP</small></div><div class="stat-foot"><span class="mini-bar"><i id="xp-mini-bar"></i></span><span id="xp-next">Your first quest awaits</span></div></article>
-          <article class="stat-card"><div class="stat-top"><span>QUESTS COMPLETED</span><span class="stat-symbol orange">◈</span></div><div class="stat-number" id="quest-total">0</div><div class="stat-foot"><span class="muted">Every answer moves you forward</span></div></article>
-          <article class="stat-card"><div class="stat-top"><span>WORDS DISCOVERED</span><span class="stat-symbol green">✳</span></div><div class="stat-number" id="word-total">0</div><div class="stat-foot"><span class="muted">Your personal word vault</span></div></article>
-          <article class="stat-card"><div class="stat-top"><span>CURRENT LEVEL</span><span class="stat-symbol blue">⌁</span></div><div class="stat-number" id="level-stat">A1 <small>Newcomer</small></div><div class="stat-foot"><span class="muted">One skill at a time</span></div></article>
-        </section>
-
-        <section class="section-heading"><div><div class="eyebrow">MADE FOR YOUR MOMENTUM</div><h2>Today's quests <span class="heading-star">✳</span></h2><p>Pick a challenge. Earn XP. Keep growing.</p></div><button class="text-link" data-open-view="practice">See all activities <span>→</span></button></section>
-        <section class="quest-grid" id="quest-grid">
-          <button class="quest-card quest-vocab" data-game="vocabulary"><div class="quest-visual"><span class="visual-bubble bubble-one">hello</span><span class="visual-bubble bubble-two">bonjour?</span><span class="visual-orb">Aa</span></div><div class="quest-info"><div class="quest-tags"><span class="tag tag-purple">VOCABULARY</span><span class="quest-time">3 min</span></div><h3>Word collector</h3><p>Gather useful words and unlock their meaning.</p><div class="quest-bottom"><span>+30 XP</span><span class="play-arrow">↗</span></div></div></button>
-          <button class="quest-card quest-grammar" data-game="grammar"><div class="quest-visual"><span class="grammar-line line-one">I <b>am</b> ready.</span><span class="grammar-line line-two">They <b>are</b> here.</span><span class="grammar-check">✓</span></div><div class="quest-info"><div class="quest-tags"><span class="tag tag-orange">GRAMMAR</span><span class="quest-time">4 min</span></div><h3>Sentence shaper</h3><p>Build sentences that sound right, one choice at a time.</p><div class="quest-bottom"><span>+40 XP</span><span class="play-arrow">↗</span></div></div></button>
-          <button class="quest-card quest-story" data-game="story"><div class="quest-visual"><div class="story-sun"></div><div class="story-hill hill-one"></div><div class="story-hill hill-two"></div><span class="story-quote">“Excuse me…”</span></div><div class="quest-info"><div class="quest-tags"><span class="tag tag-green">REAL LIFE</span><span class="quest-time">5 min</span></div><h3>Lost in London</h3><p>Use English to find your way through a mini story.</p><div class="quest-bottom"><span>+50 XP</span><span class="play-arrow">↗</span></div></div></button>
-        </section>
-
-        <section class="lower-grid">
-          <article class="panel progress-panel"><div class="panel-heading"><div><div class="eyebrow">THE LONG GAME</div><h2>Your path to fluency</h2></div><button class="icon-button" data-open-view="worlds" aria-label="Explore levels">↗</button></div><div class="level-track" id="level-track"></div><div class="progress-note"><span class="progress-badge">✦</span><span id="path-note">Your adventure begins at A1. Complete quests to build your skills.</span></div></article>
-          <article class="panel daily-panel"><div class="daily-top"><span class="daily-icon">☼</span><span class="tag tag-gold">DAILY RITUAL</span></div><h2>A little, every day.</h2><p>Consistency beats cramming. Complete two quests today to keep your streak alive.</p><div class="daily-progress"><div><span id="daily-count">0 of 2 quests</span><strong id="daily-percent">0%</strong></div><div class="progress-rail"><i id="daily-bar"></i></div></div><button class="btn btn-outline" id="daily-btn">Start a quick quest <span>→</span></button></article>
-        </section>
-        <footer class="footer"><span>✦ EPIPHANY</span><span>Curiosity is your superpower.</span><span>LEARN · PLAY · GROW</span></footer>
+      <section class="block" aria-labelledby="path-title">
+        <div class="block-head"><h2 id="path-title">Your path</h2><p>Six levels, from first words to fluent ideas.</p></div>
+        <ol class="track" id="track"></ol>
+        <p class="track-note" id="track-note"></p>
       </section>
 
-      <section class="view" id="worlds-view"><div class="page-intro"><div class="eyebrow">THE WORLD IS YOUR CLASSROOM</div><h1>Choose your <span>next world.</span></h1><p>Six stages. Countless little discoveries. Move forward as your skills grow.</p></div><div class="world-grid" id="world-grid"></div></section>
-      <section class="view" id="practice-view"><div class="page-intro"><div class="eyebrow">A FEW MINUTES CAN CHANGE A LOT</div><h1>Pick your <span>challenge.</span></h1><p>Mix it up. Every activity trains a different part of your English.</p></div><div class="activity-grid" id="activity-grid"></div></section>
-      <section class="view" id="vocabulary-view"><div class="page-intro"><div class="eyebrow">WORDS YOU'VE MET ALONG THE WAY</div><h1>Your word <span>vault.</span></h1><p>Every new word is a tool you can use in the real world.</p></div><div class="panel vault-panel" id="vault-content"></div></section>
-      <section class="view" id="achievements-view"><div class="page-intro"><div class="eyebrow">PROGRESS WORTH CELEBRATING</div><h1>Look how far <span>you'll go.</span></h1><p>Achievements celebrate effort, not perfection.</p></div><div class="achievement-grid" id="achievement-grid"></div></section>
-    </main>
-  </div>
+      <section class="block" aria-labelledby="games-title">
+        <div class="block-head"><h2 id="games-title">Or choose a game</h2><p>Every game trains a different part of your English.</p></div>
+        <div class="games" id="games"></div>
+      </section>
 
-  <div class="game-overlay" id="game-overlay" aria-hidden="true">
-    <div class="game-modal" role="dialog" aria-modal="true" aria-labelledby="game-title"><div class="game-modal-top"><button class="icon-button" id="close-game" aria-label="Close activity">←</button><div class="game-progress-copy"><span id="game-step-label">QUEST 1 OF 5</span><div class="game-progress"><i id="game-progress-bar"></i></div></div><span class="game-xp">✦ <b id="game-xp">+30 XP</b></span></div><div id="game-content"></div></div>
+      <p class="foot-note">Your progress is saved on this device.</p>
+    </div>
+  </section>
+
+  <!-- WORDS -->
+  <section class="view" id="words-view" aria-labelledby="words-title">
+    <div class="page">
+      <div class="intro">
+        <p class="kicker" id="words-count">0 words</p>
+        <h1 id="words-title" tabindex="-1">Your word vault</h1>
+        <p class="lead">Words you got right are saved here, with their meaning.</p>
+      </div>
+      <div id="words-body"></div>
+    </div>
+  </section>
+
+  <!-- TROPHIES -->
+  <section class="view" id="trophies-view" aria-labelledby="trophies-title">
+    <div class="page">
+      <div class="intro">
+        <p class="kicker" id="trophies-count">0 of 6</p>
+        <h1 id="trophies-title" tabindex="-1">Trophies</h1>
+        <p class="lead">They celebrate effort, not perfection.</p>
+      </div>
+      <div class="trophies" id="trophies"></div>
+    </div>
+  </section>
+</main>
+
+<nav class="dock" aria-label="Main">
+  <button class="dock-item" data-view="home" aria-current="page"><span class="dock-ic"><svg><use href="#i-path"/></svg></span>Play</button>
+  <button class="dock-item" data-view="words"><span class="dock-ic"><svg><use href="#i-book"/></svg></span>Words</button>
+  <button class="dock-item" data-view="trophies"><span class="dock-ic"><svg><use href="#i-trophy"/></svg></span>Trophies</button>
+</nav>
+
+<!-- GAME -->
+<div class="game" id="game" hidden role="dialog" aria-modal="true" aria-label="Quest">
+  <header class="game-top">
+    <button class="icon-btn" id="game-close" type="button" aria-label="Leave quest"><svg><use href="#i-x"/></svg></button>
+    <div class="steps" id="steps" aria-hidden="true"></div>
+    <button class="ar-toggle" id="game-ar" type="button" aria-pressed="false" title="Arabic help">
+      <span class="ar-long" lang="ar">العربية</span><span class="ar-short" lang="ar" aria-hidden="true">ع</span><span class="sr-only">Arabic help</span>
+    </button>
+  </header>
+  <div class="game-scroll" id="game-scroll">
+    <div class="game-body" id="game-body"></div>
   </div>
-  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <div class="sheet" id="sheet" aria-live="polite"></div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
 </body>
 </html>

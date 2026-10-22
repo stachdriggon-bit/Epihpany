@@ -1,176 +1,337 @@
-const LEVELS = [
-  {id:'A1',name:'Newcomer',title:'First Steps',desc:'Meet everyday words, build simple sentences, and start saying what you mean.',theme:'Your first discoveries',xp:0},
-  {id:'A2',name:'Explorer',title:'Everyday Explorer',desc:'Talk about your life, make plans, and handle familiar everyday situations.',theme:'The everyday world',xp:180},
-  {id:'B1',name:'Wayfinder',title:'Independent Wayfinder',desc:'Tell stories, explain opinions, and navigate travel, study, and work.',theme:'Stories & possibilities',xp:520},
-  {id:'B2',name:'Trailblazer',title:'Confident Trailblazer',desc:'Follow complex ideas, debate thoughtfully, and express yourself with nuance.',theme:'Ideas in motion',xp:1100},
-  {id:'C1',name:'Wordsmith',title:'Fluent Wordsmith',desc:'Use flexible language, read between the lines, and communicate precisely.',theme:'Beyond the obvious',xp:2100},
-  {id:'C2',name:'Virtuoso',title:'Language Virtuoso',desc:'Handle subtle meaning, sophisticated texts, and demanding real-world tasks.',theme:'Mastery without borders',xp:3600}
-];
-const GAMES = {
-  vocabulary:{title:'Word collector',category:'VOCABULARY',xp:30,desc:'Choose the meaning that fits best.',questions:[
-    {q:'What does “borrow” mean?',sub:'Choose the closest meaning.',answers:['To give something away','To take something for a while and return it','To buy something new','To lose something'],correct:1,explain:'Borrow means to take and use something that belongs to someone else, then give it back.',word:['borrow','to use something and return it']},
-    {q:'She was absolutely delighted.',sub:'What does “delighted” mean?',answers:['Very pleased and happy','A little confused','Extremely tired','Quite worried'],correct:0,explain:'Delighted means very happy or pleased. It is stronger than simply “glad”.',word:['delighted','very pleased and happy']},
-    {q:'Which word means “happening often”?',sub:'Choose the best word.',answers:['Rare','Frequent','Unlikely','Brief'],correct:1,explain:'Frequent describes something that happens often.',word:['frequent','happening often']},
-    {q:'“I need to figure it out.” What does it mean?',sub:'Understand the expression.',answers:['Draw a picture','Find an answer or understand something','Forget about it','Explain it loudly'],correct:1,explain:'To figure something out is to understand or solve it.',word:['figure out','to understand or solve something']},
-    {q:'Choose the best word: The instructions were so ___ that nobody was confused.',sub:'Complete the sentence.',answers:['vague','clear','scarce','reluctant'],correct:1,explain:'Clear means easy to understand, which fits the second half of the sentence.',word:['clear','easy to understand']}
-  ]},
-  grammar:{title:'Sentence shaper',category:'GRAMMAR',xp:40,desc:'Find the sentence that works.',questions:[
-    {q:'She ___ to school every day.',sub:'Choose the correct form.',answers:['go','goes','going','gone'],correct:1,explain:'With he, she, or it in the present simple, most verbs take -s: she goes.',word:null},
-    {q:'They ___ dinner when I arrived.',sub:'Choose the best tense.',answers:['have','were having','are having','had have'],correct:1,explain:'The past continuous describes an action in progress when another past event happened.',word:null},
-    {q:'If I ___ more time, I would learn Italian.',sub:'Complete the second conditional.',answers:['have','will have','had','would have'],correct:2,explain:'The second conditional uses if + past simple, then would + base verb for an unreal or imagined situation.',word:null},
-    {q:'Neither of the answers ___ correct.',sub:'Choose the standard form.',answers:['are','were','is','be'],correct:2,explain:'In formal standard English, neither is generally treated as singular here: neither is correct.',word:null},
-    {q:'By next June, she ___ her degree.',sub:'Choose the future perfect.',answers:['will finish','will have finished','has finished','finishes'],correct:1,explain:'The future perfect (will have + past participle) describes something completed before a future point.',word:null}
-  ]},
-  story:{title:'Lost in London',category:'REAL LIFE',xp:50,desc:'Make choices to keep the conversation moving.',questions:[
-    {q:'You need to find the train station. What do you ask?',sub:'A stranger is walking past.',answers:['Where train station?','Could you tell me how to get to the train station?','You tell station now.','How I am station?'],correct:1,explain:'“Could you tell me how to get to…?” is a polite, natural way to ask for directions.',word:['Could you tell me how to get to…?','a polite way to ask for directions']},
-    {q:'The person says, “It’s just around the corner.” What do they mean?',sub:'Understand the direction.',answers:['It is very far away','It is nearby, after turning at the next corner','It is upstairs','It is closed today'],correct:1,explain:'“Just around the corner” usually means very close by.',word:['around the corner','very nearby']},
-    {q:'You did not hear the directions clearly. You say…',sub:'Keep the conversation friendly.',answers:['Say it again!','What?','Sorry, would you mind repeating that?','You are wrong.'],correct:2,explain:'“Would you mind repeating that?” is polite and natural when you need someone to say something again.',word:['Would you mind repeating that?','a polite request for repetition']},
-    {q:'The person helps you. What is a natural response?',sub:'Choose a friendly reply.',answers:['I appreciate your help, thank you.','I am appreciating you help.','Thanks for your helps.','I thank you much.'],correct:0,explain:'“I appreciate your help” is a natural way to express gratitude.',word:null},
-    {q:'You are almost there. You hear, “You can’t miss it.” This means…',sub:'Understand the expression.',answers:['You must not go there','It is easy to see or find','You have lost your ticket','It is already closed'],correct:1,explain:'“You can’t miss it” means the place is easy to spot or find.',word:['You can’t miss it','it is easy to see or find']}
-  ]},
-  listening:{title:'Meaning detective',category:'COMPREHENSION',xp:35,desc:'Read a short message and catch the important detail.',questions:[
-    {q:'Message: “The meeting has been pushed back to half past three.” When is it now?',sub:'Read carefully.',answers:['3:00','3:15','3:30','4:30'],correct:2,explain:'Half past three means 3:30. “Pushed back” means the meeting was delayed to a later time.',word:['pushed back','delayed until a later time']},
-    {q:'“Although it was raining, we decided to go hiking.” What happened?',sub:'Notice the contrast.',answers:['They stayed home because of rain','They went hiking despite the rain','The rain stopped before they left','They planned to go another day'],correct:1,explain:'Although introduces a contrast: it was raining, but they went hiking anyway.',word:['although','used to introduce a contrast']},
-    {q:'A notice says: “No later than Friday.” What is the deadline?',sub:'Interpret the phrase.',answers:['After Friday','Any time next week','Friday at the latest','Only before Monday'],correct:2,explain:'“No later than Friday” means Friday is the latest acceptable time.',word:['no later than','by the stated time at the latest']},
-    {q:'“I’d rather you didn’t mention it.” The speaker is asking you to…',sub:'Understand the intention.',answers:['Tell everyone','Avoid talking about it','Write it down','Explain it again'],correct:1,explain:'“I’d rather you didn’t…” expresses a preference that someone not do something.',word:null},
-    {q:'“The proposal was rejected on the grounds that it was too costly.” Why was it rejected?',sub:'Find the reason.',answers:['It was too complicated','It was too expensive','It arrived too late','It was incomplete'],correct:1,explain:'“On the grounds that” introduces the reason. Costly means expensive.',word:['on the grounds that','for the reason that']}
-  ]},
-  spelling:{title:'Word detective',category:'SPELLING',xp:30,desc:'Spot the correctly written word.',questions:[
-    {q:'Which spelling is correct?',sub:'Choose carefully.',answers:['Definately','Definitely','Definitly','Definetely'],correct:1,explain:'Definitely is spelled d-e-f-i-n-i-t-e-l-y. A useful trick: it contains “finite”.',word:['definitely','without doubt']},
-    {q:'Choose the correct word.',sub:'Something that can be trusted is…',answers:['reliable','relyable','reliabel','relyible'],correct:0,explain:'Reliable is the correct spelling, formed from rely + -able.',word:['reliable','able to be trusted']},
-    {q:'Which is the correct form?',sub:'A strong feeling of certainty.',answers:['Confidance','Confidence','Confidense','Confidance'],correct:1,explain:'Confidence is spelled with -ence at the end.',word:['confidence','belief in yourself or something']},
-    {q:'Choose the correct spelling.',sub:'To make something better.',answers:['Improve','Impruve','Improvve','Improv'],correct:0,explain:'Improve is spelled i-m-p-r-o-v-e.',word:['improve','to make or become better']},
-    {q:'Which word is correct?',sub:'A difficult situation or problem.',answers:['Challange','Challenge','Chalenge','Challeng'],correct:1,explain:'Challenge has one “l” in the middle after “a” and ends in -enge.',word:['challenge','a difficult task or situation']}
-  ]},
-  advanced:{title:'Nuance navigator',category:'ADVANCED ENGLISH',xp:55,desc:'Choose the most precise and natural expression.',questions:[
-    {q:'“Her explanation was plausible, but not entirely convincing.” This means it was…',sub:'Read for nuance.',answers:['Obviously false','Seemingly reasonable, but not fully persuasive','Completely proven','Impossible to understand'],correct:1,explain:'Plausible means apparently reasonable or believable. It does not necessarily mean proven.',word:['plausible','seemingly reasonable or believable']},
-    {q:'Choose the best connector: “The evidence was limited; ___, the conclusion was tentative.”',sub:'Show a logical result.',answers:['nevertheless','consequently','whereas','meanwhile'],correct:1,explain:'Consequently signals a result: because the evidence was limited, the conclusion was tentative.',word:['consequently','as a result']},
-    {q:'“He was reluctant to endorse the proposal.” He was…',sub:'Infer the attitude.',answers:['Eager to support it','Hesitant or unwilling to support it','Unable to understand it','Certain to reject it publicly'],correct:1,explain:'Reluctant means unwilling or hesitant. It suggests hesitation, not necessarily outright refusal.',word:['reluctant','hesitant or unwilling']},
-    {q:'Which phrase most clearly signals a concession?',sub:'Choose the most precise transition.',answers:['In addition','For instance','Admittedly','As a result'],correct:2,explain:'Admittedly acknowledges a point or limitation before introducing a contrasting or qualifying claim.',word:['admittedly','used to acknowledge a point or limitation']},
-    {q:'“The findings are inconclusive.” This means the findings…',sub:'Choose the exact meaning.',answers:['Prove the hypothesis','Do not lead to a definite conclusion','Are irrelevant','Have been disproved'],correct:1,explain:'Inconclusive evidence does not settle the question either way.',word:['inconclusive','not leading to a definite conclusion']}
-  ]}
-};
-const AR_EXPLANATIONS = {
- vocabulary:[
-  'تعني borrow أن تستعمل شيئًا يملكه شخص آخر ثم تعيده إليه.',
-  'تعني delighted الشعور بسعادة كبيرة أو رضا شديد.',
-  'تُستخدم frequent لوصف شيء يحدث كثيرًا أو بصورة متكررة.',
-  'تعني figure out أن تفهم شيئًا أو تجد حلًا لمشكلة.',
-  'تعني clear أن الشيء سهل الفهم؛ وهذا يناسب الجملة لأن التعليمات لم تُسبب أي ارتباك.'
- ],
- grammar:[
-  'مع الضمائر he وshe وit نضيف غالبًا s إلى الفعل في المضارع البسيط: she goes.',
-  'نستخدم الماضي المستمر لحدث كان جاريًا عندما وقع حدث آخر في الماضي.',
-  'الشرط الثاني: if + الماضي البسيط، ثم would + الفعل الأساسي للتحدث عن حالة افتراضية.',
-  'في الإنجليزية القياسية الرسمية تُعامل neither غالبًا كمفرد في هذا التركيب، لذا نستخدم is.',
-  'يتكوّن المستقبل التام من will have + التصريف الثالث، ويصف حدثًا سيكتمل قبل وقت مستقبلي.'
- ],
- story:[
-  'صيغة Could you tell me how to get to…? طريقة مهذبة وطبيعية للسؤال عن الاتجاهات.',
-  'التعبير around the corner يعني عادةً أن المكان قريب جدًا، بعد الزاوية أو المنعطف.',
-  'Would you mind repeating that? طلب مهذب من شخص أن يعيد كلامه.',
-  'عبارة I appreciate your help طريقة طبيعية للتعبير عن الامتنان والمساعدة.',
-  'التعبير You can’t miss it يعني أن المكان واضح وسهل العثور عليه.'
- ],
- listening:[
-  'Half past three تعني الثالثة والنصف، أي 3:30. وpushed back تعني تأجيل الموعد إلى وقت لاحق.',
-  'Although تُظهر التباين: كان المطر يهطل، ومع ذلك قرروا الذهاب في نزهة.',
-  'No later than Friday تعني أن يوم الجمعة هو آخر موعد مسموح به.',
-  'I’d rather you didn’t… تعبّر عن تفضيل المتحدث ألّا يقوم الشخص بفعل شيء.',
-  'التعبير on the grounds that يقدّم السبب؛ وcostly تعني مكلفًا أو باهظ الثمن.'
- ],
- spelling:[
-  'التهجئة الصحيحة هي definitely. تذكّر أنها تحتوي على كلمة finite ضمن ترتيب حروفها.',
-  'التهجئة الصحيحة reliable، ومعناها جدير بالثقة أو يمكن الاعتماد عليه.',
-  'تُكتب confidence بالنهاية -ence، وتعني الثقة أو الإيمان بالقدرة.',
-  'الفعل الصحيح هو improve، ومعناه يجعل الشيء أفضل أو يصبح أفضل.',
-  'التهجئة الصحيحة challenge، وتعني تحديًا أو مهمة صعبة.'
- ],
- advanced:[
-  'Plausible تعني معقولًا أو قابلًا للتصديق ظاهريًا، لكنها لا تعني بالضرورة أنه مثبت أو مقنع تمامًا.',
-  'Consequently تدل على النتيجة: لأن الأدلة محدودة، فالاستنتاج مؤقت أو غير نهائي.',
-  'Reluctant تعني مترددًا أو غير راغب؛ ولا تعني بالضرورة الرفض التام.',
-  'Admittedly تُستخدم للاعتراف بنقطة أو قيد قبل إضافة توضيح أو فكرة موازنة.',
-  'Inconclusive تعني أن النتائج لا تسمح بالوصول إلى استنتاج نهائي.'
- ]
-};
-const $ = s => document.querySelector(s);
-const $$ = s => [...document.querySelectorAll(s)];
-const localDayKey = (date = new Date()) => [date.getFullYear(),String(date.getMonth()+1).padStart(2,'0'),String(date.getDate()).padStart(2,'0')].join('-');
-const defaultState = () => ({xp:0,quests:0,words:[],completed:[],streak:0,lastDay:null,daily:0,level:'A1',sound:true,helpArabic:false});
-let state;
-try { state = {...defaultState(), ...JSON.parse(localStorage.getItem('epiphany-progress') || '{}')}; } catch { state = defaultState(); }
-if (state.lastDay !== localDayKey()) state.daily = 0;
-let activeGame = null, questionIndex = 0, gameScore = 0, gameAnswers = [], answered = false, gameWords = [];
-function saveState(){try{localStorage.setItem('epiphany-progress',JSON.stringify(state));$('#save-status').textContent='Progress saved on this device';}catch{$('#save-status').textContent='Session progress only';}syncArabicHelpButton();
-renderStats();}
-function currentLevel(){return [...LEVELS].reverse().find(l=>state.xp>=l.xp)||LEVELS[0];}
-function levelIndex(){return LEVELS.findIndex(l=>l.id===currentLevel().id);}
-function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
-function renderStats(){
- const level=currentLevel();state.level=level.id;
- $('#xp-total').innerHTML=state.xp+' <small>XP</small>';$('#quest-total').textContent=state.quests;$('#word-total').textContent=state.words.length;
- $('#level-stat').innerHTML=level.id+' <small>'+level.name+'</small>';$('#profile-level').textContent=level.id+' · '+level.name;$('#streak-count').textContent=(state.streak||0)+' day streak';
- const next=LEVELS[levelIndex()+1];const progress=next?Math.min(100,Math.round((state.xp-level.xp)/(next.xp-level.xp)*100)):100;
- $('#xp-mini-bar').style.width=progress+'%';$('#xp-next').textContent=next?(next.xp-state.xp)+' XP to '+next.id:'C2 unlocked — extraordinary!';
- $('#daily-count').textContent=Math.min(state.daily,2)+' of 2 quests';$('#daily-percent').textContent=Math.min(100,Math.round(state.daily/2*100))+'%';$('#daily-bar').style.width=Math.min(100,state.daily/2*100)+'%';
- $('#path-note').textContent=next?'You’re building toward '+next.id+'. Complete activities, review mistakes, and keep your skills growing.':'You have reached the C2 XP milestone. Keep practising to maintain your edge.';
- renderLevels();
-}
-function renderLevels(){
- const idx=levelIndex();$('#level-track').innerHTML=LEVELS.map((l,i)=>'<div class="level-node '+(i<idx?'done ':i===idx?'current ':'')+(state.completed.includes(l.id)?'done':'')+'"><div class="level-dot">'+(i<idx?'✓':l.id)+'</div><span class="level-name">'+l.id+'</span></div>').join('');
- $('#world-grid').innerHTML=LEVELS.map((l,i)=>{const unlocked=i<=idx;return '<button class="world-card '+(!unlocked?'locked':'')+'" data-level="'+l.id+'"><div class="world-art"></div><div class="world-level">'+l.id+' · '+l.name.toUpperCase()+'</div><h3>'+l.title+'</h3><p>'+l.desc+'</p><div class="world-meta"><span>'+(unlocked?'Explore this world':'🔒 Unlock at '+l.xp+' XP')+'</span><span class="world-status">'+(unlocked?'↗':'◌')+'</span></div></button>';}).join('');
- $('#activity-grid').innerHTML=[['vocabulary','Aa','Word collector','Grow your vocabulary in context.','3 min','+30 XP'],['grammar','⌘','Sentence shaper','Build accurate, natural sentences.','4 min','+40 XP'],['story','↗','Lost in London','Make choices in everyday conversations.','5 min','+50 XP'],['listening','◖','Meaning detective','Understand messages, tone, and intent.','4 min','+35 XP'],['spelling','✳','Word detective','Sharpen spelling and word recognition.','3 min','+30 XP'],['advanced','✧','Nuance navigator','Explore precise language and subtle meaning.','6 min','+55 XP']].map(a=>'<button class="activity-card" data-game="'+a[0]+'"><div class="activity-icon">'+a[1]+'</div><h3>'+a[2]+'</h3><p>'+a[3]+'</p><div class="activity-meta"><span>'+a[4]+'</span><span>'+a[5]+' ↗</span></div></button>').join('');
- renderVault();renderAchievements();
-}
-function renderVault(){
- const box=$('#vault-content');if(!state.words.length){box.innerHTML='<div class="empty-state"><div class="empty-icon">▤</div><h3>Your word vault is waiting.</h3><p>Finish a vocabulary or story quest to collect your first useful expression.</p><button class="btn btn-primary" data-game="vocabulary">Find your first word ↗</button></div>';return;}
- box.innerHTML='<div class="word-list">'+state.words.map(w=>'<div class="word-row"><div><strong>'+escapeHtml(w[0])+'</strong><small>'+escapeHtml(w[1])+'</small></div><span class="word-level">'+escapeHtml(w[2]||currentLevel().id)+'</span></div>').join('')+'</div>';
-}
-function renderAchievements(){
- const all=[['✦','First Spark','Complete your first quest.',state.quests>=1],['Aa','Word Gatherer','Discover 5 useful words.',state.words.length>=5],['⚡','Momentum','Complete 5 quests.',state.quests>=5],['♨','Habit Builder','Return for 3 days.',state.streak>=3],['◎','World Traveler','Reach B1.',levelIndex()>=2],['✧','Mastermind','Reach C1.',levelIndex()>=4]];
- $('#achievement-grid').innerHTML=all.map(a=>'<article class="achievement-card '+(!a[3]?'locked-achievement':'')+'"><div class="achievement-icon">'+a[0]+'</div><h3>'+a[1]+'</h3><p>'+a[2]+'</p><div class="activity-meta"><span>'+(a[3]?'UNLOCKED':'LOCKED')+'</span><span>'+(a[3]?'✓':'◌')+'</span></div></article>').join('');
-}
-function openView(name){
- $$('.view').forEach(v=>v.classList.toggle('active-view',v.id===name+'-view'));$$('.nav-item').forEach(b=>b.classList.toggle('active',b.dataset.view===name));
- const label={home:'ADVENTURE HOME',worlds:'EXPLORE WORLDS',practice:'QUICK PRACTICE',vocabulary:'WORD VAULT',achievements:'ACHIEVEMENTS'};$('#breadcrumb-current').textContent=label[name]||'ADVENTURE HOME';$('#sidebar').classList.remove('mobile-open');window.scrollTo({top:0,behavior:'smooth'});
-}
-function startGame(type){
- const game=GAMES[type];if(!game)return;activeGame=type;questionIndex=0;gameScore=0;gameAnswers=[];gameWords=[];answered=false;
- $('#game-overlay').classList.add('open');$('#game-overlay').setAttribute('aria-hidden','false');document.body.style.overflow='hidden';renderQuestion();
-}
-function arabicGuidance(type){return ({vocabulary:'اختر المعنى الأقرب للكلمة أو العبارة الإنجليزية.',grammar:'اختر الصيغة التي تجعل الجملة صحيحة وطبيعية.',story:'تخيّل أنك في هذا الموقف الحقيقي واختر الرد الأنسب والأكثر تهذيبًا.',listening:'اقرأ الرسالة بعناية وابحث عن معناها أو المعلومة الأساسية.',spelling:'اختر الكلمة المكتوبة بطريقة صحيحة.',advanced:'ركّز على الفروق الدقيقة في المعنى والمنطق بين الخيارات.'})[type]||'خذ وقتك واقرأ الخيارات بهدوء.';}
-function renderQuestion(){
- const g=GAMES[activeGame];const q=g.questions[questionIndex];answered=false;
- $('#game-step-label').textContent='QUEST '+(questionIndex+1)+' OF '+g.questions.length;$('#game-progress-bar').style.width=((questionIndex)/g.questions.length*100)+'%';$('#game-xp').textContent='+'+g.xp+' XP';
- $('#game-content').innerHTML='<div class="game-heading"><div class="game-kicker">'+g.category+' · '+currentLevel().id+'</div><h2>'+g.title+'</h2><p>'+g.desc+'</p></div><div class="question-box"><div class="question-label">CHALLENGE '+(questionIndex+1)+'</div><h3>'+escapeHtml(q.q)+'</h3><p>'+escapeHtml(q.sub)+'</p></div>'+(state.helpArabic?'<div class="arabic-help" lang="ar" dir="rtl"><strong>مساعدة بالعربية</strong><span>'+arabicGuidance(activeGame)+'</span></div>':'')+'<div class="answer-list">'+q.answers.map((a,i)=>'<button class="answer-option" data-answer="'+i+'"><span class="answer-letter">'+String.fromCharCode(65+i)+'</span><span>'+escapeHtml(a)+'</span></button>').join('')+'</div><div class="feedback-box" id="feedback-box" aria-live="polite"></div><div class="game-footer"><span class="hint">No pressure — learn as you go.</span><button class="btn btn-primary" id="next-question" disabled>'+(questionIndex===g.questions.length-1?'See results':'Continue')+' →</button></div>';
- $$('#game-content [data-answer]').forEach(b=>b.addEventListener('click',()=>selectAnswer(Number(b.dataset.answer))));$('#next-question').addEventListener('click',()=>{if(questionIndex<g.questions.length-1){questionIndex++;renderQuestion();}else showResults();});
-}
-function selectAnswer(choice){
- if(answered)return;answered=true;const g=GAMES[activeGame],q=g.questions[questionIndex],correct=choice===q.correct;if(correct)gameScore++;gameAnswers.push({correct,choice,correctAnswer:q.correct});
- if(q.word&&correct)gameWords.push(q.word);
- $$('#game-content [data-answer]').forEach((b,i)=>{b.disabled=true;if(i===q.correct)b.classList.add('correct');else if(i===choice)b.classList.add('wrong');});
- const fb=$('#feedback-box');fb.classList.add('show');fb.innerHTML='<strong>'+(correct?'✦ Exactly right!':'Not quite — and that’s okay.')+'</strong>'+escapeHtml(q.explain)+(state.helpArabic?'<div class="arabic-feedback" lang="ar" dir="rtl"><strong>'+(correct?'أحسنت!':'معلومة للتعلّم')+'</strong>'+escapeHtml(AR_EXPLANATIONS[activeGame][questionIndex])+'</div>':'');$('#next-question').disabled=false;
-}
-function showResults(){
- const g=GAMES[activeGame],total=g.questions.length,earned=Math.round(g.xp*(.35+.65*gameScore/total));$('#game-progress-bar').style.width='100%';$('#game-step-label').textContent='QUEST COMPLETE';$('#game-xp').textContent='+'+earned+' XP';
- $('#game-content').innerHTML='<div class="game-result"><div class="result-star">'+(gameScore===total?'✦':'✧')+'</div><div class="game-kicker">QUEST COMPLETE</div><h2>'+(gameScore===total?'Brilliant work!':gameScore>=3?'Look at you, growing!':'Every try teaches you something.')+'</h2><p>You got '+gameScore+' out of '+total+' correct. '+(gameScore===total?'A perfect round — enjoy that feeling.':'Review the explanations and give it another go when you’re ready.')+'</p><div class="result-stats"><div class="result-stat"><strong>+'+earned+'</strong><span>XP EARNED</span></div><div class="result-stat"><strong>'+gameScore+'/'+total+'</strong><span>CORRECT</span></div><div class="result-stat"><strong>'+gameWords.length+'</strong><span>WORDS FOUND</span></div></div><button class="btn btn-primary" id="finish-game">Back to your adventure ↗</button> <button class="btn btn-quiet" id="retry-game">Play again</button></div>';
- const levelAtQuestStart=currentLevel().id;state.xp+=earned;state.quests++;state.daily=Math.min(2,state.daily+1);const today=localDayKey();if(state.lastDay!==today){const yesterday=new Date();yesterday.setDate(yesterday.getDate()-1);const wasYesterday=state.lastDay===localDayKey(yesterday);state.streak=wasYesterday?(state.streak||0)+1:1;state.lastDay=today;}if(!state.completed.includes(levelAtQuestStart))state.completed.push(levelAtQuestStart);
- gameWords.forEach(w=>{if(!state.words.some(existing=>existing[0]===w[0]))state.words.push([...w,currentLevel().id]);});saveState();renderLevels();
- $('#finish-game').addEventListener('click',closeGame);$('#retry-game').addEventListener('click',()=>startGame(activeGame));
-}
-function closeGame(){ $('#game-overlay').classList.remove('open');$('#game-overlay').setAttribute('aria-hidden','true');document.body.style.overflow='';activeGame=null; }
-function toast(message){const t=$('#toast');t.textContent=message;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2400);}
-$$('.nav-item').forEach(b=>b.addEventListener('click',()=>openView(b.dataset.view)));
-$$('[data-open-view]').forEach(b=>b.addEventListener('click',()=>openView(b.dataset.openView)));
-document.addEventListener('click',e=>{const game=e.target.closest('[data-game]');if(game){startGame(game.dataset.game);return;}const world=e.target.closest('[data-level]');if(world){const i=LEVELS.findIndex(l=>l.id===world.dataset.level);if(i>levelIndex()){toast('Keep questing to unlock '+world.dataset.level+'!');return;}const gameForLevel=i>=4?'advanced':i===3?'listening':i===2?'story':i===1?'grammar':'vocabulary';startGame(gameForLevel);}});
-$('#continue-btn').addEventListener('click',()=>startGame(currentLevel().id==='C1'||currentLevel().id==='C2'?'advanced':'vocabulary'));
-$('#daily-btn').addEventListener('click',()=>startGame(state.daily%2===0?'vocabulary':'story'));
-$('#close-game').addEventListener('click',closeGame);$('#game-overlay').addEventListener('click',e=>{if(e.target.id==='game-overlay')closeGame();});
-$('#mobile-menu').addEventListener('click',()=>$('#sidebar').classList.toggle('mobile-open'));
-$('#sound-toggle').addEventListener('click',()=>{state.sound=!state.sound;$('#sound-toggle').style.color=state.sound?'#b8aaff':'#77738c';toast(state.sound?'Sound effects enabled':'Sound effects muted');saveState();});
-function syncArabicHelpButton(){const b=$('#help-toggle');if(!b)return;b.textContent=state.helpArabic?'العربية ON':'العربية OFF';b.setAttribute('aria-pressed',String(state.helpArabic));b.classList.toggle('enabled',state.helpArabic);}
-$('#help-toggle').addEventListener('click',()=>{state.helpArabic=!state.helpArabic;syncArabicHelpButton();saveState();if(activeGame&&!answered)renderQuestion();toast(state.helpArabic?'Arabic learning help enabled':'Arabic learning help disabled');});
-document.addEventListener('keydown',e=>{if(e.key==='Escape')closeGame();});
-syncArabicHelpButton();
-renderStats();
+/* Epiphany app logic. Lesson content lives in data.js (LEVELS, GAMES, AR_EXPLANATIONS).
+   Saved progress keeps the same localStorage key and shape as the first prototype. */
+(() => {
+  'use strict';
+  const $ = s => document.querySelector(s);
+  const $$ = s => [...document.querySelectorAll(s)];
+  const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const ic = n => '<svg aria-hidden="true"><use href="#i-' + n + '"/></svg>';
+  const dayKey = (d = new Date()) => [d.getFullYear(), String(d.getMonth() + 1).padStart(2, '0'), String(d.getDate()).padStart(2, '0')].join('-');
+
+  /* ---------- state ---------- */
+  const defaults = () => ({xp:0, quests:0, words:[], completed:[], streak:0, lastDay:null, daily:0, level:'A1', sound:true, helpArabic:false});
+  let state;
+  try { state = {...defaults(), ...JSON.parse(localStorage.getItem('epiphany-progress') || '{}')}; } catch { state = defaults(); }
+  if (state.lastDay !== dayKey()) state.daily = 0;
+  let saveWarned = false;
+  function save() {
+    try { localStorage.setItem('epiphany-progress', JSON.stringify(state)); }
+    catch { if (!saveWarned) { saveWarned = true; toast('Progress can’t be saved in this browser. It will last for this visit only.'); } }
+  }
+
+  /* ---------- game metadata (look & feel per game) ---------- */
+  const META = {
+    vocabulary:{label:'Vocabulary',   tone:'violet', glyph:'Aa',   time:3, blurb:'Grow your vocabulary in context.'},
+    grammar:   {label:'Grammar',      tone:'coral',  glyph:'S+V',  time:4, blurb:'Build accurate, natural sentences.'},
+    story:     {label:'Real life',    tone:'mint',   icon:'chat',   time:5, blurb:'Make choices in everyday conversations.'},
+    listening: {label:'Comprehension',tone:'sky',    icon:'search', time:4, blurb:'Understand messages, tone and intent.'},
+    spelling:  {label:'Spelling',     tone:'pink',   glyph:'abc',  time:3, blurb:'Sharpen spelling and word recognition.'},
+    advanced:  {label:'Advanced',     tone:'ink',    icon:'spark',  time:6, blurb:'Explore precise language and subtle meaning.'}
+  };
+  const ORDER = ['vocabulary', 'spelling', 'grammar', 'story', 'listening', 'advanced'];
+  const UNLOCK = {vocabulary:0, spelling:0, grammar:1, story:2, listening:3, advanced:4};   // level index that suggests each game
+  const LEVEL_GAME = ['vocabulary', 'grammar', 'story', 'listening', 'advanced', 'advanced']; // same mapping the world map used
+  const glyph = g => META[g].icon ? ic(META[g].icon) : META[g].glyph;
+
+  /* ---------- derived values ---------- */
+  const levelIndex = () => { let i = 0; LEVELS.forEach((l, k) => { if (state.xp >= l.xp) i = k; }); return i; };
+  const currentLevel = () => LEVELS[levelIndex()];
+  const liveStreak = () => {
+    const y = new Date(); y.setDate(y.getDate() - 1);
+    return state.lastDay === dayKey() || state.lastDay === dayKey(y) ? (state.streak || 0) : 0;
+  };
+  function pickNext() {
+    const ok = ORDER.filter(g => UNLOCK[g] <= levelIndex());
+    return ok[state.quests % ok.length];
+  }
+
+  /* ---------- rendering: header + home ---------- */
+  function renderHeader() {
+    $('#chip-streak').textContent = liveStreak();
+    $('#chip-xp').textContent = state.xp;
+  }
+
+  function renderHome() {
+    const h = new Date().getHours();
+    $('#greeting').textContent = h < 12 ? 'Good morning' : h < 18 ? 'Good afternoon' : 'Good evening';
+
+    const g = pickNext(), game = GAMES[g], m = META[g];
+    $('#next-card').className = 'next t-' + m.tone;
+    $('#next-cat').textContent = m.label;
+    $('#next-title').textContent = game.title;
+    $('#next-desc').textContent = game.desc;
+    $('#next-count').textContent = game.questions.length + ' questions';
+    $('#next-time').textContent = m.time + ' min';
+    $('#next-xp').textContent = '+' + game.xp + ' XP';
+    $('#next-art').innerHTML = '<div class="glyph">' + glyph(g) + '</div>';
+    $('#next-start').dataset.game = g;
+
+    const done = Math.min(state.daily, 2);
+    $('#ring-text').textContent = done + '/2';
+    $('#ring').setAttribute('aria-label', 'Daily goal: ' + done + ' of 2 quests');
+    $('#ring-fg').style.strokeDashoffset = (207.35 * (1 - done / 2)).toFixed(2);
+    $('#ring-note').textContent = done >= 2 ? 'Goal complete. Your streak is safe today.'
+      : done === 1 ? 'One more quest keeps your streak alive.' : 'Finish 2 quests to keep your streak alive.';
+
+    const idx = levelIndex(), lv = LEVELS[idx], nx = LEVELS[idx + 1];
+    const pct = nx ? Math.min(100, Math.round((state.xp - lv.xp) / (nx.xp - lv.xp) * 100)) : 100;
+    $('#lv-name').textContent = lv.id + ' · ' + lv.name;
+    $('#lv-next').textContent = nx ? (nx.xp - state.xp) + ' XP to ' + nx.id : 'Top level reached';
+    $('#lv-bar').style.width = pct + '%';
+    $('#lv-bar-wrap').setAttribute('aria-valuenow', pct);
+
+    const track = $('#track');
+    track.style.setProperty('--prog', (idx / (LEVELS.length - 1)).toFixed(3));
+    track.innerHTML = LEVELS.map((l, i) => {
+      const cls = i < idx ? 'done' : i === idx ? 'current' : 'locked';
+      const dot = i < idx ? ic('check') : i > idx ? ic('lock') : l.id;
+      const sub = i < idx ? 'Cleared' : i === idx ? 'You are here' : l.xp + ' XP';
+      return '<li><button class="node ' + cls + '" data-level="' + i + '" aria-label="' + l.id + ', ' + l.name + (cls === 'locked' ? ', locked, unlocks at ' + l.xp + ' XP' : '') + '">' +
+        '<span class="node-dot">' + dot + '</span><span class="node-name">' + l.name + '</span><span class="node-sub">' + sub + '</span></button></li>';
+    }).join('');
+    $('#track-note').innerHTML = '<strong>' + lv.id + ' · ' + esc(lv.title) + '</strong>' + esc(lv.desc);
+
+    $('#games').innerHTML = ORDER.map(k => {
+      const gm = GAMES[k], mm = META[k];
+      return '<button class="tile t-' + mm.tone + '" data-game="' + k + '"><span class="tile-ic">' + glyph(k) + '</span>' +
+        '<span><h3>' + esc(gm.title) + '</h3><p>' + mm.time + ' min · +' + gm.xp + ' XP</p></span></button>';
+    }).join('');
+  }
+
+  /* ---------- rendering: words + trophies ---------- */
+  function renderWords() {
+    const n = state.words.length;
+    $('#words-count').textContent = n + (n === 1 ? ' word' : ' words');
+    $('#words-body').innerHTML = !n
+      ? '<div class="empty"><div class="empty-ic">' + ic('book') + '</div><h2>Your vault is empty, for now.</h2><p>Answer a vocabulary or real-life question correctly and the word lands here with its meaning.</p><button class="btn" data-game="vocabulary">' + ic('play') + 'Find your first word</button></div>'
+      : '<div class="vault">' + state.words.slice().reverse().map(w =>
+          '<article class="word"><b>' + esc(w[0]) + '</b><span>' + esc(w[1]) + '</span><em>' + esc(w[2] || 'A1') + '</em></article>').join('') + '</div>';
+  }
+
+  function renderTrophies() {
+    const idx = levelIndex();
+    const all = [
+      ['spark', 'First Spark',     'Complete your first quest.', Math.min(state.quests, 1), 1],
+      ['book',  'Word Gatherer',   'Discover 5 useful words.',   Math.min(state.words.length, 5), 5],
+      ['bolt',  'Momentum',        'Complete 5 quests.',         Math.min(state.quests, 5), 5],
+      ['flame', 'Habit Builder',   'Return for 3 days in a row.', Math.min(state.streak || 0, 3), 3],
+      ['globe', 'World Traveler',  'Reach B1.',                  Math.min(idx, 2), 2],
+      ['crown', 'Mastermind',      'Reach C1.',                  Math.min(idx, 4), 4]
+    ];
+    const got = all.filter(a => a[3] >= a[4]).length;
+    $('#trophies-count').textContent = got + ' of ' + all.length + ' unlocked';
+    $('#trophies').innerHTML = all.map(a => {
+      const on = a[3] >= a[4];
+      return '<article class="trophy' + (on ? ' on' : '') + '"><div class="trophy-ic">' + ic(a[0]) + '</div><div style="flex:1;min-width:0"><h3>' + a[1] + '</h3><p>' + a[2] + '</p>' +
+        '<div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="' + a[4] + '" aria-valuenow="' + a[3] + '" aria-label="' + a[1] + ' progress"><i style="width:' + Math.round(a[3] / a[4] * 100) + '%"></i></div></div></article>';
+    }).join('');
+  }
+
+  function renderAll() { renderHeader(); renderHome(); renderWords(); renderTrophies(); syncSettings(); }
+
+  /* ---------- navigation ---------- */
+  function openView(name) {
+    $$('.view').forEach(v => v.classList.toggle('is-active', v.id === name + '-view'));
+    $$('[data-view]').forEach(b => b.setAttribute('aria-current', b.dataset.view === name ? 'page' : 'false'));
+    window.scrollTo(0, 0);
+    const h = $('#' + name + '-title'); if (h) h.focus({preventScroll: true});
+  }
+
+  /* ---------- settings: Arabic help + sound ---------- */
+  function syncSettings() {
+    document.body.classList.toggle('ar-on', !!state.helpArabic);
+    $$('#ar-toggle, #game-ar').forEach(b => b.setAttribute('aria-pressed', String(!!state.helpArabic)));
+    const s = $('#sound-toggle');
+    s.setAttribute('aria-pressed', String(!!state.sound));
+    s.innerHTML = ic(state.sound ? 'sound' : 'mute');
+  }
+  function toggleArabic() {
+    state.helpArabic = !state.helpArabic; save(); syncSettings();
+    if (G) { if (G.answered) setSheetSpace(); } else toast(state.helpArabic ? 'Arabic help is on' : 'Arabic help is off');
+  }
+  $('#ar-toggle').addEventListener('click', toggleArabic);
+  $('#game-ar').addEventListener('click', toggleArabic);
+  $('#sound-toggle').addEventListener('click', () => {
+    state.sound = !state.sound; save(); syncSettings();
+    toast(state.sound ? 'Sound is on' : 'Sound is off');
+    if (state.sound) sfx('ok');
+  });
+
+  let ac;
+  function tone(f, t, d, type, v) {
+    const o = ac.createOscillator(), g = ac.createGain(), at = ac.currentTime + t;
+    o.type = type || 'sine'; o.frequency.value = f;
+    g.gain.setValueAtTime(0.0001, at); g.gain.linearRampToValueAtTime(v || 0.12, at + 0.02); g.gain.exponentialRampToValueAtTime(0.0001, at + d);
+    o.connect(g); g.connect(ac.destination); o.start(at); o.stop(at + d + 0.05);
+  }
+  function sfx(kind) {
+    if (!state.sound) return;
+    try {
+      ac = ac || new (window.AudioContext || window.webkitAudioContext)();
+      if (ac.state === 'suspended') ac.resume();
+      const seq = {ok:[[659, 0, .12], [880, .1, .22]], no:[[262, 0, .18, 'triangle'], [196, .15, .24, 'triangle']],
+        done:[[523, 0, .14], [659, .12, .14], [784, .24, .14], [1047, .36, .34]]}[kind];
+      seq.forEach(a => tone(a[0], a[1], a[2], a[3]));
+    } catch { /* audio is optional */ }
+  }
+
+  let toastTimer;
+  function toast(msg) {
+    const t = $('#toast'); t.textContent = msg; t.classList.add('show');
+    clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove('show'), 2600);
+  }
+
+  /* ---------- quest ---------- */
+  let G = null;
+  const guidance = {
+    vocabulary:'اختر المعنى الأقرب للكلمة أو العبارة الإنجليزية.',
+    grammar:'اختر الصيغة التي تجعل الجملة صحيحة وطبيعية.',
+    story:'تخيّل أنك في هذا الموقف الحقيقي واختر الرد الأنسب والأكثر تهذيبًا.',
+    listening:'اقرأ الرسالة بعناية وابحث عن معناها أو المعلومة الأساسية.',
+    spelling:'اختر الكلمة المكتوبة بطريقة صحيحة.',
+    advanced:'ركّز على الفروق الدقيقة في المعنى والمنطق بين الخيارات.'
+  };
+
+  function lockPage(on) {
+    ['.top', 'main', '.dock'].forEach(s => { const el = $(s); if (el) el.inert = on; });
+    document.body.classList.toggle('no-scroll', on);
+  }
+
+  function startGame(type) {
+    const game = GAMES[type]; if (!game) return;
+    G = {type, i:0, score:0, words:[], answered:false, results:[]};
+    const el = $('#game'); el.className = 'game t-' + META[type].tone; el.hidden = false;
+    lockPage(true);
+    renderQuestion();
+  }
+
+  function renderSteps(full) {
+    const n = GAMES[G.type].questions.length;
+    $('#steps').innerHTML = Array.from({length:n}, (_, k) =>
+      '<span class="step ' + (full ? (G.results[k] || 'ok') : G.results[k] || (k === G.i ? 'current' : '')) + '"></span>').join('');
+  }
+
+  function hideSheet() {
+    const s = $('#sheet'); s.classList.remove('show');
+    $('#game').style.setProperty('--sheet-h', '0px');
+  }
+  function setSheetSpace() { $('#game').style.setProperty('--sheet-h', $('#sheet').offsetHeight + 'px'); }
+  function showSheet(ok, html) {
+    const s = $('#sheet'); s.className = 'sheet' + (ok ? '' : ' bad');
+    s.innerHTML = '<div class="sheet-in">' + html + '</div>';
+    requestAnimationFrame(() => {
+      s.classList.add('show'); setSheetSpace();
+      const sel = $('#answers .correct'); if (sel) sel.scrollIntoView({block:'nearest', behavior:'smooth'});
+      const b = $('#go-next'); if (b) b.focus({preventScroll: true});
+    });
+  }
+
+  function renderQuestion() {
+    const game = GAMES[G.type], q = game.questions[G.i], m = META[G.type];
+    G.answered = false; hideSheet(); renderSteps();
+    $('#game-body').innerHTML =
+      '<div class="q-meta"><span class="pill">' + m.label + '</span><span class="q-count">Question ' + (G.i + 1) + ' of ' + game.questions.length + '</span></div>' +
+      '<h2 class="q-text" id="q-text" tabindex="-1">' + esc(q.q) + '</h2><p class="q-sub">' + esc(q.sub) + '</p>' +
+      '<p class="ar-only ar-guide arabic" lang="ar" dir="rtl">' + guidance[G.type] + '</p>' +
+      '<div class="answers" id="answers" role="group" aria-labelledby="q-text">' +
+      q.answers.map((a, i) => '<button class="answer" data-i="' + i + '"><span class="key">' + (i + 1) + '</span><span>' + esc(a) + '</span></button>').join('') + '</div>';
+    $('#game-scroll').scrollTop = 0;
+    $('#q-text').focus({preventScroll: true});
+  }
+
+  function selectAnswer(choice) {
+    if (!G || G.answered) return;
+    G.answered = true;
+    const game = GAMES[G.type], q = game.questions[G.i], ok = choice === q.correct;
+    if (ok) { G.score++; if (q.word) G.words.push(q.word); }
+    G.results[G.i] = ok ? 'ok' : 'no';
+    $$('#answers .answer').forEach((b, k) => { b.disabled = true; if (k === q.correct) b.classList.add('correct'); else if (k === choice) b.classList.add('wrong'); });
+    $('#answers').classList.add('done');
+    renderSteps(); sfx(ok ? 'ok' : 'no');
+    const last = G.i === game.questions.length - 1;
+    showSheet(ok,
+      '<h3><span class="sheet-mark">' + ic(ok ? 'check' : 'x') + '</span>' + (ok ? 'Exactly right!' : 'Not quite — and that’s okay.') + '</h3>' +
+      (ok ? '' : '<p>Correct answer: <b>' + esc(q.answers[q.correct]) + '</b></p>') +
+      '<p>' + esc(q.explain) + '</p>' +
+      (ok && q.word ? '<div class="newword"><span>New word</span><b>' + esc(q.word[0]) + '</b><span>' + esc(q.word[1]) + '</span></div>' : '') +
+      '<p class="ar-only arabic" lang="ar" dir="rtl"><strong>' + (ok ? 'أحسنت!' : 'معلومة للتعلّم') + '</strong> ' + esc(AR_EXPLANATIONS[G.type][G.i]) + '</p>' +
+      '<div class="sheet-actions"><button class="btn" id="go-next">' + (last ? 'See results' : 'Continue') + ic('arrow') + '</button></div>');
+  }
+
+  function next() {
+    if (!G || !G.answered) return;
+    if (G.i < GAMES[G.type].questions.length - 1) { G.i++; renderQuestion(); } else showResults();
+  }
+
+  function showResults() {
+    const game = GAMES[G.type], total = game.questions.length;
+    const earned = Math.round(game.xp * (.35 + .65 * G.score / total));
+    const before = currentLevel();
+    state.xp += earned; state.quests++; state.daily = Math.min(2, state.daily + 1);
+    const today = dayKey();
+    if (state.lastDay !== today) {
+      const y = new Date(); y.setDate(y.getDate() - 1);
+      state.streak = state.lastDay === dayKey(y) ? (state.streak || 0) + 1 : 1;
+      state.lastDay = today;
+    }
+    if (!state.completed.includes(before.id)) state.completed.push(before.id);
+    const after = currentLevel();
+    G.words.forEach(w => { if (!state.words.some(e => e[0] === w[0])) state.words.push([w[0], w[1], after.id]); });
+    save(); renderAll();
+
+    hideSheet(); renderSteps(true); sfx('done');
+    const perfect = G.score === total, nxt = pickNext();
+    $('#game-body').innerHTML =
+      '<div class="result"><div class="burst">' + ic('spark') + '</div>' +
+      '<p class="kicker" style="margin:6px 0 0">Quest complete</p>' +
+      '<h2>' + (perfect ? 'Brilliant work!' : G.score >= 3 ? 'Look at you, growing!' : 'Every try teaches you something.') + '</h2>' +
+      '<p>You got ' + G.score + ' out of ' + total + '. ' + (perfect ? 'A perfect round. Enjoy that feeling.' : 'Check the words below and play again when you’re ready.') + '</p>' +
+      '<div class="stats3"><div class="stat"><b>+' + earned + '</b><span>XP earned</span></div><div class="stat"><b>' + G.score + '/' + total + '</b><span>Correct</span></div><div class="stat"><b>' + G.words.length + '</b><span>New words</span></div></div>' +
+      (after.id !== before.id ? '<div class="levelup"><b>You reached ' + after.id + '!</b>' + after.name + ' · ' + esc(after.title) + '</div>' : '') +
+      (G.words.length ? '<div class="found"><div class="found-title">Added to your vault</div>' + G.words.map(w => '<span class="w">' + esc(w[0]) + '</span>').join('') + '</div>' : '') +
+      '<div class="result-actions"><button class="btn" id="res-next">' + ic('play') + 'Next: ' + esc(GAMES[nxt].title) + '</button>' +
+      '<button class="btn btn-ghost" id="res-home">Back to home</button>' +
+      '<button class="btn btn-link" id="res-again">Play this quest again</button></div></div>';
+    $('#game-scroll').scrollTop = 0;
+    const type = G.type;
+    $('#res-next').addEventListener('click', () => startGame(nxt));
+    $('#res-home').addEventListener('click', closeGame);
+    $('#res-again').addEventListener('click', () => startGame(type));
+    $('#res-next').focus({preventScroll: true});
+  }
+
+  function closeGame() {
+    $('#game').hidden = true; hideSheet(); G = null;
+    lockPage(false); renderAll();
+    const h = $('.view.is-active h1'); if (h) h.focus({preventScroll: true});
+  }
+
+  /* ---------- events ---------- */
+  document.addEventListener('click', e => {
+    const view = e.target.closest('[data-view]');
+    if (view) { openView(view.dataset.view); return; }
+    const ans = e.target.closest('.answer');
+    if (ans && G) { selectAnswer(Number(ans.dataset.i)); return; }
+    if (e.target.closest('#go-next')) { next(); return; }
+    const gm = e.target.closest('[data-game]');
+    if (gm) { startGame(gm.dataset.game); return; }
+    const lv = e.target.closest('[data-level]');
+    if (lv) {
+      const i = Number(lv.dataset.level), l = LEVELS[i];
+      if (i > levelIndex()) toast(l.id + ' unlocks at ' + l.xp + ' XP. ' + (l.xp - state.xp) + ' XP to go.');
+      else startGame(LEVEL_GAME[i]);
+    }
+  });
+  $('#logo').addEventListener('click', e => { e.preventDefault(); openView('home'); });
+  $('#game-close').addEventListener('click', closeGame);
+  document.addEventListener('keydown', e => {
+    if (!G) return;
+    if (e.key === 'Escape') { closeGame(); return; }
+    if (/^[1-9]$/.test(e.key) && !G.answered) {
+      const k = Number(e.key) - 1;
+      if (k < GAMES[G.type].questions[G.i].answers.length) selectAnswer(k);
+    } else if (e.key === 'Enter' && G.answered && !(document.activeElement && document.activeElement.tagName === 'BUTTON')) next();
+  });
+
+  renderAll();
+})();
