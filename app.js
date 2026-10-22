@@ -7,13 +7,22 @@
   const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const ic = n => '<svg aria-hidden="true"><use href="#i-' + n + '"/></svg>';
   const dayKey = (d = new Date()) => [d.getFullYear(), String(d.getMonth() + 1).padStart(2, '0'), String(d.getDate()).padStart(2, '0')].join('-');
+  const weekKey = (d = new Date()) => { const x = new Date(d.getFullYear(), d.getMonth(), d.getDate()); x.setDate(x.getDate() - ((x.getDay() + 6) % 7)); return dayKey(x); };
+  const DAILY_QUESTS = [
+    {title:'Finish one quest',desc:'Play any game from start to results.',target:1,kind:'quests',reward:15},
+    {title:'Earn 25 XP today',desc:'Keep learning and collect 25 XP today.',target:25,kind:'xp',reward:15},
+    {title:'Get 4 answers right',desc:'Answer 4 questions correctly on your first try.',target:4,kind:'correct',reward:15}
+  ];
 
   /* ---------- state ---------- */
-  const defaults = () => ({xp:0, quests:0, words:[], review:[], placementDone:false, completed:[], streak:0, lastDay:null, daily:0, level:'A1', sound:true, helpArabic:false});
+  const defaults = () => ({xp:0, quests:0, words:[], review:[], placementDone:false, completed:[], streak:0, lastDay:null, daily:0, level:'A1', sound:true, helpArabic:false, streakFreezes:1, dailyQuestDate:null, dailyQuestProgress:0, dailyQuestClaimed:false, dailyCorrect:0, dailyXp:0, weeklyKey:null, weeklyProgress:0, weeklyClaimed:false});
   let state;
   try { state = {...defaults(), ...JSON.parse(localStorage.getItem('epiphany-progress') || '{}')}; } catch { state = defaults(); }
   if (!Array.isArray(state.review)) state.review = [];
+  if (!Number.isFinite(state.streakFreezes)) state.streakFreezes = 1;
   if (state.lastDay !== dayKey()) state.daily = 0;
+  if (state.dailyQuestDate !== dayKey()) { state.dailyQuestDate = dayKey(); state.dailyQuestProgress = 0; state.dailyQuestClaimed = false; state.dailyCorrect = 0; state.dailyXp = 0; }
+  if (state.weeklyKey !== weekKey()) { state.weeklyKey = weekKey(); state.weeklyProgress = 0; state.weeklyClaimed = false; }
   let saveWarned = false;
   function save() {
     try { localStorage.setItem('epiphany-progress', JSON.stringify(state)); }
@@ -39,7 +48,8 @@
   const currentLevel = () => LEVELS[levelIndex()];
   const liveStreak = () => {
     const y = new Date(); y.setDate(y.getDate() - 1);
-    return state.lastDay === dayKey() || state.lastDay === dayKey(y) ? (state.streak || 0) : 0;
+    const twoDaysAgo = new Date(); twoDaysAgo.setDate(twoDaysAgo.getDate() - 2);
+    return state.lastDay === dayKey() || state.lastDay === dayKey(y) || (state.lastDay === dayKey(twoDaysAgo) && state.streakFreezes > 0) ? (state.streak || 0) : 0;
   };
   function pickNext() {
     const ok = ORDER.filter(g => UNLOCK[g] <= levelIndex());
@@ -52,10 +62,32 @@
     $('#chip-xp').textContent = state.xp;
   }
 
+  function renderChallenges() {
+    const today = new Date(), task = DAILY_QUESTS[(today.getDate() - 1) % DAILY_QUESTS.length];
+    const progress = task.kind === 'quests' ? state.daily : task.kind === 'xp' ? state.dailyXp : state.dailyCorrect;
+    const done = state.dailyQuestClaimed || progress >= task.target;
+    $('#daily-date').textContent = today.toLocaleDateString('en', {month:'short', day:'numeric'});
+    $('#daily-title').textContent = task.title; $('#daily-desc').textContent = task.desc;
+    $('#daily-progress-label').textContent = Math.min(progress, task.target) + '/' + task.target;
+    $('#daily-bar').style.width = Math.min(100, progress / task.target * 100) + '%';
+    $('#daily-reward').textContent = done ? 'Reward claimed · +' + task.reward + ' XP' : 'Reward: +' + task.reward + ' bonus XP';
+    $('#daily-status').textContent = done ? '✓ Challenge complete' : 'You’ve got this!'; $('#daily-status').classList.toggle('is-done', done);
+    const count = Math.min(state.weeklyProgress || 0, 5), weeklyDone = !!state.weeklyClaimed;
+    const monday = new Date(today.getFullYear(), today.getMonth(), today.getDate()); monday.setDate(monday.getDate() - ((monday.getDay() + 6) % 7));
+    const sunday = new Date(monday); sunday.setDate(sunday.getDate() + 6);
+    $('#weekly-dates').textContent = monday.toLocaleDateString('en',{month:'short',day:'numeric'}) + '–' + sunday.toLocaleDateString('en',{month:'short',day:'numeric'});
+    $('#weekly-progress-label').textContent = count + '/5'; $('#weekly-bar').style.width = (count / 5 * 100) + '%';
+    $('#weekly-reward').textContent = weeklyDone ? 'Reward claimed · +60 XP' : 'Reward: +60 bonus XP';
+    $('#weekly-status').textContent = weeklyDone ? '✓ Weekly challenge complete' : 'One quest at a time.'; $('#weekly-status').classList.toggle('is-done', weeklyDone);
+    $('#freeze-count').textContent = Math.max(0, state.streakFreezes || 0);
+    $('#freeze-note').textContent = state.streakFreezes > 0 ? 'Your streak has a little safety net.' : 'No freezes left right now. Keep your streak going!';
+  }
+
   function renderHome() {
     const h = new Date().getHours();
     $('#greeting').textContent = h < 12 ? 'Good morning' : h < 18 ? 'Good afternoon' : 'Good evening';
 
+    renderChallenges();
     const g = pickNext(), game = GAMES[g], m = META[g];
     $('#next-card').className = 'next t-' + m.tone;
     $('#next-cat').textContent = m.label;
@@ -344,9 +376,20 @@
     const before = currentLevel();
     state.xp += earned; state.quests++; state.daily = Math.min(2, state.daily + 1);
     const today = dayKey();
+    if (state.dailyQuestDate !== today) { state.dailyQuestDate = today; state.dailyQuestProgress = 0; state.dailyQuestClaimed = false; state.dailyCorrect = 0; state.dailyXp = 0; }
+    if (state.weeklyKey !== weekKey()) { state.weeklyKey = weekKey(); state.weeklyProgress = 0; state.weeklyClaimed = false; }
+    state.dailyCorrect += finalScore; state.dailyXp += earned; state.dailyQuestProgress = state.daily;
+    state.weeklyProgress = (state.weeklyProgress || 0) + 1;
+    const task = DAILY_QUESTS[(new Date().getDate() - 1) % DAILY_QUESTS.length];
+    const taskProgress = task.kind === 'quests' ? state.daily : task.kind === 'xp' ? state.dailyXp : state.dailyCorrect;
+    let bonusMessage = '';
+    if (!state.dailyQuestClaimed && taskProgress >= task.target) { state.dailyQuestClaimed = true; state.xp += task.reward; bonusMessage = 'Daily quest bonus: +' + task.reward + ' XP!'; }
+    if (!state.weeklyClaimed && state.weeklyProgress >= 5) { state.weeklyClaimed = true; state.xp += 60; bonusMessage += ' Weekly challenge complete: +60 XP!'; }
     if (state.lastDay !== today) {
-      const y = new Date(); y.setDate(y.getDate() - 1);
-      state.streak = state.lastDay === dayKey(y) ? (state.streak || 0) + 1 : 1;
+      const y = new Date(); y.setDate(y.getDate() - 1); const twoDaysAgo = new Date(); twoDaysAgo.setDate(twoDaysAgo.getDate() - 2);
+      if (state.lastDay === dayKey(y)) state.streak = (state.streak || 0) + 1;
+      else if (state.lastDay === dayKey(twoDaysAgo) && state.streakFreezes > 0) { state.streakFreezes -= 1; state.streak = (state.streak || 0) + 1; bonusMessage += ' Streak freeze used to protect your streak.'; }
+      else state.streak = 1;
       state.lastDay = today;
     }
     if (!state.completed.includes(before.id)) state.completed.push(before.id);
@@ -362,17 +405,51 @@
       '<h2>' + (perfect ? 'Brilliant work!' : G.score >= 3 ? 'Look at you, growing!' : 'Every try teaches you something.') + '</h2>' +
       '<p>You got ' + G.score + ' out of ' + total + '. ' + (perfect ? 'A perfect round. Enjoy that feeling.' : 'Check the words below and play again when you’re ready.') + '</p>' +
       '<div class="stats3"><div class="stat"><b>+' + earned + '</b><span>XP earned</span></div><div class="stat"><b>' + finalScore + '/' + total + '</b><span>Correct first try</span></div><div class="stat"><b>' + G.words.length + '</b><span>New words</span></div></div>' +
+      (bonusMessage ? '<p class="challenge-bonus">' + esc(bonusMessage.trim()) + '</p>' : '') +
       (after.id !== before.id ? '<div class="levelup"><b>You reached ' + after.id + '!</b>' + after.name + ' · ' + esc(after.title) + '</div>' : '') +
       (G.words.length ? '<div class="found"><div class="found-title">Added to your vault</div>' + G.words.map(w => '<span class="w">' + esc(w[0]) + '</span>').join('') + '</div>' : '') + (G.originalQuestions ? '<p class="review-complete">You also reviewed ' + G.originalQuestions.filter((item,i)=>G.originalResults[i]==='no').length + ' missed question(s).</p>' : '') +
-      '<div class="result-actions"><button class="btn" id="res-next">' + ic('play') + 'Next: ' + esc(GAMES[nxt].title) + '</button>' +
+      '<div class="result-actions"><button class="btn" id="res-share">' + ic('spark') + 'Share result card</button>' +
+      '<button class="btn btn-ghost" id="res-download">Download result image</button>' +
+      '<button class="btn" id="res-next">' + ic('play') + 'Next: ' + esc(GAMES[nxt].title) + '</button>' +
       '<button class="btn btn-ghost" id="res-home">Back to home</button>' +
       '<button class="btn btn-link" id="res-again">Play this quest again</button></div></div>';
     $('#game-scroll').scrollTop = 0;
     const type = G.type;
+    const shareData = {game: game.title, score: finalScore, total, xp: earned, level: after.id, streak: liveStreak()};
+    $('#res-share').addEventListener('click', () => shareResult(shareData));
+    $('#res-download').addEventListener('click', () => shareResult(shareData, true));
     $('#res-next').addEventListener('click', () => startGame(nxt));
     $('#res-home').addEventListener('click', closeGame);
     $('#res-again').addEventListener('click', () => startGame(type));
     $('#res-next').focus({preventScroll: true});
+  }
+
+  async function shareResult(data, downloadOnly = false) {
+    const canvas = document.createElement('canvas'); canvas.width = 1080; canvas.height = 1080;
+    const ctx = canvas.getContext('2d'); if (!ctx) { toast('Could not create the result card in this browser.'); return; }
+    const bg = ctx.createLinearGradient(0, 0, 1080, 1080); bg.addColorStop(0, '#F7F3FF'); bg.addColorStop(1, '#E7F6EE'); ctx.fillStyle = bg; ctx.fillRect(0, 0, 1080, 1080);
+    ctx.fillStyle = '#FFC531'; ctx.beginPath(); ctx.arc(900, 160, 150, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = '#D9CBFF'; ctx.beginPath(); ctx.arc(160, 900, 180, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = '#121A3A'; ctx.font = '800 62px Arial'; ctx.fillText('epiphany', 90, 125);
+    ctx.font = '700 26px Arial'; ctx.fillStyle = '#655F7D'; ctx.fillText('A LITTLE ENGLISH. A BIG STEP.', 94, 175);
+    ctx.fillStyle = '#FFFFFF'; ctx.strokeStyle = '#121A3A'; ctx.lineWidth = 5; ctx.beginPath(); if (ctx.roundRect) ctx.roundRect(70, 240, 940, 590, 42); else ctx.rect(70, 240, 940, 590); ctx.fill(); ctx.stroke();
+    ctx.textAlign = 'center'; ctx.fillStyle = '#6552A3'; ctx.font = '800 30px Arial'; ctx.fillText('QUEST COMPLETE', 540, 315);
+    ctx.fillStyle = '#121A3A'; ctx.font = '800 58px Arial'; const words = String(data.game || 'English quest').split(' '); let lines = [], line = '';
+    words.forEach(word => { const test = line ? line + ' ' + word : word; if (ctx.measureText(test).width > 820 && line) { lines.push(line); line = word; } else line = test; }); if (line) lines.push(line); lines.slice(0,2).forEach((l,i) => ctx.fillText(l, 540, 390 + i * 65));
+    ctx.fillStyle = '#655F7D'; ctx.font = '600 28px Arial'; ctx.fillText('FIRST-TRY SCORE', 540, 515);
+    ctx.fillStyle = '#121A3A'; ctx.font = '800 100px Arial'; ctx.fillText(data.score + ' / ' + data.total, 540, 625);
+    ctx.fillStyle = '#6552A3'; ctx.font = '800 40px Arial'; ctx.fillText('+' + data.xp + ' XP', 540, 700);
+    ctx.fillStyle = '#121A3A'; ctx.font = '700 28px Arial'; ctx.fillText(data.level + ' LEVEL   •   ' + data.streak + ' DAY STREAK', 540, 770);
+    ctx.textAlign = 'left'; ctx.fillStyle = '#121A3A'; ctx.font = '700 28px Arial'; ctx.fillText('Keep your spark going!', 95, 910);
+    ctx.fillStyle = '#655F7D'; ctx.font = '500 22px Arial'; ctx.fillText('Learn a little every day · Epiphany', 95, 955);
+    const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png')); if (!blob) { toast('Could not export the image. Try Download result image again.'); return; }
+    const file = new File([blob], 'epiphany-result.png', {type:'image/png'});
+    if (!downloadOnly && navigator.share && (!navigator.canShare || navigator.canShare({files:[file]}))) {
+      try { await navigator.share({title:'My Epiphany result', text:'I’m learning English with Epiphany!', files:[file]}); return; }
+      catch (err) { if (err && err.name === 'AbortError') return; }
+    }
+    const url = URL.createObjectURL(blob), a = document.createElement('a'); a.href = url; a.download = 'epiphany-result.png'; document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1500); toast(downloadOnly ? 'Result card downloaded.' : 'Result card downloaded — you can now share it.');
   }
 
   function closeGame() {
