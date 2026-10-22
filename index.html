@@ -71,6 +71,7 @@
         <span class="ar-long" lang="ar">العربية</span><span class="ar-short" lang="ar" aria-hidden="true">ع</span><span class="sr-only">Arabic help</span>
       </button>
       <button class="icon-btn" id="sound-toggle" type="button" aria-pressed="true" aria-label="Turn sound effects off" title="Sound effects"><svg><use href="#i-sound"/></svg></button>
+      <button class="icon-btn profile-shortcut" type="button" data-view="profile" aria-label="Open profile" title="Profile">♙</button>
       <details class="tools-menu">
         <summary class="icon-btn utility-btn" aria-label="Open app settings" title="App settings">⚙</summary>
         <div class="tools-panel" aria-label="App settings">
@@ -112,42 +113,19 @@
           <div class="next-art" id="next-art" aria-hidden="true"></div>
         </article>
 
-        <aside class="you" aria-label="Your progress">
-          <div class="goal">
-            <div class="ring" role="img" id="ring" aria-label="Daily goal">
-              <svg viewBox="0 0 80 80"><circle class="ring-bg" cx="40" cy="40" r="33"/><circle class="ring-fg" id="ring-fg" cx="40" cy="40" r="33"/></svg>
-              <span id="ring-text">0/2</span>
-            </div>
-            <div>
-              <h3>Today's goal</h3>
-              <p id="ring-note">Finish 2 quests to keep your streak alive.</p>
-            </div>
-          </div>
-          <div class="level">
-            <div class="level-head"><strong id="lv-name">A1 · Newcomer</strong><span id="lv-next">180 XP to A2</span></div>
-            <div class="bar" role="progressbar" aria-label="Progress to next level" aria-valuemin="0" aria-valuemax="100" id="lv-bar-wrap"><i id="lv-bar"></i></div>
-          </div>
+        <aside class="you progress-strip" aria-label="Your progress">
+          <span class="progress-item"><span class="progress-symbol">🔥</span><b id="home-streak">0</b><span>day streak</span></span>
+          <span class="progress-divider" aria-hidden="true"></span>
+          <span class="progress-item"><span class="progress-symbol">✓</span><b id="ring-text">0/2</b><span>today</span></span>
+          <span class="progress-divider" aria-hidden="true"></span>
+          <span class="progress-item"><span class="progress-symbol">✦</span><b id="home-level">A1</b><span>level</span></span>
+          <span id="ring-note" hidden></span><span id="lv-name" hidden></span><span id="lv-next" hidden></span>
+          <div id="ring" hidden aria-label="Daily goal"><svg viewBox="0 0 80 80"><circle id="ring-fg" cx="40" cy="40" r="33"/></svg></div>
+          <div id="lv-bar-wrap" hidden><i id="lv-bar"></i></div>
         </aside>
       </div>
 
-      <section class="motivation" aria-label="Daily and weekly challenges">
-        <article class="challenge-card daily-card">
-          <div class="challenge-top"><span class="challenge-icon">✦</span><span class="challenge-tag">DAILY QUEST</span><span class="challenge-date" id="daily-date">Today</span></div>
-          <h2 id="daily-title">A little progress, every day</h2><p id="daily-desc">Complete a quest to build your learning habit.</p>
-          <div class="challenge-progress"><div class="bar"><i id="daily-bar"></i></div><span id="daily-progress-label">0/1</span></div>
-          <p class="challenge-reward" id="daily-reward">Reward: +15 bonus XP</p><span class="challenge-status" id="daily-status" aria-live="polite"></span><button class="btn btn-ghost challenge-action" type="button" id="daily-start">Start daily quest</button>
-        </article>
-        <article class="challenge-card weekly-card">
-          <div class="challenge-top"><span class="challenge-icon">♜</span><span class="challenge-tag">WEEKLY CHALLENGE</span><span class="challenge-date" id="weekly-dates">This week</span></div>
-          <h2>Quest explorer</h2><p>Finish 5 quests this week. Small steps add up.</p>
-          <div class="challenge-progress"><div class="bar"><i id="weekly-bar"></i></div><span id="weekly-progress-label">0/5</span></div>
-          <p class="challenge-reward" id="weekly-reward">Reward: +60 bonus XP</p><span class="challenge-status" id="weekly-status" aria-live="polite"></span><button class="btn btn-ghost challenge-action" type="button" id="weekly-start">Start a quest</button>
-        </article>
-        <article class="challenge-card freeze-card">
-          <div class="challenge-top"><span class="challenge-icon">❄</span><span class="challenge-tag">STREAK FREEZE</span></div>
-          <h2><span id="freeze-count">1</span> freeze available</h2><p>A freeze can protect one missed day. It is used automatically when needed.</p><p class="freeze-note" id="freeze-note">Your streak has a little safety net.</p><button class="btn btn-ghost challenge-action" type="button" id="freeze-info">How freeze works</button>
-        </article>
-      </section>
+
 
       <section class="block" aria-labelledby="path-title">
         <div class="block-head"><h2 id="path-title">Your path</h2><p>Six levels, from first words to fluent ideas.</p></div>
@@ -177,6 +155,33 @@
       </div>
       <section id="wotd-card" class="wotd-card" aria-labelledby="wotd-title"></section>
       <div id="words-body"></div>
+    </div>
+  </section>
+
+
+
+  <!-- PROFILE: goals and personal progress -->
+  <section class="view" id="profile-view" aria-labelledby="profile-title">
+    <div class="page">
+      <div class="intro"><p class="kicker">YOUR LEARNING SPACE</p><h1 id="profile-title" tabindex="-1">Your profile</h1><p class="lead">Your goals, streak protection and learning milestones in one place.</p></div>
+      <section class="block profile-challenges" aria-labelledby="profile-challenges-title"><div class="block-head"><h2 id="profile-challenges-title">Challenges & streak</h2><p>Daily and weekly goals, plus your streak freeze.</p></div>      <section class="motivation profile-motivation" aria-label="Daily and weekly challenges">
+        <article class="challenge-card daily-card">
+          <div class="challenge-top"><span class="challenge-icon">✦</span><span class="challenge-tag">DAILY QUEST</span><span class="challenge-date" id="daily-date">Today</span></div>
+          <h2 id="daily-title">A little progress, every day</h2><p id="daily-desc">Complete a quest to build your learning habit.</p>
+          <div class="challenge-progress"><div class="bar"><i id="daily-bar"></i></div><span id="daily-progress-label">0/1</span></div>
+          <p class="challenge-reward" id="daily-reward">Reward: +15 bonus XP</p><span class="challenge-status" id="daily-status" aria-live="polite"></span><button class="btn btn-ghost challenge-action" type="button" id="daily-start">Start daily quest</button>
+        </article>
+        <article class="challenge-card weekly-card">
+          <div class="challenge-top"><span class="challenge-icon">♜</span><span class="challenge-tag">WEEKLY CHALLENGE</span><span class="challenge-date" id="weekly-dates">This week</span></div>
+          <h2>Quest explorer</h2><p>Finish 5 quests this week. Small steps add up.</p>
+          <div class="challenge-progress"><div class="bar"><i id="weekly-bar"></i></div><span id="weekly-progress-label">0/5</span></div>
+          <p class="challenge-reward" id="weekly-reward">Reward: +60 bonus XP</p><span class="challenge-status" id="weekly-status" aria-live="polite"></span><button class="btn btn-ghost challenge-action" type="button" id="weekly-start">Start a quest</button>
+        </article>
+        <article class="challenge-card freeze-card">
+          <div class="challenge-top"><span class="challenge-icon">❄</span><span class="challenge-tag">STREAK FREEZE</span></div>
+          <h2><span id="freeze-count">1</span> freeze available</h2><p>A freeze can protect one missed day. It is used automatically when needed.</p><p class="freeze-note" id="freeze-note">Your streak has a little safety net.</p><button class="btn btn-ghost challenge-action" type="button" id="freeze-info">How freeze works</button>
+        </article>
+      </section></section>
     </div>
   </section>
 
