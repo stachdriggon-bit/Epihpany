@@ -418,3 +418,14 @@ body.ar-on .meta{direction:rtl}
   .top-right .utility-btn{width:30px;height:34px}
   .ar-toggle{min-width:32px;width:32px}
 }
+
+.tools-menu{position:relative;flex:none}
+.tools-menu>summary{list-style:none;cursor:pointer;font-size:20px;font-weight:800}
+.tools-menu>summary::-webkit-details-marker{display:none}
+.tools-panel{position:absolute;top:calc(100% + 12px);right:0;z-index:40;width:220px;padding:8px;background:var(--surface);border:1.5px solid var(--line);border-radius:16px;box-shadow:0 12px 35px rgba(18,26,58,.18);display:grid;gap:4px}
+.tools-action{display:flex;align-items:center;gap:12px;width:100%;padding:11px 12px;border-radius:10px;text-align:left;font-size:15px;font-weight:700}
+.tools-action:hover{background:var(--navy-soft)}
+.tools-action[hidden]{display:none}
+body[data-theme="dark"] .tools-panel{background:var(--surface)}
+body.ar-on .tools-panel{right:auto;left:0}
+@media(max-width:760px){.tools-panel{top:calc(100% + 8px);right:-4px}.tools-menu>summary{width:36px;height:38px}}
