@@ -87,8 +87,8 @@ const SPOT_QUESTIONS = [
     "text": "She live here.",
     "wrongIndex": 1,
     "fix": "lives",
-    "why_en": "Use the present perfect for a situation continuing from the past until now.",
-    "why_ar": "نستخدم المضارع التام لحالة بدأت في الماضي وما زالت مستمرة."
+    "why_en": "With he, she, or it, the present simple usually adds -s to the main verb.",
+    "why_ar": "مع he وshe وit نضيف غالبًا s للفعل في المضارع البسيط."
   },
   {
     "id": "spot-a2-03",
@@ -186,8 +186,8 @@ const SPOT_QUESTIONS = [
     "text": "She has went to Paris.",
     "wrongIndex": 2,
     "fix": "gone",
-    "why_en": "A finished time such as last year calls for the past simple.",
-    "why_ar": "مع وقت منتهٍ مثل last year نستخدم الماضي البسيط."
+    "why_en": "“Went” is the past simple of go; use “gone” after has or have.",
+    "why_ar": "Went هو الماضي البسيط من go، أما بعد has أو have فنستخدم gone."
   },
   {
     "id": "spot-b1-06",
