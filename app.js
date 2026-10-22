@@ -787,6 +787,7 @@
   }
   function worldInteract(){
     if(!WORLD||WORLD.mode!=='play')return;const step=worldStep();if(!step)return;
+    if(step.type!=='pickup'&&step.type!=='give'){const person=WORLD.objects.find(o=>o.person&&worldReachableFromPlayer(o));if(person){const lines={'baker':'Hello! Could you help me with my bakery today?','market-vendor':'Welcome! What would you like to buy today?','market-customer':'Excuse me, can you help me find the right stall?','station-clerk':'Hello! Where would you like to travel today?','traveller':'I am looking for my platform. Can you help me?','family':'Welcome home! Could you help us find a few things?'};const line=lines[person.id]||'Hello there! Can you help me with something?';worldFeedback(line);speak(line);return;}}
     if(step.type==='pickup'){
       const o=worldObj(step.object);
       if(o&&worldReachableFromPlayer(o)){WORLD.carried=o.id;WORLD.picked.add(o.id);WORLD.objects=WORLD.objects.filter(v=>v.id!==o.id);if(worldEval())worldComplete();else worldStatus();worldDraw();return;}
