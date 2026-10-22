@@ -249,10 +249,16 @@
     state.helpArabic = !state.helpArabic; save(); syncSettings();
     if (G) { if (G.answered) setSheetSpace(); } else toast(state.helpArabic ? 'Arabic help is on' : 'Arabic help is off');
   }
-  $('#theme-toggle').addEventListener('click', () => {
+  // Capture the theme action before the settings popover closes.
+  document.addEventListener('click', e => {
+    const themeButton = e.target.closest('#theme-toggle');
+    if (!themeButton) return;
+    e.preventDefault();
     state.theme = state.theme === 'dark' ? 'light' : 'dark';
-    save(); syncSettings();
-  });
+    document.body.dataset.theme = state.theme;
+    save();
+    syncSettings();
+  }, true);
 
   function exportProgress() {
     const backup = {app:'Epiphany', formatVersion:1, exportedAt:new Date().toISOString(), progress:state};
