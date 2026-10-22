@@ -59,7 +59,7 @@ const SPOT_QUESTIONS = [
     "level": "A1",
     "text": "He has two childs.",
     "wrongIndex": 3,
-    "fix": "children",
+    "fix": "children.",
     "why_en": "The plural of child is children.",
     "why_ar": "جمع child هو children وليس childs."
   },
@@ -103,8 +103,8 @@ const SPOT_QUESTIONS = [
     "id": "spot-a2-04",
     "level": "A2",
     "text": "He explained me the rule.",
-    "wrongIndex": 1,
-    "fix": "explained the rule to me",
+    "wrongIndex": 2,
+    "fix": "to me",
     "why_en": "Explain something to someone; do not use this pattern with a direct person object.",
     "why_ar": "نقول explain something to someone، ولا نضع الشخص مباشرة بعد explain."
   },
@@ -148,7 +148,7 @@ const SPOT_QUESTIONS = [
     "id": "spot-b1-01",
     "level": "B1",
     "text": "If I will see her, I'll tell her.",
-    "wrongIndex": 1,
+    "wrongIndex": 2,
     "fix": "remove will",
     "why_en": "In a first conditional if-clause, use the present simple for the future condition.",
     "why_ar": "في جملة الشرط الأولى نستخدم المضارع البسيط بعد if."
@@ -174,9 +174,9 @@ const SPOT_QUESTIONS = [
   {
     "id": "spot-b1-04",
     "level": "B1",
-    "text": "I suggested him to apply.",
-    "wrongIndex": 1,
-    "fix": "suggested that he apply",
+    "text": "I suggested to applying.",
+    "wrongIndex": 2,
+    "fix": "remove to",
     "why_en": "Suggest is normally followed by a gerund or a that-clause, not this infinitive pattern.",
     "why_ar": "يتبع suggest غالبًا فعل ing أو جملة that، لا هذا التركيب."
   },
@@ -275,7 +275,7 @@ const SPOT_QUESTIONS = [
     "level": "B2",
     "text": "The manager demanded that he apologizes.",
     "wrongIndex": 5,
-    "fix": "apologize",
+    "fix": "apologize.",
     "why_en": "After demand that, formal English often uses the base-form subjunctive.",
     "why_ar": "بعد demand that يُستخدم الفعل بصيغته الأساسية في الأسلوب الرسمي."
   },
@@ -284,7 +284,7 @@ const SPOT_QUESTIONS = [
     "level": "B2",
     "text": "It is high time we leave.",
     "wrongIndex": 5,
-    "fix": "left",
+    "fix": "left.",
     "why_en": "It is high time is commonly followed by a past form for a present change needed.",
     "why_ar": "بعد It is high time نستخدم غالبًا صيغة الماضي للتعبير عن أمر حان وقته."
   }
