@@ -1,5 +1,5 @@
-const CACHE_NAME = 'epiphany-shell-v3';
-const CORE_ASSETS = ['./', './index.html', './style.css', './app.js', './data.js', './data-mistakes.js', './manifest.webmanifest', './icon.svg'];
+const CACHE_NAME = 'epiphany-shell-v4';
+const CORE_ASSETS = ['./', './index.html', './style.css', './app.js', './data.js', './data-mistakes.js', './data-spot.js', './data-typing.js', './data-wotd.js', './data-aha.js', './manifest.webmanifest', './icon.svg'];
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(CORE_ASSETS)).then(() => self.skipWaiting()));
 });
