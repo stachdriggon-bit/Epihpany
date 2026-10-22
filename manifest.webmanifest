@@ -1,0 +1,15 @@
+{
+  "id": "./",
+  "name": "Epiphany — English Quests",
+  "short_name": "Epiphany",
+  "description": "Short, playful English quests from A1 to C2.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#F5F6FC",
+  "theme_color": "#F5F6FC",
+  "orientation": "portrait-primary",
+  "icons": [
+    {"src":"icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}
+  ]
+}
