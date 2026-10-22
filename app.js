@@ -231,8 +231,8 @@
       ['flame', 'Habit Builder',   'Return for 3 days in a row.', Math.min(state.streak || 0, 3), 3],
       ['globe', 'World Traveler',  'Reach B1.',                  Math.min(idx, 2), 2],
       ['crown', 'Mastermind',      'Reach C1.',                  Math.min(idx, 4), 4],
-      ['search', 'Mistake Hunter', 'Complete 10 Common Mistakes questions.', Math.min((state.modes.mistakes||0)+(state.modes.spot||0),10),10],
-      ['pencil', 'Wordsmith', 'Complete 10 Type It questions.', Math.min(state.modes.typing||0,10),10]
+      ['search', 'Mistake Hunter', 'Complete 10 Common Mistakes quests.', Math.min((state.modes.mistakes||0)+(state.modes.spot||0),10),10],
+      ['pencil', 'Wordsmith', 'Complete 10 Type It quests.', Math.min(state.modes.typing||0,10),10]
     ];
     const got = all.filter(a => a[3] >= a[4]).length;
     $('#trophies-count').textContent = got + ' of ' + all.length + ' unlocked';
