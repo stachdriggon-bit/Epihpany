@@ -633,3 +633,18 @@ body[data-theme="dark"] .trap-explanation{background:#252B3C;border-color:var(--
   .motivation::-webkit-scrollbar{display:none}
   .challenge-card{flex:0 0 78%;scroll-snap-align:start}
 }
+
+
+/* Play refresh: one compact progress line; challenges live in Profile */
+.progress-strip{grid-column:1/-1;display:flex;flex-direction:row;align-items:center;justify-content:flex-start;gap:clamp(12px,3vw,30px);min-height:58px;padding:12px 20px;border-radius:18px;box-shadow:none;background:var(--tone-soft);border-color:var(--line);flex-wrap:nowrap}
+.progress-item{display:inline-flex;align-items:center;gap:7px;white-space:nowrap;font-size:14px;color:var(--ink-2)}
+.progress-item b{font-size:16px;color:var(--ink);font-weight:800}
+.progress-symbol{font-size:17px}
+.progress-divider{height:22px;width:1px;background:var(--line-2);flex:none}
+.profile-shortcut{font-size:19px;line-height:1}
+.profile-motivation{grid-template-columns:repeat(3,minmax(0,1fr));overflow:visible;padding:0;margin:22px 0 4px}
+.profile-motivation .challenge-card{flex:auto;box-shadow:0 3px 0 var(--ink)}
+.profile-motivation .challenge-card>p:not(.challenge-reward):not(.freeze-note),.profile-motivation .challenge-status,.profile-motivation .freeze-note,.profile-motivation .daily-card .challenge-action,.profile-motivation .weekly-card .challenge-action{display:block}
+.profile-motivation .challenge-card .challenge-action{display:inline-flex}
+@media(max-width:940px){.profile-motivation{grid-template-columns:repeat(2,minmax(0,1fr))}.profile-motivation .freeze-card{grid-column:1/-1}}
+@media(max-width:600px){.progress-strip{gap:10px;padding:12px 10px;justify-content:space-between}.progress-item{gap:4px;font-size:12px}.progress-item b{font-size:14px}.progress-symbol{font-size:14px}.progress-divider{height:18px}.profile-motivation{display:grid;grid-template-columns:1fr;overflow:visible;margin-inline:0;padding:0}.profile-motivation .challenge-card{padding:19px}.profile-motivation .freeze-card{grid-column:auto}}
