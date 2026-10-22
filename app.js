@@ -518,7 +518,7 @@
     if(ok)G.score++;
     else {const key='spot-'+q.level;state.weakTraps[key]=(Number(state.weakTraps[key])||0)+1;save();}
     G.results[G.i]=ok?'ok':'no';
-    $('#spot-text .spot-word').forEach((b,i)=>{b.disabled=true;if(i===q.wrongIndex)b.classList.add('wrong');});
+    $$('#spot-text .spot-word').forEach((b,i)=>{b.disabled=true;if(i===q.wrongIndex)b.classList.add('wrong');});
     const words=q.text.split(/\s+/);let corrected;
     if(/^remove\s/i.test(q.fix)){corrected=words.filter((_,i)=>i!==q.wrongIndex).join(' ');}
     else {words[q.wrongIndex]=q.fix;corrected=words.join(' ');}
