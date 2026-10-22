@@ -355,7 +355,7 @@ const MISTAKE_QUESTIONS = [
     "answer": 2,
     "why_en": "English adjectives usually follow a familiar order before the noun, such as opinion, size or age, then color, origin, or material.",
     "why_ar": "للصفات في الإنجليزية ترتيب مألوف قبل الاسم، مثل الرأي ثم الحجم أو العمر ثم اللون أو الأصل أو المادة.",
-    "arabic_hint": "الصفات تأتي قبل العبارة الاسمية: new efficient control system."
+    "arabic_hint": "الترتيب الأنسب هنا efficient new control system: الجودة ثم الحداثة ثم نوع النظام."
   },
   {
     "id": "ad06",
