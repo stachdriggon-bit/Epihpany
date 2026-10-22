@@ -233,7 +233,7 @@
     document.body.classList.toggle('ar-on', !!state.helpArabic);
     document.documentElement.dir = state.helpArabic ? 'rtl' : 'ltr';
     document.body.dir = state.helpArabic ? 'rtl' : 'ltr';
-    $('#ar-toggle, #game-ar').forEach(b => b.setAttribute('aria-pressed', String(!!state.helpArabic)));
+    $$('#ar-toggle, #game-ar').forEach(b => b.setAttribute('aria-pressed', String(!!state.helpArabic)));
     const s = $('#sound-toggle');
     s.setAttribute('aria-pressed', String(!!state.sound));
     s.setAttribute('aria-label', state.sound ? 'Turn sound effects off' : 'Turn sound effects on');
