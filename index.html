@@ -3,7 +3,12 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#F5F6FC">
+  <meta name="theme-color" content="#F5F6FC" id="theme-color-meta">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" type="image/svg+xml" href="icon.svg">
   <meta name="description" content="Epiphany: short, playful English quests from A1 to C2.">
   <title>Epiphany: learn English in small, playful quests</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -14,7 +19,7 @@
   <script src="data.js" defer></script>
   <script src="app.js" defer></script>
 </head>
-<body>
+<body data-theme="light">
 
 <svg style="position:absolute;width:0;height:0" aria-hidden="true" focusable="false">
   <defs>
@@ -57,7 +62,12 @@
       <button class="ar-toggle" id="ar-toggle" type="button" aria-pressed="false" title="Arabic help: show hints and explanations in Arabic">
         <span class="ar-long" lang="ar">العربية</span><span class="ar-short" lang="ar" aria-hidden="true">ع</span><span class="sr-only">Arabic help</span>
       </button>
-      <button class="icon-btn" id="sound-toggle" type="button" aria-pressed="true" aria-label="Sound effects"><svg><use href="#i-sound"/></svg></button>
+      <button class="icon-btn" id="sound-toggle" type="button" aria-pressed="true" aria-label="Turn sound effects off" title="Sound effects"><svg><use href="#i-sound"/></svg></button>
+      <button class="icon-btn utility-btn" id="theme-toggle" type="button" aria-pressed="false" aria-label="Turn on dark mode" title="Dark mode">◐</button>
+      <button class="icon-btn utility-btn" id="export-progress" type="button" aria-label="Export progress to a file" title="Export progress">↓</button>
+      <button class="icon-btn utility-btn" id="import-progress" type="button" aria-label="Import progress from a file" title="Import progress">↑</button>
+      <button class="icon-btn utility-btn" id="install-app" type="button" aria-label="Install Epiphany app" title="Install app" hidden>＋</button>
+      <input id="import-file" type="file" accept="application/json,.json" hidden aria-label="Choose an Epiphany progress backup">
     </div>
   </div>
 </header>
