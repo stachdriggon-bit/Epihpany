@@ -15,12 +15,14 @@
   ];
 
   /* ---------- state ---------- */
-  const defaults = () => ({xp:0, quests:0, words:[], review:[], placementDone:false, completed:[], streak:0, lastDay:null, daily:0, level:'A1', sound:true, helpArabic:false, theme:'light', streakFreezes:1, dailyQuestDate:null, dailyQuestProgress:0, dailyQuestClaimed:false, dailyCorrect:0, dailyXp:0, weeklyKey:null, weeklyProgress:0, weeklyClaimed:false, mistakeTrapErrors:{}, mistakeQuestionErrors:{}});
+  const defaults = () => ({xp:0, quests:0, words:[], review:[], placementDone:false, completed:[], streak:0, lastDay:null, daily:0, level:'A1', sound:true, helpArabic:false, theme:'light', streakFreezes:1, dailyQuestDate:null, dailyQuestProgress:0, dailyQuestClaimed:false, dailyCorrect:0, dailyXp:0, weeklyKey:null, weeklyProgress:0, weeklyClaimed:false, mistakeTrapErrors:{}, mistakeQuestionErrors:{}, modes:{}, weakTraps:{}});
   let state;
   try { state = {...defaults(), ...JSON.parse(localStorage.getItem('epiphany-progress') || '{}')}; } catch { state = defaults(); }
   if (!Array.isArray(state.review)) state.review = [];
   if (!state.mistakeTrapErrors || typeof state.mistakeTrapErrors !== 'object' || Array.isArray(state.mistakeTrapErrors)) state.mistakeTrapErrors = {};
   if (!state.mistakeQuestionErrors || typeof state.mistakeQuestionErrors !== 'object' || Array.isArray(state.mistakeQuestionErrors)) state.mistakeQuestionErrors = {};
+  if (!state.modes || typeof state.modes !== 'object' || Array.isArray(state.modes)) state.modes = {};
+  if (!state.weakTraps || typeof state.weakTraps !== 'object' || Array.isArray(state.weakTraps)) state.weakTraps = {};
   if (!Number.isFinite(state.streakFreezes)) state.streakFreezes = 1;
   if (state.lastDay !== dayKey()) state.daily = 0;
   if (state.dailyQuestDate !== dayKey()) { state.dailyQuestDate = dayKey(); state.dailyQuestProgress = 0; state.dailyQuestClaimed = false; state.dailyCorrect = 0; state.dailyXp = 0; }
@@ -39,11 +41,15 @@
     listening: {label:'Comprehension',tone:'sky',    icon:'search', time:4, blurb:'Understand messages, tone and intent.'},
     spelling:  {label:'Spelling',     tone:'pink',   glyph:'abc',  time:3, blurb:'Sharpen spelling and word recognition.'},
     advanced:  {label:'Advanced',     tone:'ink',    icon:'spark',  time:6, blurb:'Explore precise language and subtle meaning.'},
-    mistakes:  {label:'Arab learner traps', tone:'coral', glyph:'?!', time:4, blurb:'Spot common mistakes Arabic speakers make in English.'}
+    mistakes:  {label:'Common mistakes', tone:'coral', glyph:'?!', time:4, blurb:'Learn from common English mistakes.'},
+    typing:    {label:'Type It', tone:'sky', glyph:'Aa', time:4, blurb:'Write the missing word from memory.'}
   };
-  const ORDER = ['vocabulary', 'spelling', 'grammar', 'story', 'listening', 'advanced', 'mistakes'];
-  const UNLOCK = {vocabulary:0, spelling:0, grammar:1, story:2, listening:3, advanced:4, mistakes:0};
-  GAMES.mistakes = {title:'Arab Learner Traps', category:'GRAMMAR', xp:40, desc:'Understand the mistakes Arabic speakers often make.', questions:MISTAKE_QUESTIONS.map(q=>({q:q.prompt,sub:q.sub,answers:q.options,correct:q.answer,explain:q.why_en,word:null,level:q.level,ar:q.arabic_hint,id:q.id,trap:q.trap,why_ar:q.why_ar,arabic_hint:q.arabic_hint}))};   // level index that suggests each game
+  const ORDER = ['vocabulary', 'spelling', 'grammar', 'story', 'listening', 'advanced', 'mistakes', 'typing'];
+  const UNLOCK = {vocabulary:0, spelling:0, grammar:1, story:2, listening:3, advanced:4, mistakes:0, typing:0};
+  GAMES.mistakes = {title:'Common Mistakes', category:'GRAMMAR', xp:40, desc:'Understand common mistakes made by English learners.', questions:MISTAKE_QUESTIONS.map(q=>({q:q.prompt,sub:q.sub,answers:q.options,correct:q.answer,explain:q.why_en,word:null,level:q.level,ar:q.arabic_hint,id:q.id,trap:q.trap,why_ar:q.why_ar,arabic_hint:q.arabic_hint,aha:null}))};
+  GAMES.spot = {title:'Spot the Mistake',category:'GRAMMAR',xp:40,desc:'Tap the one incorrect word in a short text.',questions:SPOT_QUESTIONS.map(q=>({...q,q:q.text,sub:'Tap the one incorrect word.',answers:[q.fix],correct:q.wrongIndex,explain:q.why_en,aha:null,mode:'spot'}))};
+  GAMES.typing = {title:'Type It',category:'WRITING',xp:45,desc:'Write the missing word without multiple-choice hints.',questions:TYPING_QUESTIONS.map(q=>({...q,q:q.prompt,sub:'Hint: '+q.hint,answers:q.accept,correct:0,explain:q.why_en,aha:null,mode:'typing'}))};
+  Object.values(GAMES).forEach(game=>(game.questions||[]).forEach((item,i)=>{if(!item.aha){const note=AHA_NOTES[(i+String(item.id||item.q||'').length)%AHA_NOTES.length];item.aha={en:note.en,ar:note.ar};}}));   // level index that suggests each game
   const LEVEL_GAME = ['vocabulary', 'grammar', 'story', 'listening', 'advanced', 'advanced']; // same mapping the world map used
   const glyph = g => META[g].icon ? ic(META[g].icon) : META[g].glyph;
 
@@ -130,6 +136,7 @@
 
     $('#games').innerHTML = ORDER.map(k => {
       const gm = GAMES[k], mm = META[k];
+      if (k === 'mistakes') return '<article class="tile tile-group t-' + mm.tone + '"><span class="tile-ic">' + glyph(k) + '</span><div class="tile-group-main"><h3>Common mistakes</h3><p>Two ways to learn from mistakes · 4 min</p><div class="tile-group-actions"><button type="button" data-game="mistakes">Choose the correct answer</button><button type="button" data-game="spot">Spot the mistake</button></div></div></article>';
       return '<button class="tile t-' + mm.tone + '" data-game="' + k + '"><span class="tile-ic">' + glyph(k) + '</span>' +
         '<span><h3>' + esc(gm.title) + '</h3><p>' + mm.time + ' min · +' + gm.xp + ' XP</p></span></button>';
     }).join('');
@@ -190,7 +197,20 @@
     const w=due[0];
     return '<section class="review-panel"><div class="review-head"><div><p class="kicker">SPACED REPETITION</p><h2>Daily word review</h2></div><span class="review-count">'+due.length+' due</span></div><p class="review-note">Try to recall the meaning before revealing it. A short session is enough.</p><article class="review-card"><div class="review-word"><b>'+esc(w.word)+'</b><button class="listen-btn" data-speak="'+esc(w.word)+'" aria-label="Listen to '+esc(w.word)+'">'+ic('sound')+' Listen</button></div><p id="review-meaning" hidden>'+esc(w.meaning)+'</p><button class="btn btn-ghost" id="reveal-review">Reveal meaning</button><div class="review-actions" id="review-actions" hidden><button class="btn btn-ghost" data-review="again" data-word="'+esc(w.word)+'">Need practice</button><button class="btn" data-review="known" data-word="'+esc(w.word)+'">I knew it</button></div></article></section>';
   }
+  function renderWotd() {
+    const box=$('#wotd-card'); if(!box) return;
+    const levelOrder=LEVELS.map(x=>x.id), current=currentLevel().id;
+    let pool=WOTD_WORDS.filter(w=>w.level===current);
+    if(!pool.length){const idx=levelOrder.indexOf(current);pool=WOTD_WORDS.filter(w=>levelOrder.indexOf(w.level)<=idx);if(!pool.length)pool=WOTD_WORDS.slice();}
+    const now=new Date(), dayNumber=Math.floor(Date.UTC(now.getFullYear(),now.getMonth(),now.getDate())/86400000);
+    const w=pool[dayNumber%pool.length];
+    const speech=!!(window.speechSynthesis&&('SpeechSynthesisUtterance' in window));
+    const saved=state.words.some(x=>String(x[0]).toLowerCase()===w.word.toLowerCase());
+    box.innerHTML='<div class="wotd-top"><span class="kicker">EPIPHANY OF THE DAY</span><span class="pill">'+esc(w.level)+'</span></div><h2 id="wotd-title" class="wotd-word">'+esc(w.word)+'</h2><p class="wotd-pronunciation">'+esc(w.pronunciation||'')+'</p><div class="wotd-meanings"><p><strong>Meaning:</strong> '+esc(w.meaning)+'</p><p class="arabic" lang="ar" dir="rtl"><strong>المعنى:</strong> '+esc(w.meaning_ar)+'</p></div><p class="wotd-example">“'+esc(w.example)+'”</p><p class="wotd-origin">'+esc(w.origin)+'</p><div class="wotd-actions">'+(speech?'<button type="button" class="btn btn-ghost" data-speak="'+esc(w.word)+'">🔊 Listen</button>':'')+'<button type="button" class="btn" id="wotd-save" '+(saved?'disabled':'')+'>'+(saved?'Saved to Words':'Save word')+'</button></div>';
+    box.dataset.word=w.word;
+  }
   function renderWords() {
+    renderWotd();
     const n=state.words.length, due=state.review.filter(w=>!w.due||w.due<=dayKey()).length;
     $('#words-count').textContent=n+(n===1?' word':' words')+' · '+due+' to review';
     const vault=!n?'<div class="empty"><div class="empty-ic">'+ic('book')+'</div><h2>Your vault is empty, for now.</h2><p>Answer vocabulary questions correctly to collect useful words.</p><button class="btn" data-game="vocabulary">'+ic('play')+'Find your first word</button></div>':
@@ -207,7 +227,9 @@
       ['bolt',  'Momentum',        'Complete 5 quests.',         Math.min(state.quests, 5), 5],
       ['flame', 'Habit Builder',   'Return for 3 days in a row.', Math.min(state.streak || 0, 3), 3],
       ['globe', 'World Traveler',  'Reach B1.',                  Math.min(idx, 2), 2],
-      ['crown', 'Mastermind',      'Reach C1.',                  Math.min(idx, 4), 4]
+      ['crown', 'Mastermind',      'Reach C1.',                  Math.min(idx, 4), 4],
+      ['search', 'Mistake Hunter', 'Complete 10 Common Mistakes questions.', Math.min((state.modes.mistakes||0)+(state.modes.spot||0),10),10],
+      ['pencil', 'Wordsmith', 'Complete 10 Type It questions.', Math.min(state.modes.typing||0,10),10]
     ];
     const got = all.filter(a => a[3] >= a[4]).length;
     $('#trophies-count').textContent = got + ' of ' + all.length + ' unlocked';
@@ -254,7 +276,9 @@
     if (G) { if (G.answered) setSheetSpace(); } else toast(state.helpArabic ? 'Arabic help is on' : 'Arabic help is off');
   }
   // Capture the theme action before the settings popover closes.
+  document.addEventListener('submit', e => { if(e.target && e.target.id==='typing-form'){e.preventDefault();checkTyping();} });
   document.addEventListener('click', e => {
+    if(e.target.closest('#wotd-save')){const box=$('#wotd-card'),w=WOTD_WORDS.find(x=>x.word===box.dataset.word);if(w&&!state.words.some(x=>String(x[0]).toLowerCase()===w.word.toLowerCase())){state.words.push([w.word,w.meaning,w.level]);save();renderAll();toast('Word saved to your vault.');}return;}
     const themeButton = e.target.closest('#theme-toggle');
     if (!themeButton) return;
     e.preventDefault();
@@ -365,7 +389,9 @@
     story:'تخيّل أنك في هذا الموقف الحقيقي واختر الرد الأنسب والأكثر تهذيبًا.',
     listening:'اقرأ الرسالة بعناية وابحث عن معناها أو المعلومة الأساسية.',
     spelling:'اختر الكلمة المكتوبة بطريقة صحيحة.',
-    advanced:'ركّز على الفروق الدقيقة في المعنى والمنطق بين الخيارات.'
+    advanced:'ركّز على الفروق الدقيقة في المعنى والمنطق بين الخيارات.',
+    typing:'اكتب الكلمة الناقصة بنفسك، واستفد من التلميح دون خيارات جاهزة.',
+    spot:'اضغط على الكلمة الوحيدة الخاطئة في النص القصير.'
   };
 
   function lockPage(on) {
@@ -403,7 +429,7 @@
         : [...shuffle(levelPool), ...shuffle(generalPool).slice(0, 5 - levelPool.length)];
     }
     const paired = shuffle(selected).map(q => ({q, ar: q.ar || 'راجع معنى الإجابة الصحيحة وحاول تذكّرها في سياق جديد.'}));
-    G = {type, questions: paired, i:0, score:0, words:[], answered:false, results:[]};
+    G = {type, questions: paired, i:0, score:0, words:[], answered:false, results:[], originalMode:type};
     const el = $('#game'); el.className = 'game t-' + META[type].tone; el.hidden = false;
     lockPage(true);
     renderQuestion();
@@ -433,6 +459,14 @@
   function renderQuestion() {
     const game = GAMES[G.type], q = G.questions[G.i].q, m = META[G.type];
     G.answered = false; hideSheet(); renderSteps();
+    if (G.type === 'spot') {
+      $('#game-body').innerHTML = '<div class="q-meta"><span class="pill">Common mistakes · Spot it</span><span class="q-count">Question '+(G.i+1)+' of '+G.questions.length+'</span></div><h2 class="q-text" id="q-text" tabindex="-1">Tap the incorrect word</h2><p class="q-sub">Only one word is wrong. Read the whole text first.</p><div class="spot-text" id="spot-text" role="group" aria-label="Tap the incorrect word">'+q.text.split(/\\s+/).map((word,i)=>'<button type="button" class="spot-word" data-spot-index="'+i+'" aria-label="Word '+(i+1)+': '+esc(word)+'">'+esc(word)+'</button>').join(' ')+'</div><p class="ar-only arabic" lang="ar" dir="rtl">اضغط على الكلمة الخاطئة الوحيدة.</p>';
+      $('#game-scroll').scrollTop=0; $('#q-text').focus({preventScroll:true}); return;
+    }
+    if (G.type === 'typing') {
+      $('#game-body').innerHTML = '<div class="q-meta"><span class="pill">Type It</span><span class="q-count">Question '+(G.i+1)+' of '+G.questions.length+'</span></div><h2 class="q-text" id="q-text" tabindex="-1">Complete the sentence</h2><p class="typing-prompt">'+esc(q.q.replace(/_{3,}/g,'________'))+'</p><p class="q-sub">'+esc(q.sub)+'</p><form id="typing-form" class="typing-form"><label for="typing-answer">Your answer</label><input id="typing-answer" name="answer" autocomplete="off" autocapitalize="none" spellcheck="false" required aria-describedby="typing-feedback"><p id="typing-feedback" class="typing-feedback" aria-live="polite"></p><button class="btn" type="submit">Check answer</button></form><p class="ar-only arabic" lang="ar" dir="rtl">اكتب الكلمة أو العبارة الناقصة ثم اضغط تحقق.</p>';
+      $('#game-scroll').scrollTop=0; $('#q-text').focus({preventScroll:true}); const input=$('#typing-answer'); input.addEventListener('focus',()=>setTimeout(()=>input.scrollIntoView({block:'center',behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'}),180)); return;
+    }
     $('#game-body').innerHTML =
       '<div class="q-meta"><span class="pill">' + (G.reviewMode ? 'Practice again' : m.label) + '</span><span class="q-count">Question ' + (G.i + 1) + ' of ' + G.questions.length + '</span></div>' +
       '<h2 class="q-text" id="q-text" tabindex="-1">' + esc(q.q) + '</h2>' + (q.word ? '<button class="listen-btn question-listen" data-speak="' + esc(wordParts(q.word, q.explain).word) + '">' + ic('sound') + ' Listen to word</button>' : '') + '<p class="q-sub">' + esc(q.sub) + '</p>' +
@@ -453,8 +487,10 @@
       if (G.type === 'mistakes' && q.id) {
         state.mistakeTrapErrors[q.trap] = (Number(state.mistakeTrapErrors[q.trap]) || 0) + 1;
         state.mistakeQuestionErrors[q.id] = (Number(state.mistakeQuestionErrors[q.id]) || 0) + 1;
-        save();
       }
+      const weakKey = q.trap || (G.type === 'spot' ? 'spot-' + q.level : G.type);
+      state.weakTraps[weakKey] = (Number(state.weakTraps[weakKey]) || 0) + 1;
+      save();
     }
     G.results[G.i] = ok ? 'ok' : 'no';
     $$('#answers .answer').forEach((b, k) => { b.disabled = true; if (k === q.correct) b.classList.add('correct'); else if (k === choice) b.classList.add('wrong'); });
@@ -466,9 +502,47 @@
       (ok ? '' : '<p>Correct answer: <b>' + esc(q.answers[q.correct]) + '</b></p>') +
       '<p>' + esc(q.explain) + '</p>' +
       (!ok && G.type === 'mistakes' ? '<section class="trap-explanation" aria-label="Why Arabic speakers make this mistake"><h4>Why do Arabic speakers make this mistake?</h4><p class="arabic" lang="ar" dir="rtl">' + esc(q.why_ar || q.ar) + '</p><p class="trap-hint arabic" lang="ar" dir="rtl">' + esc(q.arabic_hint || '') + '</p></section>' : '') +
+      (!ok && q.aha ? '<aside class="aha-note"><span aria-hidden="true">💡</span><div><strong>Aha moment</strong><p>'+esc(q.aha.en)+'</p><p class="arabic ar-only" lang="ar" dir="rtl">'+esc(q.aha.ar)+'</p></div></aside>' : '') +
       (ok && q.word ? '<div class="newword"><span>New word</span><b>' + esc(q.word[0]) + '</b><span>' + esc(q.word[1]) + '</span></div>' : '') +
       '<p class="ar-only arabic" lang="ar" dir="rtl"><strong>' + (ok ? 'أحسنت!' : 'معلومة للتعلّم') + '</strong> ' + esc(item.ar) + '</p>' +
       '<div class="sheet-actions"><button class="btn" id="go-next">' + (last ? 'See results' : 'Continue') + ic('arrow') + '</button></div>');
+  }
+
+  function selectSpot(index) {
+    if(!G||G.answered||G.type!=='spot')return;
+    const item=G.questions[G.i],q=item.q,ok=index===q.wrongIndex;G.answered=true;
+    if(ok)G.score++;
+    else {const key='spot-'+q.level;state.weakTraps[key]=(Number(state.weakTraps[key])||0)+1;save();}
+    G.results[G.i]=ok?'ok':'no';
+    $('#spot-text .spot-word').forEach((b,i)=>{b.disabled=true;if(i===q.wrongIndex)b.classList.add('wrong');});
+    const words=q.text.split(/\\s+/);let corrected;
+    if(/^remove\\s/i.test(q.fix)){corrected=words.filter((_,i)=>i!==q.wrongIndex).join(' ');}
+    else {words[q.wrongIndex]=q.fix;corrected=words.join(' ');}
+    const correctDisplay=corrected;
+    showSheet(ok,'<h3><span class="sheet-mark">'+ic(ok?'check':'x')+'</span>'+(ok?'Exactly right!':'Good try — spot the pattern.')+'</h3><p><strong>Corrected sentence:</strong></p><p class="spot-corrected">'+esc(correctDisplay)+'</p>'+(!ok?'<p class="spot-reveal">You selected: <span class="spot-wrong-word">'+esc(words[index]||'')+'</span></p>':'')+'<p>'+esc(q.why_en)+'</p><p class="arabic ar-only" lang="ar" dir="rtl">'+esc(q.why_ar)+'</p>'+( !ok&&q.aha?'<aside class="aha-note"><span aria-hidden="true">💡</span><div><strong>Aha moment</strong><p>'+esc(q.aha.en)+'</p><p class="arabic ar-only" lang="ar" dir="rtl">'+esc(q.aha.ar)+'</p></div></aside>':'')+'<div class="sheet-actions"><button class="btn" id="go-next">'+(G.i===G.questions.length-1?'See results':'Continue')+ic('arrow')+'</button></div>');
+    renderSteps();sfx(ok?'ok':'no');
+  }
+  function editDistanceOne(a,b) {
+    a=String(a);b=String(b);if(a===b)return false;if(Math.abs(a.length-b.length)>1)return false;
+    let i=0,j=0,edits=0;
+    while(i<a.length&&j<b.length){if(a[i]===b[j]){i++;j++;continue;}edits++;if(edits>1)return false;if(a.length>b.length)i++;else if(b.length>a.length)j++;else{i++;j++;}}
+    if(i<a.length||j<b.length)edits++;return edits===1;
+  }
+  function checkTyping() {
+    if(!G||G.type!=='typing'||G.answered)return;
+    const input=$('#typing-answer'),feedback=$('#typing-feedback');if(!input)return;
+    const q=G.questions[G.i].q,answer=input.value.trim().replace(/\\s+/g,' ').toLowerCase();
+    if(!answer){feedback.textContent='Type an answer first.';feedback.className='typing-feedback bad';input.focus();return;}
+    const accepted=q.accept.map(x=>String(x).trim().replace(/\\s+/g,' ').toLowerCase());
+    if(accepted.includes(answer)){finishTyping(true);return;}
+    if(!G.typingRetry&&accepted.some(x=>editDistanceOne(answer,x))){G.typingRetry=true;feedback.textContent='Very close! Check the spelling and try once more — no stars lost.';feedback.className='typing-feedback near';input.select();return;}
+    finishTyping(false);
+  }
+  function finishTyping(ok) {
+    const item=G.questions[G.i],q=item.q;G.answered=true;
+    if(ok)G.score++;else{const key='typing-'+q.level;state.weakTraps[key]=(Number(state.weakTraps[key])||0)+1;save();}
+    G.results[G.i]=ok?'ok':'no';renderSteps();sfx(ok?'ok':'no');
+    showSheet(ok,'<h3><span class="sheet-mark">'+ic(ok?'check':'x')+'</span>'+(ok?'Exactly right!':'Not quite — keep going.')+'</h3>'+(!ok?'<p><strong>Accepted answer:</strong> '+esc(q.accept.join(' / '))+'</p>':'')+'<p>'+esc(q.why_en)+'</p><p class="arabic ar-only" lang="ar" dir="rtl">'+esc(q.why_ar)+'</p>'+(!ok&&q.aha?'<aside class="aha-note"><span aria-hidden="true">💡</span><div><strong>Aha moment</strong><p>'+esc(q.aha.en)+'</p><p class="arabic ar-only" lang="ar" dir="rtl">'+esc(q.aha.ar)+'</p></div></aside>':'')+'<div class="sheet-actions"><button class="btn" id="go-next">'+(G.i===G.questions.length-1?'See results':'Continue')+ic('arrow')+'</button></div>');
   }
 
   function next() {
@@ -492,6 +566,7 @@
     if (state.weeklyKey !== weekKey()) { state.weeklyKey = weekKey(); state.weeklyProgress = 0; state.weeklyClaimed = false; }
     state.dailyCorrect += finalScore; state.dailyXp += earned; state.dailyQuestProgress = state.daily;
     state.weeklyProgress = (state.weeklyProgress || 0) + 1;
+    state.modes[G.type] = (Number(state.modes[G.type]) || 0) + 1;
     const task = DAILY_QUESTS[(new Date().getDate() - 1) % DAILY_QUESTS.length];
     const taskProgress = task.kind === 'quests' ? state.daily : task.kind === 'xp' ? state.dailyXp : state.dailyCorrect;
     let bonusMessage = '';
@@ -580,6 +655,8 @@
       save();renderWords();toast(rb.dataset.review==='known'?'Nice! We’ll review it again later.':'No problem — this word stays in today’s practice.');}return;}
     const view = e.target.closest('[data-view]');
     if (view) { openView(view.dataset.view); return; }
+    const spotWord = e.target.closest('[data-spot-index]');
+    if (spotWord && G && G.type === 'spot') { selectSpot(Number(spotWord.dataset.spotIndex)); return; }
     const ans = e.target.closest('.answer');
     if (ans && G) { selectAnswer(Number(ans.dataset.i)); return; }
     if (e.target.closest('#go-next')) { next(); return; }
@@ -611,6 +688,7 @@
   document.addEventListener('keydown', e => {
     if (!G) return;
     if (e.key === 'Escape') { closeGame(); return; }
+    if (G.type === 'typing') return;
     if (/^[1-9]$/.test(e.key) && !G.answered) {
       const k = Number(e.key) - 1;
       if (k < G.questions[G.i].q.answers.length) selectAnswer(k);
