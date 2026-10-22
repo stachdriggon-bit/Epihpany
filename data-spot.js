@@ -85,7 +85,7 @@ const SPOT_QUESTIONS = [
     "id": "spot-a2-02",
     "level": "A2",
     "text": "I am living here since 2020.",
-    "wrongIndex": -1,
+    "wrongIndex": 2,
     "fix": "have lived",
     "why_en": "Use the present perfect for a situation continuing from the past until now.",
     "why_ar": "نستخدم المضارع التام لحالة بدأت في الماضي وما زالت مستمرة."
@@ -130,7 +130,7 @@ const SPOT_QUESTIONS = [
     "id": "spot-a2-07",
     "level": "A2",
     "text": "I have seen him yesterday.",
-    "wrongIndex": -1,
+    "wrongIndex": 2,
     "fix": "saw",
     "why_en": "Yesterday refers to a finished past time, so use the past simple.",
     "why_ar": "Yesterday وقت ماضٍ منتهٍ، لذا نستخدم الماضي البسيط."
@@ -139,7 +139,7 @@ const SPOT_QUESTIONS = [
     "id": "spot-a2-08",
     "level": "A2",
     "text": "Can you give me an advice?",
-    "wrongIndex": -1,
+    "wrongIndex": 4,
     "fix": "some advice",
     "why_en": "Advice is uncountable; use some advice or a piece of advice.",
     "why_ar": "Advice اسم غير معدود؛ نقول some advice أو a piece of advice."
@@ -148,7 +148,7 @@ const SPOT_QUESTIONS = [
     "id": "spot-b1-01",
     "level": "B1",
     "text": "If I will see her, I'll tell her.",
-    "wrongIndex": -1,
+    "wrongIndex": 1,
     "fix": "see",
     "why_en": "In a first conditional if-clause, use the present simple for the future condition.",
     "why_ar": "في جملة الشرط الأولى نستخدم المضارع البسيط بعد if."
@@ -157,7 +157,7 @@ const SPOT_QUESTIONS = [
     "id": "spot-b1-02",
     "level": "B1",
     "text": "Despite of the rain, we went out.",
-    "wrongIndex": -1,
+    "wrongIndex": 0,
     "fix": "Despite",
     "why_en": "Despite is not followed by of; use in spite of if you need of.",
     "why_ar": "لا نضيف of بعد despite؛ أما in spite of فيأتي معها of."
@@ -184,7 +184,7 @@ const SPOT_QUESTIONS = [
     "id": "spot-b1-05",
     "level": "B1",
     "text": "She has been to Paris last year.",
-    "wrongIndex": -1,
+    "wrongIndex": 2,
     "fix": "went",
     "why_en": "A finished time such as last year calls for the past simple.",
     "why_ar": "مع وقت منتهٍ مثل last year نستخدم الماضي البسيط."
@@ -229,7 +229,7 @@ const SPOT_QUESTIONS = [
     "id": "spot-b2-02",
     "level": "B2",
     "text": "The proposal comprises of three parts.",
-    "wrongIndex": -1,
+    "wrongIndex": 2,
     "fix": "comprises",
     "why_en": "Comprise is normally used without of in this meaning.",
     "why_ar": "يُستخدم comprise عادةً دون of بهذا المعنى."
