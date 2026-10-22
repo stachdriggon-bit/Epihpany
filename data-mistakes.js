@@ -349,7 +349,7 @@ const MISTAKE_QUESTIONS = [
     "options": [
       "control efficient new",
       "new efficient control",
-      "new efficient control system",
+      "new efficient control",
       "efficient system new control"
     ],
     "answer": 2,
@@ -446,18 +446,18 @@ const MISTAKE_QUESTIONS = [
     "id": "te03",
     "level": "A2",
     "trap": "present-perfect-vs-past",
-    "sub": "Choose the natural question.",
-    "prompt": "___ you ever ___ sushi?",
+    "sub": "Use “have been” to describe experience without a finished past time.",
+    "prompt": "Choose the correct sentence about life experience.",
     "options": [
-      "Did / ate",
-      "Have / eaten",
-      "Have / ate",
-      "Do / eaten"
+      "went to London three times",
+      "have been to London three times",
+      "was in London three times",
+      "am going to London three times"
     ],
     "answer": 1,
-    "why_en": "Choose the tense by looking at the time expression and its link to the present. Finished past times usually take the past simple; experiences or unfinished periods often use the present perfect.",
-    "why_ar": "اختر الزمن بحسب مؤشر الوقت وعلاقته بالحاضر. الوقت الماضي المنتهي يأخذ غالبًا الماضي البسيط، أما التجارب أو الفترات المستمرة فقد تحتاج إلى المضارع التام.",
-    "arabic_hint": "للسؤال عن تجربة في الحياة نستخدم Have you ever + التصريف الثالث."
+    "why_en": "Use “have been to” to describe life experience; a specific finished past time would normally use the past simple.",
+    "why_ar": "نستخدم have been to للحديث عن تجربة في الحياة دون تحديد وقت ماضٍ منتهٍ. إذا ذكرت وقتًا منتهيًا مثل last year، نستخدم الماضي البسيط.",
+    "arabic_hint": "لا تخلط بين “I have been to London” (تجربة في حياتي) و“I went to London last year” (حدث في وقت ماضٍ محدد)."
   },
   {
     "id": "te04",
