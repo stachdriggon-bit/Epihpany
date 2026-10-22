@@ -76,6 +76,7 @@
   /* ---------- rendering: header + home ---------- */
   function renderHeader() {
     $('#chip-streak').textContent = liveStreak();
+    const homeStreak = $('#home-streak'); if (homeStreak) homeStreak.textContent = liveStreak();
     $('#chip-xp').textContent = state.xp;
   }
 
@@ -126,6 +127,7 @@
     const idx = levelIndex(), lv = LEVELS[idx], nx = LEVELS[idx + 1];
     const pct = nx ? Math.min(100, Math.round((state.xp - lv.xp) / (nx.xp - lv.xp) * 100)) : 100;
     $('#lv-name').textContent = lv.id + ' · ' + lv.name;
+    const homeLevel = $('#home-level'); if (homeLevel) homeLevel.textContent = lv.id;
     $('#lv-next').textContent = nx ? (nx.xp - state.xp) + ' XP to ' + nx.id : 'Top level reached';
     $('#lv-bar').style.width = pct + '%';
     $('#lv-bar-wrap').setAttribute('aria-valuenow', pct);
