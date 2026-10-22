@@ -63,10 +63,15 @@
         <span class="ar-long" lang="ar">العربية</span><span class="ar-short" lang="ar" aria-hidden="true">ع</span><span class="sr-only">Arabic help</span>
       </button>
       <button class="icon-btn" id="sound-toggle" type="button" aria-pressed="true" aria-label="Turn sound effects off" title="Sound effects"><svg><use href="#i-sound"/></svg></button>
-      <button class="icon-btn utility-btn" id="theme-toggle" type="button" aria-pressed="false" aria-label="Turn on dark mode" title="Dark mode">◐</button>
-      <button class="icon-btn utility-btn" id="export-progress" type="button" aria-label="Export progress to a file" title="Export progress">↓</button>
-      <button class="icon-btn utility-btn" id="import-progress" type="button" aria-label="Import progress from a file" title="Import progress">↑</button>
-      <button class="icon-btn utility-btn" id="install-app" type="button" aria-label="Install Epiphany app" title="Install app" hidden>＋</button>
+      <details class="tools-menu">
+        <summary class="icon-btn utility-btn" aria-label="Open app settings" title="App settings">⚙</summary>
+        <div class="tools-panel" aria-label="App settings">
+          <button class="tools-action" id="theme-toggle" type="button" aria-pressed="false" aria-label="Turn on dark mode">◐ <span>Dark mode</span></button>
+          <button class="tools-action" id="export-progress" type="button" aria-label="Export progress to a file">↓ <span>Export progress</span></button>
+          <button class="tools-action" id="import-progress" type="button" aria-label="Import progress from a file">↑ <span>Import progress</span></button>
+          <button class="tools-action" id="install-app" type="button" aria-label="Install Epiphany app" hidden>＋ <span>Install app</span></button>
+        </div>
+      </details>
       <input id="import-file" type="file" accept="application/json,.json" hidden aria-label="Choose an Epiphany progress backup">
     </div>
   </div>
