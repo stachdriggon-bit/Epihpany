@@ -573,7 +573,7 @@ body[data-theme="dark"] .trap-explanation{background:#252B3C;border-color:var(--
 .world-instruction{display:flex;flex-direction:column;gap:3px;min-width:0}.world-instruction strong{font-size:clamp(17px,2vw,25px);line-height:1.2}.world-instruction span{font-size:14px;color:#64705c}
 .world-exit{width:44px;height:44px;border:0;border-radius:14px;background:#f0f2f7;color:#17203d;font-size:24px;cursor:pointer}
 .world-stage{flex:1;min-height:0;display:flex;flex-direction:column;position:relative}
-#world-canvas{display:block;flex:1;width:100%;height:100%;min-height:0;image-rendering:pixelated;touch-action:none}
+#world-canvas{display:block;flex:1;width:100%;height:100%;min-height:0;image-rendering:auto;touch-action:none;background:#8fbe7a}
 .world-helpbar{display:flex;align-items:center;justify-content:center;gap:9px;flex-wrap:wrap;padding:8px 12px;background:rgba(255,255,255,.94);border-top:1px solid #dce7d6;min-height:52px}
 .world-helpbar button,.world-dpad button,.world-interact{border:1px solid #d5ddcd;border-radius:12px;background:#fff;color:#17203d;min-height:44px;padding:9px 13px;font-weight:700;cursor:pointer;touch-action:manipulation}
 .world-helpbar button:active,.world-dpad button:active,.world-interact:active{transform:scale(.97)}
