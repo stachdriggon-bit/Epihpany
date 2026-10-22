@@ -23,6 +23,7 @@
   <script src="data-wotd.js" defer></script>
   <script src="data-aha.js" defer></script>
   <script src="data-stories.js" defer></script>
+  <script src="data-world.js" defer></script>
   <script src="app.js" defer></script>
 </head>
 <body data-theme="light">
@@ -59,6 +60,7 @@
     <nav class="tabs" aria-label="Main">
       <button class="tab" data-view="home" aria-current="page"><svg><use href="#i-path"/></svg>Play</button>
       <button class="tab" data-view="stories">📖 Stories</button>
+      <button class="tab" data-view="world">🌍 World</button>
       <button class="tab" data-view="words"><svg><use href="#i-book"/></svg>Words</button>
       <button class="tab" data-view="trophies"><svg><use href="#i-trophy"/></svg>Trophies</button>
     </nav>
@@ -218,6 +220,8 @@
   </div>
   <div class="sheet" id="sheet" aria-live="polite"></div>
 </div>
+
+<div class="world-game" id="world-game" hidden aria-label="World village game"></div>
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
