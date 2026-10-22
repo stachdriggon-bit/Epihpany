@@ -130,7 +130,7 @@ const SPOT_QUESTIONS = [
     "id": "spot-a2-07",
     "level": "A2",
     "text": "I have seen him yesterday.",
-    "wrongIndex": 2,
+    "wrongIndex": 4,
     "fix": "saw",
     "why_en": "Yesterday refers to a finished past time, so use the past simple.",
     "why_ar": "Yesterday وقت ماضٍ منتهٍ، لذا نستخدم الماضي البسيط."
@@ -157,7 +157,7 @@ const SPOT_QUESTIONS = [
     "id": "spot-b1-02",
     "level": "B1",
     "text": "Despite of the rain, we went out.",
-    "wrongIndex": 0,
+    "wrongIndex": 1,
     "fix": "Despite",
     "why_en": "Despite is not followed by of; use in spite of if you need of.",
     "why_ar": "لا نضيف of بعد despite؛ أما in spite of فيأتي معها of."
@@ -229,7 +229,7 @@ const SPOT_QUESTIONS = [
     "id": "spot-b2-02",
     "level": "B2",
     "text": "The proposal comprises of three parts.",
-    "wrongIndex": 2,
+    "wrongIndex": 3,
     "fix": "comprises",
     "why_en": "Comprise is normally used without of in this meaning.",
     "why_ar": "يُستخدم comprise عادةً دون of بهذا المعنى."
