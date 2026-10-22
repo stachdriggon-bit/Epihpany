@@ -207,10 +207,10 @@
       for (let i = copy.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [copy[i], copy[j]] = [copy[j], copy[i]]; }
       return copy;
     };
-    // Keep each round level-focused while using the original questions for extra variety.
-    const focusedCount = Math.min(3, levelPool.length, 5);
-    const selected = shuffle(levelPool).slice(0, focusedCount);
-    selected.push(...shuffle(generalPool).slice(0, 5 - selected.length));
+    // Use five questions from the learner's current CEFR level whenever possible.
+    const selected = levelPool.length >= 5
+      ? shuffle(levelPool).slice(0, 5)
+      : [...shuffle(levelPool), ...shuffle(generalPool).slice(0, 5 - levelPool.length)];
     const paired = shuffle(selected).map(q => ({q, ar: q.ar || 'راجع معنى الإجابة الصحيحة وحاول تذكّرها في سياق جديد.'}));
     G = {type, questions: paired, i:0, score:0, words:[], answered:false, results:[]};
     const el = $('#game'); el.className = 'game t-' + META[type].tone; el.hidden = false;
