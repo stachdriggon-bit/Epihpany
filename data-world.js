@@ -3,7 +3,7 @@ const WORLD_DATA = {
   tileSize: 32,
   width: 20,
   height: 14,
-  start: {x:2,y:2},
+  start: {x:4,y:3},
   map: [
     "GGGGGGGGGGGGGGGGGGGG",
     "GGTTGGGGGGHHHGGGGTTG",
