@@ -825,7 +825,7 @@
     (t.words||[]).forEach(w=>{if(!state.words.some(v=>String(v[0]).toLowerCase()===String(w[0]).toLowerCase()))state.words.push(w);});
     save();renderHeader();renderWords();renderTrophies();return earned;
   }
-  function worldShell(inner){const t=worldTask();return '<div class="world-top"><div class="world-task-count">Task <b>'+(WORLD.index+1)+'</b> / '+WORLD.tasks.length+'</div><div class="world-instruction"><strong>'+esc(t?t.instruction:'Village complete!')+'</strong></div><button class="world-exit" data-world-exit aria-label="Exit World">✕</button></div>'+inner;}
+  function worldShell(inner){const t=worldTask();return '<div class="world-top"><div class="world-task-count">Task <b>'+(WORLD.index+1)+'</b> / '+WORLD.tasks.length+'</div>'+(t&&t.dialogue?'<div class="world-dialogue">'+esc(t.dialogue)+'</div>':'')+'<div class="world-instruction"><strong>'+esc(t?t.instruction:'Village complete!')+'</strong></div><button class="world-exit" data-world-exit aria-label="Exit World">✕</button></div>'+inner;}
   function worldDraw(){
     if(!WORLD||WORLD.mode!=='play')return;const c=$('#world-canvas');if(!c)return;const r=c.getBoundingClientRect(),d=Math.max(1,Math.min(2,devicePixelRatio||1));if(!r.width||!r.height)return;
     if(c.width!==Math.round(r.width*d)||c.height!==Math.round(r.height*d)){c.width=Math.round(r.width*d);c.height=Math.round(r.height*d);}
