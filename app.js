@@ -228,7 +228,6 @@
   function syncSettings() {
     document.body.classList.toggle('ar-on', !!state.helpArabic);
     document.documentElement.dir = state.helpArabic ? 'rtl' : 'ltr';
-    document.documentElement.lang = state.helpArabic ? 'ar' : 'en';
     document.body.dir = state.helpArabic ? 'rtl' : 'ltr';
     $('#ar-toggle, #game-ar').forEach(b => b.setAttribute('aria-pressed', String(!!state.helpArabic)));
     const s = $('#sound-toggle');
