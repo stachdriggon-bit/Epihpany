@@ -60,7 +60,7 @@
     $('#next-cat').textContent = m.label;
     $('#next-title').textContent = game.title;
     $('#next-desc').textContent = game.desc;
-    $('#next-count').textContent = game.questions.length + ' questions';
+    $('#next-count').textContent = '5-question quest · ' + game.questions.length + ' in bank';
     $('#next-time').textContent = m.time + ' min';
     $('#next-xp').textContent = '+' + game.xp + ' XP';
     $('#next-art').innerHTML = '<div class="glyph">' + glyph(g) + '</div>';
@@ -199,14 +199,16 @@
 
   function startGame(type) {
     const game = GAMES[type]; if (!game) return;
-    G = {type, i:0, score:0, words:[], answered:false, results:[]};
+    const paired = game.questions.map((q, i) => ({q, ar: (AR_EXPLANATIONS[type] || [])[i] || 'راجع معنى الإجابة الصحيحة وحاول تذكّرها في سياق جديد.'}));
+    for (let i = paired.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [paired[i], paired[j]] = [paired[j], paired[i]]; }
+    G = {type, questions: paired.slice(0, Math.min(5, paired.length)), i:0, score:0, words:[], answered:false, results:[]};
     const el = $('#game'); el.className = 'game t-' + META[type].tone; el.hidden = false;
     lockPage(true);
     renderQuestion();
   }
 
   function renderSteps(full) {
-    const n = GAMES[G.type].questions.length;
+    const n = G.questions.length;
     $('#steps').innerHTML = Array.from({length:n}, (_, k) =>
       '<span class="step ' + (full ? (G.results[k] || 'ok') : G.results[k] || (k === G.i ? 'current' : '')) + '"></span>').join('');
   }
@@ -227,7 +229,7 @@
   }
 
   function renderQuestion() {
-    const game = GAMES[G.type], q = game.questions[G.i], m = META[G.type];
+    const game = GAMES[G.type], q = G.questions[G.i].q, m = META[G.type];
     G.answered = false; hideSheet(); renderSteps();
     $('#game-body').innerHTML =
       '<div class="q-meta"><span class="pill">' + m.label + '</span><span class="q-count">Question ' + (G.i + 1) + ' of ' + game.questions.length + '</span></div>' +
@@ -242,7 +244,7 @@
   function selectAnswer(choice) {
     if (!G || G.answered) return;
     G.answered = true;
-    const game = GAMES[G.type], q = game.questions[G.i], ok = choice === q.correct;
+    const game = GAMES[G.type], item = G.questions[G.i], q = item.q, ok = choice === q.correct;
     if (ok) { G.score++; if (q.word) G.words.push(q.word); }
     G.results[G.i] = ok ? 'ok' : 'no';
     $$('#answers .answer').forEach((b, k) => { b.disabled = true; if (k === q.correct) b.classList.add('correct'); else if (k === choice) b.classList.add('wrong'); });
@@ -254,17 +256,17 @@
       (ok ? '' : '<p>Correct answer: <b>' + esc(q.answers[q.correct]) + '</b></p>') +
       '<p>' + esc(q.explain) + '</p>' +
       (ok && q.word ? '<div class="newword"><span>New word</span><b>' + esc(q.word[0]) + '</b><span>' + esc(q.word[1]) + '</span></div>' : '') +
-      '<p class="ar-only arabic" lang="ar" dir="rtl"><strong>' + (ok ? 'أحسنت!' : 'معلومة للتعلّم') + '</strong> ' + esc(AR_EXPLANATIONS[G.type][G.i]) + '</p>' +
+      '<p class="ar-only arabic" lang="ar" dir="rtl"><strong>' + (ok ? 'أحسنت!' : 'معلومة للتعلّم') + '</strong> ' + esc(item.ar) + '</p>' +
       '<div class="sheet-actions"><button class="btn" id="go-next">' + (last ? 'See results' : 'Continue') + ic('arrow') + '</button></div>');
   }
 
   function next() {
     if (!G || !G.answered) return;
-    if (G.i < GAMES[G.type].questions.length - 1) { G.i++; renderQuestion(); } else showResults();
+    if (G.i < G.questions.length - 1) { G.i++; renderQuestion(); } else showResults();
   }
 
   function showResults() {
-    const game = GAMES[G.type], total = game.questions.length;
+    const game = GAMES[G.type], total = G.questions.length;
     const earned = Math.round(game.xp * (.35 + .65 * G.score / total));
     const before = currentLevel();
     state.xp += earned; state.quests++; state.daily = Math.min(2, state.daily + 1);
@@ -329,7 +331,7 @@
     if (e.key === 'Escape') { closeGame(); return; }
     if (/^[1-9]$/.test(e.key) && !G.answered) {
       const k = Number(e.key) - 1;
-      if (k < GAMES[G.type].questions[G.i].answers.length) selectAnswer(k);
+      if (k < G.questions[G.i].q.answers.length) selectAnswer(k);
     } else if (e.key === 'Enter' && G.answered && !(document.activeElement && document.activeElement.tagName === 'BUTTON')) next();
   });
 
