@@ -604,3 +604,17 @@ body[data-theme="dark"] .trap-explanation{background:#252B3C;border-color:var(--
 @media(min-width:760px){.world-mobile-controls{justify-content:center;gap:40px}.world-dpad{flex-direction:row;gap:5px}.world-dpad>button{width:48px}.world-stage{max-height:calc(100dvh - 82px)}}
 @media(max-width:600px){.world-top{grid-template-columns:auto minmax(0,1fr) auto;gap:8px;padding:9px 10px;min-height:76px}.world-task-count{font-size:11px}.world-task-count b{font-size:18px}.world-instruction strong{font-size:16px}.world-instruction span{font-size:12px}.world-helpbar{gap:6px;padding:6px 7px}.world-helpbar button{padding:7px 9px;font-size:12px;min-height:42px}.world-mobile-controls{padding:8px 12px 10px;gap:10px}.world-dpad>button{width:42px;height:40px;min-height:40px}.world-dpad>div button{width:42px;height:42px;min-height:42px}.world-interact{min-width:120px;padding:10px;font-size:12px;min-height:50px}.world-stage{min-height:0}.world-intro{justify-content:flex-start;padding-top:55px}}
 @media(prefers-reduced-motion:reduce){.world-helpbar .world-hint{animation:none}}
+
+
+/* Progressive World help: learner chooses how much support to reveal */
+.world-help-panel{padding:12px 16px 14px;background:#fffdf2;border-top:1px solid #eadb9a;display:grid;gap:9px;max-height:30dvh;overflow:auto}
+.world-help-panel[hidden]{display:none!important}
+.world-help-heading{display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.world-help-heading strong{font-size:14px;color:#17203d}
+.world-help-heading span{font-size:12px;color:#68745f}
+.world-help-panel>p{margin:0;color:#29344d;font-size:14px;line-height:1.55}
+.world-help-actions{display:flex;gap:8px;flex-wrap:wrap}
+.world-help-actions button{min-height:40px;padding:8px 12px;border:1px solid #e1d28d;border-radius:11px;background:#fff;color:#17203d;font:inherit;font-size:12px;font-weight:800;cursor:pointer}
+.world-help-actions button.is-selected{background:#fff1a8;border-color:#c5a72a}
+.world-helpbar [data-world-help-toggle]{background:#fff1a8;border-color:#e4c54b}
+@media(max-width:600px){.world-help-panel{padding:10px 11px;max-height:34dvh}.world-help-heading{display:grid;gap:2px}.world-help-panel>p{font-size:13px}.world-help-actions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}.world-help-actions button{padding:7px 5px;font-size:11px;overflow-wrap:anywhere}}
