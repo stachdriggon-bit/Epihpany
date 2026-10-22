@@ -471,6 +471,20 @@
     const ans = e.target.closest('.answer');
     if (ans && G) { selectAnswer(Number(ans.dataset.i)); return; }
     if (e.target.closest('#go-next')) { next(); return; }
+    if (e.target.closest('#daily-start')) {
+      if (state.dailyQuestClaimed) { toast('Today’s challenge is complete — come back tomorrow!'); return; }
+      startGame(pickNext()); return;
+    }
+    if (e.target.closest('#weekly-start')) {
+      if (state.weeklyClaimed) { toast('Weekly challenge complete! A new one starts Monday.'); return; }
+      startGame(pickNext()); return;
+    }
+    if (e.target.closest('#freeze-info')) {
+      toast(state.streakFreezes > 0
+        ? 'Your freeze is automatic: miss one day and return the next day to protect your streak.'
+        : 'You have no freezes available. Keep learning to protect your streak.');
+      return;
+    }
     const gm = e.target.closest('[data-game]');
     if (gm) { startGame(gm.dataset.game); return; }
     const lv = e.target.closest('[data-level]');
