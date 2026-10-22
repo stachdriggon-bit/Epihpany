@@ -353,6 +353,7 @@ body.ar-on .ar-only{display:block}
 :focus-visible{outline:3px solid var(--focus);outline-offset:4px}
 button:disabled{opacity:.6}
 body[data-theme="dark"]{
+  --surface:#1B2030;
   --ink:#F2F4FF;--ink-2:#C0C7E0;--ink-3:#929BBE;
   --ground:#111522;--surface:#1B2030;--line:#343B52;--line-2:#4B5470;
   --spark:#FFD15A;--spark-hi:#FFE08A;--spark-lo:#DDA52A;
