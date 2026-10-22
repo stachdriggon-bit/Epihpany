@@ -777,14 +777,29 @@
   }
   function worldAward(stars,t){
     const old=Number(state.world.stars[t.id]||0),first=!state.world.done.includes(t.id),earned=Math.max(0,stars-old)*5;
-    if(first){state.world.done.push(t.id);state.quests++;state.daily=Math.min(2,state.daily+1);state.dailyQuestProgress=state.daily;const today=dayKey();
-      if(state.dailyQuestDate!==today){state.dailyQuestDate=today;state.dailyQuestProgress=0;state.dailyQuestClaimed=false;state.dailyCorrect=0;state.dailyXp=0;}
-      if(state.weeklyKey!==weekKey()){state.weeklyKey=weekKey();state.weeklyProgress=0;state.weeklyClaimed=false;}state.weeklyProgress=(state.weeklyProgress||0)+1;
+    const today=dayKey();
+    // Reset daily/weekly counters before counting this first-time completion.
+    if(first&&state.dailyQuestDate!==today){state.dailyQuestDate=today;state.dailyQuestProgress=0;state.dailyQuestClaimed=false;state.dailyCorrect=0;state.dailyXp=0;state.daily=0;}
+    if(first&&state.weeklyKey!==weekKey()){state.weeklyKey=weekKey();state.weeklyProgress=0;state.weeklyClaimed=false;}
+    if(first){
+      state.world.done.push(t.id);state.quests++;state.daily=Math.min(2,(Number(state.daily)||0)+1);state.dailyQuestProgress=state.daily;
+      state.weeklyProgress=(Number(state.weeklyProgress)||0)+1;
       if(state.lastDay!==today){const y=new Date();y.setDate(y.getDate()-1);const two=new Date();two.setDate(two.getDate()-2);
         if(state.lastDay===dayKey(y))state.streak=(state.streak||0)+1;
         else if(state.lastDay===dayKey(two)&&state.streakFreezes>0){state.streakFreezes--;state.streak=(state.streak||0)+1;}
-        else state.streak=1;state.lastDay=today;}}
-    if(stars>old)state.world.stars[t.id]=stars;state.xp+=earned;if(first){state.dailyXp=(state.dailyXp||0)+earned;const dailyTask=DAILY_QUESTS[(new Date().getDate()-1)%DAILY_QUESTS.length],progress=dailyTask.kind==='quests'?state.daily:dailyTask.kind==='xp'?state.dailyXp:state.dailyCorrect;if(!state.dailyQuestClaimed&&progress>=dailyTask.target){state.dailyQuestClaimed=true;state.xp+=dailyTask.reward;}if(!state.weeklyClaimed&&state.weeklyProgress>=5){state.weeklyClaimed=true;state.xp+=60;}const lvl=currentLevel();if(!state.completed.includes(lvl.id))state.completed.push(lvl.id);}
+        else state.streak=1;state.lastDay=today;
+      }
+    }
+    if(stars>old)state.world.stars[t.id]=stars;
+    state.xp+=earned;
+    if(first){
+      state.dailyXp=(Number(state.dailyXp)||0)+earned;
+      const dailyTask=DAILY_QUESTS[(new Date().getDate()-1)%DAILY_QUESTS.length];
+      const progress=dailyTask.kind==='quests'?state.daily:dailyTask.kind==='xp'?state.dailyXp:state.dailyCorrect;
+      if(!state.dailyQuestClaimed&&progress>=dailyTask.target){state.dailyQuestClaimed=true;state.xp+=dailyTask.reward;}
+      if(!state.weeklyClaimed&&state.weeklyProgress>=5){state.weeklyClaimed=true;state.xp+=60;}
+      const lvl=currentLevel();if(!state.completed.includes(lvl.id))state.completed.push(lvl.id);
+    }
     (t.words||[]).forEach(w=>{if(!state.words.some(v=>String(v[0]).toLowerCase()===String(w[0]).toLowerCase()))state.words.push(w);});
     save();renderHeader();renderWords();renderTrophies();return earned;
   }
@@ -917,7 +932,7 @@
   function startWorld(){if(typeof WORLD_DATA==='undefined'){toast('Village data is not loaded. Refresh and try again.');return;}if(WORLD&&WORLD.raf)cancelAnimationFrame(WORLD.raf);
     WORLD={mode:'intro',tasks:WORLD_DATA.tasks.slice(),index:0,map:WORLD_DATA.map,objects:WORLD_DATA.objects.map(o=>({...o})),player:{x:WORLD_DATA.start.x,y:WORLD_DATA.start.y,fromX:WORLD_DATA.start.x,fromY:WORLD_DATA.start.y,moveAt:0,queuedKey:null,color:'#FFC531'},outfit:'#6C5CE7',showTranslation:!!state.helpArabic,tries:0,usedHelp:false,moves:0,step:0,carried:null,picked:new Set(),given:new Set(),stars:0,progress:{},raf:0};
     lockPage(true);$$('[data-view]').forEach(b=>b.setAttribute('aria-current',b.dataset.view==='world'?'page':'false'));$('#world-game').hidden=false;$('#world-game').innerHTML='<div class="world-intro"><button class="world-exit" data-world-exit>✕</button><div class="world-intro-art">🌳 🏠 🌉</div><p class="world-kicker">EPIPHANY WORLD</p><h1>Understand. Move. Discover.</h1><p>Read the English instruction and explore a tiny village to complete 10 tasks.</p><h3>Your character</h3><div class="world-color-picks"><button class="is-selected" data-world-color="#FFC531">🟡 Yellow</button><button data-world-color="#7C6CFF">🟣 Purple</button></div><h3>Clothes</h3><div class="world-color-picks"><button class="is-selected" data-world-outfit="#6C5CE7">Purple</button><button data-world-outfit="#168B68">Green</button><button data-world-outfit="#3478D4">Blue</button></div><button class="world-primary" data-world-begin>Start exploring →</button><p class="world-small">Arrow keys / WASD to move · Space to interact</p></div>';}
-  function worldComplete(){if(!WORLD||WORLD.mode!=='play')return;const t=worldTask();if(t.check.type==='pickup'){WORLD.carried=null;WORLD.picked.delete(t.check.object);const original=WORLD_DATA.objects.find(o=>o.id===t.check.object);if(original&&!worldObj(original.id))WORLD.objects.push({...original});}const stars=WORLD.usedHelp?(WORLD.moves>7?1:2):3,gain=worldAward(stars,t);WORLD.stars+=stars;WORLD.mode='success';sfx('done');
+  function worldComplete(){if(!WORLD||WORLD.mode!=='play')return;const t=worldTask();if(t.check.type==='pickup'){WORLD.carried=null;WORLD.picked.delete(t.check.object);const original=WORLD_DATA.objects.find(o=>o.id===t.check.object);if(original&&!worldObj(original.id))WORLD.objects.push({...original});}const stars=WORLD.usedHelp?(WORLD.moves>7?1:2):3,gain=worldAward(stars,t);WORLD.stars=Object.values(state.world.stars).reduce((sum,value)=>sum+(Number(value)||0),0);WORLD.mode='success';sfx('done');
     $('#world-game').innerHTML=worldShell('<section class="world-success"><div class="world-big-star">★</div><p class="world-kicker">TASK COMPLETE</p><h2>Well done!</h2><div class="world-stars">'+('★'.repeat(stars))+'<span>'+('☆'.repeat(3-stars))+'</span></div><p>+'+gain+' XP earned</p><p class="world-translation" lang="ar" dir="rtl">'+esc(t.ar)+'</p><h3>New words</h3><div class="world-word-list">'+t.words.map(w=>'<span class="world-word-chip"><b>'+esc(w[0])+'</b><small>'+esc(w[1])+'</small></span>').join('')+'</div><button class="world-primary" data-world-next>'+(WORLD.index===WORLD.tasks.length-1?'Finish village':'Next task')+' →</button></section>');}
   function worldNext(){if(WORLD.index===WORLD.tasks.length-1){WORLD.mode='finished';$('#world-game').innerHTML='<div class="world-finish"><div class="world-intro-art">🏡 ✨ 🌳</div><p class="world-kicker">VILLAGE COMPLETE</p><h1>You did it!</h1><p>You earned '+WORLD.stars+' stars across 10 tasks.</p><h2>Words from your adventure</h2><div class="world-word-list">'+WORLD.tasks.flatMap(t=>t.words).filter((w,i,a)=>a.findIndex(v=>v[0]===w[0])===i).map(w=>'<span class="world-word-chip"><b>'+esc(w[0])+'</b><small>'+esc(w[1])+'</small></span>').join('')+'</div><button class="world-primary" data-world-replay>Play again ↻</button><button class="world-secondary" data-world-exit>Back to Epiphany</button></div>';return;}
     WORLD.index++;WORLD.mode='play';WORLD.tries=0;WORLD.usedHelp=false;WORLD.moves=0;WORLD.step=0;WORLD.target=null;WORLD.objects=WORLD_DATA.objects.filter(o=>!WORLD.picked.has(o.id)).map(o=>({...o}));worldRenderPlay();}
