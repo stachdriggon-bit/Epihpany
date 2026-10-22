@@ -201,10 +201,18 @@
     const game = GAMES[type]; if (!game) return;
     const level = currentLevel().id;
     const levelPool = game.questions.filter(q => q.level === level);
-    const pool = levelPool.length >= 5 ? levelPool : game.questions;
-    const paired = pool.map(q => ({q, ar: q.ar || 'راجع معنى الإجابة الصحيحة وحاول تذكّرها في سياق جديد.'}));
-    for (let i = paired.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [paired[i], paired[j]] = [paired[j], paired[i]]; }
-    G = {type, questions: paired.slice(0, Math.min(5, paired.length)), i:0, score:0, words:[], answered:false, results:[]};
+    const generalPool = game.questions.filter(q => !q.level);
+    const shuffle = list => {
+      const copy = list.slice();
+      for (let i = copy.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [copy[i], copy[j]] = [copy[j], copy[i]]; }
+      return copy;
+    };
+    // Keep each round level-focused while using the original questions for extra variety.
+    const focusedCount = Math.min(3, levelPool.length, 5);
+    const selected = shuffle(levelPool).slice(0, focusedCount);
+    selected.push(...shuffle(generalPool).slice(0, 5 - selected.length));
+    const paired = shuffle(selected).map(q => ({q, ar: q.ar || 'راجع معنى الإجابة الصحيحة وحاول تذكّرها في سياق جديد.'}));
+    G = {type, questions: paired, i:0, score:0, words:[], answered:false, results:[]};
     const el = $('#game'); el.className = 'game t-' + META[type].tone; el.hidden = false;
     lockPage(true);
     renderQuestion();
