@@ -764,6 +764,11 @@
     return worldCheck(t.check);
   }
   function worldPass(x,y){return worldWalkable(x,y);}
+  function worldFeedback(message){
+    let note=$('#world-feedback');
+    if(!note){note=document.createElement('p');note.id='world-feedback';note.className='world-feedback';note.setAttribute('role','status');const stage=$('.world-stage');if(stage)stage.insertBefore(note,stage.firstChild);}
+    note.textContent=message;note.classList.remove('is-visible');void note.offsetWidth;note.classList.add('is-visible');
+  }
   function worldMove(k){
     if(!WORLD||WORLD.mode!=='play')return;let dx=0,dy=0;
     if(k==='ArrowUp'||k.toLowerCase()==='w')dy=-1;else if(k==='ArrowDown'||k.toLowerCase()==='s')dy=1;else if(k==='ArrowLeft'||k.toLowerCase()==='a')dx=-1;else if(k==='ArrowRight'||k.toLowerCase()==='d')dx=1;
@@ -771,8 +776,13 @@
     const moving=Math.min(1,(performance.now()-(p.moveAt||0))/160);
     if(p.moveAt&&moving<1){p.queuedKey=k;return;}
     const x=p.x+dx,y=p.y+dy;
-    if(!worldPass(x,y)){p.queuedKey=null;WORLD.bump=performance.now()+120;worldDraw();return;}
+    if(!worldPass(x,y)){p.queuedKey=null;WORLD.bump=performance.now()+120;worldFeedback('That way is blocked. Look for an open path.');worldDraw();return;}
     p.fromX=p.x;p.fromY=p.y;p.x=x;p.y=y;p.moveAt=performance.now();p.queuedKey=null;WORLD.tries++;WORLD.moves++;
+    const here=WORLD.objects.find(o=>o.id==='blue-house'&&worldReachableFromPlayer(o));
+    const red=WORLD.objects.find(o=>o.id==='red-house'&&worldReachableFromPlayer(o));
+    const task=worldTask();
+    if(task&&task.feedback&&here&&task.check.object==='red-house')worldFeedback('That is the blue house, not the red one. Look for the red door.');
+    else if(task&&task.feedback&&red&&task.check.object==='blue-house')worldFeedback('That is the red house, not the blue one. Look for the blue door.');
     worldDraw();if(worldEval())worldComplete();
   }
   function worldInteract(){
