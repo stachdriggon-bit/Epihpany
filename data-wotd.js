@@ -365,7 +365,7 @@ const WOTD_WORDS = [
     "pronunciation": "ih-LAB-uh-rayt",
     "meaning": "to explain or develop in more detail",
     "meaning_ar": "يفصّل",
-    "level": "B2",
+    "level": "C1",
     "example": "Could you elaborate on that idea?",
     "origin": "From Latin elaborare, to work out."
   },
@@ -374,7 +374,7 @@ const WOTD_WORDS = [
     "pronunciation": "IN-fur-uns",
     "meaning": "a conclusion based on evidence",
     "meaning_ar": "استنتاج",
-    "level": "B2",
+    "level": "C1",
     "example": "That inference is reasonable.",
     "origin": "From Latin inferre, to bring in."
   },
@@ -383,7 +383,7 @@ const WOTD_WORDS = [
     "pronunciation": "ri-ZIL-yunt",
     "meaning": "able to recover after difficulty",
     "meaning_ar": "قادر على التعافي",
-    "level": "B2",
+    "level": "C1",
     "example": "A resilient learner keeps trying.",
     "origin": "From Latin resilire, to spring back."
   },
@@ -392,7 +392,7 @@ const WOTD_WORDS = [
     "pronunciation": "PLAW-zuh-bul",
     "meaning": "seeming reasonable or likely",
     "meaning_ar": "معقول",
-    "level": "B2",
+    "level": "C1",
     "example": "That is a plausible explanation.",
     "origin": "From Latin plausibilis, worthy of applause."
   },
@@ -401,7 +401,7 @@ const WOTD_WORDS = [
     "pronunciation": "KON-tum-playt",
     "meaning": "to think deeply about something",
     "meaning_ar": "يتأمل",
-    "level": "B2",
+    "level": "C1",
     "example": "Take a moment to contemplate the question.",
     "origin": "From Latin contemplari, to observe."
   },
@@ -410,7 +410,7 @@ const WOTD_WORDS = [
     "pronunciation": "ar-TIK-yuh-lut",
     "meaning": "to express ideas clearly",
     "meaning_ar": "يعبّر بوضوح",
-    "level": "B2",
+    "level": "C1",
     "example": "She can articulate complex ideas.",
     "origin": "From Latin articulare, to divide into joints."
   },
@@ -419,7 +419,7 @@ const WOTD_WORDS = [
     "pronunciation": "MIT-i-gayt",
     "meaning": "to make something less harmful or severe",
     "meaning_ar": "يخفف",
-    "level": "B2",
+    "level": "C1",
     "example": "Good planning can mitigate risk.",
     "origin": "From Latin mitigare, to soften."
   },
@@ -428,7 +428,7 @@ const WOTD_WORDS = [
     "pronunciation": "NOO-ahns",
     "meaning": "a small difference in meaning or feeling",
     "meaning_ar": "فرق دقيق في المعنى",
-    "level": "B2",
+    "level": "C1",
     "example": "The translation misses a nuance.",
     "origin": "From French nuance, a shade of colour."
   },
@@ -437,7 +437,7 @@ const WOTD_WORDS = [
     "pronunciation": "IN-tri-kit",
     "meaning": "having many detailed parts",
     "meaning_ar": "معقد التفاصيل",
-    "level": "B2",
+    "level": "C1",
     "example": "The machine has an intricate design.",
     "origin": "From Latin intricatus, entangled."
   },
@@ -446,7 +446,7 @@ const WOTD_WORDS = [
     "pronunciation": "FOS-tur",
     "meaning": "to encourage development",
     "meaning_ar": "يعزز أو ينمّي",
-    "level": "B2",
+    "level": "C1",
     "example": "Good feedback can foster confidence.",
     "origin": "From Old English fostrian, to nourish."
   },
@@ -455,7 +455,7 @@ const WOTD_WORDS = [
     "pronunciation": "di-RYVE",
     "meaning": "to obtain something from a source",
     "meaning_ar": "يشتق أو يستمد",
-    "level": "B2",
+    "level": "C2",
     "example": "Many words derive from Latin.",
     "origin": "From Latin derivare, to lead off."
   },
@@ -464,7 +464,7 @@ const WOTD_WORDS = [
     "pronunciation": "suh-STAYN",
     "meaning": "to keep something going over time",
     "meaning_ar": "يحافظ على الاستمرار",
-    "level": "B2",
+    "level": "C2",
     "example": "Small habits sustain progress.",
     "origin": "From Latin sustinere, to hold up."
   },
@@ -473,7 +473,7 @@ const WOTD_WORDS = [
     "pronunciation": "kum-PEL-ing",
     "meaning": "very convincing or interesting",
     "meaning_ar": "مقنع",
-    "level": "B2",
+    "level": "C2",
     "example": "She gave a compelling argument.",
     "origin": "From compel, ultimately Latin compellere."
   },
@@ -482,7 +482,7 @@ const WOTD_WORDS = [
     "pronunciation": "FRAYM-wurk",
     "meaning": "a basic structure supporting an idea or system",
     "meaning_ar": "إطار عمل",
-    "level": "B2",
+    "level": "C2",
     "example": "Use a framework to organise your essay.",
     "origin": "Frame + work describes a supporting structure."
   },
@@ -491,7 +491,7 @@ const WOTD_WORDS = [
     "pronunciation": "FUR-thur-mor",
     "meaning": "in addition to what was already said",
     "meaning_ar": "علاوة على ذلك",
-    "level": "B2",
+    "level": "C2",
     "example": "Furthermore, the results were consistent.",
     "origin": "Formed from further + more."
   },
@@ -500,7 +500,7 @@ const WOTD_WORDS = [
     "pronunciation": "wair-AZ",
     "meaning": "used to contrast two facts",
     "meaning_ar": "بينما",
-    "level": "B2",
+    "level": "C2",
     "example": "I prefer tea, whereas he likes coffee.",
     "origin": "Where + as developed into a contrast connector."
   },
@@ -509,7 +509,7 @@ const WOTD_WORDS = [
     "pronunciation": "kun-VURS-lee",
     "meaning": "in an opposite way",
     "meaning_ar": "على العكس",
-    "level": "B2",
+    "level": "C2",
     "example": "Conversely, the second method was slower.",
     "origin": "From Latin conversus, turned around."
   },
@@ -518,7 +518,7 @@ const WOTD_WORDS = [
     "pronunciation": "un-dur-MYNE",
     "meaning": "to weaken gradually or indirectly",
     "meaning_ar": "يقوّض",
-    "level": "B2",
+    "level": "C2",
     "example": "One error can undermine the argument.",
     "origin": "Originally linked to digging beneath a structure."
   },
@@ -527,7 +527,7 @@ const WOTD_WORDS = [
     "pronunciation": "en-DEV-ur",
     "meaning": "an attempt to do something difficult",
     "meaning_ar": "مسعى",
-    "level": "B2",
+    "level": "C2",
     "example": "Learning a language is a worthwhile endeavour.",
     "origin": "From Old French endever, to make an effort."
   },
@@ -536,7 +536,7 @@ const WOTD_WORDS = [
     "pronunciation": "pruh-FOUND",
     "meaning": "very great or intense",
     "meaning_ar": "عميق الأثر",
-    "level": "B2",
+    "level": "C2",
     "example": "The book had a profound effect on me.",
     "origin": "From Latin profundus, deep."
   }
