@@ -707,6 +707,7 @@
   function worldFootprint(o){
     if(!o)return [];
     if(Array.isArray(o.footprint)&&o.footprint.length)return o.footprint.map(p=>({x:o.x+p.x,y:o.y+p.y}));
+    if(o.id==="bridge")return [-2,-1,0,1,2].map(dx=>({x:o.x+dx,y:o.y}));
     return [{x:o.x,y:o.y}];
   }
   function worldDist(a,b){return Math.abs(a.x-b.x)+Math.abs(a.y-b.y);}
