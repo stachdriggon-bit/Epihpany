@@ -621,13 +621,13 @@ const MISTAKE_QUESTIONS = [
     "options": [
       "many",
       "a few",
-      "much",
+      "a lot of",
       "several"
     ],
     "answer": 2,
-    "why_en": "Some English nouns are uncountable even when Arabic uses a plural form. They usually do not take a/an or a plural -s; use a unit phrase when counting them.",
-    "why_ar": "بعض الأسماء غير معدودة في الإنجليزية حتى لو كان مقابلها العربي جمعًا. لا نضيف إليها s ولا نستخدم a/an معها عادةً؛ استخدم وحدة قياس عند العد.",
-    "arabic_hint": "Feedback غير معدود، لذلك لا نستخدم many أو a few مباشرةً."
+    "why_en": "“Feedback” is uncountable, so “a lot of useful feedback” is natural; do not use “many” or “a few” directly.",
+    "why_ar": "Feedback اسم غير معدود؛ التعبير الطبيعي هنا a lot of useful feedback، ولا نستخدم many أو a few معه مباشرةً.",
+    "arabic_hint": "قارن بين many suggestions (اقتراحات معدودة) وa lot of feedback (ملاحظات غير معدودة)."
   },
   {
     "id": "un06",
