@@ -14,7 +14,6 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Cairo:wght@500;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%23FFC531'/%3E%3Cpath d='M16 5l2.6 7.4L26 15l-7.4 2.6L16 25l-2.6-7.4L6 15l7.4-2.6z' fill='%23121A3A'/%3E%3C/svg%3E">
   <link rel="stylesheet" href="style.css">
   <script src="data.js" defer></script>
   <script src="data-mistakes.js" defer></script>
@@ -59,8 +58,8 @@
 
     <nav class="tabs" aria-label="Main">
       <button class="tab" data-view="home" aria-current="page"><svg><use href="#i-path"/></svg>Play</button>
-      <button class="tab" data-view="stories">📖 Stories</button>
-      <button class="tab" data-view="world">🌍 World</button>
+      <button class="tab" data-view="stories"><span class="tab-emoji" aria-hidden="true">📖</span>Stories</button>
+      <button class="tab" data-view="world"><span class="tab-emoji" aria-hidden="true">🌍</span>World</button>
       <button class="tab" data-view="words"><svg><use href="#i-book"/></svg>Words</button>
       <button class="tab" data-view="trophies"><svg><use href="#i-trophy"/></svg>Trophies</button>
     </nav>
@@ -197,6 +196,7 @@
 <nav class="dock" aria-label="Main">
   <button class="dock-item" data-view="home" aria-current="page"><span class="dock-ic"><svg><use href="#i-path"/></svg></span>Play</button>
   <button class="dock-item" data-view="stories"><span class="dock-ic">📖</span>Stories</button>
+  <button class="dock-item" data-view="world"><span class="dock-ic">🌍</span>World</button>
   <button class="dock-item" data-view="words"><span class="dock-ic"><svg><use href="#i-book"/></svg></span>Words</button>
   <button class="dock-item" data-view="trophies"><span class="dock-ic"><svg><use href="#i-trophy"/></svg></span>Trophies</button>
 </nav>

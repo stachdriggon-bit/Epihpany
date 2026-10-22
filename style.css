@@ -618,3 +618,18 @@ body[data-theme="dark"] .trap-explanation{background:#252B3C;border-color:var(--
 .world-help-actions button.is-selected{background:#fff1a8;border-color:#c5a72a}
 .world-helpbar [data-world-help-toggle]{background:#fff1a8;border-color:#e4c54b}
 @media(max-width:600px){.world-help-panel{padding:10px 11px;max-height:34dvh}.world-help-heading{display:grid;gap:2px}.world-help-panel>p{font-size:13px}.world-help-actions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}.world-help-actions button{padding:7px 5px;font-size:11px;overflow-wrap:anywhere}}
+
+/* ---------- v2 fixes: calmer home + nav ---------- */
+.tab{white-space:nowrap;flex-shrink:0}
+.tab-emoji,.dock-ic{font-size:18px;line-height:1}
+.motivation{gap:12px;margin:22px 0 4px}
+.challenge-card{padding:14px 18px;gap:8px;border-radius:18px;box-shadow:0 3px 0 var(--ink)}
+.challenge-card h2{font-size:19px}
+.challenge-card>p:not(.challenge-reward):not(.freeze-note),.challenge-status,.freeze-note,.daily-card .challenge-action,.weekly-card .challenge-action{display:none}
+.challenge-reward{font-size:13px}
+.freeze-card .challenge-action{align-self:flex-start;padding:6px 14px;font-size:13px;min-height:0}
+@media(max-width:600px){
+  .motivation{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:10px;margin-inline:-16px;padding:2px 16px 8px;scrollbar-width:none}
+  .motivation::-webkit-scrollbar{display:none}
+  .challenge-card{flex:0 0 78%;scroll-snap-align:start}
+}

@@ -1,9 +1,8 @@
-# Epiphany — redesigned interface
+# Epiphany — English quests
 
-Static site, no build step. Open `index.html`.
+Static site, no build step. Serve the folder over http(s) (needed for the offline service worker) or just open `index.html`.
 
-Files: `index.html` (structure), `style.css` (design system), `app.js` (logic), `data.js` (levels, quests, Arabic explanations — unchanged content).
+Files: `index.html`, `style.css`, `app.js` (logic), `service-worker.js` + `manifest.webmanifest` (installable/offline), and data files: `data.js` (levels, core quests), `data-mistakes.js`, `data-spot.js`, `data-typing.js`, `data-wotd.js`, `data-aha.js`, `data-stories.js`, `data-world.js`.
 
-Progress is stored in localStorage key `epiphany-progress` (same format as before, so existing progress carries over).
-
-Structure: Play (one recommended quest + daily goal + level path + all quests), Words, Trophies. Quests open full-screen with a bottom feedback sheet.
+Progress: localStorage key `epiphany-progress` (export/import available in settings).
+When you change any file, bump `CACHE_NAME` in `service-worker.js`.
