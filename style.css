@@ -688,3 +688,13 @@ body[data-theme="dark"] .trap-explanation{background:#252B3C;border-color:var(--
  .category-picker-card{padding:19px;border-radius:22px;max-height:88dvh}
  .category-picker-head h2{font-size:24px}
 }
+
+/* World map usability and feedback */
+.world-stage{width:100%;max-width:none}
+#world-canvas{display:block;width:100%;height:clamp(320px,58vh,620px);min-height:320px;touch-action:manipulation}
+.world-help-actions button small{display:block;margin-top:3px;font-size:11px;opacity:.78}
+.world-dialogue{margin:0 0 6px;padding:8px 12px;border-left:3px solid var(--focus,#7c6cff);border-radius:8px;background:rgba(124,108,255,.09);font-size:14px;line-height:1.45}
+.world-feedback{position:absolute;z-index:4;top:12px;left:50%;transform:translate(-50%,-5px);max-width:calc(100% - 24px);width:max-content;padding:10px 15px;border:1px solid rgba(194,104,65,.35);border-radius:14px;background:#fff4eb;color:#7c3f24;font-weight:750;font-size:14px;text-align:center;opacity:0;pointer-events:none}
+.world-feedback.is-visible{animation:world-feedback-in 2.6s ease both}
+@keyframes world-feedback-in{0%{opacity:0;transform:translate(-50%,-5px)}10%,78%{opacity:1;transform:translate(-50%,0)}100%{opacity:0;transform:translate(-50%,-4px)}}
+@media(max-width:760px){#world-canvas{height:clamp(360px,54vh,600px);min-height:360px}.world-stage{margin-inline:-4px;width:calc(100% + 8px)}.world-helpbar{flex-wrap:wrap}.world-dialogue{font-size:13px}}
