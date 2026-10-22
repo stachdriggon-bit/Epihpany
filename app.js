@@ -722,7 +722,7 @@
     if(t.check.type==='sequence'){while(WORLD.step<t.check.steps.length&&worldCheck(t.check.steps[WORLD.step]))WORLD.step++;return WORLD.step>=t.check.steps.length;}
     return worldCheck(t.check);
   }
-  function worldPass(x,y){if(x<0||y<0||x>=WORLD_DATA.width||y>=WORLD_DATA.height)return false;const ch=(WORLD.map[y]||'')[x];if('WHT'.includes(ch))return false;return !WORLD.objects.some(o=>o.solid&&o.x===x&&o.y===y);}
+  function worldPass(x,y){if(x<0||y<0||x>=WORLD_DATA.width||y>=WORLD_DATA.height)return false;const ch=(WORLD.map[y]||'')[x];if('WH'.includes(ch))return false;return !WORLD.objects.some(o=>o.solid&&o.x===x&&o.y===y);}
   function worldMove(k){
     if(!WORLD||WORLD.mode!=='play')return;let dx=0,dy=0;
     if(k==='ArrowUp'||k.toLowerCase()==='w')dy=-1;else if(k==='ArrowDown'||k.toLowerCase()==='s')dy=1;else if(k==='ArrowLeft'||k.toLowerCase()==='a')dx=-1;else if(k==='ArrowRight'||k.toLowerCase()==='d')dx=1;
