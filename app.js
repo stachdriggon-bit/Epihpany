@@ -242,7 +242,7 @@
     theme.setAttribute('aria-pressed', String(dark));
     theme.setAttribute('aria-label', dark ? 'Turn off dark mode' : 'Turn on dark mode');
     theme.title = dark ? 'Light mode' : 'Dark mode';
-    theme.textContent = dark ? '☼' : '◐';
+    theme.innerHTML = dark ? '☼ <span>Light mode</span>' : '◐ <span>Dark mode</span>';
     const meta = $('#theme-color-meta');
     if (meta) meta.content = dark ? '#111522' : '#F5F6FC';
   }
