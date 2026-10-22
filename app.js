@@ -143,12 +143,17 @@
     }).join('');
     $('#track-note').innerHTML = '<strong>' + lv.id + ' · ' + esc(lv.title) + '</strong>' + esc(lv.desc);
 
-    $('#games').innerHTML = ORDER.map(k => {
-      const gm = GAMES[k], mm = META[k];
-      if (k === 'mistakes') return '<article class="tile tile-group t-' + mm.tone + '"><span class="tile-ic">' + glyph(k) + '</span><div class="tile-group-main"><h3>Common mistakes</h3><p>Two ways to learn from mistakes · 4 min</p><div class="tile-group-actions"><button type="button" data-game="mistakes">Choose the correct answer</button><button type="button" data-game="spot">Spot the mistake</button></div></div></article>';
-      return '<button class="tile t-' + mm.tone + '" data-game="' + k + '"><span class="tile-ic">' + glyph(k) + '</span>' +
-        '<span><h3>' + esc(gm.title) + '</h3><p>' + mm.time + ' min · +' + gm.xp + ' XP</p></span></button>';
-    }).join('');
+    const gameCategories = [
+      {id:'words',title:'Words',desc:'Build your vocabulary and recognise words.',icon:'Aa',tone:'violet',games:[['vocabulary','Word collector'],['spelling','Word detective']]},
+      {id:'grammar',title:'Grammar',desc:'Make sentences clearer and more accurate.',icon:'S+V',tone:'coral',games:[['grammar','Sentence shaper'],['mistakes','Common mistakes'],['spot','Spot the mistake'],['typing','Type It']]},
+      {id:'reading',title:'Reading & Listening',desc:'Understand stories, messages and meaning.',icon:'◖',tone:'sky',games:[['story','Lost in London'],['listening','Meaning detective']]},
+      {id:'challenge',title:'Challenge',desc:'Train your ear for nuance and precise meaning.',icon:'✦',tone:'ink',games:[['advanced','Nuance navigator']]}
+    ];
+    window.__gameCategories = gameCategories;
+    $('#games').innerHTML = gameCategories.map(cat =>
+      '<button class="category-card t-' + cat.tone + '" type="button" data-category="' + cat.id + '" aria-haspopup="dialog">' +
+        '<span class="category-icon">' + cat.icon + '</span><span class="category-copy"><strong>' + cat.title + '</strong><small>' + cat.desc + '</small><em>' + cat.games.length + (cat.games.length===1?' activity':' activities') + '</em></span><span class="category-arrow" aria-hidden="true">→</span></button>'
+    ).join('');
   }
 
   /* ---------- rendering: words + trophies ---------- */
@@ -995,8 +1000,26 @@
         : 'You have no freezes available. Keep learning to protect your streak.');
       return;
     }
+    const categoryClose = e.target.closest('[data-category-close]');
+    if (categoryClose) { const picker=$('#category-picker'); if(picker)picker.hidden=true; return; }
+    const categoryButton = e.target.closest('[data-category]');
+    if (categoryButton) {
+      const cat=(window.__gameCategories||[]).find(item=>item.id===categoryButton.dataset.category);
+      if(cat){
+        $('#category-picker-title').textContent=cat.title;
+        $('#category-picker-desc').textContent=cat.desc;
+        $('#category-options').innerHTML=cat.games.map(([id,label])=>{
+          const gmData=GAMES[id], meta=META[id];
+          return '<button type="button" class="category-option t-'+meta.tone+'" data-game="'+id+'"><span class="category-option-icon">'+glyph(id)+'</span><span><strong>'+label+'</strong><small>'+meta.time+' min · +'+gmData.xp+' XP</small></span><span class="category-option-arrow" aria-hidden="true">→</span></button>';
+        }).join('');
+        $('#category-picker').hidden=false;
+        const closeBtn=$('#category-picker [data-category-close]:not(.category-backdrop)');
+        if(closeBtn)closeBtn.focus();
+      }
+      return;
+    }
     const gm = e.target.closest('[data-game]');
-    if (gm) { startGame(gm.dataset.game); return; }
+    if (gm) { const picker=$('#category-picker'); if(picker)picker.hidden=true; startGame(gm.dataset.game); return; }
     const lv = e.target.closest('[data-level]');
     if (lv) {
       const i = Number(lv.dataset.level), l = LEVELS[i];
