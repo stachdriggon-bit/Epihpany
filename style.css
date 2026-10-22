@@ -493,3 +493,18 @@ body[data-theme="dark"] .tab:hover {
 body[data-theme="dark"] .tools-action {
   color: var(--ink);
 }
+
+
+/* Arab Learner Traps: always-visible Arabic feedback after a wrong answer */
+.trap-explanation{display:grid;gap:8px;padding:13px 15px;border:1.5px solid var(--bad);border-radius:16px;background:rgba(255,255,255,.72);min-width:0}
+.trap-explanation h4{font-size:15px;line-height:1.35;font-weight:900;margin:0}
+.trap-explanation .arabic{margin:0;font-size:17px;line-height:1.8;overflow-wrap:anywhere}
+.trap-explanation .trap-hint{padding-top:8px;border-top:1px solid var(--line)}
+body[data-theme="dark"] .trap-explanation{background:#252B3C;border-color:var(--bad)}
+.sheet{max-height:65dvh;overflow-y:auto;overscroll-behavior:contain}
+@media(max-width:760px){
+  .trap-explanation{padding:11px 12px}
+  .trap-explanation h4{font-size:14px}
+  .trap-explanation .arabic{font-size:16px}
+  .sheet{max-height:68dvh}
+}
