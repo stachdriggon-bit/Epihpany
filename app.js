@@ -15,10 +15,12 @@
   ];
 
   /* ---------- state ---------- */
-  const defaults = () => ({xp:0, quests:0, words:[], review:[], placementDone:false, completed:[], streak:0, lastDay:null, daily:0, level:'A1', sound:true, helpArabic:false, theme:'light', streakFreezes:1, dailyQuestDate:null, dailyQuestProgress:0, dailyQuestClaimed:false, dailyCorrect:0, dailyXp:0, weeklyKey:null, weeklyProgress:0, weeklyClaimed:false});
+  const defaults = () => ({xp:0, quests:0, words:[], review:[], placementDone:false, completed:[], streak:0, lastDay:null, daily:0, level:'A1', sound:true, helpArabic:false, theme:'light', streakFreezes:1, dailyQuestDate:null, dailyQuestProgress:0, dailyQuestClaimed:false, dailyCorrect:0, dailyXp:0, weeklyKey:null, weeklyProgress:0, weeklyClaimed:false, mistakeTrapErrors:{}, mistakeQuestionErrors:{}});
   let state;
   try { state = {...defaults(), ...JSON.parse(localStorage.getItem('epiphany-progress') || '{}')}; } catch { state = defaults(); }
   if (!Array.isArray(state.review)) state.review = [];
+  if (!state.mistakeTrapErrors || typeof state.mistakeTrapErrors !== 'object' || Array.isArray(state.mistakeTrapErrors)) state.mistakeTrapErrors = {};
+  if (!state.mistakeQuestionErrors || typeof state.mistakeQuestionErrors !== 'object' || Array.isArray(state.mistakeQuestionErrors)) state.mistakeQuestionErrors = {};
   if (!Number.isFinite(state.streakFreezes)) state.streakFreezes = 1;
   if (state.lastDay !== dayKey()) state.daily = 0;
   if (state.dailyQuestDate !== dayKey()) { state.dailyQuestDate = dayKey(); state.dailyQuestProgress = 0; state.dailyQuestClaimed = false; state.dailyCorrect = 0; state.dailyXp = 0; }
@@ -36,10 +38,12 @@
     story:     {label:'Real life',    tone:'mint',   icon:'chat',   time:5, blurb:'Make choices in everyday conversations.'},
     listening: {label:'Comprehension',tone:'sky',    icon:'search', time:4, blurb:'Understand messages, tone and intent.'},
     spelling:  {label:'Spelling',     tone:'pink',   glyph:'abc',  time:3, blurb:'Sharpen spelling and word recognition.'},
-    advanced:  {label:'Advanced',     tone:'ink',    icon:'spark',  time:6, blurb:'Explore precise language and subtle meaning.'}
+    advanced:  {label:'Advanced',     tone:'ink',    icon:'spark',  time:6, blurb:'Explore precise language and subtle meaning.'},
+    mistakes:  {label:'Arab learner traps', tone:'coral', glyph:'?!', time:4, blurb:'Spot common mistakes Arabic speakers make in English.'}
   };
-  const ORDER = ['vocabulary', 'spelling', 'grammar', 'story', 'listening', 'advanced'];
-  const UNLOCK = {vocabulary:0, spelling:0, grammar:1, story:2, listening:3, advanced:4};   // level index that suggests each game
+  const ORDER = ['vocabulary', 'spelling', 'grammar', 'story', 'listening', 'advanced', 'mistakes'];
+  const UNLOCK = {vocabulary:0, spelling:0, grammar:1, story:2, listening:3, advanced:4, mistakes:0};
+  GAMES.mistakes = {title:'Arab Learner Traps', category:'GRAMMAR', xp:40, desc:'Understand the mistakes Arabic speakers often make.', questions:MISTAKE_QUESTIONS.map(q=>({q:q.prompt,sub:q.sub,answers:q.options,correct:q.answer,explain:q.why_en,word:null,level:q.level,ar:q.arabic_hint,id:q.id,trap:q.trap,why_ar:q.why_ar,arabic_hint:q.arabic_hint}))};   // level index that suggests each game
   const LEVEL_GAME = ['vocabulary', 'grammar', 'story', 'listening', 'advanced', 'advanced']; // same mapping the world map used
   const glyph = g => META[g].icon ? ic(META[g].icon) : META[g].glyph;
 
@@ -380,9 +384,24 @@
       return copy;
     };
     // Use five questions from the learner's current CEFR level whenever possible.
-    const selected = levelPool.length >= 5
-      ? shuffle(levelPool).slice(0, 5)
-      : [...shuffle(levelPool), ...shuffle(generalPool).slice(0, 5 - levelPool.length)];
+    let selected;
+    if (type === 'mistakes') {
+      const levels = LEVELS.map(l=>l.id), center = levels.indexOf(level);
+      let pool = game.questions.filter(q => Math.abs(levels.indexOf(q.level) - center) <= 1);
+      if (pool.length < 5) pool = game.questions.slice();
+      const remaining = pool.slice(), chosen = [];
+      while (chosen.length < 5 && remaining.length) {
+        const weights = remaining.map(q => 1 + Math.min(6, Number(state.mistakeTrapErrors[q.trap] || 0) * 2) + Math.min(3, Number(state.mistakeQuestionErrors[q.id] || 0)));
+        const totalWeight = weights.reduce((sum,w)=>sum+w,0); let roll = Math.random()*totalWeight, at = 0;
+        for (; at < weights.length - 1; at++) { roll -= weights[at]; if (roll < 0) break; }
+        chosen.push(remaining.splice(at,1)[0]);
+      }
+      selected = shuffle(chosen);
+    } else {
+      selected = levelPool.length >= 5
+        ? shuffle(levelPool).slice(0, 5)
+        : [...shuffle(levelPool), ...shuffle(generalPool).slice(0, 5 - levelPool.length)];
+    }
     const paired = shuffle(selected).map(q => ({q, ar: q.ar || 'راجع معنى الإجابة الصحيحة وحاول تذكّرها في سياق جديد.'}));
     G = {type, questions: paired, i:0, score:0, words:[], answered:false, results:[]};
     const el = $('#game'); el.className = 'game t-' + META[type].tone; el.hidden = false;
@@ -415,7 +434,7 @@
     const game = GAMES[G.type], q = G.questions[G.i].q, m = META[G.type];
     G.answered = false; hideSheet(); renderSteps();
     $('#game-body').innerHTML =
-      '<div class="q-meta"><span class="pill">' + (G.reviewMode ? 'Practice again' : m.label) + '</span><span class="q-count">Question ' + (G.i + 1) + ' of ' + game.questions.length + '</span></div>' +
+      '<div class="q-meta"><span class="pill">' + (G.reviewMode ? 'Practice again' : m.label) + '</span><span class="q-count">Question ' + (G.i + 1) + ' of ' + G.questions.length + '</span></div>' +
       '<h2 class="q-text" id="q-text" tabindex="-1">' + esc(q.q) + '</h2>' + (q.word ? '<button class="listen-btn question-listen" data-speak="' + esc(wordParts(q.word, q.explain).word) + '">' + ic('sound') + ' Listen to word</button>' : '') + '<p class="q-sub">' + esc(q.sub) + '</p>' +
       '<p class="ar-only ar-guide arabic" lang="ar" dir="rtl">' + guidance[G.type] + '</p>' +
       '<div class="answers" id="answers" role="group" aria-labelledby="q-text">' +
@@ -429,7 +448,14 @@
     G.answered = true;
     const game = GAMES[G.type], item = G.questions[G.i], q = item.q, ok = choice === q.correct;
     if (ok) { G.score++; const wp=wordParts(q.word,q.explain); if(wp)G.words.push([wp.word,wp.meaning,wp.level]); }
-    else if (!G.reviewMode) addReview(q.word,q.explain);
+    else if (!G.reviewMode) {
+      addReview(q.word,q.explain);
+      if (G.type === 'mistakes' && q.id) {
+        state.mistakeTrapErrors[q.trap] = (Number(state.mistakeTrapErrors[q.trap]) || 0) + 1;
+        state.mistakeQuestionErrors[q.id] = (Number(state.mistakeQuestionErrors[q.id]) || 0) + 1;
+        save();
+      }
+    }
     G.results[G.i] = ok ? 'ok' : 'no';
     $$('#answers .answer').forEach((b, k) => { b.disabled = true; if (k === q.correct) b.classList.add('correct'); else if (k === choice) b.classList.add('wrong'); });
     $('#answers').classList.add('done');
@@ -439,6 +465,7 @@
       '<h3><span class="sheet-mark">' + ic(ok ? 'check' : 'x') + '</span>' + (ok ? 'Exactly right!' : 'Not quite — and that’s okay.') + '</h3>' +
       (ok ? '' : '<p>Correct answer: <b>' + esc(q.answers[q.correct]) + '</b></p>') +
       '<p>' + esc(q.explain) + '</p>' +
+      (!ok && G.type === 'mistakes' ? '<section class="trap-explanation" aria-label="Why Arabic speakers make this mistake"><h4>Why do Arabic speakers make this mistake?</h4><p class="arabic" lang="ar" dir="rtl">' + esc(q.why_ar || q.ar) + '</p><p class="trap-hint arabic" lang="ar" dir="rtl">' + esc(q.arabic_hint || '') + '</p></section>' : '') +
       (ok && q.word ? '<div class="newword"><span>New word</span><b>' + esc(q.word[0]) + '</b><span>' + esc(q.word[1]) + '</span></div>' : '') +
       '<p class="ar-only arabic" lang="ar" dir="rtl"><strong>' + (ok ? 'أحسنت!' : 'معلومة للتعلّم') + '</strong> ' + esc(item.ar) + '</p>' +
       '<div class="sheet-actions"><button class="btn" id="go-next">' + (last ? 'See results' : 'Continue') + ic('arrow') + '</button></div>');
