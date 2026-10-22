@@ -429,3 +429,12 @@ body.ar-on .meta{direction:rtl}
 body[data-theme="dark"] .tools-panel{background:var(--surface)}
 body.ar-on .tools-panel{right:auto;left:0}
 @media(max-width:760px){.tools-panel{top:calc(100% + 8px);right:-4px}.tools-menu>summary{width:36px;height:38px}}
+
+/* Keep text legible on high-saturation accent surfaces in dark mode */
+body[data-theme="dark"] .btn,
+body[data-theme="dark"] .meta-xp,
+body[data-theme="dark"] .pill,
+body[data-theme="dark"] .node.current .node-dot,
+body[data-theme="dark"] .chip-xp{color:#121A3A}
+body[data-theme="dark"] .node.done .node-dot{color:#121A3A}
+body[data-theme="dark"] .btn-ghost{color:var(--ink)}
