@@ -15,7 +15,7 @@
   ];
 
   /* ---------- state ---------- */
-  const defaults = () => ({xp:0, quests:0, words:[], review:[], placementDone:false, completed:[], streak:0, lastDay:null, daily:0, level:'A1', sound:true, helpArabic:false, theme:'light', streakFreezes:1, dailyQuestDate:null, dailyQuestProgress:0, dailyQuestClaimed:false, dailyCorrect:0, dailyXp:0, weeklyKey:null, weeklyProgress:0, weeklyClaimed:false, mistakeTrapErrors:{}, mistakeQuestionErrors:{}, modes:{}, weakTraps:{}, stories:{}});
+  const defaults = () => ({xp:0, quests:0, words:[], review:[], placementDone:false, completed:[], streak:0, lastDay:null, daily:0, level:'A1', sound:true, helpArabic:false, theme:'light', streakFreezes:1, dailyQuestDate:null, dailyQuestProgress:0, dailyQuestClaimed:false, dailyCorrect:0, dailyXp:0, weeklyKey:null, weeklyProgress:0, weeklyClaimed:false, mistakeTrapErrors:{}, mistakeQuestionErrors:{}, modes:{}, weakTraps:{}, stories:{}, world:{done:[],stars:{}}});
   let state;
   try { state = {...defaults(), ...JSON.parse(localStorage.getItem('epiphany-progress') || '{}')}; } catch { state = defaults(); }
   if (!Array.isArray(state.review)) state.review = [];
@@ -24,6 +24,9 @@
   if (!state.modes || typeof state.modes !== 'object' || Array.isArray(state.modes)) state.modes = {};
   if (!state.weakTraps || typeof state.weakTraps !== 'object' || Array.isArray(state.weakTraps)) state.weakTraps = {};
   if (!state.stories || typeof state.stories !== 'object' || Array.isArray(state.stories)) state.stories = {};
+  if (!state.world || typeof state.world !== 'object' || Array.isArray(state.world)) state.world = {done:[],stars:{}};
+  if (!Array.isArray(state.world.done)) state.world.done = [];
+  if (!state.world.stars || typeof state.world.stars !== 'object' || Array.isArray(state.world.stars)) state.world.stars = {};
   if (!Number.isFinite(state.streakFreezes)) state.streakFreezes = 1;
   if (state.lastDay !== dayKey()) state.daily = 0;
   if (state.dailyQuestDate !== dayKey()) { state.dailyQuestDate = dayKey(); state.dailyQuestProgress = 0; state.dailyQuestClaimed = false; state.dailyCorrect = 0; state.dailyXp = 0; }
@@ -694,6 +697,109 @@
     const h = $('.view.is-active h1'); if (h) h.focus({preventScroll: true});
   }
 
+
+  /* ---------- World: tiny top-down village ---------- */
+  let WORLD=null;
+  function worldTask(){return WORLD&&WORLD.tasks[WORLD.index];}
+  function worldObj(id){return WORLD&&WORLD.objects.find(o=>o.id===id);}
+  function worldDist(a,b){return Math.abs(a.x-b.x)+Math.abs(a.y-b.y);}
+  function worldNear(id){const o=worldObj(id);return !!o&&worldDist(WORLD.player,o)<=1;}
+  function worldCheck(c){
+    if(!c)return false;
+    if(c.type==='sequence')return WORLD.step>=c.steps.length;
+    if(c.type==='near')return worldNear(c.object);
+    if(c.type==='at'){const o=worldObj(c.object);return !!o&&o.x===WORLD.player.x&&o.y===WORLD.player.y;}
+    if(c.type==='under'||c.type==='behind'){const o=worldObj(c.object);return !!o&&WORLD.player.x===o.x&&WORLD.player.y===o.y+1;}
+    if(c.type==='on'){return (WORLD.map[WORLD.player.y]||'')[WORLD.player.x]==='B';}
+    if(c.type==='between'){const a=worldObj(c.objects[0]),b=worldObj(c.objects[1]);return !!a&&!!b&&WORLD.player.y===a.y&&WORLD.player.y===b.y&&WORLD.player.x>Math.min(a.x,b.x)&&WORLD.player.x<Math.max(a.x,b.x);}
+    if(c.type==='pickup')return WORLD.carried===c.object||WORLD.picked.has(c.object);
+    if(c.type==='give')return WORLD.given.has(c.item);
+    return false;
+  }
+  function worldStep(){const t=worldTask();return t?(t.check.type==='sequence'?t.check.steps[WORLD.step]:t.check):null;}
+  function worldEval(){
+    const t=worldTask();if(!t)return false;
+    if(t.check.type==='sequence'){while(WORLD.step<t.check.steps.length&&worldCheck(t.check.steps[WORLD.step]))WORLD.step++;return WORLD.step>=t.check.steps.length;}
+    return worldCheck(t.check);
+  }
+  function worldPass(x,y){if(x<0||y<0||x>=WORLD_DATA.width||y>=WORLD_DATA.height)return false;const ch=(WORLD.map[y]||'')[x];if('WHT'.includes(ch))return false;return !WORLD.objects.some(o=>o.solid&&o.x===x&&o.y===y);}
+  function worldMove(k){
+    if(!WORLD||WORLD.mode!=='play')return;let dx=0,dy=0;
+    if(k==='ArrowUp'||k.toLowerCase()==='w')dy=-1;else if(k==='ArrowDown'||k.toLowerCase()==='s')dy=1;else if(k==='ArrowLeft'||k.toLowerCase()==='a')dx=-1;else if(k==='ArrowRight'||k.toLowerCase()==='d')dx=1;
+    const x=WORLD.player.x+dx,y=WORLD.player.y+dy;if(!worldPass(x,y)){WORLD.bump=performance.now()+120;worldDraw();return;}
+    const p=WORLD.player;p.fromX=p.vx;p.fromY=p.vy;p.x=x;p.y=y;p.moveAt=performance.now();WORLD.tries++;WORLD.moves++;
+    worldDraw();if(worldEval())worldComplete();
+    const hint=$('#world-hint');if(hint)hint.hidden=WORLD.tries<3||WORLD.usedHelp;
+  }
+  function worldInteract(){
+    if(!WORLD||WORLD.mode!=='play')return;const step=worldStep();if(!step)return;
+    if(step.type==='pickup'){
+      const o=worldObj(step.object);
+      if(o&&worldDist(WORLD.player,o)<=1){WORLD.carried=o.id;WORLD.picked.add(o.id);WORLD.objects=WORLD.objects.filter(v=>v.id!==o.id);if(worldEval())worldComplete();else worldStatus();worldDraw();return;}
+    }
+    if(step.type==='give'){
+      const o=worldObj(step.person);
+      if(WORLD.carried===step.item&&o&&worldDist(WORLD.player,o)<=1){WORLD.given.add(step.item);WORLD.carried=null;if(worldEval())worldComplete();else worldStatus();worldDraw();return;}
+    }
+    toast('Move next to the item or person, then press Space.');
+  }
+  function worldAward(stars,t){
+    const old=Number(state.world.stars[t.id]||0),first=!state.world.done.includes(t.id),earned=Math.max(0,stars-old)*5;
+    if(first){state.world.done.push(t.id);state.quests++;state.daily=Math.min(2,state.daily+1);state.weeklyProgress=(state.weeklyProgress||0)+1;const today=dayKey();
+      if(state.lastDay!==today){const y=new Date();y.setDate(y.getDate()-1);if(state.lastDay===dayKey(y))state.streak=(state.streak||0)+1;else state.streak=1;state.lastDay=today;}}
+    if(stars>old)state.world.stars[t.id]=stars;state.xp+=earned;
+    (t.words||[]).forEach(w=>{if(!state.words.some(v=>String(v[0]).toLowerCase()===String(w[0]).toLowerCase()))state.words.push(w);});
+    save();renderHeader();renderWords();renderTrophies();return earned;
+  }
+  function worldShell(inner){const t=worldTask();return '<div class="world-top"><div class="world-task-count">Task <b>'+(WORLD.index+1)+'</b> / '+WORLD.tasks.length+'</div><div class="world-instruction"><strong>'+esc(t?t.instruction:'Village complete!')+'</strong><span lang="ar" dir="rtl">'+esc(t?t.ar:'أحسنت!')+'</span></div><button class="world-exit" data-world-exit aria-label="Exit World">✕</button></div>'+inner;}
+  function worldDraw(){
+    if(!WORLD||WORLD.mode!=='play')return;const c=$('#world-canvas');if(!c)return;const r=c.getBoundingClientRect(),d=Math.max(1,Math.min(2,devicePixelRatio||1));if(!r.width||!r.height)return;
+    if(c.width!==Math.round(r.width*d)||c.height!==Math.round(r.height*d)){c.width=Math.round(r.width*d);c.height=Math.round(r.height*d);}
+    const x=c.getContext('2d');x.setTransform(d,0,0,d,0,0);x.clearRect(0,0,r.width,r.height);
+    const tile=Math.min(r.width/20,r.height/14),ox=(r.width-tile*20)/2,oy=(r.height-tile*14)/2;WORLD.tile=tile;WORLD.ox=ox;WORLD.oy=oy;
+    const col={G:'#91d17e',W:'#55bde0',B:'#b9824c',R:'#e8c77b',H:'#cb7768',T:'#39834d'};
+    for(let y=0;y<14;y++)for(let xx=0;xx<20;xx++){const ch=(WORLD.map[y]||'')[xx]||'G',px=ox+xx*tile,py=oy+y*tile;x.fillStyle=col[ch]||col.G;x.fillRect(px,py,tile+.5,tile+.5);
+      if(ch==='B'){x.fillStyle='#8c5b35';x.fillRect(px+tile*.08,py+tile*.12,tile*.84,tile*.76);x.strokeStyle='#e9c18c';for(let j=1;j<4;j++){x.beginPath();x.moveTo(px+tile*j/4,py+tile*.12);x.lineTo(px+tile*j/4,py+tile*.88);x.stroke();}}
+      if(ch==='W'){x.strokeStyle='#c8f3ff';x.beginPath();x.moveTo(px+tile*.2,py+tile*.45);x.lineTo(px+tile*.75,py+tile*.45);x.stroke();}
+      if(ch==='H'){x.font=tile*.8+'px sans-serif';x.textAlign='center';x.textBaseline='middle';x.fillText('🏠',px+tile/2,py+tile/2);}
+    }
+    WORLD.objects.forEach(o=>{x.font=tile*.8+'px sans-serif';x.textAlign='center';x.textBaseline='middle';x.fillText(o.emoji,ox+(o.x+.5)*tile,oy+(o.y+.5)*tile);});
+    const p=WORLD.player,elapsed=Math.min(1,(performance.now()-(p.moveAt||0))/120),e=elapsed*elapsed*(3-2*elapsed),px=ox+(p.fromX+(p.x-p.fromX)*e+.5)*tile,py=oy+(p.fromY+(p.y-p.fromY)*e+.5)*tile;
+    x.fillStyle='rgba(0,0,0,.15)';x.beginPath();x.ellipse(px,py+tile*.23,tile*.28,tile*.1,0,0,Math.PI*2);x.fill();
+    x.fillStyle=p.color;x.beginPath();x.arc(px,py,tile*.3,0,Math.PI*2);x.fill();x.strokeStyle='#fff';x.lineWidth=2;x.stroke();
+    x.fillStyle='#fff';x.beginPath();x.arc(px-tile*.1,py-tile*.06,tile*.07,0,Math.PI*2);x.arc(px+tile*.1,py-tile*.06,tile*.07,0,Math.PI*2);x.fill();
+    x.fillStyle='#17203d';x.beginPath();x.arc(px-tile*.08,py-tile*.05,tile*.03,0,Math.PI*2);x.arc(px+tile*.12,py-tile*.05,tile*.03,0,Math.PI*2);x.fill();
+    x.fillStyle=WORLD.outfit;x.beginPath();x.arc(px,py+tile*.18,tile*.1,0,Math.PI*2);x.fill();
+    if(p.moveAt&&elapsed<1)WORLD.raf=requestAnimationFrame(worldDraw);
+    if(WORLD.target){x.strokeStyle='#ffc531';x.lineWidth=3;x.setLineDash([5,4]);x.strokeRect(ox+WORLD.target.x*tile+3,oy+WORLD.target.y*tile+3,tile-6,tile-6);x.setLineDash([]);}
+  }
+  function worldStatus(){const h=$('#world-hint');if(h)h.hidden=WORLD.tries<3||WORLD.usedHelp;const s=$('#world-step');if(s)s.textContent=worldTask().check.type==='sequence'?'Step '+(WORLD.step+1)+' of '+worldTask().check.steps.length:'';const carry=$('#world-carry');if(carry)carry.textContent=WORLD.carried?'Carrying '+(WORLD.carried==='key'?'the key':'the basket'):'';}
+  function worldRenderPlay(){const t=worldTask();$('#world-game').innerHTML=worldShell('<div class="world-stage"><canvas id="world-canvas" aria-label="Top-down village map"></canvas><div class="world-helpbar"><button data-world-speak>🔊 Listen</button><button data-world-translate>🌐 Translation</button><button id="world-hint" data-world-hint hidden>✨ Show me</button><span id="world-step"></span><span id="world-carry"></span></div><div class="world-mobile-controls"><div class="world-dpad"><button data-world-move="ArrowUp" aria-label="Move up">▲</button><div><button data-world-move="ArrowLeft" aria-label="Move left">◀</button><button data-world-move="ArrowDown" aria-label="Move down">▼</button><button data-world-move="ArrowRight" aria-label="Move right">▶</button></div></div><button class="world-interact" data-world-interact>Space · Interact</button></div></div>');worldStatus();requestAnimationFrame(worldDraw);}
+  function startWorld(){if(typeof WORLD_DATA==='undefined'){toast('Village data is not loaded. Refresh and try again.');return;}if(WORLD&&WORLD.raf)cancelAnimationFrame(WORLD.raf);
+    WORLD={mode:'intro',tasks:WORLD_DATA.tasks.slice(),index:0,map:WORLD_DATA.map,objects:WORLD_DATA.objects.map(o=>({...o})),player:{x:2,y:2,vx:2,vy:2,fromX:2,fromY:2,color:'#FFC531',moveAt:0},outfit:'#6C5CE7',tries:0,usedHelp:false,moves:0,step:0,carried:null,picked:new Set(),given:new Set(),stars:0,progress:{},raf:0};
+    lockPage(true);$('#world-game').hidden=false;$('#world-game').innerHTML='<div class="world-intro"><button class="world-exit" data-world-exit>✕</button><div class="world-intro-art">🌳 🏠 🌉</div><p class="world-kicker">EPIPHANY WORLD</p><h1>Understand. Move. Discover.</h1><p>Read the English instruction and explore a tiny village to complete 10 tasks.</p><h3>Your character</h3><div class="world-color-picks"><button class="is-selected" data-world-color="#FFC531">🟡 Yellow</button><button data-world-color="#7C6CFF">🟣 Purple</button></div><h3>Clothes</h3><div class="world-color-picks"><button class="is-selected" data-world-outfit="#6C5CE7">Purple</button><button data-world-outfit="#168B68">Green</button><button data-world-outfit="#3478D4">Blue</button></div><button class="world-primary" data-world-begin>Start exploring →</button><p class="world-small">Arrow keys / WASD to move · Space to interact</p></div>';}
+  function worldComplete(){if(!WORLD||WORLD.mode!=='play')return;const t=worldTask(),stars=WORLD.usedHelp?(WORLD.moves>7?1:2):3,gain=worldAward(stars,t);WORLD.stars+=stars;WORLD.mode='success';sfx('done');
+    $('#world-game').innerHTML=worldShell('<section class="world-success"><div class="world-big-star">★</div><p class="world-kicker">TASK COMPLETE</p><h2>Well done!</h2><div class="world-stars">'+('★'.repeat(stars))+'<span>'+('☆'.repeat(3-stars))+'</span></div><p>+'+gain+' XP earned</p><p class="world-translation" lang="ar" dir="rtl">'+esc(t.ar)+'</p><h3>New words</h3><div class="world-word-list">'+t.words.map(w=>'<span class="world-word-chip"><b>'+esc(w[0])+'</b><small>'+esc(w[1])+'</small></span>').join('')+'</div><button class="world-primary" data-world-next>'+(WORLD.index===WORLD.tasks.length-1?'Finish village':'Next task')+' →</button></section>');}
+  function worldNext(){if(WORLD.index===WORLD.tasks.length-1){WORLD.mode='finished';$('#world-game').innerHTML='<div class="world-finish"><div class="world-intro-art">🏡 ✨ 🌳</div><p class="world-kicker">VILLAGE COMPLETE</p><h1>You did it!</h1><p>You earned '+WORLD.stars+' stars across 10 tasks.</p><h2>Words from your adventure</h2><div class="world-word-list">'+WORLD.tasks.flatMap(t=>t.words).filter((w,i,a)=>a.findIndex(v=>v[0]===w[0])===i).map(w=>'<span class="world-word-chip"><b>'+esc(w[0])+'</b><small>'+esc(w[1])+'</small></span>').join('')+'</div><button class="world-primary" data-world-replay>Play again ↻</button><button class="world-secondary" data-world-exit>Back to Epiphany</button></div>';return;}
+    WORLD.index++;WORLD.mode='play';WORLD.tries=0;WORLD.usedHelp=false;WORLD.moves=0;WORLD.step=0;WORLD.target=null;WORLD.objects=WORLD_DATA.objects.filter(o=>!WORLD.picked.has(o.id)).map(o=>({...o}));worldRenderPlay();}
+  function closeWorld(){if(WORLD&&WORLD.raf)cancelAnimationFrame(WORLD.raf);WORLD=null;$('#world-game').hidden=true;lockPage(false);renderAll();}
+  document.addEventListener('click',e=>{
+    const move=e.target.closest('[data-world-move]');if(move){worldMove(move.dataset.worldMove);return;}
+    if(e.target.closest('[data-world-interact]')){worldInteract();return;}
+    if(e.target.closest('[data-world-speak]')){if(worldTask())speak(worldTask().instruction);return;}
+    if(e.target.closest('[data-world-translate]')){if(worldTask())toast(worldTask().ar);return;}
+    if(e.target.closest('[data-world-hint]')){if(WORLD&&WORLD.tries>=3){WORLD.usedHelp=true;const t=worldTask(),o=t.check.object&&worldObj(t.check.object);WORLD.target=o?{x:o.x,y:o.y+((t.check.type==='under'||t.check.type==='behind')?1:0)}:{x:9,y:12};toast(t.hint);worldDraw();worldStatus();}return;}
+    const pc=e.target.closest('[data-world-color]');if(pc&&WORLD){WORLD.player.color=pc.dataset.worldColor;$('#world-game').querySelectorAll('[data-world-color]').forEach(b=>b.classList.toggle('is-selected',b===pc));return;}
+    const po=e.target.closest('[data-world-outfit]');if(po&&WORLD){WORLD.outfit=po.dataset.worldOutfit;$('#world-game').querySelectorAll('[data-world-outfit]').forEach(b=>b.classList.toggle('is-selected',b===po));return;}
+    if(e.target.closest('[data-world-begin]')){WORLD.mode='play';worldRenderPlay();return;}
+    if(e.target.closest('[data-world-next]')){worldNext();return;}
+    if(e.target.closest('[data-world-replay]')){startWorld();return;}
+    if(e.target.closest('[data-world-exit]')){closeWorld();return;}
+  });
+  document.addEventListener('keydown',e=>{if(!WORLD)return;if(e.key==='Escape'){closeWorld();return;}if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','w','a','s','d','W','A','S','D'].includes(e.key)){e.preventDefault();worldMove(e.key);return;}if(e.code==='Space'){e.preventDefault();worldInteract();}});
+  document.addEventListener('visibilitychange',()=>{if(document.hidden&&WORLD&&WORLD.raf){cancelAnimationFrame(WORLD.raf);WORLD.raf=0;}else if(!document.hidden&&WORLD&&WORLD.mode==='play')worldDraw();});
+  window.addEventListener('resize',()=>{if(WORLD&&WORLD.mode==='play')worldDraw();});
+
   /* ---------- events ---------- */
   document.addEventListener('submit', e => { if(e.target && e.target.id==='typing-form'){e.preventDefault();checkTyping();} });
   document.addEventListener('click', e => {
@@ -705,7 +811,7 @@
       else{item.streak=0;item.interval=0;item.due=dayKey();}
       save();renderWords();toast(rb.dataset.review==='known'?'Nice! We’ll review it again later.':'No problem — this word stays in today’s practice.');}return;}
     const view = e.target.closest('[data-view]');
-    if (view) { openView(view.dataset.view); return; }
+    if (view) { if(view.dataset.view==='world'){startWorld();return;} openView(view.dataset.view); return; }
     const spotWord = e.target.closest('[data-spot-index]');
     if (spotWord && G && G.type === 'spot') { selectSpot(Number(spotWord.dataset.spotIndex)); return; }
     const ans = e.target.closest('.answer');
