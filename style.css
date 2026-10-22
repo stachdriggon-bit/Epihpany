@@ -438,3 +438,57 @@ body[data-theme="dark"] .node.current .node-dot,
 body[data-theme="dark"] .chip-xp{color:#121A3A}
 body[data-theme="dark"] .node.done .node-dot{color:#121A3A}
 body[data-theme="dark"] .btn-ghost{color:var(--ink)}
+
+
+/* Dark mode coverage for components that use fixed light colors */
+body[data-theme="dark"] .tabs,
+body[data-theme="dark"] .chip,
+body[data-theme="dark"] .icon-btn,
+body[data-theme="dark"] .ar-toggle,
+body[data-theme="dark"] .you,
+body[data-theme="dark"] .track-note,
+body[data-theme="dark"] .tile,
+body[data-theme="dark"] .word,
+body[data-theme="dark"] .trophy,
+body[data-theme="dark"] .answer,
+body[data-theme="dark"] .game,
+body[data-theme="dark"] .placement-card,
+body[data-theme="dark"] .listen-btn,
+body[data-theme="dark"] .review-card,
+body[data-theme="dark"] .stat,
+body[data-theme="dark"] .newword,
+body[data-theme="dark"] .empty,
+body[data-theme="dark"] .tools-panel {
+  background-color: var(--surface);
+  color: var(--ink);
+}
+body[data-theme="dark"] .tab[aria-current="page"] {
+  background: var(--ink);
+  color: #111522;
+}
+body[data-theme="dark"] .logo,
+body[data-theme="dark"] .logo-mark,
+body[data-theme="dark"] .node.current .node-dot,
+body[data-theme="dark"] .node.done .node-dot {
+  color: var(--ink);
+}
+body[data-theme="dark"] .logo-mark {
+  background: var(--spark);
+  border-color: var(--ink);
+  box-shadow: 0 3px 0 var(--line);
+}
+body[data-theme="dark"] .btn,
+body[data-theme="dark"] .meta-xp,
+body[data-theme="dark"] .pill,
+body[data-theme="dark"] .node.current .node-dot,
+body[data-theme="dark"] .chip-xp {
+  color: #121A3A;
+}
+body[data-theme="dark"] .tools-action:hover,
+body[data-theme="dark"] .tab:hover {
+  background: var(--navy-soft);
+  color: var(--ink);
+}
+body[data-theme="dark"] .tools-action {
+  color: var(--ink);
+}
