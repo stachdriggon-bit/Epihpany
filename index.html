@@ -22,6 +22,7 @@
   <script src="data-typing.js" defer></script>
   <script src="data-wotd.js" defer></script>
   <script src="data-aha.js" defer></script>
+  <script src="data-stories.js" defer></script>
   <script src="app.js" defer></script>
 </head>
 <body data-theme="light">
@@ -57,6 +58,7 @@
 
     <nav class="tabs" aria-label="Main">
       <button class="tab" data-view="home" aria-current="page"><svg><use href="#i-path"/></svg>Play</button>
+      <button class="tab" data-view="stories">📖 Stories</button>
       <button class="tab" data-view="words"><svg><use href="#i-book"/></svg>Words</button>
       <button class="tab" data-view="trophies"><svg><use href="#i-trophy"/></svg>Trophies</button>
     </nav>
@@ -161,6 +163,9 @@
     </div>
   </section>
 
+  <!-- STORIES -->
+  <section class="view" id="stories-view" aria-labelledby="stories-title"><div class="page"><div class="intro"><p class="kicker">READ · TAP · REMEMBER</p><h1 id="stories-title" tabindex="-1">Stories</h1><p class="lead">Short original stories. Tap any word to explore it, then answer three quick questions.</p></div><div id="stories-content"></div></div></section>
+
   <!-- WORDS -->
   <section class="view" id="words-view" aria-labelledby="words-title">
     <div class="page">
@@ -189,6 +194,7 @@
 
 <nav class="dock" aria-label="Main">
   <button class="dock-item" data-view="home" aria-current="page"><span class="dock-ic"><svg><use href="#i-path"/></svg></span>Play</button>
+  <button class="dock-item" data-view="stories"><span class="dock-ic">📖</span>Stories</button>
   <button class="dock-item" data-view="words"><span class="dock-ic"><svg><use href="#i-book"/></svg></span>Words</button>
   <button class="dock-item" data-view="trophies"><span class="dock-ic"><svg><use href="#i-trophy"/></svg></span>Trophies</button>
 </nav>
