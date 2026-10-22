@@ -648,3 +648,43 @@ body[data-theme="dark"] .trap-explanation{background:#252B3C;border-color:var(--
 .profile-motivation .challenge-card .challenge-action{display:inline-flex}
 @media(max-width:940px){.profile-motivation{grid-template-columns:repeat(2,minmax(0,1fr))}.profile-motivation .freeze-card{grid-column:1/-1}}
 @media(max-width:600px){.progress-strip{gap:10px;padding:12px 10px;justify-content:space-between}.progress-item{gap:4px;font-size:12px}.progress-item b{font-size:14px}.progress-symbol{font-size:14px}.progress-divider{height:18px}.profile-motivation{display:grid;grid-template-columns:1fr;overflow:visible;margin-inline:0;padding:0}.profile-motivation .challenge-card{padding:19px}.profile-motivation .freeze-card{grid-column:auto}}
+
+
+/* Play: four clear practice categories instead of a long stack of individual games */
+.games{grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.category-card{display:flex;align-items:center;gap:16px;min-width:0;min-height:150px;padding:20px;border:1.5px solid var(--line);border-radius:24px;background:#fff;color:var(--ink);text-align:left;cursor:pointer;transition:transform .16s,border-color .16s,box-shadow .16s}
+.category-card:hover,.category-card:focus-visible{border-color:var(--ink);transform:translateY(-2px);box-shadow:0 5px 0 var(--ink);outline:none}
+.category-icon{display:grid;place-items:center;flex:none;width:64px;height:64px;border-radius:20px;background:var(--tone);color:var(--tone-on,var(--ink));font:800 23px var(--display)}
+.category-copy{display:flex;flex-direction:column;gap:5px;min-width:0;flex:1}
+.category-copy strong{font:800 22px var(--display);line-height:1.15}
+.category-copy small{font-size:14px;line-height:1.4;color:var(--ink-2)}
+.category-copy em{font-size:12px;font-style:normal;font-weight:800;color:var(--ink-3);margin-top:3px}
+.category-arrow{font-size:25px;color:var(--ink-2);align-self:center}
+.category-picker[hidden]{display:none}
+.category-picker{position:fixed;inset:0;z-index:120;display:grid;place-items:center;padding:20px}
+.category-backdrop{position:absolute;inset:0;width:100%;height:100%;border:0;background:rgba(20,24,38,.48);cursor:pointer}
+.category-picker-card{position:relative;z-index:1;width:min(100%,520px);max-height:min(82dvh,680px);overflow:auto;padding:24px;background:var(--paper,#fff);border:1px solid var(--line);border-radius:26px;box-shadow:0 24px 80px rgba(15,20,35,.25);animation:pop-in .18s ease-out}
+.category-picker-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:20px}
+.category-picker-head h2{font:800 27px var(--display);margin:0 0 6px}
+.category-picker-head p:last-child{margin:0;color:var(--ink-2);font-size:14px;line-height:1.45}
+.category-picker-head .kicker{margin:0 0 7px}
+.category-picker-head .icon-btn{flex:none;font-size:25px}
+.category-options{display:grid;gap:10px}
+.category-option{display:flex;align-items:center;gap:13px;width:100%;min-height:72px;padding:12px 14px;border:1.5px solid var(--line);border-radius:17px;background:var(--surface,#fff);color:var(--ink);text-align:left;cursor:pointer}
+.category-option:hover,.category-option:focus-visible{border-color:var(--ink);outline:none}
+.category-option-icon{display:grid;place-items:center;flex:none;width:44px;height:44px;border-radius:13px;background:var(--tone);color:var(--tone-on,var(--ink));font-weight:800}
+.category-option>span:nth-child(2){display:flex;flex:1;flex-direction:column;gap:4px}
+.category-option strong{font-size:16px}
+.category-option small{font-size:12px;color:var(--ink-2)}
+.category-option-arrow{font-size:22px;color:var(--ink-2)}
+@keyframes pop-in{from{opacity:0;transform:translateY(8px) scale(.98)}to{opacity:1;transform:none}}
+@media(max-width:760px){
+ .games{grid-template-columns:1fr;gap:11px}
+ .category-card{min-height:112px;padding:15px 16px;border-radius:20px;gap:13px}
+ .category-icon{width:54px;height:54px;border-radius:16px}
+ .category-copy strong{font-size:20px}
+ .category-copy small{font-size:13px}
+ .category-picker{padding:12px}
+ .category-picker-card{padding:19px;border-radius:22px;max-height:88dvh}
+ .category-picker-head h2{font-size:24px}
+}
