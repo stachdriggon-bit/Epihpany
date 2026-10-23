@@ -677,7 +677,7 @@
     target.dataset.translationEnhanced='1';
     if(!target.id)target.id='translation-source-'+(++translationControlId);
     const output=document.createElement('div');output.className='translation-result';output.hidden=true;output.id=target.id+'-arabic';output.lang='ar';output.dir='rtl';
-    const button=document.createElement('button');button.type='button';button.className='translate-btn';button.dataset.translateTarget=target.id;button.setAttribute('aria-expanded','false');button.innerHTML='<span aria-hidden="true">ع</span> ترجمة '+(kind==='answer'?'الإجابة':'النص');button.hidden=!state.translationEnabled;
+    const button=document.createElement('button');button.type='button';button.className='translate-btn';button.dataset.translateTarget=target.id;button.setAttribute('aria-expanded','false');const label=kind==='answer'?'الإجابة':target.classList.contains('spot-text')?'النص':target.classList.contains('typing-prompt')?'الجملة':'السؤال';button.dataset.translationLabel=label;button.innerHTML='<span aria-hidden="true">ع</span> ترجمة '+label;button.hidden=!state.translationEnabled;
     if(kind==='answer'){const row=document.createElement('div');const mini=target.classList.contains('mg-card')||target.classList.contains('mg-tile');row.className='answer-translation-row'+(mini?' mini-answer-translation-row':'');target.parentNode.insertBefore(row,target);row.appendChild(target);row.appendChild(button);row.appendChild(output);}
     else{target.insertAdjacentElement('afterend',button);button.insertAdjacentElement('afterend',output);}
   }
@@ -693,7 +693,7 @@
     e.preventDefault();e.stopPropagation();
     const target=document.getElementById(button.dataset.translateTarget),output=document.getElementById(button.dataset.translateTarget+'-arabic');if(!target||!output)return;
     if(output.hidden){const result=translateToArabic(target.textContent);output.textContent=result.text;output.classList.toggle('translation-approximate',!result.exact);output.title=result.exact?'ترجمة محلية':'ترجمة مساعدة محلية؛ قد تبقى بعض الكلمات الإنجليزية دون ترجمة';output.hidden=false;button.setAttribute('aria-expanded','true');button.innerHTML='<span aria-hidden="true">ع</span> إخفاء الترجمة';}
-    else{output.hidden=true;button.setAttribute('aria-expanded','false');button.innerHTML='<span aria-hidden="true">ع</span> ترجمة '+(target.classList.contains('answer')?'الإجابة':'النص');}
+    else{output.hidden=true;button.setAttribute('aria-expanded','false');button.innerHTML='<span aria-hidden="true">ع</span> ترجمة '+(button.dataset.translationLabel|| (target.classList.contains('answer')?'الإجابة':'السؤال'));}
   });
   const translationObserver=new MutationObserver(()=>{enhanceTranslationControls($('#game-body'));enhanceTranslationControls($('#world-game'));});
   if($('#game-body'))translationObserver.observe($('#game-body'),{childList:true,subtree:true});
@@ -826,7 +826,7 @@
   $('#ar-toggle').addEventListener('click', toggleArabic);
   $('#game-ar').addEventListener('click', toggleArabic);
   const translationToggle = $('#translation-toggle');
-  if (translationToggle) translationToggle.addEventListener('click', () => { state.translationEnabled = !state.translationEnabled; save(); syncSettings(); document.querySelectorAll('.translate-btn').forEach(b => { b.hidden = !state.translationEnabled; }); document.querySelectorAll('.translation-result').forEach(el => { if (!state.translationEnabled) el.hidden = true; }); toast(state.translationEnabled ? 'Arabic translation is on' : 'Arabic translation is off'); });
+  if (translationToggle) translationToggle.addEventListener('click', () => { state.translationEnabled = !state.translationEnabled; save(); syncSettings(); enhanceTranslationControls($('#game-body')); document.querySelectorAll('.translate-btn').forEach(b => { b.hidden = !state.translationEnabled; }); document.querySelectorAll('.translation-result').forEach(el => { if (!state.translationEnabled) el.hidden = true; }); toast(state.translationEnabled ? 'Arabic translation is on' : 'Arabic translation is off'); });
   $('#sound-toggle').addEventListener('click', () => {
     state.sound = !state.sound; save(); syncSettings();
     toast(state.sound ? 'Sound is on' : 'Sound is off');
