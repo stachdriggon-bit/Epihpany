@@ -38,7 +38,7 @@ const GAMES = {
   spelling:{title:'Word detective',category:'SPELLING',xp:30,desc:'Spot the correctly written word.',questions:[
     {q:'Which spelling is correct?',sub:'Choose carefully.',answers:['Definately','Definitely','Definitly','Definetely'],correct:1,explain:'Definitely is spelled d-e-f-i-n-i-t-e-l-y. A useful trick: it contains “finite”.',word:['definitely','without doubt']},
     {q:'Choose the correct word.',sub:'Something that can be trusted is…',answers:['reliable','relyable','reliabel','relyible'],correct:0,explain:'Reliable is the correct spelling, formed from rely + -able.',word:['reliable','able to be trusted']},
-    {q:'Which is the correct form?',sub:'A strong feeling of certainty.',answers:['Confidance','Confidence','Confidense','Confidance'],correct:1,explain:'Confidence is spelled with -ence at the end.',word:['confidence','belief in yourself or something']},
+    {q:'Which is the correct form?',sub:'A strong feeling of certainty.',answers:['Confidance','Confidence','Confidense','Confedence'],correct:1,explain:'Confidence is spelled with -ence at the end.',word:['confidence','belief in yourself or something']},
     {q:'Choose the correct spelling.',sub:'To make something better.',answers:['Improve','Impruve','Improvve','Improv'],correct:0,explain:'Improve is spelled i-m-p-r-o-v-e.',word:['improve','to make or become better']},
     {q:'Which word is correct?',sub:'A difficult situation or problem.',answers:['Challange','Challenge','Chalenge','Challeng'],correct:1,explain:'Challenge has one “l” in the middle after “a” and ends in -enge.',word:['challenge','a difficult task or situation']}
   ]},

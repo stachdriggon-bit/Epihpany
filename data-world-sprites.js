@@ -216,6 +216,154 @@
 
   function ticketDesk() { return stall({ color: '#3478d4', kind: 'ticket' }); }
 
+  /* ---------- scenes: full-map backgrounds (20 × 14 tiles, 32 units per tile) ---------- */
+  const T = 32, MW = 20, MH = 14;
+  const rnd = (a, b, k = 1) => { const n = Math.sin(a * 127.1 + b * 311.7 + k * 74.7) * 43758.5453; return n - Math.floor(n); };
+  const sceneWrap = body => `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${MW * T} ${MH * T}" width="${MW * T * 2}" height="${MH * T * 2}">${body}</svg>`;
+  const rr = (x, y, w, h, r, fill, stroke, sw = 1.4, extra = '') => `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${r}" fill="${fill}"${stroke ? ` stroke="${stroke}" stroke-width="${sw}"` : ''} ${extra}/>`;
+  const ell = (cx, cy, rx, ry, fill, extra = '') => `<ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" fill="${fill}" ${extra}/>`;
+
+  function grassBase(c1 = '#93c37d', c2 = '#86b672', seed = 1) {
+    let s = `<defs><linearGradient id="gg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${c1}"/><stop offset="1" stop-color="${c2}"/></linearGradient></defs><rect width="${MW * T}" height="${MH * T}" fill="url(#gg)"/>`;
+    for (let gy = 0; gy < MH; gy++) for (let gx = 0; gx < MW; gx++) {
+      const sd = rnd(gx, gy, seed), px = gx * T, py = gy * T;
+      s += ell(px + T * (.2 + sd * .6), py + T * (.2 + rnd(gy, gx, seed) * .6), 6 + sd * 4, 3 + sd * 2, sd > .5 ? '#a5d28d' : '#78a864', `opacity=".22" transform="rotate(${Math.round(sd * 120)} ${px + 16} ${py + 16})"`);
+      if (sd > .66) {
+        const tx = px + T * (.3 + sd * .4), ty = py + T * .72;
+        s += `<path d="M${tx} ${ty}q-2-8-5-10M${tx} ${ty}q0-9 1-12M${tx} ${ty}q3-7 6-9" fill="none" stroke="#35693a" stroke-opacity=".34" stroke-width="1.3" stroke-linecap="round"/>`;
+        if (sd > .9) s += `<circle cx="${px + 23}" cy="${py + 9}" r="2.2" fill="${rnd(gy, gx) > .5 ? '#fff4cf' : '#f8d6e4'}"/><circle cx="${px + 23}" cy="${py + 9}" r=".9" fill="#e9b94f"/>`;
+      }
+    }
+    return s;
+  }
+
+  function planter(gx, gy) {
+    const px = gx * T, py = gy * T;
+    return ell(px + 16, py + 24, 12, 4, '#2d3a24', 'opacity=".2"') + rr(px + 5, py + 10, 22, 13, 4, '#b77e52', '#80563b', 1.2) + ell(px + 16, py + 10, 10, 6, '#6c9a58') +
+      [0, 1, 2].map(n => `<circle cx="${px + 10 + n * 6}" cy="${py + 8 + (n % 2) * 2.5}" r="1.9" fill="${n % 2 ? '#f4d58a' : '#e98b83'}"/>`).join('');
+  }
+  function flowerBed(gx, gy, w = 1) {
+    const px = gx * T, py = gy * T;
+    return ell(px + w * 16, py + 23, w * 13, 4, '#2d4c2f', 'opacity=".16"') + rr(px + 3, py + 9, w * T - 6, 14, 5, '#759c60', '#5a824e', 1.2) +
+      Array.from({ length: w * 4 }, (_, n) => `<circle cx="${px + 8 + n * 6}" cy="${py + 12 + (n % 2) * 4}" r="1.8" fill="${n % 2 ? '#f4d2a2' : '#eaa4a0'}"/>`).join('');
+  }
+  function fence(gx, gy, len) {
+    const fx = gx * T, fy = gy * T;
+    let s = `<g stroke="#9b744c" stroke-width="1.6" stroke-linecap="round"><path d="M${fx} ${fy + 25}H${fx + T * len}M${fx} ${fy + 20}H${fx + T * len}"/>`;
+    for (let n = 0; n <= len; n++) s += `<path d="M${fx + n * T} ${fy + 17}v13"/>`;
+    return s + '</g>';
+  }
+
+  function sceneVillage() {
+    let s = grassBase('#93c37d', '#86b672', 1);
+    for (const [gx, gy] of [[2, 1], [16, 1], [2, 12], [16, 12]]) s += ell((gx + 1) * T, (gy + 1) * T, 44, 36, '#6e9c64', 'opacity=".9"') + ell((gx + 1) * T, (gy + 1.1) * T, 30, 15, '#2c5c39', 'opacity=".18"');
+    // sand lane
+    s += `<path d="M${6.5 * T} ${4.5 * T}H${13.5 * T}V${10.5 * T}H${6.5 * T}Z" fill="none" stroke="#b79d68" stroke-width="${T + 4}" stroke-linejoin="round"/>`;
+    s += `<path d="M${6.5 * T} ${4.5 * T}H${13.5 * T}V${10.5 * T}H${6.5 * T}Z" fill="none" stroke="#dcc592" stroke-width="${T}" stroke-linejoin="round"/>`;
+    s += `<path d="M${6.5 * T} ${4.5 * T}H${13.5 * T}V${10.5 * T}H${6.5 * T}Z" fill="none" stroke="#f0e1b8" stroke-opacity=".55" stroke-width="${T - 10}" stroke-linejoin="round"/>`;
+    for (let k = 0; k < 40; k++) { const a = rnd(k, 3), b = rnd(3, k); const onTop = k % 4; const x = onTop === 0 ? 6.5 * T + a * 7 * T : onTop === 1 ? 6.5 * T + a * 7 * T : 6.5 * T + (onTop === 2 ? 0 : 7 * T); const y = onTop === 0 ? 4.5 * T : onTop === 1 ? 10.5 * T : 4.5 * T + a * 6 * T; s += ell(x + (b - .5) * 18, y + (rnd(k, 8) - .5) * 18, 1.8, 1, '#9a7b48', 'opacity=".35"'); }
+    // pond + bridge
+    s += rr(8.55 * T, 5.8 * T, 2.9 * T, 2.4 * T, 26, '#d9cba3', '#b9a77b', 1.4);
+    s += rr(8.75 * T, 6 * T, 2.5 * T, 2 * T, 22, '#62b2c4');
+    s += `<path d="M${9 * T} ${6.5 * T}q10-6 20 0t20 0M${9.2 * T} ${7.6 * T}q10-5 18 0t18 0" fill="none" stroke="#e8faf6" stroke-opacity=".55" stroke-width="1.4" stroke-linecap="round"/>`;
+    s += rr(7 * T, 7.12 * T, 5 * T, .78 * T, 5, '#81583e', '#5d402e', 1.4);
+    for (let n = 0; n < 20; n++) s += `<path d="M${7 * T + 6 + n * 7.8} ${7.12 * T + 3}v${.78 * T - 6}" stroke="${n % 3 ? '#a77a51' : '#c69b6c'}" stroke-width="1.3"/>`;
+    // gardens + fences
+    for (const [gx, gy] of [[4, 3], [15, 3], [4, 11], [15, 11]]) s += flowerBed(gx, gy);
+    for (const [gx, gy] of [[3, 3, 2], [16, 3, 2], [3, 11, 2], [16, 11, 2]].map(a => [a[0], a[1], a[2]])) s += fence(gx, gy, 2);
+    return { svg: sceneWrap(s), trees: [] };
+  }
+
+  function sceneMarket() {
+    let s = `<rect width="${MW * T}" height="${MH * T}" fill="#d9c9a2"/>`;
+    for (let gy = 0; gy < MH; gy++) for (let gx = 0; gx < MW; gx++) { const sd = rnd(gx, gy, 2), px = gx * T, py = gy * T; s += rr(px + 2, py + 2, T - 4, T - 4, 6, sd > .5 ? '#cdbb90' : '#e2d3ac', null, 0, 'opacity=".55"'); }
+    const road = (gx0, gy0, gx1, gy1) => rr(gx0 * T, gy0 * T, (gx1 - gx0 + 1) * T, (gy1 - gy0 + 1) * T, 0, '#ecdcb4');
+    // lanes: ring + middle row
+    s += `<g>${road(5, 3, 14, 3)}${road(5, 6, 14, 6)}${road(5, 9, 14, 9)}${road(5, 3, 5, 9)}${road(14, 3, 14, 9)}</g>`;
+    for (let gy = 0; gy < MH; gy++) for (let gx = 0; gx < MW; gx++) { const inRoad = (gy === 3 || gy === 6 || gy === 9) && gx >= 5 && gx <= 14 || (gx === 5 || gx === 14) && gy >= 3 && gy <= 9; if (inRoad) s += rr(gx * T + 3, gy * T + 3, T - 6, T - 6, 7, rnd(gx, gy) > .5 ? '#f3e6c3' : '#e9d9b0', null, 0, 'opacity=".9"'); }
+    for (const [gx, gy] of [[3, 2], [16, 2], [3, 11], [16, 11]]) s += planter(gx, gy);
+    const sx = 10 * T + 16, sy = 2 * T + 16;
+    s += rr(sx - 2, sy - 2, 4, 14, 1, '#765039') + rr(sx - 13, sy - 9, 26, 9, 2, '#a96d45', '#70482f', 1.2) + `<text x="${sx}" y="${sy - 2.4}" text-anchor="middle" font-family="sans-serif" font-weight="800" font-size="5.6" fill="#fff0c8">MARKET</text>`;
+    // bunting
+    s += `<path d="M${5 * T} ${2.2 * T}Q${10 * T} ${3.2 * T} ${15 * T} ${2.2 * T}" fill="none" stroke="#7a6a4f" stroke-width="1"/>` + Array.from({ length: 11 }, (_, k) => { const t = (k + .5) / 11, x = 5 * T + t * 10 * T, y = 2.2 * T + Math.sin(t * Math.PI) * T; return `<path d="M${x - 4} ${y}l4 8 4-8z" fill="${['#e65e50', '#f4c542', '#5c9b78', '#4f86c6'][k % 4]}"/>`; }).join('');
+    return { svg: sceneWrap(s), trees: [[1, 1], [18, 1], [1, 12], [18, 12]].map(([a, b]) => [a + .5, b + .5]) };
+  }
+
+  function sceneStation() {
+    let s = `<rect width="${MW * T}" height="${MH * T}" fill="#cfd3da"/>`;
+    for (let gy = 0; gy < MH; gy++) for (let gx = 0; gx < MW; gx++) if ((gx + gy) % 2 === 0) s += rr(gx * T, gy * T, T, T, 0, '#fff', null, 0, 'opacity=".2"');
+    for (const row of [3, 7]) {
+      const y = row * T;
+      s += rr(0, y + 1, MW * T, T - 2, 0, '#8a7a68') + rr(0, y + 3, MW * T, T - 6, 0, '#a89886');
+      for (let k = 0; k < 80; k++) s += ell(rnd(k, row) * MW * T, y + 4 + rnd(row, k) * (T - 8), 1.4, .9, '#6f6253', 'opacity=".45"');
+      for (let n = 0; n < MW * 2; n++) s += rr(n * 16 + 2, y + 4, 8, T - 8, 1.5, '#6b4c33', null, 0, 'opacity=".85"');
+      s += `<path d="M0 ${y + 10}H${MW * T}M0 ${y + 22}H${MW * T}" stroke="#d7dbe0" stroke-width="3"/><path d="M0 ${y + 9}H${MW * T}M0 ${y + 21}H${MW * T}" stroke="#7b8590" stroke-width="1"/>`;
+      s += rr(0, y - 4, MW * T, 4, 0, '#f4c94a') + rr(0, y + T, MW * T, 4, 0, '#f4c94a');
+    }
+    s += `<g opacity=".28" stroke="#fff" stroke-width="1.5"><path d="M0 ${11 * T}H${MW * T}M0 ${13 * T}H${MW * T}"/></g>`;
+    return { svg: sceneWrap(s), trees: [] };
+  }
+
+  function sceneHome() {
+    let s = `<rect width="${MW * T}" height="${MH * T}" fill="#e0c496"/>`;
+    for (let r = 0; r < MH * 2; r++) { s += rr(0, r * 16, MW * T, 16, 0, r % 2 ? '#d9b985' : '#e6cc9f', null, 0, 'opacity=".9"'); for (let k = 0; k < 6; k++) { const x = ((r * 53 + k * 119) % (MW * T)); s += `<path d="M${x} ${r * 16}v16" stroke="#8c643a" stroke-opacity=".28" stroke-width="1"/>`; } }
+    s += `<path d="M0 0H${MW * T}M0 16H${MW * T}" stroke="#8c643a" stroke-opacity=".12"/>`;
+    // rug
+    s += rr(6 * T, 6.2 * T, 8 * T, 4.6 * T, 16, '#b4535a', '#7d3038', 1.6) + rr(6.35 * T, 6.55 * T, 7.3 * T, 3.9 * T, 12, 'none', '#f1d5a8', 2.4, 'stroke-dasharray="6 5"') + rr(7 * T, 7.2 * T, 6 * T, 2.6 * T, 10, '#c76a70', null, 0, 'opacity=".7"');
+    // walls
+    s += rr(0, 0, MW * T, T * .55, 0, '#8a6d52') + rr(0, MH * T - T * .55, MW * T, T * .55, 0, '#8a6d52') + rr(0, 0, T * .55, MH * T, 0, '#8a6d52') + rr(MW * T - T * .55, 0, T * .55, MH * T, 0, '#8a6d52');
+    s += rr(0, T * .55, MW * T, 5, 0, '#000', null, 0, 'opacity=".12"');
+    for (const wx of [4, 10, 16]) s += rr(wx * T - 2, 2, 1.8 * T, T * .5, 3, '#f4ecdb', '#7a5a3c', 1.2) + rr(wx * T + 2, 5, 1.8 * T - 8, T * .5 - 7, 2, '#a9d5ea') + `<path d="M${wx * T + .9 * T - 2} 5v${T * .5 - 7}" stroke="#fff" stroke-width="1.2"/>`;
+    // skirting + plant + picture frames
+    s += `<g>${[[1.2, 1.4], [18.2, 1.4]].map(([gx, gy]) => ell(gx * T + 16, gy * T + 26, 10, 3.5, '#2d3a24', 'opacity=".2"') + rr(gx * T + 8, gy * T + 14, 16, 14, 3, '#b77e52', '#80563b', 1) + `<path d="M${gx * T + 16} ${gy * T + 14}q-10-6-9-14M${gx * T + 16} ${gy * T + 14}q8-8 10-14M${gx * T + 16} ${gy * T + 14}q0-10 0-16" stroke="#4f8950" stroke-width="3" fill="none" stroke-linecap="round"/>`).join('')}</g>`;
+    s += rr(7 * T, 1.0 * T, 1.6 * T, 1.2 * T, 3, '#c9a169', '#7d5a36', 1.6) + rr(7 * T + 5, 1.0 * T + 5, 1.6 * T - 10, 1.2 * T - 10, 2, '#9fc7a3') + `<path d="M${7 * T + 8} ${2 * T}l10-10 8 6 6-8 10 12z" fill="#5f9c6a"/>`;
+    s += rr(12 * T, 1.0 * T, 1.2 * T, 1.2 * T, 3, '#c9a169', '#7d5a36', 1.6) + rr(12 * T + 5, 1.0 * T + 5, 1.2 * T - 10, 1.2 * T - 10, 2, '#f3d9a6') + ell(12 * T + 19, 1.0 * T + 19, 6, 6, '#e48a62');
+    return { svg: sceneWrap(s), trees: [] };
+  }
+
+  function scenePark() {
+    let s = grassBase('#9ccb82', '#8cbf76', 5);
+    // path
+    s += rr(1.6 * T, 9 * T - 2, 16.8 * T, T + 4, 16, '#b8a173') + rr(1.7 * T, 9 * T, 16.6 * T, T, 14, '#dcc799') + rr(1.9 * T, 9 * T + 5, 16.2 * T, T - 10, 10, '#ebdab6', null, 0, 'opacity=".7"');
+    for (let k = 0; k < 40; k++) s += ell(2 * T + rnd(k, 4) * 16 * T, 9 * T + 6 + rnd(4, k) * (T - 12), 1.8, 1, '#a58b5a', 'opacity=".4"');
+    // pond
+    const px = 8 * T, py = 4 * T, pw = 4 * T, ph = 3 * T;
+    s += rr(px - 5, py - 3, pw + 10, ph + 10, 40, '#2d4c2f', null, 0, 'opacity=".16"') + rr(px - 5, py - 5, pw + 10, ph + 10, 38, '#d9cba3', '#b9a77b', 1.6);
+    s += `<defs><linearGradient id="pw" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7cc6d6"/><stop offset="1" stop-color="#4f9fb8"/></linearGradient></defs>` + rr(px, py, pw, ph, 34, 'url(#pw)');
+    s += `<g fill="none" stroke="#e8faf6" stroke-opacity=".55" stroke-width="1.4" stroke-linecap="round"><path d="M${px + 18} ${py + 26}q12-6 26 0"/><path d="M${px + 66} ${py + 56}q10-5 22 0"/><path d="M${px + 44} ${py + 74}q10-5 20 0"/></g>`;
+    for (const [lx, ly, f] of [[px + 30, py + 38, 0], [px + 92, py + 30, 1], [px + 78, py + 62, 0]]) s += `<path d="M${lx} ${ly}m-8 0a8 8 0 1 0 16 0a8 8 0 1 0-16 0" fill="#4f9a5c"/><path d="M${lx} ${ly}l8-2" stroke="#9cd2a2" stroke-width="1"/>` + (f ? `<circle cx="${lx}" cy="${ly - 1}" r="3" fill="#f6c6d8"/>` : '');
+    // flowers, hedges, picnic blanket
+    for (const [gx, gy, w] of [[1, 7, 2], [16, 7, 2], [3, 11.9, 2]]) s += flowerBed(gx, gy, w);
+    s += `<g transform="rotate(-4 ${14.4 * T} ${12.4 * T})">${rr(13.3 * T, 11.8 * T, 2.2 * T, 1.3 * T, 3, '#f4efe2', '#c9524a', 1.4)}${Array.from({ length: 5 }, (_, k) => rr(13.3 * T + 5 + k * 13.6, 11.8 * T + 1, 7, 1.3 * T - 2, 0, '#e65e50', null, 0, 'opacity=".75"')).join('')}${ell(14.4 * T, 12.4 * T, 7, 5, '#d9a05a')}</g>`;
+    return { svg: sceneWrap(s), trees: [[0, 0], [3, 1], [18, 0], [1, 6], [18, 11], [10, 12], [6, 13], [12, 1]].map(([a, b]) => [a + .5, b + .5]) };
+  }
+
+  function sceneSchool() {
+    let s = `<rect width="${MW * T}" height="${MH * T}" fill="#e8dcc4"/>`;
+    for (let gy = 0; gy < MH; gy++) for (let gx = 0; gx < MW; gx++) if ((gx + gy) % 2 === 0) s += rr(gx * T, gy * T, T, T, 0, '#785f40', null, 0, 'opacity=".08"');
+    s += rr(0, 0, MW * T, T * .45, 0, '#8a6d52') + rr(0, MH * T - T * .45, MW * T, T * .45, 0, '#8a6d52') + rr(0, 0, T * .45, MH * T, 0, '#8a6d52') + rr(MW * T - T * .45, 0, T * .45, MH * T, 0, '#8a6d52');
+    // hopscotch / court lines
+    s += `<g stroke="#fff" stroke-opacity=".6" stroke-width="2" fill="none"><rect x="${3 * T}" y="${5.5 * T}" width="${5 * T}" height="${3.3 * T}" rx="6"/><path d="M${5.5 * T} ${5.5 * T}v${3.3 * T}"/><circle cx="${5.5 * T}" cy="${7.15 * T}" r="${T * .55}"/></g>`;
+    for (let n = 0; n < 6; n++) s += rr((9.1 + (n % 2) * .28) * T, (4.1 + n * .43) * T, .48 * T, .27 * T, 3, n % 2 ? '#d5c6a7' : '#e3d6bd', '#78624a', .8);
+    for (const [gx, gy] of [[2, 2], [4, 2], [15, 2], [17, 2], [2, 10], [17, 10]]) { const px = gx * T, py = gy * T; s += ell(px + 16, py + 19, 14, 5, '#365833', 'opacity=".2"') + rr(px + 2.5, py + 8, 27, 14, 5, '#719b61', '#537b4a', 1.2) + [0, 1, 2].map(k => `<circle cx="${px + 8 + k * 8}" cy="${py + 9}" r="1.6" fill="${k % 2 ? '#f2c6a7' : '#f6e1a1'}"/>`).join(''); }
+    // building
+    const bx = 6.5 * T, by = .95 * T, bw = 7 * T, bh = 2.65 * T;
+    s += ell(bx + bw * .52, by + bh + 4, bw * .52, 6, '#3f3b2f', 'opacity=".22"');
+    s += `<path d="M${bx + bw} ${by + 6}l11 7v${bh - 13}h-11z" fill="#a6b69d" stroke="#6b7d63" stroke-width="1"/>`;
+    s += rr(bx, by, bw, bh, 2, '#e8dfc8', '#927b5d', 1.6);
+    s += `<path d="M${bx - 8} ${by + 4}L${bx + bw * .5} ${by - 20}L${bx + bw + 8} ${by + 4}Z" fill="#b96f52" stroke="#7d4a38" stroke-width="1.4" stroke-linejoin="round"/><path d="M${bx - 6} ${by + 3.5}L${bx + bw * .5} ${by - 17}" stroke="#e6b08a" stroke-width="1.8" fill="none"/>`;
+    for (const wx of [7.35, 8.65, 12.35, 13.65]) s += rr(wx * T, by + 20, 25, 29, 2, '#f7e9c8', '#9b7958', 1.2) + rr(wx * T + 3, by + 23, 19, 23, 1, '#91c9d5') + `<path d="M${wx * T + 12.5} ${by + 23}v23" stroke="#fff" stroke-opacity=".75" stroke-width="1"/>`;
+    s += rr(bx + bw * .43, by + 50, bw * .14, 34, 2, '#76533d', '#5b4030', 1.2) + `<circle cx="${bx + bw * .535}" cy="${by + 67}" r="1.3" fill="#e6c078"/>`;
+    s += rr(bx + bw * .31, by + 6, bw * .38, 9, 1.5, '#f3e6c9', '#a78a62', 1) + `<text x="${bx + bw * .5}" y="${by + 12.8}" text-anchor="middle" font-family="sans-serif" font-weight="800" font-size="5.6" fill="#5d7357">SCHOOL</text>`;
+    s += rr(bx + bw * .35, by + bh - 1, bw * .3, 3.5, 0, '#b7a58a') + rr(bx + bw * .31, by + bh + 2.5, bw * .38, 3.5, 0, '#d0bea0');
+    // flag
+    s += `<rect x="${16.4 * T}" y="${4.6 * T}" width="2.4" height="${3 * T}" fill="#8a8f98"/><path d="M${16.4 * T + 2.4} ${4.6 * T + 2}h20v12h-20z" fill="#e65e50"/>`;
+    return { svg: sceneWrap(s), trees: [] };
+  }
+
+  const SCENES = { village: sceneVillage, market: sceneMarket, station: sceneStation, home: sceneHome, park: scenePark, school: sceneSchool };
+  const sceneCache = {};
+
   /* ---------- registry ---------- */
   const HOUSE_RED = { wall: '#f0d8bb', side: '#c99b75', roof: '#a95446', roofL: '#c97962', glass: '#a9d5d7', trim: '#f6e6cc' };
   const HOUSE_BLUE = { wall: '#dce9e8', side: '#a9c5c8', roof: '#527486', roofL: '#779aa7', glass: '#8fc7d3', trim: '#e7f0ec' };
@@ -271,5 +419,17 @@
     return img && store.ready[key] ? { img } : null;
   };
   store.preload = () => Object.keys(RAW).forEach(load);
+  store.scene = function (id) {
+    const f = SCENES[id]; if (!f) return null;
+    let e = sceneCache[id];
+    if (!e) {
+      const sc = f(), img = new Image();
+      e = sceneCache[id] = { img, trees: sc.trees || [], ready: false };
+      img.onload = () => { e.ready = true; if (typeof store.onReady === 'function') store.onReady('scene:' + id); };
+      img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(sc.svg);
+    }
+    return e.ready ? e : null;
+  };
+  store.preloadScenes = () => Object.keys(SCENES).forEach(store.scene);
   window.WORLD_SPRITES = store;
 })();

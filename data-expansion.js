@@ -973,3 +973,25 @@
     addedStories:16, longFormStories:4, extraQuestions:extraQuestionBank.length, addedWords:moreWords.length
   };
 })();
+
+/* Quality guard: remove exact repeats created when several question banks were merged (keeps the first copy). */
+(() => {
+  if (typeof GAMES === 'undefined') return;
+  const norm = value => String(value).toLowerCase().replace(/\s+/g, ' ').trim();
+  const keyFor = (game, q) => {
+    const options = q.answers.map(norm).sort().join('|');
+    if (game === 'spelling') return options;          // same four spellings = same question
+    if (game === 'vocabulary') return norm(q.q);      // same word asked twice
+    return norm(q.q) + '|' + options;
+  };
+  Object.keys(GAMES).forEach(game => {
+    const seen = new Set();
+    GAMES[game].questions = GAMES[game].questions.filter(q => {
+      if (!q || !Array.isArray(q.answers)) return false;
+      const key = keyFor(game, q);
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+  });
+})();

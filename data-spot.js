@@ -327,9 +327,9 @@ const SPOT_QUESTIONS = [
   {
     "id": "spot-b1-09",
     "level": "B1",
-    "text": "I look forward to meet you.",
-    "wrongIndex": 4,
-    "fix": "meeting",
+    "text": "We are looking forward to hear from you.",
+    "wrongIndex": 5,
+    "fix": "hearing",
     "why_en": "“Look forward to” is followed by a noun or an -ing form.",
     "why_ar": "يتبع look forward to اسم أو فعل منتهٍ بـ ing."
   },

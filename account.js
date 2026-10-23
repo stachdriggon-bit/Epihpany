@@ -4,6 +4,8 @@
   const config = window.EPIPHANY_SUPABASE_CONFIG;
   const sdk = window.supabase;
   const $ = id => document.getElementById(id);
+  // Works on a domain root and on a sub-folder host (e.g. /Epiphany/) alike.
+  const callbackUrl = () => new URL('auth-callback.html', new URL('./', window.location.href)).href;
   const statusEl = () => $('account-status');
   let client = null;
   let currentUser = null;
@@ -56,7 +58,7 @@
     try {
       const {error} = await client.auth.signInWithOAuth({
         provider,
-        options: {redirectTo: new URL('/auth-callback.html', window.location.origin).href}
+        options: {redirectTo: callbackUrl()}
       });
       if (error) throw error;
     } catch (error) {
@@ -491,7 +493,7 @@
       submit.disabled = true;
       try {
         if (currentMode === 'signup') {
-          const {data, error} = await client.auth.signUp({email, password, options:{emailRedirectTo:new URL('/auth-callback.html', window.location.origin).href}});
+          const {data, error} = await client.auth.signUp({email, password, options:{emailRedirectTo:callbackUrl()}});
           if (error) throw error;
           if (data.session) {
             status('Account created. Preparing your saved progress…', 'success');
@@ -514,7 +516,7 @@
           status('Signed in. Loading your progress…', 'loading');
         } else if (currentMode === 'reset') {
           const {error} = await client.auth.resetPasswordForEmail(email, {
-            redirectTo: new URL('/auth-callback.html', window.location.origin).href
+            redirectTo: callbackUrl()
           });
           if (error) throw error;
           setMode('signin');

@@ -37,6 +37,7 @@
     (() => {
       const $ = id => document.getElementById(id);
       const card = $('card');
+      const HOME = new URL('./', window.location.href).href;
       let finished = false;
       let redirectTimer = null;
       function show(kind, title, message, autoRedirect) {
@@ -49,13 +50,23 @@
         $('spinner').hidden = kind !== '';
         $('continue').hidden = kind === '';
         if (redirectTimer) clearTimeout(redirectTimer);
-        if (autoRedirect) redirectTimer = setTimeout(() => { window.location.replace('/'); }, 1800);
+        if (autoRedirect) redirectTimer = setTimeout(() => { window.location.replace(HOME); }, 1800);
       }
-      $('continue').addEventListener('click', () => window.location.replace('/'));
+      $('continue').addEventListener('click', () => window.location.replace(HOME));
+      // Supabase reports problems in the URL fragment (#error=...) as well as in the query string.
       const params = new URLSearchParams(window.location.search);
-      const callbackError = params.get('error_description') || params.get('error');
+      const hashParams = new URLSearchParams(window.location.hash.replace(/^#/, ''));
+      const pick = key => params.get(key) || hashParams.get(key);
+      const callbackError = pick('error_description') || pick('error');
+      const errorCode = pick('error_code');
       if (callbackError) {
-        show('error', 'We couldn’t finish signing you in', 'The link may have expired, or the account provider rejected the request. Return to Epiphany and try again.', false);
+        if (errorCode === 'otp_expired' || /expired|invalid/i.test(callbackError)) {
+          show('error', 'This link has expired or was already used', 'Your email may already be verified. Return to Epiphany and sign in with your email and password — or request a new link.', false);
+        } else if (/access_denied|cancel/i.test(callbackError)) {
+          show('error', 'Sign-in was cancelled', 'You can return to Epiphany and try again whenever you like.', false);
+        } else {
+          show('error', 'We couldn’t finish signing you in', String(callbackError).replace(/\+/g, ' ').slice(0, 160) + '. Return to Epiphany and try again.', false);
+        }
         return;
       }
       const config = window.EPIPHANY_SUPABASE_CONFIG;

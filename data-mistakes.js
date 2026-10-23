@@ -1909,16 +1909,17 @@ const MISTAKE_QUESTIONS = [
     "level": "C2",
     "trap": "precision",
     "sub": "Choose the closest meaning of “ostensible”.",
-    "prompt": [
+    "prompt": "The ostensible purpose of the visit was to inspect the building.",
+    "options": [
       "appearing to be true or real, though not necessarily so",
       "proven beyond any doubt",
       "completely irrelevant",
       "impossible to observe"
     ],
-    "options": 0,
-    "answer": "Ostensible describes what appears to be the case.",
+    "answer": 0,
     "why_en": "Ostensible describes something that appears to be true or real, without guaranteeing that it actually is.",
-    "why_ar": "تصف كلمة ostensible شيئًا يبدو صحيحًا أو حقيقيًا ظاهريًا، دون أن يعني ذلك بالضرورة أنه كذلك فعلًا."
+    "why_ar": "تصف كلمة ostensible شيئًا يبدو صحيحًا أو حقيقيًا ظاهريًا، دون أن يعني ذلك بالضرورة أنه كذلك فعلًا.",
+    "arabic_hint": "ostensible تعني «ظاهري» أي ما يبدو صحيحًا في الظاهر."
   },
   {
     "id": "trap-c2-bank-08",

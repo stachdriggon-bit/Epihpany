@@ -15,3 +15,10 @@ World: story missions (fixed) + endless Practice runs (random layout, generated 
 - Mobile header no longer overflows with large XP (shows 12.9k).
 - World art: `data-world-sprites.js` holds ~40 vector (SVG) sprites — houses, trees, people with roles, stalls, park and school props. Edit the builder functions there to restyle the whole world; the old canvas drawing remains as a fallback.
 - Animation: NPC breathing/hopping, swaying trees, swinging swing, floating kite, walking hop + facing for the player (idle ≈10 fps; off with prefers-reduced-motion).
+
+## v7 review fixes
+- Stories: fixed a crash that stopped every story from opening (`page is not iterable`). All 52 stories now play to the result screen.
+- World: picked-up items are restored after every mission (previously 4 story missions became impossible after a fetch mission). Scene backgrounds (SVG) for all six regions.
+- Data: repaired one malformed Mistakes item, removed repeated questions, fixed a duplicate answer and a duplicate Spot sentence, rewrote three very short C1/C2 stories.
+- Account: callback URLs work on sub-folder hosting, `auth-callback.html` now reads errors from the URL fragment (`#error=...`) and shows clear messages.
+- `supabase-privacy-migration.sql` v2: v1 only restricted signed-in users, so anonymous visitors could still read private profiles/posts. Re-run v2.
