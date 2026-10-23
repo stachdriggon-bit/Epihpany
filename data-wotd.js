@@ -557,7 +557,9 @@ const WOTD_WORDS = [
     "meaning_ar": "يشتق أو يستمد",
     "level": "C2",
     "example": "Many words derive from Latin.",
-    "origin": "From Latin derivare, to lead off."
+    "example_ar": "تُشتق كلمات كثيرة من اللاتينية.",
+    "origin": "From Latin derivare, to lead off.",
+    "origin_ar": "من اللاتينية derivare، أي يقود أو يشتق."
   },
   {
     "word": "sustain",
@@ -566,7 +568,9 @@ const WOTD_WORDS = [
     "meaning_ar": "يحافظ على الاستمرار",
     "level": "C2",
     "example": "Small habits sustain progress.",
-    "origin": "From Latin sustinere, to hold up."
+    "example_ar": "تحافظ العادات الصغيرة على التقدّم.",
+    "origin": "From Latin sustinere, to hold up.",
+    "origin_ar": "من اللاتينية sustinere، أي يدعم."
   },
   {
     "word": "compelling",
@@ -575,7 +579,9 @@ const WOTD_WORDS = [
     "meaning_ar": "مقنع",
     "level": "C2",
     "example": "She gave a compelling argument.",
-    "origin": "From compel, ultimately Latin compellere."
+    "example_ar": "قدّمت حجة مقنعة.",
+    "origin": "From compel, ultimately Latin compellere.",
+    "origin_ar": "من compel، وأصلها في النهاية لاتيني compellere."
   },
   {
     "word": "framework",
@@ -584,7 +590,9 @@ const WOTD_WORDS = [
     "meaning_ar": "إطار عمل",
     "level": "C2",
     "example": "Use a framework to organise your essay.",
-    "origin": "Frame + work describes a supporting structure."
+    "example_ar": "استخدم إطارًا لتنظيم مقالتك.",
+    "origin": "Frame + work describes a supporting structure.",
+    "origin_ar": "تصف frame وwork معًا بنية داعمة."
   },
   {
     "word": "furthermore",
@@ -593,7 +601,9 @@ const WOTD_WORDS = [
     "meaning_ar": "علاوة على ذلك",
     "level": "C2",
     "example": "Furthermore, the results were consistent.",
-    "origin": "Formed from further + more."
+    "example_ar": "علاوة على ذلك، كانت النتائج متسقة.",
+    "origin": "Formed from further + more.",
+    "origin_ar": "تكوّنت من further بمعنى إضافي وmore بمعنى أكثر."
   },
   {
     "word": "whereas",
@@ -602,7 +612,9 @@ const WOTD_WORDS = [
     "meaning_ar": "بينما",
     "level": "C2",
     "example": "I prefer tea, whereas he likes coffee.",
-    "origin": "Where + as developed into a contrast connector."
+    "example_ar": "أفضل الشاي، بينما هو يحب القهوة.",
+    "origin": "Where + as developed into a contrast connector.",
+    "origin_ar": "تطورت where وas لتصبح أداة ربط للمقارنة والتضاد."
   },
   {
     "word": "conversely",
@@ -611,7 +623,9 @@ const WOTD_WORDS = [
     "meaning_ar": "على العكس",
     "level": "C2",
     "example": "Conversely, the second method was slower.",
-    "origin": "From Latin conversus, turned around."
+    "example_ar": "على العكس، كانت الطريقة الثانية أبطأ.",
+    "origin": "From Latin conversus, turned around.",
+    "origin_ar": "من اللاتينية conversus، أي انعكس."
   },
   {
     "word": "undermine",
@@ -620,7 +634,9 @@ const WOTD_WORDS = [
     "meaning_ar": "يقوّض",
     "level": "C2",
     "example": "One error can undermine the argument.",
-    "origin": "Originally linked to digging beneath a structure."
+    "example_ar": "قد يضعف خطأ واحد الحجة.",
+    "origin": "Originally linked to digging beneath a structure.",
+    "origin_ar": "ارتبطت أصلًا بفكرة الحفر تحت بنية لإضعافها."
   },
   {
     "word": "endeavour",
@@ -629,7 +645,9 @@ const WOTD_WORDS = [
     "meaning_ar": "مسعى",
     "level": "C2",
     "example": "Learning a language is a worthwhile endeavour.",
-    "origin": "From Old French endever, to make an effort."
+    "example_ar": "تعلّم لغة مسعى يستحق الجهد.",
+    "origin": "From Old French endever, to make an effort.",
+    "origin_ar": "من الفرنسية القديمة endever، أي يبذل جهدًا."
   },
   {
     "word": "profound",
@@ -638,6 +656,8 @@ const WOTD_WORDS = [
     "meaning_ar": "عميق الأثر",
     "level": "C2",
     "example": "The book had a profound effect on me.",
-    "origin": "From Latin profundus, deep."
+    "example_ar": "كان للكتاب تأثير عميق فيّ.",
+    "origin": "From Latin profundus, deep.",
+    "origin_ar": "من اللاتينية profundus، وتعني عميق."
   }
 ];
