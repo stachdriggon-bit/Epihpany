@@ -95,18 +95,7 @@
   <!-- PLAY -->
   <section class="view is-active" id="home-view" aria-labelledby="home-title">
     <div class="page">
-      <section class="account-welcome-banner" id="account-welcome-banner" aria-labelledby="account-welcome-title">
-        <div class="account-welcome-mark" aria-hidden="true">✦</div>
-        <div class="account-welcome-copy">
-          <strong id="account-welcome-title">Keep your progress safe</strong>
-          <p>Create a free account to sync your learning across devices, or continue as a guest.</p>
-        </div>
-        <div class="account-welcome-actions">
-          <button class="btn btn-go" type="button" id="welcome-create-account">Create account</button>
-          <button class="btn btn-ghost" type="button" id="welcome-sign-in">Sign in</button>
-          <button class="account-guest-link" type="button" id="welcome-continue-guest">Continue as guest</button>
-        </div>
-      </section>
+
 
       <div class="intro">
         <p class="kicker" id="greeting">Good evening</p>
@@ -245,6 +234,25 @@
   <button class="dock-item" data-view="words"><span class="dock-ic"><svg><use href="#i-book"/></svg></span>Words</button>
   <button class="dock-item" data-view="trophies"><span class="dock-ic"><svg><use href="#i-trophy"/></svg></span>Trophies</button>
 </nav>
+
+<!-- First-visit account welcome modal -->
+<div class="account-welcome-modal" id="account-welcome-modal" hidden role="dialog" aria-modal="true" aria-labelledby="account-welcome-title">
+  <button class="account-modal-backdrop" id="welcome-modal-backdrop" type="button" aria-label="Close welcome window"></button>
+  <section class="account-modal-card">
+    <button class="account-modal-close" id="welcome-modal-close" type="button" aria-label="Close">×</button>
+    <div class="account-modal-brand" aria-hidden="true"><span>✦</span></div>
+    <p class="kicker">YOUR LEARNING JOURNEY</p>
+    <h2 id="account-welcome-title">Every word brings you closer.</h2>
+    <p class="account-modal-intro">Create an account to keep your progress safe and continue learning on any device.</p>
+    <button class="account-social-button account-google-button" id="welcome-google" type="button"><span class="social-google-mark" aria-hidden="true">G</span>Continue with Google</button>
+    <button class="account-social-button account-facebook-button" id="welcome-facebook" type="button"><span class="social-facebook-mark" aria-hidden="true">f</span>Continue with Facebook</button>
+    <div class="account-modal-divider"><span>or use your email</span></div>
+    <button class="btn btn-go account-modal-email" id="welcome-create-account" type="button">Create account with email</button>
+    <button class="account-modal-signin" id="welcome-sign-in" type="button">Already have an account? <strong>Sign in</strong></button>
+    <button class="account-guest-link account-modal-guest" id="welcome-continue-guest" type="button">Continue as guest</button>
+    <p class="account-modal-footnote">Your progress stays on this device when you play as a guest.</p>
+  </section>
+</div>
 
 <!-- FIRST-VISIT PLACEMENT TEST -->
 <div class="placement" id="placement" hidden role="dialog" aria-modal="true" aria-labelledby="placement-title">
