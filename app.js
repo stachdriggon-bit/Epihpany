@@ -1930,7 +1930,7 @@
   function buildPromotionQuestions(targetLevel) {
     const bank = [];
     Object.entries(GAMES).forEach(([gameId, game]) => {
-      if (!['vocabulary','grammar','story','listening','advanced','mistakes','spot','typing'].includes(gameId)) return;
+      if (!['vocabulary','grammar','story','listening','advanced','mistakes'].includes(gameId)) return;
       (game.questions || []).forEach(q => {
         if (q.level !== targetLevel.id || !Array.isArray(q.answers) || q.answers.length < 2 ||
             !Number.isInteger(q.correct) || q.correct < 0 || q.correct >= q.answers.length) return;
