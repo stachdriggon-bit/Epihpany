@@ -513,14 +513,58 @@
 
   /* ---------- Stories ---------- */
   let ST=null;
+  let STORY_MODE='library';
+  let CREATE_STORY={topic:'mystery',mode:'setup',story:null,answer:'',name:'Robin',friend:'Maya',time:'today',place:'a small town'};
   const storyLevelIndex=level=>LEVELS.findIndex(l=>l.id===level);
+  const CREATE_STORY_TOPICS={
+    mystery:{label:'A small mystery',emoji:'🔎',target:'bridge',definition:'A structure built over a river, road, or other gap so people can cross from one side to the other.',clue:'Look for the structure people use to cross water safely.',before:'Robin needed a safe way to cross the river. The',after:'helped people get from one side to the other.'},
+    adventure:{label:'An unexpected adventure',emoji:'🧭',target:'compass',definition:'A small instrument that shows directions, usually north, south, east, and west.',clue:'The characters need something that can tell them which direction to go.',before:'They needed an instrument that could show direction. The',after:'pointed towards north.'},
+    everyday:{label:'A day-to-day surprise',emoji:'🧾',target:'receipt',definition:'A paper or digital record that shows what you bought and how much you paid.',clue:'The paper lists the items, their prices, and the money paid.',before:'The shop assistant gave them a paper record of the purchase: a',after:'showed each item and its price.'},
+    nature:{label:'Nature and discovery',emoji:'🌿',target:'shelter',definition:'A place or structure that protects someone from danger or bad weather.',clue:'The hikers need a place that protects them from rain and wind.',before:'The rain grew stronger, so they looked for a dry place. A',after:'kept them protected from the weather.'}
+  };
+  const CREATE_STORY_TIMES={today:'today',past:'a few years ago',future:'in the future'};
+  const CREATE_STORY_PLACES=['a small town','a coastal village','a mountain village','a busy city','a quiet forest'];
+  const CREATE_STORY_NAMES=['Robin','Maya','Alex','Sam','Nora','Leo','Amina','Daniel'];
+  function renderCreateStory(){
+    const box=$('#create-story-panel');if(!box)return;
+    const unlocked=hasDeveloperAccess()||storyLevelIndex(currentLevel().id)>=storyLevelIndex('B1');
+    if(!unlocked){box.innerHTML='<div class="create-story-locked"><span class="create-story-icon">🔒</span><div><h3>Unlock at B1</h3><p>Create Your Story asks you to explain an unfamiliar word in English, using clues from the surrounding text. Reach B1 to try this writing challenge. You can preview the idea now, but the activity stays locked until then.</p><div class="create-story-example"><p class="kicker">QUICK PREVIEW</p><p>“The river was too wide to cross on foot. Robin looked for a safe way to get to the other side…”</p><p class="create-story-blank">What kind of structure could help people cross a river?</p></div></div></div>';return;}
+    if(CREATE_STORY.mode==='setup'){
+      box.innerHTML='<div class="create-story-setup"><div class="create-story-intro"><span class="create-story-icon">✨</span><div><p class="kicker">YOUR CHOICES · YOUR STORY</p><h3>Build a story in seconds</h3><p>Choose a theme, two characters, a time and a place. Then read the story and explain a hidden word in your own English.</p></div></div><form id="create-story-form" class="create-story-form"><label for="create-topic">Story idea</label><select id="create-topic" name="topic">'+Object.entries(CREATE_STORY_TOPICS).map(([id,t])=>'<option value="'+id+'" '+(CREATE_STORY.topic===id?'selected':'')+'>'+t.emoji+' '+t.label+'</option>').join('')+'</select><div class="create-story-two"><div><label for="create-name">Main character</label><input id="create-name" name="name" maxlength="24" value="'+esc(CREATE_STORY.name)+'" required></div><div><label for="create-friend">Friend / partner</label><input id="create-friend" name="friend" maxlength="24" value="'+esc(CREATE_STORY.friend)+'" required></div></div><label for="create-time">When does it happen?</label><select id="create-time" name="time"><option value="today" '+(CREATE_STORY.time==='today'?'selected':'')+'>Today</option><option value="past" '+(CREATE_STORY.time==='past'?'selected':'')+'>A few years ago</option><option value="future" '+(CREATE_STORY.time==='future'?'selected':'')+'>In the future</option></select><label for="create-place">Where does it happen?</label><select id="create-place" name="place">'+CREATE_STORY_PLACES.map(p=>'<option value="'+esc(p)+'" '+(p===CREATE_STORY.place?'selected':'')+'>'+p+'</option>').join('')+'</select><button class="btn" type="submit">Create my story →</button></form></div>';return;
+    }
+    const s=CREATE_STORY.story;if(!s)return;
+    if(CREATE_STORY.mode==='story'){
+      box.innerHTML='<div class="create-story-reader"><div class="create-story-story-head"><span class="create-story-icon">'+s.emoji+'</span><div><p class="kicker">YOUR STORY · '+esc(currentLevel().id)+'</p><h3>'+esc(s.title)+'</h3><p>Read for meaning, not just for individual words.</p></div></div>'+s.pages.map((p,i)=>'<p class="create-story-paragraph"><span>'+String(i+1).padStart(2,'0')+'</span>'+esc(p)+'</p>').join('')+'<div class="create-story-gap"><p class="kicker">CONTEXT CLUE</p><p>'+esc(s.clue)+'</p><p class="create-story-blank">'+esc(s.before)+' <span class="hidden-word">________</span> '+esc(s.after)+'</p><p class="create-story-instruction">The word is hidden. Explain what it means in English without writing the word itself.</p><form id="create-story-answer-form"><label for="create-story-answer">Your explanation</label><textarea id="create-story-answer" name="answer" rows="3" maxlength="500" required placeholder="It is a thing / place that…">'+esc(CREATE_STORY.answer)+'</textarea><button class="btn" type="submit">Check my explanation</button></form></div></div>';return;
+    }
+    box.innerHTML='<div class="create-story-feedback"><p class="kicker">THINK · EXPLAIN · REMEMBER</p><h3>'+(CREATE_STORY.selfRate==='good'?'Nice work! You explained the idea.':CREATE_STORY.selfRate==='practice'?'Good effort. Keep building your explanation.':'Compare your explanation with the meaning.')+'</h3><div class="create-story-your-answer"><strong>Your explanation</strong><p>'+esc(CREATE_STORY.answer)+'</p></div><div class="create-story-model"><strong>One possible meaning</strong><p>'+esc(s.definition)+'</p></div><p class="create-story-note">There is more than one good way to explain a word. Compare the main idea, then decide whether your explanation was clear. Your answer is not judged by an exact-match algorithm.</p><div class="create-story-rating"><button class="btn btn-ghost" data-create-rate="practice">I want more practice</button><button class="btn" data-create-rate="good">I explained it clearly</button></div><button class="btn btn-ghost" data-create-next>Make another story →</button></div>';
+  }
+  function createStorySubmit(form){
+    const data=new FormData(form),topic=String(data.get('topic')||'mystery'),name=String(data.get('name')||'Robin').trim().slice(0,24)||'Robin',friend=String(data.get('friend')||'Maya').trim().slice(0,24)||'Maya',time=String(data.get('time')||'today'),place=String(data.get('place')||CREATE_STORY_PLACES[0]),t=CREATE_STORY_TOPICS[topic]||CREATE_STORY_TOPICS.mystery;
+    const timePhrase=CREATE_STORY_TIMES[time]||'today';
+    const storyText={
+      mystery:[name+' arrived in '+place+' '+timePhrase+'. The river was high after heavy rain, and the path beside it was closed.',friend+' pointed to a strong structure with wooden boards and rails. People could walk across it to reach the other side safely.','Near the middle, '+name+' noticed a small metal key between two boards. Someone had dropped it while crossing.'],
+      adventure:['During an expedition in '+place+', '+name+' discovered an old map '+timePhrase+'. The trail split into three paths, and the signs had fallen down.',friend+' took a small round instrument from the backpack. Its needle moved until it pointed north, helping them work out which path to follow.','Using the map and the instrument, '+name+' chose the eastern trail. Soon, the trees opened onto a hidden waterfall.'],
+      everyday:[name+' stopped at a little shop in '+place+' '+timePhrase+'. After buying a notebook and a bottle of water, the shop assistant handed over a small printed paper.',friend+' explained that the paper listed each item, its price, the total cost, and the amount paid. It could help if an item needed to be returned.','Later, '+name+' checked the paper and noticed the notebook had been charged twice. The shop corrected the mistake and returned the extra money.'],
+      nature:[name+' was exploring the hills near '+place+' '+timePhrase+'. Dark clouds appeared, and the wind became stronger. There was no house nearby.',friend+' found a small wooden structure under the rocks. It had a roof and three walls, giving hikers a dry place to wait until the storm passed.','They stayed inside the structure until the rain stopped. Then '+name+' continued along the path, feeling safer and ready to explore again.']
+    };
+    CREATE_STORY={...CREATE_STORY,topic,mode:'story',name,friend,time,place,answer:'',selfRate:null,story:{title:t.label,emoji:t.emoji,pages:storyText[topic]||storyText.mystery,target:t.target,definition:t.definition,clue:t.clue,before:t.before,after:t.after}};
+    renderCreateStory();
+  }
+  function submitCreateStoryAnswer(form){
+    if(!CREATE_STORY.story)return;
+    const answer=String(new FormData(form).get('answer')||'').trim();
+    if(answer.length<12){toast('Try to explain the idea in a little more detail.');return;}
+    CREATE_STORY.answer=answer;CREATE_STORY.mode='feedback';CREATE_STORY.selfRate=null;renderCreateStory();
+  }
+  
   const storyIsSaved=word=>state.words.some(w=>String(w[0]).toLowerCase()===String(word).toLowerCase());
   function renderStories(){
     const root=$('#stories-content');if(!root||typeof STORIES==='undefined')return;
     const unlocked=hasDeveloperAccess()?LEVELS.length-1:storyLevelIndex(currentLevel().id),ordered=STORIES.slice().sort((a,b)=>storyLevelIndex(a.level)-storyLevelIndex(b.level)||a.title.localeCompare(b.title));
     const featured=ordered.find(s=>storyLevelIndex(s.level)<=unlocked&&!(state.stories[s.id]&&state.stories[s.id].done))||ordered.find(s=>storyLevelIndex(s.level)<=unlocked)||ordered[0];
     const card=(s,large)=>{const locked=storyLevelIndex(s.level)>unlocked,done=!!(state.stories[s.id]&&state.stories[s.id].done);return '<button type="button" class="story-card '+(large?'story-featured ':'')+(locked?'is-locked ':'')+(done?'is-done':'')+'" data-story-open="'+esc(s.id)+'" '+(locked?'aria-disabled="true"':'')+'><span class="story-art" style="--story-tone:'+esc(s.tone)+'"><span>'+esc(s.emoji)+'</span>'+(locked?'<b>🔒</b>':'')+'</span><span class="story-card-info"><span class="story-card-meta"><em>'+esc(s.level)+'</em><small>'+s.minutes+' min</small></span><strong>'+esc(s.title)+'</strong><small>'+(locked?'Unlock at '+esc(s.level):done?'✓ Completed · '+state.stories[s.id].score+'/3':'Read this story')+'</small></span></button>';};
-    root.innerHTML=(hasDeveloperAccess()?'<p class="developer-access-note">🛠 Developer access active · all CEFR stories unlocked for testing</p>':'')+'<section class="story-feature-section"><div class="block-head"><h2>Recommended story</h2><p>One small story, a little more English.</p></div>'+card(featured,true)+'</section>'+LEVELS.map(item=>item.id).map(level=>'<section class="story-level"><div class="block-head"><h2>'+level+' stories</h2><p>'+(storyLevelIndex(level)<=unlocked?'Ready to read':'Reach '+level+' to unlock these stories')+'</p></div><div class="story-grid">'+ordered.filter(s=>s.level===level&&s.id!==featured.id).map(s=>card(s,false)).join('')+'</div></section>').join('');
+    root.innerHTML=(hasDeveloperAccess()?'<p class="developer-access-note">🛠 Developer access active · all CEFR stories unlocked for testing</p>':'')+'<div class="story-mode-switch" role="tablist" aria-label="Story modes"><button type="button" role="tab" aria-selected="'+(STORY_MODE==='library')+'" class="'+(STORY_MODE==='library'?'is-active':'')+'" data-story-mode="library"><span>📚</span><strong>Story Library</strong><small>Read and choose</small></button><button type="button" role="tab" aria-selected="'+(STORY_MODE==='create')+'" class="'+(STORY_MODE==='create'?'is-active':'')+'" data-story-mode="create"><span>✨</span><strong>Create Your Story</strong><small>Read · infer · explain</small></button></div>'+(STORY_MODE==='create'?'<section class="create-story-shell"><div id="create-story-panel"></div></section>':'')+'<div class="story-library-content" '+(STORY_MODE==='library'?'':'hidden')+'><section class="story-feature-section"><div class="block-head"><h2>Recommended story</h2><p>One small story, a little more English.</p></div>'+card(featured,true)+'</section>'+LEVELS.map(item=>item.id).map(level=>'<section class="story-level"><div class="block-head"><h2>'+level+' stories</h2><p>'+(storyLevelIndex(level)<=unlocked?'Ready to read':'Reach '+level+' to unlock these stories')+'</p></div><div class="story-grid">'+ordered.filter(s=>s.level===level&&s.id!==featured.id).map(s=>card(s,false)).join('')+'</div></section>').join('')+'</div>';
+    if(STORY_MODE==='create')renderCreateStory();
   }
   function prepareStoryQuestions(story){
     const questions=(story.questions||[]).map(q=>({...q,answers:[...(q.answers||[])]}));
@@ -611,9 +655,16 @@
     if (G) { if (G.answered) setSheetSpace(); } else toast(state.helpArabic ? 'Arabic help is on' : 'Arabic help is off');
   }
   // Capture the theme action before the settings popover closes.
-  document.addEventListener('submit', e => { if(e.target && e.target.id==='typing-form'){e.preventDefault();checkTyping();} });
+  document.addEventListener('submit', e => {
+    if(e.target && e.target.id==='typing-form'){e.preventDefault();checkTyping();return;}
+    if(e.target && e.target.id==='create-story-form'){e.preventDefault();createStorySubmit(e.target);return;}
+    if(e.target && e.target.id==='create-story-answer-form'){e.preventDefault();submitCreateStoryAnswer(e.target);return;}
+  });
   document.addEventListener('click', e => {
     if (MG && miniClick(e)) return;
+    const storyMode=e.target.closest('[data-story-mode]');if(storyMode){STORY_MODE=storyMode.dataset.storyMode;renderStories();return;}
+    const createRate=e.target.closest('[data-create-rate]');if(createRate&&CREATE_STORY.mode==='feedback'){CREATE_STORY.selfRate=createRate.dataset.createRate;renderCreateStory();return;}
+    if(e.target.closest('[data-create-next]')){CREATE_STORY={...CREATE_STORY,mode:'setup',story:null,answer:'',selfRate:null};renderCreateStory();return;}
     const so=e.target.closest('[data-story-open]');if(so){startStory(so.dataset.storyOpen);return;}
     const sa=e.target.closest('[data-story-answer]');if(sa){answerStoryQuestion(Number(sa.dataset.storyAnswer));return;}
     const sd=e.target.closest('[data-story-decision]');if(sd){answerStoryDecision(Number(sd.dataset.storyDecision));return;}
