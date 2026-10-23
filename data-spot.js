@@ -531,5 +531,329 @@ const SPOT_QUESTIONS = [
     "fix": "on",
     "why_en": "The standard collocation is contingent on.",
     "why_ar": "التركيب الصحيح هو contingent on."
+  },
+  {
+    "id": "spot-a1-17",
+    "level": "A1",
+    "text": "She don't like tea.",
+    "wrongIndex": 1,
+    "fix": "doesn't",
+    "why_en": "Use doesn't with she in the present simple.",
+    "why_ar": "نستخدم doesn't مع she في المضارع البسيط."
+  },
+  {
+    "id": "spot-a1-18",
+    "level": "A1",
+    "text": "There are a cat under the chair.",
+    "wrongIndex": 1,
+    "fix": "is",
+    "why_en": "Use is with a singular noun phrase.",
+    "why_ar": "نستخدم is مع الاسم المفرد."
+  },
+  {
+    "id": "spot-a1-19",
+    "level": "A1",
+    "text": "He go to work by bus.",
+    "wrongIndex": 1,
+    "fix": "goes",
+    "why_en": "Third-person singular takes -s in the present simple.",
+    "why_ar": "نضيف s للفعل مع الغائب المفرد في المضارع البسيط."
+  },
+  {
+    "id": "spot-a1-20",
+    "level": "A1",
+    "text": "I am twelve year old.",
+    "wrongIndex": 3,
+    "fix": "years",
+    "why_en": "Use the plural noun years after twelve.",
+    "why_ar": "نستخدم years بالجمع بعد twelve."
+  },
+  {
+    "id": "spot-a2-17",
+    "level": "A2",
+    "text": "We was tired after the trip.",
+    "wrongIndex": 1,
+    "fix": "were",
+    "why_en": "Use were with we.",
+    "why_ar": "نستخدم were مع we."
+  },
+  {
+    "id": "spot-a2-18",
+    "level": "A2",
+    "text": "She is good in mathematics.",
+    "wrongIndex": 3,
+    "fix": "at",
+    "why_en": "The usual collocation is good at a subject or skill.",
+    "why_ar": "التركيب الشائع هو good at."
+  },
+  {
+    "id": "spot-a2-19",
+    "level": "A2",
+    "text": "I have seen him yesterday.",
+    "wrongIndex": 1,
+    "fix": "saw",
+    "why_en": "A finished past-time marker normally takes the past simple.",
+    "why_ar": "مع زمن ماضٍ منتهٍ نستخدم الماضي البسيط عادةً."
+  },
+  {
+    "id": "spot-a2-20",
+    "level": "A2",
+    "text": "There isn't some bread left.",
+    "wrongIndex": 2,
+    "fix": "any",
+    "why_en": "Any is normally used in negative statements like this.",
+    "why_ar": "نستخدم any عادةً في الجمل المنفية مثل هذه."
+  },
+  {
+    "id": "spot-b1-17",
+    "level": "B1",
+    "text": "She suggested take a taxi.",
+    "wrongIndex": 2,
+    "fix": "taking",
+    "why_en": "Suggest is followed by an -ing form or a that-clause.",
+    "why_ar": "يأتي بعد suggest فعل ing أو جملة تبدأ بـ that."
+  },
+  {
+    "id": "spot-b1-18",
+    "level": "B1",
+    "text": "I look forward to hear from you.",
+    "wrongIndex": 4,
+    "fix": "hearing",
+    "why_en": "In look forward to, to is a preposition followed by -ing.",
+    "why_ar": "في look forward to يأتي بعد to فعل ing."
+  },
+  {
+    "id": "spot-b1-19",
+    "level": "B1",
+    "text": "He explained the problem me.",
+    "wrongIndex": 4,
+    "fix": "to me",
+    "why_en": "Explain something to someone is the standard pattern.",
+    "why_ar": "التركيب الصحيح explain something to someone."
+  },
+  {
+    "id": "spot-b1-20",
+    "level": "B1",
+    "text": "Despite of the traffic, we arrived early.",
+    "wrongIndex": 0,
+    "fix": "In spite",
+    "why_en": "Use in spite of, or despite without of.",
+    "why_ar": "نستخدم in spite of أو despite دون of."
+  },
+  {
+    "id": "spot-b2-17",
+    "level": "B2",
+    "text": "The results depend of several factors.",
+    "wrongIndex": 3,
+    "fix": "on",
+    "why_en": "The fixed collocation is depend on.",
+    "why_ar": "التركيب الصحيح depend on."
+  },
+  {
+    "id": "spot-b2-18",
+    "level": "B2",
+    "text": "She denied to have taken the document.",
+    "wrongIndex": 2,
+    "fix": "having",
+    "why_en": "Deny is followed by an -ing form.",
+    "why_ar": "يأتي بعد deny فعل ing."
+  },
+  {
+    "id": "spot-b2-19",
+    "level": "B2",
+    "text": "Not only she missed the train, but she lost her ticket.",
+    "wrongIndex": 2,
+    "fix": "did she",
+    "why_en": "Not only at the beginning requires inversion in the first clause.",
+    "why_ar": "بدء الجملة بـ Not only يستلزم القلب في الجملة الأولى."
+  },
+  {
+    "id": "spot-b2-20",
+    "level": "B2",
+    "text": "The proposal aims at reduce waste.",
+    "wrongIndex": 4,
+    "fix": "reducing",
+    "why_en": "After a preposition such as at, use the -ing form.",
+    "why_ar": "بعد حرف جر مثل at نستخدم فعل ing."
+  },
+  {
+    "id": "spot-c1-11",
+    "level": "C1",
+    "text": "The board insisted that he submits the report immediately.",
+    "wrongIndex": 5,
+    "fix": "submit",
+    "why_en": "The mandative subjunctive uses the base form after insist that.",
+    "why_ar": "يأتي الفعل بصيغته الأساسية بعد insist that في هذا التركيب الرسمي."
+  },
+  {
+    "id": "spot-c1-12",
+    "level": "C1",
+    "text": "Scarcely had we arrived than the storm began.",
+    "wrongIndex": 4,
+    "fix": "when",
+    "why_en": "The standard pair is scarcely...when.",
+    "why_ar": "التركيب القياسي هو scarcely...when."
+  },
+  {
+    "id": "spot-c1-13",
+    "level": "C1",
+    "text": "The extent to which these claims are valid remain unclear.",
+    "wrongIndex": 8,
+    "fix": "remains",
+    "why_en": "The grammatical subject of remain is the singular extent.",
+    "why_ar": "الفاعل النحوي هو extent المفرد، لذلك نستخدم remains."
+  },
+  {
+    "id": "spot-c1-14",
+    "level": "C1",
+    "text": "The new policy is liable of causing confusion.",
+    "wrongIndex": 5,
+    "fix": "to",
+    "why_en": "The standard phrase is liable to do something.",
+    "why_ar": "التعبير الصحيح liable to يتبعه الفعل."
+  },
+  {
+    "id": "spot-c1-15",
+    "level": "C1",
+    "text": "Were it not for her advice, I would have make a costly mistake.",
+    "wrongIndex": 9,
+    "fix": "made",
+    "why_en": "Would have is followed by the past participle.",
+    "why_ar": "يأتي بعد would have التصريف الثالث."
+  },
+  {
+    "id": "spot-c1-16",
+    "level": "C1",
+    "text": "The author alludes on a well-known philosophical debate.",
+    "wrongIndex": 3,
+    "fix": "to",
+    "why_en": "The verb allude takes the preposition to.",
+    "why_ar": "يأتي بعد allude حرف الجر to."
+  },
+  {
+    "id": "spot-c1-17",
+    "level": "C1",
+    "text": "Only when the figures were checked did the discrepancy emerged.",
+    "wrongIndex": 9,
+    "fix": "emerge",
+    "why_en": "After did, use the base form of the verb.",
+    "why_ar": "بعد did نستخدم الفعل بصيغته الأساسية."
+  },
+  {
+    "id": "spot-c1-18",
+    "level": "C1",
+    "text": "The findings lend credence for the hypothesis.",
+    "wrongIndex": 4,
+    "fix": "to",
+    "why_en": "The fixed phrase is lend credence to.",
+    "why_ar": "التعبير الصحيح lend credence to."
+  },
+  {
+    "id": "spot-c1-19",
+    "level": "C1",
+    "text": "It is essential that every applicant is informed promptly.",
+    "wrongIndex": 1,
+    "fix": "be",
+    "why_en": "Formal mandative clauses often use the base-form subjunctive be.",
+    "why_ar": "في الأسلوب الرسمي قد نستخدم be بصيغته الأساسية بعد essential that."
+  },
+  {
+    "id": "spot-c1-20",
+    "level": "C1",
+    "text": "The two accounts are mutually exclusive to one another.",
+    "wrongIndex": 6,
+    "fix": "of",
+    "why_en": "The phrase “mutually exclusive of one another” is standard.",
+    "why_ar": "التعبير المقبول هو mutually exclusive of one another."
+  },
+  {
+    "id": "spot-c2-11",
+    "level": "C2",
+    "text": "Little she realised how consequential the decision would be.",
+    "wrongIndex": 1,
+    "fix": "did she",
+    "why_en": "Little at the beginning triggers inversion.",
+    "why_ar": "بدء الجملة بـ Little يستلزم القلب."
+  },
+  {
+    "id": "spot-c2-12",
+    "level": "C2",
+    "text": "The claim is predicated in an assumption that remains untested.",
+    "wrongIndex": 4,
+    "fix": "on",
+    "why_en": "The formal collocation is predicated on.",
+    "why_ar": "التركيب الرسمي الصحيح predicated on."
+  },
+  {
+    "id": "spot-c2-13",
+    "level": "C2",
+    "text": "Be that as it may, the evidence do not support the conclusion.",
+    "wrongIndex": 7,
+    "fix": "does",
+    "why_en": "Evidence is an uncountable noun and takes a singular verb here.",
+    "why_ar": "Evidence اسم غير معدود ويأخذ فعلًا مفردًا هنا."
+  },
+  {
+    "id": "spot-c2-14",
+    "level": "C2",
+    "text": "The theory is not so much disproven than inadequately supported.",
+    "wrongIndex": 7,
+    "fix": "as",
+    "why_en": "The contrastive construction is not so much X as Y.",
+    "why_ar": "التركيب المقابل هو not so much X as Y."
+  },
+  {
+    "id": "spot-c2-15",
+    "level": "C2",
+    "text": "Had the issue been addressed, the consequences may have been less severe.",
+    "wrongIndex": 7,
+    "fix": "might",
+    "why_en": "For a past counterfactual, might have is the coherent result form here.",
+    "why_ar": "في الافتراض المخالف للماضي، تكون might have متناسقة هنا."
+  },
+  {
+    "id": "spot-c2-16",
+    "level": "C2",
+    "text": "The distinction is subtle, not to say imperceptiblely.",
+    "wrongIndex": 7,
+    "fix": "imperceptibly.",
+    "why_en": "The adverb is imperceptibly, formed from imperceptible.",
+    "why_ar": "الظرف الصحيح imperceptibly مشتق من imperceptible."
+  },
+  {
+    "id": "spot-c2-17",
+    "level": "C2",
+    "text": "Under no circumstances the confidential data should be disclosed.",
+    "wrongIndex": 3,
+    "fix": "should the",
+    "why_en": "A negative fronted phrase requires subject–auxiliary inversion.",
+    "why_ar": "العبارة السلبية في البداية تستلزم القلب."
+  },
+  {
+    "id": "spot-c2-18",
+    "level": "C2",
+    "text": "The argument is compelling insofar than it accounts for the exceptions.",
+    "wrongIndex": 5,
+    "fix": "as",
+    "why_en": "The standard conjunction is insofar as.",
+    "why_ar": "التركيب الصحيح insofar as."
+  },
+  {
+    "id": "spot-c2-19",
+    "level": "C2",
+    "text": "Such was the ambiguity that neither interpretation could be rule out.",
+    "wrongIndex": 9,
+    "fix": "ruled",
+    "why_en": "The passive infinitive requires the past participle ruled out.",
+    "why_ar": "يتطلب المبني للمجهول التصريف الثالث ruled out."
+  },
+  {
+    "id": "spot-c2-20",
+    "level": "C2",
+    "text": "The recommendation rests on premises whose implications has yet to be explored.",
+    "wrongIndex": 7,
+    "fix": "have",
+    "why_en": "The plural subject implications takes have.",
+    "why_ar": "الفاعل implications جمع، لذلك نستخدم have."
   }
 ];
