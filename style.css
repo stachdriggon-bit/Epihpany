@@ -1315,3 +1315,52 @@ body[data-theme="dark"] .avatar-choice { background:var(--surface); }
 .promotion-result p{margin:6px 0}
 #track-note [data-promotion-start]{margin-top:10px;min-height:44px}
 #track-note .level-note{line-height:1.55}
+
+
+/* Header layout fix — keep navigation and utility controls in separate rows
+   before the available width becomes too tight to fit them without overlap. */
+@media (min-width:761px) and (max-width:1180px) {
+  .top-in {
+    height:auto;
+    min-height:68px;
+    flex-wrap:wrap;
+    align-content:center;
+    row-gap:9px;
+    column-gap:12px;
+    padding-block:10px;
+  }
+  .top-in > .logo {
+    flex:0 0 auto;
+    margin-right:auto;
+  }
+  .top-in > .top-right {
+    flex:0 0 auto;
+    margin-left:auto;
+    max-width:100%;
+  }
+  .top-in > .tabs {
+    order:3;
+    display:flex;
+    flex:1 0 100%;
+    width:100%;
+    min-width:0;
+    max-width:100%;
+    box-sizing:border-box;
+    justify-content:flex-start;
+    margin:0;
+    overflow-x:auto;
+    overflow-y:hidden;
+    overscroll-behavior-x:contain;
+    scrollbar-width:none;
+  }
+  .top-in > .tabs::-webkit-scrollbar { display:none; }
+  .top-in > .tabs .tab {
+    flex:0 0 auto;
+    min-width:max-content;
+    white-space:nowrap;
+  }
+}
+@media (min-width:761px) and (max-width:900px) {
+  .top-in > .top-right { gap:5px; }
+  .top-in > .top-right .chip { padding-inline:8px; }
+}
