@@ -569,7 +569,36 @@
       {pages:(n,f,p,t)=>[t+', '+n+' and '+f+' noticed that their group was running out of time to finish a community garden in '+p+'. Everyone was doing the same small tasks, while other jobs were waiting.', 'They listed the remaining work and divided it according to each person’s strengths. This solution helped the group work in parallel instead of waiting for one another.', 'They finished before sunset and agreed to assign clear roles at the start of their next project.']}
     ]}
   };
-  const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'};
+  
+  const CREATE_STORY_FEATURE_LABELS={
+    mystery:['crossing a gap','what the structure connects','how people use it','what kind of structure it is'],
+    adventure:['finding directions','a navigation tool','how it guides someone','travel or orientation'],
+    everyday:['a record or proof of purchase','prices and total cost','items purchased','payment or shopping'],
+    nature:['protection or safety','bad weather or danger','cover or a protected place'],
+    communication:['showing regret','a mistake or hurt','expressing that you are sorry','repairing the relationship'],
+    technology:['power or energy','storing energy','electronic devices','making equipment work'],
+    investigation:['facts or information','supporting or disproving an idea','an explanation or claim','observing and checking details'],
+    planning:['that it is a plan','money and spending','a limit on how much can be spent','how the money is managed'],
+    emotions:['the worry or fear beforehand','feeling calm afterward','a problem or concern ending','the emotion someone experiences'],
+    problemSolving:['an answer or method','solving or fixing something','the problem being addressed','how the result helps']
+  };
+  const CREATE_STORY_FINAL_HINTS={
+    mystery:'Look for a structure that lets people cross from one bank to the other.',
+    adventure:'A small tool with a magnetised needle can help you find north.',
+    everyday:'It is often printed or emailed after payment and can help with returns.',
+    nature:'You can wait inside it until the storm passes.',
+    communication:'It names the act of expressing regret and accepting responsibility.',
+    technology:'It may need charging or replacing when its stored energy runs low.',
+    investigation:'Investigators gather it before deciding what happened.',
+    planning:'It helps compare spending with the money available.',
+    emotions:'It describes feeling better once the worry has passed.',
+    problemSolving:'It is the answer you choose after testing ways to fix the problem.'
+  };
+  Object.entries(CREATE_STORY_TOPICS).forEach(([key,topic])=>{
+    topic.featureLabels=CREATE_STORY_FEATURE_LABELS[key]||[];
+    topic.hints.push(CREATE_STORY_FINAL_HINTS[key]||'Think about what it does and why it matters in this situation.');
+  });
+const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'};
   const CREATE_STORY_PLACES=['a small town','a coastal village','a mountain village','a busy city','a quiet forest'];
   function renderCreateStory(){
     const box=$('#create-story-panel');if(!box)return;
@@ -581,7 +610,7 @@
     const s=CREATE_STORY.story;if(!s)return;
     if(CREATE_STORY.mode==='story'){
       const hintLevel=CREATE_STORY.hintLevel||0;
-      const hintBlock='<div class="create-story-hints"><div class="create-story-hint-head"><strong>Need a hint?</strong><span>'+(hintLevel===0?'No hints used':hintLevel+' of 2 hints revealed')+'</span></div>'+(hintLevel>0?'<p class="create-story-hint">'+esc(s.hints[0])+'</p>':'')+(hintLevel>1?'<p class="create-story-hint">'+esc(s.hints[1])+'</p>':'')+(hintLevel<2?'<button type="button" class="btn btn-ghost" data-create-hint>Reveal '+(hintLevel===0?'first':'stronger')+' hint</button>':'<p class="create-story-note">You have seen both hints. Use them to explain the idea in your own words.</p>')+'</div>';
+      const hintBlock='<div class="create-story-hints"><div class="create-story-hint-head"><strong>Need a hint?</strong><span>'+(hintLevel===0?'No hints used':hintLevel+' of 3 hints revealed')+'</span></div>'+(hintLevel>0?'<p class="create-story-hint">'+esc(s.hints[0])+'</p>':'')+(hintLevel>1?'<p class="create-story-hint">'+esc(s.hints[1])+'</p>':'')+(hintLevel>2?'<p class="create-story-hint">'+esc(s.hints[2])+'</p>':'')+(hintLevel<3?'<button type="button" class="btn btn-ghost" data-create-hint>Reveal '+(['first','stronger','final'][hintLevel])+' hint</button>':'<p class="create-story-note">You have seen all three hints. Use them to explain the idea in your own words.</p>')+'</div>';
       const storyPages=s.pages.map((p,i)=>'<p class="create-story-paragraph"><span>'+String(i+1).padStart(2,'0')+'</span>'+String(p).split(s.target).map(esc).join('<span class="hidden-word" aria-label="hidden word">________</span>')+'</p>').join('');
       box.innerHTML='<div class="create-story-reader"><div class="create-story-story-head"><span class="create-story-icon">'+s.emoji+'</span><div><p class="kicker">YOUR STORY · '+esc(currentLevel().id)+'</p><h3>'+esc(s.label)+'</h3><p>Read the whole story. One important word is hidden inside the text.</p></div></div>'+storyPages+'<div class="create-story-gap"><p class="kicker">THINK FROM CONTEXT</p><p>'+esc(s.clue)+'</p>'+hintBlock+'<p class="create-story-instruction">Explain the missing word in English. Describe its purpose or meaning without writing the word itself.</p><form id="create-story-answer-form"><label for="create-story-answer">Your explanation</label><textarea id="create-story-answer" name="answer" rows="3" maxlength="500" required placeholder="It is a thing / place that…">'+esc(CREATE_STORY.answer)+'</textarea><button class="btn" type="submit">Check my explanation</button></form></div></div>';return;
     }
@@ -589,17 +618,29 @@
     box.innerHTML='<div class="create-story-feedback"><p class="kicker">THINK · EXPLAIN · REMEMBER</p><h3>'+esc(assessment.title)+'</h3><p class="create-story-assessment">'+esc(assessment.message)+'</p><div class="create-story-scoreline"><span>Meaning clues noticed</span><strong>'+Number(assessment.hits||0)+' / '+Number(assessment.total||0)+'</strong><div class="create-story-scorebar"><span style="width:'+Math.round(100*(Number(assessment.hits||0)/Math.max(1,Number(assessment.total||0))))+'%"></span></div></div>'+(CREATE_STORY.selfRate==='practice'?'<p class="create-story-self-rate">You chose to practise this skill again. Try a new story and look for context clues.</p>':CREATE_STORY.selfRate==='good'?'<p class="create-story-self-rate">You marked your explanation as clear. Keep building confidence with another word.</p>':'')+'<div class="create-story-your-answer"><strong>Your explanation</strong><p>'+esc(CREATE_STORY.answer)+'</p></div><div class="create-story-model"><strong>One possible meaning</strong><p>'+esc(s.definition)+'</p></div><p class="create-story-note">This is a light clue-based check, not a strict grade. Good explanations can use different words, so use the feedback as guidance rather than a final judgement.</p><div class="create-story-rating"><button class="btn btn-ghost" data-create-rate="practice">I want more practice</button><button class="btn" data-create-rate="good">I explained it clearly</button></div><button class="btn btn-ghost" data-create-next>Make another story →</button></div>';
   }
   function assessCreateStoryAnswer(answer,story){
-    const lower=String(answer||'').toLowerCase();
+    const lower=String(answer||'').toLowerCase().replace(/[’]/g,"'");
     const groups=story.featureGroups||[];
-    const covered=groups.filter(group=>group.some(term=>{
-      const escaped=term.replace(/[.*+?^$()|[\]\\]/g,'\\$&');
-      return new RegExp('\\b'+escaped+'\\b','i').test(lower);
-    }));
-    const details=covered.length;
+    const coveredIndices=[];
+    const hasTerm=term=>{
+      const forms=[term];
+      if(term.length>3){
+        if(term.endsWith('y'))forms.push(term.slice(0,-1)+'ies',term.slice(0,-1)+'ied');
+        else if(term.endsWith('e'))forms.push(term+'s',term+'d',term.slice(0,-1)+'ing');
+        else forms.push(term+'s',term+'es',term+'ed',term+'ing');
+      }
+      return forms.some(form=>{
+        const escaped=form.replace(/[.*+?^$()|[\]\\]/g,'\\$&');
+        return new RegExp('\\b'+escaped+'\\b','i').test(lower);
+      });
+    };
+    groups.forEach((group,index)=>{if(group.some(hasTerm))coveredIndices.push(index);});
+    const details=coveredIndices.length;
+    const missing=(story.featureLabels||['its main purpose','what it is or does','how it is used','why it matters']).filter((_,index)=>!coveredIndices.includes(index));
+    const nextClue=missing.length?' Try adding a clue about '+missing[0]+'.':'';
     if(details>=3)return {hits:details,total:groups.length,title:'You explained the meaning clearly!',message:'Your explanation includes '+details+' useful meaning clues. Compare it with the example definition and see whether you can make it even more precise.'};
-    if(details===2)return {hits:details,total:groups.length,title:'You have the main idea',message:'You included two useful clues. To make your explanation stronger, add one more detail about what it is, what it does, or when people use it.'};
-    if(details===1)return {hits:details,total:groups.length,title:'You have part of the idea',message:'You mentioned one useful part of the meaning. Add another detail: what it is, what it does, or how it helps in this situation.'};
-    return {hits:0,total:groups.length,title:'Good start — add a clearer clue',message:'This quick checker could not find enough specific meaning clues yet. Describe its purpose, what it connects or protects, or how it is used. Different wording can still be correct.'};
+    if(details===2)return {hits:details,total:groups.length,title:'You have the main idea',message:'You included two useful clues.'+nextClue+' Different wording can still be correct.'};
+    if(details===1)return {hits:details,total:groups.length,title:'You have part of the idea',message:'You mentioned one useful part of the meaning.'+nextClue+' Add another detail in your own words.'};
+    return {hits:0,total:groups.length,title:'Good start — add a clearer clue',message:'The checker did not recognise enough specific meaning clues yet.'+nextClue+' Use the story and hints to explain what it does or why it matters; different wording can still be correct.'};
   }
   function createStorySubmit(form){
     const data=new FormData(form),topic=String(data.get('topic')||'mystery'),name=String(data.get('name')||'Robin').trim().slice(0,24)||'Robin',friend=String(data.get('friend')||'Maya').trim().slice(0,24)||'Maya',time=String(data.get('time')||'today'),place=String(data.get('place')||CREATE_STORY_PLACES[0]),t=CREATE_STORY_TOPICS[topic]||CREATE_STORY_TOPICS.mystery;
