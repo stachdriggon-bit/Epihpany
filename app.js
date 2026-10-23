@@ -1232,7 +1232,7 @@
       for(let n=0;n<4;n++){x.fillStyle=(n+gx)%2?'#f4d2a2':'#eaa4a0';x.beginPath();x.arc(px+tile*(.22+n*.18),py+tile*(.34+(n%2)*.1),tile*.045,0,Math.PI*2);x.fill();}
     }
     // Low timber fence sections frame garden edges while leaving routes open.
-    for(const [gx,gy,len] of [[5,3,2],[13,3,2],[5,11,2],[13,11,2]]){
+    for(const [gx,gy,len] of [[3,3,2],[16,3,2],[3,11,2],[16,11,2]]){
       const fx=ox+gx*tile,fy=oy+gy*tile;
       x.strokeStyle='#9b744c';x.lineWidth=Math.max(2,tile*.045);
       x.beginPath();x.moveTo(fx,fy+tile*.78);x.lineTo(fx+tile*len,fy+tile*.78);x.moveTo(fx,fy+tile*.64);x.lineTo(fx+tile*len,fy+tile*.64);x.stroke();
