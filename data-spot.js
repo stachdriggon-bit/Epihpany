@@ -366,7 +366,7 @@ const SPOT_QUESTIONS = [
     "level": "B1",
     "text": "The film was bored, so we left.",
     "wrongIndex": 3,
-    "fix": "boring",
+    "fix": "boring,",
     "why_en": "Boring describes the thing that causes boredom; bored describes a person's feeling.",
     "why_ar": "Boring تصف الشيء المسبب للملل، أما bored فتصف شعور الشخص."
   },
@@ -491,7 +491,7 @@ const SPOT_QUESTIONS = [
     "id": "spot-b2-16",
     "level": "B2",
     "text": "The manager insisted on us leave early.",
-    "wrongIndex": 6,
+    "wrongIndex": 5,
     "fix": "leaving",
     "why_en": "Use insist that + clause, or insist on + noun/-ing form.",
     "why_ar": "نستخدم insist that مع جملة، أو insist on مع اسم أو فعل ing."
@@ -519,7 +519,7 @@ const SPOT_QUESTIONS = [
     "level": "C2",
     "text": "Under no circumstances should the files shared.",
     "wrongIndex": 6,
-    "fix": "be shared",
+    "fix": "be shared.",
     "why_en": "A negative phrase at the beginning requires subject–auxiliary inversion.",
     "why_ar": "العبارة السلبية في البداية تستلزم القلب بين الفعل المساعد والفاعل."
   },
