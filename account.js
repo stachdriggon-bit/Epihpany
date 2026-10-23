@@ -20,6 +20,30 @@
     el.textContent = message;
     el.dataset.state = kind || 'info';
   }
+  function hideWelcomeBanner(remember = true) {
+    const banner = $('account-welcome-banner');
+    if (banner) banner.hidden = true;
+    if (remember) {
+      try { localStorage.setItem('epiphany-account-welcome-dismissed', '1'); } catch {}
+    }
+  }
+  function showWelcomeBannerIfNeeded() {
+    const banner = $('account-welcome-banner');
+    if (!banner || currentUser) return;
+    let dismissed = false;
+    try { dismissed = localStorage.getItem('epiphany-account-welcome-dismissed') === '1'; } catch {}
+    banner.hidden = dismissed;
+  }
+  function openAccountFromWelcome(mode) {
+    hideWelcomeBanner(true);
+    setMode(mode);
+    const profileButton = document.querySelector('[data-view="profile"]');
+    if (profileButton) profileButton.click();
+    const emailInput = $('account-email-input');
+    if (emailInput) emailInput.focus({preventScroll:true});
+    status(mode === 'signup' ? 'Create an account to sync your progress across devices.' : 'Sign in to load your saved progress.', 'info');
+  }
+
   function setMode(mode) {
     currentMode = mode;
     const title = $('account-form-title');
@@ -138,6 +162,7 @@
   }
 
   window.EpiphanyAuth = {
+    openAccountMode: openAccountFromWelcome,
     queueSave(progress) {
       if (!client || !currentUser || syncing) return;
       clearTimeout(saveTimer);
@@ -150,6 +175,10 @@
     const form = $('account-form');
     if (!form) return;
     setMode('signin');
+    showWelcomeBannerIfNeeded();
+    $('welcome-create-account')?.addEventListener('click', () => openAccountFromWelcome('signup'));
+    $('welcome-sign-in')?.addEventListener('click', () => openAccountFromWelcome('signin'));
+    $('welcome-continue-guest')?.addEventListener('click', () => hideWelcomeBanner(true));
     if (!config || !config.url || !config.publishableKey || !sdk || !sdk.createClient) {
       status('Account service is not configured yet. You can still play and save on this device.', 'error');
       return;
@@ -227,6 +256,7 @@
         return;
       }
       renderAccount();
+      hideWelcomeBanner(true);
       if (event === 'PASSWORD_RECOVERY') {
         recoveryMode = true;
         renderAccount();
@@ -242,6 +272,7 @@
       if (data && data.session && data.session.user) {
         currentUser = data.session.user;
         renderAccount();
+        hideWelcomeBanner(true);
         if (lastSyncedUser !== currentUser.id) {
           lastSyncedUser = currentUser.id;
           syncUserProgress(currentUser);
