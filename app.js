@@ -188,6 +188,19 @@
 
   /* ---------- rendering: words + trophies ---------- */
   let speechRequest = 0;
+  let speechVoices = [];
+  function refreshSpeechVoices() {
+    const synth = window.speechSynthesis;
+    if (synth && typeof synth.getVoices === 'function') {
+      const available = synth.getVoices();
+      if (available && available.length) speechVoices = available.slice();
+    }
+    return speechVoices;
+  }
+  if (window.speechSynthesis) {
+    refreshSpeechVoices();
+    window.speechSynthesis.addEventListener?.('voiceschanged', refreshSpeechVoices);
+  }
   function speak(text) {
     const synth = window.speechSynthesis;
     if (!synth || !('SpeechSynthesisUtterance' in window)) {
@@ -196,33 +209,31 @@
     }
     const phrase = String(text == null ? '' : text).replace(/\s+/g, ' ').trim();
     if (!phrase) { toast('There is no word to pronounce.'); return; }
-
-    // Some browsers interrupt a new utterance if cancel() and speak() happen
-    // in the same tick. Defer speaking and prefer an available English voice.
     const request = ++speechRequest;
     synth.cancel();
     const utterance = new SpeechSynthesisUtterance(phrase);
     utterance.lang = 'en-US';
-    utterance.rate = 0.88;
-    const voices = synth.getVoices ? synth.getVoices() : [];
-    const englishVoice = voices.find(v => /^en-US$/i.test(v.lang))
-      || voices.find(v => /^en-GB$/i.test(v.lang))
-      || voices.find(v => /^en(?:-|$)/i.test(v.lang));
-    if (englishVoice) utterance.voice = englishVoice;
+    utterance.rate = 0.82;
+    utterance.pitch = 1.02;
+    const voices = refreshSpeechVoices();
+    const english = voices.filter(v => /^en(?:-|$)/i.test(v.lang));
+    const preferred = english.find(v => /google us english|microsoft.*(aria|jenny|guy|ava)|samantha|ava premium|daniel enhanced|natural/i.test(v.name))
+      || english.find(v => /^en-US$/i.test(v.lang) && v.localService)
+      || english.find(v => /^en-US$/i.test(v.lang))
+      || english.find(v => /^en-GB$/i.test(v.lang))
+      || english[0];
+    if (preferred) { utterance.voice = preferred; utterance.lang = preferred.lang || 'en-US'; }
     utterance.onerror = event => {
       if (request === speechRequest && event.error !== 'canceled' && event.error !== 'interrupted') {
-        toast('Could not play this pronunciation. Check your browser sound settings and try again.');
+        toast('Could not play this pronunciation. Check your phone/browser voice settings and try again.');
       }
     };
-    window.setTimeout(() => {
-      if (request !== speechRequest) return;
-      try {
-        if (synth.paused) synth.resume();
-        synth.speak(utterance);
-      } catch {
-        toast('Could not play this pronunciation. Try again.');
-      }
-    }, 80);
+    try {
+      if (synth.paused) synth.resume();
+      synth.speak(utterance);
+    } catch {
+      toast('Could not play this pronunciation. Try again.');
+    }
   }
   function wordParts(raw, fallback) {
     if (Array.isArray(raw)) return {word:String(raw[0]||''),meaning:String(raw[1]||fallback||'Review this word in context.'),level:String(raw[2]||currentLevel().id)};
@@ -1550,13 +1561,52 @@
   }
   function worldNext(){if(WORLD.index===WORLD.tasks.length-1){WORLD.mode='finished';$('#world-game').innerHTML='<div class="world-finish"><div class="world-intro-art">'+esc((WORLD_DATA.regions.find(r=>r.id===WORLD.region)||{}).icon||'🏡')+' ✨ 🌍</div><p class="world-kicker">'+(WORLD.run==='practice'?'PRACTICE RUN COMPLETE':'AREA COMPLETE')+'</p><h1>'+esc(WORLD.regionName||'Adventure')+(WORLD.run==='practice'?' · run complete!':' complete!')+'</h1><p>'+(WORLD.run==='practice'?'You finished '+WORLD.tasks.length+' missions. '+esc(worldRunBonus())+' Every run has new missions and a new layout.':'You earned '+WORLD.stars+' stars in this area.')+'</p><h2>Words from your adventure</h2><div class="world-word-list">'+WORLD.tasks.flatMap(t=>t.words||[]).filter((w,i,a)=>a.findIndex(v=>v[0]===w[0])===i).map(w=>'<span class="world-word-chip"><b>'+esc(w[0])+'</b><small>'+esc(w[1])+'</small></span>').join('')+'</div><button class="world-primary" data-world-practice="'+esc(WORLD.region)+'">New practice run</button><button class="world-secondary" data-world-regions>Explore another place →</button>'+(WORLD.run==='practice'?'':'<button class="world-secondary" data-world-replay>Replay story missions ↻</button>')+'<button class="world-secondary" data-world-exit>Back to Epiphany</button></div>';return;}
     WORLD.index++;WORLD.mode='play';WORLD.tries=0;WORLD.usedHelp=false;WORLD.moves=0;WORLD.step=0;WORLD.target=null;WORLD.objects=(WORLD.baseObjects||((WORLD_DATA.regions.find(r=>r.id===WORLD.region)||{}).objects)||WORLD_DATA.objects).filter(o=>!WORLD.picked.has(o.id)).map(o=>({...o}));worldRenderPlay();}
-  function closeWorld(){if(WORLD&&WORLD.raf)cancelAnimationFrame(WORLD.raf);WORLD=null;$('#world-game').hidden=true;lockPage(false);const active=$('.view.is-active');const activeName=active?active.id.replace('-view',''):'home';$$('[data-view]').forEach(b=>b.setAttribute('aria-current',b.dataset.view===activeName?'page':'false'));renderAll();}
+  function closeWorld(){stopWorldHold();worldSwipeStart=null;if(WORLD&&WORLD.raf)cancelAnimationFrame(WORLD.raf);WORLD=null;$('#world-game').hidden=true;lockPage(false);const active=$('.view.is-active');const activeName=active?active.id.replace('-view',''):'home';$$('[data-view]').forEach(b=>b.setAttribute('aria-current',b.dataset.view===activeName?'page':'false'));renderAll();}
+  let worldHoldDelay = null, worldHoldRepeat = null, worldSwipeStart = null, worldSuppressClickUntil = 0;
+  function stopWorldHold() {
+    if (worldHoldDelay) clearTimeout(worldHoldDelay);
+    if (worldHoldRepeat) clearInterval(worldHoldRepeat);
+    worldHoldDelay = null; worldHoldRepeat = null;
+  }
+  document.addEventListener('pointerdown', e => {
+    if (!WORLD || WORLD.mode !== 'play') return;
+    const move = e.target.closest('[data-world-move]');
+    if (move) {
+      e.preventDefault();
+      stopWorldHold();
+      const key = move.dataset.worldMove;
+      move.classList.add('is-pressed');
+      worldMove(key);
+      worldHoldDelay = setTimeout(() => { worldHoldRepeat = setInterval(() => worldMove(key), 185); }, 260);
+      try { move.setPointerCapture(e.pointerId); } catch {}
+      return;
+    }
+    if (e.target.closest('#world-canvas')) worldSwipeStart = {x:e.clientX,y:e.clientY,id:e.pointerId};
+  }, {passive:false});
+  function finishWorldPointer(e) {
+    const held = !!(worldHoldDelay || worldHoldRepeat);
+    if (held) {
+      stopWorldHold();
+      document.querySelectorAll('[data-world-move].is-pressed').forEach(b=>b.classList.remove('is-pressed'));
+      worldSuppressClickUntil = Date.now() + 450;
+    }
+    if (!worldSwipeStart || !WORLD || WORLD.mode !== 'play') { worldSwipeStart = null; return; }
+    const start = worldSwipeStart; worldSwipeStart = null;
+    if (start.id !== e.pointerId) return;
+    const dx=e.clientX-start.x, dy=e.clientY-start.y;
+    if (Math.max(Math.abs(dx),Math.abs(dy)) < 22) return;
+    const key = Math.abs(dx) > Math.abs(dy) ? (dx < 0 ? 'ArrowLeft' : 'ArrowRight') : (dy < 0 ? 'ArrowUp' : 'ArrowDown');
+    worldMove(key);
+  }
+  document.addEventListener('pointerup', finishWorldPointer);
+  document.addEventListener('pointercancel', finishWorldPointer);
   document.addEventListener('click',e=>{
+    if (Date.now() < worldSuppressClickUntil && e.target.closest('[data-world-move]')) { e.preventDefault(); return; }
     const storyFollow=e.target.closest('[data-story-follow-up]');if(storyFollow){const taskId=storyFollow.dataset.storyFollowUp;$('#game').hidden=true;ST=null;lockPage(false);startWorld(taskId);return;}
     const practicePick=e.target.closest('[data-world-practice]');if(practicePick&&WORLD){worldChooseRegion(practicePick.dataset.worldPractice,'practice');return;}
     const regionPick=e.target.closest('[data-world-region]');if(regionPick){worldChooseRegion(regionPick.dataset.worldRegion);return;}
     if(e.target.closest('[data-world-regions]')){worldShowRegions();return;}
-    const move=e.target.closest('[data-world-move]');if(move){worldMove(move.dataset.worldMove);return;}
+    const move=e.target.closest('[data-world-move]');if(move){return;}
     if(e.target.closest('[data-world-interact]')){worldInteract();return;}
     if(e.target.closest('[data-world-speak]')){if(worldTask())speak(worldTask().instruction);return;}
     
