@@ -587,14 +587,14 @@ const SPOT_QUESTIONS = [
     "why_ar": "التركيب الشائع هو good at."
   },
   {
-    "id": "spot-a2-19",
-    "level": "A2",
-    "text": "I have seen him yesterday.",
-    "wrongIndex": 1,
-    "fix": "saw",
-    "why_en": "A finished past-time marker normally takes the past simple.",
-    "why_ar": "مع زمن ماضٍ منتهٍ نستخدم الماضي البسيط عادةً."
-  },
+  "id": "spot-a2-19",
+  "level": "A2",
+  "text": "I have saw him before.",
+  "wrongIndex": 2,
+  "fix": "seen",
+  "why_en": "Present perfect uses have + past participle, so saw must be seen.",
+  "why_ar": "يتكون المضارع التام من have والتصريف الثالث، لذا تصبح saw هي seen."
+},
   {
     "id": "spot-a2-20",
     "level": "A2",
@@ -650,23 +650,23 @@ const SPOT_QUESTIONS = [
     "why_ar": "التركيب الصحيح depend on."
   },
   {
-    "id": "spot-b2-18",
-    "level": "B2",
-    "text": "She denied to have taken the document.",
-    "wrongIndex": 2,
-    "fix": "having",
-    "why_en": "Deny is followed by an -ing form.",
-    "why_ar": "يأتي بعد deny فعل ing."
-  },
+  "id": "spot-b2-18",
+  "level": "B2",
+  "text": "She denied to take the document.",
+  "wrongIndex": 2,
+  "fix": "taking",
+  "why_en": "Deny is followed by an -ing form.",
+  "why_ar": "يأتي بعد deny فعل ing."
+},
   {
-    "id": "spot-b2-19",
-    "level": "B2",
-    "text": "Not only she missed the train, but she lost her ticket.",
-    "wrongIndex": 2,
-    "fix": "did she",
-    "why_en": "Not only at the beginning requires inversion in the first clause.",
-    "why_ar": "بدء الجملة بـ Not only يستلزم القلب في الجملة الأولى."
-  },
+  "id": "spot-b2-19",
+  "level": "B2",
+  "text": "Not only did she missed the train, but she lost her ticket.",
+  "wrongIndex": 4,
+  "fix": "miss",
+  "why_en": "After did, use the base form of the verb.",
+  "why_ar": "بعد did نستخدم الفعل بصيغته الأساسية."
+},
   {
     "id": "spot-b2-20",
     "level": "B2",
@@ -704,14 +704,14 @@ const SPOT_QUESTIONS = [
     "why_ar": "الفاعل النحوي هو extent المفرد، لذلك نستخدم remains."
   },
   {
-    "id": "spot-c1-14",
-    "level": "C1",
-    "text": "The new policy is liable of causing confusion.",
-    "wrongIndex": 5,
-    "fix": "to",
-    "why_en": "The standard phrase is liable to do something.",
-    "why_ar": "التعبير الصحيح liable to يتبعه الفعل."
-  },
+  "id": "spot-c1-14",
+  "level": "C1",
+  "text": "The new policy is liable of cause confusion.",
+  "wrongIndex": 4,
+  "fix": "to",
+  "why_en": "The standard phrase is liable to do something.",
+  "why_ar": "التعبير الصحيح liable to يتبعه الفعل."
+},
   {
     "id": "spot-c1-15",
     "level": "C1",
@@ -731,14 +731,14 @@ const SPOT_QUESTIONS = [
     "why_ar": "يأتي بعد allude حرف الجر to."
   },
   {
-    "id": "spot-c1-17",
-    "level": "C1",
-    "text": "Only when the figures were checked did the discrepancy emerged.",
-    "wrongIndex": 9,
-    "fix": "emerge",
-    "why_en": "After did, use the base form of the verb.",
-    "why_ar": "بعد did نستخدم الفعل بصيغته الأساسية."
-  },
+  "id": "spot-c1-17",
+  "level": "C1",
+  "text": "Only when the figures were checked did the discrepancy emerged.",
+  "wrongIndex": 9,
+  "fix": "emerge.",
+  "why_en": "After did, use the base form of the verb.",
+  "why_ar": "بعد did نستخدم الفعل بصيغته الأساسية."
+},
   {
     "id": "spot-c1-18",
     "level": "C1",
@@ -749,14 +749,14 @@ const SPOT_QUESTIONS = [
     "why_ar": "التعبير الصحيح lend credence to."
   },
   {
-    "id": "spot-c1-19",
-    "level": "C1",
-    "text": "It is essential that every applicant is informed promptly.",
-    "wrongIndex": 1,
-    "fix": "be",
-    "why_en": "Formal mandative clauses often use the base-form subjunctive be.",
-    "why_ar": "في الأسلوب الرسمي قد نستخدم be بصيغته الأساسية بعد essential that."
-  },
+  "id": "spot-c1-19",
+  "level": "C1",
+  "text": "It is essential that every applicant is informed promptly.",
+  "wrongIndex": 6,
+  "fix": "be",
+  "why_en": "Formal mandative clauses often use the base-form subjunctive be.",
+  "why_ar": "في الأسلوب الرسمي قد نستخدم be بصيغته الأساسية بعد essential that."
+},
   {
     "id": "spot-c1-20",
     "level": "C1",
@@ -767,14 +767,14 @@ const SPOT_QUESTIONS = [
     "why_ar": "التعبير المقبول هو mutually exclusive of one another."
   },
   {
-    "id": "spot-c2-11",
-    "level": "C2",
-    "text": "Little she realised how consequential the decision would be.",
-    "wrongIndex": 1,
-    "fix": "did she",
-    "why_en": "Little at the beginning triggers inversion.",
-    "why_ar": "بدء الجملة بـ Little يستلزم القلب."
-  },
+  "id": "spot-c2-11",
+  "level": "C2",
+  "text": "Little did she realised how consequential the decision would be.",
+  "wrongIndex": 3,
+  "fix": "realise",
+  "why_en": "After did, use the base form of the verb.",
+  "why_ar": "بعد did نستخدم الفعل بصيغته الأساسية."
+},
   {
     "id": "spot-c2-12",
     "level": "C2",
@@ -812,23 +812,23 @@ const SPOT_QUESTIONS = [
     "why_ar": "في الافتراض المخالف للماضي، تكون might have متناسقة هنا."
   },
   {
-    "id": "spot-c2-16",
-    "level": "C2",
-    "text": "The distinction is subtle, not to say imperceptiblely.",
-    "wrongIndex": 7,
-    "fix": "imperceptibly.",
-    "why_en": "The adverb is imperceptibly, formed from imperceptible.",
-    "why_ar": "الظرف الصحيح imperceptibly مشتق من imperceptible."
-  },
+  "id": "spot-c2-16",
+  "level": "C2",
+  "text": "The distinction is subtle, not to say imperceptiblely.",
+  "wrongIndex": 7,
+  "fix": "imperceptible.",
+  "why_en": "Use the adjective imperceptible to describe the distinction.",
+  "why_ar": "نستخدم الصفة imperceptible لوصف distinction."
+},
   {
-    "id": "spot-c2-17",
-    "level": "C2",
-    "text": "Under no circumstances the confidential data should be disclosed.",
-    "wrongIndex": 3,
-    "fix": "should the",
-    "why_en": "A negative fronted phrase requires subject–auxiliary inversion.",
-    "why_ar": "العبارة السلبية في البداية تستلزم القلب."
-  },
+  "id": "spot-c2-17",
+  "level": "C2",
+  "text": "Under no circumstances the confidential data be disclosed.",
+  "wrongIndex": 3,
+  "fix": "should the",
+  "why_en": "A negative fronted phrase requires subject–auxiliary inversion.",
+  "why_ar": "العبارة السلبية في البداية تستلزم القلب."
+},
   {
     "id": "spot-c2-18",
     "level": "C2",
