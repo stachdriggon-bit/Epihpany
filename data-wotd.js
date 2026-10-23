@@ -337,7 +337,9 @@ const WOTD_WORDS = [
     "meaning_ar": "دقيق أو خفي",
     "level": "B2",
     "example": "There is a subtle difference in meaning.",
-    "origin": "From Latin subtilis, finely woven."
+    "example_ar": "هناك فرق دقيق في المعنى.",
+    "origin": "From Latin subtilis, finely woven.",
+    "origin_ar": "من اللاتينية subtilis، المرتبطة بالنسيج الدقيق."
   },
   {
     "word": "coherent",
@@ -346,7 +348,9 @@ const WOTD_WORDS = [
     "meaning_ar": "مترابط ومنطقي",
     "level": "B2",
     "example": "Write a coherent paragraph.",
-    "origin": "From Latin cohaerere, to stick together."
+    "example_ar": "اكتب فقرة مترابطة.",
+    "origin": "From Latin cohaerere, to stick together.",
+    "origin_ar": "من اللاتينية cohaerere، أي يترابط."
   },
   {
     "word": "ambiguous",
@@ -355,7 +359,9 @@ const WOTD_WORDS = [
     "meaning_ar": "ملتبس",
     "level": "B2",
     "example": "The instruction is ambiguous.",
-    "origin": "From Latin ambiguus, uncertain."
+    "example_ar": "التعليمات ملتبسة.",
+    "origin": "From Latin ambiguus, uncertain.",
+    "origin_ar": "من اللاتينية ambiguus، أي غير واضح أو متعدد المعاني."
   },
   {
     "word": "inevitable",
@@ -364,7 +370,9 @@ const WOTD_WORDS = [
     "meaning_ar": "حتمي",
     "level": "B2",
     "example": "Mistakes are an inevitable part of learning.",
-    "origin": "From Latin inevitabilis, unavoidable."
+    "example_ar": "الأخطاء جزء لا مفر منه من التعلّم.",
+    "origin": "From Latin inevitabilis, unavoidable.",
+    "origin_ar": "من اللاتينية inevitabilis، أي لا يمكن تجنّبه."
   },
   {
     "word": "justify",
@@ -373,7 +381,9 @@ const WOTD_WORDS = [
     "meaning_ar": "يبرر",
     "level": "B2",
     "example": "Can you justify your choice?",
-    "origin": "From Latin justificare, to do justice."
+    "example_ar": "هل يمكنك تبرير اختيارك؟",
+    "origin": "From Latin justificare, to do justice.",
+    "origin_ar": "من اللاتينية justificare، أي يبرّر."
   },
   {
     "word": "reluctant",
@@ -382,7 +392,9 @@ const WOTD_WORDS = [
     "meaning_ar": "متردد أو غير راغب",
     "level": "B2",
     "example": "He was reluctant to speak first.",
-    "origin": "From Latin reluctari, to struggle against."
+    "example_ar": "كان مترددًا في التحدث أولًا.",
+    "origin": "From Latin reluctari, to struggle against.",
+    "origin_ar": "من اللاتينية reluctari، أي يقاوم."
   },
   {
     "word": "precise",
@@ -391,7 +403,9 @@ const WOTD_WORDS = [
     "meaning_ar": "دقيق",
     "level": "B2",
     "example": "Choose a precise word.",
-    "origin": "From Latin praecidere, to cut off."
+    "example_ar": "اختر كلمة دقيقة.",
+    "origin": "From Latin praecidere, to cut off.",
+    "origin_ar": "من اللاتينية praecidere، أي يحدّد."
   },
   {
     "word": "distinguish",
@@ -400,7 +414,9 @@ const WOTD_WORDS = [
     "meaning_ar": "يميّز",
     "level": "B2",
     "example": "Distinguish fact from opinion.",
-    "origin": "From Latin distinguere, to separate."
+    "example_ar": "ميّز بين الحقيقة والرأي.",
+    "origin": "From Latin distinguere, to separate.",
+    "origin_ar": "من اللاتينية distinguere، أي يفصل أو يميّز."
   },
   {
     "word": "interpret",
@@ -409,7 +425,9 @@ const WOTD_WORDS = [
     "meaning_ar": "يفسّر",
     "level": "B2",
     "example": "How do you interpret this sentence?",
-    "origin": "From Latin interpretari."
+    "example_ar": "كيف تفسّر هذه الجملة؟",
+    "origin": "From Latin interpretari.",
+    "origin_ar": "من اللاتينية interpretari، أي يفسّر."
   },
   {
     "word": "convey",
@@ -418,7 +436,9 @@ const WOTD_WORDS = [
     "meaning_ar": "ينقل أو يعبّر عن",
     "level": "B2",
     "example": "Her tone conveys confidence.",
-    "origin": "From Latin conveyere, to carry together."
+    "example_ar": "تنقل نبرة صوتها الثقة.",
+    "origin": "From Latin conveyere, to carry together.",
+    "origin_ar": "من اللاتينية conveyere، أي يحمل معًا."
   },
   {
     "word": "elaborate",
