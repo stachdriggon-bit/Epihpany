@@ -569,7 +569,7 @@ body[data-theme="dark"] .trap-explanation{background:#252B3C;border-color:var(--
 .world-game[hidden]{display:none!important}
 .world-game{position:fixed;inset:0;z-index:120;display:flex;flex-direction:column;background:#eaf4e5;color:#17203d;overflow:hidden;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom);font-family:"DM Sans",system-ui,sans-serif}
 .world-top{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:14px;padding:12px 18px;background:#fff;border-bottom:1px solid #dce7d6;min-height:82px;z-index:2}
-.world-task-count{font-size:13px;color:#68745f;white-space:nowrap}.world-task-count b{font-size:20px;color:#17203d}
+.world-task-count{font-size:13px;color:#68745f;white-space:nowrap}.world-task-count b{font-size:20px;color:#17203d}.world-progress-track{display:block;width:min(150px,100%);height:5px;margin-top:7px;overflow:hidden;border-radius:99px;background:#e7eddf}.world-progress-track>span{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,#80b86e,#f3c64f);transition:width .25s ease}
 .world-instruction{display:flex;flex-direction:column;gap:3px;min-width:0}.world-instruction strong{font-size:clamp(17px,2vw,25px);line-height:1.2}.world-instruction span{font-size:14px;color:#64705c}
 .world-exit{width:44px;height:44px;border:0;border-radius:14px;background:#f0f2f7;color:#17203d;font-size:24px;cursor:pointer}
 .world-stage{flex:1;min-height:0;display:flex;flex-direction:column;position:relative}
