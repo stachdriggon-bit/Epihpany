@@ -736,6 +736,8 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     choose:'اختر',select:'اختر',tap:'اضغط',click:'انقر',read:'اقرأ',listen:'استمع',write:'اكتب',type:'اكتب',answer:'إجابة',answers:'إجابات',question:'سؤال',correct:'صحيح',incorrect:'خاطئ',wrong:'خاطئ',best:'أفضل',closest:'الأقرب',meaning:'المعنى',mean:'يعني',means:'تعني',word:'كلمة',words:'كلمات',sentence:'جملة',complete:'أكمل',fill:'املأ',blank:'الفراغ',missing:'الناقص',only:'فقط',one:'واحد',more:'أكثر',again:'مجدّدًا',practice:'تدرّب',try:'حاول',explain:'اشرح',
     not:'لا',never:'أبدًا',always:'دائمًا',often:'غالبًا',sometimes:'أحيانًا',take:'يأخذ',takes:'يأخذ',took:'أخذ',go:'يذهب',goes:'يذهب',went:'ذهب',come:'يأتي',came:'جاء',have:'لديه',has:'لديه',had:'كان لديه',want:'يريد',wants:'يريد',need:'يحتاج',needs:'يحتاج',make:'يصنع',makes:'يصنع',made:'صنع',get:'يحصل على',give:'يعطي',find:'يجد',found:'وجد',use:'يستخدم',help:'يساعد',like:'يحب',know:'يعرف',think:'يعتقد',feel:'يشعر',say:'يقول',said:'قال',see:'يرى',saw:'رأى',friend:'صديق',friends:'أصدقاء',family:'العائلة',people:'الناس',happy:'سعيد',sad:'حزين',tired:'متعب',hungry:'جائع',rain:'مطر',raining:'تمطر',umbrella:'مظلة',house:'منزل',home:'المنزل',school:'مدرسة',work:'عمل',water:'ماء',food:'طعام',book:'كتاب',day:'يوم',today:'اليوم',yesterday:'أمس',tomorrow:'غدًا',time:'وقت',early:'مبكرًا',late:'متأخرًا',before:'قبل',after:'بعد',first:'أول',last:'أخير',new:'جديد',old:'قديم',small:'صغير',big:'كبير',large:'كبير',long:'طويل',short:'قصير',fast:'سريع',slow:'بطيء',good:'جيد',bad:'سيئ',easy:'سهل',difficult:'صعب',important:'مهم',different:'مختلف',borrow:'يستعير',buy:'يشتري',bought:'اشترى',sell:'يبيع',return:'يعيد',delighted:'سعيد للغاية',happening:'يحدث',happened:'حدث',absolutely:'تمامًا',very:'جدًا',extremely:'للغاية',confused:'مرتبك',worried:'قلق',pleased:'مسرور',glad:'سعيد',clear:'واضح',instructions:'تعليمات',instruction:'تعليمات',option:'خيار',options:'خيارات'
   };
+  Object.assign(AR_TRANSLATION_WORDS, window.EPIPHANY_AR_TRANSLATION_WORDS || {});
+
   function normalizeTranslationKey(value) {
     return String(value||'').toLowerCase().replace(/[“”]/g,'"').replace(/[‘’]/g,"'").replace(/[.!?…,:;]+$/,'').replace(/\s+/g,' ').trim();
   }
@@ -1292,6 +1294,8 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     ["It means never questioning either side","يعني عدم التشكيك في أي طرف مطلقًا."],
     ["It is achieved by using equally long quotations","يتحقق باستخدام اقتباسات متساوية الطول."]
   ].map(([en,ar])=>[normalizeTranslationKey(en),ar])));
+  Object.assign(AR_TRANSLATION_PHRASES, Object.fromEntries(Object.entries(window.EPIPHANY_AR_TRANSLATION_PHRASES || {}).map(([en,ar])=>[normalizeTranslationKey(en),ar])));
+
   function translateKnownPhrase(source) {
     const lower=normalizeTranslationKey(source);
     if(AR_TRANSLATION_PHRASES[lower])return AR_TRANSLATION_PHRASES[lower];
