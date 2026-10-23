@@ -788,3 +788,17 @@ body[data-theme="dark"] .trap-explanation{background:#252B3C;border-color:var(--
 .account-note{color:var(--ink-2);margin:0 0 16px}
 .account-form button:disabled,.account-block button:disabled{opacity:.6;cursor:wait}
 @media(max-width:520px){.account-actions{align-items:stretch;flex-direction:column}.account-actions .btn{width:100%}.account-link{text-align:center}}
+
+
+/* First-visit account invitation: visible on the Play screen, optional for guests */
+.account-welcome-banner{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:16px;margin:0 0 24px;padding:18px 20px;border:1.5px solid var(--line);border-radius:22px;background:linear-gradient(110deg,var(--tone-soft),var(--surface));}
+.account-welcome-banner[hidden]{display:none!important}
+.account-welcome-mark{display:grid;place-items:center;width:48px;height:48px;border-radius:16px;background:var(--tone);color:var(--ink);font-size:25px}
+.account-welcome-copy{min-width:0}
+.account-welcome-copy strong{display:block;font:800 18px var(--display);color:var(--ink)}
+.account-welcome-copy p{margin:4px 0 0;color:var(--ink-2);font-size:13px;line-height:1.5}
+.account-welcome-actions{display:flex;align-items:center;justify-content:flex-end;gap:8px;flex-wrap:wrap}
+.account-welcome-actions .btn{min-height:42px;padding:9px 13px;white-space:nowrap}
+.account-guest-link{padding:8px 5px;border:0;background:transparent;color:var(--ink-2);font:700 12px var(--body);text-decoration:underline;cursor:pointer;white-space:nowrap}
+@media(max-width:760px){.account-welcome-banner{grid-template-columns:auto minmax(0,1fr);gap:12px;padding:15px}.account-welcome-mark{width:42px;height:42px}.account-welcome-actions{grid-column:1/-1;justify-content:stretch}.account-welcome-actions .btn{flex:1}.account-guest-link{flex-basis:100%;padding:7px}}
+@media(max-width:420px){.account-welcome-actions{display:grid;grid-template-columns:1fr 1fr}.account-welcome-actions .btn{width:100%}.account-guest-link{grid-column:1/-1}}
