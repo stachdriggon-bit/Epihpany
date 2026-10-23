@@ -1573,6 +1573,7 @@
   function placementQuestions(){const shuffle=list=>{const a=list.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};return LEVELS.flatMap(level=>shuffle(GAMES.vocabulary.questions.filter(q=>q.level===level.id)).slice(0,2).map(q=>({...q,placementLevel:level.id}))); }
   let placement={questions:[],index:0,answers:[]};
   function showPlacement(){if(state.placementDone)return;placement={questions:placementQuestions(),index:0,answers:[]};$('#placement').hidden=false;lockPage(true);renderPlacementQuestion();}
+  window.__epiphanyShowPlacement = showPlacement;
   function renderPlacementQuestion(){const q=placement.questions[placement.index];$('#placement-progress').textContent='Question '+(placement.index+1)+' of '+placement.questions.length;$('#placement-content').innerHTML='<h2>'+esc(q.q)+'</h2><p>'+esc(q.sub||'Choose the best answer.')+'</p><div class="answers">'+q.answers.map((x,i)=>'<button class="answer" data-place-answer="'+i+'"><span class="key">'+(i+1)+'</span><span>'+esc(x)+'</span></button>').join('')+'</div>';}
   function skipPlacement(){state.placementDone=true;save();$('#placement').hidden=true;lockPage(false);renderAll();toast('Placement skipped. Your starting level is A1 — you can begin playing now.');}
   $('#placement-skip').addEventListener('click',skipPlacement);
@@ -1608,5 +1609,8 @@
     try { localStorage.setItem('epiphany-progress', JSON.stringify(state)); } catch {}
     renderAll();
   };
-  renderAll(); if(!state.placementDone)showPlacement();
+  renderAll();
+  let accountWelcomeDismissed = false;
+  try { accountWelcomeDismissed = localStorage.getItem('epiphany-account-welcome-dismissed') === '1'; } catch {}
+  if(!state.placementDone && accountWelcomeDismissed)showPlacement();
 })();
