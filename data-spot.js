@@ -423,5 +423,113 @@ const SPOT_QUESTIONS = [
     "fix": "substantiated",
     "why_en": "After “has yet to be”, use the past participle in the passive.",
     "why_ar": "بعد has yet to be نستخدم التصريف الثالث للمبني للمجهول."
+  },
+  {
+    "id": "spot-a1-15",
+    "level": "A1",
+    "text": "My brother have a bicycle.",
+    "wrongIndex": 2,
+    "fix": "has",
+    "why_en": "Use has with he, she, and it in the present simple.",
+    "why_ar": "نستخدم has مع he وshe وit في المضارع البسيط."
+  },
+  {
+    "id": "spot-a1-16",
+    "level": "A1",
+    "text": "We are go to school now.",
+    "wrongIndex": 2,
+    "fix": "going",
+    "why_en": "The present continuous uses be + verb-ing.",
+    "why_ar": "يتكون المضارع المستمر من be والفعل المنتهي بـ ing."
+  },
+  {
+    "id": "spot-a2-15",
+    "level": "A2",
+    "text": "I didn't saw him yesterday.",
+    "wrongIndex": 2,
+    "fix": "see",
+    "why_en": "After did or didn't, use the base form of the verb.",
+    "why_ar": "بعد did أو didn't نستخدم الفعل بصيغته الأساسية."
+  },
+  {
+    "id": "spot-a2-16",
+    "level": "A2",
+    "text": "This bag is more cheaper than that one.",
+    "wrongIndex": 3,
+    "fix": "cheaper",
+    "why_en": "Do not use more with a comparative adjective already ending in -er.",
+    "why_ar": "لا نستخدم more مع صفة مقارنة تنتهي أصلًا بـ er."
+  },
+  {
+    "id": "spot-b1-15",
+    "level": "B1",
+    "text": "I have been here since three hours.",
+    "wrongIndex": 4,
+    "fix": "for",
+    "why_en": "Use for with a duration and since with a starting point.",
+    "why_ar": "نستخدم for مع المدة وsince مع نقطة البداية."
+  },
+  {
+    "id": "spot-b1-16",
+    "level": "B1",
+    "text": "She asked me where was I going.",
+    "wrongIndex": 4,
+    "fix": "I was",
+    "why_en": "Reported questions use statement word order: subject before verb.",
+    "why_ar": "في الأسئلة المنقولة نستخدم ترتيب الجملة الخبرية: الفاعل ثم الفعل."
+  },
+  {
+    "id": "spot-b2-15",
+    "level": "B2",
+    "text": "Had I known earlier, I would tell you yesterday.",
+    "wrongIndex": 6,
+    "fix": "have told",
+    "why_en": "A past unreal condition uses would have + past participle in the result clause.",
+    "why_ar": "في الشرط غير الحقيقي عن الماضي نستخدم would have والتصريف الثالث في النتيجة."
+  },
+  {
+    "id": "spot-b2-16",
+    "level": "B2",
+    "text": "The manager insisted on that we leave early.",
+    "wrongIndex": 3,
+    "fix": "insisted that",
+    "why_en": "Use insist that + clause, or insist on + noun/-ing form.",
+    "why_ar": "نستخدم insist that مع جملة، أو insist on مع اسم أو فعل ing."
+  },
+  {
+    "id": "spot-c1-09",
+    "level": "C1",
+    "text": "Not until the data was analysed the pattern became clear.",
+    "wrongIndex": 6,
+    "fix": "did the pattern become",
+    "why_en": "A fronted not until phrase triggers inversion in the main clause.",
+    "why_ar": "عند بدء الجملة بـ Not until يحدث القلب في الجملة الرئيسية."
+  },
+  {
+    "id": "spot-c1-10",
+    "level": "C1",
+    "text": "The findings are at odds to the initial hypothesis.",
+    "wrongIndex": 7,
+    "fix": "with",
+    "why_en": "The fixed expression is at odds with.",
+    "why_ar": "التعبير الثابت هو at odds with."
+  },
+  {
+    "id": "spot-c2-09",
+    "level": "C2",
+    "text": "Under no circumstances the files should be shared.",
+    "wrongIndex": 3,
+    "fix": "should the files",
+    "why_en": "A negative phrase at the beginning requires subject–auxiliary inversion.",
+    "why_ar": "العبارة السلبية في البداية تستلزم القلب بين الفعل المساعد والفاعل."
+  },
+  {
+    "id": "spot-c2-10",
+    "level": "C2",
+    "text": "The proposal is contingent of external approval.",
+    "wrongIndex": 5,
+    "fix": "on",
+    "why_en": "The standard collocation is contingent on.",
+    "why_ar": "التركيب الصحيح هو contingent on."
   }
 ];
