@@ -673,14 +673,9 @@
       }
       selected = shuffle(chosen);
     } else {
-      if (levelPool.length >= 5) selected = shuffle(levelPool).slice(0, 5);
-      else {
-        // Not enough questions at this level (e.g. C1/C2 for newer modes): fill from the nearest levels.
-        const ids = LEVELS.map(l => l.id), at = ids.indexOf(level);
-        const near = game.questions.filter(q => q.level && q.level !== level)
-          .sort((a, b) => Math.abs(ids.indexOf(a.level) - at) - Math.abs(ids.indexOf(b.level) - at) || Math.random() - .5);
-        selected = [...shuffle(levelPool), ...shuffle(generalPool), ...near].slice(0, 5);
-      }
+      // Never silently mix easier or harder CEFR levels into a normal round.
+      // Use up to five unique questions from the player's own level only.
+      selected = shuffle(levelPool).slice(0, 5);
     }
     const paired = shuffle(selected).map(source => {
       const q = {...source, answers:[...(source.answers||[])]};
