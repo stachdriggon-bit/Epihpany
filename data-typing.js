@@ -653,5 +653,17 @@ const TYPING_QUESTIONS = [
     "why_en": "The passive infinitive uses be + past participle.",
     "why_ar": "يتكون المصدر المبني للمجهول من be والتصريف الثالث.",
     "answer": "tested"
-  }
+  },
+  {"id":"type-a1-17","level":"A1","prompt":"My brother ___ a bicycle.","hint":"have","accept":["has"],"why_en":"Use has with he, she, or it.","why_ar":"نستخدم has مع he أو she أو it.","answer":"has"},
+  {"id":"type-a1-18","level":"A1","prompt":"We are ___ to school now. (go)","hint":"present continuous","accept":["going"],"why_en":"The present continuous uses be + verb-ing.","why_ar":"يتكون المضارع المستمر من be والفعل المنتهي بـ ing.","answer":"going"},
+  {"id":"type-a2-17","level":"A2","prompt":"I didn't ___ him yesterday. (see)","hint":"base form","accept":["see"],"why_en":"After didn't, use the base form.","why_ar":"بعد didn't نستخدم الفعل بصيغته الأساسية.","answer":"see"},
+  {"id":"type-a2-18","level":"A2","prompt":"This bag is ___ than that one. (cheap)","hint":"comparative","accept":["cheaper"],"why_en":"Short adjectives usually form the comparative with -er.","why_ar":"غالبًا نكوّن المقارنة للصفات القصيرة بإضافة er.","answer":"cheaper"},
+  {"id":"type-b1-17","level":"B1","prompt":"I've been waiting ___ two hours.","hint":"for/since","accept":["for"],"why_en":"Use for with a duration.","why_ar":"نستخدم for مع مدة زمنية.","answer":"for"},
+  {"id":"type-b1-18","level":"B1","prompt":"She asked me where I ___ going.","hint":"reported question","accept":["was"],"why_en":"Reported questions use statement word order.","why_ar":"تستخدم الأسئلة المنقولة ترتيب الجملة الخبرية.","answer":"was"},
+  {"id":"type-b2-17","level":"B2","prompt":"Had I known, I would ___ you earlier.","hint":"past participle","accept":["have told"],"why_en":"The third conditional result uses would have + past participle.","why_ar":"تستخدم نتيجة الشرط الثالث would have والتصريف الثالث.","answer":"have told"},
+  {"id":"type-b2-18","level":"B2","prompt":"The manager insisted ___ our leaving early.","hint":"preposition","accept":["on"],"why_en":"Use insist on before a noun or an -ing form.","why_ar":"نستخدم insist on قبل اسم أو فعل ing.","answer":"on"},
+  {"id":"type-c1-09","level":"C1","prompt":"Not until the data had been analysed ___ the pattern become clear.","hint":"auxiliary","accept":["did"],"why_en":"A fronted not until phrase triggers inversion; use did + base verb for the past simple.","why_ar":"عند تقديم Not until يحدث القلب، ونستخدم did مع الفعل الأساسي للماضي البسيط.","answer":"did"},
+  {"id":"type-c1-10","level":"C1","prompt":"The findings are at odds ___ the initial hypothesis.","hint":"preposition","accept":["with"],"why_en":"The fixed phrase is at odds with.","why_ar":"التعبير الثابت هو at odds with.","answer":"with"},
+  {"id":"type-c2-09","level":"C2","prompt":"Under no circumstances ___ these files be shared.","hint":"modal","accept":["should"],"why_en":"A negative phrase at the beginning requires inversion.","why_ar":"العبارة السلبية في بداية الجملة تستلزم القلب.","answer":"should"},
+  {"id":"type-c2-10","level":"C2","prompt":"The proposal is contingent ___ external approval.","hint":"preposition","accept":["on"],"why_en":"The formal collocation is contingent on.","why_ar":"التركيب الرسمي هو contingent on.","answer":"on"}
 ];
