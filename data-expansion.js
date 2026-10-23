@@ -179,7 +179,7 @@
     ['C2','ostensible','appearing to be true or stated as the reason, perhaps not the real one','ظاهري','os-TEN-suh-bul','The ostensible reason was budget pressure.'],
     ['C2','epistemic','relating to knowledge or how we know things','معرفي متعلق بالمعرفة','ep-uh-STEM-ik','The debate raised an epistemic question.'],
     ['C2','conjecture','an opinion based on incomplete information','تخمين','kun-JEK-chur','Without further data, the explanation remains conjecture.'],
-    ['C2','disparate','fundamentally different or unrelated','متباين','DIS-puh-rut','The report combined disparate sources of evidence.']
+    ['C2','disparate','fundamentally different or unrelated','متباين','DIS-puh-rut','The report combined disparate sources of evidence.'],
     ["A1","shelter","a place that protects you from bad weather or danger","مأوى","SHEL-tur","We waited in a shelter during the rain."],
     ["A1","arrive","to reach a place","يصل","uh-RYVE","We arrive at school before eight."],
     ["A1","repair","to fix something that is broken","يصلح","ri-PAIR","Can you repair this chair?"],
