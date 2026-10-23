@@ -35,6 +35,9 @@
   function save() {
     try { localStorage.setItem('epiphany-progress', JSON.stringify(state)); }
     catch { if (!saveWarned) { saveWarned = true; toast('Progress can’t be saved in this browser. It will last for this visit only.'); } }
+    if (window.EpiphanyAuth && typeof window.EpiphanyAuth.queueSave === 'function') {
+      window.EpiphanyAuth.queueSave(state);
+    }
   }
 
   /* ---------- game metadata (look & feel per game) ---------- */
@@ -1577,5 +1580,33 @@
     const scores=Object.fromEntries(LEVELS.map(l=>[l.id,placement.answers.filter(a=>a.level===l.id&&a.ok).length]));let target=0;for(let i=0;i<LEVELS.length;i++){if(scores[LEVELS[i].id]>=1)target=i;else break;}
     state.level=LEVELS[target].id;state.xp=Math.max(state.xp,LEVELS[target].xp);state.placementDone=true;save();$('#placement').hidden=true;lockPage(false);renderAll();toast('Your starting level is '+LEVELS[target].id+'. You can improve it as you learn.');}
   document.addEventListener('click',e=>{const p=e.target.closest('[data-place-answer]');if(p&&!$('#placement').hidden){answerPlacement(Number(p.dataset.placeAnswer));return;}});
+  window.__epiphanyReadProgress = () => JSON.parse(JSON.stringify(state));
+  window.__epiphanyApplyCloudProgress = progress => {
+    const incoming = progress && typeof progress === 'object' && !Array.isArray(progress) ? progress : {};
+    state = {...defaults(), ...incoming};
+    if (!Array.isArray(state.words)) state.words = [];
+    if (!Array.isArray(state.review)) state.review = [];
+    if (!Array.isArray(state.completed)) state.completed = [];
+    if (!state.mistakeTrapErrors || typeof state.mistakeTrapErrors !== 'object' || Array.isArray(state.mistakeTrapErrors)) state.mistakeTrapErrors = {};
+    if (!state.mistakeQuestionErrors || typeof state.mistakeQuestionErrors !== 'object' || Array.isArray(state.mistakeQuestionErrors)) state.mistakeQuestionErrors = {};
+    if (!state.modes || typeof state.modes !== 'object' || Array.isArray(state.modes)) state.modes = {};
+    if (!state.weakTraps || typeof state.weakTraps !== 'object' || Array.isArray(state.weakTraps)) state.weakTraps = {};
+    if (!state.stories || typeof state.stories !== 'object' || Array.isArray(state.stories)) state.stories = {};
+    if (!state.world || typeof state.world !== 'object' || Array.isArray(state.world)) state.world = {done:[],stars:{}};
+    if (!Array.isArray(state.world.done)) state.world.done = [];
+    if (!state.world.stars || typeof state.world.stars !== 'object' || Array.isArray(state.world.stars)) state.world.stars = {};
+    if (state.lastDay !== dayKey()) state.daily = 0;
+    if (state.dailyQuestDate !== dayKey()) {
+      state.dailyQuestDate = dayKey(); state.dailyQuestProgress = 0; state.dailyQuestClaimed = false; state.dailyCorrect = 0; state.dailyXp = 0;
+    }
+    if (state.weeklyKey !== weekKey()) { state.weeklyKey = weekKey(); state.weeklyProgress = 0; state.weeklyClaimed = false; }
+    try { localStorage.setItem('epiphany-progress', JSON.stringify(state)); } catch {}
+    renderAll();
+  };
+  window.__epiphanyResetProgress = () => {
+    state = defaults();
+    try { localStorage.setItem('epiphany-progress', JSON.stringify(state)); } catch {}
+    renderAll();
+  };
   renderAll(); if(!state.placementDone)showPlacement();
 })();
