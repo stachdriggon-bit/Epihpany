@@ -481,8 +481,7 @@ const TYPING_QUESTIONS = [
     "why_en": "Use the form that fits the subject, tense, and structure of the sentence.",
     "why_ar": "اختر الصيغة التي تناسب الفاعل والزمن وتركيب الجملة.",
     "answer": "better"
-  }
-  ,
+  },
   {"id":"type-a1-11","level":"A1","prompt":"My sister ___ ten years old.","hint":"be","accept":["is"],"why_en":"Use “is” with a singular third-person subject.","why_ar":"نستخدم is مع فاعل مفرد غائب.","answer":"is"},
   {"id":"type-a1-12","level":"A1","prompt":"We ___ English at school.","hint":"study","accept":["study"],"why_en":"Use the base form with “we” in the present simple.","why_ar":"نستخدم الفعل الأساسي مع we في المضارع البسيط.","answer":"study"},
   {"id":"type-a2-11","level":"A2","prompt":"There isn’t ___ sugar in the jar.","hint":"much / many","accept":["much"],"why_en":"Sugar is uncountable, so “much” fits this negative sentence.","why_ar":"Sugar اسم غير معدود، لذلك نستخدم much في الجملة المنفية.","answer":"much"},
@@ -654,17 +653,5 @@ const TYPING_QUESTIONS = [
     "why_en": "The passive infinitive uses be + past participle.",
     "why_ar": "يتكون المصدر المبني للمجهول من be والتصريف الثالث.",
     "answer": "tested"
-  },
-  {"id":"type-a1-15","level":"A1","prompt":"She can ___ (swim) very well.","hint":"modal verb","accept":["swim"],"why_en":"A modal verb is followed by the base form.","why_ar":"يأتي بعد الفعل الناقص الفعل بصيغته الأساسية.","answer":"swim"},
-  {"id":"type-a1-16","level":"A1","prompt":"Those ___ my shoes.","hint":"be","accept":["are"],"why_en":"Use are with the plural subject those.","why_ar":"نستخدم are مع الفاعل الجمع those.","answer":"are"},
-  {"id":"type-a2-15","level":"A2","prompt":"I'm interested ___ learning French.","hint":"preposition","accept":["in"],"why_en":"The standard phrase is interested in.","why_ar":"التركيب الصحيح interested in.","answer":"in"},
-  {"id":"type-a2-16","level":"A2","prompt":"We ___ (see) that film last week.","hint":"past simple","accept":["saw"],"why_en":"A finished time expression like last week calls for the past simple.","why_ar":"مع last week نستخدم الماضي البسيط.","answer":"saw"},
-  {"id":"type-b1-15","level":"B1","prompt":"If I had known, I ___ (come).","hint":"third conditional","accept":["would have come"],"why_en":"The third conditional result uses would have + past participle.","why_ar":"تستخدم نتيجة الشرط الثالث would have مع التصريف الثالث.","answer":"would have come"},
-  {"id":"type-b1-16","level":"B1","prompt":"The lecture was so ___ that I nearly fell asleep. (bore)","hint":"adjective","accept":["boring"],"why_en":"Use -ing to describe something that causes a feeling.","why_ar":"نستخدم ing لوصف الشيء الذي يسبب الشعور.","answer":"boring"},
-  {"id":"type-b2-15","level":"B2","prompt":"Despite ___ exhausted, she finished the report. (be)","hint":"-ing form","accept":["being"],"why_en":"Despite can be followed by a noun or an -ing form.","why_ar":"يمكن أن يأتي بعد despite اسم أو فعل منتهٍ بـ ing.","answer":"being"},
-  {"id":"type-b2-16","level":"B2","prompt":"The new evidence casts doubt ___ the original theory.","hint":"preposition","accept":["on"],"why_en":"The fixed collocation is cast doubt on.","why_ar":"التركيب الثابت هو cast doubt on.","answer":"on"},
-  {"id":"type-c1-07","level":"C1","prompt":"Were the plan ___ properly, it might succeed. (implement)","hint":"passive infinitive","accept":["to be implemented"],"why_en":"Hypothetical inversion can use were + subject + to be + past participle.","why_ar":"يمكن استخدام were مع الفاعل ثم to be والتصريف الثالث في الافتراض.","answer":"to be implemented"},
-  {"id":"type-c1-08","level":"C1","prompt":"The decision gave rise ___ considerable debate.","hint":"preposition","accept":["to"],"why_en":"The standard phrase is give rise to.","why_ar":"التعبير الصحيح give rise to.","answer":"to"},
-  {"id":"type-c2-07","level":"C2","prompt":"So complex ___ the evidence that no firm conclusion could be drawn.","hint":"be","accept":["was"],"why_en":"Fronting so + adjective for emphasis triggers inversion.","why_ar":"تقديم so + صفة للتوكيد يستلزم القلب.","answer":"was"},
-  {"id":"type-c2-08","level":"C2","prompt":"The hypothesis remains to be ___ independently. (test)","hint":"past participle","accept":["tested"],"why_en":"The passive infinitive uses be + past participle.","why_ar":"يتكون المصدر المبني للمجهول من be والتصريف الثالث.","answer":"tested"}
+  }
 ];
