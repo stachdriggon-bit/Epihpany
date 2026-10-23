@@ -144,9 +144,9 @@
     $('#track-note').innerHTML = '<strong>' + lv.id + ' · ' + esc(lv.title) + '</strong>' + esc(lv.desc);
 
     const gameCategories = [
-      {id:'words',title:'Words',desc:'Build your vocabulary and recognise words.',icon:'Aa',tone:'violet',games:[['vocabulary','Word collector'],['spelling','Word detective']]},
+      {id:'words',title:'Words',desc:'Build your vocabulary and recognise words.',icon:'Aa',tone:'violet',games:[['vocabulary','Word collector'],['spelling','Word detective'],['match','Word Match']]},
       {id:'grammar',title:'Grammar',desc:'Make sentences clearer and more accurate.',icon:'S+V',tone:'coral',games:[['grammar','Sentence shaper'],['mistakes','Common mistakes'],['spot','Spot the mistake'],['typing','Type It']]},
-      {id:'reading',title:'Reading & Listening',desc:'Understand stories, messages and meaning.',icon:'◖',tone:'sky',games:[['story','Lost in London'],['listening','Meaning detective']]},
+      {id:'reading',title:'Reading & Listening',desc:'Understand stories, messages and meaning.',icon:'◖',tone:'sky',games:[['story','Lost in London'],['listening','Meaning detective'],['order','Order the Story'],['directions','Directions']]},
       {id:'challenge',title:'Challenge',desc:'Train your ear for nuance and precise meaning.',icon:'✦',tone:'ink',games:[['advanced','Nuance navigator']]}
     ];
     window.__gameCategories = gameCategories;
@@ -327,6 +327,7 @@
   // Capture the theme action before the settings popover closes.
   document.addEventListener('submit', e => { if(e.target && e.target.id==='typing-form'){e.preventDefault();checkTyping();} });
   document.addEventListener('click', e => {
+    if (MG && miniClick(e)) return;
     const so=e.target.closest('[data-story-open]');if(so){startStory(so.dataset.storyOpen);return;}
     const sa=e.target.closest('[data-story-answer]');if(sa){answerStoryQuestion(Number(sa.dataset.storyAnswer));return;}
     const sw=e.target.closest('[data-story-word]');if(sw&&ST&&ST.mode==='read'){openStoryWord(sw.dataset.storyWord,sw.dataset.storyDisplay);return;}
@@ -458,6 +459,7 @@
   }
 
   function startGame(type) {
+    if (MINI[type]) { startMini(type); return; }
     const game = GAMES[type]; if (!game) return;
     const level = currentLevel().id;
     const levelPool = game.questions.filter(q => q.level === level);
@@ -703,8 +705,210 @@
     setTimeout(() => URL.revokeObjectURL(url), 1500); toast(downloadOnly ? 'Result card downloaded.' : 'Result card downloaded — you can now share it.');
   }
 
+  /* ---------- mini-games: Order the Story · Word Match · Directions ---------- */
+  let MG = null;
+  const MINI = {
+    order:     {label:'Order the Story', tone:'mint',   glyph:'1·2·3', time:4, blurb:'Put the events of a story in order.', xp:30},
+    match:     {label:'Word Match',      tone:'violet', glyph:'⇄',     time:3, blurb:'Match each word with its meaning.',   xp:25},
+    directions:{label:'Directions',      tone:'sky',    glyph:'↱',     time:4, blurb:'Follow directions on a town map.',    xp:35}
+  };
+  Object.assign(META, MINI); Object.keys(MINI).forEach(k => { UNLOCK[k] = 0; });
+  const NUM_WORDS = ['zero','one','two','three','four'];
+  const AR_NUM = ['صفر','واحدة','اثنتين','ثلاث','أربع'];
+  const SHUF = list => { const a = list.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+
+  function awardActivity(xpGain, correct) {
+    state.xp += xpGain; state.quests++; state.daily = Math.min(2, state.daily + 1);
+    const today = dayKey();
+    if (state.dailyQuestDate !== today) { state.dailyQuestDate = today; state.dailyQuestProgress = 0; state.dailyQuestClaimed = false; state.dailyCorrect = 0; state.dailyXp = 0; }
+    if (state.weeklyKey !== weekKey()) { state.weeklyKey = weekKey(); state.weeklyProgress = 0; state.weeklyClaimed = false; }
+    state.dailyXp += xpGain; state.dailyCorrect += correct; state.dailyQuestProgress = state.daily; state.weeklyProgress = (state.weeklyProgress || 0) + 1;
+    const task = DAILY_QUESTS[(new Date().getDate() - 1) % DAILY_QUESTS.length];
+    const progress = task.kind === 'quests' ? state.daily : task.kind === 'xp' ? state.dailyXp : state.dailyCorrect;
+    let bonus = '';
+    if (!state.dailyQuestClaimed && progress >= task.target) { state.dailyQuestClaimed = true; state.xp += task.reward; bonus = ' Daily bonus +' + task.reward + ' XP!'; }
+    if (!state.weeklyClaimed && state.weeklyProgress >= 5) { state.weeklyClaimed = true; state.xp += 60; bonus += ' Weekly bonus +60 XP!'; }
+    if (state.lastDay !== today) {
+      const y = new Date(); y.setDate(y.getDate() - 1); const two = new Date(); two.setDate(two.getDate() - 2);
+      if (state.lastDay === dayKey(y)) state.streak = (state.streak || 0) + 1;
+      else if (state.lastDay === dayKey(two) && state.streakFreezes > 0) { state.streakFreezes--; state.streak = (state.streak || 0) + 1; bonus += ' Streak freeze protected your streak.'; }
+      else state.streak = 1;
+      state.lastDay = today;
+    }
+    if (!state.completed.includes(currentLevel().id)) state.completed.push(currentLevel().id);
+    save(); renderAll();
+    return bonus.trim();
+  }
+
+  function startMini(type) {
+    G = null; ST = null;
+    MG = {type, i: 0, score: 0, total: 0, answered: false, results: []};
+    const m = META[type];
+    $('#game').className = 'game t-' + m.tone; $('#game').hidden = false; lockPage(true); hideSheet();
+    if (type === 'order') miniOrderSetup();
+    else if (type === 'match') miniMatchSetup();
+    else miniDirSetup();
+  }
+  function miniSteps(done) {
+    $('#steps').innerHTML = Array.from({length: MG.total}, (_, i) => '<span class="step ' + (MG.results[i] === 'ok' ? 'ok' : MG.results[i] === 'no' ? 'no' : (i === MG.i && !done ? 'current' : '')) + '"></span>').join('');
+  }
+  function miniFinish(note) {
+    const m = META[MG.type];
+    let ratio = MG.total ? MG.score / MG.total : 1;
+    if (MG.type === 'match') ratio = Math.max(.4, Math.min(1, MG.total * 1.6 / Math.max(1, MG.attempts)));
+    const gain = Math.max(8, Math.round(m.xp * (.4 + .6 * ratio)));
+    const bonus = awardActivity(gain, MG.score);
+    const stars = ratio >= .9 ? '★★★' : ratio >= .6 ? '★★☆' : '★☆☆';
+    miniSteps(true); hideSheet();
+    const type = MG.type;
+    $('#game-body').innerHTML = '<div class="result story-result"><div class="burst">' + (type === 'order' ? '📚' : type === 'match' ? '🧩' : '🧭') + '</div><p class="kicker">' + esc(m.label.toUpperCase()) + ' COMPLETE</p><h2>' + (ratio >= .9 ? 'Brilliant work!' : ratio >= .6 ? 'Nicely done!' : 'Good practice!') + '</h2><div class="story-stars">' + stars + '</div>' +
+      '<div class="stats3"><div class="stat"><b>+' + gain + '</b><span>XP earned</span></div><div class="stat"><b>' + MG.score + '/' + MG.total + '</b><span>' + (type === 'match' ? 'Pairs' : 'Correct') + '</span></div><div class="stat"><b>' + esc(note || '') + '</b><span>' + (type === 'match' ? 'Attempts' : 'Rounds') + '</span></div></div>' +
+      (bonus ? '<p class="challenge-bonus">' + esc(bonus) + '</p>' : '') +
+      '<div class="result-actions"><button class="btn" data-mini-again="' + type + '">Play again</button><button class="btn btn-ghost" data-mini-close>Back to Play</button></div></div>';
+    $('#game-scroll').scrollTop = 0; MG.done = true; sfx('done');
+  }
+
+  /* Order the Story */
+  function miniOrderSetup() {
+    const idx = levelIndex();
+    let pool = STORIES.filter(s => storyLevelIndex(s.level) <= idx);
+    if (!pool.length) pool = STORIES.slice();
+    const picked = SHUF(pool).slice(0, 3);
+    MG.rounds = picked.map(s => {
+      const n = Math.min(4, s.pages.length), start = Math.floor(Math.random() * (s.pages.length - n + 1));
+      const items = s.pages.slice(start, start + n).map((p, k) => ({k, text: String(p.text).split(/(?<=[.!?”"])\s+/)[0] || p.text, ar: p.ar}));
+      let order = SHUF(items.map(x => x.k)), tries = 0;
+      while (order.every((v, p) => v === p) && tries++ < 10) order = SHUF(order);
+      return {title: s.title, items, pool: order, placed: []};
+    });
+    MG.total = MG.rounds.length; MG.i = 0; miniOrderRender();
+  }
+  function miniOrderRender() {
+    const r = MG.rounds[MG.i]; MG.answered = false; hideSheet(); miniSteps();
+    const textOf = k => r.items.find(x => x.k === k).text;
+    $('#game-body').innerHTML = '<div class="q-meta"><span class="pill">Order the Story</span><span class="q-count">Story ' + (MG.i + 1) + ' of ' + MG.total + '</span></div>' +
+      '<h2 class="q-text" id="q-text" tabindex="-1">Put the events in order</h2><p class="q-sub">From “' + esc(r.title) + '”. Tap the sentences in the order they happened.</p>' +
+      '<ol class="mg-slots" aria-label="Your order">' + r.items.map((_, p) => '<li class="mg-slot' + (r.placed[p] !== undefined ? ' is-filled' : '') + '">' + (r.placed[p] !== undefined ? '<button type="button" class="mg-card is-placed" data-mg-unplace="' + p + '"><b>' + (p + 1) + '</b><span>' + esc(textOf(r.placed[p])) + '</span></button>' : '<span class="mg-empty">' + (p + 1) + '</span>') + '</li>').join('') + '</ol>' +
+      '<div class="mg-pool" role="group" aria-label="Sentences to place">' + r.pool.map(k => '<button type="button" class="mg-card" data-mg-place="' + k + '"><span>' + esc(textOf(k)) + '</span></button>').join('') + '</div>' +
+      '<div class="mg-actions"><button class="btn" id="mg-check" ' + (r.pool.length ? 'disabled' : '') + '>Check order</button></div>';
+    $('#game-scroll').scrollTop = 0; const h = $('#q-text'); if (h) h.focus({preventScroll: true});
+  }
+  function miniOrderCheck() {
+    const r = MG.rounds[MG.i]; if (MG.answered || r.pool.length) return;
+    MG.answered = true; const correct = r.placed.filter((k, p) => k === p).length, ok = correct === r.items.length;
+    if (ok) MG.score++; MG.results[MG.i] = ok ? 'ok' : 'no'; miniSteps();
+    $$('.mg-slots .mg-card').forEach((b, p) => { b.disabled = true; b.classList.add(r.placed[p] === p ? 'is-right' : 'is-wrong'); });
+    $('#mg-check').disabled = true; sfx(ok ? 'ok' : 'no');
+    showSheet(ok, '<h3><span class="sheet-mark">' + ic(ok ? 'check' : 'x') + '</span>' + (ok ? 'Perfect order!' : correct + ' of ' + r.items.length + ' in the right place') + '</h3>' +
+      (ok ? '' : '<p>Correct order:</p><ol class="mg-answer">' + r.items.map(x => '<li>' + esc(x.text) + '</li>').join('') + '</ol>') +
+      '<div class="sheet-actions"><button class="btn" id="go-next">' + (MG.i === MG.total - 1 ? 'See results' : 'Next story') + ic('arrow') + '</button></div>');
+  }
+
+  /* Word Match (memory pairs) */
+  function miniShort(text) { const t = String(text || '').replace(/^to /, '').split(/[;,(]/)[0].trim(); return t.length > 34 ? t.slice(0, 32).trim() + '…' : t; }
+  function miniMatchSetup() {
+    const idx = levelIndex(), lvIds = LEVELS.map(l => l.id);
+    const seen = new Set(), pairs = [];
+    const add = (w, m) => { const key = String(w).toLowerCase(); if (!w || !m || seen.has(key) || /^معنى/.test(m)) return; seen.add(key); pairs.push({w: String(w), m: miniShort(m)}); };
+    SHUF(state.words.filter(x => x[1] && x[1] !== 'No explanation has been added for this word yet.')).slice(0, 3).forEach(x => add(x[0], x[1]));
+    const wl = WOTD_WORDS.filter(x => lvIds.indexOf(x.level) <= idx + 1);
+    SHUF(wl.length >= 6 ? wl : WOTD_WORDS).forEach(x => { if (pairs.length < 6) add(x.word, x.meaning); });
+    const cards = SHUF(pairs.flatMap((p, n) => [{id: 'w' + n, n, text: p.w, kind: 'word'}, {id: 'm' + n, n, text: p.m, kind: 'meaning'}]));
+    MG.pairs = pairs; MG.cards = cards; MG.open = []; MG.matched = new Set(); MG.attempts = 0; MG.total = pairs.length; MG.lock = false;
+    miniMatchRender();
+  }
+  function miniMatchRender() {
+    miniSteps();
+    $('#game-body').innerHTML = '<div class="q-meta"><span class="pill">Word Match</span><span class="q-count">' + MG.matched.size + ' of ' + MG.total + ' pairs</span></div><h2 class="q-text" id="q-text" tabindex="-1">Match each word with its meaning</h2><p class="q-sub">Flip two cards. A word and its meaning make a pair.</p>' +
+      '<div class="mg-grid" role="group" aria-label="Memory cards">' + MG.cards.map((c, i) => {
+        const open = MG.open.includes(i), done = MG.matched.has(c.n);
+        return '<button type="button" class="mg-tile ' + (done ? 'is-done ' : open ? 'is-open ' : '') + 'mg-' + c.kind + '" data-mg-flip="' + i + '" ' + (done ? 'disabled' : '') + ' aria-label="' + (open || done ? esc(c.text) : 'Hidden card') + '"><span>' + (open || done ? esc(c.text) : '?') + '</span></button>';
+      }).join('') + '</div>';
+    for (let i = 0; i < MG.total; i++) { MG.results[i] = MG.matched.size > i ? 'ok' : ''; } miniSteps();
+  }
+  function miniFlip(i) {
+    if (MG.lock || MG.open.includes(i) || MG.matched.has(MG.cards[i].n)) return;
+    MG.open.push(i); sfx('ok');
+    if (MG.open.length < 2) { miniMatchRender(); return; }
+    MG.attempts++; const [a, b] = MG.open.map(k => MG.cards[k]);
+    if (a.n === b.n && a.kind !== b.kind) { MG.matched.add(a.n); MG.open = []; MG.score = MG.matched.size; miniMatchRender(); if (MG.matched.size === MG.total) setTimeout(() => { if (MG && MG.type === 'match') miniFinish(String(MG.attempts)); }, 700); return; }
+    MG.lock = true; miniMatchRender(); sfx('no');
+    setTimeout(() => { if (!MG) return; MG.open = []; MG.lock = false; miniMatchRender(); }, 950);
+  }
+
+  /* Directions */
+  const DIR_V = {N: [0, -1], E: [1, 0], S: [0, 1], W: [-1, 0]}, DIR_L = {N: 'W', W: 'S', S: 'E', E: 'N'}, DIR_R = {W: 'N', S: 'W', E: 'S', N: 'E'};
+  function dirPath(it) {
+    let [x, y] = it.start, d = it.dir; const pts = [[x, y]];
+    for (const s of it.steps) { if (s[0] === 'go') { for (let k = 0; k < s[1]; k++) { x += DIR_V[d][0]; y += DIR_V[d][1]; pts.push([x, y]); } } else d = s[1] === 'left' ? DIR_L[d] : DIR_R[d]; }
+    return pts;
+  }
+  function dirText(it) {
+    const en = ['Start at the dot and face the arrow.'], ar = ['ابدأ من النقطة وواجه السهم.'];
+    it.steps.forEach((s, i) => {
+      if (s[0] === 'go') { en.push((i === 0 ? 'Walk straight for ' : 'Then walk ') + NUM_WORDS[s[1]] + (s[1] === 1 ? ' block.' : ' blocks.')); ar.push('امشِ ' + AR_NUM[s[1]] + (s[1] === 1 ? ' كتلة.' : ' كتل.')); }
+      else { en.push('Turn ' + s[1] + '.'); ar.push('انعطف ' + (s[1] === 'left' ? 'يسارًا.' : 'يمينًا.')); }
+    });
+    en.push('The place is on your ' + it.side + '.'); ar.push('المكان على ' + (it.side === 'left' ? 'يسارك.' : 'يمينك.'));
+    return {en: en.join(' '), ar: ar.join(' ')};
+  }
+  function miniDirSetup() {
+    const idx = levelIndex(), pool = DIRECTION_ITEMS.filter(it => idx >= 2 || it.level === 'A2');
+    MG.items = SHUF(pool.length >= 5 ? pool : DIRECTION_ITEMS).slice(0, 5); MG.total = MG.items.length; MG.i = 0; miniDirRender();
+  }
+  function dirMapSvg(it, reveal, chosen) {
+    const C = 76, P = 28, W = 4 * C + 2 * P, H = 3 * C + 2 * P, px = x => P + x * C, py = y => P + y * C;
+    let s = '<svg class="mg-map" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Town map"><rect width="' + W + '" height="' + H + '" rx="18" fill="#dfe8c8"/>';
+    for (let y = 0; y <= 3; y++) s += '<line x1="' + px(0) + '" y1="' + py(y) + '" x2="' + px(4) + '" y2="' + py(y) + '" stroke="#c4c8d4" stroke-width="12" stroke-linecap="round"/>';
+    for (let x = 0; x <= 4; x++) s += '<line x1="' + px(x) + '" y1="' + py(0) + '" x2="' + px(x) + '" y2="' + py(3) + '" stroke="#c4c8d4" stroke-width="12" stroke-linecap="round"/>';
+    DIRECTION_BLOCKS.forEach((row, cy) => row.forEach((b, cx) => {
+      const isAns = it.answer[0] === cx && it.answer[1] === cy, isCh = chosen && chosen[0] === cx && chosen[1] === cy;
+      const cls = reveal ? (isAns ? ' is-right' : isCh ? ' is-wrong' : '') : '';
+      s += '<g class="mg-block' + cls + '" data-mg-block="' + cx + ',' + cy + '" tabindex="0" role="button" aria-label="' + esc(b[1]) + '"><rect x="' + (px(cx) + 12) + '" y="' + (py(cy) + 12) + '" width="' + (C - 24) + '" height="' + (C - 24) + '" rx="12"/><text x="' + (px(cx) + C / 2) + '" y="' + (py(cy) + C / 2 - 2) + '" font-size="22" text-anchor="middle">' + b[0] + '</text><text x="' + (px(cx) + C / 2) + '" y="' + (py(cy) + C / 2 + 17) + '" font-size="10.5" font-weight="700" text-anchor="middle">' + esc(b[1]) + '</text></g>';
+    }));
+    if (reveal) { const pts = dirPath(it); s += '<polyline points="' + pts.map(p => px(p[0]) + ',' + py(p[1])).join(' ') + '" fill="none" stroke="#7C6CFF" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="2 9"/>'; }
+    const sx = px(it.start[0]), sy = py(it.start[1]), v = DIR_V[it.dir], ang = Math.atan2(v[1], v[0]) * 180 / Math.PI;
+    s += '<g transform="translate(' + sx + ' ' + sy + ')"><circle r="11" fill="#FFC531" stroke="#121A3A" stroke-width="3"/><g transform="rotate(' + ang + ')"><path d="M14 0 L24 0 M19 -6 L25 0 L19 6" fill="none" stroke="#121A3A" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></g></g></svg>';
+    return s;
+  }
+  function miniDirRender() {
+    const it = MG.items[MG.i]; MG.answered = false; hideSheet(); miniSteps(); const t = dirText(it);
+    $('#game-body').innerHTML = '<div class="q-meta"><span class="pill">Directions</span><span class="q-count">Question ' + (MG.i + 1) + ' of ' + MG.total + '</span></div><h2 class="q-text" id="q-text" tabindex="-1">Where does the route end?</h2><p class="mg-route">' + esc(t.en) + '</p>' + (state.helpArabic ? '<p class="mg-route-ar arabic" lang="ar" dir="rtl">' + esc(t.ar) + '</p>' : '') +
+      '<div class="mg-actions mg-actions-top"><button class="btn btn-ghost" data-mg-listen>🔊 Listen</button></div><p class="q-sub">Tap the building on the map.</p><div class="mg-map-wrap">' + dirMapSvg(it, false) + '</div>';
+    $('#game-scroll').scrollTop = 0; const h = $('#q-text'); if (h) h.focus({preventScroll: true});
+  }
+  function miniDirAnswer(cx, cy) {
+    if (MG.answered) return; const it = MG.items[MG.i]; MG.answered = true;
+    const ok = it.answer[0] === cx && it.answer[1] === cy; if (ok) MG.score++; MG.results[MG.i] = ok ? 'ok' : 'no';
+    $('.mg-map-wrap').innerHTML = dirMapSvg(it, true, [cx, cy]); miniSteps(); sfx(ok ? 'ok' : 'no');
+    const right = DIRECTION_BLOCKS[it.answer[1]][it.answer[0]];
+    showSheet(ok, '<h3><span class="sheet-mark">' + ic(ok ? 'check' : 'x') + '</span>' + (ok ? 'Exactly right!' : 'Not quite.') + '</h3><p>' + (ok ? 'You followed the route to the ' : 'The route ends at the ') + '<b>' + esc(right[1]) + '</b>. The dotted line shows the way.</p><div class="sheet-actions"><button class="btn" id="go-next">' + (MG.i === MG.total - 1 ? 'See results' : 'Continue') + ic('arrow') + '</button></div>');
+  }
+
+  function miniNext() {
+    if (!MG) return; hideSheet();
+    if (MG.i < MG.total - 1) { MG.i++; MG.answered = false; if (MG.type === 'order') miniOrderRender(); else if (MG.type === 'directions') miniDirRender(); }
+    else miniFinish(String(MG.total));
+  }
+  function miniClick(e) {
+    const el = e.target;
+    const close = el.closest('[data-mini-close]'); if (close) { closeGame(); return true; }
+    const again = el.closest('[data-mini-again]'); if (again) { startMini(again.dataset.miniAgain); return true; }
+    if (MG.done) return false;
+    if (el.closest('#go-next')) { miniNext(); return true; }
+    const place = el.closest('[data-mg-place]');
+    if (place && MG.type === 'order') { const r = MG.rounds[MG.i]; if (MG.answered) return true; const k = Number(place.dataset.mgPlace); r.pool = r.pool.filter(v => v !== k); r.placed.push(k); miniOrderRender(); return true; }
+    const un = el.closest('[data-mg-unplace]');
+    if (un && MG.type === 'order') { const r = MG.rounds[MG.i]; if (MG.answered) return true; const p = Number(un.dataset.mgUnplace), moved = r.placed.splice(p); r.pool.push(...moved); miniOrderRender(); return true; }
+    if (el.closest('#mg-check')) { miniOrderCheck(); return true; }
+    const flip = el.closest('[data-mg-flip]'); if (flip && MG.type === 'match') { miniFlip(Number(flip.dataset.mgFlip)); return true; }
+    const blk = el.closest('[data-mg-block]'); if (blk && MG.type === 'directions') { const [cx, cy] = blk.dataset.mgBlock.split(',').map(Number); miniDirAnswer(cx, cy); return true; }
+    if (el.closest('[data-mg-listen]') && MG.type === 'directions') { speak(dirText(MG.items[MG.i]).en); return true; }
+    return false;
+  }
+
   function closeGame() {
-    $('#game').hidden = true; hideSheet(); G = null; ST = null;
+    $('#game').hidden = true; hideSheet(); G = null; ST = null; MG = null;
     lockPage(false); renderAll();
     const h = $('.view.is-active h1'); if (h) h.focus({preventScroll: true});
   }
@@ -830,21 +1034,52 @@
   function worldDraw(){
     if(!WORLD||WORLD.mode!=='play')return;const c=$('#world-canvas');if(!c)return;const r=c.getBoundingClientRect(),d=Math.max(1,Math.min(2,devicePixelRatio||1));if(!r.width||!r.height)return;
     if(c.width!==Math.round(r.width*d)||c.height!==Math.round(r.height*d)){c.width=Math.round(r.width*d);c.height=Math.round(r.height*d);}
-    const x=c.getContext('2d');x.setTransform(d,0,0,d,0,0);x.clearRect(0,0,r.width,r.height);
-    const tile=Math.min(r.width/20,r.height/14),ox=(r.width-tile*20)/2,oy=(r.height-tile*14)/2;WORLD.tile=tile;WORLD.ox=ox;WORLD.oy=oy;
+    const x=c.getContext('2d');x.setTransform(d,0,0,d,0,0);x.clearRect(0,0,r.width,r.height);x.fillStyle=({market:'#d9c9a2',station:'#cfd3da',home:'#8a6d52'})[WORLD.region]||'#8fbe7a';x.fillRect(0,0,r.width,r.height);
+    const MW=(WORLD.map[0]||'').length||20,MH=WORLD.map.length||14,fit=Math.min(r.width/MW,r.height/MH),tile=Math.max(fit,Math.min(34,Math.max(26,r.height/9)));
+    // Camera: when the map is larger than the screen (phones), follow the player instead of shrinking everything.
+    const pp=WORLD.player,el=Math.min(1,(performance.now()-(pp.moveAt||0))/160),ee=el*el*(3-2*el),pcx=(pp.fromX+(pp.x-pp.fromX)*ee+.5)*tile,pcy=(pp.fromY+(pp.y-pp.fromY)*ee+.5)*tile;
+    const ox=tile*MW<=r.width?(r.width-tile*MW)/2:Math.min(0,Math.max(r.width-tile*MW,r.width/2-pcx)),oy=tile*MH<=r.height?(r.height-tile*MH)/2:Math.min(0,Math.max(r.height-tile*MH,r.height/2-pcy));WORLD.tile=tile;WORLD.ox=ox;WORLD.oy=oy;
+    const theme=WORLD.region||'village';
     // Soft, cohesive top-down village art: layered terrain, curved paths and hand-drawn landmarks.
     const seeded=(a,b)=>{const n=Math.sin(a*127.1+b*311.7)*43758.5453;return n-Math.floor(n);};
     const grass=['#8dbd78','#91c27b','#96c780','#89b975'];
     const roundRect=(ctx,rx,ry,rw,rh,rr,fill,stroke)=>{ctx.beginPath();ctx.roundRect(rx,ry,rw,rh,rr);if(fill){ctx.fillStyle=fill;ctx.fill();}if(stroke){ctx.strokeStyle=stroke;ctx.stroke();}};
     const pathColor={R:'#d6bd8b',B:'#876044',W:'#4e9ea8',T:'#426f4d',H:'#d5b38a'};
+    function drawTheme(t){
+      const W=MW*tile,H=MH*tile;
+      if(t==='market'){
+        x.fillStyle='#d9c9a2';x.fillRect(ox,oy,W,H);
+        for(let gy=0;gy<MH;gy++)for(let gx=0;gx<MW;gx++){const px=ox+gx*tile,py=oy+gy*tile,sd=seeded(gx,gy);x.fillStyle=sd>.5?'rgba(150,120,80,.12)':'rgba(255,248,225,.14)';x.beginPath();x.roundRect(px+tile*.06,py+tile*.06,tile*.88,tile*.88,tile*.12);x.fill();}
+        for(let gy=0;gy<MH;gy++)for(let gx=0;gx<MW;gx++){if((WORLD.map[gy]||'')[gx]==='R'){const px=ox+gx*tile,py=oy+gy*tile;x.fillStyle='#ecdcb4';x.fillRect(px,py,tile+.4,tile+.4);}}
+        // trees along the edge
+        for(const [gx,gy] of [[1,1],[18,1],[1,12],[18,12]]){drawTree(ox+(gx+.5)*tile,oy+(gy+.5)*tile);}
+      }else if(t==='station'){
+        x.fillStyle='#cfd3da';x.fillRect(ox,oy,W,H);
+        for(let gy=0;gy<MH;gy++)for(let gx=0;gx<MW;gx++){if((gx+gy)%2===0){x.fillStyle='rgba(255,255,255,.18)';x.fillRect(ox+gx*tile,oy+gy*tile,tile,tile);}}
+        // two railway lines
+        for(let gy=0;gy<MH;gy++)for(let gx=0;gx<MW;gx++){if((WORLD.map[gy]||'')[gx]==='B'){const px=ox+gx*tile,py=oy+gy*tile;x.fillStyle='#8a7a68';x.fillRect(px,py+tile*.12,tile+.4,tile*.76);x.fillStyle='#5b4a3b';for(let k=0;k<3;k++)x.fillRect(px+tile*(.1+k*.33),py+tile*.08,tile*.12,tile*.84);x.fillStyle='#4b5563';x.fillRect(px,py+tile*.28,tile+.4,tile*.08);x.fillRect(px,py+tile*.64,tile+.4,tile*.08);}}
+        // platform edge strips
+        x.fillStyle='#f4c94a';for(const row of [4,6,8])x.fillRect(ox,oy+row*tile+tile*.9,W,tile*.08);
+      }else if(t==='home'){
+        x.fillStyle='#e0c496';x.fillRect(ox,oy,W,H);
+        for(let gy=0;gy<MH*2;gy++){x.fillStyle=gy%2?'rgba(140,100,60,.10)':'rgba(255,240,210,.12)';x.fillRect(ox,oy+gy*tile/2,W,tile/2);}
+        x.strokeStyle='rgba(120,84,48,.18)';x.lineWidth=1;for(let gy=0;gy<MH*2;gy++){x.beginPath();x.moveTo(ox,oy+gy*tile/2);x.lineTo(ox+W,oy+gy*tile/2);x.stroke();}
+        // rug
+        x.fillStyle='#b4535a';x.beginPath();x.roundRect(ox+tile*6,oy+tile*6.2,tile*8,tile*4.6,tile*.5);x.fill();x.strokeStyle='#f1d5a8';x.lineWidth=tile*.12;x.setLineDash([tile*.25,tile*.2]);x.beginPath();x.roundRect(ox+tile*6.3,oy+tile*6.5,tile*7.4,tile*4,tile*.4);x.stroke();x.setLineDash([]);
+        // walls
+        x.fillStyle='#8a6d52';x.fillRect(ox,oy,W,tile*.5);x.fillRect(ox,oy+H-tile*.5,W,tile*.5);x.fillRect(ox,oy,tile*.5,H);x.fillRect(ox+W-tile*.5,oy,tile*.5,H);
+        x.fillStyle='#cfe3ee';for(const wx of [4,10,16]){x.fillRect(ox+wx*tile,oy+tile*.08,tile*1.6,tile*.34);}
+      }
+    }
     // Base grass with subtle, non-grid texture.
-    x.fillStyle='#8fbe7a';x.fillRect(ox,oy,tile*20,tile*14);
-    for(let gy=0;gy<14;gy++)for(let gx=0;gx<20;gx++){
+    x.fillStyle='#8fbe7a';x.fillRect(ox,oy,tile*MW,tile*MH);
+    for(let gy=0;gy<MH;gy++)for(let gx=0;gx<MW;gx++){
       const px=ox+gx*tile,py=oy+gy*tile,seed=seeded(gx,gy);
       x.fillStyle=grass[Math.floor(seed*grass.length)];x.globalAlpha=.22;
       x.beginPath();x.ellipse(px+tile*(.2+seed*.6),py+tile*(.2+seeded(gy,gx)*.6),tile*.12,tile*.055,seed*2,0,Math.PI*2);x.fill();x.globalAlpha=1;
       if(seed>.83){x.strokeStyle='rgba(52,105,57,.18)';x.lineWidth=Math.max(1,tile*.025);x.beginPath();x.moveTo(px+tile*.55,py+tile*.55);x.lineTo(px+tile*.62,py+tile*.43);x.stroke();}
     }
+    if(theme==='village'){
     // Woodland corners are organic patches, not flat square blocks.
     for(const [gx,gy] of [[2,1],[16,1],[2,12],[16,12]]){
       const px=ox+gx*tile,py=oy+gy*tile;
@@ -871,6 +1106,8 @@
     const bx=ox+8*tile,by=oy+7*tile;
     roundRect(x,bx+tile*.04,by+tile*.12,tile*3-tile*.08,tile*.78,tile*.08,'#81583e','#5d402e');
     for(let n=0;n<12;n++){x.strokeStyle=n%3===0?'#c69b6c':'#a77a51';x.lineWidth=Math.max(1,tile*.035);x.beginPath();x.moveTo(bx+tile*(.13+n*.23),by+tile*.17);x.lineTo(bx+tile*(.13+n*.23),by+tile*.84);x.stroke();}
+    }
+    if(theme!=='village')drawTheme(theme);
     // Soft tree silhouettes and layered foliage.
     function drawTree(cx,cy){
       x.fillStyle='rgba(34,74,45,.2)';x.beginPath();x.ellipse(cx,cy+tile*.31,tile*.32,tile*.12,0,0,Math.PI*2);x.fill();
@@ -936,6 +1173,23 @@
         x.strokeStyle='#e4c58b';x.lineWidth=tile*.04;for(let n=0;n<4;n++){x.beginPath();x.moveTo(cx-tile*.16+n*tile*.1,cy-tile*.06);x.lineTo(cx-tile*.16+n*tile*.1,cy+tile*.18);x.stroke();}
         x.beginPath();x.arc(cx,cy-tile*.02,tile*.18,Math.PI,0);x.stroke();return;
       }
+      if(o.id==='fruit-stall'||o.id==='bread-stall'||o.id==='ticket-desk'){
+        const c1=o.id==='fruit-stall'?'#d9534f':o.id==='bread-stall'?'#e0a030':'#3478d4';
+        x.fillStyle='rgba(50,40,30,.2)';x.beginPath();x.ellipse(cx,cy+tile*.36,tile*.5,tile*.12,0,0,Math.PI*2);x.fill();
+        roundRect(x,cx-tile*.44,cy-tile*.02,tile*.88,tile*.4,tile*.05,'#a67c52','#6e4f33');
+        for(let k=0;k<6;k++){x.fillStyle=k%2?'#fff7e6':c1;x.fillRect(cx-tile*.45+k*tile*.15,cy-tile*.4,tile*.15,tile*.4);}
+        x.fillStyle=c1;x.beginPath();x.moveTo(cx-tile*.45,cy-tile*.4);x.lineTo(cx+tile*.45,cy-tile*.4);x.lineTo(cx+tile*.5,cy-tile*.48);x.lineTo(cx-tile*.5,cy-tile*.48);x.closePath();x.fill();
+        x.font=tile*.34+'px sans-serif';x.textAlign='center';x.textBaseline='middle';x.fillText(o.emoji||'',cx,cy+tile*.17);return;
+      }
+      if(o.id==='sofa'){
+        roundRect(x,cx-tile*.45,cy-tile*.3,tile*.9,tile*.62,tile*.14,'#4f86c6','#2f5a8c');
+        roundRect(x,cx-tile*.34,cy-tile*.08,tile*.31,tile*.32,tile*.08,'#6a9ddb');roundRect(x,cx+tile*.03,cy-tile*.08,tile*.31,tile*.32,tile*.08,'#6a9ddb');return;
+      }
+      if(o.id==='table'){
+        x.fillStyle='rgba(50,40,30,.2)';x.beginPath();x.ellipse(cx,cy+tile*.3,tile*.42,tile*.1,0,0,Math.PI*2);x.fill();
+        x.fillStyle='#9a6b3f';x.beginPath();x.ellipse(cx,cy,tile*.42,tile*.3,0,0,Math.PI*2);x.fill();x.strokeStyle='#6e4a2a';x.lineWidth=tile*.04;x.stroke();
+        x.fillStyle='#f6efe0';x.beginPath();x.arc(cx,cy-tile*.03,tile*.1,0,Math.PI*2);x.fill();return;
+      }
       x.font=tile*.65+'px sans-serif';x.textAlign='center';x.textBaseline='middle';x.fillText(o.emoji||'•',cx,cy);
     });
         const p=WORLD.player,elapsed=Math.min(1,(performance.now()-(p.moveAt||0))/160),e=elapsed*elapsed*(3-2*elapsed),px=ox+(p.fromX+(p.x-p.fromX)*e+.5)*tile,py=oy+(p.fromY+(p.y-p.fromY)*e+.5)*tile;
@@ -963,16 +1217,16 @@
   function worldChooseRegion(id){
     if(!WORLD)return;const region=(WORLD_DATA.regions||[]).find(r=>r.id===id);if(!region)return;
     const completed=(state.world&&state.world.done||[]).length;if(completed<region.unlock){toast('Complete more missions to unlock this place.');return;}
-    WORLD.region=region.id;WORLD.regionName=region.name;WORLD.tasks=WORLD_DATA.tasks.filter(t=>(t.region||'village')===region.id);WORLD.index=0;WORLD.map=region.map||WORLD_DATA.map;WORLD.objects=(region.objects||WORLD_DATA.objects).map(o=>({...o}));WORLD.player={x:region.start.x,y:region.start.y,fromX:region.start.x,fromY:region.start.y,moveAt:0,queuedKey:null,color:WORLD.player.color||'#FFC531'};WORLD.step=0;WORLD.picked=new Set();WORLD.given=new Set();WORLD.carried=null;WORLD.mode='play';WORLD.usedHelp=false;WORLD.moves=0;worldRenderPlay();
+    WORLD.region=region.id;WORLD.regionName=region.name;WORLD.tasks=WORLD_DATA.tasks.filter(t=>(t.region||'village')===region.id);WORLD.index=0;WORLD.map=region.map||WORLD_DATA.map;WORLD.objects=(region.objects||WORLD_DATA.objects).map(o=>({...o}));WORLD.player={x:region.start.x,y:region.start.y,fromX:region.start.x,fromY:region.start.y,moveAt:0,queuedKey:null,color:(WORLD.player&&WORLD.player.color)||'#FFC531'};WORLD.step=0;WORLD.picked=new Set();WORLD.given=new Set();WORLD.carried=null;WORLD.mode='play';WORLD.usedHelp=false;WORLD.moves=0;worldRenderPlay();
   }
   function startWorld(taskId){if(typeof WORLD_DATA==='undefined'){toast('World data is not loaded. Refresh and try again.');return;}if(WORLD&&WORLD.raf)cancelAnimationFrame(WORLD.raf);
     // Opening the World tab should only build the region menu; do not initialise
     // task state, clone maps/objects, or prepare gameplay until a region is chosen.
-    if(!taskId){WORLD={mode:'regions',region:null,regionName:null,raf:0};lockPage(true);$('[data-view]').forEach(b=>b.setAttribute('aria-current',b.dataset.view==='world'?'page':'false'));$('#world-game').hidden=false;worldShowRegions();return;}
+    if(!taskId){WORLD={mode:'regions',region:null,regionName:null,raf:0,player:{color:'#FFC531'},outfit:'#6C5CE7',showTranslation:!!state.helpArabic,tries:0,usedHelp:false,moves:0,step:0,carried:null,picked:new Set(),given:new Set(),stars:Object.values((state.world&&state.world.stars)||{}).reduce((a,v)=>a+(Number(v)||0),0),progress:{}};lockPage(true);$$('[data-view]').forEach(b=>b.setAttribute('aria-current',b.dataset.view==='world'?'page':'false'));$('#world-game').hidden=false;worldShowRegions();return;}
     WORLD={mode:'intro',tasks:WORLD_DATA.tasks.slice(),index:Math.max(0,WORLD_DATA.tasks.findIndex(t=>t.id===taskId)),map:WORLD_DATA.map,objects:WORLD_DATA.objects.map(o=>({...o})),player:{x:WORLD_DATA.start.x,y:WORLD_DATA.start.y,fromX:WORLD_DATA.start.x,fromY:WORLD_DATA.start.y,moveAt:0,queuedKey:null,color:'#FFC531'},outfit:'#6C5CE7',showTranslation:!!state.helpArabic,tries:0,usedHelp:false,moves:0,step:0,carried:null,picked:new Set(),given:new Set(),stars:0,progress:{},raf:0};
-    lockPage(true);$('[data-view]').forEach(b=>b.setAttribute('aria-current',b.dataset.view==='world'?'page':'false'));$('#world-game').hidden=false;$('#world-game').innerHTML='<div class="world-intro"><button class="world-exit" data-world-exit>✕</button><div class="world-intro-art">🌳 🏠 🌉</div><p class="world-kicker">EPIPHANY WORLD</p><h1>Understand. Move. Discover.</h1><p>Read the English instruction and explore a tiny village to complete 10 tasks.</p><h3>Your character</h3><div class="world-color-picks"><button class="is-selected" data-world-color="#FFC531">🟡 Yellow</button><button data-world-color="#7C6CFF">🟣 Purple</button></div><h3>Clothes</h3><div class="world-color-picks"><button class="is-selected" data-world-outfit="#6C5CE7">Purple</button><button data-world-outfit="#168B68">Green</button><button data-world-outfit="#3478D4">Blue</button></div><button class="world-primary" data-world-begin>Start exploring →</button><p class="world-small">Arrow keys / WASD to move · Space to interact</p></div>';}
+    lockPage(true);$$('[data-view]').forEach(b=>b.setAttribute('aria-current',b.dataset.view==='world'?'page':'false'));$('#world-game').hidden=false;$('#world-game').innerHTML='<div class="world-intro"><button class="world-exit" data-world-exit>✕</button><div class="world-intro-art">🌳 🏠 🌉</div><p class="world-kicker">EPIPHANY WORLD</p><h1>Understand. Move. Discover.</h1><p>Read the English instruction and explore a tiny village and complete its missions.</p><h3>Your character</h3><div class="world-color-picks"><button class="is-selected" data-world-color="#FFC531">🟡 Yellow</button><button data-world-color="#7C6CFF">🟣 Purple</button></div><h3>Clothes</h3><div class="world-color-picks"><button class="is-selected" data-world-outfit="#6C5CE7">Purple</button><button data-world-outfit="#168B68">Green</button><button data-world-outfit="#3478D4">Blue</button></div><button class="world-primary" data-world-begin>Start exploring →</button><p class="world-small">Arrow keys / WASD to move · Space to interact</p></div>';}
   function worldComplete(){if(!WORLD||WORLD.mode!=='play')return;const t=worldTask();if(t.check.type==='pickup'){WORLD.carried=null;WORLD.picked.delete(t.check.object);const original=WORLD_DATA.objects.find(o=>o.id===t.check.object);if(original&&!worldObj(original.id))WORLD.objects.push({...original});}const stars=WORLD.usedHelp?(WORLD.moves>7?1:2):3,gain=worldAward(stars,t);WORLD.stars=Object.values(state.world.stars).reduce((sum,value)=>sum+(Number(value)||0),0);WORLD.mode='success';sfx('done');
-    $('#world-game').innerHTML=worldShell('<section class="world-success"><div class="world-big-star">★</div><p class="world-kicker">TASK COMPLETE</p><h2>Well done!</h2><div class="world-stars">'+('★'.repeat(stars))+'<span>'+('☆'.repeat(3-stars))+'</span></div><p>+'+gain+' XP earned</p><h3>New words</h3><div class="world-word-list">'+t.words.map(w=>'<span class="world-word-chip"><b>'+esc(w[0])+'</b><small>'+esc(w[1])+'</small></span>').join('')+'</div>'+(t.suggestedStory&&STORIES.some(s=>s.id===t.suggestedStory&&storyLevelIndex(s.level)<=storyLevelIndex(currentLevel().id))?'<button class="world-secondary" data-world-story="'+esc(t.suggestedStory)+'">Read the story behind this task →</button>':'')+'<button class="world-primary" data-world-next>'+(WORLD.index===WORLD.tasks.length-1?'Finish village':'Next task')+' →</button></section>');}
+    $('#world-game').innerHTML=worldShell('<section class="world-success"><div class="world-big-star">★</div><p class="world-kicker">TASK COMPLETE</p><h2>Well done!</h2><div class="world-stars">'+('★'.repeat(stars))+'<span>'+('☆'.repeat(3-stars))+'</span></div><p>+'+gain+' XP earned</p><h3>New words</h3><div class="world-word-list">'+t.words.map(w=>'<span class="world-word-chip"><b>'+esc(w[0])+'</b><small>'+esc(w[1])+'</small></span>').join('')+'</div>'+(t.suggestedStory&&STORIES.some(s=>s.id===t.suggestedStory&&storyLevelIndex(s.level)<=storyLevelIndex(currentLevel().id))?'<button class="world-secondary" data-world-story="'+esc(t.suggestedStory)+'">Read the story behind this task →</button>':'')+'<button class="world-primary" data-world-next>'+(WORLD.index===WORLD.tasks.length-1?'Finish area':'Next task')+' →</button></section>');}
   function worldNext(){if(WORLD.index===WORLD.tasks.length-1){WORLD.mode='finished';$('#world-game').innerHTML='<div class="world-finish"><div class="world-intro-art">'+esc((WORLD_DATA.regions.find(r=>r.id===WORLD.region)||{}).icon||'🏡')+' ✨ 🌍</div><p class="world-kicker">AREA COMPLETE</p><h1>'+esc(WORLD.regionName||'Adventure')+' complete!</h1><p>You earned '+WORLD.stars+' stars in this area.</p><h2>Words from your adventure</h2><div class="world-word-list">'+WORLD.tasks.flatMap(t=>t.words).filter((w,i,a)=>a.findIndex(v=>v[0]===w[0])===i).map(w=>'<span class="world-word-chip"><b>'+esc(w[0])+'</b><small>'+esc(w[1])+'</small></span>').join('')+'</div><button class="world-primary" data-world-regions>Explore another place →</button><button class="world-secondary" data-world-replay>Replay this area ↻</button><button class="world-secondary" data-world-exit>Back to Epiphany</button></div>';return;}
     WORLD.index++;WORLD.mode='play';WORLD.tries=0;WORLD.usedHelp=false;WORLD.moves=0;WORLD.step=0;WORLD.target=null;WORLD.objects=((WORLD_DATA.regions.find(r=>r.id===WORLD.region)||{}).objects||WORLD_DATA.objects).filter(o=>!WORLD.picked.has(o.id)).map(o=>({...o}));worldRenderPlay();}
   function closeWorld(){if(WORLD&&WORLD.raf)cancelAnimationFrame(WORLD.raf);WORLD=null;$('#world-game').hidden=true;lockPage(false);const active=$('.view.is-active');const activeName=active?active.id.replace('-view',''):'home';$$('[data-view]').forEach(b=>b.setAttribute('aria-current',b.dataset.view===activeName?'page':'false'));renderAll();}
@@ -985,13 +1239,13 @@
     if(e.target.closest('[data-world-speak]')){if(worldTask())speak(worldTask().instruction);return;}
     
     if(e.target.closest('[data-world-help-toggle]')){if(WORLD){const panel=$('#world-help-panel'),button=e.target.closest('[data-world-help-toggle]'),opening=panel.hidden;panel.hidden=!opening;button.setAttribute('aria-expanded',String(opening));button.textContent=opening?'✕ Close help':'💡 Need help?';}return;}
-    const helpLevel=e.target.closest('[data-world-help-level]');if(helpLevel&&WORLD){const level=Number(helpLevel.dataset.worldHelpLevel),t=worldTask(),c=worldStep(),o=(c&&c.object&&worldObj(c.object))||(c&&c.person&&worldObj(c.person)),copy=$('#world-help-copy');if(level===1){copy.textContent=t.hint||'Look carefully at the instruction and the objects in the village.';}else if(level===2){WORLD.usedHelp=true;WORLD.target=o?{x:o.x,y:o.y+((c.type==='under'||c.type==='behind')?1:0)}:(c&&c.type==='between'?{x:9,y:12}:c&&c.type==='pickup'?{x:4,y:9}:c&&c.type==='give'?{x:13,y:10}:{x:9,y:8});copy.textContent='Follow the glowing marker on the map. Move to it, or interact when you are next to the correct item or person.';worldDraw();}else{copy.textContent='Read the instruction carefully. Use the map and the object positions to work out what to do.';}$('[data-world-help-level]').forEach(button=>button.classList.toggle('is-selected',button===helpLevel));worldStatus();return;}
+    const helpLevel=e.target.closest('[data-world-help-level]');if(helpLevel&&WORLD){const level=Number(helpLevel.dataset.worldHelpLevel),t=worldTask(),c=worldStep(),o=(c&&c.object&&worldObj(c.object))||(c&&c.person&&worldObj(c.person)),copy=$('#world-help-copy');if(level===1){copy.textContent=t.hint||'Look carefully at the instruction and the objects in the village.';}else if(level===2){WORLD.usedHelp=true;WORLD.target=o?{x:o.x,y:o.y+((c.type==='under'||c.type==='behind')?1:0)}:(c&&c.type==='between'?{x:9,y:12}:c&&c.type==='pickup'?{x:4,y:9}:c&&c.type==='give'?{x:13,y:10}:{x:9,y:8});copy.textContent='Follow the glowing marker on the map. Move to it, or interact when you are next to the correct item or person.';worldDraw();}else{copy.textContent='Read the instruction carefully. Use the map and the object positions to work out what to do.';}$$('[data-world-help-level]').forEach(button=>button.classList.toggle('is-selected',button===helpLevel));worldStatus();return;}
     const pc=e.target.closest('[data-world-color]');if(pc&&WORLD){WORLD.player.color=pc.dataset.worldColor;$('#world-game').querySelectorAll('[data-world-color]').forEach(b=>b.classList.toggle('is-selected',b===pc));return;}
     const po=e.target.closest('[data-world-outfit]');if(po&&WORLD){WORLD.outfit=po.dataset.worldOutfit;$('#world-game').querySelectorAll('[data-world-outfit]').forEach(b=>b.classList.toggle('is-selected',b===po));return;}
     if(e.target.closest('[data-world-begin]')){WORLD.mode='play';worldRenderPlay();return;}
     const worldStory=e.target.closest('[data-world-story]');if(worldStory){const id=worldStory.dataset.worldStory;closeWorld();openView('stories');startStory(id);return;}
     if(e.target.closest('[data-world-next]')){worldNext();return;}
-    if(e.target.closest('[data-world-replay]')){startWorld();return;}
+    if(e.target.closest('[data-world-replay]')){if(WORLD&&WORLD.region){worldChooseRegion(WORLD.region);}else startWorld();return;}
     if(e.target.closest('[data-world-exit]')){closeWorld();return;}
   });
   document.addEventListener('keydown',e=>{if(!WORLD)return;if(e.key==='Escape'){closeWorld();return;}if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','w','a','s','d','W','A','S','D'].includes(e.key)){e.preventDefault();worldMove(e.key);return;}if(e.code==='Space'){e.preventDefault();worldInteract();}});
@@ -1039,7 +1293,7 @@
         $('#category-picker-desc').textContent=cat.desc;
         $('#category-options').innerHTML=cat.games.map(([id,label])=>{
           const gmData=GAMES[id], meta=META[id];
-          return '<button type="button" class="category-option t-'+meta.tone+'" data-game="'+id+'"><span class="category-option-icon">'+glyph(id)+'</span><span><strong>'+label+'</strong><small>'+meta.time+' min · +'+gmData.xp+' XP</small></span><span class="category-option-arrow" aria-hidden="true">→</span></button>';
+          return '<button type="button" class="category-option t-'+meta.tone+'" data-game="'+id+'"><span class="category-option-icon">'+glyph(id)+'</span><span><strong>'+label+'</strong><small>'+meta.time+' min · +'+((gmData||meta).xp)+' XP</small></span><span class="category-option-arrow" aria-hidden="true">→</span></button>';
         }).join('');
         $('#category-picker').hidden=false;
         const closeBtn=$('#category-picker [data-category-close]:not(.category-backdrop)');
