@@ -381,5 +381,37 @@
     add(game, level, q, answers, correct, explain, {sub:'Level '+level+' · choose the best answer.', ar, why_ar:ar});
   });
 
+
+  // Targeted spelling and advanced-language pass.
+  const spellingAdvancedPass = [
+    ["spelling","A1","Choose the correctly spelled word.",["school","scool","shcool","schoal"],0,"School is the correct spelling.","School هي التهجئة الصحيحة."],
+    ["spelling","A1","Choose the correctly spelled word.",["yellow","yello","yelow","yeollow"],0,"Yellow is the correct spelling.","Yellow هي التهجئة الصحيحة."],
+    ["spelling","A2","Choose the correctly spelled word.",["Wednesday","Wensday","Wednsday","Wednesdey"],0,"Wednesday is the correct spelling.","Wednesday هي التهجئة الصحيحة."],
+    ["spelling","A2","Choose the correctly spelled word.",["different","diffrent","differant","diferent"],0,"Different has double f and ends in -ent.","Different تحتوي على حرفي f وتنتهي بـ ent."],
+    ["spelling","B1","Choose the correctly spelled word.",["environment","enviroment","environement","enviornment"],0,"Environment is the correct spelling.","Environment هي التهجئة الصحيحة."],
+    ["spelling","B1","Choose the correctly spelled word.",["occasionally","ocassionally","occasionly","occasionaly"],0,"Occasionally has double c and double l.","Occasionally تحتوي على حرفي c وحرفي l."],
+    ["spelling","B2","Choose the correctly spelled word.",["entrepreneur","enterpreneur","entreprenur","entreprenuer"],0,"Entrepreneur is the correct spelling.","Entrepreneur هي التهجئة الصحيحة."],
+    ["spelling","B2","Choose the correctly spelled word.",["maintenance","maintainance","maintenence","maintenanse"],0,"Maintenance is the standard spelling.","Maintenance هي التهجئة الصحيحة."],
+    ["spelling","C1","Choose the correctly spelled word.",["acquiescence","acquiescense","acquiesence","acquiescance"],0,"Acquiescence is the correct spelling.","Acquiescence هي التهجئة الصحيحة."],
+    ["spelling","C1","Choose the correctly spelled word.",["reconnaissance","reconnaisance","reconnaissence","reconnaisance"],0,"Reconnaissance is the standard spelling.","Reconnaissance هي التهجئة الصحيحة."],
+    ["spelling","C2","Choose the correctly spelled word.",["idiosyncratic","ideosyncratic","idiosyncrattic","idiosyncratick"],0,"Idiosyncratic is the correct adjective form.","Idiosyncratic هي الصفة الصحيحة."],
+    ["spelling","C2","Choose the correctly spelled word.",["pharaoh","pharoah","pharao","pharoh"],0,"Pharaoh is the standard spelling.","Pharaoh هي التهجئة الصحيحة."],
+    ["advanced","A1","Choose the correct question.",["Where do you live?","Where you live?","Where does you live?","Where are you live?"],0,"Use do with you in present simple questions.","نستخدم do مع you في أسئلة المضارع البسيط."],
+    ["advanced","A1","Complete: “I am ___ years old.”",["ten","have ten","ten year","age ten years"],0,"English uses “I am ten years old.”","نقول بالإنجليزية I am ten years old."],
+    ["advanced","A2","Choose the natural phrase.",["I’m looking forward to seeing you.","I look forward see you.","I’m looking forward to see you.","I look forward for seeing you."],0,"“Look forward to” is followed by a noun or gerund.","يتبع Look forward to اسم أو فعل منتهٍ بـ ing."],
+    ["advanced","A2","Choose the correct form.",["She is good at drawing.","She is good in draw.","She good at to draw.","She is good on drawing."],0,"Use “good at” followed by a noun or gerund.","نستخدم good at ويتبعها اسم أو فعل ing."],
+    ["advanced","B1","Choose the best response to a mild apology.",["No worries; it happens.","You are apology.","I am sorry you are.","Apology happened you."],0,"“No worries; it happens” is a natural reassuring response.","No worries; it happens رد طبيعي ومطمئن على اعتذار بسيط."],
+    ["advanced","B1","Choose the correct reported speech: “I’m busy,” he said.",["He said that he was busy.","He said that I am busy.","He told that he busy.","He said me he was busy."],0,"Reported speech commonly backshifts am to was when reporting in the past.","في الكلام المنقول تتحول am غالبًا إلى was عند النقل في الماضي."],
+    ["advanced","B2","Choose the sentence with the clearest formal tone.",["The results indicate a modest improvement.","The results are super cool.","The results kinda got better.","The results were, like, good."],0,"“Indicate a modest improvement” is appropriately precise and formal.","Indicate a modest improvement صياغة دقيقة ورسمية."],
+    ["advanced","B2","Choose the correct inversion.",["Little did she realise the risk.","Little she did realise the risk.","Little did realise she the risk.","Little she realised did the risk."],0,"“Little” at the beginning triggers subject–auxiliary inversion.","تتطلب Little في بداية الجملة قلب ترتيب الفاعل والفعل المساعد."],
+    ["advanced","C1","Choose the most idiomatic phrase.",["The findings call into question the assumption.","The findings call in question to the assumption.","The findings call question into assumption.","The findings call upon question the assumption."],0,"“Call into question” means cast doubt on something.","Call into question تعني التشكيك في أمر ما."],
+    ["advanced","C1","Choose the correct construction.",["Notwithstanding the delay, the team finished.","Notwithstanding of the delay, the team finished.","Notwithstanding the delay but the team finished.","Notwithstanding to delay, team finished."],0,"Notwithstanding can directly precede a noun phrase.","يمكن أن تأتي Notwithstanding مباشرة قبل عبارة اسمية."],
+    ["advanced","C2","Choose the most precise sentence.",["The claim is tenable only under narrowly specified conditions.","The claim is maybe sort of true always.","The claim is true no matter what the conditions are.","The claim has conditions but none matter."],0,"The sentence precisely limits the claim to specific conditions.","تحدد الجملة الادعاء بدقة ضمن شروط محددة."],
+    ["advanced","C2","Choose the correct phrase.",["By no means does this establish causation.","By no means this establishes causation.","By no means does this established causation.","By no means this do establish causation."],0,"“By no means” fronted for emphasis requires inversion.","تتطلب By no means عند تقديمها للتوكيد قلب ترتيب الجملة."]
+  ];
+  spellingAdvancedPass.forEach(([game, level, q, answers, correct, explain, ar]) => {
+    add(game, level, q, answers, correct, explain, {sub:'Level '+level+' · choose the best answer.', ar, why_ar:ar});
+  });
+
   window.EpiphanyExpansion = {count: bank.length, byLevel: Object.fromEntries(['A1','A2','B1','B2','C1','C2'].map(level => [level, bank.filter(q => q[1] === level).length])), addedStories:16, longFormStories:4, extraQuestions:extraQuestionBank.length, addedWords:moreWords.length};
 })();
