@@ -490,6 +490,8 @@
     closeDockMore();
     $$('.view').forEach(v => v.classList.toggle('is-active', v.id === name + '-view'));
     $$('[data-view]').forEach(b => b.setAttribute('aria-current', b.dataset.view === name ? 'page' : 'false'));
+    const more = $('#dock-more-toggle');
+    if (more) more.setAttribute('aria-current', ['words','trophies'].includes(name) ? 'page' : 'false');
     window.scrollTo(0, 0);
     const h = $('#' + name + '-title'); if (h) h.focus({preventScroll: true});
   }
