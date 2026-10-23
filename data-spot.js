@@ -652,7 +652,7 @@ const SPOT_QUESTIONS = [
   {
   "id": "spot-b2-18",
   "level": "B2",
-  "text": "She denied to take the document.",
+  "text": "She denied take the document.",
   "wrongIndex": 2,
   "fix": "taking",
   "why_en": "Deny is followed by an -ing form.",
@@ -707,7 +707,7 @@ const SPOT_QUESTIONS = [
   "id": "spot-c1-14",
   "level": "C1",
   "text": "The new policy is liable of cause confusion.",
-  "wrongIndex": 4,
+  "wrongIndex": 5,
   "fix": "to",
   "why_en": "The standard phrase is liable to do something.",
   "why_ar": "التعبير الصحيح liable to يتبعه الفعل."
