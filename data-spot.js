@@ -132,8 +132,8 @@ const SPOT_QUESTIONS = [
     "text": "I have saw him before.",
     "wrongIndex": 2,
     "fix": "seen",
-    "why_en": "Yesterday refers to a finished past time, so use the past simple.",
-    "why_ar": "Yesterday وقت ماضٍ منتهٍ، لذا نستخدم الماضي البسيط."
+    "why_en": "The present perfect uses have/has + the past participle. The past participle of see is seen.",
+    "why_ar": "يتكون المضارع التام من have/has والتصريف الثالث؛ والتصريف الثالث من see هو seen."
   },
   {
     "id": "spot-a2-08",
@@ -288,34 +288,258 @@ const SPOT_QUESTIONS = [
     "why_en": "It is high time is commonly followed by a past form for a present change needed.",
     "why_ar": "بعد It is high time نستخدم غالبًا صيغة الماضي للتعبير عن أمر حان وقته."
   },
-  {"id":"spot-a1-09","level":"A1","text":"They is at home.","wrongIndex":1,"fix":"are","why_en":"Use “are” with the plural subject “they”.","why_ar":"نستخدم are مع الفاعل الجمع they."},
-  {"id":"spot-a1-10","level":"A1","text":"I have two childs.","wrongIndex":3,"fix":"children.","why_en":"The plural of child is children, not childs.","why_ar":"جمع child هو children وليس childs."},
-  {"id":"spot-a2-09","level":"A2","text":"She didn’t went to work yesterday.","wrongIndex":2,"fix":"go","why_en":"After didn’t, use the base form of the verb.","why_ar":"بعد didn’t نستخدم الفعل بصيغته الأساسية: go."},
-  {"id":"spot-a2-10","level":"A2","text":"There are much people outside.","wrongIndex":2,"fix":"many","why_en":"Use many with countable plural nouns such as people.","why_ar":"نستخدم many مع الأسماء المعدودة الجمع مثل people."},
-  {"id":"spot-b1-09","level":"B1","text":"I look forward to meet you.","wrongIndex":4,"fix":"meeting","why_en":"“Look forward to” is followed by a noun or an -ing form.","why_ar":"يتبع look forward to اسم أو فعل منتهٍ بـ ing."},
-  {"id":"spot-b1-10","level":"B1","text":"If I would have more time, I would travel.","wrongIndex":2,"fix":"had","why_en":"The second conditional uses past simple in the if-clause.","why_ar":"في الشرط الثاني نستخدم الماضي البسيط في جملة if."},
-  {"id":"spot-b2-09","level":"B2","text":"In spite the rain, the match continued.","wrongIndex":2,"fix":"of the","why_en":"Despite is not followed by “of”; use “despite the rain” or “in spite of the rain”.","why_ar":"لا يأتي of بعد despite؛ نقول despite the rain أو in spite of the rain."},
-  {"id":"spot-b2-10","level":"B2","text":"Hardly I arrived when the phone rang.","wrongIndex":1,"fix":"had I","why_en":"When “hardly” begins the sentence, use subject–auxiliary inversion.","why_ar":"عندما تبدأ الجملة بـ Hardly نستخدم القلب: hardly had I arrived."},
-  {"id":"spot-c1-01","level":"C1","text":"The committee suggested him to revise the proposal.","wrongIndex":2,"fix":"that he","why_en":"Suggest is not normally followed by object + infinitive in this meaning; use “suggested that he revise” or “suggested revising”.","why_ar":"لا يأتي suggest عادةً مع مفعول ثم to + فعل؛ نستخدم suggested that he revise أو suggested revising."},
-  {"id":"spot-c1-02","level":"C1","text":"The data indicates a substantial decline.","wrongIndex":1,"fix":"indicate","why_en":"In formal usage, “data” is often treated as a plural noun, taking “indicate”.","why_ar":"في الاستعمال الرسمي تُعامل data غالبًا كجمع، لذا نستخدم indicate."},
-  {"id":"spot-c2-01","level":"C2","text":"Little did she knew how serious the consequences were.","wrongIndex":3,"fix":"know","why_en":"After the auxiliary “did”, use the base form “know”.","why_ar":"بعد did نستخدم الفعل بصيغته الأساسية know."},
-  {"id":"spot-c2-02","level":"C2","text":"The evidence is too scant to warrants a definitive conclusion.","wrongIndex":6,"fix":"warrant","why_en":"The verb “warrant” takes a direct object here and is not followed by “of”.","why_ar":"الفعل warrant يأخذ مفعولًا مباشرًا هنا ولا يتبعه of."},
-  {"id":"spot-a1-11","level":"A1","text":"He don't like milk.","wrongIndex":1,"fix":"doesn't","why_en":"With he, she, or it, use doesn't in the present simple negative.","why_ar":"مع he أو she أو it نستخدم doesn't في النفي بالمضارع البسيط."},
-  {"id":"spot-a1-12","level":"A1","text":"This are my keys.","wrongIndex":1,"fix":"is","why_en":"Use is with the singular demonstrative this.","why_ar":"نستخدم is مع اسم مفرد يبدأ بـ this."},
-  {"id":"spot-a2-11","level":"A2","text":"We have lived here since five years.","wrongIndex":4,"fix":"for","why_en":"Use for with a duration and since with a starting point.","why_ar":"نستخدم for مع مدة زمنية وsince مع نقطة بداية."},
-  {"id":"spot-a2-12","level":"A2","text":"There isn't some bread left.","wrongIndex":2,"fix":"any","why_en":"In ordinary negative statements, use any rather than some.","why_ar":"في النفي المعتاد نستخدم any بدل some."},
-  {"id":"spot-b1-11","level":"B1","text":"I'm used to wake up early.","wrongIndex":3,"fix":"waking","why_en":"“Be used to” is followed by a noun or an -ing form.","why_ar":"يأتي بعد be used to اسم أو فعل منتهٍ بـ ing."},
-  {"id":"spot-b1-12","level":"B1","text":"Despite of the traffic, we arrived on time.","wrongIndex":1,"fix":"remove of","why_en":"Despite is followed directly by a noun phrase; do not add of.","why_ar":"تأتي despite مباشرة قبل الاسم ولا نضيف of."},
-  {"id":"spot-b2-11","level":"B2","text":"No sooner had we sat down when the lights went out.","wrongIndex":5,"fix":"than","why_en":"The fixed pair is “no sooner … than”.","why_ar":"التركيب الثابت هو no sooner … than."},
-  {"id":"spot-b2-12","level":"B2","text":"She denied to have taken the documents.","wrongIndex":2,"fix":"having","why_en":"Deny is followed by an -ing form, not a to-infinitive.","why_ar":"يأتي بعد deny فعل منتهٍ بـ ing وليس مصدرًا مع to."},
-  {"id":"spot-c1-03","level":"C1","text":"Had I knew about the delay, I would have called.","wrongIndex":2,"fix":"known","why_en":"In third conditional inversion, use the past participle after had.","why_ar":"في القلب الشرطي من النوع الثالث نستخدم التصريف الثالث بعد had."},
-  {"id":"spot-c1-04","level":"C1","text":"The findings are comprised of three distinct stages.","wrongIndex":2,"fix":"comprise","why_en":"In standard usage, comprise can take the parts directly; “are comprised of” is often avoided in formal editing.","why_ar":"في التحرير الرسمي يُفضّل أن يأتي comprise مباشرةً قبل الأجزاء دون are/of."},
-  {"id":"spot-c1-05","level":"C1","text":"Scarcely had the meeting begun than the alarm sounded.","wrongIndex":5,"fix":"when","why_en":"The usual paired construction is “scarcely … when”.","why_ar":"التركيب المعتاد هو scarcely … when."},
-  {"id":"spot-c1-06","level":"C1","text":"Each of the proposals have been carefully reviewed.","wrongIndex":4,"fix":"has","why_en":"The head of the subject is each, which takes a singular verb.","why_ar":"رأس الفاعل هو each ولذلك يأخذ فعلًا مفردًا."},
-  {"id":"spot-c2-03","level":"C2","text":"Were he to have knew the truth, he might have acted differently.","wrongIndex":4,"fix":"known","why_en":"The perfect infinitive is “to have + past participle”.","why_ar":"صيغة المصدر التام هي to have متبوعة بالتصريف الثالث."},
-  {"id":"spot-c2-04","level":"C2","text":"Not only the report was inaccurate, but it was also incomplete.","wrongIndex":3,"fix":"was the report","why_en":"When “not only” opens a clause, subject–auxiliary inversion is required.","why_ar":"عندما تبدأ الجملة بـ Not only نستخدم القلب بين الفعل المساعد والفاعل."},
-  {"id":"spot-c2-05","level":"C2","text":"The policy may have unforeseen implications, not least because it is predicated in assumptions.","wrongIndex":12,"fix":"on","why_en":"The standard collocation is “predicated on”, meaning based on.","why_ar":"التركيب الصحيح predicated on بمعنى قائم على."},
-  {"id":"spot-c2-06","level":"C2","text":"Rarely the committee reached consensus so quickly.","wrongIndex":1,"fix":"has the committee","why_en":"A fronted negative adverb such as rarely triggers inversion.","why_ar":"الظرف السلبي Rarely في بداية الجملة يستلزم القلب."},
+  {
+    "id": "spot-a1-09",
+    "level": "A1",
+    "text": "They is at home.",
+    "wrongIndex": 1,
+    "fix": "are",
+    "why_en": "Use “are” with the plural subject “they”.",
+    "why_ar": "نستخدم are مع الفاعل الجمع they."
+  },
+  {
+    "id": "spot-a1-10",
+    "level": "A1",
+    "text": "I have two childs.",
+    "wrongIndex": 3,
+    "fix": "children.",
+    "why_en": "The plural of child is children, not childs.",
+    "why_ar": "جمع child هو children وليس childs."
+  },
+  {
+    "id": "spot-a2-09",
+    "level": "A2",
+    "text": "She didn’t went to work yesterday.",
+    "wrongIndex": 2,
+    "fix": "go",
+    "why_en": "After didn’t, use the base form of the verb.",
+    "why_ar": "بعد didn’t نستخدم الفعل بصيغته الأساسية: go."
+  },
+  {
+    "id": "spot-a2-10",
+    "level": "A2",
+    "text": "There are much people outside.",
+    "wrongIndex": 2,
+    "fix": "many",
+    "why_en": "Use many with countable plural nouns such as people.",
+    "why_ar": "نستخدم many مع الأسماء المعدودة الجمع مثل people."
+  },
+  {
+    "id": "spot-b1-09",
+    "level": "B1",
+    "text": "I look forward to meet you.",
+    "wrongIndex": 4,
+    "fix": "meeting",
+    "why_en": "“Look forward to” is followed by a noun or an -ing form.",
+    "why_ar": "يتبع look forward to اسم أو فعل منتهٍ بـ ing."
+  },
+  {
+    "id": "spot-b1-10",
+    "level": "B1",
+    "text": "If I would have more time, I would travel.",
+    "wrongIndex": 2,
+    "fix": "had",
+    "why_en": "The second conditional uses past simple in the if-clause.",
+    "why_ar": "في الشرط الثاني نستخدم الماضي البسيط في جملة if."
+  },
+  {
+    "id": "spot-b2-09",
+    "level": "B2",
+    "text": "In spite the rain, the match continued.",
+    "wrongIndex": 2,
+    "fix": "of the",
+    "why_en": "Despite is not followed by “of”; use “despite the rain” or “in spite of the rain”.",
+    "why_ar": "لا يأتي of بعد despite؛ نقول despite the rain أو in spite of the rain."
+  },
+  {
+    "id": "spot-b2-10",
+    "level": "B2",
+    "text": "Hardly I arrived when the phone rang.",
+    "wrongIndex": 1,
+    "fix": "had I",
+    "why_en": "When “hardly” begins the sentence, use subject–auxiliary inversion.",
+    "why_ar": "عندما تبدأ الجملة بـ Hardly نستخدم القلب: hardly had I arrived."
+  },
+  {
+    "id": "spot-c1-01",
+    "level": "C1",
+    "text": "The committee suggested him to revise the proposal.",
+    "wrongIndex": 2,
+    "fix": "that he",
+    "why_en": "Suggest is not normally followed by object + infinitive in this meaning; use “suggested that he revise” or “suggested revising”.",
+    "why_ar": "لا يأتي suggest عادةً مع مفعول ثم to + فعل؛ نستخدم suggested that he revise أو suggested revising."
+  },
+  {
+    "id": "spot-c1-02",
+    "level": "C1",
+    "text": "The data indicates a substantial decline.",
+    "wrongIndex": 1,
+    "fix": "indicate",
+    "why_en": "In formal usage, “data” is often treated as a plural noun, taking “indicate”.",
+    "why_ar": "في الاستعمال الرسمي تُعامل data غالبًا كجمع، لذا نستخدم indicate."
+  },
+  {
+    "id": "spot-c2-01",
+    "level": "C2",
+    "text": "Little did she knew how serious the consequences were.",
+    "wrongIndex": 3,
+    "fix": "know",
+    "why_en": "After the auxiliary “did”, use the base form “know”.",
+    "why_ar": "بعد did نستخدم الفعل بصيغته الأساسية know."
+  },
+  {
+    "id": "spot-c2-02",
+    "level": "C2",
+    "text": "The evidence is too scant to warrants a definitive conclusion.",
+    "wrongIndex": 6,
+    "fix": "warrant",
+    "why_en": "The verb “warrant” takes a direct object here and is not followed by “of”.",
+    "why_ar": "الفعل warrant يأخذ مفعولًا مباشرًا هنا ولا يتبعه of."
+  },
+  {
+    "id": "spot-a1-11",
+    "level": "A1",
+    "text": "He don't like milk.",
+    "wrongIndex": 1,
+    "fix": "doesn't",
+    "why_en": "With he, she, or it, use doesn't in the present simple negative.",
+    "why_ar": "مع he أو she أو it نستخدم doesn't في النفي بالمضارع البسيط."
+  },
+  {
+    "id": "spot-a1-12",
+    "level": "A1",
+    "text": "This are my keys.",
+    "wrongIndex": 1,
+    "fix": "is",
+    "why_en": "Use is with the singular demonstrative this.",
+    "why_ar": "نستخدم is مع اسم مفرد يبدأ بـ this."
+  },
+  {
+    "id": "spot-a2-11",
+    "level": "A2",
+    "text": "We have lived here since five years.",
+    "wrongIndex": 4,
+    "fix": "for",
+    "why_en": "Use for with a duration and since with a starting point.",
+    "why_ar": "نستخدم for مع مدة زمنية وsince مع نقطة بداية."
+  },
+  {
+    "id": "spot-a2-12",
+    "level": "A2",
+    "text": "There isn't some bread left.",
+    "wrongIndex": 2,
+    "fix": "any",
+    "why_en": "In ordinary negative statements, use any rather than some.",
+    "why_ar": "في النفي المعتاد نستخدم any بدل some."
+  },
+  {
+    "id": "spot-b1-11",
+    "level": "B1",
+    "text": "I'm used to wake up early.",
+    "wrongIndex": 3,
+    "fix": "waking",
+    "why_en": "“Be used to” is followed by a noun or an -ing form.",
+    "why_ar": "يأتي بعد be used to اسم أو فعل منتهٍ بـ ing."
+  },
+  {
+    "id": "spot-b1-12",
+    "level": "B1",
+    "text": "Despite of the traffic, we arrived on time.",
+    "wrongIndex": 1,
+    "fix": "remove of",
+    "why_en": "Despite is followed directly by a noun phrase; do not add of.",
+    "why_ar": "تأتي despite مباشرة قبل الاسم ولا نضيف of."
+  },
+  {
+    "id": "spot-b2-11",
+    "level": "B2",
+    "text": "No sooner had we sat down when the lights went out.",
+    "wrongIndex": 5,
+    "fix": "than",
+    "why_en": "The fixed pair is “no sooner … than”.",
+    "why_ar": "التركيب الثابت هو no sooner … than."
+  },
+  {
+    "id": "spot-b2-12",
+    "level": "B2",
+    "text": "She denied to have taken the documents.",
+    "wrongIndex": 2,
+    "fix": "having",
+    "why_en": "Deny is followed by an -ing form, not a to-infinitive.",
+    "why_ar": "يأتي بعد deny فعل منتهٍ بـ ing وليس مصدرًا مع to."
+  },
+  {
+    "id": "spot-c1-03",
+    "level": "C1",
+    "text": "Had I knew about the delay, I would have called.",
+    "wrongIndex": 2,
+    "fix": "known",
+    "why_en": "In third conditional inversion, use the past participle after had.",
+    "why_ar": "في القلب الشرطي من النوع الثالث نستخدم التصريف الثالث بعد had."
+  },
+  {
+    "id": "spot-c1-04",
+    "level": "C1",
+    "text": "The findings are comprised of three distinct stages.",
+    "wrongIndex": 2,
+    "fix": "comprise",
+    "why_en": "In standard usage, comprise can take the parts directly; “are comprised of” is often avoided in formal editing.",
+    "why_ar": "في التحرير الرسمي يُفضّل أن يأتي comprise مباشرةً قبل الأجزاء دون are/of."
+  },
+  {
+    "id": "spot-c1-05",
+    "level": "C1",
+    "text": "Scarcely had the meeting begun than the alarm sounded.",
+    "wrongIndex": 5,
+    "fix": "when",
+    "why_en": "The usual paired construction is “scarcely … when”.",
+    "why_ar": "التركيب المعتاد هو scarcely … when."
+  },
+  {
+    "id": "spot-c1-06",
+    "level": "C1",
+    "text": "Each of the proposals have been carefully reviewed.",
+    "wrongIndex": 4,
+    "fix": "has",
+    "why_en": "The head of the subject is each, which takes a singular verb.",
+    "why_ar": "رأس الفاعل هو each ولذلك يأخذ فعلًا مفردًا."
+  },
+  {
+    "id": "spot-c2-03",
+    "level": "C2",
+    "text": "Were he to have knew the truth, he might have acted differently.",
+    "wrongIndex": 4,
+    "fix": "known",
+    "why_en": "The perfect infinitive is “to have + past participle”.",
+    "why_ar": "صيغة المصدر التام هي to have متبوعة بالتصريف الثالث."
+  },
+  {
+    "id": "spot-c2-04",
+    "level": "C2",
+    "text": "Not only the report was inaccurate, but it was also incomplete.",
+    "wrongIndex": 3,
+    "fix": "was the report",
+    "why_en": "When “not only” opens a clause, subject–auxiliary inversion is required.",
+    "why_ar": "عندما تبدأ الجملة بـ Not only نستخدم القلب بين الفعل المساعد والفاعل."
+  },
+  {
+    "id": "spot-c2-05",
+    "level": "C2",
+    "text": "The policy may have unforeseen implications, not least because it is predicated in assumptions.",
+    "wrongIndex": 12,
+    "fix": "on",
+    "why_en": "The standard collocation is “predicated on”, meaning based on.",
+    "why_ar": "التركيب الصحيح predicated on بمعنى قائم على."
+  },
+  {
+    "id": "spot-c2-06",
+    "level": "C2",
+    "text": "Rarely the committee reached consensus so quickly.",
+    "wrongIndex": 1,
+    "fix": "has the committee",
+    "why_en": "A fronted negative adverb such as rarely triggers inversion.",
+    "why_ar": "الظرف السلبي Rarely في بداية الجملة يستلزم القلب."
+  },
   {
     "id": "spot-a1-13",
     "level": "A1",
@@ -587,14 +811,14 @@ const SPOT_QUESTIONS = [
     "why_ar": "التركيب الشائع هو good at."
   },
   {
-  "id": "spot-a2-19",
-  "level": "A2",
-  "text": "I have saw him before.",
-  "wrongIndex": 2,
-  "fix": "seen",
-  "why_en": "Present perfect uses have + past participle, so saw must be seen.",
-  "why_ar": "يتكون المضارع التام من have والتصريف الثالث، لذا تصبح saw هي seen."
-},
+    "id": "spot-a2-19",
+    "level": "A2",
+    "text": "I have saw him before.",
+    "wrongIndex": 2,
+    "fix": "seen",
+    "why_en": "Present perfect uses have + past participle, so saw must be seen.",
+    "why_ar": "يتكون المضارع التام من have والتصريف الثالث، لذا تصبح saw هي seen."
+  },
   {
     "id": "spot-a2-20",
     "level": "A2",
@@ -650,23 +874,23 @@ const SPOT_QUESTIONS = [
     "why_ar": "التركيب الصحيح depend on."
   },
   {
-  "id": "spot-b2-18",
-  "level": "B2",
-  "text": "She denied take the document.",
-  "wrongIndex": 2,
-  "fix": "taking",
-  "why_en": "Deny is followed by an -ing form.",
-  "why_ar": "يأتي بعد deny فعل ing."
-},
+    "id": "spot-b2-18",
+    "level": "B2",
+    "text": "She denied take the document.",
+    "wrongIndex": 2,
+    "fix": "taking",
+    "why_en": "Deny is followed by an -ing form.",
+    "why_ar": "يأتي بعد deny فعل ing."
+  },
   {
-  "id": "spot-b2-19",
-  "level": "B2",
-  "text": "Not only did she missed the train, but she lost her ticket.",
-  "wrongIndex": 4,
-  "fix": "miss",
-  "why_en": "After did, use the base form of the verb.",
-  "why_ar": "بعد did نستخدم الفعل بصيغته الأساسية."
-},
+    "id": "spot-b2-19",
+    "level": "B2",
+    "text": "Not only did she missed the train, but she lost her ticket.",
+    "wrongIndex": 4,
+    "fix": "miss",
+    "why_en": "After did, use the base form of the verb.",
+    "why_ar": "بعد did نستخدم الفعل بصيغته الأساسية."
+  },
   {
     "id": "spot-b2-20",
     "level": "B2",
@@ -704,14 +928,14 @@ const SPOT_QUESTIONS = [
     "why_ar": "الفاعل النحوي هو extent المفرد، لذلك نستخدم remains."
   },
   {
-  "id": "spot-c1-14",
-  "level": "C1",
-  "text": "The new policy is liable of cause confusion.",
-  "wrongIndex": 5,
-  "fix": "to",
-  "why_en": "The standard phrase is liable to do something.",
-  "why_ar": "التعبير الصحيح liable to يتبعه الفعل."
-},
+    "id": "spot-c1-14",
+    "level": "C1",
+    "text": "The new policy is liable of cause confusion.",
+    "wrongIndex": 5,
+    "fix": "to",
+    "why_en": "The standard phrase is liable to do something.",
+    "why_ar": "التعبير الصحيح liable to يتبعه الفعل."
+  },
   {
     "id": "spot-c1-15",
     "level": "C1",
@@ -731,14 +955,14 @@ const SPOT_QUESTIONS = [
     "why_ar": "يأتي بعد allude حرف الجر to."
   },
   {
-  "id": "spot-c1-17",
-  "level": "C1",
-  "text": "Only when the figures were checked did the discrepancy emerged.",
-  "wrongIndex": 9,
-  "fix": "emerge.",
-  "why_en": "After did, use the base form of the verb.",
-  "why_ar": "بعد did نستخدم الفعل بصيغته الأساسية."
-},
+    "id": "spot-c1-17",
+    "level": "C1",
+    "text": "Only when the figures were checked did the discrepancy emerged.",
+    "wrongIndex": 9,
+    "fix": "emerge.",
+    "why_en": "After did, use the base form of the verb.",
+    "why_ar": "بعد did نستخدم الفعل بصيغته الأساسية."
+  },
   {
     "id": "spot-c1-18",
     "level": "C1",
@@ -749,14 +973,14 @@ const SPOT_QUESTIONS = [
     "why_ar": "التعبير الصحيح lend credence to."
   },
   {
-  "id": "spot-c1-19",
-  "level": "C1",
-  "text": "It is essential that every applicant is informed promptly.",
-  "wrongIndex": 6,
-  "fix": "be",
-  "why_en": "Formal mandative clauses often use the base-form subjunctive be.",
-  "why_ar": "في الأسلوب الرسمي قد نستخدم be بصيغته الأساسية بعد essential that."
-},
+    "id": "spot-c1-19",
+    "level": "C1",
+    "text": "It is essential that every applicant is informed promptly.",
+    "wrongIndex": 6,
+    "fix": "be",
+    "why_en": "Formal mandative clauses often use the base-form subjunctive be.",
+    "why_ar": "في الأسلوب الرسمي قد نستخدم be بصيغته الأساسية بعد essential that."
+  },
   {
     "id": "spot-c1-20",
     "level": "C1",
@@ -767,14 +991,14 @@ const SPOT_QUESTIONS = [
     "why_ar": "التعبير المقبول هو mutually exclusive of one another."
   },
   {
-  "id": "spot-c2-11",
-  "level": "C2",
-  "text": "Little did she realised how consequential the decision would be.",
-  "wrongIndex": 3,
-  "fix": "realise",
-  "why_en": "After did, use the base form of the verb.",
-  "why_ar": "بعد did نستخدم الفعل بصيغته الأساسية."
-},
+    "id": "spot-c2-11",
+    "level": "C2",
+    "text": "Little did she realised how consequential the decision would be.",
+    "wrongIndex": 3,
+    "fix": "realise",
+    "why_en": "After did, use the base form of the verb.",
+    "why_ar": "بعد did نستخدم الفعل بصيغته الأساسية."
+  },
   {
     "id": "spot-c2-12",
     "level": "C2",
@@ -812,23 +1036,23 @@ const SPOT_QUESTIONS = [
     "why_ar": "في الافتراض المخالف للماضي، تكون might have متناسقة هنا."
   },
   {
-  "id": "spot-c2-16",
-  "level": "C2",
-  "text": "The distinction is subtle, not to say imperceptiblely.",
-  "wrongIndex": 7,
-  "fix": "imperceptible.",
-  "why_en": "Use the adjective imperceptible to describe the distinction.",
-  "why_ar": "نستخدم الصفة imperceptible لوصف distinction."
-},
+    "id": "spot-c2-16",
+    "level": "C2",
+    "text": "The distinction is subtle, not to say imperceptiblely.",
+    "wrongIndex": 7,
+    "fix": "imperceptible.",
+    "why_en": "Use the adjective imperceptible to describe the distinction.",
+    "why_ar": "نستخدم الصفة imperceptible لوصف distinction."
+  },
   {
-  "id": "spot-c2-17",
-  "level": "C2",
-  "text": "Under no circumstances the confidential data be disclosed.",
-  "wrongIndex": 3,
-  "fix": "should the",
-  "why_en": "A negative fronted phrase requires subject–auxiliary inversion.",
-  "why_ar": "العبارة السلبية في البداية تستلزم القلب."
-},
+    "id": "spot-c2-17",
+    "level": "C2",
+    "text": "Under no circumstances the confidential data be disclosed.",
+    "wrongIndex": 3,
+    "fix": "should the",
+    "why_en": "A negative fronted phrase requires subject–auxiliary inversion.",
+    "why_ar": "العبارة السلبية في البداية تستلزم القلب."
+  },
   {
     "id": "spot-c2-18",
     "level": "C2",
