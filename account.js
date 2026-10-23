@@ -438,7 +438,17 @@
       }
     });
   }
+  const DEVELOPER_EMAILS = new Set([
+    'abdulrahimaouadi@gmail.com',
+    'crboy952@gmail.com'
+  ]);
+  const isDeveloperAccount = () => !!(currentUser && currentUser.email && DEVELOPER_EMAILS.has(String(currentUser.email).trim().toLowerCase()));
+  function announceAuthAccess() {
+    document.dispatchEvent(new CustomEvent('epiphany-auth-changed', { detail: { isDeveloper: isDeveloperAccount() } }));
+  }
+
   window.EpiphanyAuth = {
+    isDeveloper: isDeveloperAccount,
     openAccountMode: openAccountFromWelcome,
     isWelcomeOpen: () => !!($('account-welcome-modal') && !$('account-welcome-modal').hidden),
     queueSave(progress) {
@@ -571,8 +581,10 @@
     });
     client.auth.onAuthStateChange((event, session) => {
       currentUser = session && session.user ? session.user : null;
+      announceAuthAccess();
       if (event === 'PASSWORD_RECOVERY') recoveryMode = true;
       if (!currentUser) {
+        announceAuthAccess();
         lastSyncedUser = null;
         recoveryMode = false;
         renderAccount();
@@ -599,6 +611,7 @@
       if (error) throw error;
       if (data && data.session && data.session.user) {
         currentUser = data.session.user;
+        announceAuthAccess();
         renderAccount();
         setPlayerProfileAccess();
         hideWelcomeModal(true);
