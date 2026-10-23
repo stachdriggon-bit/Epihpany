@@ -497,6 +497,7 @@
           if (error) throw error;
           pendingVerificationEmail = '';
           status('Email verified. Preparing your saved progress…', 'success');
+          window.__epiphanyShowPlacement?.();
         } else if (currentMode === 'signin') {
           const {error} = await client.auth.signInWithPassword({email, password});
           if (error) throw error;
