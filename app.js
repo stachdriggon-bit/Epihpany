@@ -1253,16 +1253,16 @@
     if(exact)return {text:exact,exact:true};
     let templateMatch=source.match(/^Level\s+(A1|A2|B1|B2|C1|C2)\s*[·•-]\s*choose the best answer\.?$/i);
     if(templateMatch)return {text:'المستوى '+templateMatch[1]+' · اختر أفضل إجابة.',exact:true};
-    if(/^Start at the dot and face the arrow\\./i.test(source)){
-      const parts=source.match(/Start at the dot and face the arrow\\.|(?:Then )?walk (?:straight for )?(one|two|three|four|five|six|seven|eight|nine|ten) blocks?\\.|Turn (left|right)\\.|The place is on your (left|right)\\./gi)||[];
+    if(/^Start at the dot and face the arrow\./i.test(source)){
+      const parts=source.match(/Start at the dot and face the arrow\.|(?:Then )?walk (?:straight for )?(one|two|three|four|five|six|seven|eight|nine|ten) blocks?\.|Turn (left|right)\.|The place is on your (left|right)\./gi)||[];
       const nums={one:'كتلة واحدة',two:'كتلتين',three:'ثلاث كتل',four:'أربع كتل',five:'خمس كتل',six:'ست كتل',seven:'سبع كتل',eight:'ثماني كتل',nine:'تسع كتل',ten:'عشر كتل'};
       const translated=parts.map(part=>{
         if(/^Start at the dot/i.test(part))return 'ابدأ من النقطة ووجّه نفسك في اتجاه السهم.';
-        const walk=part.match(/^(?:Then )?walk (?:straight for )?(one|two|three|four|five|six|seven|eight|nine|ten) blocks?\\.$/i);
+        const walk=part.match(/^(?:Then )?walk (?:straight for )?(one|two|three|four|five|six|seven|eight|nine|ten) blocks?\.$/i);
         if(walk)return (/^Then /i.test(part)?'ثم سر لمسافة ':'سر مباشرةً لمسافة ')+nums[walk[1].toLowerCase()]+'.';
-        const turn=part.match(/^Turn (left|right)\\.$/i);
+        const turn=part.match(/^Turn (left|right)\.$/i);
         if(turn)return 'انعطف '+(turn[1].toLowerCase()==='left'?'يسارًا.':'يمينًا.');
-        const side=part.match(/^The place is on your (left|right)\\.$/i);
+        const side=part.match(/^The place is on your (left|right)\.$/i);
         if(side)return 'المكان على '+(side[1].toLowerCase()==='left'?'يسارك.':'يمينك.');
         return '';
       }).filter(Boolean);
