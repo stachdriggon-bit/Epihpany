@@ -1,5 +1,5 @@
-/* Epiphany Expansion Pack: 72 additional questions across six CEFR bands.
-   Loaded after data.js and before app.js. Each item is reviewed, level-tagged and skill-specific. */
+/* Epiphany Expansion Pack: expanded CEFR question banks plus story, word and feedback content.
+   Loaded after data.js and before app.js. Questions are level-tagged and skill-specific. */
 (() => {
   const add = (game, level, q, answers, correct, explain, extra = {}) => {
     GAMES[game].questions.push({
@@ -393,7 +393,7 @@
     ["spelling","B2","Choose the correctly spelled word.",["entrepreneur","enterpreneur","entreprenur","entreprenuer"],0,"Entrepreneur is the correct spelling.","Entrepreneur هي التهجئة الصحيحة."],
     ["spelling","B2","Choose the correctly spelled word.",["maintenance","maintainance","maintenence","maintenanse"],0,"Maintenance is the standard spelling.","Maintenance هي التهجئة الصحيحة."],
     ["spelling","C1","Choose the correctly spelled word.",["acquiescence","acquiescense","acquiesence","acquiescance"],0,"Acquiescence is the correct spelling.","Acquiescence هي التهجئة الصحيحة."],
-    ["spelling","C1","Choose the correctly spelled word.",["reconnaissance","reconnaisance","reconnaissence","reconnaisance"],0,"Reconnaissance is the standard spelling.","Reconnaissance هي التهجئة الصحيحة."],
+    ["spelling","C1","Choose the correctly spelled word.",["reconnaissance","reconnaisance","reconnaissence","reconnaisense"],0,"Reconnaissance is the standard spelling.","Reconnaissance هي التهجئة الصحيحة."],
     ["spelling","C2","Choose the correctly spelled word.",["idiosyncratic","ideosyncratic","idiosyncrattic","idiosyncratick"],0,"Idiosyncratic is the correct adjective form.","Idiosyncratic هي الصفة الصحيحة."],
     ["spelling","C2","Choose the correctly spelled word.",["pharaoh","pharoah","pharao","pharoh"],0,"Pharaoh is the standard spelling.","Pharaoh هي التهجئة الصحيحة."],
     ["advanced","A1","Choose the correct question.",["Where do you live?","Where you live?","Where does you live?","Where are you live?"],0,"Use do with you in present simple questions.","نستخدم do مع you في أسئلة المضارع البسيط."],
@@ -497,7 +497,7 @@
     ["listening","C1","“I wouldn’t go so far as to call it a failure.” What is the speaker doing?",["Rejecting an overly strong description","Calling it an unquestionable disaster","Saying the outcome is irrelevant","Demanding an immediate apology"],0,"The speaker considers “failure” too strong a label.","يرى المتحدث أن وصف الأمر بالفشل مبالغ فيه."],
     ["advanced","C1","Choose the most precise phrase: The claim is ___ with the available evidence.",["at odds","in odds","at odd","on odds"],0,"“At odds with” means in conflict with.","At odds with تعني متعارضًا مع."],
     ["vocabulary","C2","A recondite passage is ___.",["difficult to understand because it is obscure or specialised","written for very young children","clear to every reader immediately","devoid of any meaning by definition"],0,"Recondite means obscure, abstruse, or difficult to understand.","Recondite تعني غامضة أو عسيرة الفهم."],
-    ["spelling","C2","Choose the correctly spelled word.",["perspicacious","perspicatious","perspicatious","perspicatious"],0,"Perspicacious is the standard spelling.","Perspicacious هي التهجئة الصحيحة."],
+    ["spelling","C2","Choose the correctly spelled word.",["perspicacious","perspicatious","perspicaciouss","perspicacius"],0,"Perspicacious is the standard spelling.","Perspicacious هي التهجئة الصحيحة."],
     ["grammar","C2","Little ___ that the seemingly minor clause would reshape the entire agreement.",["did they suspect","they did suspect","they suspected did","had they suspect"],0,"“Little” at the start triggers inversion: did they suspect.","تتطلب Little في البداية قلب الترتيب: did they suspect."],
     ["story","C2","A scholar distinguishes an explanation that fits the data from one that makes risky, testable predictions. What is the key issue?",["Explanatory fit versus predictive power","The number of pages in the paper","Whether the author is popular","The use of simple vocabulary"],0,"A theory may fit existing data without making strong novel predictions.","قد تلائم النظرية البيانات الحالية دون تقديم تنبؤات جديدة قوية."],
     ["listening","C2","“The wording is deliberately equivocal.” What does this suggest?",["It is phrased to allow more than one interpretation","It is perfectly unambiguous","It is a direct numerical measurement","It contains no possible nuance"],0,"Equivocal wording can be interpreted in more than one way.","الصياغة الملتبسة تسمح بأكثر من تفسير."],
@@ -642,7 +642,7 @@
     ["story","C2","A court distinguishes between evidence that is admissible and evidence that is persuasive. What is the key point?",["Being allowed into consideration does not guarantee strong persuasive force","All admissible evidence is automatically decisive","Persuasive evidence is always inadmissible","The two terms mean exactly the same thing"],0,"Admissibility and persuasive weight are separate questions.","قبول الدليل للنظر فيه وقوته الإقناعية مسألتان مختلفتان."],
     ["story","C2","A policy evaluation uses a counterfactual comparison to estimate what would have happened without the intervention. Why?",["To estimate the intervention’s effect against a plausible alternative","To avoid comparing outcomes","To prove the intervention worked without data","To replace measurement with opinion"],0,"A counterfactual helps estimate what changed because of the intervention.","يساعد الافتراض المضاد للواقع على تقدير ما تغير بسبب التدخل."],
     ["listening","C2","“The claim is not logically impossible; it is simply underdetermined by the evidence.” What does this mean?",["The evidence is insufficient to settle the claim","The claim has been conclusively disproved","The claim is logically contradictory","The evidence proves every interpretation equally"],0,"Underdetermined means the available evidence does not uniquely settle the issue.","Underdetermined تعني أن الأدلة المتاحة لا تحسم المسألة بصورة فريدة."],
-    ["spelling","C2","Choose the correctly spelled word.",["antediluvian","antedelluvian","antediluvien","antediluvian"],0,"Antediluvian is the standard spelling.","Antediluvian هي التهجئة الصحيحة."],
+    ["spelling","C2","Choose the correctly spelled word.",["antediluvian","antedelluvian","antediluvien","antediluvienn"],0,"Antediluvian is the standard spelling.","Antediluvian هي التهجئة الصحيحة."],
     ["advanced","C2","Choose the correct phrase: The result follows ___ from the premises.",["necessarily","necessary","necessitate","necessitated"],0,"Necessarily is the adverb modifying follows.","Necessarily ظرف يصف الفعل follows."]
   ];
   ninthBalancedPass.forEach(([game, level, q, answers, correct, explain, ar]) => {
@@ -920,8 +920,8 @@
     ["spelling","A2","Choose the correctly spelled word.",["quietly","quietley","quiteley","quietlly"],0,"Quietly is the correct spelling.","Quietly هي التهجئة الصحيحة."],
     ["spelling","B1","Choose the correctly spelled word.",["definite","definate","defenite","definit"],0,"Definite is the standard spelling.","Definite هي التهجئة الصحيحة."],
     ["spelling","B2","Choose the correctly spelled word.",["independent","independant","independet","independantt"],0,"Independent is the standard spelling.","Independent هي التهجئة الصحيحة."],
-    ["spelling","C1","Choose the correctly spelled word.",["exhilarate","exhilerate","exhilerate","exhilarait"],0,"Exhilarate is the correct spelling.","Exhilarate هي التهجئة الصحيحة."],
-    ["spelling","C2","Choose the correctly spelled word.",["perspicacious","perspicatious","perspicaciouss","perspicatious"],0,"Perspicacious is the standard spelling.","Perspicacious هي التهجئة الصحيحة."],
+    ["spelling","C1","Choose the correctly spelled word.",["exhilarate","exhilerate","exhilerite","exhilarait"],0,"Exhilarate is the correct spelling.","Exhilarate هي التهجئة الصحيحة."],
+    ["spelling","C2","Choose the correctly spelled word.",["perspicacious","perspicatious","perspicaciouss","perspicacous"],0,"Perspicacious is the standard spelling.","Perspicacious هي التهجئة الصحيحة."],
     ["story","A1","Nabil checks the label on a bottle before drinking from it. Why?",["To make sure it is the drink he expects","To find a train platform","To repair a bicycle","To check the time of a film"],0,"Reading the label helps identify what is in the bottle.","قراءة الملصق تساعد على معرفة محتوى القارورة."],
     ["story","A2","A family leaves extra time to reach the airport because traffic may be heavy. What are they planning for?",["A possible delay","A change in the airport’s name","A free hotel room","A cancelled passport"],0,"Extra time helps them cope with possible traffic delays.","الوقت الإضافي يساعدهم على التعامل مع تأخر المرور المحتمل."],
     ["story","B1","A team asks users to try a new website and report confusing steps. What is the purpose?",["To identify usability problems","To stop users from giving feedback","To prove no changes are needed","To remove all instructions"],0,"User feedback helps reveal confusing parts of a design.","ملاحظات المستخدمين تكشف الأجزاء المربكة في التصميم."],
@@ -941,5 +941,11 @@
     add(game, level, q, answers, correct, explain, {sub:'Level '+level+' · choose the best answer.', ar, why_ar:ar});
   });
 
-  window.EpiphanyExpansion = {count: bank.length, byLevel: Object.fromEntries(['A1','A2','B1','B2','C1','C2'].map(level => [level, bank.filter(q => q[1] === level).length])), addedStories:16, longFormStories:4, extraQuestions:extraQuestionBank.length, addedWords:moreWords.length};
+  const coreTaggedQuestions = ['vocabulary','spelling','grammar','story','listening','advanced'].flatMap(game => GAMES[game].questions.filter(q => q.level));
+  window.EpiphanyExpansion = {
+    count: coreTaggedQuestions.length,
+    byLevel: Object.fromEntries(['A1','A2','B1','B2','C1','C2'].map(level => [level, coreTaggedQuestions.filter(q => q.level === level).length])),
+    byGame: Object.fromEntries(['vocabulary','spelling','grammar','story','listening','advanced'].map(game => [game, Object.fromEntries(['A1','A2','B1','B2','C1','C2'].map(level => [level, GAMES[game].questions.filter(q => q.level === level).length]))])),
+    addedStories:16, longFormStories:4, extraQuestions:extraQuestionBank.length, addedWords:moreWords.length
+  };
 })();
