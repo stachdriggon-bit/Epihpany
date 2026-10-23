@@ -1,4 +1,4 @@
-const CACHE_NAME = 'epiphany-shell-v38-ui-phase4';
+const CACHE_NAME = 'epiphany-shell-v39-quality-pass';
 const CORE_ASSETS = ['./', './index.html', './style.css', './app.js', './data.js', './data-expansion.js', './data-mistakes.js', './data-spot.js', './data-typing.js', './data-wotd.js', './data-aha.js', './data-stories.js', './data-world.js', './data-world-sprites.js', './data-minigames.js', './supabase-config.js', './account.js', './manifest.webmanifest', './icon.svg'];
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(CORE_ASSETS)).then(() => self.skipWaiting()));
@@ -16,7 +16,7 @@ self.addEventListener('fetch', event => {
       caches.open(CACHE_NAME).then(cache => cache.put(request, copy));
     }
     return response;
-  }).catch(() => caches.match(request).then(cached => {
+  }).catch(() => caches.match(request, {ignoreSearch:true}).then(cached => {
     if (cached) return cached;
     if (request.mode === 'navigate') return caches.match('./index.html');
     return new Response('', {status: 503, statusText: 'Offline'});
