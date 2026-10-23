@@ -227,7 +227,9 @@ const WOTD_WORDS = [
     "meaning_ar": "دقيق",
     "level": "B1",
     "example": "The report must be accurate.",
-    "origin": "From Latin accuratus, done with care."
+    "example_ar": "يجب أن يكون التقرير دقيقًا.",
+    "origin": "From Latin accuratus, done with care.",
+    "origin_ar": "من اللاتينية accuratus، أي أُنجز بعناية."
   },
   {
     "word": "assume",
@@ -236,7 +238,9 @@ const WOTD_WORDS = [
     "meaning_ar": "يفترض",
     "level": "B1",
     "example": "Do not assume the answer.",
-    "origin": "From Latin assumere, to take up."
+    "example_ar": "لا تفترض الإجابة.",
+    "origin": "From Latin assumere, to take up.",
+    "origin_ar": "من اللاتينية assumere، أي يتبنّى."
   },
   {
     "word": "approach",
@@ -245,7 +249,9 @@ const WOTD_WORDS = [
     "meaning_ar": "نهج أو طريقة",
     "level": "B1",
     "example": "Try a different approach.",
-    "origin": "From French approcher, to come near."
+    "example_ar": "جرّب نهجًا مختلفًا.",
+    "origin": "From French approcher, to come near.",
+    "origin_ar": "من الفرنسية approcher، أي يقترب."
   },
   {
     "word": "evidence",
@@ -254,7 +260,9 @@ const WOTD_WORDS = [
     "meaning_ar": "دليل",
     "level": "B1",
     "example": "The evidence supports the claim.",
-    "origin": "From Latin evidentia, clearness."
+    "example_ar": "تدعم الأدلة هذا الادعاء.",
+    "origin": "From Latin evidentia, clearness.",
+    "origin_ar": "من اللاتينية evidentia، وتعني الوضوح."
   },
   {
     "word": "maintain",
@@ -263,7 +271,9 @@ const WOTD_WORDS = [
     "meaning_ar": "يحافظ على",
     "level": "B1",
     "example": "Maintain a steady learning routine.",
-    "origin": "From Latin manu tenere, to hold in the hand."
+    "example_ar": "حافظ على روتين تعلّم منتظم.",
+    "origin": "From Latin manu tenere, to hold in the hand.",
+    "origin_ar": "من اللاتينية manu tenere، أي يمسك باليد."
   },
   {
     "word": "reliable",
@@ -272,7 +282,9 @@ const WOTD_WORDS = [
     "meaning_ar": "موثوق",
     "level": "B1",
     "example": "Use a reliable source.",
-    "origin": "From rely + -able."
+    "example_ar": "استخدم مصدرًا موثوقًا.",
+    "origin": "From rely + -able.",
+    "origin_ar": "تتكوّن من rely بمعنى يعتمد واللاحقة -able."
   },
   {
     "word": "consequence",
@@ -281,7 +293,9 @@ const WOTD_WORDS = [
     "meaning_ar": "نتيجة",
     "level": "B1",
     "example": "Every choice has a consequence.",
-    "origin": "From Latin consequi, to follow."
+    "example_ar": "لكل اختيار نتيجة.",
+    "origin": "From Latin consequi, to follow.",
+    "origin_ar": "من اللاتينية consequi، أي يتبع."
   },
   {
     "word": "perspective",
@@ -290,7 +304,9 @@ const WOTD_WORDS = [
     "meaning_ar": "وجهة نظر",
     "level": "B1",
     "example": "Try to understand her perspective.",
-    "origin": "From Latin perspicere, to look through."
+    "example_ar": "حاول فهم وجهة نظرها.",
+    "origin": "From Latin perspicere, to look through.",
+    "origin_ar": "من اللاتينية perspicere، أي ينظر من خلال."
   },
   {
     "word": "significant",
@@ -299,7 +315,9 @@ const WOTD_WORDS = [
     "meaning_ar": "مهم أو ملحوظ",
     "level": "B1",
     "example": "We noticed a significant improvement.",
-    "origin": "From Latin significare, to indicate."
+    "example_ar": "لاحظنا تحسنًا ملحوظًا.",
+    "origin": "From Latin significare, to indicate.",
+    "origin_ar": "من اللاتينية significare، أي يدل على شيء."
   },
   {
     "word": "clarify",
@@ -308,7 +326,9 @@ const WOTD_WORDS = [
     "meaning_ar": "يوضّح",
     "level": "B1",
     "example": "Could you clarify your point?",
-    "origin": "From Latin clarus, clear."
+    "example_ar": "هل يمكنك توضيح فكرتك؟",
+    "origin": "From Latin clarus, clear.",
+    "origin_ar": "من اللاتينية clarus، وتعني واضح."
   },
   {
     "word": "subtle",
