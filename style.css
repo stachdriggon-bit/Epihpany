@@ -1188,3 +1188,80 @@ body[data-theme="dark"] .world-region-hub { background:radial-gradient(ellipse a
  .world-region-card,.world-practice-btn,.world-exit,.world-helpbar button,.world-help-actions button,.world-interact { transition:none; }
  .world-region-card:not(:disabled):hover,.world-practice-btn:hover,.world-helpbar button:hover,.world-help-actions button:hover { transform:none; }
 }
+
+
+/* Phase 3 — Consistent activity, learning feedback and achievement surfaces */
+:root {
+  --ep-card-radius:22px;
+  --ep-control-radius:13px;
+}
+.view .page { min-width:0; }
+.view .intro { max-width:760px; }
+.view .intro .lead { max-width:62ch; line-height:1.65; }
+.view .block,.view .challenge-card,.view .wotd-card,.view .profile-posts,.view .community-wall {
+  border-radius:var(--ep-card-radius);
+}
+.view button,.view .btn,.view input,.view textarea,.view select { border-radius:var(--ep-control-radius); }
+.view button,.view .btn { transition:transform .16s ease,box-shadow .16s ease,border-color .16s ease,background-color .16s ease; }
+.view button:not(:disabled):hover,.view .btn:not(:disabled):hover { transform:translateY(-1px); }
+.view button:active,.view .btn:active { transform:translateY(0); }
+.view button:disabled,.view .btn:disabled { cursor:not-allowed; }
+.view :is(button,a,input,textarea,select,[tabindex]):focus-visible { outline:3px solid var(--focus,#7c6cff);outline-offset:3px; }
+#stories-view #stories-content,#words-view #words-body,#games-view #games-content { min-width:0; }
+#stories-view #stories-content>*,#words-view #words-body>*,#games-view #games-content>* { max-width:100%; }
+#stories-view article,#stories-view .story-card,#words-view article,#words-view .word-card,#words-view .word-row {
+  border-radius:18px;
+}
+#stories-view button,#words-view button,#games-view button { min-height:40px; }
+.challenge-grid { gap:16px; }
+.challenge-card {
+  position:relative;
+  overflow:hidden;
+  border:1px solid var(--line);
+  box-shadow:0 8px 24px rgba(35,43,83,.055);
+}
+.challenge-card::before {
+  content:"";
+  position:absolute;
+  width:120px;height:120px;
+  top:-58px;right:-38px;
+  border-radius:50%;
+  background:rgba(124,108,255,.075);
+  pointer-events:none;
+}
+.challenge-card>* { position:relative; }
+.challenge-top { gap:9px;flex-wrap:wrap; }
+.challenge-icon { display:inline-grid;place-items:center;flex:0 0 38px;width:38px;height:38px;border-radius:13px;background:var(--surface-soft,rgba(124,108,255,.1)); }
+.challenge-tag { letter-spacing:.07em; }
+.challenge-card h2 { line-height:1.2;letter-spacing:-.02em; }
+.challenge-card p { line-height:1.6; }
+.challenge-progress { gap:10px; }
+.challenge-progress .bar { overflow:hidden;border-radius:99px; }
+.challenge-progress .bar i { border-radius:inherit;transition:width .35s ease; }
+.challenge-action { min-height:44px; }
+.daily-card { border-top:3px solid #f4bd2e; }
+.weekly-card { border-top:3px solid #7c6cff; }
+.freeze-card { border-top:3px solid #63bde8; }
+.wotd-card { overflow:hidden; }
+.profile-nav a { transition:background .16s,color .16s,transform .16s; }
+.profile-nav a:hover { transform:translateY(-1px); }
+.profile-save-status:empty { display:none; }
+.player-profile-form textarea { min-height:100px;resize:vertical; }
+.profile-avatar-options { border-radius:20px; }
+.profile-avatar-options button,.avatar-choice { transition:transform .16s,box-shadow .16s,border-color .16s; }
+.profile-avatar-options button:hover,.avatar-choice:hover { transform:translateY(-2px); }
+.profile-posts,.community-wall { overflow:hidden; }
+@media(max-width:700px) {
+ .view .intro { margin-bottom:20px; }
+ .view .intro .lead { font-size:15px; }
+ .challenge-grid { grid-template-columns:minmax(0,1fr); }
+ .challenge-card { padding:18px; }
+ .challenge-top { align-items:center; }
+ .challenge-card h2 { font-size:21px; }
+ .challenge-action { width:100%; }
+ #stories-view #stories-content,#words-view #words-body { overflow-wrap:anywhere; }
+}
+@media(prefers-reduced-motion:reduce) {
+ .view button,.view .btn,.challenge-progress .bar i,.profile-nav a,.profile-avatar-options button,.avatar-choice { transition:none; }
+ .view button:hover,.view .btn:hover,.profile-nav a:hover,.profile-avatar-options button:hover,.avatar-choice:hover { transform:none; }
+}
