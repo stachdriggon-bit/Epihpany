@@ -316,5 +316,113 @@ const SPOT_QUESTIONS = [
   {"id":"spot-c2-03","level":"C2","text":"Were he to have knew the truth, he might have acted differently.","wrongIndex":4,"fix":"known","why_en":"The perfect infinitive is “to have + past participle”.","why_ar":"صيغة المصدر التام هي to have متبوعة بالتصريف الثالث."},
   {"id":"spot-c2-04","level":"C2","text":"Not only the report was inaccurate, but it was also incomplete.","wrongIndex":3,"fix":"was the report","why_en":"When “not only” opens a clause, subject–auxiliary inversion is required.","why_ar":"عندما تبدأ الجملة بـ Not only نستخدم القلب بين الفعل المساعد والفاعل."},
   {"id":"spot-c2-05","level":"C2","text":"The policy may have unforeseen implications, not least because it is predicated in assumptions.","wrongIndex":12,"fix":"on","why_en":"The standard collocation is “predicated on”, meaning based on.","why_ar":"التركيب الصحيح predicated on بمعنى قائم على."},
-  {"id":"spot-c2-06","level":"C2","text":"Rarely the committee reached consensus so quickly.","wrongIndex":1,"fix":"has the committee","why_en":"A fronted negative adverb such as rarely triggers inversion.","why_ar":"الظرف السلبي Rarely في بداية الجملة يستلزم القلب."}
+  {"id":"spot-c2-06","level":"C2","text":"Rarely the committee reached consensus so quickly.","wrongIndex":1,"fix":"has the committee","why_en":"A fronted negative adverb such as rarely triggers inversion.","why_ar":"الظرف السلبي Rarely في بداية الجملة يستلزم القلب."},
+  {
+    "id": "spot-a1-13",
+    "level": "A1",
+    "text": "She can sings very well.",
+    "wrongIndex": 2,
+    "fix": "sing",
+    "why_en": "A modal verb such as can is followed by the base form.",
+    "why_ar": "بعد الفعل الناقص can نستخدم الفعل بصيغته الأساسية."
+  },
+  {
+    "id": "spot-a1-14",
+    "level": "A1",
+    "text": "Those is my shoes.",
+    "wrongIndex": 1,
+    "fix": "are",
+    "why_en": "Use are with the plural demonstrative those.",
+    "why_ar": "نستخدم are مع اسم الإشارة للجمع those."
+  },
+  {
+    "id": "spot-a2-13",
+    "level": "A2",
+    "text": "I am interested on science.",
+    "wrongIndex": 3,
+    "fix": "in",
+    "why_en": "The standard collocation is interested in.",
+    "why_ar": "التركيب الصحيح هو interested in."
+  },
+  {
+    "id": "spot-a2-14",
+    "level": "A2",
+    "text": "He has visited Paris last year.",
+    "wrongIndex": 2,
+    "fix": "visited",
+    "why_en": "A finished past-time expression such as last year normally takes the past simple.",
+    "why_ar": "مع زمن ماضٍ منتهٍ مثل last year نستخدم الماضي البسيط عادةً."
+  },
+  {
+    "id": "spot-b1-13",
+    "level": "B1",
+    "text": "If I knew the answer, I will tell you.",
+    "wrongIndex": 5,
+    "fix": "would",
+    "why_en": "The second conditional uses would in the result clause.",
+    "why_ar": "في الشرط من النوع الثاني نستخدم would في جملة النتيجة."
+  },
+  {
+    "id": "spot-b1-14",
+    "level": "B1",
+    "text": "The film was bored, so we left.",
+    "wrongIndex": 3,
+    "fix": "boring",
+    "why_en": "Boring describes the thing that causes boredom; bored describes a person's feeling.",
+    "why_ar": "Boring تصف الشيء المسبب للملل، أما bored فتصف شعور الشخص."
+  },
+  {
+    "id": "spot-b2-13",
+    "level": "B2",
+    "text": "Despite he was exhausted, he continued working.",
+    "wrongIndex": 1,
+    "fix": "Although",
+    "why_en": "Use although before a full clause; despite is followed by a noun or -ing form.",
+    "why_ar": "نستخدم although قبل جملة كاملة، أما despite فيأتي بعدها اسم أو فعل ing."
+  },
+  {
+    "id": "spot-b2-14",
+    "level": "B2",
+    "text": "She speaks English as if she is a native speaker, but she only started last year.",
+    "wrongIndex": 6,
+    "fix": "were",
+    "why_en": "For an unreal comparison, as if + were is common in formal English.",
+    "why_ar": "للتشبيه غير الحقيقي، يُستخدم were بعد as if في الإنجليزية الرسمية."
+  },
+  {
+    "id": "spot-c1-07",
+    "level": "C1",
+    "text": "Were the company to expands abroad, costs would rise.",
+    "wrongIndex": 4,
+    "fix": "expand",
+    "why_en": "After the infinitive marker to, use the base form of the verb.",
+    "why_ar": "بعد to في المصدر نستخدم الفعل بصيغته الأساسية."
+  },
+  {
+    "id": "spot-c1-08",
+    "level": "C1",
+    "text": "The report gives rise for serious concerns.",
+    "wrongIndex": 5,
+    "fix": "to",
+    "why_en": "The fixed phrase is “give rise to”.",
+    "why_ar": "التعبير الثابت هو give rise to."
+  },
+  {
+    "id": "spot-c2-07",
+    "level": "C2",
+    "text": "So intricate the mechanism was that few could explain it.",
+    "wrongIndex": 2,
+    "fix": "was the mechanism",
+    "why_en": "When “so + adjective” is fronted, use subject–auxiliary inversion.",
+    "why_ar": "عند تقديم so + صفة نستخدم القلب بين الفاعل والفعل المساعد."
+  },
+  {
+    "id": "spot-c2-08",
+    "level": "C2",
+    "text": "The argument rests on a premise whose validity has yet to be substantiate.",
+    "wrongIndex": 12,
+    "fix": "substantiated",
+    "why_en": "After “has yet to be”, use the past participle in the passive.",
+    "why_ar": "بعد has yet to be نستخدم التصريف الثالث للمبني للمجهول."
+  }
 ];
