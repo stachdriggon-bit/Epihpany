@@ -456,7 +456,7 @@ const SPOT_QUESTIONS = [
     "level": "A2",
     "text": "This bag is more cheaper than that one.",
     "wrongIndex": 3,
-    "fix": "cheaper",
+    "fix": "remove more",
     "why_en": "Do not use more with a comparative adjective already ending in -er.",
     "why_ar": "لا نستخدم more مع صفة مقارنة تنتهي أصلًا بـ er."
   },
@@ -472,7 +472,7 @@ const SPOT_QUESTIONS = [
   {
     "id": "spot-b1-16",
     "level": "B1",
-    "text": "She asked me where was I going.",
+    "text": "She asked me where was going.",
     "wrongIndex": 4,
     "fix": "I was",
     "why_en": "Reported questions use statement word order: subject before verb.",
@@ -490,18 +490,18 @@ const SPOT_QUESTIONS = [
   {
     "id": "spot-b2-16",
     "level": "B2",
-    "text": "The manager insisted on that we leave early.",
-    "wrongIndex": 3,
-    "fix": "insisted that",
+    "text": "The manager insisted on us leave early.",
+    "wrongIndex": 4,
+    "fix": "our leaving",
     "why_en": "Use insist that + clause, or insist on + noun/-ing form.",
     "why_ar": "نستخدم insist that مع جملة، أو insist on مع اسم أو فعل ing."
   },
   {
     "id": "spot-c1-09",
     "level": "C1",
-    "text": "Not until the data was analysed the pattern became clear.",
-    "wrongIndex": 6,
-    "fix": "did the pattern become",
+    "text": "Not until the data was analysed did the pattern became clear.",
+    "wrongIndex": 8,
+    "fix": "become",
     "why_en": "A fronted not until phrase triggers inversion in the main clause.",
     "why_ar": "عند بدء الجملة بـ Not until يحدث القلب في الجملة الرئيسية."
   },
@@ -517,9 +517,9 @@ const SPOT_QUESTIONS = [
   {
     "id": "spot-c2-09",
     "level": "C2",
-    "text": "Under no circumstances the files should be shared.",
-    "wrongIndex": 3,
-    "fix": "should the files",
+    "text": "Under no circumstances should the files shared.",
+    "wrongIndex": 6,
+    "fix": "be shared",
     "why_en": "A negative phrase at the beginning requires subject–auxiliary inversion.",
     "why_ar": "العبارة السلبية في البداية تستلزم القلب بين الفعل المساعد والفاعل."
   },
@@ -527,7 +527,7 @@ const SPOT_QUESTIONS = [
     "id": "spot-c2-10",
     "level": "C2",
     "text": "The proposal is contingent of external approval.",
-    "wrongIndex": 5,
+    "wrongIndex": 4,
     "fix": "on",
     "why_en": "The standard collocation is contingent on.",
     "why_ar": "التركيب الصحيح هو contingent on."
