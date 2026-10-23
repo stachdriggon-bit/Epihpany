@@ -2052,6 +2052,9 @@
     const incoming = progress && typeof progress === 'object' && !Array.isArray(progress) ? progress : {};
     state = {...defaults(), ...incoming};
     if (!LEVELS.some(level => level.id === state.assessedLevel)) { state.assessedLevel = 'A1'; state.placementDone = false; state.placementResult = null; }
+    if (!Number.isFinite(state.xpAtLevelStart)) state.xpAtLevelStart = Number(state.xp) || 0;
+    if (!Array.isArray(state.promotionHistory)) state.promotionHistory = [];
+    if (!state.promotionAttempts || typeof state.promotionAttempts !== 'object' || Array.isArray(state.promotionAttempts)) state.promotionAttempts = {};
     if (!Array.isArray(state.words)) state.words = [];
     if (!Array.isArray(state.review)) state.review = [];
     if (!Array.isArray(state.completed)) state.completed = [];
