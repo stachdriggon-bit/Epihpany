@@ -510,5 +510,149 @@ const TYPING_QUESTIONS = [
   {"id":"type-c2-03","level":"C2","prompt":"So compelling ___ the evidence that the panel reopened the case.","hint":"be","accept":["was"],"why_en":"With “so + adjective” fronted for emphasis, invert the auxiliary and subject.","why_ar":"عند تقديم so + صفة للتوكيد نستخدم القلب بين الفعل والفاعل.","answer":"was"},
   {"id":"type-c2-04","level":"C2","prompt":"The claim is not borne ___ by the available evidence.","hint":"out","accept":["out"],"why_en":"The phrase “borne out” means supported or confirmed by evidence.","why_ar":"التعبير borne out يعني أن الأدلة تؤيد الادعاء.","answer":"out"},
   {"id":"type-c2-05","level":"C2","prompt":"Much ___ I admire her work, I disagree with this conclusion.","hint":"as","accept":["as"],"why_en":"“Much as” introduces a concessive clause meaning although.","why_ar":"يأتي Much as لبدء جملة تنازلية بمعنى رغم أن.","answer":"as"},
-  {"id":"type-c2-06","level":"C2","prompt":"The witness's account was internally ___, with no contradictions.","hint":"consistent","accept":["consistent"],"why_en":"Consistent means coherent and free from contradiction.","why_ar":"Consistent تعني متماسكًا وخاليًا من التناقض.","answer":"consistent"}
+  {"id":"type-c2-06","level":"C2","prompt":"The witness's account was internally ___, with no contradictions.","hint":"consistent","accept":["consistent"],"why_en":"Consistent means coherent and free from contradiction.","why_ar":"Consistent تعني متماسكًا وخاليًا من التناقض.","answer":"consistent"},
+  {
+    "id": "type-a1-15",
+    "level": "A1",
+    "prompt": "She can ___ (swim) very well.",
+    "hint": "modal verb",
+    "accept": [
+      "swim"
+    ],
+    "why_en": "A modal verb is followed by the base form.",
+    "why_ar": "يأتي بعد الفعل الناقص الفعل بصيغته الأساسية.",
+    "answer": "swim"
+  },
+  {
+    "id": "type-a1-16",
+    "level": "A1",
+    "prompt": "Those ___ my shoes.",
+    "hint": "be",
+    "accept": [
+      "are"
+    ],
+    "why_en": "Use are with the plural subject those.",
+    "why_ar": "نستخدم are مع الفاعل الجمع those.",
+    "answer": "are"
+  },
+  {
+    "id": "type-a2-15",
+    "level": "A2",
+    "prompt": "I'm interested ___ learning French.",
+    "hint": "preposition",
+    "accept": [
+      "in"
+    ],
+    "why_en": "The standard phrase is interested in.",
+    "why_ar": "التركيب الصحيح interested in.",
+    "answer": "in"
+  },
+  {
+    "id": "type-a2-16",
+    "level": "A2",
+    "prompt": "We ___ (see) that film last week.",
+    "hint": "past simple",
+    "accept": [
+      "saw"
+    ],
+    "why_en": "A finished time expression like last week calls for the past simple.",
+    "why_ar": "مع last week نستخدم الماضي البسيط.",
+    "answer": "saw"
+  },
+  {
+    "id": "type-b1-15",
+    "level": "B1",
+    "prompt": "If I had known, I ___ (come).",
+    "hint": "third conditional",
+    "accept": [
+      "would have come"
+    ],
+    "why_en": "The third conditional result uses would have + past participle.",
+    "why_ar": "تستخدم نتيجة الشرط الثالث would have مع التصريف الثالث.",
+    "answer": "would have come"
+  },
+  {
+    "id": "type-b1-16",
+    "level": "B1",
+    "prompt": "The lecture was so ___ that I nearly fell asleep. (bore)",
+    "hint": "adjective",
+    "accept": [
+      "boring"
+    ],
+    "why_en": "Use -ing to describe something that causes a feeling.",
+    "why_ar": "نستخدم ing لوصف الشيء الذي يسبب الشعور.",
+    "answer": "boring"
+  },
+  {
+    "id": "type-b2-15",
+    "level": "B2",
+    "prompt": "Despite ___ exhausted, she finished the report. (be)",
+    "hint": "-ing form",
+    "accept": [
+      "being"
+    ],
+    "why_en": "Despite can be followed by a noun or an -ing form.",
+    "why_ar": "يمكن أن يأتي بعد despite اسم أو فعل منتهٍ بـ ing.",
+    "answer": "being"
+  },
+  {
+    "id": "type-b2-16",
+    "level": "B2",
+    "prompt": "The new evidence casts doubt ___ the original theory.",
+    "hint": "preposition",
+    "accept": [
+      "on"
+    ],
+    "why_en": "The fixed collocation is “cast doubt on”.",
+    "why_ar": "التركيب الثابت هو cast doubt on.",
+    "answer": "on"
+  },
+  {
+    "id": "type-c1-07",
+    "level": "C1",
+    "prompt": "Were the plan ___ properly, it might succeed. (implement)",
+    "hint": "passive infinitive",
+    "accept": [
+      "to be implemented"
+    ],
+    "why_en": "Hypothetical inversion can use were + subject + to be + past participle.",
+    "why_ar": "يمكن استخدام were مع الفاعل ثم to be والتصريف الثالث في الافتراض.",
+    "answer": "to be implemented"
+  },
+  {
+    "id": "type-c1-08",
+    "level": "C1",
+    "prompt": "The decision gave rise ___ considerable debate.",
+    "hint": "preposition",
+    "accept": [
+      "to"
+    ],
+    "why_en": "The standard phrase is “give rise to”.",
+    "why_ar": "التعبير الصحيح give rise to.",
+    "answer": "to"
+  },
+  {
+    "id": "type-c2-07",
+    "level": "C2",
+    "prompt": "So complex ___ the evidence that no firm conclusion could be drawn.",
+    "hint": "be",
+    "accept": [
+      "was"
+    ],
+    "why_en": "Fronting “so + adjective” for emphasis triggers inversion.",
+    "why_ar": "تقديم so + صفة للتوكيد يستلزم القلب.",
+    "answer": "was"
+  },
+  {
+    "id": "type-c2-08",
+    "level": "C2",
+    "prompt": "The hypothesis remains to be ___ independently. (test)",
+    "hint": "past participle",
+    "accept": [
+      "tested"
+    ],
+    "why_en": "The passive infinitive uses be + past participle.",
+    "why_ar": "يتكون المصدر المبني للمجهول من be والتصريف الثالث.",
+    "answer": "tested"
+  }
 ];
