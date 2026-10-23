@@ -700,7 +700,7 @@ body[data-theme="dark"] .trap-explanation{background:#252B3C;border-color:var(--
 @media(max-width:760px){#world-canvas{height:clamp(360px,54vh,600px);min-height:360px}.world-stage{margin-inline:-4px;width:calc(100% + 8px)}.world-helpbar{flex-wrap:wrap}.world-dialogue{font-size:13px}}
 
 /* World region hub */
-.world-region-hub{width:min(980px,100%);margin:0 auto;padding:clamp(20px,4vw,42px);border-radius:28px;background:var(--surface,#fff);color:var(--text,#20232b);box-shadow:0 18px 60px rgba(30,35,50,.10)}
+.world-region-hub{width:min(980px,100%);max-height:100%;flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;box-sizing:border-box;margin:0 auto;padding:clamp(20px,4vw,42px);border-radius:28px;background:var(--surface,#fff);color:var(--text,#20232b);box-shadow:0 18px 60px rgba(30,35,50,.10)}
 .world-region-hub>h1{font-size:clamp(28px,4vw,42px);margin:8px 0 10px;letter-spacing:-.035em}
 .world-region-hub>p:not(.world-kicker){color:var(--muted,#687080);max-width:620px;line-height:1.6}
 .world-region-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin:24px 0}
