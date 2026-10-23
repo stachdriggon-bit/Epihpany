@@ -228,12 +228,33 @@
         toast('Could not play this pronunciation. Check your phone/browser voice settings and try again.');
       }
     };
-    try {
-      if (synth.paused) synth.resume();
-      synth.speak(utterance);
-    } catch {
-      toast('Could not play this pronunciation. Try again.');
-    }
+    let started = false, voiceWait = null;
+    const startSpeaking = () => {
+      if (started || request !== speechRequest) return;
+      const latest = refreshSpeechVoices().filter(v => /^en(?:-|$)/i.test(v.lang));
+      if (!utterance.voice && latest.length) {
+        const best = latest.find(v => /google us english|microsoft.*(aria|jenny|guy|ava)|samantha|ava premium|daniel enhanced|natural/i.test(v.name))
+          || latest.find(v => /^en-US$/i.test(v.lang) && v.localService)
+          || latest.find(v => /^en-US$/i.test(v.lang))
+          || latest.find(v => /^en-GB$/i.test(v.lang))
+          || latest[0];
+        if (best) { utterance.voice = best; utterance.lang = best.lang || 'en-US'; }
+      }
+      started = true;
+      if (voiceWait) clearTimeout(voiceWait);
+      synth.removeEventListener?.('voiceschanged', onVoicesReady);
+      try {
+        if (synth.paused) synth.resume();
+        synth.speak(utterance);
+      } catch {
+        toast('Could not play this pronunciation. Try again.');
+      }
+    };
+    const onVoicesReady = () => { if (refreshSpeechVoices().length) startSpeaking(); };
+    if (!preferred && !speechVoices.length) {
+      synth.addEventListener?.('voiceschanged', onVoicesReady);
+      voiceWait = setTimeout(startSpeaking, 240);
+    } else startSpeaking();
   }
   function wordParts(raw, fallback) {
     if (Array.isArray(raw)) return {word:String(raw[0]||''),meaning:String(raw[1]||fallback||'Review this word in context.'),level:String(raw[2]||currentLevel().id)};
