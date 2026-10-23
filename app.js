@@ -1245,6 +1245,8 @@
     }
     templateMatch=source.match(/^Focus:\s*(.+?)\.?$/i);
     if(templateMatch)return {text:'ركّز على كلمة «'+templateMatch[1]+'».',exact:true};
+    templateMatch=source.match(/^Hint:\s*(.+?)\.?$/i);
+    if(templateMatch)return {text:'تلميح: «'+templateMatch[1]+'».',exact:true};
     templateMatch=source.match(/^What is the opposite of\s+[“"']?(.+?)[”"']?\??$/i);
     if(templateMatch)return {text:'ما عكس «'+templateMatch[1].replace(/[“”"']/g,'')+'»؟',exact:true};
     templateMatch=source.match(/^The opposite of\s+[“"']?(.+?)[”"']?\s+is\s+_{2,}\.?$/i);
@@ -1260,11 +1262,15 @@
     m=source.match(/^Which word means\s+[“"']?(.+?)[”"']?\??$/i);
     if(m)return {text:'أي كلمة تعني «'+translateKnownPhrase(m[1].replace(/[“”"']/g,''))+'»؟',exact:true};
     const translated=translateKnownPhrase(source);
+    const unavailable={text:'لم تتوفر ترجمة موثوقة لهذا النص بعد. يمكنك متابعة النص بالإنجليزية أو تجربة سؤال آخر.',exact:false,unavailable:true};
     const untranslated=(translated.match(/[A-Za-z]+(?:['’-][A-Za-z]+)*/g)||[]);
-    if(untranslated.length)return {text:'لم تتوفر ترجمة موثوقة لهذا النص بعد. يمكنك متابعة النص بالإنجليزية أو تجربة سؤال آخر.',exact:false,unavailable:true};
+    if(untranslated.length)return unavailable;
     const tokens=source.match(/[A-Za-z]+(?:['’-][A-Za-z]+)*/g)||[];
     const unknown=tokens.filter(token=>!AR_TRANSLATION_WORDS[token.toLowerCase()]&&!(typeof STORY_WORDS_AR!=='undefined'&&STORY_WORDS_AR[token.toLowerCase()])&&!(typeof W_AR!=='undefined'&&W_AR[token.toLowerCase()]));
-    if(tokens.length>0&&unknown.length/tokens.length>0.3)return {text:'لم تتوفر ترجمة موثوقة لهذا النص بعد. يمكنك متابعة النص بالإنجليزية أو تجربة سؤال آخر.',exact:false,unavailable:true};
+    if(tokens.length>0&&unknown.length/tokens.length>0.3)return unavailable;
+    // Word-by-word substitution is not a reliable sentence translation. Keep long,
+    // unrecognised sentences in English rather than showing misleading Arabic.
+    if(tokens.length>3)return unavailable;
     return {text:translated,exact:false};
   }
   let translationControlId=0;
