@@ -219,6 +219,8 @@
   function renderPlayerProfile(profile) {
     const name = profile && profile.display_name || (currentUser && (currentUser.user_metadata && (currentUser.user_metadata.full_name || currentUser.user_metadata.name)) ) || (currentUser && currentUser.email ? currentUser.email.split('@')[0] : 'English learner');
     const bio = profile && profile.bio || 'Learning English one day at a time ✨';
+    const privacy = $('player-profile-private');
+    if (privacy) privacy.checked = profile && typeof profile.is_private === 'boolean' ? profile.is_private : true;
     selectedAvatar = profile && profile.avatar_emoji || '🦊';
     selectedAvatarColor = profile && /^#[0-9a-f]{6}$/i.test(profile.avatar_color || '') ? profile.avatar_color : '#FFE08A';
     uploadedAvatarUrl = profile && profile.avatar_url || '';
@@ -235,7 +237,7 @@
   async function loadPlayerProfile() {
     if (!client || !currentUser) return;
     try {
-      const {data, error} = await client.from('player_profiles').select('display_name,bio,avatar_url,avatar_emoji,avatar_color').eq('user_id', currentUser.id).maybeSingle();
+      const {data, error} = await client.from('player_profiles').select('display_name,bio,avatar_url,avatar_emoji,avatar_color,is_private').eq('user_id', currentUser.id).maybeSingle();
       if (error) throw error;
       renderPlayerProfile(data || {});
       profileStatus(data ? 'Your player profile is loaded.' : 'Choose a name and avatar, then save your profile.', 'success');
@@ -275,10 +277,15 @@
       return;
     }
     const userIds = [...new Set(posts.map(post => post.user_id))];
-    const {data:profiles, error:profileError} = await client.from('player_profiles').select('user_id,display_name,avatar_url,avatar_emoji,avatar_color').in('user_id',userIds);
+    const {data:profiles, error:profileError} = await client.from('player_profiles').select('user_id,display_name,avatar_url,avatar_emoji,avatar_color,is_private').in('user_id',userIds);
     if (profileError) throw profileError;
     const byUser = new Map((profiles || []).map(profile => [profile.user_id,profile]));
-    list.innerHTML = posts.map(post => {
+    const visiblePosts = posts.filter(post => byUser.has(post.user_id) && byUser.get(post.user_id).is_private === false);
+    if (!visiblePosts.length) {
+      list.innerHTML = '<div class="profile-empty-posts">No public posts yet. Private players stay private ✨</div>';
+      return;
+    }
+    list.innerHTML = visiblePosts.map(post => {
       const profile = byUser.get(post.user_id) || {};
       const name = profile.display_name || 'English learner';
       const date = post.created_at ? new Date(post.created_at).toLocaleDateString(undefined,{year:'numeric',month:'short',day:'numeric'}) : '';
@@ -304,13 +311,14 @@
     if (saveButton) saveButton.disabled = true;
     profileStatus('Saving your profile…', 'loading');
     try {
-      const payload = {user_id:currentUser.id,display_name:displayName,bio,avatar_url:uploadedAvatarUrl || null,avatar_emoji:selectedAvatar,avatar_color:selectedAvatarColor,updated_at:new Date().toISOString()};
+      const privacy = $('player-profile-private');
+      const payload = {user_id:currentUser.id,display_name:displayName,bio,avatar_url:uploadedAvatarUrl || null,avatar_emoji:selectedAvatar,avatar_color:selectedAvatarColor,is_private:privacy ? privacy.checked : true,updated_at:new Date().toISOString()};
       const {error} = await client.from('player_profiles').upsert(payload,{onConflict:'user_id'});
       if (error) throw error;
       if ($('player-profile-display-name')) $('player-profile-display-name').textContent = displayName;
       if ($('player-profile-bio-preview')) $('player-profile-bio-preview').textContent = bio || 'Learning English one day at a time ✨';
       renderPlayerAvatar();
-      profileStatus('Profile saved! Your identity is ready ✨', 'success');
+      profileStatus((privacy && privacy.checked ? 'Profile saved as private. Only you can see your profile and posts.' : 'Profile saved as public. Other learners can see your profile and shared posts.') + ' ✨', 'success');
     } catch (error) {
       console.error('Epiphany profile save failed:', error);
       profileStatus('Could not save the profile. Check that the Supabase profile setup SQL has been run.', 'error');
