@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#F5F6FC">
+  <title>Epiphany · Natural Voice Test</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body{min-height:100vh;background:var(--bg,#f5f6fc);color:var(--ink,#20233a)}
+    .voice-test{width:min(720px,calc(100% - 32px));margin:40px auto;padding:clamp(20px,4vw,36px);background:var(--card,#fff);border:1px solid var(--line,#e7e7ef);border-radius:24px;box-shadow:0 16px 50px #25264a12}
+    .voice-test h1{margin:.25rem 0 .6rem;font-size:clamp(1.8rem,5vw,2.6rem)}
+    .voice-test .lead{line-height:1.65;color:var(--muted,#62677e)}
+    .voice-test label{display:block;font-weight:700;margin:20px 0 8px}
+    .voice-test select{width:100%;padding:13px;border:1px solid var(--line,#ddd);border-radius:12px;background:var(--card,#fff);color:inherit;font:inherit}
+    .sample-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin-top:16px}
+    .sample-grid button{display:flex;justify-content:space-between;align-items:center;gap:12px;text-align:left;padding:14px;border:1px solid var(--line,#e5e5ef);border-radius:14px;background:var(--card,#fff);color:inherit;font:inherit;font-weight:650;cursor:pointer}
+    .sample-grid button:hover{border-color:#8a83ed;background:#f5f3ff}
+    .sample-grid button:disabled{opacity:.6;cursor:wait}
+    .sample-grid span{color:#7669e8}
+    #status{margin:18px 0 0;min-height:1.5em;font-size:.94rem;color:var(--muted,#62677e)}
+    .note{margin-top:22px;padding:14px;border-radius:14px;background:#f2f0ff;color:#49416e;line-height:1.6;font-size:.92rem}
+    .back-link{display:inline-block;margin-top:18px;color:inherit}
+  </style>
+</head>
+<body>
+  <main class="voice-test">
+    <p class="kicker">EPIPHANY · AUDIO LAB</p>
+    <h1>Try a more natural English voice</h1>
+    <p class="lead">Listen to the same short words and sentence in two voices. Try this page on your phone and compare the pronunciation before we change the game’s reader.</p>
+    <label for="voice">Choose a voice</label>
+    <select id="voice">
+      <option value="female">Rachel · American English · female</option>
+      <option value="male">George · British English · male</option>
+    </select>
+    <div class="sample-grid">
+      <button type="button" data-sample="hello">Hello! <span>▶</span></button>
+      <button type="button" data-sample="comfortable">comfortable <span>▶</span></button>
+      <button type="button" data-sample="thought">thought <span>▶</span></button>
+      <button type="button" data-sample="through">through <span>▶</span></button>
+      <button type="button" data-sample="repeat">Could you repeat that, please? <span>▶</span></button>
+    </div>
+    <p id="status" role="status" aria-live="polite">Choose a voice, then tap any sample. The first play needs an internet connection.</p>
+    <div class="note">This is a separate test page. It does not change your games, saved progress, points, or current reader. Audio generation uses your ElevenLabs free quota.</div>
+    <a class="back-link" href="./">← Back to Epiphany</a>
+  </main>
+  <script>
+    (() => {
+      const voice = document.getElementById('voice');
+      const status = document.getElementById('status');
+      const buttons = [...document.querySelectorAll('[data-sample]')];
+      let player = null, currentUrl = null;
+      buttons.forEach(button => button.addEventListener('click', async () => {
+        buttons.forEach(b => b.disabled = true);
+        status.textContent = 'Generating the sample…';
+        try {
+          if (player) { player.pause(); player = null; }
+          if (currentUrl) { URL.revokeObjectURL(currentUrl); currentUrl = null; }
+          const response = await fetch('/api/tts-test', {
+            method: 'POST',
+            headers: {'Content-Type':'application/json'},
+            body: JSON.stringify({sample: button.dataset.sample, voice: voice.value})
+          });
+          if (!response.ok) {
+            let message = 'Could not generate the voice sample.';
+            try { message = (await response.json()).error || message; } catch {}
+            throw new Error(message);
+          }
+          const blob = await response.blob();
+          currentUrl = URL.createObjectURL(blob);
+          player = new Audio(currentUrl);
+          await player.play();
+          status.textContent = 'Playing sample. Change voice to compare the same phrase.';
+          player.onended = () => { status.textContent = 'Sample finished. Choose another word or voice.'; };
+        } catch (error) {
+          status.textContent = error.message || 'Voice playback failed. Please try again.';
+        } finally {
+          buttons.forEach(b => b.disabled = false);
+        }
+      }));
+    })();
+  </script>
+</body>
+</html>
