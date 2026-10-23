@@ -419,6 +419,7 @@
   }
 
   function renderAll() { renderHeader(); renderHome(); renderStories(); renderWords(); renderTrophies(); syncSettings(); }
+  document.addEventListener('epiphany-auth-changed', () => { renderAll(); if (WORLD && WORLD.mode === 'regions') worldShowRegions(); });
 
 
   const STORY_WORDS={
