@@ -13,8 +13,8 @@ const MISTAKE_QUESTIONS = [
       "be"
     ],
     "answer": 1,
-    "why_en": "English needs a form of be with adjectives and uses am/is/are according to the subject. Do not put be before an ordinary present-simple verb.",
-    "why_ar": "الإنجليزية تحتاج إلى فعل be مع الصفات، ويجب أن يتوافق am/is/are مع الفاعل. لا نضع be قبل الفعل العادي في المضارع البسيط.",
+    "why_en": "Use is with she when describing a quality.",
+    "why_ar": "نستخدم is مع she لوصف صفة؛ فنقول She is very tall.",
     "arabic_hint": "في العربية نقول «هي طويلة» دون فعل ظاهر بمعنى be، لكن الإنجليزية تحتاج إلى is."
   },
   {
@@ -30,8 +30,8 @@ const MISTAKE_QUESTIONS = [
       "be"
     ],
     "answer": 2,
-    "why_en": "English needs a form of be with adjectives and uses am/is/are according to the subject. Do not put be before an ordinary present-simple verb.",
-    "why_ar": "الإنجليزية تحتاج إلى فعل be مع الصفات، ويجب أن يتوافق am/is/are مع الفاعل. لا نضع be قبل الفعل العادي في المضارع البسيط.",
+    "why_en": "Use am with I before the adjective ready.",
+    "why_ar": "نستخدم am مع I قبل الصفة ready؛ فنقول I am ready.",
     "arabic_hint": "قد يترجم المتعلم الجملة مباشرة وينسى أن am تأتي مع I."
   },
   {
@@ -64,8 +64,8 @@ const MISTAKE_QUESTIONS = [
       "be"
     ],
     "answer": 2,
-    "why_en": "English needs a form of be with adjectives and uses am/is/are according to the subject. Do not put be before an ordinary present-simple verb.",
-    "why_ar": "الإنجليزية تحتاج إلى فعل be مع الصفات، ويجب أن يتوافق am/is/are مع الفاعل. لا نضع be قبل الفعل العادي في المضارع البسيط.",
+    "why_en": "Use are with they to describe where they are.",
+    "why_ar": "نستخدم are مع they لوصف مكانهم؛ فنقول They are at home.",
     "arabic_hint": "انتبه إلى توافق فعل be مع الضمير الجمع they."
   },
   {
@@ -149,8 +149,8 @@ const MISTAKE_QUESTIONS = [
       "to"
     ],
     "answer": 2,
-    "why_en": "English prepositions are often fixed by the time expression, place, or idiom. Learn the whole phrase rather than translating the Arabic preposition literally.",
-    "why_ar": "حروف الجر الإنجليزية ترتبط غالبًا بنوع الوقت أو المكان أو التعبير الثابت. تعلّم العبارة كاملة بدل ترجمة حرف الجر العربي حرفيًا.",
+    "why_en": "Use in with months: in May.",
+    "why_ar": "نستخدم in مع أسماء الأشهر: in May.",
     "arabic_hint": "في العربية نقول «في مايو»، لكن الإنجليزية تستخدم in مع الأشهر."
   },
   {
@@ -166,8 +166,8 @@ const MISTAKE_QUESTIONS = [
       "by"
     ],
     "answer": 2,
-    "why_en": "English prepositions are often fixed by the time expression, place, or idiom. Learn the whole phrase rather than translating the Arabic preposition literally.",
-    "why_ar": "حروف الجر الإنجليزية ترتبط غالبًا بنوع الوقت أو المكان أو التعبير الثابت. تعلّم العبارة كاملة بدل ترجمة حرف الجر العربي حرفيًا.",
+    "why_en": "Use at with an exact clock time: at 8:30.",
+    "why_ar": "نستخدم at مع وقت الساعة المحدد: at 8:30.",
     "arabic_hint": "مع وقت محدد على الساعة نستخدم at."
   },
   {
@@ -183,8 +183,8 @@ const MISTAKE_QUESTIONS = [
       "for"
     ],
     "answer": 2,
-    "why_en": "English prepositions are often fixed by the time expression, place, or idiom. Learn the whole phrase rather than translating the Arabic preposition literally.",
-    "why_ar": "حروف الجر الإنجليزية ترتبط غالبًا بنوع الوقت أو المكان أو التعبير الثابت. تعلّم العبارة كاملة بدل ترجمة حرف الجر العربي حرفيًا.",
+    "why_en": "Use on with days of the week: on Monday.",
+    "why_ar": "نستخدم on مع أيام الأسبوع: on Monday.",
     "arabic_hint": "لا تترجم حرف الجر العربي «في» دائمًا إلى in؛ مع الأيام نستخدم on."
   },
   {
@@ -200,8 +200,8 @@ const MISTAKE_QUESTIONS = [
       "to"
     ],
     "answer": 1,
-    "why_en": "English prepositions are often fixed by the time expression, place, or idiom. Learn the whole phrase rather than translating the Arabic preposition literally.",
-    "why_ar": "حروف الجر الإنجليزية ترتبط غالبًا بنوع الوقت أو المكان أو التعبير الثابت. تعلّم العبارة كاملة بدل ترجمة حرف الجر العربي حرفيًا.",
+    "why_en": "Use in with the name of a city: in Algiers.",
+    "why_ar": "نستخدم in مع اسم المدينة: in Algiers.",
     "arabic_hint": "نستخدم in مع المدن والدول، وليس at."
   },
   {
@@ -285,8 +285,8 @@ const MISTAKE_QUESTIONS = [
       "small new leather"
     ],
     "answer": 1,
-    "why_en": "English adjectives usually follow a familiar order before the noun, such as opinion, size or age, then color, origin, or material.",
-    "why_ar": "للصفات في الإنجليزية ترتيب مألوف قبل الاسم، مثل الرأي ثم الحجم أو العمر ثم اللون أو الأصل أو المادة.",
+    "why_en": "The usual order is size before material: a small leather bag.",
+    "why_ar": "يأتي الحجم عادةً قبل المادة: a small leather bag.",
     "arabic_hint": "في الإنجليزية يأتي الحجم عادةً قبل المادة: small leather bag."
   },
   {
@@ -302,8 +302,8 @@ const MISTAKE_QUESTIONS = [
       "red car fast"
     ],
     "answer": 1,
-    "why_en": "English adjectives usually follow a familiar order before the noun, such as opinion, size or age, then color, origin, or material.",
-    "why_ar": "للصفات في الإنجليزية ترتيب مألوف قبل الاسم، مثل الرأي ثم الحجم أو العمر ثم اللون أو الأصل أو المادة.",
+    "why_en": "The speed adjective comes before the color: a fast red car.",
+    "why_ar": "تأتي صفة السرعة قبل اللون: a fast red car.",
     "arabic_hint": "غالبًا تأتي صفة الجودة قبل اللون: fast red car."
   },
   {
@@ -319,8 +319,8 @@ const MISTAKE_QUESTIONS = [
       "wooden old beautiful"
     ],
     "answer": 2,
-    "why_en": "English adjectives usually follow a familiar order before the noun, such as opinion, size or age, then color, origin, or material.",
-    "why_ar": "للصفات في الإنجليزية ترتيب مألوف قبل الاسم، مثل الرأي ثم الحجم أو العمر ثم اللون أو الأصل أو المادة.",
+    "why_en": "Opinion usually comes before age and material: a beautiful old wooden house.",
+    "why_ar": "تأتي صفة الرأي عادةً قبل العمر والمادة: a beautiful old wooden house.",
     "arabic_hint": "الترتيب الشائع هنا: الرأي ثم العمر ثم المادة."
   },
   {
@@ -336,8 +336,8 @@ const MISTAKE_QUESTIONS = [
       "comfortable Italian modern"
     ],
     "answer": 0,
-    "why_en": "English adjectives usually follow a familiar order before the noun, such as opinion, size or age, then color, origin, or material.",
-    "why_ar": "للصفات في الإنجليزية ترتيب مألوف قبل الاسم، مثل الرأي ثم الحجم أو العمر ثم اللون أو الأصل أو المادة.",
+    "why_en": "The natural order here is opinion/quality, then age, then origin: a comfortable modern Italian hotel.",
+    "why_ar": "الترتيب الطبيعي هنا هو الصفة الدالة على الجودة، ثم الحداثة، ثم الأصل: a comfortable modern Italian hotel.",
     "arabic_hint": "الترتيب المعتاد: الجودة ثم النمط/العمر ثم الأصل."
   },
   {
@@ -421,8 +421,8 @@ const MISTAKE_QUESTIONS = [
       "finishing"
     ],
     "answer": 1,
-    "why_en": "Choose the tense by looking at the time expression and its link to the present. Finished past times usually take the past simple; experiences or unfinished periods often use the present perfect.",
-    "why_ar": "اختر الزمن بحسب مؤشر الوقت وعلاقته بالحاضر. الوقت الماضي المنتهي يأخذ غالبًا الماضي البسيط، أما التجارب أو الفترات المستمرة فقد تحتاج إلى المضارع التام.",
+    "why_en": "Yesterday names a finished past time, so use the past simple: finished.",
+    "why_ar": "تشير yesterday إلى وقت ماضٍ منتهٍ، لذا نستخدم الماضي البسيط: finished.",
     "arabic_hint": "Yesterday وقت منتهٍ، لذلك نستخدم الماضي البسيط finished."
   },
   {
@@ -438,8 +438,8 @@ const MISTAKE_QUESTIONS = [
       "have lived"
     ],
     "answer": 1,
-    "why_en": "Choose the tense by looking at the time expression and its link to the present. Finished past times usually take the past simple; experiences or unfinished periods often use the present perfect.",
-    "why_ar": "اختر الزمن بحسب مؤشر الوقت وعلاقته بالحاضر. الوقت الماضي المنتهي يأخذ غالبًا الماضي البسيط، أما التجارب أو الفترات المستمرة فقد تحتاج إلى المضارع التام.",
+    "why_en": "Since 2021 marks a period continuing to the present, so use has lived.",
+    "why_ar": "تشير since 2021 إلى مدة مستمرة حتى الحاضر، لذا نستخدم has lived.",
     "arabic_hint": "Since تشير إلى نقطة بداية، والحالة مستمرة حتى الآن؛ نستخدم has lived."
   },
   {
@@ -557,8 +557,8 @@ const MISTAKE_QUESTIONS = [
       "advise"
     ],
     "answer": 1,
-    "why_en": "Some English nouns are uncountable even when Arabic uses a plural form. They usually do not take a/an or a plural -s; use a unit phrase when counting them.",
-    "why_ar": "بعض الأسماء غير معدودة في الإنجليزية حتى لو كان مقابلها العربي جمعًا. لا نضيف إليها s ولا نستخدم a/an معها عادةً؛ استخدم وحدة قياس عند العد.",
+    "why_en": "Advice is uncountable; say some advice, not an advice or advices.",
+    "why_ar": "كلمة advice غير معدودة؛ نقول some advice، وليس an advice أو advices.",
     "arabic_hint": "Advice اسم غير معدود؛ نقول some advice أو a piece of advice."
   },
   {
@@ -574,8 +574,8 @@ const MISTAKE_QUESTIONS = [
       "inform"
     ],
     "answer": 1,
-    "why_en": "Some English nouns are uncountable even when Arabic uses a plural form. They usually do not take a/an or a plural -s; use a unit phrase when counting them.",
-    "why_ar": "بعض الأسماء غير معدودة في الإنجليزية حتى لو كان مقابلها العربي جمعًا. لا نضيف إليها s ولا نستخدم a/an معها عادةً؛ استخدم وحدة قياس عند العد.",
+    "why_en": "Information is uncountable; use information, not informations.",
+    "why_ar": "كلمة information غير معدودة؛ نستخدم information دون s.",
     "arabic_hint": "Information غير معدود، رغم أن العربية تقول «معلومات»."
   },
   {
@@ -591,8 +591,8 @@ const MISTAKE_QUESTIONS = [
       "three slice of bread"
     ],
     "answer": 2,
-    "why_en": "Some English nouns are uncountable even when Arabic uses a plural form. They usually do not take a/an or a plural -s; use a unit phrase when counting them.",
-    "why_ar": "بعض الأسماء غير معدودة في الإنجليزية حتى لو كان مقابلها العربي جمعًا. لا نضيف إليها s ولا نستخدم a/an معها عادةً؛ استخدم وحدة قياس عند العد.",
+    "why_en": "Bread is uncountable here, so count slices: three slices of bread.",
+    "why_ar": "كلمة bread غير معدودة هنا، لذا نعدّها بوحدات: three slices of bread.",
     "arabic_hint": "نعدّ bread بوحدات مثل slices أو loaves."
   },
   {
@@ -608,8 +608,8 @@ const MISTAKE_QUESTIONS = [
       "have"
     ],
     "answer": 1,
-    "why_en": "Some English nouns are uncountable even when Arabic uses a plural form. They usually do not take a/an or a plural -s; use a unit phrase when counting them.",
-    "why_ar": "بعض الأسماء غير معدودة في الإنجليزية حتى لو كان مقابلها العربي جمعًا. لا نضيف إليها s ولا نستخدم a/an معها عادةً؛ استخدم وحدة قياس عند العد.",
+    "why_en": "Equipment is an uncountable singular noun, so use is.",
+    "why_ar": "كلمة equipment اسم غير معدود ويعامل كمفرد، لذا نستخدم is.",
     "arabic_hint": "Equipment اسم غير معدود ويأخذ فعلًا مفردًا."
   },
   {
@@ -693,8 +693,8 @@ const MISTAKE_QUESTIONS = [
       "does agree"
     ],
     "answer": 1,
-    "why_en": "English verbs have their own patterns and prepositions. A direct translation from Arabic can sound unnatural, so learn the verb together with what follows it.",
-    "why_ar": "لكل فعل إنجليزي نمطه وحرف الجر الذي يأتي معه. الترجمة الحرفية من العربية قد تنتج جملة غير طبيعية، لذا تعلّم الفعل مع التركيب الذي يليه.",
+    "why_en": "Agree is a main verb; say I agree, not I am agree.",
+    "why_ar": "Agree فعل أساسي؛ نقول I agree وليس I am agree.",
     "arabic_hint": "في العربية نقول «أنا موافق»، لكن agree فعل، لذلك نقول I agree لا I am agree."
   },
   {
@@ -710,8 +710,8 @@ const MISTAKE_QUESTIONS = [
       "at"
     ],
     "answer": 2,
-    "why_en": "English verbs have their own patterns and prepositions. A direct translation from Arabic can sound unnatural, so learn the verb together with what follows it.",
-    "why_ar": "لكل فعل إنجليزي نمطه وحرف الجر الذي يأتي معه. الترجمة الحرفية من العربية قد تنتج جملة غير طبيعية، لذا تعلّم الفعل مع التركيب الذي يليه.",
+    "why_en": "The fixed expression is depend on.",
+    "why_ar": "التعبير الثابت هو depend on.",
     "arabic_hint": "التعبير الصحيح هو depend on، ولا يُختار حرف الجر بالترجمة الحرفية."
   },
   {
@@ -727,8 +727,8 @@ const MISTAKE_QUESTIONS = [
       "from"
     ],
     "answer": 1,
-    "why_en": "English verbs have their own patterns and prepositions. A direct translation from Arabic can sound unnatural, so learn the verb together with what follows it.",
-    "why_ar": "لكل فعل إنجليزي نمطه وحرف الجر الذي يأتي معه. الترجمة الحرفية من العربية قد تنتج جملة غير طبيعية، لذا تعلّم الفعل مع التركيب الذي يليه.",
+    "why_en": "The standard expression is married to someone.",
+    "why_ar": "التعبير الصحيح هو married to someone.",
     "arabic_hint": "التعبير الصحيح هو married to someone، رغم اختلاف حرف الجر عن العربية."
   },
   {
