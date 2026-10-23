@@ -940,12 +940,15 @@ body[data-theme="dark"] .level-note{border-color:var(--line)}
   font: 800 15px/1.4 var(--display, sans-serif);
 }
 .privacy-toggle {
-  display: grid;
-  grid-template-columns: 1px 42px minmax(0,1fr);
+  display: flex;
+  width: 100%;
+  min-width: 0;
   align-items: center;
-  gap: .8rem;
+  gap: .85rem;
   cursor: pointer;
 }
+.privacy-toggle .privacy-switch { flex: 0 0 42px; }
+.privacy-toggle-copy { flex: 1 1 auto; width: auto; }
 .privacy-toggle input {
   position: absolute;
   width: 1px;
@@ -983,7 +986,8 @@ body[data-theme="dark"] .level-note{border-color:var(--line)}
 body[data-theme="dark"] .privacy-setting { background: rgba(124,108,255,.12); }
 @media(max-width:420px) {
   .privacy-setting { padding: .9rem; }
-  .privacy-toggle { grid-template-columns: 1px 38px minmax(0,1fr); gap: .65rem; }
+  .privacy-toggle { gap: .65rem; }
+  .privacy-toggle .privacy-switch { flex-basis: 38px; }
   .privacy-switch { width: 38px; }
   .privacy-toggle input:checked + .privacy-switch::after { transform: translateX(13px); }
 }
