@@ -1308,3 +1308,10 @@ body[data-theme="dark"] .avatar-choice { background:var(--surface); }
  .community-refresh { align-self:flex-start; }
  .account-block { padding:18px; }
 }
+
+
+/* CEFR promotion test feedback */
+.promotion-result{padding:18px;border:1px solid var(--line);border-radius:18px;background:var(--surface);margin:12px 0 18px;line-height:1.65}
+.promotion-result p{margin:6px 0}
+#track-note [data-promotion-start]{margin-top:10px;min-height:44px}
+#track-note .level-note{line-height:1.55}
