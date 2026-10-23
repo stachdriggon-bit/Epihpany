@@ -15,9 +15,10 @@
   ];
 
   /* ---------- state ---------- */
-  const defaults = () => ({xp:0, quests:0, words:[], review:[], placementDone:false, completed:[], streak:0, lastDay:null, daily:0, level:'A1', sound:true, helpArabic:false, theme:'light', streakFreezes:1, dailyQuestDate:null, dailyQuestProgress:0, dailyQuestClaimed:false, dailyCorrect:0, dailyXp:0, weeklyKey:null, weeklyProgress:0, weeklyClaimed:false, mistakeTrapErrors:{}, mistakeQuestionErrors:{}, modes:{}, weakTraps:{}, stories:{}, world:{done:[],stars:{}}});
+  const defaults = () => ({xp:0, quests:0, words:[], review:[], placementDone:false, assessedLevel:'A1', placementResult:null, completed:[], streak:0, lastDay:null, daily:0, level:'A1', sound:true, helpArabic:false, theme:'light', streakFreezes:1, dailyQuestDate:null, dailyQuestProgress:0, dailyQuestClaimed:false, dailyCorrect:0, dailyXp:0, weeklyKey:null, weeklyProgress:0, weeklyClaimed:false, mistakeTrapErrors:{}, mistakeQuestionErrors:{}, modes:{}, weakTraps:{}, stories:{}, world:{done:[],stars:{}}});
   let state;
   try { state = {...defaults(), ...JSON.parse(localStorage.getItem('epiphany-progress') || '{}')}; } catch { state = defaults(); }
+  if (!LEVELS.some(level => level.id === state.assessedLevel)) { state.assessedLevel = 'A1'; state.placementDone = false; state.placementResult = null; }
   if (!Array.isArray(state.review)) state.review = [];
   if (!state.mistakeTrapErrors || typeof state.mistakeTrapErrors !== 'object' || Array.isArray(state.mistakeTrapErrors)) state.mistakeTrapErrors = {};
   if (!state.mistakeQuestionErrors || typeof state.mistakeQuestionErrors !== 'object' || Array.isArray(state.mistakeQuestionErrors)) state.mistakeQuestionErrors = {};
@@ -63,7 +64,8 @@
   const glyph = g => META[g].icon ? ic(META[g].icon) : META[g].glyph;
 
   /* ---------- derived values ---------- */
-  const levelIndex = () => { let i = 0; LEVELS.forEach((l, k) => { if (state.xp >= l.xp) i = k; }); return i; };
+  // CEFR is determined by the placement assessment, never by XP earned in games.
+  const levelIndex = () => Math.max(0, LEVELS.findIndex(level => level.id === state.assessedLevel));
   const currentLevel = () => LEVELS[levelIndex()];
   const liveStreak = () => {
     const y = new Date(); y.setDate(y.getDate() - 1);
@@ -128,23 +130,22 @@
       : done === 1 ? 'One more quest keeps your streak alive.' : 'Finish 2 quests to keep your streak alive.';
 
     const idx = levelIndex(), lv = LEVELS[idx], nx = LEVELS[idx + 1];
-    const pct = nx ? Math.min(100, Math.round((state.xp - lv.xp) / (nx.xp - lv.xp) * 100)) : 100;
-    $('#lv-name').textContent = lv.id + ' · ' + lv.name;
+    $('#lv-name').textContent = 'Estimated CEFR · ' + lv.id;
     const homeLevel = $('#home-level'); if (homeLevel) homeLevel.textContent = lv.id;
-    $('#lv-next').textContent = nx ? (nx.xp - state.xp) + ' XP to ' + nx.id : 'Top level reached';
-    $('#lv-bar').style.width = pct + '%';
-    $('#lv-bar-wrap').setAttribute('aria-valuenow', pct);
+    $('#lv-next').textContent = nx ? 'A level check is needed to update your estimate' : 'Highest CEFR band assessed';
+    $('#lv-bar').style.width = '100%';
+    $('#lv-bar-wrap').setAttribute('aria-valuenow', 100);
 
     const track = $('#track');
     track.style.setProperty('--prog', (idx / (LEVELS.length - 1)).toFixed(3));
     track.innerHTML = LEVELS.map((l, i) => {
       const cls = i < idx ? 'done' : i === idx ? 'current' : 'locked';
       const dot = i < idx ? ic('check') : i > idx ? ic('lock') : l.id;
-      const sub = i < idx ? 'Cleared' : i === idx ? 'You are here' : l.xp + ' XP';
-      return '<li><button class="node ' + cls + '" data-level="' + i + '" aria-label="' + l.id + ', ' + l.name + (cls === 'locked' ? ', locked, unlocks at ' + l.xp + ' XP' : '') + '">' +
+      const sub = i < idx ? 'Passed in assessment' : i === idx ? 'Estimated level' : 'Not assessed yet';
+      return '<li><button class="node ' + cls + '" data-level="' + i + '" aria-label="' + l.id + ', ' + l.name + (cls === 'locked' ? ', not yet assessed' : '') + '">' +
         '<span class="node-dot">' + dot + '</span><span class="node-name">' + l.name + '</span><span class="node-sub">' + sub + '</span></button></li>';
     }).join('');
-    $('#track-note').innerHTML = '<strong>' + lv.id + ' · ' + esc(lv.title) + '</strong>' + esc(lv.desc);
+    $('#track-note').innerHTML = '<strong>Estimated CEFR: ' + lv.id + ' · ' + esc(lv.title) + '</strong> ' + esc(lv.desc) + '<p class="level-note">XP rewards track game activity; they do not determine your English level.</p>';
 
     const gameCategories = [
       {id:'words',title:'Words',desc:'Build your vocabulary and recognise words.',icon:'Aa',tone:'violet',games:[['vocabulary','Word collector'],['spelling','Word detective'],['match','Word Match']]},
@@ -1553,7 +1554,7 @@
     const lv = e.target.closest('[data-level]');
     if (lv) {
       const i = Number(lv.dataset.level), l = LEVELS[i];
-      if (i > levelIndex()) toast(l.id + ' unlocks at ' + l.xp + ' XP. ' + (l.xp - state.xp) + ' XP to go.');
+      if (i > levelIndex()) toast(l.id + ' is not unlocked by XP. Pass its level check to update your CEFR estimate.');
       else startGame(LEVEL_GAME[i]);
     }
   });
@@ -1570,21 +1571,67 @@
     } else if (e.key === 'Enter' && G.answered && !(document.activeElement && document.activeElement.tagName === 'BUTTON')) next();
   });
 
-  function placementQuestions(){const shuffle=list=>{const a=list.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};return LEVELS.flatMap(level=>shuffle(GAMES.vocabulary.questions.filter(q=>q.level===level.id)).slice(0,2).map(q=>({...q,placementLevel:level.id}))); }
-  let placement={questions:[],index:0,answers:[]};
-  function showPlacement(){if(state.placementDone)return;placement={questions:placementQuestions(),index:0,answers:[]};$('#placement').hidden=false;lockPage(true);renderPlacementQuestion();}
+  function shufflePlacement(list){const items=list.slice();for(let i=items.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[items[i],items[j]]=[items[j],items[i]];}return items;}
+  const PLACEMENT_SKILLS = ['vocabulary','grammar','story','listening','advanced'];
+  function placementQuestions(level){
+    return shufflePlacement(PLACEMENT_SKILLS.map(gameId => {
+      const pool = (GAMES[gameId]?.questions || []).filter(q => q.level === level.id && Array.isArray(q.answers) && q.answers.length >= 2 && Number.isInteger(q.correct) && q.correct >= 0 && q.correct < q.answers.length);
+      const picked = shufflePlacement(pool)[0];
+      return picked ? {...picked, placementLevel:level.id, placementSkill:gameId} : null;
+    }).filter(Boolean));
+  }
+  let placement={questions:[],index:0,answers:[],stage:0,highestPassed:0,stageCorrect:0,scoreByLevel:{}};
+  function showPlacement(){
+    if(state.placementDone)return;
+    placement={questions:placementQuestions(LEVELS[0]),index:0,answers:[],stage:0,highestPassed:0,stageCorrect:0,scoreByLevel:{}};
+    $('#placement').hidden=false;lockPage(true);renderPlacementQuestion();
+  }
   window.__epiphanyShowPlacement = showPlacement;
-  function renderPlacementQuestion(){const q=placement.questions[placement.index];$('#placement-progress').textContent='Question '+(placement.index+1)+' of '+placement.questions.length;$('#placement-content').innerHTML='<h2>'+esc(q.q)+'</h2><p>'+esc(q.sub||'Choose the best answer.')+'</p><div class="answers">'+q.answers.map((x,i)=>'<button class="answer" data-place-answer="'+i+'"><span class="key">'+(i+1)+'</span><span>'+esc(x)+'</span></button>').join('')+'</div>';}
-  function skipPlacement(){state.placementDone=true;save();$('#placement').hidden=true;lockPage(false);renderAll();toast('Placement skipped. Your starting level is A1 — you can begin playing now.');}
+  function renderPlacementQuestion(){
+    const q=placement.questions[placement.index];
+    $('#placement-progress').textContent='Level '+LEVELS[placement.stage].id+' · Question '+(placement.index+1)+' of '+placement.questions.length+' (up to 30)';
+    $('#placement-content').innerHTML='<h2>'+esc(q.q)+'</h2><p>'+esc(q.sub||'Choose the best answer.')+'</p><div class="answers">'+q.answers.map((x,i)=>'<button class="answer" data-place-answer="'+i+'"><span class="key">'+(i+1)+'</span><span>'+esc(x)+'</span></button>').join('')+'</div>';
+  }
+  function closePlacement(){ $('#placement').hidden=true;lockPage(false);renderAll(); }
+  function skipPlacement(){
+    state.assessedLevel='A1';state.level='A1';state.placementDone=true;state.placementResult={level:'A1',skipped:true,testedAt:new Date().toISOString()};
+    save();closePlacement();toast('Level check skipped. Your estimated starting level remains A1.');
+  }
   $('#placement-skip').addEventListener('click',skipPlacement);
-  function answerPlacement(choice){const q=placement.questions[placement.index];placement.answers.push({level:q.placementLevel,ok:choice===q.correct});placement.index++;if(placement.index<placement.questions.length){renderPlacementQuestion();return;}
-    const scores=Object.fromEntries(LEVELS.map(l=>[l.id,placement.answers.filter(a=>a.level===l.id&&a.ok).length]));let target=0;for(let i=0;i<LEVELS.length;i++){if(scores[LEVELS[i].id]>=1)target=i;else break;}
-    state.level=LEVELS[target].id;state.xp=Math.max(state.xp,LEVELS[target].xp);state.placementDone=true;save();$('#placement').hidden=true;lockPage(false);renderAll();toast('Your starting level is '+LEVELS[target].id+'. You can improve it as you learn.');}
+  $('#placement-retake')?.addEventListener('click',()=>{state.placementDone=false;save();showPlacement();});
+  function finishPlacement(){
+    const target=LEVELS[placement.highestPassed] || LEVELS[0];
+    state.assessedLevel=target.id;state.level=target.id;state.placementDone=true;
+    state.placementResult={level:target.id,skipped:false,testedAt:new Date().toISOString(),answered:placement.answers.length,correct:placement.answers.filter(a=>a.ok).length,scores:placement.scoreByLevel};
+    save();closePlacement();
+    toast('Estimated CEFR level: '+target.id+'. XP is separate from your English assessment.');
+  }
+  function answerPlacement(choice){
+    const q=placement.questions[placement.index];
+    const ok=choice===q.correct;
+    placement.answers.push({level:q.placementLevel,skill:q.placementSkill,ok});
+    placement.stageCorrect += ok ? 1 : 0;
+    placement.index++;
+    if(placement.index<placement.questions.length){renderPlacementQuestion();return;}
+    const stageLevel=LEVELS[placement.stage];
+    placement.scoreByLevel[stageLevel.id]={correct:placement.stageCorrect,total:placement.questions.length};
+    if(placement.stageCorrect>=4){
+      placement.highestPassed=placement.stage;
+      if(placement.stage<LEVELS.length-1){
+        placement.stage++;
+        placement.questions=placementQuestions(LEVELS[placement.stage]);
+        placement.index=0;placement.stageCorrect=0;
+        renderPlacementQuestion();return;
+      }
+    }
+    finishPlacement();
+  }
   document.addEventListener('click',e=>{const p=e.target.closest('[data-place-answer]');if(p&&!$('#placement').hidden){answerPlacement(Number(p.dataset.placeAnswer));return;}});
   window.__epiphanyReadProgress = () => JSON.parse(JSON.stringify(state));
   window.__epiphanyApplyCloudProgress = progress => {
     const incoming = progress && typeof progress === 'object' && !Array.isArray(progress) ? progress : {};
     state = {...defaults(), ...incoming};
+    if (!LEVELS.some(level => level.id === state.assessedLevel)) { state.assessedLevel = 'A1'; state.placementDone = false; state.placementResult = null; }
     if (!Array.isArray(state.words)) state.words = [];
     if (!Array.isArray(state.review)) state.review = [];
     if (!Array.isArray(state.completed)) state.completed = [];
