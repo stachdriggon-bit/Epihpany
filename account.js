@@ -28,13 +28,13 @@
       try { localStorage.setItem('epiphany-account-welcome-dismissed', '1'); } catch {}
     }
   }
-  function showWelcomeModalIfNeeded() {
+  function showWelcomeModalIfNeeded(force = false) {
     const modal = $('account-welcome-modal');
     if (!modal || currentUser) return;
     let dismissed = false;
     try { dismissed = localStorage.getItem('epiphany-account-welcome-dismissed') === '1'; } catch {}
-    modal.hidden = dismissed;
-    document.body.classList.toggle('account-modal-open', !dismissed);
+    modal.hidden = dismissed && !force;
+    document.body.classList.toggle('account-modal-open', !modal.hidden);
   }
   function openAccountFromWelcome(mode) {
     hideWelcomeModal(true);
@@ -59,7 +59,7 @@
       if (error) throw error;
     } catch (error) {
       status(error && error.message ? error.message : 'Social sign-in could not start.', 'error');
-      showWelcomeModalIfNeeded();
+      showWelcomeModalIfNeeded(true);
     }
   }
 
@@ -235,7 +235,6 @@
           const {error} = await client.auth.signInWithPassword({email, password});
           if (error) throw error;
           status('Signed in. Loading your progress…', 'loading');
-          window.__epiphanyShowPlacement?.();
         } else if (currentMode === 'reset') {
           const {error} = await client.auth.resetPasswordForEmail(email, {
             redirectTo: window.location.origin + window.location.pathname
