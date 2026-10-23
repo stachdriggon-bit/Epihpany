@@ -447,7 +447,9 @@ const WOTD_WORDS = [
     "meaning_ar": "يفصّل",
     "level": "C1",
     "example": "Could you elaborate on that idea?",
-    "origin": "From Latin elaborare, to work out."
+    "example_ar": "هل يمكنك التوسّع في هذه الفكرة؟",
+    "origin": "From Latin elaborare, to work out.",
+    "origin_ar": "من اللاتينية elaborare، أي يعمل على شيء بإتقان."
   },
   {
     "word": "inference",
@@ -456,7 +458,9 @@ const WOTD_WORDS = [
     "meaning_ar": "استنتاج",
     "level": "C1",
     "example": "That inference is reasonable.",
-    "origin": "From Latin inferre, to bring in."
+    "example_ar": "هذا الاستنتاج معقول.",
+    "origin": "From Latin inferre, to bring in.",
+    "origin_ar": "من اللاتينية inferre، أي يستنتج."
   },
   {
     "word": "resilient",
@@ -465,7 +469,9 @@ const WOTD_WORDS = [
     "meaning_ar": "قادر على التعافي",
     "level": "C1",
     "example": "A resilient learner keeps trying.",
-    "origin": "From Latin resilire, to spring back."
+    "example_ar": "يواصل المتعلّم المرن المحاولة.",
+    "origin": "From Latin resilire, to spring back.",
+    "origin_ar": "من اللاتينية resilire، أي ينهض مجددًا."
   },
   {
     "word": "plausible",
@@ -474,7 +480,9 @@ const WOTD_WORDS = [
     "meaning_ar": "معقول",
     "level": "C1",
     "example": "That is a plausible explanation.",
-    "origin": "From Latin plausibilis, worthy of applause."
+    "example_ar": "هذا تفسير معقول.",
+    "origin": "From Latin plausibilis, worthy of applause.",
+    "origin_ar": "من اللاتينية plausibilis، أي جدير بالتصديق."
   },
   {
     "word": "contemplate",
@@ -483,7 +491,9 @@ const WOTD_WORDS = [
     "meaning_ar": "يتأمل",
     "level": "C1",
     "example": "Take a moment to contemplate the question.",
-    "origin": "From Latin contemplari, to observe."
+    "example_ar": "خذ لحظة للتأمل في السؤال.",
+    "origin": "From Latin contemplari, to observe.",
+    "origin_ar": "من اللاتينية contemplari، أي يتأمل."
   },
   {
     "word": "articulate",
@@ -492,7 +502,9 @@ const WOTD_WORDS = [
     "meaning_ar": "يعبّر بوضوح",
     "level": "C1",
     "example": "She can articulate complex ideas.",
-    "origin": "From Latin articulare, to divide into joints."
+    "example_ar": "يمكنها التعبير عن أفكار معقدة بوضوح.",
+    "origin": "From Latin articulare, to divide into joints.",
+    "origin_ar": "من اللاتينية articulare، أي يقسّم إلى أجزاء."
   },
   {
     "word": "mitigate",
@@ -501,7 +513,9 @@ const WOTD_WORDS = [
     "meaning_ar": "يخفف",
     "level": "C1",
     "example": "Good planning can mitigate risk.",
-    "origin": "From Latin mitigare, to soften."
+    "example_ar": "يمكن للتخطيط الجيد أن يخفّف المخاطر.",
+    "origin": "From Latin mitigare, to soften.",
+    "origin_ar": "من اللاتينية mitigare، أي يخفّف."
   },
   {
     "word": "nuance",
@@ -510,7 +524,9 @@ const WOTD_WORDS = [
     "meaning_ar": "فرق دقيق في المعنى",
     "level": "C1",
     "example": "The translation misses a nuance.",
-    "origin": "From French nuance, a shade of colour."
+    "example_ar": "تفوّت الترجمة فرقًا دقيقًا في المعنى.",
+    "origin": "From French nuance, a shade of colour.",
+    "origin_ar": "من الفرنسية nuance، وتعني درجة أو تدرّجًا."
   },
   {
     "word": "intricate",
@@ -519,7 +535,9 @@ const WOTD_WORDS = [
     "meaning_ar": "معقد التفاصيل",
     "level": "C1",
     "example": "The machine has an intricate design.",
-    "origin": "From Latin intricatus, entangled."
+    "example_ar": "للآلة تصميم معقّد التفاصيل.",
+    "origin": "From Latin intricatus, entangled.",
+    "origin_ar": "من اللاتينية intricatus، وتعني متشابكًا."
   },
   {
     "word": "foster",
@@ -528,7 +546,9 @@ const WOTD_WORDS = [
     "meaning_ar": "يعزز أو ينمّي",
     "level": "C1",
     "example": "Good feedback can foster confidence.",
-    "origin": "From Old English fostrian, to nourish."
+    "example_ar": "يمكن للملاحظات البنّاءة أن تعزّز الثقة.",
+    "origin": "From Old English fostrian, to nourish.",
+    "origin_ar": "من الإنجليزية القديمة fostrian، أي يرعى."
   },
   {
     "word": "derive",
