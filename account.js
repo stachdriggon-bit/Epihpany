@@ -9,6 +9,8 @@
   let currentUser = null;
   let currentMode = 'signin';
   let recoveryMode = false;
+  let pendingVerificationEmail = '';
+  let resendCooldownTimer = null;
   let syncing = false;
   let lastSyncedUser = null;
   let saveTimer = null;
@@ -70,21 +72,34 @@
     const password = $('account-password');
     const toggle = $('account-mode-toggle');
     const forgot = $('account-forgot');
-    if (title) title.textContent = ({signin:'Welcome back',signup:'Create your account',reset:'Reset your password',newpassword:'Choose a new password'})[mode] || 'Your account';
-    if (submit) submit.textContent = ({signin:'Sign in',signup:'Create account',reset:'Send reset link',newpassword:'Update password'})[mode] || 'Continue';
+    const emailInput = $('account-email-input');
+    const otpLabel = $('account-otp-label');
+    const otpInput = $('account-otp-input');
+    const otpHelp = $('account-otp-help');
+    const resend = $('account-resend-code');
+    const editEmail = $('account-edit-email');
+    if (title) title.textContent = ({signin:'Welcome back',signup:'Create your account',verify:'Verify your email',reset:'Reset your password',newpassword:'Choose a new password'})[mode] || 'Your account';
+    if (submit) submit.textContent = ({signin:'Sign in',signup:'Create account',verify:'Verify code',reset:'Send reset link',newpassword:'Update password'})[mode] || 'Continue';
+    if (emailInput) emailInput.readOnly = mode === 'verify';
+    if (otpLabel) otpLabel.hidden = mode !== 'verify';
+    if (otpHelp) otpHelp.hidden = mode !== 'verify';
+    if (otpInput) { otpInput.hidden = mode !== 'verify'; otpInput.required = mode === 'verify'; if (mode !== 'verify') otpInput.value = ''; }
+    if (resend) resend.hidden = mode !== 'verify';
+    if (editEmail) editEmail.hidden = mode !== 'verify';
     if (password) {
-      password.hidden = mode === 'reset';
-      password.required = mode !== 'reset';
+      password.hidden = mode === 'reset' || mode === 'verify';
+      password.required = mode !== 'reset' && mode !== 'verify';
       password.autocomplete = mode === 'signup' ? 'new-password' : mode === 'newpassword' ? 'new-password' : 'current-password';
       password.placeholder = mode === 'newpassword' ? 'New password (at least 8 characters)' : 'Password';
       password.minLength = mode === 'newpassword' || mode === 'signup' ? 8 : 1;
       password.value = '';
     }
     if (toggle) {
-      toggle.hidden = mode === 'reset' || mode === 'newpassword';
+      toggle.hidden = mode === 'reset' || mode === 'newpassword' || mode === 'verify';
       toggle.textContent = mode === 'signup' ? 'Already have an account? Sign in' : 'New here? Create an account';
     }
     if (forgot) forgot.hidden = mode !== 'signin';
+    if (mode === 'verify' && otpInput) otpInput.focus({preventScroll:true});
   }
   function renderAccount() {
     const signedIn = $('account-signed-in');
@@ -471,10 +486,17 @@
           if (data.session) {
             status('Account created. Preparing your saved progress…', 'success');
           } else {
-            setMode('signin');
-            status('Account created. Check your email to confirm it, then sign in.', 'success');
-            window.__epiphanyShowPlacement?.();
+            pendingVerificationEmail = email;
+            setMode('verify');
+            status('We sent a 6-digit verification code to your email. Enter it here to activate your account.', 'success');
           }
+        } else if (currentMode === 'verify') {
+          const token = $('account-otp-input').value.trim();
+          const verifyEmail = pendingVerificationEmail || email;
+          const {error} = await client.auth.verifyOtp({email:verifyEmail, token, type:'signup'});
+          if (error) throw error;
+          pendingVerificationEmail = '';
+          status('Email verified. Preparing your saved progress…', 'success');
         } else if (currentMode === 'signin') {
           const {error} = await client.auth.signInWithPassword({email, password});
           if (error) throw error;
@@ -499,6 +521,32 @@
       } finally {
         submit.disabled = false;
       }
+    });
+    $('account-otp-input')?.addEventListener('input', event => {
+      event.target.value = event.target.value.replace(/\\D/g, '').slice(0, 6);
+    });
+    $('account-resend-code')?.addEventListener('click', async () => {
+      if (!client || currentMode !== 'verify') return;
+      const button = $('account-resend-code');
+      button.disabled = true;
+      try {
+        const email = pendingVerificationEmail || $('account-email-input').value.trim();
+        const {error} = await client.auth.resend({type:'signup', email});
+        if (error) throw error;
+        status('A new verification code has been sent. Check your inbox and spam folder.', 'success');
+        if (resendCooldownTimer) clearTimeout(resendCooldownTimer);
+        button.textContent = 'Resend available in 60 seconds';
+        resendCooldownTimer = setTimeout(() => { button.disabled = false; button.textContent = 'Resend code'; }, 60000);
+      } catch (error) {
+        status(error && error.message ? error.message : 'Could not resend the code. Please wait a moment and try again.', 'error');
+        button.disabled = false;
+      }
+    });
+    $('account-edit-email')?.addEventListener('click', () => {
+      pendingVerificationEmail = '';
+      setMode('signup');
+      status('Check the email address, then create your account again.', 'info');
+      $('account-email-input')?.focus({preventScroll:true});
     });
     $('account-mode-toggle').addEventListener('click', () => {
       setMode(currentMode === 'signup' ? 'signin' : 'signup');
