@@ -528,8 +528,8 @@
       {pages:(n,f,p,t)=>[t+', '+n+' and '+f+' found an old treasure map in '+p+'. The map had no street names, only lines and a mark at the top.','A compass helped them identify north and compare the map with the land around them. They could finally tell which path led east.','Following the right direction, they found a box of old photographs instead of gold. The photographs helped the town learn about its history.']}
     ]},
     everyday:{label:'A day-to-day surprise',emoji:'🧾',target:'receipt',definition:'A paper or digital record showing what you bought, the prices, and how much you paid.',clue:'After shopping, the characters need to check the items, prices, and total amount they paid.',hints:['Think about the paper or digital message a shop gives you after you pay.','It lists the things you bought, their prices, and the total cost.'],concepts:['pay','paid','price','cost','shop','buy','bought','purchase','item','total','money','record','paper','bill','proof'],variants:[
-      {pages:(n,f,p,t)=>[t+', '+n+' and '+f+' bought a notebook and a bottle of water at a shop in '+p+'. At home, they noticed the total seemed too high.','The receipt listed each item, its price, and the amount paid. When they checked it, they saw that the notebook had been charged twice.',n+' returned to the shop with the receipt. The assistant corrected the mistake and returned the extra money.']},
-      {pages:(n,f,p,t)=>[t+', '+n+' and '+f+' bought a gift in '+p+'. The shop assistant asked if they wanted proof of the purchase.','The assistant printed a receipt. It showed the gift, its price, the date, and the total payment.','Later, the gift did not work. Because they kept the receipt, the shop could find the purchase and help them exchange it.']},
+      {pages:(n,f,p,t)=>[t+', '+n+' and '+f+' bought a notebook and a bottle of water at a shop in '+p+'. At home, they noticed the total seemed too high.','The receipt listed each item, its price, and the amount paid. When they checked it, they saw that the notebook had been charged twice.',n+' returned to the shop with the paper. The assistant corrected the mistake and returned the extra money.']},
+      {pages:(n,f,p,t)=>[t+', '+n+' and '+f+' bought a gift in '+p+'. The shop assistant asked if they wanted proof of the purchase.','The assistant printed a receipt. It showed the gift, its price, the date, and the total payment.','Later, the gift did not work. Because they kept the paper, the shop could find the purchase and help them exchange it.']},
       {pages:(n,f,p,t)=>[t+', '+n+' and '+f+' planned a small picnic in '+p+'. They bought fruit, bread, and juice but wanted to stay within their budget.','They checked the receipt to see the price of every item and the total cost. One item was more expensive than they expected.','They changed their shopping list for next time and learned to check the total before leaving the shop.']}
     ]},
     nature:{label:'Nature and discovery',emoji:'🌿',target:'shelter',definition:'A place or structure that protects people from danger or bad weather.',clue:'The weather becomes dangerous. The hikers need a place where they can stay protected from rain and wind.',hints:['Think of a safe place to wait when the weather becomes bad.','It protects people from rain, wind, or danger; it may have a roof and walls.'],concepts:['protect','protection','safe','safety','weather','rain','wind','roof','dry','cover','place','building','walls','storm','warm'],variants:[
@@ -559,7 +559,7 @@
   }
   function assessCreateStoryAnswer(answer,story){
     const lower=String(answer||'').toLowerCase();
-    const hits=story.concepts.filter(word=>new RegExp('\\\\b'+word+'\\\\b','i').test(lower));
+    const hits=story.concepts.filter(word=>new RegExp('\\b'+word+'\\b','i').test(lower));
     if(hits.length>=2)return {hits:hits.length,title:'You found the main idea!',message:'Your explanation includes useful clues: '+hits.slice(0,3).join(', ')+'. Compare it with the example meaning to see what else you could add.'};
     if(hits.length===1)return {hits:1,title:'You are on the right track',message:'You included a relevant idea (“'+hits[0]+'”). Try adding what the thing is used for or how it helps in this situation.'};
     return {hits:0,title:'Good start — make the meaning clearer',message:'Try describing what it does, what it is used for, or how it helps the characters. You can use the hints and then compare your answer with the example.'};
@@ -575,7 +575,7 @@
     if(!CREATE_STORY.story)return;
     const answer=String(new FormData(form).get('answer')||'').trim();
     if(answer.length<12){toast('Try to explain the idea in a little more detail.');return;}
-    if(new RegExp('\\\\b'+CREATE_STORY.story.target+'\\\\b','i').test(answer)){toast('Try describing the meaning without using the hidden word itself.');return;}
+    if(new RegExp('\\b'+CREATE_STORY.story.target+'\\b','i').test(answer)){toast('Try describing the meaning without using the hidden word itself.');return;}
     CREATE_STORY.answer=answer;CREATE_STORY.assessment=assessCreateStoryAnswer(answer,CREATE_STORY.story);CREATE_STORY.mode='feedback';CREATE_STORY.selfRate=null;renderCreateStory();
   }
   
@@ -867,7 +867,11 @@
     if(m)return {text:'ما معنى كلمة «'+m[1].replace(/[“”"']/g,'')+'»؟',exact:true};
     m=source.match(/^Which word means\s+[“"']?(.+?)[”"']?\??$/i);
     if(m)return {text:'أي كلمة تعني «'+translateKnownPhrase(m[1].replace(/[“”"']/g,''))+'»؟',exact:true};
-    return {text:translateKnownPhrase(source),exact:false};
+    const translated=translateKnownPhrase(source);
+    const tokens=source.match(/[A-Za-z]+(?:['’-][A-Za-z]+)*/g)||[];
+    const unknown=tokens.filter(token=>!AR_TRANSLATION_WORDS[token.toLowerCase()]&&!(typeof STORY_WORDS_AR!=='undefined'&&STORY_WORDS_AR[token.toLowerCase()])&&!(typeof W_AR!=='undefined'&&W_AR[token.toLowerCase()]));
+    if(tokens.length>3&&unknown.length/tokens.length>0.3)return {text:'لم تتوفر ترجمة موثوقة لهذا النص بعد. يمكنك متابعة النص بالإنجليزية أو تجربة سؤال آخر.',exact:false};
+    return {text:translated,exact:false};
   }
   let translationControlId=0;
   function addTranslationControl(target,kind) {
