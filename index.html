@@ -28,7 +28,7 @@
   <script src="data-expansion.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
   <script src="supabase-config.js?v=accounts-20261023" defer></script>
-  <script src="account.js?v=auth-callback-20261023" defer></script>
+  <script src="account.js?v=privacy-20261023" defer></script>
   <script src="app.js?v=neural-voice-20261023" defer></script>
 </head>
 <body data-theme="light">
@@ -210,6 +210,13 @@
             <input id="player-display-name" maxlength="32" placeholder="The name you want others to see" autocomplete="nickname">
             <label for="player-bio">A short bio <span>English is encouraged</span></label>
             <textarea id="player-bio" maxlength="180" rows="2" placeholder="I'm learning English one day at a time."></textarea>
+            <div class="privacy-setting">
+              <label class="privacy-toggle" for="player-profile-private">
+                <input id="player-profile-private" type="checkbox" checked>
+                <span class="privacy-toggle-copy"><strong>Private account</strong><small>When enabled, only you can see your profile and posts in Epiphany.</small></span>
+              </label>
+              <p class="profile-small-note">Turn this off to make your profile and shared posts visible to the community. Your learning progress remains private.</p>
+            </div>
             <div class="profile-avatar-options">
               <div><h4>Choose your cartoon avatar</h4><p>Pick a character and a background.</p></div>
               <div class="avatar-choices" id="avatar-choices" role="group" aria-label="Choose an avatar">
