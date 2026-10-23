@@ -282,7 +282,30 @@
     const card=(s,large)=>{const locked=storyLevelIndex(s.level)>unlocked,done=!!(state.stories[s.id]&&state.stories[s.id].done);return '<button type="button" class="story-card '+(large?'story-featured ':'')+(locked?'is-locked ':'')+(done?'is-done':'')+'" data-story-open="'+esc(s.id)+'" '+(locked?'aria-disabled="true"':'')+'><span class="story-art" style="--story-tone:'+esc(s.tone)+'"><span>'+esc(s.emoji)+'</span>'+(locked?'<b>🔒</b>':'')+'</span><span class="story-card-info"><span class="story-card-meta"><em>'+esc(s.level)+'</em><small>'+s.minutes+' min</small></span><strong>'+esc(s.title)+'</strong><small>'+(locked?'Unlock at '+esc(s.level):done?'✓ Completed · '+state.stories[s.id].score+'/3':'Read this story')+'</small></span></button>';};
     root.innerHTML='<section class="story-feature-section"><div class="block-head"><h2>Recommended story</h2><p>One small story, a little more English.</p></div>'+card(featured,true)+'</section>'+['A1','A2','B1','B2'].map(level=>'<section class="story-level"><div class="block-head"><h2>'+level+' stories</h2><p>'+(storyLevelIndex(level)<=unlocked?'Ready to read':'Reach '+level+' to unlock these stories')+'</p></div><div class="story-grid">'+ordered.filter(s=>s.level===level&&s.id!==featured.id).map(s=>card(s,false)).join('')+'</div></section>').join('');
   }
-  function startStory(id){const story=STORIES.find(s=>s.id===id);if(!story)return;if(storyLevelIndex(story.level)>storyLevelIndex(currentLevel().id)){toast('Reach '+story.level+' to unlock this story.');return;}ST={story,page:0,mode:'read',qi:0,score:0,results:[],savedDuring:[],answered:false};G=null;$('#game').className='game t-story';$('#game').hidden=false;lockPage(true);hideSheet();renderStoryPage();}
+  function prepareStoryQuestions(story){
+    const questions=(story.questions||[]).map(q=>({...q,answers:[...(q.answers||[])]}));
+    const positionPools={};
+    let previousByCount={};
+    for(const q of questions){
+      if(!q.answers.length)continue;
+      const correctText=q.answers[q.correct];
+      const distractors=q.answers.filter((_,i)=>i!==q.correct);
+      for(let i=distractors.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[distractors[i],distractors[j]]=[distractors[j],distractors[i]];}
+      const count=q.answers.length;
+      if(!positionPools[count]||positionPools[count].length===0){
+        positionPools[count]=Array.from({length:count},(_,i)=>i);
+        for(let i=count-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[positionPools[count][i],positionPools[count][j]]=[positionPools[count][j],positionPools[count][i]];}
+        if(count>1&&positionPools[count][0]===previousByCount[count]){const j=1+Math.floor(Math.random()*(count-1));[positionPools[count][0],positionPools[count][j]]=[positionPools[count][j],positionPools[count][0]];}
+      }
+      const target=positionPools[count].shift();
+      previousByCount[count]=target;
+      distractors.splice(target,0,correctText);
+      q.answers=distractors;
+      q.correct=target;
+    }
+    return {...story,questions};
+  }
+  function startStory(id){const source=STORIES.find(s=>s.id===id);if(!source)return;if(storyLevelIndex(source.level)>storyLevelIndex(currentLevel().id)){toast('Reach '+source.level+' to unlock this story.');return;}const story={...source,questions:prepareStoryQuestions(source).questions};ST={story,page:0,mode:'read',qi:0,score:0,results:[],savedDuring:[],answered:false};G=null;$('#game').className='game t-story';$('#game').hidden=false;lockPage(true);hideSheet();renderStoryPage();}
   function storyTextTokens(text){return (String(text||'').match(/[\p{L}]+(?:['’][\p{L}]+)*|[^\p{L}]+/gu)||[]).map(part=>{if(!/^[\p{L}]+(?:['’][\p{L}]+)*$/u.test(part))return esc(part);const bare=part.toLowerCase().normalize('NFD').replace(/[\p{Diacritic}]/gu,'');const known=storyLookup(bare);return '<button type="button" class="story-word '+(known?'is-vocab ':'')+(storyIsSaved(bare)?'is-saved':'')+'" data-story-word="'+esc(bare)+'" data-story-display="'+esc(part)+'" aria-label="Learn the word '+esc(bare)+'">'+esc(part)+'</button>';}).join('');}
   function storyLookup(key){const all=(typeof STORIES!=='undefined'?STORIES:[]);for(const story of all){const found=Object.entries(story.vocab||{}).find(([k])=>k.toLowerCase()===key);if(found)return {meaning:found[1][0],ar:found[1][1],pronunciation:found[1][2],example:found[1][3]};}const global=(typeof WOTD_WORDS!=='undefined'?WOTD_WORDS:[]).find(w=>w.word.toLowerCase()===key);if(global)return {meaning:global.meaning,ar:global.meaning_ar,pronunciation:global.pronunciation,example:global.example};const saved=state.words.find(w=>String(w[0]).toLowerCase()===key);if(saved)return {meaning:saved[1],ar:'معنى محفوظ سابقًا',pronunciation:key,example:''};const fallback=STORY_WORDS[key]||STORY_WORDS[storyWordBase(key)]||null;if(fallback){return {meaning:fallback,ar:STORY_WORDS_AR[key]||STORY_WORDS_AR[storyWordBase(key)]||'المعنى بالعربية غير متوفر بعد',pronunciation:key,example:''};}return null;}
   function storyWordBase(word){if(STORY_WORDS[word])return word;let w=word;if(w.endsWith('ies')&&w.length>4)w=w.slice(0,-3)+'y';else if(w.endsWith('es')&&w.length>4)w=w.slice(0,-2);else if(w.endsWith('s')&&w.length>3)w=w.slice(0,-1);if(STORY_WORDS[w])return w;const candidates=[word.slice(0,-1),word.slice(0,-2),word.replace(/ies$/,'y'),word.replace(/ied$/,'y'),word.replace(/ed$/,''),word.replace(/ing$/,'')];for(const candidate of candidates){if(candidate!==word&&STORY_WORDS[candidate])return candidate;}return word;}
