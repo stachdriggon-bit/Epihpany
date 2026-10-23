@@ -1199,6 +1199,24 @@
     return false;
   }
   function worldStep(){const t=worldTask();return t?(t.check.type==='sequence'?t.check.steps[WORLD.step]:t.check):null;}
+  function worldHelpTarget(c,o){
+    if(c&&c.target)return {x:c.target.x,y:c.target.y};
+    if(c&&c.type==='between'&&c.objects){
+      const a=worldObj(c.objects[0]),b=worldObj(c.objects[1]);
+      if(a&&b)return {x:Math.round((a.x+b.x)/2),y:a.y};
+    }
+    if(o){
+      const p=worldFootprint(o)[0]||o;
+      if(c&&c.type==='under')return {x:p.x,y:p.y+1};
+      if(c&&c.type==='behind')return {x:p.x+1,y:p.y};
+      if(c&&c.type==='rel'){
+        const d={left:[-1,0],right:[1,0],above:[0,-1],below:[0,1]}[c.rel];
+        if(d)return {x:p.x+d[0],y:p.y+d[1]};
+      }
+      return {x:o.x,y:o.y};
+    }
+    return {x:WORLD.player.x,y:WORLD.player.y};
+  }
   function worldEval(){
     const t=worldTask();if(!t)return false;
     if(t.check.type==='sequence'){while(WORLD.step<t.check.steps.length&&worldCheck(t.check.steps[WORLD.step]))WORLD.step++;return WORLD.step>=t.check.steps.length;}
@@ -1289,12 +1307,45 @@
     if (places.length >= 2) addMaker(2, () => { const a = any(places); let b = any(places); for (let k = 0; k < 8 && b === a; k++) b = any(places); if (a === b) return; push('not', 'Go to the ' + nm(a) + ', not the ' + nm(b) + '.', 'اذهب إلى ' + wArName(a) + ' وليس ' + wArName(b) + '.', stepNear(a), {level: 'B1', negObject: b.id, negName: nm(b), goalName: nm(a), hint: 'The ' + nm(a) + ' is to the ' + wCompass(WORLD.player, a) + '.', words: [mean(a), mean(b), ['not', 'used to say no', 'A1']].filter(Boolean)}); });
     if (places.length) addMaker(2, () => { for (let k = 0; k < 12; k++) { const o = any(places), s = any([['left', -1, 0, 'يسار'], ['right', 1, 0, 'يمين'], ['above', 0, -1, 'أعلى'], ['below', 0, 1, 'أسفل']]); const c = worldFootprint(o)[0], tx = c.x + s[1], ty = c.y + s[2]; if (worldWalkable(tx, ty) && reach.has(tx + ',' + ty)) { push('side', 'Stand ' + (s[0] === 'above' || s[0] === 'below' ? '' : 'on the ') + s[0] + (s[0] === 'above' || s[0] === 'below' ? ' ' : ' side of ') + 'the ' + nm(o) + '.', 'قف ' + (s[0] === 'above' ? 'فوق ' : s[0] === 'below' ? 'تحت ' : 'على ' + s[3] + ' ') + wArName(o) + '.', {type: 'rel', object: o.id, rel: s[0], target: {x: tx, y: ty}}, {level: 'B1', hint: 'Stand ' + s[0] + ' the ' + nm(o) + ' (' + wCompass(WORLD.player, o) + ' of you).', words: [mean(o), [s[0], 'a position relative to something', 'A2']].filter(Boolean)}); return; } } });
     if (items.length && people.length && places.length) addMaker(3, () => { const o = any(items), p = any(people), pl = any(places); if (usedPick.has(o.id)) return; usedPick.add(o.id); push('three', 'First go to the ' + nm(pl) + ', then pick up the ' + nm(o) + ', and finally give it to the ' + nm(p) + '.', 'أولًا اذهب إلى ' + wArName(pl) + '، ثم التقط ' + wArName(o) + '، وأخيرًا أعطه إلى ' + wArName(p) + '.', {type: 'sequence', steps: [stepNear(pl), {type: 'pickup', object: o.id, target: {x: o.x, y: o.y}}, {type: 'give', item: o.id, person: p.id, target: {x: p.x, y: p.y}}]}, {level: 'B2', hint: 'Three stops: ' + nm(pl) + ' → ' + nm(o) + ' → ' + nm(p) + '.', words: [mean(pl), mean(o), mean(p), ['finally', 'as the last step', 'B1']].filter(Boolean)}); });
-    // Pick a mix: simple kinds first at A1/A2, harder ones open up with the learner's level.
+    // Build a varied run: avoid repeating the same objective, and cap each mission pattern
+    // before allowing a third variant. Rejected attempts must not consume a pickup item.
     const order = SHUF(makers.map((m, i) => i)).filter(i => makers[i].minLevel <= lvl);
-    let guard = 0; const kinds = new Set();
-    while (T.length < count && guard++ < 80 && order.length) { const before = T.length; makers[order[(guard - 1) % order.length]].run(); if (T.length > before) { const k = T[T.length - 1].id; if (kinds.has(k) && Math.random() < .6) T.pop(); else kinds.add(k); } }
-    // unique ids per task position inside a run (bounded set), shuffled
-    return T.slice(0, count).map((t, i) => Object.assign(t, {id: t.id + '-' + i}));
+    const signature = t => {
+      const check = c => !c ? '' : c.type === 'sequence'
+        ? 'sequence(' + c.steps.map(check).join('>') + ')'
+        : [c.type, c.object || '', c.item || '', c.person || '', c.rel || '',
+           c.n || '', c.dx || '', c.dy || '', (c.objects || []).join(',')].join(':');
+      return t.id.replace(/^world-gen-[^-]+-/, '') + '|' + check(t.check) + '|' + (t.negObject || '');
+    };
+    const kindCounts = new Map(), signatures = new Set();
+    let guard = 0;
+    while (T.length < count && guard++ < 180 && order.length) {
+      const maker = makers[order[(guard - 1) % order.length]];
+      const maxPerKind = T.length < count - 2 ? 2 : 3;
+      const before = T.length, oldPicks = new Set(usedPick);
+      maker.run();
+      if (T.length === before) continue;
+      const task = T[T.length - 1], sig = signature(task), kind = task.id;
+      const sameKind = kindCounts.get(kind) || 0;
+      if (signatures.has(sig) || sameKind >= maxPerKind) {
+        T.pop();
+        usedPick.clear(); oldPicks.forEach(id => usedPick.add(id));
+        continue;
+      }
+      signatures.add(sig); kindCounts.set(kind, sameKind + 1);
+    }
+    // Fill a rare short run only with a fresh objective; never repeat an identical target.
+    while (T.length < count && guard++ < 260 && order.length) {
+      const maker = makers[order[(guard - 1) % order.length]], before = T.length, oldPicks = new Set(usedPick);
+      maker.run();
+      if (T.length === before) continue;
+      const task = T[T.length - 1], sig = signature(task), kind = task.id, sameKind = kindCounts.get(kind) || 0;
+      if (signatures.has(sig) || sameKind >= 3) {
+        T.pop(); usedPick.clear(); oldPicks.forEach(id => usedPick.add(id)); continue;
+      }
+      signatures.add(sig); kindCounts.set(kind, sameKind + 1);
+    }
+    return SHUF(T.slice(0, count)).map((t, i) => Object.assign(t, {id: t.id + '-' + i}));
   }
   function wFixOffset(t) {
     const c = t && t.check; if (!c || c.type !== 'offset' || !c.flex) return;
@@ -1759,7 +1810,7 @@
     WORLD={mode:'intro',tasks:WORLD_DATA.tasks.slice(),index:Math.max(0,WORLD_DATA.tasks.findIndex(t=>t.id===taskId)),map:WORLD_DATA.map,objects:WORLD_DATA.objects.map(o=>({...o})),player:{x:WORLD_DATA.start.x,y:WORLD_DATA.start.y,fromX:WORLD_DATA.start.x,fromY:WORLD_DATA.start.y,moveAt:0,queuedKey:null,color:'#FFC531'},outfit:'#6C5CE7',showTranslation:!!state.helpArabic,tries:0,usedHelp:false,moves:0,step:0,carried:null,picked:new Set(),given:new Set(),stars:0,progress:{},raf:0};
     lockPage(true);$$('[data-view]').forEach(b=>b.setAttribute('aria-current',b.dataset.view==='world'?'page':'false'));$('#world-game').hidden=false;$('#world-game').innerHTML='<div class="world-intro"><button class="world-exit" data-world-exit>✕</button><div class="world-intro-art" aria-hidden="true">'+worldRegionArt('village')+worldRegionArt('home')+worldRegionArt('park')+'</div><p class="world-kicker">EPIPHANY WORLD</p><h1>Understand. Move. Discover.</h1><p>Read the English instruction and explore a tiny village and complete its missions.</p><h3>Your character</h3><div class="world-color-picks"><button class="is-selected" data-world-color="#FFC531"><span class="world-color-swatch" style="--swatch:#FFC531"></span> Yellow</button><button data-world-color="#7C6CFF"><span class="world-color-swatch" style="--swatch:#7C6CFF"></span> Purple</button></div><h3>Clothes</h3><div class="world-color-picks"><button class="is-selected" data-world-outfit="#6C5CE7">Purple</button><button data-world-outfit="#168B68">Green</button><button data-world-outfit="#3478D4">Blue</button></div><button class="world-primary" data-world-begin>Start exploring →</button><p class="world-small">Arrow keys / WASD to move · Space to interact</p></div>';}
   function worldComplete(){if(!WORLD||WORLD.mode!=='play')return;const t=worldTask();if(t.check.type==='pickup'){WORLD.carried=null;WORLD.picked.delete(t.check.object);const original=WORLD_DATA.objects.find(o=>o.id===t.check.object);if(original&&!worldObj(original.id))WORLD.objects.push({...original});}const stars=WORLD.usedHelp?(WORLD.moves>(t.generated?14:7)?1:2):3,gain=WORLD.run==='practice'?worldAwardPractice(stars,t):worldAward(stars,t);WORLD.stars=Object.values(state.world.stars).reduce((sum,value)=>sum+(Number(value)||0),0);WORLD.mode='success';sfx('done');
-    $('#world-game').innerHTML=worldShell('<section class="world-success"><div class="world-big-star">★</div><p class="world-kicker">TASK COMPLETE</p><h2>Well done!</h2><div class="world-stars">'+('★'.repeat(stars))+'<span>'+('☆'.repeat(3-stars))+'</span></div><p>+'+gain+' XP earned</p><h3>New words</h3><div class="world-word-list">'+(t.words||[]).map(w=>'<span class="world-word-chip"><b>'+esc(w[0])+'</b><small>'+esc(w[1])+'</small></span>').join('')+'</div>'+(t.suggestedStory&&STORIES.some(s=>s.id===t.suggestedStory&&storyLevelIndex(s.level)<=storyLevelIndex(currentLevel().id))?'<button class="world-secondary" data-world-story="'+esc(t.suggestedStory)+'">Read the story behind this task →</button>':'')+'<button class="world-primary" data-world-next>'+(WORLD.index===WORLD.tasks.length-1?(WORLD.run==='practice'?'Finish run':'Finish area'):'Next task')+' →</button></section>');}
+    $('#world-game').innerHTML=worldShell('<section class="world-success"><div class="world-big-star">★</div><p class="world-kicker">TASK COMPLETE</p><h2>Well done!</h2><div class="world-stars">'+('★'.repeat(stars))+'<span>'+('☆'.repeat(3-stars))+'</span></div><p>+'+gain+' XP earned</p><div class="world-context-tip"><strong>English in action</strong><p>“'+esc(t.instruction)+'”</p>'+(t.words&&t.words[0]?'<small>In this mission, <b>'+esc(t.words[0][0])+'</b> means '+esc(t.words[0][1])+'. Read the instruction aloud to practise it in context.</small>':'<small>Read the instruction aloud and connect the English words to the action you just completed.</small>')+'</div><h3>New words</h3><div class="world-word-list">'+(t.words||[]).map(w=>'<span class="world-word-chip"><b>'+esc(w[0])+'</b><small>'+esc(w[1])+'</small></span>').join('')+'</div>'+(t.suggestedStory&&STORIES.some(s=>s.id===t.suggestedStory&&storyLevelIndex(s.level)<=storyLevelIndex(currentLevel().id))?'<button class="world-secondary" data-world-story="'+esc(t.suggestedStory)+'">Read the story behind this task →</button>':'')+'<button class="world-primary" data-world-next>'+(WORLD.index===WORLD.tasks.length-1?(WORLD.run==='practice'?'Finish run':'Finish area'):'Next task')+' →</button></section>');}
   function worldRunBonus(){
     if(!WORLD||WORLD.run!=='practice')return '';
     if(!WORLD.bonusGiven){WORLD.bonusGiven=true;const b=awardActivity(15,WORLD.tasks.length);state.world.runs=(state.world.runs||0)+1;save();WORLD.bonusText='+15 XP run bonus.'+(b?' '+b:'');}
@@ -1856,7 +1907,7 @@
     if(e.target.closest('[data-world-speak]')){if(worldTask())speak(worldTask().instruction);return;}
     
     if(e.target.closest('[data-world-help-toggle]')){if(WORLD){const panel=$('#world-help-panel'),button=e.target.closest('[data-world-help-toggle]'),opening=panel.hidden;panel.hidden=!opening;button.setAttribute('aria-expanded',String(opening));button.textContent=opening?'✕ Close help':'💡 Need help?';}return;}
-    const helpLevel=e.target.closest('[data-world-help-level]');if(helpLevel&&WORLD){const level=Number(helpLevel.dataset.worldHelpLevel),t=worldTask(),c=worldStep(),o=(c&&c.object&&worldObj(c.object))||(c&&c.person&&worldObj(c.person)),copy=$('#world-help-copy');if(level===1){copy.textContent=t.hint||'Look for the key noun (the person or thing) and the direction word in the instruction.';}else if(level===2){WORLD.usedHelp=true;WORLD.target=(c&&c.target)?{x:c.target.x,y:c.target.y}:o?{x:o.x,y:o.y+((c.type==='under'||c.type==='behind')?1:0)}:(c&&c.type==='between'?{x:9,y:12}:c&&c.type==='pickup'?{x:4,y:9}:c&&c.type==='give'?{x:13,y:10}:{x:9,y:8});copy.textContent=(c&&c.type==='pickup')?'Follow the glowing marker to the item, stand next to it, then press “Space · Interact”.':(c&&c.type==='give')?'Carry the requested item to the highlighted person. Stand next to them and press “Space · Interact”.':'Follow the glowing marker. The goal is usually the highlighted object or the tile beside it; use the arrows to move one step at a time.';worldDraw();}else{const targetName=o?(W_AR[o.name]||W_AR[o.id]||o.name):'';const arRelation={near:'اقترب من',interact:'اقترب من ثم تفاعل مع',at:'اذهب إلى',under:'قف أسفل',behind:'قف خلف',left:'قف على يسار',right:'قف على يمين',above:'قف أعلى',below:'قف أسفل',between:'قف بين',pickup:'التقط',give:'سلّم الغرض إلى',offset:'تحرّك من مكانك'};const action=arRelation[c&&c.type]||'ابحث عن';copy.setAttribute('dir','rtl');copy.textContent=(c&&c.type==='pickup')?'تحرّك إلى الغرض المضيء، قف بجانبه ثم اضغط «Space · Interact» لالتقاطه.':(c&&c.type==='give')?'احمل الغرض المطلوب إلى الشخص المحدّد، قف بجانبه ثم اضغط «Space · Interact» لتسليمه.':action+(targetName?' '+targetName:'')+'. استخدم أزرار الأسهم للتحرّك خطوةً خطوة، واستمع إلى التعليمات إذا احتجت.';}$$('[data-world-help-level]').forEach(button=>button.classList.toggle('is-selected',button===helpLevel));worldStatus();return;}
+    const helpLevel=e.target.closest('[data-world-help-level]');if(helpLevel&&WORLD){const level=Number(helpLevel.dataset.worldHelpLevel),t=worldTask(),c=worldStep(),o=(c&&c.object&&worldObj(c.object))||(c&&c.person&&worldObj(c.person)),copy=$('#world-help-copy');copy.setAttribute('dir','auto');if(level===1){copy.textContent=t.hint||'Look for the key noun (the person or thing) and the direction word in the instruction.';}else if(level===2){WORLD.usedHelp=true;WORLD.target=worldHelpTarget(c,o);copy.textContent=(c&&c.type==='pickup')?'Follow the glowing marker to the item, stand next to it, then press “Space · Interact”.':(c&&c.type==='give')?'Carry the requested item to the highlighted person. Stand next to them and press “Space · Interact”.':'Follow the glowing marker. The goal is usually the highlighted object or the tile beside it; use the arrows to move one step at a time.';worldDraw();}else{const targetName=o?(W_AR[o.name]||W_AR[o.id]||o.name):'';const arRelation={near:'اقترب من',interact:'اقترب من ثم تفاعل مع',at:'اذهب إلى',under:'قف أسفل',behind:'قف خلف',left:'قف على يسار',right:'قف على يمين',above:'قف أعلى',below:'قف أسفل',between:'قف بين',pickup:'التقط',give:'سلّم الغرض إلى',offset:'تحرّك من مكانك'};const action=arRelation[c&&c.type]||'ابحث عن';copy.setAttribute('dir','rtl');copy.textContent=(c&&c.type==='pickup')?'تحرّك إلى الغرض المضيء، قف بجانبه ثم اضغط «Space · Interact» لالتقاطه.':(c&&c.type==='give')?'احمل الغرض المطلوب إلى الشخص المحدّد، قف بجانبه ثم اضغط «Space · Interact» لتسليمه.':action+(targetName?' '+targetName:'')+'. استخدم أزرار الأسهم للتحرّك خطوةً خطوة، واستمع إلى التعليمات إذا احتجت.';}$$('[data-world-help-level]').forEach(button=>button.classList.toggle('is-selected',button===helpLevel));worldStatus();return;}
     const pc=e.target.closest('[data-world-color]');if(pc&&WORLD){WORLD.player.color=pc.dataset.worldColor;$('#world-game').querySelectorAll('[data-world-color]').forEach(b=>b.classList.toggle('is-selected',b===pc));return;}
     const po=e.target.closest('[data-world-outfit]');if(po&&WORLD){WORLD.outfit=po.dataset.worldOutfit;$('#world-game').querySelectorAll('[data-world-outfit]').forEach(b=>b.classList.toggle('is-selected',b===po));return;}
     if(e.target.closest('[data-world-begin]')){WORLD.mode='play';worldRenderPlay();return;}
