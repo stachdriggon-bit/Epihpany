@@ -580,9 +580,10 @@
       return new RegExp('\\b'+escaped+'\\b','i').test(lower);
     }));
     const details=covered.length;
-    if(details>=2)return {hits:details,total:groups.length,title:'You explained the meaning well!',message:'Your explanation covers '+details+' useful parts of the meaning. Compare it with the example definition and see if you can make it even more precise.'};
+    if(details>=3)return {hits:details,total:groups.length,title:'You explained the meaning clearly!',message:'Your explanation includes '+details+' useful meaning clues. Compare it with the example definition and see whether you can make it even more precise.'};
+    if(details===2)return {hits:details,total:groups.length,title:'You have the main idea',message:'You included two useful clues. To make your explanation stronger, add one more detail about what it is, what it does, or when people use it.'};
     if(details===1)return {hits:details,total:groups.length,title:'You have part of the idea',message:'You mentioned one useful part of the meaning. Add another detail: what it is, what it does, or how it helps in this situation.'};
-    return {hits:0,total:groups.length,title:'Good start — add a clearer clue',message:'Your answer may be on the right track, but this quick checker could not find enough detail. Describe its purpose, what it connects or protects, or how it is used. Different wording can still be correct.'};
+    return {hits:0,total:groups.length,title:'Good start — add a clearer clue',message:'This quick checker could not find enough specific meaning clues yet. Describe its purpose, what it connects or protects, or how it is used. Different wording can still be correct.'};
   }
   function createStorySubmit(form){
     const data=new FormData(form),topic=String(data.get('topic')||'mystery'),name=String(data.get('name')||'Robin').trim().slice(0,24)||'Robin',friend=String(data.get('friend')||'Maya').trim().slice(0,24)||'Maya',time=String(data.get('time')||'today'),place=String(data.get('place')||CREATE_STORY_PLACES[0]),t=CREATE_STORY_TOPICS[topic]||CREATE_STORY_TOPICS.mystery;
