@@ -482,4 +482,18 @@ const TYPING_QUESTIONS = [
     "why_ar": "اختر الصيغة التي تناسب الفاعل والزمن وتركيب الجملة.",
     "answer": "better"
   }
+  ,
+  {"id":"type-a1-11","level":"A1","prompt":"My sister ___ ten years old.","hint":"be","accept":["is"],"why_en":"Use “is” with a singular third-person subject.","why_ar":"نستخدم is مع فاعل مفرد غائب.","answer":"is"},
+  {"id":"type-a1-12","level":"A1","prompt":"We ___ English at school.","hint":"study","accept":["study"],"why_en":"Use the base form with “we” in the present simple.","why_ar":"نستخدم الفعل الأساسي مع we في المضارع البسيط.","answer":"study"},
+  {"id":"type-a2-11","level":"A2","prompt":"There isn’t ___ sugar in the jar.","hint":"much / many","accept":["much"],"why_en":"Sugar is uncountable, so “much” fits this negative sentence.","why_ar":"Sugar اسم غير معدود، لذلك نستخدم much في الجملة المنفية.","answer":"much"},
+  {"id":"type-a2-12","level":"A2","prompt":"I have known her ___ five years.","hint":"for / since","accept":["for"],"why_en":"Use “for” with a duration of time.","why_ar":"نستخدم for مع مدة زمنية.","answer":"for"},
+  {"id":"type-b1-11","level":"B1","prompt":"If I had studied harder, I ___ the exam.","hint":"pass","accept":["would have passed"],"why_en":"The third conditional uses would have + past participle in the result clause.","why_ar":"في الشرط الثالث نستخدم would have مع التصريف الثالث في النتيجة.","answer":"would have passed"},
+  {"id":"type-b1-12","level":"B1","prompt":"She suggested ___ a taxi.","hint":"take","accept":["taking"],"why_en":"Suggest can be followed by a gerund (-ing form).","why_ar":"يمكن أن يتبع suggest فعل بصيغة ing.","answer":"taking"},
+  {"id":"type-b2-11","level":"B2","prompt":"No sooner had we sat down ___ the alarm rang.","hint":"connector","accept":["than"],"why_en":"The fixed construction is “no sooner … than”.","why_ar":"التركيب الثابت هو no sooner … than.","answer":"than"},
+  {"id":"type-b2-12","level":"B2","prompt":"The report needs ___ before publication.","hint":"revise","accept":["revising","to be revised"],"why_en":"“Need” can take an -ing form with passive meaning, or a passive infinitive.","why_ar":"يمكن أن يأتي need مع ing بمعنى المبني للمجهول أو مع مصدر مبني للمجهول.","answer":"revising"},
+  {"id":"type-c1-01","level":"C1","prompt":"Not until the figures were verified ___ the report released.","hint":"be","accept":["was"],"why_en":"“Not until” at the beginning triggers inversion in the main clause.","why_ar":"عند بدء الجملة بـ Not until يحدث القلب في الجملة الرئيسية.","answer":"was"},
+  {"id":"type-c1-02","level":"C1","prompt":"Her account was consistent ___ the available evidence.","hint":"preposition","accept":["with"],"why_en":"The established collocation is “consistent with”.","why_ar":"التركيب الصحيح هو consistent with.","answer":"with"},
+  {"id":"type-c2-01","level":"C2","prompt":"Were the premise ___ false, the inference would collapse.","hint":"prove","accept":["to prove"],"why_en":"Formal hypothetical inversion uses “were + subject + to-infinitive”.","why_ar":"في القلب الافتراضي الرسمي نستخدم were + الفاعل + to + الفعل.","answer":"to prove"},
+  {"id":"type-c2-02","level":"C2","prompt":"The evidence is suggestive, but not ___.","hint":"decisive","accept":["conclusive"],"why_en":"“Conclusive” means sufficient to settle a question definitively.","why_ar":"Conclusive تعني حاسمًا بما يكفي لإنهاء الجدل حول المسألة.","answer":"conclusive"}
+
 ];
