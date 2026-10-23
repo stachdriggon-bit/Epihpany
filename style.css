@@ -880,3 +880,12 @@ body[data-theme="dark"] .player-profile-card,body[data-theme="dark"] .profile-po
 .level-note{margin-top:10px!important;padding-top:10px;border-top:1px solid var(--line);font-size:13px;color:var(--ink-2)}
 .level-check-retake{margin-top:14px;min-height:44px;border-radius:14px;font-weight:800}
 body[data-theme="dark"] .level-note{border-color:var(--line)}
+
+/* Adaptive practice: a compact personal feedback panel on the home screen. */
+.weakness-panel{margin:0 0 1.25rem}
+.weakness-panel .weakness-note{color:var(--muted,#667085);line-height:1.55;margin:.65rem 0 1rem}
+.weakness-list{display:grid;gap:.5rem;list-style:none;margin:.75rem 0 1rem;padding:0}
+.weakness-list li{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:.65rem .8rem;border-radius:12px;background:var(--surface-2,rgba(127,127,127,.08))}
+.weakness-list li span{font-weight:600}
+.weakness-list li b{font-size:.82rem;white-space:nowrap;color:var(--muted,#667085)}
+.weakness-panel .btn{width:100%;justify-content:center}
