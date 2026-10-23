@@ -54,7 +54,7 @@
     try {
       const {error} = await client.auth.signInWithOAuth({
         provider,
-        options: {redirectTo: window.location.origin + window.location.pathname}
+        options: {redirectTo: new URL('/auth-callback.html', window.location.origin).href}
       });
       if (error) throw error;
     } catch (error) {
@@ -457,7 +457,7 @@
       submit.disabled = true;
       try {
         if (currentMode === 'signup') {
-          const {data, error} = await client.auth.signUp({email, password, options:{emailRedirectTo:window.location.origin + window.location.pathname}});
+          const {data, error} = await client.auth.signUp({email, password, options:{emailRedirectTo:new URL('/auth-callback.html', window.location.origin).href}});
           if (error) throw error;
           if (data.session) {
             status('Account created. Preparing your saved progress…', 'success');
@@ -472,7 +472,7 @@
           status('Signed in. Loading your progress…', 'loading');
         } else if (currentMode === 'reset') {
           const {error} = await client.auth.resetPasswordForEmail(email, {
-            redirectTo: window.location.origin + window.location.pathname
+            redirectTo: new URL('/auth-callback.html', window.location.origin).href
           });
           if (error) throw error;
           setMode('signin');
