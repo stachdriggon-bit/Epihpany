@@ -925,40 +925,65 @@ body[data-theme="dark"] .level-note{border-color:var(--line)}
 @media(max-width:360px){.logo-word{display:none}}
 
 
-/* Player account privacy preference */
+/* Player account privacy preference: clear, prominent switch */
 .privacy-setting {
-  margin: 1rem 0 1.15rem;
-  padding: 1rem;
-  border: 1px solid var(--line, #dfe3ef);
-  border-radius: 16px;
-  background: var(--surface-soft, rgba(127, 139, 180, .06));
+  min-width: 0;
+  margin: 1.1rem 0 1.25rem;
+  padding: 1rem 1.1rem;
+  border: 1.5px solid var(--line-2, #c6cbe6);
+  border-radius: 18px;
+  background: linear-gradient(135deg, rgba(255,197,49,.12), rgba(124,108,255,.07));
+}
+.privacy-setting legend {
+  padding: 0 .45rem;
+  color: var(--ink, #121a3a);
+  font: 800 15px/1.4 var(--display, sans-serif);
 }
 .privacy-toggle {
-  display: flex;
-  align-items: flex-start;
+  display: grid;
+  grid-template-columns: 1px 42px minmax(0,1fr);
+  align-items: center;
   gap: .8rem;
   cursor: pointer;
 }
 .privacy-toggle input {
-  flex: 0 0 auto;
-  width: 1.15rem;
-  height: 1.15rem;
-  margin: .2rem 0 0;
-  accent-color: var(--accent, #6658d3);
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
 }
-.privacy-toggle-copy {
-  display: grid;
-  gap: .25rem;
+.privacy-switch {
+  position: relative;
+  width: 42px;
+  height: 25px;
+  border-radius: 99px;
+  background: #9299ae;
+  transition: background .18s ease;
 }
-.privacy-toggle-copy strong {
-  color: var(--ink, inherit);
-  font-weight: 750;
+.privacy-switch::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 19px;
+  height: 19px;
+  border-radius: 50%;
+  background: white;
+  box-shadow: 0 1px 3px rgba(18,26,58,.25);
+  transition: transform .18s ease;
 }
-.privacy-toggle-copy small {
-  color: var(--ink-2, #626b88);
-  line-height: 1.5;
-}
-.privacy-setting .profile-small-note {
-  margin: .7rem 0 0 1.95rem;
-  line-height: 1.5;
+.privacy-toggle input:checked + .privacy-switch { background: #6356d9; }
+.privacy-toggle input:checked + .privacy-switch::after { transform: translateX(17px); }
+.privacy-toggle input:focus-visible + .privacy-switch { outline: 3px solid var(--focus); outline-offset: 3px; }
+.privacy-toggle-copy { display: grid; gap: .25rem; min-width: 0; }
+.privacy-toggle-copy strong { color: var(--ink, #121a3a); font-weight: 800; }
+.privacy-toggle-copy small { color: var(--ink-2, #626b88); line-height: 1.55; }
+.privacy-setting .profile-small-note { margin: .8rem 0 0; line-height: 1.55; }
+.privacy-setting .profile-small-note strong { color: var(--ink, #121a3a); }
+body[data-theme="dark"] .privacy-setting { background: rgba(124,108,255,.12); }
+@media(max-width:420px) {
+  .privacy-setting { padding: .9rem; }
+  .privacy-toggle { grid-template-columns: 1px 38px minmax(0,1fr); gap: .65rem; }
+  .privacy-switch { width: 38px; }
+  .privacy-toggle input:checked + .privacy-switch::after { transform: translateX(13px); }
 }
