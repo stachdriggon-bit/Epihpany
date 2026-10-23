@@ -653,7 +653,7 @@
 
   /* ---------- unified, offline Arabic translation ---------- */
   const AR_TRANSLATION_WORDS = {
-    what:'ما',why:'لماذا',how:'كيف',when:'متى',where:'أين',who:'من',which:'أي',does:'هل',do:'هل',did:'هل',is:'هو',are:'هم',was:'كان',were:'كانوا',the:'الـ',a:'',an:'',and:'و',or:'أو',but:'لكن',because:'لأن',so:'لذلك',if:'إذا',then:'ثم',to:'إلى',of:'من',for:'لـ',with:'مع',without:'بدون',in:'في',on:'على',at:'في',from:'من',this:'هذا',that:'ذلك',these:'هذه',those:'تلك',it:'هو',he:'هو',she:'هي',they:'هم',we:'نحن',you:'أنت',my:'ـي',your:'ـك',their:'ـهم',
+    what:'ما',why:'لماذا',how:'كيف',when:'متى',where:'أين',who:'من',which:'أي',does:'يفعل',do:'يفعل',did:'فعل',is:'هو',are:'هم',was:'كان',were:'كانوا',the:'الـ',a:'',an:'',and:'و',or:'أو',but:'لكن',because:'لأن',so:'لذلك',if:'إذا',then:'ثم',to:'إلى',of:'من',for:'لـ',with:'مع',without:'بدون',in:'في',on:'على',at:'في',from:'من',this:'هذا',that:'ذلك',these:'هذه',those:'تلك',it:'هو',he:'هو',she:'هي',they:'هم',we:'نحن',you:'أنت',my:'ـي',your:'ـك',their:'ـهم',
     choose:'اختر',select:'اختر',tap:'اضغط',click:'انقر',read:'اقرأ',listen:'استمع',write:'اكتب',type:'اكتب',answer:'إجابة',answers:'إجابات',question:'سؤال',correct:'صحيح',incorrect:'خاطئ',wrong:'خاطئ',best:'أفضل',closest:'الأقرب',meaning:'المعنى',mean:'يعني',means:'تعني',word:'كلمة',words:'كلمات',sentence:'جملة',complete:'أكمل',fill:'املأ',blank:'الفراغ',missing:'الناقص',only:'فقط',one:'واحد',more:'أكثر',again:'مجدّدًا',practice:'تدرّب',try:'حاول',explain:'اشرح',
     not:'لا',never:'أبدًا',always:'دائمًا',often:'غالبًا',sometimes:'أحيانًا',take:'يأخذ',takes:'يأخذ',took:'أخذ',go:'يذهب',goes:'يذهب',went:'ذهب',come:'يأتي',came:'جاء',have:'لديه',has:'لديه',had:'كان لديه',want:'يريد',wants:'يريد',need:'يحتاج',needs:'يحتاج',make:'يصنع',makes:'يصنع',made:'صنع',get:'يحصل على',give:'يعطي',find:'يجد',found:'وجد',use:'يستخدم',help:'يساعد',like:'يحب',know:'يعرف',think:'يعتقد',feel:'يشعر',say:'يقول',said:'قال',see:'يرى',saw:'رأى',friend:'صديق',friends:'أصدقاء',family:'العائلة',people:'الناس',happy:'سعيد',sad:'حزين',tired:'متعب',hungry:'جائع',rain:'مطر',raining:'تمطر',umbrella:'مظلة',house:'منزل',home:'المنزل',school:'مدرسة',work:'عمل',water:'ماء',food:'طعام',book:'كتاب',day:'يوم',today:'اليوم',yesterday:'أمس',tomorrow:'غدًا',time:'وقت',early:'مبكرًا',late:'متأخرًا',before:'قبل',after:'بعد',first:'أول',last:'أخير',new:'جديد',old:'قديم',small:'صغير',big:'كبير',large:'كبير',long:'طويل',short:'قصير',fast:'سريع',slow:'بطيء',good:'جيد',bad:'سيئ',easy:'سهل',difficult:'صعب',important:'مهم',different:'مختلف',borrow:'يستعير',buy:'يشتري',bought:'اشترى',sell:'يبيع',return:'يعيد',delighted:'سعيد للغاية',happening:'يحدث',happened:'حدث',absolutely:'تمامًا',very:'جدًا',extremely:'للغاية',confused:'مرتبك',worried:'قلق',pleased:'مسرور',glad:'سعيد',clear:'واضح',instructions:'تعليمات',instruction:'تعليمات',option:'خيار',options:'خيارات'
   };
@@ -912,7 +912,7 @@
     if(AR_TRANSLATION_PHRASES[lower])return AR_TRANSLATION_PHRASES[lower];
     return source.replace(/[A-Za-z]+(?:['’-][A-Za-z]+)*/g,token=>{
       const key=token.toLowerCase();
-      if(AR_TRANSLATION_WORDS[key])return AR_TRANSLATION_WORDS[key];
+      if(Object.prototype.hasOwnProperty.call(AR_TRANSLATION_WORDS,key))return AR_TRANSLATION_WORDS[key];
       if(typeof STORY_WORDS_AR!=='undefined'&&STORY_WORDS_AR[key])return STORY_WORDS_AR[key];
       if(typeof W_AR!=='undefined'&&W_AR[key])return W_AR[key];
       return token;
