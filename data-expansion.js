@@ -236,7 +236,7 @@
   // This is an incremental batch; the 20-per-band target is not yet marked complete.
   const qualityPass = [
     ['vocabulary','A1','Which word names a place where you borrow books?',['library','bakery','station','garage'],0,'A library lends books to readers.','ما المكان الذي يمكنك استعارة الكتب منه؟ المكتبة هي المكان المخصص لذلك.'],
-    ['grammar','A1','Choose the correct sentence.',['He can swim.','He cans swim.','He can swims.','He can to swim.'],0,'After the modal verb can, use the base form without “to”.','بعد can نستخدم الفعل بصيغته الأساسية دون to أو s.'],
+    ['grammar','A1','Which sentence uses the modal can correctly?',['He can swim.','He cans swim.','He can swims.','He can to swim.'],0,'After the modal verb can, use the base form without “to”.','بعد can نستخدم الفعل بصيغته الأساسية دون to أو s.'],
     ['story','A1','A shop assistant asks, “Would you like a bag?” You need one. What do you say?',['Yes, please.','I am bag.','Yes, I like.','Give bag me.'],0,'“Yes, please” is a polite, natural response.','Yes, please رد طبيعي ومهذب لقبول العرض.'],
     ['listening','A1','A notice says, “The pool closes at six.” When must swimmers leave?',['Before or at six','At seven','Only in the morning','The pool never closes'],0,'The notice gives six o’clock as closing time.','الإعلان يعني أن المسبح يغلق عند السادسة.'],
     ['spelling','A1','Choose the correctly spelled word.',['because','becouse','becaus','beacause'],0,'The correct spelling is because.','التهجئة الصحيحة هي because.'],
