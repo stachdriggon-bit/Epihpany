@@ -1917,7 +1917,8 @@ const MISTAKE_QUESTIONS = [
     ],
     "options": 0,
     "answer": "Ostensible describes what appears to be the case.",
-    "why_en": "Ostensible تصف ما يبدو أنه صحيح دون ضمان ذلك."
+    "why_en": "Ostensible describes something that appears to be true or real, without guaranteeing that it actually is.",
+    "why_ar": "تصف كلمة ostensible شيئًا يبدو صحيحًا أو حقيقيًا ظاهريًا، دون أن يعني ذلك بالضرورة أنه كذلك فعلًا."
   },
   {
     "id": "trap-c2-bank-08",
