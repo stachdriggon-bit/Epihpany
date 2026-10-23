@@ -523,7 +523,7 @@
       }
     });
     $('account-otp-input')?.addEventListener('input', event => {
-      event.target.value = event.target.value.replace(/\\D/g, '').slice(0, 6);
+      event.target.value = event.target.value.replace(/\D/g, '').slice(0, 6);
     });
     $('account-resend-code')?.addEventListener('click', async () => {
       if (!client || currentMode !== 'verify') return;
