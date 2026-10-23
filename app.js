@@ -50,12 +50,14 @@
     spelling:  {label:'Spelling',     tone:'pink',   glyph:'abc',  time:3, blurb:'Sharpen spelling and word recognition.'},
     advanced:  {label:'Advanced',     tone:'ink',    icon:'spark',  time:6, blurb:'Explore precise language and subtle meaning.'},
     mistakes:  {label:'Common mistakes', tone:'coral', glyph:'?!', time:4, blurb:'Learn from common English mistakes.'},
+    personalized:{label:'Your weak spots',tone:'coral',glyph:'↻',time:4,blurb:'Practice the mistake patterns you personally repeat.'},
     spot:      {label:'Spot the Mistake', tone:'coral', glyph:'?!', time:4, blurb:'Tap the one incorrect word.'},
     typing:    {label:'Type It', tone:'sky', glyph:'Aa', time:4, blurb:'Write the missing word from memory.'}
   };
   const ORDER = ['vocabulary', 'spelling', 'grammar', 'story', 'listening', 'advanced', 'mistakes', 'typing'];
   const UNLOCK = {vocabulary:0, spelling:0, grammar:1, story:2, listening:3, advanced:4, mistakes:0, spot:0, typing:0};
   GAMES.mistakes = {title:'Common Mistakes', category:'GRAMMAR', xp:40, desc:'Understand common mistakes made by English learners.', questions:MISTAKE_QUESTIONS.map(q=>({q:q.prompt,sub:q.sub,answers:q.options,correct:q.answer,explain:q.why_en,word:null,level:q.level,ar:q.arabic_hint,id:q.id,trap:q.trap,why_ar:q.why_ar,arabic_hint:q.arabic_hint,aha:null}))};
+  GAMES.personalized = {title:'Your Weak Spots',category:'PERSONAL REVIEW',xp:45,desc:'A short practice set built from the mistake patterns you have missed before.',questions:GAMES.mistakes.questions.slice()};
   GAMES.spot = {title:'Spot the Mistake',category:'GRAMMAR',xp:40,desc:'Tap the one incorrect word in a short text.',questions:SPOT_QUESTIONS.map(q=>({...q,q:q.text,sub:'Tap the one incorrect word.',answers:[q.fix],correct:q.wrongIndex,explain:q.why_en,aha:null,mode:'spot'}))};
   GAMES.typing = {title:'Type It',category:'WRITING',xp:45,desc:'Write the missing word without multiple-choice hints.',questions:TYPING_QUESTIONS.map(q=>({...q,q:q.prompt,sub:'Hint: '+q.hint,answers:q.accept,correct:0,explain:q.why_en,aha:null,mode:'typing'}))};
   const AHA_BY_QUESTION = Object.fromEntries(AHA_NOTES.map(note=>[note.questionId,note]));
@@ -106,6 +108,29 @@
     $('#freeze-note').textContent = state.streakFreezes > 0 ? 'Your streak has a little safety net.' : 'No freezes left right now. Keep your streak going!';
   }
 
+  function renderWeaknessPanel() {
+    const panel = $('#weakness-panel');
+    if (!panel) return;
+    const labels = {
+      'am-is-are':'Be verbs (am / is / are)',
+      'in-on-at':'Prepositions (in / on / at)',
+      'adjective-order':'Adjective order',
+      'present-perfect-vs-past':'Present perfect vs past simple',
+      'countable-uncountable':'Countable and uncountable nouns',
+      'verb-patterns':'Verb patterns'
+    };
+    const counts = Object.entries(state.mistakeTrapErrors || {})
+      .map(([key,value])=>({key,count:Number(value)||0,label:labels[key] || String(key).replace(/[-_]+/g,' ').replace(/\b\w/g,c=>c.toUpperCase())}))
+      .filter(x=>x.count>0).sort((a,b)=>b.count-a.count);
+    const repeated = counts.filter(x=>x.count>=2);
+    const total = counts.reduce((sum,x)=>sum+x.count,0);
+    const list = (repeated.length ? repeated : counts).slice(0,3);
+    const insight = list.length
+      ? '<ul class="weakness-list">'+list.map(x=>'<li><span>'+esc(x.label)+'</span><b>'+x.count+' '+(x.count===1?'miss':'misses')+'</b></li>').join('')+'</ul>'
+      : '<p class="weakness-note">Your pattern report will appear after you practise a few common-mistake questions. It is not a grade — it helps choose what to practise next.</p>';
+    panel.innerHTML = '<section class="review-panel weakness-panel"><div class="review-head"><div><p class="kicker">PERSONAL PRACTICE</p><h2>'+(repeated.length?'Let’s work on your patterns':'Build your learning profile')+'</h2></div><span class="review-count">'+(repeated.length?repeated.length+' focus':'Adaptive')+'</span></div><p class="review-note">'+(repeated.length?'These patterns have tripped you up more than once. Your next practice gives them extra weight.':total?'We’ve started tracking the patterns you miss. A few more answers will help personalise practice.':'Practice normally and Epiphany will learn which patterns need more attention.')+'</p>'+insight+'<button type="button" class="btn '+(repeated.length?'':'btn-ghost')+'" data-game="personalized">'+(repeated.length?'Practise my weak spots':'Try a personal review')+' · 5 questions</button></section>';
+  }
+
   function renderHome() {
     const h = new Date().getHours();
     $('#greeting').textContent = h < 12 ? 'Good morning' : h < 18 ? 'Good afternoon' : 'Good evening';
@@ -121,6 +146,7 @@
     $('#next-xp').textContent = '+' + game.xp + ' XP';
     $('#next-art').innerHTML = '<div class="glyph">' + glyph(g) + '</div>';
     $('#next-start').dataset.game = g;
+    renderWeaknessPanel();
 
     const done = Math.min(state.daily, 2);
     $('#ring-text').textContent = done + '/2';
@@ -498,7 +524,19 @@
     };
     // Use five questions from the learner's current CEFR level whenever possible.
     let selected;
-    if (type === 'mistakes') {
+    if (type === 'personalized') {
+      const all = game.questions.slice();
+      const weak = all.filter(q => Number(state.mistakeTrapErrors[q.trap] || 0) > 0 || Number(state.mistakeQuestionErrors[q.id] || 0) > 0);
+      const pool = weak.length >= 5 ? weak : all;
+      const remaining = pool.slice(), chosen = [];
+      while (chosen.length < Math.min(5, remaining.length) && remaining.length) {
+        const weights = remaining.map(q => 1 + Math.min(12, Number(state.mistakeTrapErrors[q.trap] || 0) * 3) + Math.min(5, Number(state.mistakeQuestionErrors[q.id] || 0) * 2));
+        const totalWeight = weights.reduce((sum,w)=>sum+w,0); let roll = Math.random()*totalWeight, at = 0;
+        for (; at < weights.length - 1; at++) { roll -= weights[at]; if (roll < 0) break; }
+        chosen.push(remaining.splice(at,1)[0]);
+      }
+      selected = shuffle(chosen);
+    } else if (type === 'mistakes') {
       const levels = LEVELS.map(l=>l.id), center = levels.indexOf(level);
       let pool = game.questions.filter(q => Math.abs(levels.indexOf(q.level) - center) <= 1);
       if (pool.length < 5) pool = game.questions.slice();
@@ -590,7 +628,7 @@
     if (ok) { G.score++; const wp=wordParts(q.word,q.explain); if(wp)G.words.push([wp.word,wp.meaning,wp.level]); }
     else if (!G.reviewMode) {
       addReview(q.word,q.explain);
-      if (G.type === 'mistakes' && q.id) {
+      if (['mistakes','personalized'].includes(G.type) && q.id) {
         state.mistakeTrapErrors[q.trap] = (Number(state.mistakeTrapErrors[q.trap]) || 0) + 1;
         state.mistakeQuestionErrors[q.id] = (Number(state.mistakeQuestionErrors[q.id]) || 0) + 1;
       }
