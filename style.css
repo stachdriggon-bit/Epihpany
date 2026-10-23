@@ -860,3 +860,17 @@ body[data-theme="dark"] .account-modal-card{background:var(--ground);color:var(-
 .profile-login-hint{padding:18px;border-radius:18px;background:var(--ground);color:var(--ink-2);font-size:14px}
 @media(max-width:560px){.player-profile-hero{align-items:flex-start;gap:15px;padding:18px}.player-avatar-wrap{width:82px;height:82px;border-radius:23px;font-size:49px}.player-profile-heading h3{font-size:25px}.profile-avatar-options{padding:14px}.avatar-choice{width:43px;height:43px;font-size:25px}.profile-posts-heading{flex-direction:column}.post-compose-footer{align-items:stretch;flex-direction:column}.post-compose-footer .btn{width:100%}.player-profile-form>.btn{width:100%}}
 body[data-theme="dark"] .player-profile-card,body[data-theme="dark"] .profile-posts,body[data-theme="dark"] .player-post{background:var(--surface)}
+
+
+/* Community English wall */
+.community-wall{margin-top:24px;padding:clamp(18px,3vw,28px);border:1.5px solid var(--line);border-radius:24px;background:var(--surface)}
+.community-wall .profile-posts-heading{align-items:center}
+.community-refresh{min-height:40px;padding:0 15px;border:1.5px solid var(--line-2);border-radius:12px;font-size:13px}
+.community-post-list{display:grid;gap:12px}
+.community-post{display:flex;align-items:flex-start;gap:13px;padding:16px;border:1.5px solid var(--line);border-radius:18px;background:var(--ground)}
+.community-post-avatar{width:48px;height:48px;flex:none;display:grid;place-items:center;overflow:hidden;border-radius:15px;background:var(--avatar-color,#FFE08A);font-size:27px}
+.community-avatar-image{width:100%;height:100%;object-fit:cover}
+.community-post-content{min-width:0;flex:1}
+.community-post-meta{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;margin:2px 0 8px}
+.community-post-meta strong{font-size:14px}.community-post-meta time{font-size:11px;color:var(--ink-3)}
+@media(max-width:480px){.community-wall .profile-posts-heading{align-items:flex-start}.community-refresh{width:100%}}
