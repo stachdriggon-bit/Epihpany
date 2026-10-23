@@ -39,8 +39,10 @@
       sign +
       `<rect x="14" y="39" width="9" height="9" rx="1.5" fill="#f8e7c9" ${st(1.2)}/><rect x="15.5" y="40.5" width="6" height="6" fill="${o.glass}"/><path d="M18.5 40.5v6M15.5 43.5h6" stroke="#fff" stroke-width=".9"/>` +
       `<rect x="35" y="39" width="9" height="9" rx="1.5" fill="#f8e7c9" ${st(1.2)}/><rect x="36.5" y="40.5" width="6" height="6" fill="${o.glass}"/><path d="M39.5 40.5v6M36.5 43.5h6" stroke="#fff" stroke-width=".9"/>` +
-      `<rect x="26" y="40" width="9" height="14" rx="2" fill="#74503a" ${st(1.2)}/><circle cx="33" cy="48" r="1" fill="#e8c36e"/>` +
-      `<rect x="24" y="53.5" width="13" height="2.4" rx="1" fill="#d5c09a"/>`);
+      `<path d="M15 48h8M36 48h8" stroke="#8b6846" stroke-width="1.7" stroke-linecap="round"/>` +
+      `<path d="M16 47q1-4 2-1 2-5 3 0 1-3 2 1" fill="#78a85c" stroke="#4f8950" stroke-width=".7"/><path d="M37 47q1-4 2-1 2-5 3 0 1-3 2 1" fill="#78a85c" stroke="#4f8950" stroke-width=".7"/>` +
+      `<rect x="26" y="40" width="9" height="14" rx="2" fill="#74503a" ${st(1.2)}/><path d="M27.5 42h6" stroke="#a97b58" stroke-width="1"/><circle cx="33" cy="48" r="1" fill="#e8c36e"/>` +
+      `<rect x="24" y="53.5" width="13" height="2.4" rx="1" fill="#d5c09a"/><path d="M22 55.5h17" stroke="#8b765b" stroke-width="1" stroke-linecap="round"/>`);
   }
 
   function well() {
