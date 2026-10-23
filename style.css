@@ -1541,3 +1541,5 @@ body[data-theme="dark"] .dock{background:rgba(27,32,48,.97)}
 .create-story-assessment{padding:12px 14px;border-radius:12px;background:var(--ground);line-height:1.7}
 .create-story-hints .btn{justify-self:start}
 @media(max-width:560px){.create-story-hints{padding:10px}.create-story-paragraph{line-height:1.75}.create-story-paragraph .hidden-word{min-width:54px}}
+
+.create-story-self-rate{padding:10px 12px;border-inline-start:3px solid var(--focus);background:var(--ground);border-radius:8px;line-height:1.6}
