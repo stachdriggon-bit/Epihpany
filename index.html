@@ -29,6 +29,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
   <script src="supabase-config.js?v=accounts-20261023" defer></script>
   <script src="account.js?v=profile-polish-20261023" defer></script>
+  <script src="notifications.js?v=notifications-20261023" defer></script>
   <script src="app.js?v=promotion-system-20261023" defer></script>
 </head>
 <body data-theme="light">
@@ -73,6 +74,7 @@
     </nav>
 
     <div class="top-right">
+      <button class="icon-btn notification-bell" id="notification-bell" type="button" aria-label="Open notifications" aria-expanded="false" aria-controls="notification-panel" title="Notifications"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span id="notification-count" class="notification-count" hidden>0</span></button>
       <span class="chip chip-streak" title="Day streak"><svg><use href="#i-flame"/></svg><b id="chip-streak">0</b><span class="sr-only"> day streak</span></span>
       <span class="chip chip-xp" title="Total XP"><svg><use href="#i-spark"/></svg><b id="chip-xp">0</b><span class="sr-only"> XP</span></span>
       <button class="ar-toggle" id="ar-toggle" type="button" aria-pressed="false" title="Arabic help: show hints and explanations in Arabic">
@@ -367,6 +369,21 @@
 </div>
 
 <div class="world-game" id="world-game" hidden aria-label="World village game"></div>
+
+<section class="notification-panel" id="notification-panel" hidden aria-label="EPIPHANY notifications">
+  <div class="notification-panel-head"><div><p class="kicker">YOUR LEARNING SPACE</p><h2>Notifications</h2></div><button class="icon-btn" id="notification-close" type="button" aria-label="Close notifications">×</button></div>
+  <p class="notification-panel-intro">Challenge renewals and learning milestones, all in one place.</p>
+  <div class="notification-list" id="notification-list"></div>
+  <p class="notification-empty" id="notification-empty">You're all caught up. New challenge reminders will appear here.</p>
+  <div class="notification-panel-actions"><button class="btn btn-ghost" id="notification-read-all" type="button">Mark all as read</button></div>
+  <details class="notification-settings"><summary>Notification settings</summary>
+    <label><input type="checkbox" data-notification-pref="inSite" checked> In-site notifications</label>
+    <label><input type="checkbox" data-notification-pref="browser"> Browser alerts on this device</label>
+    <p id="notification-permission" class="notification-permission">Browser notifications are optional.</p>
+    <button class="btn btn-ghost" id="notification-enable-browser" type="button">Enable browser alerts</button>
+    <p class="notification-email-note">Email reminders will become available after EPIPHANY's secure email sender and scheduled backend are configured.</p>
+  </details>
+</section>
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
