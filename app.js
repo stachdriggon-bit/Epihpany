@@ -678,14 +678,14 @@
     if(!target.id)target.id='translation-source-'+(++translationControlId);
     const output=document.createElement('div');output.className='translation-result';output.hidden=true;output.id=target.id+'-arabic';output.lang='ar';output.dir='rtl';
     const button=document.createElement('button');button.type='button';button.className='translate-btn';button.dataset.translateTarget=target.id;button.setAttribute('aria-expanded','false');button.innerHTML='<span aria-hidden="true">ع</span> ترجمة '+(kind==='answer'?'الإجابة':'النص');button.hidden=!state.translationEnabled;
-    if(kind==='answer'){const row=document.createElement('div');row.className='answer-translation-row';target.parentNode.insertBefore(row,target);row.appendChild(target);row.appendChild(button);row.appendChild(output);}
+    if(kind==='answer'){const row=document.createElement('div');const mini=target.classList.contains('mg-card')||target.classList.contains('mg-tile');row.className='answer-translation-row'+(mini?' mini-answer-translation-row':'');target.parentNode.insertBefore(row,target);row.appendChild(target);row.appendChild(button);row.appendChild(output);}
     else{target.insertAdjacentElement('afterend',button);button.insertAdjacentElement('afterend',output);}
   }
   function enhanceTranslationControls(root) {
     if(!root||!state.translationEnabled||ST)return;
-    root.querySelectorAll('.q-text,.typing-prompt,.spot-text,.answer').forEach(el=>{
+    root.querySelectorAll('.q-text,.typing-prompt,.spot-text,.answer,.mg-card,.mg-tile').forEach(el=>{
       if(el.closest('#story-answers,.story-reader,.story-screen,[data-story-mode]'))return;
-      addTranslationControl(el,el.classList.contains('answer')?'answer':'question');
+      addTranslationControl(el,(el.classList.contains('answer')||el.classList.contains('mg-card')||el.classList.contains('mg-tile'))?'answer':'question');
     });
   }
   document.addEventListener('click',e=>{
