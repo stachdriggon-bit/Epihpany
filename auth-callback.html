@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#F5F6FC">
+  <title>Connecting your Epiphany account</title>
+  <style>
+    :root{color-scheme:light;--ink:#24243a;--muted:#6d6d85;--accent:#6e62e8;--paper:#f5f6fc}
+    *{box-sizing:border-box}
+    body{margin:0;min-height:100vh;display:grid;place-items:center;padding:24px;background:radial-gradient(ellipse at 15% 10%,#e7e4ff 0,transparent 45%),radial-gradient(ellipse at 90% 90%,#dff8f1 0,transparent 42%),var(--paper);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink)}
+    main{width:min(100%,440px);padding:36px 28px;text-align:center;background:rgba(255,255,255,.88);border:1px solid rgba(110,98,232,.13);border-radius:28px;box-shadow:0 22px 70px rgba(45,42,91,.12)}
+    .mark{width:58px;height:58px;display:grid;place-items:center;margin:0 auto 18px;border-radius:20px;background:#ece9ff;color:var(--accent);font-size:30px}
+    h1{margin:0;font-size:clamp(1.45rem,5vw,1.8rem);letter-spacing:-.04em}
+    p{margin:12px 0 0;color:var(--muted);line-height:1.65}
+    .spinner{width:24px;height:24px;margin:22px auto 0;border:3px solid #e6e4f8;border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite}
+    .success .mark{background:#def7e8;color:#16794a}
+    .error .mark{background:#ffe8e8;color:#b42318}
+    button{margin-top:22px;border:0;border-radius:13px;padding:12px 18px;background:var(--accent);color:#fff;font:inherit;font-weight:700;cursor:pointer}
+    button:focus-visible{outline:3px solid #bdb7ff;outline-offset:3px}
+    [hidden]{display:none!important}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    @media(prefers-reduced-motion:reduce){.spinner{animation:none}}
+  </style>
+</head>
+<body>
+  <main id="card" aria-live="polite">
+    <div class="mark" id="mark" aria-hidden="true">✦</div>
+    <h1 id="title">Connecting your account…</h1>
+    <p id="message">Please wait while we safely finish signing you in to Epiphany.</p>
+    <div class="spinner" id="spinner" aria-hidden="true"></div>
+    <button id="continue" type="button" hidden>Continue to Epiphany</button>
+  </main>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-config.js?v=auth-callback-20261023"></script>
+  <script>
+    (() => {
+      const $ = id => document.getElementById(id);
+      const card = $('card');
+      let finished = false;
+      let redirectTimer = null;
+      function show(kind, title, message, autoRedirect) {
+        finished = true;
+        card.classList.remove('success','error');
+        if (kind) card.classList.add(kind);
+        $('mark').textContent = kind === 'success' ? '✓' : kind === 'error' ? '!' : '✦';
+        $('title').textContent = title;
+        $('message').textContent = message;
+        $('spinner').hidden = kind !== '';
+        $('continue').hidden = kind === '';
+        if (redirectTimer) clearTimeout(redirectTimer);
+        if (autoRedirect) redirectTimer = setTimeout(() => { window.location.replace('/'); }, 1800);
+      }
+      $('continue').addEventListener('click', () => window.location.replace('/'));
+      const params = new URLSearchParams(window.location.search);
+      const callbackError = params.get('error_description') || params.get('error');
+      if (callbackError) {
+        show('error', 'We couldn’t finish signing you in', 'The link may have expired, or the account provider rejected the request. Return to Epiphany and try again.', false);
+        return;
+      }
+      const config = window.EPIPHANY_SUPABASE_CONFIG;
+      const sdk = window.supabase;
+      if (!config || !config.url || !config.publishableKey || !sdk || !sdk.createClient) {
+        show('error', 'Account service unavailable', 'We could not load the account service. Please return to Epiphany and try again.', false);
+        return;
+      }
+      const client = sdk.createClient(config.url, config.publishableKey);
+      let settled = false;
+      const succeed = () => {
+        if (settled) return;
+        settled = true;
+        show('success', 'You’re all set!', 'Your account is connected. Taking you back to Epiphany…', true);
+      };
+      client.auth.onAuthStateChange((event, session) => {
+        if (session && session.user && ['SIGNED_IN','INITIAL_SESSION','TOKEN_REFRESHED'].includes(event)) succeed();
+      });
+      client.auth.getSession().then(({data,error}) => {
+        if (error) throw error;
+        if (data && data.session && data.session.user) succeed();
+        else {
+          // Allow the SDK a moment to exchange a PKCE code or process confirmation tokens.
+          setTimeout(async () => {
+            if (settled) return;
+            try {
+              const result = await client.auth.getSession();
+              if (result.data && result.data.session && result.data.session.user) succeed();
+              else show('error', 'The link could not be completed', 'Your email may be verified, but Epiphany did not receive a sign-in session. Return to the app and sign in with your email and password.', false);
+            } catch {
+              show('error', 'The link could not be completed', 'Please return to Epiphany and try signing in again. If the link has expired, request a new one.', false);
+            }
+          }, 1200);
+        }
+      }).catch(() => show('error', 'The link could not be completed', 'Please return to Epiphany and try signing in again. If the link has expired, request a new one.', false));
+    })();
+  </script>
+</body>
+</html>
