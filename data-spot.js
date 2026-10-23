@@ -291,11 +291,11 @@ const SPOT_QUESTIONS = [
   {
     "id": "spot-a1-09",
     "level": "A1",
-    "text": "They is at home.",
+    "text": "My friends is in the garden.",
     "wrongIndex": 1,
     "fix": "are",
-    "why_en": "Use “are” with the plural subject “they”.",
-    "why_ar": "نستخدم are مع الفاعل الجمع they."
+    "why_en": "Friends is plural, so use are.",
+    "why_ar": "كلمة friends جمع، لذلك نستخدم are."
   },
   {
     "id": "spot-a1-10",
@@ -543,11 +543,11 @@ const SPOT_QUESTIONS = [
   {
     "id": "spot-a1-13",
     "level": "A1",
-    "text": "She can sings very well.",
+    "text": "The children is playing outside.",
     "wrongIndex": 2,
-    "fix": "sing",
-    "why_en": "A modal verb such as can is followed by the base form.",
-    "why_ar": "بعد الفعل الناقص can نستخدم الفعل بصيغته الأساسية."
+    "fix": "are",
+    "why_en": "Children is plural, so the present continuous uses are + verb-ing.",
+    "why_ar": "كلمة children جمع، لذا نستخدم are قبل الفعل المنتهي بـ ing في المضارع المستمر."
   },
   {
     "id": "spot-a1-14",
@@ -813,20 +813,20 @@ const SPOT_QUESTIONS = [
   {
     "id": "spot-a2-19",
     "level": "A2",
-    "text": "I have saw him before.",
+    "text": "She has ate breakfast already.",
     "wrongIndex": 2,
-    "fix": "seen",
-    "why_en": "Present perfect uses have + past participle, so saw must be seen.",
-    "why_ar": "يتكون المضارع التام من have والتصريف الثالث، لذا تصبح saw هي seen."
+    "fix": "eaten",
+    "why_en": "The present perfect uses has + the past participle; the past participle of eat is eaten.",
+    "why_ar": "يتكون المضارع التام من has والتصريف الثالث؛ والتصريف الثالث من eat هو eaten."
   },
   {
     "id": "spot-a2-20",
     "level": "A2",
-    "text": "There isn't some bread left.",
+    "text": "I have a good news.",
     "wrongIndex": 2,
-    "fix": "any",
-    "why_en": "Any is normally used in negative statements like this.",
-    "why_ar": "نستخدم any عادةً في الجمل المنفية مثل هذه."
+    "fix": "some",
+    "why_en": "News is uncountable in English, so do not use a before it; say some good news or a piece of good news.",
+    "why_ar": "كلمة news غير معدودة في الإنجليزية، لذلك لا نستخدم a قبلها؛ نقول some good news أو a piece of good news."
   },
   {
     "id": "spot-b1-17",
