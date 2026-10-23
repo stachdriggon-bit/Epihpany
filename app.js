@@ -81,6 +81,7 @@
   // CEFR is determined by the placement assessment, never by XP earned in games.
   const levelIndex = () => Math.max(0, LEVELS.findIndex(level => level.id === state.assessedLevel));
   const currentLevel = () => LEVELS[levelIndex()];
+  const hasDeveloperAccess = () => !!(window.EpiphanyAuth && typeof window.EpiphanyAuth.isDeveloper === 'function' && window.EpiphanyAuth.isDeveloper());
   const liveStreak = () => {
     const y = new Date(); y.setDate(y.getDate() - 1);
     const twoDaysAgo = new Date(); twoDaysAgo.setDate(twoDaysAgo.getDate() - 2);
@@ -436,7 +437,7 @@
   const storyIsSaved=word=>state.words.some(w=>String(w[0]).toLowerCase()===String(word).toLowerCase());
   function renderStories(){
     const root=$('#stories-content');if(!root||typeof STORIES==='undefined')return;
-    const unlocked=storyLevelIndex(currentLevel().id),ordered=STORIES.slice().sort((a,b)=>storyLevelIndex(a.level)-storyLevelIndex(b.level)||a.title.localeCompare(b.title));
+    const unlocked=hasDeveloperAccess()?LEVELS.length-1:storyLevelIndex(currentLevel().id),ordered=STORIES.slice().sort((a,b)=>storyLevelIndex(a.level)-storyLevelIndex(b.level)||a.title.localeCompare(b.title));
     const featured=ordered.find(s=>storyLevelIndex(s.level)<=unlocked&&!(state.stories[s.id]&&state.stories[s.id].done))||ordered.find(s=>storyLevelIndex(s.level)<=unlocked)||ordered[0];
     const card=(s,large)=>{const locked=storyLevelIndex(s.level)>unlocked,done=!!(state.stories[s.id]&&state.stories[s.id].done);return '<button type="button" class="story-card '+(large?'story-featured ':'')+(locked?'is-locked ':'')+(done?'is-done':'')+'" data-story-open="'+esc(s.id)+'" '+(locked?'aria-disabled="true"':'')+'><span class="story-art" style="--story-tone:'+esc(s.tone)+'"><span>'+esc(s.emoji)+'</span>'+(locked?'<b>🔒</b>':'')+'</span><span class="story-card-info"><span class="story-card-meta"><em>'+esc(s.level)+'</em><small>'+s.minutes+' min</small></span><strong>'+esc(s.title)+'</strong><small>'+(locked?'Unlock at '+esc(s.level):done?'✓ Completed · '+state.stories[s.id].score+'/3':'Read this story')+'</small></span></button>';};
     root.innerHTML='<section class="story-feature-section"><div class="block-head"><h2>Recommended story</h2><p>One small story, a little more English.</p></div>'+card(featured,true)+'</section>'+LEVELS.map(item=>item.id).map(level=>'<section class="story-level"><div class="block-head"><h2>'+level+' stories</h2><p>'+(storyLevelIndex(level)<=unlocked?'Ready to read':'Reach '+level+' to unlock these stories')+'</p></div><div class="story-grid">'+ordered.filter(s=>s.level===level&&s.id!==featured.id).map(s=>card(s,false)).join('')+'</div></section>').join('');
@@ -464,7 +465,7 @@
     }
     return {...story,questions};
   }
-  function startStory(id){const source=STORIES.find(s=>s.id===id);if(!source)return;if(storyLevelIndex(source.level)>storyLevelIndex(currentLevel().id)){toast('Reach '+source.level+' to unlock this story.');return;}const story={...source,pages:source.pages.map(page=>[...page]),questions:prepareStoryQuestions(source).questions};ST={story,page:0,mode:'read',qi:0,score:0,results:[],savedDuring:[],answered:false,decisionDone:false,decisionChoice:null,decisionResumePage:null};G=null;$('#game').className='game t-story';$('#game').hidden=false;lockPage(true);hideSheet();renderStoryPage();}
+  function startStory(id){const source=STORIES.find(s=>s.id===id);if(!source)return;if(!hasDeveloperAccess()&&storyLevelIndex(source.level)>storyLevelIndex(currentLevel().id)){toast('Reach '+source.level+' to unlock this story.');return;}const story={...source,pages:source.pages.map(page=>[...page]),questions:prepareStoryQuestions(source).questions};ST={story,page:0,mode:'read',qi:0,score:0,results:[],savedDuring:[],answered:false,decisionDone:false,decisionChoice:null,decisionResumePage:null};G=null;$('#game').className='game t-story';$('#game').hidden=false;lockPage(true);hideSheet();renderStoryPage();}
   function storyTextTokens(text){return (String(text||'').match(/[\p{L}]+(?:['’][\p{L}]+)*|[^\p{L}]+/gu)||[]).map(part=>{if(!/^[\p{L}]+(?:['’][\p{L}]+)*$/u.test(part))return esc(part);const bare=part.toLowerCase().normalize('NFD').replace(/[\p{Diacritic}]/gu,'');const known=storyLookup(bare);return '<button type="button" class="story-word '+(known?'is-vocab ':'')+(storyIsSaved(bare)?'is-saved':'')+'" data-story-word="'+esc(bare)+'" data-story-display="'+esc(part)+'" aria-label="Learn the word '+esc(bare)+'">'+esc(part)+'</button>';}).join('');}
   function storyLookup(key){const all=(typeof STORIES!=='undefined'?STORIES:[]);for(const story of all){const found=Object.entries(story.vocab||{}).find(([k])=>k.toLowerCase()===key);if(found){const v=found[1];return Array.isArray(v)?{meaning:v[0],ar:v[1],pronunciation:v[2],example:v[3]}:{meaning:v.meaning||'',ar:v.ar||v.meaning_ar||'',pronunciation:v.pronunciation||key,example:v.example||''};}}const global=(typeof WOTD_WORDS!=='undefined'?WOTD_WORDS:[]).find(w=>w.word.toLowerCase()===key);if(global)return {meaning:global.meaning,ar:global.meaning_ar,pronunciation:global.pronunciation,example:global.example};const saved=state.words.find(w=>String(w[0]).toLowerCase()===key);if(saved)return {meaning:saved[1],ar:'معنى محفوظ سابقًا',pronunciation:key,example:''};const fallback=STORY_WORDS[key]||STORY_WORDS[storyWordBase(key)]||null;if(fallback){return {meaning:fallback,ar:STORY_WORDS_AR[key]||STORY_WORDS_AR[storyWordBase(key)]||'المعنى بالعربية غير متوفر بعد',pronunciation:key,example:''};}return null;}
   function storyWordBase(word){if(STORY_WORDS[word])return word;let w=word;if(w.endsWith('ies')&&w.length>4)w=w.slice(0,-3)+'y';else if(w.endsWith('es')&&w.length>4)w=w.slice(0,-2);else if(w.endsWith('s')&&w.length>3)w=w.slice(0,-1);if(STORY_WORDS[w])return w;const candidates=[word.slice(0,-1),word.slice(0,-2),word.replace(/ies$/,'y'),word.replace(/ied$/,'y'),word.replace(/ed$/,''),word.replace(/ing$/,'')];for(const candidate of candidates){if(candidate!==word&&STORY_WORDS[candidate])return candidate;}return word;}
@@ -1800,11 +1801,11 @@
     if(!WORLD)return;
     const completed=(state.world&&state.world.done||[]).length;
     const regions=WORLD_DATA.regions||[];
-    $('#world-game').innerHTML='<div class="world-region-hub"><p class="world-kicker">EPIPHANY WORLD</p><h1>Choose your next adventure</h1><p>Explore places, talk to people, finish missions and earn rewards.</p><div class="world-region-grid">'+regions.map(r=>{const open=completed>=r.unlock;const done=(state.world.done||[]).filter(id=>id.startsWith('world-'+r.id+'-')).length;return '<div class="world-region-wrap"><button class="world-region-card '+(open?'':'is-locked')+'" data-world-region="'+esc(r.id)+'" '+(open?'':'disabled')+'><span class="world-region-icon">'+worldRegionArt(r.id)+'</span><strong>'+esc(r.name)+'</strong><small>'+esc(r.description)+'</small><span class="world-region-progress">'+(open?done+' missions completed':'Complete '+r.unlock+' missions to unlock')+'</span></button>'+(open?'<button class="world-practice-btn" data-world-practice="'+esc(r.id)+'">Practice run · new missions every time</button>':'')+'</div>';}).join('')+'</div><button class="world-secondary" data-world-exit>Back to Epiphany</button></div>';
+    $('#world-game').innerHTML='<div class="world-region-hub"><p class="world-kicker">EPIPHANY WORLD</p><h1>Choose your next adventure</h1><p>Explore places, talk to people, finish missions and earn rewards.</p><div class="world-region-grid">'+regions.map(r=>{const open=hasDeveloperAccess()||completed>=r.unlock;const done=(state.world.done||[]).filter(id=>id.startsWith('world-'+r.id+'-')).length;return '<div class="world-region-wrap"><button class="world-region-card '+(open?'':'is-locked')+'" data-world-region="'+esc(r.id)+'" '+(open?'':'disabled')+'><span class="world-region-icon">'+worldRegionArt(r.id)+'</span><strong>'+esc(r.name)+'</strong><small>'+esc(r.description)+'</small><span class="world-region-progress">'+(open?done+' missions completed':'Complete '+r.unlock+' missions to unlock')+'</span></button>'+(open?'<button class="world-practice-btn" data-world-practice="'+esc(r.id)+'">Practice run · new missions every time</button>':'')+'</div>';}).join('')+'</div><button class="world-secondary" data-world-exit>Back to Epiphany</button></div>';
   }
   function worldChooseRegion(id,mode){
     if(!WORLD)return;const region=(WORLD_DATA.regions||[]).find(r=>r.id===id);if(!region)return;
-    const completed=(state.world&&state.world.done||[]).length;if(completed<region.unlock){toast('Complete more missions to unlock this place.');return;}
+    const completed=(state.world&&state.world.done||[]).length;if(!hasDeveloperAccess()&&completed<region.unlock){toast('Complete more missions to unlock this place.');return;}
     const storyTasks=WORLD_DATA.tasks.filter(t=>(t.region||'village')===region.id);
     // Story missions first; once they are all done (or on request) play endless practice runs.
     const storyDone=storyTasks.every(t=>(state.world.done||[]).includes(t.id));
@@ -2001,7 +2002,7 @@
     const lv = e.target.closest('[data-level]');
     if (lv) {
       const i = Number(lv.dataset.level), l = LEVELS[i];
-      if (i > levelIndex()) toast(l.id + ' is not unlocked by XP. Pass its level check to update your CEFR estimate.');
+      if (i > levelIndex() && !hasDeveloperAccess()) toast(l.id + ' is not unlocked by XP. Pass its level check to update your CEFR estimate.');
       else startGame(LEVEL_GAME[i]);
     }
   });
