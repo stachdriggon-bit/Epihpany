@@ -962,6 +962,8 @@
     m=source.match(/^Which word means\s+[“"']?(.+?)[”"']?\??$/i);
     if(m)return {text:'أي كلمة تعني «'+translateKnownPhrase(m[1].replace(/[“”"']/g,''))+'»؟',exact:true};
     const translated=translateKnownPhrase(source);
+    const untranslated=(translated.match(/[A-Za-z]+(?:['’-][A-Za-z]+)*/g)||[]);
+    if(untranslated.length)return {text:'لم تتوفر ترجمة موثوقة لهذا النص بعد. يمكنك متابعة النص بالإنجليزية أو تجربة سؤال آخر.',exact:false};
     const tokens=source.match(/[A-Za-z]+(?:['’-][A-Za-z]+)*/g)||[];
     const unknown=tokens.filter(token=>!AR_TRANSLATION_WORDS[token.toLowerCase()]&&!(typeof STORY_WORDS_AR!=='undefined'&&STORY_WORDS_AR[token.toLowerCase()])&&!(typeof W_AR!=='undefined'&&W_AR[token.toLowerCase()]));
     if(tokens.length>0&&unknown.length/tokens.length>0.3)return {text:'لم تتوفر ترجمة موثوقة لهذا النص بعد. يمكنك متابعة النص بالإنجليزية أو تجربة سؤال آخر.',exact:false};
