@@ -905,7 +905,26 @@
     'mitigate':'يخفّف.','plausible':'معقول أو محتمل.','succinct':'موجز.','tentative':'مبدئي.','coherent':'مترابط.',
     'infer':'يستنتج.','robust':'متين / قوي.','nuanced':'دقيق الفروق.','equivocal':'ملتبس أو غير واضح.',
     'intransigent':'متصلّب في الرأي.','salient':'بارز / مهم.','ostensible':'ظاهري.','inchoate':'غير مكتمل التشكّل.',
-    'parsimonious':'مقتصد جدًا.','perfunctory':'شكلي / بلا عناية.','invidious':'ينطوي على تمييز أو ظلم.','recondite':'غامض وصعب الفهم.'
+    'parsimonious':'مقتصد جدًا.','perfunctory':'شكلي / بلا عناية.','invidious':'ينطوي على تمييز أو ظلم.','recondite':'غامض وصعب الفهم.',
+    'Check every letter carefully':'تحقّق من كل حرف بعناية.',
+    'Too expensive':'باهظ الثمن جدًا.','Reasonably priced':'سعره معقول.','Hard to find':'يصعب العثور عليه.','Free of charge':'مجانًا.',
+    'Very tired':'متعب جدًا.','Very excited':'متحمس جدًا.','Slightly hungry':'جائع قليلًا.','Quite surprised':'متفاجئ إلى حدّ ما.',
+    'Needing a drink':'بحاجة إلى شراب.','Needing sleep':'بحاجة إلى النوم.','Feeling cold':'يشعر بالبرد.','Feeling angry':'يشعر بالغضب.',
+    'Lives near you':'يسكن بالقرب منك.','Teaches you':'يدرّسك.','Works in a hospital':'يعمل في مستشفى.','Travels with you':'يسافر معك.',
+    'One time':'مرة واحدة.','Most of the time':'في معظم الأوقات.','Very quickly':'بسرعة كبيرة.',
+    'Can buy things there now':'يمكنك شراء الأشياء هناك الآن.',
+    'Cannot enter to shop now':'لا يمكنك دخول المتجر الآن.',
+    'Must pay less':'يجب أن تدفع مبلغًا أقل.','Can only use cash':'يمكنك استخدام النقود الورقية فقط.',
+    'Buy more milk':'اشترِ المزيد من الحليب.','Have no milk left':'لم يتبقَّ أي حليب.',
+    'Spill the milk':'يسكب الحليب.','Drink milk quickly':'يشرب الحليب بسرعة.',
+    'Can I wear it to see if it fits?':'هل يمكنني ارتداؤه لأرى إن كان مناسبًا؟',
+    'Can I take it home for free?':'هل يمكنني أخذه إلى المنزل مجانًا؟',
+    'Can I repair it?':'هل يمكنني إصلاحه؟','Can I exchange money?':'هل يمكنني صرف العملة؟',
+    'A shopping list':'قائمة مشتريات.','Proof of payment':'إثبات الدفع.','A discount card':'بطاقة خصم.',
+    'make up':'يؤلف أو يختلق؛ ويعتمد المعنى على السياق.',
+    'A “neighbour” is someone who…':'كلمة neighbour تصف شخصًا…',
+    'If a shop is “closed”, you…':'إذا كان المتجر مغلقًا، فأنت…',
+    '“Could I try this on?” means…':'ما معنى العبارة «Could I try this on?»؟'
   }).map(([key,value])=>[normalizeTranslationKey(key),value]));
   function translateKnownPhrase(source) {
     const lower=normalizeTranslationKey(source);
