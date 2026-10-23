@@ -755,3 +755,14 @@ body[data-theme="dark"] .trap-explanation{background:#252B3C;border-color:var(--
 .world-intro-art svg{display:block;width:clamp(62px,10vw,100px);height:clamp(62px,10vw,100px);filter:drop-shadow(0 7px 5px rgba(38,58,43,.12))}
 .world-color-picks button{display:inline-flex;align-items:center;justify-content:center;gap:8px}
 .world-color-swatch{display:inline-block;width:14px;height:14px;border-radius:50%;background:var(--swatch);border:2px solid rgba(30,35,45,.18);box-shadow:inset 0 0 0 1px rgba(255,255,255,.5)}
+
+
+/* World guidance: make the next action easy to scan */
+.world-help-panel{border-bottom:1px solid #eadb9a;box-shadow:0 5px 16px rgba(67,57,23,.06)}
+.world-help-heading strong{font-size:15px}
+.world-help-panel>p{padding:10px 12px;border-radius:12px;background:#fff;color:#29344d;border:1px solid #eee5bd}
+.world-help-actions button{min-height:44px;transition:background .15s,border-color .15s,transform .15s}
+.world-help-actions button:hover,.world-help-actions button:focus-visible{border-color:#8c7724;background:#fff8d9;outline:2px solid transparent}
+.world-help-actions button.is-selected{background:#ffe78a;border-color:#a88917;box-shadow:inset 0 0 0 1px #a88917}
+.world-instruction strong{display:block;line-height:1.45}
+@media(max-width:600px){.world-help-panel>p{line-height:1.6}.world-help-actions button{min-height:46px}}
