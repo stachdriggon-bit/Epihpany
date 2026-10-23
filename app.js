@@ -1143,7 +1143,7 @@
   }
   function miniClick(e) {
     const el = e.target;
-    const close = el.closest('[data-mini-close]'); if (close) { closeGame(); return true; }
+    const close = el.closest('[data-mini-close]'); if (close) { closeGame(); openView('home'); return true; }
     const again = el.closest('[data-mini-again]'); if (again) { startMini(again.dataset.miniAgain); return true; }
     if (MG.done) return false;
     if (el.closest('#go-next')) { miniNext(); return true; }
