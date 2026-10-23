@@ -240,6 +240,7 @@
       renderPlayerProfile(data || {});
       profileStatus(data ? 'Your player profile is loaded.' : 'Choose a name and avatar, then save your profile.', 'success');
       await loadPlayerPosts();
+      await loadCommunityPosts();
     } catch (error) {
       console.error('Epiphany profile load failed:', error);
       renderPlayerProfile({});
@@ -262,6 +263,30 @@
       const date = post.created_at ? new Date(post.created_at).toLocaleDateString(undefined,{year:'numeric',month:'short',day:'numeric'}) : '';
       return '<article class="player-post"><div class="player-post-top"><span class="player-post-date">' + escapeProfileText(date) + '</span><button type="button" class="player-post-delete" data-delete-post="' + escapeProfileText(post.id) + '">Delete</button></div><p class="player-post-body">' + escapeProfileText(post.body) + '</p></article>';
     }).join('') : '<div class="profile-empty-posts">Your English corner is ready. Share your first little thought above ✨</div>';
+  }
+  async function loadCommunityPosts() {
+    const list = $('community-post-list');
+    if (!client || !list) return;
+    const {data, error} = await client.from('player_posts').select('id,user_id,body,created_at').order('created_at',{ascending:false}).limit(20);
+    if (error) throw error;
+    const posts = data || [];
+    if (!posts.length) {
+      list.innerHTML = '<div class="profile-empty-posts">No posts yet. Be the first to share a little English moment ✨</div>';
+      return;
+    }
+    const userIds = [...new Set(posts.map(post => post.user_id))];
+    const {data:profiles, error:profileError} = await client.from('player_profiles').select('user_id,display_name,avatar_url,avatar_emoji,avatar_color').in('user_id',userIds);
+    if (profileError) throw profileError;
+    const byUser = new Map((profiles || []).map(profile => [profile.user_id,profile]));
+    list.innerHTML = posts.map(post => {
+      const profile = byUser.get(post.user_id) || {};
+      const name = profile.display_name || 'English learner';
+      const date = post.created_at ? new Date(post.created_at).toLocaleDateString(undefined,{year:'numeric',month:'short',day:'numeric'}) : '';
+      const avatar = profile.avatar_url
+        ? '<img class="community-avatar-image" src="' + escapeProfileText(profile.avatar_url) + '" alt="">'
+        : '<span>' + escapeProfileText(profile.avatar_emoji || '🦊') + '</span>';
+      return '<article class="community-post"><div class="community-post-avatar" style="--avatar-color:' + escapeProfileText(/^#[0-9a-f]{6}$/i.test(profile.avatar_color || '') ? profile.avatar_color : '#FFE08A') + '">' + avatar + '</div><div class="community-post-content"><div class="community-post-meta"><strong>' + escapeProfileText(name) + '</strong><time>' + escapeProfileText(date) + '</time></div><p class="player-post-body">' + escapeProfileText(post.body) + '</p></div></article>';
+    }).join('');
   }
   async function persistPlayerProfile() {
     if (!client || !currentUser) {
@@ -359,11 +384,18 @@
         if (error) throw error;
         input.value = '';
         await loadPlayerPosts();
+        await loadCommunityPosts();
         profileStatus('Post shared in your English corner.', 'success');
       } catch (error) {
         console.error('Epiphany post create failed:', error);
         profileStatus('Could not share the post. Check the player profile setup SQL in Supabase.', 'error');
       } finally { submit.disabled = false; }
+    });
+    $('community-refresh')?.addEventListener('click', async () => {
+      const button = $('community-refresh');
+      button.disabled = true;
+      try { await loadCommunityPosts(); } catch (error) { profileStatus('Could not refresh community posts.', 'error'); }
+      finally { button.disabled = false; }
     });
     $('player-post-list')?.addEventListener('click', async event => {
       const button = event.target.closest('[data-delete-post]');
@@ -374,6 +406,7 @@
         const {error} = await client.from('player_posts').delete().eq('id',button.dataset.deletePost).eq('user_id',currentUser.id);
         if (error) throw error;
         await loadPlayerPosts();
+        await loadCommunityPosts();
         profileStatus('Post deleted.', 'success');
       } catch (error) {
         profileStatus('Could not delete this post. Please try again.', 'error');
