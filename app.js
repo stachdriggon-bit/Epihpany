@@ -536,6 +536,21 @@
       {pages:(n,f,p,t)=>[t+', '+n+' and '+f+' were walking in the hills near '+p+'. Dark clouds appeared, and the wind became stronger.','They found a small shelter under the rocks. Its roof and three walls kept the hikers dry while the storm passed.','When the rain stopped, they checked the path and continued their walk in safer weather.']},
       {pages:(n,f,p,t)=>[t+', '+n+' and '+f+' explored a beach near '+p+'. The wind grew cold, and heavy rain started before they could return.','A wooden shelter stood beside the path. It gave them a covered place away from the wind and rain.','They waited there, shared their snacks, and left when the weather became calm.']},
       {pages:(n,f,p,t)=>[t+', '+n+' and '+f+' were observing birds near '+p+'. A sudden storm began, and the small birds needed somewhere safe.','The park had a shelter with a roof and solid sides. It protected visitors from the rain while they waited for the storm to pass.','After the clouds moved away, the birds returned to the trees and the friends finished their nature walk.']}
+    ]},
+    communication:{label:'A message misunderstood',emoji:'💬',target:'apology',definition:'Something you say or write to show that you are sorry for a mistake or for hurting someone.',clue:'A message caused a misunderstanding. One character wants to repair the friendship by admitting the mistake and showing regret.',hints:['Think of the words people use after they have upset someone or made a mistake.','It is a way to say you are sorry and try to make things right.'],featureGroups:[['sorry','regret','regretful','feel bad','take responsibility'],['mistake','wrong','hurt','upset','offend'],['say','words','message','express','admit'],['repair','fix','make things right','forgive','friendship']],variants:[
+      {pages:(n,f,p,t)=>[t+', '+n+' sent '+f+' a short message about their plans in '+p+'. The message sounded rude, although that was not what '+n+' meant.',n+' realised the mistake and wrote an apology. The message explained the misunderstanding and showed that '+n+' was sorry for the hurtful words.','After they talked, '+f+' understood the intention. They agreed to ask questions before making assumptions next time.']},
+      {pages:(n,f,p,t)=>[t+', '+n+' borrowed '+f+'’s notebook in '+p+' and accidentally left it in the rain. The pages became wet, and '+f+' felt upset.',n+' offered to replace the notebook and gave a sincere apology. It was not just an excuse; '+n+' accepted responsibility for the mistake.','They made a plan to copy the damaged notes together. Their honest conversation helped rebuild trust.']},
+      {pages:(n,f,p,t)=>[t+', '+n+' forgot an important meeting with '+f+' in '+p+'. At first, '+f+' thought the meeting did not matter to '+n+'.',n+' sent an apology, explained the reason without making excuses, and suggested a new time. The message showed respect for '+f+'’s time.','They met the next day and added a reminder to their calendars. A clear apology helped them move forward.']}
+    ]},
+    technology:{label:'A device stops working',emoji:'🔋',target:'battery',definition:'A device that stores energy and supplies electrical power to a phone, toy, or other equipment.',clue:'A handheld device suddenly turns off even though it was working a moment ago. The characters check the part that stores the energy needed to run it.',hints:['Think about the part inside a phone or remote control that provides power.','It stores energy and lets an electronic device work without being plugged in all the time.'],featureGroups:[['power','energy','electricity','charge','supplies'],['store','stores','holds','keeps'],['device','phone','remote','toy','equipment'],['run','work','operate','turn on']],variants:[
+      {pages:(n,f,p,t)=>[t+', '+n+' and '+f+' were using a small radio during a trip near '+p+'. Suddenly, the sound stopped and the screen went dark.',f+' checked the battery, the part that stores energy and supplies power to the radio. Its charge was almost empty, so they replaced it with a charged one.','The radio worked again. They learned to check the power supply before deciding that a device was broken.']},
+      {pages:(n,f,p,t)=>[t+', '+n+' wanted to take a photo of an unusual bird in '+p+'. Just as the bird landed, the phone switched off.',n+' remembered that the battery stores energy for the phone. The battery level had been very low, so the phone could not stay on.','They used '+f+'’s phone to take the picture and charged '+n+'’s phone later. Next time, they planned to check the charge before leaving.']},
+      {pages:(n,f,p,t)=>[t+', '+n+' and '+f+' built a small toy car for a school project in '+p+'. The wheels turned briefly, then stopped.','The car’s battery supplied the electrical energy for its motor. They checked the contacts and discovered that one connection was loose.',n+' fixed the connection, and the toy car moved again. The pair learned that a device needs both a power source and a good connection.']}
+    ]},
+    investigation:{label:'The case of the missing object',emoji:'🕵️',target:'evidence',definition:'Facts, objects, or information that help show whether an explanation or claim is true.',clue:'The characters have different guesses about what happened. Instead of choosing a guess, they collect details that can support or disprove each explanation.',hints:['Think of information that helps you decide what really happened.','It can be a fact, a mark, a message, or an object that supports an explanation.'],featureGroups:[['fact','detail','information','clue','object','mark'],['support','show','prove','confirm','disprove'],['explanation','claim','idea','theory','what happened'],['observe','check','collect','compare','inspect']],variants:[
+      {pages:(n,f,p,t)=>[t+', '+n+' and '+f+' noticed that a class project had disappeared from a room in '+p+'. Each person had a different idea about where it might be.','They looked for evidence: a note showing who had borrowed the project, a mark near the storage shelf, and a message from the caretaker.',n+' and '+f+' compared the details and found that the project had been moved safely to another room. They learned to check facts before blaming anyone.']},
+      {pages:(n,f,p,t)=>[t+', '+n+' and '+f+' heard a loud noise outside their home in '+p+'. One person thought a window had broken, while the other suspected a bin had fallen over.','They gathered evidence before deciding: they checked the window, looked for broken glass, and noticed fresh wheel marks beside a fallen bin.','The details showed what had happened. They learned that careful observations are more useful than guesses.']},
+      {pages:(n,f,p,t)=>[t+', '+n+' and '+f+' were trying to discover why a plant in '+p+' had stopped growing. They had several possible explanations.','They checked the soil, compared the plant with a healthy one, and read the notes about watering. These facts were evidence they could use to test their ideas.','They found that the plant had received too little water. By checking the facts, they solved the problem and knew what to change.']}
     ]}
   };
   const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'};
@@ -667,6 +682,38 @@
   }
   const AR_TRANSLATION_PHRASES = Object.fromEntries(Object.entries({
     'Tap the incorrect word':'اضغط على الكلمة غير الصحيحة.',
+    'Choose the word that completes the sentence.':'اختر الكلمة التي تُكمل الجملة.',
+    'Choose the word that best completes the sentence.':'اختر الكلمة الأنسب لإكمال الجملة.',
+    'Choose the sentence with the correct grammar.':'اختر الجملة الصحيحة نحويًا.',
+    'Choose the sentence that sounds natural.':'اختر الجملة الأكثر طبيعية في الإنجليزية.',
+    'Find the mistake.':'اعثر على الخطأ.',
+    'Spot the mistake':'اكتشف الخطأ.',
+    'Type the missing word.':'اكتب الكلمة الناقصة.',
+    'Type the word you hear.':'اكتب الكلمة التي تسمعها.',
+    'Listen and choose the correct answer.':'استمع واختر الإجابة الصحيحة.',
+    'Read the sentence and choose the best answer.':'اقرأ الجملة واختر الإجابة الأنسب.',
+    'Choose the correct meaning of the word.':'اختر المعنى الصحيح للكلمة.',
+    'Choose the word with the opposite meaning.':'اختر الكلمة ذات المعنى المضاد.',
+    'Which sentence is grammatically correct?':'أي جملة صحيحة من الناحية النحوية؟',
+    'Which sentence is incorrect?':'أي جملة غير صحيحة؟',
+    'Select the natural response.':'اختر الرد الطبيعي المناسب للموقف.',
+    'What would you say in this situation?':'ماذا ستقول في هذا الموقف؟',
+    'Read the clues and infer the missing word.':'اقرأ القرائن واستنتج الكلمة الناقصة.',
+    'Use the context to work out the meaning.':'استعن بسياق النص لاستنتاج المعنى.',
+    'Choose the best word for the gap.':'اختر الكلمة الأنسب للفراغ.',
+    'Complete the dialogue.':'أكمل الحوار.',
+    'Put the words in the correct order.':'رتّب الكلمات ترتيبًا صحيحًا.',
+    'Choose the correct preposition.':'اختر حرف الجر الصحيح.',
+    'Choose the correct tense.':'اختر الزمن الصحيح.',
+    'Which word fits the context best?':'أي كلمة تناسب سياق النص أكثر؟',
+    'Read carefully before you answer.':'اقرأ بعناية قبل الإجابة.',
+    'Try again and look for a clue.':'حاول مرة أخرى وابحث عن قرينة.',
+    'Not quite. Check the meaning of the whole sentence.':'ليست صحيحة تمامًا. راجع معنى الجملة كاملةً.',
+    'Correct! You used the context well.':'صحيح! أحسنت استخدام سياق النص.',
+    'Correct answer':'الإجابة الصحيحة',
+    'Incorrect answer':'إجابة غير صحيحة',
+    'Show hint':'أظهر تلميحًا',
+    'Hide hint':'أخفِ التلميح',
     'Complete the sentence':'أكمل الجملة.',
     'Choose the closest meaning':'اختر المعنى الأقرب.',
     'Choose the best answer':'اختر أفضل إجابة.',
