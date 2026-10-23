@@ -818,3 +818,45 @@ body.account-modal-open{overflow:hidden}
 @media(max-width:480px){.account-welcome-modal{padding:12px}.account-modal-card{padding:26px 20px 22px;border-radius:25px;max-height:calc(100dvh - 24px)}.account-modal-brand{width:54px;height:54px;border-radius:18px;font-size:28px}.account-modal-intro{font-size:13px;margin-bottom:19px}}
 @media(prefers-reduced-motion:reduce){.account-modal-card{animation:none}}
 body[data-theme="dark"] .account-modal-card{background:var(--ground);color:var(--ink)}
+
+
+/* Player profile: identity, avatar builder and English mini-posts */
+.player-profile-card,.profile-posts{border:1.5px solid var(--line);border-radius:26px;background:var(--surface);overflow:hidden}
+.player-profile-hero{display:flex;align-items:center;gap:22px;padding:clamp(20px,4vw,32px);background:linear-gradient(125deg,#fff4ce 0%,#f0edff 58%,#e2f8f1 100%);border-bottom:1.5px solid var(--line)}
+.player-avatar-wrap{width:112px;height:112px;flex:none;display:grid;place-items:center;border:3px solid #fff;border-radius:30px;background:var(--avatar-color,#FFE08A);box-shadow:0 5px 0 rgba(18,26,58,.13);overflow:hidden;font-size:66px}
+.player-avatar-wrap img{width:100%;height:100%;object-fit:cover}
+.player-profile-heading{min-width:0}
+.profile-eyebrow{font-size:11px;font-weight:800;letter-spacing:.13em;color:#625b8b}
+.player-profile-heading h3{font-size:clamp(25px,4vw,36px);margin:7px 0 6px;overflow-wrap:anywhere}
+.player-profile-heading p{max-width:52ch;color:#4b5377;font-size:15px;overflow-wrap:anywhere}
+.profile-level-chip{display:inline-flex;gap:7px;align-items:center;margin-top:12px;padding:5px 11px;border-radius:99px;background:#fff;border:1px solid #daddef;font-size:11px;font-weight:800;letter-spacing:.07em}
+.profile-save-status{padding:12px 20px;color:var(--ink-2);font-size:13px;font-weight:700;background:var(--ground)}
+.profile-save-status[data-state="success"]{color:#167447}.profile-save-status[data-state="error"]{color:#a33c35}
+.player-profile-form{display:grid;gap:9px;padding:clamp(18px,3vw,28px)}
+.player-profile-form>label,.player-post-form>label{font-size:14px;font-weight:800;color:var(--ink-2);margin-top:6px}
+.player-profile-form input:not([type="file"]):not([type="color"]),.player-profile-form textarea,.player-post-form textarea{width:100%;border:1.5px solid var(--line-2);border-radius:13px;padding:12px 14px;background:var(--surface);color:var(--ink);font:500 15px/1.5 var(--body);resize:vertical}
+.player-profile-form input:focus,.player-profile-form textarea:focus,.player-post-form textarea:focus{outline:2px solid var(--focus);outline-offset:1px}
+.player-profile-form label span{font-size:12px;font-weight:500;color:var(--ink-3);margin-left:5px}
+.profile-avatar-options{display:grid;gap:10px;margin:12px 0 6px;padding:18px;border-radius:20px;background:var(--ground);border:1px solid var(--line)}
+.profile-avatar-options h4{font:800 18px var(--display);margin:0 0 4px}.profile-avatar-options p,.profile-small-note{font-size:13px;color:var(--ink-2)}
+.avatar-choices{display:flex;flex-wrap:wrap;gap:9px}
+.avatar-choice{width:48px;height:48px;display:grid;place-items:center;border:1.5px solid var(--line-2);border-radius:15px;background:var(--surface);font-size:28px;transition:transform .15s,border-color .15s}
+.avatar-choice:hover{transform:translateY(-2px)}.avatar-choice.is-selected{border:2px solid var(--ink);background:var(--spark-soft,#fff0b5);box-shadow:0 3px 0 var(--ink)}
+.avatar-color-row{display:flex;align-items:center;gap:12px}.avatar-color-row input[type="color"]{width:48px;height:42px;padding:3px;border:1.5px solid var(--line-2);border-radius:11px;background:var(--surface)}.avatar-color-row span{font-size:13px;color:var(--ink-2)}
+.player-profile-form input[type="file"]{width:100%;font:500 13px var(--body);color:var(--ink-2)}
+.player-profile-form>.btn{justify-self:start;min-height:50px}
+.profile-posts{margin-top:20px;padding:clamp(18px,3vw,28px)}
+.profile-posts-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:18px}
+.profile-posts-heading h3{font-size:clamp(24px,3vw,30px)}.profile-posts-heading p{margin-top:7px;color:var(--ink-2);font-size:14px}
+.profile-post-count{white-space:nowrap;padding:6px 10px;border-radius:99px;background:var(--violet-soft);font-size:12px;font-weight:800}
+.player-post-form{display:grid;gap:9px;padding:16px;border:1.5px solid var(--line);border-radius:19px;background:var(--ground)}
+.post-compose-footer{display:flex;justify-content:space-between;align-items:center;gap:12px}.post-compose-footer>span{font-size:12px;color:var(--ink-3)}.post-compose-footer .btn{min-height:42px;padding:0 18px;font-size:14px;border-radius:13px;box-shadow:0 3px 0 var(--ink)}
+.player-post-list{display:grid;gap:12px;margin-top:16px}
+.player-post{padding:18px;border:1.5px solid var(--line);border-radius:18px;background:var(--surface)}
+.player-post-top{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px}.player-post-date{font-size:12px;color:var(--ink-3)}
+.player-post-body{white-space:pre-wrap;overflow-wrap:anywhere;font-size:16px;line-height:1.7}
+.player-post-delete{font-size:12px;font-weight:800;color:var(--bad);text-decoration:underline;text-underline-offset:3px}
+.profile-empty-posts{padding:24px;text-align:center;border:1.5px dashed var(--line-2);border-radius:18px;color:var(--ink-2);font-size:14px}
+.profile-login-hint{padding:18px;border-radius:18px;background:var(--ground);color:var(--ink-2);font-size:14px}
+@media(max-width:560px){.player-profile-hero{align-items:flex-start;gap:15px;padding:18px}.player-avatar-wrap{width:82px;height:82px;border-radius:23px;font-size:49px}.player-profile-heading h3{font-size:25px}.profile-avatar-options{padding:14px}.avatar-choice{width:43px;height:43px;font-size:25px}.profile-posts-heading{flex-direction:column}.post-compose-footer{align-items:stretch;flex-direction:column}.post-compose-footer .btn{width:100%}.player-profile-form>.btn{width:100%}}
+body[data-theme="dark"] .player-profile-card,body[data-theme="dark"] .profile-posts,body[data-theme="dark"] .player-post{background:var(--surface)}
