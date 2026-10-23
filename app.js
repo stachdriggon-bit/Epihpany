@@ -871,7 +871,41 @@
     'Choose the correct quantifier':'اختر أداة الكمية الصحيحة.',
     'Choose the correct time word':'اختر كلمة الزمن الصحيحة.',
     'Choose the correct reported question':'اختر صيغة السؤال المنقول الصحيحة.',
-    'Which verb fits':'أي فعل يناسب؟'
+    'Which verb fits':'أي فعل يناسب؟',
+    'Choose the most helpful response':'اختر الرد الأكثر فائدة.',
+    'Choose the natural response':'اختر الرد الطبيعي.',
+    'What is the speaker implying':'ما الذي يلمّح إليه المتحدث؟',
+    'What do they mean':'ماذا يقصدون؟',
+    'Choose the intended meaning, not a literal word-for-word translation':'اختر المعنى المقصود، لا الترجمة الحرفية كلمةً بكلمة.',
+    'Choose the natural phrase':'اختر التعبير الطبيعي.',
+    'Choose the natural collocation':'اختر الكلمات التي تُستخدم معًا بصورة طبيعية.',
+    'Understand formal language':'افهم اللغة الرسمية.',
+    'Interpret the understatement':'افهم التلميح أو التقليل من أهمية الأمر.',
+    'C2: concession and qualification':'C2: الإقرار بنقطة مع توضيح حدودها أو تقييدها.',
+    'Too expensive':'باهظ الثمن جدًا.','Reasonably priced':'سعره معقول.','Hard to find':'يصعب العثور عليه.','Free of charge':'مجانًا.',
+    'Very tired':'متعب جدًا.','Very excited':'متحمس جدًا.','Slightly hungry':'جائع قليلًا.','Quite surprised':'متفاجئ إلى حدّ ما.',
+    'Needing a drink':'بحاجة إلى شراب.','Needing sleep':'بحاجة إلى النوم.','Feeling cold':'يشعر بالبرد.','Feeling angry':'يشعر بالغضب.',
+    'Lives near you':'يسكن بالقرب منك.','Teaches you':'يدرّسك.','Works in a hospital':'يعمل في مستشفى.','Travels with you':'يسافر معك.',
+    'One time':'مرة واحدة.','Most of the time':'في معظم الأوقات.','Very quickly':'بسرعة كبيرة.',
+    'make a photo':'يلتقط صورة.','take a photo':'يلتقط صورة.','do a photo':'يلتقط صورة.',
+    'do':'يفعل.','does':'يفعل.','did':'فعل.','put':'يضع.','make':'يصنع.','take':'يأخذ.','go':'يذهب.','goes':'يذهب.',
+    'have':'لديه.','has':'لديه.','am':'أكون.','is':'يكون.','are':'يكونون.','was':'كان.','were':'كانوا.','be':'يكون.',
+    'quiet':'هادئ.','necessary':'ضروري.','tiny':'ضئيل جدًا.','expensive':'باهظ الثمن.','small':'صغير.','empty':'فارغ.',
+    'early':'مبكر.','easy':'سهل.','crowded':'مزدحم.','narrow':'ضيق.','hungry':'جائع.','late':'متأخر.','huge':'ضخم.','heavy':'ثقيل.',
+    'friend':'صديق.','people':'الناس.','different':'مختلف.','comfortable':'مريح.','beautiful':'جميل.','tomorrow':'غدًا.','yesterday':'أمس.',
+    'environment':'البيئة.','convenient':'ملائم.','occasion':'مناسبة.','recommend':'يوصي.','maintenance':'صيانة.','embarrass':'يحرج.',
+    'occurrence':'حدوث.','confidence':'الثقة.','improve':'يحسّن.','challenge':'تحدٍّ.','definitely':'بالتأكيد.','separate':'منفصل.',
+    'beginning':'البداية.','privilege':'امتياز.','independent':'مستقل.','entrepreneur':'رائد أعمال.','mischievous':'مشاغب.',
+    'acquaintance':'معرفة / شخص تعرفه.','borrow':'يستعير.','thirsty':'عطشان.','usually':'عادةً.','cheap':'رخيص.','arrive':'يصل.',
+    'ticket':'تذكرة.','appointment':'موعد.','receipt':'إيصال.','lend':'يُقرض / يُعير.','weather':'الطقس.','available':'متاح.',
+    'return':'يعيد / يعود.','advice':'نصيحة.','afford':'يستطيع تحمّل التكلفة.','evidence':'دليل.','delay':'تأخير.',
+    'contribute':'يساهم.','maintain':'يحافظ على.','opportunity':'فرصة.','prevent':'يمنع.','hesitate':'يتردد.',
+    'substantial':'كبير / جوهري.','undermine':'يُضعف.','reluctant':'متردد.','ambiguous':'ملتبس.','feasible':'قابل للتنفيذ.',
+    'convey':'ينقل / يعبّر عن.','allocate':'يخصّص.','compelling':'مقنع.','inevitable':'حتمي.','scrutinise':'يدقّق في.',
+    'mitigate':'يخفّف.','plausible':'معقول أو محتمل.','succinct':'موجز.','tentative':'مبدئي.','coherent':'مترابط.',
+    'infer':'يستنتج.','robust':'متين / قوي.','nuanced':'دقيق الفروق.','equivocal':'ملتبس أو غير واضح.',
+    'intransigent':'متصلّب في الرأي.','salient':'بارز / مهم.','ostensible':'ظاهري.','inchoate':'غير مكتمل التشكّل.',
+    'parsimonious':'مقتصد جدًا.','perfunctory':'شكلي / بلا عناية.','invidious':'ينطوي على تمييز أو ظلم.','recondite':'غامض وصعب الفهم.'
   }).map(([key,value])=>[normalizeTranslationKey(key),value]));
   function translateKnownPhrase(source) {
     const lower=normalizeTranslationKey(source);
@@ -911,7 +945,7 @@
     const translated=translateKnownPhrase(source);
     const tokens=source.match(/[A-Za-z]+(?:['’-][A-Za-z]+)*/g)||[];
     const unknown=tokens.filter(token=>!AR_TRANSLATION_WORDS[token.toLowerCase()]&&!(typeof STORY_WORDS_AR!=='undefined'&&STORY_WORDS_AR[token.toLowerCase()])&&!(typeof W_AR!=='undefined'&&W_AR[token.toLowerCase()]));
-    if(tokens.length>3&&unknown.length/tokens.length>0.3)return {text:'لم تتوفر ترجمة موثوقة لهذا النص بعد. يمكنك متابعة النص بالإنجليزية أو تجربة سؤال آخر.',exact:false};
+    if(tokens.length>0&&unknown.length/tokens.length>0.3)return {text:'لم تتوفر ترجمة موثوقة لهذا النص بعد. يمكنك متابعة النص بالإنجليزية أو تجربة سؤال آخر.',exact:false};
     return {text:translated,exact:false};
   }
   let translationControlId=0;
