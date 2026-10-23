@@ -15,10 +15,13 @@
   ];
 
   /* ---------- state ---------- */
-  const defaults = () => ({xp:0, quests:0, words:[], review:[], placementDone:false, assessedLevel:'A1', placementResult:null, completed:[], streak:0, lastDay:null, daily:0, level:'A1', sound:true, helpArabic:false, theme:'light', streakFreezes:1, dailyQuestDate:null, dailyQuestProgress:0, dailyQuestClaimed:false, dailyCorrect:0, dailyXp:0, weeklyKey:null, weeklyProgress:0, weeklyClaimed:false, mistakeTrapErrors:{}, mistakeQuestionErrors:{}, modes:{}, weakTraps:{}, stories:{}, world:{done:[],stars:{}}});
+  const defaults = () => ({xp:0, quests:0, words:[], review:[], placementDone:false, assessedLevel:'A1', placementResult:null, xpAtLevelStart:null, promotionHistory:[], promotionAttempts:{}, lastPromotionResult:null, completed:[], streak:0, lastDay:null, daily:0, level:'A1', sound:true, helpArabic:false, theme:'light', streakFreezes:1, dailyQuestDate:null, dailyQuestProgress:0, dailyQuestClaimed:false, dailyCorrect:0, dailyXp:0, weeklyKey:null, weeklyProgress:0, weeklyClaimed:false, mistakeTrapErrors:{}, mistakeQuestionErrors:{}, modes:{}, weakTraps:{}, stories:{}, world:{done:[],stars:{}}});
   let state;
   try { state = {...defaults(), ...JSON.parse(localStorage.getItem('epiphany-progress') || '{}')}; } catch { state = defaults(); }
   if (!LEVELS.some(level => level.id === state.assessedLevel)) { state.assessedLevel = 'A1'; state.placementDone = false; state.placementResult = null; }
+  if (!Number.isFinite(state.xpAtLevelStart)) state.xpAtLevelStart = Number(state.xp) || 0; // Existing players start the new promotion cycle from their current XP.
+  if (!Array.isArray(state.promotionHistory)) state.promotionHistory = [];
+  if (!state.promotionAttempts || typeof state.promotionAttempts !== 'object' || Array.isArray(state.promotionAttempts)) state.promotionAttempts = {};
   if (!Array.isArray(state.review)) state.review = [];
   if (!state.mistakeTrapErrors || typeof state.mistakeTrapErrors !== 'object' || Array.isArray(state.mistakeTrapErrors)) state.mistakeTrapErrors = {};
   if (!state.mistakeQuestionErrors || typeof state.mistakeQuestionErrors !== 'object' || Array.isArray(state.mistakeQuestionErrors)) state.mistakeQuestionErrors = {};
@@ -171,7 +174,8 @@
       return '<li><button class="node ' + cls + '" data-level="' + i + '" aria-label="' + l.id + ', ' + l.name + (cls === 'locked' ? ', not yet assessed' : '') + '">' +
         '<span class="node-dot">' + dot + '</span><span class="node-name">' + l.name + '</span><span class="node-sub">' + sub + '</span></button></li>';
     }).join('');
-    $('#track-note').innerHTML = '<strong>Estimated CEFR: ' + lv.id + ' · ' + esc(lv.title) + '</strong> ' + esc(lv.desc) + '<p class="level-note">XP rewards track game activity; they do not determine your English level.</p>';
+    const promotion = promotionStatus();
+    $('#track-note').innerHTML = '<strong>Current CEFR: ' + lv.id + ' · ' + esc(lv.title) + '</strong> ' + esc(lv.desc) + '<p class="level-note">XP opens a promotion test; only passing the test changes your CEFR level.</p>' + (nx ? '<p class="level-note">Promotion progress: ' + promotion.earned + ' / ' + promotion.required + ' XP</p>' + (promotion.unlocked ? '<button type="button" class="btn" data-promotion-start>Take the ' + nx.id + ' promotion test</button>' : '<p class="level-note">Earn ' + Math.max(0, promotion.required - promotion.earned) + ' more XP to unlock the test.</p>') : '<p class="level-note">You have reached the highest CEFR level. Keep practising to maintain your skills.</p>') + (state.lastPromotionResult ? '<p class="level-note">Last promotion test: ' + esc(state.lastPromotionResult.score + '/' + state.lastPromotionResult.total) + (state.lastPromotionResult.passed ? ' · Passed' : ' · Not passed yet') + '</p>' : '');
 
     const gameCategories = [
       {id:'words',title:'Words',desc:'Build your vocabulary and recognise words.',icon:'Aa',tone:'violet',games:[['vocabulary','Word collector'],['spelling','Word detective'],['match','Word Match']]},
@@ -1913,6 +1917,90 @@
     }).filter(Boolean));
   }
   let placement={questions:[],index:0,answers:[],stage:0,highestPassed:0,stageCorrect:0,scoreByLevel:{}};
+  // Promotion rules: XP is a gate, not a level score. Thresholds are intentionally configurable.
+  const PROMOTION_XP = [300, 500, 700, 1000, 1300]; // A1→A2, A2→B1, B1→B2, B2→C1, C1→C2
+  const PROMOTION_PASS_PERCENT = 80;
+  const promotionStatus = () => {
+    const index = levelIndex(), next = LEVELS[index + 1];
+    const required = PROMOTION_XP[index] || 0;
+    const earned = Math.max(0, (Number(state.xp) || 0) - (Number(state.xpAtLevelStart) || 0));
+    return {index, next, required, earned, unlocked: !!next && earned >= required};
+  };
+  let promotionTest = null;
+  function buildPromotionQuestions(targetLevel) {
+    const bank = [];
+    Object.entries(GAMES).forEach(([gameId, game]) => {
+      if (!['vocabulary','grammar','story','listening','advanced','mistakes','spot','typing'].includes(gameId)) return;
+      (game.questions || []).forEach(q => {
+        if (q.level !== targetLevel.id || !Array.isArray(q.answers) || q.answers.length < 2 ||
+            !Number.isInteger(q.correct) || q.correct < 0 || q.correct >= q.answers.length) return;
+        bank.push({...q, promotionSkill: gameId});
+      });
+    });
+    const unique = [...new Map(bank.map(q => [q.id || (q.promotionSkill + '|' + q.q), q])).values()];
+    return shufflePlacement(unique).slice(0, 10);
+  }
+  function startPromotionTest() {
+    const status = promotionStatus();
+    if (!status.next || !status.unlocked) { toast('Earn the required XP first to unlock this promotion test.'); return; }
+    const questions = buildPromotionQuestions(status.next);
+    if (questions.length < 8) {
+      toast('This level’s test bank is still being prepared. Keep practising; the test will unlock when enough questions are available.');
+      return;
+    }
+    promotionTest = {target:status.next, questions, index:0, answers:[]};
+    $('#placement-title').textContent = 'Promotion test · ' + status.next.id;
+    $('.placement-card .kicker').textContent = 'PROVE YOUR SKILLS';
+    $('.placement-intro').textContent = 'Answer the questions for the next CEFR level. You need at least ' + PROMOTION_PASS_PERCENT + '% to pass. XP unlocks this test; your answers determine whether you advance.';
+    $('#placement-skip').hidden = true;
+    $('#placement').hidden = false; lockPage(true);
+    renderPromotionQuestion();
+  }
+  function renderPromotionQuestion() {
+    const q = promotionTest.questions[promotionTest.index];
+    $('#placement-progress').textContent = 'Promotion test · Question ' + (promotionTest.index + 1) + ' of ' + promotionTest.questions.length;
+    $('#placement-content').innerHTML = '<h2>' + esc(q.q) + '</h2><p>' + esc(q.sub || 'Choose the best answer.') + '</p><div class="answers">' + q.answers.map((x,i)=>'<button class="answer" data-promotion-answer="' + i + '"><span class="key">' + (i+1) + '</span><span>' + esc(x) + '</span></button>').join('') + '</div>';
+  }
+  function finishPromotionTest() {
+    const correct = promotionTest.answers.filter(a=>a.ok).length;
+    const total = promotionTest.questions.length;
+    const passed = correct / total * 100 >= PROMOTION_PASS_PERCENT;
+    const from = state.assessedLevel, to = promotionTest.target.id;
+    state.lastPromotionResult = {from, to, score:correct, total, passed, testedAt:new Date().toISOString()};
+    state.promotionAttempts[to] = (Number(state.promotionAttempts[to]) || 0) + 1;
+    if (passed) {
+      state.assessedLevel = to; state.level = to; state.xpAtLevelStart = Number(state.xp) || 0;
+      state.promotionHistory.push({from, to, score:correct, total, testedAt:state.lastPromotionResult.testedAt});
+    }
+    save();
+    $('#placement-title').textContent = passed ? 'Level unlocked: ' + to : 'Keep practising';
+    $('.placement-card .kicker').textContent = passed ? 'PROMOTION PASSED' : 'PROMOTION TEST COMPLETE';
+    $('.placement-intro').textContent = passed
+      ? 'You scored ' + correct + '/' + total + '. Your CEFR level is now ' + to + '. The next promotion journey starts from zero XP earned in this level.'
+      : 'You scored ' + correct + '/' + total + '. You need ' + Math.ceil(total * PROMOTION_PASS_PERCENT / 100) + ' correct answers to pass. Practise your weak areas and try again; your XP remains saved.';
+    $('#placement-progress').textContent = passed ? 'Congratulations!' : 'Attempt ' + state.promotionAttempts[to];
+    $('#placement-content').innerHTML = '<div class="promotion-result"><p><strong>' + correct + ' / ' + total + ' correct</strong></p><p>' + (passed ? 'You demonstrated the next level’s skills.' : 'Your current level stays ' + esc(from) + ' until you pass.') + '</p></div><button type="button" class="btn" data-promotion-close>' + (passed ? 'Continue learning' : 'Return to practice') + '</button>';
+    promotionTest = null;
+  }
+  document.addEventListener('click', e => {
+    if (e.target.closest('[data-promotion-start]')) { startPromotionTest(); return; }
+    const answer = e.target.closest('[data-promotion-answer]');
+    if (answer && promotionTest) {
+      const q = promotionTest.questions[promotionTest.index];
+      promotionTest.answers.push({id:q.id || q.q, skill:q.promotionSkill, ok:Number(answer.dataset.promotionAnswer) === q.correct});
+      promotionTest.index++;
+      if (promotionTest.index < promotionTest.questions.length) renderPromotionQuestion();
+      else finishPromotionTest();
+      return;
+    }
+    if (e.target.closest('[data-promotion-close]')) {
+      $('#placement').hidden = true; $('#placement-skip').hidden = false;
+      $('.placement-card .kicker').textContent = 'A QUICK START';
+      $('.placement-intro').textContent = 'Answer up to 30 questions across vocabulary, grammar, reading and comprehension. You advance only after a strong result at each band; this is an estimate, not an official exam.';
+      lockPage(false); renderAll();
+    }
+  });
+
   function showPlacement(){
     if(state.placementDone)return;
     placement={questions:placementQuestions(LEVELS[0]),index:0,answers:[],stage:0,highestPassed:0,stageCorrect:0,scoreByLevel:{}};
@@ -1924,7 +2012,7 @@
     $('#placement-progress').textContent='Level '+LEVELS[placement.stage].id+' · Question '+(placement.index+1)+' of '+placement.questions.length+' (up to 30)';
     $('#placement-content').innerHTML='<h2>'+esc(q.q)+'</h2><p>'+esc(q.sub||'Choose the best answer.')+'</p><div class="answers">'+q.answers.map((x,i)=>'<button class="answer" data-place-answer="'+i+'"><span class="key">'+(i+1)+'</span><span>'+esc(x)+'</span></button>').join('')+'</div>';
   }
-  function closePlacement(){ $('#placement').hidden=true;lockPage(false);renderAll(); }
+  function closePlacement(){ $('#placement').hidden=true;lockPage(false);$('#placement-skip').hidden=false;$('#placement-title').textContent='Find your English level';$('.placement-card .kicker').textContent='A QUICK START';$('.placement-intro').textContent='Answer up to 30 questions across vocabulary, grammar, reading and comprehension. You advance only after a strong result at each band; this is an estimate, not an official exam.';renderAll(); }
   function skipPlacement(){
     state.assessedLevel='A1';state.level='A1';state.placementDone=true;state.placementResult={level:'A1',skipped:true,testedAt:new Date().toISOString()};
     save();closePlacement();toast('Level check skipped. Your estimated starting level remains A1.');
