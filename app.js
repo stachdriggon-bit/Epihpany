@@ -228,43 +228,111 @@
     parts.forEach(p => { p = p.trim(); if (!p) return; const last = out[out.length - 1]; if (last && last.length < 28) out[out.length - 1] = last + ' ' + p; else out.push(p); });
     return out.length ? out : [phrase];
   }
+  let naturalAudioPlayer = null;
+  const naturalAudioMemory = new Map();
+  function openSpeechDb() {
+    return new Promise(resolve => {
+      if (!('indexedDB' in window)) return resolve(null);
+      let req;
+      try { req = indexedDB.open('epiphany-speech-cache', 1); } catch { return resolve(null); }
+      req.onupgradeneeded = () => { if (!req.result.objectStoreNames.contains('audio')) req.result.createObjectStore('audio'); };
+      req.onsuccess = () => resolve(req.result);
+      req.onerror = () => resolve(null);
+    });
+  }
+  async function cachedNaturalAudio(key) {
+    if (naturalAudioMemory.has(key)) return naturalAudioMemory.get(key);
+    const db = await openSpeechDb();
+    if (!db) return null;
+    return new Promise(resolve => {
+      try {
+        const req = db.transaction('audio', 'readonly').objectStore('audio').get(key);
+        req.onsuccess = () => { const value = req.result || null; if (value) naturalAudioMemory.set(key, value); resolve(value); };
+        req.onerror = () => resolve(null);
+      } catch { resolve(null); }
+    });
+  }
+  async function saveNaturalAudio(key, blob) {
+    naturalAudioMemory.set(key, blob);
+    const db = await openSpeechDb();
+    if (!db) return;
+    try { db.transaction('audio', 'readwrite').objectStore('audio').put(blob, key); } catch {}
+  }
+  async function playNaturalSpeech(phrase, rate, request) {
+    if (phrase.length > 1800 || !navigator.onLine) return false;
+    const key = 'en-US-Neural2-F|' + rate.toFixed(2) + '|' + phrase.toLowerCase();
+    let blob = await cachedNaturalAudio(key);
+    if (request !== speechRequest) return true;
+    if (!blob) {
+      let response;
+      try {
+        response = await fetch('/api/tts', {
+          method:'POST',
+          headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({text:phrase, rate:Math.max(0.75, Math.min(1.05, rate))})
+        });
+      } catch { return false; }
+      if (!response.ok) return false;
+      try { blob = await response.blob(); } catch { return false; }
+      if (!blob || !blob.size || request !== speechRequest) return request !== speechRequest;
+      await saveNaturalAudio(key, blob);
+    }
+    if (request !== speechRequest) return true;
+    try {
+      if (naturalAudioPlayer) { naturalAudioPlayer.pause(); naturalAudioPlayer.src = ''; }
+      const url = URL.createObjectURL(blob);
+      const player = new Audio(url);
+      naturalAudioPlayer = player;
+      player.onended = () => { URL.revokeObjectURL(url); if (naturalAudioPlayer === player) naturalAudioPlayer = null; };
+      player.onerror = () => URL.revokeObjectURL(url);
+      await player.play();
+      return true;
+    } catch { return false; }
+  }
   function speak(text, opts) {
     const synth = window.speechSynthesis;
-    if (!synth || !('SpeechSynthesisUtterance' in window)) {
-      toast('Speech playback is not supported in this browser.');
-      return;
-    }
-    const phrase = String(text == null ? '' : text).replace(/\s+/g, ' ').trim();
+    const phrase = String(text == null ? '' : text).replace(/\\s+/g, ' ').trim();
     if (!phrase) { toast('There is no word to pronounce.'); return; }
     const request = ++speechRequest, rate = (opts && opts.rate) || voicePref.rate || 0.92;
-    try { synth.cancel(); } catch {}
-    const run = tries => {
-      if (request !== speechRequest) return;
-      const voice = pickVoice();
-      if (!voice && tries < 6 && !refreshSpeechVoices().length) { setTimeout(() => run(tries + 1), 120); return; }
-      const chunks = speechChunks(phrase);
-      chunks.forEach((chunk, i) => {
-        const u = new SpeechSynthesisUtterance(chunk);
-        u.lang = voice ? String(voice.lang || 'en-US').replace('_', '-') : 'en-US';
-        if (voice) u.voice = voice;
-        u.rate = chunk.split(' ').length <= 2 ? Math.min(rate, 0.85) : rate;
-        u.pitch = 1;
-        u.volume = 1;
-        u.onerror = event => {
-          if (request === speechRequest && event.error !== 'canceled' && event.error !== 'interrupted' && i === 0) toast('Could not play this pronunciation. Try another voice from ⚙ → Voice.');
-        };
-        try { synth.speak(u); } catch { if (i === 0) toast('Could not play this pronunciation. Try again.'); }
-      });
-      try { if (synth.paused) synth.resume(); } catch {}
+    try { if (synth) synth.cancel(); } catch {}
+    if (naturalAudioPlayer) { try { naturalAudioPlayer.pause(); naturalAudioPlayer.src = ''; } catch {} naturalAudioPlayer = null; }
+    const runNative = () => {
+      if (!synth || !('SpeechSynthesisUtterance' in window)) {
+        toast('Speech playback is not supported in this browser.');
+        return;
+      }
+      const run = tries => {
+        if (request !== speechRequest) return;
+        const voice = pickVoice();
+        if (!voice && tries < 6 && !refreshSpeechVoices().length) { setTimeout(() => run(tries + 1), 120); return; }
+        const chunks = speechChunks(phrase);
+        chunks.forEach((chunk, i) => {
+          const u = new SpeechSynthesisUtterance(chunk);
+          u.lang = voice ? String(voice.lang || 'en-US').replace('_', '-') : 'en-US';
+          if (voice) u.voice = voice;
+          u.rate = chunk.split(' ').length <= 2 ? Math.min(rate, 0.85) : rate;
+          u.pitch = 1;
+          u.volume = 1;
+          u.onerror = event => {
+            if (request === speechRequest && event.error !== 'canceled' && event.error !== 'interrupted' && i === 0) toast('Could not play this pronunciation. Try another voice from ⚙ → Voice.');
+          };
+          try { synth.speak(u); } catch { if (i === 0) toast('Could not play this pronunciation. Try again.'); }
+        });
+        try { if (synth.paused) synth.resume(); } catch {}
+      };
+      setTimeout(() => run(0), 60);
     };
-    setTimeout(() => run(0), 60);
+    playNaturalSpeech(phrase, rate, request).then(played => {
+      if (request !== speechRequest) return;
+      if (!played) runNative();
+    }).catch(runNative);
   }
   function openVoiceSheet() {
     const list = englishVoices(), current = pickVoice();
     const opts = list.length
       ? list.map(v => '<option value="' + esc(v.name) + '"' + (current && v.name === current.name ? ' selected' : '') + '>' + esc(v.name) + ' (' + esc(String(v.lang).replace('_', '-')) + ')</option>').join('')
       : '<option value="">No English voice found on this device</option>';
-    let m=$('#voice-modal');if(!m){m=document.createElement('div');m.id='voice-modal';m.className='voice-modal';m.setAttribute('role','dialog');m.setAttribute('aria-modal','true');document.body.appendChild(m);}m.hidden=false;m.innerHTML=('<div class="voice-sheet"><h2>🔊 Reader voice</h2><p class="voice-note">Voices come from your phone or browser. If it sounds robotic, choose another voice here. On Android install “Speech Services by Google” and download English (US); on iPhone add an Enhanced voice in Settings → Accessibility → Spoken Content → Voices.</p><label>Voice<select id="voice-select">' + opts + '</select></label><label>Speed <output id="voice-rate-out">' + Number(voicePref.rate).toFixed(2) + '×</output><input id="voice-rate" type="range" min="0.6" max="1.2" step="0.05" value="' + voicePref.rate + '"></label><div class="voice-actions"><button class="btn" id="voice-test" type="button">▶ Test voice</button><button class="btn btn-ghost" id="voice-close" type="button">Done</button></div></div>');
+    let m=$('#voice-modal');if(!m){m=document.createElement('div');m.id='voice-modal';m.className='voice-modal';m.setAttribute('role','dialog');m.setAttribute('aria-modal','true');document.body.appendChild(m);}m.hidden=false;m.innerHTML=('<div class="voice-sheet"><h2>🔊 Reader voice</h2><p class="voice-note">Natural voice is used online when available. The device voice below is the offline fallback. On Android install “Speech Services by Google” and download English (US); on iPhone add an Enhanced voice in Settings → Accessibility → Spoken Content → Voices.</p><label>Device fallback voice<select id="voice-select">' + opts + '</select></label><label>Speed <output id="voice-rate-out">' + Number(voicePref.rate).toFixed(2) + '×</output><input id="voice-rate" type="range" min="0.6" max="1.2" step="0.05" value="' + voicePref.rate + '"></label><div class="voice-actions"><button class="btn" id="voice-test" type="button">▶ Test voice</button><button class="btn btn-ghost" id="voice-close" type="button">Done</button></div></div>');
   }
   document.addEventListener('change', e => {
     if (e.target.id === 'voice-select') { voicePref.name = e.target.value; saveVoicePref(); speak('Hello! This is how I sound.'); }
