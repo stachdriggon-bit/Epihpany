@@ -1126,8 +1126,21 @@
         x.fillStyle='#d9c9a2';x.fillRect(ox,oy,W,H);
         for(let gy=0;gy<MH;gy++)for(let gx=0;gx<MW;gx++){const px=ox+gx*tile,py=oy+gy*tile,sd=seeded(gx,gy);x.fillStyle=sd>.5?'rgba(150,120,80,.12)':'rgba(255,248,225,.14)';x.beginPath();x.roundRect(px+tile*.06,py+tile*.06,tile*.88,tile*.88,tile*.12);x.fill();}
         for(let gy=0;gy<MH;gy++)for(let gx=0;gx<MW;gx++){if((WORLD.map[gy]||'')[gx]==='R'){const px=ox+gx*tile,py=oy+gy*tile;x.fillStyle='#ecdcb4';x.fillRect(px,py,tile+.4,tile+.4);}}
-        // trees along the edge
+        // Small planted corners frame the plaza without narrowing the walking lanes.
         for(const [gx,gy] of [[1,1],[18,1],[1,12],[18,12]]){drawTree(ox+(gx+.5)*tile,oy+(gy+.5)*tile);}
+        function marketPlanter(gx,gy,flip=false){
+          const px=ox+gx*tile,py=oy+gy*tile;
+          x.fillStyle='rgba(65,70,48,.18)';x.beginPath();x.ellipse(px+tile*.5,py+tile*.72,tile*.38,tile*.13,0,0,Math.PI*2);x.fill();
+          roundRect(x,px+tile*.16,py+tile*.3,tile*.68,tile*.38,tile*.1,'#b77e52','#80563b');
+          x.fillStyle='#6c9a58';x.beginPath();x.ellipse(px+tile*.5,py+tile*.3,tile*.31,tile*.2,0,0,Math.PI*2);x.fill();
+          for(let n=0;n<3;n++){x.fillStyle=(n+gx)%2?'#f4d58a':'#e98b83';x.beginPath();x.arc(px+tile*(.32+n*.17),py+tile*(.25+(n%2)*.08),tile*.055,0,Math.PI*2);x.fill();}
+        }
+        for(const [gx,gy,flip] of [[3,2,false],[16,2,true],[3,11,false],[16,11,true]])marketPlanter(gx,gy,flip);
+        // A small timber welcome sign makes the market entrance legible at a glance.
+        const sgx=10,sgy=2,scx=ox+(sgx+.5)*tile,scy=oy+(sgy+.5)*tile;
+        x.fillStyle='#765039';x.fillRect(scx-tile*.045,scy-tile*.08,tile*.09,tile*.42);
+        roundRect(x,scx-tile*.38,scy-tile*.22,tile*.76,tile*.22,tile*.045,'#a96d45','#70482f');
+        x.fillStyle='#fff0c8';x.font='bold '+Math.max(6,tile*.12)+'px sans-serif';x.textAlign='center';x.fillText('MARKET',scx,scy-tile*.075);
       }else if(t==='station'){
         x.fillStyle='#cfd3da';x.fillRect(ox,oy,W,H);
         for(let gy=0;gy<MH;gy++)for(let gx=0;gx<MW;gx++){if((gx+gy)%2===0){x.fillStyle='rgba(255,255,255,.18)';x.fillRect(ox+gx*tile,oy+gy*tile,tile,tile);}}
@@ -1143,9 +1156,35 @@
       }else if(t==='school'){
         x.fillStyle='#e8dcc4';x.fillRect(ox,oy,W,H);
         for(let gy=0;gy<MH;gy++)for(let gx=0;gx<MW;gx++){if((gx+gy)%2===0){x.fillStyle='rgba(120,100,70,.08)';x.fillRect(ox+gx*tile,oy+gy*tile,tile,tile);}}
-        x.fillStyle='#b9c9b2';x.fillRect(ox+tile*7,oy+tile*.5,tile*6,tile*2.3);x.strokeStyle='#7a5b3a';x.lineWidth=tile*.12;x.strokeRect(ox+tile*7,oy+tile*.5,tile*6,tile*2.3);
+        // Schoolyard: a welcoming path, planted borders and a proper front-facing school.
         x.fillStyle='#8a6d52';x.fillRect(ox,oy,W,tile*.45);x.fillRect(ox,oy+H-tile*.45,W,tile*.45);x.fillRect(ox,oy,tile*.45,H);x.fillRect(ox+W-tile*.45,oy,tile*.45,H);
-        x.fillStyle='#cfe3ee';for(const wx of [2,15,17]){x.fillRect(ox+wx*tile,oy+tile*.06,tile*1.4,tile*.32);}
+        // Curving-looking stepping-stone approach from the gate to the entrance.
+        for(let n=0;n<6;n++){const px=ox+tile*(9.1+(n%2)*.28),py=oy+tile*(4.1+n*.43);roundRect(x,px,py,tile*.48,tile*.27,tile*.08,n%2?'#d5c6a7':'#e3d6bd','rgba(120,98,69,.22)');}
+        // Low hedges and flower beds stay at the yard edges.
+        for(const [gx,gy] of [[2,2],[4,2],[15,2],[17,2],[2,10],[17,10]]){
+          const px=ox+gx*tile,py=oy+gy*tile;
+          x.fillStyle='rgba(54,88,51,.18)';x.beginPath();x.ellipse(px+tile*.5,py+tile*.58,tile*.42,tile*.16,0,0,Math.PI*2);x.fill();
+          roundRect(x,px+tile*.08,py+tile*.25,tile*.84,tile*.45,tile*.12,'#719b61','#537b4a');
+          for(let k=0;k<3;k++){x.fillStyle=k%2?'#f2c6a7':'#f6e1a1';x.beginPath();x.arc(px+tile*(.25+k*.24),py+tile*.27,tile*.045,0,Math.PI*2);x.fill();}
+        }
+        // Main building has a roof, shaded side wall, tall windows and a clear doorway.
+        const bx=ox+tile*6.5,by=oy+tile*.95,bw=tile*7,bh=tile*2.65;
+        x.fillStyle='rgba(63,59,47,.22)';x.beginPath();x.ellipse(bx+bw*.52,by+bh+tile*.12,bw*.52,tile*.18,0,0,Math.PI*2);x.fill();
+        x.fillStyle='#a6b69d';x.beginPath();x.moveTo(bx+bw,by+tile*.2);x.lineTo(bx+bw+tile*.35,by+tile*.42);x.lineTo(bx+bw+tile*.35,by+bh);x.lineTo(bx+bw,by+bh);x.closePath();x.fill();
+        roundRect(x,bx,by,bw,bh,tile*.06,'#e8dfc8','#927b5d');
+        x.fillStyle='#b96f52';x.beginPath();x.moveTo(bx-tile*.25,by+tile*.12);x.lineTo(bx+bw*.5,by-tile*.62);x.lineTo(bx+bw+tile*.25,by+tile*.12);x.closePath();x.fill();
+        x.strokeStyle='#e6b08a';x.lineWidth=tile*.055;x.beginPath();x.moveTo(bx-tile*.18,by+tile*.12);x.lineTo(bx+bw*.5,by-tile*.52);x.lineTo(bx+bw+tile*.18,by+tile*.12);x.stroke();
+        for(const wx of [7.35,8.65,12.35,13.65]){
+          roundRect(x,ox+tile*wx,by+tile*.62,tile*.78,tile*.9,tile*.045,'#f7e9c8','#9b7958');
+          roundRect(x,ox+tile*(wx+.09),by+tile*.71,tile*.6,tile*.7,tile*.025,'#91c9d5','#6b8d91');
+          x.strokeStyle='rgba(255,255,255,.75)';x.lineWidth=Math.max(1,tile*.025);x.beginPath();x.moveTo(ox+tile*(wx+.39),by+tile*.72);x.lineTo(ox+tile*(wx+.39),by+tile*1.39);x.stroke();
+        }
+        roundRect(x,bx+bw*.43,by+tile*1.55,bw*.14,tile*1.08,tile*.035,'#76533d','#5b4030');
+        x.fillStyle='#e6c078';x.beginPath();x.arc(bx+bw*.535,by+tile*2.08,tile*.035,0,Math.PI*2);x.fill();
+        // School plaque and broad entrance steps.
+        roundRect(x,bx+bw*.31,by+tile*.2,bw*.38,tile*.27,tile*.035,'#f3e6c9','#a78a62');
+        x.fillStyle='#5d7357';x.font='bold '+Math.max(7,tile*.15)+'px sans-serif';x.textAlign='center';x.fillText('SCHOOL',bx+bw*.5,by+tile*.39);
+        x.fillStyle='#b7a58a';x.fillRect(bx+bw*.35,by+bh-tile*.04,bw*.3,tile*.1);x.fillStyle='#d0bea0';x.fillRect(bx+bw*.31,by+bh+tile*.06,bw*.38,tile*.11);
       }else if(t==='home'){
         x.fillStyle='#e0c496';x.fillRect(ox,oy,W,H);
         for(let gy=0;gy<MH*2;gy++){x.fillStyle=gy%2?'rgba(140,100,60,.10)':'rgba(255,240,210,.12)';x.fillRect(ox,oy+gy*tile/2,W,tile/2);}
@@ -1184,6 +1223,20 @@
         x.fillStyle='rgba(255,247,215,.20)';x.fillRect(px+tile*.08,py+tile*.1,tile*.84,tile*.8);
         if(seeded(gx,gy)>.65){x.fillStyle='rgba(146,117,74,.22)';x.beginPath();x.ellipse(px+tile*.3,py+tile*.68,tile*.07,tile*.035,.2,0,Math.PI*2);x.fill();}
       }
+    }
+    // Small cottage gardens, stepping stones and wildflowers give the village a lived-in feel.
+    for(const [gx,gy] of [[4,3],[15,3],[4,11],[15,11]]){
+      const px=ox+gx*tile,py=oy+gy*tile;
+      x.fillStyle='rgba(45,76,47,.15)';x.beginPath();x.ellipse(px+tile*.5,py+tile*.72,tile*.4,tile*.14,0,0,Math.PI*2);x.fill();
+      roundRect(x,px+tile*.1,py+tile*.28,tile*.8,tile*.43,tile*.09,'#759c60','#5a824e');
+      for(let n=0;n<4;n++){x.fillStyle=(n+gx)%2?'#f4d2a2':'#eaa4a0';x.beginPath();x.arc(px+tile*(.22+n*.18),py+tile*(.34+(n%2)*.1),tile*.045,0,Math.PI*2);x.fill();}
+    }
+    // Low timber fence sections frame garden edges while leaving routes open.
+    for(const [gx,gy,len] of [[5,3,2],[13,3,2],[5,11,2],[13,11,2]]){
+      const fx=ox+gx*tile,fy=oy+gy*tile;
+      x.strokeStyle='#9b744c';x.lineWidth=Math.max(2,tile*.045);
+      x.beginPath();x.moveTo(fx,fy+tile*.78);x.lineTo(fx+tile*len,fy+tile*.78);x.moveTo(fx,fy+tile*.64);x.lineTo(fx+tile*len,fy+tile*.64);x.stroke();
+      for(let n=0;n<=len;n++){x.beginPath();x.moveTo(fx+tile*n,fy+tile*.56);x.lineTo(fx+tile*n,fy+tile*.86);x.stroke();}
     }
     // Stream and timber bridge.
     for(let gy=6;gy<=6;gy++)for(let gx=8;gx<=10;gx++){
