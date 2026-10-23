@@ -386,7 +386,9 @@ body[data-theme="dark"] .weekly-card{background:#1F403B}
 body[data-theme="dark"] .freeze-card{background:#3C3524}
 body[data-theme="dark"] .dock{background:rgba(17,21,34,.96)}
 body[data-theme="dark"] .sheet{background:#1F403B;color:var(--ink)}
-body[data-theme="dark"] .sheet.bad{background:#482C2C}
+body[data-theme="dark"] .sheet.story-choice-sheet{background:var(--paper, #f7f7f7);border-top-color:var(--line, #b8b8b8);color:var(--ink)}
+.sheet.story-choice-sheet .sheet-mark{background:var(--ink);color:var(--paper, #fff)}
+.sheet.bad{background:#482C2C}
 body[data-theme="dark"] .sheet .arabic{background:#252B3C}
 body[data-theme="dark"] .review-panel{background:linear-gradient(135deg,#302C4C,#1F403B)}
 body[data-theme="dark"] .empty{background:var(--surface)}
