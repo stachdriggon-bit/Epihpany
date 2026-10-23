@@ -7,10 +7,9 @@ export default async function handler(req, res) {
   }
   const origin = req.headers.origin;
   const host = req.headers.host;
-  if (origin && host) {
-    try { if (new URL(origin).host !== host) return res.status(403).json({ error: 'Forbidden origin' }); }
-    catch { return res.status(403).json({ error: 'Forbidden origin' }); }
-  }
+  if (!origin || !host) return res.status(403).json({ error: 'Forbidden origin' });
+  try { if (new URL(origin).host !== host) return res.status(403).json({ error: 'Forbidden origin' }); }
+  catch { return res.status(403).json({ error: 'Forbidden origin' }); }
   const apiKey = process.env.ELEVENLABS_API_KEY;
   if (!apiKey) return res.status(503).json({ error: 'Add ELEVENLABS_API_KEY in Vercel Environment Variables first.' });
   const samples = {
