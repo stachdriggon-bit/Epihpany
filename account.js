@@ -318,6 +318,7 @@
       if ($('player-profile-display-name')) $('player-profile-display-name').textContent = displayName;
       if ($('player-profile-bio-preview')) $('player-profile-bio-preview').textContent = bio || 'Learning English one day at a time ✨';
       renderPlayerAvatar();
+      try { await loadCommunityPosts(); } catch (refreshError) { console.warn('Community refresh after privacy change failed:', refreshError); }
       profileStatus((privacy && privacy.checked ? 'Profile saved as private. Only you can see your profile and posts.' : 'Profile saved as public. Other learners can see your profile and shared posts.') + ' ✨', 'success');
     } catch (error) {
       console.error('Epiphany profile save failed:', error);
