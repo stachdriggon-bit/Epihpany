@@ -520,7 +520,20 @@
         selected = [...shuffle(levelPool), ...shuffle(generalPool), ...near].slice(0, 5);
       }
     }
-    const paired = shuffle(selected).map(q => ({q, ar: q.ar || 'راجع معنى الإجابة الصحيحة وحاول تذكّرها في سياق جديد.'}));
+    const paired = shuffle(selected).map(source => {
+      const q = {...source, answers:[...(source.answers||[])]};
+      // Randomise answer positions while keeping the answer key aligned.
+      // Spot-the-mistake and typing modes use different answer semantics.
+      if (!['spot','typing'].includes(type) && Number.isInteger(q.correct) && q.answers.length > 1) {
+        const correctText=q.answers[q.correct], distractors=q.answers.filter((_,i)=>i!==q.correct);
+        const shuffleAnswers=list=>{for(let i=list.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[list[i],list[j]]=[list[j],list[i]];}return list;};
+        shuffleAnswers(distractors);
+        const target=Math.floor(Math.random()*q.answers.length);
+        distractors.splice(target,0,correctText);
+        q.answers=distractors;q.correct=target;
+      }
+      return {q, ar: q.ar || 'راجع معنى الإجابة الصحيحة وحاول تذكّرها في سياق جديد.'};
+    });
     G = {type, questions: paired, i:0, score:0, words:[], answered:false, results:[], originalMode:type};
     const el = $('#game'); el.className = 'game t-' + META[type].tone; el.hidden = false;
     lockPage(true);
