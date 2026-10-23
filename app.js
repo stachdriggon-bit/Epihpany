@@ -700,7 +700,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
   function saveStoryWord(word,meaning){const key=word.toLowerCase();if(storyIsSaved(key))return;state.words.push([word,meaning||'No explanation has been added for this word yet.',ST.story.level]);if(!ST.savedDuring.some(w=>w.toLowerCase()===key))ST.savedDuring.push(word);save();renderWords();renderHeader();toast('Word saved to Words.');}
   function storyNext(){if(ST.story.decision&&!ST.decisionDone&&ST.page===ST.story.decision.afterPage){ST.mode='decision';ST.decisionResumePage=ST.page+1;renderStoryDecision();return;}if(ST.page<ST.story.pages.length-1){ST.page++;renderStoryPage();return;}ST.mode='quiz';ST.qi=0;ST.score=0;ST.results=[];ST.answered=false;renderStoryQuestion();}
   function renderStoryDecision(){const d=ST.story.decision;if(!d)return;$('#steps').innerHTML=ST.story.pages.map((_,i)=>'<span class="step '+(i<=ST.page?'ok':'')+'"></span>').join('');$('#game-body').innerHTML='<div class="story-reader story-decision"><div class="q-meta"><span class="pill">Your turn</span><span class="q-count">Story choice</span></div><div class="story-scene" style="--story-tone:'+esc(ST.story.tone)+'" aria-hidden="true">💭</div><h2 class="story-reader-title">'+esc(d.prompt)+'</h2><p class="story-decision-intro">Choose how you would respond. There is no score penalty for exploring a different approach.</p><div class="story-decision-options" role="group" aria-label="Choose what to do next">'+d.options.map((o,i)=>'<button type="button" class="story-decision-option" data-story-decision="'+i+'"><span class="story-decision-letter">'+String.fromCharCode(65+i)+'</span><span>'+esc(o.text)+'</span></button>').join('')+'</div>'+(state.helpArabic?'<p class="story-page-ar arabic" lang="ar" dir="rtl">اختر ما ستفعله في هذا الموقف، ثم اقرأ أثر اختيارك.</p>':'')+'</div>';$('#game-scroll').scrollTop=0;}
-  function answerStoryDecision(index){if(!ST||ST.mode!=='decision'||ST.decisionDone)return;const d=ST.story.decision,o=d&&d.options[index];if(!o)return;ST.decisionDone=true;ST.decisionChoice=index;if(o.branchPage&&ST.decisionResumePage!==null){ST.story.pages.splice(ST.decisionResumePage,0,normalizeStoryPage(o.branchPage));if(o.endingPage)ST.story.pages[ST.story.pages.length-1]=normalizeStoryPage(o.endingPage);}ST.mode='decision-feedback';showSheet(true,'<h3><span class="sheet-mark">'+ic('check')+'</span>Your choice changes the story</h3><p><strong>'+esc(o.text)+'</strong></p><p>'+esc(o.response)+'</p><p class="story-choice-impact">Your decision changes what happens next and how the story ends.</p><div class="sheet-actions"><button class="btn" id="story-decision-next">See what happens '+ic('arrow')+'</button></div>');}
+  function answerStoryDecision(index){if(!ST||ST.mode!=='decision'||ST.decisionDone)return;const d=ST.story.decision,o=d&&d.options[index];if(!o)return;ST.decisionDone=true;ST.decisionChoice=index;if(o.branchPage&&ST.decisionResumePage!==null){ST.story.pages.splice(ST.decisionResumePage,0,normalizeStoryPage(o.branchPage));if(o.endingPage)ST.story.pages[ST.story.pages.length-1]=normalizeStoryPage(o.endingPage);}ST.mode='decision-feedback';showSheet(true,'<h3><span class="sheet-mark">'+ic('git-branch')+'</span>Your choice shapes the story</h3><p><strong>'+esc(o.text)+'</strong></p><p>'+esc(o.response)+'</p><p class="story-choice-impact">There is no right or wrong choice here. Each option leads to a different path.</p><div class="sheet-actions"><button class="btn" id="story-decision-next">Continue story '+ic('arrow')+'</button></div>');$('#sheet').classList.add('story-choice-sheet');}
   function renderStoryQuestion(){const q=ST.story.questions[ST.qi];$('#steps').innerHTML=ST.story.questions.map((_,i)=>'<span class="step '+(i<ST.qi?'ok':i===ST.qi?'current':'')+'"></span>').join('');$('#game-body').innerHTML='<div class="q-meta"><span class="pill">Story questions</span><span class="q-count">Question '+(ST.qi+1)+' of '+ST.story.questions.length+'</span></div><h2 class="q-text" id="story-q-title">'+esc(q.q)+'</h2><p class="q-sub">Choose the best answer.</p><div class="answers" id="story-answers" role="group" aria-labelledby="story-q-title">'+q.answers.map((v,i)=>'<button class="answer" data-story-answer="'+i+'"><span class="key">'+(i+1)+'</span><span>'+esc(v)+'</span></button>').join('')+'</div><button class="btn btn-ghost story-back-reading" data-story-action="back-reading">← Back to story</button>';$('#game-scroll').scrollTop=0;}
   function answerStoryQuestion(choice){if(!ST||ST.mode!=='quiz'||ST.answered)return;const q=ST.story.questions[ST.qi],ok=choice===q.correct;ST.answered=true;if(ok)ST.score++;else if(q.reviewWord){addReview(q.reviewWord,q.explain);save();}ST.results[ST.qi]={status:ok?'ok':'no',chosen:choice,correct:q.correct,question:q.q,explain:q.explain};$$('#story-answers .answer').forEach((b,i)=>{b.disabled=true;if(i===q.correct)b.classList.add('correct');else if(i===choice)b.classList.add('wrong');});showSheet(ok,'<h3><span class="sheet-mark">'+ic(ok?'check':'x')+'</span>'+(ok?'Exactly right!':'Good try — keep learning.')+'</h3>'+(ok?'':'<p>Correct answer: <b>'+esc(q.answers[q.correct])+'</b></p>')+'<p>'+esc(q.explain)+'</p><div class="sheet-actions"><button class="btn" id="go-next">'+(ST.qi===ST.story.questions.length-1?'See story results':'Continue')+ic('arrow')+'</button></div>');}
   function renderStoryLearningReview(story){const vocab=Object.entries(story.vocab||{}).slice(0,8);const missed=(ST.results||[]).filter(r=>r&&r.status==='no');return '<section class="story-learning-review"><div class="story-review-heading"><span class="kicker">LEARN & REMEMBER</span><h3>Words from this story</h3><p>Review useful words in context before you leave.</p></div><div class="story-review-vocab">'+(vocab.length?vocab.map(([word,v])=>'<article class="story-review-word"><div class="story-review-word-top"><strong>'+esc(word)+'</strong><span>'+esc(v.pronunciation||'')+'</span></div><p>'+esc(v.meaning||'')+'</p><p class="arabic" lang="ar" dir="rtl">'+esc(v.ar||'')+'</p><small>Example: “'+esc(v.example||'')+'”</small><button type="button" class="btn btn-ghost story-review-listen" data-story-action="listen-word" data-value="'+esc(word)+'">🔊 Listen</button></article>').join(''):'<p>No vocabulary notes have been added yet.</p>')+'</div>'+(missed.length?'<div class="story-review-missed"><h3>Questions to revisit</h3>'+missed.map(r=>'<article><p><strong>'+esc(r.question)+'</strong></p><p>'+esc(r.explain||'Read the story again and look for evidence.')+'</p></article>').join('')+'</div>':'<p class="story-review-perfect">Great work — you answered every question correctly.</p>')+'</section>';}
@@ -1309,6 +1309,41 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     const key=normalizeTranslationKey(source);
     const exact=AR_TRANSLATION_PHRASES[key];
     if(exact)return {text:exact,exact:true};
+    const commonPrompts = {
+      'what does "borrow" mean':'ما معنى كلمة «borrow»؟',
+      'what does "affordable" mean':'ما معنى كلمة «affordable»؟',
+      'what does "exhausted" mean':'ما معنى كلمة «exhausted»؟',
+      'what does "thirsty" mean':'ما معنى كلمة «thirsty»؟',
+      'what does "usually" mean':'ما معنى كلمة «usually»؟',
+      'which verb fits':'أي فعل يناسب؟',
+      'choose the correct word':'اختر الكلمة الصحيحة.',
+      'choose the correct spelling':'اختر التهجئة الصحيحة.',
+      'which spelling is correct':'أي تهجئة صحيحة؟',
+      'which word is correct':'أي كلمة صحيحة؟',
+      'which is the correct form':'ما الصيغة الصحيحة؟',
+      'which is correct':'أيّها صحيح؟',
+      'which is the correct question':'أي سؤال صيغته صحيحة؟',
+      'choose the best word':'اختر الكلمة الأنسب.',
+      'choose the best answer':'اختر أفضل إجابة.',
+      'what is the opposite of "cheap"':'ما عكس كلمة «cheap»؟',
+      'a "neighbour" is someone who…':'الجار هو شخص…',
+      'if a shop is "closed", you…':'إذا كان المتجر «مغلقًا»، فأنت…',
+      'which sentence is grammatically correct':'أي جملة صحيحة نحويًا؟',
+      'complete the sentence':'أكمل الجملة.',
+      'complete the dialogue':'أكمل الحوار.',
+      'read the situation and choose the best answer':'اقرأ الموقف واختر أفضل إجابة.',
+      'read the clues and infer the missing word':'اقرأ القرائن واستنتج الكلمة الناقصة.',
+      'choose the natural phrase':'اختر التعبير الطبيعي في الإنجليزية.',
+      'choose the correct phrase':'اختر العبارة الصحيحة.',
+      'choose the correct question':'اختر السؤال الصحيح.',
+      'which sentence is correct':'أي جملة صحيحة؟',
+      'choose the natural response':'اختر الرد الطبيعي المناسب.',
+      'what would you say in this situation':'ماذا ستقول في هذا الموقف؟',
+      'read carefully':'اقرأ بعناية.',
+      'choose the best option':'اختر الخيار الأنسب.',
+      'choose the correct option':'اختر الخيار الصحيح.'
+    };
+    if(commonPrompts[key])return {text:commonPrompts[key],exact:true};
     let templateMatch=source.match(/^Level\s+(A1|A2|B1|B2|C1|C2)\s*[·•-]\s*choose the best answer\.?$/i);
     if(templateMatch)return {text:'المستوى '+templateMatch[1]+' · اختر أفضل إجابة.',exact:true};
     if(/^Start at the dot and face the arrow\./i.test(source)){
@@ -1434,7 +1469,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     const so=e.target.closest('[data-story-open]');if(so){startStory(so.dataset.storyOpen);return;}
     const sa=e.target.closest('[data-story-answer]');if(sa){answerStoryQuestion(Number(sa.dataset.storyAnswer));return;}
     const sd=e.target.closest('[data-story-decision]');if(sd){answerStoryDecision(Number(sd.dataset.storyDecision));return;}
-    if(e.target.closest('#story-decision-next')&&ST&&ST.mode==='decision-feedback'){ST.mode='read';ST.page=ST.decisionResumePage;renderStoryPage();return;}
+    if(e.target.closest('#story-decision-next')&&ST&&ST.mode==='decision-feedback'){hideSheet();$('#sheet').classList.remove('story-choice-sheet');ST.mode='read';ST.page=ST.decisionResumePage;renderStoryPage();return;}
     const sw=e.target.closest('[data-story-word]');if(sw&&ST&&ST.mode==='read'){openStoryWord(sw.dataset.storyWord,sw.dataset.storyDisplay);return;}
     const act=e.target.closest('[data-story-action]');
     if(act&&ST){const action=act.dataset.storyAction;if(action==='next'){storyNext();return;}if(action==='prev'&&ST.page>0){ST.page--;renderStoryPage();return;}if(action==='listen-page'){speak(ST.story.pages[ST.page].text);return;}if(action==='listen-word'){speak(act.dataset.value);return;}if(action==='save-word'){saveStoryWord(act.dataset.value,act.dataset.meaning);openStoryWord(act.dataset.value,act.dataset.value);return;}if(action==='close-word'){const c=$('#story-word-card');if(c)c.hidden=true;return;}if(action==='back-reading'){ST.mode='read';ST.page=ST.story.pages.length-1;hideSheet();renderStoryPage();return;}if(action==='another'){const old=ST.story.id;ST=null;const next=STORIES.find(s=>s.id!==old&&storyLevelIndex(s.level)<=storyLevelIndex(currentLevel().id));startStory((next||STORIES[0]).id);return;}if(action==='words'){ST=null;closeGame();openView('words');return;}if(action==='close'){ST=null;closeGame();openView('stories');return;}}
