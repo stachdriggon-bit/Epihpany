@@ -1487,3 +1487,14 @@ body[data-theme="dark"] .dock{background:rgba(27,32,48,.97)}
 .story-choice-recap{margin:1rem 0;padding:1rem;border:1px solid var(--line, #e7e7e7);border-radius:1rem;background:var(--surface-soft, rgba(120,130,150,.07));text-align:left}.story-choice-recap>strong{display:block;font-size:1.05rem;margin-bottom:.8rem}.story-impact-choice{margin:.4rem 0}.story-impact-step{margin:.75rem 0;padding:.8rem;border-left:3px solid var(--accent, #7c6ee6);border-radius:.4rem;background:var(--surface, rgba(120,130,150,.06))}.story-impact-step small{display:block;font-size:.7rem;font-weight:800;letter-spacing:.08em;opacity:.72;margin-bottom:.35rem}.story-impact-step p{margin:0;line-height:1.6}.story-impact-replay{margin:.9rem 0 0;font-size:.9rem;line-height:1.6;opacity:.85}
 
 .developer-access-note{margin:0 0 1rem;padding:.7rem 1rem;border:1px solid var(--accent,#7567df);border-radius:.85rem;font-size:.88rem;font-weight:700;background:color-mix(in srgb,var(--accent,#7567df) 9%,transparent);color:var(--text,#25253a)}
+
+
+/* Developer testing lab */
+.developer-lab{border:1px solid color-mix(in srgb,var(--accent,#7567df) 40%,var(--line));background:var(--surface);border-radius:22px;padding:clamp(16px,3vw,26px);margin:1.25rem 0;}
+.developer-lab-controls{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px 12px;align-items:center;}
+.developer-lab-controls label{font-size:.85rem;font-weight:750;color:var(--ink-2);}
+.developer-lab-controls select{width:100%;min-width:0;min-height:44px;border:1px solid var(--line);border-radius:12px;background:var(--ground);color:var(--ink);padding:8px 10px;font:inherit;}
+.developer-session-status{font-size:.9rem;line-height:1.6;color:var(--ink-2);margin:14px 0;}
+.developer-lab-actions{display:flex;gap:10px;flex-wrap:wrap;}
+.developer-lab-actions button{min-height:44px;}
+@media(max-width:640px){.developer-lab-controls{grid-template-columns:minmax(0,1fr);gap:6px}.developer-lab-controls label{margin-top:6px}.developer-lab-actions{flex-direction:column}.developer-lab-actions button{width:100%}}
