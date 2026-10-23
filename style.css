@@ -742,3 +742,7 @@ body[data-theme="dark"] .trap-explanation{background:#252B3C;border-color:var(--
 .mg-block:hover rect,.mg-block:focus rect{fill:#FFF3CC;outline:none}
 .mg-block.is-right rect{fill:#BFEBD3;stroke:#1B7F53}
 .mg-block.is-wrong rect{fill:#F9C9C1;stroke:#C0392B}
+
+.world-region-wrap{display:flex;flex-direction:column;gap:8px}
+.world-practice-btn{padding:10px 14px;border:1.5px dashed var(--ink);border-radius:14px;background:#fff;font:700 14px/1.3 inherit;color:var(--ink);cursor:pointer}
+.world-practice-btn:hover{background:#FFF3CC}

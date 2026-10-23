@@ -957,6 +957,8 @@
     }
     if(c.type==='on'){const o=worldObj(c.object);return !!o&&worldFootprint(o).some(p=>p.x===WORLD.player.x&&p.y===WORLD.player.y);}
     if(c.type==='between'){const a=worldObj(c.objects[0]),b=worldObj(c.objects[1]);return !!a&&!!b&&WORLD.player.y===a.y&&WORLD.player.y===b.y&&WORLD.player.x>Math.min(a.x,b.x)&&WORLD.player.x<Math.max(a.x,b.x);}
+    if(c.type==='rel'){const o=worldObj(c.object);if(!o)return false;const d={left:[-1,0],right:[1,0],above:[0,-1],below:[0,1]}[c.rel];return worldFootprint(o).some(p=>WORLD.player.x===p.x+d[0]&&WORLD.player.y===p.y+d[1]);}
+    if(c.type==='offset'){const s0=WORLD.taskStart||WORLD.player;return WORLD.player.x===s0.x+c.dx&&WORLD.player.y===s0.y+c.dy;}
     if(c.type==='pickup')return WORLD.carried===c.object||WORLD.picked.has(c.object);
     if(c.type==='give')return WORLD.given.has(c.item);
     return false;
@@ -987,6 +989,8 @@
     const task=worldTask();
     if(task&&task.feedback&&here&&task.check.object==='red-house')worldFeedback('That is the blue house, not the red one. Look for the red door.');
     else if(task&&task.feedback&&red&&task.check.object==='blue-house')worldFeedback('That is the red house, not the blue one. Look for the blue door.');
+    if(task&&task.negObject&&!worldEval()){const n=worldObj(task.negObject);if(n&&worldReachableFromPlayer(n))worldFeedback('That is the '+task.negName+', not the '+task.goalName+'. Look again.');}
+    if(WORLD.needLeave){const s0=worldStep();if(s0&&!worldCheck(s0))WORLD.needLeave=false;worldDraw();return;}
     worldDraw();if(worldEval())worldComplete();
   }
   function worldInteract(){
@@ -1001,6 +1005,77 @@
       if(WORLD.carried===step.item&&o&&worldReachableFromPlayer(o)){WORLD.given.add(step.item);WORLD.carried=null;if(worldEval())worldComplete();else worldStatus();worldDraw();return;}
     }
     toast('Move next to the item or person, then press Space.');
+  }
+  /* ---------- World practice runs: randomised layout + generated missions ---------- */
+  const W_AR = {tree:'الشجرة','red house':'البيت الأحمر','blue house':'البيت الأزرق',well:'البئر',baker:'الخبّاز',bakery:'المخبز','fruit stall':'كشك الفاكهة','bread stall':'كشك الخبز',vendor:'البائع',customer:'الزبون',apples:'التفاح',bread:'الخبز','ticket desk':'شباك التذاكر',clerk:'الموظف',traveller:'المسافر',ticket:'التذكرة',sofa:'الأريكة',table:'الطاولة',family:'العائلة',lamp:'المصباح',book:'الكتاب',key:'المفتاح',basket:'السلة',pond:'البركة',bench:'المقعد',swing:'الأرجوحة',slide:'المنزلقة','ice-cream seller':'بائع المثلجات',child:'الطفل',ball:'الكرة',kite:'الطائرة الورقية',board:'السبّورة',teacher:'المعلّم',bookshelf:'رف الكتب',clock:'الساعة','front desk':'المكتب الأمامي','back desk':'المكتب الخلفي',student:'الطالب',bag:'الحقيبة',pencil:'القلم'};
+  const W_MEAN = {tree:'a tall plant with a trunk',well:'a deep hole for water',baker:'a person who makes bread',bakery:'a shop that sells bread',vendor:'a person who sells things',customer:'a person who buys things',apples:'round fruit, red or green',bread:'food made from flour',ticket:'a paper that lets you travel',sofa:'a long soft seat',table:'furniture with a flat top',family:'parents, children and relatives',lamp:'a light you can switch on',book:'pages joined together for reading',key:'a small tool for opening locks',basket:'a container made of woven strips',pond:'a small area of still water',bench:'a long seat for several people',swing:'a seat that moves back and forth',child:'a young person',ball:'a round object used in games',kite:'a toy that flies in the wind',board:'a flat surface to write on',teacher:'a person who helps you learn',bookshelf:'furniture for books',clock:'a device that shows the time',student:'a person who studies',bag:'a container for carrying things',pencil:'a thin tool for writing',clerk:'a person who works at a desk',traveller:'a person on a journey',seller:'a person who sells things'};
+  const W_ARN = ['صفر','خطوة واحدة','خطوتين','ثلاث خطوات','أربع خطوات'];
+  const W_NUM = ['zero','one','two','three','four'];
+  const wArName = o => W_AR[o.name] || o.name;
+  function wCompass(from, to) { const dy = to.y - from.y, dx = to.x - from.x; const v = Math.abs(dy) < 2 ? '' : dy < 0 ? 'north' : 'south', h = Math.abs(dx) < 2 ? '' : dx < 0 ? 'west' : 'east'; return v && h ? v + '-' + h : v || h || 'very close'; }
+  function wReachable() {
+    const seen = new Set(), q = [[WORLD.player.x, WORLD.player.y]], key = (x, y) => x + ',' + y; seen.add(key(q[0][0], q[0][1]));
+    while (q.length) { const [x, y] = q.shift(); for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) { const nx = x + dx, ny = y + dy; if (!seen.has(key(nx, ny)) && worldWalkable(nx, ny)) { seen.add(key(nx, ny)); q.push([nx, ny]); } } }
+    return seen;
+  }
+  function wRandomiseLayout() {
+    // Move people and pick-up items to new free cells so every run looks different.
+    const sd = WORLD.player, taken = [{x: sd.x, y: sd.y}];
+    const movable = WORLD.objects.filter(o => (o.person || o.pickup) && o.id !== 'bridge');
+    movable.forEach(o => { o.x = -99; o.y = -99; });
+    const reach = [...wReachable()].map(s => s.split(',').map(Number));
+    movable.forEach(o => {
+      const cands = SHUF(reach).filter(([x, y]) => taken.every(t => Math.abs(t.x - x) + Math.abs(t.y - y) >= 3) && !WORLD.objects.some(p => p !== o && worldFootprint(p).some(c => c.x === x && c.y === y)));
+      const pick = cands[0] || reach[Math.floor(Math.random() * reach.length)]; o.x = pick[0]; o.y = pick[1]; taken.push({x: o.x, y: o.y});
+    });
+  }
+  function wGenerate(count) {
+    const reach = wReachable(), lvl = levelIndex();
+    const uniqueName = o => WORLD.objects.filter(p => p.name === o.name).length === 1;
+    const near = o => worldFootprint(o).some(c => [[1, 0], [-1, 0], [0, 1], [0, -1], [0, 0]].some(([dx, dy]) => reach.has((c.x + dx) + ',' + (c.y + dy))));
+    const places = WORLD.objects.filter(o => !o.person && !o.pickup && o.name && uniqueName(o) && near(o) && !['river', 'bridge', 'door'].includes(o.id));
+    const people = WORLD.objects.filter(o => o.person && uniqueName(o) && near(o));
+    let items = WORLD.objects.filter(o => o.pickup && uniqueName(o) && near(o));
+    const usedPick = new Set(), tasks = [], N = n => W_NUM[n];
+    const nm = o => o.name, art = o => 'the ' + o.name;
+    const mean = o => W_MEAN[o.name] ? [o.name, W_MEAN[o.name], 'A1'] : null;
+    const stepNear = o => ({type: 'near', object: o.id, target: {x: o.x, y: o.y}});
+    const T = [];
+    const push = (kind, instruction, ar, check, extra) => T.push(Object.assign({id: 'world-gen-' + WORLD.region + '-' + kind, region: WORLD.region, level: 'A1', instruction, ar, check, generated: true}, extra));
+    const any = list => list[Math.floor(Math.random() * list.length)];
+    const makers = [];
+    if (places.length) makers.push(() => { const o = any(places); push('goto', any(['Go to ', 'Find ', 'Walk to ']) + art(o) + '.', 'اذهب إلى ' + wArName(o) + '.', stepNear(o), {hint: 'Look to the ' + wCompass(WORLD.player, o) + '.', words: [mean(o)].filter(Boolean)}); });
+    if (people.length) makers.push(() => { const o = any(people); push('speak', 'Go and speak to the ' + nm(o) + '.', 'اذهب وتحدّث مع ' + wArName(o) + '.', stepNear(o), {hint: 'Look to the ' + wCompass(WORLD.player, o) + '.', words: [mean(o)].filter(Boolean)}); });
+    makers.push(() => { const dirs = [['right', 1, 0, 'يمينًا'], ['left', -1, 0, 'يسارًا'], ['up', 0, -1, 'للأعلى'], ['down', 0, 1, 'للأسفل']]; for (let k = 0; k < 20; k++) { const d = any(dirs), n = 2 + Math.floor(Math.random() * 3), tx = WORLD.player.x + d[1] * n, ty = WORLD.player.y + d[2] * n; let ok = true; for (let s = 1; s <= n; s++) if (!worldWalkable(WORLD.player.x + d[1] * s, WORLD.player.y + d[2] * s)) ok = false; if (ok) { push('steps', 'Walk ' + N(n) + ' steps ' + d[0] + '.', 'امشِ ' + AR_NUM_STEPS(n) + ' ' + d[3] + '.', {type: 'offset', n, flex: true, dx: d[1] * n, dy: d[2] * n, target: {x: tx, y: ty}}, {hint: 'Count your steps: ' + n + ' ' + d[0] + '.', words: [[d[0], d[0] === 'up' ? 'towards the top' : d[0] === 'down' ? 'towards the bottom' : 'in that direction', 'A1'], ['step', 'one movement of your foot', 'A1']]}); return; } } });
+    if (items.length) makers.push(() => { const o = any(items); if (usedPick.has(o.id)) return; usedPick.add(o.id); push('pick', 'Pick up the ' + nm(o) + '.', 'التقط ' + wArName(o) + '.', {type: 'pickup', object: o.id, target: {x: o.x, y: o.y}}, {hint: 'Look to the ' + wCompass(WORLD.player, o) + '.', words: [mean(o), ['pick up', 'lift something', 'A2']].filter(Boolean)}); });
+    if (items.length && people.length) makers.push(() => { const o = any(items), p = any(people); if (usedPick.has(o.id)) return; usedPick.add(o.id); push('fetch', 'Pick up the ' + nm(o) + ' and give it to the ' + nm(p) + '.', 'التقط ' + wArName(o) + ' وأعطه إلى ' + wArName(p) + '.', {type: 'sequence', steps: [{type: 'pickup', object: o.id, target: {x: o.x, y: o.y}}, {type: 'give', item: o.id, person: p.id, target: {x: p.x, y: p.y}}]}, {level: 'A2', hint: 'First the ' + nm(o) + ' (' + wCompass(WORLD.player, o) + '), then the ' + nm(p) + '.', words: [mean(o), mean(p), ['give', 'hand something to someone', 'A1']].filter(Boolean)}); });
+    if (places.length + people.length >= 2) makers.push(() => { const pool = places.concat(people); const a = any(pool); let b = any(pool); for (let k = 0; k < 8 && b === a; k++) b = any(pool); if (a === b) return; push('two', 'Go to the ' + nm(a) + ', then go to the ' + nm(b) + '.', 'اذهب إلى ' + wArName(a) + '، ثم إلى ' + wArName(b) + '.', {type: 'sequence', steps: [stepNear(a), stepNear(b)]}, {level: 'A2', hint: 'First look ' + wCompass(WORLD.player, a) + '.', words: [mean(a), mean(b), ['then', 'after that', 'A1']].filter(Boolean)}); });
+    if (places.length >= 2) makers.push(() => { const a = any(places); let b = any(places); for (let k = 0; k < 8 && b === a; k++) b = any(places); if (a === b) return; push('not', 'Go to the ' + nm(a) + ', not the ' + nm(b) + '.', 'اذهب إلى ' + wArName(a) + ' وليس ' + wArName(b) + '.', stepNear(a), {level: 'B1', negObject: b.id, negName: nm(b), goalName: nm(a), hint: 'The ' + nm(a) + ' is to the ' + wCompass(WORLD.player, a) + '.', words: [mean(a), mean(b), ['not', 'used to say no', 'A1']].filter(Boolean)}); });
+    if (places.length) makers.push(() => { for (let k = 0; k < 12; k++) { const o = any(places), s = any([['left', -1, 0, 'يسار'], ['right', 1, 0, 'يمين'], ['above', 0, -1, 'أعلى'], ['below', 0, 1, 'أسفل']]); const c = worldFootprint(o)[0], tx = c.x + s[1], ty = c.y + s[2]; if (worldWalkable(tx, ty) && reach.has(tx + ',' + ty)) { push('side', 'Stand ' + (s[0] === 'above' || s[0] === 'below' ? '' : 'on the ') + s[0] + (s[0] === 'above' || s[0] === 'below' ? ' ' : ' side of ') + 'the ' + nm(o) + '.', 'قف ' + (s[0] === 'above' ? 'فوق ' : s[0] === 'below' ? 'تحت ' : 'على ' + s[3] + ' ') + wArName(o) + '.', {type: 'rel', object: o.id, rel: s[0], target: {x: tx, y: ty}}, {level: 'B1', hint: 'Stand ' + s[0] + ' the ' + nm(o) + ' (' + wCompass(WORLD.player, o) + ' of you).', words: [mean(o), [s[0], 'a position relative to something', 'A2']].filter(Boolean)}); return; } } });
+    if (items.length && people.length && places.length) makers.push(() => { const o = any(items), p = any(people), pl = any(places); if (usedPick.has(o.id)) return; usedPick.add(o.id); push('three', 'First go to the ' + nm(pl) + ', then pick up the ' + nm(o) + ', and finally give it to the ' + nm(p) + '.', 'أولًا اذهب إلى ' + wArName(pl) + '، ثم التقط ' + wArName(o) + '، وأخيرًا أعطه إلى ' + wArName(p) + '.', {type: 'sequence', steps: [stepNear(pl), {type: 'pickup', object: o.id, target: {x: o.x, y: o.y}}, {type: 'give', item: o.id, person: p.id, target: {x: p.x, y: p.y}}]}, {level: 'B2', hint: 'Three stops: ' + nm(pl) + ' → ' + nm(o) + ' → ' + nm(p) + '.', words: [mean(pl), mean(o), mean(p), ['finally', 'as the last step', 'B1']].filter(Boolean)}); });
+    // Pick a mix: simple kinds first at A1/A2, harder ones open up with the learner's level.
+    const hardStart = lvl >= 2 ? 0 : Math.max(0, makers.length - 3);
+    const order = SHUF(makers.map((m, i) => i)).filter(i => !(lvl < 2 && i >= makers.length - 2) );
+    let guard = 0; const kinds = new Set();
+    while (T.length < count && guard++ < 80) { const before = T.length; makers[order[guard % order.length]](); if (T.length > before) { const k = T[T.length - 1].id; if (kinds.has(k) && Math.random() < .6) T.pop(); else kinds.add(k); } }
+    // unique ids per task position inside a run (bounded set), shuffled
+    return T.slice(0, count).map((t, i) => Object.assign(t, {id: t.id + '-' + i}));
+  }
+  function wFixOffset(t) {
+    const c = t && t.check; if (!c || c.type !== 'offset' || !c.flex) return;
+    const n = c.n, px = WORLD.player.x, py = WORLD.player.y;
+    const dirs = [['right', 1, 0, 'يمينًا'], ['left', -1, 0, 'يسارًا'], ['up', 0, -1, 'للأعلى'], ['down', 0, 1, 'للأسفل']];
+    const ok = d => { for (let s = 1; s <= n; s++) if (!worldWalkable(px + d[1] * s, py + d[2] * s)) return false; return true; };
+    const d = SHUF(dirs).find(ok); if (!d) return;
+    c.dx = d[1] * n; c.dy = d[2] * n; c.target = {x: px + c.dx, y: py + c.dy};
+    t.instruction = 'Walk ' + W_NUM[n] + ' steps ' + d[0] + '.'; t.ar = 'امشِ ' + AR_NUM_STEPS(n) + ' ' + d[3] + '.'; t.hint = 'Count your steps: ' + n + ' ' + d[0] + '.';
+    t.words = [[d[0], d[0] === 'up' ? 'towards the top' : d[0] === 'down' ? 'towards the bottom' : 'in that direction', 'A1'], ['step', 'one movement of your foot', 'A1']];
+  }
+  function AR_NUM_STEPS(n) { return W_ARN[n] || (n + ' خطوات'); }
+  function worldAwardPractice(stars, t) {
+    const gain = stars * 3; state.xp += gain;
+    (t.words || []).forEach(w => { if (!state.words.some(v => String(v[0]).toLowerCase() === String(w[0]).toLowerCase())) state.words.push(w); });
+    state.world.runs = state.world.runs || 0; save(); renderHeader(); renderWords(); return gain;
   }
   function worldAward(stars,t){
     const old=Number(state.world.stars[t.id]||0),first=!state.world.done.includes(t.id),earned=Math.max(0,stars-old)*5;
@@ -1034,7 +1109,7 @@
   function worldDraw(){
     if(!WORLD||WORLD.mode!=='play')return;const c=$('#world-canvas');if(!c)return;const r=c.getBoundingClientRect(),d=Math.max(1,Math.min(2,devicePixelRatio||1));if(!r.width||!r.height)return;
     if(c.width!==Math.round(r.width*d)||c.height!==Math.round(r.height*d)){c.width=Math.round(r.width*d);c.height=Math.round(r.height*d);}
-    const x=c.getContext('2d');x.setTransform(d,0,0,d,0,0);x.clearRect(0,0,r.width,r.height);x.fillStyle=({market:'#d9c9a2',station:'#cfd3da',home:'#8a6d52'})[WORLD.region]||'#8fbe7a';x.fillRect(0,0,r.width,r.height);
+    const x=c.getContext('2d');x.setTransform(d,0,0,d,0,0);x.clearRect(0,0,r.width,r.height);x.fillStyle=({market:'#d9c9a2',station:'#cfd3da',home:'#8a6d52',school:'#8a6d52'})[WORLD.region]||'#8fbe7a';x.fillRect(0,0,r.width,r.height);
     const MW=(WORLD.map[0]||'').length||20,MH=WORLD.map.length||14,fit=Math.min(r.width/MW,r.height/MH),tile=Math.max(fit,Math.min(34,Math.max(26,r.height/9)));
     // Camera: when the map is larger than the screen (phones), follow the player instead of shrinking everything.
     const pp=WORLD.player,el=Math.min(1,(performance.now()-(pp.moveAt||0))/160),ee=el*el*(3-2*el),pcx=(pp.fromX+(pp.x-pp.fromX)*ee+.5)*tile,pcy=(pp.fromY+(pp.y-pp.fromY)*ee+.5)*tile;
@@ -1060,6 +1135,17 @@
         for(let gy=0;gy<MH;gy++)for(let gx=0;gx<MW;gx++){if((WORLD.map[gy]||'')[gx]==='B'){const px=ox+gx*tile,py=oy+gy*tile;x.fillStyle='#8a7a68';x.fillRect(px,py+tile*.12,tile+.4,tile*.76);x.fillStyle='#5b4a3b';for(let k=0;k<3;k++)x.fillRect(px+tile*(.1+k*.33),py+tile*.08,tile*.12,tile*.84);x.fillStyle='#4b5563';x.fillRect(px,py+tile*.28,tile+.4,tile*.08);x.fillRect(px,py+tile*.64,tile+.4,tile*.08);}}
         // platform edge strips
         x.fillStyle='#f4c94a';for(const row of [4,6,8])x.fillRect(ox,oy+row*tile+tile*.9,W,tile*.08);
+      }else if(t==='park'){
+        for(let gy=0;gy<MH;gy++)for(let gx=0;gx<MW;gx++){const ch=(WORLD.map[gy]||'')[gx],px=ox+gx*tile,py=oy+gy*tile;
+          if(ch==='R'){x.fillStyle='#dcc799';x.fillRect(px,py,tile+.4,tile+.4);}
+          if(ch==='W'){x.fillStyle='#5fb0c4';x.fillRect(px,py,tile+.4,tile+.4);x.strokeStyle='rgba(235,250,248,.5)';x.lineWidth=Math.max(1,tile*.04);x.beginPath();x.moveTo(px+tile*.15,py+tile*.4);x.bezierCurveTo(px+tile*.35,py+tile*.25,px+tile*.6,py+tile*.55,px+tile*.85,py+tile*.38);x.stroke();}}
+        for(const [gx,gy] of [[0,0],[3,1],[18,0],[1,6],[18,11],[10,12],[6,13],[12,1]]){drawTree(ox+(gx+.5)*tile,oy+(gy+.5)*tile);}
+      }else if(t==='school'){
+        x.fillStyle='#e8dcc4';x.fillRect(ox,oy,W,H);
+        for(let gy=0;gy<MH;gy++)for(let gx=0;gx<MW;gx++){if((gx+gy)%2===0){x.fillStyle='rgba(120,100,70,.08)';x.fillRect(ox+gx*tile,oy+gy*tile,tile,tile);}}
+        x.fillStyle='#b9c9b2';x.fillRect(ox+tile*7,oy+tile*.5,tile*6,tile*2.3);x.strokeStyle='#7a5b3a';x.lineWidth=tile*.12;x.strokeRect(ox+tile*7,oy+tile*.5,tile*6,tile*2.3);
+        x.fillStyle='#8a6d52';x.fillRect(ox,oy,W,tile*.45);x.fillRect(ox,oy+H-tile*.45,W,tile*.45);x.fillRect(ox,oy,tile*.45,H);x.fillRect(ox+W-tile*.45,oy,tile*.45,H);
+        x.fillStyle='#cfe3ee';for(const wx of [2,15,17]){x.fillRect(ox+wx*tile,oy+tile*.06,tile*1.4,tile*.32);}
       }else if(t==='home'){
         x.fillStyle='#e0c496';x.fillRect(ox,oy,W,H);
         for(let gy=0;gy<MH*2;gy++){x.fillStyle=gy%2?'rgba(140,100,60,.10)':'rgba(255,240,210,.12)';x.fillRect(ox,oy+gy*tile/2,W,tile/2);}
@@ -1207,17 +1293,29 @@
     if(p.moveAt&&elapsed<1)WORLD.raf=requestAnimationFrame(worldDraw);
   }
   function worldStatus(){const s=$('#world-step');if(s)s.textContent=worldTask().check.type==='sequence'?'Step '+(WORLD.step+1)+' of '+worldTask().check.steps.length:'';const carry=$('#world-carry');if(carry)carry.textContent=WORLD.carried?'Carrying '+(WORLD.carried==='key'?'the key':'the basket'):'';}
-  function worldRenderPlay(){const t=worldTask();$('#world-game').innerHTML=worldShell('<div class="world-stage"><canvas id="world-canvas" aria-label="Top-down village map"></canvas><div class="world-helpbar"><button data-world-speak>🔊 Listen</button><button data-world-help-toggle aria-expanded="false">💡 Need help?</button><span id="world-step"></span><span id="world-carry"></span></div><section class="world-help-panel" id="world-help-panel" hidden aria-live="polite"><div class="world-help-heading"><strong>Learn as you explore</strong><span>Use a hint only when you need it.</span></div><p id="world-help-copy">Try to understand the instruction and explore the village first.</p><div class="world-help-actions"><button data-world-help-level="1">1 · Small hint</button><button data-world-help-level="2">2 · Show target</button><button data-world-help-level="3">3 · Arabic help</button></div></section><div class="world-mobile-controls"><div class="world-dpad"><button data-world-move="ArrowUp" aria-label="Move up">▲</button><div><button data-world-move="ArrowLeft" aria-label="Move left">◀</button><button data-world-move="ArrowDown" aria-label="Move down">▼</button><button data-world-move="ArrowRight" aria-label="Move right">▶</button></div></div><button class="world-interact" data-world-interact>Space · Interact</button></div></div>');worldStatus();requestAnimationFrame(worldDraw);}
+  function worldRenderPlay(){const t=worldTask();WORLD.taskStart={x:WORLD.player.x,y:WORLD.player.y};wFixOffset(t);const c0=t.check.type==='sequence'?t.check.steps[0]:t.check;WORLD.needLeave=WORLD.run==='practice'&&!['pickup','give','offset'].includes(c0.type)&&worldCheck(c0);$('#world-game').innerHTML=worldShell('<div class="world-stage"><canvas id="world-canvas" aria-label="Top-down village map"></canvas><div class="world-helpbar"><button data-world-speak>🔊 Listen</button><button data-world-help-toggle aria-expanded="false">💡 Need help?</button><span id="world-step"></span><span id="world-carry"></span></div><section class="world-help-panel" id="world-help-panel" hidden aria-live="polite"><div class="world-help-heading"><strong>Learn as you explore</strong><span>Use a hint only when you need it.</span></div><p id="world-help-copy">Try to understand the instruction and explore the village first.</p><div class="world-help-actions"><button data-world-help-level="1">1 · Small hint</button><button data-world-help-level="2">2 · Show target</button><button data-world-help-level="3">3 · Arabic help</button></div></section><div class="world-mobile-controls"><div class="world-dpad"><button data-world-move="ArrowUp" aria-label="Move up">▲</button><div><button data-world-move="ArrowLeft" aria-label="Move left">◀</button><button data-world-move="ArrowDown" aria-label="Move down">▼</button><button data-world-move="ArrowRight" aria-label="Move right">▶</button></div></div><button class="world-interact" data-world-interact>Space · Interact</button></div></div>');worldStatus();if(WORLD.needLeave)worldFeedback('You are already close! Step away, then come back.');requestAnimationFrame(worldDraw);}
   function worldShowRegions(){
     if(!WORLD)return;
     const completed=(state.world&&state.world.done||[]).length;
     const regions=WORLD_DATA.regions||[];
-    $('#world-game').innerHTML='<div class="world-region-hub"><p class="world-kicker">EPIPHANY WORLD</p><h1>Choose your next adventure</h1><p>Explore places, talk to people, finish missions and earn rewards.</p><div class="world-region-grid">'+regions.map(r=>{const open=completed>=r.unlock;const done=(state.world.done||[]).filter(id=>id.startsWith('world-'+r.id+'-')).length;return '<button class="world-region-card '+(open?'':'is-locked')+'" data-world-region="'+esc(r.id)+'" '+(open?'':'disabled')+'><span class="world-region-icon">'+r.icon+'</span><strong>'+esc(r.name)+'</strong><small>'+esc(r.description)+'</small><span class="world-region-progress">'+(open?done+' missions completed':'🔒 Complete '+r.unlock+' missions to unlock')+'</span></button>';}).join('')+'</div><button class="world-secondary" data-world-exit>Back to Epiphany</button></div>';
+    $('#world-game').innerHTML='<div class="world-region-hub"><p class="world-kicker">EPIPHANY WORLD</p><h1>Choose your next adventure</h1><p>Explore places, talk to people, finish missions and earn rewards.</p><div class="world-region-grid">'+regions.map(r=>{const open=completed>=r.unlock;const done=(state.world.done||[]).filter(id=>id.startsWith('world-'+r.id+'-')).length;return '<div class="world-region-wrap"><button class="world-region-card '+(open?'':'is-locked')+'" data-world-region="'+esc(r.id)+'" '+(open?'':'disabled')+'><span class="world-region-icon">'+r.icon+'</span><strong>'+esc(r.name)+'</strong><small>'+esc(r.description)+'</small><span class="world-region-progress">'+(open?done+' missions completed':'🔒 Complete '+r.unlock+' missions to unlock')+'</span></button>'+(open?'<button class="world-practice-btn" data-world-practice="'+esc(r.id)+'">🎲 Practice run · new missions every time</button>':'')+'</div>';}).join('')+'</div><button class="world-secondary" data-world-exit>Back to Epiphany</button></div>';
   }
-  function worldChooseRegion(id){
+  function worldChooseRegion(id,mode){
     if(!WORLD)return;const region=(WORLD_DATA.regions||[]).find(r=>r.id===id);if(!region)return;
     const completed=(state.world&&state.world.done||[]).length;if(completed<region.unlock){toast('Complete more missions to unlock this place.');return;}
-    WORLD.region=region.id;WORLD.regionName=region.name;WORLD.tasks=WORLD_DATA.tasks.filter(t=>(t.region||'village')===region.id);WORLD.index=0;WORLD.map=region.map||WORLD_DATA.map;WORLD.objects=(region.objects||WORLD_DATA.objects).map(o=>({...o}));WORLD.player={x:region.start.x,y:region.start.y,fromX:region.start.x,fromY:region.start.y,moveAt:0,queuedKey:null,color:(WORLD.player&&WORLD.player.color)||'#FFC531'};WORLD.step=0;WORLD.picked=new Set();WORLD.given=new Set();WORLD.carried=null;WORLD.mode='play';WORLD.usedHelp=false;WORLD.moves=0;worldRenderPlay();
+    const storyTasks=WORLD_DATA.tasks.filter(t=>(t.region||'village')===region.id);
+    // Story missions first; once they are all done (or on request) play endless practice runs.
+    const storyDone=storyTasks.every(t=>(state.world.done||[]).includes(t.id));
+    const run=mode||(storyDone?'practice':'story');
+    const baseObjects=(region.objects||WORLD_DATA.objects).map(o=>({...o}));
+    WORLD.region=region.id;WORLD.regionName=region.name;WORLD.run=run;WORLD.index=0;WORLD.map=region.map||WORLD_DATA.map;WORLD.objects=baseObjects;
+    WORLD.player={x:region.start.x,y:region.start.y,fromX:region.start.x,fromY:region.start.y,moveAt:0,queuedKey:null,color:(WORLD.player&&WORLD.player.color)||'#FFC531'};
+    if(run==='practice'){
+      wRandomiseLayout();WORLD.tasks=wGenerate(8);
+      if(!WORLD.tasks.length){WORLD.run='story';WORLD.tasks=storyTasks;}
+    }else WORLD.tasks=storyTasks;
+    WORLD.baseObjects=WORLD.objects.map(o=>({...o}));
+    WORLD.step=0;WORLD.picked=new Set();WORLD.given=new Set();WORLD.carried=null;WORLD.mode='play';WORLD.usedHelp=false;WORLD.moves=0;WORLD.target=null;WORLD.bonusGiven=false;worldRenderPlay();
   }
   function startWorld(taskId){if(typeof WORLD_DATA==='undefined'){toast('World data is not loaded. Refresh and try again.');return;}if(WORLD&&WORLD.raf)cancelAnimationFrame(WORLD.raf);
     // Opening the World tab should only build the region menu; do not initialise
@@ -1225,13 +1323,19 @@
     if(!taskId){WORLD={mode:'regions',region:null,regionName:null,raf:0,player:{color:'#FFC531'},outfit:'#6C5CE7',showTranslation:!!state.helpArabic,tries:0,usedHelp:false,moves:0,step:0,carried:null,picked:new Set(),given:new Set(),stars:Object.values((state.world&&state.world.stars)||{}).reduce((a,v)=>a+(Number(v)||0),0),progress:{}};lockPage(true);$$('[data-view]').forEach(b=>b.setAttribute('aria-current',b.dataset.view==='world'?'page':'false'));$('#world-game').hidden=false;worldShowRegions();return;}
     WORLD={mode:'intro',tasks:WORLD_DATA.tasks.slice(),index:Math.max(0,WORLD_DATA.tasks.findIndex(t=>t.id===taskId)),map:WORLD_DATA.map,objects:WORLD_DATA.objects.map(o=>({...o})),player:{x:WORLD_DATA.start.x,y:WORLD_DATA.start.y,fromX:WORLD_DATA.start.x,fromY:WORLD_DATA.start.y,moveAt:0,queuedKey:null,color:'#FFC531'},outfit:'#6C5CE7',showTranslation:!!state.helpArabic,tries:0,usedHelp:false,moves:0,step:0,carried:null,picked:new Set(),given:new Set(),stars:0,progress:{},raf:0};
     lockPage(true);$$('[data-view]').forEach(b=>b.setAttribute('aria-current',b.dataset.view==='world'?'page':'false'));$('#world-game').hidden=false;$('#world-game').innerHTML='<div class="world-intro"><button class="world-exit" data-world-exit>✕</button><div class="world-intro-art">🌳 🏠 🌉</div><p class="world-kicker">EPIPHANY WORLD</p><h1>Understand. Move. Discover.</h1><p>Read the English instruction and explore a tiny village and complete its missions.</p><h3>Your character</h3><div class="world-color-picks"><button class="is-selected" data-world-color="#FFC531">🟡 Yellow</button><button data-world-color="#7C6CFF">🟣 Purple</button></div><h3>Clothes</h3><div class="world-color-picks"><button class="is-selected" data-world-outfit="#6C5CE7">Purple</button><button data-world-outfit="#168B68">Green</button><button data-world-outfit="#3478D4">Blue</button></div><button class="world-primary" data-world-begin>Start exploring →</button><p class="world-small">Arrow keys / WASD to move · Space to interact</p></div>';}
-  function worldComplete(){if(!WORLD||WORLD.mode!=='play')return;const t=worldTask();if(t.check.type==='pickup'){WORLD.carried=null;WORLD.picked.delete(t.check.object);const original=WORLD_DATA.objects.find(o=>o.id===t.check.object);if(original&&!worldObj(original.id))WORLD.objects.push({...original});}const stars=WORLD.usedHelp?(WORLD.moves>7?1:2):3,gain=worldAward(stars,t);WORLD.stars=Object.values(state.world.stars).reduce((sum,value)=>sum+(Number(value)||0),0);WORLD.mode='success';sfx('done');
-    $('#world-game').innerHTML=worldShell('<section class="world-success"><div class="world-big-star">★</div><p class="world-kicker">TASK COMPLETE</p><h2>Well done!</h2><div class="world-stars">'+('★'.repeat(stars))+'<span>'+('☆'.repeat(3-stars))+'</span></div><p>+'+gain+' XP earned</p><h3>New words</h3><div class="world-word-list">'+t.words.map(w=>'<span class="world-word-chip"><b>'+esc(w[0])+'</b><small>'+esc(w[1])+'</small></span>').join('')+'</div>'+(t.suggestedStory&&STORIES.some(s=>s.id===t.suggestedStory&&storyLevelIndex(s.level)<=storyLevelIndex(currentLevel().id))?'<button class="world-secondary" data-world-story="'+esc(t.suggestedStory)+'">Read the story behind this task →</button>':'')+'<button class="world-primary" data-world-next>'+(WORLD.index===WORLD.tasks.length-1?'Finish area':'Next task')+' →</button></section>');}
-  function worldNext(){if(WORLD.index===WORLD.tasks.length-1){WORLD.mode='finished';$('#world-game').innerHTML='<div class="world-finish"><div class="world-intro-art">'+esc((WORLD_DATA.regions.find(r=>r.id===WORLD.region)||{}).icon||'🏡')+' ✨ 🌍</div><p class="world-kicker">AREA COMPLETE</p><h1>'+esc(WORLD.regionName||'Adventure')+' complete!</h1><p>You earned '+WORLD.stars+' stars in this area.</p><h2>Words from your adventure</h2><div class="world-word-list">'+WORLD.tasks.flatMap(t=>t.words).filter((w,i,a)=>a.findIndex(v=>v[0]===w[0])===i).map(w=>'<span class="world-word-chip"><b>'+esc(w[0])+'</b><small>'+esc(w[1])+'</small></span>').join('')+'</div><button class="world-primary" data-world-regions>Explore another place →</button><button class="world-secondary" data-world-replay>Replay this area ↻</button><button class="world-secondary" data-world-exit>Back to Epiphany</button></div>';return;}
-    WORLD.index++;WORLD.mode='play';WORLD.tries=0;WORLD.usedHelp=false;WORLD.moves=0;WORLD.step=0;WORLD.target=null;WORLD.objects=((WORLD_DATA.regions.find(r=>r.id===WORLD.region)||{}).objects||WORLD_DATA.objects).filter(o=>!WORLD.picked.has(o.id)).map(o=>({...o}));worldRenderPlay();}
+  function worldComplete(){if(!WORLD||WORLD.mode!=='play')return;const t=worldTask();if(t.check.type==='pickup'){WORLD.carried=null;WORLD.picked.delete(t.check.object);const original=WORLD_DATA.objects.find(o=>o.id===t.check.object);if(original&&!worldObj(original.id))WORLD.objects.push({...original});}const stars=WORLD.usedHelp?(WORLD.moves>(t.generated?14:7)?1:2):3,gain=WORLD.run==='practice'?worldAwardPractice(stars,t):worldAward(stars,t);WORLD.stars=Object.values(state.world.stars).reduce((sum,value)=>sum+(Number(value)||0),0);WORLD.mode='success';sfx('done');
+    $('#world-game').innerHTML=worldShell('<section class="world-success"><div class="world-big-star">★</div><p class="world-kicker">TASK COMPLETE</p><h2>Well done!</h2><div class="world-stars">'+('★'.repeat(stars))+'<span>'+('☆'.repeat(3-stars))+'</span></div><p>+'+gain+' XP earned</p><h3>New words</h3><div class="world-word-list">'+(t.words||[]).map(w=>'<span class="world-word-chip"><b>'+esc(w[0])+'</b><small>'+esc(w[1])+'</small></span>').join('')+'</div>'+(t.suggestedStory&&STORIES.some(s=>s.id===t.suggestedStory&&storyLevelIndex(s.level)<=storyLevelIndex(currentLevel().id))?'<button class="world-secondary" data-world-story="'+esc(t.suggestedStory)+'">Read the story behind this task →</button>':'')+'<button class="world-primary" data-world-next>'+(WORLD.index===WORLD.tasks.length-1?(WORLD.run==='practice'?'Finish run':'Finish area'):'Next task')+' →</button></section>');}
+  function worldRunBonus(){
+    if(!WORLD||WORLD.run!=='practice')return '';
+    if(!WORLD.bonusGiven){WORLD.bonusGiven=true;const b=awardActivity(15,WORLD.tasks.length);state.world.runs=(state.world.runs||0)+1;save();WORLD.bonusText='+15 XP run bonus.'+(b?' '+b:'');}
+    return WORLD.bonusText||'';
+  }
+  function worldNext(){if(WORLD.index===WORLD.tasks.length-1){WORLD.mode='finished';$('#world-game').innerHTML='<div class="world-finish"><div class="world-intro-art">'+esc((WORLD_DATA.regions.find(r=>r.id===WORLD.region)||{}).icon||'🏡')+' ✨ 🌍</div><p class="world-kicker">'+(WORLD.run==='practice'?'PRACTICE RUN COMPLETE':'AREA COMPLETE')+'</p><h1>'+esc(WORLD.regionName||'Adventure')+(WORLD.run==='practice'?' · run complete!':' complete!')+'</h1><p>'+(WORLD.run==='practice'?'You finished '+WORLD.tasks.length+' missions. '+esc(worldRunBonus())+' Every run has new missions and a new layout.':'You earned '+WORLD.stars+' stars in this area.')+'</p><h2>Words from your adventure</h2><div class="world-word-list">'+WORLD.tasks.flatMap(t=>t.words||[]).filter((w,i,a)=>a.findIndex(v=>v[0]===w[0])===i).map(w=>'<span class="world-word-chip"><b>'+esc(w[0])+'</b><small>'+esc(w[1])+'</small></span>').join('')+'</div><button class="world-primary" data-world-practice="'+esc(WORLD.region)+'">New practice run 🎲</button><button class="world-secondary" data-world-regions>Explore another place →</button>'+(WORLD.run==='practice'?'':'<button class="world-secondary" data-world-replay>Replay story missions ↻</button>')+'<button class="world-secondary" data-world-exit>Back to Epiphany</button></div>';return;}
+    WORLD.index++;WORLD.mode='play';WORLD.tries=0;WORLD.usedHelp=false;WORLD.moves=0;WORLD.step=0;WORLD.target=null;WORLD.objects=(WORLD.baseObjects||((WORLD_DATA.regions.find(r=>r.id===WORLD.region)||{}).objects)||WORLD_DATA.objects).filter(o=>!WORLD.picked.has(o.id)).map(o=>({...o}));worldRenderPlay();}
   function closeWorld(){if(WORLD&&WORLD.raf)cancelAnimationFrame(WORLD.raf);WORLD=null;$('#world-game').hidden=true;lockPage(false);const active=$('.view.is-active');const activeName=active?active.id.replace('-view',''):'home';$$('[data-view]').forEach(b=>b.setAttribute('aria-current',b.dataset.view===activeName?'page':'false'));renderAll();}
   document.addEventListener('click',e=>{
     const storyFollow=e.target.closest('[data-story-follow-up]');if(storyFollow){const taskId=storyFollow.dataset.storyFollowUp;$('#game').hidden=true;ST=null;lockPage(false);startWorld(taskId);return;}
+    const practicePick=e.target.closest('[data-world-practice]');if(practicePick&&WORLD){worldChooseRegion(practicePick.dataset.worldPractice,'practice');return;}
     const regionPick=e.target.closest('[data-world-region]');if(regionPick){worldChooseRegion(regionPick.dataset.worldRegion);return;}
     if(e.target.closest('[data-world-regions]')){worldShowRegions();return;}
     const move=e.target.closest('[data-world-move]');if(move){worldMove(move.dataset.worldMove);return;}
@@ -1239,7 +1343,7 @@
     if(e.target.closest('[data-world-speak]')){if(worldTask())speak(worldTask().instruction);return;}
     
     if(e.target.closest('[data-world-help-toggle]')){if(WORLD){const panel=$('#world-help-panel'),button=e.target.closest('[data-world-help-toggle]'),opening=panel.hidden;panel.hidden=!opening;button.setAttribute('aria-expanded',String(opening));button.textContent=opening?'✕ Close help':'💡 Need help?';}return;}
-    const helpLevel=e.target.closest('[data-world-help-level]');if(helpLevel&&WORLD){const level=Number(helpLevel.dataset.worldHelpLevel),t=worldTask(),c=worldStep(),o=(c&&c.object&&worldObj(c.object))||(c&&c.person&&worldObj(c.person)),copy=$('#world-help-copy');if(level===1){copy.textContent=t.hint||'Look carefully at the instruction and the objects in the village.';}else if(level===2){WORLD.usedHelp=true;WORLD.target=o?{x:o.x,y:o.y+((c.type==='under'||c.type==='behind')?1:0)}:(c&&c.type==='between'?{x:9,y:12}:c&&c.type==='pickup'?{x:4,y:9}:c&&c.type==='give'?{x:13,y:10}:{x:9,y:8});copy.textContent='Follow the glowing marker on the map. Move to it, or interact when you are next to the correct item or person.';worldDraw();}else{copy.textContent='Read the instruction carefully. Use the map and the object positions to work out what to do.';}$$('[data-world-help-level]').forEach(button=>button.classList.toggle('is-selected',button===helpLevel));worldStatus();return;}
+    const helpLevel=e.target.closest('[data-world-help-level]');if(helpLevel&&WORLD){const level=Number(helpLevel.dataset.worldHelpLevel),t=worldTask(),c=worldStep(),o=(c&&c.object&&worldObj(c.object))||(c&&c.person&&worldObj(c.person)),copy=$('#world-help-copy');if(level===1){copy.textContent=t.hint||'Look carefully at the instruction and the objects in the village.';}else if(level===2){WORLD.usedHelp=true;WORLD.target=(c&&c.target)?{x:c.target.x,y:c.target.y}:o?{x:o.x,y:o.y+((c.type==='under'||c.type==='behind')?1:0)}:(c&&c.type==='between'?{x:9,y:12}:c&&c.type==='pickup'?{x:4,y:9}:c&&c.type==='give'?{x:13,y:10}:{x:9,y:8});copy.textContent='Follow the glowing marker on the map. Move to it, or interact when you are next to the correct item or person.';worldDraw();}else{copy.textContent='Read the instruction carefully. Use the map and the object positions to work out what to do.';}$$('[data-world-help-level]').forEach(button=>button.classList.toggle('is-selected',button===helpLevel));worldStatus();return;}
     const pc=e.target.closest('[data-world-color]');if(pc&&WORLD){WORLD.player.color=pc.dataset.worldColor;$('#world-game').querySelectorAll('[data-world-color]').forEach(b=>b.classList.toggle('is-selected',b===pc));return;}
     const po=e.target.closest('[data-world-outfit]');if(po&&WORLD){WORLD.outfit=po.dataset.worldOutfit;$('#world-game').querySelectorAll('[data-world-outfit]').forEach(b=>b.classList.toggle('is-selected',b===po));return;}
     if(e.target.closest('[data-world-begin]')){WORLD.mode='play';worldRenderPlay();return;}
