@@ -139,7 +139,7 @@ const AHA_NOTES = [
     "en": "A nuanced answer can be correct even when a more literal translation sounds tempting.",
     "ar": "قد تكون الإجابة الدقيقة صحيحة حتى عندما تبدو الترجمة الحرفية مغرية.",
     "questionId": "type-a1-04"
-  }
+  },
   {"id":"aha-c1-01","level":"C1","en":"A negative adverbial at the start of a clause often requires subject–auxiliary inversion: “Rarely have we seen…”","ar":"بدء الجملة بظرف سلبي يتطلب غالبًا قلب ترتيب الفاعل والفعل المساعد: Rarely have we seen…","questionId":"trap-c1-extra-01"},
   {"id":"aha-c1-02","level":"C1","en":"After a formal recommendation, English may use the mandative subjunctive: “The panel recommended that he be informed.”","ar":"بعد التوصية الرسمية يمكن استخدام صيغة الطلب: The panel recommended that he be informed.","questionId":"trap-c1-extra-02"},
   {"id":"aha-c1-03","level":"C1","en":"“Despite” takes a noun phrase or gerund, while “although” introduces a full clause.","ar":"يتبع Despite اسم أو فعل ing، أما although فتقدم جملة كاملة.","questionId":"trap-c1-extra-03"},
