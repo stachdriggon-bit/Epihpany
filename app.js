@@ -1315,7 +1315,7 @@
         ? 'sequence(' + c.steps.map(check).join('>') + ')'
         : [c.type, c.object || '', c.item || '', c.person || '', c.rel || '',
            c.n || '', c.dx || '', c.dy || '', (c.objects || []).join(',')].join(':');
-      return t.id.replace(/^world-gen-[^-]+-/, '') + '|' + check(t.check) + '|' + (t.negObject || '');
+      return check(t.check) + '|' + (t.negObject || '');
     };
     const kindCounts = new Map(), signatures = new Set();
     let guard = 0;
