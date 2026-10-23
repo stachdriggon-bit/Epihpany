@@ -1050,7 +1050,7 @@
     return {en: en.join(' '), ar: ar.join(' ')};
   }
   function miniDirSetup() {
-    const idx = levelIndex(), pool = DIRECTION_ITEMS.filter(it => idx >= 2 || it.level === 'A2');
+    const idx = levelIndex(), pool = DIRECTION_ITEMS.filter(it => storyLevelIndex(it.level) <= idx);
     MG.items = SHUF(pool.length >= 5 ? pool : DIRECTION_ITEMS).slice(0, 5); MG.total = MG.items.length; MG.i = 0; miniDirRender();
   }
   function dirMapSvg(it, reveal, chosen) {
