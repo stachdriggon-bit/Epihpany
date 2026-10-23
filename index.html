@@ -14,7 +14,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Cairo:wght@500;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=play-games-first-header-fix-20261023">
+  <link rel="stylesheet" href="style.css?v=progress-profile-tabs-20261023">
   <script src="data.js" defer></script>
   <script src="data-mistakes.js" defer></script>
   <script src="data-spot.js" defer></script>
@@ -68,6 +68,8 @@
       <button class="tab" data-view="world"><span class="tab-emoji" aria-hidden="true">🌍</span>World</button>
       <button class="tab" data-view="words"><svg><use href="#i-book"/></svg>Words</button>
       <button class="tab" data-view="trophies"><svg><use href="#i-trophy"/></svg>Trophies</button>
+      <button class="tab" data-view="progress"><span class="tab-emoji" aria-hidden="true">📈</span>Progress</button>
+      <button class="tab" data-view="profile"><span class="tab-emoji" aria-hidden="true">👤</span>Profile</button>
     </nav>
 
     <div class="top-right">
@@ -127,6 +129,28 @@
           <div class="next-art" id="next-art" aria-hidden="true"></div>
         </article>
 
+        
+      </div>
+
+      
+
+      
+
+
+
+      <p class="foot-note">Your progress is saved on this device.</p>
+    </div>
+  </section>
+
+  <!-- PROGRESS -->
+  <section class="view" id="progress-view" aria-labelledby="progress-title">
+    <div class="page">
+      <div class="intro">
+        <p class="kicker">YOUR JOURNEY, AT A GLANCE</p>
+        <h1 id="progress-title" tabindex="-1">Your progress</h1>
+        <p class="lead">See your learning streak, level path, and the skills you are building over time.</p>
+      </div>
+      <div class="progress-dashboard">
         <aside class="you progress-strip" aria-label="Your progress">
           <span class="progress-item"><span class="progress-symbol">🔥</span><b id="home-streak">0</b><span>day streak</span></span>
           <span class="progress-divider" aria-hidden="true"></span>
@@ -137,20 +161,22 @@
           <div id="ring" hidden aria-label="Daily goal"><svg viewBox="0 0 80 80"><circle id="ring-fg" cx="40" cy="40" r="33"/></svg></div>
           <div id="lv-bar-wrap" hidden><i id="lv-bar"></i></div>
         </aside>
-      </div>
-
-      <div id="weakness-panel" aria-live="polite"></div>
-
-      <section class="block" aria-labelledby="path-title">
+        <div id="weakness-panel" aria-live="polite"></div>
+        <section class="block" aria-labelledby="path-title">
         <div class="block-head"><h2 id="path-title">Your path</h2><p>Six levels, from first words to fluent ideas.</p></div>
         <ol class="track" id="track"></ol>
         <p class="track-note" id="track-note"></p>
         <button class="btn btn-ghost level-check-retake" id="placement-retake" type="button">Retake my level check</button>
       </section>
-
-
-
-      <p class="foot-note">Your progress is saved on this device.</p>
+        <section class="block progress-coming-soon" aria-labelledby="progress-next-title">
+          <div class="block-head"><div><h2 id="progress-next-title">What’s next?</h2><p>Your next milestones live here. Keep completing quests to build your streak and move toward the next level.</p></div></div>
+          <div class="progress-milestone-grid">
+            <article class="progress-milestone"><span>🔥</span><h3>Keep your streak</h3><p>A little practice each day adds up.</p></article>
+            <article class="progress-milestone"><span>🎯</span><h3>Build consistency</h3><p>Finish quests and strengthen your skills.</p></article>
+            <article class="progress-milestone"><span>🚀</span><h3>Reach the next level</h3><p>Use your level path to see the next step.</p></article>
+          </div>
+        </section>
+      </div>
     </div>
   </section>
 
@@ -288,6 +314,8 @@
   <button class="dock-item" data-view="world"><span class="dock-ic">🌍</span>World</button>
   <button class="dock-item" data-view="words"><span class="dock-ic"><svg><use href="#i-book"/></svg></span>Words</button>
   <button class="dock-item" data-view="trophies"><span class="dock-ic"><svg><use href="#i-trophy"/></svg></span>Trophies</button>
+  <button class="dock-item" data-view="progress"><span class="dock-ic">📈</span>Progress</button>
+  <button class="dock-item" data-view="profile"><span class="dock-ic">👤</span>Profile</button>
 </nav>
 
 <!-- First-visit account welcome modal -->
