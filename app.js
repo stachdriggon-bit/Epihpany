@@ -954,7 +954,7 @@
     templateMatch=source.match(/^What is a\s+[“"']?(.+?)[”"']?\??$/i);
     if(templateMatch)return {text:'ما المقصود بـ «'+templateMatch[1].replace(/[“”"']/g,'')+'»؟',exact:true};
     templateMatch=source.match(/^Choose the (natural phrase|correct phrase|correct word|best word|correct spelling|correct form|word):?\s*(.*)$/i);
-    if(templateMatch)return {text:({'natural phrase':'اختر التعبير الطبيعي:','correct phrase':'اختر العبارة الصحيحة:','correct word':'اختر الكلمة الصحيحة:','best word':'اختر الكلمة الأنسب:','correct spelling':'اختر التهجئة الصحيحة:','correct form':'اختر الصيغة الصحيحة:','word':'اختر الكلمة:'})[templateMatch[1].toLowerCase()]+(templateMatch[2]?' '+templateMatch[2].replace(/[“”]/g,'"'):'') ,exact:true};
+    if(templateMatch)return {text:({'natural phrase':'اختر التعبير الطبيعي:','correct phrase':'اختر العبارة الصحيحة:','correct word':'اختر الكلمة الصحيحة:','best word':'اختر الكلمة الأنسب:','correct spelling':'اختر التهجئة الصحيحة:','correct form':'اختر الصيغة الصحيحة:','word':'اختر الكلمة:'})[templateMatch[1].toLowerCase()]+(templateMatch[2]?' '+templateMatch[2].replace(/[“”]/g,'"'):'') ,exact:!templateMatch[2]};
     templateMatch=source.match(/^Which verb fits\??$/i);
     if(templateMatch)return {text:'أي فعل يناسب؟',exact:true};
     let m=source.match(/^What does\s+[“"']?(.+?)[”"']?\s+mean\??$/i);
