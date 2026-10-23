@@ -1196,37 +1196,68 @@
     if(theme!=='village')drawTheme(theme);
     // Soft tree silhouettes and layered foliage.
     function drawTree(cx,cy){
-      x.fillStyle='rgba(34,74,45,.2)';x.beginPath();x.ellipse(cx,cy+tile*.31,tile*.32,tile*.12,0,0,Math.PI*2);x.fill();
-      x.fillStyle='#75513a';roundRect(x,cx-tile*.065,cy+tile*.04,tile*.13,tile*.32,tile*.04,'#75513a');
-      for(const [dx,dy,rad,color] of [[-.13,.0,.23,'#3f7e52'],[.1,-.08,.25,'#4f915b'],[0,-.19,.25,'#5c9f65'],[-.12,-.18,.18,'#70ad70'],[.13,.04,.16,'#438451']]){
-        x.fillStyle=color;x.beginPath();x.arc(cx+tile*dx,cy+tile*dy,tile*rad,0,Math.PI*2);x.fill();
-      }
-      x.strokeStyle='rgba(28,86,48,.35)';x.lineWidth=Math.max(1,tile*.025);x.beginPath();x.arc(cx,cy-tile*.12,tile*.22,.1,Math.PI*1.7);x.stroke();
+      // Soft layered canopy with highlights, leaf clusters and a grounded trunk.
+      x.fillStyle='rgba(35,63,40,.22)';x.beginPath();x.ellipse(cx,cy+tile*.31,tile*.36,tile*.13,0,0,Math.PI*2);x.fill();
+      roundRect(x,cx-tile*.075,cy+tile*.015,tile*.15,tile*.34,tile*.035,'#795039','#63412e');
+      const leaves=[
+        [-.16,-.02,.22,'#3f7e50'],[.12,-.09,.25,'#4d9058'],[-.02,-.2,.25,'#5da267'],
+        [-.19,-.19,.17,'#70b477'],[.17,.045,.17,'#438451'],[.02,.005,.22,'#579b60']
+      ];
+      leaves.forEach(([dx,dy,r,col],i)=>{
+        x.fillStyle=col;x.beginPath();x.arc(cx+tile*dx,cy+tile*dy,tile*r,0,Math.PI*2);x.fill();
+        x.fillStyle='rgba(225,248,186,.2)';x.beginPath();x.ellipse(cx+tile*(dx-.045),cy+tile*(dy-.065),tile*r*.42,tile*r*.22,-.5,0,Math.PI*2);x.fill();
+      });
+      x.strokeStyle='rgba(29,82,45,.32)';x.lineWidth=Math.max(1,tile*.022);x.beginPath();x.arc(cx,cy-tile*.11,tile*.22,.15,Math.PI*1.8);x.stroke();
     }
-    // Recognizable, matched buildings and interactable props.
+    // More architectural detail: layered roof, eaves, framed windows, stone foundation and a readable entrance.
     function drawHouse(cx,cy,blue=false,bakery=false){
-      const wall=bakery?'#f0dfb8':blue?'#d5e4d8':'#ead2b8';
-      const roof=bakery?'#9b5947':blue?'#526f80':'#a65e4d';
-      x.fillStyle='rgba(42,68,45,.22)';x.beginPath();x.ellipse(cx,cy+tile*.31,tile*.43,tile*.15,0,0,Math.PI*2);x.fill();
-      // side wall adds depth
-      x.fillStyle=bakery?'#c9ad80':blue?'#a7c2c5':'#c69d7b';
-      x.beginPath();x.moveTo(cx+tile*.27,cy-tile*.08);x.lineTo(cx+tile*.4,cy+tile*.02);x.lineTo(cx+tile*.4,cy+tile*.42);x.lineTo(cx+tile*.27,cy+tile*.36);x.closePath();x.fill();
-      x.fillStyle=wall;roundRect(x,cx-tile*.34,cy-tile*.03,tile*.62,tile*.43,tile*.025,wall,'rgba(92,66,49,.25)');
-      x.fillStyle=roof;x.beginPath();x.moveTo(cx-tile*.43,cy+tile*.015);x.lineTo(cx-tile*.04,cy-tile*.38);x.lineTo(cx+tile*.39,cy+tile*.015);x.closePath();x.fill();
-      x.strokeStyle='rgba(255,237,208,.55)';x.lineWidth=Math.max(1,tile*.035);x.beginPath();x.moveTo(cx-tile*.34,cy+tile*.005);x.lineTo(cx-tile*.04,cy-tile*.3);x.lineTo(cx+tile*.3,cy+.01*tile);x.stroke();
-      x.fillStyle='#654a3b';roundRect(x,cx-tile*.09,cy+tile*.17,tile*.17,tile*.23,tile*.025,'#76513d');
-      x.fillStyle='#d4e8e0';roundRect(x,cx-tile*.27,cy+tile*.08,tile*.12,tile*.12,tile*.02,'#b9d9d5','#f4e5c9');
+      const wall=bakery?'#f4e5bf':blue?'#dce9e8':'#f0d8bb';
+      const side=bakery?'#c6a36e':blue?'#a9c5c8':'#c99b75';
+      const roof=bakery?'#a95743':blue?'#527486':'#a95446';
+      const roofLight=bakery?'#c9795b':blue?'#779aa7':'#c97962';
+      const left=cx-tile*.34, top=cy-tile*.04, bw=tile*.68, bh=tile*.43;
+      x.fillStyle='rgba(42,58,43,.25)';x.beginPath();x.ellipse(cx,cy+tile*.34,tile*.46,tile*.16,0,0,Math.PI*2);x.fill();
+      // Foundation and visible side plane.
+      x.fillStyle='#a58b70';x.beginPath();x.moveTo(left,top+bh-tile*.035);x.lineTo(cx+tile*.28,top+bh-tile*.035);x.lineTo(cx+tile*.42,top+bh+tile*.015);x.lineTo(cx-tile*.2,top+bh+tile*.015);x.closePath();x.fill();
+      x.fillStyle=side;x.beginPath();x.moveTo(cx+tile*.25,top+tile*.025);x.lineTo(cx+tile*.4,top+tile*.105);x.lineTo(cx+tile*.4,top+bh);x.lineTo(cx+tile*.25,top+bh-tile*.015);x.closePath();x.fill();
+      roundRect(x,left,top,bw,bh,tile*.025,wall,'rgba(95,68,48,.35)');
+      // Subtle wall boards and lower trim.
+      x.strokeStyle='rgba(125,91,59,.16)';x.lineWidth=Math.max(1,tile*.018);
+      for(let k=1;k<=2;k++){x.beginPath();x.moveTo(left+tile*.035,top+bh*k/3);x.lineTo(left+bw-tile*.035,top+bh*k/3);x.stroke();}
+      x.fillStyle=bakery?'#d6b47c':blue?'#8faeb4':'#d0aa83';x.fillRect(left,top+bh-tile*.055,bw,tile*.055);
+      // Roof has a dark underside, bright front plane and overlapping roof tiles.
+      x.fillStyle='#70453b';x.beginPath();x.moveTo(cx-tile*.46,cy+tile*.025);x.lineTo(cx-tile*.04,cy-tile*.43);x.lineTo(cx+tile*.44,cy+tile*.025);x.closePath();x.fill();
+      x.fillStyle=roof;x.beginPath();x.moveTo(cx-tile*.44,cy-tile*.005);x.lineTo(cx-tile*.04,cy-tile*.42);x.lineTo(cx+tile*.4,cy-tile*.005);x.closePath();x.fill();
+      x.fillStyle=roofLight;x.beginPath();x.moveTo(cx-tile*.35,cy-tile*.01);x.lineTo(cx-tile*.04,cy-tile*.34);x.lineTo(cx+tile*.17,cy-tile*.01);x.closePath();x.fill();
+      x.strokeStyle='rgba(255,230,196,.38)';x.lineWidth=Math.max(1,tile*.022);
+      for(let k=0;k<3;k++){x.beginPath();x.moveTo(cx-tile*(.31-k*.015),cy+tile*(.005-k*.09));x.lineTo(cx-tile*.04,cy-tile*(.35-k*.055));x.stroke();}
+      // Window frames and glass reflections.
+      for(const wx of [cx-tile*.25,cx+tile*.12]){
+        roundRect(x,wx-tile*.065,cy+tile*.075,tile*.13,tile*.13,tile*.018,'#f8e7c9','#8b684c');
+        roundRect(x,wx-tile*.047,cy+tile*.092,tile*.094,tile*.096,tile*.012,blue?'#8fc7d3':'#a9d5d7');
+        x.strokeStyle='rgba(255,255,255,.75)';x.lineWidth=Math.max(1,tile*.018);x.beginPath();x.moveTo(wx,cy+tile*.095);x.lineTo(wx,cy+tile*.185);x.moveTo(wx-tile*.045,cy+tile*.14);x.lineTo(wx+tile*.045,cy+tile*.14);x.stroke();
+      }
+      // Door, step and warm brass handle.
+      roundRect(x,cx-tile*.075,cy+tile*.19,tile*.15,tile*.22,tile*.018,'#74503a','#e1c59b');
+      x.fillStyle='#d9b86e';x.beginPath();x.arc(cx+tile*.035,cy+tile*.3,tile*.018,0,Math.PI*2);x.fill();
+      x.fillStyle='#d5c09a';x.fillRect(cx-tile*.105,cy+tile*.405,tile*.21,tile*.045);
       if(bakery){
-        x.fillStyle='#f0c878';roundRect(x,cx-tile*.31,cy+tile*.015,tile*.57,tile*.1,tile*.025,'#d5a65e');
-        x.fillStyle='#fff0c9';x.font='bold '+(tile*.2)+'px sans-serif';x.textAlign='center';x.fillText('BAKERY',cx-tile*.02,cy+tile*.09);
+        roundRect(x,cx-tile*.29,cy-tile*.055,tile*.5,tile*.09,tile*.025,'#e8bc69','#9a6840');
+        x.fillStyle='#68452f';x.font='bold '+Math.max(6,tile*.115)+'px sans-serif';x.textAlign='center';x.fillText('BAKERY',cx-tile*.04,cy+tile*.005);
+        // Small bread display outside the shop.
+        x.fillStyle='#d89b4d';x.beginPath();x.ellipse(cx+tile*.31,cy+tile*.29,tile*.09,tile*.055,-.25,0,Math.PI*2);x.fill();
+        x.strokeStyle='#f7d89a';x.lineWidth=Math.max(1,tile*.018);x.beginPath();x.moveTo(cx+tile*.26,cy+tile*.28);x.lineTo(cx+tile*.34,cy+tile*.3);x.stroke();
       }
     }
     function drawWell(cx,cy){
-      x.fillStyle='rgba(36,63,45,.18)';x.beginPath();x.ellipse(cx,cy+tile*.25,tile*.38,tile*.13,0,0,Math.PI*2);x.fill();
-      x.fillStyle='#8a8e87';x.beginPath();x.ellipse(cx,cy+tile*.06,tile*.33,tile*.24,0,0,Math.PI*2);x.fill();
-      x.fillStyle='#4e8990';x.beginPath();x.ellipse(cx,cy+tile*.01,tile*.24,tile*.15,0,0,Math.PI*2);x.fill();
-      x.strokeStyle='#d2d3c5';x.lineWidth=tile*.075;x.beginPath();x.ellipse(cx,cy+tile*.06,tile*.33,tile*.24,0,0,Math.PI*2);x.stroke();
-      x.strokeStyle='#78563c';x.lineWidth=tile*.055;x.beginPath();x.moveTo(cx-tile*.25,cy-tile*.12);x.lineTo(cx-tile*.25,cy-tile*.38);x.lineTo(cx+tile*.25,cy-tile*.38);x.lineTo(cx+tile*.25,cy-tile*.12);x.stroke();
+      x.fillStyle='rgba(36,63,45,.2)';x.beginPath();x.ellipse(cx,cy+tile*.26,tile*.39,tile*.13,0,0,Math.PI*2);x.fill();
+      // Stone ring with individual blocks and dark water.
+      x.fillStyle='#7e8580';x.beginPath();x.ellipse(cx,cy+tile*.065,tile*.35,tile*.25,0,0,Math.PI*2);x.fill();
+      x.fillStyle='#367d8a';x.beginPath();x.ellipse(cx,cy+tile*.035,tile*.245,tile*.16,0,0,Math.PI*2);x.fill();
+      x.strokeStyle='rgba(180,224,223,.65)';x.lineWidth=Math.max(1,tile*.025);x.beginPath();x.ellipse(cx-tile*.035,cy+tile*.015,tile*.13,tile*.055,-.2,0,Math.PI*2);x.stroke();
+      x.strokeStyle='#d2d3c5';x.lineWidth=tile*.065;x.beginPath();x.ellipse(cx,cy+tile*.065,tile*.35,tile*.25,0,0,Math.PI*2);x.stroke();
+      x.strokeStyle='#765039';x.lineWidth=tile*.06;x.beginPath();x.moveTo(cx-tile*.25,cy-tile*.1);x.lineTo(cx-tile*.25,cy-tile*.37);x.lineTo(cx+tile*.25,cy-tile*.37);x.lineTo(cx+tile*.25,cy-tile*.1);x.stroke();
+      x.strokeStyle='#c99a5d';x.lineWidth=tile*.025;x.beginPath();x.moveTo(cx-tile*.19,cy-tile*.31);x.lineTo(cx+tile*.19,cy-tile*.31);x.stroke();
     }
     WORLD.objects.forEach(o=>{
       const cx=ox+(o.x+.5)*tile,cy=oy+(o.y+.5)*tile;
