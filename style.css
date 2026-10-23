@@ -1485,3 +1485,5 @@ body[data-theme="dark"] .dock{background:rgba(27,32,48,.97)}
 
 /* Story decision impact: make the consequence and ending easy to compare. */
 .story-choice-recap{margin:1rem 0;padding:1rem;border:1px solid var(--line, #e7e7e7);border-radius:1rem;background:var(--surface-soft, rgba(120,130,150,.07));text-align:left}.story-choice-recap>strong{display:block;font-size:1.05rem;margin-bottom:.8rem}.story-impact-choice{margin:.4rem 0}.story-impact-step{margin:.75rem 0;padding:.8rem;border-left:3px solid var(--accent, #7c6ee6);border-radius:.4rem;background:var(--surface, rgba(120,130,150,.06))}.story-impact-step small{display:block;font-size:.7rem;font-weight:800;letter-spacing:.08em;opacity:.72;margin-bottom:.35rem}.story-impact-step p{margin:0;line-height:1.6}.story-impact-replay{margin:.9rem 0 0;font-size:.9rem;line-height:1.6;opacity:.85}
+
+.developer-access-note{margin:0 0 1rem;padding:.7rem 1rem;border:1px solid var(--accent,#7567df);border-radius:.85rem;font-size:.88rem;font-weight:700;background:color-mix(in srgb,var(--accent,#7567df) 9%,transparent);color:var(--text,#25253a)}
