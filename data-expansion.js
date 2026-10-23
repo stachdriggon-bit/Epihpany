@@ -979,10 +979,14 @@
   if (typeof GAMES === 'undefined') return;
   const norm = value => String(value).toLowerCase().replace(/\s+/g, ' ').trim();
   const keyFor = (game, q) => {
+    const level = norm(q.level || 'unleveled');
+    const prompt = norm(q.q);
+    const sub = norm(q.sub || '');
     const options = q.answers.map(norm).sort().join('|');
-    if (game === 'spelling') return options;          // same four spellings = same question
-    if (game === 'vocabulary') return norm(q.q);      // same word asked twice
-    return norm(q.q) + '|' + options;
+    // Keep levels and contextual clues separate: identical generic prompts can test different skills.
+    if (game === 'spelling') return level + '|' + options;
+    if (game === 'vocabulary') return level + '|' + prompt + '|' + sub + '|' + options;
+    return level + '|' + prompt + '|' + sub + '|' + options;
   };
   Object.keys(GAMES).forEach(game => {
     const seen = new Set();
