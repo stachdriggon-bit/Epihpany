@@ -766,3 +766,25 @@ body[data-theme="dark"] .trap-explanation{background:#252B3C;border-color:var(--
 .world-help-actions button.is-selected{background:#ffe78a;border-color:#a88917;box-shadow:inset 0 0 0 1px #a88917}
 .world-instruction strong{display:block;line-height:1.45}
 @media(max-width:600px){.world-help-panel>p{line-height:1.6}.world-help-actions button{min-height:46px}}
+
+
+/* Player account and cloud-save panel */
+.account-block{margin:24px 0 30px;padding:clamp(18px,3vw,28px);border:1.5px solid var(--line);border-radius:24px;background:var(--surface)}
+.account-status{margin:14px 0;padding:12px 14px;border-radius:12px;background:var(--tone-soft);color:var(--ink-2);font-weight:700;font-size:14px}
+.account-status[data-state="success"]{color:#167447;background:#e8f8ef}
+.account-status[data-state="error"]{color:#a33c35;background:#fff0ee}
+.account-status[data-state="loading"]{color:var(--ink);background:var(--navy-soft)}
+.account-form{display:grid;gap:9px;max-width:460px}
+.account-form h3{margin:4px 0 8px;font:800 22px var(--display)}
+.account-form label{font-size:14px;font-weight:800;color:var(--ink-2);margin-top:4px}
+.account-form input{width:100%;min-height:46px;border:1.5px solid var(--line-2);border-radius:12px;padding:11px 13px;background:var(--surface);color:var(--ink);font:500 16px var(--body);outline-offset:3px}
+.account-form input:focus{border-color:var(--ink)}
+.account-submit{margin-top:8px;justify-content:center}
+.account-actions{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:12px}
+.account-actions .btn{min-height:42px}
+.account-link{padding:9px 4px;color:var(--ink-2);text-decoration:underline;font-weight:700}
+.account-welcome{overflow-wrap:anywhere;margin:12px 0;font-size:16px}
+.account-welcome strong{color:var(--ink)}
+.account-note{color:var(--ink-2);margin:0 0 16px}
+.account-form button:disabled,.account-block button:disabled{opacity:.6;cursor:wait}
+@media(max-width:520px){.account-actions{align-items:stretch;flex-direction:column}.account-actions .btn{width:100%}.account-link{text-align:center}}
