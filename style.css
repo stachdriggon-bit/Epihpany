@@ -874,3 +874,9 @@ body[data-theme="dark"] .player-profile-card,body[data-theme="dark"] .profile-po
 .community-post-meta{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;margin:2px 0 8px}
 .community-post-meta strong{font-size:14px}.community-post-meta time{font-size:11px;color:var(--ink-3)}
 @media(max-width:480px){.community-wall .profile-posts-heading{align-items:flex-start}.community-refresh{width:100%}}
+
+
+/* CEFR assessment: distinguish language ability from earned game XP */
+.level-note{margin-top:10px!important;padding-top:10px;border-top:1px solid var(--line);font-size:13px;color:var(--ink-2)}
+.level-check-retake{margin-top:14px;min-height:44px;border-radius:14px;font-weight:800}
+body[data-theme="dark"] .level-note{border-color:var(--line)}
