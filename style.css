@@ -1413,3 +1413,8 @@ body[data-theme="dark"] .avatar-choice { background:var(--surface); }
 .notification-permission,.notification-email-note{font-size:12px;line-height:1.5;color:var(--ink-2);margin:8px 0}
 .notification-settings .btn{width:100%;margin-top:4px}
 @media(max-width:760px){.notification-panel{top:calc(66px + env(safe-area-inset-top));right:10px;width:calc(100vw - 20px);max-height:calc(100dvh - 150px);padding:17px;border-radius:21px}.notification-panel-head h2{font-size:24px}}
+
+
+/* Interactive story decisions: a calm, choice-led pause inside each story. */
+.story-decision-intro{color:var(--ink-2);line-height:1.65;margin:0 0 18px;max-width:58ch}.story-decision-options{display:grid;gap:10px;margin:18px 0}.story-decision-option{display:flex;align-items:center;gap:13px;width:100%;min-height:64px;padding:13px 16px;text-align:left;background:var(--surface,#fff);border:1.5px solid var(--line);border-radius:16px;font-weight:750;line-height:1.5}.story-decision-option:hover{border-color:var(--focus);background:var(--violet-soft)}.story-decision-letter{display:grid;place-items:center;flex:0 0 34px;width:34px;height:34px;border-radius:11px;background:var(--spark);color:var(--ink);font-weight:900}.story-decision .story-scene{display:grid;place-items:center;font-size:44px}.story-decision .story-reader-title{margin:14px 0;font-size:clamp(24px,4vw,34px)}body[data-theme="dark"] .story-decision-option{background:var(--surface)}body[data-theme="dark"] .story-decision-option:hover{background:rgba(124,108,255,.14)}
+@media(max-width:600px){.story-decision-option{align-items:flex-start;padding:12px;font-size:15px}.story-decision-letter{flex-basis:30px;width:30px;height:30px}}
