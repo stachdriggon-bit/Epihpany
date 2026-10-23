@@ -1366,3 +1366,19 @@ body[data-theme="dark"] .avatar-choice { background:var(--surface); }
     gap:16px;
   }
 }
+
+/* Progress gets a dedicated home of its own; Play stays focused on choosing a quest. */
+#home-view .home-focus { grid-template-columns:minmax(0,1fr); }
+#home-view .home-focus .next { max-width:850px; }
+#progress-view .progress-dashboard { display:grid; gap:22px; }
+#progress-view .progress-strip { display:flex; flex-wrap:wrap; justify-content:space-between; gap:18px; padding:22px 26px; border-radius:22px; }
+#progress-view #weakness-panel:empty { display:none; }
+.progress-milestone-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px; }
+.progress-milestone { background:var(--surface); border:1.5px solid var(--line); border-radius:20px; padding:20px; }
+.progress-milestone > span { display:grid; place-items:center; width:42px; height:42px; border-radius:13px; background:var(--tone-soft,var(--spark)); font-size:23px; margin-bottom:13px; }
+.progress-milestone h3 { font-size:20px; margin-bottom:7px; }
+.progress-milestone p { color:var(--ink-2); font-size:15px; }
+@media (max-width:760px) {
+  .progress-milestone-grid { grid-template-columns:1fr; }
+  #progress-view .progress-strip { padding:18px; }
+}
