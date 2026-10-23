@@ -1265,3 +1265,46 @@ body[data-theme="dark"] .world-region-hub { background:radial-gradient(ellipse a
  .view button,.view .btn,.challenge-progress .bar i,.profile-nav a,.profile-avatar-options button,.avatar-choice { transition:none; }
  .view button:hover,.view .btn:hover,.profile-nav a:hover,.profile-avatar-options button:hover,.avatar-choice:hover { transform:none; }
 }
+
+
+/* Phase 4 — Profile, personalization and achievements final visual pass */
+.player-profile-card { border:1px solid var(--line);border-radius:24px;overflow:hidden;background:var(--surface); }
+.player-profile-hero { position:relative;overflow:hidden;padding:clamp(20px,4vw,34px);background:linear-gradient(120deg,rgba(255,197,49,.15),rgba(124,108,255,.09) 58%,rgba(89,190,157,.10)); }
+.player-avatar-wrap { flex:0 0 auto;border:4px solid rgba(255,255,255,.85);box-shadow:0 10px 24px rgba(36,44,86,.12);background:var(--avatar-color,#FFE08A); }
+.player-profile-heading h3 { margin:6px 0;font-size:clamp(25px,4vw,34px);letter-spacing:-.035em;line-height:1.1;overflow-wrap:anywhere; }
+.player-profile-heading p { max-width:48ch;line-height:1.6; }
+.profile-level-chip { background:#fff2bf;border:1px solid #f2d86c;color:#5b4b15; }
+.profile-avatar-options { border:1px solid var(--line);background:var(--surface); }
+.profile-customize-heading { margin-bottom:5px; }
+.profile-customize-heading .profile-eyebrow { display:inline-block;margin-bottom:4px; }
+.avatar-choices { display:flex;flex-wrap:wrap;gap:10px; }
+.avatar-choice { display:grid;place-items:center;flex:0 0 54px;width:54px;height:54px;padding:0;border:2px solid var(--line);background:var(--surface);font-size:28px; }
+.avatar-choice.is-selected { border-color:var(--accent,#7c6cff);box-shadow:0 0 0 3px rgba(124,108,255,.14);background:var(--violet-soft,rgba(124,108,255,.08)); }
+.avatar-color-row { display:flex;align-items:center;gap:12px; }
+.avatar-color-row input[type="color"] { width:52px;height:42px;padding:3px;border:1px solid var(--line);border-radius:12px;background:var(--surface);cursor:pointer; }
+#player-avatar-upload { width:100%;max-width:100%;padding:12px;border:1px dashed var(--line-2,#c6cbe6);border-radius:14px;background:var(--surface-soft,rgba(124,108,255,.04)); }
+.profile-small-note { max-width:70ch;line-height:1.55; }
+.player-profile-form>label { display:block;font-weight:750; }
+.player-profile-form input:not([type="color"]):not([type="file"]),.player-profile-form textarea { width:100%;min-width:0; }
+.player-profile-form #player-profile-save { width:100%;min-height:48px;font-weight:850; }
+.profile-posts-heading { gap:12px;align-items:center; }
+.profile-posts-heading h3 { font-size:clamp(19px,3vw,24px);letter-spacing:-.02em; }
+.profile-empty-posts { padding:22px;border:1px dashed var(--line);border-radius:16px;text-align:center;line-height:1.6; }
+.account-block { border:1px solid var(--line);box-shadow:0 8px 28px rgba(35,43,83,.045); }
+.account-block .block-head p { max-width:60ch;line-height:1.6; }
+.account-form { border-radius:18px; }
+body[data-theme="dark"] .player-profile-hero { background:linear-gradient(120deg,rgba(255,197,49,.08),rgba(124,108,255,.12) 58%,rgba(89,190,157,.07)); }
+body[data-theme="dark"] .profile-level-chip { background:rgba(255,197,49,.14);border-color:rgba(242,216,108,.28);color:#f6dfa0; }
+body[data-theme="dark"] .avatar-choice { background:var(--surface); }
+@media(max-width:600px) {
+ .player-profile-hero { flex-direction:column;align-items:flex-start; }
+ .player-avatar-wrap { width:96px;height:96px;border-radius:28px; }
+ .player-profile-heading h3 { font-size:27px; }
+ .profile-hero-meta { align-items:flex-start; }
+ .profile-avatar-options { padding:16px; }
+ .avatar-choices { gap:8px; }
+ .avatar-choice { flex-basis:48px;width:48px;height:48px;font-size:25px; }
+ .profile-posts-heading { align-items:flex-start;flex-direction:column; }
+ .community-refresh { align-self:flex-start; }
+ .account-block { padding:18px; }
+}
