@@ -347,7 +347,7 @@ const SPOT_QUESTIONS = [
     "id": "spot-a2-14",
     "level": "A2",
     "text": "He has visited Paris last year.",
-    "wrongIndex": 2,
+    "wrongIndex": 1,
     "fix": "visited",
     "why_en": "A finished past-time expression such as last year normally takes the past simple.",
     "why_ar": "مع زمن ماضٍ منتهٍ مثل last year نستخدم الماضي البسيط عادةً."
@@ -356,7 +356,7 @@ const SPOT_QUESTIONS = [
     "id": "spot-b1-13",
     "level": "B1",
     "text": "If I knew the answer, I will tell you.",
-    "wrongIndex": 5,
+    "wrongIndex": 6,
     "fix": "would",
     "why_en": "The second conditional uses would in the result clause.",
     "why_ar": "في الشرط من النوع الثاني نستخدم would في جملة النتيجة."
@@ -392,7 +392,7 @@ const SPOT_QUESTIONS = [
     "id": "spot-c1-07",
     "level": "C1",
     "text": "Were the company to expands abroad, costs would rise.",
-    "wrongIndex": 4,
+    "wrongIndex": 5,
     "fix": "expand",
     "why_en": "After the infinitive marker to, use the base form of the verb.",
     "why_ar": "بعد to في المصدر نستخدم الفعل بصيغته الأساسية."
@@ -401,7 +401,7 @@ const SPOT_QUESTIONS = [
     "id": "spot-c1-08",
     "level": "C1",
     "text": "The report gives rise for serious concerns.",
-    "wrongIndex": 5,
+    "wrongIndex": 4,
     "fix": "to",
     "why_en": "The fixed phrase is “give rise to”.",
     "why_ar": "التعبير الثابت هو give rise to."
@@ -409,9 +409,9 @@ const SPOT_QUESTIONS = [
   {
     "id": "spot-c2-07",
     "level": "C2",
-    "text": "So intricate the mechanism was that few could explain it.",
-    "wrongIndex": 2,
-    "fix": "was the mechanism",
+    "text": "So intricate was the mechanism that few could explained it.",
+    "wrongIndex": 8,
+    "fix": "explain",
     "why_en": "When “so + adjective” is fronted, use subject–auxiliary inversion.",
     "why_ar": "عند تقديم so + صفة نستخدم القلب بين الفاعل والفعل المساعد."
   },
