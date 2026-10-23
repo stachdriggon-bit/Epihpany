@@ -46,6 +46,7 @@
   }
   let saveWarned = false;
   function save() {
+    if (DEV_MODE.active && hasDeveloperAccess()) return;
     try { localStorage.setItem('epiphany-progress', JSON.stringify(state)); }
     catch { if (!saveWarned) { saveWarned = true; toast('Progress can’t be saved in this browser. It will last for this visit only.'); } }
     if (window.EpiphanyAuth && typeof window.EpiphanyAuth.queueSave === 'function') {
@@ -79,9 +80,10 @@
 
   /* ---------- derived values ---------- */
   // CEFR is determined by the placement assessment, never by XP earned in games.
-  const levelIndex = () => Math.max(0, LEVELS.findIndex(level => level.id === state.assessedLevel));
-  const currentLevel = () => LEVELS[levelIndex()];
   const hasDeveloperAccess = () => !!(window.EpiphanyAuth && typeof window.EpiphanyAuth.isDeveloper === 'function' && window.EpiphanyAuth.isDeveloper());
+  const DEV_MODE = {active:false, level:'A1', snapshot:null};
+  const levelIndex = () => DEV_MODE.active && hasDeveloperAccess() ? Math.max(0, LEVELS.findIndex(level => level.id === DEV_MODE.level)) : Math.max(0, LEVELS.findIndex(level => level.id === state.assessedLevel));
+  const currentLevel = () => LEVELS[levelIndex()];
   const liveStreak = () => {
     const y = new Date(); y.setDate(y.getDate() - 1);
     const twoDaysAgo = new Date(); twoDaysAgo.setDate(twoDaysAgo.getDate() - 2);
@@ -160,6 +162,7 @@
     $('#next-art').innerHTML = '<div class="glyph">' + glyph(g) + '</div>';
     $('#next-start').dataset.game = g;
     renderWeaknessPanel();
+    renderDeveloperLab();
 
     const done = Math.min(state.daily, 2);
     $('#ring-text').textContent = done + '/2';
@@ -418,6 +421,82 @@
     }).join('');
   }
 
+  function renderDeveloperLab() {
+    const panel = $('#developer-lab');
+    if (!panel) return;
+    const allowed = hasDeveloperAccess();
+    panel.hidden = !allowed;
+    if (!allowed) return;
+    const levelSelect = $('#developer-level');
+    if (levelSelect) {
+      const previous = DEV_MODE.active ? DEV_MODE.level : levelSelect.value;
+      levelSelect.innerHTML = LEVELS.map(l => '<option value="'+esc(l.id)+'" '+(l.id===previous?'selected':'')+'>'+esc(l.id+' · '+l.name)+'</option>').join('');
+      if (previous && LEVELS.some(l=>l.id===previous)) levelSelect.value=previous;
+      levelSelect.disabled = DEV_MODE.active;
+    }
+    const activitySelect = $('#developer-activity');
+    if (activitySelect) {
+      const previous = activitySelect.value;
+      const items = Object.keys(GAMES).map(k => ({value:k,label:(META[k]&&META[k].label?META[k].label+' — ':'')+GAMES[k].title}))
+        .concat(Object.keys(MINI).map(k=>({value:k,label:(META[k]&&META[k].label?META[k].label+' — ':'')+(META[k]&&META[k].label||k)})))
+        .concat([{value:'__story',label:'Stories — choose any story'},{value:'__world',label:'World — all regions and missions'}]);
+      activitySelect.innerHTML = items.map(item=>'<option value="'+esc(item.value)+'">'+esc(item.label)+'</option>').join('');
+      if (items.some(item=>item.value===previous)) activitySelect.value=previous;
+      activitySelect.disabled = !DEV_MODE.active;
+    }
+    const storySelect = $('#developer-story');
+    if (storySelect && typeof STORIES !== 'undefined') {
+      const previous = storySelect.value;
+      storySelect.innerHTML = STORIES.slice().sort((a,b)=>storyLevelIndex(a.level)-storyLevelIndex(b.level)||a.title.localeCompare(b.title)).map(s=>'<option value="'+esc(s.id)+'">'+esc(s.level+' · '+s.title)+'</option>').join('');
+      if (previous && STORIES.some(s=>s.id===previous)) storySelect.value=previous;
+      storySelect.disabled = !DEV_MODE.active;
+    }
+    const start = $('#developer-start');
+    if (start) start.disabled = !DEV_MODE.active;
+    const toggle = $('#developer-session-toggle');
+    if (toggle) { toggle.textContent = DEV_MODE.active ? 'End test session and restore progress' : 'Start safe test session'; toggle.classList.toggle('btn-ghost', DEV_MODE.active); }
+    const status = $('#developer-session-status');
+    if (status) status.textContent = DEV_MODE.active ? 'Test session active · '+DEV_MODE.level+' · XP, streaks, achievements, words and progress are temporary and will be discarded when you end the session.' : 'Choose a level, then start a safe test session. Your normal CEFR level and saved progress will not be changed.';
+  }
+
+  function startDeveloperSession() {
+    if (!hasDeveloperAccess()) return;
+    const selected = $('#developer-level');
+    DEV_MODE.level = LEVELS.some(l=>l.id===(selected&&selected.value)) ? selected.value : 'A1';
+    DEV_MODE.snapshot = JSON.parse(JSON.stringify(state));
+    DEV_MODE.active = true;
+    renderAll();
+    toast('Safe test session started · '+DEV_MODE.level+' · no progress or rewards will be saved.');
+  }
+
+  function endDeveloperSession() {
+    if (!hasDeveloperAccess() || !DEV_MODE.active) return;
+    if (WORLD && WORLD.raf) cancelAnimationFrame(WORLD.raf);
+    if (DEV_MODE.snapshot) state = DEV_MODE.snapshot;
+    DEV_MODE.snapshot = null;
+    DEV_MODE.active = false;
+    DEV_MODE.level = 'A1';
+    if (WORLD) { WORLD = null; $('#world-game').hidden = true; }
+    if ($('#game')) $('#game').hidden = true;
+    if ($('#placement')) $('#placement').hidden = true;
+    lockPage(false);
+    renderAll();
+    toast('Test session ended · your original progress has been restored.');
+  }
+
+  function launchDeveloperActivity() {
+    if (!hasDeveloperAccess() || !DEV_MODE.active) return;
+    const selected = $('#developer-activity');
+    if (!selected) return;
+    if (selected.value === '__story') {
+      const story = $('#developer-story');
+      if (story && story.value) { openView('stories'); startStory(story.value); }
+      return;
+    }
+    if (selected.value === '__world') { openView('home'); startWorld(); return; }
+    if (GAMES[selected.value] || MINI[selected.value]) { openView('home'); startGame(selected.value); }
+  }
+
   function renderAll() { renderHeader(); renderHome(); renderStories(); renderWords(); renderTrophies(); syncSettings(); }
   document.addEventListener('epiphany-auth-changed', () => { renderAll(); if (WORLD && WORLD.mode === 'regions') worldShowRegions(); });
 
@@ -480,7 +559,7 @@
   function renderStoryQuestion(){const q=ST.story.questions[ST.qi];$('#steps').innerHTML=ST.story.questions.map((_,i)=>'<span class="step '+(i<ST.qi?'ok':i===ST.qi?'current':'')+'"></span>').join('');$('#game-body').innerHTML='<div class="q-meta"><span class="pill">Story questions</span><span class="q-count">Question '+(ST.qi+1)+' of '+ST.story.questions.length+'</span></div><h2 class="q-text" id="story-q-title">'+esc(q.q)+'</h2><p class="q-sub">Choose the best answer.</p><div class="answers" id="story-answers" role="group" aria-labelledby="story-q-title">'+q.answers.map((v,i)=>'<button class="answer" data-story-answer="'+i+'"><span class="key">'+(i+1)+'</span><span>'+esc(v)+'</span></button>').join('')+'</div><button class="btn btn-ghost story-back-reading" data-story-action="back-reading">← Back to story</button>';$('#game-scroll').scrollTop=0;}
   function answerStoryQuestion(choice){if(!ST||ST.mode!=='quiz'||ST.answered)return;const q=ST.story.questions[ST.qi],ok=choice===q.correct;ST.answered=true;if(ok)ST.score++;else if(q.reviewWord){addReview(q.reviewWord,q.explain);save();}ST.results[ST.qi]={status:ok?'ok':'no',chosen:choice,correct:q.correct,question:q.q,explain:q.explain};$$('#story-answers .answer').forEach((b,i)=>{b.disabled=true;if(i===q.correct)b.classList.add('correct');else if(i===choice)b.classList.add('wrong');});showSheet(ok,'<h3><span class="sheet-mark">'+ic(ok?'check':'x')+'</span>'+(ok?'Exactly right!':'Good try — keep learning.')+'</h3>'+(ok?'':'<p>Correct answer: <b>'+esc(q.answers[q.correct])+'</b></p>')+'<p>'+esc(q.explain)+'</p><div class="sheet-actions"><button class="btn" id="go-next">'+(ST.qi===ST.story.questions.length-1?'See story results':'Continue')+ic('arrow')+'</button></div>');}
   function renderStoryLearningReview(story){const vocab=Object.entries(story.vocab||{}).slice(0,8);const missed=(ST.results||[]).filter(r=>r&&r.status==='no');return '<section class="story-learning-review"><div class="story-review-heading"><span class="kicker">LEARN & REMEMBER</span><h3>Words from this story</h3><p>Review useful words in context before you leave.</p></div><div class="story-review-vocab">'+(vocab.length?vocab.map(([word,v])=>'<article class="story-review-word"><div class="story-review-word-top"><strong>'+esc(word)+'</strong><span>'+esc(v.pronunciation||'')+'</span></div><p>'+esc(v.meaning||'')+'</p><p class="arabic" lang="ar" dir="rtl">'+esc(v.ar||'')+'</p><small>Example: “'+esc(v.example||'')+'”</small><button type="button" class="btn btn-ghost story-review-listen" data-story-action="listen-word" data-value="'+esc(word)+'">🔊 Listen</button></article>').join(''):'<p>No vocabulary notes have been added yet.</p>')+'</div>'+(missed.length?'<div class="story-review-missed"><h3>Questions to revisit</h3>'+missed.map(r=>'<article><p><strong>'+esc(r.question)+'</strong></p><p>'+esc(r.explain||'Read the story again and look for evidence.')+'</p></article>').join('')+'</div>':'<p class="story-review-perfect">Great work — you answered every question correctly.</p>')+'</section>';}
-  function finishStory(){const s=ST.story,score=ST.score,old=state.stories[s.id]||{done:false,score:0},previousBest=Number(old.score)||0,firstCompletion=!old.done,newBest=score>previousBest;let bonus='';const chosenOption=s.decision&&ST.decisionChoice!==null?s.decision.options[ST.decisionChoice]:null;state.stories[s.id]={...old,done:true,score:Math.max(previousBest,score),lastDecision:chosenOption?chosenOption.text:null,lastResponse:chosenOption?chosenOption.response:null,lastConsequence:chosenOption&&chosenOption.branchPage?chosenOption.branchPage[1]:null,lastEnding:chosenOption&&chosenOption.endingPage?chosenOption.endingPage[1]:null};if(firstCompletion){state.xp+=30;state.quests++;state.daily=Math.min(2,state.daily+1);const today=dayKey();if(state.dailyQuestDate!==today){state.dailyQuestDate=today;state.dailyQuestProgress=0;state.dailyQuestClaimed=false;state.dailyCorrect=0;state.dailyXp=0;}if(state.weeklyKey!==weekKey()){state.weeklyKey=weekKey();state.weeklyProgress=0;state.weeklyClaimed=false;}state.dailyXp+=30;state.dailyCorrect+=score;state.dailyQuestProgress=state.daily;state.weeklyProgress=(state.weeklyProgress||0)+1;const task=DAILY_QUESTS[(new Date().getDate()-1)%DAILY_QUESTS.length],progress=task.kind==='quests'?state.daily:task.kind==='xp'?state.dailyXp:state.dailyCorrect;if(!state.dailyQuestClaimed&&progress>=task.target){state.dailyQuestClaimed=true;state.xp+=task.reward;bonus=' Daily bonus +'+task.reward+' XP!';}if(!state.weeklyClaimed&&state.weeklyProgress>=5){state.weeklyClaimed=true;state.xp+=60;bonus+=' Weekly bonus +60 XP!';}if(state.lastDay!==today){const y=new Date();y.setDate(y.getDate()-1);const two=new Date();two.setDate(two.getDate()-2);if(state.lastDay===dayKey(y))state.streak=(state.streak||0)+1;else if(state.lastDay===dayKey(two)&&state.streakFreezes>0){state.streakFreezes--;state.streak=(state.streak||0)+1;bonus+=' Streak freeze protected your streak.';}else state.streak=1;state.lastDay=today;}if(!state.completed.includes(currentLevel().id))state.completed.push(currentLevel().id);}save();renderAll();hideSheet();$('#steps').innerHTML=s.questions.map(()=>'<span class="step ok"></span>').join('');const ratio=s.questions.length?score/s.questions.length:0,stars=ratio>=.85?'★★★':ratio>=.6?'★★☆':ratio>0?'★☆☆':'☆☆☆';$('#game-body').innerHTML='<div class="result story-result"><div class="burst">📚</div><p class="kicker">STORY COMPLETE</p><h2>'+esc(s.title)+'</h2><div class="story-stars">'+stars+'</div><div class="stats3"><div class="stat"><b>'+(firstCompletion?'+30':'+0')+'</b><span>'+(firstCompletion?'XP earned':'XP · replay')+'</span></div><div class="stat"><b>'+score+'/'+s.questions.length+'</b><span>Correct answers</span></div><div class="stat"><b>'+ST.savedDuring.length+'</b><span>Words saved</span></div></div>'+(newBest&&old.done?'<p class="challenge-bonus">🏆 New personal best! Your best is now '+score+'/'+s.questions.length+'.</p>':'')+(bonus?'<p class="challenge-bonus">'+esc(bonus.trim())+'</p>':'')+(ST.savedDuring.length?'<div class="found"><div class="found-title">Words you saved</div>'+ST.savedDuring.map(w=>'<span class="w">'+esc(w)+'</span>').join('')+'</div>':'')+(s.decision&&ST.decisionChoice!==null?'<div class="story-choice-recap"><strong>How your decision shaped the story</strong><p class="story-impact-choice"><b>You chose:</b> '+esc(s.decision.options[ST.decisionChoice].text)+'</p><p>'+esc(s.decision.options[ST.decisionChoice].response)+'</p>'+(s.decision.options[ST.decisionChoice].branchPage?'<div class="story-impact-step"><small>THE IMMEDIATE CONSEQUENCE</small><p>'+esc(s.decision.options[ST.decisionChoice].branchPage[1])+'</p></div>':'')+(s.decision.options[ST.decisionChoice].endingPage?'<div class="story-impact-step"><small>HOW THIS PATH ENDED</small><p>'+esc(s.decision.options[ST.decisionChoice].endingPage[1])+'</p></div>':'')+'<p class="story-impact-replay">Want to discover another outcome? Replay this story and choose a different response. Your XP and quest rewards are still awarded only on your first completion.</p></div>':'')+renderStoryLearningReview(s)+(s.followUp?'<div class="follow-up-card"><p><b>Take the story into the village</b></p><p>Use the words you just read in a real task.</p><button class="btn" data-story-follow-up="'+esc(s.followUp.taskId)+'">'+esc(s.followUp.label||'Continue in the village')+' →</button></div>':'')+'<div class="result-actions"><button class="btn" data-story-action="another">Read another story</button><button class="btn btn-ghost" data-story-action="words">Open Words</button><button class="btn btn-ghost" data-story-action="close">Back to Stories</button></div></div>';$('#game-scroll').scrollTop=0;ST.mode='result';}
+  function finishStory(){const s=ST.story,score=ST.score,old=state.stories[s.id]||{done:false,score:0},previousBest=Number(old.score)||0,firstCompletion=!DEV_MODE.active&&!old.done,newBest=!DEV_MODE.active&&score>previousBest;let bonus=DEV_MODE.active?'Developer test session · no rewards or progress saved.':'';const chosenOption=s.decision&&ST.decisionChoice!==null?s.decision.options[ST.decisionChoice]:null;if(!DEV_MODE.active){state.stories[s.id]={...old,done:true,score:Math.max(previousBest,score),lastDecision:chosenOption?chosenOption.text:null,lastResponse:chosenOption?chosenOption.response:null,lastConsequence:chosenOption&&chosenOption.branchPage?chosenOption.branchPage[1]:null,lastEnding:chosenOption&&chosenOption.endingPage?chosenOption.endingPage[1]:null};if(firstCompletion){state.xp+=30;state.quests++;state.daily=Math.min(2,state.daily+1);const today=dayKey();if(state.dailyQuestDate!==today){state.dailyQuestDate=today;state.dailyQuestProgress=0;state.dailyQuestClaimed=false;state.dailyCorrect=0;state.dailyXp=0;}if(state.weeklyKey!==weekKey()){state.weeklyKey=weekKey();state.weeklyProgress=0;state.weeklyClaimed=false;}state.dailyXp+=30;state.dailyCorrect+=score;state.dailyQuestProgress=state.daily;state.weeklyProgress=(state.weeklyProgress||0)+1;const task=DAILY_QUESTS[(new Date().getDate()-1)%DAILY_QUESTS.length],progress=task.kind==='quests'?state.daily:task.kind==='xp'?state.dailyXp:state.dailyCorrect;if(!state.dailyQuestClaimed&&progress>=task.target){state.dailyQuestClaimed=true;state.xp+=task.reward;bonus=' Daily bonus +'+task.reward+' XP!';}if(!state.weeklyClaimed&&state.weeklyProgress>=5){state.weeklyClaimed=true;state.xp+=60;bonus+=' Weekly bonus +60 XP!';}if(state.lastDay!==today){const y=new Date();y.setDate(y.getDate()-1);const two=new Date();two.setDate(two.getDate()-2);if(state.lastDay===dayKey(y))state.streak=(state.streak||0)+1;else if(state.lastDay===dayKey(two)&&state.streakFreezes>0){state.streakFreezes--;state.streak=(state.streak||0)+1;bonus+=' Streak freeze protected your streak.';}else state.streak=1;state.lastDay=today;}if(!state.completed.includes(currentLevel().id))state.completed.push(currentLevel().id);}save();renderAll();}hideSheet();$('#steps').innerHTML=s.questions.map(()=>'<span class="step ok"></span>').join('');const ratio=s.questions.length?score/s.questions.length:0,stars=ratio>=.85?'★★★':ratio>=.6?'★★☆':ratio>0?'★☆☆':'☆☆☆';$('#game-body').innerHTML='<div class="result story-result"><div class="burst">📚</div><p class="kicker">STORY COMPLETE</p><h2>'+esc(s.title)+'</h2><div class="story-stars">'+stars+'</div><div class="stats3"><div class="stat"><b>'+(firstCompletion?'+30':'+0')+'</b><span>'+(firstCompletion?'XP earned':'XP · replay')+'</span></div><div class="stat"><b>'+score+'/'+s.questions.length+'</b><span>Correct answers</span></div><div class="stat"><b>'+ST.savedDuring.length+'</b><span>Words saved</span></div></div>'+(newBest&&old.done?'<p class="challenge-bonus">🏆 New personal best! Your best is now '+score+'/'+s.questions.length+'.</p>':'')+(bonus?'<p class="challenge-bonus">'+esc(bonus.trim())+'</p>':'')+(ST.savedDuring.length?'<div class="found"><div class="found-title">Words you saved</div>'+ST.savedDuring.map(w=>'<span class="w">'+esc(w)+'</span>').join('')+'</div>':'')+(s.decision&&ST.decisionChoice!==null?'<div class="story-choice-recap"><strong>How your decision shaped the story</strong><p class="story-impact-choice"><b>You chose:</b> '+esc(s.decision.options[ST.decisionChoice].text)+'</p><p>'+esc(s.decision.options[ST.decisionChoice].response)+'</p>'+(s.decision.options[ST.decisionChoice].branchPage?'<div class="story-impact-step"><small>THE IMMEDIATE CONSEQUENCE</small><p>'+esc(s.decision.options[ST.decisionChoice].branchPage[1])+'</p></div>':'')+(s.decision.options[ST.decisionChoice].endingPage?'<div class="story-impact-step"><small>HOW THIS PATH ENDED</small><p>'+esc(s.decision.options[ST.decisionChoice].endingPage[1])+'</p></div>':'')+'<p class="story-impact-replay">Want to discover another outcome? Replay this story and choose a different response. Your XP and quest rewards are still awarded only on your first completion.</p></div>':'')+renderStoryLearningReview(s)+(s.followUp?'<div class="follow-up-card"><p><b>Take the story into the village</b></p><p>Use the words you just read in a real task.</p><button class="btn" data-story-follow-up="'+esc(s.followUp.taskId)+'">'+esc(s.followUp.label||'Continue in the village')+' →</button></div>':'')+'<div class="result-actions"><button class="btn" data-story-action="another">Read another story</button><button class="btn btn-ghost" data-story-action="words">Open Words</button><button class="btn btn-ghost" data-story-action="close">Back to Stories</button></div></div>';$('#game-scroll').scrollTop=0;ST.mode='result';}
 
   /* ---------- navigation ---------- */
   function closeDockMore() {
@@ -877,6 +956,15 @@
   function showResults() {
     const game = GAMES[G.type], total = G.originalTotal || G.questions.length;
     const finalScore = G.originalScore == null ? G.score : G.originalScore;
+    if (DEV_MODE.active && hasDeveloperAccess()) {
+      const testType = G.type;
+      hideSheet(); renderSteps(true); sfx('done');
+      $('#game-body').innerHTML = '<div class="result"><div class="burst">'+ic('spark')+'</div><p class="kicker" style="margin:6px 0 0">DEVELOPER TEST · NO REWARDS</p><h2>Practice run complete</h2><p>You got '+G.score+' out of '+total+'. This test did not change XP, achievements, words or saved progression.</p><div class="stats3"><div class="stat"><b>'+finalScore+'/'+total+'</b><span>Correct first try</span></div><div class="stat"><b>0</b><span>XP awarded</span></div><div class="stat"><b>'+G.words.length+'</b><span>Words explored</span></div></div><div class="result-actions"><button class="btn" id="dev-res-again">Try again</button><button class="btn btn-ghost" id="dev-res-home">Back to Developer Mode</button></div></div>';
+      $('#game-scroll').scrollTop = 0;
+      $('#dev-res-again').addEventListener('click', () => startGame(testType));
+      $('#dev-res-home').addEventListener('click', () => { closeGame(); openView('home'); });
+      return;
+    }
     const earned = Math.round(game.xp * (.35 + .65 * finalScore / total));
     const before = currentLevel();
     state.xp += earned; state.quests++; state.daily = Math.min(2, state.daily + 1);
@@ -971,6 +1059,7 @@
   const SHUF = list => { const a = list.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
 
   function awardActivity(xpGain, correct) {
+    if (DEV_MODE.active && hasDeveloperAccess()) return 'Developer test session · no XP, rewards or progress saved.';
     state.xp += xpGain; state.quests++; state.daily = Math.min(2, state.daily + 1);
     const today = dayKey();
     if (state.dailyQuestDate !== today) { state.dailyQuestDate = today; state.dailyQuestProgress = 0; state.dailyQuestClaimed = false; state.dailyCorrect = 0; state.dailyXp = 0; }
@@ -1009,7 +1098,7 @@
     const m = META[MG.type];
     let ratio = MG.total ? MG.score / MG.total : 1;
     if (MG.type === 'match') ratio = Math.max(.4, Math.min(1, MG.total * 1.6 / Math.max(1, MG.attempts)));
-    const gain = Math.max(8, Math.round(m.xp * (.4 + .6 * ratio)));
+    const gain = DEV_MODE.active ? 0 : Math.max(8, Math.round(m.xp * (.4 + .6 * ratio)));
     const bonus = awardActivity(gain, MG.score);
     const stars = ratio >= .9 ? '★★★' : ratio >= .6 ? '★★☆' : '★☆☆';
     miniSteps(true); hideSheet();
@@ -1377,11 +1466,14 @@
   }
   function AR_NUM_STEPS(n) { return W_ARN[n] || (n + ' خطوات'); }
   function worldAwardPractice(stars, t) {
+    if (DEV_MODE.active && hasDeveloperAccess()) return 0;
     const gain = stars * 3; state.xp += gain;
     (t.words || []).forEach(w => { if (!state.words.some(v => String(v[0]).toLowerCase() === String(w[0]).toLowerCase())) state.words.push(w); });
     state.world.runs = state.world.runs || 0; save(); renderHeader(); renderWords(); return gain;
   }
   function worldAward(stars,t){
+    if(DEV_MODE.active&&hasDeveloperAccess())return 0;
+    if(DEV_MODE.active&&hasDeveloperAccess())return 0;
     const old=Number(state.world.stars[t.id]||0),first=!state.world.done.includes(t.id),earned=Math.max(0,stars-old)*5;
     const today=dayKey();
     // Reset daily/weekly counters before counting this first-time completion.
@@ -1830,6 +1922,7 @@
   function worldComplete(){if(!WORLD||WORLD.mode!=='play')return;const t=worldTask();if(t.check.type==='pickup'){WORLD.carried=null;WORLD.picked.delete(t.check.object);const original=WORLD_DATA.objects.find(o=>o.id===t.check.object);if(original&&!worldObj(original.id))WORLD.objects.push({...original});}const stars=WORLD.usedHelp?(WORLD.moves>(t.generated?14:7)?1:2):3,gain=WORLD.run==='practice'?worldAwardPractice(stars,t):worldAward(stars,t);WORLD.stars=Object.values(state.world.stars).reduce((sum,value)=>sum+(Number(value)||0),0);WORLD.mode='success';sfx('done');
     $('#world-game').innerHTML=worldShell('<section class="world-success"><div class="world-big-star">★</div><p class="world-kicker">TASK COMPLETE</p><h2>Well done!</h2><div class="world-stars">'+('★'.repeat(stars))+'<span>'+('☆'.repeat(3-stars))+'</span></div><p>+'+gain+' XP earned</p><div class="world-context-tip"><strong>English in action</strong><p>“'+esc(t.instruction)+'”</p>'+(t.words&&t.words[0]?'<small>In this mission, <b>'+esc(t.words[0][0])+'</b> means '+esc(t.words[0][1])+'. Read the instruction aloud to practise it in context.</small>':'<small>Read the instruction aloud and connect the English words to the action you just completed.</small>')+'</div><h3>New words</h3><div class="world-word-list">'+(t.words||[]).map(w=>'<span class="world-word-chip"><b>'+esc(w[0])+'</b><small>'+esc(w[1])+'</small></span>').join('')+'</div>'+(t.suggestedStory&&STORIES.some(s=>s.id===t.suggestedStory&&storyLevelIndex(s.level)<=storyLevelIndex(currentLevel().id))?'<button class="world-secondary" data-world-story="'+esc(t.suggestedStory)+'">Read the story behind this task →</button>':'')+'<button class="world-primary" data-world-next>'+(WORLD.index===WORLD.tasks.length-1?(WORLD.run==='practice'?'Finish run':'Finish area'):'Next task')+' →</button></section>');}
   function worldRunBonus(){
+    if(DEV_MODE.active&&hasDeveloperAccess())return 'Developer test session · no rewards or progress saved.';
     if(!WORLD||WORLD.run!=='practice')return '';
     if(!WORLD.bonusGiven){WORLD.bonusGiven=true;const b=awardActivity(15,WORLD.tasks.length);state.world.runs=(state.world.runs||0)+1;save();WORLD.bonusText='+15 XP run bonus.'+(b?' '+b:'');}
     return WORLD.bonusText||'';
@@ -1998,6 +2091,11 @@
       }
       return;
     }
+    if (e.target.closest('#developer-session-toggle')) {
+      if (DEV_MODE.active) endDeveloperSession(); else startDeveloperSession();
+      return;
+    }
+    if (e.target.closest('#developer-start')) { launchDeveloperActivity(); return; }
     const gm = e.target.closest('[data-game]');
     if (gm) { closeCategoryPicker(false); startGame(gm.dataset.game); return; }
     const lv = e.target.closest('[data-level]');
@@ -2007,6 +2105,7 @@
       else startGame(LEVEL_GAME[i]);
     }
   });
+  document.addEventListener('change', e => { if (e.target && e.target.id === 'developer-activity') renderDeveloperLab(); });
   $('#logo').addEventListener('click', e => { e.preventDefault(); openView('home'); });
   $('#game-close').addEventListener('click', closeGame);
   document.addEventListener('keydown', e => {
