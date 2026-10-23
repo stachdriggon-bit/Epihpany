@@ -348,7 +348,7 @@ const SPOT_QUESTIONS = [
     "level": "A2",
     "text": "He has visited Paris last year.",
     "wrongIndex": 1,
-    "fix": "visited",
+    "fix": "remove has",
     "why_en": "A finished past-time expression such as last year normally takes the past simple.",
     "why_ar": "مع زمن ماضٍ منتهٍ مثل last year نستخدم الماضي البسيط عادةً."
   },
@@ -374,7 +374,7 @@ const SPOT_QUESTIONS = [
     "id": "spot-b2-13",
     "level": "B2",
     "text": "Despite he was exhausted, he continued working.",
-    "wrongIndex": 1,
+    "wrongIndex": 0,
     "fix": "Although",
     "why_en": "Use although before a full clause; despite is followed by a noun or -ing form.",
     "why_ar": "نستخدم although قبل جملة كاملة، أما despite فيأتي بعدها اسم أو فعل ing."
@@ -392,7 +392,7 @@ const SPOT_QUESTIONS = [
     "id": "spot-c1-07",
     "level": "C1",
     "text": "Were the company to expands abroad, costs would rise.",
-    "wrongIndex": 5,
+    "wrongIndex": 4,
     "fix": "expand",
     "why_en": "After the infinitive marker to, use the base form of the verb.",
     "why_ar": "بعد to في المصدر نستخدم الفعل بصيغته الأساسية."
@@ -420,7 +420,7 @@ const SPOT_QUESTIONS = [
     "level": "C2",
     "text": "The argument rests on a premise whose validity has yet to be substantiate.",
     "wrongIndex": 12,
-    "fix": "substantiated",
+    "fix": "substantiated.",
     "why_en": "After “has yet to be”, use the past participle in the passive.",
     "why_ar": "بعد has yet to be نستخدم التصريف الثالث للمبني للمجهول."
   },
@@ -491,8 +491,8 @@ const SPOT_QUESTIONS = [
     "id": "spot-b2-16",
     "level": "B2",
     "text": "The manager insisted on us leave early.",
-    "wrongIndex": 4,
-    "fix": "our leaving",
+    "wrongIndex": 6,
+    "fix": "leaving",
     "why_en": "Use insist that + clause, or insist on + noun/-ing form.",
     "why_ar": "نستخدم insist that مع جملة، أو insist on مع اسم أو فعل ing."
   },
@@ -500,7 +500,7 @@ const SPOT_QUESTIONS = [
     "id": "spot-c1-09",
     "level": "C1",
     "text": "Not until the data was analysed did the pattern became clear.",
-    "wrongIndex": 8,
+    "wrongIndex": 9,
     "fix": "become",
     "why_en": "A fronted not until phrase triggers inversion in the main clause.",
     "why_ar": "عند بدء الجملة بـ Not until يحدث القلب في الجملة الرئيسية."
@@ -509,7 +509,7 @@ const SPOT_QUESTIONS = [
     "id": "spot-c1-10",
     "level": "C1",
     "text": "The findings are at odds to the initial hypothesis.",
-    "wrongIndex": 7,
+    "wrongIndex": 5,
     "fix": "with",
     "why_en": "The fixed expression is at odds with.",
     "why_ar": "التعبير الثابت هو at odds with."
