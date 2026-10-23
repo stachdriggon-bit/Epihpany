@@ -1473,7 +1473,6 @@
   }
   function worldAward(stars,t){
     if(DEV_MODE.active&&hasDeveloperAccess())return 0;
-    if(DEV_MODE.active&&hasDeveloperAccess())return 0;
     const old=Number(state.world.stars[t.id]||0),first=!state.world.done.includes(t.id),earned=Math.max(0,stars-old)*5;
     const today=dayKey();
     // Reset daily/weekly counters before counting this first-time completion.
