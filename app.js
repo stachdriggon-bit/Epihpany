@@ -486,7 +486,15 @@
     if (panel) panel.hidden = true;
     if (toggle) toggle.setAttribute('aria-expanded', 'false');
   }
+  let categoryReturnFocus = null;
+  function closeCategoryPicker(restoreFocus = true) {
+    const picker = $('#category-picker');
+    if (picker) picker.hidden = true;
+    if (restoreFocus && categoryReturnFocus && categoryReturnFocus.isConnected) categoryReturnFocus.focus({preventScroll:true});
+    categoryReturnFocus = null;
+  }
   function openView(name) {
+    closeCategoryPicker(false);
     closeDockMore();
     $$('.view').forEach(v => v.classList.toggle('is-active', v.id === name + '-view'));
     $$('[data-view]').forEach(b => b.setAttribute('aria-current', b.dataset.view === name ? 'page' : 'false'));
@@ -915,7 +923,7 @@
     $('#res-share').addEventListener('click', () => shareResult(shareData));
     $('#res-download').addEventListener('click', () => shareResult(shareData, true));
     $('#res-next').addEventListener('click', () => startGame(nxt));
-    $('#res-home').addEventListener('click', closeGame);
+    $('#res-home').addEventListener('click', () => { closeGame(); openView('home'); });
     $('#res-again').addEventListener('click', () => startGame(type));
     $('#res-next').focus({preventScroll: true});
   }
@@ -1969,11 +1977,12 @@
       return;
     }
     const categoryClose = e.target.closest('[data-category-close]');
-    if (categoryClose) { const picker=$('#category-picker'); if(picker)picker.hidden=true; return; }
+    if (categoryClose) { closeCategoryPicker(); return; }
     const categoryButton = e.target.closest('[data-category]');
     if (categoryButton) {
       const cat=(window.__gameCategories||[]).find(item=>item.id===categoryButton.dataset.category);
       if(cat){
+        categoryReturnFocus = categoryButton;
         $('#category-picker-title').textContent=cat.title;
         $('#category-picker-desc').textContent=cat.desc;
         $('#category-options').innerHTML=cat.games.map(([id,label])=>{
@@ -1981,13 +1990,14 @@
           return '<button type="button" class="category-option t-'+meta.tone+'" data-game="'+id+'"><span class="category-option-icon">'+glyph(id)+'</span><span><strong>'+label+'</strong><small>'+meta.time+' min · +'+((gmData||meta).xp)+' XP</small></span><span class="category-option-arrow" aria-hidden="true">→</span></button>';
         }).join('');
         $('#category-picker').hidden=false;
-        const closeBtn=$('#category-picker [data-category-close]:not(.category-backdrop)');
-        if(closeBtn)closeBtn.focus();
+        const firstOption = $('#category-options .category-option');
+        if(firstOption)firstOption.focus();
+        else { const closeBtn=$('#category-picker [data-category-close]:not(.category-backdrop)'); if(closeBtn)closeBtn.focus(); }
       }
       return;
     }
     const gm = e.target.closest('[data-game]');
-    if (gm) { const picker=$('#category-picker'); if(picker)picker.hidden=true; startGame(gm.dataset.game); return; }
+    if (gm) { closeCategoryPicker(false); startGame(gm.dataset.game); return; }
     const lv = e.target.closest('[data-level]');
     if (lv) {
       const i = Number(lv.dataset.level), l = LEVELS[i];
@@ -1998,7 +2008,8 @@
   $('#logo').addEventListener('click', e => { e.preventDefault(); openView('home'); });
   $('#game-close').addEventListener('click', closeGame);
   document.addEventListener('keydown', e => {
-    if (e.key === 'Escape' && $('#dock-more-panel') && !$('#dock-more-panel').hidden) { closeDockMore(); return; }
+    if (e.key === 'Escape' && $('#dock-more-panel') && !$('#dock-more-panel').hidden) { closeDockMore(); $('#dock-more-toggle')?.focus({preventScroll:true}); return; }
+    if (e.key === 'Escape' && $('#category-picker') && !$('#category-picker').hidden) { closeCategoryPicker(); return; }
     if(ST&&ST.mode==='quiz'&&!ST.answered&&/^[1-9]$/.test(e.key)){const k=Number(e.key)-1;if(k<ST.story.questions[ST.qi].answers.length)answerStoryQuestion(k);return;}
     if (!G) return;
     if (e.key === 'Escape') { closeGame(); return; }
