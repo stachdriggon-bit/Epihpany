@@ -309,14 +309,17 @@
   </section>
 </main>
 
+<div class="dock-more-panel" id="dock-more-panel" hidden aria-label="More destinations">
+  <button class="dock-more-link" data-view="words" type="button"><span>📚</span><span><strong>Words</strong><small>Your saved vocabulary</small></span></button>
+  <button class="dock-more-link" data-view="trophies" type="button"><span>🏆</span><span><strong>Trophies</strong><small>Achievements and rewards</small></span></button>
+</div>
 <nav class="dock" aria-label="Main">
-  <button class="dock-item" data-view="home" aria-current="page"><span class="dock-ic"><svg><use href="#i-path"/></svg></span>Play</button>
-  <button class="dock-item" data-view="stories"><span class="dock-ic">📖</span>Stories</button>
-  <button class="dock-item" data-view="world"><span class="dock-ic">🌍</span>World</button>
-  <button class="dock-item" data-view="words"><span class="dock-ic"><svg><use href="#i-book"/></svg></span>Words</button>
-  <button class="dock-item" data-view="trophies"><span class="dock-ic"><svg><use href="#i-trophy"/></svg></span>Trophies</button>
-  <button class="dock-item" data-view="progress"><span class="dock-ic">📈</span>Progress</button>
-  <button class="dock-item" data-view="profile"><span class="dock-ic">👤</span>Profile</button>
+  <button class="dock-item" data-view="home" aria-current="page"><span class="dock-ic"><svg><use href="#i-path"/></svg></span><span>Play</span></button>
+  <button class="dock-item" data-view="stories"><span class="dock-ic">📖</span><span>Stories</span></button>
+  <button class="dock-item" data-view="world"><span class="dock-ic">🌍</span><span>World</span></button>
+  <button class="dock-item" data-view="progress"><span class="dock-ic">📈</span><span>Progress</span></button>
+  <button class="dock-item" data-view="profile"><span class="dock-ic">👤</span><span>Profile</span></button>
+  <button class="dock-item dock-more-toggle" id="dock-more-toggle" type="button" aria-expanded="false" aria-controls="dock-more-panel"><span class="dock-ic">•••</span><span>More</span></button>
 </nav>
 
 <!-- First-visit account welcome modal -->
