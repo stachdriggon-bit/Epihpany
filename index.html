@@ -262,11 +262,16 @@
             <input id="account-email-input" name="email" type="email" autocomplete="email" placeholder="you@example.com" required>
             <label for="account-password">Password</label>
             <input id="account-password" name="password" type="password" autocomplete="current-password" placeholder="Password" minlength="8" required>
+            <label id="account-otp-label" for="account-otp-input" hidden>Email verification code</label>
+            <input id="account-otp-input" name="otp" type="text" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" maxlength="6" placeholder="6-digit code" aria-describedby="account-otp-help" hidden>
+            <p class="account-otp-help" id="account-otp-help" hidden>Enter the 6-digit code from your email. You can stay on this page while checking your inbox.</p>
             <button class="btn btn-go account-submit" id="account-submit" type="submit">Sign in</button>
           </form>
           <div class="account-actions">
             <button class="btn btn-ghost" id="account-mode-toggle" type="button">New here? Create an account</button>
             <button class="account-link" id="account-forgot" type="button">Forgot password?</button>
+            <button class="btn btn-ghost" id="account-resend-code" type="button" hidden>Resend code</button>
+            <button class="account-link" id="account-edit-email" type="button" hidden>Use a different email</button>
           </div>
         </div>
         <div id="account-signed-in" hidden>
