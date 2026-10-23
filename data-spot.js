@@ -288,4 +288,18 @@ const SPOT_QUESTIONS = [
     "why_en": "It is high time is commonly followed by a past form for a present change needed.",
     "why_ar": "بعد It is high time نستخدم غالبًا صيغة الماضي للتعبير عن أمر حان وقته."
   }
+  ,
+  {"id":"spot-a1-09","level":"A1","text":"They is at home.","wrongIndex":1,"fix":"are","why_en":"Use “are” with the plural subject “they”.","why_ar":"نستخدم are مع الفاعل الجمع they."},
+  {"id":"spot-a1-10","level":"A1","text":"I have two childs.","wrongIndex":3,"fix":"children.","why_en":"The plural of child is children, not childs.","why_ar":"جمع child هو children وليس childs."},
+  {"id":"spot-a2-09","level":"A2","text":"She didn’t went to work yesterday.","wrongIndex":2,"fix":"go","why_en":"After didn’t, use the base form of the verb.","why_ar":"بعد didn’t نستخدم الفعل بصيغته الأساسية: go."},
+  {"id":"spot-a2-10","level":"A2","text":"There are much people outside.","wrongIndex":2,"fix":"many","why_en":"Use many with countable plural nouns such as people.","why_ar":"نستخدم many مع الأسماء المعدودة الجمع مثل people."},
+  {"id":"spot-b1-09","level":"B1","text":"I look forward to meet you.","wrongIndex":4,"fix":"meeting","why_en":"“Look forward to” is followed by a noun or an -ing form.","why_ar":"يتبع look forward to اسم أو فعل منتهٍ بـ ing."},
+  {"id":"spot-b1-10","level":"B1","text":"If I would have more time, I would travel.","wrongIndex":2,"fix":"had","why_en":"The second conditional uses past simple in the if-clause.","why_ar":"في الشرط الثاني نستخدم الماضي البسيط في جملة if."},
+  {"id":"spot-b2-09","level":"B2","text":"Despite of the rain, the match continued.","wrongIndex":1,"fix":"Despite","why_en":"Despite is not followed by “of”; use “despite the rain” or “in spite of the rain”.","why_ar":"لا يأتي of بعد despite؛ نقول despite the rain أو in spite of the rain."},
+  {"id":"spot-b2-10","level":"B2","text":"Hardly I had arrived when the phone rang.","wrongIndex":1,"fix":"had I","why_en":"When “hardly” begins the sentence, use subject–auxiliary inversion.","why_ar":"عندما تبدأ الجملة بـ Hardly نستخدم القلب: hardly had I arrived."},
+  {"id":"spot-c1-01","level":"C1","text":"The committee suggested him to revise the proposal.","wrongIndex":2,"fix":"that he","why_en":"Suggest is not normally followed by object + infinitive in this meaning; use “suggested that he revise” or “suggested revising”.","why_ar":"لا يأتي suggest عادةً مع مفعول ثم to + فعل؛ نستخدم suggested that he revise أو suggested revising."},
+  {"id":"spot-c1-02","level":"C1","text":"The data indicates a substantial decline.","wrongIndex":1,"fix":"indicate","why_en":"In formal usage, “data” is often treated as a plural noun, taking “indicate”.","why_ar":"في الاستعمال الرسمي تُعامل data غالبًا كجمع، لذا نستخدم indicate."},
+  {"id":"spot-c2-01","level":"C2","text":"Little did she knew how serious the consequences were.","wrongIndex":3,"fix":"know","why_en":"After the auxiliary “did”, use the base form “know”.","why_ar":"بعد did نستخدم الفعل بصيغته الأساسية know."},
+  {"id":"spot-c2-02","level":"C2","text":"The evidence is too scant to warrant of a definitive conclusion.","wrongIndex":7,"fix":"warrant","why_en":"The verb “warrant” takes a direct object here and is not followed by “of”.","why_ar":"الفعل warrant يأخذ مفعولًا مباشرًا هنا ولا يتبعه of."}
+
 ];
