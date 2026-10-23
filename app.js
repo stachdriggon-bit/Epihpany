@@ -845,7 +845,33 @@
     'Prove the hypothesis':'تثبت الفرضية.',
     'Do not lead to a definite conclusion':'لا تؤدي إلى استنتاج حاسم.',
     'Are irrelevant':'غير ذات صلة.',
-    'Have been disproved':'ثبت خطؤها.'
+    'Have been disproved':'ثبت خطؤها.',
+    'Read the situation and choose the best answer':'اقرأ الموقف واختر أفضل إجابة.',
+    'Choose the most accurate answer in context':'اختر الإجابة الأدق وفقًا للسياق.',
+    'Choose the most precise answer':'اختر الإجابة الأكثر دقة.',
+    'Read for precise meaning and usage':'اقرأ للتركيز على المعنى الدقيق وطريقة الاستخدام.',
+    'Choose the most exact interpretation':'اختر التفسير الأدق.',
+    'Choose the most helpful response':'اختر الرد الأكثر فائدة.',
+    'Choose a natural response':'اختر ردًا طبيعيًا.',
+    'What do they mean?':'ماذا يقصدون؟',
+    'What is the speaker implying?':'ما الذي يلمّح إليه المتحدث؟',
+    'Understand the idiom':'افهم التعبير الاصطلاحي.',
+    'Keep the tone constructive':'حافظ على نبرة بنّاءة.',
+    'Read the message carefully':'اقرأ الرسالة بعناية.',
+    'Interpret the announcement':'فسّر الإعلان.',
+    'Understand formal language':'افهم اللغة الرسمية.',
+    'Choose the natural collocation':'اختر الكلمات التي تأتي معًا بصورة طبيعية.',
+    'Interpret the understatement':'فسّر العبارة التي تقلّل من أهمية الأمر.',
+    'Understand academic phrasing':'افهم الصياغة الأكاديمية.',
+    'Meaning “needed or required”':'المعنى: «مطلوب أو ضروري».',
+    'Meaning “to keep apart”':'المعنى: «إبقاء الأشياء منفصلة».',
+    'A person or thing that receives something':'شخص أو شيء يتلقى شيئًا.',
+    'C2: concession and qualification':'C2: الإقرار بنقطة مع تقييدها أو توضيح حدودها.',
+    'Choose the intended meaning, not a literal word-for-word translation':'اختر المعنى المقصود، وليس ترجمة حرفية كلمة بكلمة.',
+    'Choose the correct quantifier':'اختر أداة الكمية الصحيحة.',
+    'Choose the correct time word':'اختر كلمة الزمن الصحيحة.',
+    'Choose the correct reported question':'اختر صيغة السؤال المنقول الصحيحة.',
+    'Which verb fits':'أي فعل يناسب؟'
   }).map(([key,value])=>[normalizeTranslationKey(key),value]));
   function translateKnownPhrase(source) {
     const lower=normalizeTranslationKey(source);
@@ -861,8 +887,23 @@
   function translateToArabic(raw) {
     const source=String(raw||'').replace(/\s+/g,' ').trim();
     if(!source)return {text:'لا يوجد نص لترجمته.',exact:true};
-    const exact=AR_TRANSLATION_PHRASES[normalizeTranslationKey(source)];
+    const key=normalizeTranslationKey(source);
+    const exact=AR_TRANSLATION_PHRASES[key];
     if(exact)return {text:exact,exact:true};
+    let templateMatch=source.match(/^Level\\s+(A1|A2|B1|B2|C1|C2)\\s*[·•-]\\s*choose the best answer\\.?$/i);
+    if(templateMatch)return {text:'المستوى '+templateMatch[1]+' · اختر أفضل إجابة.',exact:true};
+    templateMatch=source.match(/^Focus:\\s*(.+?)\\.?$/i);
+    if(templateMatch)return {text:'ركّز على كلمة «'+templateMatch[1]+'».',exact:true};
+    templateMatch=source.match(/^What is the opposite of\\s+[“"']?(.+?)[”"']?\\??$/i);
+    if(templateMatch)return {text:'ما عكس «'+templateMatch[1].replace(/[“”"']/g,'')+'»؟',exact:true};
+    templateMatch=source.match(/^The opposite of\\s+[“"']?(.+?)[”"']?\\s+is\\s+_{2,}\\.?$/i);
+    if(templateMatch)return {text:'عكس «'+templateMatch[1].replace(/[“”"']/g,'')+'» هو ___ .',exact:true};
+    templateMatch=source.match(/^What is a\\s+[“"']?(.+?)[”"']?\\??$/i);
+    if(templateMatch)return {text:'ما المقصود بـ «'+templateMatch[1].replace(/[“”"']/g,'')+'»؟',exact:true};
+    templateMatch=source.match(/^Choose the (natural phrase|correct phrase|correct word|best word|correct spelling|correct form|word):?\\s*(.*)$/i);
+    if(templateMatch)return {text:({'natural phrase':'اختر التعبير الطبيعي:','correct phrase':'اختر العبارة الصحيحة:','correct word':'اختر الكلمة الصحيحة:','best word':'اختر الكلمة الأنسب:','correct spelling':'اختر التهجئة الصحيحة:','correct form':'اختر الصيغة الصحيحة:','word':'اختر الكلمة:'})[templateMatch[1].toLowerCase()]+(templateMatch[2]?' '+templateMatch[2].replace(/[“”]/g,'"'):'') ,exact:true};
+    templateMatch=source.match(/^Which verb fits\\??$/i);
+    if(templateMatch)return {text:'أي فعل يناسب؟',exact:true};
     let m=source.match(/^What does\s+[“"']?(.+?)[”"']?\s+mean\??$/i);
     if(m)return {text:'ما معنى كلمة «'+m[1].replace(/[“”"']/g,'')+'»؟',exact:true};
     m=source.match(/^Which word means\s+[“"']?(.+?)[”"']?\??$/i);
