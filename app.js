@@ -481,9 +481,15 @@
   function finishStory(){const s=ST.story,score=ST.score,old=state.stories[s.id]||{done:false,score:0},previousBest=Number(old.score)||0,firstCompletion=!old.done,newBest=score>previousBest;let bonus='';state.stories[s.id]={done:true,score:Math.max(previousBest,score)};if(firstCompletion){state.xp+=30;state.quests++;state.daily=Math.min(2,state.daily+1);const today=dayKey();if(state.dailyQuestDate!==today){state.dailyQuestDate=today;state.dailyQuestProgress=0;state.dailyQuestClaimed=false;state.dailyCorrect=0;state.dailyXp=0;}if(state.weeklyKey!==weekKey()){state.weeklyKey=weekKey();state.weeklyProgress=0;state.weeklyClaimed=false;}state.dailyXp+=30;state.dailyCorrect+=score;state.dailyQuestProgress=state.daily;state.weeklyProgress=(state.weeklyProgress||0)+1;const task=DAILY_QUESTS[(new Date().getDate()-1)%DAILY_QUESTS.length],progress=task.kind==='quests'?state.daily:task.kind==='xp'?state.dailyXp:state.dailyCorrect;if(!state.dailyQuestClaimed&&progress>=task.target){state.dailyQuestClaimed=true;state.xp+=task.reward;bonus=' Daily bonus +'+task.reward+' XP!';}if(!state.weeklyClaimed&&state.weeklyProgress>=5){state.weeklyClaimed=true;state.xp+=60;bonus+=' Weekly bonus +60 XP!';}if(state.lastDay!==today){const y=new Date();y.setDate(y.getDate()-1);const two=new Date();two.setDate(two.getDate()-2);if(state.lastDay===dayKey(y))state.streak=(state.streak||0)+1;else if(state.lastDay===dayKey(two)&&state.streakFreezes>0){state.streakFreezes--;state.streak=(state.streak||0)+1;bonus+=' Streak freeze protected your streak.';}else state.streak=1;state.lastDay=today;}if(!state.completed.includes(currentLevel().id))state.completed.push(currentLevel().id);}save();renderAll();hideSheet();$('#steps').innerHTML=s.questions.map(()=>'<span class="step ok"></span>').join('');const ratio=s.questions.length?score/s.questions.length:0,stars=ratio>=.85?'★★★':ratio>=.6?'★★☆':ratio>0?'★☆☆':'☆☆☆';$('#game-body').innerHTML='<div class="result story-result"><div class="burst">📚</div><p class="kicker">STORY COMPLETE</p><h2>'+esc(s.title)+'</h2><div class="story-stars">'+stars+'</div><div class="stats3"><div class="stat"><b>'+(firstCompletion?'+30':'+0')+'</b><span>'+(firstCompletion?'XP earned':'XP · replay')+'</span></div><div class="stat"><b>'+score+'/'+s.questions.length+'</b><span>Correct answers</span></div><div class="stat"><b>'+ST.savedDuring.length+'</b><span>Words saved</span></div></div>'+(newBest&&old.done?'<p class="challenge-bonus">🏆 New personal best! Your best is now '+score+'/'+s.questions.length+'.</p>':'')+(bonus?'<p class="challenge-bonus">'+esc(bonus.trim())+'</p>':'')+(ST.savedDuring.length?'<div class="found"><div class="found-title">Words you saved</div>'+ST.savedDuring.map(w=>'<span class="w">'+esc(w)+'</span>').join('')+'</div>':'')+(s.decision&&ST.decisionChoice!==null?'<div class="story-choice-recap"><strong>Your decision</strong><p>'+esc(s.decision.options[ST.decisionChoice].text)+'</p><small>'+esc(s.decision.options[ST.decisionChoice].response)+'</small></div>':'')+renderStoryLearningReview(s)+(s.followUp?'<div class="follow-up-card"><p><b>Take the story into the village</b></p><p>Use the words you just read in a real task.</p><button class="btn" data-story-follow-up="'+esc(s.followUp.taskId)+'">'+esc(s.followUp.label||'Continue in the village')+' →</button></div>':'')+'<div class="result-actions"><button class="btn" data-story-action="another">Read another story</button><button class="btn btn-ghost" data-story-action="words">Open Words</button><button class="btn btn-ghost" data-story-action="close">Back to Stories</button></div></div>';$('#game-scroll').scrollTop=0;ST.mode='result';}
 
   /* ---------- navigation ---------- */
+  function closeDockMore() {
+    const panel = $('#dock-more-panel'), toggle = $('#dock-more-toggle');
+    if (panel) panel.hidden = true;
+    if (toggle) toggle.setAttribute('aria-expanded', 'false');
+  }
   function openView(name) {
-    $$('.view').forEach(v => v.classList.toggle('is-active', v.id === name + '-view'));
-    $$('[data-view]').forEach(b => b.setAttribute('aria-current', b.dataset.view === name ? 'page' : 'false'));
+    closeDockMore();
+    $('.view').forEach(v => v.classList.toggle('is-active', v.id === name + '-view'));
+    $('[data-view]').forEach(b => b.setAttribute('aria-current', b.dataset.view === name ? 'page' : 'false'));
     window.scrollTo(0, 0);
     const h = $('#' + name + '-title'); if (h) h.focus({preventScroll: true});
   }
@@ -1930,8 +1936,17 @@
       if(rb.dataset.review==='known'){const intervals=[1,3,7,14,30];item.streak=(item.streak||0)+1;item.interval=intervals[Math.min(item.streak-1,intervals.length-1)];const due=new Date();due.setDate(due.getDate()+item.interval);item.due=dayKey(due);}
       else{item.streak=0;item.interval=0;item.due=dayKey();}
       save();renderWords();toast(rb.dataset.review==='known'?'Nice! We’ll review it again later.':'No problem — this word stays in today’s practice.');}return;}
+    const moreToggle = e.target.closest('#dock-more-toggle');
+    if (moreToggle) {
+      const panel = $('#dock-more-panel'), open = !!panel && panel.hidden;
+      if (panel) panel.hidden = !open;
+      moreToggle.setAttribute('aria-expanded', String(open));
+      return;
+    }
+    const morePanel = $('#dock-more-panel');
+    if (morePanel && !morePanel.hidden && !e.target.closest('#dock-more-panel')) closeDockMore();
     const view = e.target.closest('[data-view]');
-    if (view) { if(view.dataset.view==='world'){startWorld();return;} openView(view.dataset.view); return; }
+    if (view) { if(view.dataset.view==='world'){closeDockMore();startWorld();return;} openView(view.dataset.view); return; }
     const spotWord = e.target.closest('[data-spot-index]');
     if (spotWord && G && G.type === 'spot') { selectSpot(Number(spotWord.dataset.spotIndex)); return; }
     const ans = e.target.closest('.answer');
@@ -1981,6 +1996,7 @@
   $('#logo').addEventListener('click', e => { e.preventDefault(); openView('home'); });
   $('#game-close').addEventListener('click', closeGame);
   document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && $('#dock-more-panel') && !$('#dock-more-panel').hidden) { closeDockMore(); return; }
     if(ST&&ST.mode==='quiz'&&!ST.answered&&/^[1-9]$/.test(e.key)){const k=Number(e.key)-1;if(k<ST.story.questions[ST.qi].answers.length)answerStoryQuestion(k);return;}
     if (!G) return;
     if (e.key === 'Escape') { closeGame(); return; }
