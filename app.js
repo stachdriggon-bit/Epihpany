@@ -488,8 +488,8 @@
   }
   function openView(name) {
     closeDockMore();
-    $('.view').forEach(v => v.classList.toggle('is-active', v.id === name + '-view'));
-    $('[data-view]').forEach(b => b.setAttribute('aria-current', b.dataset.view === name ? 'page' : 'false'));
+    $$('.view').forEach(v => v.classList.toggle('is-active', v.id === name + '-view'));
+    $$('[data-view]').forEach(b => b.setAttribute('aria-current', b.dataset.view === name ? 'page' : 'false'));
     window.scrollTo(0, 0);
     const h = $('#' + name + '-title'); if (h) h.focus({preventScroll: true});
   }
