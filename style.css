@@ -779,6 +779,9 @@ body[data-theme="dark"] .trap-explanation{background:#252B3C;border-color:var(--
 .account-form label{font-size:14px;font-weight:800;color:var(--ink-2);margin-top:4px}
 .account-form input{width:100%;min-height:46px;border:1.5px solid var(--line-2);border-radius:12px;padding:11px 13px;background:var(--surface);color:var(--ink);font:500 16px var(--body);outline-offset:3px}
 .account-form input:focus{border-color:var(--ink)}
+.account-form input[readonly]{opacity:.8;cursor:default}
+.account-otp-help{margin:0;color:var(--ink-2);font-size:13px;line-height:1.55}
+#account-otp-input{font-size:clamp(24px,5vw,30px);font-weight:800;letter-spacing:.35em;text-align:center;font-variant-numeric:tabular-nums}
 .account-submit{margin-top:8px;justify-content:center}
 .account-actions{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:12px}
 .account-actions .btn{min-height:42px}
