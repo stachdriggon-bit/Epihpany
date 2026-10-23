@@ -715,6 +715,21 @@
     'Incorrect answer':'إجابة غير صحيحة',
     'Show hint':'أظهر تلميحًا',
     'Hide hint':'أخفِ التلميح',
+    'Where does the route end?':'إلى أين ينتهي المسار؟',
+    'Tap the building on the map.':'اضغط على المبنى في الخريطة.',
+    'Match each word with its meaning':'صِل كل كلمة بمعناها.',
+    'Flip two cards. A word and its meaning make a pair.':'اقلب بطاقتين. تتكوّن كل مطابقة من كلمة ومعناها.',
+    'Start at the dot and face the arrow.':'ابدأ من النقطة ووجّه نفسك في اتجاه السهم.',
+    'Walk straight for one block.':'سر مباشرةً لمسافة كتلة واحدة.',
+    'Then walk two blocks.':'ثم سر لمسافتين.',
+    'Turn left.':'انعطف يسارًا.',
+    'Turn right.':'انعطف يمينًا.',
+    'The place is on your left.':'المكان على يسارك.',
+    'The place is on your right.':'المكان على يمينك.',
+    'Exactly right!':'إجابة صحيحة تمامًا!',
+    'Not quite.':'ليس تمامًا.',
+    'Continue':'تابع',
+    'See results':'عرض النتائج',
     'Complete the sentence':'أكمل الجملة.',
     'Choose the closest meaning':'اختر المعنى الأقرب.',
     'Choose the best answer':'اختر أفضل إجابة.',
@@ -1213,6 +1228,21 @@
     if(exact)return {text:exact,exact:true};
     let templateMatch=source.match(/^Level\s+(A1|A2|B1|B2|C1|C2)\s*[·•-]\s*choose the best answer\.?$/i);
     if(templateMatch)return {text:'المستوى '+templateMatch[1]+' · اختر أفضل إجابة.',exact:true};
+    if(/^Start at the dot and face the arrow\\./i.test(source)){
+      const parts=source.match(/Start at the dot and face the arrow\\.|(?:Then )?walk (?:straight for )?(one|two|three|four|five|six|seven|eight|nine|ten) blocks?\\.|Turn (left|right)\\.|The place is on your (left|right)\\./gi)||[];
+      const nums={one:'كتلة واحدة',two:'كتلتين',three:'ثلاث كتل',four:'أربع كتل',five:'خمس كتل',six:'ست كتل',seven:'سبع كتل',eight:'ثماني كتل',nine:'تسع كتل',ten:'عشر كتل'};
+      const translated=parts.map(part=>{
+        if(/^Start at the dot/i.test(part))return 'ابدأ من النقطة ووجّه نفسك في اتجاه السهم.';
+        const walk=part.match(/^(?:Then )?walk (?:straight for )?(one|two|three|four|five|six|seven|eight|nine|ten) blocks?\\.$/i);
+        if(walk)return (/^Then /i.test(part)?'ثم سر لمسافة ':'سر مباشرةً لمسافة ')+nums[walk[1].toLowerCase()]+'.';
+        const turn=part.match(/^Turn (left|right)\\.$/i);
+        if(turn)return 'انعطف '+(turn[1].toLowerCase()==='left'?'يسارًا.':'يمينًا.');
+        const side=part.match(/^The place is on your (left|right)\\.$/i);
+        if(side)return 'المكان على '+(side[1].toLowerCase()==='left'?'يسارك.':'يمينك.');
+        return '';
+      }).filter(Boolean);
+      if(translated.length===parts.length&&parts.length>1)return {text:translated.join(' '),exact:true};
+    }
     templateMatch=source.match(/^Focus:\s*(.+?)\.?$/i);
     if(templateMatch)return {text:'ركّز على كلمة «'+templateMatch[1]+'».',exact:true};
     templateMatch=source.match(/^What is the opposite of\s+[“"']?(.+?)[”"']?\??$/i);
@@ -1243,14 +1273,15 @@
     target.dataset.translationEnhanced='1';
     if(!target.id)target.id='translation-source-'+(++translationControlId);
     const output=document.createElement('div');output.className='translation-result';output.hidden=true;output.id=target.id+'-arabic';output.lang='ar';output.dir='rtl';
-    const button=document.createElement('button');button.type='button';button.className='translate-btn';button.dataset.translateTarget=target.id;button.setAttribute('aria-expanded','false');const label=kind==='answer'?'الإجابة':target.classList.contains('q-sub')?'التوجيه':target.classList.contains('spot-text')?'النص':target.classList.contains('typing-prompt')?'الجملة':'السؤال';button.dataset.translationLabel=label;button.innerHTML='<span aria-hidden="true">ع</span> ترجمة '+label;button.hidden=!state.translationEnabled;
+    const button=document.createElement('button');button.type='button';button.className='translate-btn';button.dataset.translateTarget=target.id;button.setAttribute('aria-expanded','false');const label=kind==='answer'?'الإجابة':target.classList.contains('q-sub')?'التوجيه':target.classList.contains('mg-route')?'التعليمات':target.classList.contains('spot-text')?'النص':target.classList.contains('typing-prompt')?'الجملة':'السؤال';button.dataset.translationLabel=label;button.innerHTML='<span aria-hidden="true">ع</span> ترجمة '+label;button.hidden=!state.translationEnabled;
     if(kind==='answer'){const row=document.createElement('div');const mini=target.classList.contains('mg-card')||target.classList.contains('mg-tile');row.className='answer-translation-row'+(mini?' mini-answer-translation-row':'');target.parentNode.insertBefore(row,target);row.appendChild(target);row.appendChild(button);row.appendChild(output);}
     else{target.insertAdjacentElement('afterend',button);button.insertAdjacentElement('afterend',output);}
   }
   function enhanceTranslationControls(root) {
     if(!root||!state.translationEnabled||ST)return;
-    root.querySelectorAll('.q-text,.q-sub,.typing-prompt,.spot-text,.answer,.mg-card,.mg-tile').forEach(el=>{
+    root.querySelectorAll('.q-text,.q-sub,.typing-prompt,.spot-text,.mg-route,.answer,.mg-card,.mg-tile').forEach(el=>{
       if(el.closest('#story-answers,.story-reader,.story-screen,[data-story-mode]'))return;
+      if(el.classList.contains('mg-route')&&el.nextElementSibling&&el.nextElementSibling.classList.contains('mg-route-ar'))return;
       addTranslationControl(el,(el.classList.contains('answer')||el.classList.contains('mg-card')||el.classList.contains('mg-tile'))?'answer':'question');
     });
   }
