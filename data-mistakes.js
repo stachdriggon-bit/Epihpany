@@ -815,5 +815,209 @@ const MISTAKE_QUESTIONS = [
     "why_en": "English verbs have their own patterns and prepositions. A direct translation from Arabic can sound unnatural, so learn the verb together with what follows it.",
     "why_ar": "لكل فعل إنجليزي نمطه وحرف الجر الذي يأتي معه. الترجمة الحرفية من العربية قد تنتج جملة غير طبيعية، لذا تعلّم الفعل مع التركيب الذي يليه.",
     "arabic_hint": "بعد insisted that قد نستخدم be بصيغته الأساسية في الأسلوب الرسمي."
+  },
+  {
+    "id": "trap-a1-extra-01",
+    "level": "A1",
+    "trap": "articles",
+    "sub": "Choose the correct sentence.",
+    "prompt": "I have ___ umbrella.",
+    "options": [
+      "a",
+      "an",
+      "the",
+      "—"
+    ],
+    "answer": 1,
+    "why_en": "Use an before a vowel sound, as in umbrella.",
+    "why_ar": "نستخدم an قبل صوت علة كما في umbrella.",
+    "arabic_hint": "اختر الأداة وفق الصوت الأول للكلمة."
+  },
+  {
+    "id": "trap-a1-extra-02",
+    "level": "A1",
+    "trap": "be-verbs",
+    "sub": "Choose the correct form.",
+    "prompt": "My parents ___ at home.",
+    "options": [
+      "is",
+      "am",
+      "are",
+      "be"
+    ],
+    "answer": 2,
+    "why_en": "Parents is plural, so it takes are.",
+    "why_ar": "Parents جمع، لذلك نستخدم are.",
+    "arabic_hint": "انتبه إلى أن الفاعل جمع."
+  },
+  {
+    "id": "trap-a2-extra-01",
+    "level": "A2",
+    "trap": "countability",
+    "sub": "Complete the sentence.",
+    "prompt": "There isn't ___ milk in the fridge.",
+    "options": [
+      "many",
+      "some",
+      "any",
+      "few"
+    ],
+    "answer": 2,
+    "why_en": "Any is common in negative statements with uncountable nouns.",
+    "why_ar": "نستخدم any كثيرًا في النفي مع الأسماء غير المعدودة.",
+    "arabic_hint": "Milk اسم غير معدود والجملة منفية."
+  },
+  {
+    "id": "trap-a2-extra-02",
+    "level": "A2",
+    "trap": "past-time",
+    "sub": "Choose the correct form.",
+    "prompt": "They ___ home an hour ago.",
+    "options": [
+      "come",
+      "came",
+      "have come",
+      "coming"
+    ],
+    "answer": 1,
+    "why_en": "Ago refers to a finished past time, so use the past simple.",
+    "why_ar": "تشير ago إلى وقت ماضٍ منتهٍ، لذا نستخدم الماضي البسيط.",
+    "arabic_hint": "وجود ago دليل على الماضي البسيط."
+  },
+  {
+    "id": "trap-b1-extra-01",
+    "level": "B1",
+    "trap": "verb-patterns",
+    "sub": "Complete the sentence.",
+    "prompt": "He apologized ___ being late.",
+    "options": [
+      "for",
+      "to",
+      "about",
+      "with"
+    ],
+    "answer": 0,
+    "why_en": "The standard pattern is apologize for something or doing something.",
+    "why_ar": "التركيب الصحيح apologize for شيء أو فعل.",
+    "arabic_hint": "احفظ الفعل مع حرف الجر المناسب."
+  },
+  {
+    "id": "trap-b1-extra-02",
+    "level": "B1",
+    "trap": "conditionals",
+    "sub": "Choose the correct form.",
+    "prompt": "If I ___ more time, I would learn Japanese.",
+    "options": [
+      "have",
+      "had",
+      "will have",
+      "would have"
+    ],
+    "answer": 1,
+    "why_en": "The second conditional uses past simple in the if-clause.",
+    "why_ar": "يستخدم الشرط الثاني الماضي البسيط في جملة if.",
+    "arabic_hint": "would في النتيجة يشير غالبًا إلى الشرط الثاني."
+  },
+  {
+    "id": "trap-b2-extra-01",
+    "level": "B2",
+    "trap": "collocations",
+    "sub": "Choose the correct preposition.",
+    "prompt": "We need to take ___ account the cost of travel.",
+    "options": [
+      "in",
+      "into",
+      "on",
+      "at"
+    ],
+    "answer": 1,
+    "why_en": "The fixed phrase is take into account.",
+    "why_ar": "التعبير الثابت هو take into account.",
+    "arabic_hint": "تعلم العبارة كاملة لا حرف الجر وحده."
+  },
+  {
+    "id": "trap-b2-extra-02",
+    "level": "B2",
+    "trap": "reported-speech",
+    "sub": "Choose the correct form.",
+    "prompt": "He denied ___ the confidential file.",
+    "options": [
+      "to open",
+      "opening",
+      "open",
+      "opened"
+    ],
+    "answer": 1,
+    "why_en": "Deny is followed by an -ing form.",
+    "why_ar": "يأتي بعد deny فعل منتهٍ بـ ing.",
+    "arabic_hint": "تختلف صيغة الفعل بعد deny عن بعض الأفعال الأخرى."
+  },
+  {
+    "id": "trap-c1-extra-01",
+    "level": "C1",
+    "trap": "inversion",
+    "sub": "Choose the correct sentence.",
+    "prompt": "Only after the review ___ the error discovered.",
+    "options": [
+      "the team did",
+      "did the team",
+      "the team had",
+      "the team was"
+    ],
+    "answer": 1,
+    "why_en": "A fronted only after phrase triggers inversion in the main clause.",
+    "why_ar": "تقديم Only after يستلزم القلب في الجملة الرئيسية.",
+    "arabic_hint": "ابحث عن ترتيب الفعل المساعد ثم الفاعل."
+  },
+  {
+    "id": "trap-c1-extra-02",
+    "level": "C1",
+    "trap": "subjunctive",
+    "sub": "Choose the formal construction.",
+    "prompt": "They recommended that the proposal ___ revised.",
+    "options": [
+      "is",
+      "be",
+      "was",
+      "to be"
+    ],
+    "answer": 1,
+    "why_en": "Formal recommendation clauses can use the base-form subjunctive be.",
+    "why_ar": "يمكن استخدام be بصيغته الأساسية بعد recommend that في الأسلوب الرسمي.",
+    "arabic_hint": "بعد recommend that قد يأتي الفعل بصيغته الأساسية."
+  },
+  {
+    "id": "trap-c2-extra-01",
+    "level": "C2",
+    "trap": "inversion",
+    "sub": "Choose the correct sentence.",
+    "prompt": "Rarely ___ such a compelling argument.",
+    "options": [
+      "we have heard",
+      "have we heard",
+      "we heard have",
+      "heard we have"
+    ],
+    "answer": 1,
+    "why_en": "A negative adverb at the beginning triggers subject–auxiliary inversion.",
+    "why_ar": "الظرف السلبي في بداية الجملة يستلزم القلب.",
+    "arabic_hint": "رتب الجملة: الظرف ثم الفعل المساعد ثم الفاعل."
+  },
+  {
+    "id": "trap-c2-extra-02",
+    "level": "C2",
+    "trap": "formal-collocations",
+    "sub": "Complete the phrase.",
+    "prompt": "The conclusion is predicated ___ several assumptions.",
+    "options": [
+      "in",
+      "on",
+      "at",
+      "for"
+    ],
+    "answer": 1,
+    "why_en": "The standard formal collocation is predicated on.",
+    "why_ar": "التركيب الرسمي الصحيح هو predicated on.",
+    "arabic_hint": "احفظ التركيب predicated on كوحدة واحدة."
   }
 ];
