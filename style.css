@@ -1525,3 +1525,8 @@ body[data-theme="dark"] .dock{background:rgba(27,32,48,.97)}
 .q-text+.translate-btn,.typing-prompt+.translate-btn,.spot-text+.translate-btn{margin-top:8px}
 .world-instruction .translate-btn{margin-top:8px;align-self:flex-start}
 @media(max-width:520px){.answer-translation-row{grid-template-columns:minmax(0,1fr) auto;gap:6px}.answer-translation-row .translate-btn{padding:6px 8px;font-size:11px}.answer-translation-row .answer{gap:9px;padding:12px 10px;font-size:16px}.translation-result{font-size:14px}}
+
+.mini-answer-translation-row{grid-template-columns:minmax(0,1fr) auto;width:100%;min-width:0}
+.mini-answer-translation-row .mg-card,.mini-answer-translation-row .mg-tile{grid-column:1;grid-row:1;min-width:0;width:100%}
+.mini-answer-translation-row .translate-btn{grid-column:2;grid-row:1;padding:5px 7px;font-size:11px}
+.mini-answer-translation-row .translation-result{grid-column:1/-1}
