@@ -117,7 +117,9 @@ const WOTD_WORDS = [
     "meaning_ar": "يحقق",
     "level": "A2",
     "example": "You can achieve your goal.",
-    "origin": "From Old French achever, to bring to an end."
+    "example_ar": "يمكنك تحقيق هدفك.",
+    "origin": "From Old French achever, to bring to an end.",
+    "origin_ar": "من الفرنسية القديمة achever، أي إتمام شيء."
   },
   {
     "word": "support",
@@ -126,7 +128,9 @@ const WOTD_WORDS = [
     "meaning_ar": "يدعم",
     "level": "A2",
     "example": "My friends support my goals.",
-    "origin": "From Latin supportare, to carry from below."
+    "example_ar": "يدعم أصدقائي أهدافي.",
+    "origin": "From Latin supportare, to carry from below.",
+    "origin_ar": "من اللاتينية supportare، أي يحمل من الأسفل."
   },
   {
     "word": "avoid",
@@ -135,7 +139,9 @@ const WOTD_WORDS = [
     "meaning_ar": "يتجنب",
     "level": "A2",
     "example": "Avoid translating every word literally.",
-    "origin": "From Old French esvuidier."
+    "example_ar": "تجنّب ترجمة كل كلمة حرفيًا.",
+    "origin": "From Old French esvuidier.",
+    "origin_ar": "من الفرنسية القديمة esvuidier."
   },
   {
     "word": "suggest",
@@ -144,7 +150,9 @@ const WOTD_WORDS = [
     "meaning_ar": "يقترح",
     "level": "A2",
     "example": "I suggest taking a short break.",
-    "origin": "From Latin suggerere, to bring up."
+    "example_ar": "أقترح أخذ استراحة قصيرة.",
+    "origin": "From Latin suggerere, to bring up.",
+    "origin_ar": "من اللاتينية suggerere، أي يطرح فكرة."
   },
   {
     "word": "depend",
@@ -153,7 +161,9 @@ const WOTD_WORDS = [
     "meaning_ar": "يعتمد",
     "level": "A2",
     "example": "The result depends on your effort.",
-    "origin": "The phrase depend on has a fixed preposition."
+    "example_ar": "تعتمد النتيجة على جهدك.",
+    "origin": "The phrase depend on has a fixed preposition.",
+    "origin_ar": "تأتي عبارة depend on مع حرف الجر on."
   },
   {
     "word": "compare",
@@ -162,7 +172,9 @@ const WOTD_WORDS = [
     "meaning_ar": "يقارن",
     "level": "A2",
     "example": "Compare the two sentences.",
-    "origin": "From Latin comparare, to pair together."
+    "example_ar": "قارن بين الجملتين.",
+    "origin": "From Latin comparare, to pair together.",
+    "origin_ar": "من اللاتينية comparare، أي يقارن بين الأشياء."
   },
   {
     "word": "confident",
@@ -171,7 +183,9 @@ const WOTD_WORDS = [
     "meaning_ar": "واثق",
     "level": "A2",
     "example": "She feels confident speaking English.",
-    "origin": "From Latin confidere, to trust."
+    "example_ar": "تشعر بالثقة أثناء التحدث بالإنجليزية.",
+    "origin": "From Latin confidere, to trust.",
+    "origin_ar": "من اللاتينية confidere، أي يثق."
   },
   {
     "word": "purpose",
@@ -180,7 +194,9 @@ const WOTD_WORDS = [
     "meaning_ar": "هدف أو غرض",
     "level": "A2",
     "example": "What is the purpose of this task?",
-    "origin": "From Latin propositum, an intention."
+    "example_ar": "ما الغرض من هذه المهمة؟",
+    "origin": "From Latin propositum, an intention.",
+    "origin_ar": "من اللاتينية propositum، وتعني النيّة."
   },
   {
     "word": "discover",
@@ -189,7 +205,9 @@ const WOTD_WORDS = [
     "meaning_ar": "يكتشف",
     "level": "A2",
     "example": "We discovered a better method.",
-    "origin": "Literally related to uncovering what was hidden."
+    "example_ar": "اكتشفنا طريقة أفضل.",
+    "origin": "Literally related to uncovering what was hidden.",
+    "origin_ar": "مرتبطة بكشف شيء كان مخفيًا."
   },
   {
     "word": "patient",
@@ -198,7 +216,9 @@ const WOTD_WORDS = [
     "meaning_ar": "صبور",
     "level": "A2",
     "example": "Be patient with yourself.",
-    "origin": "From Latin patientia, the ability to endure."
+    "example_ar": "كن صبورًا مع نفسك.",
+    "origin": "From Latin patientia, the ability to endure.",
+    "origin_ar": "من اللاتينية patientia، وتعني القدرة على التحمّل."
   },
   {
     "word": "accurate",
