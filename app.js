@@ -1725,10 +1725,10 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     }
     $('#game-body').innerHTML =
       '<div class="q-meta"><span class="pill">' + (G.reviewMode ? 'Practice again' : m.label) + '</span><span class="q-count">Question ' + (G.i + 1) + ' of ' + G.questions.length + '</span></div>' +
-      '<h2 class="q-text" id="q-text" tabindex="-1">' + esc(q.q) + '</h2>' + (q.word ? '<button class="listen-btn question-listen" data-speak="' + esc(wordParts(q.word, q.explain).word) + '">' + ic('sound') + ' Listen to word</button>' : '') + '<p class="q-sub">' + esc(q.sub) + '</p>' +
+      '<h2 class="q-text" id="q-text" tabindex="-1">' + esc(q.q) + '</h2>' + (state.helpArabic && G.questions[G.i].q_ar ? '<p class="arabic question-ar" lang="ar" dir="rtl">' + esc(G.questions[G.i].q_ar) + '</p>' : '') + (q.word ? '<button class="listen-btn question-listen" data-speak="' + esc(wordParts(q.word, q.explain).word) + '">' + ic('sound') + ' Listen to word</button>' : '') + '<p class="q-sub">' + esc(q.sub) + '</p>' +
       '<p class="ar-only ar-guide arabic" lang="ar" dir="rtl">' + guidance[G.type] + '</p>' +
       '<div class="answers" id="answers" role="group" aria-labelledby="q-text">' +
-      q.answers.map((a, i) => '<button class="answer" data-i="' + i + '"><span class="key">' + (i + 1) + '</span><span>' + esc(a) + '</span></button>').join('') + '</div>';
+      q.answers.map((a, i) => '<button class="answer" data-i="' + i + '"><span class="key">' + (i + 1) + '</span><span>' + esc(a) + '</span>' + (state.helpArabic && G.questions[G.i].answers_ar && G.questions[G.i].answers_ar[i] ? '<span class="answer-ar arabic" lang="ar" dir="rtl">' + esc(G.questions[G.i].answers_ar[i]) + '</span>' : '') + '</button>').join('') + '</div>';
     $('#game-scroll').scrollTop = 0;
     $('#q-text').focus({preventScroll: true});
   }
@@ -1756,7 +1756,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     showSheet(ok,
       '<h3><span class="sheet-mark">' + ic(ok ? 'check' : 'x') + '</span>' + (ok ? 'Exactly right!' : 'Not quite — and that’s okay.') + '</h3>' +
       (ok ? '' : '<p>Correct answer: <b>' + esc(q.answers[q.correct]) + '</b></p>') +
-      '<p>' + esc(q.explain) + '</p>' +
+      '<p>' + esc(q.explain) + '</p>' + (state.helpArabic && G.questions[G.i].explain_ar ? '<p class="arabic" lang="ar" dir="rtl">' + esc(G.questions[G.i].explain_ar) + '</p>' : '') +
       (!ok && G.type === 'mistakes' ? '<section class="trap-explanation" aria-label="Why Arabic speakers make this mistake"><h4>Why do Arabic speakers make this mistake?</h4><p class="arabic" lang="ar" dir="rtl">' + esc(q.why_ar || q.ar) + '</p><p class="trap-hint arabic" lang="ar" dir="rtl">' + esc(q.arabic_hint || '') + '</p></section>' : '') +
       (!ok && q.aha ? '<aside class="aha-note"><span aria-hidden="true">💡</span><div><strong>Aha moment</strong><p>'+esc(q.aha.en)+'</p><p class="arabic ar-only" lang="ar" dir="rtl">'+esc(q.aha.ar)+'</p></div></aside>' : '') +
       (ok && q.word ? '<div class="newword"><span>New word</span><b>' + esc(q.word[0]) + '</b><span>' + esc(q.word[1]) + '</span></div>' : '') +
