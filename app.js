@@ -15,7 +15,7 @@
   ];
 
   /* ---------- state ---------- */
-  const defaults = () => ({xp:0, quests:0, words:[], review:[], placementDone:false, assessedLevel:'A1', placementResult:null, xpAtLevelStart:null, promotionHistory:[], promotionAttempts:{}, lastPromotionResult:null, completed:[], streak:0, lastDay:null, daily:0, level:'A1', sound:true, helpArabic:false, theme:'light', streakFreezes:1, dailyQuestDate:null, dailyQuestProgress:0, dailyQuestClaimed:false, dailyCorrect:0, dailyXp:0, weeklyKey:null, weeklyProgress:0, weeklyClaimed:false, mistakeTrapErrors:{}, mistakeQuestionErrors:{}, modes:{}, weakTraps:{}, stories:{}, world:{done:[],stars:{}}});
+  const defaults = () => ({xp:0, quests:0, words:[], review:[], placementDone:false, assessedLevel:'A1', placementResult:null, xpAtLevelStart:null, promotionHistory:[], promotionAttempts:{}, lastPromotionResult:null, completed:[], streak:0, lastDay:null, daily:0, level:'A1', sound:true, helpArabic:false, theme:'light', streakFreezes:1, dailyQuestDate:null, dailyQuestProgress:0, dailyQuestClaimed:false, dailyCorrect:0, dailyXp:0, weeklyKey:null, weeklyProgress:0, weeklyClaimed:false, mistakeTrapErrors:{}, mistakeQuestionErrors:{}, modes:{}, weakTraps:{}, recentQuestions:{}, stories:{}, world:{done:[],stars:{}}});
   let state;
   try { state = {...defaults(), ...JSON.parse(localStorage.getItem('epiphany-progress') || '{}')}; } catch { state = defaults(); }
   if (!LEVELS.some(level => level.id === state.assessedLevel)) { state.assessedLevel = 'A1'; state.placementDone = false; state.placementResult = null; }
@@ -27,6 +27,7 @@
   if (!state.mistakeQuestionErrors || typeof state.mistakeQuestionErrors !== 'object' || Array.isArray(state.mistakeQuestionErrors)) state.mistakeQuestionErrors = {};
   if (!state.modes || typeof state.modes !== 'object' || Array.isArray(state.modes)) state.modes = {};
   if (!state.weakTraps || typeof state.weakTraps !== 'object' || Array.isArray(state.weakTraps)) state.weakTraps = {};
+  if (!state.recentQuestions || typeof state.recentQuestions !== 'object' || Array.isArray(state.recentQuestions)) state.recentQuestions = {};
   if (!state.stories || typeof state.stories !== 'object' || Array.isArray(state.stories)) state.stories = {};
   if (!state.world || typeof state.world !== 'object' || Array.isArray(state.world)) state.world = {done:[],stars:{}};
   if (!Array.isArray(state.world.done)) state.world.done = [];
@@ -690,6 +691,30 @@
       // Use up to five unique questions from the player's own level only.
       selected = shuffle(levelPool).slice(0, 5);
     }
+    // Avoid showing the same questions in consecutive rounds of the same game and CEFR level.
+    // Keep a bounded recent history; when enough unseen questions exist, replace a repeat-heavy draw.
+    const recentKey = type + ':' + level;
+    const questionKey = q => String(q.id || q.q || q.text || '');
+    const recentList = Array.isArray(state.recentQuestions[recentKey]) ? state.recentQuestions[recentKey] : [];
+    const recentIds = new Set(recentList);
+    let freshPool;
+    if (type === 'personalized') {
+      const all = game.questions.slice();
+      const weak = all.filter(q => Number(state.mistakeTrapErrors[q.trap] || 0) > 0 || Number(state.mistakeQuestionErrors[q.id] || 0) > 0);
+      freshPool = (weak.length >= 5 ? weak : all).filter(q => !recentIds.has(questionKey(q)));
+    } else if (type === 'mistakes') {
+      const levels = LEVELS.map(l => l.id), center = levels.indexOf(level);
+      let pool = game.questions.filter(q => Math.abs(levels.indexOf(q.level) - center) <= 1);
+      if (pool.length < 5) pool = game.questions.slice();
+      freshPool = pool.filter(q => !recentIds.has(questionKey(q)));
+    } else {
+      freshPool = levelPool.filter(q => !recentIds.has(questionKey(q)));
+    }
+    if (selected.some(q => recentIds.has(questionKey(q))) && freshPool.length >= selected.length) {
+      selected = shuffle(freshPool).slice(0, selected.length);
+    }
+    state.recentQuestions[recentKey] = [...recentList, ...selected.map(questionKey)].filter(Boolean).slice(-12);
+    save();
     const paired = shuffle(selected).map(source => {
       const q = {...source, answers:[...(source.answers||[])]};
       // Randomise answer positions while keeping the answer key aligned.
