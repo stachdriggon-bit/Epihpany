@@ -20,28 +20,47 @@
     el.textContent = message;
     el.dataset.state = kind || 'info';
   }
-  function hideWelcomeBanner(remember = true) {
-    const banner = $('account-welcome-banner');
-    if (banner) banner.hidden = true;
+  function hideWelcomeModal(remember = true) {
+    const modal = $('account-welcome-modal');
+    if (modal) modal.hidden = true;
+    document.body.classList.remove('account-modal-open');
     if (remember) {
       try { localStorage.setItem('epiphany-account-welcome-dismissed', '1'); } catch {}
     }
   }
-  function showWelcomeBannerIfNeeded() {
-    const banner = $('account-welcome-banner');
-    if (!banner || currentUser) return;
+  function showWelcomeModalIfNeeded() {
+    const modal = $('account-welcome-modal');
+    if (!modal || currentUser) return;
     let dismissed = false;
     try { dismissed = localStorage.getItem('epiphany-account-welcome-dismissed') === '1'; } catch {}
-    banner.hidden = dismissed;
+    modal.hidden = dismissed;
+    document.body.classList.toggle('account-modal-open', !dismissed);
   }
   function openAccountFromWelcome(mode) {
-    hideWelcomeBanner(true);
+    hideWelcomeModal(true);
     setMode(mode);
     const profileButton = document.querySelector('[data-view="profile"]');
     if (profileButton) profileButton.click();
     const emailInput = $('account-email-input');
     if (emailInput) emailInput.focus({preventScroll:true});
     status(mode === 'signup' ? 'Create an account to sync your progress across devices.' : 'Sign in to load your saved progress.', 'info');
+  }
+  async function signInWithProvider(provider) {
+    if (!client) {
+      status('Account service is not configured yet. Please try again later.', 'error');
+      return;
+    }
+    hideWelcomeModal(true);
+    try {
+      const {error} = await client.auth.signInWithOAuth({
+        provider,
+        options: {redirectTo: window.location.origin + window.location.pathname}
+      });
+      if (error) throw error;
+    } catch (error) {
+      status(error && error.message ? error.message : 'Social sign-in could not start.', 'error');
+      showWelcomeModalIfNeeded();
+    }
   }
 
   function setMode(mode) {
@@ -163,6 +182,7 @@
 
   window.EpiphanyAuth = {
     openAccountMode: openAccountFromWelcome,
+    isWelcomeOpen: () => !!($('account-welcome-modal') && !$('account-welcome-modal').hidden),
     queueSave(progress) {
       if (!client || !currentUser || syncing) return;
       clearTimeout(saveTimer);
@@ -175,10 +195,20 @@
     const form = $('account-form');
     if (!form) return;
     setMode('signin');
-    showWelcomeBannerIfNeeded();
+    showWelcomeModalIfNeeded();
     $('welcome-create-account')?.addEventListener('click', () => openAccountFromWelcome('signup'));
     $('welcome-sign-in')?.addEventListener('click', () => openAccountFromWelcome('signin'));
-    $('welcome-continue-guest')?.addEventListener('click', () => hideWelcomeBanner(true));
+    $('welcome-google')?.addEventListener('click', () => signInWithProvider('google'));
+    $('welcome-facebook')?.addEventListener('click', () => signInWithProvider('facebook'));
+    $('welcome-continue-guest')?.addEventListener('click', () => { hideWelcomeModal(true); window.__epiphanyShowPlacement?.(); });
+    $('welcome-modal-close')?.addEventListener('click', () => { hideWelcomeModal(true); window.__epiphanyShowPlacement?.(); });
+    $('welcome-modal-backdrop')?.addEventListener('click', () => { hideWelcomeModal(true); window.__epiphanyShowPlacement?.(); });
+    document.addEventListener('keydown', event => {
+      if (event.key === 'Escape' && $('account-welcome-modal') && !$('account-welcome-modal').hidden) {
+        hideWelcomeModal(true);
+        window.__epiphanyShowPlacement?.();
+      }
+    });
     if (!config || !config.url || !config.publishableKey || !sdk || !sdk.createClient) {
       status('Account service is not configured yet. You can still play and save on this device.', 'error');
       return;
@@ -199,11 +229,13 @@
           } else {
             setMode('signin');
             status('Account created. Check your email to confirm it, then sign in.', 'success');
+            window.__epiphanyShowPlacement?.();
           }
         } else if (currentMode === 'signin') {
           const {error} = await client.auth.signInWithPassword({email, password});
           if (error) throw error;
           status('Signed in. Loading your progress…', 'loading');
+          window.__epiphanyShowPlacement?.();
         } else if (currentMode === 'reset') {
           const {error} = await client.auth.resetPasswordForEmail(email, {
             redirectTo: window.location.origin + window.location.pathname
@@ -256,12 +288,13 @@
         return;
       }
       renderAccount();
-      hideWelcomeBanner(true);
+      hideWelcomeModal(true);
       if (event === 'PASSWORD_RECOVERY') {
         recoveryMode = true;
         renderAccount();
         status('Choose a new password for your account.', 'info');
       }
+      if (event === 'SIGNED_IN') window.__epiphanyShowPlacement?.();
       if (lastSyncedUser !== currentUser.id && event !== 'PASSWORD_RECOVERY') {
         lastSyncedUser = currentUser.id;
         setTimeout(() => syncUserProgress(currentUser), 0);
@@ -272,7 +305,7 @@
       if (data && data.session && data.session.user) {
         currentUser = data.session.user;
         renderAccount();
-        hideWelcomeBanner(true);
+        hideWelcomeModal(true);
         if (lastSyncedUser !== currentUser.id) {
           lastSyncedUser = currentUser.id;
           syncUserProgress(currentUser);
