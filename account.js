@@ -163,7 +163,7 @@
       submit.disabled = true;
       try {
         if (currentMode === 'signup') {
-          const {data, error} = await client.auth.signUp({email, password});
+          const {data, error} = await client.auth.signUp({email, password, options:{emailRedirectTo:window.location.origin + window.location.pathname}});
           if (error) throw error;
           if (data.session) {
             status('Account created. Preparing your saved progress…', 'success');
