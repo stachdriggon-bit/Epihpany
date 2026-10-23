@@ -1033,3 +1033,64 @@ body[data-theme="dark"] .profile-privacy-chip { background:rgba(20,25,53,.7); co
  .profile-privacy-chip { font-size:10px; }
  .profile-section-head h2 { font-size:25px; }
 }
+
+
+/* Phase 1 — home and global navigation polish */
+.top-in { gap: clamp(10px,1.5vw,20px); }
+.logo { flex: 0 0 auto; }
+.tabs { flex: 0 1 auto; min-width:0; }
+.tab { white-space:nowrap; }
+.top-right { flex:0 0 auto; }
+.home-intro { margin-bottom:24px; }
+.home-intro .kicker { display:inline-flex; align-items:center; gap:8px; padding:8px 11px; margin-bottom:12px; border:1px solid var(--line); border-radius:99px; background:var(--surface); font-size:12px; letter-spacing:.07em; }
+.home-intro h1 { max-width:15ch; line-height:1.02; }
+.home-intro .lead { max-width:38ch; line-height:1.55; }
+.home-focus { gap:20px; }
+.next { position:relative; isolation:isolate; }
+.next::before { content:""; position:absolute; z-index:-1; width:240px; height:240px; right:-65px; top:-95px; border-radius:50%; background:rgba(255,255,255,.22); pointer-events:none; }
+.progress-strip { align-content:center; }
+.progress-item { transition:transform .18s ease; }
+.progress-item:hover { transform:translateY(-2px); }
+.block { scroll-margin-top:90px; }
+button,.btn,.tab,.icon-btn,.ar-toggle { -webkit-tap-highlight-color:transparent; }
+button:focus-visible,.btn:focus-visible,.tab:focus-visible,.icon-btn:focus-visible,.ar-toggle:focus-visible { outline-offset:3px; }
+body[data-theme="dark"] .home-intro .kicker { background:var(--surface); }
+body[data-theme="dark"] .next::before { background:rgba(255,255,255,.05); }
+@media(max-width:1080px) {
+ .top-in { gap:10px; padding-inline:16px; }
+ .logo { font-size:23px; }
+ .tabs { gap:2px; padding:3px; }
+ .tab { gap:6px; padding:8px 11px; font-size:14px; }
+ .top-right { gap:5px; }
+ .chip { padding-inline:9px; }
+}
+@media(max-width:860px) {
+ .top-in { height:auto; min-height:64px; flex-wrap:wrap; padding:10px 14px; row-gap:9px; }
+ .logo { margin-right:auto; }
+ .top-right { margin-left:auto; }
+ .tabs { order:3; flex:1 0 100%; justify-content:space-between; margin:0; overflow-x:auto; scrollbar-width:none; }
+ .tabs::-webkit-scrollbar { display:none; }
+ .tab { flex:1 0 auto; justify-content:center; }
+}
+@media(max-width:520px) {
+ .top-in { padding:8px 10px 9px; column-gap:7px; }
+ .logo { font-size:21px; }
+ .logo-mark { width:29px; height:29px; }
+ .top-right { gap:4px; }
+ .top-right .chip { height:34px; padding:0 7px; font-size:13px; }
+ .top-right .chip svg { width:16px; height:16px; }
+ .top-right .icon-btn { width:34px; height:34px; }
+ .ar-toggle { height:34px; min-width:34px; padding:0 8px; }
+ .tabs { width:100%; }
+ .tab { min-height:40px; padding:8px 10px; font-size:13px; }
+ .tab svg { width:17px; height:17px; }
+ .page { padding-top:30px; }
+ .home-intro { margin-bottom:20px; }
+ .home-intro h1 { font-size:clamp(36px,10vw,48px); }
+ .home-intro .lead { font-size:16px; }
+ .home-focus { gap:16px; }
+}
+@media(prefers-reduced-motion:reduce) {
+ .progress-item { transition:none; }
+ .progress-item:hover { transform:none; }
+}
