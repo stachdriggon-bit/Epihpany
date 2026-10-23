@@ -140,4 +140,14 @@ const AHA_NOTES = [
     "ar": "قد تكون الإجابة الدقيقة صحيحة حتى عندما تبدو الترجمة الحرفية مغرية.",
     "questionId": "type-a1-04"
   }
+  {"id":"aha-c1-01","level":"C1","en":"A negative adverbial at the start of a clause often requires subject–auxiliary inversion: “Rarely have we seen…”","ar":"بدء الجملة بظرف سلبي يتطلب غالبًا قلب ترتيب الفاعل والفعل المساعد: Rarely have we seen…","questionId":"trap-c1-extra-01"},
+  {"id":"aha-c1-02","level":"C1","en":"After a formal recommendation, English may use the mandative subjunctive: “The panel recommended that he be informed.”","ar":"بعد التوصية الرسمية يمكن استخدام صيغة الطلب: The panel recommended that he be informed.","questionId":"trap-c1-extra-02"},
+  {"id":"aha-c1-03","level":"C1","en":"“Despite” takes a noun phrase or gerund, while “although” introduces a full clause.","ar":"يتبع Despite اسم أو فعل ing، أما although فتقدم جملة كاملة.","questionId":"trap-c1-extra-03"},
+  {"id":"aha-c1-04","level":"C1","en":"A claim that is compatible with evidence is not necessarily proved by it; alternative explanations may remain.","ar":"توافق الادعاء مع الأدلة لا يعني بالضرورة إثباته؛ فقد تبقى تفسيرات بديلة.","questionId":"trap-c1-extra-04"},
+  {"id":"aha-c1-05","level":"C1","en":"Use “corroborate” for supporting a claim with additional evidence, not simply repeating the claim.","ar":"نستخدم corroborate للدلالة على دعم الادعاء بأدلة إضافية، لا لمجرد تكراره.","questionId":"trap-c1-extra-05"},
+  {"id":"aha-c2-01","level":"C2","en":"“Not until…” and “Only after…” at the start of a sentence trigger inversion in the main clause.","ar":"عند بدء الجملة بـ Not until أو Only after يحدث قلب للترتيب في الجملة الرئيسية.","questionId":"trap-c2-extra-01"},
+  {"id":"aha-c2-02","level":"C2","en":"A formal collocation is often fixed: say “insofar as” or “on the proviso that,” not improvised combinations.","ar":"غالبًا ما يكون التعبير الرسمي ثابتًا: قل insofar as أو on the proviso that، ولا تركّب حروف الجر عشوائيًا.","questionId":"trap-c2-extra-02"},
+  {"id":"aha-c2-03","level":"C2","en":"A valid argument has a sound logical form; a sound argument also requires true premises.","ar":"الحجة الصحيحة منطقيًا تمتلك بنية استدلال سليمة، أما الحجة السليمة فتتطلب أيضًا مقدمات صحيحة.","questionId":"trap-c2-extra-03"},
+  {"id":"aha-c2-04","level":"C2","en":"“Tenable” means defensible with reasons; it does not mean conclusively established.","ar":"Tenable تعني قابلًا للدفاع عنه بالحجج، ولا تعني أنه ثبت بصورة قاطعة.","questionId":"trap-c2-extra-04"},
+  {"id":"aha-c2-05","level":"C2","en":"A source can be authentic but unreliable: genuineness and accuracy are separate questions.","ar":"قد يكون المصدر أصليًا لكنه غير موثوق؛ فالأصالة والدقة مسألتان منفصلتان.","questionId":"trap-c2-extra-05"},
 ];
