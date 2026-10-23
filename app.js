@@ -84,7 +84,7 @@
   function renderHeader() {
     $('#chip-streak').textContent = liveStreak();
     const homeStreak = $('#home-streak'); if (homeStreak) homeStreak.textContent = liveStreak();
-    $('#chip-xp').textContent = state.xp;
+    $('#chip-xp').textContent = state.xp >= 10000 ? (state.xp / 1000).toFixed(state.xp >= 100000 ? 0 : 1).replace(/\.0$/, '') + 'k' : state.xp;$('#chip-xp').title = String(state.xp);
   }
 
   function renderChallenges() {
@@ -189,6 +189,22 @@
   /* ---------- rendering: words + trophies ---------- */
   let speechRequest = 0;
   let speechVoices = [];
+  let voicePref = {name:'', rate:0.92};
+  try { voicePref = {...voicePref, ...JSON.parse(localStorage.getItem('epiphany-voice') || '{}')}; } catch {}
+  function saveVoicePref() { try { localStorage.setItem('epiphany-voice', JSON.stringify(voicePref)); } catch {} }
+  const isEnglishVoice = v => /^en([-_]|$)/i.test(v.lang || '') || /english/i.test(v.name || '');
+  function voiceScore(v) {
+    const n = (v.name || '') + ' ' + (v.voiceURI || ''), lang = String(v.lang || '').replace('_', '-');
+    let s = 0;
+    if (/^en-US$/i.test(lang)) s += 30; else if (/^en-GB$/i.test(lang)) s += 22; else if (/^en-(AU|CA|IE|IN|ZA)$/i.test(lang)) s += 12;
+    if (/premium|enhanced|neural|natural|online|wavenet/i.test(n)) s += 60;
+    if (/google/i.test(n)) s += 35;
+    if (/samantha|ava|allison|susan|zoe|serena|karen|daniel|aria|jenny|guy|libby|sonia|siri/i.test(n)) s += 25;
+    if (/network|-x-.*-network|-x-(iob|iol|iom|sfg|tpc|tpd|tpf)/i.test(n)) s += 20;
+    if (/compact|espeak|robot|novelty|bad news|bahh|bells|boing|bubbles|cellos|deranged|good news|hysterical|pipe organ|trinoids|whisper|zarvox|albert|fred|junior|kathy|ralph|organ/i.test(n)) s -= 80;
+    if (v.localService === false) s += 10;
+    return s;
+  }
   function refreshSpeechVoices() {
     const synth = window.speechSynthesis;
     if (synth && typeof synth.getVoices === 'function') {
@@ -197,11 +213,22 @@
     }
     return speechVoices;
   }
+  function englishVoices() { return refreshSpeechVoices().filter(isEnglishVoice).sort((a, b) => voiceScore(b) - voiceScore(a)); }
+  function pickVoice() {
+    const list = englishVoices();
+    if (voicePref.name) { const chosen = list.find(v => v.name === voicePref.name); if (chosen) return chosen; }
+    return list[0] || null;
+  }
   if (window.speechSynthesis) {
     refreshSpeechVoices();
     window.speechSynthesis.addEventListener?.('voiceschanged', refreshSpeechVoices);
   }
-  function speak(text) {
+  function speechChunks(phrase) {
+    const parts = phrase.match(/[^.!?;:]+[.!?;:]*/g) || [phrase], out = [];
+    parts.forEach(p => { p = p.trim(); if (!p) return; const last = out[out.length - 1]; if (last && last.length < 28) out[out.length - 1] = last + ' ' + p; else out.push(p); });
+    return out.length ? out : [phrase];
+  }
+  function speak(text, opts) {
     const synth = window.speechSynthesis;
     if (!synth || !('SpeechSynthesisUtterance' in window)) {
       toast('Speech playback is not supported in this browser.');
@@ -209,53 +236,46 @@
     }
     const phrase = String(text == null ? '' : text).replace(/\s+/g, ' ').trim();
     if (!phrase) { toast('There is no word to pronounce.'); return; }
-    const request = ++speechRequest;
-    synth.cancel();
-    const utterance = new SpeechSynthesisUtterance(phrase);
-    utterance.lang = 'en-US';
-    utterance.rate = 0.82;
-    utterance.pitch = 1.02;
-    const voices = refreshSpeechVoices();
-    const english = voices.filter(v => /^en(?:-|$)/i.test(v.lang));
-    const preferred = english.find(v => /google us english|microsoft.*(aria|jenny|guy|ava)|samantha|ava premium|daniel enhanced|natural/i.test(v.name))
-      || english.find(v => /^en-US$/i.test(v.lang) && v.localService)
-      || english.find(v => /^en-US$/i.test(v.lang))
-      || english.find(v => /^en-GB$/i.test(v.lang))
-      || english[0];
-    if (preferred) { utterance.voice = preferred; utterance.lang = preferred.lang || 'en-US'; }
-    utterance.onerror = event => {
-      if (request === speechRequest && event.error !== 'canceled' && event.error !== 'interrupted') {
-        toast('Could not play this pronunciation. Check your phone/browser voice settings and try again.');
-      }
+    const request = ++speechRequest, rate = (opts && opts.rate) || voicePref.rate || 0.92;
+    try { synth.cancel(); } catch {}
+    const run = tries => {
+      if (request !== speechRequest) return;
+      const voice = pickVoice();
+      if (!voice && tries < 6 && !refreshSpeechVoices().length) { setTimeout(() => run(tries + 1), 120); return; }
+      const chunks = speechChunks(phrase);
+      chunks.forEach((chunk, i) => {
+        const u = new SpeechSynthesisUtterance(chunk);
+        u.lang = voice ? String(voice.lang || 'en-US').replace('_', '-') : 'en-US';
+        if (voice) u.voice = voice;
+        u.rate = chunk.split(' ').length <= 2 ? Math.min(rate, 0.85) : rate;
+        u.pitch = 1;
+        u.volume = 1;
+        u.onerror = event => {
+          if (request === speechRequest && event.error !== 'canceled' && event.error !== 'interrupted' && i === 0) toast('Could not play this pronunciation. Try another voice from ⚙ → Voice.');
+        };
+        try { synth.speak(u); } catch { if (i === 0) toast('Could not play this pronunciation. Try again.'); }
+      });
+      try { if (synth.paused) synth.resume(); } catch {}
     };
-    let started = false, voiceWait = null;
-    const startSpeaking = () => {
-      if (started || request !== speechRequest) return;
-      const latest = refreshSpeechVoices().filter(v => /^en(?:-|$)/i.test(v.lang));
-      if (!utterance.voice && latest.length) {
-        const best = latest.find(v => /google us english|microsoft.*(aria|jenny|guy|ava)|samantha|ava premium|daniel enhanced|natural/i.test(v.name))
-          || latest.find(v => /^en-US$/i.test(v.lang) && v.localService)
-          || latest.find(v => /^en-US$/i.test(v.lang))
-          || latest.find(v => /^en-GB$/i.test(v.lang))
-          || latest[0];
-        if (best) { utterance.voice = best; utterance.lang = best.lang || 'en-US'; }
-      }
-      started = true;
-      if (voiceWait) clearTimeout(voiceWait);
-      synth.removeEventListener?.('voiceschanged', onVoicesReady);
-      try {
-        if (synth.paused) synth.resume();
-        synth.speak(utterance);
-      } catch {
-        toast('Could not play this pronunciation. Try again.');
-      }
-    };
-    const onVoicesReady = () => { if (refreshSpeechVoices().length) startSpeaking(); };
-    if (!preferred && !speechVoices.length) {
-      synth.addEventListener?.('voiceschanged', onVoicesReady);
-      voiceWait = setTimeout(startSpeaking, 240);
-    } else startSpeaking();
+    setTimeout(() => run(0), 60);
   }
+  function openVoiceSheet() {
+    const list = englishVoices(), current = pickVoice();
+    const opts = list.length
+      ? list.map(v => '<option value="' + esc(v.name) + '"' + (current && v.name === current.name ? ' selected' : '') + '>' + esc(v.name) + ' (' + esc(String(v.lang).replace('_', '-')) + ')</option>').join('')
+      : '<option value="">No English voice found on this device</option>';
+    let m=$('#voice-modal');if(!m){m=document.createElement('div');m.id='voice-modal';m.className='voice-modal';m.setAttribute('role','dialog');m.setAttribute('aria-modal','true');document.body.appendChild(m);}m.hidden=false;m.innerHTML=('<div class="voice-sheet"><h2>🔊 Reader voice</h2><p class="voice-note">Voices come from your phone or browser. If it sounds robotic, choose another voice here. On Android install “Speech Services by Google” and download English (US); on iPhone add an Enhanced voice in Settings → Accessibility → Spoken Content → Voices.</p><label>Voice<select id="voice-select">' + opts + '</select></label><label>Speed <output id="voice-rate-out">' + Number(voicePref.rate).toFixed(2) + '×</output><input id="voice-rate" type="range" min="0.6" max="1.2" step="0.05" value="' + voicePref.rate + '"></label><div class="voice-actions"><button class="btn" id="voice-test" type="button">▶ Test voice</button><button class="btn btn-ghost" id="voice-close" type="button">Done</button></div></div>');
+  }
+  document.addEventListener('change', e => {
+    if (e.target.id === 'voice-select') { voicePref.name = e.target.value; saveVoicePref(); speak('Hello! This is how I sound.'); }
+    if (e.target.id === 'voice-rate') { voicePref.rate = Number(e.target.value); saveVoicePref(); const o = $('#voice-rate-out'); if (o) o.textContent = voicePref.rate.toFixed(2) + '×'; }
+  });
+  document.addEventListener('input', e => { if (e.target.id === 'voice-rate') { const o = $('#voice-rate-out'); if (o) o.textContent = Number(e.target.value).toFixed(2) + '×'; } });
+  document.addEventListener('click', e => {
+    if (e.target.closest('#open-voice')) { const d = $('.tools-menu'); if (d) d.open = false; openVoiceSheet(); }
+    else if (e.target.closest('#voice-test')) speak('Hello! Let us practise English together. Where is the bakery?');
+    else if (e.target.closest('#voice-close') || e.target.id === 'voice-modal') { const m = $('#voice-modal'); if (m) m.hidden = true; }
+  });
   function wordParts(raw, fallback) {
     if (Array.isArray(raw)) return {word:String(raw[0]||''),meaning:String(raw[1]||fallback||'Review this word in context.'),level:String(raw[2]||currentLevel().id)};
     if (typeof raw==='string'&&raw.trim()) return {word:raw.trim(),meaning:String(fallback||'Review this word in context.'),level:currentLevel().id};
@@ -1093,7 +1113,7 @@
     if(p.moveAt&&moving<1){p.queuedKey=k;return;}
     const x=p.x+dx,y=p.y+dy;
     if(!worldPass(x,y)){p.queuedKey=null;WORLD.bump=performance.now()+120;worldFeedback('That way is blocked. Look for an open path.');worldDraw();return;}
-    p.fromX=p.x;p.fromY=p.y;p.x=x;p.y=y;p.moveAt=performance.now();p.queuedKey=null;WORLD.tries++;WORLD.moves++;
+    if(dx)WORLD.facing=dx;p.fromX=p.x;p.fromY=p.y;p.x=x;p.y=y;p.moveAt=performance.now();p.queuedKey=null;WORLD.tries++;WORLD.moves++;
     const here=WORLD.objects.find(o=>o.id==='blue-house'&&worldReachableFromPlayer(o));
     const red=WORLD.objects.find(o=>o.id==='red-house'&&worldReachableFromPlayer(o));
     const task=worldTask();
@@ -1217,10 +1237,10 @@
   }
   function worldShell(inner){const t=worldTask();return '<div class="world-top"><div class="world-task-count">Task <b>'+(WORLD.index+1)+'</b> / '+WORLD.tasks.length+'</div>'+(t&&t.dialogue?'<div class="world-dialogue">'+esc(t.dialogue)+'</div>':'')+'<div class="world-instruction"><strong>'+esc(t?t.instruction:'Village complete!')+'</strong></div><button class="world-exit" data-world-exit aria-label="Exit World">✕</button></div>'+inner;}
   function worldDraw(){
-    if(!WORLD||WORLD.mode!=='play')return;const c=$('#world-canvas');if(!c)return;const r=c.getBoundingClientRect(),d=Math.max(1,Math.min(2,devicePixelRatio||1));if(!r.width||!r.height)return;
+    if(!WORLD||WORLD.mode!=='play')return;if(WORLD.idle){clearTimeout(WORLD.idle);WORLD.idle=0;}const c=$('#world-canvas');if(!c)return;const r=c.getBoundingClientRect(),d=Math.max(1,Math.min(2,devicePixelRatio||1));if(!r.width||!r.height)return;
     if(c.width!==Math.round(r.width*d)||c.height!==Math.round(r.height*d)){c.width=Math.round(r.width*d);c.height=Math.round(r.height*d);}
     const x=c.getContext('2d');x.setTransform(d,0,0,d,0,0);x.clearRect(0,0,r.width,r.height);x.fillStyle=({market:'#d9c9a2',station:'#cfd3da',home:'#8a6d52',school:'#8a6d52'})[WORLD.region]||'#8fbe7a';x.fillRect(0,0,r.width,r.height);
-    const MW=(WORLD.map[0]||'').length||20,MH=WORLD.map.length||14,fit=Math.min(r.width/MW,r.height/MH),tile=Math.max(fit,Math.min(34,Math.max(26,r.height/9)));
+    const MW=(WORLD.map[0]||'').length||20,MH=WORLD.map.length||14,fit=Math.min(r.width/MW,r.height/MH),tile=Math.max(fit,Math.min(38,Math.max(30,r.height/8.5)));
     // Camera: when the map is larger than the screen (phones), follow the player instead of shrinking everything.
     const pp=WORLD.player,el=Math.min(1,(performance.now()-(pp.moveAt||0))/160),ee=el*el*(3-2*el),pcx=(pp.fromX+(pp.x-pp.fromX)*ee+.5)*tile,pcy=(pp.fromY+(pp.y-pp.fromY)*ee+.5)*tile;
     const ox=tile*MW<=r.width?(r.width-tile*MW)/2:Math.min(0,Math.max(r.width-tile*MW,r.width/2-pcx)),oy=tile*MH<=r.height?(r.height-tile*MH)/2:Math.min(0,Math.max(r.height-tile*MH,r.height/2-pcy));WORLD.tile=tile;WORLD.ox=ox;WORLD.oy=oy;
@@ -1261,7 +1281,17 @@
       }else if(t==='park'){
         for(let gy=0;gy<MH;gy++)for(let gx=0;gx<MW;gx++){const ch=(WORLD.map[gy]||'')[gx],px=ox+gx*tile,py=oy+gy*tile;
           if(ch==='R'){x.fillStyle='#dcc799';x.fillRect(px,py,tile+.4,tile+.4);}
-          if(ch==='W'){x.fillStyle='#5fb0c4';x.fillRect(px,py,tile+.4,tile+.4);x.strokeStyle='rgba(235,250,248,.5)';x.lineWidth=Math.max(1,tile*.04);x.beginPath();x.moveTo(px+tile*.15,py+tile*.4);x.bezierCurveTo(px+tile*.35,py+tile*.25,px+tile*.6,py+tile*.55,px+tile*.85,py+tile*.38);x.stroke();}}
+          }
+         {let x0=99,y0=99,x1=-1,y1=-1;for(let gy=0;gy<MH;gy++)for(let gx=0;gx<MW;gx++)if((WORLD.map[gy]||'')[gx]==='W'){x0=Math.min(x0,gx);y0=Math.min(y0,gy);x1=Math.max(x1,gx);y1=Math.max(y1,gy);}
+           if(x1>=0){const bx=ox+x0*tile,by=oy+y0*tile,bw=(x1-x0+1)*tile,bh=(y1-y0+1)*tile,rr=Math.min(bw,bh)*.42;
+             x.fillStyle='rgba(40,70,45,.18)';x.beginPath();x.roundRect(bx-tile*.1,by+tile*.12,bw+tile*.2,bh+tile*.12,rr+tile*.1);x.fill();
+             roundRect(x,bx-tile*.14,by-tile*.14,bw+tile*.28,bh+tile*.28,rr+tile*.12,'#d9cba3','#b9a77b');
+             const gr=x.createLinearGradient(bx,by,bx,by+bh);gr.addColorStop(0,'#7cc6d6');gr.addColorStop(1,'#4f9fb8');
+             x.beginPath();x.roundRect(bx,by,bw,bh,rr);x.fillStyle=gr;x.fill();
+             x.strokeStyle='rgba(235,250,248,.55)';x.lineWidth=Math.max(1,tile*.04);x.lineCap='round';
+             for(let k=0;k<5;k++){const rx=bx+bw*(.18+seeded(k,3)*.55),ry=by+bh*(.2+seeded(3,k)*.6);x.beginPath();x.ellipse(rx,ry,tile*.3,tile*.09,0,.2,Math.PI*1.6);x.stroke();}
+             for(let k=0;k<3;k++){const rx=bx+bw*(.2+seeded(k,9)*.6),ry=by+bh*(.25+seeded(9,k)*.5);x.fillStyle='#4f9a5c';x.beginPath();x.arc(rx,ry,tile*.14,.3,Math.PI*2-.3);x.lineTo(rx,ry);x.fill();if(k===1){x.fillStyle='#f6c6d8';x.beginPath();x.arc(rx+tile*.02,ry-tile*.02,tile*.05,0,Math.PI*2);x.fill();}}
+           }}
         for(const [gx,gy] of [[0,0],[3,1],[18,0],[1,6],[18,11],[10,12],[6,13],[12,1]]){drawTree(ox+(gx+.5)*tile,oy+(gy+.5)*tile);}
       }else if(t==='school'){
         x.fillStyle='#e8dcc4';x.fillRect(ox,oy,W,H);
@@ -1363,6 +1393,7 @@
     if(theme!=='village')drawTheme(theme);
     // Soft tree silhouettes and layered foliage.
     function drawTree(cx,cy){
+      {const sp=window.WORLD_SPRITES&&WORLD_SPRITES.get('tree');if(sp){const sz=sp.size*tile,gy=cy+tile*.44,sw=WORLD.anim!==false?Math.sin(performance.now()/1000*1.1+cx*.013)*.022:0;x.save();x.translate(cx,gy);x.rotate(sw);x.drawImage(sp.img,-sz/2,-sz*(58/64),sz,sz);x.restore();return;}}
       // Soft layered canopy with highlights, leaf clusters and a grounded trunk.
       x.fillStyle='rgba(35,63,40,.22)';x.beginPath();x.ellipse(cx,cy+tile*.31,tile*.36,tile*.13,0,0,Math.PI*2);x.fill();
       roundRect(x,cx-tile*.075,cy+tile*.015,tile*.15,tile*.34,tile*.035,'#795039','#63412e');
@@ -1437,8 +1468,42 @@
       x.strokeStyle='#765039';x.lineWidth=tile*.06;x.beginPath();x.moveTo(cx-tile*.25,cy-tile*.1);x.lineTo(cx-tile*.25,cy-tile*.37);x.lineTo(cx+tile*.25,cy-tile*.37);x.lineTo(cx+tile*.25,cy-tile*.1);x.stroke();
       x.strokeStyle='#c99a5d';x.lineWidth=tile*.025;x.beginPath();x.moveTo(cx-tile*.19,cy-tile*.31);x.lineTo(cx+tile*.19,cy-tile*.31);x.stroke();
     }
+    function worldOverlayObjects(){
+      const tag=(txt,cx,cy)=>{const fs=Math.max(9,Math.round(tile*.27));x.font='700 '+fs+'px DM Sans, system-ui, sans-serif';x.textAlign='center';x.textBaseline='middle';const w=x.measureText(txt).width+fs*.9,h=fs*1.45;roundRect(x,cx-w/2,cy-h/2,w,h,h/2,'rgba(255,255,255,.92)','rgba(23,32,61,.25)');x.fillStyle='#17203d';x.fillText(txt,cx,cy+fs*.04);x.textBaseline='alphabetic';};
+      const step=worldStep();
+      WORLD.objects.forEach(o=>{
+        if(o.id==='river'||o.id==='bridge')return;
+        const cx=ox+(o.x+.5)*tile,cy=oy+(o.y+.5)*tile,reach=worldReachableFromPlayer(o);
+        if(WORLD.labels){const nm=String(o.name||o.id||'').replace(/-/g,' ');if(nm)tag(nm,cx,cy+tile*(o.person?.52:.66));}
+        if(o.person&&reach&&!(step&&(step.type==='pickup'||step.type==='give'))){const by=cy-tile*.62+Math.sin(performance.now()/260)*tile*.03;roundRect(x,cx-tile*.2,by-tile*.15,tile*.4,tile*.3,tile*.12,'#fff','rgba(23,32,61,.35)');x.fillStyle='#17203d';[-.1,0,.1].forEach(dx=>{x.beginPath();x.arc(cx+tile*dx,by,tile*.03,0,Math.PI*2);x.fill();});}
+        if(!o.person&&reach&&step&&step.type==='pickup'&&step.object===o.id){x.fillStyle='#ffc531';x.beginPath();x.arc(cx,cy-tile*.5,tile*.15,0,Math.PI*2);x.fill();x.fillStyle='#17203d';x.font='800 '+Math.round(tile*.22)+'px sans-serif';x.textAlign='center';x.fillText('!',cx,cy-tile*.43);}
+      });
+      if(WORLD.tapMark&&WORLD.tapMark.until>performance.now()){const tm=WORLD.tapMark;x.strokeStyle='rgba(255,197,49,.9)';x.lineWidth=3;x.beginPath();x.arc(ox+(tm.x+.5)*tile,oy+(tm.y+.5)*tile,tile*.28,0,Math.PI*2);x.stroke();}
+    }
+    const anim=WORLD.anim!==false,T=performance.now()/1000;
+    const phaseOf=id=>{let h=0;for(const ch of String(id))h=(h*31+ch.charCodeAt(0))%997;return h/997*6.28;};
+    function drawSprite(spr,cx,cy,o){
+      const size=(spr.size||(o&&o.person?1.3:1.2))*tile,img=spr.img,gy=cy+tile*.44;
+      let sy=1,sx=1,rot=0,dy=0,ax=cx,ay=gy;
+      if(anim&&o){
+        const ph=phaseOf(o.id),id=o.id;
+        if(o.person){
+          const br=Math.sin(T*2.1+ph);sy=1+br*.022;sx=1-br*.012;
+          if(id==='child'||id==='student'||id==='family'){dy=-Math.max(0,Math.sin(T*3.2+ph))*tile*.045;}
+          if(id==='baker'||id==='market-vendor'||id==='seller'){rot=Math.sin(T*1.3+ph)*.03;}
+        }else if(/tree/.test(id)){rot=Math.sin(T*1.1+ph)*.022;}
+        else if(id==='swing'){rot=Math.sin(T*1.7)*.09;ay=gy-size*(50/64);}
+        else if(id==='kite'){dy=Math.sin(T*1.8+ph)*tile*.07;rot=Math.sin(T*1.3)*.12;ay=gy-size*.2;}
+        else if(id==='lamp'){}
+      }
+      x.save();x.translate(ax,ay);if(rot)x.rotate(rot);x.scale(sx,sy);
+      x.drawImage(img,cx-ax-size/2,(gy-ay)-size*(58/64)+dy,size,size);
+      x.restore();
+    }
     WORLD.objects.forEach(o=>{
       const cx=ox+(o.x+.5)*tile,cy=oy+(o.y+.5)*tile;
+      const spr=window.WORLD_SPRITES&&WORLD_SPRITES.get(o.id);
+      if(spr){drawSprite(spr,cx,cy,o);return;}
       if(o.id==='tree-north'||o.id==='tree-west'||o.id==='tree-east'||o.id==='north-tree'){drawTree(cx,cy);return;}
       if(o.id==='red-house'){drawHouse(cx,cy,false,false);return;}
       if(o.id==='blue-house'){drawHouse(cx,cy,true,false);return;}
@@ -1500,9 +1565,11 @@
         x.fillStyle='#9a6b3f';x.beginPath();x.ellipse(cx,cy,tile*.42,tile*.3,0,0,Math.PI*2);x.fill();x.strokeStyle='#6e4a2a';x.lineWidth=tile*.04;x.stroke();
         x.fillStyle='#f6efe0';x.beginPath();x.arc(cx,cy-tile*.03,tile*.1,0,Math.PI*2);x.fill();return;
       }
+      if(/pond/.test(((o.id||'')+' '+(o.name||'')).toLowerCase()))return;
+      x.save();x.translate(cx,cy);x.scale(1.4,1.4);x.translate(-cx,-cy);
       x.fillStyle='rgba(35,49,42,.18)';x.beginPath();x.ellipse(cx,cy+tile*.25,tile*.29,tile*.09,0,0,Math.PI*2);x.fill();
       const label=((o.id||'')+' '+(o.name||'')).toLowerCase();
-      if(/apple|fruit|ball|pond/.test(label)){const col=label.includes('ball')?'#f4f0e6':label.includes('pond')?'#62b8c9':'#e85d50';x.fillStyle=col;x.beginPath();x.arc(cx,cy,tile*.19,0,Math.PI*2);x.fill();x.strokeStyle='rgba(64,69,58,.25)';x.lineWidth=tile*.025;x.stroke();if(label.includes('apple')||label.includes('fruit')){x.fillStyle='#4f8950';x.beginPath();x.ellipse(cx+tile*.06,cy-tile*.19,tile*.09,tile*.045,-.6,0,Math.PI*2);x.fill();x.strokeStyle='#6d4b32';x.lineWidth=tile*.03;x.beginPath();x.moveTo(cx,cy-tile*.15);x.lineTo(cx+tile*.015,cy-tile*.23);x.stroke();}if(label.includes('ball')){x.strokeStyle='#5b7caa';x.lineWidth=tile*.035;x.beginPath();x.arc(cx,cy,tile*.12,.3,2.7);x.stroke();}}
+      if(/pond/.test(label)){}else if(/apple|fruit|ball/.test(label)){const col=label.includes('ball')?'#f4f0e6':label.includes('pond')?'#62b8c9':'#e85d50';x.fillStyle=col;x.beginPath();x.arc(cx,cy,tile*.19,0,Math.PI*2);x.fill();x.strokeStyle='rgba(64,69,58,.25)';x.lineWidth=tile*.025;x.stroke();if(label.includes('apple')||label.includes('fruit')){x.fillStyle='#4f8950';x.beginPath();x.ellipse(cx+tile*.06,cy-tile*.19,tile*.09,tile*.045,-.6,0,Math.PI*2);x.fill();x.strokeStyle='#6d4b32';x.lineWidth=tile*.03;x.beginPath();x.moveTo(cx,cy-tile*.15);x.lineTo(cx+tile*.015,cy-tile*.23);x.stroke();}if(label.includes('ball')){x.strokeStyle='#5b7caa';x.lineWidth=tile*.035;x.beginPath();x.arc(cx,cy,tile*.12,.3,2.7);x.stroke();}}
       else if(/bread/.test(label)){x.fillStyle='#e7b568';x.beginPath();x.ellipse(cx,cy,tile*.24,tile*.14,-.12,0,Math.PI*2);x.fill();x.strokeStyle='#c18a45';x.lineWidth=tile*.035;x.stroke();for(let k=-1;k<=1;k++){x.strokeStyle='#fff0c8';x.lineWidth=tile*.025;x.beginPath();x.moveTo(cx+tile*k*.1,cy-tile*.055);x.lineTo(cx+tile*k*.1+tile*.035,cy+tile*.015);x.stroke();}}
       else if(/ticket/.test(label)){roundRect(x,cx-tile*.2,cy-tile*.13,tile*.4,tile*.26,tile*.04,'#f8f3df','#6886a8');x.fillStyle='#447ab0';x.fillRect(cx-tile*.2,cy-tile*.13,tile*.4,tile*.07);x.strokeStyle='#9ba7b1';x.lineWidth=tile*.02;x.setLineDash([tile*.035,tile*.035]);x.beginPath();x.moveTo(cx,cy-tile*.02);x.lineTo(cx,cy+tile*.12);x.stroke();x.setLineDash([]);}
       else if(/pencil/.test(label)){x.save();x.translate(cx,cy);x.rotate(-.65);roundRect(x,-tile*.06,-tile*.25,tile*.12,tile*.5,tile*.025,'#e6bf48','#ad8732');x.fillStyle='#e9a6a5';x.fillRect(-tile*.06,-tile*.25,tile*.12,tile*.07);x.restore();}
@@ -1512,10 +1579,19 @@
       else if(/slide/.test(label)){x.fillStyle='#6e91d0';x.beginPath();x.moveTo(cx-tile*.17,cy-tile*.22);x.lineTo(cx+tile*.08,cy-tile*.22);x.lineTo(cx+tile*.23,cy+tile*.2);x.lineTo(cx+tile*.06,cy+tile*.2);x.closePath();x.fill();x.strokeStyle='#4c6eaa';x.lineWidth=tile*.04;x.stroke();}
       else if(/bench|desk|board|shelf|chair/.test(label)){roundRect(x,cx-tile*.25,cy-tile*.12,tile*.5,tile*.14,tile*.035,'#b98754','#805b38');x.fillStyle='#805b38';x.fillRect(cx-tile*.19,cy+tile*.02,tile*.055,tile*.22);x.fillRect(cx+tile*.135,cy+tile*.02,tile*.055,tile*.22);}
       else{roundRect(x,cx-tile*.22,cy-tile*.18,tile*.44,tile*.36,tile*.06,'#d9e3d2','#82957d');x.strokeStyle='#82957d';x.lineWidth=tile*.03;x.stroke();}
+      x.restore();
     });
+    worldOverlayObjects();
         const p=WORLD.player,elapsed=Math.min(1,(performance.now()-(p.moveAt||0))/160),e=elapsed*elapsed*(3-2*elapsed),px=ox+(p.fromX+(p.x-p.fromX)*e+.5)*tile,py=oy+(p.fromY+(p.y-p.fromY)*e+.5)*tile;
+    x.strokeStyle='rgba(255,197,49,.95)';x.lineWidth=Math.max(2,tile*.06);x.beginPath();x.ellipse(px,py+tile*.3,tile*.36,tile*.14,0,0,Math.PI*2);x.stroke();x.fillStyle='rgba(255,197,49,.25)';x.fill();
     x.fillStyle='rgba(36,55,43,.24)';x.beginPath();x.ellipse(px,py+tile*.3,tile*.28,tile*.1,0,0,Math.PI*2);x.fill();
     const bob=p.moveAt&&elapsed<1?Math.sin(elapsed*Math.PI*4)*tile*.025:0;
+    const psp=window.WORLD_SPRITES&&WORLD_SPRITES.getPlayer(WORLD.outfit);
+    if(psp){const sz=1.3*tile,mv=p.moveAt&&elapsed<1,gy=py+tile*.44,br=WORLD.anim!==false?Math.sin(T*2.3):0,
+      hop=mv?-Math.abs(Math.sin(elapsed*Math.PI))*tile*.12:0,tilt=mv?Math.sin(elapsed*Math.PI*2)*.13:0,
+      sq=mv?1+Math.sin(elapsed*Math.PI*2)*.04:1+br*.022,face=WORLD.facing<0?-1:1;
+      x.save();x.translate(px,gy);x.rotate(tilt);x.scale(face/sq,sq);
+      x.drawImage(psp.img,-sz/2,-sz*(58/64)+hop,sz,sz);x.restore();}else{
     roundRect(x,px-tile*.17,py+tile*.11+bob,tile*.13,tile*.22,tile*.045,'#34465a');roundRect(x,px+tile*.04,py+tile*.11-bob,tile*.13,tile*.22,tile*.045,'#34465a');
     roundRect(x,px-tile*.22,py-tile*.035,tile*.44,tile*.29,tile*.095,WORLD.outfit||'#d7a75b','#ffffff66');
     roundRect(x,px-tile*.24,py+tile*.015,tile*.09,tile*.21,tile*.045,'#c98f67');roundRect(x,px+tile*.15,py+tile*.015,tile*.09,tile*.21,tile*.045,'#c98f67');
@@ -1525,14 +1601,18 @@
     x.fillStyle='#4b3b32';x.beginPath();x.ellipse(px,py-tile*.22,tile*.18,tile*.105,0,Math.PI,Math.PI*2);x.fill();x.beginPath();x.ellipse(px-tile*.14,py-tile*.17,tile*.045,tile*.095,-.25,0,Math.PI*2);x.fill();
     x.fillStyle='#fff';x.beginPath();x.arc(px-tile*.055,py-tile*.16,tile*.027,0,Math.PI*2);x.arc(px+tile*.055,py-tile*.16,tile*.027,0,Math.PI*2);x.fill();x.fillStyle='#34465a';x.beginPath();x.arc(px-tile*.05,py-tile*.16,tile*.012,0,Math.PI*2);x.arc(px+tile*.06,py-tile*.16,tile*.012,0,Math.PI*2);x.fill();
     x.strokeStyle='#8d5140';x.lineWidth=tile*.018;x.beginPath();x.arc(px,py-tile*.115,tile*.045,.15,Math.PI-.3);x.stroke();
+    }
     if(WORLD.target){x.strokeStyle='rgba(255,197,49,'+(.35+.65*(.5+.5*Math.sin(performance.now()/180)))+')';x.lineWidth=4;x.setLineDash([5,4]);x.strokeRect(ox+WORLD.target.x*tile+3,oy+WORLD.target.y*tile+3,tile-6,tile-6);x.setLineDash([]);}
+    {const vg=x.createRadialGradient(r.width/2,r.height/2,Math.min(r.width,r.height)*.35,r.width/2,r.height/2,Math.max(r.width,r.height)*.75);vg.addColorStop(0,'rgba(20,40,25,0)');vg.addColorStop(1,'rgba(20,40,25,.22)');x.fillStyle=vg;x.fillRect(0,0,r.width,r.height);}
     if(p.moveAt&&elapsed>=1&&p.queuedKey){const queued=p.queuedKey;p.queuedKey=null;worldMove(queued);return;}
     // Redraw continuously only while the player is moving. A help marker is static,
     // so it must not keep an expensive full-map render loop running forever.
     if(p.moveAt&&elapsed<1)WORLD.raf=requestAnimationFrame(worldDraw);
+    else if(WORLD.anim!==false&&!document.hidden&&window.WORLD_SPRITES)WORLD.idle=setTimeout(()=>{WORLD&&WORLD.mode==='play'&&(WORLD.raf=requestAnimationFrame(worldDraw));},WORLD.idleMs||90);
   }
+  if(window.WORLD_SPRITES){WORLD_SPRITES.onReady=()=>{if(WORLD&&WORLD.mode==='play')worldDraw();};WORLD_SPRITES.preload();}
   function worldStatus(){const s=$('#world-step');if(s)s.textContent=worldTask().check.type==='sequence'?'Step '+(WORLD.step+1)+' of '+worldTask().check.steps.length:'';const carry=$('#world-carry');if(carry)carry.textContent=WORLD.carried?'Carrying '+(WORLD.carried==='key'?'the key':'the basket'):'';}
-  function worldRenderPlay(){const t=worldTask();WORLD.taskStart={x:WORLD.player.x,y:WORLD.player.y};wFixOffset(t);const c0=t.check.type==='sequence'?t.check.steps[0]:t.check;WORLD.needLeave=WORLD.run==='practice'&&!['pickup','give','offset'].includes(c0.type)&&worldCheck(c0);$('#world-game').innerHTML=worldShell('<div class="world-stage"><canvas id="world-canvas" aria-label="Top-down village map"></canvas><div class="world-helpbar"><button data-world-speak>🔊 Listen</button><button data-world-help-toggle aria-expanded="false">Need help?</button><span id="world-step"></span><span id="world-carry"></span></div><section class="world-help-panel" id="world-help-panel" hidden aria-live="polite"><div class="world-help-heading"><strong>What should I do?</strong><span>Hints are optional — choose the level you need.</span></div><p id="world-help-copy">1. Find the person or object named in the instruction. 2. Follow direction words like under, behind, or next to. 3. Stand beside an item or person and press Interact when needed.</p><div class="world-help-actions"><button data-world-help-level="1">Small hint</button><button data-world-help-level="2">Show target</button><button data-world-help-level="3">Explain in Arabic</button></div></section><div class="world-mobile-controls"><div class="world-dpad"><button data-world-move="ArrowUp" aria-label="Move up">▲</button><div><button data-world-move="ArrowLeft" aria-label="Move left">◀</button><button data-world-move="ArrowDown" aria-label="Move down">▼</button><button data-world-move="ArrowRight" aria-label="Move right">▶</button></div></div><button class="world-interact" data-world-interact>Space · Interact</button></div></div>');worldStatus();if(WORLD.needLeave)worldFeedback('You are already close! Step away, then come back.');requestAnimationFrame(worldDraw);}
+  function worldRenderPlay(){if(WORLD.anim===undefined){try{WORLD.anim=!window.matchMedia('(prefers-reduced-motion: reduce)').matches;}catch{WORLD.anim=true;}}if(WORLD.labels===undefined){try{WORLD.labels=localStorage.getItem('epiphany-world-labels')==='1';}catch{WORLD.labels=false;}}const t=worldTask();WORLD.taskStart={x:WORLD.player.x,y:WORLD.player.y};wFixOffset(t);const c0=t.check.type==='sequence'?t.check.steps[0]:t.check;WORLD.needLeave=WORLD.run==='practice'&&!['pickup','give','offset'].includes(c0.type)&&worldCheck(c0);$('#world-game').innerHTML=worldShell('<div class="world-stage"><canvas id="world-canvas" aria-label="Top-down village map"></canvas><div class="world-helpbar"><button data-world-speak>🔊 Listen</button><button data-world-labels aria-pressed="'+(WORLD.labels?'true':'false')+'" class="'+(WORLD.labels?'is-on':'')+'">🏷 Names</button><button data-world-help-toggle aria-expanded="false">Need help?</button><span id="world-step"></span><span id="world-carry"></span></div><section class="world-help-panel" id="world-help-panel" hidden aria-live="polite"><div class="world-help-heading"><strong>What should I do?</strong><span>Hints are optional — choose the level you need.</span></div><p id="world-help-copy">1. Find the person or object named in the instruction. 2. Follow direction words like under, behind, or next to. 3. Stand beside an item or person and press Interact when needed.</p><div class="world-help-actions"><button data-world-help-level="1">Small hint</button><button data-world-help-level="2">Show target</button><button data-world-help-level="3">Explain in Arabic</button></div></section><div class="world-mobile-controls"><div class="world-dpad"><button data-world-move="ArrowUp" aria-label="Move up">▲</button><div><button data-world-move="ArrowLeft" aria-label="Move left">◀</button><button data-world-move="ArrowDown" aria-label="Move down">▼</button><button data-world-move="ArrowRight" aria-label="Move right">▶</button></div></div><button class="world-interact" data-world-interact>Space · Interact</button></div></div>');worldStatus();if(WORLD.needLeave)worldFeedback('You are already close! Step away, then come back.');requestAnimationFrame(worldDraw);}
   function worldRegionArt(id){
     const art={
       village:'<svg viewBox="0 0 64 64" aria-hidden="true"><ellipse cx="32" cy="54" rx="23" ry="5" fill="#b6d6a0"/><path d="M8 30 28 12l20 18v21H8z" fill="#f0d7b1" stroke="#a86d51" stroke-width="2.5" stroke-linejoin="round"/><path d="M4 30 28 8l24 22" fill="#c86f59" stroke="#98503f" stroke-width="3" stroke-linejoin="round"/><rect x="23" y="35" width="11" height="16" rx="2" fill="#7e5b45"/><rect x="12" y="33" width="8" height="8" rx="1" fill="#a9d8df"/><circle cx="51" cy="18" r="8" fill="#6da86d"/><circle cx="47" cy="15" r="5" fill="#8cc47c"/></svg>',
@@ -1582,7 +1662,7 @@
   }
   function worldNext(){if(WORLD.index===WORLD.tasks.length-1){WORLD.mode='finished';$('#world-game').innerHTML='<div class="world-finish"><div class="world-intro-art">'+esc((WORLD_DATA.regions.find(r=>r.id===WORLD.region)||{}).icon||'🏡')+' ✨ 🌍</div><p class="world-kicker">'+(WORLD.run==='practice'?'PRACTICE RUN COMPLETE':'AREA COMPLETE')+'</p><h1>'+esc(WORLD.regionName||'Adventure')+(WORLD.run==='practice'?' · run complete!':' complete!')+'</h1><p>'+(WORLD.run==='practice'?'You finished '+WORLD.tasks.length+' missions. '+esc(worldRunBonus())+' Every run has new missions and a new layout.':'You earned '+WORLD.stars+' stars in this area.')+'</p><h2>Words from your adventure</h2><div class="world-word-list">'+WORLD.tasks.flatMap(t=>t.words||[]).filter((w,i,a)=>a.findIndex(v=>v[0]===w[0])===i).map(w=>'<span class="world-word-chip"><b>'+esc(w[0])+'</b><small>'+esc(w[1])+'</small></span>').join('')+'</div><button class="world-primary" data-world-practice="'+esc(WORLD.region)+'">New practice run</button><button class="world-secondary" data-world-regions>Explore another place →</button>'+(WORLD.run==='practice'?'':'<button class="world-secondary" data-world-replay>Replay story missions ↻</button>')+'<button class="world-secondary" data-world-exit>Back to Epiphany</button></div>';return;}
     WORLD.index++;WORLD.mode='play';WORLD.tries=0;WORLD.usedHelp=false;WORLD.moves=0;WORLD.step=0;WORLD.target=null;WORLD.objects=(WORLD.baseObjects||((WORLD_DATA.regions.find(r=>r.id===WORLD.region)||{}).objects)||WORLD_DATA.objects).filter(o=>!WORLD.picked.has(o.id)).map(o=>({...o}));worldRenderPlay();}
-  function closeWorld(){stopWorldHold();worldSwipeStart=null;if(WORLD&&WORLD.raf)cancelAnimationFrame(WORLD.raf);WORLD=null;$('#world-game').hidden=true;lockPage(false);const active=$('.view.is-active');const activeName=active?active.id.replace('-view',''):'home';$$('[data-view]').forEach(b=>b.setAttribute('aria-current',b.dataset.view===activeName?'page':'false'));renderAll();}
+  function closeWorld(){if(WORLD&&WORLD.idle)clearTimeout(WORLD.idle);stopWorldHold();try{worldCancelAuto();}catch{}worldSwipeStart=null;if(WORLD&&WORLD.raf)cancelAnimationFrame(WORLD.raf);WORLD=null;$('#world-game').hidden=true;lockPage(false);const active=$('.view.is-active');const activeName=active?active.id.replace('-view',''):'home';$$('[data-view]').forEach(b=>b.setAttribute('aria-current',b.dataset.view===activeName?'page':'false'));renderAll();}
   let worldHoldDelay = null, worldHoldRepeat = null, worldSwipeStart = null, worldSuppressClickUntil = 0;
   function stopWorldHold() {
     if (worldHoldDelay) clearTimeout(worldHoldDelay);
@@ -1596,6 +1676,7 @@
       e.preventDefault();
       stopWorldHold();
       const key = move.dataset.worldMove;
+      worldCancelAuto();
       move.classList.add('is-pressed');
       worldMove(key);
       worldHoldDelay = setTimeout(() => { worldHoldRepeat = setInterval(() => worldMove(key), 185); }, 260);
@@ -1604,6 +1685,38 @@
     }
     if (e.target.closest('#world-canvas')) worldSwipeStart = {x:e.clientX,y:e.clientY,id:e.pointerId};
   }, {passive:false});
+  let worldAuto = null;
+  function worldCancelAuto() { if (worldAuto) { clearInterval(worldAuto); worldAuto = null; } }
+  function worldWalkTo(tx, ty) {
+    worldCancelAuto();
+    if (!WORLD || WORLD.mode !== 'play') return;
+    const W = WORLD_DATA.width, H = WORLD_DATA.height, sx = WORLD.player.x, sy = WORLD.player.y;
+    if (tx < 0 || ty < 0 || tx >= W || ty >= H) return;
+    const goals = new Set(); const addGoal = (x, y) => { if (worldWalkable(x, y)) goals.add(x + ',' + y); };
+    if (worldWalkable(tx, ty)) addGoal(tx, ty); else { addGoal(tx + 1, ty); addGoal(tx - 1, ty); addGoal(tx, ty + 1); addGoal(tx, ty - 1); }
+    WORLD.tapMark = {x: tx, y: ty, until: performance.now() + 900};
+    if (!goals.size || goals.has(sx + ',' + sy)) { worldDraw(); return; }
+    const prev = new Map([[sx + ',' + sy, null]]), queue = [[sx, sy]]; let found = null;
+    while (queue.length && !found) {
+      const [cx, cy] = queue.shift();
+      for (const [dx, dy] of [[0, -1], [0, 1], [-1, 0], [1, 0]]) {
+        const nx = cx + dx, ny = cy + dy, k = nx + ',' + ny;
+        if (prev.has(k) || !worldWalkable(nx, ny)) continue;
+        prev.set(k, cx + ',' + cy);
+        if (goals.has(k)) { found = k; break; }
+        queue.push([nx, ny]);
+      }
+    }
+    if (!found) { worldFeedback('There is no open path to that place.'); worldDraw(); return; }
+    const path = []; for (let k = found; prev.get(k); k = prev.get(k)) path.unshift(k);
+    const keys = []; let px = sx, py = sy;
+    path.forEach(k => { const [nx, ny] = k.split(',').map(Number); keys.push(nx > px ? 'ArrowRight' : nx < px ? 'ArrowLeft' : ny > py ? 'ArrowDown' : 'ArrowUp'); px = nx; py = ny; });
+    let i = 0; worldDraw();
+    worldAuto = setInterval(() => {
+      if (!WORLD || WORLD.mode !== 'play' || i >= keys.length) { worldCancelAuto(); return; }
+      worldMove(keys[i++]);
+    }, 190);
+  }
   function finishWorldPointer(e) {
     const held = !!(worldHoldDelay || worldHoldRepeat);
     if (held) {
@@ -1615,7 +1728,12 @@
     const start = worldSwipeStart; worldSwipeStart = null;
     if (start.id !== e.pointerId) return;
     const dx=e.clientX-start.x, dy=e.clientY-start.y;
-    if (Math.max(Math.abs(dx),Math.abs(dy)) < 22) return;
+    if (Math.max(Math.abs(dx),Math.abs(dy)) < 22) {
+      const cv = $('#world-canvas');
+      if (cv && e.type === 'pointerup' && WORLD.tile) { const b = cv.getBoundingClientRect(); worldWalkTo(Math.floor((e.clientX - b.left - WORLD.ox) / WORLD.tile), Math.floor((e.clientY - b.top - WORLD.oy) / WORLD.tile)); }
+      return;
+    }
+    worldCancelAuto();
     const key = Math.abs(dx) > Math.abs(dy) ? (dx < 0 ? 'ArrowLeft' : 'ArrowRight') : (dy < 0 ? 'ArrowUp' : 'ArrowDown');
     worldMove(key);
   }
@@ -1629,6 +1747,7 @@
     if(e.target.closest('[data-world-regions]')){worldShowRegions();return;}
     const move=e.target.closest('[data-world-move]');if(move){return;}
     if(e.target.closest('[data-world-interact]')){worldInteract();return;}
+    if(e.target.closest('[data-world-labels]')){if(WORLD){WORLD.labels=!WORLD.labels;try{localStorage.setItem('epiphany-world-labels',WORLD.labels?'1':'0');}catch{}const b=e.target.closest('[data-world-labels]');b.setAttribute('aria-pressed',String(WORLD.labels));b.classList.toggle('is-on',WORLD.labels);worldDraw();}return;}
     if(e.target.closest('[data-world-speak]')){if(worldTask())speak(worldTask().instruction);return;}
     
     if(e.target.closest('[data-world-help-toggle]')){if(WORLD){const panel=$('#world-help-panel'),button=e.target.closest('[data-world-help-toggle]'),opening=panel.hidden;panel.hidden=!opening;button.setAttribute('aria-expanded',String(opening));button.textContent=opening?'✕ Close help':'💡 Need help?';}return;}
@@ -1641,7 +1760,7 @@
     if(e.target.closest('[data-world-replay]')){if(WORLD&&WORLD.region){worldChooseRegion(WORLD.region);}else startWorld();return;}
     if(e.target.closest('[data-world-exit]')){closeWorld();return;}
   });
-  document.addEventListener('keydown',e=>{if(!WORLD)return;if(e.key==='Escape'){closeWorld();return;}if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','w','a','s','d','W','A','S','D'].includes(e.key)){e.preventDefault();worldMove(e.key);return;}if(e.code==='Space'){e.preventDefault();worldInteract();}});
+  document.addEventListener('keydown',e=>{if(!WORLD)return;if(e.key==='Escape'){closeWorld();return;}if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','w','a','s','d','W','A','S','D'].includes(e.key)){e.preventDefault();worldCancelAuto();worldMove(e.key);return;}if(e.code==='Space'){e.preventDefault();worldInteract();}});
   document.addEventListener('visibilitychange',()=>{if(document.hidden&&WORLD&&WORLD.raf){cancelAnimationFrame(WORLD.raf);WORLD.raf=0;}else if(!document.hidden&&WORLD&&WORLD.mode==='play')worldDraw();});
   window.addEventListener('resize',()=>{if(WORLD&&WORLD.mode==='play')worldDraw();});
 

@@ -906,3 +906,20 @@ body[data-theme="dark"] .level-note{border-color:var(--line)}
   .world-helpbar{gap:6px;padding:8px 10px}
   .world-helpbar button{min-height:46px;padding:9px 11px}
 }
+
+/* reader voice */
+.voice-modal{position:fixed;inset:0;z-index:300;background:rgba(20,24,40,.5);display:flex;align-items:flex-end;justify-content:center}
+.voice-modal[hidden]{display:none}
+.voice-sheet{width:min(520px,100%);background:var(--paper,#fff);color:var(--ink,#17203d);border-radius:20px 20px 0 0;padding:20px 18px max(20px,env(safe-area-inset-bottom));display:grid;gap:14px}
+@media(min-width:640px){.voice-modal{align-items:center}.voice-sheet{border-radius:20px}}
+.voice-sheet h2{font-size:22px}.voice-note{font-size:14px;line-height:1.5;opacity:.8}
+.voice-sheet label{display:grid;gap:6px;font-weight:700;font-size:14px}
+.voice-sheet select{min-height:46px;border-radius:12px;border:1.5px solid currentColor;padding:0 10px;font-size:16px;background:transparent;color:inherit}
+.voice-sheet input[type=range]{width:100%;min-height:36px}
+.voice-actions{display:flex;gap:10px}.voice-actions .btn{flex:1}
+.world-helpbar button.is-on{background:#ffe89b;border-color:#d7a600}
+
+/* header must never overflow on phones */
+.top-in{min-width:0}.top-right{min-width:0;flex-shrink:1}.logo{flex-shrink:1;min-width:0}
+@media(max-width:420px){.top-right .chip{padding:0 6px;gap:3px}.logo-word{font-size:19px}.top-right .icon-btn{width:32px}}
+@media(max-width:360px){.logo-word{display:none}}
