@@ -7,7 +7,9 @@ const WOTD_WORDS = [
     "meaning_ar": "يلاحظ",
     "level": "A1",
     "example": "I noticed a small change.",
-    "origin": "From Latin notitia, meaning knowledge."
+    "example_ar": "لاحظت تغييرًا صغيرًا.",
+    "origin": "From Latin notitia, meaning knowledge.",
+    "origin_ar": "من اللاتينية notitia، وتعني المعرفة."
   },
   {
     "word": "improve",
@@ -16,7 +18,9 @@ const WOTD_WORDS = [
     "meaning_ar": "يحسّن",
     "level": "A1",
     "example": "I want to improve my English.",
-    "origin": "From Old French emprower, linked to making progress."
+    "example_ar": "أريد تحسين لغتي الإنجليزية.",
+    "origin": "From Old French emprower, linked to making progress.",
+    "origin_ar": "من الفرنسية القديمة، وترتبط بإحراز التقدم."
   },
   {
     "word": "curious",
@@ -25,7 +29,9 @@ const WOTD_WORDS = [
     "meaning_ar": "فضولي",
     "level": "A1",
     "example": "She is curious about science.",
-    "origin": "From Latin curiosus, meaning careful or inquisitive."
+    "example_ar": "إنها فضولية بشأن العلوم.",
+    "origin": "From Latin curiosus, meaning careful or inquisitive.",
+    "origin_ar": "من اللاتينية curiosus، وتدل على حب الاستطلاع."
   },
   {
     "word": "journey",
@@ -34,7 +40,9 @@ const WOTD_WORDS = [
     "meaning_ar": "رحلة",
     "level": "A1",
     "example": "Learning is a long journey.",
-    "origin": "Historically linked to a day's travel."
+    "example_ar": "التعلّم رحلة طويلة.",
+    "origin": "Historically linked to a day's travel.",
+    "origin_ar": "ارتبطت تاريخيًا بالسفر الذي يستغرق يومًا."
   },
   {
     "word": "choose",
@@ -43,7 +51,9 @@ const WOTD_WORDS = [
     "meaning_ar": "يختار",
     "level": "A1",
     "example": "Choose the answer that fits.",
-    "origin": "From Old English ceosan."
+    "example_ar": "اختر الإجابة المناسبة.",
+    "origin": "From Old English ceosan.",
+    "origin_ar": "من الإنجليزية القديمة ceosan."
   },
   {
     "word": "habit",
@@ -52,7 +62,9 @@ const WOTD_WORDS = [
     "meaning_ar": "عادة",
     "level": "A1",
     "example": "Reading is a useful habit.",
-    "origin": "From Latin habitus, meaning condition or manner."
+    "example_ar": "القراءة عادة مفيدة.",
+    "origin": "From Latin habitus, meaning condition or manner.",
+    "origin_ar": "من اللاتينية habitus، وتعني الحالة أو الطريقة."
   },
   {
     "word": "share",
@@ -61,7 +73,9 @@ const WOTD_WORDS = [
     "meaning_ar": "يشارك",
     "level": "A1",
     "example": "We share ideas in class.",
-    "origin": "Related to the idea of dividing or distributing."
+    "example_ar": "نتبادل الأفكار في الصف.",
+    "origin": "Related to the idea of dividing or distributing.",
+    "origin_ar": "مرتبطة بفكرة التقسيم أو التوزيع."
   },
   {
     "word": "simple",
@@ -70,7 +84,9 @@ const WOTD_WORDS = [
     "meaning_ar": "بسيط",
     "level": "A1",
     "example": "Keep your explanation simple.",
-    "origin": "From Latin simplex, meaning single or uncomplicated."
+    "example_ar": "اجعل شرحك بسيطًا.",
+    "origin": "From Latin simplex, meaning single or uncomplicated.",
+    "origin_ar": "من اللاتينية simplex، وتعني غير معقّد."
   },
   {
     "word": "careful",
@@ -79,7 +95,9 @@ const WOTD_WORDS = [
     "meaning_ar": "حذر",
     "level": "A1",
     "example": "Be careful with spelling.",
-    "origin": "Built from care + -ful."
+    "example_ar": "كن حذرًا في التهجئة.",
+    "origin": "Built from care + -ful.",
+    "origin_ar": "تتكوّن من care بمعنى العناية واللاحقة -ful."
   },
   {
     "word": "practice",
@@ -88,7 +106,9 @@ const WOTD_WORDS = [
     "meaning_ar": "ممارسة",
     "level": "A1",
     "example": "A little practice helps every day.",
-    "origin": "The noun spelling practice ends in -ice."
+    "example_ar": "القليل من التدريب يفيد كل يوم.",
+    "origin": "The noun spelling practice ends in -ice.",
+    "origin_ar": "في الاسم practice تنتهي التهجئة بـ -ice."
   },
   {
     "word": "achieve",
