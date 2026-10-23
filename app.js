@@ -1163,7 +1163,11 @@
       const px=ox+gx*tile,py=oy+gy*tile,seed=seeded(gx,gy);
       x.fillStyle=grass[Math.floor(seed*grass.length)];x.globalAlpha=.22;
       x.beginPath();x.ellipse(px+tile*(.2+seed*.6),py+tile*(.2+seeded(gy,gx)*.6),tile*.12,tile*.055,seed*2,0,Math.PI*2);x.fill();x.globalAlpha=1;
-      if(seed>.83){x.strokeStyle='rgba(52,105,57,.18)';x.lineWidth=Math.max(1,tile*.025);x.beginPath();x.moveTo(px+tile*.55,py+tile*.55);x.lineTo(px+tile*.62,py+tile*.43);x.stroke();}
+      if(seed>.72){
+        x.strokeStyle='rgba(52,105,57,.28)';x.lineWidth=Math.max(1,tile*.028);x.lineCap='round';
+        x.beginPath();x.moveTo(px+tile*(.48+seed*.12),py+tile*.68);x.quadraticCurveTo(px+tile*.43,py+tile*.48,px+tile*.38,py+tile*.45);x.moveTo(px+tile*(.48+seed*.12),py+tile*.68);x.quadraticCurveTo(px+tile*.58,py+tile*.49,px+tile*.66,py+tile*.47);x.stroke();
+        if(seed>.91){x.fillStyle=seeded(gy,gx)>.5?'#fff1c7':'#f6d4e2';x.beginPath();x.arc(px+tile*.72,py+tile*.25,tile*.045,0,Math.PI*2);x.fill();x.fillStyle='#e9b94f';x.beginPath();x.arc(px+tile*.72,py+tile*.25,tile*.018,0,Math.PI*2);x.fill();}
+      }
     }
     if(theme==='village'){
     // Woodland corners are organic patches, not flat square blocks.
@@ -1215,7 +1219,7 @@
       const side=bakery?'#c6a36e':blue?'#a9c5c8':'#c99b75';
       const roof=bakery?'#a95743':blue?'#527486':'#a95446';
       const roofLight=bakery?'#c9795b':blue?'#779aa7':'#c97962';
-      const left=cx-tile*.34, top=cy-tile*.04, bw=tile*.68, bh=tile*.43;
+      const left=cx-tile*.38, top=cy-tile*.055, bw=tile*.76, bh=tile*.49;
       x.fillStyle='rgba(42,58,43,.25)';x.beginPath();x.ellipse(cx,cy+tile*.34,tile*.46,tile*.16,0,0,Math.PI*2);x.fill();
       // Foundation and visible side plane.
       x.fillStyle='#a58b70';x.beginPath();x.moveTo(left,top+bh-tile*.035);x.lineTo(cx+tile*.28,top+bh-tile*.035);x.lineTo(cx+tile*.42,top+bh+tile*.015);x.lineTo(cx-tile*.2,top+bh+tile*.015);x.closePath();x.fill();
@@ -1226,9 +1230,16 @@
       for(let k=1;k<=2;k++){x.beginPath();x.moveTo(left+tile*.035,top+bh*k/3);x.lineTo(left+bw-tile*.035,top+bh*k/3);x.stroke();}
       x.fillStyle=bakery?'#d6b47c':blue?'#8faeb4':'#d0aa83';x.fillRect(left,top+bh-tile*.055,bw,tile*.055);
       // Roof has a dark underside, bright front plane and overlapping roof tiles.
-      x.fillStyle='#70453b';x.beginPath();x.moveTo(cx-tile*.46,cy+tile*.025);x.lineTo(cx-tile*.04,cy-tile*.43);x.lineTo(cx+tile*.44,cy+tile*.025);x.closePath();x.fill();
-      x.fillStyle=roof;x.beginPath();x.moveTo(cx-tile*.44,cy-tile*.005);x.lineTo(cx-tile*.04,cy-tile*.42);x.lineTo(cx+tile*.4,cy-tile*.005);x.closePath();x.fill();
-      x.fillStyle=roofLight;x.beginPath();x.moveTo(cx-tile*.35,cy-tile*.01);x.lineTo(cx-tile*.04,cy-tile*.34);x.lineTo(cx+tile*.17,cy-tile*.01);x.closePath();x.fill();
+      // Chimney, deep roof fascia and a larger layered roof silhouette.
+      x.fillStyle='#8d6b58';x.fillRect(cx+tile*.19,cy-tile*.39,tile*.12,tile*.25);
+      x.fillStyle='#c58b72';x.fillRect(cx+tile*.17,cy-tile*.41,tile*.16,tile*.055);
+      x.fillStyle='#70453b';x.beginPath();x.moveTo(cx-tile*.49,cy+tile*.035);x.lineTo(cx-tile*.04,cy-tile*.51);x.lineTo(cx+tile*.48,cy+tile*.035);x.closePath();x.fill();
+      x.fillStyle=roof;x.beginPath();x.moveTo(cx-tile*.46,cy+tile*.005);x.lineTo(cx-tile*.04,cy-tile*.49);x.lineTo(cx+tile*.43,cy+tile*.005);x.closePath();x.fill();
+      x.fillStyle=roofLight;x.beginPath();x.moveTo(cx-tile*.37,cy+tile*.002);x.lineTo(cx-tile*.04,cy-tile*.395);x.lineTo(cx+tile*.16,cy+tile*.002);x.closePath();x.fill();
+      // Roof seams make the roof read as overlapping hand-painted shingles.
+      x.strokeStyle='rgba(75,43,39,.32)';x.lineWidth=Math.max(1,tile*.018);
+      for(let k=1;k<=4;k++){const yy=cy-tile*(.39-k*.075),half=tile*(.35-k*.075);x.beginPath();x.moveTo(cx-tile*.04-half,yy);x.lineTo(cx-tile*.04+half,yy);x.stroke();}
+      x.strokeStyle='rgba(255,230,196,.42)';x.lineWidth=Math.max(1,tile*.024);x.beginPath();x.moveTo(cx-tile*.43,cy+tile*.005);x.lineTo(cx-tile*.04,cy-tile*.46);x.lineTo(cx+tile*.4,cy+tile*.005);x.stroke();
       x.strokeStyle='rgba(255,230,196,.38)';x.lineWidth=Math.max(1,tile*.022);
       for(let k=0;k<3;k++){x.beginPath();x.moveTo(cx-tile*(.31-k*.015),cy+tile*(.005-k*.09));x.lineTo(cx-tile*.04,cy-tile*(.35-k*.055));x.stroke();}
       // Window frames and glass reflections.
@@ -1240,7 +1251,11 @@
       // Door, step and warm brass handle.
       roundRect(x,cx-tile*.075,cy+tile*.19,tile*.15,tile*.22,tile*.018,'#74503a','#e1c59b');
       x.fillStyle='#d9b86e';x.beginPath();x.arc(cx+tile*.035,cy+tile*.3,tile*.018,0,Math.PI*2);x.fill();
-      x.fillStyle='#d5c09a';x.fillRect(cx-tile*.105,cy+tile*.405,tile*.21,tile*.045);
+      x.fillStyle='#d5c09a';x.fillRect(cx-tile*.13,cy+tile*.465,tile*.26,tile*.045);
+      // Small wall lantern adds depth and makes the entrance easy to spot.
+      x.fillStyle='#7b573b';roundRect(x,cx+tile*.14,cy+tile*.21,tile*.075,tile*.09,tile*.018,'#79513a','#e0c08a');
+      x.fillStyle='#ffe6a0';x.beginPath();x.arc(cx+tile*.177,cy+tile*.25,tile*.025,0,Math.PI*2);x.fill();
+      if(!bakery){roundRect(x,cx-tile*.25,cy-tile*.015,tile*.5,tile*.07,tile*.018,blue?'#e7f0ec':'#f6e6cc','rgba(92,70,51,.35)');x.fillStyle=blue?'#476d7d':'#87513e';x.font='bold '+Math.max(5,tile*.09)+'px sans-serif';x.textAlign='center';x.fillText(blue?'HOME':'HOME',cx,cy+tile*.035);}
       if(bakery){
         roundRect(x,cx-tile*.29,cy-tile*.055,tile*.5,tile*.09,tile*.025,'#e8bc69','#9a6840');
         x.fillStyle='#68452f';x.font='bold '+Math.max(6,tile*.115)+'px sans-serif';x.textAlign='center';x.fillText('BAKERY',cx-tile*.04,cy+tile*.005);
