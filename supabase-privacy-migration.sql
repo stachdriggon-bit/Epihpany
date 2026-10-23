@@ -11,29 +11,20 @@ ALTER TABLE public.player_profiles
 ALTER TABLE public.player_profiles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.player_posts ENABLE ROW LEVEL SECURITY;
 
--- Remove existing SELECT policies on these two tables so an older permissive
--- policy cannot accidentally override the privacy rules below.
-DO $$
-DECLARE p record;
-BEGIN
-  FOR p IN
-    SELECT schemaname, tablename, policyname
-    FROM pg_policies
-    WHERE schemaname = 'public'
-      AND tablename IN ('player_profiles', 'player_posts')
-      AND cmd IN ('SELECT', 'ALL')
-  LOOP
-    EXECUTE format('DROP POLICY IF EXISTS %I ON %I.%I', p.policyname, p.schemaname, p.tablename);
-  END LOOP;
-END $$;
+-- Restrictive policies are intentional: they apply alongside existing policies,
+-- so an older permissive SELECT policy cannot bypass privacy.
+DROP POLICY IF EXISTS player_profiles_select_visible ON public.player_profiles;
+DROP POLICY IF EXISTS player_posts_select_visible ON public.player_posts;
 
 CREATE POLICY player_profiles_select_visible
   ON public.player_profiles
+  AS RESTRICTIVE
   FOR SELECT TO authenticated
   USING (auth.uid() = user_id OR is_private = false);
 
 CREATE POLICY player_posts_select_visible
   ON public.player_posts
+  AS RESTRICTIVE
   FOR SELECT TO authenticated
   USING (
     auth.uid() = user_id
