@@ -33,8 +33,16 @@
   if (!state.world.stars || typeof state.world.stars !== 'object' || Array.isArray(state.world.stars)) state.world.stars = {};
   if (!Number.isFinite(state.streakFreezes)) state.streakFreezes = 1;
   if (state.lastDay !== dayKey()) state.daily = 0;
-  if (state.dailyQuestDate !== dayKey()) { state.dailyQuestDate = dayKey(); state.dailyQuestProgress = 0; state.dailyQuestClaimed = false; state.dailyCorrect = 0; state.dailyXp = 0; }
-  if (state.weeklyKey !== weekKey()) { state.weeklyKey = weekKey(); state.weeklyProgress = 0; state.weeklyClaimed = false; }
+  if (state.dailyQuestDate !== dayKey()) {
+    const hadDailyQuest = !!state.dailyQuestDate;
+    state.dailyQuestDate = dayKey(); state.dailyQuestProgress = 0; state.dailyQuestClaimed = false; state.dailyCorrect = 0; state.dailyXp = 0;
+    if (hadDailyQuest) window.EpiphanyNotifications?.dailyReset(state.dailyQuestDate);
+  }
+  if (state.weeklyKey !== weekKey()) {
+    const hadWeeklyChallenge = !!state.weeklyKey;
+    state.weeklyKey = weekKey(); state.weeklyProgress = 0; state.weeklyClaimed = false;
+    if (hadWeeklyChallenge) window.EpiphanyNotifications?.weeklyReset(state.weeklyKey);
+  }
   let saveWarned = false;
   function save() {
     try { localStorage.setItem('epiphany-progress', JSON.stringify(state)); }
