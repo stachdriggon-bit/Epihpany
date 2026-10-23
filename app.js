@@ -15,7 +15,7 @@
   ];
 
   /* ---------- state ---------- */
-  const defaults = () => ({xp:0, quests:0, words:[], review:[], placementDone:false, assessedLevel:'A1', placementResult:null, xpAtLevelStart:null, promotionHistory:[], promotionAttempts:{}, lastPromotionResult:null, completed:[], streak:0, lastDay:null, daily:0, level:'A1', sound:true, helpArabic:false, theme:'light', streakFreezes:1, dailyQuestDate:null, dailyQuestProgress:0, dailyQuestClaimed:false, dailyCorrect:0, dailyXp:0, weeklyKey:null, weeklyProgress:0, weeklyClaimed:false, mistakeTrapErrors:{}, mistakeQuestionErrors:{}, modes:{}, weakTraps:{}, recentQuestions:{}, stories:{}, world:{done:[],stars:{}}});
+  const defaults = () => ({xp:0, quests:0, words:[], review:[], translationEnabled:true, placementDone:false, assessedLevel:'A1', placementResult:null, xpAtLevelStart:null, promotionHistory:[], promotionAttempts:{}, lastPromotionResult:null, completed:[], streak:0, lastDay:null, daily:0, level:'A1', sound:true, helpArabic:false, theme:'light', streakFreezes:1, dailyQuestDate:null, dailyQuestProgress:0, dailyQuestClaimed:false, dailyCorrect:0, dailyXp:0, weeklyKey:null, weeklyProgress:0, weeklyClaimed:false, mistakeTrapErrors:{}, mistakeQuestionErrors:{}, modes:{}, weakTraps:{}, recentQuestions:{}, stories:{}, world:{done:[],stars:{}}});
   let state;
   try { state = {...defaults(), ...JSON.parse(localStorage.getItem('epiphany-progress') || '{}')}; } catch { state = defaults(); }
   if (!LEVELS.some(level => level.id === state.assessedLevel)) { state.assessedLevel = 'A1'; state.placementDone = false; state.placementResult = null; }
@@ -629,8 +629,87 @@
     const h = $('#' + name + '-title'); if (h) h.focus({preventScroll: true});
   }
 
+  /* ---------- unified, offline Arabic translation ---------- */
+  const AR_TRANSLATION_WORDS = {
+    what:'ما',why:'لماذا',how:'كيف',when:'متى',where:'أين',who:'من',which:'أي',does:'هل',do:'هل',did:'هل',is:'هو',are:'هم',was:'كان',were:'كانوا',the:'الـ',a:'',an:'',and:'و',or:'أو',but:'لكن',because:'لأن',so:'لذلك',if:'إذا',then:'ثم',to:'إلى',of:'من',for:'لـ',with:'مع',without:'بدون',in:'في',on:'على',at:'في',from:'من',this:'هذا',that:'ذلك',these:'هذه',those:'تلك',it:'هو',he:'هو',she:'هي',they:'هم',we:'نحن',you:'أنت',my:'ـي',your:'ـك',their:'ـهم',
+    choose:'اختر',select:'اختر',tap:'اضغط',click:'انقر',read:'اقرأ',listen:'استمع',write:'اكتب',type:'اكتب',answer:'إجابة',answers:'إجابات',question:'سؤال',correct:'صحيح',incorrect:'خاطئ',wrong:'خاطئ',best:'أفضل',closest:'الأقرب',meaning:'المعنى',mean:'يعني',means:'تعني',word:'كلمة',words:'كلمات',sentence:'جملة',complete:'أكمل',fill:'املأ',blank:'الفراغ',missing:'الناقص',only:'فقط',one:'واحد',more:'أكثر',again:'مجدّدًا',practice:'تدرّب',try:'حاول',explain:'اشرح',
+    not:'لا',never:'أبدًا',always:'دائمًا',often:'غالبًا',sometimes:'أحيانًا',take:'يأخذ',takes:'يأخذ',took:'أخذ',go:'يذهب',goes:'يذهب',went:'ذهب',come:'يأتي',came:'جاء',have:'لديه',has:'لديه',had:'كان لديه',want:'يريد',wants:'يريد',need:'يحتاج',needs:'يحتاج',make:'يصنع',makes:'يصنع',made:'صنع',get:'يحصل على',give:'يعطي',find:'يجد',found:'وجد',use:'يستخدم',help:'يساعد',like:'يحب',know:'يعرف',think:'يعتقد',feel:'يشعر',say:'يقول',said:'قال',see:'يرى',saw:'رأى',friend:'صديق',friends:'أصدقاء',family:'العائلة',people:'الناس',happy:'سعيد',sad:'حزين',tired:'متعب',hungry:'جائع',rain:'مطر',raining:'تمطر',umbrella:'مظلة',house:'منزل',home:'المنزل',school:'مدرسة',work:'عمل',water:'ماء',food:'طعام',book:'كتاب',day:'يوم',today:'اليوم',yesterday:'أمس',tomorrow:'غدًا',time:'وقت',early:'مبكرًا',late:'متأخرًا',before:'قبل',after:'بعد',first:'أول',last:'أخير',new:'جديد',old:'قديم',small:'صغير',big:'كبير',large:'كبير',long:'طويل',short:'قصير',fast:'سريع',slow:'بطيء',good:'جيد',bad:'سيئ',easy:'سهل',difficult:'صعب',important:'مهم',different:'مختلف',borrow:'يستعير',buy:'يشتري',bought:'اشترى',sell:'يبيع',return:'يعيد',delighted:'سعيد للغاية',happening:'يحدث',happened:'حدث',absolutely:'تمامًا',very:'جدًا',extremely:'للغاية',confused:'مرتبك',worried:'قلق',pleased:'مسرور',glad:'سعيد',clear:'واضح',instructions:'تعليمات',instruction:'تعليمات',option:'خيار',options:'خيارات'
+  };
+  const AR_TRANSLATION_PHRASES = {
+    'tap the incorrect word':'اضغط على الكلمة الخاطئة.',
+    'complete the sentence':'أكمل الجملة.',
+    'choose the closest meaning.':'اختر المعنى الأقرب.',
+    'choose the best answer.':'اختر أفضل إجابة.',
+    'choose the best answer':'اختر أفضل إجابة.',
+    'choose the correct answer:':'اختر الإجابة الصحيحة:',
+    'read the whole text first.':'اقرأ النص كاملًا أولًا.',
+    'only one word is wrong. read the whole text first.':'هناك كلمة واحدة خاطئة فقط. اقرأ النص كاملًا أولًا.',
+    'your answer':'إجابتك','check answer':'تحقّق من الإجابة',
+    'what does “borrow” mean?':'ما معنى كلمة «borrow»؟',
+    'what does “delighted” mean?':'ما معنى كلمة «delighted»؟',
+    'which word means “happening often”?':'أي كلمة تعني «يحدث كثيرًا»؟'
+  };
+  function translateKnownPhrase(source) {
+    const lower=source.toLowerCase();
+    if(AR_TRANSLATION_PHRASES[lower])return AR_TRANSLATION_PHRASES[lower];
+    return source.replace(/[A-Za-z]+(?:['’-][A-Za-z]+)*/g,token=>{
+      const key=token.toLowerCase();
+      if(AR_TRANSLATION_WORDS[key])return AR_TRANSLATION_WORDS[key];
+      if(typeof STORY_WORDS_AR!=='undefined'&&STORY_WORDS_AR[key])return STORY_WORDS_AR[key];
+      if(typeof W_AR!=='undefined'&&W_AR[key])return W_AR[key];
+      return token;
+    }).replace(/\?/g,'؟');
+  }
+  function translateToArabic(raw) {
+    const source=String(raw||'').replace(/\s+/g,' ').trim();
+    if(!source)return {text:'لا يوجد نص لترجمته.',exact:true};
+    const exact=AR_TRANSLATION_PHRASES[source.toLowerCase()];
+    if(exact)return {text:exact,exact:true};
+    let m=source.match(/^What does\s+[“"']?(.+?)[”"']?\s+mean\??$/i);
+    if(m)return {text:'ما معنى كلمة «'+m[1].replace(/[“”"']/g,'')+'»؟',exact:true};
+    m=source.match(/^Which word means\s+[“"']?(.+?)[”"']?\??$/i);
+    if(m)return {text:'أي كلمة تعني «'+translateKnownPhrase(m[1].replace(/[“”"']/g,''))+'»؟',exact:true};
+    return {text:translateKnownPhrase(source),exact:false};
+  }
+  let translationControlId=0;
+  function addTranslationControl(target,kind) {
+    if(!target||target.dataset.translationEnhanced==='1')return;
+    target.dataset.translationEnhanced='1';
+    if(!target.id)target.id='translation-source-'+(++translationControlId);
+    const output=document.createElement('div');output.className='translation-result';output.hidden=true;output.id=target.id+'-arabic';output.lang='ar';output.dir='rtl';
+    const button=document.createElement('button');button.type='button';button.className='translate-btn';button.dataset.translateTarget=target.id;button.setAttribute('aria-expanded','false');button.innerHTML='<span aria-hidden="true">ع</span> ترجمة '+(kind==='answer'?'الإجابة':'النص');button.hidden=!state.translationEnabled;
+    if(kind==='answer'){const row=document.createElement('div');row.className='answer-translation-row';target.parentNode.insertBefore(row,target);row.appendChild(target);row.appendChild(button);row.appendChild(output);}
+    else{target.insertAdjacentElement('afterend',button);button.insertAdjacentElement('afterend',output);}
+  }
+  function enhanceTranslationControls(root) {
+    if(!root||!state.translationEnabled||ST)return;
+    root.querySelectorAll('.q-text,.typing-prompt,.spot-text,.answer').forEach(el=>{
+      if(el.closest('#story-answers,.story-reader,.story-screen,[data-story-mode]'))return;
+      addTranslationControl(el,el.classList.contains('answer')?'answer':'question');
+    });
+  }
+  document.addEventListener('click',e=>{
+    const button=e.target.closest('[data-translate-target]');if(!button)return;
+    e.preventDefault();e.stopPropagation();
+    const target=document.getElementById(button.dataset.translateTarget),output=document.getElementById(button.dataset.translateTarget+'-arabic');if(!target||!output)return;
+    if(output.hidden){const result=translateToArabic(target.textContent);output.textContent=result.text;output.classList.toggle('translation-approximate',!result.exact);output.title=result.exact?'ترجمة محلية':'ترجمة مساعدة محلية؛ قد تبقى بعض الكلمات الإنجليزية دون ترجمة';output.hidden=false;button.setAttribute('aria-expanded','true');button.innerHTML='<span aria-hidden="true">ع</span> إخفاء الترجمة';}
+    else{output.hidden=true;button.setAttribute('aria-expanded','false');button.innerHTML='<span aria-hidden="true">ع</span> ترجمة '+(target.classList.contains('answer')?'الإجابة':'النص');}
+  });
+  const translationObserver=new MutationObserver(()=>{enhanceTranslationControls($('#game-body'));enhanceTranslationControls($('#world-game'));});
+  if($('#game-body'))translationObserver.observe($('#game-body'),{childList:true,subtree:true});
+  if($('#world-game'))translationObserver.observe($('#world-game'),{childList:true,subtree:true});
+  document.addEventListener('click',e=>{
+    const b=e.target.closest('[data-translate-world]');if(!b||!WORLD||!state.translationEnabled)return;
+    const output=$('#world-translation'),task=worldTask();if(!output||!task)return;
+    if(output.hidden){const result=translateToArabic(task.instruction);output.textContent=result.text;output.hidden=false;output.classList.toggle('translation-approximate',!result.exact);b.setAttribute('aria-expanded','true');b.textContent='ع إخفاء الترجمة';}
+    else{output.hidden=true;b.setAttribute('aria-expanded','false');b.textContent='ع ترجمة التعليمات';}
+  });
+
   /* ---------- settings: Arabic help + sound ---------- */
   function syncSettings() {
+    document.body.classList.toggle('translation-off', !state.translationEnabled);
+    const translationToggle = $('#translation-toggle');
+    if (translationToggle) { translationToggle.setAttribute('aria-pressed', String(!!state.translationEnabled)); const label=translationToggle.querySelector('span'); if(label) label.textContent = state.translationEnabled ? 'Arabic translation: On' : 'Arabic translation: Off'; }
     document.body.classList.toggle('ar-on', !!state.helpArabic);
     document.documentElement.dir = state.helpArabic ? 'rtl' : 'ltr';
     document.body.dir = state.helpArabic ? 'rtl' : 'ltr';
@@ -746,6 +825,8 @@
 
   $('#ar-toggle').addEventListener('click', toggleArabic);
   $('#game-ar').addEventListener('click', toggleArabic);
+  const translationToggle = $('#translation-toggle');
+  if (translationToggle) translationToggle.addEventListener('click', () => { state.translationEnabled = !state.translationEnabled; save(); syncSettings(); document.querySelectorAll('.translate-btn').forEach(b => { b.hidden = !state.translationEnabled; }); document.querySelectorAll('.translation-result').forEach(el => { if (!state.translationEnabled) el.hidden = true; }); toast(state.translationEnabled ? 'Arabic translation is on' : 'Arabic translation is off'); });
   $('#sound-toggle').addEventListener('click', () => {
     state.sound = !state.sound; save(); syncSettings();
     toast(state.sound ? 'Sound is on' : 'Sound is off');
@@ -1551,7 +1632,7 @@
     (t.words||[]).forEach(w=>{if(!state.words.some(v=>String(v[0]).toLowerCase()===String(w[0]).toLowerCase()))state.words.push(w);});
     save();renderHeader();renderWords();renderTrophies();return earned;
   }
-  function worldShell(inner){const t=worldTask(),progress=WORLD&&WORLD.tasks.length?Math.round(((WORLD.index+(WORLD.mode==='success'?1:0))/WORLD.tasks.length)*100):0;return '<div class="world-top"><div class="world-task-count">Task <b>'+(WORLD.index+1)+'</b> / '+WORLD.tasks.length+'<span class="world-progress-track" role="progressbar" aria-label="Mission progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="'+progress+'"><span style="width:'+progress+'%"></span></span></div>'+(t&&t.dialogue?'<div class="world-dialogue">'+esc(t.dialogue)+'</div>':'')+'<div class="world-instruction"><strong>'+esc(t?t.instruction:'Adventure complete!')+'</strong><span>Explore the map and follow the instruction.</span></div><button class="world-exit" data-world-exit aria-label="Exit World">✕</button></div>'+inner;}
+  function worldShell(inner){const t=worldTask(),progress=WORLD&&WORLD.tasks.length?Math.round(((WORLD.index+(WORLD.mode==='success'?1:0))/WORLD.tasks.length)*100):0;return '<div class="world-top"><div class="world-task-count">Task <b>'+(WORLD.index+1)+'</b> / '+WORLD.tasks.length+'<span class="world-progress-track" role="progressbar" aria-label="Mission progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="'+progress+'"><span style="width:'+progress+'%"></span></span></div>'+(t&&t.dialogue?'<div class="world-dialogue">'+esc(t.dialogue)+'</div>':'')+'<div class="world-instruction"><strong>'+esc(t?t.instruction:'Adventure complete!')+'</strong><span>Explore the map and follow the instruction.</span>'+(t&&WORLD&&WORLD.mode==='play'?'<button type="button" class="translate-btn" data-translate-world aria-expanded="false">ع ترجمة التعليمات</button><p id="world-translation" class="translation-result" lang="ar" dir="rtl" hidden></p>':'')+'</div><button class="world-exit" data-world-exit aria-label="Exit World">✕</button></div>'+inner;}
   function worldDraw(){
     if(!WORLD||WORLD.mode!=='play')return;if(WORLD.idle){clearTimeout(WORLD.idle);WORLD.idle=0;}const c=$('#world-canvas');if(!c)return;const r=c.getBoundingClientRect(),d=Math.max(1,Math.min(2,devicePixelRatio||1));if(!r.width||!r.height)return;
     if(c.width!==Math.round(r.width*d)||c.height!==Math.round(r.height*d)){c.width=Math.round(r.width*d);c.height=Math.round(r.height*d);}
@@ -2344,6 +2425,7 @@
     renderAll();
   };
   renderAll();
+  enhanceTranslationControls($('#game-body'));
   let accountWelcomeDismissed = false;
   try { accountWelcomeDismissed = localStorage.getItem('epiphany-account-welcome-dismissed') === '1'; } catch {}
   if(!state.placementDone && accountWelcomeDismissed)showPlacement();
