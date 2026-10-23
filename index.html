@@ -26,7 +26,7 @@
   <script src="data-minigames.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
   <script src="supabase-config.js?v=accounts-20261023" defer></script>
-  <script src="account.js?v=accounts-20261023" defer></script>
+  <script src="account.js?v=player-profile-20261023" defer></script>
   <script src="app.js?v=accounts-cloud-save-20261023" defer></script>
 </head>
 <body data-theme="light">
@@ -192,6 +192,39 @@
           <p class="account-note">Your progress will sync automatically while you play online.</p>
           <button class="btn btn-ghost" id="account-signout" type="button">Sign out</button>
         </div>
+      </section>
+      <section class="block player-profile" aria-labelledby="player-profile-title">
+        <div class="block-head"><h2 id="player-profile-title">Your player identity</h2><p>Make this space yours. Choose a name, an avatar and a few words in English.</p></div>
+        <div class="player-profile-card">
+          <div class="player-profile-hero">
+            <div class="player-avatar-wrap"><img id="player-avatar-preview" alt="Your profile avatar" hidden><span id="player-avatar-emoji" aria-hidden="true">🦊</span></div>
+            <div class="player-profile-heading"><span class="profile-eyebrow">YOUR EPIPHANY ID</span><h3 id="player-profile-display-name">Your name</h3><p id="player-profile-bio-preview">A little English, a little progress, every day.</p><span class="profile-level-chip">LEVEL <b id="player-profile-level">A1</b></span></div>
+          </div>
+          <p class="profile-save-status" id="player-profile-status" role="status" aria-live="polite">Sign in to create your player profile.</p>
+          <form id="player-profile-form" class="player-profile-form">
+            <label for="player-display-name">Display name</label>
+            <input id="player-display-name" maxlength="32" placeholder="The name you want others to see" autocomplete="nickname">
+            <label for="player-bio">A short bio <span>English is encouraged</span></label>
+            <textarea id="player-bio" maxlength="180" rows="2" placeholder="I'm learning English one day at a time."></textarea>
+            <div class="profile-avatar-options">
+              <div><h4>Choose your cartoon avatar</h4><p>Pick a character and a background.</p></div>
+              <div class="avatar-choices" id="avatar-choices" role="group" aria-label="Choose an avatar">
+                <button type="button" class="avatar-choice is-selected" data-avatar="🦊" aria-label="Fox avatar">🦊</button><button type="button" class="avatar-choice" data-avatar="🐼" aria-label="Panda avatar">🐼</button><button type="button" class="avatar-choice" data-avatar="🐸" aria-label="Frog avatar">🐸</button><button type="button" class="avatar-choice" data-avatar="🐱" aria-label="Cat avatar">🐱</button><button type="button" class="avatar-choice" data-avatar="🦄" aria-label="Unicorn avatar">🦄</button><button type="button" class="avatar-choice" data-avatar="🤖" aria-label="Robot avatar">🤖</button><button type="button" class="avatar-choice" data-avatar="🐯" aria-label="Tiger avatar">🐯</button><button type="button" class="avatar-choice" data-avatar="🐻" aria-label="Bear avatar">🐻</button>
+              </div>
+              <label for="avatar-color">Avatar background</label>
+              <div class="avatar-color-row"><input id="avatar-color" type="color" value="#FFE08A" aria-label="Avatar background color"><span>Make your character feel like you.</span></div>
+              <label for="player-avatar-upload">Or upload your own picture</label>
+              <input id="player-avatar-upload" type="file" accept="image/png,image/jpeg,image/webp">
+              <p class="profile-small-note">Use a picture you’re comfortable sharing. Uploaded images are stored with your account.</p>
+            </div>
+            <button class="btn btn-go" id="player-profile-save" type="submit">Save my profile</button>
+          </form>
+        </div>
+        <section class="profile-posts">
+          <div class="profile-posts-heading"><div><h3>My English corner</h3><p>Share a short thought, a new phrase or a tiny win.</p></div><span class="profile-post-count" id="player-post-count">0 posts</span></div>
+          <form id="player-post-form" class="player-post-form"><label for="player-post-text">Write something in English</label><textarea id="player-post-text" rows="3" maxlength="500" placeholder="Today I learned a new word: resilient…" required></textarea><div class="post-compose-footer"><span>Up to 500 characters</span><button class="btn btn-go" id="player-post-submit" type="submit">Share post</button></div></form>
+          <div class="player-post-list" id="player-post-list"><div class="profile-empty-posts">Your little English moments will appear here.</div></div>
+        </section>
       </section>
       <section class="block profile-challenges" aria-labelledby="profile-challenges-title"><div class="block-head"><h2 id="profile-challenges-title">Challenges & streak</h2><p>Daily and weekly goals, plus your streak freeze.</p></div>      <section class="motivation profile-motivation" aria-label="Daily and weekly challenges">
         <article class="challenge-card daily-card">
