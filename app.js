@@ -260,7 +260,7 @@
   }
   async function playNaturalSpeech(phrase, rate, request) {
     if (phrase.length > 1800 || !navigator.onLine) return false;
-    const key = 'en-US-Neural2-F|' + rate.toFixed(2) + '|' + phrase.toLowerCase();
+    const key = 'elevenlabs-george|' + rate.toFixed(2) + '|' + phrase.toLowerCase();
     let blob = await cachedNaturalAudio(key);
     if (request !== speechRequest) return true;
     if (!blob) {
