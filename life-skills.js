@@ -103,6 +103,33 @@
       {speaker:'Shop assistant',scene:'Calling a shop',line:'We can hold the item for two hours.',prompt:'That works for you. Close the call politely.',options:['“That’s perfect, thank you for your help. Goodbye.”','“Hold it for a week instead.”','Hang up without responding'],answer:0,ar:'يمكننا الاحتفاظ بالمنتج ساعتين. هذا يناسبك؛ أنهِ المكالمة بأدب.',arOptions:['هذا ممتاز، شكرًا لمساعدتك. إلى اللقاء','احتفظوا به أسبوعًا بدلًا من ذلك','أغلق الخط دون رد'],explain:'Acknowledge the arrangement and close the call courteously.',arExplain:'أكد موافقتك على الترتيب وأنهِ المكالمة بلباقة.'}
     ]
   };
+  const guidedData = {
+    numbers: [
+      {kind:'price',scene:'At a market',prompt:'The label says £2.00. How much is it?',options:['Two pounds','Twenty pounds','Two pence'],answer:0,ar:'يظهر على الملصق السعر 2.00 جنيه. كم السعر؟',arOptions:['جنيهان','عشرون جنيهًا','بنسان'],explain:'£2.00 is two pounds.',arExplain:'2.00 جنيه تعني جنيهان.'},
+      {kind:'time',scene:'Meeting a friend',prompt:'Your friend says “six o’clock”. What time is that?',options:['6:00','6:30','7:00'],answer:0,ar:'قال صديقك six o’clock. كم الساعة؟',arOptions:['6:00','6:30','7:00'],explain:'Six o’clock is 6:00.',arExplain:'Six o’clock تعني الساعة السادسة تمامًا.'},
+      {kind:'number',scene:'Queue ticket',prompt:'Your ticket number is 12. Which number is it?',options:['Twelve','Twenty-one','Two'],answer:0,ar:'رقم تذكرتك 12. ما الرقم؟',arOptions:['اثنا عشر','واحد وعشرون','اثنان'],explain:'12 is twelve.',arExplain:'يُقرأ الرقم 12 باللغة الإنجليزية twelve.'}
+    ],
+    signs: [
+      {sign:'PUSH',symbol:'⇥',place:'Office door',prompt:'The door says PUSH. What should you do?',options:['Push the door','Pull the door','Walk away'],answer:0,ar:'كُتب على الباب PUSH. ماذا تفعل؟',arOptions:['ادفع الباب','اسحب الباب','ابتعد'],explain:'Push means move the door away from you.',arExplain:'تعني Push دفع الباب بعيدًا عنك.'},
+      {sign:'EXIT',symbol:'↗',place:'Inside a public building',prompt:'Which sign helps you find a way out?',options:['EXIT','SOLD OUT','QUIET PLEASE'],answer:0,ar:'أي لافتة تساعدك على إيجاد المخرج؟',arOptions:['مخرج','نفدت التذاكر','يرجى الهدوء'],explain:'EXIT marks a way out of a building.',arExplain:'تعني EXIT مخرجًا من المبنى.'},
+      {sign:'WET FLOOR',symbol:'⚠',place:'Supermarket entrance',prompt:'The floor may be slippery. What should you do?',options:['Walk carefully','Run','Jump'],answer:0,ar:'قد تكون الأرضية زلقة. ماذا تفعل؟',arOptions:['امشِ بحذر','اركض','اقفز'],explain:'Walk carefully on a wet floor.',arExplain:'امشِ بحذر على الأرضية المبللة.'}
+    ],
+    forms: [{ar:'أكمل الاستمارة الخيالية باستخدام بيانات افتراضية فقط.'}],
+    polite: [
+      {scene:'You need help in a shop',level:'Friendly',prompt:'You need help finding an item. What can you say?',options:['“Excuse me, could you help me?”','“Help me now!”','“Go away.”'],answer:0,ar:'تحتاج إلى المساعدة في إيجاد منتج. ماذا تقول؟',arOptions:['عذرًا، هل يمكنك مساعدتي؟','ساعدني الآن!','ابتعد'],explain:'“Excuse me” is a polite way to get someone’s attention.',arExplain:'تُستخدم Excuse me لجذب انتباه شخص بأدب.'},
+      {scene:'You cannot attend',level:'Friendly',prompt:'A friend invites you, but you are busy. What is a polite reply?',options:['“Thanks for inviting me, but I can’t today.”','“No. Stop.”','“Never ask me.”'],answer:0,ar:'دعاك صديق لكنك مشغول. ما الرد المهذب؟',arOptions:['شكرًا على دعوتي، لكنني لا أستطيع اليوم.','لا. توقف.','لا تسألني أبدًا.'],explain:'Thank the person and give a clear, kind refusal.',arExplain:'اشكر الشخص وارفض بوضوح ولطف.'},
+      {scene:'You need clarification',level:'Polite request',prompt:'You did not hear the last sentence. What can you ask?',options:['“Could you repeat that, please?”','“Speak properly.”','“Forget it.”'],answer:0,ar:'لم تسمع الجملة الأخيرة. ماذا تطلب؟',arOptions:['هل يمكنك إعادة ذلك، من فضلك؟','تحدث بشكل صحيح.','انس الأمر.'],explain:'Ask politely for repetition when you miss something.',arExplain:'اطلب إعادة الكلام بأدب عندما لا تسمعه.'}
+    ],
+    kitchen: [
+      {title:'Make a cup of tea',scene:'Recipe sequence',steps:['Fill the kettle with water.','Boil the water safely.','Put a tea bag in a cup.','Pour the hot water into the cup.','Let it steep, then remove the tea bag.'],ar:'رتّب خطوات إعداد كوب شاي.',explain:'Boil water before pouring it over the tea bag.',arExplain:'اغلِ الماء قبل سكبه على كيس الشاي.'}
+    ],
+    phone: [
+      {speaker:'Receptionist',scene:'Calling a clinic',line:'Good morning. How can I help?',prompt:'You want to book an appointment. What do you say?',options:['“I’d like to make an appointment, please.”','“Doctor now.”','“Goodbye”'],answer:0,ar:'تريد حجز موعد. ماذا تقول؟',arOptions:['أود حجز موعد، من فضلك.','الطبيب الآن.','إلى اللقاء'],explain:'State your request politely and clearly.',arExplain:'عبّر عن طلبك بوضوح وأدب.'},
+      {speaker:'Shop assistant',scene:'Calling a shop',line:'Hello, how can I help?',prompt:'You want to ask about a product. What is a good opening?',options:['“Hello, I have a question about a product.”','“Give it to me.”','“What is this place?”'],answer:0,ar:'تريد السؤال عن منتج. ما البداية المناسبة؟',arOptions:['مرحبًا، لدي سؤال عن منتج.','أعطني إياه.','ما هذا المكان؟'],explain:'A brief greeting and a clear request make a good opening.',arExplain:'التحية القصيرة والطلب الواضح بداية جيدة.'},
+      {speaker:'Customer service',scene:'Calling about a bill',line:'How can I help you?',prompt:'Your bill looks wrong. What can you say?',options:['“I’m calling to ask about a charge on my bill.”','“You are all wrong.”','“Give me your password.”'],answer:0,ar:'تبدو فاتورتك غير صحيحة. ماذا تقول؟',arOptions:['أتصل للاستفسار عن رسم في فاتورتي.','أنتم جميعًا مخطئون.','أعطني كلمة مرورك.'],explain:'Describe the issue calmly and never share passwords.',arExplain:'اشرح المشكلة بهدوء ولا تشارك كلمات المرور.'}
+    ]
+  };
+
   // Arabic UI labels and common activity text. Unmapped text remains English, never silently misrepresented.
   const arText = {
     'REAL-WORLD NUMBERS':'الأرقام في الحياة اليومية','READ THE ENVIRONMENT':'قراءة اللافتات','PRACTICAL PAPERWORK':'الاستمارات العملية','TONE & SOCIAL SKILLS':'اللباقة والتواصل','KITCHEN & SHOPPING':'المطبخ والتسوق','SPEAKING IN REAL LIFE':'التحدث في الحياة اليومية',
@@ -258,7 +285,7 @@
     const policy = window.EpiphanyThinkLab && window.EpiphanyThinkLab.getGameDifficulty
       ? window.EpiphanyThinkLab.getGameDifficulty('life-'+id, module.skill) : {level:'guided'};
     state.difficulty = policy.level || 'guided';
-    state.pool = id === 'forms' ? [data.forms[0]] : (data[id] || []).slice();
+    state.pool = id === 'forms' ? [data.forms[0]] : (state.difficulty === 'guided' ? (guidedData[id] || data[id] || []).slice() : (data[id] || []).slice());
     if (state.difficulty === 'challenge' && id !== 'forms') state.pool = state.pool.concat(challengeData[id] || []);
     // Keep challenge cards later in the run, so a round never changes level mid-session.
     render();
