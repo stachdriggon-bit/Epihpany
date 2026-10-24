@@ -31,7 +31,7 @@
   <script src="account.js?v=developer-access-20261023" defer></script>
   <script src="notifications.js?v=notifications-20261023" defer></script>
   <script src="data-translation-ar.js?v=translation-library-v20-20261024"></script>
-  <script src="app.js?v=dictation-fix-v2-20261024" defer></script>
+  <script src="app.js?v=challenge-modes-20261024-1" defer></script>
 </head>
 <body data-theme="light">
 
@@ -305,6 +305,20 @@
           <h2>Quest explorer</h2><p>Finish 5 quests this week. Small steps add up.</p>
           <div class="challenge-progress"><div class="bar"><i id="weekly-bar"></i></div><span id="weekly-progress-label">0/5</span></div>
           <p class="challenge-reward" id="weekly-reward">Reward: +60 bonus XP</p><span class="challenge-status" id="weekly-status" aria-live="polite"></span><button class="btn btn-ghost challenge-action" type="button" id="weekly-start">Start a quest</button>
+        </article>
+        <article class="challenge-card daily-run-card">
+          <div class="challenge-top"><span class="challenge-icon">▦</span><span class="challenge-tag">DAILY CHALLENGE</span><span class="challenge-date">Same for everyone</span></div>
+          <h2>Daily #<span id="daily-challenge-number">—</span></h2>
+          <p>Five shared questions each day. Compare your first-try result with friends using a Wordle-style score card.</p>
+          <p class="challenge-reward" id="daily-challenge-status">One attempt per day · New challenge tomorrow</p>
+          <button class="btn challenge-action" type="button" id="daily-challenge-start">Play today’s challenge</button>
+        </article>
+        <article class="challenge-card one-life-card">
+          <div class="challenge-top"><span class="challenge-icon">♥</span><span class="challenge-tag">ONE LIFE</span><span class="challenge-date">Advanced mode</span></div>
+          <h2>One mistake. Run over.</h2>
+          <p>Answer as many questions as you can. Your first wrong answer ends the run — no retries and no review round.</p>
+          <p class="challenge-reward">Personal best: <b id="one-life-best">0</b></p>
+          <button class="btn btn-ghost challenge-action" type="button" id="one-life-start">Start One Life</button>
         </article>
         <article class="challenge-card freeze-card">
           <div class="challenge-top"><span class="challenge-icon">❄</span><span class="challenge-tag">STREAK FREEZE</span></div>
