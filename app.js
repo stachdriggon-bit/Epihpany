@@ -83,6 +83,15 @@
     const hint = String(q.hint || '').toLowerCase().trim();
     const why = String(q.why_en || '').toLowerCase();
     // Prefer the question's explicit hint and sentence structure over incidental words in explanations.
+    // High-priority distinctions: these sentence patterns should win over generic collocation words in explanations.
+    if (/\b(?:look forward to|used to|suggest(?:ed)? .*ing|denied .*ing|avoid .*ing|enjoy .*ing|insist(?:ed)? on .*ing|needs? testing|needs? revising|suggested him to|suggested to applying)\b/.test(prompt)) return 'verb-patterns';
+    if (/\b(?:no sooner|hardly .* when|hardly i arrived|little did .*|not only did .*|only when .* did|rarely .* reached|not until .* did|scarcely .* when)\b/.test(prompt)) return 'inversion';
+    if (/\b(?:despite of|in spite the|although .* but|not so much .* than|much as .* admire|despite .* exhausted)\b/.test(prompt)) return 'concession';
+    if (/\b(?:he has visited .* last year|has visited .* last year|has .* yesterday|have .* last week)\b/.test(prompt)) return 'past-time';
+    if (/\b(?:can you give me an advice|a good news|less books|much people|there are much people|the news are|data (?:shows|indicates)|implications has)\b/.test(prompt)) return 'countable-uncountable';
+    if (/\b(?:is agree|am agree|are agree)\b/.test(prompt)) return 'verb-patterns';
+    if (/\b(?:if i will see her|if i would have|if i knew .* i will|as if .* but .* started last year|as though)\b/.test(prompt)) return 'conditionals';
+
     if (/\b(he|she|it) (?:go|live|play|work)\b|\b(?:every day|on fridays)\b/.test(prompt) && /\b(?:go|live|play|work|study)\b/.test(prompt)) return 'present-simple';
     if (/\bi am agree\b|\bremove am\b/.test(prompt+' '+why)) return 'verb-patterns';
     if (/\b(?:they|we|you|i|he|she|it) (?:is|are|am|was|were)\b|\b(?:this are|those is|there is many|there are a cat|friends is|we was|they is|he are|i is)\b/.test(prompt)) return 'am-is-are';
