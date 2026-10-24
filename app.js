@@ -1860,8 +1860,13 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     const levelIds = LEVELS.map(l => l.id);
     const currentIndex = Math.max(0, levelIds.indexOf(level));
     const targetIndex = Math.max(0, Math.min(levelIds.length - 1, currentIndex + (challengeMode ? 0 : state.adaptiveOffset)));
-    const targetLevel = levelIds[targetIndex] || level;
-    const levelPool = game.questions.filter(q => q.level === targetLevel);
+    let targetLevel = levelIds[targetIndex] || level;
+    let levelPool = game.questions.filter(q => q.level === targetLevel);
+    // Only move to an adjacent CEFR band when the game has enough questions there.
+    if (targetLevel !== level && levelPool.length < 5) {
+      targetLevel = level;
+      levelPool = game.questions.filter(q => q.level === level);
+    }
     const generalPool = game.questions.filter(q => !q.level);
     const shuffle = list => {
       const copy = list.slice();
