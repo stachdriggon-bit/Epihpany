@@ -36,6 +36,8 @@ h1,h2,h3,p,ul,ol{margin:0}
 h1,h2,h3{font-family:var(--display);letter-spacing:-.02em;line-height:1.1}
 .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 :focus-visible{outline:3px solid var(--focus);outline-offset:3px;border-radius:10px}
+/* Hide the ring only for the temporary focus applied after a navigation click. */
+.view h1.programmatic-view-focus:focus{outline:none}
 [hidden]{display:none!important}
 
 /* ---------- header ---------- */
