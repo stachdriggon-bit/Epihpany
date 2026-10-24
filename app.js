@@ -1871,7 +1871,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
 
   function next() {
     if (!G || !G.answered) return;
-    if (G.i < G.questions.length - 1) { G.i++; renderQuestion(); }
+    if (G.i < G.questions.length - 1) { G.i++; if(G.type==='grammar'&&!G.reviewMode)renderGrammarModeQuestion();else renderQuestion(); }
     else if (!G.reviewMode && G.questions.some((item,i)=>G.results[i]==='no')) {
       G.originalQuestions=G.questions.slice(); G.originalResults=G.results.slice(); G.originalScore=G.score; G.originalTotal=G.questions.length;
       G.questions=G.originalQuestions.filter((item,i)=>G.originalResults[i]==='no'); G.reviewMode=true; G.i=0; G.score=0; G.results=[]; G.answered=false;
