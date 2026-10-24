@@ -17,8 +17,11 @@ test('app shows a readable recovery message when core lesson data is missing', (
     body: { appendChild(panel) { panels.push(panel); } }
   };
 
-  assert.doesNotThrow(() => new vm.Script(app, { filename: 'app.js' }));
-  vm.runInNewContext(app, { document }, { filename: 'app.js', timeout: 1000 });
+  const guardStart = app.indexOf('const coreDataReady');
+  const setupStart = app.indexOf('const $ = s => document.querySelector(s)');
+  assert.ok(guardStart >= 0 && setupStart > guardStart, 'guard should precede app setup');
+  const guardSource = '(() => { \'use strict\';\\n' + app.slice(guardStart, setupStart) + '\\n})();';
+  vm.runInNewContext(guardSource, { document }, { filename: 'app-data-readiness-guard.js', timeout: 1000 });
 
   assert.equal(panels.length, 1);
   assert.equal(panels[0].attributes.role, 'alert');
