@@ -412,6 +412,11 @@ window.EPIPHANY_AR_TRANSLATION_PHRASES = Object.assign(window.EPIPHANY_AR_TRANSL
       }
     }
     if(typeof value.en==='string'&&typeof value.ar==='string')put(value.en,value.ar);
+    // Several content banks use a plain "ar" field beside a differently named English field.
+    // Register these pairs explicitly so story pages and prompts receive exact translations too.
+    if(typeof value.text==='string'&&typeof value.ar==='string')put(value.text,value.ar);
+    if(typeof value.prompt==='string'&&typeof value.prompt_ar==='string')put(value.prompt,value.prompt_ar);
+    if(typeof value.instruction==='string'&&typeof value.instruction_ar==='string')put(value.instruction,value.instruction_ar);
     if(typeof value.explain==='string'&&typeof value.ar==='string'&&value.ar.trim()&&!value.explain_ar)put(value.explain,value.ar);
     Object.values(value).forEach(visit);
   }
