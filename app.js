@@ -6,6 +6,7 @@
   const $$ = s => [...document.querySelectorAll(s)];
   const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const ic = n => '<svg aria-hidden="true"><use href="#i-' + n + '"/></svg>';
+  if(!document.querySelector('link[href*="mini-games.css"]')) { const miniStyle=document.createElement('link'); miniStyle.rel='stylesheet'; miniStyle.href='mini-games.css?v=mini-games-20261024'; document.head.appendChild(miniStyle); }
   const dayKey = (d = new Date()) => [d.getFullYear(), String(d.getMonth() + 1).padStart(2, '0'), String(d.getDate()).padStart(2, '0')].join('-');
   const weekKey = (d = new Date()) => { const x = new Date(d.getFullYear(), d.getMonth(), d.getDate()); x.setDate(x.getDate() - ((x.getDay() + 6) % 7)); return dayKey(x); };
   const DAILY_QUESTS = [
