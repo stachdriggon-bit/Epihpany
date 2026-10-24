@@ -368,6 +368,33 @@
       renderHeader();
       renderHome();
       return {xp:gain};
+    },
+    getInsights() {
+      const defs = [
+        {id:'vocabulary',label:'Vocabulary',game:'odd',hint:'Spot meaning patterns and word relationships.'},
+        {id:'grammar',label:'Grammar',game:'translator',hint:'Choose accurate, natural sentence forms.'},
+        {id:'listening',label:'Listening',game:'maze',hint:'Recognise spoken words and similar sounds.'},
+        {id:'conversation',label:'Natural expression',game:'translator',hint:'Choose how people naturally express an idea.'},
+        {id:'reading',label:'Reading & inference',game:'detective',hint:'Connect details and infer what is most likely.'},
+        {id:'spelling',label:'Spelling & word logic',game:'wordladder',hint:'Notice letter patterns and transform words.'}
+      ];
+      const signals = state.adaptiveSignals && typeof state.adaptiveSignals === 'object' ? state.adaptiveSignals : {};
+      const skills = defs.map(d => {
+        const b = signals[d.id] || {};
+        const attempts = Math.max(0, Number(b.attempts) || 0), correct = Math.max(0, Number(b.correct) || 0), errors = Math.max(0, Number(b.errors) || 0);
+        return {...d, attempts, correct, errors, accuracy:attempts ? Math.round(correct / attempts * 100) : null};
+      });
+      const measured = skills.filter(x => x.attempts > 0);
+      const eligible = skills.filter(x => x.attempts >= 2);
+      const pool = eligible.length ? eligible : measured;
+      pool.sort((a,b) => (a.accuracy-b.accuracy) || (b.errors-a.errors) || (b.attempts-a.attempts));
+      const focus = pool[0] || null;
+      return {
+        skills,
+        totalAttempts:skills.reduce((n,x)=>n+x.attempts,0),
+        totalCorrect:skills.reduce((n,x)=>n+x.correct,0),
+        focus:focus ? {id:focus.id,label:focus.label,game:focus.game,hint:focus.hint,attempts:focus.attempts,accuracy:focus.accuracy,reason:focus.attempts<2?'This is an early signal. A few more answers will make the recommendation more reliable.':'This is currently your lowest-accuracy area among skills with enough practice data.'} : {id:'vocabulary',label:'Vocabulary',game:'odd',hint:'Start with a short pattern challenge to establish your baseline.',attempts:0,accuracy:null,reason:'No Think Lab skill data yet. Your first challenges will establish a starting point.'}
+      };
     }
   };
 
