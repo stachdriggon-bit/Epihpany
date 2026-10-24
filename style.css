@@ -1607,3 +1607,27 @@ body[data-theme="dark"] .story-word.is-speaking{background:#705b1d!important;col
 body[data-theme="dark"] .story-dictation-feedback.is-correct{background:#173d2c;color:#b9f3d1}
 body[data-theme="dark"] .story-dictation-feedback.is-wrong{background:#4b3417;color:#ffe0a8}
 @media(max-width:560px){.story-audio-tools{gap:7px;padding:10px}.story-audio-tools>span{width:100%}.story-audio-tools .btn{flex:1}.story-dictation-form{padding:12px}.story-dictation-form .btn{width:100%}}
+
+
+/* Daily Challenge, adaptive practice, and One Life */
+.daily-run-card{background:#E8F7EF;border-color:#173D31}
+.one-life-card{background:#FFF0E9;border-color:#713C2A}
+.daily-run-card .challenge-icon{background:#C7F0D8}
+.one-life-card .challenge-icon{background:#FFD8C7}
+.challenge-result .daily-score-grid{display:flex;justify-content:center;gap:10px;margin:22px 0 12px;flex-wrap:wrap}
+.daily-score-cell{display:grid;place-items:center;width:52px;height:52px;border:2px solid var(--ink);border-radius:13px;font-size:25px;font-weight:900}
+.daily-score-cell.is-correct{background:#BFEFD4;color:#135A3D}
+.daily-score-cell.is-wrong{background:#FFD8D4;color:#852F2B}
+.daily-share-text{font-size:18px;text-align:center;letter-spacing:2px}
+.one-life-note{font-weight:800;text-align:center}
+.adaptive-note{padding:10px 13px;border-radius:12px;background:var(--violet-soft);color:var(--ink);font-weight:750}
+.challenge-action:disabled{opacity:.65;cursor:not-allowed;filter:grayscale(.2)}
+body[data-theme="dark"] .daily-run-card{background:#1F3B31;border-color:#8BD5AF}
+body[data-theme="dark"] .one-life-card{background:#482F2A;border-color:#E8A58A}
+body[data-theme="dark"] .daily-run-card .challenge-icon{background:#244F3D;color:#E6FFF0}
+body[data-theme="dark"] .one-life-card .challenge-icon{background:#694035;color:#FFF0E8}
+body[data-theme="dark"] .daily-score-cell{border-color:#DDE2FF}
+body[data-theme="dark"] .daily-score-cell.is-correct{background:#245C43;color:#D8FFE8}
+body[data-theme="dark"] .daily-score-cell.is-wrong{background:#703B39;color:#FFE1DF}
+body[data-theme="dark"] .adaptive-note{background:#302C4C;color:#F1EEFF}
+@media(max-width:700px){.daily-score-cell{width:44px;height:44px;border-radius:10px}.daily-run-card,.one-life-card{min-width:0}}
