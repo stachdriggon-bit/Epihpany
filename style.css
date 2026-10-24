@@ -2122,3 +2122,11 @@ body.immersion-week-active .translate-btn{display:none!important}
 body[data-theme="dark"] .depth-tool-card,body[data-theme="dark"] .treasure-reveal{background:var(--ground)}
 body[data-theme="dark"] .monthly-word-thread{background:#302c4c}
 @media(max-width:760px){.depth-tools-grid{grid-template-columns:1fr}.monthly-word-thread{grid-template-columns:1fr}.monthly-word-thread .btn{grid-column:1;grid-row:auto;justify-self:start}.monthly-word-thread-kicker,.monthly-word-thread p,.monthly-word-thread small{grid-column:1}}
+
+.monthly-word-in-feedback,.story-month-word{margin:15px 0;padding:14px 16px;border:1px solid color-mix(in srgb,var(--focus) 28%,var(--line));border-radius:15px;background:var(--violet-soft)}
+.monthly-word-in-feedback>span,.story-month-word>span{display:block;font-size:10px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:var(--focus)}
+.monthly-word-in-feedback>strong,.story-month-word>strong{display:block;margin:5px 0;font-size:20px}
+.monthly-word-in-feedback p,.story-month-word p{margin:5px 0 10px;color:var(--ink-2);font-size:12px;line-height:1.6}
+.monthly-word-in-feedback .btn{margin-top:4px}
+.story-month-word{margin:12px 0 16px}
+body[data-theme="dark"] .monthly-word-in-feedback,body[data-theme="dark"] .story-month-word{background:#302c4c}
