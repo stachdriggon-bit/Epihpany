@@ -2615,9 +2615,11 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     toast('Epiphany was installed successfully.');
   });
   if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol)) {
-    window.addEventListener('load', () => navigator.serviceWorker.register('./service-worker.js').catch(() => {
+    const registerOfflineSupport = () => navigator.serviceWorker.register('./service-worker.js').catch(() => {
       toast('Offline mode could not be enabled in this browser.');
-    }));
+    });
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', registerOfflineSupport, {once:true});
+    else registerOfflineSupport();
   }
 
   $('#ar-toggle').addEventListener('click', toggleArabic);
