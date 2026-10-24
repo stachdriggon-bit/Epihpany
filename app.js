@@ -1428,7 +1428,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     else{target.insertAdjacentElement('afterend',button);button.insertAdjacentElement('afterend',output);}
   }
   function enhanceTranslationControls(root) {
-    if(!root||!state.translationEnabled||(ST&&root.id!=='sheet'))return;
+    if(!root||!state.translationEnabled)return;
     root.querySelectorAll('.q-text,.q-sub,.typing-prompt,.spot-text,.mg-route,.answer,.mg-card,.mg-tile,.question-text,.prompt-text,.instruction-text,.story-prompt,.story-response,.story-option,.story-text,.story-reader-title,.story-help-note,.story-pronunciation,.story-example,.world-instruction,.world-dialogue,.wotd-definition,.aha-note,.sheet p:not(.arabic),.sheet h3').forEach(el=>{
       // Story/World/WOTD elements are included only through explicit semantic selectors above.
       if(el.classList.contains('mg-route')&&el.nextElementSibling&&el.nextElementSibling.classList.contains('mg-route-ar'))return;
