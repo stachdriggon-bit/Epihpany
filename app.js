@@ -1912,7 +1912,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     } else {
       freshPool = levelPool.filter(q => !recentIds.has(questionKey(q)));
     }
-    if (selected.some(q => recentIds.has(questionKey(q))) && freshPool.length >= selected.length) {
+    if (challengeMode !== 'daily' && selected.some(q => recentIds.has(questionKey(q))) && freshPool.length >= selected.length) {
       selected = ['personalized','mistakes','grammar'].includes(type) && freshPool.some(q=>q.trap&&q.id) ? shuffle(weightedGrammarPick(freshPool, selected.length)) : shuffle(freshPool).slice(0, selected.length);
     }
     state.recentQuestions[recentKey] = [...recentList, ...selected.map(questionKey)].filter(Boolean).slice(-12);
