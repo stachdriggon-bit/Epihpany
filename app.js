@@ -366,17 +366,48 @@
     if (typeof raw==='string'&&raw.trim()) return {word:raw.trim(),meaning:String(fallback||'Review this word in context.'),level:currentLevel().id};
     return null;
   }
+  const REVIEW_INTERVALS=[1,3,7,14,30];
+  const WORD_COLLOCATIONS={
+    decision:['make a decision','a difficult decision','decision-making'], improve:['improve your skills','improve performance','greatly improve'],
+    take:['take a break','take responsibility','take your time'], make:['make a mistake','make progress','make a difference'],
+    do:['do your homework','do your best','do research'], effort:['make an effort','put effort into','a great effort'],
+    advice:['give advice','ask for advice','a piece of advice'], experience:['gain experience','a valuable experience','work experience'],
+    opportunity:['seize an opportunity','a great opportunity','opportunity to learn'], achieve:['achieve a goal','achieve success','achieve results'],
+    curious:['curious about something','a curious person','curiosity about'], notice:['notice a difference','notice a change','barely notice'],
+    journey:['go on a journey','a long journey','learning journey'], confident:['feel confident','confident about','build confidence']
+  };
+  function wordContext(word,meaning){
+    const key=String(word||'').toLowerCase();
+    const daily=typeof WOTD_WORDS!=='undefined'&&WOTD_WORDS.find(x=>x.word.toLowerCase()===key);
+    const examples=daily?[daily.example, 'I learned the word '+word+' by using it in a real situation.']:[
+      'I used “'+word+'” while talking about '+(meaning||'everyday life')+'.',
+      'Try to use “'+word+'” in a conversation today.'
+    ];
+    return {examples,collocations:WORD_COLLOCATIONS[key]||['use '+key+' naturally','learn the word in context','a common use of '+key]};
+  }
   function addReview(raw,fallback) {
     const p=wordParts(raw,fallback); if(!p)return;
-    const old=state.review.find(x=>x.word.toLowerCase()===p.word.toLowerCase());
-    if(old){old.due=dayKey();old.interval=0;old.streak=0;old.meaning=p.meaning||old.meaning;}
-    else state.review.push({...p,due:dayKey(),interval:0,streak:0,attempts:0});
+    const key=p.word.toLowerCase();
+    const old=state.review.find(x=>x.word.toLowerCase()===key);
+    if(old){old.due=dayKey();old.box=1;old.interval=0;old.streak=0;old.exerciseStage=0;old.meaning=p.meaning||old.meaning;old.errors=Number(old.errors)||0;old.errors++;}
+    else state.review.push({...p,due:dayKey(),box:1,interval:0,streak:0,attempts:0,errors:1,exerciseStage:0,mastered:false});
+    save();
   }
   function renderReview() {
-    const due=state.review.filter(w=>!w.due||w.due<=dayKey());
-    if(!due.length)return '<section class="review-panel"><div class="review-head"><div><p class="kicker">SPACED REPETITION</p><h2>Daily word review</h2></div><span class="review-count">✓</span></div><p class="review-note">You’re all caught up. Words you miss will appear here for short daily practice.</p></section>';
-    const w=due[0];
-    return '<section class="review-panel"><div class="review-head"><div><p class="kicker">SPACED REPETITION</p><h2>Daily word review</h2></div><span class="review-count">'+due.length+' due</span></div><p class="review-note">Try to recall the meaning before revealing it. A short session is enough.</p><article class="review-card"><div class="review-word"><b>'+esc(w.word)+'</b><button class="listen-btn" data-speak="'+esc(w.word)+'" aria-label="Listen to '+esc(w.word)+'">'+ic('sound')+' Listen</button></div><p id="review-meaning" hidden>'+esc(w.meaning)+'</p><button class="btn btn-ghost" id="reveal-review">Reveal meaning</button><div class="review-actions" id="review-actions" hidden><button class="btn btn-ghost" data-review="again" data-word="'+esc(w.word)+'">Need practice</button><button class="btn" data-review="known" data-word="'+esc(w.word)+'">I knew it</button></div></article></section>';
+    const today=dayKey(), due=state.review.filter(w=>!w.due||w.due<=today);
+    const hard=state.review.filter(w=>(Number(w.errors)||0)>=2);
+    const head='<div class="review-head"><div><p class="kicker">SPACED REPETITION</p><h2>Daily word review</h2></div><span class="review-count">'+due.length+' due</span></div>';
+    const hardPanel='<section class="hard-words"><div class="review-head"><div><p class="kicker">PERSONAL WORD LIST</p><h2>My difficult words</h2></div><span class="review-count">'+hard.length+'</span></div>'+(hard.length?'<div class="hard-word-list">'+hard.slice().sort((a,b)=>(b.errors||0)-(a.errors||0)).slice(0,8).map(x=>'<article class="hard-word"><b>'+esc(x.word)+'</b><span>'+esc(x.meaning)+'</span><small>'+Number(x.errors||0)+' mistakes</small><button class="btn btn-ghost" data-hard-review="'+esc(x.word)+'">Practise</button></article>').join('')+'</div>':'<p class="review-note">Words you miss twice or more will appear here automatically.</p>')+'</section>';
+    if(!due.length)return '<section class="review-panel">'+head+'<p class="review-note">You’re all caught up. Your next review is scheduled automatically.</p></section>'+hardPanel;
+    const w=due[0], ctx=wordContext(w.word,w.meaning), stage=Math.max(0,Math.min(3,Number(w.exerciseStage)||0));
+    const stageNames=['Recall the meaning','Understand it in context','Write it from listening','Use it in a sentence'];
+    let exercise='';
+    if(stage===0)exercise='<p class="review-note">First, recall the meaning without looking. Then reveal it and rate your answer.</p><p id="review-meaning" hidden>'+esc(w.meaning)+'</p><button class="btn btn-ghost" id="reveal-review">Reveal meaning</button>';
+    if(stage===1)exercise='<p class="review-note">Read the examples and collocations. Can you explain how the word is used?</p><div class="word-examples">'+ctx.examples.map((x,i)=>'<p><b>Example '+(i+1)+':</b> '+esc(x)+'</p>').join('')+'</div><p class="word-collocations"><b>Common combinations:</b> '+ctx.collocations.map(esc).join(' · ')+'</p><button class="btn" data-review-stage-success="'+esc(w.word)+'">I understand the context</button>';
+    if(stage===2)exercise='<p class="review-note">Listen to the word, then type exactly what you hear.</p><button class="btn btn-ghost" data-speak="'+esc(w.word)+'">'+ic('sound')+' Play word</button><form class="word-dictation" data-word-dictation="'+esc(w.word)+'"><input name="typedWord" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Type the word you heard" required><button class="btn" type="submit">Check spelling</button></form>';
+    if(stage===3)exercise='<p class="review-note">Write your own sentence using the word. The goal is meaningful use, not memorising a definition.</p><textarea class="word-own-sentence" data-own-sentence="'+esc(w.word)+'" rows="2" placeholder="Write a sentence with '+esc(w.word)+'…"></textarea><button class="btn" data-review-sentence="'+esc(w.word)+'">Check my sentence</button><p class="review-note">Self-check: is the sentence understandable and is the word used correctly?</p>';
+    const box=Math.max(1,Math.min(5,Number(w.box)||1));
+    return '<section class="review-panel">'+head+'<p class="review-note">Box '+box+' of 5 · Next interval: '+REVIEW_INTERVALS[box-1]+' day'+(REVIEW_INTERVALS[box-1]===1?'':'s')+' · Exercise '+(stage+1)+' of 4</p><article class="review-card"><div class="review-word"><b>'+esc(w.word)+'</b><button class="listen-btn" data-speak="'+esc(w.word)+'" aria-label="Listen to '+esc(w.word)+'">'+ic('sound')+' Listen</button></div><p class="review-stage-title">'+stageNames[stage]+'</p>'+exercise+((stage===0)?'<div class="review-actions" id="review-actions" hidden><button class="btn btn-ghost" data-review="again" data-word="'+esc(w.word)+'">I need more practice</button><button class="btn" data-review="known" data-word="'+esc(w.word)+'">I recalled it</button></div>':'')+'</article></section>'+hardPanel;
   }
   function renderWotd() {
     const box=$('#wotd-card'); if(!box) return;
@@ -395,7 +426,7 @@
     const n=state.words.length, due=state.review.filter(w=>!w.due||w.due<=dayKey()).length;
     $('#words-count').textContent=n+(n===1?' word':' words')+' · '+due+' to review';
     const vault=!n?'<div class="empty"><div class="empty-ic">'+ic('book')+'</div><h2>Your vault is empty, for now.</h2><p>Answer vocabulary questions correctly to collect useful words.</p><button class="btn" data-game="vocabulary">'+ic('play')+'Find your first word</button></div>':
-      '<div class="vault">'+state.words.slice().reverse().map(w=>'<article class="word"><div class="word-title"><b>'+esc(w[0])+'</b><button class="listen-btn" data-speak="'+esc(w[0])+'" aria-label="Listen to '+esc(w[0])+'">'+ic('sound')+' Listen</button></div><span>'+esc(w[1])+'</span><em>'+esc(w[2]||'A1')+'</em></article>').join('')+'</div>';
+      '<div class="vault">'+state.words.slice().reverse().map(w=>{const info=wordContext(w[0],w[1]);return '<article class="word"><div class="word-title"><b>'+esc(w[0])+'</b><button class="listen-btn" data-speak="'+esc(w[0])+'" aria-label="Listen to '+esc(w[0])+'">'+ic('sound')+' Listen</button></div><span>'+esc(w[1])+'</span><em>'+esc(w[2]||'A1')+'</em><div class="word-examples">'+info.examples.map((x,i)=>'<p><b>Example '+(i+1)+':</b> '+esc(x)+'</p>').join('')+'</div><p class="word-collocations"><b>Common combinations:</b> '+info.collocations.map(esc).join(' · ')+'</p></article>';}).join('')+'</div>';
     $('#words-body').innerHTML=renderReview()+'<h2 class="vault-heading">Your collected words</h2>'+vault;
     const reveal=$('#reveal-review'); if(reveal)reveal.addEventListener('click',()=>{$('#review-meaning').hidden=false;$('#review-actions').hidden=false;reveal.hidden=true;});
   }
@@ -1501,7 +1532,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     const act=e.target.closest('[data-story-action]');
     if(act&&ST){const action=act.dataset.storyAction;if(action==='next'){storyNext();return;}if(action==='prev'&&ST.page>0){ST.page--;renderStoryPage();return;}if(action==='listen-page'){speak(ST.story.pages[ST.page].text);return;}if(action==='listen-word'){speak(act.dataset.value);return;}if(action==='save-word'){saveStoryWord(act.dataset.value,act.dataset.meaning);openStoryWord(act.dataset.value,act.dataset.value);return;}if(action==='close-word'){const c=$('#story-word-card');if(c)c.hidden=true;return;}if(action==='back-reading'){ST.mode='read';ST.page=ST.story.pages.length-1;hideSheet();renderStoryPage();return;}if(action==='another'){const old=ST.story.id;ST=null;const next=STORIES.find(s=>s.id!==old&&storyLevelIndex(s.level)<=storyLevelIndex(currentLevel().id));startStory((next||STORIES[0]).id);return;}if(action==='words'){ST=null;closeGame();openView('words');return;}if(action==='close'){ST=null;closeGame();openView('stories');return;}}
     if(ST&&ST.mode==='quiz'&&e.target.closest('#go-next')){hideSheet();if(ST.qi<2){ST.qi++;ST.answered=false;renderStoryQuestion();}else finishStory();return;}
-    if(e.target.closest('#wotd-save')){const box=$('#wotd-card'),w=WOTD_WORDS.find(x=>x.word===box.dataset.word);if(w&&!state.words.some(x=>String(x[0]).toLowerCase()===w.word.toLowerCase())){state.words.push([w.word,w.meaning,w.level]);save();renderAll();toast('Word saved to your vault.');}return;}
+    if(e.target.closest('#wotd-save')){const box=$('#wotd-card'),w=WOTD_WORDS.find(x=>x.word===box.dataset.word);if(w&&!state.words.some(x=>String(x[0]).toLowerCase()===w.word.toLowerCase())){state.words.push([w.word,w.meaning,w.level]);addReview([w.word,w.meaning,w.level],w.meaning);save();renderAll();toast('Word saved to your vault and daily review.');}return;}
     const themeButton = e.target.closest('#theme-toggle');
     if (!themeButton) return;
     e.preventDefault();
@@ -2924,9 +2955,20 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     const sb=e.target.closest('[data-speak]'); if(sb){speak(sb.dataset.speak);return;}
     const rb=e.target.closest('[data-review]');
     if(rb){const item=state.review.find(w=>w.word===rb.dataset.word);if(item){item.attempts=(item.attempts||0)+1;
-      if(rb.dataset.review==='known'){const intervals=[1,3,7,14,30];item.streak=(item.streak||0)+1;item.interval=intervals[Math.min(item.streak-1,intervals.length-1)];const due=new Date();due.setDate(due.getDate()+item.interval);item.due=dayKey(due);}
-      else{item.streak=0;item.interval=0;item.due=dayKey();}
-      save();renderWords();toast(rb.dataset.review==='known'?'Nice! We’ll review it again later.':'No problem — this word stays in today’s practice.');}return;}
+      if(rb.dataset.review==='known'){
+        item.exerciseStage=1;
+        if((Number(item.box)||1)>=5&&item.mastered){item.streak=(item.streak||0)+1;}
+        else item.mastered=false;
+      }else{item.errors=(Number(item.errors)||0)+1;item.box=1;item.interval=0;item.streak=0;item.exerciseStage=0;item.mastered=false;item.due=dayKey();}
+      save();renderWords();toast(rb.dataset.review==='known'?'Good recall. Next, practise the word in context.':'No problem — this word stays in today’s practice.');}return;}
+    const stageSuccess=e.target.closest('[data-review-stage-success]');
+    if(stageSuccess){const item=state.review.find(w=>w.word===stageSuccess.dataset.reviewStageSuccess);if(item){item.exerciseStage=2;save();renderWords();toast('Great — now practise spelling from listening.');}return;}
+    const dictation=e.target.closest('[data-word-dictation]');
+    if(dictation){const item=state.review.find(w=>w.word===dictation.dataset.wordDictation),input=dictation.querySelector('[name="typedWord"]');if(item&&input){item.attempts=(item.attempts||0)+1;if(input.value.trim().toLowerCase()===item.word.toLowerCase()){item.exerciseStage=3;save();renderWords();toast('Correct spelling! Now use the word in your own sentence.');}else{item.errors=(Number(item.errors)||0)+1;item.box=1;item.interval=0;item.streak=0;item.exerciseStage=0;item.mastered=false;item.due=dayKey();save();renderWords();toast('Not quite. The word returned to Box 1 for extra practice.');}}return;}
+    const ownSentence=e.target.closest('[data-review-sentence]');
+    if(ownSentence){const word=ownSentence.dataset.reviewSentence,item=state.review.find(w=>w.word===word),field=$('[data-own-sentence="'+CSS.escape(word)+'"]');if(item&&field&&field.value.trim().split(/\s+/).length>=3){item.exerciseStage=0;item.box=Math.min(5,(Number(item.box)||1)+1);item.interval=REVIEW_INTERVALS[item.box-1];item.streak=(item.streak||0)+1;item.mastered=item.box>=5;const due=new Date();due.setDate(due.getDate()+item.interval);item.due=dayKey(due);save();renderWords();toast('Nice sentence. Your word moved to Box '+item.box+'.');}else toast('Write a complete sentence of at least three words first.');return;}
+    const hard=e.target.closest('[data-hard-review]');
+    if(hard){const item=state.review.find(w=>w.word===hard.dataset.hardReview);if(item){item.due=dayKey();item.exerciseStage=0;save();renderWords();toast('Added to today’s review.');}return;}
     const moreToggle = e.target.closest('#dock-more-toggle');
     if (moreToggle) {
       const panel = $('#dock-more-panel'), open = !!panel && panel.hidden;
