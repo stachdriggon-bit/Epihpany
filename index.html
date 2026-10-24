@@ -41,7 +41,7 @@
   <script src="notifications.js?v=bc8b50b6" defer></script>
 <script src="telemetry.js?v=20261024m" defer></script>
 <script src="lazy-data.js?v=20261024n" defer></script>
-  <script src="app.js?v=20261024ar" defer></script>
+  <script src="app.js?v=20261024as" defer></script>
 <style>
   body:not(.epiphany-entered) > header.top,
   body:not(.epiphany-entered) > .bottom-nav,
@@ -172,6 +172,7 @@
           <button class="tools-action" id="translation-toggle" type="button" aria-pressed="true" aria-label="Toggle Arabic translation">ع <span>Arabic translation: On</span></button>
           <button class="tools-action" id="theme-toggle" type="button" aria-pressed="false" aria-label="Turn on dark mode">◐ <span>Dark mode</span></button>
           <button class="tools-action" id="open-voice" type="button" aria-label="Choose reader voice">🔊 <span>Reader voice</span></button>
+          <label class="tools-action" for="low-data-toggle"><input id="low-data-toggle" type="checkbox"> <span>Save data · use device voice</span></label>
           <button class="tools-action" id="export-progress" type="button" aria-label="Export progress to a file">↓ <span>Export progress</span></button>
           <button class="tools-action" id="import-progress" type="button" aria-label="Import progress from a file">↑ <span>Import progress</span></button>
           <label class="tools-action telemetry-setting" for="anonymous-telemetry"><input id="anonymous-telemetry" type="checkbox"> <span>Share anonymous usage & error reports (optional)</span></label>
