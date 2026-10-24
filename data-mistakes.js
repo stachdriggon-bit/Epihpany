@@ -5,6 +5,7 @@ const MISTAKE_QUESTIONS = [
     "level": "A1",
     "trap": "am-is-are",
     "sub": "Choose the correct sentence.",
+    "sub_ar": "اختر الجملة الصحيحة.",
     "prompt": "She ___ very tall.",
     "options": [
       "am",
@@ -22,6 +23,7 @@ const MISTAKE_QUESTIONS = [
     "level": "A1",
     "trap": "am-is-are",
     "sub": "Complete the sentence.",
+    "sub_ar": "أكمل الجملة.",
     "prompt": "I ___ ready for the lesson.",
     "options": [
       "is",
@@ -39,6 +41,7 @@ const MISTAKE_QUESTIONS = [
     "level": "A2",
     "trap": "am-is-are",
     "sub": "Choose the correct form.",
+    "sub_ar": "اختر الصيغة الصحيحة.",
     "prompt": "He ___ to work by bus every day.",
     "options": [
       "go",
@@ -56,6 +59,7 @@ const MISTAKE_QUESTIONS = [
     "level": "A2",
     "trap": "am-is-are",
     "sub": "Complete the sentence.",
+    "sub_ar": "أكمل الجملة.",
     "prompt": "They ___ at home right now.",
     "options": [
       "is",
@@ -73,6 +77,7 @@ const MISTAKE_QUESTIONS = [
     "level": "B1",
     "trap": "am-is-are",
     "sub": "Which sentence is correct?",
+    "sub_ar": "أيّ جملة صحيحة؟",
     "prompt": "My brother ___ not interested in football.",
     "options": [
       "do",
@@ -90,6 +95,7 @@ const MISTAKE_QUESTIONS = [
     "level": "B2",
     "trap": "am-is-are",
     "sub": "Choose the correct question.",
+    "sub_ar": "اختر السؤال الصحيح.",
     "prompt": "___ you familiar with this process?",
     "options": [
       "Do",
@@ -107,6 +113,7 @@ const MISTAKE_QUESTIONS = [
     "level": "C1",
     "trap": "am-is-are",
     "sub": "Complete the sentence.",
+    "sub_ar": "أكمل الجملة.",
     "prompt": "The results ___ consistent with the initial estimate.",
     "options": [
       "is",
@@ -124,6 +131,7 @@ const MISTAKE_QUESTIONS = [
     "level": "C2",
     "trap": "am-is-are",
     "sub": "Select the standard form.",
+    "sub_ar": "اختر الصيغة القياسية.",
     "prompt": "Neither explanation ___ entirely convincing.",
     "options": [
       "are",
@@ -141,6 +149,7 @@ const MISTAKE_QUESTIONS = [
     "level": "A1",
     "trap": "in-on-at",
     "sub": "Choose the correct preposition.",
+    "sub_ar": "اختر حرف الجر الصحيح.",
     "prompt": "My birthday is ___ May.",
     "options": [
       "at",
@@ -158,6 +167,7 @@ const MISTAKE_QUESTIONS = [
     "level": "A1",
     "trap": "in-on-at",
     "sub": "Complete the sentence.",
+    "sub_ar": "أكمل الجملة.",
     "prompt": "The class starts ___ 8:30.",
     "options": [
       "in",
@@ -175,6 +185,7 @@ const MISTAKE_QUESTIONS = [
     "level": "A2",
     "trap": "in-on-at",
     "sub": "Choose the natural sentence.",
+    "sub_ar": "اختر الجملة الطبيعية في الإنجليزية.",
     "prompt": "We have a meeting ___ Monday.",
     "options": [
       "in",
@@ -192,6 +203,7 @@ const MISTAKE_QUESTIONS = [
     "level": "A2",
     "trap": "in-on-at",
     "sub": "Choose the correct option.",
+    "sub_ar": "اختر الخيار الصحيح.",
     "prompt": "She lives ___ Algiers.",
     "options": [
       "at",
@@ -209,6 +221,7 @@ const MISTAKE_QUESTIONS = [
     "level": "B1",
     "trap": "in-on-at",
     "sub": "Complete the expression.",
+    "sub_ar": "أكمل التعبير.",
     "prompt": "I’m good ___ solving practical problems.",
     "options": [
       "in",
@@ -226,6 +239,7 @@ const MISTAKE_QUESTIONS = [
     "level": "B2",
     "trap": "in-on-at",
     "sub": "Choose the correct phrase.",
+    "sub_ar": "اختر العبارة الصحيحة.",
     "prompt": "The report was submitted ___ time, before the deadline.",
     "options": [
       "in",
@@ -243,6 +257,7 @@ const MISTAKE_QUESTIONS = [
     "level": "C1",
     "trap": "in-on-at",
     "sub": "Complete the sentence.",
+    "sub_ar": "أكمل الجملة.",
     "prompt": "The policy came ___ effect at the start of the year.",
     "options": [
       "in",
@@ -260,6 +275,7 @@ const MISTAKE_QUESTIONS = [
     "level": "C2",
     "trap": "in-on-at",
     "sub": "Choose the idiomatic phrase.",
+    "sub_ar": "اختر التعبير الاصطلاحي المناسب.",
     "prompt": "Her argument is ___ odds with the available evidence.",
     "options": [
       "in",
@@ -277,6 +293,7 @@ const MISTAKE_QUESTIONS = [
     "level": "A1",
     "trap": "adjective-order",
     "sub": "Choose the natural phrase.",
+    "sub_ar": "اختر التعبير الطبيعي في الإنجليزية.",
     "prompt": "She bought a ___ bag.",
     "options": [
       "leather small",
@@ -294,6 +311,7 @@ const MISTAKE_QUESTIONS = [
     "level": "A1",
     "trap": "adjective-order",
     "sub": "Choose the correct phrase.",
+    "sub_ar": "اختر العبارة الصحيحة.",
     "prompt": "He drives a ___ car.",
     "options": [
       "red fast",
@@ -311,6 +329,7 @@ const MISTAKE_QUESTIONS = [
     "level": "A2",
     "trap": "adjective-order",
     "sub": "Which sounds most natural?",
+    "sub_ar": "أيّ الخيارات يبدو أكثر طبيعية؟",
     "prompt": "They live in a ___ house.",
     "options": [
       "wooden beautiful old",
@@ -328,6 +347,7 @@ const MISTAKE_QUESTIONS = [
     "level": "A2",
     "trap": "adjective-order",
     "sub": "Complete the phrase.",
+    "sub_ar": "أكمل العبارة.",
     "prompt": "We stayed in a ___ hotel.",
     "options": [
       "comfortable modern Italian",
@@ -345,6 +365,7 @@ const MISTAKE_QUESTIONS = [
     "level": "B1",
     "trap": "adjective-order",
     "sub": "Choose the best phrase for a report.",
+    "sub_ar": "اختر أفضل تعبير لتقرير.",
     "prompt": "The team developed an ___ system.",
     "options": [
       "control efficient new",
@@ -362,6 +383,7 @@ const MISTAKE_QUESTIONS = [
     "level": "B2",
     "trap": "adjective-order",
     "sub": "Select the natural description.",
+    "sub_ar": "اختر الوصف الطبيعي.",
     "prompt": "It was an ___ decision.",
     "options": [
       "unexpected political major",
@@ -379,6 +401,7 @@ const MISTAKE_QUESTIONS = [
     "level": "C1",
     "trap": "adjective-order",
     "sub": "Choose the most idiomatic phrase.",
+    "sub_ar": "اختر التعبير الاصطلاحي الأكثر شيوعًا.",
     "prompt": "They proposed a ___ framework.",
     "options": [
       "regulatory comprehensive new",
@@ -396,6 +419,7 @@ const MISTAKE_QUESTIONS = [
     "level": "C2",
     "trap": "adjective-order",
     "sub": "Choose the most natural noun phrase.",
+    "sub_ar": "اختر العبارة الاسمية الأكثر طبيعية.",
     "prompt": "The study offers a ___ account of the dispute.",
     "options": [
       "historical nuanced unusually",
@@ -413,6 +437,7 @@ const MISTAKE_QUESTIONS = [
     "level": "A1",
     "trap": "present-perfect-vs-past",
     "sub": "Choose the correct sentence.",
+    "sub_ar": "اختر الجملة الصحيحة.",
     "prompt": "I ___ my homework yesterday.",
     "options": [
       "have finished",
@@ -430,6 +455,7 @@ const MISTAKE_QUESTIONS = [
     "level": "A2",
     "trap": "present-perfect-vs-past",
     "sub": "Complete the sentence.",
+    "sub_ar": "أكمل الجملة.",
     "prompt": "She ___ in this town since 2021.",
     "options": [
       "lived",
@@ -447,6 +473,7 @@ const MISTAKE_QUESTIONS = [
     "level": "A2",
     "trap": "present-perfect-vs-past",
     "sub": "Use “have been” to describe experience without a finished past time.",
+    "sub_ar": "استخدم «have been» لوصف تجربة دون تحديد وقت ماضٍ منتهٍ.",
     "prompt": "Choose the correct sentence about life experience.",
     "options": [
       "went to London three times",
@@ -464,6 +491,7 @@ const MISTAKE_QUESTIONS = [
     "level": "B1",
     "trap": "present-perfect-vs-past",
     "sub": "Choose the best option.",
+    "sub_ar": "اختر الخيار الأنسب.",
     "prompt": "I can’t open the file. I ___ my password.",
     "options": [
       "forgot",
@@ -481,6 +509,7 @@ const MISTAKE_QUESTIONS = [
     "level": "B1",
     "trap": "present-perfect-vs-past",
     "sub": "Complete the sentence.",
+    "sub_ar": "أكمل الجملة.",
     "prompt": "We ___ the museum last weekend.",
     "options": [
       "have visited",
@@ -498,6 +527,7 @@ const MISTAKE_QUESTIONS = [
     "level": "B2",
     "trap": "present-perfect-vs-past",
     "sub": "Choose the correct sentence.",
+    "sub_ar": "اختر الجملة الصحيحة.",
     "prompt": "By the time I arrived, the meeting ___.",
     "options": [
       "has started",
@@ -515,6 +545,7 @@ const MISTAKE_QUESTIONS = [
     "level": "C1",
     "trap": "present-perfect-vs-past",
     "sub": "Complete the sentence naturally.",
+    "sub_ar": "أكمل الجملة بصياغة طبيعية.",
     "prompt": "This is the first time I ___ such a detailed analysis.",
     "options": [
       "saw",
@@ -532,6 +563,7 @@ const MISTAKE_QUESTIONS = [
     "level": "C2",
     "trap": "present-perfect-vs-past",
     "sub": "Choose the precise option.",
+    "sub_ar": "اختر الخيار الأكثر دقة.",
     "prompt": "The committee ___ three revisions so far, and it may request another.",
     "options": [
       "requested",
@@ -549,6 +581,7 @@ const MISTAKE_QUESTIONS = [
     "level": "A1",
     "trap": "countable-uncountable",
     "sub": "Choose the correct sentence.",
+    "sub_ar": "اختر الجملة الصحيحة.",
     "prompt": "Can you give me some ___?",
     "options": [
       "advices",
@@ -566,6 +599,7 @@ const MISTAKE_QUESTIONS = [
     "level": "A1",
     "trap": "countable-uncountable",
     "sub": "Complete the sentence.",
+    "sub_ar": "أكمل الجملة.",
     "prompt": "I need some ___ about the bus schedule.",
     "options": [
       "informations",
@@ -583,6 +617,7 @@ const MISTAKE_QUESTIONS = [
     "level": "A2",
     "trap": "countable-uncountable",
     "sub": "Choose the correct phrase.",
+    "sub_ar": "اختر العبارة الصحيحة.",
     "prompt": "There are ___ on the table.",
     "options": [
       "three bread",
@@ -600,6 +635,7 @@ const MISTAKE_QUESTIONS = [
     "level": "A2",
     "trap": "countable-uncountable",
     "sub": "Choose the natural sentence.",
+    "sub_ar": "اختر الجملة الطبيعية في الإنجليزية.",
     "prompt": "The equipment ___ very expensive.",
     "options": [
       "are",
@@ -617,6 +653,7 @@ const MISTAKE_QUESTIONS = [
     "level": "B1",
     "trap": "countable-uncountable",
     "sub": "Complete the sentence.",
+    "sub_ar": "أكمل الجملة.",
     "prompt": "We received ___ useful feedback after the presentation.",
     "options": [
       "many",
@@ -634,6 +671,7 @@ const MISTAKE_QUESTIONS = [
     "level": "B2",
     "trap": "countable-uncountable",
     "sub": "Choose the correct option.",
+    "sub_ar": "اختر الخيار الصحيح.",
     "prompt": "The research ___ that the method is reliable.",
     "options": [
       "suggest",
@@ -651,6 +689,7 @@ const MISTAKE_QUESTIONS = [
     "level": "C1",
     "trap": "countable-uncountable",
     "sub": "Choose the natural phrase.",
+    "sub_ar": "اختر التعبير الطبيعي في الإنجليزية.",
     "prompt": "The company has made considerable ___ in efficiency.",
     "options": [
       "progresses",
@@ -668,6 +707,7 @@ const MISTAKE_QUESTIONS = [
     "level": "C2",
     "trap": "countable-uncountable",
     "sub": "Choose the formal sentence.",
+    "sub_ar": "اختر الجملة الرسمية.",
     "prompt": "The evidence ___ insufficient to support the claim.",
     "options": [
       "are",
@@ -685,6 +725,7 @@ const MISTAKE_QUESTIONS = [
     "level": "A1",
     "trap": "verb-patterns",
     "sub": "Choose the correct sentence.",
+    "sub_ar": "اختر الجملة الصحيحة.",
     "prompt": "I ___ with you.",
     "options": [
       "am agree",
@@ -702,6 +743,7 @@ const MISTAKE_QUESTIONS = [
     "level": "A2",
     "trap": "verb-patterns",
     "sub": "Complete the expression.",
+    "sub_ar": "أكمل التعبير.",
     "prompt": "It depends ___ the weather.",
     "options": [
       "of",
@@ -719,6 +761,7 @@ const MISTAKE_QUESTIONS = [
     "level": "A2",
     "trap": "verb-patterns",
     "sub": "Choose the correct sentence.",
+    "sub_ar": "اختر الجملة الصحيحة.",
     "prompt": "She is married ___ a doctor.",
     "options": [
       "with",
@@ -736,6 +779,7 @@ const MISTAKE_QUESTIONS = [
     "level": "B1",
     "trap": "verb-patterns",
     "sub": "Choose the natural sentence.",
+    "sub_ar": "اختر الجملة الطبيعية في الإنجليزية.",
     "prompt": "He suggested ___ the train instead.",
     "options": [
       "to take",
@@ -753,6 +797,7 @@ const MISTAKE_QUESTIONS = [
     "level": "B1",
     "trap": "verb-patterns",
     "sub": "Complete the sentence.",
+    "sub_ar": "أكمل الجملة.",
     "prompt": "We discussed ___ the deadline.",
     "options": [
       "about extending",
@@ -770,6 +815,7 @@ const MISTAKE_QUESTIONS = [
     "level": "B2",
     "trap": "verb-patterns",
     "sub": "Choose the correct sentence.",
+    "sub_ar": "اختر الجملة الصحيحة.",
     "prompt": "I look forward to ___ from you.",
     "options": [
       "hear",
@@ -787,6 +833,7 @@ const MISTAKE_QUESTIONS = [
     "level": "C1",
     "trap": "verb-patterns",
     "sub": "Choose the natural sentence.",
+    "sub_ar": "اختر الجملة الطبيعية في الإنجليزية.",
     "prompt": "The outcome depends ___ whether funding is approved.",
     "options": [
       "of",
@@ -804,6 +851,7 @@ const MISTAKE_QUESTIONS = [
     "level": "C2",
     "trap": "verb-patterns",
     "sub": "Choose the formal construction.",
+    "sub_ar": "اختر التركيب الرسمي.",
     "prompt": "The chair insisted that every member ___ present.",
     "options": [
       "is",
@@ -821,6 +869,7 @@ const MISTAKE_QUESTIONS = [
     "level": "A1",
     "trap": "articles",
     "sub": "Choose the correct sentence.",
+    "sub_ar": "اختر الجملة الصحيحة.",
     "prompt": "I have ___ umbrella.",
     "options": [
       "a",
@@ -838,6 +887,7 @@ const MISTAKE_QUESTIONS = [
     "level": "A1",
     "trap": "be-verbs",
     "sub": "Choose the correct form.",
+    "sub_ar": "اختر الصيغة الصحيحة.",
     "prompt": "My parents ___ at home.",
     "options": [
       "is",
@@ -855,6 +905,7 @@ const MISTAKE_QUESTIONS = [
     "level": "A2",
     "trap": "countability",
     "sub": "Complete the sentence.",
+    "sub_ar": "أكمل الجملة.",
     "prompt": "There isn't ___ milk in the fridge.",
     "options": [
       "many",
@@ -872,6 +923,7 @@ const MISTAKE_QUESTIONS = [
     "level": "A2",
     "trap": "past-time",
     "sub": "Choose the correct form.",
+    "sub_ar": "اختر الصيغة الصحيحة.",
     "prompt": "They ___ home an hour ago.",
     "options": [
       "come",
@@ -889,6 +941,7 @@ const MISTAKE_QUESTIONS = [
     "level": "B1",
     "trap": "verb-patterns",
     "sub": "Complete the sentence.",
+    "sub_ar": "أكمل الجملة.",
     "prompt": "He apologized ___ being late.",
     "options": [
       "for",
@@ -906,6 +959,7 @@ const MISTAKE_QUESTIONS = [
     "level": "B1",
     "trap": "conditionals",
     "sub": "Choose the correct form.",
+    "sub_ar": "اختر الصيغة الصحيحة.",
     "prompt": "If I ___ more time, I would learn Japanese.",
     "options": [
       "have",
@@ -923,6 +977,7 @@ const MISTAKE_QUESTIONS = [
     "level": "B2",
     "trap": "collocations",
     "sub": "Choose the correct preposition.",
+    "sub_ar": "اختر حرف الجر الصحيح.",
     "prompt": "We need to take ___ account the cost of travel.",
     "options": [
       "in",
@@ -940,6 +995,7 @@ const MISTAKE_QUESTIONS = [
     "level": "B2",
     "trap": "reported-speech",
     "sub": "Choose the correct form.",
+    "sub_ar": "اختر الصيغة الصحيحة.",
     "prompt": "He denied ___ the confidential file.",
     "options": [
       "to open",
@@ -957,6 +1013,7 @@ const MISTAKE_QUESTIONS = [
     "level": "C1",
     "trap": "inversion",
     "sub": "Choose the correct sentence.",
+    "sub_ar": "اختر الجملة الصحيحة.",
     "prompt": "Only after the review ___ the error discovered.",
     "options": [
       "the team did",
@@ -974,6 +1031,7 @@ const MISTAKE_QUESTIONS = [
     "level": "C1",
     "trap": "subjunctive",
     "sub": "Choose the formal construction.",
+    "sub_ar": "اختر التركيب الرسمي.",
     "prompt": "They recommended that the proposal ___ revised.",
     "options": [
       "is",
@@ -991,6 +1049,7 @@ const MISTAKE_QUESTIONS = [
     "level": "C2",
     "trap": "inversion",
     "sub": "Choose the correct sentence.",
+    "sub_ar": "اختر الجملة الصحيحة.",
     "prompt": "Rarely ___ such a compelling argument.",
     "options": [
       "we have heard",
@@ -1008,6 +1067,7 @@ const MISTAKE_QUESTIONS = [
     "level": "C2",
     "trap": "formal-collocations",
     "sub": "Complete the phrase.",
+    "sub_ar": "أكمل العبارة.",
     "prompt": "The conclusion is predicated ___ several assumptions.",
     "options": [
       "in",
@@ -1025,6 +1085,7 @@ const MISTAKE_QUESTIONS = [
     "level": "A1",
     "trap": "articles",
     "sub": "Choose the correct article.",
+    "sub_ar": "اختر أداة التعريف أو التنكير الصحيحة.",
     "prompt": "She has ___ apple.",
     "options": [
       "a",
@@ -1042,6 +1103,7 @@ const MISTAKE_QUESTIONS = [
     "level": "A1",
     "trap": "be-verbs",
     "sub": "Choose the correct form.",
+    "sub_ar": "اختر الصيغة الصحيحة.",
     "prompt": "I ___ ready now.",
     "options": [
       "is",
@@ -1059,6 +1121,7 @@ const MISTAKE_QUESTIONS = [
     "level": "A1",
     "trap": "present-simple",
     "sub": "Choose the correct verb.",
+    "sub_ar": "اختر الفعل الصحيح.",
     "prompt": "He ___ TV every evening.",
     "options": [
       "watch",
@@ -1076,6 +1139,7 @@ const MISTAKE_QUESTIONS = [
     "level": "A1",
     "trap": "pronouns",
     "sub": "Choose the correct pronoun.",
+    "sub_ar": "اختر الضمير الصحيح.",
     "prompt": "Sara is my friend. ___ is kind.",
     "options": [
       "He",
@@ -1093,6 +1157,7 @@ const MISTAKE_QUESTIONS = [
     "level": "A1",
     "trap": "plurals",
     "sub": "Choose the plural form.",
+    "sub_ar": "اختر صيغة الجمع.",
     "prompt": "I have three ___.",
     "options": [
       "box",
@@ -1110,6 +1175,7 @@ const MISTAKE_QUESTIONS = [
     "level": "A1",
     "trap": "can",
     "sub": "Choose the correct form.",
+    "sub_ar": "اختر الصيغة الصحيحة.",
     "prompt": "My brother can ___ fast.",
     "options": [
       "runs",
@@ -1127,6 +1193,7 @@ const MISTAKE_QUESTIONS = [
     "level": "A1",
     "trap": "word-order",
     "sub": "Choose the correct question.",
+    "sub_ar": "اختر السؤال الصحيح.",
     "prompt": "___ you like music?",
     "options": [
       "Are",
@@ -1144,6 +1211,7 @@ const MISTAKE_QUESTIONS = [
     "level": "A1",
     "trap": "possessives",
     "sub": "Choose the correct word.",
+    "sub_ar": "اختر الكلمة الصحيحة.",
     "prompt": "This is ___ book; I own it.",
     "options": [
       "me",
@@ -1161,6 +1229,7 @@ const MISTAKE_QUESTIONS = [
     "level": "A2",
     "trap": "past-simple",
     "sub": "Choose the correct form.",
+    "sub_ar": "اختر الصيغة الصحيحة.",
     "prompt": "We ___ our grandparents yesterday.",
     "options": [
       "visit",
@@ -1178,6 +1247,7 @@ const MISTAKE_QUESTIONS = [
     "level": "A2",
     "trap": "countability",
     "sub": "Choose the correct word.",
+    "sub_ar": "اختر الكلمة الصحيحة.",
     "prompt": "How ___ apples do you need?",
     "options": [
       "much",
@@ -1195,6 +1265,7 @@ const MISTAKE_QUESTIONS = [
     "level": "A2",
     "trap": "comparatives",
     "sub": "Choose the correct form.",
+    "sub_ar": "اختر الصيغة الصحيحة.",
     "prompt": "This road is ___ than that one.",
     "options": [
       "more narrow",
@@ -1212,6 +1283,7 @@ const MISTAKE_QUESTIONS = [
     "level": "A2",
     "trap": "prepositions",
     "sub": "Choose the correct preposition.",
+    "sub_ar": "اختر حرف الجر الصحيح.",
     "prompt": "The meeting starts ___ nine.",
     "options": [
       "in",
@@ -1229,6 +1301,7 @@ const MISTAKE_QUESTIONS = [
     "level": "A2",
     "trap": "present-perfect",
     "sub": "Choose the correct form.",
+    "sub_ar": "اختر الصيغة الصحيحة.",
     "prompt": "I have never ___ sushi.",
     "options": [
       "eat",
@@ -1246,6 +1319,7 @@ const MISTAKE_QUESTIONS = [
     "level": "A2",
     "trap": "infinitives",
     "sub": "Choose the correct form.",
+    "sub_ar": "اختر الصيغة الصحيحة.",
     "prompt": "She wants ___ a doctor.",
     "options": [
       "be",
@@ -1263,6 +1337,7 @@ const MISTAKE_QUESTIONS = [
     "level": "B1",
     "trap": "verb-patterns",
     "sub": "Choose the correct form.",
+    "sub_ar": "اختر الصيغة الصحيحة.",
     "prompt": "They avoided ___ about the problem.",
     "options": [
       "to talk",
@@ -1280,6 +1355,7 @@ const MISTAKE_QUESTIONS = [
     "level": "B1",
     "trap": "conditionals",
     "sub": "Choose the correct form.",
+    "sub_ar": "اختر الصيغة الصحيحة.",
     "prompt": "If I were you, I ___ apologise.",
     "options": [
       "will",
@@ -1297,6 +1373,7 @@ const MISTAKE_QUESTIONS = [
     "level": "B1",
     "trap": "reported-speech",
     "sub": "Choose the correct form.",
+    "sub_ar": "اختر الصيغة الصحيحة.",
     "prompt": "He asked me where I ___.",
     "options": [
       "live",
@@ -1314,6 +1391,7 @@ const MISTAKE_QUESTIONS = [
     "level": "B1",
     "trap": "since-for",
     "sub": "Choose the correct preposition.",
+    "sub_ar": "اختر حرف الجر الصحيح.",
     "prompt": "I've worked here ___ 2021.",
     "options": [
       "for",
@@ -1331,6 +1409,7 @@ const MISTAKE_QUESTIONS = [
     "level": "B1",
     "trap": "gerunds",
     "sub": "Choose the correct form.",
+    "sub_ar": "اختر الصيغة الصحيحة.",
     "prompt": "She is interested in ___ abroad.",
     "options": [
       "study",
@@ -1348,6 +1427,7 @@ const MISTAKE_QUESTIONS = [
     "level": "B1",
     "trap": "articles",
     "sub": "Choose the correct article.",
+    "sub_ar": "اختر أداة التعريف أو التنكير الصحيحة.",
     "prompt": "He hopes to become ___ engineer.",
     "options": [
       "a",
@@ -1365,6 +1445,7 @@ const MISTAKE_QUESTIONS = [
     "level": "B1",
     "trap": "adjectives",
     "sub": "Choose the correct word.",
+    "sub_ar": "اختر الكلمة الصحيحة.",
     "prompt": "The long journey was ___.",
     "options": [
       "tired",
@@ -1382,6 +1463,7 @@ const MISTAKE_QUESTIONS = [
     "level": "B1",
     "trap": "modals",
     "sub": "Choose the correct form.",
+    "sub_ar": "اختر الصيغة الصحيحة.",
     "prompt": "You ___ wear a seat belt; it is the law.",
     "options": [
       "might",
@@ -1399,6 +1481,7 @@ const MISTAKE_QUESTIONS = [
     "level": "B1",
     "trap": "relative-clauses",
     "sub": "Choose the correct relative pronoun.",
+    "sub_ar": "اختر ضمير الوصل الصحيح.",
     "prompt": "The woman ___ called you is my aunt.",
     "options": [
       "which",
@@ -1416,6 +1499,7 @@ const MISTAKE_QUESTIONS = [
     "level": "B1",
     "trap": "collocations",
     "sub": "Choose the correct phrase.",
+    "sub_ar": "اختر العبارة الصحيحة.",
     "prompt": "Please ___ attention to the instructions.",
     "options": [
       "do",
@@ -1433,6 +1517,7 @@ const MISTAKE_QUESTIONS = [
     "level": "B2",
     "trap": "inversion",
     "sub": "Choose the correct sentence.",
+    "sub_ar": "اختر الجملة الصحيحة.",
     "prompt": "Not until midnight ___ home.",
     "options": [
       "they returned",
@@ -1450,6 +1535,7 @@ const MISTAKE_QUESTIONS = [
     "level": "B2",
     "trap": "verb-patterns",
     "sub": "Choose the correct form.",
+    "sub_ar": "اختر الصيغة الصحيحة.",
     "prompt": "He admitted ___ the mistake.",
     "options": [
       "to make",
@@ -1467,6 +1553,7 @@ const MISTAKE_QUESTIONS = [
     "level": "B2",
     "trap": "prepositions",
     "sub": "Choose the correct preposition.",
+    "sub_ar": "اختر حرف الجر الصحيح.",
     "prompt": "The new policy is consistent ___ our values.",
     "options": [
       "to",
@@ -1484,6 +1571,7 @@ const MISTAKE_QUESTIONS = [
     "level": "B2",
     "trap": "wish",
     "sub": "Choose the correct form.",
+    "sub_ar": "اختر الصيغة الصحيحة.",
     "prompt": "I wish I ___ more time yesterday.",
     "options": [
       "have",
@@ -1501,6 +1589,7 @@ const MISTAKE_QUESTIONS = [
     "level": "B2",
     "trap": "articles",
     "sub": "Choose the correct article.",
+    "sub_ar": "اختر أداة التعريف أو التنكير الصحيحة.",
     "prompt": "She plays ___ piano beautifully.",
     "options": [
       "a",
@@ -1518,6 +1607,7 @@ const MISTAKE_QUESTIONS = [
     "level": "B2",
     "trap": "causative",
     "sub": "Choose the correct form.",
+    "sub_ar": "اختر الصيغة الصحيحة.",
     "prompt": "I had my laptop ___ yesterday.",
     "options": [
       "repair",
@@ -1535,6 +1625,7 @@ const MISTAKE_QUESTIONS = [
     "level": "B2",
     "trap": "linking-words",
     "sub": "Choose the best connector.",
+    "sub_ar": "اختر أداة الربط الأنسب.",
     "prompt": "___ the heavy rain, the match continued.",
     "options": [
       "Although",
@@ -1552,6 +1643,7 @@ const MISTAKE_QUESTIONS = [
     "level": "B2",
     "trap": "reported-speech",
     "sub": "Choose the correct form.",
+    "sub_ar": "اختر الصيغة الصحيحة.",
     "prompt": "She denied ___ the confidential email.",
     "options": [
       "to send",
@@ -1569,6 +1661,7 @@ const MISTAKE_QUESTIONS = [
     "level": "B2",
     "trap": "quantifiers",
     "sub": "Choose the correct phrase.",
+    "sub_ar": "اختر العبارة الصحيحة.",
     "prompt": "There is ___ chance of success without more data.",
     "options": [
       "few",
@@ -1586,6 +1679,7 @@ const MISTAKE_QUESTIONS = [
     "level": "B2",
     "trap": "collocations",
     "sub": "Choose the correct verb.",
+    "sub_ar": "اختر الفعل الصحيح.",
     "prompt": "The findings ___ light on the cause.",
     "options": [
       "put",
@@ -1603,6 +1697,7 @@ const MISTAKE_QUESTIONS = [
     "level": "B2",
     "trap": "conditionals",
     "sub": "Choose the correct form.",
+    "sub_ar": "اختر الصيغة الصحيحة.",
     "prompt": "Had we left earlier, we ___ the traffic.",
     "options": [
       "would avoid",
@@ -1620,6 +1715,7 @@ const MISTAKE_QUESTIONS = [
     "level": "B2",
     "trap": "adverbs",
     "sub": "Choose the correct form.",
+    "sub_ar": "اختر الصيغة الصحيحة.",
     "prompt": "The instructions were ___ clear.",
     "options": [
       "remarkable",
@@ -1637,6 +1733,7 @@ const MISTAKE_QUESTIONS = [
     "level": "C1",
     "trap": "subjunctive",
     "sub": "Choose the formal construction.",
+    "sub_ar": "اختر التركيب الرسمي.",
     "prompt": "The chair requested that each member ___ present.",
     "options": [
       "is",
@@ -1654,6 +1751,7 @@ const MISTAKE_QUESTIONS = [
     "level": "C1",
     "trap": "inversion",
     "sub": "Choose the correct form.",
+    "sub_ar": "اختر الصيغة الصحيحة.",
     "prompt": "Rarely ___ such a convincing explanation.",
     "options": [
       "we have heard",
@@ -1671,6 +1769,7 @@ const MISTAKE_QUESTIONS = [
     "level": "C1",
     "trap": "collocations",
     "sub": "Choose the correct preposition.",
+    "sub_ar": "اختر حرف الجر الصحيح.",
     "prompt": "The decision is contingent ___ approval.",
     "options": [
       "of",
@@ -1688,6 +1787,7 @@ const MISTAKE_QUESTIONS = [
     "level": "C1",
     "trap": "verb-patterns",
     "sub": "Choose the correct form.",
+    "sub_ar": "اختر الصيغة الصحيحة.",
     "prompt": "The report warrants ___ further.",
     "options": [
       "to examine",
@@ -1705,6 +1805,7 @@ const MISTAKE_QUESTIONS = [
     "level": "C1",
     "trap": "concession",
     "sub": "Choose the best connector.",
+    "sub_ar": "اختر أداة الربط الأنسب.",
     "prompt": "Much ___ I respect her, I disagree with this conclusion.",
     "options": [
       "as",
@@ -1722,6 +1823,7 @@ const MISTAKE_QUESTIONS = [
     "level": "C1",
     "trap": "relative-clauses",
     "sub": "Choose the correct word.",
+    "sub_ar": "اختر الكلمة الصحيحة.",
     "prompt": "The proposal, ___ merits remain disputed, was approved.",
     "options": [
       "which",
@@ -1739,6 +1841,7 @@ const MISTAKE_QUESTIONS = [
     "level": "C1",
     "trap": "formal-grammar",
     "sub": "Choose the correct form.",
+    "sub_ar": "اختر الصيغة الصحيحة.",
     "prompt": "It is imperative that the files ___ securely stored.",
     "options": [
       "are",
@@ -1756,6 +1859,7 @@ const MISTAKE_QUESTIONS = [
     "level": "C1",
     "trap": "prepositions",
     "sub": "Choose the correct preposition.",
+    "sub_ar": "اختر حرف الجر الصحيح.",
     "prompt": "Her account is at variance ___ the official record.",
     "options": [
       "to",
@@ -1773,6 +1877,7 @@ const MISTAKE_QUESTIONS = [
     "level": "C1",
     "trap": "inversion",
     "sub": "Choose the correct form.",
+    "sub_ar": "اختر الصيغة الصحيحة.",
     "prompt": "Only after the audit ___ the discrepancy discovered.",
     "options": [
       "the team did",
@@ -1790,6 +1895,7 @@ const MISTAKE_QUESTIONS = [
     "level": "C1",
     "trap": "hedging",
     "sub": "Choose the most cautious wording.",
+    "sub_ar": "اختر الصياغة الأكثر تحفّظًا.",
     "prompt": "The evidence ___ suggest a correlation, but it is not conclusive.",
     "options": [
       "may",
@@ -1807,6 +1913,7 @@ const MISTAKE_QUESTIONS = [
     "level": "C1",
     "trap": "word-choice",
     "sub": "Choose the correct word.",
+    "sub_ar": "اختر الكلمة الصحيحة.",
     "prompt": "The new rule may ___ existing inequalities.",
     "options": [
       "exacerbate",
@@ -1824,6 +1931,7 @@ const MISTAKE_QUESTIONS = [
     "level": "C1",
     "trap": "collocations",
     "sub": "Choose the correct preposition.",
+    "sub_ar": "اختر حرف الجر الصحيح.",
     "prompt": "The findings lend credence ___ the hypothesis.",
     "options": [
       "for",
@@ -1841,6 +1949,7 @@ const MISTAKE_QUESTIONS = [
     "level": "C2",
     "trap": "inversion",
     "sub": "Choose the correct form.",
+    "sub_ar": "اختر الصيغة الصحيحة.",
     "prompt": "Under no circumstances ___ the original data be altered.",
     "options": [
       "the researchers should",
@@ -1858,6 +1967,7 @@ const MISTAKE_QUESTIONS = [
     "level": "C2",
     "trap": "formal-collocations",
     "sub": "Choose the correct preposition.",
+    "sub_ar": "اختر حرف الجر الصحيح.",
     "prompt": "The argument is predicated ___ an untested assumption.",
     "options": [
       "in",
@@ -1875,6 +1985,7 @@ const MISTAKE_QUESTIONS = [
     "level": "C2",
     "trap": "subjunctive",
     "sub": "Choose the formal construction.",
+    "sub_ar": "اختر التركيب الرسمي.",
     "prompt": "The statute requires that every applicant ___ the form in person.",
     "options": [
       "completes",
@@ -1892,6 +2003,7 @@ const MISTAKE_QUESTIONS = [
     "level": "C2",
     "trap": "concession",
     "sub": "Choose the correct construction.",
+    "sub_ar": "اختر التركيب الصحيح.",
     "prompt": "Be that ___ it may, the conclusion remains unsupported.",
     "options": [
       "as",
@@ -1909,6 +2021,7 @@ const MISTAKE_QUESTIONS = [
     "level": "C2",
     "trap": "precision",
     "sub": "Choose the closest meaning of “ostensible”.",
+    "sub_ar": "اختر أقرب معنى لكلمة «ostensible».",
     "prompt": "The ostensible purpose of the visit was to inspect the building.",
     "options": [
       "appearing to be true or real, though not necessarily so",
@@ -1926,6 +2039,7 @@ const MISTAKE_QUESTIONS = [
     "level": "C2",
     "trap": "formal-grammar",
     "sub": "Choose the correct form.",
+    "sub_ar": "اختر الصيغة الصحيحة.",
     "prompt": "The evidence, together with the appendices, ___ been reviewed.",
     "options": [
       "have",
@@ -1943,6 +2057,7 @@ const MISTAKE_QUESTIONS = [
     "level": "C2",
     "trap": "collocations",
     "sub": "Choose the correct phrase.",
+    "sub_ar": "اختر العبارة الصحيحة.",
     "prompt": "The claim is difficult to reconcile ___ the available evidence.",
     "options": [
       "to",
@@ -1960,6 +2075,7 @@ const MISTAKE_QUESTIONS = [
     "level": "C2",
     "trap": "inversion",
     "sub": "Choose the correct form.",
+    "sub_ar": "اختر الصيغة الصحيحة.",
     "prompt": "Not once ___ the witness contradict the original statement.",
     "options": [
       "the witness did",
@@ -1977,6 +2093,7 @@ const MISTAKE_QUESTIONS = [
     "level": "C2",
     "trap": "word-choice",
     "sub": "Choose the best word.",
+    "sub_ar": "اختر الكلمة الأنسب.",
     "prompt": "The distinction is ___; it changes the interpretation of the entire clause.",
     "options": [
       "material",
@@ -1994,6 +2111,7 @@ const MISTAKE_QUESTIONS = [
     "level": "C2",
     "trap": "formal-phrases",
     "sub": "Choose the correct phrase.",
+    "sub_ar": "اختر العبارة الصحيحة.",
     "prompt": "The distinction matters ___ the interpretation of the statute is concerned.",
     "options": [
       "insofar as",
@@ -2011,6 +2129,7 @@ const MISTAKE_QUESTIONS = [
     "level": "C2",
     "trap": "logic",
     "sub": "Choose the correct word.",
+    "sub_ar": "اختر الكلمة الصحيحة.",
     "prompt": "The premises do not ___ entail the conclusion.",
     "options": [
       "necessarily",
@@ -2028,6 +2147,7 @@ const MISTAKE_QUESTIONS = [
     "level": "C2",
     "trap": "formal-grammar",
     "sub": "Choose the correct form.",
+    "sub_ar": "اختر الصيغة الصحيحة.",
     "prompt": "Were the evidence more robust, the claim ___ be defensible.",
     "options": [
       "might",
