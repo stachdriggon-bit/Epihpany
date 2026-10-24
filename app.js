@@ -1867,7 +1867,14 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     const recentIds = new Set(recentList);
     let freshPool;
     if (['personalized','grammar','spot','typing'].includes(type)) {
-      freshPool = game.questions.filter(q => !recentIds.has(questionKey(q)));
+      // Keep the no-repeat replacement inside the same level window as the initial draw.
+      let eligible = levelPool.slice();
+      if (eligible.length < 5) {
+        const levels = LEVELS.map(l => l.id), center = levels.indexOf(level);
+        const nearby = game.questions.filter(q => !q.level || Math.abs(levels.indexOf(q.level) - center) <= 1);
+        if (nearby.length) eligible = nearby;
+      }
+      freshPool = eligible.filter(q => !recentIds.has(questionKey(q)));
     } else if (type === 'mistakes') {
       const levels = LEVELS.map(l => l.id), center = levels.indexOf(level);
       let pool = game.questions.filter(q => Math.abs(levels.indexOf(q.level) - center) <= 1);
