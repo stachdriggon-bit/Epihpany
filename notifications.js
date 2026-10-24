@@ -29,13 +29,13 @@
     if (!prefs.browser || !('Notification' in window) || Notification.permission !== 'granted') return;
     try {
       const reg = await navigator.serviceWorker?.getRegistration();
-      if (reg && reg.showNotification) await reg.showNotification(item.title, {body:item.body, icon:'./icon.svg', badge:'./icon.svg', tag:item.id, data:{url:'./#progress-view'}});
+      if (reg && reg.showNotification) await reg.showNotification(item.title, {body:item.body, icon:'./icon.svg', badge:'./icon.svg', tag:item.id, data:{url:item.url || './#progress-view'}});
       else new Notification(item.title, {body:item.body, tag:item.id});
     } catch (error) { console.warn('Epiphany browser notification failed:', error); }
   }
-  function add({id,kind='daily',title,body}) {
+  function add({id,kind='daily',title,body,url}) {
     if (!prefs.inSite || !id || items.some(item => item.id === id)) return;
-    const item = {id,kind,title,body,read:false,createdAt:new Date().toISOString(),dateLabel:new Intl.DateTimeFormat(undefined,{dateStyle:'medium'}).format(new Date())};
+    const item = {id,kind,title,body,url:url||'',read:false,createdAt:new Date().toISOString(),dateLabel:new Intl.DateTimeFormat(undefined,{dateStyle:'medium'}).format(new Date())};
     items.unshift(item); items = items.slice(0,60); save(); render(); showBrowser(item);
   }
   function close() { const panel=$('notification-panel'); if(panel) panel.hidden=true; const btn=$('notification-bell'); if(btn) btn.setAttribute('aria-expanded','false'); }
@@ -60,6 +60,7 @@
     dailyReset(dateKey) { add({id:'daily-reset-'+dateKey,kind:'daily',title:'A new daily challenge is ready!',body:'Your daily quest has refreshed. Play a quick round and earn XP.'}); },
     weeklyReset(weekKey) { add({id:'weekly-reset-'+weekKey,kind:'weekly',title:'Your weekly challenge has renewed!',body:'A fresh weekly challenge is waiting. Build your streak one quest at a time.'}); },
     announce(title, body, id) { add({id:id||('notice-'+Date.now()),kind:'achievement',title,body}); },
+    wordReminder(word) { const target=String(word||'').trim(); if(!target)return; const day=new Date().toISOString().slice(0,10); add({id:'word-reminder-'+day+'-'+target.toLowerCase().replace(/[^a-z0-9]+/g,'-').slice(0,48),kind:'word',title:'Do you remember “'+target+'”?',body:'Try to recall its meaning before checking.',url:'./#word='+encodeURIComponent(target)}); },
     close
   };
   document.addEventListener('DOMContentLoaded', render);
