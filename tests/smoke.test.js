@@ -6,6 +6,15 @@ const path = require('node:path');
 const { chromium } = require('playwright');
 
 const root = path.resolve(__dirname, '..');
+
+async function dismissFirstVisitOverlays(page) {
+  const welcomeClose = page.locator('#welcome-modal-close');
+  if (await welcomeClose.isVisible()) await welcomeClose.click();
+  const placementSkip = page.locator('#placement-skip');
+  if (await placementSkip.isVisible()) await placementSkip.click();
+  const languageChoice = page.locator('#help-language-modal [data-help-language="en"]');
+  if (await languageChoice.isVisible()) await languageChoice.click();
+}
 const mime = { '.html':'text/html; charset=utf-8', '.js':'text/javascript; charset=utf-8', '.css':'text/css; charset=utf-8', '.json':'application/json; charset=utf-8', '.svg':'image/svg+xml', '.png':'image/png', '.jpg':'image/jpeg', '.webp':'image/webp' };
 let server, browser, baseUrl;
 
@@ -40,6 +49,7 @@ test('main navigation tabs open without uncaught page errors', async t => {
         } catch {}
       });
       await page.goto(baseUrl, { waitUntil: 'domcontentloaded' });
+      await dismissFirstVisitOverlays(page);
       await page.waitForSelector('button[data-view="' + view + '"]', { timeout: 10000 });
       const eagerDeferred = requested.filter(path => /\/(data-translation-ar|data-stories|data-world(?:-sprites)?|think-lab|practice-lab|life-skills)\.js$/.test(path));
       assert.deepEqual(eagerDeferred, [], 'deferred files should not load at startup for ' + view);
@@ -76,6 +86,7 @@ test('main navigation tabs open without uncaught page errors', async t => {
     const offlinePage = await browser.newPage();
     offlinePage.on('pageerror', error => errors.push('offline: ' + error.message));
     await offlinePage.goto(baseUrl, { waitUntil: 'domcontentloaded' });
+    await dismissFirstVisitOverlays(offlinePage);
     await offlinePage.evaluate(() => navigator.serviceWorker.ready);
     await offlinePage.reload({ waitUntil: 'domcontentloaded' });
     await offlinePage.waitForFunction(() => !!navigator.serviceWorker.controller, null, { timeout: 5000 });
