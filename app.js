@@ -1527,6 +1527,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
       }
       return;
     }
+    if(e.target && e.target.matches('[data-grammar-own-form]')){e.preventDefault();const txt=e.target.elements.ownSentence.value.trim(),tokens=txt.split(/\s+/).filter(Boolean),ok=tokens.length>=6&&/[.!?]$/.test(txt);if(ok)G.score++;G.answered=true;G.results[G.i]=ok?'ok':'no';showSheet(ok,'<h3>'+(ok?'Good start!':'Add a little more detail.')+'</h3><p>'+(ok?'Compare your sentence with the rule and examples.':'Write at least six words and finish with punctuation.')+'</p><p>Model sentence: <b>'+esc(G.questions[G.i].q.q.replace(/_{3,}/,G.questions[G.i].q.answers[G.questions[G.i].q.correct]))+'</b></p><p>'+esc(G.questions[G.i].q.explain)+'</p><div class="sheet-actions"><button class="btn" id="go-next">'+(G.i===G.questions.length-1?'See results':'Continue')+ic('arrow')+'</button></div>');return;}
     if(e.target && e.target.id==='typing-form'){e.preventDefault();checkTyping();return;}
     if(e.target && e.target.id==='create-story-form'){e.preventDefault();createStorySubmit(e.target);return;}
     if(e.target && e.target.id==='create-story-answer-form'){e.preventDefault();submitCreateStoryAnswer(e.target);return;}
@@ -1754,7 +1755,34 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     G = {type, questions: paired, i:0, score:0, words:[], answered:false, results:[], originalMode:type};
     const el = $('#game'); el.className = 'game t-' + META[type].tone; el.hidden = false;
     lockPage(true);
+    if(type==='grammar'){G.grammarMode='mcq';renderGrammarIntro();return;}
     renderQuestion();
+  }
+
+  const GRAMMAR_LESSONS=[
+    {match:/present simple|goes|he, she, or it/i,title:'Present simple',rule:'Use the base verb with I/you/we/they. Add -s or -es with he/she/it.',examples:['She goes to school every day.','They go to school every day.']},
+    {match:/past continuous|action in progress/i,title:'Past continuous',rule:'Use was/were + verb-ing for an action in progress at a past moment.',examples:['They were having dinner when I arrived.','I was reading when the phone rang.']},
+    {match:/second conditional|if \+ past simple/i,title:'Second conditional',rule:'Use if + past simple, then would + base verb for an unreal or imagined situation.',examples:['If I had more time, I would learn Italian.','If she lived nearby, she would walk here.']},
+    {match:/neither|singular here/i,title:'Neither / nor',rule:'In formal English, neither is generally treated as singular when it stands alone.',examples:['Neither answer is correct.','Neither of them is ready.']},
+    {match:/future perfect|will have/i,title:'Future perfect',rule:'Use will have + past participle for an action completed before a future point.',examples:['By June, she will have finished.','They will have arrived by noon.']}
+  ];
+  function grammarLesson(q){const found=GRAMMAR_LESSONS.find(x=>x.match.test(q.explain+' '+q.q));if(found)return found;return {title:'Grammar focus',rule:(q.explain||'Check the grammatical pattern and the meaning of the whole sentence.').split(/[.!?]/)[0]+'.',examples:[q.q.replace(/_{3,}/g,q.answers[q.correct]),'Read the sentence aloud and notice how the form fits its meaning.']};}
+  function renderGrammarMap(){
+    const source=typeof MISTAKE_QUESTIONS!=='undefined'?MISTAKE_QUESTIONS:[],topics=[...new Set(source.map(q=>q.trap).filter(Boolean))],label=x=>x.replace(/-/g,' ').replace(/\b\w/g,c=>c.toUpperCase());
+    return '<section class="grammar-map"><div class="review-head"><div><p class="kicker">YOUR GRAMMAR PATH</p><h2>Grammar map</h2></div><span class="review-count">'+topics.length+' topics</span></div><p class="review-note">Progress is calculated from your existing mistake history.</p><div class="grammar-tree">'+topics.map(topic=>{const total=source.filter(q=>q.trap===topic).length,errors=Number(state.mistakeTrapErrors[topic])||0,answered=source.filter(q=>q.trap===topic).reduce((sum,q)=>sum+(Number(state.mistakeQuestionErrors[q.id])||0),0),status=errors===0&&answered===0?'not-started':errors>=3?'needs-practice':'in-progress';return '<button type="button" class="grammar-node '+status+'" data-grammar-topic="'+esc(topic)+'"><span class="grammar-node-dot"></span><b>'+esc(label(topic))+'</b><small>'+(status==='not-started'?'Not practised yet':status==='needs-practice'?'Needs practice':'In progress')+'</small><span class="grammar-node-count">'+errors+' pattern errors · '+total+' questions</span></button>';}).join('')+'</div></section>';
+  }
+  function renderGrammarIntro(){
+    const q=G.questions[0].q,lesson=grammarLesson(q);$('#steps').innerHTML='';
+    $('#game-body').innerHTML='<div class="grammar-intro"><div class="q-meta"><span class="pill">GRAMMAR LAB</span><span class="q-count">'+G.questions.length+' questions</span></div><p class="kicker">BEFORE YOU PRACTISE</p><h2 class="q-text">'+esc(lesson.title)+'</h2><div class="grammar-rule-card"><p>'+esc(lesson.rule)+'</p><p>Pay attention to the subject, tense, and meaning of the whole sentence.</p><p>Use the rule in context instead of translating word for word.</p></div><h3>Examples</h3><div class="grammar-examples">'+lesson.examples.map((x,i)=>'<p><b>'+(i+1)+'.</b> '+esc(x)+'</p>').join('')+'</div><p class="review-note">Choose how you want to practise.</p><div class="grammar-mode-grid"><button class="btn" data-grammar-mode="mcq">Multiple choice</button><button class="btn btn-ghost" data-grammar-mode="fix">Correct the sentence</button><button class="btn btn-ghost" data-grammar-mode="order">Arrange the words</button><button class="btn btn-ghost" data-grammar-mode="own">Complete in your own words</button></div><button class="btn btn-ghost grammar-map-toggle" data-grammar-map-toggle>Open my grammar map</button><div id="grammar-map-slot" hidden>'+renderGrammarMap()+'</div></div>';$('#game-scroll').scrollTop=0;
+  }
+  function renderGrammarModeQuestion(){
+    if(G.grammarMode==='mcq'){renderQuestion();return;}
+    const item=G.questions[G.i],q=item.q,correct=q.answers[q.correct],sentence=q.q.replace(/_{3,}/,correct);G.answered=false;hideSheet();renderSteps();
+    const meta='<div class="q-meta"><span class="pill">Grammar · '+({fix:'Correct the sentence',order:'Arrange the words',own:'Your own answer'}[G.grammarMode]||'Practice')+'</span><span class="q-count">Question '+(G.i+1)+' of '+G.questions.length+'</span></div>';
+    if(G.grammarMode==='fix'){const wrong=q.answers.find((x,i)=>i!==q.correct)||correct,broken=q.q.replace(/_{3,}/,wrong);$('#game-body').innerHTML='<div>'+meta+'<h2 class="q-text">'+esc(broken)+'</h2><p class="q-sub">Choose the correct form to repair the sentence.</p><div class="answers" id="answers">'+q.answers.map((a,i)=>'<button class="answer" data-i="'+i+'">'+esc(a)+'</button>').join('')+'</div></div>';}
+    else if(G.grammarMode==='order'){const words=sentence.replace(/[.!?]$/,'').split(/\s+/),shuffled=words.slice();for(let i=shuffled.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[shuffled[i],shuffled[j]]=[shuffled[j],shuffled[i]];}G.orderTarget=words.join(' ').toLowerCase();G.orderPicked=[];G.orderWords=shuffled;$('#game-body').innerHTML='<div>'+meta+'<h2 class="q-text">Arrange the words into a correct sentence</h2><p class="q-sub">'+esc(q.sub||'Build the sentence.')+'</p><div class="grammar-word-bank">'+shuffled.map((w,i)=>'<button type="button" class="grammar-word-chip" data-order-word="'+i+'">'+esc(w)+'</button>').join('')+'</div><div class="grammar-order-answer" id="grammar-order-answer" aria-live="polite">Your sentence will appear here.</div><button class="btn" data-order-check>Check sentence</button><button class="btn btn-ghost" data-order-reset>Start again</button></div>';}
+    else $('#game-body').innerHTML='<div>'+meta+'<h2 class="q-text">Use the same grammar pattern</h2><p class="q-sub">Write your own complete sentence using this grammar rule. Include at least six words.</p><form data-grammar-own-form><textarea name="ownSentence" rows="3" required placeholder="Write your sentence here…"></textarea><button class="btn" type="submit">Check my sentence</button></form><p class="review-note">This checks completeness, then shows a model sentence and the rule for self-review.</p></div>';
+    $('#game-scroll').scrollTop=0;
   }
 
   function renderSteps(full) {
@@ -1821,6 +1849,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     $('#answers').classList.add('done');
     renderSteps(); sfx(ok ? 'ok' : 'no');
     const last = G.i === game.questions.length - 1;
+    if(G.type==='grammar'&&G.grammarMode==='fix'){showSheet(ok,'<h3>'+(ok?'Sentence repaired!':'Not quite.')+'</h3><p>'+(ok?'You chose the correct form.':'Correct form: <b>'+esc(q.answers[q.correct])+'</b>')+'</p><p>'+esc(q.explain)+'</p><div class="sheet-actions"><button class="btn" id="go-next">'+(last?'See results':'Continue')+ic('arrow')+'</button></div>');return;}
     showSheet(ok,
       '<h3><span class="sheet-mark">' + ic(ok ? 'check' : 'x') + '</span>' + (ok ? 'Exactly right!' : 'Not quite — and that’s okay.') + '</h3>' +
       (ok ? '' : '<p>Correct answer: <b>' + esc(q.answers[q.correct]) + '</b></p>') +
@@ -2969,6 +2998,12 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
   document.addEventListener('click', e => {
     if(e.target.closest('#wotd-save')){const box=$('#wotd-card'),w=WOTD_WORDS.find(x=>x.word===box.dataset.word);if(w&&!state.words.some(x=>String(x[0]).toLowerCase()===w.word.toLowerCase())){state.words.push([w.word,w.meaning,w.level]);save();renderAll();toast('Word saved to your vault.');}return;}
     const sb=e.target.closest('[data-speak]'); if(sb){speak(sb.dataset.speak);return;}
+    const grammarMode=e.target.closest('[data-grammar-mode]');if(grammarMode){G.grammarMode=grammarMode.dataset.grammarMode;G.i=0;renderGrammarModeQuestion();return;}
+    const grammarMap=e.target.closest('[data-grammar-map-toggle]');if(grammarMap){const slot=$('#grammar-map-slot');if(slot){slot.hidden=!slot.hidden;grammarMap.textContent=slot.hidden?'Open my grammar map':'Hide my grammar map';}return;}
+    const grammarTopic=e.target.closest('[data-grammar-topic]');if(grammarTopic){const pool=GAMES.mistakes.questions.filter(x=>x.q.trap===grammarTopic.dataset.grammarTopic);if(pool.length){G.type='mistakes';G.questions=pool.slice(0,5);G.i=0;G.score=0;G.results=[];G.words=[];renderQuestion();}else toast('No questions are mapped to this topic yet.');return;}
+    const orderWord=e.target.closest('[data-order-word]');if(orderWord&&G&&G.type==='grammar'&&G.grammarMode==='order'){const idx=Number(orderWord.dataset.orderWord);if(G.orderPicked.includes(idx))return;G.orderPicked.push(idx);orderWord.disabled=true;$('#grammar-order-answer').textContent=G.orderPicked.map(i=>G.orderWords[i]).join(' ');return;}
+    if(e.target.closest('[data-order-reset]')){G.orderPicked=[];G.orderWords.forEach((_,i)=>{const b=$('[data-order-word="'+i+'"]');if(b)b.disabled=false;});$('#grammar-order-answer').textContent='Your sentence will appear here.';return;}
+    if(e.target.closest('[data-order-check]')){const actual=G.orderPicked.map(i=>G.orderWords[i]).join(' ').replace(/[.!?]$/,'').toLowerCase(),ok=actual===G.orderTarget;if(ok)G.score++;G.answered=true;G.results[G.i]=ok?'ok':'no';showSheet(ok,'<h3>'+(ok?'Correct sentence!':'Not quite yet.')+'</h3><p>Suggested answer: <b>'+esc(G.orderTarget)+'</b></p><p>'+esc(G.questions[G.i].q.explain)+'</p><div class="sheet-actions"><button class="btn" id="go-next">'+(G.i===G.questions.length-1?'See results':'Continue')+ic('arrow')+'</button></div>');return;}
     const rb=e.target.closest('[data-review]');
     if(rb){const item=state.review.find(w=>w.word===rb.dataset.word);if(item){item.attempts=(item.attempts||0)+1;
       if(rb.dataset.review==='known'){
