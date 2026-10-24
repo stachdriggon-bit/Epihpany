@@ -68,6 +68,7 @@
       <button class="tab" data-view="home" aria-current="page"><svg><use href="#i-path"/></svg>Play</button>
       <button class="tab" data-view="stories"><span class="tab-emoji" aria-hidden="true">📖</span>Stories</button>
       <button class="tab" data-view="world"><span class="tab-emoji" aria-hidden="true">🌍</span>World</button>
+      <button class="tab" data-view="arcade"><span class="tab-emoji" aria-hidden="true">🎮</span>Arcade</button>
       <button class="tab" data-view="words"><svg><use href="#i-book"/></svg>Words</button>
       <button class="tab" data-view="trophies"><svg><use href="#i-trophy"/></svg>Trophies</button>
       <button class="tab" data-view="progress"><span class="tab-emoji" aria-hidden="true">📈</span>Progress</button>
@@ -196,6 +197,26 @@
 
   <!-- STORIES -->
   <section class="view" id="stories-view" aria-labelledby="stories-title"><div class="page"><div class="intro"><p class="kicker">READ · TAP · REMEMBER</p><h1 id="stories-title" tabindex="-1">Stories</h1><p class="lead">Choose a story mode: explore branching stories, or build your own story and practise explaining words from context.</p></div><div id="stories-content"></div></div></section>
+
+  <!-- ARCADE: standalone games and practice library -->
+  <section class="view" id="arcade-view" aria-labelledby="arcade-title">
+    <div class="page arcade-page">
+      <div class="intro">
+        <p class="kicker">PLAY · PRACTISE · IMPROVE</p>
+        <h1 id="arcade-title" tabindex="-1">Arcade</h1>
+        <p class="lead">Quick games for words, listening, grammar and sentence building. Your results feed the same learning progress as World and your quests.</p>
+      </div>
+      <section class="block arcade-featured" aria-labelledby="arcade-mini-title">
+        <div class="block-head"><div><h2 id="arcade-mini-title">Mini-games</h2><p>Short, focused rounds you can launch anytime.</p></div></div>
+        <div id="arcade-mini-games" class="arcade-mini-grid"></div>
+      </section>
+      <section class="block arcade-library" aria-labelledby="arcade-library-title">
+        <div class="block-head"><div><h2 id="arcade-library-title">Practice library</h2><p>Choose a skill and jump straight into an activity.</p></div></div>
+        <div id="arcade-library" class="arcade-library-grid"></div>
+      </section>
+      <p class="foot-note">Arcade and World use the same learner profile, vocabulary review and progress system.</p>
+    </div>
+  </section>
 
   <!-- WORDS -->
   <section class="view" id="words-view" aria-labelledby="words-title">
@@ -342,13 +363,14 @@
 </main>
 
 <div class="dock-more-panel" id="dock-more-panel" hidden aria-label="More destinations">
+  <button class="dock-more-link" data-view="stories" type="button"><span>📖</span><span><strong>Stories</strong><small>Branching stories and writing</small></span></button>
   <button class="dock-more-link" data-view="words" type="button"><span>📚</span><span><strong>Words</strong><small>Your saved vocabulary</small></span></button>
   <button class="dock-more-link" data-view="trophies" type="button"><span>🏆</span><span><strong>Trophies</strong><small>Achievements and rewards</small></span></button>
 </div>
 <nav class="dock" aria-label="Main">
   <button class="dock-item" data-view="home" aria-current="page"><span class="dock-ic"><svg><use href="#i-path"/></svg></span><span>Play</span></button>
-  <button class="dock-item" data-view="stories"><span class="dock-ic">📖</span><span>Stories</span></button>
   <button class="dock-item" data-view="world"><span class="dock-ic">🌍</span><span>World</span></button>
+  <button class="dock-item" data-view="arcade"><span class="dock-ic">🎮</span><span>Arcade</span></button>
   <button class="dock-item" data-view="progress"><span class="dock-ic">📈</span><span>Progress</span></button>
   <button class="dock-item" data-view="profile"><span class="dock-ic">👤</span><span>Profile</span></button>
   <button class="dock-item dock-more-toggle" id="dock-more-toggle" type="button" aria-expanded="false" aria-controls="dock-more-panel"><span class="dock-ic">•••</span><span>More</span></button>

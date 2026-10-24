@@ -314,6 +314,38 @@
     panel.innerHTML = '<section class="review-panel weakness-panel"><div class="review-head"><div><p class="kicker">PERSONAL PRACTICE</p><h2>'+(repeated.length?'Let’s work on your patterns':'Build your learning profile')+'</h2></div><span class="review-count">'+(repeated.length?repeated.length+' focus':'Adaptive')+'</span></div><p class="review-note">'+(repeated.length?'These patterns have tripped you up more than once. Your next practice gives them extra weight.':total?'We’ve started tracking the patterns you miss. A few more answers will help personalise practice.':'Practice normally and Epiphany will learn which patterns need more attention.')+'</p>'+insight+'<button type="button" class="btn '+(repeated.length?'':'btn-ghost')+'" data-game="personalized">'+(repeated.length?'Practise my weak spots':'Try a personal review')+' · 5 questions</button></section>';
   }
 
+  function renderArcade() {
+    const miniRoot = $('#arcade-mini-games');
+    const libraryRoot = $('#arcade-library');
+    if (!miniRoot || !libraryRoot) return;
+    const miniIds = ['speed','audioImage','sentenceOrder','match','order','directions'];
+    miniRoot.innerHTML = miniIds.map(id => {
+      const m = META[id];
+      if (!m) return '';
+      const copy = m.blurb || m.desc || 'A quick English practice game.';
+      const xp = Number(m.xp || (GAMES[id] && GAMES[id].xp) || 25);
+      return '<article class="arcade-game-card t-' + esc(m.tone || 'mint') + '">' +
+        '<div class="arcade-game-mark" aria-hidden="true">' + glyph(id) + '</div>' +
+        '<div class="arcade-game-copy"><h3>' + esc(m.label) + '</h3><p>' + esc(copy) + '</p>' +
+        '<div class="arcade-game-meta"><span>' + Number(m.time || 3) + ' min</span><span>+' + xp + ' XP</span></div></div>' +
+        '<button class="btn arcade-play" type="button" data-game="' + esc(id) + '">Play now ' + ic('arrow') + '</button></article>';
+    }).join('');
+    const cats = window.__gameCategories || [];
+    libraryRoot.innerHTML = cats.filter(cat => cat.id !== 'minigames').map(cat => {
+      const games = cat.games.filter(([id]) => !miniIds.includes(id));
+      if (!games.length) return '';
+      return '<section class="arcade-skill-group" aria-label="' + esc(cat.title) + '">' +
+        '<header class="arcade-skill-head"><span class="arcade-skill-icon">' + esc(cat.icon) + '</span><div><h3>' + esc(cat.title) + '</h3><p>' + esc(cat.desc) + '</p></div></header>' +
+        '<div class="arcade-skill-games">' + games.map(([id,label]) => {
+          const meta = META[id] || {};
+          const game = GAMES[id] || {};
+          return '<button class="arcade-skill-game t-' + esc(meta.tone || cat.tone || 'violet') + '" type="button" data-game="' + esc(id) + '">' +
+            '<span class="arcade-skill-glyph">' + glyph(id) + '</span><span class="arcade-skill-copy"><strong>' + esc(label) + '</strong><small>' + Number(meta.time || 3) + ' min · +' + Number(game.xp || meta.xp || 25) + ' XP</small></span>' +
+            '<span class="arcade-skill-arrow" aria-hidden="true">→</span></button>';
+        }).join('') + '</div></section>';
+    }).join('');
+  }
+
   function renderHome() {
     const h = new Date().getHours();
     $('#greeting').textContent = h < 12 ? 'Good morning' : h < 18 ? 'Good afternoon' : 'Good evening';
@@ -697,7 +729,7 @@
     if (GAMES[selected.value] || MINI[selected.value]) { openView('home'); startGame(selected.value); }
   }
 
-  function renderAll() { renderHeader(); renderHome(); renderStories(); renderWords(); renderTrophies(); const grammarInsight=$('#grammar-progress-insight'); if(grammarInsight) grammarInsight.innerHTML=renderGrammarMap(); syncSettings(); }
+  function renderAll() { renderHeader(); renderHome(); renderArcade(); renderStories(); renderWords(); renderTrophies(); const grammarInsight=$('#grammar-progress-insight'); if(grammarInsight) grammarInsight.innerHTML=renderGrammarMap(); syncSettings(); }
   document.addEventListener('epiphany-auth-changed', () => { renderAll(); if (WORLD && WORLD.mode === 'regions') worldShowRegions(); });
 
 
