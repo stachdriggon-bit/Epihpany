@@ -2818,10 +2818,13 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
   function miniOrderRender() {
     const r = MG.rounds[MG.i]; MG.answered = false; hideSheet(); miniSteps();
     const textOf = k => r.items.find(x => x.k === k).text;
+    const showArabic = !!(state.translationEnabled || state.helpArabic);
+    const sentenceMarkup = text => '<span>' + esc(text) + '</span>' + (showArabic ? '<span class="story-option-ar arabic" lang="ar" dir="rtl">' + esc(translateToArabic(text).text) + '</span>' : '');
     $('#game-body').innerHTML = '<div class="q-meta"><span class="pill">Order the Story</span><span class="q-count">Story ' + (MG.i + 1) + ' of ' + MG.total + '</span></div>' +
-      '<h2 class="q-text" id="q-text" tabindex="-1">Put the events in order</h2><p class="q-sub">From “' + esc(r.title) + '”. Tap the sentences in the order they happened.</p>' +
-      '<ol class="mg-slots" aria-label="Your order">' + r.items.map((_, p) => '<li class="mg-slot' + (r.placed[p] !== undefined ? ' is-filled' : '') + '">' + (r.placed[p] !== undefined ? '<button type="button" class="mg-card is-placed" data-mg-unplace="' + p + '"><b>' + (p + 1) + '</b><span>' + esc(textOf(r.placed[p])) + '</span></button>' : '<span class="mg-empty">' + (p + 1) + '</span>') + '</li>').join('') + '</ol>' +
-      '<div class="mg-pool" role="group" aria-label="Sentences to place">' + r.pool.map(k => '<button type="button" class="mg-card" data-mg-place="' + k + '"><span>' + esc(textOf(k)) + '</span></button>').join('') + '</div>' +
+      '<h2 class="q-text" id="q-text" tabindex="-1">Put the events in order</h2>' + (showArabic ? '<p class="q-sub arabic" lang="ar" dir="rtl">رتّب الأحداث حسب تسلسل وقوعها.</p>' : '<p class="q-sub">From “' + esc(r.title) + '”. Tap the sentences in the order they happened.</p>') +
+      '<p class="q-sub">From “' + esc(r.title) + '”.</p>' +
+      '<ol class="mg-slots" aria-label="Your order">' + r.items.map((_, p) => '<li class="mg-slot' + (r.placed[p] !== undefined ? ' is-filled' : '') + '">' + (r.placed[p] !== undefined ? '<button type="button" class="mg-card is-placed" data-mg-unplace="' + p + '"><b>' + (p + 1) + '</b>' + sentenceMarkup(textOf(r.placed[p])) + '</button>' : '<span class="mg-empty">' + (p + 1) + '</span>') + '</li>').join('') + '</ol>' +
+      '<div class="mg-pool" role="group" aria-label="Sentences to place">' + r.pool.map(k => '<button type="button" class="mg-card" data-mg-place="' + k + '">' + sentenceMarkup(textOf(k)) + '</button>').join('') + '</div>' +
       '<div class="mg-actions"><button class="btn" id="mg-check" ' + (r.pool.length ? 'disabled' : '') + '>Check order</button></div>';
     $('#game-scroll').scrollTop = 0; const h = $('#q-text'); if (h) h.focus({preventScroll: true});
   }
@@ -2832,7 +2835,8 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     $$('.mg-slots .mg-card').forEach((b, p) => { b.disabled = true; b.classList.add(r.placed[p] === p ? 'is-right' : 'is-wrong'); });
     $('#mg-check').disabled = true; sfx(ok ? 'ok' : 'no');
     showSheet(ok, '<h3><span class="sheet-mark">' + ic(ok ? 'check' : 'x') + '</span>' + (ok ? 'Perfect order!' : correct + ' of ' + r.items.length + ' in the right place') + '</h3>' +
-      (ok ? '' : '<p>Correct order:</p><ol class="mg-answer">' + r.items.map(x => '<li>' + esc(x.text) + '</li>').join('') + '</ol>') +
+      (ok ? '' : '<p>Correct order:</p>' + ((state.translationEnabled||state.helpArabic) ? '<p class="story-page-ar arabic" lang="ar" dir="rtl">الترتيب الصحيح:</p>' : '') + '<ol class="mg-answer">' + r.items.map(x => '<li>' + esc(x.text) + ((state.translationEnabled||state.helpArabic) ? '<span class="story-option-ar arabic" lang="ar" dir="rtl">' + esc(translateToArabic(x.text).text) + '</span>' : '') + '</li>').join('') + '</ol>') +
+      ((state.translationEnabled||state.helpArabic) ? '<p class="story-page-ar arabic" lang="ar" dir="rtl">' + (ok ? 'أحسنت! رتّبت الأحداث ترتيبًا صحيحًا.' : 'راجع تسلسل الأحداث ثم حاول مجددًا في القصة التالية.') + '</p>' : '') +
       '<div class="sheet-actions"><button class="btn" id="go-next">' + (MG.i === MG.total - 1 ? 'See results' : 'Next story') + ic('arrow') + '</button></div>');
   }
 
