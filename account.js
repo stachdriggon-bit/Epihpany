@@ -250,7 +250,6 @@
     const removeAvatar = $('player-avatar-remove'); if (removeAvatar) removeAvatar.hidden = !uploadedAvatarUrl;
     const removeBanner = $('player-banner-remove'); if (removeBanner) removeBanner.hidden = !uploadedBannerUrl;
     updateFrameAvailability();
-    window.addEventListener('epiphany:achievements-updated',updateFrameAvailability);
   }
   function renderPlayerProfile(profile) {
     const name = profile && profile.display_name || (currentUser && (currentUser.user_metadata && (currentUser.user_metadata.full_name || currentUser.user_metadata.name)) ) || (currentUser && currentUser.email ? currentUser.email.split('@')[0] : 'English learner');
@@ -458,6 +457,7 @@
     $('avatar-crop-modal')?.addEventListener('click',event=>{if(event.target.id==='avatar-crop-modal')closeAvatarCrop();});
     document.addEventListener('keydown',event=>{if(event.key==='Escape'&&!$('avatar-crop-modal')?.hidden)closeAvatarCrop();});
     updateFrameAvailability();
+    window.addEventListener('epiphany:achievements-updated',updateFrameAvailability);
     postForm.addEventListener('submit', async event => {
       event.preventDefault();
       if (!client || !currentUser) { profileStatus('Sign in to share a post.', 'error'); return; }
