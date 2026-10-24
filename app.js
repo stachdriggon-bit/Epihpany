@@ -2892,7 +2892,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
         if (!G) return;
         G.answered = false;
         hideSheet();
-        $('#answers .answer').forEach(button => { button.disabled = false; button.classList.remove('correct','wrong'); });
+        $( '#answers .answer').forEach(button => { button.disabled = false; button.classList.remove('correct','wrong'); });
         const answerRoot = $('#answers'); if (answerRoot) answerRoot.classList.remove('done');
       }, {once:true});
       return;
