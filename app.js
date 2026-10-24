@@ -74,8 +74,37 @@
   const UNLOCK = {vocabulary:0, spelling:0, grammar:1, story:2, listening:3, advanced:4, mistakes:0, spot:0, typing:0};
   GAMES.mistakes = {title:'Common Mistakes', category:'GRAMMAR', xp:40, desc:'Understand common mistakes made by English learners.', questions:MISTAKE_QUESTIONS.map(q=>({q:q.prompt,sub:q.sub,answers:q.options,correct:q.answer,explain:q.why_en,word:null,level:q.level,ar:q.arabic_hint,id:q.id,trap:q.trap,why_ar:q.why_ar,arabic_hint:q.arabic_hint,aha:null}))};
   GAMES.personalized = {title:'Your Weak Spots',category:'PERSONAL REVIEW',xp:45,desc:'A short practice set built from the mistake patterns you have missed before.',questions:GAMES.mistakes.questions.slice()};
-  GAMES.spot = {title:'Spot the Mistake',category:'GRAMMAR',xp:40,desc:'Tap the one incorrect word in a short text.',questions:SPOT_QUESTIONS.map(q=>({...q,q:q.text,sub:'Tap the one incorrect word.',answers:[q.fix],correct:q.wrongIndex,explain:q.why_en,aha:null,mode:'spot'}))};
-  GAMES.typing = {title:'Type It',category:'WRITING',xp:45,desc:'Write the missing word without multiple-choice hints.',questions:TYPING_QUESTIONS.map(q=>({...q,q:q.prompt,sub:'Hint: '+q.hint,answers:q.accept,correct:0,explain:q.why_en,aha:null,mode:'typing'}))};
+  // Assign a topic only when the prompt or its explanation provides a clear grammar signal.
+  // These tags let writing and error-spotting rounds share the same review history as grammar.
+  function inferGrammarTrap(q) {
+    const text = [q.prompt,q.text,q.why_en,q.why_ar,q.hint,q.answer,q.fix].filter(Boolean).join(' ').toLowerCase();
+    const has = re => re.test(text);
+    if (has(/\b(am|is|are) with (i|you|we|they|he|she|it)\b|subject pronoun.*\b(am|is|are)\b|\bbe verb\b|\bbe-verbs?\b|\bwas and were\b|\bwas\/were\b|\b(is|are|am)\b.*\b(subject|pronoun)\b/)) return 'am-is-are';
+    if (has(/\b(can|could|should|must|might|may|would)\b.*\b(base form|base verb|bare infinitive)\b|after can|modal verb/)) return 'modals';
+    if (has(/\bcan\b/)) return 'can';
+    if (has(/\b(present perfect|have\/has|has or have|since and for|since\/for)\b/)) return has(/\bsince\b|\bfor\b.*\bduration\b/) ? 'since-for' : 'present-perfect';
+    if (has(/\bsince\b.*\bfor\b|\bfor\b.*\bsince\b/)) return 'since-for';
+    if (has(/\b(article|a or an|a\/an|use an before|use a before|the before|definite article|indefinite article)\b|\ba apple\b|\ban (?:university|hour)\b/)) return 'articles';
+    if (has(/\b(plural|plurals|plural noun|plural form|ends in s|add s to the noun|irregular plural)\b/)) return 'plurals';
+    if (has(/\b(past simple|simple past|past tense|past form|irregular verb|yesterday|last week|ago)\b/)) return 'past-simple';
+    if (has(/\b(present simple|simple present|he\/she\/it|third person|adds? -s|add -s|verb ending in -s|every day)\b/)) return 'present-simple';
+    if (has(/\b(preposition|prepositions|in, on, at|in\/on\/at|at the weekend|on monday|in the morning|preposition of time|preposition of place)\b/)) return 'in-on-at';
+    if (has(/\b(comparative|superlative|than me|-er than|more .* than|the most|the best|better than)\b/)) return 'comparatives';
+    if (has(/\b(possessive|possessive adjective|my, your|his, her|their|whose)\b/)) return 'possessives';
+    if (has(/\b(pronoun|subject pronoun|object pronoun|he, she, it|me and him|they and them)\b/)) return 'pronouns';
+    if (has(/\b(gerund|verb\+ing|verb followed by -ing|enjoy .*ing|avoid .*ing)\b/)) return 'gerunds';
+    if (has(/\b(infinitive|to + verb|to-infinitive|verb followed by to)\b/)) return 'infinitives';
+    if (has(/\b(conditionals?|if clause|if .* will|would have|second conditional|third conditional)\b/)) return 'conditionals';
+    if (has(/\b(relative clause|who, which|that refers to|whose refers)\b/)) return 'relative-clauses';
+    if (has(/\b(countable|uncountable|much or many|much vs many|countable noun|uncountable noun)\b/)) return 'countable-uncountable';
+    if (has(/\b(much, many|few, little|a few|a little|quantifier|some or any|some\/any)\b/)) return 'quantifiers';
+    if (has(/\b(word order|order of words|sentence order|adverb position|place the adverb)\b/)) return 'word-order';
+    if (has(/\b(adjective order|order of adjectives|adjectives before nouns)\b/)) return 'adjective-order';
+    if (has(/\b(word choice|choose the correct word|confusing words|collocation)\b/)) return 'word-choice';
+    return null;
+  }
+  GAMES.spot = {title:'Spot the Mistake',category:'GRAMMAR',xp:40,desc:'Tap the one incorrect word in a short text.',questions:SPOT_QUESTIONS.map(q=>({...q,q:q.text,sub:'Tap the one incorrect word.',answers:[q.fix],correct:q.wrongIndex,explain:q.why_en,trap:inferGrammarTrap(q),aha:null,mode:'spot'}))};
+  GAMES.typing = {title:'Type It',category:'WRITING',xp:45,desc:'Write the missing word without multiple-choice hints.',questions:TYPING_QUESTIONS.map(q=>({...q,q:q.prompt,sub:'Hint: '+q.hint,answers:q.accept,correct:0,explain:q.why_en,trap:inferGrammarTrap(q),aha:null,mode:'typing'}))};
   const AHA_BY_QUESTION = Object.fromEntries(AHA_NOTES.map(note=>[note.questionId,note]));
   Object.values(GAMES).forEach(game=>(game.questions||[]).forEach(item=>{const note=AHA_BY_QUESTION[item.id];if(note)item.aha={en:note.en,ar:note.ar};}));   // level index that suggests each game
   const LEVEL_GAME = ['vocabulary', 'grammar', 'story', 'listening', 'advanced', 'advanced']; // same mapping the world map used
@@ -1724,7 +1753,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     };
     // Use five questions from the learner's current CEFR level whenever possible.
     let selected;
-    if (['personalized','grammar'].includes(type) && game.questions.some(q=>q.trap&&q.id)) {
+    if (['personalized','grammar','spot','typing'].includes(type) && game.questions.some(q=>q.trap&&q.id)) {
       // Prioritise topics that are due for review or still cause errors, while keeping a little variety.
       selected = shuffle(weightedGrammarPick(game.questions, 5));
     } else if (type === 'mistakes') {
@@ -1744,7 +1773,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     const recentList = Array.isArray(state.recentQuestions[recentKey]) ? state.recentQuestions[recentKey] : [];
     const recentIds = new Set(recentList);
     let freshPool;
-    if (['personalized','grammar'].includes(type)) {
+    if (['personalized','grammar','spot','typing'].includes(type)) {
       freshPool = game.questions.filter(q => !recentIds.has(questionKey(q)));
     } else if (type === 'mistakes') {
       const levels = LEVELS.map(l => l.id), center = levels.indexOf(level);
