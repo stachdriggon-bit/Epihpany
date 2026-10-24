@@ -1,6 +1,6 @@
 const CACHE_NAME = 'epiphany-shell-20261024t';
 const VENDOR_CACHE = 'epiphany-vendor-20261024k';
-const CORE_ASSETS = ['./', './index.html', './style.css', './life-skills.css', './app.js', './data.js', './data-expansion.js', './data-mistakes.js', './data-spot.js', './data-typing.js', './data-wotd.js', './data-aha.js', './data-minigames.js', './mini-games.css', './supabase-config.js', './account.js', './telemetry.js', './lazy-data.js', './manifest.webmanifest', './icon.svg', './notifications.js'];
+const CORE_ASSETS = ['./', './index.html', './style.css', './life-skills.css', './app.js', './data.js', './data-expansion.js', './data-mistakes.js', './data-spot.js', './data-typing.js', './data-wotd.js', './data-aha.js', './data-minigames.js', './mini-games.css', './supabase-config.js', './account.js', './telemetry.js', './lazy-data.js', './manifest.webmanifest', './icon.svg', './wotd-card.html', './notifications.js'];
 self.addEventListener('install', event => {
   event.waitUntil((async () => {
     const cache = await caches.open(CACHE_NAME);
