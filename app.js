@@ -4727,6 +4727,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
       try { localStorage.setItem('epiphany-help-language-choice', choice); } catch {}
       save(); syncSettings();
       helpLanguageModal.hidden = true;
+      if (state.helpArabic) ensureArabicTranslationCatalog().then(() => { renderAll(); if (G && G.answered) setSheetSpace(); }).catch(() => {});
       if (G && G.answered) setSheetSpace();
     });
   });
