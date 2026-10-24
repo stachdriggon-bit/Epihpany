@@ -4106,7 +4106,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
         const hits=topic.keyIdeas.filter(group=>group.some(term=>all.includes(term.toLowerCase()))).length;
         const hasExample=example.length>=5||/\b(example|for instance|such as)\b/i.test(explanation);
         const complete=enough&&hits>=Math.min(2,topic.keyIdeas.length)&&hasExample;
-        state.teachMeAttempts.push({topic:topicKey,date:dayKey(),ideaHits:hits,hasExample,complete});state.teachMeAttempts=state.teachMeAttempts.slice(-100);save();recordLearningActivity({attempts:1});
+        state.teachMeAttempts.push({topic:topicKey,date:dayKey(),ideaHits:hits,hasExample,complete});state.teachMeAttempts=state.teachMeAttempts.slice(-100);recordLearningActivity({attempts:1});save();
         const feedback=$('#teach-feedback');
         if(feedback)feedback.innerHTML=complete
           ?'<div class="teach-feedback-result is-ready"><h3>You made the idea teachable.</h3><p>Your explanation includes several key ideas and an example. That is a useful sign of understanding, not a formal grade.</p><details><summary>Compare with a model explanation</summary><p>'+esc(topic.hint)+'</p><p><strong>Example:</strong> '+esc(topic.model)+'</p></details><p class="tool-helper">One more step: '+esc(topic.follow)+'</p></div>'
