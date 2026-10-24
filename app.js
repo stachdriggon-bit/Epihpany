@@ -3,7 +3,7 @@
 (() => {
   'use strict';
   const $ = s => document.querySelector(s);
-  const $ = s => [...document.querySelectorAll(s)];
+  const $$ = s => [...document.querySelectorAll(s)];
   let bidiLastMode = null;
   let bidiObserver = null;
   function processBidiTree(root) {
