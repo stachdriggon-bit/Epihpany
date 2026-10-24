@@ -85,6 +85,9 @@
     // Prefer the question's explicit hint and sentence structure over incidental words in explanations.
     if (/\b(he|she|it) (?:go|live|play|work)\b|\b(?:every day|on fridays)\b/.test(prompt) && /\b(?:go|live|play|work|study)\b/.test(prompt)) return 'present-simple';
     if (/\b(?:they|we|you|i|he|she|it) (?:is|are|am|was|were)\b|\b(?:this are|those is|there is many|there are a cat|friends is|we was|they is|he are|i is)\b/.test(prompt)) return 'am-is-are';
+    if (/\b(?:despite of|in spite the|although .* but)\b/.test(prompt)) return 'concession';
+    if (/\b(?:last year|yesterday|two days ago|last week)\b/.test(prompt) && /\b(?:has|have|had)\b/.test(prompt)) return 'past-time';
+    if (/\b(?:needs ___|needs to be|needs .* before publication|device needs)\b/.test(prompt)) return 'verb-patterns';
     if (/\b(?:less books|much people|many books|a good news|an advice|some advice)\b/.test(prompt) || /\b(advice is uncountable|use fewer with countable|use many with countable|news looks plural|data is often treated as plural|data is often treated as a plural)\b/.test(why)) return 'countable-uncountable';
     if (/\b(?:doesn't|does not|didn't|did not|after did|after doesn't|after didn’t)\b/.test(prompt) || /\bafter (?:doesn't|does not|did|didn't|didn’t)\b/.test(why)) return 'past-simple';
     if (/\b(?:since|for)\b/.test(prompt) && /\b(?:2022|may|five years|two hours|three hours|period continuing|marks a period)\b/.test(prompt+' '+why)) return 'since-for';
@@ -113,7 +116,7 @@
     if (has(/\b(device needs|needs testing|denied .*document|insist(?:ed)? on .*leave|insist on \+ noun|followed by an? -ing)\b/)) return 'verb-patterns';
     if (has(/\b(results, together with|together with the appendix|head of the subject|subject-verb agreement|agreement with the subject)\b/)) return 'be-verbs';
     if (has(/\b(passive construction|past participle|could be .* out|could be ruled out)\b/)) return 'verb-patterns';
-    if (has(/\b(too .* to warrant|after to|infinitive marker to|takes a direct object|not followed by)\b/)) return 'infinitives';
+    if (has(/\b(too .* to warrant|after the infinitive marker to|after to use the base form|infinitive marker to|infinitive form is required)\b/)) return 'infinitives';
     if (has(/\b(use were with we|were with we|was with i|was with he|was\/were|was and were)\b/)) return 'am-is-are';
     // High-confidence patterns for writing and error-spotting items with generic explanations.
     if (has(/\b(present continuous|be \+ verb-ing|verb-ing|verb ending in -ing)\b|\b(are|is|am) go(ing)? to\b/)) return 'verb-patterns';
