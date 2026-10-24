@@ -376,7 +376,7 @@
       {when:/leave a conversation/, wants:/\b(lovely|nice|talking|go|leave|get going|take care|goodbye|bye)\b/, conflict:/\b(shut up|finished with you|stop talking)\b/},
       {when:/customer complains|order is wrong/, wants:/\b(sorry|check|look|fix|correct|help|order|happened|resolve)\b/, conflict:/\b(your fault|not my problem|you're wrong|you are wrong)\b/}
     ];
-    const rule = contextRules.find(r => r.when.test(scene) || r.when.test(prompt));
+    const rule = contextRules.filter(r => r.when.test(scene) || r.when.test(prompt)).sort((a,b) => b.when.source.length-a.when.source.length)[0];
     let kind = 'clear';
     let message = '';
     let label = '';
@@ -384,7 +384,7 @@
       kind = 'unclear';
       label = ar ? 'لنوضّح المقصود' : 'Let’s clarify the meaning';
       message = ar ? 'الرد قصير جدًا حتى نعرف قصدك. أضف ما تريد فعله أو طلبه، ثم جرّب مرة أخرى. هذا ليس حكمًا على مستواك.' : 'This is too short for the coach to understand your intention. Add what you want to do or ask, then try again. This is not a judgement of your level.';
-    } else if (rule && rule.conflict.test(text) && !rule.wants.test(text)) {
+    } else if (rule && rule.conflict.test(text)) {
       kind = 'meaning';
       label = ar ? 'قد يتغيّر المعنى' : 'The meaning may have changed';
       message = ar ? 'انتبه: قد يوصل هذا الرد معنى معاكسًا لما يتطلبه الموقف. راجع ما تريد تحقيقه أولًا، ثم أعد صياغته. قد لا يلتقط هذا الفاحص البسيط كل السياق، لذلك اعتبرها ملاحظة للمراجعة لا حكمًا نهائيًا.' : 'Careful: this wording may communicate the opposite of what the situation calls for. Check what you want to achieve, then rephrase it. This simple coach may miss context, so treat this as a prompt to review—not a final verdict.';
@@ -392,6 +392,10 @@
       kind = 'unclear';
       label = ar ? 'المعنى يحتاج توضيحًا' : 'The meaning may need clarifying';
       message = ar ? 'لم أستطع تحديد الجزء الذي يجيب عن الموقف. هذا لا يعني أن ردك خطأ؛ استخدم كلمات أوضح لطلبك أو قرارك، أو قارنه بالنموذج لترى الفكرة التي ينبغي إيصالها.' : 'I could not identify the part of your reply that addresses the situation. That does not mean it is wrong. Make your request or decision more explicit, or compare it with the example to see the message to convey.';
+    } else if (!completeEnough && text.split(' ').filter(Boolean).length <= 2) {
+      kind = 'unclear';
+      label = ar ? 'المعنى يحتاج توضيحًا' : 'The meaning may need clarifying';
+      message = ar ? 'الرد مختصر جدًا ولا يوضح الطلب أو القرار كاملًا. أضف جملة قصيرة تشرح ما تقصده، ولا تقلق بشأن مطابقة النموذج.' : 'This reply is too brief to make the request or decision clear. Add a short sentence explaining what you mean; there is no need to match the model.';
     } else if (!polite && (rule || completeEnough)) {
       kind = 'tone';
       label = ar ? 'المعنى مفهوم؛ حسّن النبرة' : 'Understandable; soften the tone';
