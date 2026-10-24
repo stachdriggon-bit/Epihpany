@@ -393,8 +393,9 @@
         policy};
     },
     getGameDifficulty(gameId, skill) {
-      const gameSkills = {odd:'vocabulary', detective:'reading', translator:'conversation', maze:'listening', wordladder:'spelling'};
-      return this.getDifficulty(skill || gameSkills[String(gameId || '').toLowerCase()] || 'vocabulary');
+      const builtInSkills = {odd:'vocabulary', detective:'reading', translator:'conversation', maze:'listening', wordladder:'spelling'};
+      const registeredSkill = this._gameSkills && this._gameSkills[String(gameId || '').toLowerCase()];
+      return this.getDifficulty(skill || registeredSkill || builtInSkills[String(gameId || '').toLowerCase()] || 'vocabulary');
     },
     registerGame(gameId, skill) {
       const allowed = ['vocabulary','grammar','listening','conversation','reading','spelling'];
