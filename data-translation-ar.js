@@ -2002,3 +2002,37 @@ window.EPIPHANY_AR_TRANSLATION_PHRASES = Object.assign(window.EPIPHANY_AR_TRANSL
   "A “tenuous” argument is ___.":"الحجة «tenuous» هي حجة ___.",
   "Choose the sentence with correct inversion.":"اختر الجملة التي تستخدم القلب النحوي استخدامًا صحيحًا."
 });
+
+
+/* Exact Arabic for the remaining expansion-bank prompts. */
+window.EPIPHANY_AR_TRANSLATION_PHRASES = Object.assign(window.EPIPHANY_AR_TRANSLATION_PHRASES || {}, {
+  "A colleague’s analysis is strong, but one assumption is unsupported. What is the most constructive response?":"تحليل زميلك قوي، لكن أحد افتراضاته غير مدعوم. ما الرد الأكثر بنّاءً؟",
+  "“Her endorsement was qualified rather than unequivocal.” What does this suggest?":"«كان تأييدها مشروطًا لا قاطعًا». ماذا يوحي ذلك؟",
+  "To “obviate” a problem is to ___.":"أن تقوم بـ«obviate» مشكلة يعني أن ___.",
+  "A “perfunctory” inspection is carried out ___.":"يُجرى الفحص «perfunctory» ___.",
+  "A review identifies a serious flaw but also acknowledges an unusually valuable contribution. Which response is most balanced?":"يكشف التقييم عيبًا خطيرًا، لكنه يعترف أيضًا بمساهمة ذات قيمة استثنائية. أي رد هو الأكثر توازنًا؟",
+  "“The evidence is suggestive, though hardly dispositive.” What is implied?":"«تشير الأدلة إلى احتمال ما، لكنها لا تحسم الأمر إطلاقًا». ما المعنى الضمني؟",
+  "A claim is “underdetermined” by the evidence when the evidence ___.":"يكون الادعاء «underdetermined» بالأدلة عندما تكون الأدلة ___.",
+  "Before going outside, you put a ___ on your foot.":"قبل الخروج، تضع ___ في قدمك.",
+  "My sister ___ breakfast at seven.":"أختي ___ الإفطار في السابعة.",
+  "Mia has no umbrella and it is raining. What might she do?":"لا تملك ميا مظلة والمطر يهطل. ماذا يمكن أن تفعل؟",
+  "“How much is this sandwich?” What does the speaker want to know?":"«كم ثمن هذه الشطيرة؟» ما الذي يريد المتحدث معرفته؟",
+  "Which is the most polite request?":"أي طلب هو الأكثر تهذيبًا؟",
+  "If you miss a bus, you ___.":"إذا فاتتك الحافلة، فأنت ___.",
+  "We have known each other ___ five years.":"نحن نعرف بعضنا ___ خمس سنوات.",
+  "Omar reads the return policy before buying a jacket. Why?":"يقرأ عمر سياسة الإرجاع قبل شراء سترة. لماذا؟",
+  "“The meeting has been moved from Tuesday to Thursday.” When is it now?":"«نُقل الاجتماع من الثلاثاء إلى الخميس». متى سيُعقد الآن؟",
+  "Choose a natural way to make a suggestion.":"اختر طريقة طبيعية لاقتراح شيء.",
+  "A reliable person is someone who ___.":"الشخص الموثوق هو شخص ___.",
+  "If she had received the message, she ___ earlier.":"لو كانت قد تلقت الرسالة، لكانت ___ في وقت أبكر.",
+  "A team misses its deadline because nobody clarified who was responsible. What would most likely help next time?":"يفوّت فريق الموعد النهائي لأن أحدًا لم يوضح المسؤول عن المهمة. ما الذي يُرجح أن يساعد في المرة القادمة؟",
+  "“I see your point, but the figures suggest a different conclusion.” What is the speaker doing?":"«أفهم وجهة نظرك، لكن الأرقام تشير إلى استنتاج مختلف». ماذا يفعل المتحدث؟",
+  "Choose the best connector: The road was flooded; ___, the event was postponed.":"اختر أداة الربط الأنسب: «غمرت المياه الطريق؛ ___، أُجّل الحدث».",
+  "A feasible plan is one that is ___.":"الخطة القابلة للتنفيذ هي خطة ___.",
+  "A report cites a small survey but claims the result applies to everyone. What is the main weakness?":"يستشهد تقرير باستطلاع صغير، لكنه يدّعي أن النتيجة تنطبق على الجميع. ما نقطة الضعف الرئيسية؟",
+  "“I’m not ruling it out, although we would need stronger evidence.” What does the speaker mean?":"«لا أستبعد ذلك، رغم أننا سنحتاج إلى أدلة أقوى». ماذا يقصد المتحدث؟",
+  "Choose the best phrase for a measured qualification.":"اختر أفضل عبارة للتعبير عن تحفظ متزن.",
+  "A contentious issue is one that is ___.":"المسألة «contentious» هي مسألة ___.",
+  "Were the proposal ___, implementation would begin next month.":"لو كان المقترح ___، لبدأ التنفيذ الشهر المقبل.",
+  "An analyst distinguishes correlation from causation and asks for a controlled study. What is the analyst prioritising?":"يميّز محلل بين الارتباط والسببية ويطلب دراسة مضبوطة. ما الأولوية التي يركز عليها؟"
+});
