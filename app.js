@@ -4436,7 +4436,44 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     const move=e.target.closest('[data-world-move]');if(move){return;}
     if(e.target.closest('[data-world-interact]')){worldInteract();return;}
     const dialogClose=e.target.closest('[data-world-dialog-close]');if(dialogClose){const panel=$('#world-conversation');if(panel)panel.remove();if(WORLD)WORLD.conversationOpen=false;return;}
-    const dialogChoice=e.target.closest('[data-world-dialog-choice]');if(dialogChoice&&WORLD){const t=worldTask(),choice=t&&t.conversation&&t.conversation.options[Number(dialogChoice.dataset.worldDialogChoice)],feedback=$('.world-conversation-feedback');if(!choice)return;const id=t.check&&t.check.object||'world-npc';try{const all=JSON.parse(localStorage.getItem('epiphany-world-character-memory')||'{}'),prev=all[id]||{visits:0},txt=String(choice.text||'').toLowerCase();let tone='friendly';if(/give me|now!|want|do it|must|immediately|order/.test(txt))tone='demanding';else if(/do not talk|don't talk|leave me|no thanks|i cannot|i can't|go away/.test(txt))tone='avoidant';all[id]={...prev,visits:(Number(prev.visits)||0)+(choice.correct?1:0),lastSeen:Date.now(),lastResponse:choice.text,lastTone:tone,lastOutcome:choice.correct?'positive':'retry'};localStorage.setItem('epiphany-world-character-memory',JSON.stringify(all));}catch{}if(choice.correct){if(feedback)feedback.textContent=choice.reply||'That is a natural response. Well done!';WORLD.dialogueComplete=true;WORLD.conversationOpen=false;setTimeout(()=>{const panel=$('#world-conversation');if(panel)panel.remove();if(WORLD&&WORLD.mode==='play'&&worldEval())worldComplete();},650);recordAdaptiveResult('conversation',t.id||t.title||'world-dialogue',true);}else{recordAdaptiveResult('conversation',t.id||t.title||'world-dialogue',false);if(feedback)feedback.textContent=(choice.reply||'Not quite. Try another response.')+' Try again.';sfx('wrong');}return;}}
+    const dialogChoice = e.target.closest('[data-world-dialog-choice]');
+    if (dialogChoice && WORLD) {
+      const task = worldTask();
+      const choice = task && task.conversation && task.conversation.options[Number(dialogChoice.dataset.worldDialogChoice)];
+      const feedback = $('.world-conversation-feedback');
+      if (!choice) return;
+      const memoryId = (task.check && task.check.object) || 'world-npc';
+      try {
+        const all = JSON.parse(localStorage.getItem('epiphany-world-character-memory') || '{}');
+        const previous = all[memoryId] || {visits: 0};
+        const responseText = String(choice.text || '').toLowerCase();
+        let tone = 'friendly';
+        if (/give me|now!|want|do it|must|immediately|order/.test(responseText)) tone = 'demanding';
+        else if (/do not talk|don't talk|leave me|no thanks|i cannot|i can't|go away/.test(responseText)) tone = 'avoidant';
+        all[memoryId] = {
+          ...previous, visits: (Number(previous.visits) || 0) + (choice.correct ? 1 : 0),
+          lastSeen: Date.now(), lastResponse: choice.text, lastTone: tone,
+          lastOutcome: choice.correct ? 'positive' : 'retry'
+        };
+        localStorage.setItem('epiphany-world-character-memory', JSON.stringify(all));
+      } catch {}
+      if (choice.correct) {
+        if (feedback) feedback.textContent = choice.reply || 'That is a natural response. Well done!';
+        WORLD.dialogueComplete = true;
+        WORLD.conversationOpen = false;
+        setTimeout(function () {
+          const panel = $('#world-conversation');
+          if (panel) panel.remove();
+          if (WORLD && WORLD.mode === 'play' && worldEval()) worldComplete();
+        }, 650);
+        recordAdaptiveResult('conversation', task.id || task.title || 'world-dialogue', true);
+      } else {
+        recordAdaptiveResult('conversation', task.id || task.title || 'world-dialogue', false);
+        if (feedback) feedback.textContent = (choice.reply || 'Not quite. Try another response.') + ' Try again.';
+        sfx('wrong');
+      }
+      return;
+    }
     if(e.target.closest('[data-world-labels]')){if(WORLD){WORLD.labels=!WORLD.labels;try{localStorage.setItem('epiphany-world-labels',WORLD.labels?'1':'0');}catch{}const b=e.target.closest('[data-world-labels]');b.setAttribute('aria-pressed',String(WORLD.labels));b.textContent=WORLD.labels?'🏷 Labels on':'🙈 No labels';b.classList.toggle('is-on',WORLD.labels);worldDraw();}return;}
     if(e.target.closest('[data-world-speak]')){if(worldTask())speak(worldTask().instruction);return;}
     
