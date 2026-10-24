@@ -61,17 +61,32 @@
   }
   function speakTarget() { const item=rounds.maze[index%rounds.maze.length]; if(!('speechSynthesis' in window)||!window.SpeechSynthesisUtterance){const fb=root.querySelector('#tl-feedback');if(fb){fb.hidden=false;fb.className='tl-feedback is-wrong';fb.textContent='Speech playback is not available in this browser.';}return;} window.speechSynthesis.cancel(); const utterance=new SpeechSynthesisUtterance(item.target); utterance.lang='en-US'; utterance.rate=.82; window.speechSynthesis.speak(utterance); }
   function start(id) { mode=id; index=0; score=0; clueCount=0; ladderPath=[]; renderGame(); if(id==='maze') speakTarget(); }
+  root.addEventListener('submit', e => {
+    const form=e.target.closest('[data-think-ladder-form]');if(!form||mode!=='wordladder')return;e.preventDefault();if(locked)return;
+    const item=rounds.wordladder[index%rounds.wordladder.length],input=form.querySelector('input'),word=input.value.trim().toLowerCase(),previous=ladderPath[ladderPath.length-1];
+    const validWords=new Set([item.start,...item.path,item.goal]);
+    const differs=word.length===previous.length&&word!==previous&&[...word].filter((ch,i)=>ch!==previous[i]).length===1;
+    const allowed=validWords.has(word)&&differs;
+    if(!allowed){const fb=root.querySelector('#tl-feedback');fb.hidden=false;fb.className='tl-feedback is-wrong';fb.innerHTML='<strong>Not quite—check the move.</strong><p>'+(!differs?'Change exactly one letter from “'+esc(previous)+'”.':'Try a valid word from this ladder, and change only one letter.')+'</p>';if(window.EpiphanyThinkLab)window.EpiphanyThinkLab.recordResult('spelling','word-ladder',false,false);input.select();return;}
+    ladderPath.push(word);
+    if(window.EpiphanyThinkLab)window.EpiphanyThinkLab.recordResult('spelling','word-ladder',true,word===item.goal&&index===rounds.wordladder.length-1);
+    if(word===item.goal){score++;locked=true;renderGame();const fb=root.querySelector('#tl-feedback');fb.hidden=false;fb.className='tl-feedback is-correct';fb.innerHTML='<strong>✓ Ladder complete!</strong><p>'+esc(item.explain)+'</p>';const next=root.querySelector('[data-think-next]');if(next)next.hidden=false;}
+    else{renderGame();const input2=root.querySelector('#tl-ladder-input');if(input2)input2.focus();}
+  });
   root.addEventListener('click', e => {
     const launch=e.target.closest('[data-think-game]'); if(launch){start(launch.dataset.thinkGame);return;}
-    if(e.target.closest('[data-think-back]')){landing();return;}
+    if(e.target.closest('[data-think-back]')){if(window.speechSynthesis)window.speechSynthesis.cancel();landing();return;}
     if(e.target.closest('[data-think-clue]')){clueCount=Math.min(rounds.detective[index%rounds.detective.length].clues.length-1,clueCount+1);renderGame();return;}
-    if(e.target.closest('[data-think-next]')){index++;clueCount=0;ladderPath=[];if(index>=rounds[mode].length){const finished=mode;root.innerHTML='<div class="tl-finish"><span class="tl-finish-mark">∴</span><span class="tl-eyebrow">CASE FILE CLOSED</span><h2>Good thinking.</h2><p>You solved <b>'+score+' of '+rounds[finished].length+'</b> challenges. The goal is not only to get it right—it’s to understand why.</p><button type="button" class="tl-next" data-think-restart>Try another case ↗</button><button type="button" class="tl-back" data-think-back>Back to Think Lab</button></div>';mode=null;}else renderGame();return;}
+    if(e.target.closest('[data-think-next]')){if(window.speechSynthesis)window.speechSynthesis.cancel();index++;clueCount=0;ladderPath=[];if(index>=rounds[mode].length){const finished=mode;root.innerHTML='<div class="tl-finish"><span class="tl-finish-mark">∴</span><span class="tl-eyebrow">CASE FILE CLOSED</span><h2>Good thinking.</h2><p>You solved <b>'+score+' of '+rounds[finished].length+'</b> challenges. The goal is not only to get it right—it’s to understand why.</p><button type="button" class="tl-next" data-think-restart>Try another case ↗</button><button type="button" class="tl-back" data-think-back>Back to Think Lab</button></div>';mode=null;}else renderGame();return;}
     if(e.target.closest('[data-think-restart]')){landing();return;}
     if(e.target.closest('[data-think-speak]')){speakTarget();return;}
     const answer=e.target.closest('[data-think-answer]'); if(!answer||locked||!mode)return;
-    locked=true;const item=rounds[mode][index%rounds[mode].length],chosen=Number(answer.dataset.thinkAnswer),correct=chosen===item.answer;if(correct)score++;
-    root.querySelectorAll('[data-think-answer]').forEach(b=>{b.disabled=true;const n=Number(b.dataset.thinkAnswer);if(n===item.answer)b.classList.add('is-correct');if(n===chosen&&!correct)b.classList.add('is-wrong');});
-    const fb=root.querySelector('#tl-feedback');fb.hidden=false;fb.className='tl-feedback '+(correct?'is-correct':'is-wrong');fb.innerHTML='<strong>'+(correct?'✓ Well reasoned.':'↗ Look at the clues again.')+'</strong><p>'+esc(item.explain)+'</p>';
+    const item=rounds[mode][index%rounds[mode].length];
+    if(mode==='wordladder')return;
+    locked=true;const chosen=Number(answer.dataset.thinkAnswer),correct=mode==='maze'?item.options[chosen]===item.target:chosen===item.answer;if(correct)score++;
+    if(window.EpiphanyThinkLab){const skill=mode==='maze'?'listening':mode==='translator'?'conversation':mode==='detective'?'reading':'vocabulary';window.EpiphanyThinkLab.recordResult(skill,mode,correct,index===rounds[mode].length-1);}
+    root.querySelectorAll('[data-think-answer]').forEach(b=>{b.disabled=true;const n=Number(b.dataset.thinkAnswer);const isRight=mode==='maze'?item.options[n]===item.target:n===item.answer;if(isRight)b.classList.add('is-correct');if(n===chosen&&!correct)b.classList.add('is-wrong');});
+    const fb=root.querySelector('#tl-feedback');fb.hidden=false;fb.className='tl-feedback '+(correct?'is-correct':'is-wrong');fb.innerHTML='<strong>'+(correct?(mode==='maze'?'✓ Path cleared!':'✓ Well reasoned.'):'↗ Look at the clues again.')+'</strong><p>'+esc(item.explain)+'</p>'+(mode==='maze'?'<p class="tl-heard-word">Target word: <b>'+esc(item.target)+'</b></p>':'');
     const next=root.querySelector('[data-think-next]');if(next)next.hidden=false;
   });
   landing();
