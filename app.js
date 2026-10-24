@@ -908,6 +908,44 @@
     curious:['curious about something','a curious person','curiosity about'], notice:['notice a difference','notice a change','barely notice'],
     journey:['go on a journey','a long journey','learning journey'], confident:['feel confident','confident about','build confidence']
   };
+  const WORD_FAMILIES={
+    happy:['happy (adjective)','happiness (noun)','unhappy (adjective)','happily (adverb)'],
+    happiness:['happy (adjective)','happiness (noun)','unhappy (adjective)','happily (adverb)'],
+    unhappy:['happy (adjective)','happiness (noun)','unhappy (adjective)','happily (adverb)'],
+    happily:['happy (adjective)','happiness (noun)','unhappy (adjective)','happily (adverb)'],
+    decide:['decide (verb)','decision (noun)','decisive (adjective)','decisively (adverb)'],
+    decision:['decide (verb)','decision (noun)','decisive (adjective)','decisively (adverb)'],
+    improve:['improve (verb)','improvement (noun)','improved (adjective/participle)'],
+    improvement:['improve (verb)','improvement (noun)','improved (adjective/participle)'],
+    create:['create (verb)','creation (noun)','creative (adjective)','creatively (adverb)'],
+    creation:['create (verb)','creation (noun)','creative (adjective)','creatively (adverb)'],
+    creative:['create (verb)','creation (noun)','creative (adjective)','creatively (adverb)'],
+    act:['act (verb/noun)','action (noun)','active (adjective)','actively (adverb)'],
+    action:['act (verb/noun)','action (noun)','active (adjective)','actively (adverb)'],
+    help:['help (verb/noun)','helpful (adjective)','helpless (adjective)','helpfully (adverb)'],
+    helpful:['help (verb/noun)','helpful (adjective)','helpless (adjective)','helpfully (adverb)'],
+    success:['succeed (verb)','success (noun)','successful (adjective)','successfully (adverb)'],
+    succeed:['succeed (verb)','success (noun)','successful (adjective)','successfully (adverb)'],
+    successful:['succeed (verb)','success (noun)','successful (adjective)','successfully (adverb)'],
+    beauty:['beauty (noun)','beautiful (adjective)','beautifully (adverb)'],
+    beautiful:['beauty (noun)','beautiful (adjective)','beautifully (adverb)'],
+    care:['care (verb/noun)','careful (adjective)','careless (adjective)','carefully (adverb)'],
+    careful:['care (verb/noun)','careful (adjective)','careless (adjective)','carefully (adverb)'],
+    educate:['educate (verb)','education (noun)','educational (adjective)'],
+    education:['educate (verb)','education (noun)','educational (adjective)'],
+    use:['use (verb/noun)','useful (adjective)','useless (adjective)','usefully (adverb)'],
+    useful:['use (verb/noun)','useful (adjective)','useless (adjective)','usefully (adverb)'],
+    differ:['differ (verb)','difference (noun)','different (adjective)','differently (adverb)'],
+    difference:['differ (verb)','difference (noun)','different (adjective)','differently (adverb)'],
+    different:['differ (verb)','difference (noun)','different (adjective)','differently (adverb)'],
+    strong:['strong (adjective)','strength (noun)','strongly (adverb)'],
+    strength:['strong (adjective)','strength (noun)','strongly (adverb)'],
+    confident:['confidence (noun)','confident (adjective)','confidently (adverb)'],
+    confidence:['confidence (noun)','confident (adjective)','confidently (adverb)'],
+    quick:['quick (adjective)','quickly (adverb)','quicken (verb)'],
+    possible:['possible (adjective)','possibility (noun)','possibly (adverb)','impossible (adjective)'],
+    possibility:['possible (adjective)','possibility (noun)','possibly (adverb)','impossible (adjective)']
+  };
   function wordContext(word,meaning){
     const key=String(word||'').toLowerCase();
     const daily=typeof WOTD_WORDS!=='undefined'&&WOTD_WORDS.find(x=>String(x.word||'').toLowerCase()===key);
@@ -920,7 +958,7 @@
     if(examples.length<2)addExample('Try using “'+word+'” when you talk about something you did today.','Your daily life');
     if(examples.length<3)addExample('Imagine explaining “'+word+'” to a friend using a new sentence.','Conversation');
     const contexts=[{title:'See it',kind:'example',text:examples[0].text},{title:'Connect it to your life',kind:examples[1].source.indexOf('Your own context')===0?'example':'prompt',text:examples[1].text},{title:'Use it somewhere new',kind:examples[2].source.indexOf('Your own context')===0?'example':'prompt',text:examples[2].text}];
-    return {examples:examples.map(x=>x.text),contexts,collocations:WORD_COLLOCATIONS[key]||['use '+key+' naturally','learn the word in context','a common use of '+key]};
+    return {examples:examples.map(x=>x.text),contexts,collocations:WORD_COLLOCATIONS[key]||['use '+key+' naturally','learn the word in context','a common use of '+key],family:WORD_FAMILIES[key]||[]};
   }
   function addReview(raw,fallback) {
     const p=wordParts(raw,fallback); if(!p)return;
@@ -940,7 +978,7 @@
     const stageNames=['Recall the meaning','Understand it in context','Write it from listening','Use it in a sentence'];
     let exercise='';
     if(stage===0)exercise='<p class="review-note">First, try to recall the meaning without looking. There is no penalty for uncertainty.</p><p id="review-meaning" hidden>'+esc(w.meaning)+'</p><button class="btn btn-ghost" id="reveal-review">Reveal meaning</button><div class="review-confidence" id="review-actions" hidden><p class="review-confidence-prompt">How well did you remember it?</p><div class="review-confidence-options"><button type="button" class="btn btn-ghost" data-review-confidence="low" data-word="'+esc(w.word)+'">Not sure</button><button type="button" class="btn btn-ghost" data-review-confidence="medium" data-word="'+esc(w.word)+'">A little</button><button type="button" class="btn" data-review-confidence="high" data-word="'+esc(w.word)+'">Confident</button></div></div>';
-    if(stage===1)exercise='<p class="review-note">Meet the word in three different contexts. Notice what stays the same and what changes.</p><div class="three-contexts">'+ctx.contexts.map((x,i)=>'<article class="context-card"><span class="context-number">'+(i+1)+'</span><div><b>'+esc(x.title)+'</b><p>'+esc(x.text)+'</p></div></article>').join('')+'</div><p class="word-collocations"><b>Common combinations:</b> '+ctx.collocations.map(esc).join(' · ')+'</p><p class="review-note">Before continuing, try to create one new example of your own.</p><button class="btn" data-review-stage-success="'+esc(w.word)+'">I can use it in context</button>';
+    if(stage===1)exercise='<p class="review-note">Meet the word in three different contexts. Notice what stays the same and what changes.</p><div class="three-contexts">'+ctx.contexts.map((x,i)=>'<article class="context-card"><span class="context-number">'+(i+1)+'</span><div><b>'+esc(x.title)+'</b><p>'+esc(x.text)+'</p></div></article>').join('')+'</div>'+(ctx.family.length?'<p class="word-collocations"><b>Word family:</b> '+ctx.family.map(esc).join(' · ')+'</p>':'')+'<p class="word-collocations"><b>Common combinations:</b> '+ctx.collocations.map(esc).join(' · ')+'</p><p class="review-note">Before continuing, try to create one new example of your own.</p><button class="btn" data-review-stage-success="'+esc(w.word)+'">I can use it in context</button>';
     if(stage===2)exercise='<p class="review-note">Listen to the word, then type exactly what you hear.</p><button class="btn btn-ghost" data-speak="'+esc(w.word)+'">'+ic('sound')+' Play word</button><form class="word-dictation" data-word-dictation="'+esc(w.word)+'"><input name="typedWord" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Type the word you heard" required><button class="btn" type="submit">Check spelling</button></form>';
     if(stage===3)exercise='<p class="review-note">Write your own sentence using the word. The goal is meaningful use, not memorising a definition.</p><textarea class="word-own-sentence" data-own-sentence="'+esc(w.word)+'" rows="2" placeholder="Write a sentence with '+esc(w.word)+'…"></textarea><button class="btn" data-review-sentence="'+esc(w.word)+'">Check my sentence</button><p class="review-note">Self-check: is the sentence understandable and is the word used correctly?</p>';
     const box=Math.max(1,Math.min(5,Number(w.box)||1));
@@ -1226,7 +1264,7 @@
     const n=state.words.length, due=state.review.filter(w=>!w.due||w.due<=dayKey()).length;
     $('#words-count').textContent=n+(n===1?' word':' words')+' · '+due+' to review';
     const vault=!n?'<div class="empty"><div class="empty-ic">'+ic('book')+'</div><h2>Your vault is empty, for now.</h2><p>Answer vocabulary questions correctly to collect useful words.</p><button class="btn" data-game="vocabulary">'+ic('play')+'Find your first word</button></div>':
-      '<div class="vault">'+state.words.slice().reverse().map(w=>{const info=wordContext(w[0],w[1]);return '<article class="word"><div class="word-title"><b>'+esc(w[0])+'</b><button class="listen-btn" data-speak="'+esc(w[0])+'" aria-label="Listen to '+esc(w[0])+'">'+ic('sound')+' Listen</button></div><span>'+esc(w[1])+'</span><em>'+esc(w[2]||'A1')+'</em><div class="three-contexts">'+info.contexts.map((x,i)=>'<article class="context-card"><span class="context-number">'+(i+1)+'</span><div><b>'+esc(x.title)+'</b><p>'+esc(x.text)+'</p></div></article>').join('')+'</div><p class="word-collocations"><b>Common combinations:</b> '+info.collocations.map(esc).join(' · ')+'</p></article>';}).join('')+'</div>';
+      '<div class="vault">'+state.words.slice().reverse().map(w=>{const info=wordContext(w[0],w[1]);return '<article class="word"><div class="word-title"><b>'+esc(w[0])+'</b><button class="listen-btn" data-speak="'+esc(w[0])+'" aria-label="Listen to '+esc(w[0])+'">'+ic('sound')+' Listen</button></div><span>'+esc(w[1])+'</span><em>'+esc(w[2]||'A1')+'</em><div class="three-contexts">'+info.contexts.map((x,i)=>'<article class="context-card"><span class="context-number">'+(i+1)+'</span><div><b>'+esc(x.title)+'</b><p>'+esc(x.text)+'</p></div></article>').join('')+'</div>'+(info.family.length?'<p class="word-collocations"><b>Word family:</b> '+info.family.map(esc).join(' · ')+'</p>':'')+'<p class="word-collocations"><b>Common combinations:</b> '+info.collocations.map(esc).join(' · ')+'</p></article>';}).join('')+'</div>';
     const dailyContinue = ['lesson','story'].includes(state.dailySessionStep)
       ? '<section class="review-panel daily-session-return"><p class="kicker">YOUR DAILY PATH</p><h2>'+(state.dailySessionStep==='lesson'?'Word review complete':'Practice complete')+'</h2><p class="review-note">'+(state.dailySessionStep==='lesson'?'You’re ready for the personalised practice activity.':'Your short story is ready whenever you are.')+'</p><button type="button" class="btn" data-daily-session-continue>'+(state.dailySessionStep==='lesson'?'Continue to practice':'Continue daily session')+' '+ic('arrow')+'</button></section>'
       : '';
