@@ -3543,3 +3543,34 @@ window.EPIPHANY_AR_TRANSLATION_PHRASES = Object.assign(window.EPIPHANY_AR_TRANSL
   "“We can extend the deadline, on condition that the revised plan is submitted tomorrow.” What is the condition?":"«يمكننا تمديد الموعد النهائي بشرط تقديم الخطة المعدلة غدًا». ما الشرط؟",
   "Choose the correct phrase: The explanation is plausible, but not ___ supported by the data.":"اختر العبارة الصحيحة: التفسير معقول، لكنه غير مدعوم بالبيانات ___ بما يكفي."
 });
+
+
+/* Close the last audited gaps in the expansion prompt catalog. */
+window.EPIPHANY_AR_TRANSLATION_PHRASES = Object.assign(window.EPIPHANY_AR_TRANSLATION_PHRASES || {}, {
+  "Which definition best fits “pervasive”?":"أي تعريف يناسب كلمة «pervasive»؟",
+  "The toilets are down the hall on your left.” Where should the listener go?":"«دورات المياه في نهاية الممر على يسارك». إلى أين ينبغي للمستمع أن يذهب؟",
+  "A circumspect decision-maker is ___.":"صانع القرار الحذر هو شخص ___.",
+  "The report is unlikely to be accepted unless the methodology ___ more clearly.":"من غير المرجح قبول التقرير ما لم ___ المنهجية بوضوح أكبر.",
+  "A reviewer distinguishes statistical significance from practical importance. Why?":"يميّز مراجع بين الدلالة الإحصائية والأهمية العملية. لماذا؟",
+  "“The evidence is compelling, save for one unresolved inconsistency.” What qualification is made?":"«الأدلة مقنعة، باستثناء تناقض واحد لم يُحل». ما التحفظ المذكور؟",
+  "Choose the correct phrase: The finding is ___ of independent replication.":"اختر العبارة الصحيحة: النتيجة ___ إلى تكرار مستقل.",
+  "An invidious comparison is one that is ___.":"المقارنة المجحفة هي مقارنة ___.",
+  "Much as the objection ___, it does not overturn the central finding.":"على الرغم من أن الاعتراض ___، فإنه لا ينقض النتيجة الأساسية.",
+  "A legal scholar notes that a precedent is distinguishable because a material fact differs. What is the claim?":"يلاحظ باحث قانوني أن السابقة القضائية قابلة للتمييز بسبب اختلاف حقيقة جوهرية. ما الادعاء؟",
+  "“The testimony is not inherently implausible, but corroboration is conspicuously absent.” What is missing?":"«الشهادة ليست مستبعدة بطبيعتها، لكن التأييد بأدلة إضافية غائب بوضوح». ما الذي ينقص؟",
+  "Choose the correct phrase: The result is robust, ___ the assumptions are not radically altered.":"اختر العبارة الصحيحة: تظل النتيجة متينة ___ لم تتغير الافتراضات جذريًا.",
+  "Nabil checks the label on a bottle before drinking from it. Why?":"يتحقق نبيل من ملصق القارورة قبل الشرب منها. لماذا؟",
+  "A family leaves extra time to reach the airport because traffic may be heavy. What are they planning for?":"تترك عائلة وقتًا إضافيًا للوصول إلى المطار لأن حركة المرور قد تكون كثيفة. ما الذي تستعد له؟",
+  "A team asks users to try a new website and report confusing steps. What is the purpose?":"يطلب فريق من المستخدمين تجربة موقع جديد والإبلاغ عن الخطوات المربكة. ما الغرض؟",
+  "A report separates measured outcomes from predictions about future outcomes. Why is this distinction important?":"يفصل تقرير النتائج المقاسة عن التوقعات المستقبلية. لماذا هذا التمييز مهم؟",
+  "A researcher explains why several cases were excluded from a dataset before presenting the results. What does this support?":"يوضح باحث سبب استبعاد حالات عدة من مجموعة البيانات قبل عرض النتائج. ما الذي يدعمه ذلك؟",
+  "A theorist distinguishes a claim being compatible with evidence from being uniquely supported by it. What distinction is central?":"يميّز منظّر بين توافق ادعاء مع الأدلة وبين كونه مدعومًا بها دون غيره. ما التمييز الأساسي؟",
+  "“Please leave your shoes by the door.” What should the listener do?":"«يرجى ترك حذائك بجانب الباب». ماذا ينبغي للمستمع أن يفعل؟",
+  "“The café serves breakfast until eleven, then switches to the lunch menu.” When does breakfast service end?":"«يقدم المقهى الإفطار حتى الحادية عشرة، ثم ينتقل إلى قائمة الغداء». متى ينتهي تقديم الإفطار؟",
+  "“I can review the draft today, but I won’t be able to edit the layout until tomorrow.” What can happen today?":"«يمكنني مراجعة المسودة اليوم، لكن لن أتمكن من تعديل التنسيق حتى الغد». ما الذي يمكن إنجازه اليوم؟",
+  "“The estimate excludes installation, which may represent a substantial additional cost.” What should the customer note?":"«لا يشمل التقدير التركيب، الذي قد يمثل تكلفة إضافية كبيرة». ما الذي ينبغي للزبون ملاحظته؟",
+  "“The evidence is consistent with the hypothesis, though it does not discriminate between competing accounts.” What limitation remains?":"«تتوافق الأدلة مع الفرضية، لكنها لا تميز بين التفسيرات المتنافسة». ما القيد الذي لا يزال قائمًا؟",
+  "“The argument is valid conditional on the stipulated definitions, but those definitions are themselves contested.” What is the caveat?":"«الحجة صحيحة بشرط التعريفات المحددة، لكن تلك التعريفات نفسها محل خلاف». ما التحفظ؟",
+  "Choose the correct phrase: The project was completed ___ schedule despite the delay.":"اختر العبارة الصحيحة: اكتمل المشروع ___ الموعد رغم التأخير.",
+  "Choose the correct phrase: The claim is tenable, ___ the term is understood in its narrow technical sense.":"اختر العبارة الصحيحة: يمكن الدفاع عن الادعاء ___ فهم المصطلح بمعناه التقني الضيق."
+});
