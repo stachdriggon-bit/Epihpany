@@ -271,7 +271,7 @@
     $('#daily-status').textContent = done ? '✓ Challenge complete' : 'You’ve got this!'; $('#daily-status').classList.toggle('is-done', done);
     const dailyNo = $('#daily-challenge-number'), dailyModeStatus = $('#daily-challenge-status'), dailyModeButton = $('#daily-challenge-start');
     if (dailyNo) dailyNo.textContent = dailyChallengeNumber(today);
-    const dailyDone = state.dailyChallengeDate === dayKey(today) && !!state.dailyChallengeResult;
+    const dailyDone = state.dailyChallengeDate === todayForChallenge(today) && !!state.dailyChallengeResult;
     if (dailyModeStatus) dailyModeStatus.textContent = dailyDone ? '✓ Completed today · ' + state.dailyChallengeResult.score + '/' + state.dailyChallengeResult.total : 'One attempt per day · New challenge tomorrow';
     if (dailyModeButton) { dailyModeButton.disabled = dailyDone; dailyModeButton.textContent = dailyDone ? 'Completed today' : 'Play today’s challenge'; }
     const best = $('#one-life-best'); if (best) best.textContent = Number(state.oneLifeBest) || 0;
@@ -1838,14 +1838,14 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     document.body.classList.toggle('no-scroll', on);
   }
 
-  function todayForChallenge() { return dayKey(); }
+  function todayForChallenge(date = new Date()) { return [date.getUTCFullYear(), String(date.getUTCMonth() + 1).padStart(2, '0'), String(date.getUTCDate()).padStart(2, '0')].join('-'); }
   function dailyChallengeNumber(date = new Date()) {
     const start = Date.UTC(date.getUTCFullYear(), 0, 1);
     return Math.floor((Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()) - start) / 86400000) + 1;
   }
   function stableHash(value) { let h = 2166136261; for (const ch of String(value)) { h ^= ch.charCodeAt(0); h = Math.imul(h, 16777619); } return h >>> 0; }
   function startDailyChallenge() {
-    const today = dayKey();
+    const today = todayForChallenge();
     if (state.dailyChallengeDate === today && state.dailyChallengeResult) { toast('You have completed today’s Daily Challenge. Come back tomorrow!'); return; }
     const eligible = ORDER.filter(type => GAMES[type] && (GAMES[type].questions || []).some(q => Number.isInteger(q.correct) && q.answers && q.answers.length > 1));
     if (!eligible.length) { toast('Daily Challenge is not available right now.'); return; }
@@ -2189,7 +2189,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
 
   function showChallengeResults(score, total) {
     const mode = G.mode, dailyNo = dailyChallengeNumber(), results = G.results.slice(), isDaily = mode === 'daily';
-    if (isDaily) { state.dailyChallengeDate = dayKey(); state.dailyChallengeResult = {score, total, results, date:dayKey()}; } else state.oneLifeBest = Math.max(Number(state.oneLifeBest) || 0, score);
+    if (isDaily) { state.dailyChallengeDate = todayForChallenge(); state.dailyChallengeResult = {score, total, results, date:todayForChallenge()}; } else state.oneLifeBest = Math.max(Number(state.oneLifeBest) || 0, score);
     save(); hideSheet(); renderSteps(true); sfx('done');
     const squares = results.map(r => r === 'ok' ? '🟩' : '🟥').join(' ');
     const shareData = {game:isDaily?'Daily #'+dailyNo:'One Life Challenge',score,total,xp:0,level:currentLevel().id,streak:liveStreak(),challengeMode:mode,results,dailyNo};
