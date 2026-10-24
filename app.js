@@ -1847,7 +1847,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
   function startDailyChallenge() {
     const today = todayForChallenge();
     if (state.dailyChallengeDate === today && state.dailyChallengeResult) { toast('You have completed today’s Daily Challenge. Come back tomorrow!'); return; }
-    const eligible = ORDER.filter(type => GAMES[type] && (GAMES[type].questions || []).some(q => Number.isInteger(q.correct) && q.answers && q.answers.length > 1));
+    const eligible = ORDER.filter(type => GAMES[type] && (GAMES[type].questions || []).filter(q => Number.isInteger(q.correct) && q.answers && q.answers.length > 1).length >= 5);
     if (!eligible.length) { toast('Daily Challenge is not available right now.'); return; }
     startGame(eligible[stableHash('epiphany-game-' + today) % eligible.length], 'daily');
   }
