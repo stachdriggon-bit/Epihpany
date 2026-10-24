@@ -1636,7 +1636,8 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
   function startGuidedStory(form){
     if(!form)return;
     const data=new FormData(form),topic=String(data.get('topic')||'mystery'),name=String(data.get('name')||'Robin').trim().slice(0,24)||'Robin',friend=String(data.get('friend')||'Maya').trim().slice(0,24)||'Maya',place=String(data.get('place')||CREATE_STORY_PLACES[0]),problem=String(data.get('problem')||'lost'),t=CREATE_STORY_TOPICS[topic]||CREATE_STORY_TOPICS.mystery;
-    let savedDraft={};try{const raw=JSON.parse(localStorage.getItem('epiphany-story-draft')||'null');if(raw&&raw.topic===topic&&raw.drafts&&typeof raw.drafts==='object'&&!Array.isArray(raw.drafts))savedDraft=raw;}catch{}\n    CREATE_STORY={...CREATE_STORY,topic,genreLabel:t.label,name:savedDraft.name||name,friend:savedDraft.friend||friend,place:savedDraft.place||place,problem:savedDraft.problem||problem,problemLabel:STORY_PROBLEMS[savedDraft.problem||problem]||STORY_PROBLEMS.lost,writerLevel:savedDraft.writerLevel||currentLevel().id,mode:'writer',drafts:savedDraft.drafts||{},challengeWords:[],lastPart:'opening',story:null,answer:''};
+    let savedDraft={};try{const raw=JSON.parse(localStorage.getItem('epiphany-story-draft')||'null');if(raw&&raw.topic===topic&&raw.drafts&&typeof raw.drafts==='object'&&!Array.isArray(raw.drafts))savedDraft=raw;}catch{}
+    CREATE_STORY={...CREATE_STORY,topic,genreLabel:t.label,name:savedDraft.name||name,friend:savedDraft.friend||friend,place:savedDraft.place||place,problem:savedDraft.problem||problem,problemLabel:STORY_PROBLEMS[savedDraft.problem||problem]||STORY_PROBLEMS.lost,writerLevel:savedDraft.writerLevel||currentLevel().id,mode:'writer',drafts:savedDraft.drafts||{},challengeWords:[],lastPart:'opening',story:null,answer:''};
     renderCreateStory();
   }
   function updateWriterFeedback(){
