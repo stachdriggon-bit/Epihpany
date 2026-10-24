@@ -851,7 +851,7 @@
     const w=due[0], ctx=wordContext(w.word,w.meaning), stage=Math.max(0,Math.min(3,Number(w.exerciseStage)||0));
     const stageNames=['Recall the meaning','Understand it in context','Write it from listening','Use it in a sentence'];
     let exercise='';
-    if(stage===0)exercise='<p class="review-note">First, recall the meaning without looking. Then reveal it and rate your answer.</p><p id="review-meaning" hidden>'+esc(w.meaning)+'</p><button class="btn btn-ghost" id="reveal-review">Reveal meaning</button>';
+    if(stage===0)exercise='<p class="review-note">First, try to recall the meaning without looking. There is no penalty for uncertainty.</p><p id="review-meaning" hidden>'+esc(w.meaning)+'</p><button class="btn btn-ghost" id="reveal-review">Reveal meaning</button><div class="review-confidence" id="review-actions" hidden><p class="review-confidence-prompt">How well did you remember it?</p><div class="review-confidence-options"><button type="button" class="btn btn-ghost" data-review-confidence="low" data-word="'+esc(w.word)+'">Not sure</button><button type="button" class="btn btn-ghost" data-review-confidence="medium" data-word="'+esc(w.word)+'">A little</button><button type="button" class="btn" data-review-confidence="high" data-word="'+esc(w.word)+'">Confident</button></div></div>';
     if(stage===1)exercise='<p class="review-note">Read the examples and collocations. Can you explain how the word is used?</p><div class="word-examples">'+ctx.examples.map((x,i)=>'<p><b>Example '+(i+1)+':</b> '+esc(x)+'</p>').join('')+'</div><p class="word-collocations"><b>Common combinations:</b> '+ctx.collocations.map(esc).join(' · ')+'</p><button class="btn" data-review-stage-success="'+esc(w.word)+'">I understand the context</button>';
     if(stage===2)exercise='<p class="review-note">Listen to the word, then type exactly what you hear.</p><button class="btn btn-ghost" data-speak="'+esc(w.word)+'">'+ic('sound')+' Play word</button><form class="word-dictation" data-word-dictation="'+esc(w.word)+'"><input name="typedWord" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Type the word you heard" required><button class="btn" type="submit">Check spelling</button></form>';
     if(stage===3)exercise='<p class="review-note">Write your own sentence using the word. The goal is meaningful use, not memorising a definition.</p><textarea class="word-own-sentence" data-own-sentence="'+esc(w.word)+'" rows="2" placeholder="Write a sentence with '+esc(w.word)+'…"></textarea><button class="btn" data-review-sentence="'+esc(w.word)+'">Check my sentence</button><p class="review-note">Self-check: is the sentence understandable and is the word used correctly?</p>';
@@ -1136,7 +1136,7 @@
       ? '<section class="review-panel daily-session-return"><p class="kicker">YOUR DAILY PATH</p><h2>'+(state.dailySessionStep==='lesson'?'Word review complete':'Practice complete')+'</h2><p class="review-note">'+(state.dailySessionStep==='lesson'?'You’re ready for the personalised practice activity.':'Your short story is ready whenever you are.')+'</p><button type="button" class="btn" data-daily-session-continue>'+(state.dailySessionStep==='lesson'?'Continue to practice':'Continue daily session')+' '+ic('arrow')+'</button></section>'
       : '';
     $('#words-body').innerHTML=dailyContinue+renderReview()+'<div class="dictionary-tools"><div><h2 class="vault-heading">Your collected words</h2><p>Export your personal dictionary to a spreadsheet or Anki.</p></div><div class="dictionary-export-actions"><button type="button" class="btn btn-ghost" data-dictionary-export="csv">Export CSV</button><button type="button" class="btn" data-dictionary-export="anki">Export for Anki</button></div></div>'+vault;
-    const reveal=$('#reveal-review'); if(reveal)reveal.addEventListener('click',()=>{$('#review-meaning').hidden=false;$('#review-actions').hidden=false;reveal.hidden=true;});
+    const reveal=$('#reveal-review'); if(reveal)reveal.addEventListener('click',()=>{$('#review-meaning').hidden=false;$('#review-actions').hidden=false;reveal.hidden=true;reveal.setAttribute('aria-expanded','true');});
   }
 
   function renderTrophies() {
@@ -4321,14 +4321,20 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     if(e.target.closest('[data-order-check]')){const actual=G.orderPicked.map(i=>G.orderWords[i]).join(' ').replace(/[.!?]$/,'').toLowerCase(),ok=actual===G.orderTarget;if(ok)G.score++;G.answered=true;G.results[G.i]=ok?'ok':'no';showSheet(ok,'<h3>'+(ok?'Correct sentence!':'Not quite yet.')+'</h3><p>Suggested answer: <b>'+esc(G.orderTarget)+'</b></p><p>'+esc(G.questions[G.i].q.explain)+'</p><div class="sheet-actions"><button class="btn" id="go-next">'+(G.i===G.questions.length-1?'See results':'Continue')+ic('arrow')+'</button></div>');return;}
     const dailyContinue=e.target.closest('[data-daily-session-continue]');
     if(dailyContinue){startDailySession();return;}
-    const rb=e.target.closest('[data-review]');
-    if(rb){const item=state.review.find(w=>w.word===rb.dataset.word);if(item){item.attempts=(item.attempts||0)+1;
-      if(rb.dataset.review==='known'){
-        item.exerciseStage=1;
-        if((Number(item.box)||1)>=5&&item.mastered){item.streak=(item.streak||0)+1;}
-        else item.mastered=false;
-      }else{item.errors=(Number(item.errors)||0)+1;item.box=1;item.interval=0;item.streak=0;item.exerciseStage=0;item.mastered=false;item.due=dayKey();}
-      save();renderWords();toast(rb.dataset.review==='known'?'Good recall. Next, practise the word in context.':'No problem — this word stays in today’s practice.');}return;}
+    const confidenceButton=e.target.closest('[data-review-confidence]');
+    if(confidenceButton){const item=state.review.find(w=>w.word===confidenceButton.dataset.word);if(item){
+      item.attempts=(Number(item.attempts)||0)+1;
+      item.confidence=confidenceButton.dataset.reviewConfidence;
+      item.confidenceAt=new Date().toISOString();
+      if(!Array.isArray(item.confidenceHistory))item.confidenceHistory=[];
+      item.confidenceHistory.push({value:item.confidence,at:item.confidenceAt});
+      item.confidenceHistory=item.confidenceHistory.slice(-20);
+      if(item.confidence==='low'){item.box=1;item.interval=0;item.streak=0;item.mastered=false;}
+      else if((Number(item.box)||1)<5)item.mastered=false;
+      item.exerciseStage=1;
+      save();renderWords();
+      toast(item.confidence==='low'?'That’s okay — the word will get another close review.':item.confidence==='medium'?'Thanks for checking in. Let’s strengthen it in context.':'Great confidence. Keep using the word in different ways.');
+    }return;}
     const stageSuccess=e.target.closest('[data-review-stage-success]');
     if(stageSuccess){const item=state.review.find(w=>w.word===stageSuccess.dataset.reviewStageSuccess);if(item){item.exerciseStage=2;save();renderWords();toast('Great — now practise spelling from listening.');}return;}
     const ownSentence=e.target.closest('[data-review-sentence]');
