@@ -1152,6 +1152,20 @@
       ['search','Mistake Detective','Complete 10 Common Mistakes or Spot the Mistake quests.',Math.min((state.modes.mistakes||0)+(state.modes.spot||0),10),10],
       ['pencil','Confident Writer','Complete 10 Type It quests.',Math.min(state.modes.typing||0,10),10]
     ];
+    const month=currentMonthWord(), monthProgress=state.wordMonthProgress[month.monthKey]||{uses:0,examples:[]};
+    const monthlyUses=Number(monthProgress.uses)||0;
+    const personalExamples=(monthProgress.examples||[]).length;
+    const teachingAttempts=(state.teachMeAttempts||[]).filter(x=>x&&x.complete).length;
+    const immersionDays=Object.keys((state.immersionWeek&&state.immersionWeek.days)||{}).length;
+    const milestones=[
+      {icon:'message-circle',title:'A word out in the world',desc:'Use “'+month.word+'” in real life on five different days this month.',progress:Math.min(monthlyUses,5),target:5,detail:monthlyUses>=5?'You made room for this word beyond the app.':(5-monthlyUses)+' more day'+(5-monthlyUses===1?'':'s')+' to go'},
+      {icon:'pencil-line',title:'Your own voice',desc:'Save three original sentences using this month’s word.',progress:Math.min(personalExamples,3),target:3,detail:personalExamples>=3?'Your examples are saved.':'Write '+(3-personalExamples)+' more personal example'+(3-personalExamples===1?'':'s')},
+      {icon:'brain',title:'Learn it well enough to teach it',desc:'Complete three “Teach me!” explanations with an example.',progress:Math.min(teachingAttempts,3),target:3,detail:teachingAttempts>=3?'You explained ideas in your own words.':'Complete '+(3-teachingAttempts)+' more teaching exercise'+(3-teachingAttempts===1?'':'s')},
+      {icon:'globe-2',title:'A wider English world',desc:'Take part in five different days of your English immersion week.',progress:Math.min(immersionDays,5),target:5,detail:immersionDays>=5?'You built a real-world learning rhythm.':'Record '+(5-immersionDays)+' more active day'+(5-immersionDays===1?'':'s')}
+    ];
+    const milestoneCount=milestones.filter(m=>m.progress>=m.target).length;
+    const milestoneRoot=$('#meaningful-milestones');
+    if(milestoneRoot)milestoneRoot.innerHTML='<section class="meaningful-section"><div class="meaningful-heading"><p class="kicker">BEYOND POINTS</p><h2>Meaningful milestones</h2><p>Progress is what you can do with English—not a number on a screen. These milestones celebrate real use, personal expression and understanding.</p><span class="meaningful-count">'+milestoneCount+' of '+milestones.length+' milestones reached</span></div><div class="meaningful-grid">'+milestones.map(m=>{const done=m.progress>=m.target;return '<article class="meaningful-card '+(done?'is-earned':'')+'"><div class="meaningful-card-icon">'+ic(m.icon)+'</div><div class="meaningful-card-copy"><h3>'+m.title+'</h3><p>'+m.desc+'</p><div class="meaningful-progress" role="progressbar" aria-valuemin="0" aria-valuemax="'+m.target+'" aria-valuenow="'+m.progress+'" aria-label="'+m.title+' progress"><i style="width:'+Math.round(m.progress/m.target*100)+'%"></i></div><small>'+m.progress+' / '+m.target+' · '+m.detail+'</small></div>'+(done?'<span class="meaningful-earned" aria-label="Milestone reached">✓</span>':'')+'</article>';}).join('')+'</div><p class="meaningful-note">No XP is awarded for these milestones. They are here to reflect meaningful learning, not to turn every action into a score.</p></section>';
     const got = all.filter(a => a[3] >= a[4]).length;
     $('#trophies-count').textContent = got + ' of ' + all.length + ' unlocked';
     $('#trophies').innerHTML = all.map(a => {
