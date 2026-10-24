@@ -1433,6 +1433,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
   /* ---------- settings: Arabic help + sound ---------- */
   function syncSettings() {
     document.body.classList.toggle('translation-off', !state.translationEnabled);
+    if(state.translationEnabled){enhanceTranslationControls($('#game-body'));enhanceTranslationControls($('#world-game'));enhanceTranslationControls($('#sheet'));}
     const translationToggle = $('#translation-toggle');
     if (translationToggle) { translationToggle.setAttribute('aria-pressed', String(!!state.translationEnabled)); const label=translationToggle.querySelector('span'); if(label) label.textContent = state.translationEnabled ? 'Arabic translation: On' : 'Arabic translation: Off'; }
     document.body.classList.toggle('ar-on', !!state.helpArabic);
