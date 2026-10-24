@@ -260,6 +260,38 @@
     return ok[state.quests % ok.length];
   }
 
+  // Daily-session practice deliberately targets the learner's own error history.
+  // It reuses existing adaptive signals and game pools instead of creating a second
+  // progress system or changing the normal home-page rotation.
+  function pickDailySessionGame() {
+    const rotation = ['vocabulary', 'spelling', 'grammar', 'listening', 'mistakes', 'spot', 'typing', 'advanced'];
+    const available = rotation.filter(g => GAMES[g] && UNLOCK[g] <= levelIndex());
+    const skillGames = {
+      grammar: ['grammar', 'mistakes', 'spot'],
+      vocabulary: ['vocabulary', 'spelling'],
+      listening: ['listening'],
+      conversation: ['advanced', 'story'],
+      sentence: ['typing']
+    };
+    const signals = state.adaptiveSignals && typeof state.adaptiveSignals === 'object' ? state.adaptiveSignals : {};
+    const weakest = Object.entries(signals)
+      .map(([skill, data]) => {
+        const attempts = Math.max(0, Number(data && data.attempts) || 0);
+        const errors = Math.max(0, Number(data && data.errors) || 0);
+        return {skill, attempts, errors, rate: attempts ? errors / attempts : 0};
+      })
+      .filter(x => x.attempts >= 2 && x.errors > 0)
+      .sort((a, b) => (b.rate - a.rate) || (b.errors - a.errors) || (b.attempts - a.attempts));
+    for (const signal of weakest) {
+      const candidates = skillGames[signal.skill] || (available.includes(signal.skill) ? [signal.skill] : []);
+      const chosen = candidates.find(game => available.includes(game) && game !== 'story');
+      if (chosen) return chosen;
+    }
+    // If there is no reliable error history yet, use the existing level-aware rotation.
+    const fallback = pickNext();
+    return GAMES[fallback] && fallback !== 'story' ? fallback : (available[0] || 'vocabulary');
+  }
+
   /* ---------- rendering: header + home ---------- */
   function renderHeader() {
     $('#chip-streak').textContent = liveStreak();
@@ -424,7 +456,13 @@
       if (due.length) { openView('words'); toast('Complete today’s due-word review, then return here to continue.'); return; }
       state.dailySessionStep = 'lesson'; save();
     }
-    if (state.dailySessionStep === 'lesson') { renderDailySessionCard(); startGame(pickNext()); toast('Skill practice started. Finish the activity to unlock your short story.'); return; }
+    if (state.dailySessionStep === 'lesson') {
+      const game = pickDailySessionGame();
+      renderDailySessionCard();
+      startGame(game);
+      toast('Personalised practice started. Finish the activity to unlock your short story.');
+      return;
+    }
     if (state.dailySessionStep === 'story') {
       openView('stories');
       const available = (typeof STORIES !== 'undefined' ? STORIES : []).filter(s => storyLevelIndex(s.level) <= storyLevelIndex(currentLevel().id));
