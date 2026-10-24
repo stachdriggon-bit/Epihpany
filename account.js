@@ -449,8 +449,28 @@
     document.dispatchEvent(new CustomEvent('epiphany-auth-changed', { detail: { isDeveloper: isDeveloperAccount() } }));
   }
 
+  async function saveStoryToCloud(story, visibility = 'private') {
+    if (!client || !currentUser) throw new Error('Sign in to save stories to your account.');
+    const payload = {user_id:currentUser.id,title:String(story.title||'My story').slice(0,100),genre:String(story.genre||'adventure').slice(0,40),level:['A1','A2','B1','B2','C1','C2'].includes(story.level)?story.level:'A1',pages:Array.isArray(story.pages)?story.pages.map(page=>String(page).slice(0,1800)).slice(0,8):[],word_count:Math.min(10000,Math.max(0,Number(story.wordCount)||0)),problem:String(story.problem||'').slice(0,300),visibility:visibility==='public'?'public':'private',reply_to:story.replyTo||null,updated_at:new Date().toISOString()};
+    let query=story.cloudId?client.from('player_stories').update(payload).eq('id',story.cloudId).eq('user_id',currentUser.id).select('id').single():client.from('player_stories').insert(payload).select('id').single();
+    const {data,error}=await query;if(error)throw error;return data.id;
+  }
+  async function listMyCloudStories() {
+    if(!client||!currentUser)throw new Error('Sign in to view your account stories.');
+    const {data,error}=await client.from('player_stories').select('id,title,genre,level,pages,word_count,problem,visibility,reply_to,created_at,updated_at').eq('user_id',currentUser.id).order('updated_at',{ascending:false}).limit(30);
+    if(error)throw error;return data||[];
+  }
+  async function listPublicCloudStories() {
+    if(!client||!currentUser)throw new Error('Sign in to explore community stories.');
+    const {data,error}=await client.from('player_stories').select('id,title,genre,level,pages,word_count,problem,reply_to,created_at').eq('visibility','public').order('created_at',{ascending:false}).limit(20);
+    if(error)throw error;return data||[];
+  }
+
   window.EpiphanyAuth = {
     isDeveloper: isDeveloperAccount,
+    saveStory: saveStoryToCloud,
+    listMyStories: listMyCloudStories,
+    listPublicStories: listPublicCloudStories,
     openAccountMode: openAccountFromWelcome,
     isWelcomeOpen: () => !!($('account-welcome-modal') && !$('account-welcome-modal').hidden),
     queueSave(progress) {
