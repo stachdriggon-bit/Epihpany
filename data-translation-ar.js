@@ -416,14 +416,23 @@ window.EPIPHANY_AR_TRANSLATION_PHRASES = Object.assign(window.EPIPHANY_AR_TRANSL
     Object.values(value).forEach(visit);
   }
   const sources=[];
+  // Include every first-party lesson/content bank that may carry authored *_ar fields.
+  // Keep the explicit list safe: never traverse the browser's window/document object graph.
   if(typeof GAMES!=='undefined')sources.push(GAMES);
+  if(typeof LEVELS!=='undefined')sources.push(LEVELS);
+  if(typeof AR_EXPLANATIONS!=='undefined')sources.push(AR_EXPLANATIONS);
   if(typeof MISTAKE_QUESTIONS!=='undefined')sources.push(MISTAKE_QUESTIONS);
   if(typeof SPOT_QUESTIONS!=='undefined')sources.push(SPOT_QUESTIONS);
   if(typeof TYPING_QUESTIONS!=='undefined')sources.push(TYPING_QUESTIONS);
   if(typeof STORIES!=='undefined')sources.push(STORIES);
   if(typeof WORLD_MAP!=='undefined')sources.push(WORLD_MAP);
+  if(typeof WORLD_TASKS!=='undefined')sources.push(WORLD_TASKS);
+  if(typeof WORLD_QUESTIONS!=='undefined')sources.push(WORLD_QUESTIONS);
   if(typeof WOTD_WORDS!=='undefined')sources.push(WOTD_WORDS);
   if(typeof AHA_NOTES!=='undefined')sources.push(AHA_NOTES);
+  if(typeof MINI_GAMES!=='undefined')sources.push(MINI_GAMES);
+  if(typeof MINIGAMES!=='undefined')sources.push(MINIGAMES);
+  if(typeof DIRECTIONS_DATA!=='undefined')sources.push(DIRECTIONS_DATA);
   if(typeof EPIPHANY_EXPANSION!=='undefined')sources.push(EPIPHANY_EXPANSION);
   sources.forEach(visit);
 })();
