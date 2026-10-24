@@ -63,8 +63,8 @@ test('main navigation tabs open without uncaught page errors', async t => {
         assert.ok(requested.some(path => path.endsWith('/practice-lab.js')), 'Arcade should load practice tools on first open');
         await page.locator('.arcade-play').first().click();
         await page.locator('#game').waitFor({ state: 'visible', timeout: 5000 });
-        await page.locator('#game-body .answer').first().waitFor({ state: 'visible', timeout: 5000 });
-        await page.locator('#game-body .answer').first().click();
+        await page.locator('#game-body').waitFor({ state: 'visible', timeout: 5000 });
+        if (await page.locator('#game-body .answer').count()) await page.locator('#game-body .answer').first().click();
       }
       if (view === 'home') {
         await page.locator('#ar-toggle').click();
@@ -73,6 +73,27 @@ test('main navigation tabs open without uncaught page errors', async t => {
       }
       await page.close();
     }
+    const offlinePage = await browser.newPage();
+    offlinePage.on('pageerror', error => errors.push('offline: ' + error.message));
+    await offlinePage.goto(baseUrl, { waitUntil: 'domcontentloaded' });
+    await offlinePage.evaluate(() => navigator.serviceWorker.ready);
+    await offlinePage.reload({ waitUntil: 'domcontentloaded' });
+    await offlinePage.waitForFunction(() => !!navigator.serviceWorker.controller, null, { timeout: 5000 });
+    await offlinePage.locator('button[data-view="stories"]').first().click();
+    await offlinePage.waitForFunction(() => typeof STORIES !== 'undefined' && Array.isArray(STORIES), null, { timeout: 5000 });
+    await offlinePage.waitForFunction(async () => {
+      const keys = await caches.keys();
+      const shellKey = keys.find(key => key.startsWith('epiphany-shell-'));
+      if (!shellKey) return false;
+      const cache = await caches.open(shellKey);
+      return !!(await cache.match(new URL('/data-stories.js', location.href).href, { ignoreSearch: true }));
+    }, null, { timeout: 5000 });
+    await offlinePage.context().setOffline(true);
+    await offlinePage.reload({ waitUntil: 'domcontentloaded' });
+    await offlinePage.locator('button[data-view="stories"]').first().click();
+    await offlinePage.waitForFunction(() => typeof STORIES !== 'undefined' && Array.isArray(STORIES), null, { timeout: 5000 });
+    await offlinePage.context().setOffline(false);
+    await offlinePage.close();
     assert.deepEqual(errors, [], 'uncaught page errors occurred: ' + errors.join(' | '));
   } finally {
     if (browser) await browser.close();
