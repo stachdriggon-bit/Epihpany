@@ -410,6 +410,7 @@
     const hint=$('avatar-frame-hint');if(hint)hint.textContent='Gold frame: 30-day streak. Star frame: master 100 words. Keep learning to unlock them.';
     if(!document.querySelector('[data-avatar-frame="'+selectedAvatarFrame+'"]:not(:disabled)'))selectedAvatarFrame='none';
     const avatarWrap=document.querySelector('.player-avatar-wrap');if(avatarWrap)avatarWrap.dataset.frame=selectedAvatarFrame;
+    document.querySelectorAll('[data-avatar-frame]').forEach(button=>button.classList.toggle('is-selected',button.dataset.avatarFrame===selectedAvatarFrame));
   }
   function setPlayerProfileAccess() {
     const form = $('player-profile-form');
