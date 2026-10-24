@@ -10,6 +10,39 @@
   "theme_color": "#F5F6FC",
   "orientation": "portrait-primary",
   "icons": [
-    {"src":"icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Quick exercise",
+      "short_name": "Quick practice",
+      "description": "Start a short English vocabulary exercise.",
+      "url": "./?quick=1",
+      "icons": [
+        {
+          "src": "icon.svg",
+          "sizes": "any",
+          "type": "image/svg+xml"
+        }
+      ]
+    },
+    {
+      "name": "My review",
+      "short_name": "Review",
+      "description": "Review the words that are due today.",
+      "url": "./?review=1",
+      "icons": [
+        {
+          "src": "icon.svg",
+          "sizes": "any",
+          "type": "image/svg+xml"
+        }
+      ]
+    }
   ]
 }
