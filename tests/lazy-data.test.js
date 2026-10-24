@@ -58,7 +58,7 @@ test('initial HTML defers stories and World data and keeps loader in offline she
   assert.match(fs.readFileSync(path.join(root, 'lazy-data.js'), 'utf8'), /data-stories-expansion\.js/);
   assert.doesNotMatch(html, /<script[^>]+src="data-stories\.js/);
   assert.doesNotMatch(html, /<script[^>]+src="data-world(?:-sprites)?\.js/);
-  assert.match(html, /lazy-data\.js\?v=20261024n/);
+  assert.match(html, /lazy-data\.js\?v=20261024o/);
   assert.doesNotMatch(html, /<script[^>]+src="data-translation-ar\.js/);
   assert.doesNotMatch(html, /<script[^>]+src="(?:think-lab|practice-lab|life-skills)\.js/);
   assert.match(sw, /'\.\/lazy-data\.js'/);
