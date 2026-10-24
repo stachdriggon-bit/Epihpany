@@ -2385,7 +2385,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
   }
 
   function showResults() {
-    if (!DEV_MODE.active && state.dailySessionStep === 'lesson') { state.dailySessionStep = 'story'; save(); }
+    if (!DEV_MODE.active && state.dailySessionStep === 'lesson' && G && !G.mode) { state.dailySessionStep = 'story'; save(); }
     const game = GAMES[G.type], total = G.originalTotal || G.questions.length;
     const finalScore = G.originalScore == null ? G.score : G.originalScore;
     if (G.mode === 'daily' || G.mode === 'oneLife') { showChallengeResults(finalScore, total); return; }
