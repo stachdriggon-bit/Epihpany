@@ -369,6 +369,8 @@
       renderHome();
       return {xp:gain};
     },
+    // Shared adaptive policy for every Think Lab game (including future additions).
+    // Conservative thresholds prevent one lucky streak or one mistake from swinging difficulty.
     getDifficulty(skill) {
       const allowed = ['vocabulary','grammar','listening','conversation','reading','spelling'];
       const safeSkill = allowed.includes(skill) ? skill : 'vocabulary';
@@ -377,10 +379,31 @@
       const correct = Math.max(0, Number(b.correct) || 0);
       const errors = Math.max(0, Number(b.errors) || 0);
       const accuracy = attempts ? Math.round(correct / attempts * 100) : null;
-      const level = attempts < 3 ? 'guided' : attempts >= 6 && accuracy >= 80 ? 'challenge' : accuracy < 55 ? 'guided' : 'steady';
-      const hintLevel = attempts < 2 || (accuracy !== null && accuracy < 55) || errors >= 4 ? 2
-        : (accuracy !== null && accuracy < 75) || errors >= 2 ? 1 : 0;
-      return {skill:safeSkill, attempts, accuracy, errors, level, hintLevel};
+      const policy = {minimumEvidence:4, challengeMinimumAttempts:8, challengeAccuracy:82, guidedMinimumAttempts:4, guidedAccuracy:50};
+      let level = 'steady';
+      if (attempts < policy.minimumEvidence) level = 'guided';
+      else if (attempts >= policy.challengeMinimumAttempts && accuracy >= policy.challengeAccuracy) level = 'challenge';
+      else if (attempts >= policy.guidedMinimumAttempts && accuracy < policy.guidedAccuracy) level = 'guided';
+      const hintLevel = attempts < 2 ? 2
+        : attempts < 5 ? 1
+        : (accuracy !== null && accuracy < 50) || errors >= 5 ? 2
+        : (accuracy !== null && accuracy < 75) || errors >= 3 ? 1 : 0;
+      return {skill:safeSkill, attempts, accuracy, errors, level, hintLevel,
+        confidence:attempts < policy.minimumEvidence ? 'low' : attempts < policy.challengeMinimumAttempts ? 'building' : 'established',
+        policy};
+    },
+    getGameDifficulty(gameId, skill) {
+      const gameSkills = {odd:'vocabulary', detective:'reading', translator:'conversation', maze:'listening', wordladder:'spelling'};
+      return this.getDifficulty(skill || gameSkills[String(gameId || '').toLowerCase()] || 'vocabulary');
+    },
+    registerGame(gameId, skill) {
+      const allowed = ['vocabulary','grammar','listening','conversation','reading','spelling'];
+      const id = String(gameId || '').trim().toLowerCase().slice(0,80);
+      if (!id || !allowed.includes(skill)) return false;
+      // Registration is intentionally runtime-only; the policy and saved skill signals stay central.
+      this._gameSkills = this._gameSkills || {};
+      this._gameSkills[id] = skill;
+      return true;
     },
     getInsights() {
       const defs = [
