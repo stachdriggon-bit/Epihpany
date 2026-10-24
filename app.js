@@ -1031,6 +1031,15 @@
   function exportPersonalDictionary(format) {
     const rows = (state.words || []).map(w => ({word:String(w[0]||''),meaning:String(w[1]||''),level:String(w[2]||'')})).filter(w => w.word);
     if (!rows.length) { toast('Save some words first, then export your dictionary.'); return; }
+    if(format==='print'){
+      const win=window.open('','_blank');
+      if(!win){toast('Allow pop-ups to print or save your dictionary as PDF.');return;}
+      const escHtml=v=>String(v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+      win.document.open();
+      win.document.write('<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>EPIPHANY · My word dictionary</title><style>body{font:16px/1.5 Arial,sans-serif;max-width:900px;margin:32px auto;padding:0 20px;color:#17203d}h1{margin-bottom:4px}p{color:#555}table{width:100%;border-collapse:collapse;margin-top:24px}th,td{border:1px solid #cdd1df;padding:9px;text-align:left;vertical-align:top}th{background:#f0f2fa}@media print{body{margin:0;max-width:none;padding:0}button{display:none}tr{break-inside:avoid}}</style></head><body><h1>My English word dictionary</h1><p>EPIPHANY · '+rows.length+' words</p><button onclick="window.print()">Print / Save as PDF</button><table><thead><tr><th>Word</th><th>Meaning</th><th>CEFR level</th></tr></thead><tbody>'+rows.map(w=>'<tr><td>'+escHtml(w.word)+'</td><td>'+escHtml(w.meaning)+'</td><td>'+escHtml(w.level||'—')+'</td></tr>').join('')+'</tbody></table><script>window.addEventListener("load",()=>setTimeout(()=>window.print(),250));<\/script></body></html>');
+      win.document.close();
+      return;
+    }
     const clean = value => String(value).replaceAll(String.fromCharCode(9),' ').replaceAll(String.fromCharCode(10),' ').replaceAll(String.fromCharCode(13),' ').replace(/^[=+@-]/,value => "'" + value);
     const quote = value => '"' + clean(value).replace(/"/g,'""') + '"';
     const tab = String.fromCharCode(9), newline = String.fromCharCode(10), crlf = String.fromCharCode(13) + newline;
@@ -1041,15 +1050,6 @@
     const url = URL.createObjectURL(blob), link = document.createElement('a');
     link.href = url; link.download = format==='anki' ? 'epiphany-dictionary-anki.txt' : 'epiphany-dictionary.csv';
     document.body.appendChild(link); link.click(); link.remove(); URL.revokeObjectURL(url);
-    if(format==='print'){
-      const win=window.open('','_blank');
-      if(!win){toast('Allow pop-ups to print or save your dictionary as PDF.');return;}
-      const escHtml=v=>String(v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
-      win.document.open();
-      win.document.write('<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>EPIPHANY · My word dictionary</title><style>body{font:16px/1.5 Arial,sans-serif;max-width:900px;margin:32px auto;padding:0 20px;color:#17203d}h1{margin-bottom:4px}p{color:#555}table{width:100%;border-collapse:collapse;margin-top:24px}th,td{border:1px solid #cdd1df;padding:9px;text-align:left;vertical-align:top}th{background:#f0f2fa}@media print{body{margin:0;max-width:none;padding:0}button{display:none}tr{break-inside:avoid}}</style></head><body><h1>My English word dictionary</h1><p>EPIPHANY · '+rows.length+' words</p><button onclick="window.print()">Print / Save as PDF</button><table><thead><tr><th>Word</th><th>Meaning</th><th>CEFR level</th></tr></thead><tbody>'+rows.map(w=>'<tr><td>'+escHtml(w.word)+'</td><td>'+escHtml(w.meaning)+'</td><td>'+escHtml(w.level||'—')+'</td></tr>').join('')+'</tbody></table><script>window.addEventListener("load",()=>setTimeout(()=>window.print(),250));<\/script></body></html>');
-      win.document.close();
-      return;
-    }
     toast(rows.length + ' words exported.');
   }
   let focusClockInterval = null;
@@ -4436,6 +4436,14 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     if(e.target.closest('[data-world-replay]')){if(WORLD&&WORLD.region){worldChooseRegion(WORLD.region);}else startWorld();return;}
     if(e.target.closest('[data-world-home]')){closeWorld();openView('home');return;}
     if(e.target.closest('[data-world-exit]')){closeWorld();return;}
+  });
+  document.addEventListener('keydown',e=>{
+    if(!/^[1-4]$/.test(e.key)||e.altKey||e.ctrlKey||e.metaKey||e.shiftKey)return;
+    const target=e.target;if(target&&(target.isContentEditable||/^(INPUT|TEXTAREA|SELECT)$/.test(target.tagName)))return;
+    if($('#world-conversation')||$('#voice-modal')&&!$('#voice-modal').hidden)return;
+    const index=Number(e.key)-1;
+    if(ST&&ST.mode==='quiz'&&!ST.answered){const storyAnswers=$('#story-answers .answer');if(storyAnswers.length>index&&!storyAnswers[index].disabled){e.preventDefault();answerStoryQuestion(index);return;}}
+    if(G&&!G.answered){const answers=$('#answers .answer');if(answers.length>index&&!answers[index].disabled){e.preventDefault();selectAnswer(index);return;}}
   });
   document.addEventListener('keydown',e=>{if(!WORLD)return;if(e.key==='Escape'){closeWorld();return;}if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','w','a','s','d','W','A','S','D'].includes(e.key)){e.preventDefault();worldCancelAuto();worldMove(e.key);return;}if(e.code==='Space'){e.preventDefault();worldInteract();}});
   document.addEventListener('visibilitychange',()=>{if(document.hidden&&WORLD&&WORLD.raf){cancelAnimationFrame(WORLD.raf);WORLD.raf=0;}else if(!document.hidden&&WORLD&&WORLD.mode==='play')worldDraw();});
