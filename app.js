@@ -2367,7 +2367,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
   }
   function toggleArabic() {
     if (state.immersionWeek?.active && state.immersionWeek.endsAt && Date.now() < Number(state.immersionWeek.endsAt)) { toast('Arabic help is paused during your optional immersion week. You can end it in My Tools.'); return; }
-    state.helpArabic = !state.helpArabic; save(); syncSettings();
+    state.helpArabic = !state.helpArabic; try { localStorage.setItem('epiphany-help-language-choice', state.helpArabic ? 'ar' : 'en'); } catch {} save(); syncSettings();
     if (G) { if (G.answered) setSheetSpace(); } else toast(state.helpArabic ? 'Arabic help is on' : 'Arabic help is off');
   }
   // Capture the theme action before the settings popover closes.
@@ -4523,6 +4523,28 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
   }, true);
   renderAll();
   enhanceTranslationControls($('#game-body'));
+  const helpLanguageModal = $('#help-language-modal');
+  let helpLanguageChoice = '';
+  try { helpLanguageChoice = localStorage.getItem('epiphany-help-language-choice') || ''; } catch {}
+  let hasExistingProgress = false;
+  try { hasExistingProgress = !!localStorage.getItem('epiphany-progress'); } catch {}
+  if (helpLanguageModal && !helpLanguageChoice && !hasExistingProgress) {
+    helpLanguageModal.hidden = false;
+    const firstChoice = helpLanguageModal.querySelector('[data-help-language="en"]');
+    if (firstChoice) firstChoice.focus();
+  }
+  if (helpLanguageModal) helpLanguageModal.querySelectorAll('[data-help-language]').forEach(button => {
+    button.addEventListener('click', () => {
+      const choice = button.dataset.helpLanguage;
+      if (!['en','ar'].includes(choice)) return;
+      state.helpArabic = choice === 'ar';
+      try { localStorage.setItem('epiphany-help-language-choice', choice); } catch {}
+      save(); syncSettings();
+      helpLanguageModal.hidden = true;
+      if (G && G.answered) setSheetSpace();
+    });
+  });
+
   let accountWelcomeDismissed = false;
   try { accountWelcomeDismissed = localStorage.getItem('epiphany-account-welcome-dismissed') === '1'; } catch {}
   if(!state.placementDone && accountWelcomeDismissed)showPlacement();
