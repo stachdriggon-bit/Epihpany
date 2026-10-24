@@ -16,7 +16,7 @@
   ];
 
   /* ---------- state ---------- */
-  const defaults = () => ({xp:0, quests:0, words:[], review:[], encounteredWords:[], focusTimer:{mode:'focus',duration:1500,remaining:1500,endsAt:null,running:false,sessions:0}, xpActivity:{days:{}}, _lastSavedXp:null, adaptiveOffset:0, adaptiveStreak:0, adaptiveSignals:{}, learningActivity:{days:{}}, dailyChallengeDate:null, dailyChallengeResult:null, dailySessionDate:null, dailySessionStep:'review', dailySessionDone:false, oneLifeBest:0, translationEnabled:true, storyReaderSettings:{fontScale:1,lineSpacing:1.75,nightMode:false}, placementDone:false, assessedLevel:'A1', placementResult:null, xpAtLevelStart:null, promotionHistory:[], promotionAttempts:{}, lastPromotionResult:null, completed:[], streak:0, lastDay:null, daily:0, level:'A1', sound:true, helpArabic:false, theme:'light', streakFreezes:1, dailyQuestDate:null, dailyQuestProgress:0, dailyQuestClaimed:false, dailyCorrect:0, dailyXp:0, weeklyKey:null, weeklyProgress:0, weeklyClaimed:false, mistakeTrapErrors:{}, mistakeQuestionErrors:{}, mistakeTrapCorrect:{}, mistakeQuestionCorrect:{}, mistakeTrapSrs:{}, modes:{}, weakTraps:{}, recentQuestions:{}, stories:{}, world:{done:[],stars:{}}});
+  const defaults = () => ({xp:0, quests:0, words:[], review:[], encounteredWords:[], wordMonthProgress:{}, dailyTreasure:{date:'',index:0,opened:false}, teachMeAttempts:[], immersionWeek:{startedAt:null,endsAt:null,days:{},active:false}, focusTimer:{mode:'focus',duration:1500,remaining:1500,endsAt:null,running:false,sessions:0}, xpActivity:{days:{}}, _lastSavedXp:null, adaptiveOffset:0, adaptiveStreak:0, adaptiveSignals:{}, learningActivity:{days:{}}, dailyChallengeDate:null, dailyChallengeResult:null, dailySessionDate:null, dailySessionStep:'review', dailySessionDone:false, oneLifeBest:0, translationEnabled:true, storyReaderSettings:{fontScale:1,lineSpacing:1.75,nightMode:false}, placementDone:false, assessedLevel:'A1', placementResult:null, xpAtLevelStart:null, promotionHistory:[], promotionAttempts:{}, lastPromotionResult:null, completed:[], streak:0, lastDay:null, daily:0, level:'A1', sound:true, helpArabic:false, theme:'light', streakFreezes:1, dailyQuestDate:null, dailyQuestProgress:0, dailyQuestClaimed:false, dailyCorrect:0, dailyXp:0, weeklyKey:null, weeklyProgress:0, weeklyClaimed:false, mistakeTrapErrors:{}, mistakeQuestionErrors:{}, mistakeTrapCorrect:{}, mistakeQuestionCorrect:{}, mistakeTrapSrs:{}, modes:{}, weakTraps:{}, recentQuestions:{}, stories:{}, world:{done:[],stars:{}}});
   let state;
   try { state = {...defaults(), ...JSON.parse(localStorage.getItem('epiphany-progress') || '{}')}; } catch { state = defaults(); }
   if (!LEVELS.some(level => level.id === state.assessedLevel)) { state.assessedLevel = 'A1'; state.placementDone = false; state.placementResult = null; }
@@ -25,6 +25,12 @@
   if (!state.promotionAttempts || typeof state.promotionAttempts !== 'object' || Array.isArray(state.promotionAttempts)) state.promotionAttempts = {};
   if (!Array.isArray(state.review)) state.review = [];
   if (!Array.isArray(state.encounteredWords)) state.encounteredWords = [];
+  if (!state.wordMonthProgress || typeof state.wordMonthProgress !== 'object' || Array.isArray(state.wordMonthProgress)) state.wordMonthProgress = {};
+  if (!state.dailyTreasure || typeof state.dailyTreasure !== 'object' || Array.isArray(state.dailyTreasure)) state.dailyTreasure = defaults().dailyTreasure;
+  if (!Array.isArray(state.teachMeAttempts)) state.teachMeAttempts = [];
+  if (!state.immersionWeek || typeof state.immersionWeek !== 'object' || Array.isArray(state.immersionWeek)) state.immersionWeek = defaults().immersionWeek;
+  if (!state.immersionWeek.days || typeof state.immersionWeek.days !== 'object' || Array.isArray(state.immersionWeek.days)) state.immersionWeek.days = {};
+  if (state.immersionWeek.endsAt && Date.now() >= Number(state.immersionWeek.endsAt)) state.immersionWeek.active = false;
   if (!state.focusTimer || typeof state.focusTimer !== 'object') state.focusTimer = defaults().focusTimer;
   if (!Number.isFinite(Number(state.focusTimer.remaining))) state.focusTimer.remaining = Number(state.focusTimer.duration) || 1500;
   if (!state.xpActivity || typeof state.xpActivity !== 'object' || Array.isArray(state.xpActivity)) state.xpActivity = {days:{}};
@@ -352,6 +358,7 @@
     if (!state.learningActivity || typeof state.learningActivity !== 'object') state.learningActivity={days:{}};
     if (!state.learningActivity.days || typeof state.learningActivity.days !== 'object') state.learningActivity.days={};
     const today=dayKey(), day=state.learningActivity.days[today]||(state.learningActivity.days[today]={minutes:0,words:0,attempts:0});
+    if (state.immersionWeek?.active && state.immersionWeek.endsAt && Date.now() < Number(state.immersionWeek.endsAt)) { if (!state.immersionWeek.days || typeof state.immersionWeek.days !== 'object') state.immersionWeek.days = {}; state.immersionWeek.days[today] = true; }
     day.minutes=(Number(day.minutes)||0)+Math.max(0,Number(minutes)||0);
     day.words=(Number(day.words)||0)+Math.max(0,Number(words)||0);
     day.attempts=(Number(day.attempts)||0)+Math.max(0,Number(attempts)||0);
@@ -1019,6 +1026,58 @@
     root.innerHTML = '<section class="block progress-forecast-card"><div class="block-head"><div><p class="kicker">YOUR OWN LEARNING PACE</p><h2>'+(next?'Your next step: '+esc(current.id)+' → '+esc(next.id):'Your learning journey')+'</h2><p>The estimate follows your current level. When you pass a promotion test, it automatically moves to the next milestone.</p></div><span class="forecast-badge">Personal estimate</span></div><div class="forecast-progress-line"><span style="width:'+currentProgress+'%"></span></div><div class="forecast-levels"><span>'+esc(current.id)+' · '+Math.round(currentProgress)+'% of XP needed for next test</span><span>'+(next?esc(next.id)+' · next milestone':'All assessed levels complete')+'</span></div>'+forecastText+'<div class="forecast-journey"><div class="forecast-journey-heading"><h3>Your full CEFR path</h3><p>XP unlocks each promotion test; passing the test changes your assessed level.</p></div><div class="forecast-level-grid">'+levelCards+'</div></div><p class="forecast-caveat">This estimates active learning days, not calendar days. It uses your recent XP pace, which may change. Future levels are not promised dates: each transition depends on passing its assessment.</p></section>';
   }
 
+
+  const MONTH_WORDS = [
+    {month:1,theme:'Fresh starts',variants:{A1:['try','to make an effort','I will try a new way to learn.'],A2:['curious','wanting to know more','I was curious about that expression.'],B1:['notice','to become aware of something','I noticed how the speaker softened the request.'],B2:['adapt','to change for a new situation','I adapted my explanation for a different audience.'],C1:['subtle','not obvious, but important','There is a subtle difference in tone.'],C2:['discern','to recognise a fine distinction','She could discern a slight change in meaning.']}},
+    {month:2,theme:'Connection',variants:{A1:['share','to give or tell someone something','I shared a new word with my friend.'],A2:['support','to help someone or something','An example can support your explanation.'],B1:['relate','to connect with an experience','I can relate to that situation.'],B2:['perspective','a way of seeing something','Try another perspective.'],C1:['rapport','a friendly, trusting relationship','The conversation built rapport.'],C2:['reciprocal','shared by both sides','Learning can be a reciprocal exchange.']}},
+    {month:3,theme:'Discovery',variants:{A1:['find','to discover something','I found a useful phrase in a film.'],A2:['explore','to learn by trying','We explored several ways to say it.'],B1:['discover','to find something new','I discovered a more natural expression.'],B2:['insight','a deeper understanding','The example gave me insight.'],C1:['uncover','to reveal something hidden','The discussion uncovered an assumption.'],C2:['elucidate','to make something clearer','The example helped elucidate the rule.']}},
+    {month:4,theme:'Courage',variants:{A1:['brave','ready to face something difficult','It was brave of me to speak first.'],A2:['attempt','to try to do something','I made an attempt even though I was unsure.'],B1:['hesitate','to pause because you are unsure','I hesitated, then asked the question.'],B2:['resilient','able to recover after difficulty','A resilient learner keeps experimenting.'],C1:['persevere','to continue despite difficulty','She persevered through the challenging text.'],C2:['intrepid','willing to face difficulty','His intrepid approach led to a useful conversation.']}},
+    {month:5,theme:'Everyday choices',variants:{A1:['choose','to decide between options','I chose a shorter sentence.'],A2:['prefer','to like one option more','I prefer everyday examples.'],B1:['weigh','to consider different options','I weighed both expressions before choosing.'],B2:['trade-off','a balance of benefits and drawbacks','There is a trade-off between speed and precision.'],C1:['nuance','a small but meaningful difference','The nuance changes the speaker’s attitude.'],C2:['judicious','showing careful judgement','A judicious choice depends on context.']}},
+    {month:6,theme:'Clarity',variants:{A1:['clear','easy to understand','I wrote a clear explanation.'],A2:['explain','to make an idea easier to understand','Can you explain it in your own words?'],B1:['specific','clear and exact','A specific example makes the rule clearer.'],B2:['precise','exact and accurate','That is a precise description.'],C1:['coherent','clear and logically connected','Her explanation was coherent.'],C2:['unambiguous','having only one clear meaning','The instruction should be unambiguous.']}},
+    {month:7,theme:'Flexibility',variants:{A1:['change','to make or become different','I changed my sentence after feedback.'],A2:['adjust','to change something slightly','I adjusted the wording to sound friendlier.'],B1:['flexible','able to change when needed','A flexible plan makes room for practice.'],B2:['refine','to improve through small changes','I refined my explanation.'],C1:['versatile','useful in many situations','It is a versatile expression.'],C2:['multifaceted','having several different aspects','The word has a multifaceted meaning.']}},
+    {month:8,theme:'Attention',variants:{A1:['listen','to pay attention to sound','I listened for the phrase.'],A2:['focus','to give attention to one thing','I focused on how it was used.'],B1:['concentrate','to give all your attention','I concentrated on the speaker’s intention.'],B2:['attentive','paying close attention','An attentive reader notices context.'],C1:['scrutinise','to examine very carefully','We scrutinised the wording.'],C2:['meticulous','very careful about details','A meticulous reading revealed the implication.']}},
+    {month:9,theme:'Growth',variants:{A1:['learn','to gain knowledge or skill','I learn a little English every day.'],A2:['improve','to become better','I improved by using words in context.'],B1:['progress','movement towards improvement','Small steps still count as progress.'],B2:['consolidate','to make learning more secure','Review helps consolidate new vocabulary.'],C1:['proficiency','a high level of skill','Regular use builds proficiency.'],C2:['mastery','deep knowledge or skill','Mastery grows through flexible practice.']}},
+    {month:10,theme:'Meaning',variants:{A1:['mean','to express an idea','What do you mean by that?'],A2:['context','the situation that explains meaning','Context helps me understand the word.'],B1:['imply','to suggest without saying directly','His reply implied disagreement.'],B2:['convey','to communicate an idea or feeling','The phrase conveys warmth.'],C1:['connotation','an idea associated with a word','The word has a positive connotation.'],C2:['infer','to conclude from evidence','We can infer the speaker’s intention.']}},
+    {month:11,theme:'Understanding',variants:{A1:['help','to make something easier','An example can help me understand.'],A2:['realise','to understand something clearly','I realised why the tense changed.'],B1:['recognise','to identify or understand','I recognised the expression from a story.'],B2:['interpret','to explain the meaning of something','We interpreted the reply in context.'],C1:['comprehend','to understand fully','I comprehend the argument more clearly now.'],C2:['disambiguate','to remove uncertainty about meaning','The extra sentence helps disambiguate the pronoun.']}},
+    {month:12,theme:'Reflection',variants:{A1:['remember','to keep something in your mind','I remembered the word when I needed it.'],A2:['reflect','to think carefully about something','I reflected on what made it easier.'],B1:['meaningful','important or useful in a real way','A meaningful example is easier to remember.'],B2:['evaluate','to judge something carefully','I evaluated my explanation.'],C1:['synthesise','to combine ideas into a whole','I synthesised the clues into a clear explanation.'],C2:['introspective','examining your own thoughts','An introspective review revealed my progress.']}}
+  ];
+  const DAILY_TREASURES = [
+    {kind:'Everyday expression',title:'That rings a bell',body:'Something sounds familiar, even if you cannot remember exactly why.',example:'Her name rings a bell, but I cannot remember where we met.'},
+    {kind:'Tiny language fact',title:'Actually ≠ currently',body:'Actually usually means “in fact”; currently means “at the present time”.',example:'Actually, I live here. / I am currently studying.'},
+    {kind:'Everyday expression',title:'Give me a heads-up',body:'A friendly way to ask someone to tell you about something in advance.',example:'Give me a heads-up if the meeting time changes.'},
+    {kind:'Tiny language fact',title:'Make progress',body:'English uses common word partnerships: we usually say “make progress”, not “do progress”.',example:'You are making real progress.'},
+    {kind:'Everyday expression',title:'It slipped my mind',body:'Use this when you forgot something unintentionally.',example:'I meant to call, but it slipped my mind.'},
+    {kind:'Everyday expression',title:'Fair enough',body:'A relaxed way to accept that someone’s point or decision is reasonable.',example:'“I need more time.” “Fair enough — take your time.”'},
+    {kind:'Tiny language fact',title:'Advice is uncountable',body:'Say “some advice” or “a piece of advice”, not “an advice”.',example:'Can I give you a piece of advice?'},
+    {kind:'Everyday expression',title:'On the same page',body:'To share the same understanding about a plan or situation.',example:'Let’s check we are on the same page.'},
+    {kind:'Tiny language fact',title:'Eventually means “in the end”',body:'It does not usually mean “possibly”. It describes what happens after some time.',example:'After a few tries, she eventually found the words.'},
+    {kind:'Everyday expression',title:'I see where you’re coming from',body:'A way to show you understand someone’s view, even if you disagree.',example:'I see where you’re coming from, but I have another concern.'},
+    {kind:'Tiny language fact',title:'Less and fewer',body:'In careful standard English, “fewer” is common with countable items and “less” with amounts.',example:'Fewer mistakes, less stress.'},
+    {kind:'Everyday expression',title:'Take your time',body:'A reassuring way to say there is no need to hurry.',example:'Take your time — there is no rush.'}
+  ];
+  const TEACH_TOPICS = {
+    sinceFor:{title:'Since vs for',keyIdeas:[['since','starting point'],['for','duration']],hint:'“Since” points to when something began; “for” tells us how long it has lasted.',model:'I have lived here since 2021. / I have lived here for three years.',follow:'Can you give one example with a starting point and one with a duration?'},
+    presentPerfect:{title:'Present perfect',keyIdeas:[['have','has'],['past participle','third form','been','seen','done']],hint:'Use have/has + past participle to connect a past event or experience to the present.',model:'I have finished my work. / She has seen that film.',follow:'Can you make an example with have/has and a past participle?'},
+    articles:{title:'A, an and the',keyIdeas:[['a','an'],['the','specific','known']],hint:'A/an introduces a non-specific countable thing; the points to something specific or already known.',model:'I saw a dog. The dog was sleeping.',follow:'Can you introduce something with a/an and then refer to it with the?'},
+    pastSimple:{title:'Past simple',keyIdeas:[['yesterday','last week','ago','past'],['verb','action','finished']],hint:'Use the past simple for a finished event at a finished past time.',model:'I visited my friend yesterday.',follow:'Can you describe a finished event and say when it happened?'},
+    countable:{title:'Much vs many',keyIdeas:[['many','countable','people','books'],['much','uncountable','water','time','money']],hint:'Use many with plural countable nouns and much with uncountable nouns.',model:'How many books? How much time?',follow:'Can you give one example with a countable noun and one with an uncountable noun?'},
+    comparatives:{title:'Comparatives',keyIdeas:[['-er','than','comparative'],['more','than']],hint:'Comparatives compare two people or things, often adjective + -er or more + adjective, followed by than.',model:'This book is shorter than that one. / This task is more difficult than the last.',follow:'Can you compare two things using than?'},
+    willGoingTo:{title:'Will vs going to',keyIdeas:[['will','decision','offer'],['going to','plan','evidence']],hint:'Going to often describes a plan or evidence-based prediction; will often describes a quick decision, offer, or prediction.',model:'I’m going to study tonight. / I’ll help you with that.',follow:'Can you give one planned action and one quick decision or offer?'},
+    presentSimple:{title:'Present simple',keyIdeas:[['routine','usually','every day','habit'],['s','he','she','it']],hint:'Use present simple for habits and general facts. With he/she/it, most verbs take -s or -es.',model:'I study every day. / She studies every day.',follow:'Can you describe a habit and make a sentence with she or he?'}
+  };
+
+  function currentMonthWord() {
+    const month = new Date().getMonth()+1, record = MONTH_WORDS.find(item=>item.month===month)||MONTH_WORDS[0];
+    const level=currentLevel().id, v=record.variants[level]||record.variants.A1;
+    return {month,monthKey:new Date().getFullYear()+'-'+String(month).padStart(2,'0'),theme:record.theme,word:v[0],meaning:v[1],example:v[2],level};
+  }
+  function dailyTreasureForToday() {
+    if (!state.dailyTreasure || state.dailyTreasure.date!==dayKey()) {
+      const now=new Date(), seed=Math.floor(Date.UTC(now.getFullYear(),now.getMonth(),now.getDate())/86400000);
+      state.dailyTreasure={date:dayKey(),index:seed%DAILY_TREASURES.length,opened:false}; save();
+    }
+    return DAILY_TREASURES[Math.max(0,Math.min(DAILY_TREASURES.length-1,Number(state.dailyTreasure.index)||0))];
+  }
   function renderMyTools() {
     if (!Array.isArray(state.encounteredWords)) state.encounteredWords = [];
     const entries = state.encounteredWords.slice().reverse();
@@ -1033,6 +1092,21 @@
     const seconds = focusRemainingSeconds();
     const timerTime = String(Math.floor(seconds/60)).padStart(2,'0')+':'+String(seconds%60).padStart(2,'0');
     const mode = timer.mode === 'break' ? 'break' : 'focus';
+
+    const monthWord=currentMonthWord();
+    const monthProgress=state.wordMonthProgress[monthWord.monthKey]||(state.wordMonthProgress[monthWord.monthKey]={uses:0,saved:false,lastUsed:''});
+    const treasure=dailyTreasureForToday();
+    const immersion=state.immersionWeek||(state.immersionWeek=defaults().immersionWeek);
+    const immersionActive=!!(immersion.active&&immersion.endsAt&&Date.now()<Number(immersion.endsAt));
+    const immersionDays=Object.keys(immersion.days||{}).filter(key=>key>=dayKey(new Date(Number(immersion.startedAt)||Date.now()))&&key<=dayKey()).length;
+    const immersionRemaining=immersionActive?Math.max(1,Math.ceil((Number(immersion.endsAt)-Date.now())/86400000)):0;
+    const lastTeach=(state.teachMeAttempts||[]).slice(-1)[0];
+    const treasureContent=state.dailyTreasure.opened?'<div class="treasure-reveal"><span class="treasure-kind">'+esc(treasure.kind)+'</span><h3>'+esc(treasure.title)+'</h3><p>'+esc(treasure.body)+'</p><blockquote>'+esc(treasure.example)+'</blockquote></div>':'<p class="tool-helper">A small surprise is waiting. Open it whenever you like — a short session counts, too.</p>';
+    const deepPanels='<div class="depth-tools-grid">'+
+      '<section class="depth-tool-card word-month-card"><div class="depth-tool-kicker">✦ MONTHLY THREAD · '+esc(monthWord.theme.toUpperCase())+'</div><div class="depth-tool-title-row"><div><p class="kicker">WORD OF THE MONTH · '+esc(monthWord.monthKey)+'</p><h2>'+esc(monthWord.word)+'</h2></div><span class="depth-tool-level">'+esc(monthWord.level)+'</span></div><p>'+esc(monthWord.meaning)+'.</p><blockquote>'+esc(monthWord.example)+'</blockquote><div class="depth-tool-progress"><span>'+Number(monthProgress.uses||0)+' use'+(Number(monthProgress.uses)===1?'':'s')+' recorded</span><span>'+(monthProgress.saved?'In your Word Vault':'Not saved yet')+'</span></div><div class="depth-tool-actions"><button type="button" class="btn" data-depth-action="save-month-word">'+(monthProgress.saved?'Saved to Words':'Save for review')+'</button><button type="button" class="btn btn-ghost" data-depth-action="use-month-word">I used it today</button></div><label for="month-word-sentence">Use it in your own sentence</label><textarea id="month-word-sentence" rows="2" maxlength="500" placeholder="Write a sentence that fits your life…"></textarea><button type="button" class="btn btn-ghost" data-depth-action="check-month-sentence">Keep my example</button><p class="tool-helper" id="month-word-feedback" role="status" aria-live="polite">No perfect sentence needed. Notice how the word changes with context.</p></section>'+
+      '<section class="depth-tool-card treasure-card"><div class="depth-tool-kicker">🎁 A LITTLE SURPRISE</div><h2>Daily treasure</h2><p>A curious expression, a tiny language fact, or a useful way to sound more natural.</p>'+treasureContent+(state.dailyTreasure.opened?'<p class="treasure-opened-note">Today’s treasure is yours. Come back tomorrow for another.</p>':'<button type="button" class="btn" data-depth-action="open-treasure">Open today’s treasure</button>')+'</section>'+
+      '<section class="depth-tool-card teach-me-card"><div class="depth-tool-kicker">🧠 LEARN BY TEACHING</div><h2>Teach me!</h2><p>Explain a rule to a curious learner. This gentle checker looks for key ideas and an example; it is not an AI judge.</p><label for="teach-topic">What will you teach?</label><select id="teach-topic">'+Object.keys(TEACH_TOPICS).map(k=>'<option value="'+k+'">'+esc(TEACH_TOPICS[k].title)+'</option>').join('')+'</select><label for="teach-explanation">Explain it in your own words</label><textarea id="teach-explanation" rows="4" maxlength="1800" placeholder="Imagine explaining this to a friend who is learning English…"></textarea><label for="teach-example">Your example</label><input id="teach-example" maxlength="350" placeholder="Write one sentence or a pair of examples"><button type="button" class="btn" data-depth-action="check-teaching">Share my explanation</button><div id="teach-feedback" class="teach-feedback" role="status" aria-live="polite">'+(lastTeach?'<p class="tool-helper">Last topic: '+esc(TEACH_TOPICS[lastTeach.topic]?.title||'Language rule')+'. Teaching is practice, not a test.</p>':'<p class="tool-helper">Different correct wording is welcome. The goal is understanding, not repeating a textbook.</p>')+'</div></section>'+
+      '<section class="depth-tool-card immersion-card"><div class="depth-tool-kicker">🌍 OPTIONAL CHALLENGE</div><h2>English immersion week</h2><p>Try seven days with Arabic translation and Arabic hints paused. End the challenge at any time; your progress is never lost.</p>'+(immersionActive?'<div class="immersion-status"><strong>'+immersionRemaining+' day'+(immersionRemaining===1?'':'s')+' left</strong><span>'+immersionDays+' active learning day'+(immersionDays===1?'':'s')+' recorded</span></div><p class="tool-helper">Your English-only challenge is active.</p><button type="button" class="btn btn-ghost" data-depth-action="end-immersion">End challenge now</button>':'<p class="tool-helper">Optional, and best started when you feel ready.</p><button type="button" class="btn" data-depth-action="start-immersion">Start my seven-day challenge</button>')+'</section></div>';
     target.innerHTML = '<section class="tool-feature-hero"><div class="tool-feature-icon" aria-hidden="true">✎</div><div><p class="kicker">YOUR EVERYDAY ENGLISH</p><h2>Words I encountered today</h2><p>Collect the words that matter to you, in the situation where you found them. No grades, no pressure — just curiosity that stays with you.</p><div class="tool-feature-stats"><span>' + entries.length + ' saved ' + (entries.length === 1 ? 'note' : 'notes') + '</span><span>Connected to spaced review</span></div></div></section>' +
       '<section class="encountered-form-card" aria-labelledby="encountered-form-title"><div class="block-head"><div><h2 id="encountered-form-title">Save a word from real life</h2><p>You can leave the meaning blank if you are not sure yet.</p></div></div>' +
       '<form id="encountered-word-form" class="encountered-form"><label for="encountered-word">Word or phrase <span>Required</span></label><input id="encountered-word" name="word" maxlength="100" required autocomplete="off" placeholder="e.g. it slipped my mind">' +
@@ -1486,12 +1560,20 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     if (restoreFocus && categoryReturnFocus && categoryReturnFocus.isConnected) categoryReturnFocus.focus({preventScroll:true});
     categoryReturnFocus = null;
   }
+  function injectMonthlyWordThread(name) {
+    const host=name==='home'?$('#home-view .daily-session-card'):name==='stories'?$('#stories-view .intro'):name==='arcade'?$('#arcade-view .intro'):null;
+    if(!host)return;const old=$('#monthly-word-thread-'+name);if(old)old.remove();const word=currentMonthWord(),progress=state.wordMonthProgress[word.monthKey]||{uses:0};
+    const card=document.createElement('aside');card.id='monthly-word-thread-'+name;card.className='monthly-word-thread';
+    card.innerHTML='<span class="monthly-word-thread-kicker">THIS MONTH’S WORD · '+esc(word.theme)+'</span><div><strong>'+esc(word.word)+'</strong><span>'+esc(word.meaning)+'</span></div><p>'+esc(word.example)+'</p><small>'+Number(progress.uses||0)+' real-life uses recorded · Notice it across stories, games and everyday life.</small><button type="button" class="btn btn-ghost" data-view="mytools">Explore the monthly word →</button>';
+    host.insertAdjacentElement('afterend',card);
+  }
   function openView(name) {
     closeCategoryPicker(false);
     closeDockMore();
     $$('.view').forEach(v => v.classList.toggle('is-active', v.id === name + '-view'));
     $$('[data-view]').forEach(b => b.setAttribute('aria-current', b.dataset.view === name ? 'page' : 'false'));
     if (name === 'mytools') { renderMyTools(); }
+    if (['home','stories','arcade'].includes(name)) injectMonthlyWordThread(name);
     if (name === 'progress') renderProgressForecast();
     if (name === 'home') renderHome();
     if (name === 'arcade') renderArcade();
@@ -2259,8 +2341,11 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
   function syncSettings() {
     document.body.classList.toggle('translation-off', !state.translationEnabled);
     if(state.translationEnabled){enhanceTranslationControls($('#game-body'));enhanceTranslationControls($('#world-game'));enhanceTranslationControls($('#sheet'));}
+    const immersionActive = !!(state.immersionWeek?.active && state.immersionWeek.endsAt && Date.now() < Number(state.immersionWeek.endsAt));
+    document.body.classList.toggle('immersion-week-active', immersionActive);
     const translationToggle = $('#translation-toggle');
-    if (translationToggle) { translationToggle.setAttribute('aria-pressed', String(!!state.translationEnabled)); const label=translationToggle.querySelector('span'); if(label) label.textContent = state.translationEnabled ? 'Arabic translation: On' : 'Arabic translation: Off'; }
+    if (translationToggle) { translationToggle.disabled = immersionActive; translationToggle.title = immersionActive ? 'Arabic translation is paused during immersion week.' : 'Toggle Arabic translation'; translationToggle.setAttribute('aria-pressed', String(!!state.translationEnabled)); const label=translationToggle.querySelector('span'); if(label) label.textContent = immersionActive ? 'Immersion week: English only' : state.translationEnabled ? 'Arabic translation: On' : 'Arabic translation: Off'; }
+    $('#ar-toggle, #game-ar').forEach(b => { b.disabled = immersionActive; if (immersionActive) b.title = 'Arabic help is paused during immersion week.'; });
     document.body.classList.toggle('ar-on', !!state.helpArabic);
     document.documentElement.dir = state.helpArabic ? 'rtl' : 'ltr';
     document.body.dir = state.helpArabic ? 'rtl' : 'ltr';
@@ -2281,6 +2366,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     if (meta) meta.content = dark ? '#111522' : '#F5F6FC';
   }
   function toggleArabic() {
+    if (state.immersionWeek?.active && state.immersionWeek.endsAt && Date.now() < Number(state.immersionWeek.endsAt)) { toast('Arabic help is paused during your optional immersion week. You can end it in My Tools.'); return; }
     state.helpArabic = !state.helpArabic; save(); syncSettings();
     if (G) { if (G.answered) setSheetSpace(); } else toast(state.helpArabic ? 'Arabic help is on' : 'Arabic help is off');
   }
@@ -2459,7 +2545,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
   $('#ar-toggle').addEventListener('click', toggleArabic);
   $('#game-ar').addEventListener('click', toggleArabic);
   const translationToggle = $('#translation-toggle');
-  if (translationToggle) translationToggle.addEventListener('click', () => { state.translationEnabled = !state.translationEnabled; save(); syncSettings(); enhanceTranslationControls($('#game-body')); document.querySelectorAll('.translate-btn').forEach(b => { b.hidden = !state.translationEnabled; }); document.querySelectorAll('.translation-result').forEach(el => { if (!state.translationEnabled) el.hidden = true; }); toast(state.translationEnabled ? 'Arabic translation is on' : 'Arabic translation is off'); });
+  if (translationToggle) translationToggle.addEventListener('click', () => { if (state.immersionWeek?.active && state.immersionWeek.endsAt && Date.now() < Number(state.immersionWeek.endsAt)) { toast('Arabic translation is paused during immersion week. You can end it in My Tools.'); return; } state.translationEnabled = !state.translationEnabled; save(); syncSettings(); enhanceTranslationControls($('#game-body')); document.querySelectorAll('.translate-btn').forEach(b => { b.hidden = !state.translationEnabled; }); document.querySelectorAll('.translation-result').forEach(el => { if (!state.translationEnabled) el.hidden = true; }); toast(state.translationEnabled ? 'Arabic translation is on' : 'Arabic translation is off'); });
   $('#sound-toggle').addEventListener('click', () => {
     state.sound = !state.sound; save(); syncSettings();
     toast(state.sound ? 'Sound is on' : 'Sound is off');
@@ -3986,6 +4072,55 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
   document.addEventListener('change', e => { if (e.target && e.target.id === 'photo-ocr-file') { const file=e.target.files&&e.target.files[0], preview=$('#photo-ocr-preview'), button=$('[data-tool-action="run-ocr"]'), status=$('#photo-ocr-status'); if (!file) return; if (!file.type.startsWith('image/')) { if(status)status.textContent='Please choose an image file.'; return; } if(preview){preview.src=URL.createObjectURL(file);preview.hidden=false;} if(button)button.disabled=false; if(status)status.textContent='Image ready. Extract text when you are ready.'; } });
   document.addEventListener('submit', e => { if(e.target && e.target.id==='typing-form'){e.preventDefault();checkTyping();return;}if(e.target&&e.target.id==='story-dictation-form'){e.preventDefault();checkStoryDictation(e.target);return;} });
   document.addEventListener('click', async e => {
+
+    const depthAction = e.target.closest('[data-depth-action]');
+    if (depthAction) {
+      const name=depthAction.dataset.depthAction, word=currentMonthWord();
+      const progress=state.wordMonthProgress[word.monthKey]||(state.wordMonthProgress[word.monthKey]={uses:0,saved:false,lastUsed:''});
+      if(name==='save-month-word'){
+        const key=word.word.toLowerCase();
+        if(!state.words.some(item=>String(item[0]||'').toLowerCase()===key))state.words.push([word.word,word.meaning,word.level]);
+        let review=state.review.find(item=>String(item.word||'').toLowerCase()===key);
+        if(!review)state.review.push({word:word.word,meaning:word.meaning,level:word.level,due:dayKey(),box:1,interval:0,streak:0,attempts:0,errors:0,exerciseStage:0,mastered:false,context:word.example,source:'Word of the Month'});
+        else{review.due=dayKey();review.context=word.example;review.source='Word of the Month';}
+        progress.saved=true;save();renderMyTools();toast('Monthly word added to your Word Vault and review.');return;
+      }
+      if(name==='use-month-word'){
+        if(progress.lastUsed!==dayKey()){progress.uses=(Number(progress.uses)||0)+1;progress.lastUsed=dayKey();recordLearningActivity({words:1});}
+        save();renderMyTools();toast('Nice — using the word is what matters.');return;
+      }
+      if(name==='check-month-sentence'){
+        const field=$('#month-word-sentence'),feedback=$('#month-word-feedback'),sentence=String(field?.value||'').trim();
+        if(!sentence){if(feedback)feedback.textContent='Write a sentence first, even a simple one.';return;}
+        if(!progress.examples)progress.examples=[];
+        progress.examples.push({date:dayKey(),sentence:sentence.slice(0,500)});
+        if(progress.lastUsed!==dayKey()){progress.uses=(Number(progress.uses)||0)+1;progress.lastUsed=dayKey();recordLearningActivity({words:1});}
+        save();if(feedback)feedback.innerHTML='<strong>Your example is saved.</strong> It does not need to match a model sentence word for word. Ask whether the word expresses the meaning you intended.';
+        toast('Your example is saved for this month.');return;
+      }
+      if(name==='open-treasure'){dailyTreasureForToday();state.dailyTreasure.opened=true;save();renderMyTools();toast('A little discovery for today.');return;}
+      if(name==='check-teaching'){
+        const topicKey=$('#teach-topic')?.value||'sinceFor',topic=TEACH_TOPICS[topicKey]||TEACH_TOPICS.sinceFor;
+        const explanation=String($('#teach-explanation')?.value||'').trim(),example=String($('#teach-example')?.value||'').trim(),all=(explanation+' '+example).toLowerCase();
+        const enough=explanation.split(/\s+/).filter(Boolean).length>=8;
+        const hits=topic.keyIdeas.filter(group=>group.some(term=>all.includes(term.toLowerCase()))).length;
+        const hasExample=example.length>=5||/\b(example|for instance|such as)\b/i.test(explanation);
+        const complete=enough&&hits>=Math.min(2,topic.keyIdeas.length)&&hasExample;
+        state.teachMeAttempts.push({topic:topicKey,date:dayKey(),ideaHits:hits,hasExample,complete});state.teachMeAttempts=state.teachMeAttempts.slice(-100);save();recordLearningActivity({attempts:1});
+        const feedback=$('#teach-feedback');
+        if(feedback)feedback.innerHTML=complete
+          ?'<div class="teach-feedback-result is-ready"><h3>You made the idea teachable.</h3><p>Your explanation includes several key ideas and an example. That is a useful sign of understanding, not a formal grade.</p><details><summary>Compare with a model explanation</summary><p>'+esc(topic.hint)+'</p><p><strong>Example:</strong> '+esc(topic.model)+'</p></details><p class="tool-helper">One more step: '+esc(topic.follow)+'</p></div>'
+          :'<div class="teach-feedback-result is-gentle"><h3>There may be more to explain — and that is normal.</h3><p>'+esc(topic.follow)+'</p><p class="tool-helper">The checker noticed '+hits+' of '+topic.keyIdeas.length+' key idea groups and '+(hasExample?'an example':'no clear example yet')+'. Different correct wording may not be recognised, so this is a prompt to reflect, not a verdict that you are wrong.</p><details><summary>Open a helpful reminder</summary><p>'+esc(topic.hint)+'</p><p><strong>Model:</strong> '+esc(topic.model)+'</p></details></div>';
+        return;
+      }
+      if(name==='start-immersion'){
+        const now=Date.now();state.immersionWeek={startedAt:now,endsAt:now+7*86400000,days:{},active:true};
+        state.translationEnabled=false;state.helpArabic=false;save();syncSettings();renderMyTools();toast('Your optional English immersion week has started. You can stop it at any time.');return;
+      }
+      if(name==='end-immersion'){
+        state.immersionWeek.active=false;state.immersionWeek.endedAt=Date.now();save();syncSettings();renderMyTools();toast('Challenge ended. Your progress is safe; Arabic help is available again.');return;
+      }
+    }
     const action = e.target.closest('[data-tool-action]');
     if (action) {
       const name = action.dataset.toolAction;
