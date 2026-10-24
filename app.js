@@ -350,6 +350,27 @@
     bucket.lastAt=Date.now();
     const attempts=Number(bucket.attempts)||0;recordLearningActivity({attempts:1,minutes:attempts%5===1?1:0});save();
   }
+  // Public bridge for Think Lab: keep its results inside the shared learner profile.
+  window.EpiphanyThinkLab = {
+    recordResult(skill, topic, correct, completed = false) {
+      if (DEV_MODE.active && hasDeveloperAccess()) return {xp:0};
+      const allowed = ['vocabulary','grammar','listening','conversation','reading','spelling'];
+      const safeSkill = allowed.includes(skill) ? skill : 'vocabulary';
+      recordAdaptiveResult(safeSkill, 'think-lab:' + String(topic || 'challenge').slice(0,100), !!correct);
+      const gain = correct ? 3 : 1;
+      state.xp = (Number(state.xp) || 0) + gain;
+      state.dailyXp = (Number(state.dailyXp) || 0) + gain;
+      if (completed) {
+        state.quests = (Number(state.quests) || 0) + 1;
+        state.daily = Math.min(2, (Number(state.daily) || 0) + 1);
+      }
+      save();
+      renderHeader();
+      renderHome();
+      return {xp:gain};
+    }
+  };
+
   function adaptiveRecommendation(){
     const signals=state.adaptiveSignals||{},review=(state.review||[]).filter(w=>w&&w.word);
     const hard=review.filter(w=>(Number(w.errors)||0)>=2).sort((a,b)=>(Number(b.errors)||0)-(Number(a.errors)||0));
