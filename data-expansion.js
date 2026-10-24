@@ -2,10 +2,12 @@
    Loaded after data.js and before app.js. Questions are level-tagged and skill-specific. */
 (() => {
   const add = (game, level, q, answers, correct, explain, extra = {}) => {
+    const authored = typeof AR_EXPANSION_TRANSLATIONS !== 'undefined' ? AR_EXPANSION_TRANSLATIONS[q] : null;
+    const localized = authored ? {...extra, q_ar: extra.q_ar || authored[0], answers_ar: extra.answers_ar || authored[1], explain_ar: extra.explain_ar || authored[2]} : extra;
     GAMES[game].questions.push({
       id: 'exp-' + level.toLowerCase() + '-' + game + '-' + (GAMES[game].questions.length + 1),
-      level, q, sub: extra.sub || 'Choose the best answer.', answers, correct, explain,
-      ar: extra.ar || '', why_ar: extra.why_ar || '', word: extra.word || null, q_ar: extra.q_ar || '', answers_ar: extra.answers_ar || [], explain_ar: extra.explain_ar || '', sub_ar: extra.sub_ar || ''
+      level, q, sub: localized.sub || 'Choose the best answer.', answers, correct, explain,
+      ar: localized.ar || '', why_ar: localized.why_ar || '', word: localized.word || null, q_ar: localized.q_ar || '', answers_ar: localized.answers_ar || [], explain_ar: localized.explain_ar || '', sub_ar: localized.sub_ar || ''
     });
   };
   // Authored Arabic translations for the advanced expansion questions.
