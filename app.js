@@ -79,6 +79,37 @@
   function inferGrammarTrap(q) {
     const text = [q.prompt,q.text,q.why_en,q.why_ar,q.hint,q.answer,q.fix].filter(Boolean).join(' ').toLowerCase();
     const has = re => re.test(text);
+    const prompt = String(q.prompt || q.text || '').toLowerCase();
+    const hint = String(q.hint || '').toLowerCase().trim();
+    const why = String(q.why_en || '').toLowerCase();
+    // Prefer the question's explicit hint and sentence structure over incidental words in explanations.
+    if (/\b(he|she|it) (?:go|live|play|work)\b|\b(?:every day|on fridays)\b/.test(prompt) && /\b(?:go|live|play|work|study)\b/.test(prompt)) return 'present-simple';
+    if (/\b(?:they|we|you|i|he|she|it) (?:is|are|am|was|were)\b|\b(?:this are|those is|there is many|there are a cat|friends is|we was|they is|he are|i is)\b/.test(prompt)) return 'am-is-are';
+    if (/\b(?:less books|much people|many books|a good news|an advice|some advice)\b/.test(prompt) || /\b(advice is uncountable|use fewer with countable|use many with countable|news looks plural|data is often treated as plural|data is often treated as a plural)\b/.test(why)) return 'countable-uncountable';
+    if (/\b(?:doesn't|does not|didn't|did not|after did|after doesn't|after didn’t)\b/.test(prompt) || /\bafter (?:doesn't|does not|did|didn't|didn’t)\b/.test(why)) return 'past-simple';
+    if (/\b(?:since|for)\b/.test(prompt) && /\b(?:2022|may|five years|two hours|three hours|period continuing|marks a period)\b/.test(prompt+' '+why)) return 'since-for';
+    if (/\b(?:look forward to|interested in|consistent with|responsible of|responsible for|at odds|contingent|give rise|lend credence|predicated|depend of|depend on|liable of|liable to|cast doubt|open to interpretation|alludes to|interested on|good in mathematics|explained me|explained the problem me|comprises of|comprised of|mutually exclusive|borne out|insofar|scarcely|no sooner|hardly had)\b/.test(prompt)) return 'formal-collocations';
+    if (hint === 'present perfect' || /\b(present perfect uses have\/has|present perfect|since may marks a period continuing|have already|has went|has visited .* last year)\b/.test(prompt+' '+why)) return 'present-perfect';
+    if (hint === 'past continuous' || /\b(past continuous|was watching|were watching|action was in progress|when another past event)\b/.test(prompt+' '+why)) return 'past-time';
+    if (hint === 'present continuous' || /\b(present continuous|be \+ verb-ing)\b/.test(hint+' '+why)) return 'verb-patterns';
+    if (hint === 'third conditional' || /\bthird conditional|would have \+ past participle|past counterfactual result\b/.test(hint+' '+why) || /\bwould have\b/.test(prompt)) return 'conditionals';
+    if (/\b(recommended that|demanded that|insisted that|board insisted that|suggested that he revise|mandative subjunctive)\b/.test(prompt+' '+why)) return 'subjunctive';
+    if (/\b(no sooner|scarcely|hardly had|little did|not only did|only when .* did|fronted for emphasis|invert the auxiliary and subject)\b/.test(prompt+' '+why)) return 'inversion';
+    if (hint === 'preposition') {
+      if (/\b(monday|fridays|2022|since|for five years|for two hours|in the morning|at night|on monday)\b/.test(prompt)) return 'in-on-at';
+      return 'formal-collocations';
+    }
+    if (hint === 'past participle') {
+      if (/\b(would have|had i known|were it not|if i had|if i had studied)\b/.test(prompt)) return 'conditionals';
+      if (/\b(could be|to be .* independently|remain to be|was .* implemented|were .* analysed|be .* out)\b/.test(prompt)) return 'verb-patterns';
+      if (/\b(have|has|had) already\b/.test(prompt)) return 'present-perfect';
+    }
+    if (hint === 'auxiliary' && /\bimplications\b/.test(prompt)) return 'be-verbs';
+    if (hint === 'be' && /\bthere\b/.test(prompt)) return 'be-verbs';
+    if (hint === 'plural' && /\bchilds\b/.test(prompt)) return 'plurals';
+    if (hint === 'adverb' || hint === 'adjective') return 'word-choice';
+    if (hint === 'comparative') return 'comparatives';
+    if (hint === 'result') return 'linking-words';
     if (has(/\b(device needs|needs testing|denied .*document|insist(?:ed)? on .*leave|insist on \+ noun|followed by an? -ing)\b/)) return 'verb-patterns';
     if (has(/\b(results, together with|together with the appendix|head of the subject|subject-verb agreement|agreement with the subject)\b/)) return 'be-verbs';
     if (has(/\b(passive construction|past participle|could be .* out|could be ruled out)\b/)) return 'verb-patterns';
