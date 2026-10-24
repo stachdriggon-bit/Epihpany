@@ -3133,12 +3133,86 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     const modeLabel = G.mode === 'daily' ? 'Daily #' + dailyChallengeNumber() : G.mode === 'oneLife' ? 'ONE LIFE · No retries' : (G.reviewMode ? 'Practice again' : m.label);
     $('#game-body').innerHTML =
       '<div class="q-meta"><span class="pill">' + modeLabel + '</span><span class="q-count">Question ' + (G.i + 1) + ' of ' + G.questions.length + '</span></div>' +
-      '<h2 class="q-text" id="q-text" tabindex="-1">' + esc(q.q) + '</h2>' + (state.helpArabic && G.questions[G.i].q_ar ? '<p class="arabic question-ar" lang="ar" dir="rtl">' + esc(G.questions[G.i].q_ar) + '</p>' : '') + (q.word ? '<button class="listen-btn question-listen" data-speak="' + esc(wordParts(q.word, q.explain).word) + '">' + ic('sound') + ' Listen to word</button>' : '') + '<p class="q-sub">' + esc(q.sub) + '</p>' + (state.helpArabic && G.questions[G.i].sub_ar ? '<p class="arabic" lang="ar" dir="rtl">' + esc(G.questions[G.i].sub_ar) + '</p>' : '') +
+      '<h2 class="q-text" id="q-text" tabindex="-1">' + esc(q.q) + '</h2>' + (state.helpArabic && G.questions[G.i].q_ar ? '<p class="arabic question-ar" lang="ar" dir="rtl">' + esc(G.questions[G.i].q_ar) + '</p>' : '') + (q.word ? '<button class="listen-btn question-listen" data-speak="' + esc(wordParts(q.word, q.explain).word) + '">' + ic('sound') + ' Listen to word</button>' : '') + '<p class="q-sub">' + esc(q.sub) + '</p><button type="button" class="btn btn-ghost share-question-btn" data-share-current-question>↗ Share this question</button>' + (state.helpArabic && G.questions[G.i].sub_ar ? '<p class="arabic" lang="ar" dir="rtl">' + esc(G.questions[G.i].sub_ar) + '</p>' : '') +
       '<p class="ar-only ar-guide arabic" lang="ar" dir="rtl">' + guidance[G.type] + '</p>' +
       '<div class="answers" id="answers" role="group" aria-labelledby="q-text">' +
       q.answers.map((a, i) => '<button class="answer" data-i="' + i + '"><span class="key">' + (i + 1) + '</span><span>' + esc(a) + '</span>' + (state.helpArabic && G.questions[G.i].answers_ar && G.questions[G.i].answers_ar[i] ? '<span class="answer-ar arabic" lang="ar" dir="rtl">' + esc(G.questions[G.i].answers_ar[i]) + '</span>' : '') + '</button>').join('') + '</div>';
     $('#game-scroll').scrollTop = 0;
     $('#q-text').focus({preventScroll: true});
+  }
+
+
+  function currentShareWord() {
+    if (!G || !G.questions || !G.questions[G.i]) return '';
+    const q = G.questions[G.i].q || {};
+    const candidate = q.word ? wordParts(q.word, q.explain).word : (Array.isArray(q.answers) && Number.isInteger(q.correct) ? q.answers[q.correct] : '');
+    return String(candidate || '').trim().split(/\\s+/).slice(0,4).join(' ');
+  }
+  function shareCurrentQuestion() {
+    const word = currentShareWord();
+    if (!word) { toast('This question has no shareable word yet.'); return; }
+    const url = new URL(window.location.href);
+    url.search = '';
+    url.hash = 'word=' + encodeURIComponent(word);
+    const shareData = {title:'A word to practise on EPIPHANY', text:'Can you remember the meaning of “' + word + '”?', url:url.href};
+    if (navigator.share) {
+      navigator.share(shareData).catch(function(error){ if(error && error.name!=='AbortError') copyShareLink(url.href); });
+    } else copyShareLink(url.href);
+  }
+  function copyShareLink(url) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(url).then(function(){toast('Share link copied. Send it to a friend!');}).catch(function(){window.prompt('Copy this share link:',url);});
+    } else window.prompt('Copy this share link:',url);
+  }
+  function findSharedWord(rawWord) {
+    const wanted = String(rawWord || '').trim().toLowerCase();
+    if (!wanted) return null;
+    const saved = (state.words || []).find(function(item){return Array.isArray(item) && String(item[0]||'').toLowerCase()===wanted;});
+    if (saved) return {word:String(saved[0]),meaning:String(saved[1]||'Try to recall the meaning, then make your own example.'),level:String(saved[2]||currentLevel().id)};
+    const review = (state.review || []).find(function(item){return item && String(item.word||'').toLowerCase()===wanted;});
+    if (review) return {word:String(review.word),meaning:String(review.meaning||'Try to recall the meaning, then make your own example.'),level:String(review.level||currentLevel().id)};
+    for (const game of Object.values(GAMES)) {
+      for (const question of (game && game.questions) || []) {
+        const qWord = question.word ? wordParts(question.word, question.explain).word : '';
+        const answer = Array.isArray(question.answers) && Number.isInteger(question.correct) ? question.answers[question.correct] : '';
+        if (String(qWord).toLowerCase()===wanted || String(answer).toLowerCase()===wanted) {
+          return {word:qWord || String(answer),meaning:String(question.explain||question.sub||'Think about how this word is used in the sentence.'),level:String(question.level||currentLevel().id),example:String(question.q||'')};
+        }
+      }
+    }
+    return {word:String(rawWord).slice(0,100),meaning:'Try to recall the meaning, then use the word in a sentence of your own.',level:currentLevel().id};
+  }
+  function showSharedWord(rawWord) {
+    const item = findSharedWord(rawWord);
+    if (!item) return;
+    let modal = document.getElementById('shared-word-modal');
+    if (!modal) { modal=document.createElement('div'); modal.id='shared-word-modal'; modal.className='shared-word-modal'; modal.hidden=true; document.body.appendChild(modal); }
+    modal.innerHTML='<section class="shared-word-card" role="dialog" aria-modal="true" aria-labelledby="shared-word-title"><button type="button" class="icon-btn shared-word-close" data-shared-word-close aria-label="Close">×</button><p class="kicker">A WORD TO SHARE · '+esc(item.level)+'</p><h2 id="shared-word-title">'+esc(item.word)+'</h2><p>'+esc(item.meaning)+'</p>'+(item.example?'<p class="listen-only-status">'+esc(item.example)+'</p>':'')+'<div class="shared-word-actions"><button type="button" class="btn" data-shared-word-listen="'+esc(item.word)+'">🔊 Listen</button><button type="button" class="btn btn-ghost" data-shared-word-share="'+esc(item.word)+'">↗ Share again</button><button type="button" class="btn btn-ghost" data-shared-word-close>Close</button></div></section>';
+    modal.hidden=false;
+    if (window.location.hash.indexOf('#word=')!==0) history.replaceState(null,'','#word='+encodeURIComponent(item.word));
+  }
+  function closeSharedWord() { const modal=document.getElementById('shared-word-modal'); if(modal)modal.hidden=true; }
+  function startListenOnly() {
+    const today = dayKey();
+    let items = (state.review || []).filter(function(item){return item && (!item.due || item.due<=today);}).map(function(item){return {word:String(item.word||''),meaning:String(item.meaning||''),example:wordContext(item.word,item.meaning).contexts[0]?.text||('Try using '+item.word+' in a sentence.')}});
+    if (!items.length) items = (state.words || []).slice().reverse().map(function(item){return {word:String(item[0]||''),meaning:String(item[1]||''),example:wordContext(item[0],item[1]).contexts[0]?.text||('Try using '+item[0]+' in a sentence.')}});
+    if (!items.length) items = Object.values(GAMES).flatMap(function(game){return (game.questions||[]).map(function(q){const p=q.word?wordParts(q.word,q.explain):null;return p?{word:p.word,meaning:p.meaning,example:String(q.q||q.sub||'')}:null;}).filter(Boolean);});
+    const seen = new Set(); items=items.filter(function(item){const key=item.word.toLowerCase();if(!key||seen.has(key))return false;seen.add(key);return true;}).slice(0,10);
+    if (!items.length) { toast('No words are ready for listening yet. Try a vocabulary quest first.'); return; }
+    let modal=document.getElementById('listen-only-modal');
+    if(!modal){modal=document.createElement('div');modal.id='listen-only-modal';modal.className='listen-only-modal';modal.hidden=true;document.body.appendChild(modal);}
+    let index=0, stopped=false;
+    modal.innerHTML='<section class="listen-only-card" role="dialog" aria-modal="true" aria-labelledby="listen-only-title"><button type="button" class="icon-btn listen-only-close" data-listen-close aria-label="Close listening session">×</button><p class="kicker">EYES-FREE PRACTICE</p><h2 id="listen-only-title">Listen, repeat, remember</h2><p class="listen-only-status" id="listen-only-status" aria-live="polite">Get comfortable. The session will read a word, leave time for you to repeat it, then say its meaning and an example.</p><div class="listen-only-actions"><button type="button" class="btn" data-listen-play>▶ Start / Resume</button><button type="button" class="btn btn-ghost" data-listen-pause>Ⅱ Pause</button><button type="button" class="btn btn-ghost" data-listen-next>Next word →</button><button type="button" class="btn btn-ghost" data-listen-stop>Stop</button></div></section>';
+    modal.hidden=false;
+    function status(text){const node=document.getElementById('listen-only-status');if(node)node.textContent=text;}
+    function say(text,onEnd){if(stopped)return;const synth=window.speechSynthesis;if(!synth||!window.SpeechSynthesisUtterance){status('Speech is not available in this browser.');return;}const utterance=new SpeechSynthesisUtterance(text);utterance.lang='en-US';utterance.rate=0.84;utterance.onend=function(){if(!stopped&&onEnd)onEnd();};utterance.onerror=function(){status('Audio could not play. Try the device voice settings.');};synth.speak(utterance);}
+    function play(){if(stopped)return;const item=items[index];if(!item){status('Listening session complete. You can close this window or start again.');return;}status('Word '+(index+1)+' of '+items.length+'. Listen, then repeat aloud when you hear “Your turn”.');say(item.word,function(){say('Your turn. Repeat the word aloud.',function(){setTimeout(function(){if(stopped)return;say('Meaning: '+item.meaning+'. Example: '+item.example,function(){index++;if(index<items.length)play();else status('You have finished this listening session. Well done.');});},3500);});});}
+    modal.querySelector('[data-listen-play]').addEventListener('click',function(){stopped=false;if(window.speechSynthesis)window.speechSynthesis.resume();play();});
+    modal.querySelector('[data-listen-pause]').addEventListener('click',function(){if(window.speechSynthesis)window.speechSynthesis.pause();status('Paused. Resume whenever you are ready.');});
+    modal.querySelector('[data-listen-next]').addEventListener('click',function(){if(window.speechSynthesis)window.speechSynthesis.cancel();index=Math.min(index+1,items.length);stopped=false;play();});
+    modal.querySelector('[data-listen-stop]').addEventListener('click',function(){stopped=true;if(window.speechSynthesis)window.speechSynthesis.cancel();status('Stopped. Your progress is unchanged.');});
+    modal.querySelector('[data-listen-close]').addEventListener('click',function(){stopped=true;if(window.speechSynthesis)window.speechSynthesis.cancel();modal.hidden=true;});
+    modal.addEventListener('click',function(event){if(event.target===modal){stopped=true;if(window.speechSynthesis)window.speechSynthesis.cancel();modal.hidden=true;}});
   }
 
   function selectAnswer(choice) {
@@ -5062,6 +5136,26 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
   }, true);
   renderAll();
   enhanceTranslationControls($('#game-body'));
+  document.addEventListener('click', function(event) {
+    if (event.target.closest('#listen-only-start')) { startListenOnly(); return; }
+    if (event.target.closest('#quick-practice-start')) { startGame('vocabulary'); return; }
+    if (event.target.closest('#quick-review-start')) { openView('words'); const panel=document.querySelector('.review-panel'); if(panel)panel.scrollIntoView({behavior:'smooth',block:'start'}); return; }
+    if (event.target.closest('#focus-mode-toggle')) { const enabled=!document.body.classList.contains('focus-mode'); document.body.classList.toggle('focus-mode',enabled); const button=document.getElementById('focus-mode-toggle'); if(button){button.setAttribute('aria-pressed',String(enabled));button.textContent=enabled?'⛶':'⛶';button.title=enabled?'Exit focus mode':'Focus mode';button.setAttribute('aria-label',enabled?'Exit focus mode':'Enter focus mode');} return; }
+    if (event.target.closest('[data-share-current-question]')) { shareCurrentQuestion(); return; }
+    if (event.target.closest('[data-shared-word-close]')) { closeSharedWord(); return; }
+    const listenWord=event.target.closest('[data-shared-word-listen]'); if(listenWord){speak(listenWord.dataset.sharedWordListen);return;}
+    const shareWord=event.target.closest('[data-shared-word-share]'); if(shareWord){const url=new URL(window.location.href);url.search='';url.hash='word='+encodeURIComponent(shareWord.dataset.sharedWordShare);copyShareLink(url.href);return;}
+  });
+  document.addEventListener('keydown', function(event){if(event.key==='Escape'){closeSharedWord();const listenModal=document.getElementById('listen-only-modal');if(listenModal&&!listenModal.hidden){const synth=window.speechSynthesis;if(synth)synth.cancel();listenModal.hidden=true;}if(document.body.classList.contains('focus-mode')){document.body.classList.remove('focus-mode');const button=document.getElementById('focus-mode-toggle');if(button)button.setAttribute('aria-pressed','false');}}});
+  window.addEventListener('hashchange',function(){const match=window.location.hash.match(/^#word=(.+)$/);if(match)showSharedWord(decodeURIComponent(match[1]));});
+  const sharedMatch=window.location.hash.match(/^#word=(.+)$/);if(sharedMatch)setTimeout(function(){showSharedWord(decodeURIComponent(sharedMatch[1]));},0);
+  setTimeout(function(){
+    const params=new URLSearchParams(window.location.search);
+    if(params.get('quick')==='1'){startGame('vocabulary');}
+    else if(params.get('review')==='1'){openView('words');const panel=document.querySelector('.review-panel');if(panel)panel.scrollIntoView({block:'start'});}
+    const due=(state.review||[]).filter(function(item){return item&&(!item.due||item.due<=dayKey());});
+    if(due.length&&window.EpiphanyNotifications&&typeof window.EpiphanyNotifications.wordReminder==='function')window.EpiphanyNotifications.wordReminder(due[0].word);
+  },250);
   const profileNav = $('.profile-nav');
   if (profileNav) {
     profileNav.addEventListener('click', event => {
