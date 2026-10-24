@@ -138,7 +138,7 @@ test('main navigation tabs open without uncaught page errors', async t => {
     }, null, { timeout: 5000 });
     await offlinePage.context().setOffline(true);
     await offlinePage.reload({ waitUntil: 'domcontentloaded' });
-    await offlinePage.locator('button[data-view="stories"]').first().click();
+    await clickView(offlinePage, 'stories');
     await offlinePage.waitForFunction(() => typeof STORIES !== 'undefined' && Array.isArray(STORIES), null, { timeout: 5000 });
     await offlinePage.context().setOffline(false);
     await offlinePage.close();
