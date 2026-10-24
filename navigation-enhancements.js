@@ -72,6 +72,7 @@
     if (!raw || raw.startsWith('word=') || raw.startsWith('word%3D')) return;
     const view = decodeURIComponent(raw).split(/[/?&]/)[0];
     if (!labels[view]) return;
+    if (currentView() === view) { syncCurrentNav(view); return; }
     restoringHistory = true;
     navigate(view, { history: false });
     restoringHistory = false;
@@ -222,6 +223,12 @@
 
   // Intercept navigation before app.js handles the same click, so each route gets a history entry.
   document.addEventListener('click', event => {
+    const logo = event.target.closest('#logo');
+    if (logo) {
+      event.preventDefault();
+      navigate('home');
+      return;
+    }
     const button = event.target.closest('[data-view]');
     if (!button || !labels[button.dataset.view]) return;
     if (!restoringHistory && location.hash !== routeFor(button.dataset.view)) {
