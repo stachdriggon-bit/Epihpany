@@ -4,6 +4,7 @@ const TYPING_QUESTIONS = [
     "id": "type-a1-01",
     "level": "A1",
     "prompt": "She ___ to school every day.",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "go",
     "accept": [
       "goes"
@@ -16,6 +17,7 @@ const TYPING_QUESTIONS = [
     "id": "type-a1-02",
     "level": "A1",
     "prompt": "They ___ happy today.",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "be",
     "accept": [
       "are"
@@ -28,6 +30,7 @@ const TYPING_QUESTIONS = [
     "id": "type-a1-03",
     "level": "A1",
     "prompt": "I ___ a student.",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "be",
     "accept": [
       "am"
@@ -40,6 +43,7 @@ const TYPING_QUESTIONS = [
     "id": "type-a1-04",
     "level": "A1",
     "prompt": "He ___ football on Fridays.",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "play",
     "accept": [
       "plays"
@@ -52,6 +56,7 @@ const TYPING_QUESTIONS = [
     "id": "type-a1-05",
     "level": "A1",
     "prompt": "We ___ in Algeria.",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "live",
     "accept": [
       "live"
@@ -64,6 +69,7 @@ const TYPING_QUESTIONS = [
     "id": "type-a1-06",
     "level": "A1",
     "prompt": "She has ___ orange.",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "a/an",
     "accept": [
       "an"
@@ -76,6 +82,7 @@ const TYPING_QUESTIONS = [
     "id": "type-a1-07",
     "level": "A1",
     "prompt": "There ___ two cats outside.",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "be",
     "accept": [
       "are"
@@ -88,6 +95,7 @@ const TYPING_QUESTIONS = [
     "id": "type-a1-08",
     "level": "A1",
     "prompt": "My brother ___ 10 years old.",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "be",
     "accept": [
       "is"
@@ -100,6 +108,7 @@ const TYPING_QUESTIONS = [
     "id": "type-a1-09",
     "level": "A1",
     "prompt": "I ___ coffee every morning.",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "drink",
     "accept": [
       "drink"
@@ -112,6 +121,7 @@ const TYPING_QUESTIONS = [
     "id": "type-a1-10",
     "level": "A1",
     "prompt": "He ___ not like tea.",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "do",
     "accept": [
       "does"
@@ -124,6 +134,7 @@ const TYPING_QUESTIONS = [
     "id": "type-a2-01",
     "level": "A2",
     "prompt": "She has ___ here since May.",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "live",
     "accept": [
       "lived",
@@ -137,6 +148,7 @@ const TYPING_QUESTIONS = [
     "id": "type-a2-02",
     "level": "A2",
     "prompt": "I ___ him yesterday.",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "see",
     "accept": [
       "saw"
@@ -149,6 +161,7 @@ const TYPING_QUESTIONS = [
     "id": "type-a2-03",
     "level": "A2",
     "prompt": "They are interested ___ music.",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "preposition",
     "accept": [
       "in"
@@ -161,6 +174,7 @@ const TYPING_QUESTIONS = [
     "id": "type-a2-04",
     "level": "A2",
     "prompt": "He doesn't ___ meat.",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "eat",
     "accept": [
       "eat"
@@ -173,6 +187,7 @@ const TYPING_QUESTIONS = [
     "id": "type-a2-05",
     "level": "A2",
     "prompt": "We have already ___ lunch.",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "eat",
     "accept": [
       "eaten"
@@ -185,6 +200,7 @@ const TYPING_QUESTIONS = [
     "id": "type-a2-06",
     "level": "A2",
     "prompt": "This is ___ than mine.",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "good",
     "accept": [
       "better"
@@ -197,6 +213,7 @@ const TYPING_QUESTIONS = [
     "id": "type-a2-07",
     "level": "A2",
     "prompt": "There isn't ___ milk left.",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "much",
     "accept": [
       "much"
@@ -209,6 +226,7 @@ const TYPING_QUESTIONS = [
     "id": "type-a2-08",
     "level": "A2",
     "prompt": "I look forward to ___ you.",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "meet",
     "accept": [
       "meeting"
@@ -221,6 +239,7 @@ const TYPING_QUESTIONS = [
     "id": "type-a2-09",
     "level": "A2",
     "prompt": "She ___ TV when I called.",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "watch",
     "accept": [
       "was watching"
@@ -233,6 +252,7 @@ const TYPING_QUESTIONS = [
     "id": "type-a2-10",
     "level": "A2",
     "prompt": "If it rains, we ___ home.",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "stay",
     "accept": [
       "will stay"
@@ -245,6 +265,7 @@ const TYPING_QUESTIONS = [
     "id": "type-b1-01",
     "level": "B1",
     "prompt": "If I ___ more time, I'd learn Italian.",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "have",
     "accept": [
       "had"
@@ -257,6 +278,7 @@ const TYPING_QUESTIONS = [
     "id": "type-b1-02",
     "level": "B1",
     "prompt": "She has worked here ___ 2022.",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "preposition",
     "accept": [
       "since"
@@ -269,6 +291,7 @@ const TYPING_QUESTIONS = [
     "id": "type-b1-03",
     "level": "B1",
     "prompt": "The report ___ by the team yesterday.",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "write",
     "accept": [
       "was written"
@@ -281,6 +304,7 @@ const TYPING_QUESTIONS = [
     "id": "type-b1-04",
     "level": "B1",
     "prompt": "I wish I ___ more confident.",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "be",
     "accept": [
       "were"
@@ -293,6 +317,7 @@ const TYPING_QUESTIONS = [
     "id": "type-b1-05",
     "level": "B1",
     "prompt": "He suggested ___ a taxi.",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "take",
     "accept": [
       "taking"
@@ -305,6 +330,7 @@ const TYPING_QUESTIONS = [
     "id": "type-b1-06",
     "level": "B1",
     "prompt": "By the time we arrived, they ___ .",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "leave",
     "accept": [
       "had left"
@@ -317,6 +343,7 @@ const TYPING_QUESTIONS = [
     "id": "type-b1-07",
     "level": "B1",
     "prompt": "Neither answer ___ correct.",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "be",
     "accept": [
       "is"
@@ -329,6 +356,7 @@ const TYPING_QUESTIONS = [
     "id": "type-b1-08",
     "level": "B1",
     "prompt": "She asked me where I ___ .",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "live",
     "accept": [
       "lived"
@@ -341,6 +369,7 @@ const TYPING_QUESTIONS = [
     "id": "type-b1-09",
     "level": "B1",
     "prompt": "I'm used to ___ early.",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "wake up",
     "accept": [
       "waking up"
@@ -353,6 +382,7 @@ const TYPING_QUESTIONS = [
     "id": "type-b1-10",
     "level": "B1",
     "prompt": "The film was ___ than I expected.",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "interesting",
     "accept": [
       "more interesting"
@@ -365,6 +395,7 @@ const TYPING_QUESTIONS = [
     "id": "type-b2-01",
     "level": "B2",
     "prompt": "Had I ___ earlier, I would have caught the train.",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "leave",
     "accept": [
       "left"
@@ -377,6 +408,7 @@ const TYPING_QUESTIONS = [
     "id": "type-b2-02",
     "level": "B2",
     "prompt": "The committee recommended that he ___ immediately.",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "act",
     "accept": [
       "act"
@@ -389,6 +421,7 @@ const TYPING_QUESTIONS = [
     "id": "type-b2-03",
     "level": "B2",
     "prompt": "No sooner had she arrived ___ the phone rang.",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "connector",
     "accept": [
       "than"
@@ -401,6 +434,7 @@ const TYPING_QUESTIONS = [
     "id": "type-b2-04",
     "level": "B2",
     "prompt": "The findings are consistent ___ earlier research.",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "preposition",
     "accept": [
       "with"
@@ -413,6 +447,7 @@ const TYPING_QUESTIONS = [
     "id": "type-b2-05",
     "level": "B2",
     "prompt": "Were it not for your help, I ___ failed.",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "would",
     "accept": [
       "would have"
@@ -425,6 +460,7 @@ const TYPING_QUESTIONS = [
     "id": "type-b2-06",
     "level": "B2",
     "prompt": "The device needs ___ before use.",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "test",
     "accept": [
       "testing",
@@ -438,6 +474,7 @@ const TYPING_QUESTIONS = [
     "id": "type-b2-07",
     "level": "B2",
     "prompt": "He denied ___ the document.",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "sign",
     "accept": [
       "signing"
@@ -450,6 +487,7 @@ const TYPING_QUESTIONS = [
     "id": "type-b2-08",
     "level": "B2",
     "prompt": "The results, together with the appendix, ___ included.",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "be",
     "accept": [
       "are"
@@ -462,6 +500,7 @@ const TYPING_QUESTIONS = [
     "id": "type-b2-09",
     "level": "B2",
     "prompt": "She speaks as though she ___ everything.",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "know",
     "accept": [
       "knew"
@@ -474,6 +513,7 @@ const TYPING_QUESTIONS = [
     "id": "type-b2-10",
     "level": "B2",
     "prompt": "The more you practise, the ___ you become.",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "good",
     "accept": [
       "better"
@@ -486,6 +526,7 @@ const TYPING_QUESTIONS = [
     "id": "type-a1-11",
     "level": "A1",
     "prompt": "My sister ___ ten years old.",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "be",
     "accept": [
       "is"
@@ -498,6 +539,7 @@ const TYPING_QUESTIONS = [
     "id": "type-a1-12",
     "level": "A1",
     "prompt": "We ___ English at school.",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "study",
     "accept": [
       "study"
@@ -510,6 +552,7 @@ const TYPING_QUESTIONS = [
     "id": "type-a2-11",
     "level": "A2",
     "prompt": "There isn’t ___ sugar in the jar.",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "much / many",
     "accept": [
       "much"
@@ -522,6 +565,7 @@ const TYPING_QUESTIONS = [
     "id": "type-a2-12",
     "level": "A2",
     "prompt": "I have known her ___ five years.",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "for / since",
     "accept": [
       "for"
@@ -534,6 +578,7 @@ const TYPING_QUESTIONS = [
     "id": "type-b1-11",
     "level": "B1",
     "prompt": "If I had studied harder, I ___ the exam.",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "pass",
     "accept": [
       "would have passed"
@@ -546,6 +591,7 @@ const TYPING_QUESTIONS = [
     "id": "type-b1-12",
     "level": "B1",
     "prompt": "She suggested ___ a taxi.",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "take",
     "accept": [
       "taking"
@@ -558,6 +604,7 @@ const TYPING_QUESTIONS = [
     "id": "type-b2-11",
     "level": "B2",
     "prompt": "No sooner had we sat down ___ the alarm rang.",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "connector",
     "accept": [
       "than"
@@ -570,6 +617,7 @@ const TYPING_QUESTIONS = [
     "id": "type-b2-12",
     "level": "B2",
     "prompt": "The report needs ___ before publication.",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "revise",
     "accept": [
       "revising",
@@ -583,6 +631,7 @@ const TYPING_QUESTIONS = [
     "id": "type-c1-01",
     "level": "C1",
     "prompt": "Not until the figures were verified ___ the report released.",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "be",
     "accept": [
       "was"
@@ -595,6 +644,7 @@ const TYPING_QUESTIONS = [
     "id": "type-c1-02",
     "level": "C1",
     "prompt": "Her account was consistent ___ the available evidence.",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "preposition",
     "accept": [
       "with"
@@ -607,6 +657,7 @@ const TYPING_QUESTIONS = [
     "id": "type-c2-01",
     "level": "C2",
     "prompt": "Were the premise ___ false, the inference would collapse.",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "prove",
     "accept": [
       "to prove"
@@ -619,6 +670,7 @@ const TYPING_QUESTIONS = [
     "id": "type-c2-02",
     "level": "C2",
     "prompt": "The evidence is suggestive, but not ___.",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "decisive",
     "accept": [
       "conclusive"
@@ -631,6 +683,7 @@ const TYPING_QUESTIONS = [
     "id": "type-a1-13",
     "level": "A1",
     "prompt": "My sister ___ (like) apples.",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "present simple",
     "accept": [
       "likes"
@@ -643,6 +696,7 @@ const TYPING_QUESTIONS = [
     "id": "type-a1-14",
     "level": "A1",
     "prompt": "They ___ students.",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "be",
     "accept": [
       "are"
@@ -655,6 +709,7 @@ const TYPING_QUESTIONS = [
     "id": "type-a2-13",
     "level": "A2",
     "prompt": "I was tired, ___ I went to bed early.",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "result",
     "accept": [
       "so"
@@ -667,6 +722,7 @@ const TYPING_QUESTIONS = [
     "id": "type-a2-14",
     "level": "A2",
     "prompt": "How ___ water do we need?",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "quantity",
     "accept": [
       "much"
@@ -679,6 +735,7 @@ const TYPING_QUESTIONS = [
     "id": "type-b1-13",
     "level": "B1",
     "prompt": "If I ___ (know) about the meeting, I would have attended.",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "third conditional",
     "accept": [
       "had known"
@@ -691,6 +748,7 @@ const TYPING_QUESTIONS = [
     "id": "type-b1-14",
     "level": "B1",
     "prompt": "She suggested ___ (take) the earlier train.",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "verb pattern",
     "accept": [
       "taking"
@@ -703,6 +761,7 @@ const TYPING_QUESTIONS = [
     "id": "type-b2-13",
     "level": "B2",
     "prompt": "No sooner had he arrived ___ it began to rain.",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "paired conjunction",
     "accept": [
       "than"
@@ -715,6 +774,7 @@ const TYPING_QUESTIONS = [
     "id": "type-b2-14",
     "level": "B2",
     "prompt": "The instructions were so vague that they were open ___ interpretation.",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "preposition",
     "accept": [
       "to"
@@ -727,6 +787,7 @@ const TYPING_QUESTIONS = [
     "id": "type-c1-03",
     "level": "C1",
     "prompt": "Only after the audit ___ the discrepancy discovered.",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "be",
     "accept": [
       "was"
@@ -739,6 +800,7 @@ const TYPING_QUESTIONS = [
     "id": "type-c1-04",
     "level": "C1",
     "prompt": "The proposal, ___ initially controversial, was eventually adopted.",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "although it was",
     "accept": [
       "although initially controversial",
@@ -752,6 +814,7 @@ const TYPING_QUESTIONS = [
     "id": "type-c1-05",
     "level": "C1",
     "prompt": "The results are contingent ___ the sample size.",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "preposition",
     "accept": [
       "on"
@@ -764,6 +827,7 @@ const TYPING_QUESTIONS = [
     "id": "type-c1-06",
     "level": "C1",
     "prompt": "Were the data ___ independently, the conclusion might differ.",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "analyse",
     "accept": [
       "to be analysed",
@@ -777,6 +841,7 @@ const TYPING_QUESTIONS = [
     "id": "type-c2-03",
     "level": "C2",
     "prompt": "So compelling ___ the evidence that the panel reopened the case.",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "be",
     "accept": [
       "was"
@@ -789,6 +854,7 @@ const TYPING_QUESTIONS = [
     "id": "type-c2-04",
     "level": "C2",
     "prompt": "The claim is not borne ___ by the available evidence.",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "out",
     "accept": [
       "out"
@@ -801,6 +867,7 @@ const TYPING_QUESTIONS = [
     "id": "type-c2-05",
     "level": "C2",
     "prompt": "Much ___ I admire her work, I disagree with this conclusion.",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "as",
     "accept": [
       "as"
@@ -813,6 +880,7 @@ const TYPING_QUESTIONS = [
     "id": "type-c2-06",
     "level": "C2",
     "prompt": "The witness's account was internally ___, with no contradictions.",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "consistent",
     "accept": [
       "consistent"
@@ -825,6 +893,7 @@ const TYPING_QUESTIONS = [
     "id": "type-a1-15",
     "level": "A1",
     "prompt": "She can ___ (swim) very well.",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "modal verb",
     "accept": [
       "swim"
@@ -837,6 +906,7 @@ const TYPING_QUESTIONS = [
     "id": "type-a1-16",
     "level": "A1",
     "prompt": "Those ___ my shoes.",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "be",
     "accept": [
       "are"
@@ -849,6 +919,7 @@ const TYPING_QUESTIONS = [
     "id": "type-a2-15",
     "level": "A2",
     "prompt": "I'm interested ___ learning French.",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "preposition",
     "accept": [
       "in"
@@ -861,6 +932,7 @@ const TYPING_QUESTIONS = [
     "id": "type-a2-16",
     "level": "A2",
     "prompt": "We ___ (see) that film last week.",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "past simple",
     "accept": [
       "saw"
@@ -873,6 +945,7 @@ const TYPING_QUESTIONS = [
     "id": "type-b1-15",
     "level": "B1",
     "prompt": "If I had known, I ___ (come).",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "third conditional",
     "accept": [
       "would have come"
@@ -885,6 +958,7 @@ const TYPING_QUESTIONS = [
     "id": "type-b1-16",
     "level": "B1",
     "prompt": "The lecture was so ___ that I nearly fell asleep. (bore)",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "adjective",
     "accept": [
       "boring"
@@ -897,6 +971,7 @@ const TYPING_QUESTIONS = [
     "id": "type-b2-15",
     "level": "B2",
     "prompt": "Despite ___ exhausted, she finished the report. (be)",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "-ing form",
     "accept": [
       "being"
@@ -909,6 +984,7 @@ const TYPING_QUESTIONS = [
     "id": "type-b2-16",
     "level": "B2",
     "prompt": "The new evidence casts doubt ___ the original theory.",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "preposition",
     "accept": [
       "on"
@@ -921,6 +997,7 @@ const TYPING_QUESTIONS = [
     "id": "type-c1-07",
     "level": "C1",
     "prompt": "Were the plan ___ properly, it might succeed. (implement)",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "passive infinitive",
     "accept": [
       "to be implemented"
@@ -933,6 +1010,7 @@ const TYPING_QUESTIONS = [
     "id": "type-c1-08",
     "level": "C1",
     "prompt": "The decision gave rise ___ considerable debate.",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "preposition",
     "accept": [
       "to"
@@ -945,6 +1023,7 @@ const TYPING_QUESTIONS = [
     "id": "type-c2-07",
     "level": "C2",
     "prompt": "So complex ___ the evidence that no firm conclusion could be drawn.",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "be",
     "accept": [
       "was"
@@ -957,6 +1036,7 @@ const TYPING_QUESTIONS = [
     "id": "type-c2-08",
     "level": "C2",
     "prompt": "The hypothesis remains to be ___ independently. (test)",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "past participle",
     "accept": [
       "tested"
@@ -969,6 +1049,7 @@ const TYPING_QUESTIONS = [
     "id": "type-a1-17",
     "level": "A1",
     "prompt": "My brother ___ a bicycle.",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "have",
     "accept": [
       "has"
@@ -981,6 +1062,7 @@ const TYPING_QUESTIONS = [
     "id": "type-a1-18",
     "level": "A1",
     "prompt": "We are ___ to school now. (go)",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "present continuous",
     "accept": [
       "going"
@@ -993,6 +1075,7 @@ const TYPING_QUESTIONS = [
     "id": "type-a2-17",
     "level": "A2",
     "prompt": "I didn't ___ him yesterday. (see)",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "base form",
     "accept": [
       "see"
@@ -1005,6 +1088,7 @@ const TYPING_QUESTIONS = [
     "id": "type-a2-18",
     "level": "A2",
     "prompt": "This bag is ___ than that one. (cheap)",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "comparative",
     "accept": [
       "cheaper"
@@ -1017,6 +1101,7 @@ const TYPING_QUESTIONS = [
     "id": "type-b1-17",
     "level": "B1",
     "prompt": "I've been waiting ___ two hours.",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "for/since",
     "accept": [
       "for"
@@ -1029,6 +1114,7 @@ const TYPING_QUESTIONS = [
     "id": "type-b1-18",
     "level": "B1",
     "prompt": "She asked me where I ___ going.",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "reported question",
     "accept": [
       "was"
@@ -1041,6 +1127,7 @@ const TYPING_QUESTIONS = [
     "id": "type-b2-17",
     "level": "B2",
     "prompt": "Had I known, I would ___ you earlier.",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "past participle",
     "accept": [
       "have told"
@@ -1053,6 +1140,7 @@ const TYPING_QUESTIONS = [
     "id": "type-b2-18",
     "level": "B2",
     "prompt": "The manager insisted ___ our leaving early.",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "preposition",
     "accept": [
       "on"
@@ -1065,6 +1153,7 @@ const TYPING_QUESTIONS = [
     "id": "type-c1-09",
     "level": "C1",
     "prompt": "Not until the data had been analysed ___ the pattern become clear.",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "auxiliary",
     "accept": [
       "did"
@@ -1077,6 +1166,7 @@ const TYPING_QUESTIONS = [
     "id": "type-c1-10",
     "level": "C1",
     "prompt": "The findings are at odds ___ the initial hypothesis.",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "preposition",
     "accept": [
       "with"
@@ -1089,6 +1179,7 @@ const TYPING_QUESTIONS = [
     "id": "type-c2-09",
     "level": "C2",
     "prompt": "Under no circumstances ___ these files be shared.",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "modal",
     "accept": [
       "should"
@@ -1101,6 +1192,7 @@ const TYPING_QUESTIONS = [
     "id": "type-c2-10",
     "level": "C2",
     "prompt": "The proposal is contingent ___ external approval.",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "preposition",
     "accept": [
       "on"
@@ -1113,6 +1205,7 @@ const TYPING_QUESTIONS = [
     "id": "type-a1-19",
     "level": "A1",
     "prompt": "My sister ___ eight years old.",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "be",
     "accept": [
       "is"
@@ -1125,6 +1218,7 @@ const TYPING_QUESTIONS = [
     "id": "type-a1-20",
     "level": "A1",
     "prompt": "They ___ football every Friday. (play)",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "present simple",
     "accept": [
       "play"
@@ -1137,6 +1231,7 @@ const TYPING_QUESTIONS = [
     "id": "type-a2-19",
     "level": "A2",
     "prompt": "We ___ a film when you called. (watch)",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "past continuous",
     "accept": [
       "were watching"
@@ -1149,6 +1244,7 @@ const TYPING_QUESTIONS = [
     "id": "type-a2-20",
     "level": "A2",
     "prompt": "There isn't ___ juice left.",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "any/some",
     "accept": [
       "any"
@@ -1161,6 +1257,7 @@ const TYPING_QUESTIONS = [
     "id": "type-b1-19",
     "level": "B1",
     "prompt": "She suggested ___ a taxi. (take)",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "verb pattern",
     "accept": [
       "taking"
@@ -1173,6 +1270,7 @@ const TYPING_QUESTIONS = [
     "id": "type-b1-20",
     "level": "B1",
     "prompt": "I look forward to ___ from you. (hear)",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "verb pattern",
     "accept": [
       "hearing"
@@ -1185,6 +1283,7 @@ const TYPING_QUESTIONS = [
     "id": "type-b2-19",
     "level": "B2",
     "prompt": "Not only ___ she miss the train, but she also lost her ticket.",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "inversion",
     "accept": [
       "did"
@@ -1197,6 +1296,7 @@ const TYPING_QUESTIONS = [
     "id": "type-b2-20",
     "level": "B2",
     "prompt": "The results depend ___ several factors.",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "preposition",
     "accept": [
       "on"
@@ -1209,6 +1309,7 @@ const TYPING_QUESTIONS = [
     "id": "type-c1-11",
     "level": "C1",
     "prompt": "The board insisted that he ___ the report immediately. (submit)",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "subjunctive",
     "accept": [
       "submit"
@@ -1221,6 +1322,7 @@ const TYPING_QUESTIONS = [
     "id": "type-c1-12",
     "level": "C1",
     "prompt": "Scarcely had we arrived ___ the storm began.",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "conjunction",
     "accept": [
       "when"
@@ -1233,6 +1335,7 @@ const TYPING_QUESTIONS = [
     "id": "type-c1-13",
     "level": "C1",
     "prompt": "The extent to which these claims are valid ___ unclear. (remain)",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "subject–verb agreement",
     "accept": [
       "remains"
@@ -1245,6 +1348,7 @@ const TYPING_QUESTIONS = [
     "id": "type-c1-14",
     "level": "C1",
     "prompt": "The new policy is liable ___ causing confusion.",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "preposition",
     "accept": [
       "to"
@@ -1257,6 +1361,7 @@ const TYPING_QUESTIONS = [
     "id": "type-c1-15",
     "level": "C1",
     "prompt": "Were it not for her advice, I would have ___ a costly mistake. (make)",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "past participle",
     "accept": [
       "made"
@@ -1269,6 +1374,7 @@ const TYPING_QUESTIONS = [
     "id": "type-c1-16",
     "level": "C1",
     "prompt": "The author alludes ___ a well-known debate.",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "preposition",
     "accept": [
       "to"
@@ -1281,6 +1387,7 @@ const TYPING_QUESTIONS = [
     "id": "type-c1-17",
     "level": "C1",
     "prompt": "Only when the figures were checked ___ the discrepancy emerge?",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "auxiliary",
     "accept": [
       "did"
@@ -1293,6 +1400,7 @@ const TYPING_QUESTIONS = [
     "id": "type-c1-18",
     "level": "C1",
     "prompt": "The findings lend credence ___ the hypothesis.",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "preposition",
     "accept": [
       "to"
@@ -1305,6 +1413,7 @@ const TYPING_QUESTIONS = [
     "id": "type-c1-19",
     "level": "C1",
     "prompt": "It is essential that every applicant ___ informed promptly.",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "formal subjunctive",
     "accept": [
       "be"
@@ -1317,6 +1426,7 @@ const TYPING_QUESTIONS = [
     "id": "type-c1-20",
     "level": "C1",
     "prompt": "Had I known about the closure, I ___ a different route. (take)",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "third conditional",
     "accept": [
       "would have taken"
@@ -1329,6 +1439,7 @@ const TYPING_QUESTIONS = [
     "id": "type-c2-11",
     "level": "C2",
     "prompt": "Little ___ she realise how consequential the decision would be.",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "inversion",
     "accept": [
       "did"
@@ -1341,6 +1452,7 @@ const TYPING_QUESTIONS = [
     "id": "type-c2-12",
     "level": "C2",
     "prompt": "The claim is predicated ___ an assumption that remains untested.",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "formal collocation",
     "accept": [
       "on"
@@ -1353,6 +1465,7 @@ const TYPING_QUESTIONS = [
     "id": "type-c2-13",
     "level": "C2",
     "prompt": "Be that as it may, the evidence ___ not support the conclusion.",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "auxiliary",
     "accept": [
       "does"
@@ -1365,6 +1478,7 @@ const TYPING_QUESTIONS = [
     "id": "type-c2-14",
     "level": "C2",
     "prompt": "The theory is not so much disproven ___ inadequately supported.",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "contrastive construction",
     "accept": [
       "as"
@@ -1377,6 +1491,7 @@ const TYPING_QUESTIONS = [
     "id": "type-c2-15",
     "level": "C2",
     "prompt": "Had the issue been addressed, the consequences ___ have been less severe.",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "modal verb",
     "accept": [
       "might"
@@ -1389,6 +1504,7 @@ const TYPING_QUESTIONS = [
     "id": "type-c2-16",
     "level": "C2",
     "prompt": "The distinction is subtle, not to say ___. (imperceptible)",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "adverb",
     "accept": [
       "imperceptibly"
@@ -1401,6 +1517,7 @@ const TYPING_QUESTIONS = [
     "id": "type-c2-17",
     "level": "C2",
     "prompt": "Under no circumstances ___ the confidential data be disclosed.",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "inversion",
     "accept": [
       "should"
@@ -1413,6 +1530,7 @@ const TYPING_QUESTIONS = [
     "id": "type-c2-18",
     "level": "C2",
     "prompt": "The argument is compelling insofar ___ it accounts for the exceptions.",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "conjunction",
     "accept": [
       "as"
@@ -1425,6 +1543,7 @@ const TYPING_QUESTIONS = [
     "id": "type-c2-19",
     "level": "C2",
     "prompt": "Such was the ambiguity that neither interpretation could be ___ out. (rule)",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "past participle",
     "accept": [
       "ruled"
@@ -1437,6 +1556,7 @@ const TYPING_QUESTIONS = [
     "id": "type-c2-20",
     "level": "C2",
     "prompt": "The recommendation rests on premises whose implications ___ yet to be explored.",
+    "sub_ar": "تلميح: اكتب الكلمة الناقصة باللغة الإنجليزية.",
     "hint": "auxiliary",
     "accept": [
       "have"
