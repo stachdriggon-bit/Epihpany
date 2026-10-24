@@ -64,3 +64,12 @@
 .ls-own-reply textarea{display:block;width:100%;min-height:76px;resize:vertical;padding:.8rem;border:1px solid var(--ls-line,rgba(120,140,160,.3));border-radius:10px;background:var(--ls-paper,#fff);color:inherit;font:inherit;box-sizing:border-box}
 .ls-own-reply .ls-secondary{margin-top:.65rem}
 .ls-own-reply p{margin:.6rem 0 0;font-size:.88rem;line-height:1.55;opacity:.78}
+
+/* Feedback categories distinguish coaching from right/wrong grading. */
+.ls-feedback-meaning,.ls-feedback-unclear,.ls-feedback-tone,.ls-feedback-natural{border-inline-start:4px solid var(--ls-accent, #4b8b8b)}
+.ls-feedback-meaning>span,.ls-feedback-unclear>span,.ls-feedback-tone>span,.ls-feedback-natural>span{display:inline-flex;align-items:center;gap:.35rem;font-weight:750}
+.ls-feedback-meaning>span:before{content:"↺";font-size:1.1em}
+.ls-feedback-unclear>span:before{content:"…";font-size:1.1em}
+.ls-feedback-tone>span:before{content:"✳";font-size:1.1em}
+.ls-feedback-natural>span:before{content:"✓";font-size:1.1em}
+.ls-own-reply .ls-secondary{white-space:normal}
