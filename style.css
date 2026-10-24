@@ -1781,3 +1781,8 @@ body[data-theme="dark"] .writer-story-card,body[data-theme="dark"] .writer-part,
 /* Personal dictionary export tools */
 .dictionary-tools{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin:24px 0 12px}.dictionary-tools .vault-heading{margin:0}.dictionary-tools p{margin:5px 0 0;color:var(--ink-2);font-size:13px}.dictionary-export-actions{display:flex;gap:8px;flex-wrap:wrap}.dictionary-export-actions .btn{min-height:42px}
 @media(max-width:600px){.dictionary-tools{align-items:flex-start}.dictionary-export-actions{width:100%}.dictionary-export-actions .btn{flex:1}}
+
+/* v9 review fixes */
+.privacy-toggle input[type="checkbox"]{width:1px!important;height:1px!important;max-width:1px;padding:0;margin:0;border:0}
+.player-profile-form,.player-profile-form>*,.player-post-form,.player-post-form>*{min-width:0;max-width:100%}
+[tabindex="-1"]:focus,[tabindex="-1"]:focus-visible{outline:none}

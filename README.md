@@ -22,3 +22,9 @@ World: story missions (fixed) + endless Practice runs (random layout, generated 
 - Data: repaired one malformed Mistakes item, removed repeated questions, fixed a duplicate answer and a duplicate Spot sentence, rewrote three very short C1/C2 stories.
 - Account: callback URLs work on sub-folder hosting, `auth-callback.html` now reads errors from the URL fragment (`#error=...`) and shows clear messages.
 - `supabase-privacy-migration.sql` v2: v1 only restricted signed-in users, so anonymous visitors could still read private profiles/posts. Re-run v2.
+
+## v9 review fixes
+- openView / story search used $ instead of $$ (navigation threw errors).
+- Profile page horizontal overflow (hidden privacy checkbox).
+- Create Your Story: word-bank count on result screen; coach checks for was/were and past negatives.
+- Story search now searches all levels; heading focus outline removed.
