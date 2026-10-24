@@ -791,6 +791,12 @@
       return true;
     } catch { return false; }
   }
+  const networkConnection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+  const autoSaveData = !!(networkConnection && (networkConnection.saveData || /^(slow-2g|2g)$/.test(networkConnection.effectiveType || '')));
+  let lowDataMode = (() => { try { const saved=localStorage.getItem('epiphany-low-data'); return saved===null ? autoSaveData : saved==='1'; } catch { return autoSaveData; } })();
+  function updateLowDataControl(){const c=$('#low-data-toggle');if(c){c.checked=lowDataMode;c.setAttribute('aria-label',lowDataMode?'Data saver on: use device voice':'Data saver off: natural online voice allowed');}}
+  updateLowDataControl();
+  document.addEventListener('change',e=>{if(e.target&&e.target.id==='low-data-toggle'){lowDataMode=!!e.target.checked;try{localStorage.setItem('epiphany-low-data',lowDataMode?'1':'0');}catch{}if(lowDataMode&&naturalAudioPlayer){try{naturalAudioPlayer.pause();naturalAudioPlayer.src='';}catch{}naturalAudioPlayer=null;}toast(lowDataMode?'Data saver on. Pronunciation uses your device voice.':'Data saver off. Natural online voice may be used.');}});
   function speak(text, opts) {
     const synth = window.speechSynthesis;
     const phrase = String(text == null ? '' : text).replace(/\s+/g, ' ').trim();
@@ -824,6 +830,7 @@
       };
       setTimeout(() => run(0), 60);
     };
+    if (lowDataMode) { runNative(); return; }
     playNaturalSpeech(phrase, rate, request).then(played => {
       if (request !== speechRequest) return;
       if (!played) runNative();
@@ -1034,6 +1041,15 @@
     const url = URL.createObjectURL(blob), link = document.createElement('a');
     link.href = url; link.download = format==='anki' ? 'epiphany-dictionary-anki.txt' : 'epiphany-dictionary.csv';
     document.body.appendChild(link); link.click(); link.remove(); URL.revokeObjectURL(url);
+    if(format==='print'){
+      const win=window.open('','_blank');
+      if(!win){toast('Allow pop-ups to print or save your dictionary as PDF.');return;}
+      const escHtml=v=>String(v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+      win.document.open();
+      win.document.write('<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>EPIPHANY · My word dictionary</title><style>body{font:16px/1.5 Arial,sans-serif;max-width:900px;margin:32px auto;padding:0 20px;color:#17203d}h1{margin-bottom:4px}p{color:#555}table{width:100%;border-collapse:collapse;margin-top:24px}th,td{border:1px solid #cdd1df;padding:9px;text-align:left;vertical-align:top}th{background:#f0f2fa}@media print{body{margin:0;max-width:none;padding:0}button{display:none}tr{break-inside:avoid}}</style></head><body><h1>My English word dictionary</h1><p>EPIPHANY · '+rows.length+' words</p><button onclick="window.print()">Print / Save as PDF</button><table><thead><tr><th>Word</th><th>Meaning</th><th>CEFR level</th></tr></thead><tbody>'+rows.map(w=>'<tr><td>'+escHtml(w.word)+'</td><td>'+escHtml(w.meaning)+'</td><td>'+escHtml(w.level||'—')+'</td></tr>').join('')+'</tbody></table><script>window.addEventListener("load",()=>setTimeout(()=>window.print(),250));<\/script></body></html>');
+      win.document.close();
+      return;
+    }
     toast(rows.length + ' words exported.');
   }
   let focusClockInterval = null;
@@ -1293,7 +1309,7 @@
     const dailyContinue = ['lesson','story'].includes(state.dailySessionStep)
       ? '<section class="review-panel daily-session-return"><p class="kicker">YOUR DAILY PATH</p><h2>'+(state.dailySessionStep==='lesson'?'Word review complete':'Practice complete')+'</h2><p class="review-note">'+(state.dailySessionStep==='lesson'?'You’re ready for the personalised practice activity.':'Your short story is ready whenever you are.')+'</p><button type="button" class="btn" data-daily-session-continue>'+(state.dailySessionStep==='lesson'?'Continue to practice':'Continue daily session')+' '+ic('arrow')+'</button></section>'
       : '';
-    $('#words-body').innerHTML=dailyContinue+renderReview()+'<div class="dictionary-tools"><div><h2 class="vault-heading">Your collected words</h2><p>Export your personal dictionary to a spreadsheet or Anki.</p></div><div class="dictionary-export-actions"><button type="button" class="btn btn-ghost" data-dictionary-export="csv">Export CSV</button><button type="button" class="btn" data-dictionary-export="anki">Export for Anki</button></div></div>'+vault;
+    $('#words-body').innerHTML=dailyContinue+renderReview()+'<div class="dictionary-tools"><div><h2 class="vault-heading">Your collected words</h2><p>Export your personal dictionary to a spreadsheet or Anki.</p></div><div class="dictionary-export-actions"><button type="button" class="btn btn-ghost" data-dictionary-export="csv">Export CSV</button><button type="button" class="btn" data-dictionary-export="anki">Export for Anki</button><button type="button" class="btn btn-ghost" data-dictionary-export="print">Print / Save as PDF</button></div></div>'+vault;
     const reveal=$('#reveal-review'); if(reveal)reveal.addEventListener('click',()=>{$('#review-meaning').hidden=false;$('#review-actions').hidden=false;reveal.hidden=true;reveal.setAttribute('aria-expanded','true');});
   }
 
