@@ -80,7 +80,7 @@
   function setupMobileLabel() {
     const summary = $('.mobile-menu > summary');
     if (summary && !$('#mobile-current-section')) {
-      const label = document.createElement('span');
+      const label = document.createElement('small');
       label.id = 'mobile-current-section'; label.className = 'mobile-current-section';
       label.textContent = labels[currentView()] || 'Start learning';
       label.setAttribute('aria-live', 'polite');
