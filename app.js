@@ -79,6 +79,11 @@
   function inferGrammarTrap(q) {
     const text = [q.prompt,q.text,q.why_en,q.why_ar,q.hint,q.answer,q.fix].filter(Boolean).join(' ').toLowerCase();
     const has = re => re.test(text);
+    if (has(/\b(device needs|needs testing|denied .*document|insist(?:ed)? on .*leave|insist on \+ noun|followed by an? -ing)\b/)) return 'verb-patterns';
+    if (has(/\b(results, together with|together with the appendix|head of the subject|subject-verb agreement|agreement with the subject)\b/)) return 'be-verbs';
+    if (has(/\b(passive construction|past participle|could be .* out|could be ruled out)\b/)) return 'verb-patterns';
+    if (has(/\b(too .* to warrant|after to|infinitive marker to|takes a direct object|not followed by)\b/)) return 'infinitives';
+    if (has(/\b(use were with we|were with we|was with i|was with he|was\/were|was and were)\b/)) return 'am-is-are';
     // High-confidence patterns for writing and error-spotting items with generic explanations.
     if (has(/\b(present continuous|be \+ verb-ing|verb-ing|verb ending in -ing)\b|\b(are|is|am) go(ing)? to\b/)) return 'verb-patterns';
     if (has(/\b(recommended that|insisted that|essential that|demand that|mandative subjunctive|base-form subjunctive)\b/)) return 'subjunctive';
