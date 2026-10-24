@@ -79,7 +79,7 @@ test('main navigation tabs open without uncaught page errors', async t => {
         if (view !== 'home') assert.equal(await target.evaluate(el => el.classList.contains('is-active')), true, view + ' view should become active');
       }
       if (view === 'stories') {
-        await page.waitForFunction(() => typeof STORIES !== 'undefined' && Array.isArray(STORIES), null, { timeout: 5000 });
+        await page.waitForFunction(() => typeof STORIES !== 'undefined' && Array.isArray(STORIES) && STORIES.length >= 34, null, { timeout: 5000 });
         assert.ok(requested.some(path => path.endsWith('/data-stories.js')), 'Stories should load its data on first open');
       }
       if (view === 'world') {
@@ -128,13 +128,15 @@ test('main navigation tabs open without uncaught page errors', async t => {
     await offlinePage.reload({ waitUntil: 'domcontentloaded' });
     await offlinePage.waitForFunction(() => !!navigator.serviceWorker.controller, null, { timeout: 5000 });
     await clickView(offlinePage, 'stories');
-    await offlinePage.waitForFunction(() => typeof STORIES !== 'undefined' && Array.isArray(STORIES), null, { timeout: 5000 });
+    await offlinePage.waitForFunction(() => typeof STORIES !== 'undefined' && Array.isArray(STORIES) && STORIES.length >= 34, null, { timeout: 5000 });
     await offlinePage.waitForFunction(async () => {
       const keys = await caches.keys();
       const shellKey = keys.find(key => key.startsWith('epiphany-shell-'));
       if (!shellKey) return false;
       const cache = await caches.open(shellKey);
-      return !!(await cache.match(new URL('/data-stories.js', location.href).href, { ignoreSearch: true }));
+      const baseStories = await cache.match(new URL('/data-stories.js', location.href).href, { ignoreSearch: true });
+      const expandedStories = await cache.match(new URL('/data-stories-expansion.js', location.href).href, { ignoreSearch: true });
+      return !!baseStories && !!expandedStories;
     }, null, { timeout: 5000 });
     await offlinePage.context().setOffline(true);
     await offlinePage.reload({ waitUntil: 'domcontentloaded' });
