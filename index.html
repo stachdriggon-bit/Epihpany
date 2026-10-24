@@ -68,18 +68,24 @@
       <span class="logo-word">epiphany</span>
     </a>
 
-    <nav class="tabs" aria-label="Main">
-      <button class="tab" data-view="home" aria-current="page"><svg><use href="#i-path"/></svg>Play</button>
-      <button class="tab" data-view="stories"><span class="tab-emoji" aria-hidden="true">📖</span>Stories</button>
-      <button class="tab" data-view="world"><span class="tab-emoji" aria-hidden="true">🌍</span>World</button>
-      <button class="tab" data-view="arcade"><span class="tab-emoji" aria-hidden="true">🎮</span>Arcade</button>
-      <button class="tab" data-view="thinklab"><span class="tab-emoji" aria-hidden="true">⌕</span>Think Lab</button>
-      <button class="tab" data-view="lifeskills"><span class="tab-emoji" aria-hidden="true">✳</span>Life Skills</button>
-      <button class="tab" data-view="mytools"><span class="tab-emoji" aria-hidden="true">✎</span>My Tools</button>
-      <button class="tab" data-view="words"><svg><use href="#i-book"/></svg>Words</button>
-      <button class="tab" data-view="trophies"><svg><use href="#i-trophy"/></svg>Trophies</button>
-      <button class="tab" data-view="progress"><span class="tab-emoji" aria-hidden="true">📈</span>Progress</button>
-      <button class="tab" data-view="profile"><span class="tab-emoji" aria-hidden="true">✦</span>Profile</button>
+    <nav class="tabs" aria-label="Main navigation">
+      <button class="tab nav-home" data-view="home" aria-current="page"><svg><use href="#i-path"/></svg><span>Start learning</span></button>
+      <details class="nav-group">
+        <summary><span aria-hidden="true">📚</span><span>Learn</span><svg class="nav-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 10 5 5 5-5"/></svg></summary>
+        <div class="nav-submenu"><button class="tab" data-view="stories">📖 Stories <small>Learn through choices</small></button><button class="tab" data-view="arcade">🎮 Arcade <small>Mini-games and challenges</small></button></div>
+      </details>
+      <details class="nav-group">
+        <summary><span aria-hidden="true">🌍</span><span>Real life</span><svg class="nav-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 10 5 5 5-5"/></svg></summary>
+        <div class="nav-submenu"><button class="tab" data-view="world">🌍 World <small>Practice everyday situations</small></button><button class="tab" data-view="lifeskills">✳ Life Skills <small>Communication and life skills</small></button></div>
+      </details>
+      <details class="nav-group">
+        <summary><span aria-hidden="true">🧠</span><span>Practice & think</span><svg class="nav-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 10 5 5 5-5"/></svg></summary>
+        <div class="nav-submenu"><button class="tab" data-view="thinklab">⌕ Think Lab <small>Reasoning and language puzzles</small></button><button class="tab" data-view="mytools">✎ My Tools <small>Personal English tools</small></button></div>
+      </details>
+      <details class="nav-group">
+        <summary><span aria-hidden="true">📈</span><span>My progress</span><svg class="nav-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 10 5 5 5-5"/></svg></summary>
+        <div class="nav-submenu"><button class="tab" data-view="words">📘 Words <small>Saved vocabulary and review</small></button><button class="tab" data-view="trophies">🏆 Trophies <small>Milestones and achievements</small></button><button class="tab" data-view="progress">📈 Progress <small>Learning history and next steps</small></button><button class="tab" data-view="profile">✦ Profile <small>Your learning profile</small></button></div>
+      </details>
     </nav>
 
     <details class="mobile-menu"><summary aria-label="Open navigation menu" title="Menu"><span></span><span></span><span></span></summary><nav aria-label="Mobile navigation"><button class="tab" data-view="home">Play</button><button class="tab" data-view="stories">Stories</button><button class="tab" data-view="world">World</button><button class="tab" data-view="arcade">Arcade</button><button class="tab" data-view="thinklab">Think Lab</button><button class="tab" data-view="lifeskills">Life Skills</button><button class="tab" data-view="mytools">My Tools</button><button class="tab" data-view="words">Words</button><button class="tab" data-view="trophies">Trophies</button><button class="tab" data-view="progress">Progress</button><button class="tab" data-view="profile">Profile</button></nav></details>
