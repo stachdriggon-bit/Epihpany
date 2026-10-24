@@ -94,6 +94,7 @@ test('overlapping feature groups share one in-flight script request', async () =
 
   const thinkLab = context.window.EPIPHANY_LAZY_LOAD('thinklab');
   const lifeSkills = context.window.EPIPHANY_LAZY_LOAD('lifeskills');
+  await new Promise(resolve => setImmediate(resolve));
   assert.equal(requested.length, 1, 'the shared Think Lab script should only be inserted once');
   assert.match(requested[0], /^think-lab\\.js\\?/);
 
@@ -122,11 +123,13 @@ test('failed lazy scripts are removed and can be retried', async () => {
   vm.runInContext(fs.readFileSync(path.join(root, 'lazy-data.js'), 'utf8'), context);
 
   const failed = context.window.EPIPHANY_LAZY_LOAD('stories');
+  await new Promise(resolve => setImmediate(resolve));
   scripts[0].onerror();
   await assert.rejects(failed, /Unable to load feature data: data-stories\\.js/);
   assert.equal(scripts[0].removed, true);
 
   const retry = context.window.EPIPHANY_LAZY_LOAD('stories');
+  await new Promise(resolve => setImmediate(resolve));
   assert.equal(requested.length, 2);
   scripts[1].onload();
   await new Promise(resolve => setImmediate(resolve));
