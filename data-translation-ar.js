@@ -2036,3 +2036,46 @@ window.EPIPHANY_AR_TRANSLATION_PHRASES = Object.assign(window.EPIPHANY_AR_TRANSL
   "Were the proposal ___, implementation would begin next month.":"لو كان المقترح ___، لبدأ التنفيذ الشهر المقبل.",
   "An analyst distinguishes correlation from causation and asks for a controlled study. What is the analyst prioritising?":"يميّز محلل بين الارتباط والسببية ويطلب دراسة مضبوطة. ما الأولوية التي يركز عليها؟"
 });
+
+
+/* Final exact prompt set found by auditing the expansion question tuples. */
+window.EPIPHANY_AR_TRANSLATION_PHRASES = Object.assign(window.EPIPHANY_AR_TRANSLATION_PHRASES || {}, {
+  "Little ___ that the apparently minor change would reshape the debate.":"قلّما ___ أن التغيير الذي بدا بسيطًا سيعيد تشكيل النقاش.",
+  "“The findings are suggestive rather than conclusive.” What is implied?":"«تشير النتائج إلى احتمال ما لكنها ليست حاسمة». ما المعنى الضمني؟",
+  "Choose the most precise academic verb: The data ___ the hypothesis, but do not prove it.":"اختر الفعل الأكاديمي الأدق: البيانات ___ الفرضية، لكنها لا تثبتها.",
+  "A dispassionate assessment is one that is ___.":"التقييم «dispassionate» هو تقييم ___.",
+  "Not until the final chapter ___ the full significance become apparent.":"لم تتضح الأهمية الكاملة إلا في الفصل الأخير. اختر الصيغة المناسبة: ___.",
+  "A critic argues that a theory survives only because its proponents reinterpret every failed prediction. What is the central criticism?":"يرى ناقد أن النظرية لا تصمد إلا لأن أنصارها يعيدون تفسير كل تنبؤ فاشل. ما النقد الأساسي؟",
+  "“That conclusion is not so much mistaken as insufficiently substantiated.” What is the speaker’s point?":"«ليس الاستنتاج خاطئًا بقدر ما أنه غير مدعوم بأدلة كافية». ما النقطة التي يقصدها المتحدث؟",
+  "Choose the best phrase: The claim is plausible; ___, the available evidence remains inconclusive.":"اختر العبارة الأنسب: «الادعاء معقول؛ ___، لا تزال الأدلة المتاحة غير حاسمة».",
+  "Which item do you use to unlock a door?":"أي غرض تستخدمه لفتح قفل الباب؟",
+  "There ___ a cat under the table.":"___ قطة تحت الطاولة.",
+  "Sam puts on his coat before going outside because the air is cold. What is the reason?":"يرتدي سام معطفه قبل الخروج لأن الجو بارد. ما السبب؟",
+  "“Please write your name at the top of the page.” Where should the name go?":"«يرجى كتابة اسمك أعلى الصفحة». أين ينبغي كتابة الاسم؟",
+  "Complete the greeting: “Nice to ___ you.”":"أكمل التحية: «سعيدٌ أن ___ بك».",
+  "A crowded place has ___.":"المكان المزدحم يحتوي على ___.",
+  "You ___ wear a helmet when riding this bike; it is compulsory.":"يجب أن ___ خوذة عند ركوب هذه الدراجة؛ فهذا إلزامي.",
+  "A train ticket says departure 09:20 and arrival 10:05. How long is the journey?":"توضح تذكرة القطار أن المغادرة 09:20 والوصول 10:05. كم تستغرق الرحلة؟",
+  "“I’d rather stay in tonight than go out.” What does the speaker prefer?":"«أفضل البقاء في المنزل الليلة بدلًا من الخروج». ماذا يفضّل المتحدث؟",
+  "Choose the correct response to “Would you mind opening the window?”":"اختر الرد الصحيح على «هل تمانع في فتح النافذة؟»",
+  "If a proposal is rejected, it is ___.":"إذا رُفض المقترح، فإنه يكون ___.",
+  "I wish I ___ so much time on that task yesterday.":"ليتني لم ___ كل هذا الوقت في تلك المهمة أمس.",
+  "A colleague gives detailed feedback on a draft before publication. What is the likely benefit?":"يقدم زميل ملاحظات مفصلة على مسودة قبل نشرها. ما الفائدة المحتملة؟",
+  "“Could we go over the main points once more?” What is the speaker asking for?":"«هل يمكننا مراجعة النقاط الرئيسية مرة أخرى؟» ما الذي يطلبه المتحدث؟",
+  "Choose the best collocation: We need to ___ a decision by Friday.":"اختر التلازم اللفظي الأنسب: نحتاج إلى ___ قرار بحلول الجمعة.",
+  "To mitigate a problem is to ___.":"أن تقوم بـ«mitigate» مشكلة يعني أن ___.",
+  "No sooner ___ the announcement than the phones began ringing.":"ما إن ___ الإعلان حتى بدأت الهواتف ترن.",
+  "A company reports rising sales but omits a sharp increase in costs. What should a reader request?":"تعلن شركة ارتفاع المبيعات لكنها تُغفل زيادة حادة في التكاليف. ما الذي ينبغي للقارئ طلبه؟",
+  "“I take your point; that said, the proposal needs a clearer budget.” What is the speaker doing?":"«أفهم وجهة نظرك؛ ومع ذلك، يحتاج المقترح إلى ميزانية أوضح». ماذا يفعل المتحدث؟",
+  "Choose the correct form: The new policy is intended to ___ unnecessary delays.":"اختر الصيغة الصحيحة: تهدف السياسة الجديدة إلى ___ التأخيرات غير الضرورية.",
+  "A tenuous connection is ___.":"العلاقة «tenuous» هي علاقة ___.",
+  "Much as I ___ the concern, the evidence does not support that conclusion.":"على الرغم من أنني ___ هذا القلق، فإن الأدلة لا تدعم ذلك الاستنتاج.",
+  "A researcher preregisters a hypothesis before collecting data. What is one key advantage?":"يسجل باحث فرضيته مسبقًا قبل جمع البيانات. ما إحدى المزايا الأساسية؟",
+  "“The measure is defensible, albeit far from ideal.” What does the speaker convey?":"«يمكن الدفاع عن هذا الإجراء، رغم أنه بعيد عن المثالية». ماذا يعبّر المتحدث؟",
+  "Choose the most suitable phrase: The sample is small; ___, the results should be treated cautiously.":"اختر العبارة الأنسب: «العينة صغيرة؛ ___، ينبغي التعامل مع النتائج بحذر».",
+  "A perfunctory review is one performed ___.":"المراجعة «perfunctory» هي مراجعة تُجرى ___.",
+  "Had the warning been heeded, the consequences ___ so severe.":"لو أُخذ التحذير على محمل الجد، لما كانت العواقب بهذه الشدة. اختر الصيغة المناسبة: ___.",
+  "A policy is judged only by its intended benefits, while foreseeable harms are excluded from analysis. What is the flaw?":"يُقيَّم إجراء ما بناءً على فوائده المقصودة فقط، بينما تُستبعد الأضرار المتوقعة من التحليل. ما الخلل؟",
+  "“I would hesitate to infer a general rule from so anomalous a case.” What is the speaker cautioning against?":"«سأتردد في استنتاج قاعدة عامة من حالة شاذة إلى هذا الحد». ممَّ يحذر المتحدث؟",
+  "Choose the best connector: The evidence is internally consistent; ___, its external validity remains uncertain.":"اختر أداة الربط الأنسب: «الأدلة متسقة داخليًا؛ ___، لا تزال صلاحيتها الخارجية غير مؤكدة»."
+});
