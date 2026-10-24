@@ -1301,7 +1301,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     if (name === 'arcade') renderArcade();
     if (name === 'progress' || name === 'profile') { renderWeaknessPanel(); renderLearningInsights(); }
     const more = $('#dock-more-toggle');
-    if (more) more.setAttribute('aria-current', ['words','trophies','stories'].includes(name) ? 'page' : 'false');
+    if (more) more.setAttribute('aria-current', ['words','trophies','stories','lifeskills'].includes(name) ? 'page' : 'false');
     window.scrollTo(0, 0);
     const h = $('#' + name + '-title'); if (h) h.focus({preventScroll: true});
   }
