@@ -18,5 +18,6 @@ test('anonymous telemetry is opt-in and uses only coarse learning events', () =>
   assert.match(script, /'section_open'/);
   assert.match(html, /id="anonymous-telemetry"/);
   assert.doesNotMatch(script, /\.from\(['"]player_progress['"]\)/);
+  assert.doesNotMatch(script, /safeDetails\.message = String\(details\.message/);
   assert.doesNotMatch(script, /details:\s*\{[^}]*answer/i);
 });
