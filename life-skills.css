@@ -57,3 +57,10 @@
 @media(max-width:900px){.ls-module-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.life-skills-page .ls-hero{grid-template-columns:1fr 260px;gap:8px}.ls-hero-art{transform:scale(.88)}}
 @media(max-width:640px){.life-skills-page .ls-hero{grid-template-columns:1fr;padding:23px}.ls-hero-art{min-height:210px;transform:scale(.85);margin:-6px 0}.ls-hero h2{font-size:2.6rem}.ls-module-grid{grid-template-columns:1fr}.ls-module{min-height:0}.ls-landing-tools{align-items:start;flex-direction:column}.ls-workbar{padding:12px 14px}.ls-mission-head{padding:21px 18px 6px}.ls-stage{padding:16px 17px 20px;min-height:280px}.ls-stage-foot{padding:11px 17px}.ls-sign-scene{grid-template-columns:1fr}.ls-real-sign{min-height:78px}.ls-form-paper{padding:15px}.ls-form-paper form{grid-template-columns:1fr}.ls-form-field:first-child,.ls-form-paper form .ls-primary{grid-column:auto}.ls-inline-actions{flex-direction:column}.ls-inline-actions button{width:100%}.ls-tone-card{align-items:start;flex-direction:column}.ls-method-note{font-size:.72rem}}
 @media(prefers-reduced-motion:reduce){.ls-module{transition:none}.ls-module:hover{transform:none}}
+
+/* Open-ended replies: coach intent and tone without exact-match grading. */
+.ls-own-reply{margin:1.1rem 0 0;padding:1rem;border:1px solid var(--ls-line,rgba(120,140,160,.25));border-radius:14px;background:rgba(120,140,160,.055)}
+.ls-own-reply label{display:block;margin-bottom:.55rem;font-weight:700}
+.ls-own-reply textarea{display:block;width:100%;min-height:76px;resize:vertical;padding:.8rem;border:1px solid var(--ls-line,rgba(120,140,160,.3));border-radius:10px;background:var(--ls-paper,#fff);color:inherit;font:inherit;box-sizing:border-box}
+.ls-own-reply .ls-secondary{margin-top:.65rem}
+.ls-own-reply p{margin:.6rem 0 0;font-size:.88rem;line-height:1.55;opacity:.78}
