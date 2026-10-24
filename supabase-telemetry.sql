@@ -2,7 +2,7 @@
 create table if not exists public.epiphany_telemetry (
  id bigint generated always as identity primary key,
  session_id uuid not null,
- event_name text not null check (event_name in ('session_start','first_quest_complete','return_day_2','return_day_7','section_open','section_exit','client_error')),
+ event_name text not null check (event_name in ('session_start','first_session_complete','return_day_2','return_day_7','section_open','section_exit','client_error')),
  section text check (section is null or length(section) <= 40),
  app_version text not null default '20261024k',
  details jsonb not null default '{}'::jsonb check (pg_column_size(details) <= 1024),
