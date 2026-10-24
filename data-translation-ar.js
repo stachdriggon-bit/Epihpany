@@ -3750,3 +3750,38 @@ window.EPIPHANY_AR_TRANSLATION_PHRASES = Object.assign(window.EPIPHANY_AR_TRANSL
   "She can swim.":"يمكنها السباحة.",
   "She cans swim.":"صياغة غير صحيحة"
 });
+
+
+/* Story reader titles and recurring story-mode interface text. */
+window.EPIPHANY_AR_TRANSLATION_PHRASES = Object.assign(window.EPIPHANY_AR_TRANSLATION_PHRASES || {}, {
+  "The Lost Key":"المفتاح المفقود",
+  "A Rainy Picnic":"نزهة تحت المطر",
+  "The Night Train":"قطار الليل",
+  "The Missing Bread":"الخبز المفقود",
+  "The Last Bus":"الحافلة الأخيرة",
+  "The Quiet Lab":"المختبر الهادئ",
+  "The Open Door":"الباب المفتوح",
+  "A Second Chance":"فرصة ثانية",
+  "The Quiet Objection":"الاعتراض الهادئ",
+  "The Cost of Clarity":"ثمن الوضوح",
+  "The Language of Consensus":"لغة التوافق",
+  "The Unintended Inference":"الاستنتاج غير المقصود",
+  "WORD IN CONTEXT":"كلمة في السياق",
+  "Listen to page":"استمع إلى الصفحة",
+  "Previous":"السابق",
+  "Next":"التالي",
+  "Questions":"الأسئلة",
+  "Tap a word to learn it. Dotted underlines mark useful vocabulary.":"اضغط على كلمة لتتعلم معناها. تشير الخطوط المنقطة تحت الكلمات إلى مفردات مفيدة.",
+  "No explanation has been added for this word yet.":"لم يُضف شرح لهذه الكلمة بعد.",
+  "Close word card":"إغلاق بطاقة الكلمة",
+  "Story":"قصة",
+  "Page":"الصفحة",
+  "of":"من",
+  "Listen and choose the best answer.":"استمع واختر أفضل إجابة.",
+  "Choose the best response.":"اختر الرد الأنسب.",
+  "Read the story and answer the questions.":"اقرأ القصة وأجب عن الأسئلة.",
+  "Continue the story":"تابع القصة",
+  "Make your choice":"اتخذ قرارك",
+  "There is no single correct answer here. Choose the response that best fits your approach.":"لا توجد إجابة واحدة صحيحة هنا. اختر الرد الذي يعبر عن النهج الذي تراه أنسب.",
+  "Your choice changes what happens next.":"يغيّر اختيارك ما سيحدث بعد ذلك."
+});
