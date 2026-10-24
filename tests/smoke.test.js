@@ -23,14 +23,14 @@ async function clickView(page, view) {
 }
 
 async function dismissFirstVisitOverlays(page) {
-  const landingStart = page.locator('#landing-start');
-  if (await landingStart.isVisible()) await landingStart.click();
   const welcomeClose = page.locator('#welcome-modal-close');
   if (await welcomeClose.isVisible()) await welcomeClose.click();
   const placementSkip = page.locator('#placement-skip');
   if (await placementSkip.isVisible()) await placementSkip.click();
   const languageChoice = page.locator('#help-language-modal [data-help-language="en"]');
   if (await languageChoice.isVisible()) await languageChoice.click();
+  const landingStart = page.locator('#landing-start');
+  if (await landingStart.isVisible()) await landingStart.click();
 }
 const mime = { '.html':'text/html; charset=utf-8', '.js':'text/javascript; charset=utf-8', '.css':'text/css; charset=utf-8', '.json':'application/json; charset=utf-8', '.svg':'image/svg+xml', '.png':'image/png', '.jpg':'image/jpeg', '.webp':'image/webp' };
 let server, browser, baseUrl;
