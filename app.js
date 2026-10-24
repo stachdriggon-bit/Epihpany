@@ -77,6 +77,24 @@
   // Assign a topic only when the prompt or its explanation provides a clear grammar signal.
   // These tags let writing and error-spotting rounds share the same review history as grammar.
   function inferGrammarTrap(q) {
+    // High-confidence patterns for writing and error-spotting items with generic explanations.
+    if (has(/\b(present continuous|be \+ verb-ing|verb-ing|verb ending in -ing)\b|\b(are|is|am) go(ing)? to\b/)) return 'verb-patterns';
+    if (has(/\b(recommended that|insisted that|essential that|demand that|mandative subjunctive|base-form subjunctive)\b/)) return 'subjunctive';
+    if (has(/\b(denied|suggested|insisted on|needs?)(?: \w+){0,3}\b(ing|taking|signing|testing|leaving)\b|\b(followed by an? -ing|followed by -ing|gerund)\b/)) return 'verb-patterns';
+    if (has(/\b(sc(ar|arcely)|scarcely|no sooner|hardly had|scarcely.*than|scarcely.*when)\b|\b(fronted for emphasis|subject-auxiliary inversion|negative fronted phrase|inversion)\b/)) return 'inversion';
+    if (has(/\b(not so much|insofar than|insofar as|much as .* admire|although|despite|concession|concessive clause|contrastive construction)\b/)) return 'concession';
+    if (has(/\b(borne out|give rise to|gives rise for|lend credence|at odds|mutually exclusive|contingent on|predicated on|fixed phrase|fixed expression|standard collocation|standard phrase|paired construction|usual paired construction|collocation is|phrase is)\b/)) return 'formal-collocations';
+    if (has(/\b(more interesting|the more .* the|the more you|better than|comparative adjective|comparative form|comparative)\b/)) return 'comparatives';
+    if (has(/\b(so introduces the result|result of being|therefore|result clause|linking word|linking words|conjunction)\b/)) return 'linking-words';
+    if (has(/\b(adverb form|adjective form|adjective describes|describes the thing|causes a feeling|imperceptible|conclusive|consistent|word means|means sufficient|word choice|choose the correct word)\b/)) return 'word-choice';
+    if (has(/\b(any rather than some|any is commonly used|negative sentences|negative statements|isn't .* some|there isn't .* some)\b/)) return 'quantifiers';
+    if (has(/\b(singular demonstrative|this are|each of the proposals|head of the subject is each|singular verb|singular noun phrase|subject takes a singular verb|takes a singular verb)\b/)) return 'be-verbs';
+    if (has(/\b(agree is a verb|i am agree|remove am)\b/)) return 'verb-patterns';
+    if (has(/\b(after the auxiliary did|after did|use the base form|base form of the verb|after did or didn't)\b/)) return 'past-simple';
+    if (has(/\b(he, use the present-simple|present-simple form ending in -s|use has with he|third-person singular|third person singular)\b/)) return 'present-simple';
+    if (has(/\b(as though|as if|unreal comparison|would have|past counterfactual|past unreal condition)\b/)) return 'conditionals';
+    if (has(/\b(news is uncountable|uncountable noun|uncountable in english|countable noun|countability)\b/)) return 'countable-uncountable';
+    if (has(/\b(so \+ adjective|fronted for emphasis|invert the auxiliary and subject)\b/)) return 'inversion';
     const text = [q.prompt,q.text,q.why_en,q.why_ar,q.hint,q.answer,q.fix].filter(Boolean).join(' ').toLowerCase();
     const has = re => re.test(text);
     if (has(/\b(am|is|are) with (i|you|we|they|he|she|it)\b|subject pronoun.*\b(am|is|are)\b|\bbe verb\b|\bbe-verbs?\b|\bwas and were\b|\bwas\/were\b|\b(is|are|am)\b.*\b(subject|pronoun)\b/)) return 'am-is-are';
