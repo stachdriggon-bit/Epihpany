@@ -29,7 +29,7 @@ test('feature data loader does not request large datasets until requested', asyn
 
   await context.window.EPIPHANY_LAZY_LOAD('stories');
   assert.deepEqual(requested.map(src => src.split('?')[0]), ['data-stories.js', 'data-stories-expansion.js']);
-  assert.ok(requested.every(src => /\\?v=.+/.test(src)), 'loaded scripts should have cache-busting versions');
+  assert.ok(requested.every(src => /\?v=.+/.test(src)), 'loaded scripts should have cache-busting versions');
   await context.window.EPIPHANY_LAZY_LOAD('stories');
   assert.equal(requested.length, 2);
 
@@ -38,7 +38,7 @@ test('feature data loader does not request large datasets until requested', asyn
     'data-world.js',
     'data-world-sprites.js'
   ]);
-  assert.ok(requested.slice(2).every(src => /\\?v=.+/.test(src)));
+  assert.ok(requested.slice(2).every(src => /\?v=.+/.test(src)));
   await context.window.EPIPHANY_LAZY_LOAD('arcade');
   await context.window.EPIPHANY_LAZY_LOAD('thinklab');
   await context.window.EPIPHANY_LAZY_LOAD('lifeskills');
@@ -47,10 +47,10 @@ test('feature data loader does not request large datasets until requested', asyn
     'think-lab.js',
     'life-skills.js'
   ]);
-  assert.ok(requested.slice(4).every(src => /\\?v=.+/.test(src)));
+  assert.ok(requested.slice(4).every(src => /\?v=.+/.test(src)));
   await context.window.EPIPHANY_LAZY_LOAD('arabic');
   assert.equal(requested[7].split('?')[0], 'data-translation-ar.js');
-  assert.match(requested[7], /\\?v=.+/);
+  assert.match(requested[7], /\?v=.+/);
   assert.deepEqual(merged, [true]);
 });
 
