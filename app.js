@@ -1624,8 +1624,10 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     if (name === 'home') injectMonthlyWordThread(name);
     if (name === 'progress') renderProgressForecast();
     if (name === 'home') renderHome();
-    if (name === 'arcade') renderArcade();
+    if (name === 'arcade') { renderArcade(); window.EPIPHANY_LAZY_LOAD('arcade').catch(() => toast('Practice tools could not load. Connect to the internet and try again.')); }
     if (name === 'stories') renderStories();
+    if (name === 'thinklab') window.EPIPHANY_LAZY_LOAD('thinklab').catch(() => toast('Think Lab could not load. Connect to the internet and try again.'));
+    if (name === 'lifeskills') window.EPIPHANY_LAZY_LOAD('lifeskills').catch(() => toast('Life Skills could not load. Connect to the internet and try again.'));
     if (name === 'progress' || name === 'profile') { renderWeaknessPanel(); renderLearningInsights(); }
     const more = $('#dock-more-toggle');
     if (more) more.setAttribute('aria-current', ['words','trophies','stories','lifeskills','mytools'].includes(name) ? 'page' : 'false');
