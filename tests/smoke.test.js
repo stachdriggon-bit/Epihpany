@@ -23,6 +23,8 @@ async function clickView(page, view) {
 }
 
 async function dismissFirstVisitOverlays(page) {
+  const landingStart = page.locator('#landing-start');
+  if (await landingStart.isVisible()) await landingStart.click();
   const welcomeClose = page.locator('#welcome-modal-close');
   if (await welcomeClose.isVisible()) await welcomeClose.click();
   const placementSkip = page.locator('#placement-skip');
