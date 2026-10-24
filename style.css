@@ -1637,7 +1637,7 @@ body[data-theme="dark"] .adaptive-note{background:#302C4C;color:#F1EEFF}
 .story-reader .story-text{font-size:calc(1.08rem * var(--story-font-scale,1));line-height:var(--story-line-height,1.75);transition:font-size .12s ease}
 .story-reader .story-text .story-word{line-height:inherit}
 .story-reader .story-page-ar{font-size:calc(1rem * var(--story-font-scale,1));line-height:calc(var(--story-line-height,1.75) + .1)}
-.story-reader .story-reader-title{font-size:calc(clamp(24px,6vw,34px) * min(var(--story-font-scale,1),1.15))}
+.story-reader .story-reader-title{font-size:clamp(24px,6vw,34px)}
 .story-reader-night{background:#171B29;color:#F2F1FA;border:1px solid #353B50;border-radius:22px;padding:clamp(14px,3vw,24px)}
 .story-reader-night .story-text{color:#F2F1FA}
 .story-reader-night .story-word{color:#F2F1FA}
@@ -1650,3 +1650,14 @@ body[data-theme="dark"] .adaptive-note{background:#302C4C;color:#F1EEFF}
 .story-reader-night .story-hidden-note{background:#292F43;color:#E4E7F5}
 .story-reader .story-audio-tools [data-story-setting]{min-width:42px;min-height:40px;padding:7px 10px}
 @media(max-width:560px){.story-reader .story-audio-tools [data-story-setting]{flex:0 0 auto}.story-reader .story-audio-tools>span{width:auto}.story-reader .story-audio-tools>span:nth-of-type(2){margin-left:4px}}
+
+.story-season{margin:26px 0 34px;padding:clamp(14px,3vw,22px);border:1px solid var(--line);border-radius:22px;background:linear-gradient(135deg,var(--surface),var(--ground))}
+.story-season .block-head{margin-bottom:16px}
+.story-season .block-head h2{margin:4px 0 8px}
+.story-season .block-head .kicker{margin:0;color:var(--focus);font-weight:900;letter-spacing:.08em}
+.story-season .story-card-meta small{font-weight:850;color:var(--focus)}
+.story-season .story-card-info>strong{overflow-wrap:anywhere}
+.story-reader-night .story-progress-dots span{background:#3A4055}
+.story-reader-night .story-progress-dots span.active{background:#C3B8FF}
+.story-reader-night .story-scene{border:1px solid rgba(255,255,255,.16)}
+@media(max-width:560px){.story-season{padding:12px}.story-season .story-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
