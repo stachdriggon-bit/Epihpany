@@ -1724,7 +1724,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     };
     // Use five questions from the learner's current CEFR level whenever possible.
     let selected;
-    if (type === 'personalized') {
+    if (['personalized','grammar'].includes(type) && game.questions.some(q=>q.trap&&q.id)) {
       // Prioritise topics that are due for review or still cause errors, while keeping a little variety.
       selected = shuffle(weightedGrammarPick(game.questions, 5));
     } else if (type === 'mistakes') {
@@ -1744,7 +1744,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     const recentList = Array.isArray(state.recentQuestions[recentKey]) ? state.recentQuestions[recentKey] : [];
     const recentIds = new Set(recentList);
     let freshPool;
-    if (type === 'personalized') {
+    if (['personalized','grammar'].includes(type)) {
       freshPool = game.questions.filter(q => !recentIds.has(questionKey(q)));
     } else if (type === 'mistakes') {
       const levels = LEVELS.map(l => l.id), center = levels.indexOf(level);
@@ -1755,7 +1755,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
       freshPool = levelPool.filter(q => !recentIds.has(questionKey(q)));
     }
     if (selected.some(q => recentIds.has(questionKey(q))) && freshPool.length >= selected.length) {
-      selected = ['personalized','mistakes'].includes(type) ? shuffle(weightedGrammarPick(freshPool, selected.length)) : shuffle(freshPool).slice(0, selected.length);
+      selected = ['personalized','mistakes','grammar'].includes(type) && freshPool.some(q=>q.trap&&q.id) ? shuffle(weightedGrammarPick(freshPool, selected.length)) : shuffle(freshPool).slice(0, selected.length);
     }
     state.recentQuestions[recentKey] = [...recentList, ...selected.map(questionKey)].filter(Boolean).slice(-12);
     save();
@@ -1864,10 +1864,10 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     if (!G || G.answered) return;
     G.answered = true;
     const game = GAMES[G.type], item = G.questions[G.i], q = item.q, ok = choice === q.correct;
-    if (ok) { G.score++; const wp=wordParts(q.word,q.explain); if(wp)G.words.push([wp.word,wp.meaning,wp.level]); if(!G.reviewMode&&['mistakes','personalized'].includes(G.type)&&q.id){state.mistakeTrapCorrect[q.trap]=(Number(state.mistakeTrapCorrect[q.trap])||0)+1;state.mistakeQuestionCorrect[q.id]=(Number(state.mistakeQuestionCorrect[q.id])||0)+1;updateGrammarSrs(q,true);save();} }
+    if (ok) { G.score++; const wp=wordParts(q.word,q.explain); if(wp)G.words.push([wp.word,wp.meaning,wp.level]); if(!G.reviewMode&&q.trap&&q.id){state.mistakeTrapCorrect[q.trap]=(Number(state.mistakeTrapCorrect[q.trap])||0)+1;state.mistakeQuestionCorrect[q.id]=(Number(state.mistakeQuestionCorrect[q.id])||0)+1;updateGrammarSrs(q,true);save();} }
     else if (!G.reviewMode) {
       addReview(q.word,q.explain);
-      if (['mistakes','personalized'].includes(G.type) && q.id) {
+      if (q.trap && q.id) {
         state.mistakeTrapErrors[q.trap] = (Number(state.mistakeTrapErrors[q.trap]) || 0) + 1;
         state.mistakeQuestionErrors[q.id] = (Number(state.mistakeQuestionErrors[q.id]) || 0) + 1;
         updateGrammarSrs(q,false);
