@@ -1789,8 +1789,16 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     // Use five questions from the learner's current CEFR level whenever possible.
     let selected;
     if (['personalized','grammar','spot','typing'].includes(type) && game.questions.some(q=>q.trap&&q.id)) {
-      // Prioritise topics that are due for review or still cause errors, while keeping a little variety.
-      selected = shuffle(weightedGrammarPick(game.questions, 5));
+      // Keep adaptive practice at the learner's CEFR level when the bank has enough items.
+      // If that level is small, widen only as much as needed instead of mixing every level by default.
+      let adaptivePool = levelPool.slice();
+      if (adaptivePool.length < 5) {
+        const levels = LEVELS.map(l=>l.id), center = levels.indexOf(level);
+        const nearby = game.questions.filter(q => !q.level || Math.abs(levels.indexOf(q.level) - center) <= 1);
+        adaptivePool = nearby.length >= 5 ? nearby : game.questions.slice();
+      }
+      // Prioritise due topics and repeated errors while keeping a little variety.
+      selected = shuffle(weightedGrammarPick(adaptivePool, 5));
     } else if (type === 'mistakes') {
       const levels = LEVELS.map(l=>l.id), center = levels.indexOf(level);
       let pool = game.questions.filter(q => Math.abs(levels.indexOf(q.level) - center) <= 1);
