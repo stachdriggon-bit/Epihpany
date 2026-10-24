@@ -1566,3 +1566,18 @@ body[data-theme="dark"] .dock{background:rgba(27,32,48,.97)}
 .hard-word{display:grid;gap:.35rem;padding:.8rem;border-radius:13px;background:var(--surface-soft,rgba(120,110,180,.07));min-width:0}
 .hard-word span{line-height:1.45}.hard-word small{opacity:.72}.hard-word .btn{justify-self:start}
 @media(max-width:520px){.word-dictation{display:grid}.word-dictation input,.word-dictation button{width:100%}.hard-words{padding:.75rem}}
+
+/* Grammar Lab */
+.grammar-intro,.grammar-map{display:grid;gap:1rem}
+.grammar-rule-card{padding:1rem 1.1rem;border-radius:16px;background:var(--surface-soft,rgba(130,100,180,.09));border:1px solid var(--line,rgba(100,100,130,.18))}
+.grammar-rule-card p{margin:.35rem 0;line-height:1.6}
+.grammar-examples{display:grid;gap:.55rem}.grammar-examples p{margin:0;padding:.8rem 1rem;border:1px solid var(--line,rgba(100,100,130,.16));border-radius:12px}
+.grammar-mode-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.65rem}.grammar-mode-grid button{white-space:normal;min-height:48px}
+.grammar-map{margin-top:1rem;padding:1rem;border:1px solid var(--line,rgba(100,100,130,.2));border-radius:18px}
+.grammar-tree{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,210px),1fr));gap:.7rem}
+.grammar-node{display:grid;grid-template-columns:14px 1fr;gap:.25rem .6rem;text-align:left;align-items:center;padding:.8rem;border:1px solid var(--line,rgba(100,100,130,.22));border-radius:13px;background:var(--surface,#fff);color:inherit}
+.grammar-node small,.grammar-node-count{grid-column:2;opacity:.75}.grammar-node-dot{width:10px;height:10px;border-radius:50%;background:#9ca3af;grid-row:1/3}.grammar-node.in-progress .grammar-node-dot{background:#d6a23b}.grammar-node.needs-practice .grammar-node-dot{background:#dc6262}.grammar-node b{font-size:.95rem}.grammar-node-count{font-size:.75rem}
+.grammar-word-bank{display:flex;flex-wrap:wrap;gap:.55rem;margin:1rem 0}.grammar-word-chip{padding:.6rem .8rem;border:1px solid var(--line,rgba(100,100,130,.25));border-radius:999px;background:var(--surface,#fff);color:inherit}.grammar-word-chip:disabled{opacity:.45;text-decoration:line-through}
+.grammar-order-answer{min-height:54px;padding:.9rem;margin:.7rem 0;border:1px dashed var(--line,rgba(100,100,130,.3));border-radius:12px;line-height:1.5}
+[data-grammar-own-form] textarea{width:100%;padding:.85rem;border:1px solid var(--line,rgba(100,100,130,.25));border-radius:12px;background:var(--surface,#fff);color:inherit;font:inherit;resize:vertical;margin:.8rem 0}
+@media(max-width:520px){.grammar-mode-grid{grid-template-columns:1fr}.grammar-map{padding:.75rem}}
