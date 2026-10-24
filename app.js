@@ -1514,6 +1514,19 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
   }
   // Capture the theme action before the settings popover closes.
   document.addEventListener('submit', e => {
+    if(e.target && e.target.matches('[data-word-dictation]')){
+      e.preventDefault();
+      const form=e.target, word=form.dataset.wordDictation, item=state.review.find(w=>w.word===word), input=form.querySelector('[name="typedWord"]');
+      if(!item||!input)return;
+      item.attempts=(item.attempts||0)+1;
+      if(input.value.trim().toLowerCase()===item.word.toLowerCase()){
+        item.exerciseStage=3;save();renderWords();toast('Correct spelling! Now use the word in your own sentence.');
+      }else{
+        item.errors=(Number(item.errors)||0)+1;item.box=1;item.interval=0;item.streak=0;item.exerciseStage=0;item.mastered=false;item.due=dayKey();
+        save();renderWords();toast('Not quite. The word returned to Box 1 for extra practice.');
+      }
+      return;
+    }
     if(e.target && e.target.id==='typing-form'){e.preventDefault();checkTyping();return;}
     if(e.target && e.target.id==='create-story-form'){e.preventDefault();createStorySubmit(e.target);return;}
     if(e.target && e.target.id==='create-story-answer-form'){e.preventDefault();submitCreateStoryAnswer(e.target);return;}
@@ -1901,7 +1914,10 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     }
     if (!state.completed.includes(before.id)) state.completed.push(before.id);
     const after = currentLevel();
-    G.words.forEach(w => { if (!state.words.some(e => e[0].toLowerCase() === w[0].toLowerCase())) state.words.push([w[0], w[1], w[2] || after.id]); });
+    G.words.forEach(w => {
+      if (!state.words.some(e => e[0].toLowerCase() === w[0].toLowerCase())) state.words.push([w[0], w[1], w[2] || after.id]);
+      if (!state.review.some(e => e.word.toLowerCase() === String(w[0]).toLowerCase())) state.review.push({word:String(w[0]),meaning:String(w[1]||'Review this word in context.'),level:w[2]||after.id,due:dayKey(),box:1,interval:0,streak:0,attempts:0,errors:0,exerciseStage:0,mastered:false});
+    });
     save(); renderAll();
 
     hideSheet(); renderSteps(true); sfx('done');
