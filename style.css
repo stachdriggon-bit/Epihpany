@@ -1583,3 +1583,27 @@ body[data-theme="dark"] .dock{background:rgba(27,32,48,.97)}
 .grammar-order-answer{min-height:54px;padding:.9rem;margin:.7rem 0;border:1px dashed var(--line,rgba(100,100,130,.3));border-radius:12px;line-height:1.5}
 [data-grammar-own-form] textarea{width:100%;padding:.85rem;border:1px solid var(--line,rgba(100,100,130,.25));border-radius:12px;background:var(--surface,#fff);color:inherit;font:inherit;resize:vertical;margin:.8rem 0}
 @media(max-width:520px){.grammar-mode-grid{grid-template-columns:1fr}.grammar-map{padding:.75rem}}
+
+
+/* Reading & listening practice controls */
+.story-audio-tools{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:18px 0;padding:12px;border:1px solid var(--line);border-radius:16px;background:var(--surface)}
+.story-audio-tools>span{font-size:13px;font-weight:800;color:var(--ink-2);margin-inline-end:4px}
+.story-speed{min-width:48px;min-height:40px;padding:7px 10px;border:1px solid var(--line);border-radius:11px;background:var(--ground);color:var(--ink);font:inherit;font-weight:800;cursor:pointer}
+.story-speed.is-active{background:var(--focus);border-color:var(--focus);color:#fff}
+.story-audio-tools .btn{min-height:40px;padding:8px 12px}
+.story-hidden-note{margin:16px 0;padding:18px;border:1px dashed var(--focus);border-radius:15px;background:var(--ground);color:var(--ink-2);line-height:1.7;text-align:center}
+.story-word.is-speaking{background:#ffe08a!important;color:#382b00!important;border-radius:5px;box-shadow:0 0 0 2px #ffe08a;transition:background .08s ease}
+.story-dictation-form{display:grid;gap:10px;margin:18px 0;padding:16px;border:1px solid var(--line);border-radius:16px;background:var(--surface)}
+.story-dictation-form label{font-weight:800}
+.story-dictation-form textarea{width:100%;resize:vertical;min-height:90px;padding:12px;border:1px solid var(--line);border-radius:12px;background:var(--ground);color:var(--ink);font:inherit;line-height:1.65}
+.story-dictation-form .btn{justify-self:start}
+.story-dictation-feedback{margin:4px 0 0;padding:10px 12px;border-radius:10px;font-weight:800}
+.story-dictation-feedback.is-correct{background:#ddf6e8;color:#17613b}
+.story-dictation-feedback.is-wrong{background:#fff0d8;color:#7c4b00}
+.story-dictation-model{margin:0;line-height:1.7}
+.story-reader-actions [data-story-action="comprehension"]{grid-column:1/-1}
+.story-comprehension-quiz{max-width:680px}
+body[data-theme="dark"] .story-word.is-speaking{background:#705b1d!important;color:#fff4c2!important;box-shadow:0 0 0 2px #705b1d}
+body[data-theme="dark"] .story-dictation-feedback.is-correct{background:#173d2c;color:#b9f3d1}
+body[data-theme="dark"] .story-dictation-feedback.is-wrong{background:#4b3417;color:#ffe0a8}
+@media(max-width:560px){.story-audio-tools{gap:7px;padding:10px}.story-audio-tools>span{width:100%}.story-audio-tools .btn{flex:1}.story-dictation-form{padding:12px}.story-dictation-form .btn{width:100%}}
