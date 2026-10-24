@@ -2,7 +2,7 @@
 (() => {
   'use strict';
   const groups = {
-    stories: ['data-stories.js?v=6ba335cc'],
+    stories: ['data-stories.js?v=6ba335cc', 'data-stories-expansion.js?v=20261024p'],
     world: ['data-world.js?v=e99f5bf6', 'data-world-sprites.js?v=6fff0f70'],
     arcade: ['practice-lab.js?v=0f7e5c76'],
     thinklab: ['think-lab.js?v=72d8145c'],
