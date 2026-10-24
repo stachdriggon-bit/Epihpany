@@ -15,7 +15,7 @@
   function render() {
     const badge = $('notification-count'), list = $('notification-list'), empty = $('notification-empty'), permission = $('notification-permission');
     if (badge) { badge.textContent = unread() > 99 ? '99+' : String(unread()); badge.hidden = unread() === 0; }
-    if (list) list.innerHTML = items.length ? items.map(item => '<article class="ep-notification '+(item.read?'is-read':'')+'"><span class="ep-notification-icon" aria-hidden="true">'+(item.kind==='weekly'?'🗓️':item.kind==='achievement'?'🏆':'✨')+'</span><div><strong>'+esc(item.title)+'</strong><p>'+esc(item.body)+'</p><time>'+esc(item.dateLabel || '')+'</time></div>'+(item.read?'':'<button type="button" data-notification-read="'+esc(item.id)+'" aria-label="Mark as read">✓</button>')+'</article>').join('') : '';
+    if (list) list.innerHTML = items.length ? items.map(item => '<article class="ep-notification '+(item.read?'is-read':'')+'"><span class="ep-notification-icon" aria-hidden="true">'+(item.kind==='weekly'?'🗓️':item.kind==='achievement'?'🏆':item.kind==='word'?'📘':'✨')+'</span><div><strong>'+esc(item.title)+'</strong><p>'+esc(item.body)+'</p><time>'+esc(item.dateLabel || '')+'</time></div>'+(item.read?'':'<button type="button" data-notification-read="'+esc(item.id)+'" aria-label="Mark as read">✓</button>')+'</article>').join('') : '';
     if (empty) empty.hidden = items.length > 0;
     if (permission) {
       const supported = 'Notification' in window && 'serviceWorker' in navigator;
