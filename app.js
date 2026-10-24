@@ -1913,7 +1913,13 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     g.gain.setValueAtTime(0.0001, at); g.gain.linearRampToValueAtTime(v || 0.12, at + 0.02); g.gain.exponentialRampToValueAtTime(0.0001, at + d);
     o.connect(g); g.connect(ac.destination); o.start(at); o.stop(at + d + 0.05);
   }
+  function epiphanyHaptic(kind) {
+    if (!navigator.vibrate || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    try { navigator.vibrate(kind === 'ok' ? 18 : kind === 'no' ? [22, 35, 22] : 10); } catch {}
+  }
   function sfx(kind) {
+    epiphanyHaptic(kind);
+
     if (!state.sound) return;
     try {
       ac = ac || new (window.AudioContext || window.webkitAudioContext)();
