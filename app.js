@@ -2482,7 +2482,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     const sw=e.target.closest('[data-story-word]');if(sw&&ST&&ST.mode==='read'){openStoryWord(sw.dataset.storyWord,sw.dataset.storyDisplay);return;}
     const setting=e.target.closest('[data-story-setting]');if(setting&&ST){const prefs=state.storyReaderSettings||(state.storyReaderSettings={fontScale:1,lineSpacing:1.75,nightMode:false});const key=setting.dataset.storySetting;if(key==='font-up')prefs.fontScale=Math.min(1.35,Math.round((prefs.fontScale+0.1)*100)/100);if(key==='font-down')prefs.fontScale=Math.max(0.85,Math.round((prefs.fontScale-0.1)*100)/100);if(key==='line-up')prefs.lineSpacing=Math.min(2.25,Math.round((prefs.lineSpacing+0.1)*100)/100);if(key==='line-down')prefs.lineSpacing=Math.max(1.45,Math.round((prefs.lineSpacing-0.1)*100)/100);if(key==='night')prefs.nightMode=!prefs.nightMode;save();renderStoryPage();return;}
     const act=e.target.closest('[data-story-action]');
-    const speed=e.target.closest('[data-story-rate]');if(speed&&ST){const draft=$('#story-dictation-answer');if(draft&&ST.dictationActive)ST.dictationAnswer=draft.value;ST.audioRate=Number(speed.dataset.storyRate);renderStoryPage();return;}if(act&&ST){const action=act.dataset.storyAction;if(action==='next'){persistStoryReaderProgress();storyNext();return;}if(action==='prev'&&ST.page>0){ST.page--;ST.textHidden=false;ST.dictationActive=false;ST.dictationChecked=false;persistStoryReaderProgress();renderStoryPage();return;}if(action==='listen-page'){speakStoryPage();return;}if(action==='toggle-text'){ST.textHidden=!ST.textHidden;ST.dictationActive=false;renderStoryPage();return;}if(action==='dictation'){ST.dictationActive=!ST.dictationActive;ST.textHidden=ST.dictationActive;ST.dictationChecked=false;ST.dictationAnswer='';renderStoryPage();if(ST.dictationActive)speakStoryPage();return;}if(action==='comprehension'){ST.comprehensionOnly=true;ST.textHidden=true;ST.dictationActive=false;ST.mode='quiz';ST.qi=0;ST.score=0;ST.results=[];ST.answered=false;try{window.speechSynthesis?.cancel();}catch{}renderStoryQuestion();return;}if(action==='listen-word'){speak(act.dataset.value);return;}if(action==='save-word'){saveStoryWord(act.dataset.value,act.dataset.meaning);openStoryWord(act.dataset.value,act.dataset.value);return;}if(action==='close-word'){const card=$('#story-word-card');if(card)card.hidden=true;return;}if(action==='back-reading'){ST.mode='read';ST.comprehensionOnly=false;ST.page=ST.story.pages.length-1;hideSheet();renderStoryPage();return;}if(action==='another'){const old=ST.story.id;ST=null;const next=STORIES.find(s=>s.id!==old&&storyLevelIndex(s.level)<=storyLevelIndex(currentLevel().id));startStory((next||STORIES[0]).id);return;}if(action==='words'){ST=null;closeGame();openView('words');return;}if(action==='close'){ST=null;closeGame();openView('stories');return;}}
+    const speed=e.target.closest('[data-story-rate]');if(speed&&ST){const draft=$('#story-dictation-answer');if(draft&&ST.dictationActive)ST.dictationAnswer=draft.value;ST.audioRate=Number(speed.dataset.storyRate);renderStoryPage();return;}if(act&&ST){const action=act.dataset.storyAction;if(action==='next'){persistStoryReaderProgress();storyNext();return;}if(action==='prev'&&ST.page>0){ST.page--;ST.textHidden=false;ST.dictationActive=false;ST.dictationChecked=false;persistStoryReaderProgress();renderStoryPage();return;}if(action==='listen-page'){speakStoryPage();return;}if(action==='toggle-text'){ST.textHidden=!ST.textHidden;ST.dictationActive=false;renderStoryPage();return;}if(action==='dictation'){ST.dictationActive=!ST.dictationActive;ST.textHidden=ST.dictationActive;ST.dictationChecked=false;ST.dictationAnswer='';renderStoryPage();if(ST.dictationActive)speakStoryPage();return;}if(action==='comprehension'){ST.comprehensionOnly=true;ST.textHidden=true;ST.dictationActive=false;ST.mode='quiz';ST.qi=0;ST.score=0;ST.results=[];ST.answered=false;try{window.speechSynthesis?.cancel();}catch{}renderStoryQuestion();return;}if(action==='listen-word'){speak(act.dataset.value);return;}if(action==='save-word'){saveStoryWord(act.dataset.value,act.dataset.meaning);openStoryWord(act.dataset.value,act.dataset.value);return;}if(action==='close-word'){const card=$('#story-word-card');if(card)card.hidden=true;return;}if(action==='back-reading'){ST.mode='read';ST.comprehensionOnly=false;ST.page=ST.story.pages.length-1;hideSheet();renderStoryPage();return;}if(action==='replay-other'){const replayId=ST.story.id;ST=null;startStory(replayId);return;}if(action==='another'){const old=ST.story.id;ST=null;const next=STORIES.find(s=>s.id!==old&&storyLevelIndex(s.level)<=storyLevelIndex(currentLevel().id));startStory((next||STORIES[0]).id);return;}if(action==='words'){ST=null;closeGame();openView('words');return;}if(action==='close'){ST=null;closeGame();openView('stories');return;}}
     if(ST&&ST.mode==='quiz'&&e.target.closest('#go-next')){hideSheet();if(ST.qi<2){ST.qi++;ST.answered=false;renderStoryQuestion();}else finishStory();return;}
     if(e.target.closest('#wotd-save')){const box=$('#wotd-card'),w=WOTD_WORDS.find(x=>x.word===box.dataset.word);if(w&&!state.words.some(x=>String(x[0]).toLowerCase()===w.word.toLowerCase())){state.words.push([w.word,w.meaning,w.level]);recordLearningActivity({words:1});addReview([w.word,w.meaning,w.level],w.meaning);save();renderAll();toast('Word saved to your vault and daily review.');}return;}
     const themeButton = e.target.closest('#theme-toggle');
@@ -2788,6 +2788,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
   }
 
   function renderQuestion() {
+    if (G) G.hintRetryUsed = false;
     const game = GAMES[G.type], q = G.questions[G.i].q, m = META[G.type];
     G.answered = false; hideSheet(); renderSteps();
     if (G.type === 'spot') {
@@ -2812,8 +2813,24 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
 
   function selectAnswer(choice) {
     if (!G || G.answered) return;
+    const item = G.questions[G.i], q = item.q, ok = choice === q.correct;
+    if (!ok && !G.hintRetryUsed && G.mode !== 'oneLife') {
+      G.answered = true;
+      G.hintRetryUsed = true;
+      const hint = q.hint || q.hint_en || 'Read the whole sentence again. Look for the clue that connects the meaning to the grammar.';
+      const hintAr = q.hint_ar || q.explain_ar || q.why_ar || 'اقرأ الجملة كاملةً مرة أخرى، وابحث عن القرينة التي تربط المعنى بالصياغة الصحيحة.';
+      showSheet(false, '<h3><span class="sheet-mark">💡</span>One more try</h3><p>'+esc(hint)+'</p><p class="arabic" lang="ar" dir="rtl">'+esc(hintAr)+'</p><p class="retry-hint-note">Your first answer is a clue, not a penalty. Try again before seeing the answer.</p><div class="sheet-actions"><button class="btn" id="go-retry-answer">Try again</button></div>');
+      const retry = $('#go-retry-answer');
+      if (retry) retry.addEventListener('click', () => {
+        if (!G) return;
+        G.answered = false;
+        hideSheet();
+        $('#answers .answer').forEach(button => { button.disabled = false; button.classList.remove('correct','wrong'); });
+        const answerRoot = $('#answers'); if (answerRoot) answerRoot.classList.remove('done');
+      }, {once:true});
+      return;
+    }
     G.answered = true;
-    const game = GAMES[G.type], item = G.questions[G.i], q = item.q, ok = choice === q.correct;
     recordAdaptiveResult(['spot','grammar','mistakes','personalized'].includes(G.type)?'grammar':G.type==='listening'?'listening':G.type==='story'?'conversation':'vocabulary',q.trap||q.id||G.type,ok);
     if (ok) { G.score++; const wp=wordParts(q.word,q.explain); if(wp)G.words.push([wp.word,wp.meaning,wp.level]); if(!G.reviewMode&&q.trap&&q.id){state.mistakeTrapCorrect[q.trap]=(Number(state.mistakeTrapCorrect[q.trap])||0)+1;state.mistakeQuestionCorrect[q.id]=(Number(state.mistakeQuestionCorrect[q.id])||0)+1;updateGrammarSrs(q,true);save();} }
     else if (!G.reviewMode) {
@@ -2841,7 +2858,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     showSheet(ok,
       '<h3><span class="sheet-mark">' + ic(ok ? 'check' : 'x') + '</span>' + (ok ? 'Exactly right!' : 'Not quite — and that’s okay.') + '</h3>' +
       (ok ? '' : '<p>Correct answer: <b>' + esc(q.answers[q.correct]) + '</b></p>') +
-      '<p>' + esc(q.explain) + '</p>' + (state.helpArabic && G.questions[G.i].explain_ar ? '<p class="arabic" lang="ar" dir="rtl">' + esc(G.questions[G.i].explain_ar) + '</p>' : '') +
+      '<p>' + esc(q.explain) + '</p>' + (!ok ? '<p class="arabic answer-explanation-ar" lang="ar" dir="rtl">' + esc(q.explain_ar || q.why_ar || q.arabic_hint || (q.aha&&q.aha.ar) || 'راجع معنى الجملة كاملةً، ولا تعتمد على ترجمة الكلمة وحدها لاختيار الصياغة الأنسب.') + '</p>' : (state.helpArabic && q.explain_ar ? '<p class="arabic" lang="ar" dir="rtl">' + esc(q.explain_ar) + '</p>' : '')) +
       (!ok && G.type === 'mistakes' ? '<section class="trap-explanation" aria-label="Why Arabic speakers make this mistake"><h4>Why do Arabic speakers make this mistake?</h4><p class="arabic" lang="ar" dir="rtl">' + esc(q.why_ar || q.ar) + '</p><p class="trap-hint arabic" lang="ar" dir="rtl">' + esc(q.arabic_hint || '') + '</p></section>' : '') +
       (!ok && q.aha ? '<aside class="aha-note"><span aria-hidden="true">💡</span><div><strong>Aha moment</strong><p>'+esc(q.aha.en)+'</p><p class="arabic ar-only" lang="ar" dir="rtl">'+esc(q.aha.ar)+'</p></div></aside>' : '') +
       (ok && q.word ? '<div class="newword"><span>New word</span><b>' + esc(q.word[0]) + '</b><span>' + esc(q.word[1]) + '</span></div>' : '') +
