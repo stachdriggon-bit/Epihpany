@@ -269,6 +269,12 @@
     $('#daily-bar').style.width = Math.min(100, progress / task.target * 100) + '%';
     $('#daily-reward').textContent = done ? 'Reward claimed · +' + task.reward + ' XP' : 'Reward: +' + task.reward + ' bonus XP';
     $('#daily-status').textContent = done ? '✓ Challenge complete' : 'You’ve got this!'; $('#daily-status').classList.toggle('is-done', done);
+    const dailyNo = $('#daily-challenge-number'), dailyModeStatus = $('#daily-challenge-status'), dailyModeButton = $('#daily-challenge-start');
+    if (dailyNo) dailyNo.textContent = dailyChallengeNumber(today);
+    const dailyDone = state.dailyChallengeDate === dayKey(today) && !!state.dailyChallengeResult;
+    if (dailyModeStatus) dailyModeStatus.textContent = dailyDone ? '✓ Completed today · ' + state.dailyChallengeResult.score + '/' + state.dailyChallengeResult.total : 'One attempt per day · New challenge tomorrow';
+    if (dailyModeButton) { dailyModeButton.disabled = dailyDone; dailyModeButton.textContent = dailyDone ? 'Completed today' : 'Play today’s challenge'; }
+    const best = $('#one-life-best'); if (best) best.textContent = Number(state.oneLifeBest) || 0;
     const count = Math.min(state.weeklyProgress || 0, 5), weeklyDone = !!state.weeklyClaimed;
     const monday = new Date(today.getFullYear(), today.getMonth(), today.getDate()); monday.setDate(monday.getDate() - ((monday.getDay() + 6) % 7));
     const sunday = new Date(monday); sunday.setDate(sunday.getDate() + 6);
