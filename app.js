@@ -739,7 +739,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
   Object.assign(AR_TRANSLATION_WORDS, window.EPIPHANY_AR_TRANSLATION_WORDS || {});
 
   function normalizeTranslationKey(value) {
-    return String(value||'').toLowerCase().replace(/[“”]/g,'"').replace(/[‘’]/g,"'").replace(/[.!?…,:;]+$/,'').replace(/\s+/g,' ').trim();
+    return String(value||'').toLowerCase().replace(/[“”]/g,'\"').replace(/[‘’]/g,"'").replace(/\s+/g,' ').trim().replace(/[.!?…,:;]+$/,'').trim();
   }
   const AR_TRANSLATION_PHRASES = Object.fromEntries(Object.entries({
     'Tap the incorrect word':'اضغط على الكلمة غير الصحيحة.',
