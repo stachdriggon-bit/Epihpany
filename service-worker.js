@@ -1,6 +1,6 @@
-const CACHE_NAME = 'epiphany-shell-20261024m';
-const VENDOR_CACHE = 'epiphany-vendor-20261024k';
-const CORE_ASSETS = ['./', './index.html', './style.css', './life-skills.css', './app.js', './data.js', './data-expansion.js', './data-mistakes.js', './data-spot.js', './data-typing.js', './data-wotd.js', './data-aha.js', './data-minigames.js', './data-translation-ar.js', './mini-games.css', './supabase-config.js', './account.js', './telemetry.js', './lazy-data.js', './manifest.webmanifest', './icon.svg', './notifications.js'];
+const CACHE_NAME = 'epiphany-shell-20261024n';
+const VENDOR_CACHE = 'epiphany-vendor-20261024n';
+const CORE_ASSETS = ['./', './index.html', './style.css', './life-skills.css', './app.js', './data.js', './data-expansion.js', './data-mistakes.js', './data-spot.js', './data-typing.js', './data-wotd.js', './data-aha.js', './data-minigames.js', './mini-games.css', './supabase-config.js', './account.js', './telemetry.js', './lazy-data.js', './manifest.webmanifest', './icon.svg', './notifications.js'];
 self.addEventListener('install', event => {
   event.waitUntil((async () => {
     const cache = await caches.open(CACHE_NAME);
@@ -48,17 +48,16 @@ self.addEventListener('fetch', event => {
   if (approvedVendor) {
     event.respondWith((async () => {
       const cache = await caches.open(VENDOR_CACHE);
+      const cached = await cache.match(request);
+      if (cached) return cached;
       try {
         const response = await fetch(request);
         if (response && response.ok) {
           await cache.put(request, response.clone());
           return response;
         }
-        const cached = await cache.match(request);
-        return cached || response;
+        return response;
       } catch (error) {
-        const cached = await cache.match(request);
-        if (cached) return cached;
         return new Response('', {status: 503, statusText: 'Vendor asset unavailable offline'});
       }
     })());
