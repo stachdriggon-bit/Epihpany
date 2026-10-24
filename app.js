@@ -16,7 +16,7 @@
   ];
 
   /* ---------- state ---------- */
-  const defaults = () => ({xp:0, quests:0, words:[], review:[], adaptiveOffset:0, adaptiveStreak:0, dailyChallengeDate:null, dailyChallengeResult:null, oneLifeBest:0, translationEnabled:true, storyReaderSettings:{fontScale:1,lineSpacing:1.75,nightMode:false}, placementDone:false, assessedLevel:'A1', placementResult:null, xpAtLevelStart:null, promotionHistory:[], promotionAttempts:{}, lastPromotionResult:null, completed:[], streak:0, lastDay:null, daily:0, level:'A1', sound:true, helpArabic:false, theme:'light', streakFreezes:1, dailyQuestDate:null, dailyQuestProgress:0, dailyQuestClaimed:false, dailyCorrect:0, dailyXp:0, weeklyKey:null, weeklyProgress:0, weeklyClaimed:false, mistakeTrapErrors:{}, mistakeQuestionErrors:{}, mistakeTrapCorrect:{}, mistakeQuestionCorrect:{}, mistakeTrapSrs:{}, modes:{}, weakTraps:{}, recentQuestions:{}, stories:{}, world:{done:[],stars:{}}});
+  const defaults = () => ({xp:0, quests:0, words:[], review:[], adaptiveOffset:0, adaptiveStreak:0, adaptiveSignals:{}, dailyChallengeDate:null, dailyChallengeResult:null, oneLifeBest:0, translationEnabled:true, storyReaderSettings:{fontScale:1,lineSpacing:1.75,nightMode:false}, placementDone:false, assessedLevel:'A1', placementResult:null, xpAtLevelStart:null, promotionHistory:[], promotionAttempts:{}, lastPromotionResult:null, completed:[], streak:0, lastDay:null, daily:0, level:'A1', sound:true, helpArabic:false, theme:'light', streakFreezes:1, dailyQuestDate:null, dailyQuestProgress:0, dailyQuestClaimed:false, dailyCorrect:0, dailyXp:0, weeklyKey:null, weeklyProgress:0, weeklyClaimed:false, mistakeTrapErrors:{}, mistakeQuestionErrors:{}, mistakeTrapCorrect:{}, mistakeQuestionCorrect:{}, mistakeTrapSrs:{}, modes:{}, weakTraps:{}, recentQuestions:{}, stories:{}, world:{done:[],stars:{}}});
   let state;
   try { state = {...defaults(), ...JSON.parse(localStorage.getItem('epiphany-progress') || '{}')}; } catch { state = defaults(); }
   if (!LEVELS.some(level => level.id === state.assessedLevel)) { state.assessedLevel = 'A1'; state.placementDone = false; state.placementResult = null; }
@@ -24,6 +24,7 @@
   if (!Array.isArray(state.promotionHistory)) state.promotionHistory = [];
   if (!state.promotionAttempts || typeof state.promotionAttempts !== 'object' || Array.isArray(state.promotionAttempts)) state.promotionAttempts = {};
   if (!Array.isArray(state.review)) state.review = [];
+  if (!state.adaptiveSignals || typeof state.adaptiveSignals !== 'object' || Array.isArray(state.adaptiveSignals)) state.adaptiveSignals = {};
   if (!state.mistakeTrapErrors || typeof state.mistakeTrapErrors !== 'object' || Array.isArray(state.mistakeTrapErrors)) state.mistakeTrapErrors = {};
   if (!state.mistakeQuestionErrors || typeof state.mistakeQuestionErrors !== 'object' || Array.isArray(state.mistakeQuestionErrors)) state.mistakeQuestionErrors = {};
   if (!state.mistakeTrapCorrect || typeof state.mistakeTrapCorrect !== 'object' || Array.isArray(state.mistakeTrapCorrect)) state.mistakeTrapCorrect = {};
@@ -291,6 +292,41 @@
     $('#freeze-note').textContent = state.streakFreezes > 0 ? 'Your streak has a little safety net.' : 'No freezes left right now. Keep your streak going!';
   }
 
+  function recordAdaptiveResult(skill, topic, correct) {
+    if (DEV_MODE.active && hasDeveloperAccess()) return;
+    if (!state.adaptiveSignals || typeof state.adaptiveSignals !== 'object') state.adaptiveSignals = {};
+    const bucket = state.adaptiveSignals[skill] || (state.adaptiveSignals[skill] = {attempts:0,errors:0,correct:0,topics:{}});
+    bucket.attempts=(Number(bucket.attempts)||0)+1;
+    if(correct)bucket.correct=(Number(bucket.correct)||0)+1;else bucket.errors=(Number(bucket.errors)||0)+1;
+    if(!bucket.topics||typeof bucket.topics!=='object')bucket.topics={};
+    const key=String(topic||skill).slice(0,120), item=bucket.topics[key]||(bucket.topics[key]={attempts:0,errors:0,correct:0});
+    item.attempts=(Number(item.attempts)||0)+1;
+    if(correct)item.correct=(Number(item.correct)||0)+1;else item.errors=(Number(item.errors)||0)+1;
+    bucket.lastAt=Date.now();save();
+  }
+  function adaptiveRecommendation(){
+    const signals=state.adaptiveSignals||{},review=(state.review||[]).filter(w=>w&&w.word);
+    const hard=review.filter(w=>(Number(w.errors)||0)>=2).sort((a,b)=>(Number(b.errors)||0)-(Number(a.errors)||0));
+    const traps=Object.entries(state.mistakeTrapErrors||{}).map(([key,errors])=>({key,errors:Number(errors)||0,correct:Number((state.mistakeTrapCorrect||{})[key])||0})).filter(x=>x.errors>0).sort((a,b)=>(b.errors-Math.floor(b.correct/2))-(a.errors-Math.floor(a.correct/2)));
+    const sig=skill=>{const b=signals[skill]||{},topics=Object.entries(b.topics||{}).map(([key,v])=>({key,errors:Number(v.errors)||0,correct:Number(v.correct)||0}));topics.sort((a,b)=>(b.errors-Math.floor(b.correct/2))-(a.errors-Math.floor(a.correct/2)));return{errors:Number(b.errors)||0,correct:Number(b.correct)||0,topic:topics[0]};};
+    const c=[];
+    if(traps[0]&&traps[0].errors>=2)c.push({priority:traps[0].errors-Math.floor(traps[0].correct/2),game:'personalized',title:'Your grammar weak spots',reason:'You have missed this grammar pattern more than once. This short review prioritises patterns you find difficult.',detail:traps[0].key.replace(/[-_]+/g,' '),kind:'grammar'});
+    const v=sig('vocabulary');if(hard.length||v.errors>=2)c.push({priority:Math.max(hard.length?Number(hard[0].errors)||0:0,v.errors),game:'speed',title:'Review your difficult words',reason:'Speed Round gives extra attention to saved words and words you have missed before.',detail:hard.length?hard.slice(0,3).map(w=>w.word).join(', '):(v.topic&&v.topic.key)||'vocabulary',kind:'vocabulary'});
+    const l=sig('listening');if(l.errors>=2)c.push({priority:l.errors-Math.floor(l.correct/2),game:'audioImage',title:'Train listening recognition',reason:'You have missed several sound-to-word matches. Practise hearing a word and connecting it to its meaning.',detail:(l.topic&&l.topic.key)||'sound and meaning',kind:'listening'});
+    const s=sig('sentence');if(s.errors>=2)c.push({priority:s.errors-Math.floor(s.correct/2),game:'sentenceOrder',title:'Build sentences with confidence',reason:'Sentence Builder gives you another chance to practise word order and natural sentence structure.',detail:'sentence order',kind:'sentence'});
+    const d=sig('conversation');if(d.errors>=2)c.push({priority:d.errors-Math.floor(d.correct/2),game:'story',title:'Practise real-life choices',reason:'Some choices in World conversations have been tricky. Try a real-life dialogue and review the context before choosing.',detail:(d.topic&&d.topic.key)||'conversation choices',kind:'conversation'});
+    c.sort((a,b)=>b.priority-a.priority);if(c.length)return c[0];
+    if(review.length)return{priority:0,game:'speed',title:'Keep your vocabulary active',reason:'Use a quick round to revisit saved words. As you practise, EPIPHANY will learn which words need more review.',detail:review.slice(0,3).map(w=>w.word).join(', '),kind:'vocabulary'};
+    return{priority:0,game:'speed',title:'Start with a quick word round',reason:'Play a short round to begin building your personal learning signals. Repeated mistakes will help EPIPHANY recommend more targeted practice.',detail:'60-second Speed Round',kind:'starter'};
+  }
+  function preparePersonalizedGame(){
+    const all=(GAMES.mistakes&&GAMES.mistakes.questions||[]).slice();if(!all.length||!GAMES.personalized)return;
+    const errors=state.mistakeTrapErrors||{},qErrors=state.mistakeQuestionErrors||{};
+    const ranked=all.map((q,i)=>({q,i,weight:(Number(errors[q.trap])||0)*4+(Number(qErrors[q.id])||0)*3})).sort((a,b)=>b.weight-a.weight||a.i-b.i);
+    const focus=ranked.filter(x=>x.weight>0).map(x=>x.q),fallback=SHUF(all.filter(q=>!focus.includes(q)));
+    GAMES.personalized.questions=SHUF(focus.concat(fallback).slice(0,5));
+  }
+
   function renderWeaknessPanel() {
     const panel = $('#weakness-panel');
     if (!panel) return;
@@ -315,6 +351,8 @@
   }
 
   function renderArcade() {
+    const recommendation=adaptiveRecommendation(), recommendationRoot=$('#arcade-recommendation');
+    if(recommendationRoot){const label=recommendation.kind==='starter'?'A good place to begin':'Chosen from your practice history';recommendationRoot.innerHTML='<article class="adaptive-recommendation"><div class="adaptive-rec-top"><span class="adaptive-rec-icon" aria-hidden="true">✦</span><div><p class="kicker">YOUR NEXT BEST PRACTICE</p><h2>'+esc(recommendation.title)+'</h2></div><span class="adaptive-rec-tag">'+esc(label)+'</span></div><p>'+esc(recommendation.reason)+'</p>'+(recommendation.detail?'<p class="adaptive-rec-detail"><strong>Focus:</strong> '+esc(recommendation.detail)+'</p>':'')+'<button type="button" class="btn" data-game="'+esc(recommendation.game)+'">Start recommended practice '+ic('arrow')+'</button></article>';}
     const miniRoot = $('#arcade-mini-games');
     const libraryRoot = $('#arcade-library');
     if (!miniRoot || !libraryRoot) return;
@@ -2075,6 +2113,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     if (!G || G.answered) return;
     G.answered = true;
     const game = GAMES[G.type], item = G.questions[G.i], q = item.q, ok = choice === q.correct;
+    recordAdaptiveResult(['spot','grammar','mistakes','personalized'].includes(G.type)?'grammar':G.type==='listening'?'listening':G.type==='story'?'conversation':'vocabulary',q.trap||q.id||G.type,ok);
     if (ok) { G.score++; const wp=wordParts(q.word,q.explain); if(wp)G.words.push([wp.word,wp.meaning,wp.level]); if(!G.reviewMode&&q.trap&&q.id){state.mistakeTrapCorrect[q.trap]=(Number(state.mistakeTrapCorrect[q.trap])||0)+1;state.mistakeQuestionCorrect[q.id]=(Number(state.mistakeQuestionCorrect[q.id])||0)+1;updateGrammarSrs(q,true);save();} }
     else if (!G.reviewMode) {
       addReview(q.word,q.explain);
@@ -2328,7 +2367,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
   function miniWeakWordPool() {
     const items=[],seen=new Set();
     const add=(word,meaning,icon)=>{const w=String(word||'').trim(),m=String(meaning||'').trim(),key=w.toLowerCase();if(!w||!m||seen.has(key))return;seen.add(key);items.push({word:w,meaning:m,icon:icon||'🔤'});};
-    (state.review||[]).forEach(x=>{if(x&&x.word)add(x.word,x.meaning||x.translation||'Review this word in context.');});
+    (state.review||[]).slice().sort((a,b)=>(Number(b.errors)||0)-(Number(a.errors)||0)).forEach(x=>{if(x&&x.word)add(x.word,x.meaning||x.translation||'Review this word in context.');});
     (state.words||[]).forEach(x=>{if(Array.isArray(x))add(x[0],x[1]);else if(x&&x.word)add(x.word,x.meaning);});
     (WOTD_WORDS||[]).forEach(x=>add(x.word,x.meaning));
     return items;
@@ -2510,13 +2549,13 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     const close = el.closest('[data-mini-close]'); if (close) { closeGame(); openView('home'); return true; }
     const again = el.closest('[data-mini-again]'); if (again) { startMini(again.dataset.miniAgain); return true; }
     if (MG.done) return false;
-    const speedAnswer=el.closest('[data-mini-speed-answer]');if(speedAnswer&&MG.type==='speed'){if(MG.answered)return true;MG.total++;const picked=decodeURIComponent(speedAnswer.dataset.miniSpeedAnswer);const ok=picked===MG.current.word;if(ok)MG.score++;sfx(ok?'ok':'no');miniSpeedRender();return true;}
+    const speedAnswer=el.closest('[data-mini-speed-answer]');if(speedAnswer&&MG.type==='speed'){if(MG.answered)return true;MG.total++;const picked=decodeURIComponent(speedAnswer.dataset.miniSpeedAnswer);const ok=picked===MG.current.word;if(ok)MG.score++;recordAdaptiveResult('vocabulary',MG.current.word,ok);if(!ok)addReview(MG.current.word,MG.current.meaning);sfx(ok?'ok':'no');miniSpeedRender();return true;}
     if(el.closest('[data-mini-audio-play]')&&MG.type==='audioImage'){miniSpeech(MG.current.word);return true;}
-    const audioAnswer=el.closest('[data-mini-audio-answer]');if(audioAnswer&&MG.type==='audioImage'){if(MG.answered)return true;MG.answered=true;const ok=audioAnswer.dataset.miniAudioAnswer===MG.current.word;if(ok)MG.score++;MG.results[MG.i]=ok?'ok':'no';sfx(ok?'ok':'no');$('.mini-picture-grid').querySelectorAll('button').forEach(b=>{b.disabled=true;if(b.dataset.miniAudioAnswer===MG.current.word)b.classList.add('is-right');else if(b===audioAnswer)b.classList.add('is-wrong');});showSheet(ok,'<h3>'+(ok?'That’s it!':'Not quite')+'</h3><p>The word is <b>'+esc(MG.current.word)+'</b> — '+esc(MG.current.meaning)+'.</p><div class="sheet-actions"><button class="btn" id="go-next">'+(MG.i===MG.total-1?'See results':'Next word')+ic('arrow')+'</button></div>');return true;}
+    const audioAnswer=el.closest('[data-mini-audio-answer]');if(audioAnswer&&MG.type==='audioImage'){if(MG.answered)return true;MG.answered=true;const ok=audioAnswer.dataset.miniAudioAnswer===MG.current.word;if(ok)MG.score++;recordAdaptiveResult('listening',MG.current.word,ok);if(!ok)addReview(MG.current.word,MG.current.meaning);MG.results[MG.i]=ok?'ok':'no';sfx(ok?'ok':'no');$('.mini-picture-grid').querySelectorAll('button').forEach(b=>{b.disabled=true;if(b.dataset.miniAudioAnswer===MG.current.word)b.classList.add('is-right');else if(b===audioAnswer)b.classList.add('is-wrong');});showSheet(ok,'<h3>'+(ok?'That’s it!':'Not quite')+'</h3><p>The word is <b>'+esc(MG.current.word)+'</b> — '+esc(MG.current.meaning)+'.</p><div class="sheet-actions"><button class="btn" id="go-next">'+(MG.i===MG.total-1?'See results':'Next word')+ic('arrow')+'</button></div>');return true;}
     const sentenceWord=el.closest('[data-mini-sentence-word]');if(sentenceWord&&MG.type==='sentenceOrder'&&!MG.answered){const token=MG.tokens.find(t=>t.id===Number(sentenceWord.dataset.miniSentenceWord));if(token)MG.placed.push(token);miniSentenceRender();return true;}
     const sentenceRemove=el.closest('[data-mini-sentence-remove]');if(sentenceRemove&&MG.type==='sentenceOrder'&&!MG.answered){MG.placed.splice(Number(sentenceRemove.dataset.miniSentenceRemove),1);miniSentenceRender();return true;}
     if(el.closest('[data-mini-sentence-reset]')&&MG.type==='sentenceOrder'){MG.placed=[];MG.feedback='';miniSentenceRender();return true;}
-    if(el.closest('[data-mini-sentence-check]')&&MG.type==='sentenceOrder'){if(MG.answered)return true;const expected=MG.current.text.replace(/[.!?]$/,'').toLowerCase();const actual=MG.placed.map(t=>t.word).join(' ').toLowerCase();if(actual===expected){MG.answered=true;MG.score++;MG.results[MG.i]='ok';sfx('ok');miniSpeech(MG.current.text);showSheet(true,'<h3>Perfect sentence!</h3><p>'+esc(MG.current.text)+'</p><div class="sheet-actions"><button class="btn" id="go-next">'+(MG.i===MG.total-1?'See results':'Next sentence')+ic('arrow')+'</button></div>');}else{MG.feedback='Not quite yet. Rearrange the words and try again.';sfx('no');miniSentenceRender();}return true;}
+    if(el.closest('[data-mini-sentence-check]')&&MG.type==='sentenceOrder'){if(MG.answered)return true;const expected=MG.current.text.replace(/[.!?]$/,'').toLowerCase();const actual=MG.placed.map(t=>t.word).join(' ').toLowerCase();if(actual===expected){recordAdaptiveResult('sentence',MG.current.text,true);MG.answered=true;MG.score++;MG.results[MG.i]='ok';sfx('ok');miniSpeech(MG.current.text);showSheet(true,'<h3>Perfect sentence!</h3><p>'+esc(MG.current.text)+'</p><div class="sheet-actions"><button class="btn" id="go-next">'+(MG.i===MG.total-1?'See results':'Next sentence')+ic('arrow')+'</button></div>');}else{recordAdaptiveResult('sentence',MG.current.text,false);MG.feedback='Not quite yet. Rearrange the words and try again.';sfx('no');miniSentenceRender();}return true;}
     if (el.closest('#go-next')) { miniNext(); return true; }
     const place = el.closest('[data-mg-place]');
     if (place && MG.type === 'order') { const r = MG.rounds[MG.i]; if (MG.answered) return true; const k = Number(place.dataset.mgPlace); r.pool = r.pool.filter(v => v !== k); r.placed.push(k); miniOrderRender(); return true; }
@@ -3312,7 +3351,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     const move=e.target.closest('[data-world-move]');if(move){return;}
     if(e.target.closest('[data-world-interact]')){worldInteract();return;}
     const dialogClose=e.target.closest('[data-world-dialog-close]');if(dialogClose){const panel=$('#world-conversation');if(panel)panel.remove();if(WORLD)WORLD.conversationOpen=false;return;}
-    const dialogChoice=e.target.closest('[data-world-dialog-choice]');if(dialogChoice&&WORLD){const t=worldTask(),choice=t&&t.conversation&&t.conversation.options[Number(dialogChoice.dataset.worldDialogChoice)],feedback=$('.world-conversation-feedback');if(!choice)return;if(choice.correct){if(feedback)feedback.textContent=choice.reply||'That is a natural response. Well done!';WORLD.dialogueComplete=true;WORLD.conversationOpen=false;setTimeout(()=>{const panel=$('#world-conversation');if(panel)panel.remove();if(WORLD&&WORLD.mode==='play'&&worldEval())worldComplete();},650);}else{if(feedback)feedback.textContent=(choice.reply||'Not quite. Try another response.')+' Try again.';sfx('wrong');}return;}
+    const dialogChoice=e.target.closest('[data-world-dialog-choice]');if(dialogChoice&&WORLD){const t=worldTask(),choice=t&&t.conversation&&t.conversation.options[Number(dialogChoice.dataset.worldDialogChoice)],feedback=$('.world-conversation-feedback');if(!choice)return;if(choice.correct){if(feedback)feedback.textContent=choice.reply||'That is a natural response. Well done!';WORLD.dialogueComplete=true;WORLD.conversationOpen=false;setTimeout(()=>{const panel=$('#world-conversation');if(panel)panel.remove();if(WORLD&&WORLD.mode==='play'&&worldEval())worldComplete();},650);}else{recordAdaptiveResult('conversation',t.id||t.title||'world-dialogue',false);if(feedback)feedback.textContent=(choice.reply||'Not quite. Try another response.')+' Try again.';sfx('wrong');}if(choice.correct)recordAdaptiveResult('conversation',t.id||t.title||'world-dialogue',true);return;}
     if(e.target.closest('[data-world-labels]')){if(WORLD){WORLD.labels=!WORLD.labels;try{localStorage.setItem('epiphany-world-labels',WORLD.labels?'1':'0');}catch{}const b=e.target.closest('[data-world-labels]');b.setAttribute('aria-pressed',String(WORLD.labels));b.textContent=WORLD.labels?'🏷 Labels on':'🙈 No labels';b.classList.toggle('is-on',WORLD.labels);worldDraw();}return;}
     if(e.target.closest('[data-world-speak]')){if(worldTask())speak(worldTask().instruction);return;}
     
@@ -3429,7 +3468,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     }
     if (e.target.closest('#developer-start')) { launchDeveloperActivity(); return; }
     const gm = e.target.closest('[data-game]');
-    if (gm) { closeCategoryPicker(false); if(MINI[gm.dataset.game])startMini(gm.dataset.game);else startGame(gm.dataset.game); return; }
+    if (gm) { closeCategoryPicker(false); if(gm.dataset.game==='personalized')preparePersonalizedGame(); if(MINI[gm.dataset.game])startMini(gm.dataset.game);else startGame(gm.dataset.game); return; }
     const lv = e.target.closest('[data-level]');
     if (lv) {
       const i = Number(lv.dataset.level), l = LEVELS[i];
