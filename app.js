@@ -3115,7 +3115,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
       if(!WORLD.tasks.length){WORLD.run='story';WORLD.tasks=storyTasks;}
     }else WORLD.tasks=storyTasks;
     WORLD.baseObjects=WORLD.objects.map(o=>({...o}));
-    WORLD.step=0;WORLD.picked=new Set();WORLD.given=new Set();WORLD.carried=null;WORLD.mode='play';WORLD.usedHelp=false;WORLD.moves=0;WORLD.target=null;WORLD.bonusGiven=false;WORLD.dialogueComplete=false;WORLD.weather=['clear','rain'][Math.floor(Math.random()*2)];WORLD.timeOfDay=['morning','evening','night'][Math.floor(Math.random()*3)];worldRenderPlay();
+    WORLD.step=0;WORLD.picked=new Set();WORLD.given=new Set();WORLD.carried=null;WORLD.mode='play';WORLD.usedHelp=false;WORLD.moves=0;WORLD.target=null;WORLD.bonusGiven=false;WORLD.dialogueComplete=false;worldRenderPlay();
   }
   function startWorld(taskId){if(typeof WORLD_DATA==='undefined'){toast('World data is not loaded. Refresh and try again.');return;}if(WORLD&&WORLD.raf)cancelAnimationFrame(WORLD.raf);
     // Opening the World tab should only build the region menu; do not initialise
