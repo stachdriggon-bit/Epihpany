@@ -1240,6 +1240,11 @@
     const days=state.learningActivity?.days||{},now=new Date(),week=[];
     for(let offset=6;offset>=0;offset--){const d=new Date(now.getFullYear(),now.getMonth(),now.getDate()-offset),key=dayKey(d),row=days[key]||{};week.push({key,label:d.toLocaleDateString('en',{weekday:'short'}),date:d.toLocaleDateString('en',{month:'short',day:'numeric'}),minutes:Number(row.minutes)||0,words:Number(row.words)||0});}
     const totalMinutes=week.reduce((n,d)=>n+d.minutes,0),totalWords=week.reduce((n,d)=>n+d.words,0),maxMinutes=Math.max(1,...week.map(d=>d.minutes)),maxWords=Math.max(1,...week.map(d=>d.words));
+    const hasAnyActivity = Object.values(days).some(row => row && (Number(row.minutes)>0 || Number(row.words)>0 || Number(row.attempts)>0));
+    if (!hasAnyActivity) {
+      const welcome = '<section class="block learning-insights learning-insights-empty"><div class="block-head"><div><p class="kicker">YOUR LEARNING RHYTHM</p><h2>Your map starts with your first session</h2><p>Finish a short activity or save a new word. Your learning rhythm will appear here as you go.</p></div></div></section>';
+      if(root)root.innerHTML=welcome;if(profileRoot)profileRoot.innerHTML=welcome;return;
+    }
     const markup='<section class="block learning-insights"><div class="block-head"><div><p class="kicker">YOUR LAST 7 DAYS</p><h2>Learning rhythm</h2><p>Estimated practice minutes and newly saved words.</p></div><span class="activity-total">'+totalMinutes+' min · '+totalWords+' words</span></div><div class="weekly-bars"><div class="weekly-chart"><h3>Minutes</h3><div class="weekly-bar-list">'+week.map(d=>'<div class="weekly-bar-col" title="'+d.date+': '+d.minutes+' minutes"><span>'+d.minutes+'</span><i style="height:'+Math.max(d.minutes?8:2,d.minutes/maxMinutes*100)+'%"></i><small>'+d.label+'</small></div>').join('')+'</div></div><div class="weekly-chart"><h3>Words learned</h3><div class="weekly-bar-list">'+week.map(d=>'<div class="weekly-bar-col words" title="'+d.date+': '+d.words+' words"><span>'+d.words+'</span><i style="height:'+Math.max(d.words?8:2,d.words/maxWords*100)+'%"></i><small>'+d.label+'</small></div>').join('')+'</div></div></div><div class="activity-heat-wrap"><div class="activity-head"><h3>Activity map</h3><span>Last 12 weeks</span></div><div class="activity-heatmap" role="img" aria-label="Daily learning activity over the last 12 weeks">'+Array.from({length:84},(_,i)=>{const d=new Date(now.getFullYear(),now.getMonth(),now.getDate()-(83-i)),key=dayKey(d),row=days[key]||{},score=(Number(row.minutes)||0)+(Number(row.words)||0)+(Number(row.attempts)||0);return '<span class="activity-cell level-'+(score===0?0:score<3?1:score<8?2:score<16?3:4)+'" title="'+key+': '+(Number(row.minutes)||0)+' min, '+(Number(row.words)||0)+' words"></span>';}).join('')+'</div><div class="activity-legend"><span>Less</span><i class="level-0"></i><i class="level-1"></i><i class="level-2"></i><i class="level-3"></i><i class="level-4"></i><span>More</span></div></div></section>';
     if(root)root.innerHTML=markup;if(profileRoot)profileRoot.innerHTML=markup;
   }
@@ -2349,7 +2354,15 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     document.body.classList.toggle('ar-on', !!state.helpArabic);
     document.documentElement.dir = state.helpArabic ? 'rtl' : 'ltr';
     document.body.dir = state.helpArabic ? 'rtl' : 'ltr';
-    $$('#ar-toggle, #game-ar').forEach(b => b.setAttribute('aria-pressed', String(!!state.helpArabic)));
+    $('#ar-toggle, #game-ar').forEach(b => b.setAttribute('aria-pressed', String(!!state.helpArabic)));
+    const helpToggle = $('#ar-toggle');
+    if (helpToggle) {
+      const longLabel = helpToggle.querySelector('.ar-long'), shortLabel = helpToggle.querySelector('.ar-short');
+      if (longLabel) { longLabel.textContent = state.helpArabic ? 'المساعدة: العربية' : 'Help: English'; longLabel.lang = state.helpArabic ? 'ar' : 'en'; }
+      if (shortLabel) { shortLabel.textContent = state.helpArabic ? 'ع' : 'EN'; shortLabel.lang = state.helpArabic ? 'ar' : 'en'; }
+      helpToggle.setAttribute('aria-label', state.helpArabic ? 'Help language: Arabic. Click to switch to English.' : 'Help language: English. Click to switch to Arabic.');
+      helpToggle.title = state.helpArabic ? 'Help language: Arabic' : 'Help language: English';
+    }
     const s = $('#sound-toggle');
     s.setAttribute('aria-pressed', String(!!state.sound));
     s.setAttribute('aria-label', state.sound ? 'Turn sound effects off' : 'Turn sound effects on');
@@ -4523,6 +4536,16 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
   }, true);
   renderAll();
   enhanceTranslationControls($('#game-body'));
+  const profileNav = $('.profile-nav');
+  if (profileNav) {
+    profileNav.addEventListener('click', event => {
+      const link = event.target.closest('a[href^="#"]');
+      if (!link) return;
+      profileNav.querySelectorAll('a').forEach(item => item.removeAttribute('aria-current'));
+      link.setAttribute('aria-current', 'location');
+    });
+  }
+
   const helpLanguageModal = $('#help-language-modal');
   let helpLanguageChoice = '';
   try { helpLanguageChoice = localStorage.getItem('epiphany-help-language-choice') || ''; } catch {}
