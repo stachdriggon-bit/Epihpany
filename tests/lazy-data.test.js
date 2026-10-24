@@ -75,3 +75,62 @@ test('initial HTML defers stories and World data and keeps loader in offline she
   assert.match(app, /if \(state\.helpArabic\) ensureArabicTranslationCatalog\(\)/);
   assert.doesNotMatch(sw, /'\.\/data-translation-ar\.js'/);
 });
+
+
+test('overlapping feature groups share one in-flight script request', async () => {
+  const requested = [];
+  const scripts = [];
+  const document = {
+    createElement(tag) {
+      assert.equal(tag, 'script');
+      const script = { async: true, src: '', removed: false, remove() { this.removed = true; } };
+      scripts.push(script);
+      return script;
+    },
+    head: { appendChild(script) { requested.push(script.src); } }
+  };
+  const context = vm.createContext({ window: {}, document });
+  vm.runInContext(fs.readFileSync(path.join(root, 'lazy-data.js'), 'utf8'), context);
+
+  const thinkLab = context.window.EPIPHANY_LAZY_LOAD('thinklab');
+  const lifeSkills = context.window.EPIPHANY_LAZY_LOAD('lifeskills');
+  assert.equal(requested.length, 1, 'the shared Think Lab script should only be inserted once');
+  assert.match(requested[0], /^think-lab\\.js\\?/);
+
+  scripts[0].onload();
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(requested.length, 2);
+  assert.match(requested[1], /^life-skills\\.js\\?/);
+  scripts[1].onload();
+
+  await Promise.all([thinkLab, lifeSkills]);
+  assert.equal(requested.length, 2);
+});
+
+test('failed lazy scripts are removed and can be retried', async () => {
+  const requested = [];
+  const scripts = [];
+  const document = {
+    createElement() {
+      const script = { async: true, src: '', removed: false, remove() { this.removed = true; } };
+      scripts.push(script);
+      return script;
+    },
+    head: { appendChild(script) { requested.push(script.src); } }
+  };
+  const context = vm.createContext({ window: {}, document });
+  vm.runInContext(fs.readFileSync(path.join(root, 'lazy-data.js'), 'utf8'), context);
+
+  const failed = context.window.EPIPHANY_LAZY_LOAD('stories');
+  scripts[0].onerror();
+  await assert.rejects(failed, /Unable to load feature data: data-stories\\.js/);
+  assert.equal(scripts[0].removed, true);
+
+  const retry = context.window.EPIPHANY_LAZY_LOAD('stories');
+  assert.equal(requested.length, 2);
+  scripts[1].onload();
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(requested.length, 3);
+  scripts[2].onload();
+  await retry;
+});
