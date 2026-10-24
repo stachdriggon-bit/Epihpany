@@ -410,6 +410,7 @@
     document.querySelectorAll('[data-frame-requirement]').forEach(button=>{const req=button.dataset.frameRequirement,unlocked=req==='streak'?streak>=30:words>=100;button.disabled=!unlocked;button.classList.toggle('is-locked',!unlocked);button.setAttribute('aria-label',button.textContent.replace(/^🔒\s*/,'')+(unlocked?' unlocked':' locked'));button.textContent=(unlocked?'':'🔒 ')+(req==='streak'?'Gold · 30-day streak':'Stars · 100 words');});
     const hint=$('avatar-frame-hint');if(hint)hint.textContent='Gold frame: 30-day streak. Star frame: master 100 words. Keep learning to unlock them.';
     if(!document.querySelector('[data-avatar-frame="'+selectedAvatarFrame+'"]:not(:disabled)'))selectedAvatarFrame='none';
+    const avatarWrap=document.querySelector('.player-avatar-wrap');if(avatarWrap)avatarWrap.dataset.frame=selectedAvatarFrame;
   }
   function setPlayerProfileAccess() {
     const form = $('player-profile-form');
@@ -437,7 +438,10 @@
     $('avatar-color')?.addEventListener('input',event=>{selectedAvatarColor=event.target.value;renderPlayerAvatar();});
     $('avatar-color-2')?.addEventListener('input',event=>{selectedAvatarColor2=event.target.value;renderPlayerAvatar();});
     $('profile-accent-color')?.addEventListener('input',event=>{selectedProfileAccent=event.target.value;renderPlayerAvatar();});
-    $('avatar-search')?.addEventListener('input',event=>{const q=event.target.value.trim().toLowerCase();document.querySelectorAll('[data-avatar]').forEach(button=>{const text=(button.dataset.avatar+' '+button.dataset.category+' '+button.getAttribute('aria-label')).toLowerCase();button.hidden=!!q&&!text.includes(q);});});
+    let avatarCategory='all';
+    function filterAvatars(){const q=($('avatar-search')?.value||'').trim().toLowerCase();document.querySelectorAll('[data-avatar]').forEach(button=>{const text=(button.dataset.avatar+' '+button.dataset.category+' '+button.getAttribute('aria-label')).toLowerCase();button.hidden=(avatarCategory!=='all'&&button.dataset.category!==avatarCategory)||!!q&&!text.includes(q);});}
+    $('avatar-search')?.addEventListener('input',filterAvatars);
+    document.querySelectorAll('[data-avatar-filter]').forEach(button=>button.addEventListener('click',()=>{avatarCategory=button.dataset.avatarFilter;document.querySelectorAll('[data-avatar-filter]').forEach(item=>{const active=item===button;item.classList.toggle('is-selected',active);item.setAttribute('aria-pressed',String(active));});filterAvatars();}));
     $('player-avatar-upload')?.addEventListener('change',event=>openAvatarCrop(event.target.files&&event.target.files[0]));
     $('avatar-crop-zoom')?.addEventListener('input',event=>{cropScale=Number(event.target.value)||1;drawAvatarCrop();});
     const cropCanvas=$('avatar-crop-canvas');
