@@ -5332,3 +5332,7 @@ window.EPIPHANY_AR_TRANSLATION_PHRASES = Object.assign(window.EPIPHANY_AR_TRANSL
   "Go and talk to the family, then visit the lamp.":"اذهب وتحدث إلى العائلة، ثم توجه إلى المصباح.",
   "First find the people near the middle-left, then head to the lamp on the right.":"اعثر أولًا على الأشخاص قرب منتصف الجهة اليسرى، ثم توجه إلى المصباح على اليمين."
 });
+
+window.EPIPHANY_AR_TRANSLATION_PHRASES = Object.assign(window.EPIPHANY_AR_TRANSLATION_PHRASES || {}, {
+  "should":"ينبغي / يجب"
+});
