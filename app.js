@@ -824,7 +824,7 @@
     const box=Math.max(1,Math.min(5,Number(item.box)||1));
     const history=Array.isArray(item.answerHistory)?item.answerHistory.slice(-5):[];
     const accuracy=history.length?history.filter(x=>x&&x.correct).length/history.length:null;
-    let targetBox=box;
+    let targetBox=Math.min(5,box+1);
     if(item.confidence==='low')targetBox=1;
     else if(item.confidence==='medium')targetBox=Math.min(targetBox,3);
     if(accuracy!==null&&history.length>=2) {
