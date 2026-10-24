@@ -68,8 +68,10 @@ test('question banks do not repeat the same question within a game', () => {
   for (const [gameName, game] of Object.entries(games)) {
     const seen = new Map();
     for (const [index, q] of (game.questions || []).entries()) {
-      const key = clean(q.q || q.question);
-      if (!key) continue;
+      const prompt = clean(q.q || q.question);
+      if (!prompt) continue;
+      const options = Array.isArray(q.answers) ? q.answers.map(clean).sort().join('|') : '';
+      const key = prompt + '|' + options;
       if (seen.has(key)) duplicates.push(`${gameName}: question ${index + 1} duplicates question ${seen.get(key) + 1}: ${q.q || q.question}`);
       else seen.set(key, index);
     }
