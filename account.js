@@ -199,7 +199,13 @@
 
   let selectedAvatar = '🦊';
   let selectedAvatarColor = '#FFE08A';
+  let selectedAvatarColor2 = '#F0EDFF';
   let uploadedAvatarUrl = '';
+  let selectedBannerStyle = 'aurora';
+  let uploadedBannerUrl = '';
+  let selectedAvatarFrame = 'none';
+  let selectedProfileAccent = '#7c6cff';
+  let cropSourceImage = null, cropSourceUrl = '', cropScale = 1, cropOffsetX = 0, cropOffsetY = 0, cropDragging = false, cropLastPointer = null;
   function profileStatus(message, kind) {
     const el = $('player-profile-status');
     if (!el) return;
@@ -215,6 +221,14 @@
     const wrap = document.querySelector('.player-avatar-wrap');
     if (!preview || !emoji || !wrap) return;
     wrap.style.setProperty('--avatar-color', selectedAvatarColor);
+    wrap.style.setProperty('--avatar-color-2', selectedAvatarColor2);
+    wrap.dataset.frame = selectedAvatarFrame;
+    const profileView = $('profile-view');
+    if (profileView) profileView.style.setProperty('--profile-accent', selectedProfileAccent);
+    const hero = document.querySelector('.player-profile-hero');
+    if (hero) { hero.dataset.bannerStyle = selectedBannerStyle; hero.style.backgroundImage = uploadedBannerUrl ? 'linear-gradient(0deg,rgba(20,25,50,.12),rgba(20,25,50,.12)),url("' + uploadedBannerUrl.replace(/["\\]/g,'') + '")' : ''; }
+    document.querySelectorAll('[data-banner-style]').forEach(button=>{const active=button.dataset.bannerStyle===selectedBannerStyle&&!uploadedBannerUrl;button.classList.toggle('is-selected',active);button.setAttribute('aria-pressed',String(active));});
+    document.querySelectorAll('[data-avatar-frame]').forEach(button=>{const active=button.dataset.avatarFrame===selectedAvatarFrame;button.classList.toggle('is-selected',active);button.setAttribute('aria-pressed',String(active));});
     if (uploadedAvatarUrl) {
       preview.src = uploadedAvatarUrl;
       preview.hidden = false;
@@ -230,8 +244,12 @@
       button.classList.toggle('is-selected', active);
       button.setAttribute('aria-pressed', String(active));
     });
-    const color = $('avatar-color');
-    if (color && color.value !== selectedAvatarColor) color.value = selectedAvatarColor;
+    const color = $('avatar-color'); if (color && color.value !== selectedAvatarColor) color.value = selectedAvatarColor;
+    const color2 = $('avatar-color-2'); if (color2 && color2.value !== selectedAvatarColor2) color2.value = selectedAvatarColor2;
+    const accent = $('profile-accent-color'); if (accent && accent.value !== selectedProfileAccent) accent.value = selectedProfileAccent;
+    const removeAvatar = $('player-avatar-remove'); if (removeAvatar) removeAvatar.hidden = !uploadedAvatarUrl;
+    const removeBanner = $('player-banner-remove'); if (removeBanner) removeBanner.hidden = !uploadedBannerUrl;
+    updateFrameAvailability();
   }
   function renderPlayerProfile(profile) {
     const name = profile && profile.display_name || (currentUser && (currentUser.user_metadata && (currentUser.user_metadata.full_name || currentUser.user_metadata.name)) ) || (currentUser && currentUser.email ? currentUser.email.split('@')[0] : 'English learner');
@@ -240,7 +258,12 @@
     if (privacy) privacy.checked = profile && typeof profile.is_private === 'boolean' ? profile.is_private : true;
     selectedAvatar = profile && profile.avatar_emoji || '🦊';
     selectedAvatarColor = profile && /^#[0-9a-f]{6}$/i.test(profile.avatar_color || '') ? profile.avatar_color : '#FFE08A';
+    selectedAvatarColor2 = profile && /^#[0-9a-f]{6}$/i.test(profile.avatar_color_2 || '') ? profile.avatar_color_2 : '#F0EDFF';
     uploadedAvatarUrl = profile && profile.avatar_url || '';
+    selectedBannerStyle = ['aurora','sunset','ocean','pattern'].includes(profile && profile.banner_style) ? profile.banner_style : 'aurora';
+    uploadedBannerUrl = profile && profile.banner_url || '';
+    selectedAvatarFrame = ['none','gold','stars'].includes(profile && profile.avatar_frame) ? profile.avatar_frame : 'none';
+    selectedProfileAccent = profile && /^#[0-9a-f]{6}$/i.test(profile.accent_color || '') ? profile.accent_color : '#7c6cff';
     if ($('player-display-name')) $('player-display-name').value = name;
     if ($('player-bio')) $('player-bio').value = bio;
     if ($('player-profile-display-name')) $('player-profile-display-name').textContent = name;
@@ -254,7 +277,7 @@
   async function loadPlayerProfile() {
     if (!client || !currentUser) return;
     try {
-      const {data, error} = await client.from('player_profiles').select('display_name,bio,avatar_url,avatar_emoji,avatar_color,is_private').eq('user_id', currentUser.id).maybeSingle();
+      const {data, error} = await client.from('player_profiles').select('display_name,bio,avatar_url,avatar_emoji,avatar_color,is_private,avatar_color_2,banner_style,banner_url,avatar_frame,accent_color').eq('user_id', currentUser.id).maybeSingle();
       if (error) throw error;
       renderPlayerProfile(data || {});
       profileStatus(data ? 'Your player profile is loaded.' : 'Choose a name and avatar, then save your profile.', 'success');
@@ -329,7 +352,7 @@
     profileStatus('Saving your profile…', 'loading');
     try {
       const privacy = $('player-profile-private');
-      const payload = {user_id:currentUser.id,display_name:displayName,bio,avatar_url:uploadedAvatarUrl || null,avatar_emoji:selectedAvatar,avatar_color:selectedAvatarColor,is_private:privacy ? privacy.checked : true,updated_at:new Date().toISOString()};
+      const payload = {user_id:currentUser.id,display_name:displayName,bio,avatar_url:uploadedAvatarUrl || null,avatar_emoji:selectedAvatar,avatar_color:selectedAvatarColor,avatar_color_2:selectedAvatarColor2,banner_style:selectedBannerStyle,banner_url:uploadedBannerUrl || null,avatar_frame:selectedAvatarFrame,accent_color:selectedProfileAccent,is_private:privacy ? privacy.checked : true,updated_at:new Date().toISOString()};
       const {error} = await client.from('player_profiles').upsert(payload,{onConflict:'user_id'});
       if (error) throw error;
       if ($('player-profile-display-name')) $('player-profile-display-name').textContent = displayName;
@@ -344,29 +367,47 @@
       if (saveButton) saveButton.disabled = false;
     }
   }
-  async function uploadPlayerAvatar(file) {
-    if (!client || !currentUser) { profileStatus('Sign in before uploading a picture.', 'error'); return; }
-    if (!file) return;
-    if (!/^image\/(png|jpeg|webp)$/.test(file.type)) { profileStatus('Please choose a PNG, JPG or WebP image.', 'error'); return; }
-    if (file.size > 3 * 1024 * 1024) { profileStatus('Please use an image smaller than 3 MB.', 'error'); return; }
-    const input = $('player-avatar-upload');
-    if (input) input.disabled = true;
-    profileStatus('Uploading your picture…', 'loading');
-    try {
-      const safeName = file.name.toLowerCase().replace(/[^a-z0-9._-]+/g,'-').slice(-80) || 'avatar-image';
-      const path = currentUser.id + '/' + Date.now() + '-' + safeName;
-      const {error} = await client.storage.from('player-avatars').upload(path,file,{cacheControl:'3600',upsert:true,contentType:file.type});
-      if (error) throw error;
-      const {data} = client.storage.from('player-avatars').getPublicUrl(path);
-      uploadedAvatarUrl = data.publicUrl;
-      renderPlayerAvatar();
-      await persistPlayerProfile();
-    } catch (error) {
-      console.error('Epiphany avatar upload failed:', error);
-      profileStatus('Picture upload failed. Make sure the player-avatars storage bucket was created in Supabase.', 'error');
-    } finally {
-      if (input) { input.disabled = false; input.value = ''; }
-    }
+  function drawAvatarCrop() {
+    const canvas=$('avatar-crop-canvas'); if(!canvas||!cropSourceImage)return;
+    const ctx=canvas.getContext('2d'),w=canvas.width,h=canvas.height;ctx.clearRect(0,0,w,h);ctx.save();ctx.beginPath();ctx.arc(w/2,h/2,w/2-2,0,Math.PI*2);ctx.clip();ctx.fillStyle=selectedAvatarColor;ctx.fillRect(0,0,w,h);
+    const fit=Math.max(w/cropSourceImage.naturalWidth,h/cropSourceImage.naturalHeight)*cropScale,dw=cropSourceImage.naturalWidth*fit,dh=cropSourceImage.naturalHeight*fit;
+    ctx.drawImage(cropSourceImage,(w-dw)/2+cropOffsetX,(h-dh)/2+cropOffsetY,dw,dh);ctx.restore();ctx.beginPath();ctx.arc(w/2,h/2,w/2-2,0,Math.PI*2);ctx.strokeStyle='rgba(255,255,255,.95)';ctx.lineWidth=4;ctx.stroke();
+  }
+  function openAvatarCrop(file) {
+    if(!client||!currentUser){profileStatus('Sign in before uploading a picture.','error');return;} if(!file)return;
+    if(!/^image\/(png|jpeg|webp)$/.test(file.type)){profileStatus('Please choose a PNG, JPG or WebP image.','error');return;}
+    if(file.size>12*1024*1024){profileStatus('Please choose an image smaller than 12 MB.','error');return;}
+    if(cropSourceUrl)URL.revokeObjectURL(cropSourceUrl);cropSourceUrl=URL.createObjectURL(file);cropSourceImage=new Image();
+    cropSourceImage.onload=()=>{cropScale=1;cropOffsetX=0;cropOffsetY=0;$('avatar-crop-zoom').value='1';$('avatar-crop-modal').hidden=false;document.body.classList.add('avatar-crop-open');drawAvatarCrop();$('avatar-crop-save')?.focus();};
+    cropSourceImage.onerror=()=>profileStatus('This picture could not be opened. Please try another image.','error');cropSourceImage.src=cropSourceUrl;
+  }
+  function closeAvatarCrop() {
+    const modal=$('avatar-crop-modal');if(modal)modal.hidden=true;document.body.classList.remove('avatar-crop-open');if(cropSourceUrl)URL.revokeObjectURL(cropSourceUrl);cropSourceUrl='';cropSourceImage=null;
+  }
+  async function saveCroppedAvatar() {
+    if(!cropSourceImage||!client||!currentUser)return;
+    const canvas=document.createElement('canvas');canvas.width=256;canvas.height=256;const ctx=canvas.getContext('2d');
+    const fit=Math.max(256/cropSourceImage.naturalWidth,256/cropSourceImage.naturalHeight)*cropScale,dw=cropSourceImage.naturalWidth*fit,dh=cropSourceImage.naturalHeight*fit;
+    ctx.save();ctx.beginPath();ctx.arc(128,128,128,0,Math.PI*2);ctx.clip();ctx.fillStyle=selectedAvatarColor;ctx.fillRect(0,0,256,256);ctx.drawImage(cropSourceImage,(256-dw)/2+cropOffsetX,(256-dh)/2+cropOffsetY,dw,dh);ctx.restore();
+    const button=$('avatar-crop-save');if(button)button.disabled=true;profileStatus('Optimizing your picture…','loading');
+    try{const blob=await new Promise((resolve,reject)=>canvas.toBlob(b=>b?resolve(b):reject(new Error('Image compression failed')),'image/webp',.82));const path=currentUser.id+'/'+Date.now()+'-avatar.webp';const {error}=await client.storage.from('player-avatars').upload(path,blob,{cacheControl:'31536000',upsert:true,contentType:'image/webp'});if(error)throw error;uploadedAvatarUrl=client.storage.from('player-avatars').getPublicUrl(path).data.publicUrl;renderPlayerAvatar();closeAvatarCrop();await persistPlayerProfile();}
+    catch(error){console.error('Epiphany avatar upload failed:',error);profileStatus('Picture upload failed. Check the player-avatars storage bucket and try again.','error');}
+    finally{if(button)button.disabled=false;const input=$('player-avatar-upload');if(input){input.disabled=false;input.value='';}}
+  }
+  async function uploadProfileBanner(file) {
+    if(!client||!currentUser){profileStatus('Sign in before uploading a cover image.','error');return;}if(!file)return;
+    if(!/^image\/(png|jpeg|webp)$/.test(file.type)){profileStatus('Please choose a PNG, JPG or WebP image.','error');return;}if(file.size>12*1024*1024){profileStatus('Please choose a cover image smaller than 12 MB.','error');return;}
+    const input=$('player-banner-upload');if(input)input.disabled=true;
+    try{const image=new Image(),url=URL.createObjectURL(file);await new Promise((resolve,reject)=>{image.onload=resolve;image.onerror=reject;image.src=url;});const canvas=document.createElement('canvas');canvas.width=1200;canvas.height=360;const ctx=canvas.getContext('2d'),scale=Math.max(1200/image.naturalWidth,360/image.naturalHeight),dw=image.naturalWidth*scale,dh=image.naturalHeight*scale;ctx.drawImage(image,(1200-dw)/2,(360-dh)/2,dw,dh);URL.revokeObjectURL(url);const blob=await new Promise((resolve,reject)=>canvas.toBlob(b=>b?resolve(b):reject(new Error('Cover compression failed')),'image/webp',.8));const path=currentUser.id+'/'+Date.now()+'-cover.webp';const {error}=await client.storage.from('player-avatars').upload(path,blob,{cacheControl:'31536000',upsert:true,contentType:'image/webp'});if(error)throw error;uploadedBannerUrl=client.storage.from('player-avatars').getPublicUrl(path).data.publicUrl;renderPlayerAvatar();await persistPlayerProfile();}
+    catch(error){console.error('Epiphany cover upload failed:',error);profileStatus('Cover upload failed. Check the player-avatars storage bucket and try again.','error');}
+    finally{if(input){input.disabled=false;input.value='';}}
+  }
+  function updateFrameAvailability() {
+    const streak=Math.max(Number($('home-streak')?.textContent||0),Number($('chip-streak')?.textContent||0));
+    const words=Math.max(...['home-words','chip-words','progress-words-mastered','profile-words-mastered'].map(id=>Number($(id)?.textContent||0)),0);
+    document.querySelectorAll('[data-frame-requirement]').forEach(button=>{const req=button.dataset.frameRequirement,unlocked=req==='streak'?streak>=30:words>=100;button.disabled=!unlocked;button.classList.toggle('is-locked',!unlocked);button.setAttribute('aria-label',button.textContent.replace(/^🔒\s*/,'')+(unlocked?' unlocked':' locked'));button.textContent=(unlocked?'':'🔒 ')+(req==='streak'?'Gold · 30-day streak':'Stars · 100 words');});
+    const hint=$('avatar-frame-hint');if(hint)hint.textContent='Gold frame: 30-day streak. Star frame: master 100 words. Keep learning to unlock them.';
+    if(!document.querySelector('[data-avatar-frame="'+selectedAvatarFrame+'"]:not(:disabled)'))selectedAvatarFrame='none';
   }
   function setPlayerProfileAccess() {
     const form = $('player-profile-form');
@@ -391,12 +432,26 @@
       uploadedAvatarUrl = '';
       renderPlayerAvatar();
     }));
-    $('avatar-color')?.addEventListener('input', event => {
-      selectedAvatarColor = event.target.value;
-      renderPlayerAvatar();
-    });
-    $('player-avatar-upload')?.addEventListener('change', event => uploadPlayerAvatar(event.target.files && event.target.files[0]));
+    $('avatar-color')?.addEventListener('input',event=>{selectedAvatarColor=event.target.value;renderPlayerAvatar();});
+    $('avatar-color-2')?.addEventListener('input',event=>{selectedAvatarColor2=event.target.value;renderPlayerAvatar();});
+    $('profile-accent-color')?.addEventListener('input',event=>{selectedProfileAccent=event.target.value;renderPlayerAvatar();});
+    $('avatar-search')?.addEventListener('input',event=>{const q=event.target.value.trim().toLowerCase();document.querySelectorAll('[data-avatar]').forEach(button=>{const text=(button.dataset.avatar+' '+button.dataset.category+' '+button.getAttribute('aria-label')).toLowerCase();button.hidden=!!q&&!text.includes(q);});});
+    $('player-avatar-upload')?.addEventListener('change',event=>openAvatarCrop(event.target.files&&event.target.files[0]));
+    $('avatar-crop-zoom')?.addEventListener('input',event=>{cropScale=Number(event.target.value)||1;drawAvatarCrop();});
+    const cropCanvas=$('avatar-crop-canvas');
+    cropCanvas?.addEventListener('pointerdown',event=>{cropDragging=true;cropLastPointer={x:event.clientX,y:event.clientY};cropCanvas.setPointerCapture(event.pointerId);});
+    cropCanvas?.addEventListener('pointermove',event=>{if(!cropDragging||!cropLastPointer)return;const rect=cropCanvas.getBoundingClientRect();cropOffsetX+=(event.clientX-cropLastPointer.x)*256/rect.width;cropOffsetY+=(event.clientY-cropLastPointer.y)*256/rect.height;cropLastPointer={x:event.clientX,y:event.clientY};drawAvatarCrop();});
+    ['pointerup','pointercancel','lostpointercapture'].forEach(type=>cropCanvas?.addEventListener(type,()=>{cropDragging=false;cropLastPointer=null;}));
+    $('avatar-crop-cancel')?.addEventListener('click',closeAvatarCrop);$('avatar-crop-save')?.addEventListener('click',saveCroppedAvatar);
+    $('player-avatar-remove')?.addEventListener('click',async()=>{uploadedAvatarUrl='';renderPlayerAvatar();await persistPlayerProfile();});
+    $('player-banner-upload')?.addEventListener('change',event=>uploadProfileBanner(event.target.files&&event.target.files[0]));
+    $('player-banner-remove')?.addEventListener('click',async()=>{uploadedBannerUrl='';renderPlayerAvatar();await persistPlayerProfile();});
+    document.querySelectorAll('[data-banner-style]').forEach(button=>button.addEventListener('click',()=>{selectedBannerStyle=button.dataset.bannerStyle;uploadedBannerUrl='';renderPlayerAvatar();}));
+    document.querySelectorAll('[data-avatar-frame]').forEach(button=>button.addEventListener('click',()=>{if(button.disabled)return;selectedAvatarFrame=button.dataset.avatarFrame;renderPlayerAvatar();}));
     form.addEventListener('submit', async event => { event.preventDefault(); await persistPlayerProfile(); });
+    $('avatar-crop-modal')?.addEventListener('click',event=>{if(event.target.id==='avatar-crop-modal')closeAvatarCrop();});
+    document.addEventListener('keydown',event=>{if(event.key==='Escape'&&!$('avatar-crop-modal')?.hidden)closeAvatarCrop();});
+    updateFrameAvailability();
     postForm.addEventListener('submit', async event => {
       event.preventDefault();
       if (!client || !currentUser) { profileStatus('Sign in to share a post.', 'error'); return; }
