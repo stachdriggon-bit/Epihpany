@@ -165,7 +165,7 @@
       next.box = 0; next.streak = 0; next.due = today;
     } else {
       next.streak = (Number(old.streak)||0)+1;
-      next.box = Math.min(GRAMMAR_SRS_DAYS.length, Math.max(1, Number(old.box)||0) + 1);
+      next.box = Math.min(GRAMMAR_SRS_DAYS.length, (Number(old.box)||0) + 1);
       const dueDate = new Date(); dueDate.setHours(12,0,0,0); dueDate.setDate(dueDate.getDate()+GRAMMAR_SRS_DAYS[next.box-1]);
       next.due = dayKey(dueDate);
     }
