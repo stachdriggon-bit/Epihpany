@@ -1907,3 +1907,6 @@ body[data-theme="dark"] .pl-word.is-missing,body[data-theme="dark"] .pl-char.is-
 @media(max-width:760px){.tl-mastery-grid{grid-template-columns:1fr}.tl-recommendation{padding:18px}.tl-skill-list{gap:14px}.tl-section-heading{gap:10px}}
 @media(max-width:460px){.tl-mastery{padding:17px}.tl-skill-list{grid-template-columns:1fr;gap:13px}.tl-mastery-count b{font-size:1.5rem}.tl-section-heading p{font-size:.78rem}}
 @media(prefers-reduced-motion:reduce){.tl-skill-track span{transition:none}}
+
+/* Adaptive Think Lab difficulty indicator */
+.tl-level-tag{display:inline-flex;align-items:center;margin:0 0 10px;padding:4px 8px;border:1px solid var(--line);border-radius:99px;font-size:.62rem;font-weight:800;letter-spacing:.09em;color:var(--ink-2);background:var(--ground,#f4f5fa)}
