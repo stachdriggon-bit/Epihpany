@@ -77,6 +77,8 @@
   // Assign a topic only when the prompt or its explanation provides a clear grammar signal.
   // These tags let writing and error-spotting rounds share the same review history as grammar.
   function inferGrammarTrap(q) {
+    const text = [q.prompt,q.text,q.why_en,q.why_ar,q.hint,q.answer,q.fix].filter(Boolean).join(' ').toLowerCase();
+    const has = re => re.test(text);
     // High-confidence patterns for writing and error-spotting items with generic explanations.
     if (has(/\b(present continuous|be \+ verb-ing|verb-ing|verb ending in -ing)\b|\b(are|is|am) go(ing)? to\b/)) return 'verb-patterns';
     if (has(/\b(recommended that|insisted that|essential that|demand that|mandative subjunctive|base-form subjunctive)\b/)) return 'subjunctive';
@@ -95,8 +97,6 @@
     if (has(/\b(as though|as if|unreal comparison|would have|past counterfactual|past unreal condition)\b/)) return 'conditionals';
     if (has(/\b(news is uncountable|uncountable noun|uncountable in english|countable noun|countability)\b/)) return 'countable-uncountable';
     if (has(/\b(so \+ adjective|fronted for emphasis|invert the auxiliary and subject)\b/)) return 'inversion';
-    const text = [q.prompt,q.text,q.why_en,q.why_ar,q.hint,q.answer,q.fix].filter(Boolean).join(' ').toLowerCase();
-    const has = re => re.test(text);
     if (has(/\b(am|is|are) with (i|you|we|they|he|she|it)\b|subject pronoun.*\b(am|is|are)\b|\bbe verb\b|\bbe-verbs?\b|\bwas and were\b|\bwas\/were\b|\b(is|are|am)\b.*\b(subject|pronoun)\b/)) return 'am-is-are';
     if (has(/\b(can|could|should|must|might|may|would)\b.*\b(base form|base verb|bare infinitive)\b|after can|modal verb/)) return 'modals';
     if (has(/\bcan\b/)) return 'can';
