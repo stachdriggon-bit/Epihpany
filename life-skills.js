@@ -368,7 +368,7 @@
       {when:/disagree|unrealistic|deadline|task|plan/, wants:/\b(could|would|alternative|option|consider|complete|finish|time|instead|work for you|check|different)\b/, conflict:/\b(stupid|idiot|shut up|you're wrong|you are wrong)\b/},
       {when:/misinformation|incorrect/, wants:/\b(check|update|different|information|fact|verify|look at|confirm)\b/, conflict:/\b(stupid|idiot|shut up)\b/},
       {when:/private information|private contact/, wants:/\b(can't|cannot|permission|private|share|confidential|ask them)\b/, conflict:/\b(here is|here's|i'll send|i will send|their number is)\b/},
-      {when:/help in a shop|right size/, wants:/\b(help|size|please|could|would|find|medium)\b/, conflict:/\b(go away|leave me alone|don't help|do not help)\b/},
+      {when:/help.*shop|shop.*help|right size|help finding an item/, wants:/\b(help|size|please|could|would|find|medium)\b/, conflict:/\b(go away|leave me alone|don't help|do not help)\b/},
       {when:/apologises for being late|apologizes for being late/, wants:/\b(no worries|that's okay|it is okay|thanks|thank you|fine|don't worry|do not worry)\b/, conflict:/\b(terrible|idiot|never forgive|shut up)\b/},
       {when:/clarification|did not understand|did not hear/, wants:/\b(repeat|clarify|explain|again|last|understand|sorry|mean)\b/, conflict:/\b(shut up|speak properly|stupid)\b/},
       {when:/extra item|do not want it|don't want it/, wants:/\b(no|not interested|thank|don't need|do not need|all set|already have)\b/, conflict:/\b(yes|i'll take|i will take|give me)\b/},
