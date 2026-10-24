@@ -172,6 +172,16 @@
     'Wash the vegetables.':'اغسل الخضروات.','Chop the vegetables into small pieces.':'قطّع الخضروات إلى قطع صغيرة.','Beat the eggs in a bowl.':'اخفق البيض في وعاء.','Cook the vegetables and add the eggs.':'اطهُ الخضروات ثم أضف البيض.','Cook until the eggs are set.':'اطهُ حتى يتماسك البيض.',
     'Good morning, Green Street Clinic. How can I help?':'صباح الخير، عيادة غرين ستريت. كيف يمكنني مساعدتك؟','Of course. Is morning or afternoon better for you?':'بالتأكيد. هل يناسبك الصباح أم بعد الظهر؟','I can offer Thursday at 3:30 p.m.':'يمكنني عرض موعد الخميس الساعة 3:30 مساءً.','How can I help you today?':'كيف يمكنني مساعدتك اليوم؟','I can check the charges. Could you tell me the date on the bill?':'يمكنني التحقق من الرسوم. هل تخبرني بتاريخ الفاتورة؟','I’ll review the charges and explain them.':'سأراجع الرسوم وأشرحها لك.','Hello, Riverside Store. How can I help?':'مرحبًا، متجر ريفرسايد. كيف يمكنني مساعدتك؟','Which colour are you looking for?':'ما اللون الذي تبحث عنه؟','We have blue in medium. Would you like us to hold it?':'لدينا اللون الأزرق بمقاس متوسط. هل تريد أن نحتفظ به لك؟'
   });
+  Object.assign(arOptionText, {
+    'Afternoon would be better, if possible.':'بعد الظهر أفضل إن أمكن.',
+    'Thursday at half past three works for me. Thank you.':'الخميس الساعة الثالثة والنصف يناسبني. شكرًا.',
+    'I’m calling because my bill seems higher than usual.':'أتصل لأن فاتورتي تبدو أعلى من المعتاد.',
+    'Yes, it’s dated 12 October.':'نعم، تاريخها 12 أكتوبر.',
+    'Thank you. I appreciate you checking.':'شكرًا لك، أقدّر قيامك بالتحقق.',
+    'Could you tell me if this jacket is available in a medium?':'هل يمكنك إخباري إن كان هذا المعطف متوفرًا بمقاس متوسط؟',
+    'Blue, please, if you have it.':'الأزرق من فضلك، إن كان متوفرًا.',
+    'Yes, please. Could you hold it until this evening?':'نعم من فضلك. هل يمكنك الاحتفاظ به حتى هذا المساء؟'
+  });
   const arExplainText = {
     '£3.75 is three pounds and seventy-five pence.':'3.75 جنيه تعني ثلاثة جنيهات وخمسة وسبعين بنسًا.',
     'Quarter past six means 6:15.':'السادسة والربع تعني 6:15.',
@@ -206,8 +216,6 @@
     'Store leftovers promptly and follow local food-safety guidance; do not leave cooked food out overnight.':'احفظ بقايا الطعام سريعًا واتبع إرشادات سلامة الغذاء المحلية؛ لا تترك الطعام المطهو خارج الثلاجة طوال الليل.',
     'Simmer means cook gently in a liquid with small, occasional bubbles.':'تعني simmer الطهي برفق في سائل تظهر فيه فقاعات صغيرة متباعدة.'
   };
-  const originalExplanationText = explanationText;
-  explanationText = function(item) { return arabicOn() ? (item.arExplain || arExplainText[item.explain] || item.explain || 'واصل التدريب على استخدام الإنجليزية في المواقف اليومية.') : (item.explain || 'Good work. Keep practising the language you would use in real life.'); };
 
   function tx(text, kind) {
     if (!arabicOn() || !text) return text;
@@ -215,7 +223,7 @@
     return arText[text] || text;
   }
   function promptText(item) { return arabicOn() ? (item.ar || arText[item.prompt] || item.prompt) : item.prompt; }
-  function explanationText(item) { return arabicOn() && item.arExplain ? item.arExplain : tx(item.explain); }
+  function explanationText(item) { return arabicOn() ? (item.arExplain || arExplainText[item.explain] || item.explain || 'واصل التدريب على استخدام الإنجليزية في المواقف اليومية.') : (item.explain || 'Good work. Keep practising the language you would use in real life.'); }
   function optionsMarkup(item) {
     return item.options.map((opt,i)=>'<button type="button" class="ls-choice" data-ls-answer="'+i+'"><span class="ls-choice-key">'+String.fromCharCode(65+i)+'</span><span>'+esc(arabicOn() && item.arOptions ? item.arOptions[i] : tx(opt,'option'))+'</span></button>').join('');
   }
@@ -261,13 +269,13 @@
     render();
   }
   function renderQuestion(item,m) {
-    if(m.id==='numbers') return '<div class="ls-number-board"><span class="ls-scene-tag">'+esc(item.scene)+'</span><span class="ls-number-icon">'+(item.kind==='price'?'£':item.kind==='time'?'◷':item.kind==='date'?'▦':'#')+'</span><span class="ls-kind">'+esc(item.kind.toUpperCase())+'</span></div><h3>'+esc(promptText(item))+'</h3>'+answerOptions(item);
-    if(m.id==='signs') return '<div class="ls-sign-scene"><span class="ls-scene-tag">'+esc(item.place)+'</span><div class="ls-real-sign"><span>'+esc(item.symbol)+'</span><strong>'+esc(item.sign)+'</strong></div></div><h3>'+esc(item.prompt)+'</h3>'+answerOptions(item);
+    if(m.id==='numbers') return '<div class="ls-number-board"><span class="ls-scene-tag">'+esc(tx(item.scene))+'</span><span class="ls-number-icon">'+(item.kind==='price'?'£':item.kind==='time'?'◷':item.kind==='date'?'▦':'#')+'</span><span class="ls-kind">'+esc(item.kind.toUpperCase())+'</span></div><h3>'+esc(promptText(item))+'</h3>'+answerOptions(item);
+    if(m.id==='signs') return '<div class="ls-sign-scene"><span class="ls-scene-tag">'+esc(tx(item.place))+'</span><div class="ls-real-sign"><span>'+esc(item.symbol)+'</span><strong>'+esc(item.sign)+'</strong></div></div><h3>'+esc(promptText(item))+'</h3>'+answerOptions(item);
     if(m.id==='polite') return '<div class="ls-tone-card"><span class="ls-scene-tag">'+esc(item.scene)+'</span><span class="ls-tone-label">'+esc(item.level)+'</span></div><h3>'+esc(item.prompt)+'</h3>'+answerOptions(item);
     if(m.id==='kitchen') {
       if(item.steps) {
         if(!state.sequence.length) state.sequence=item.steps.map((_,i)=>i).sort(()=>Math.random()-.5);
-        return '<div class="ls-recipe-card"><span class="ls-scene-tag">'+esc(item.scene)+'</span><h3>'+esc(item.title)+'</h3><p>'+(arabicOn()?'<span lang="ar" dir="rtl">'+esc(item.ar)+'</span>':'Put the steps in order from first to last. Select a step to place it in the sequence.')+'</p></div><div class="ls-sequence"><div class="ls-sequence-label">YOUR ORDER</div>'+state.sequence.map((step,pos)=>'<button type="button" class="ls-step" data-ls-step="'+step+'"><span>'+String(pos+1).padStart(2,'0')+'</span>'+esc(arabicOn() && item.arSteps ? item.arSteps[step] : item.steps[step])+'<b>↕</b></button>').join('')+'</div><div class="ls-inline-actions"><button type="button" class="ls-secondary" data-ls-shuffle>Shuffle steps</button><button type="button" class="ls-primary" data-ls-check-sequence>Check recipe order ↗</button></div>';
+        return '<div class="ls-recipe-card"><span class="ls-scene-tag">'+esc(item.scene)+'</span><h3>'+esc(tx(item.title))+'</h3><p>'+(arabicOn()?'<span lang="ar" dir="rtl">'+esc(item.ar)+'</span>':'Put the steps in order from first to last. Select a step to place it in the sequence.')+'</p></div><div class="ls-sequence"><div class="ls-sequence-label">YOUR ORDER</div>'+state.sequence.map((step,pos)=>'<button type="button" class="ls-step" data-ls-step="'+step+'"><span>'+String(pos+1).padStart(2,'0')+'</span>'+esc(arabicOn() && item.arSteps ? item.arSteps[step] : item.steps[step])+'<b>↕</b></button>').join('')+'</div><div class="ls-inline-actions"><button type="button" class="ls-secondary" data-ls-shuffle>Shuffle steps</button><button type="button" class="ls-primary" data-ls-check-sequence>Check recipe order ↗</button></div>';
       }
       return '<div class="ls-recipe-card"><span class="ls-scene-tag">'+esc(item.scene)+'</span><h3>'+esc(item.title)+'</h3></div><h3>'+esc(item.prompt)+'</h3>'+answerOptions(item);
     }
