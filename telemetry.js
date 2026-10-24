@@ -112,7 +112,7 @@
   }, true);
   window.addEventListener('epiphany:progress-saved', event => {
     if (!enabled || !consent()) return;
-    if (event.detail && event.detail.dailySessionDone) {
+    if (event.detail && event.detail.dailySessionStep === 'done') {
       try {
         if (localStorage.getItem(FIRST_SESSION_KEY) !== 'yes') {
           send('first_session_complete');
