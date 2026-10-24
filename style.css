@@ -2292,3 +2292,13 @@ body.ar-on .contrast-practice{direction:rtl;text-align:right}
 .context-card p{margin:0;line-height:1.65;color:var(--ink-2)}
 body.ar-on .three-contexts{direction:rtl;text-align:right}
 @media(max-width:520px){.context-card{padding:.75rem;gap:.55rem;grid-template-columns:1.8rem minmax(0,1fr)}.context-number{width:1.8rem;height:1.8rem}}
+
+/* Pronunciation sound lab */
+.sound-lab-list{display:grid;gap:.75rem;margin:1rem 0}
+.sound-lab-item{padding:1rem;border:1px solid var(--line);border-radius:14px;background:var(--surface,var(--ground));min-width:0}
+.sound-lab-top{display:flex;align-items:center;justify-content:space-between;gap:.75rem;flex-wrap:wrap}
+.sound-lab-top strong{font-size:1rem;color:var(--ink)}
+.sound-lab-item p{margin:.65rem 0;line-height:1.65;color:var(--ink-2)}
+.sound-lab-phrase{border:0;background:transparent;color:var(--accent,var(--ink));text-align:start;text-decoration:underline;text-underline-offset:3px;cursor:pointer;padding:.25rem 0;max-width:100%;overflow-wrap:anywhere}
+body.ar-on .sound-lab-card{direction:rtl;text-align:right}
+@media(max-width:520px){.sound-lab-item{padding:.8rem}.sound-lab-top{align-items:flex-start}}
