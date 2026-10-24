@@ -1801,3 +1801,8 @@ body[data-theme="dark"] .writer-story-card,body[data-theme="dark"] .writer-part,
 .story-continue-card p{margin:0;color:var(--muted);font-size:13px}
 .story-continue-card .kicker{font-size:10px;letter-spacing:.12em;font-weight:800}
 @media(max-width:600px){.story-continue-card{align-items:stretch;flex-direction:column;gap:12px;padding:15px}.story-continue-card .btn{width:100%}.story-advanced-filters summary{min-height:46px}}
+
+.writer-before-after{margin-top:12px;padding:12px;border:1px solid var(--line);border-radius:12px;background:var(--surface)}
+.writer-before-after>strong{display:block;margin-bottom:8px}
+.writer-before-after p{display:grid;gap:5px;margin:8px 0;padding:10px;border-radius:9px;background:var(--surface-2,var(--surface))}
+.writer-before-after p span{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:800}
