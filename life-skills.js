@@ -68,6 +68,8 @@
       {scene:'Calling a shop',turns:[{speaker:'Shop assistant',line:'Hello, Riverside Store. How can I help?',prompt:'You want to ask whether a jacket is available in medium.',options:['“Could you tell me if this jacket is available in a medium?”','“Send jacket now.”','“Do you sell weather?”'],answer:0,explain:'Ask a focused question and name the item and size.'},{speaker:'Shop assistant',line:'Which colour are you looking for?',prompt:'You prefer the blue one.',options:['“Blue, please, if you have it.”','“The colour of Thursday.”','“Any colour is wrong.”'],answer:0,explain:'Give the needed detail in a short, natural reply.'},{speaker:'Shop assistant',line:'We have blue in medium. Would you like us to hold it?',prompt:'You want them to keep it until this evening.',options:['“Yes, please. Could you hold it until this evening?”','“Hold the entire shop.”','“No” when you mean yes'],answer:0,explain:'A polite request with a clear time limit is easy to act on.'}]}
     ]
   };
+  // Flatten the scripted calls so every caller turn plays in sequence rather than jumping between scenarios.
+  data.phone = data.phone.flatMap(call => call.turns.map(turn => ({...turn, scene:call.scene})));
   const state = {module:null,round:0,score:0,locked:false,showArabic:false,sequence:[],feedback:null,formValues:{}};
   const $ = (sel,el=root) => el.querySelector(sel);
   const esc = s => String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -107,7 +109,7 @@
       return '<div class="ls-recipe-card"><span class="ls-scene-tag">'+esc(item.scene)+'</span><h3>'+esc(item.title)+'</h3></div><h3>'+esc(item.prompt)+'</h3>'+answerOptions(item);
     }
     if(m.id==='phone') {
-      const turn=item.turns[state.round%item.turns.length];
+      const turn=item;
       return '<div class="ls-phone-shell"><div class="ls-phone-status"><span>● CALL IN PROGRESS</span><span>00:0'+(state.round+1)+'</span></div><div class="ls-caller"><span>☎</span><div><strong>'+esc(turn.speaker)+'</strong><small>'+esc(item.scene)+'</small></div></div><blockquote class="ls-dialogue">'+esc(turn.line)+'</blockquote><div class="ls-listen-label">YOUR TURN</div><h3>'+esc(turn.prompt)+'</h3>'+answerOptions(turn);
     }
     if(m.id==='forms') {
@@ -130,7 +132,7 @@
     const mod=e.target.closest('[data-ls-module]');if(mod){chooseModule(mod.dataset.lsModule);return;}
     if(e.target.closest('[data-ls-home]')){landing();return;}
     if(e.target.closest('[data-ls-ar]')){state.showArabic=!state.showArabic;render();return;}
-    const ans=e.target.closest('[data-ls-answer]');if(ans&&!state.locked){const item=state.module==='phone'?itemFor().turns[state.round%itemFor().turns.length]:itemFor();const n=Number(ans.dataset.lsAnswer);const correct=n===item.answer;if(correct)state.score++;feedback(item,correct);return;}
+    const ans=e.target.closest('[data-ls-answer]');if(ans&&!state.locked){const item=itemFor();const n=Number(ans.dataset.lsAnswer);const correct=n===item.answer;if(correct)state.score++;feedback(item,correct);return;}
     if(e.target.closest('[data-ls-next]')){if(state.round>=data[state.module].length-1){const m=modules.find(x=>x.id===state.module);root.innerHTML='<div class="ls-finish"><span>✳ MISSION COMPLETE</span><h2>Real-world confidence, one step at a time.</h2><p>You completed '+data[state.module].length+' situations and earned '+state.score+' first-choice successes. The goal is progress, not perfection.</p><button class="ls-primary" type="button" data-ls-home>Back to Life Skills ↗</button></div>';state.module=null;return;}state.round++;state.locked=false;state.feedback=null;state.sequence=[];render();return;}
     const step=e.target.closest('[data-ls-step]');if(step){const arr=state.sequence;const i=arr.indexOf(Number(step.dataset.lsStep));if(i>0)[arr[i-1],arr[i]]=[arr[i],arr[i-1]];else if(i===0&&arr.length>1)[arr[0],arr[1]]=[arr[1],arr[0]];render();return;}
     if(e.target.closest('[data-ls-shuffle]')){state.sequence=state.sequence.slice().sort(()=>Math.random()-.5);render();return;}
