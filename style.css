@@ -2214,3 +2214,8 @@ body[data-theme="dark"] #thinklab-view .tl-heading-seal{background:radial-gradie
 body[data-theme="dark"] #thinklab-view .tl-page-heading h1 span{color:#a69bff}
 body[data-theme="dark"] #lifeskills-view .life-skills-page,body[data-theme="dark"] .life-skills-page{color:var(--ink)}
 body[data-theme="dark"] .learning-insights-empty{background:var(--surface);border-color:var(--line)}
+
+/* Gentle retry: hint first, reveal only after another attempt */
+.retry-hint-note{padding:10px 12px;border-radius:12px;background:var(--surface);color:var(--ink-2);font-size:.92rem}
+.answer-explanation-ar{padding:10px 12px;border-inline-start:3px solid var(--violet);border-radius:8px;background:var(--surface);line-height:1.7}
+.story-choice-recap [data-story-action="replay-other"]{margin-top:8px}
