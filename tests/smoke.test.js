@@ -7,6 +7,21 @@ const { chromium } = require('playwright');
 
 const root = path.resolve(__dirname, '..');
 
+async function clickView(page, view) {
+  const selector = 'button[data-view="' + view + '"]';
+  await page.waitForSelector(selector, { state: 'attached', timeout: 10000 });
+  if (!(await page.locator(selector + ':visible').count())) {
+    const group = page.locator('details.nav-group').filter({ has: page.locator(selector) }).first();
+    if (await group.count() && await group.isVisible()) {
+      if (!(await group.evaluate(el => el.open))) await group.locator('summary').click();
+    } else {
+      const mobileMenu = page.locator('.mobile-menu');
+      if (await mobileMenu.isVisible() && !(await mobileMenu.evaluate(el => el.open))) await mobileMenu.locator('summary').click();
+    }
+  }
+  await page.locator(selector + ':visible').first().click();
+}
+
 async function dismissFirstVisitOverlays(page) {
   const welcomeClose = page.locator('#welcome-modal-close');
   if (await welcomeClose.isVisible()) await welcomeClose.click();
@@ -41,6 +56,7 @@ test('main navigation tabs open without uncaught page errors', async t => {
     const views = ['home','stories','world','arcade','words','trophies','progress','profile'];
     for (const view of views) {
       const page = await browser.newPage();
+      await page.setViewportSize({ width: 800, height: 900 });
       const requested = [];
       page.on('pageerror', error => errors.push(view + ': ' + error.message));
       page.on('console', message => { if (message.type() === 'error') consoleErrors.push(view + ': ' + message.text()); });
@@ -52,20 +68,10 @@ test('main navigation tabs open without uncaught page errors', async t => {
       });
       await page.goto(baseUrl, { waitUntil: 'domcontentloaded' });
       await dismissFirstVisitOverlays(page);
-      const viewSelector = 'button[data-view="' + view + '"]';
-      await page.waitForSelector(viewSelector, { state: 'attached', timeout: 10000 });
-      const visibleViewButton = page.locator(viewSelector + ':visible').first();
-      if (!(await visibleViewButton.count())) {
-        const group = page.locator('details.nav-group').filter({ has: page.locator(viewSelector) }).first();
-        if (await group.count()) await group.locator('summary').click();
-        else {
-          const mobileMenu = page.locator('.mobile-menu');
-          if (await mobileMenu.isVisible()) await mobileMenu.locator('summary').click();
-        }
-      }
+      await page.waitForSelector('button[data-view="' + view + '"]', { state: 'attached', timeout: 10000 });
       const eagerDeferred = requested.filter(path => /\/(data-translation-ar|data-stories|data-world(?:-sprites)?|think-lab|practice-lab|life-skills)\.js$/.test(path));
       assert.deepEqual(eagerDeferred, [], 'deferred files should not load at startup for ' + view);
-      await page.locator(viewSelector + ':visible').first().click();
+      await clickView(page, view);
       await page.waitForTimeout(350);
       if (view !== 'world') {
         const target = page.locator('#' + view + '-view');
@@ -114,13 +120,14 @@ test('main navigation tabs open without uncaught page errors', async t => {
       await page.close();
     }
     const offlinePage = await browser.newPage();
+    await offlinePage.setViewportSize({ width: 800, height: 900 });
     offlinePage.on('pageerror', error => errors.push('offline: ' + error.message));
     await offlinePage.goto(baseUrl, { waitUntil: 'domcontentloaded' });
     await dismissFirstVisitOverlays(offlinePage);
     await offlinePage.evaluate(() => navigator.serviceWorker.ready);
     await offlinePage.reload({ waitUntil: 'domcontentloaded' });
     await offlinePage.waitForFunction(() => !!navigator.serviceWorker.controller, null, { timeout: 5000 });
-    await offlinePage.locator('button[data-view="stories"]').first().click();
+    await clickView(offlinePage, 'stories');
     await offlinePage.waitForFunction(() => typeof STORIES !== 'undefined' && Array.isArray(STORIES), null, { timeout: 5000 });
     await offlinePage.waitForFunction(async () => {
       const keys = await caches.keys();
