@@ -20,7 +20,8 @@ test('feature data loader does not request large datasets until requested', asyn
       }
     }
   };
-  const context = { window: {}, document, Promise, Map, Set, Object, Error };
+  const merged = [];
+  const context = { window: { EPIPHANY_MERGE_AR_TRANSLATIONS: () => merged.push(true) }, document, Promise, Map, Set, Object, Error };
   const source = fs.readFileSync(path.join(root, 'lazy-data.js'), 'utf8');
   assert.doesNotThrow(() => new vm.Script(source, { filename: 'lazy-data.js' }));
   vm.runInNewContext(source, context);
@@ -44,6 +45,9 @@ test('feature data loader does not request large datasets until requested', asyn
     'think-lab.js?v=72d8145c',
     'life-skills.js?v=c0ba2ab9'
   ]);
+  await context.window.EPIPHANY_LAZY_LOAD('arabic');
+  assert.equal(requested[6], 'data-translation-ar.js?v=74c3f4b5');
+  assert.deepEqual(merged, [true]);
 });
 
 test('initial HTML defers stories and World data and keeps loader in offline shell', () => {
@@ -51,11 +55,14 @@ test('initial HTML defers stories and World data and keeps loader in offline she
   const sw = fs.readFileSync(path.join(root, 'service-worker.js'), 'utf8');
   assert.doesNotMatch(html, /<script[^>]+src="data-stories\.js/);
   assert.doesNotMatch(html, /<script[^>]+src="data-world(?:-sprites)?\.js/);
-  assert.match(html, /lazy-data\.js\?v=20261024m/);
+  assert.match(html, /lazy-data\.js\?v=20261024n/);
+  assert.doesNotMatch(html, /<script[^>]+src="data-translation-ar\.js/);
   assert.doesNotMatch(html, /<script[^>]+src="(?:think-lab|practice-lab|life-skills)\.js/);
   assert.match(sw, /'\.\/lazy-data\.js'/);
   assert.doesNotMatch(sw, /'\.\/data-stories\.js'/);
   assert.doesNotMatch(sw, /'\.\/data-world\.js'/);
   assert.doesNotMatch(sw, /'\.\/data-world-sprites\.js'/);
   assert.doesNotMatch(sw, /'\.\/(?:think-lab|practice-lab|life-skills)\.js'/);
+  assert.doesNotMatch(sw, /'\.\/data-translation-ar\.js'/);
+  assert.match(sw, /const cached = await cache\.match\(request\);\s*if \(cached\) return cached;/);
 });
