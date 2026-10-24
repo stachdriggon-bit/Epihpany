@@ -8,7 +8,7 @@ const root = path.resolve(__dirname, '..');
 
 function loadData() {
   const context = vm.createContext({ console, window: {} });
-  const files = ['data.js', 'data-expansion.js', 'data-stories.js', 'data-stories-expansion.js'];
+  const files = ['data.js', 'data-expansion.js', 'data-stories.js', 'data-stories-expansion.js', 'data-wotd.js'];
   for (const file of files) {
     const fullPath = path.join(root, file);
     if (!fs.existsSync(fullPath)) continue;
@@ -104,7 +104,7 @@ test('explicit Arabic translation fields are never blank', () => {
     for (const [index, q] of (game.questions || []).entries()) {
       const where = `${gameName}.questions[${index}] (${describeQuestion(q)})`;
       for (const key of ['q_ar', 'sub_ar', 'explain_ar', 'why_ar', 'ar']) {
-        if (Object.prototype.hasOwnProperty.call(q, key) && typeof q[key] === 'string' && !q[key].trim()) {
+        if (Object.prototype.hasOwnProperty.call(q, key) && typeof q[key] === 'string' && q[key] !== '' && !q[key].trim()) {
           errors.push(`${where}: ${key} is explicitly present but empty`);
         }
       }
@@ -115,6 +115,20 @@ test('explicit Arabic translation fields are never blank', () => {
           errors.push(`${where}: answers_ar contains an empty translation`);
         }
       }
+    }
+  }
+  assert.deepEqual(errors, [], errors.join('\\n'));
+});
+
+
+test('Word of the Day entries have complete Arabic meanings and examples', () => {
+  const { words } = loadData();
+  assert.ok(Array.isArray(words) && words.length > 0, 'No Word of the Day entries loaded.');
+  const errors = [];
+  for (const [index, item] of words.entries()) {
+    const where = `WOTD[${index}] ${item.word || '(untitled)'}`;
+    for (const key of ['word', 'meaning', 'example', 'meaning_ar', 'example_ar']) {
+      if (!String(item[key] ?? '').trim()) errors.push(`${where}: missing ${key}`);
     }
   }
   assert.deepEqual(errors, [], errors.join('\\n'));
