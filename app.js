@@ -712,6 +712,21 @@
     box.innerHTML='<div class="wotd-top"><span class="kicker">EPIPHANY OF THE DAY</span><span class="pill">'+esc(w.level)+'</span></div><h2 id="wotd-title" class="wotd-word">'+esc(w.word)+'</h2><p class="wotd-pronunciation">'+esc(w.pronunciation||'')+'</p><div class="wotd-meanings"><p><strong>Meaning:</strong> '+esc(w.meaning)+'</p><p class="arabic" lang="ar" dir="rtl"><strong>المعنى:</strong> '+esc(w.meaning_ar)+'</p></div><p class="wotd-example">“'+esc(w.example)+'”</p>'+(w.example_ar?'<p class="arabic" lang="ar" dir="rtl">'+esc(w.example_ar)+'</p>':'')+'<p class="wotd-origin">'+esc(w.origin)+'</p>'+(w.origin_ar?'<p class="arabic wotd-origin-ar" lang="ar" dir="rtl">'+esc(w.origin_ar)+'</p>':'')+'<div class="wotd-actions">'+(speech?'<button type="button" class="btn btn-ghost" data-speak="'+esc(w.word)+'">Listen</button>':'')+'<button type="button" class="btn" id="wotd-save" '+(saved?'disabled':'')+'>'+(saved?'Saved to Words':'Save word')+'</button></div>';
     box.dataset.word=w.word;
   }
+  function exportPersonalDictionary(format) {
+    const rows = (state.words || []).map(w => ({word:String(w[0]||''),meaning:String(w[1]||''),level:String(w[2]||'')})).filter(w => w.word);
+    if (!rows.length) { toast('Save some words first, then export your dictionary.'); return; }
+    const clean = value => String(value).replaceAll(String.fromCharCode(9),' ').replaceAll(String.fromCharCode(10),' ').replaceAll(String.fromCharCode(13),' ').replace(/^[=+@-]/,value => "'" + value);
+    const quote = value => '"' + clean(value).replace(/"/g,'""') + '"';
+    const tab = String.fromCharCode(9), newline = String.fromCharCode(10), crlf = String.fromCharCode(13) + newline;
+    const content = format === 'anki'
+      ? rows.map(w => [clean(w.word), clean(w.meaning) + (w.level ? ' (' + clean(w.level) + ')' : '')].join(tab)).join(newline)
+      : String.fromCharCode(0xFEFF) + [['Word','Meaning','CEFR level'], ...rows.map(w => [w.word,w.meaning,w.level])].map(row => row.map(quote).join(',')).join(crlf);
+    const blob = new Blob([content], {type:format==='anki'?'text/tab-separated-values;charset=utf-8':'text/csv;charset=utf-8'});
+    const url = URL.createObjectURL(blob), link = document.createElement('a');
+    link.href = url; link.download = format==='anki' ? 'epiphany-dictionary-anki.txt' : 'epiphany-dictionary.csv';
+    document.body.appendChild(link); link.click(); link.remove(); URL.revokeObjectURL(url);
+    toast(rows.length + ' words exported.');
+  }
   function renderWords() {
     resetDailySessionIfNeeded();
     if (state.dailySessionStep === 'review' && !(state.review || []).some(w => !w.due || w.due <= dayKey())) { state.dailySessionStep = 'lesson'; save(); }
@@ -720,7 +735,7 @@
     $('#words-count').textContent=n+(n===1?' word':' words')+' · '+due+' to review';
     const vault=!n?'<div class="empty"><div class="empty-ic">'+ic('book')+'</div><h2>Your vault is empty, for now.</h2><p>Answer vocabulary questions correctly to collect useful words.</p><button class="btn" data-game="vocabulary">'+ic('play')+'Find your first word</button></div>':
       '<div class="vault">'+state.words.slice().reverse().map(w=>{const info=wordContext(w[0],w[1]);return '<article class="word"><div class="word-title"><b>'+esc(w[0])+'</b><button class="listen-btn" data-speak="'+esc(w[0])+'" aria-label="Listen to '+esc(w[0])+'">'+ic('sound')+' Listen</button></div><span>'+esc(w[1])+'</span><em>'+esc(w[2]||'A1')+'</em><div class="word-examples">'+info.examples.map((x,i)=>'<p><b>Example '+(i+1)+':</b> '+esc(x)+'</p>').join('')+'</div><p class="word-collocations"><b>Common combinations:</b> '+info.collocations.map(esc).join(' · ')+'</p></article>';}).join('')+'</div>';
-    $('#words-body').innerHTML=renderReview()+'<h2 class="vault-heading">Your collected words</h2>'+vault;
+    $('#words-body').innerHTML=renderReview()+'<div class="dictionary-tools"><div><h2 class="vault-heading">Your collected words</h2><p>Export your personal dictionary to a spreadsheet or Anki.</p></div><div class="dictionary-export-actions"><button type="button" class="btn btn-ghost" data-dictionary-export="csv">Export CSV</button><button type="button" class="btn" data-dictionary-export="anki">Export for Anki</button></div></div>'+vault;
     const reveal=$('#reveal-review'); if(reveal)reveal.addEventListener('click',()=>{$('#review-meaning').hidden=false;$('#review-actions').hidden=false;reveal.hidden=true;});
   }
 
@@ -3561,6 +3576,8 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
   document.addEventListener('input', e => { if(e.target&&e.target.id==='story-dictation-answer'&&ST&&ST.dictationActive)ST.dictationAnswer=e.target.value; });
   document.addEventListener('submit', e => { if(e.target && e.target.id==='typing-form'){e.preventDefault();checkTyping();return;}if(e.target&&e.target.id==='story-dictation-form'){e.preventDefault();checkStoryDictation(e.target);return;} });
   document.addEventListener('click', e => {
+    const dictionaryExport = e.target.closest('[data-dictionary-export]');
+    if (dictionaryExport) { exportPersonalDictionary(dictionaryExport.dataset.dictionaryExport); return; }
     if(e.target.closest('#wotd-save')){const box=$('#wotd-card'),w=WOTD_WORDS.find(x=>x.word===box.dataset.word);if(w&&!state.words.some(x=>String(x[0]).toLowerCase()===w.word.toLowerCase())){state.words.push([w.word,w.meaning,w.level]);recordLearningActivity({words:1});save();renderAll();toast('Word saved to your vault.');}return;}
     const sb=e.target.closest('[data-speak]'); if(sb){speak(sb.dataset.speak);return;}
     const grammarMode=e.target.closest('[data-grammar-mode]');if(grammarMode){G.grammarMode=grammarMode.dataset.grammarMode;G.i=0;renderGrammarModeQuestion();return;}

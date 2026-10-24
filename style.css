@@ -1777,3 +1777,7 @@ body[data-theme="dark"] .writer-story-card,body[data-theme="dark"] .writer-part,
 
 /* Guided daily session */
 .daily-session-steps span.is-current{border-color:var(--focus);background:var(--violet-soft);color:var(--focus)}.daily-session-steps span.is-complete{border-color:var(--mint);background:var(--mint-soft);color:var(--ink)}.daily-session-start:disabled{opacity:.8;cursor:default}
+
+/* Personal dictionary export tools */
+.dictionary-tools{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin:24px 0 12px}.dictionary-tools .vault-heading{margin:0}.dictionary-tools p{margin:5px 0 0;color:var(--ink-2);font-size:13px}.dictionary-export-actions{display:flex;gap:8px;flex-wrap:wrap}.dictionary-export-actions .btn{min-height:42px}
+@media(max-width:600px){.dictionary-tools{align-items:flex-start}.dictionary-export-actions{width:100%}.dictionary-export-actions .btn{flex:1}}
