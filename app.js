@@ -444,7 +444,7 @@
     title.textContent = steps[state.dailySessionStep][0];
     button.textContent = state.dailySessionStep === 'done' ? 'Session completed ✓' : state.dailySessionStep === 'review' ? 'Start session' : 'Continue session →';
     button.disabled = state.dailySessionStep === 'done';
-    copy.textContent = state.dailySessionStep === 'done' ? 'Great work. Your daily learning path is complete — come back tomorrow for a fresh session.' : 'A short guided path: review words due today, practise one skill, then read a short story. Your place is saved as you go.';
+    copy.textContent = state.dailySessionStep === 'done' ? 'Today you checked your due-word review, practised one skill, and finished a short story. Current streak: '+Number(state.streak||0)+' day'+(Number(state.streak||0)===1?'':'s')+' · Total XP: '+Number(state.xp||0)+'. Tomorrow: review the next words due, then try a fresh skill and story.' : 'A short guided path: review words due today, practise one skill, then read a short story. Your place is saved as you go.';
     const badges = $('.daily-session-steps');
     if (badges) badges.innerHTML = [['review','Review · 3 min'],['lesson','Lesson · 4 min'],['story','Story · 3 min']].map(([id,label],i)=>'<span class="'+(state.dailySessionStep===id?'is-current':(['review','lesson','story','done'].indexOf(state.dailySessionStep)>i?'is-complete':''))+'"><b>'+(state.dailySessionStep==='done'?'✓':i+1)+'</b> '+label+'</span>').join('');
   }
