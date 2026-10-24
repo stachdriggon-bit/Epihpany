@@ -77,8 +77,23 @@ test('main navigation tabs open without uncaught page errors', async t => {
         if (await page.locator('#game-body .answer').count()) await page.locator('#game-body .answer').first().click();
       }
       if (view === 'home') {
-        await page.locator('#ar-toggle').click();
-        await page.waitForFunction(() => typeof window.EPIPHANY_AR_TRANSLATION_WORDS !== 'undefined', null, { timeout: 5000 });
+        const arabicToggle = page.locator('#ar-toggle');
+        const arabicIsOn = await page.locator('body').evaluate(el => el.classList.contains('ar-on'));
+        if (!arabicIsOn) await arabicToggle.click();
+        await page.waitForFunction(() => document.body.classList.contains('ar-on'), null, { timeout: 2000 });
+        if (typeof (await page.evaluate(() => window.EPIPHANY_AR_TRANSLATION_WORDS)) === 'undefined' && !requested.some(path => path.endsWith('/data-translation-ar.js'))) {
+          await arabicToggle.click();
+          await arabicToggle.click();
+        }
+        await page.waitForFunction(() => typeof window.EPIPHANY_AR_TRANSLATION_WORDS !== 'undefined', null, { timeout: 5000 }).catch(async error => {
+          const diagnostics = await page.evaluate(() => ({
+            arabicOn: document.body.classList.contains('ar-on'),
+            loaderType: typeof window.EPIPHANY_LAZY_LOAD,
+            mergerType: typeof window.EPIPHANY_MERGE_AR_TRANSLATIONS,
+            translationTogglePressed: document.querySelector('#translation-toggle')?.getAttribute('aria-pressed')
+          }));
+          throw new Error('Arabic catalogue did not load: ' + JSON.stringify({diagnostics, requested, pageErrors: errors}) + '; ' + error.message);
+        });
         assert.ok(requested.some(path => path.endsWith('/data-translation-ar.js')), 'Arabic catalogue should load only after Arabic help is enabled');
       }
       await page.close();
