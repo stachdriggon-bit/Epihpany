@@ -723,7 +723,7 @@
   }
   function speak(text, opts) {
     const synth = window.speechSynthesis;
-    const phrase = String(text == null ? '' : text).replace(/\\s+/g, ' ').trim();
+    const phrase = String(text == null ? '' : text).replace(/\s+/g, ' ').trim();
     if (!phrase) { toast('There is no word to pronounce.'); return; }
     const request = ++speechRequest, rate = (opts && opts.rate) || voicePref.rate || 0.92;
     try { if (synth) synth.cancel(); } catch {}
@@ -2139,6 +2139,8 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
       const reviewItem = state.review.find(item => String(item.word || '').toLocaleLowerCase() === key);
       if (reviewItem) {
         reviewItem.due = dayKey();
+        reviewItem.context = context;
+        reviewItem.source = source;
         if (meaning) reviewItem.meaning = meaning;
       } else {
         state.review.push({word, meaning:meaning || 'Meaning to discover in context', level:currentLevel().id, due:dayKey(), box:1, interval:0, streak:0, attempts:0, errors:0, exerciseStage:0, mastered:false, context});
