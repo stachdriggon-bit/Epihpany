@@ -1919,11 +1919,41 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     else if(target.classList.contains('story-decision-option')){const row=document.createElement('div');row.className='story-option-translation-row';target.parentNode.insertBefore(row,target);row.appendChild(target);row.appendChild(button);row.appendChild(output);}
     else{target.insertAdjacentElement('afterend',button);button.insertAdjacentElement('afterend',output);}
   }
+  function directQuestionArabic(el) {
+    if(!el || typeof G==='undefined' || !G || !Array.isArray(G.questions)) return '';
+    const q=G.questions[G.i];
+    if(!q || typeof q!=='object') return '';
+    const clean=value=>String(value==null?'':value).replace(/\s+/g,' ').trim().replace(/[.!?؟…,:;]+$/,'').toLowerCase();
+    const textOf=el.classList.contains('answer') || el.classList.contains('mg-card') || el.classList.contains('mg-tile')
+      ? (el.querySelector(':scope > span:not(.key)') || el.querySelector(':scope > span') || el).textContent
+      : el.textContent;
+    const shown=clean(textOf);
+    if(!shown) return '';
+    const fields=[
+      ['q','q_ar'],['prompt','q_ar'],['text','q_ar'],['sub','sub_ar'],
+      ['explain','explain_ar'],['why_en','why_ar'],['instruction','ar'],['prompt','prompt_ar']
+    ];
+    for(const [sourceKey,arabicKey] of fields){
+      if(q[sourceKey] && clean(q[sourceKey])===shown && q[arabicKey]) return String(q[arabicKey]);
+    }
+    const isAnswer=el.classList.contains('answer') || el.classList.contains('mg-card') || el.classList.contains('mg-tile');
+    if(isAnswer){
+      const pairs=[['answers','answers_ar'],['options','options_ar'],['accept','accept_ar']];
+      for(const [sourceKey,arabicKey] of pairs){
+        if(!Array.isArray(q[sourceKey]) || !Array.isArray(q[arabicKey])) continue;
+        const index=q[sourceKey].findIndex(value=>clean(value)===shown);
+        if(index>=0 && q[arabicKey][index]) return String(q[arabicKey][index]);
+      }
+    }
+    return '';
+  }
   function enhanceTranslationControls(root) {
     if(!root||!state.translationEnabled)return;
     root.querySelectorAll('.q-text,.q-sub,.typing-prompt,.spot-text,.mg-route,.answer,.mg-card,.mg-tile,.question-text,.prompt-text,.instruction-text,.story-prompt,.story-response,.story-option,.story-decision-option,.story-text,.story-reader-title,.story-help-note,.story-pronunciation,.story-example,.world-instruction,.world-dialogue,.wotd-definition,.aha-note,.sheet p:not(.arabic),.sheet h3').forEach(el=>{
       // Story/World/WOTD elements are included only through explicit semantic selectors above.
       if(el.classList.contains('mg-route')&&el.nextElementSibling&&el.nextElementSibling.classList.contains('mg-route-ar'))return;
+      const directArabic=directQuestionArabic(el);
+      if(directArabic) el.dataset.translationAr=directArabic;
       addTranslationControl(el,(el.classList.contains('answer')||el.classList.contains('mg-card')||el.classList.contains('mg-tile')||el.classList.contains('story-decision-option'))?'answer':'question');
     });
   }
