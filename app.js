@@ -991,7 +991,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     box.innerHTML=items.length?items.slice(0,8).map((s,i)=>'<article class="writer-saved-item"><div><strong>'+esc(s.title||'My story')+'</strong><small>'+Number(s.wordCount||0)+' words · '+esc((s.savedAt||'').slice(0,10))+'</small></div><button type="button" data-speak="'+esc((s.pages||[]).join(' ').slice(0,1800))+'" aria-label="Listen to saved story">🔊</button></article>').join(''):'<p class="create-story-note">Your saved stories will appear here on this device.</p>';
   }
   function saveCreatedStory(){
-    const pages=CREATE_STORY.publishedPages||[],full=pages.join(' '),items=readCreatedStories(),entry={id:'story-'+Date.now(),title:(CREATE_STORY.name||'My')+' and '+(CREATE_STORY.friend||'a friend'),genre:CREATE_STORY.genreLabel,level:CREATE_STORY.writerLevel,pages,wordCount:full.trim().split(/\\s+/).filter(Boolean).length,savedAt:new Date().toISOString(),problem:CREATE_STORY.problem};
+    const pages=CREATE_STORY.publishedPages||[],full=pages.join(' '),items=readCreatedStories(),entry={id:'story-'+Date.now(),title:(CREATE_STORY.name||'My')+' and '+(CREATE_STORY.friend||'a friend'),genre:CREATE_STORY.genreLabel,level:CREATE_STORY.writerLevel,pages,wordCount:full.trim().split(/\s+/).filter(Boolean).length,savedAt:new Date().toISOString(),problem:CREATE_STORY.problem};
     try{localStorage.setItem('epiphany-created-stories',JSON.stringify([entry,...items].slice(0,30)));toast('Saved to My Story Library on this device.');renderCreatedStoryLibrary();}catch{toast('Could not save on this device. Check your browser storage settings.');}
   }
   function createStorySubmit(form){
