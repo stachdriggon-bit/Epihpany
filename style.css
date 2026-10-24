@@ -2443,3 +2443,41 @@ body[data-theme="dark"] .global-search-result:hover,body[data-theme="dark"] .glo
   #global-search-toggle{width:36px;height:36px}
 }
 @media(max-width:420px){.mobile-current-section{max-width:76px;font-size:11px}.global-search-panel{padding:16px;border-radius:19px}}
+
+
+/* Final UI polish: compact desktop header, pointer-friendly heading focus,
+   scroll-aware sticky bar, gentle view transitions and recoverable load errors. */
+.view.is-active{animation:epiphany-view-fade 150ms ease-out both}
+@keyframes epiphany-view-fade{from{opacity:0}to{opacity:1}}
+.view h1:focus,.view h2:focus,.view h3:focus{outline:none!important;box-shadow:none!important}
+body.navigation-pointer :focus-visible{outline:none;box-shadow:none}
+.top{transition:transform 180ms ease,box-shadow 180ms ease}
+.top.is-hidden-on-scroll{transform:translateY(calc(-100% - 2px));box-shadow:none;pointer-events:none}
+.section-load-error{display:flex;align-items:flex-start;gap:14px;margin:22px 0;padding:18px 20px;border:1.5px solid var(--line);border-radius:18px;background:var(--surface);color:var(--ink);box-shadow:0 8px 24px rgba(20,25,45,.06)}
+.section-load-error .load-error-icon{display:grid;place-items:center;flex:none;width:42px;height:42px;border-radius:13px;background:var(--coral-soft);font-size:22px}
+.section-load-error h2{font-size:19px;margin:1px 0 5px}
+.section-load-error p{color:var(--ink-2);font-size:14px;margin-bottom:12px}
+.section-load-error .btn{min-height:38px}
+@media(min-width:1350px){
+  .top-in{max-width:1600px;gap:12px}
+  .top-in>.logo{flex:none;order:1}
+  .top-in>.tabs{order:2;flex:1 1 auto;width:auto;min-width:0;margin:0;flex-wrap:nowrap;gap:2px;padding:4px}
+  .top-in>.tabs>.tab,.top-in>.tabs>.nav-group>summary{padding:8px 9px;font-size:13px;gap:6px}
+  .top-in>.top-right{order:3;flex:none;gap:6px}
+  .top-in>.mobile-menu{order:2}
+}
+@media(min-width:1350px) and (max-width:1510px){
+  .top-in>.logo{font-size:23px;gap:7px}
+  .top-in>.logo .logo-mark{width:30px;height:30px}
+  .top-in>.tabs>.tab,.top-in>.tabs>.nav-group>summary{padding:7px 7px;font-size:12px}
+  .top-in>.top-right .chip{padding:0 9px;font-size:14px}
+  .top-in>.top-right .ar-toggle{padding:0 9px;font-size:13px}
+}
+@media(max-width:900px){
+  .top.is-hidden-on-scroll{transform:translateY(-110%)}
+}
+@media(prefers-reduced-motion:reduce){
+  .view.is-active{animation:none!important}
+  .top{transition:none!important}
+  .top.is-hidden-on-scroll{transition:none!important}
+}
