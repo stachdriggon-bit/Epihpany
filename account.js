@@ -250,6 +250,7 @@
     const removeAvatar = $('player-avatar-remove'); if (removeAvatar) removeAvatar.hidden = !uploadedAvatarUrl;
     const removeBanner = $('player-banner-remove'); if (removeBanner) removeBanner.hidden = !uploadedBannerUrl;
     updateFrameAvailability();
+    window.addEventListener('epiphany:achievements-updated',updateFrameAvailability);
   }
   function renderPlayerProfile(profile) {
     const name = profile && profile.display_name || (currentUser && (currentUser.user_metadata && (currentUser.user_metadata.full_name || currentUser.user_metadata.name)) ) || (currentUser && currentUser.email ? currentUser.email.split('@')[0] : 'English learner');
@@ -403,8 +404,9 @@
     finally{if(input){input.disabled=false;input.value='';}}
   }
   function updateFrameAvailability() {
-    const streak=Math.max(Number($('home-streak')?.textContent||0),Number($('chip-streak')?.textContent||0));
-    const words=Math.max(...['home-words','chip-words','progress-words-mastered','profile-words-mastered'].map(id=>Number($(id)?.textContent||0)),0);
+    const achievements=window.EPIPHANY_PROFILE_ACHIEVEMENTS||{};
+    const streak=Math.max(Number($('home-streak')?.textContent||0),Number($('chip-streak')?.textContent||0),Number(achievements.streak||0));
+    const words=Math.max(Number(achievements.masteredWords||0),...['home-words','chip-words','progress-words-mastered','profile-words-mastered'].map(id=>Number($(id)?.textContent||0)),0);
     document.querySelectorAll('[data-frame-requirement]').forEach(button=>{const req=button.dataset.frameRequirement,unlocked=req==='streak'?streak>=30:words>=100;button.disabled=!unlocked;button.classList.toggle('is-locked',!unlocked);button.setAttribute('aria-label',button.textContent.replace(/^🔒\s*/,'')+(unlocked?' unlocked':' locked'));button.textContent=(unlocked?'':'🔒 ')+(req==='streak'?'Gold · 30-day streak':'Stars · 100 words');});
     const hint=$('avatar-frame-hint');if(hint)hint.textContent='Gold frame: 30-day streak. Star frame: master 100 words. Keep learning to unlock them.';
     if(!document.querySelector('[data-avatar-frame="'+selectedAvatarFrame+'"]:not(:disabled)'))selectedAvatarFrame='none';
