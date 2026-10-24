@@ -2268,3 +2268,18 @@ body[data-theme="dark"] .monthly-assessment-card{background:linear-gradient(140d
 .meaningful-earned{display:grid;place-items:center;flex:none;width:24px;height:24px;border-radius:50%;background:var(--focus);color:white;font-weight:900}
 .meaningful-note{margin:13px 0 0;color:var(--ink-2);font-size:12px;line-height:1.6}
 @media(max-width:620px){.meaningful-grid{grid-template-columns:1fr}.meaningful-card{padding:14px}}
+
+/* Smart contrast practice: distinguish commonly confused words in context. */
+.contrast-practice{margin:1rem 0;padding:clamp(1rem,3vw,1.4rem);border:1px solid var(--line);border-radius:20px;background:var(--surface, var(--ground));box-shadow:0 8px 24px rgba(35,45,90,.05)}
+.contrast-practice .review-head{display:flex;align-items:center;justify-content:space-between;gap:1rem}
+.contrast-practice h2{margin:.15rem 0;font-size:clamp(1.1rem,3vw,1.45rem)}
+.contrast-prompt{font-size:clamp(1.05rem,3vw,1.3rem);font-weight:750;line-height:1.7;margin:1rem 0}
+.contrast-blank{display:inline-block;min-width:4.5rem;border-bottom:2px dashed var(--focus,var(--violet));color:var(--focus,var(--violet));text-align:center}
+.contrast-options{display:flex;flex-wrap:wrap;gap:.65rem}
+.contrast-options .btn{min-width:6rem}
+.contrast-feedback{margin:.9rem 0 0;padding:.85rem 1rem;border-radius:12px;line-height:1.65;background:var(--violet-soft);color:var(--ink)}
+.contrast-feedback.is-correct{border-inline-start:4px solid #25845f}
+.contrast-feedback.is-incorrect{border-inline-start:4px solid #c77b31}
+.contrast-options .btn:disabled{opacity:.78;cursor:default}
+@media(max-width:520px){.contrast-practice{padding:1rem;border-radius:16px}.contrast-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.contrast-options .btn{width:100%;min-width:0}}
+body.ar-on .contrast-practice{direction:rtl;text-align:right}
