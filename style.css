@@ -1568,6 +1568,7 @@ body[data-theme="dark"] .dock{background:rgba(27,32,48,.97)}
 @media(max-width:520px){.word-dictation{display:grid}.word-dictation input,.word-dictation button{width:100%}.hard-words{padding:.75rem}}
 
 /* Grammar Lab */
+.grammar-map-intro{margin-top:1.5rem;padding-top:1.25rem;border-top:2px solid var(--line,rgba(100,100,130,.18))}.grammar-map-intro h3{margin:0 0 .35rem;font-size:1.25rem}.grammar-map-intro .review-note{margin:0;line-height:1.6}
 .grammar-intro,.grammar-map{display:grid;gap:1rem}
 .grammar-rule-card{padding:1rem 1.1rem;border-radius:16px;background:var(--surface-soft,rgba(130,100,180,.09));border:1px solid var(--line,rgba(100,100,130,.18))}
 .grammar-rule-card p{margin:.35rem 0;line-height:1.6}
