@@ -2400,3 +2400,9 @@ body.focus-mode .top,body.focus-mode .bottom-nav{display:none!important}
 #avatar-crop-canvas:active{cursor:grabbing}#avatar-crop-zoom{width:100%;accent-color:var(--profile-accent)}
 .avatar-crop-actions{display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap}body.avatar-crop-open{overflow:hidden}
 @media(max-width:520px){.avatar-crop-card{padding:18px}.avatar-crop-actions{display:grid;grid-template-columns:1fr 1fr}.banner-choice,.frame-choice{padding:8px 10px}}
+
+.avatar-category-filters{display:flex;flex-wrap:wrap;gap:7px}
+.avatar-category-filters button{padding:7px 11px;border:1px solid var(--line);border-radius:999px;background:var(--surface);color:var(--ink-2);font:700 12px var(--body)}
+.avatar-category-filters button.is-selected{border-color:var(--profile-accent);background:color-mix(in srgb,var(--profile-accent) 10%,var(--surface));color:var(--profile-accent)}
+#profile-view .profile-nav a[aria-current="location"]{color:var(--profile-accent);border-color:var(--profile-accent)}
+#profile-view .block-head h2{text-decoration:underline;text-decoration-color:color-mix(in srgb,var(--profile-accent) 36%,transparent);text-decoration-thickness:3px;text-underline-offset:7px}
