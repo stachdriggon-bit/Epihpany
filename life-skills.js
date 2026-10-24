@@ -38,6 +38,7 @@
       {sign:'QUIET PLEASE',symbol:'♩',place:'Library',prompt:'A phone rings loudly. What is the considerate response?',options:['Silence it or speak very quietly','Turn the volume up','Start a loud conversation'],answer:0,ar:'ترى لافتة تطلب الهدوء في مكتبة. كيف تتصرف؟',explain:'The sign asks visitors to keep noise to a minimum.'},
       {sign:'CLOSED FOR MAINTENANCE',symbol:'🛠',place:'Swimming pool',prompt:'What does the notice tell you?',options:['The facility is temporarily unavailable for repairs','The pool is open late','You must clean the pool yourself'],answer:0,ar:'المنشأة مغلقة للصيانة. ماذا يعني ذلك؟',explain:'Maintenance is work done to keep equipment or a facility in good condition.'}
     ],
+    forms:[{ar:'أكمل الاستمارة الخيالية باستخدام بيانات غير حقيقية فقط.'}],
     polite:[
       {scene:'You need to interrupt a colleague',level:'Neutral → polite',prompt:'You need to ask a quick question while they are working. Choose the most considerate opening.',options:['“Excuse me, do you have a moment?”','“Listen to me now.”','“You must answer this.”'],answer:0,ar:'تحتاج إلى سؤال زميل يعمل. ما البداية الأكثر تهذيبًا؟',explain:'“Excuse me, do you have a moment?” recognises that the other person may be busy.'},
       {scene:'You cannot attend',level:'Friendly',prompt:'A friend invites you to dinner, but you are busy. What sounds warm and clear?',options:['“Thanks for inviting me! I can’t make it tonight, but another time?”','“No. Stop asking.”','“Your dinner is impossible.”'],answer:0,ar:'دعاك صديق للعشاء لكنك مشغول. كيف ترفض بلطف؟',explain:'Thanking them first softens the refusal, while a clear answer avoids confusion.'},
@@ -182,6 +183,19 @@
     'Blue, please, if you have it.':'الأزرق من فضلك، إن كان متوفرًا.',
     'Yes, please. Could you hold it until this evening?':'نعم من فضلك. هل يمكنك الاحتفاظ به حتى هذا المساء؟'
   });
+  Object.assign(arText, {
+    'Numbers in real life':'الأرقام في الحياة اليومية',
+    'Decode prices, times, dates and phone numbers the way you meet them outside a lesson.':'افهم الأسعار والأوقات والتواريخ وأرقام الهواتف كما تظهر في الحياة اليومية.',
+    'Read a sign, understand the situation, then choose the safest or most useful next move.':'اقرأ اللافتة وافهم الموقف ثم اختر التصرف الأكثر أمانًا أو فائدة.',
+    'Practise everyday form fields with fictional details. Nothing you enter is sent anywhere.':'تدرّب على حقول الاستمارات اليومية ببيانات خيالية. لا يتم إرسال ما تدخله.',
+    'Choose language that fits the relationship, the situation and the level of formality.':'اختر تعبيرًا يناسب العلاقة والموقف ودرجة الرسمية.',
+    'Build a recipe in a sensible order, then handle a small shopping decision.':'رتّب خطوات وصفة بطريقة منطقية ثم اتخذ قرارًا بسيطًا أثناء التسوق.',
+    'Take a call one turn at a time. Several replies can work; context and clarity matter.':'أجرِ مكالمة خطوة بخطوة. قد تكون عدة إجابات مناسبة؛ المهم هو السياق والوضوح.',
+    'Enter studio ↗':'ادخل الاستوديو ↗','Next situation →':'الموقف التالي →','YOUR TURN':'دورك',
+    'Make a simple cheese sandwich':'إعداد شطيرة جبن بسيطة','Make a cup of tea':'إعداد كوب شاي','Prepare a fruit salad':'إعداد سلطة فواكه','Cook pasta':'طهي المعكرونة','Make a vegetable omelette':'إعداد عجة بالخضروات','Prepare a safe chopping station':'إعداد مكان آمن للتقطيع','Bake from a recipe':'الخبز وفق وصفة',
+    'Wash your hands and prepare a clean surface.':'اغسل يديك وجهّز سطحًا نظيفًا.','Take two slices of bread.':'أحضر شريحتي خبز.','Add cheese and any chosen vegetables.':'أضف الجبن والخضروات التي تختارها.','Put the second slice on top.':'ضع الشريحة الثانية في الأعلى.','Cut the sandwich and serve it.':'اقطع الشطيرة وقدّمها.','Fill the kettle with water.':'املأ الغلاية بالماء.','Boil the water safely.':'اغلِ الماء بأمان.','Put a tea bag in a cup.':'ضع كيس شاي في كوب.','Pour the hot water into the cup.':'اسكب الماء الساخن في الكوب.','Let it steep, then remove the tea bag.':'اترك الشاي لينقع ثم أخرج الكيس.','Wash the fruit.':'اغسل الفاكهة.','Place a chopping board on a stable surface.':'ضع لوح التقطيع على سطح ثابت.','Cut the fruit into small pieces.':'قطّع الفاكهة إلى قطع صغيرة.','Put the pieces in a bowl.':'ضع القطع في وعاء.','Mix gently and serve.':'اخلط برفق وقدّمها.','Fill a pot with water.':'املأ قدرًا بالماء.','Bring the water to a boil.':'اترك الماء حتى يغلي.','Add the pasta carefully.':'أضف المعكرونة بحذر.','Cook according to the packet instructions.':'اطهُ وفق تعليمات العبوة.','Drain carefully and add the sauce.':'صفِّ الماء بحذر وأضف الصلصة.','Wash the vegetables.':'اغسل الخضروات.','Chop the vegetables into small pieces.':'قطّع الخضروات إلى قطع صغيرة.','Beat the eggs in a bowl.':'اخفق البيض في وعاء.','Cook the vegetables and add the eggs.':'اطهُ الخضروات ثم أضف البيض.','Cook until the eggs are set.':'اطهُ حتى يتماسك البيض.',
+    'The goal is progress, not perfection.':'الهدف هو التقدم، لا الكمال.','MISSION COMPLETE':'اكتملت المهمة','Real-world confidence, one step at a time.':'ثقة في الحياة الواقعية، خطوة بخطوة.'
+  });
   const arExplainText = {
     '£3.75 is three pounds and seventy-five pence.':'3.75 جنيه تعني ثلاثة جنيهات وخمسة وسبعين بنسًا.',
     'Quarter past six means 6:15.':'السادسة والربع تعني 6:15.',
@@ -241,7 +255,7 @@
     const policy = window.EpiphanyThinkLab && window.EpiphanyThinkLab.getGameDifficulty
       ? window.EpiphanyThinkLab.getGameDifficulty('life-'+id, module.skill) : {level:'guided'};
     state.difficulty = policy.level || 'guided';
-    state.pool = (data[id] || []).slice();
+    state.pool = id === 'forms' ? [data.forms[0]] : (data[id] || []).slice();
     if (state.difficulty === 'challenge') state.pool = state.pool.concat(challengeData[id] || []);
     // Keep challenge cards later in the run, so a round never changes level mid-session.
     render();
@@ -271,21 +285,21 @@
   function renderQuestion(item,m) {
     if(m.id==='numbers') return '<div class="ls-number-board"><span class="ls-scene-tag">'+esc(tx(item.scene))+'</span><span class="ls-number-icon">'+(item.kind==='price'?'£':item.kind==='time'?'◷':item.kind==='date'?'▦':'#')+'</span><span class="ls-kind">'+esc(item.kind.toUpperCase())+'</span></div><h3>'+esc(promptText(item))+'</h3>'+answerOptions(item);
     if(m.id==='signs') return '<div class="ls-sign-scene"><span class="ls-scene-tag">'+esc(tx(item.place))+'</span><div class="ls-real-sign"><span>'+esc(item.symbol)+'</span><strong>'+esc(item.sign)+'</strong></div></div><h3>'+esc(promptText(item))+'</h3>'+answerOptions(item);
-    if(m.id==='polite') return '<div class="ls-tone-card"><span class="ls-scene-tag">'+esc(item.scene)+'</span><span class="ls-tone-label">'+esc(item.level)+'</span></div><h3>'+esc(item.prompt)+'</h3>'+answerOptions(item);
+    if(m.id==='polite') return '<div class="ls-tone-card"><span class="ls-scene-tag">'+esc(tx(item.scene))+'</span><span class="ls-tone-label">'+esc(item.level)+'</span></div><h3>'+esc(promptText(item))+'</h3>'+answerOptions(item);
     if(m.id==='kitchen') {
       if(item.steps) {
         if(!state.sequence.length) state.sequence=item.steps.map((_,i)=>i).sort(()=>Math.random()-.5);
-        return '<div class="ls-recipe-card"><span class="ls-scene-tag">'+esc(item.scene)+'</span><h3>'+esc(tx(item.title))+'</h3><p>'+(arabicOn()?'<span lang="ar" dir="rtl">'+esc(item.ar)+'</span>':'Put the steps in order from first to last. Select a step to place it in the sequence.')+'</p></div><div class="ls-sequence"><div class="ls-sequence-label">YOUR ORDER</div>'+state.sequence.map((step,pos)=>'<button type="button" class="ls-step" data-ls-step="'+step+'"><span>'+String(pos+1).padStart(2,'0')+'</span>'+esc(arabicOn() && item.arSteps ? item.arSteps[step] : item.steps[step])+'<b>↕</b></button>').join('')+'</div><div class="ls-inline-actions"><button type="button" class="ls-secondary" data-ls-shuffle>Shuffle steps</button><button type="button" class="ls-primary" data-ls-check-sequence>Check recipe order ↗</button></div>';
+        return '<div class="ls-recipe-card"><span class="ls-scene-tag">'+esc(tx(item.scene))+'</span><h3>'+esc(tx(item.title))+'</h3><p>'+(arabicOn()?'<span lang="ar" dir="rtl">'+esc(item.ar)+'</span>':'Put the steps in order from first to last. Select a step to place it in the sequence.')+'</p></div><div class="ls-sequence"><div class="ls-sequence-label">YOUR ORDER</div>'+state.sequence.map((step,pos)=>'<button type="button" class="ls-step" data-ls-step="'+step+'"><span>'+String(pos+1).padStart(2,'0')+'</span>'+esc(arabicOn() && item.arSteps ? item.arSteps[step] : item.steps[step])+'<b>↕</b></button>').join('')+'</div><div class="ls-inline-actions"><button type="button" class="ls-secondary" data-ls-shuffle>Shuffle steps</button><button type="button" class="ls-primary" data-ls-check-sequence>Check recipe order ↗</button></div>';
       }
-      return '<div class="ls-recipe-card"><span class="ls-scene-tag">'+esc(item.scene)+'</span><h3>'+esc(item.title)+'</h3></div><h3>'+esc(item.prompt)+'</h3>'+answerOptions(item);
+      return '<div class="ls-recipe-card"><span class="ls-scene-tag">'+esc(tx(item.scene))+'</span><h3>'+esc(tx(item.title))+'</h3></div><h3>'+esc(promptText(item))+'</h3>'+answerOptions(item);
     }
     if(m.id==='phone') {
       const turn=item;
-      return '<div class="ls-phone-shell"><div class="ls-phone-status"><span>● CALL IN PROGRESS</span><span>00:0'+(state.round+1)+'</span></div><div class="ls-caller"><span>☎</span><div><strong>'+esc(turn.speaker)+'</strong><small>'+esc(item.scene)+'</small></div></div><blockquote class="ls-dialogue">'+esc(turn.line)+'</blockquote><div class="ls-listen-label">YOUR TURN</div><h3>'+esc(turn.prompt)+'</h3>'+answerOptions(turn);
+      return '<div class="ls-phone-shell"><div class="ls-phone-status"><span>● CALL IN PROGRESS</span><span>00:0'+(state.round+1)+'</span></div><div class="ls-caller"><span>☎</span><div><strong>'+esc(turn.speaker)+'</strong><small>'+esc(tx(item.scene))+'</small></div></div><blockquote class="ls-dialogue">'+esc(tx(turn.line))+'</blockquote><div class="ls-listen-label">YOUR TURN</div><h3>'+esc(promptText(turn))+'</h3>'+answerOptions(turn);
     }
     if(m.id==='forms') {
       const fields=[{id:'first',label:'First name',placeholder:'e.g. Alex',type:'text'},{id:'birth',label:'Date of birth',placeholder:'DD / MM / YYYY',type:'date'},{id:'nationality',label:'Nationality',options:['Algerian','French','British','Canadian','Other']},{id:'status',label:'Marital status',options:['Single','Married','Prefer not to say']},{id:'contact',label:'Preferred contact method',options:['Email','Phone','Text message']}];
-      return '<div class="ls-form-paper"><div class="ls-form-paper-head"><span>✳ SAMPLE FORM</span><small>Practice only · fictional details</small></div><p>Complete this imaginary registration form. Use a made-up name and any date; nothing is submitted.</p><form data-ls-form>'+fields.map(f=>'<label class="ls-form-field"><span>'+esc(f.label)+'</span>'+(f.options?'<select name="'+f.id+'" required><option value="">Choose…</option>'+f.options.map(o=>'<option>'+esc(o)+'</option>').join('')+'</select>':'<input name="'+f.id+'" type="'+(f.type==='date'?'text':'text')+'" placeholder="'+esc(f.placeholder)+'" value="'+esc(state.formValues[f.id]||'')+'" '+(f.id==='first'?'required':'')+' autocomplete="off">')+'</label>').join('')+'<button type="submit" class="ls-primary">Review my form ↗</button></form><p class="ls-privacy-note">⚑ Do not enter real personal or sensitive information.</p></div>';
+      return '<div class="ls-form-paper"><div class="ls-form-paper-head"><span>✳ '+tx('SAMPLE FORM')+'</span><small>'+tx('Practice only · fictional details')+'</small></div><p'+(arabicOn()?' lang="ar" dir="rtl"':'')+'>'+(arabicOn()?'أكمل هذه الاستمارة الخيالية باستخدام بيانات افتراضية. لن تُرسل أي معلومات.':'Complete this imaginary registration form. Use fictional details; nothing is submitted.')+'</p><form data-ls-form>'+fields.map(f=>'<label class="ls-form-field"><span>'+esc(tx(f.label))+'</span>'+(f.options?'<select name="'+f.id+'" required><option value="">Choose…</option>'+f.options.map(o=>'<option>'+esc(tx(o))+'</option>').join('')+'</select>':'<input name="'+f.id+'" type="'+(f.type==='date'?'text':'text')+'" placeholder="'+esc(f.placeholder)+'" value="'+esc(state.formValues[f.id]||'')+'" '+(f.id==='first'?'required':'')+' autocomplete="off">')+'</label>').join('')+'<button type="submit" class="ls-primary">Review my form ↗</button></form><p class="ls-privacy-note">⚑ Do not enter real personal or sensitive information.</p></div>';
     }
     return '';
   }
@@ -325,7 +339,7 @@
     const values=Object.fromEntries(new FormData(form).entries());state.formValues=values;
     const required=['first','nationality','status','contact'];const complete=required.every(k=>String(values[k]||'').trim());
     const birth=String(values.birth||'').trim();const validDate=!birth||/^\d{2}\s*\/\s*\d{2}\s*\/\s*\d{4}$/.test(birth);
-    feedback({explain:complete&&validDate?'Form reviewed. Your answers are complete, and the date format is clear. Remember: real forms may request DD/MM/YYYY or another format, so check the instructions.':'Check the required fields and use the requested date format, for example 14/09/2002.'},complete&&validDate);
+    feedback({explain:complete&&validDate?(arabicOn()?'تمت مراجعة الاستمارة. الحقول المطلوبة مكتملة. تحقق دائمًا من تنسيق التاريخ المطلوب.':'Form reviewed. The required fields are complete. Always check the requested date format.'):(arabicOn()?'تحقق من الحقول المطلوبة واستخدم تنسيق التاريخ المطلوب، مثل 14/09/2002.':'Check the required fields and use the requested date format, for example 14/09/2002.')},complete&&validDate);
   });
   // Each studio uses the shared adaptive policy, while keeping its own interaction design.
   modules.forEach(m=>{if(window.EpiphanyThinkLab&&window.EpiphanyThinkLab.registerGame)window.EpiphanyThinkLab.registerGame('life-'+m.id,m.skill);});
