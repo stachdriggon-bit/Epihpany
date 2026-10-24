@@ -825,17 +825,23 @@
     const history=Array.isArray(item.answerHistory)?item.answerHistory.slice(-5):[];
     const accuracy=history.length?history.filter(x=>x&&x.correct).length/history.length:null;
     let targetBox=Math.min(5,box+1);
-    if(item.confidence==='low')targetBox=1;
-    else if(item.confidence==='medium')targetBox=Math.min(targetBox,3);
-    if(accuracy!==null&&history.length>=2) {
-      if(accuracy<0.6)targetBox=Math.min(targetBox,2);
-      else if(accuracy<0.8)targetBox=Math.min(targetBox,3);
+
+    // Confidence guides the pace, but demonstrated performance can correct an unsure self-rating.
+    if(history.length>=2) {
+      if(accuracy<0.6) targetBox=1;
+      else if(accuracy<0.8) targetBox=Math.min(targetBox,3);
+      else if(item.confidence==='low') targetBox=Math.min(targetBox,2);
+      else if(item.confidence==='medium') targetBox=Math.min(targetBox,3);
+    } else {
+      if(item.confidence==='low') targetBox=1;
+      else if(item.confidence==='medium') targetBox=Math.min(targetBox,3);
     }
+
     item.box=targetBox;
     item.interval=REVIEW_INTERVALS[targetBox-1];
     item.exerciseStage=0;
     item.streak=(Number(item.streak)||0)+1;
-    item.mastered=targetBox>=5&&item.confidence==='high'&&(accuracy===null||history.length<2||accuracy>=0.8);
+    item.mastered=targetBox>=5&&item.confidence==='high'&&history.length>=2&&accuracy>=0.8;
     const due=new Date();due.setDate(due.getDate()+item.interval);item.due=dayKey(due);
     return {box:targetBox,interval:item.interval,accuracy};
   }
