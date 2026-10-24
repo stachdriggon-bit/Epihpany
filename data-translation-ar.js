@@ -29,7 +29,9 @@ window.EPIPHANY_AR_TRANSLATION_WORDS = {
   someone:'شخص ما', people:'أشخاص', person:'شخص', team:'فريق', bus:'حافلة', rain:'مطر', time:'وقت', minutes:'دقائق', place:'مكان',
   start:'يبدأ', end:'نهاية', work:'عمل', help:'مساعدة', check:'تحقق', look:'انظر', know:'يعرف', understand:'يفهم', keep:'واصل',
   'don\'t':'لا', 'won\'t':'لن', 'let\'s':'دعنا', 'word-for-word':'حرفيًا'
-
+,
+  // Overrides for known context and wording errors.
+  naturally:"بطريقة طبيعية", customer:"عميل", supply:"يُزوّد", demand:"يطلب", article:"مقال", objective:"هدف", application:"تطبيق", function:"دالة", tense:"زمن", fit:"مناسب", bright:"ذكي", light:"فاتح", complete:"أكمل", attempt:"محاولة", change:"تغيير", right:"يمين", mean:"يعني", expensive:"باهظ الثمن", wet:"مبلل", delayed:"متأخر", blamed:"ألقى اللوم", assumed:"افترض", evidence:"دليل", key:"مفتاح", garden:"حديقة", shiny:"لامع", suitcase:"حقيبة سفر", station:"محطة", cyclist:"راكب دراجة", route:"مسار", sensor:"مستشعر", draft:"تيار هواء", readings:"قراءات", productive:"مثمر", assumption:"افتراض", contingency:"خطة بديلة", supplier:"مورّد", schedule:"جدول زمني", delegation:"تفويض", responsibility:"مسؤولية", confidence:"ثقة"
 };
 window.EPIPHANY_AR_TRANSLATION_PHRASES = {
   'choose the correct answer':'اختر الإجابة الصحيحة.',
@@ -264,7 +266,66 @@ window.EPIPHANY_AR_TRANSLATION_PHRASES = {
   'choose the option that best matches your reasoning':'اختر الخيار الذي يتوافق أكثر مع طريقة تفكيرك.',
   'there is no right or wrong choice':'لا يوجد اختيار صحيح أو خاطئ.',
   'your choice changes what happens next':'اختيارك يغيّر ما يحدث بعد ذلك.'
-
+,
+  // Exact context-aware translations for story comprehension and feedback.
+  "Where does Mia find the key?": "أين تجد ميا المفتاح؟",
+  "What does “shiny” mean here?": "ما معنى كلمة «لامع» هنا؟",
+  "Who helps Mia find the key?": "من يساعد ميا في العثور على المفتاح؟",
+  "Why do they leave the tree?": "لماذا يغادرون المكان عند الشجرة؟",
+  "What does “dry” mean?": "ما معنى كلمة «جاف»؟",
+  "What do they do in the café?": "ماذا يفعلون في المقهى؟",
+  "Why did Nora go back with the man?": "لماذا عادت نورا مع الرجل؟",
+  "What does “delayed” mean?": "ما معنى كلمة «متأخر»؟",
+  "How did Nora feel at the end?": "كيف شعرت نورا في النهاية؟",
+  "Who took the bread?": "من أخذ الخبز؟",
+  "What does “blamed” mean?": "ما معنى كلمة «ألقى اللوم»؟",
+  "What did Leo do after?": "ماذا فعل ليو بعد ذلك؟",
+  "Why did Daniel change his route?": "لماذا غيّر دانيال مساره؟",
+  "What does “with seconds to spare” mean?": "ما معنى «قبل فوات الأوان بلحظات»؟",
+  "What did Daniel decide?": "ماذا قرر دانيال؟",
+  "What caused the strange readings?": "ما الذي تسبب في القراءات الغريبة؟",
+  "What does “assumed” mean?": "ما معنى كلمة «افترض»؟",
+  "Why did the teacher praise Amina?": "لماذا أثنت المعلمة على أمينة؟",
+  "Why were the meetings unproductive?": "لماذا لم تكن الاجتماعات مثمرة؟",
+  "What does “swept under the rug” mean?": "ما معنى التعبير «إخفاء المشكلة بدلًا من معالجتها»؟",
+  "What changed after delegation?": "ما الذي تغيّر بعد تفويض المهام؟",
+  "Why did Rafi think he had failed?": "لماذا ظنّ رافي أنه أخفق؟",
+  "What does “sugar-coat” mean?": "ما معنى التعبير «تلطيف الحقيقة»؟",
+  "What did Rafi learn?": "ماذا تعلّم رافي؟",
+  "Why does Leila question the schedule?": "لماذا تشكّك ليلى في الجدول الزمني؟",
+  "What is a contingency in this context?": "ما المقصود بالخطة البديلة في هذا السياق؟",
+  "What is the strongest lesson from the story?": "ما أهم درس يمكن استخلاصه من القصة؟",
+  "The dog leads Mia to the garden, where she sees the key.": "يقود الكلب ميا إلى الحديقة، حيث ترى المفتاح.",
+  "The key reflects light, so it looks shiny.": "يعكس المفتاح الضوء، لذلك يبدو لامعًا.",
+  "Mia follows her little dog to the garden.": "تتبع ميا كلبها الصغير إلى الحديقة.",
+  "Cold rain begins to fall, so they move to the café.": "يبدأ المطر البارد بالهطول، فينتقلون إلى المقهى.",
+  "They are safe from the rain inside the café.": "يكونون في مأمن من المطر داخل المقهى.",
+  "They eat the picnic together and laugh.": "يتناولون طعام النزهة معًا ويضحكون.",
+  "The man had left his blue suitcase near the station desk.": "كان الرجل قد ترك حقيبته الزرقاء قرب مكتب المحطة.",
+  "Nora had to wait because the train did not arrive on time.": "اضطرت نورا إلى الانتظار لأن القطار لم يصل في موعده.",
+  "She felt good because remembering a detail helped someone.": "شعرت بالرضا لأن تذكّر تفصيل صغير ساعد شخصًا آخر.",
+  "Leo sees the cat pull the bread from the counter.": "يرى ليو القطة تسحب الخبز من المنضدة.",
+  "Leo said his brother was responsible, but he was wrong.": "قال ليو إن أخاه هو المسؤول، لكنه كان مخطئًا.",
+  "He said sorry because he had accused his brother unfairly.": "اعتذر لأنه اتهم أخاه ظلمًا.",
+  "The cyclist told him how to reach another stop in time.": "أخبره راكب الدراجة كيف يصل إلى محطة أخرى في الوقت المناسب.",
+  "Daniel arrived only moments before the bus turned away.": "وصل دانيال قبل انطلاق الحافلة بلحظات فقط.",
+  "He wanted to avoid missing the bus again.": "أراد تجنّب تفويت الحافلة مرة أخرى.",
+  "The sensor was affected by cold air entering through the open window.": "تأثر المستشعر بالهواء البارد المتسلل عبر النافذة المفتوحة.",
+  "Everyone thought the equipment was broken before testing the idea.": "اعتقد الجميع أن المعدات معطلة قبل اختبار الفكرة.",
+  "Amina investigated the cause instead of replacing the sensor immediately.": "بحثت أمينة عن السبب بدلًا من استبدال المستشعر فورًا.",
+  "People rarely spoke up, so useful ideas stayed hidden.": "نادرًا ما عبّر الناس عن آرائهم، فبقيت الأفكار المفيدة حبيسة الصمت.",
+  "Problems were not openly discussed.": "لم تُناقَش المشكلات بصراحة.",
+  "Giving people authority helped them take ownership.": "ساعد منح الفريق صلاحيات على تحمّل المسؤولية.",
+  "He became unable to continue smoothly during the opening.": "عجز عن مواصلة حديثه بسلاسة في بداية الخطاب.",
+  "The coach was honest instead of making the result sound better.": "كان المدرب صريحًا بدلًا من تجميل النتيجة.",
+  "He improved and gained confidence even without winning.": "تحسّن واكتسب الثقة حتى من دون الفوز.",
+  "The schedule depends on every supplier delivering on time, but this has not been verified.": "يعتمد الجدول على التزام كل مورّد بالتسليم في موعده، لكن ذلك لم يُتحقق منه.",
+  "A contingency prepares the team for a risk, such as a late delivery.": "تساعد الخطة البديلة الفريق على الاستعداد لمخاطر مثل تأخر التسليم.",
+  "Leila checks the evidence, raises the risk constructively, and helps the team prepare before the problem occurs.": "تتحقق ليلى من الأدلة، وتطرح الخطر بطريقة بنّاءة، وتساعد الفريق على الاستعداد قبل وقوع المشكلة.",
+  "Choose the best answer.": "اختر أفضل إجابة.",
+  "Correct answer:": "الإجابة الصحيحة:",
+  "Your choice shapes the story": "اختيارك يغيّر مسار القصة",
+  "There is no right or wrong choice here. Each option leads to a different path.": "لا يوجد اختيار صحيح أو خاطئ هنا؛ فكل خيار يقود إلى مسار مختلف."
 };
 
 
