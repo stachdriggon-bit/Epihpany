@@ -67,15 +67,47 @@
     closeMenus();
     syncCurrentNav(view);
   }
+  function setStoryBreadcrumb(title) {
+    const crumb = $('#navigation-breadcrumb');
+    if (!crumb || !title) return;
+    syncCurrentNav('stories');
+    const current = crumb.querySelector('[aria-current="page"]');
+    if (current) {
+      current.removeAttribute('aria-current');
+      current.className = 'breadcrumb-link';
+      current.setAttribute('role', 'button');
+      current.tabIndex = 0;
+      current.addEventListener('click', () => navigate('stories'));
+      current.addEventListener('keydown', event => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); navigate('stories'); } });
+    }
+    const sep = document.createElement('span'); sep.setAttribute('aria-hidden', 'true'); sep.textContent = '›';
+    const leaf = document.createElement('span'); leaf.setAttribute('aria-current', 'page'); leaf.textContent = title;
+    crumb.append(sep, leaf);
+  }
+  function openDeepStory(id, attempt = 0) {
+    const card = $('[data-story-open="' + CSS.escape(id) + '"]');
+    if (card) {
+      if ($('#game')?.hidden) card.click();
+      setStoryBreadcrumb(card.querySelector('strong')?.textContent || id);
+      return;
+    }
+    if (attempt < 24) setTimeout(() => openDeepStory(id, attempt + 1), 150);
+  }
   function routeFromHash() {
     const raw = location.hash.slice(1);
     if (!raw || raw.startsWith('word=') || raw.startsWith('word%3D')) return;
-    const view = decodeURIComponent(raw).split(/[/?&]/)[0];
+    const parts = decodeURIComponent(raw).split('/');
+    const view = parts[0].split(/[?&]/)[0];
     if (!labels[view]) return;
-    if (currentView() === view) { syncCurrentNav(view); return; }
-    restoringHistory = true;
-    navigate(view, { history: false });
-    restoringHistory = false;
+    if (view === 'stories' && !parts[1] && $('#game') && !$('#game').hidden && $('.story-reader')) {
+      $('#game-close')?.click();
+    }
+    if (currentView() !== view) {
+      restoringHistory = true;
+      navigate(view, { history: false });
+      restoringHistory = false;
+    } else syncCurrentNav(view);
+    if (view === 'stories' && parts[1]) openDeepStory(parts[1]);
   }
 
   function setupMobileLabel() {
@@ -227,6 +259,15 @@
     if (logo) {
       event.preventDefault();
       navigate('home');
+      return;
+    }
+    const storyCard = event.target.closest('[data-story-open]');
+    if (storyCard) {
+      const id = storyCard.dataset.storyOpen;
+      if (id && location.hash !== '#stories/' + encodeURIComponent(id)) {
+        history.pushState({ epiphanyView: 'stories', epiphanyStoryId: id }, '', '#stories/' + encodeURIComponent(id));
+      }
+      setTimeout(() => setStoryBreadcrumb(storyCard.querySelector('strong')?.textContent || id), 0);
       return;
     }
     const button = event.target.closest('[data-view]');
