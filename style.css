@@ -2219,3 +2219,6 @@ body[data-theme="dark"] .learning-insights-empty{background:var(--surface);borde
 .retry-hint-note{padding:10px 12px;border-radius:12px;background:var(--surface);color:var(--ink-2);font-size:.92rem}
 .answer-explanation-ar{padding:10px 12px;border-inline-start:3px solid var(--violet);border-radius:8px;background:var(--surface);line-height:1.7}
 .story-choice-recap [data-story-action="replay-other"]{margin-top:8px}
+
+.story-audio-tools [data-story-action="start-recording"],.story-audio-tools [data-story-action="stop-recording"]{border-color:var(--violet);font-weight:700}
+.story-audio-tools [data-story-action="stop-recording"]{color:#c43b4d}
