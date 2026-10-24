@@ -15,6 +15,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Cairo:wght@500;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css?v=think-lab-stable-adaptive-policy-v3-20261024">
+  <link rel="stylesheet" href="life-skills.css?v=life-skills-studio-v1-20261024">
   <script src="data.js" defer></script>
   <script src="data-mistakes.js?v=arabic-question-prompts-20261024" defer></script>
   <script src="data-spot.js?v=arabic-question-prompts-20261024" defer></script>
@@ -34,6 +35,7 @@
   <script src="app.js?v=think-lab-stable-adaptive-policy-v3-20261024" defer></script>
   <script src="think-lab.js?v=think-lab-stable-adaptive-policy-v3-20261024" defer></script>
   <script src="practice-lab.js?v=speaking-dictation-lab-20261024" defer></script>
+  <script src="life-skills.js?v=life-skills-studio-v1-20261024" defer></script>
 </head>
 <body data-theme="light">
 
@@ -72,13 +74,14 @@
       <button class="tab" data-view="world"><span class="tab-emoji" aria-hidden="true">🌍</span>World</button>
       <button class="tab" data-view="arcade"><span class="tab-emoji" aria-hidden="true">🎮</span>Arcade</button>
       <button class="tab" data-view="thinklab"><span class="tab-emoji" aria-hidden="true">⌕</span>Think Lab</button>
+      <button class="tab" data-view="lifeskills"><span class="tab-emoji" aria-hidden="true">✳</span>Life Skills</button>
       <button class="tab" data-view="words"><svg><use href="#i-book"/></svg>Words</button>
       <button class="tab" data-view="trophies"><svg><use href="#i-trophy"/></svg>Trophies</button>
       <button class="tab" data-view="progress"><span class="tab-emoji" aria-hidden="true">📈</span>Progress</button>
       <button class="tab" data-view="profile"><span class="tab-emoji" aria-hidden="true">✦</span>Profile</button>
     </nav>
 
-    <details class="mobile-menu"><summary aria-label="Open navigation menu" title="Menu"><span></span><span></span><span></span></summary><nav aria-label="Mobile navigation"><button class="tab" data-view="home">Play</button><button class="tab" data-view="stories">Stories</button><button class="tab" data-view="world">World</button><button class="tab" data-view="arcade">Arcade</button><button class="tab" data-view="thinklab">Think Lab</button><button class="tab" data-view="words">Words</button><button class="tab" data-view="trophies">Trophies</button><button class="tab" data-view="progress">Progress</button><button class="tab" data-view="profile">Profile</button></nav></details>
+    <details class="mobile-menu"><summary aria-label="Open navigation menu" title="Menu"><span></span><span></span><span></span></summary><nav aria-label="Mobile navigation"><button class="tab" data-view="home">Play</button><button class="tab" data-view="stories">Stories</button><button class="tab" data-view="world">World</button><button class="tab" data-view="arcade">Arcade</button><button class="tab" data-view="thinklab">Think Lab</button><button class="tab" data-view="lifeskills">Life Skills</button><button class="tab" data-view="words">Words</button><button class="tab" data-view="trophies">Trophies</button><button class="tab" data-view="progress">Progress</button><button class="tab" data-view="profile">Profile</button></nav></details>
 
     <div class="top-right">
       <button class="icon-btn notification-bell" id="notification-bell" type="button" aria-label="Open notifications" aria-expanded="false" aria-controls="notification-panel" title="Notifications"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span id="notification-count" class="notification-count" hidden>0</span></button>
@@ -248,6 +251,18 @@
     <div class="page think-lab-page">
       <div class="tl-page-heading"><div><p class="kicker">OBSERVE · CONNECT · DEDUCE</p><h1 id="thinklab-title" tabindex="-1">Think <span>Lab</span></h1><p class="lead">A different kind of English challenge. Less speed, more insight.</p></div><div class="tl-heading-seal" aria-hidden="true"><span>EP</span><b>THINK LAB</b><i>REASONING UNIT</i></div></div>
       <div id="think-lab-content" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <!-- LIFE SKILLS STUDIO: practical English with distinct interaction patterns -->
+  <section class="view" id="lifeskills-view" aria-labelledby="lifeskills-title">
+    <div class="page life-skills-page">
+      <div class="intro">
+        <p class="kicker">REAL LIFE · REAL LANGUAGE · REAL CONFIDENCE</p>
+        <h1 id="lifeskills-title" tabindex="-1">Life Skills <span class="hl">Studio</span></h1>
+        <p class="lead">Practical English for everyday decisions, forms, signs, shopping and conversations.</p>
+      </div>
+      <div id="life-skills-content" aria-live="polite"></div>
     </div>
   </section>
 
