@@ -84,6 +84,9 @@ test('story decisions have meaningful options and no empty Arabic translation fi
   for (const [index, story] of stories.entries()) {
     const where = `story[${index}] ${story.id || story.title || '(untitled)'}`;
     if (!String(story.title || '').trim()) errors.push(`${where}: missing title`);
+    for (const [pageIndex, page] of (story.pages || []).entries()) {
+      if (page.ar !== undefined && !String(page.ar).trim()) errors.push(`${where}: page ${pageIndex + 1} has an empty Arabic translation`);
+    }
     const decision = story.decision;
     if (decision) {
       if (!Array.isArray(decision.options) || decision.options.length < 2) errors.push(`${where}: decision needs at least two options`);
