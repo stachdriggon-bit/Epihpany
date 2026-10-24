@@ -2160,3 +2160,8 @@ body[data-theme="dark"] .monthly-word-in-feedback,body[data-theme="dark"] .story
 @media(min-width:901px){
   .mobile-menu{display:none}
 }
+
+/* Fix: dropdown submenus were clipped by older `.top-in > .tabs{overflow:auto/hidden}` rules, so their buttons could not be clicked. */
+@media(min-width:901px){
+  .top-in > .tabs,.top .tabs{overflow:visible !important}
+}
