@@ -1378,3 +1378,20 @@ window.EPIPHANY_AR_TRANSLATION_PHRASES = Object.assign(window.EPIPHANY_AR_TRANSL
   "What does ““In a nutshell.”” mean in conversation?":"ماذا تعني عبارة «باختصار» في المحادثة؟",
   "In a brief summary.":"في ملخص موجز."
 });
+
+
+/* Spelling mode: translate the task, but never reveal which spelling is correct. */
+window.EPIPHANY_AR_TRANSLATION_PHRASES = Object.assign(window.EPIPHANY_AR_TRANSLATION_PHRASES || {}, {
+  "Which word is spelled correctly?":"أي كلمة مكتوبة إملائيًا بشكل صحيح؟",
+  "Which is spelled correctly?":"أيّ خيار مكتوب بشكل صحيح؟",
+  "Choose the correctly spelled word.":"اختر الكلمة المكتوبة إملائيًا بشكل صحيح.",
+  "Choose the correctly spelled word below.":"اختر الكلمة المكتوبة إملائيًا بشكل صحيح أدناه.",
+  "Select the correctly spelled word.":"حدّد الكلمة المكتوبة إملائيًا بشكل صحيح.",
+  "Which spelling is correct?":"أي تهجئة صحيحة؟",
+  "Choose the correct spelling.":"اختر التهجئة الصحيحة.",
+  "Choose the correct word spelling.":"اختر تهجئة الكلمة الصحيحة.",
+  "Tap the word with the correct spelling.":"اضغط على الكلمة ذات التهجئة الصحيحة.",
+  "Listen carefully and choose the spelling you hear.":"استمع جيدًا واختر التهجئة التي تسمعها.",
+  "The options are different spellings of the same word.":"الخيارات تهجئات مختلفة للكلمة نفسها.",
+  "Focus on the order of the letters.":"ركّز على ترتيب الحروف."
+});
