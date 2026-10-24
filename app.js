@@ -1989,13 +1989,21 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     if(e.target && e.target.id==='create-writer-form'){e.preventDefault();startGuidedStory(e.target);return;}
     if(e.target && e.target.id==='create-story-answer-form'){e.preventDefault();submitCreateStoryAnswer(e.target);return;}
   });
+  document.addEventListener('change', e => {
+    const storyFilter=e.target.closest('#story-level-filter,#story-length-filter,#story-status-filter');
+    if(!storyFilter)return;
+    if(storyFilter.id==='story-level-filter')STORY_FILTER.level=storyFilter.value;
+    else if(storyFilter.id==='story-length-filter')STORY_FILTER.length=storyFilter.value;
+    else STORY_FILTER.status=storyFilter.value;
+    renderStories();
+  });
   document.addEventListener('input', e => {
     if(e.target&&e.target.id==='story-search-input'){STORY_FILTER.query=e.target.value;if(STORY_FILTER.query.trim()&&STORY_FILTER.level!=='all'){STORY_FILTER.level='all';renderStories();const si=$('#story-search-input');if(si){si.focus();const n=si.value.length;try{si.setSelectionRange(n,n);}catch{}}return;}const q=STORY_FILTER.query.trim().toLowerCase();let count=0;$$('.story-card').forEach(card=>{const match=(card.textContent||'').toLowerCase().includes(q);card.hidden=!match;if(match)count++;});$$('.story-level,.story-season,.story-feature-section').forEach(section=>{section.hidden=!section.querySelector('.story-card:not([hidden])');});const out=$('#story-results-count');if(out)out.textContent=count+' stories found';}
   });
   document.addEventListener('click', e => {
     if (MG && miniClick(e)) return;
     const storyMode=e.target.closest('[data-story-mode]');if(storyMode){STORY_MODE=storyMode.dataset.storyMode;renderStories();return;}
-    const storyLevelTab=e.target.closest('[data-story-level-tab]');if(storyLevelTab){STORY_FILTER.level=storyLevelTab.dataset.storyLevelTab;renderStories();return;}const storyFilter=e.target.closest('#story-level-filter,#story-length-filter,#story-status-filter');if(storyFilter){if(storyFilter.id==='story-level-filter')STORY_FILTER.level=storyFilter.value;else if(storyFilter.id==='story-length-filter')STORY_FILTER.length=storyFilter.value;else STORY_FILTER.status=storyFilter.value;renderStories();return;}
+    const storyLevelTab=e.target.closest('[data-story-level-tab]');if(storyLevelTab){STORY_FILTER.level=storyLevelTab.dataset.storyLevelTab;renderStories();return;}
 
     if(e.target.closest('#create-story-start-writing')){startGuidedStory($('#create-story-form'));return;}
     if(e.target.closest('#writer-back')){CREATE_STORY.mode='setup';renderCreateStory();return;}
