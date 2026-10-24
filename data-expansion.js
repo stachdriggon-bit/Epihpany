@@ -126,7 +126,6 @@
     '“The policy is not without its drawbacks.” This means…':['ماذا تعني عبارة “The policy is not without its drawbacks”؟',['ليس لها أي عيوب','لها بعض العيوب','إنها عديمة الفائدة تمامًا','تم سحبها'],'Not without أسلوب غير مباشر يفيد أن الشيء يتضمن بالفعل الصفة المذكورة.'],
     '“Could you help me?” is…':['عبارة “Could you help me?” هي…',['طلب مهذب','أمر بالمغادرة','حدث في الماضي','اعتذار'],'Could you…? طريقة مهذبة لطلب المساعدة.'],
     '“I’d like some water” means…':['ماذا تعني عبارة “I’d like some water”؟',['أريد بعض الماء بطريقة مهذبة','لا أحب الماء','شربت الماء أمس','أبيع الماء'],'I’d like طريقة مهذبة للتعبير عن الرغبة في شيء.'],
-    'Which phrase is more polite?':['أي عبارة أكثر تهذيبًا؟',['Give me that.','Could I have that, please?','You give now.','That is mine.'],'تجعل Could I have… please? الطلب أكثر لطفًا.'],
     '“Maybe” shows…':['إلى ماذا تشير كلمة “Maybe”؟',['اليقين','الاحتمال','عادة في الماضي','أمر'],'Maybe تدل على أن الأمر ممكن لكنه غير مؤكد.']
 };
   const bank = [
@@ -1119,8 +1118,6 @@
     '“Although it was raining, we decided to go hiking.” What happened?':['ماذا حدث رغم هطول المطر؟',['بقوا في المنزل بسبب المطر','ذهبوا للتنزه رغم المطر','توقف المطر قبل مغادرتهم','قرروا الذهاب يومًا آخر'],'Although تدل على التباين: كان المطر يهطل، لكنهم ذهبوا للتنزه.'],
     'A notice says: “No later than Friday.” What is the deadline?':['تقول الملاحظة: “No later than Friday.” ما آخر موعد؟',['بعد الجمعة','أي وقت في الأسبوع القادم','الجمعة كحد أقصى','قبل الاثنين فقط'],'تعني العبارة أن يوم الجمعة هو آخر موعد مقبول.'],
     '“I’d rather you didn’t mention it.” The speaker is asking you to…':['ماذا يطلب المتحدث بعبارة “I’d rather you didn’t mention it”؟',['إخبار الجميع','تجنب الحديث عن الأمر','كتابة الأمر','شرحه مرة أخرى'],'تعبّر “I’d rather you didn’t…” عن تفضيل ألا يقوم الشخص بفعل شيء.'],
-    'Which spelling is correct?':['أي الكلمات مكتوبة إملائيًا بصورة صحيحة؟',['Definately','Definitely','Definitly','Definetely'],'التهجئة الصحيحة هي Definitely.'],
-    'Choose the correct word.':['اختر الكلمة المكتوبة بصورة صحيحة.',['reliable','relyable','reliabel','relyible'],'التهجئة الصحيحة هي reliable.'],
     '“Her explanation was plausible, but not entirely convincing.” This means it was…':['ما معنى أن شرحها كان plausible لكنه لم يكن مقنعًا تمامًا؟',['خاطئًا بوضوح','معقولًا ظاهريًا لكنه غير مقنع بالكامل','مثبتًا تمامًا','مستحيل الفهم'],'Plausible تعني معقولًا أو قابلًا للتصديق ظاهريًا، ولا تعني بالضرورة أنه مثبت.'],
     'Choose the best connector: “The evidence was limited; ___, the conclusion was tentative.”':['اختر أداة الربط الأنسب: كانت الأدلة محدودة؛ ___ كان الاستنتاج مؤقتًا.',['nevertheless','consequently','whereas','meanwhile'],'Consequently تفيد النتيجة؛ فمحدودية الأدلة أدت إلى استنتاج غير حاسم.'],
     '“He was reluctant to endorse the proposal.” He was…':['ماذا تعني الجملة بأنه كان reluctant to endorse the proposal؟',['متحمسًا لدعمه','مترددًا أو غير راغب في دعمه','غير قادر على فهمه','متأكدًا من رفضه علنًا'],'Reluctant تعني مترددًا أو غير راغب، ولا تعني بالضرورة الرفض التام.'],
@@ -1131,7 +1128,6 @@
     '“The findings lend weight to the hypothesis.” This means they…':['ماذا تعني عبارة “The findings lend weight to the hypothesis”؟',['تجعل الفرضية أقل احتمالًا','تدعم الفرضية','تثبتها دون أي شك','لا علاقة لها بها'],'Lend weight تعني تقديم دعم أو أدلة لصالح ادعاء دون إثباته بالضرورة بشكل قاطع.'],
     '“Could you help me?” is…':['عبارة “Could you help me?” هي…',['طلب مهذب','أمر بالمغادرة','حدث في الماضي','اعتذار'],'Could you…? طريقة مهذبة لطلب المساعدة.'],
     '“I’d like some water” means…':['ماذا تعني عبارة “I’d like some water”؟',['أريد بعض الماء بطريقة مهذبة','لا أحب الماء','شربت الماء أمس','أبيع الماء'],'I’d like طريقة مهذبة للتعبير عن الرغبة في شيء.'],
-    'Which phrase is more polite?':['أي عبارة أكثر تهذيبًا؟',['Give me that.','Could I have that, please?','You give now.','That is mine.'],'تجعل Could I have… please? الطلب أكثر لطفًا.'],
     '“Maybe” shows…':['إلى ماذا تشير كلمة “Maybe”؟',['اليقين','الاحتمال','عادة في الماضي','أمر'],'Maybe تدل على أن الأمر ممكن لكنه غير مؤكد.']
 
   };
