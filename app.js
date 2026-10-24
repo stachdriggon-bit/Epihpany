@@ -1111,12 +1111,12 @@
   const TEACH_TOPICS = {
     sinceFor:{title:'Since vs for',keyIdeas:[['since','starting point'],['for','duration']],hint:'“Since” points to when something began; “for” tells us how long it has lasted.',model:'I have lived here since 2021. / I have lived here for three years.',follow:'Can you give one example with a starting point and one with a duration?'},
     presentPerfect:{title:'Present perfect',keyIdeas:[['have','has'],['past participle','third form','been','seen','done']],hint:'Use have/has + past participle to connect a past event or experience to the present.',model:'I have finished my work. / She has seen that film.',follow:'Can you make an example with have/has and a past participle?'},
-    articles:{title:'A, an and the',keyIdeas:[['a','an'],['the','specific','known']],hint:'A/an introduces a non-specific countable thing; the points to something specific or already known.',model:'I saw a dog. The dog was sleeping.',follow:'Can you introduce something with a/an and then refer to it with the?'},
-    pastSimple:{title:'Past simple',keyIdeas:[['yesterday','last week','ago','past'],['verb','action','finished']],hint:'Use the past simple for a finished event at a finished past time.',model:'I visited my friend yesterday.',follow:'Can you describe a finished event and say when it happened?'},
+    articles:{title:'A, an and the',keyIdeas:[['a','an','indefinite article'],['the','specific','known']],hint:'A/an introduces a non-specific countable thing; the points to something specific or already known.',model:'I saw a dog. The dog was sleeping.',follow:'Can you introduce something with a/an and then refer to it with the?'},
+    pastSimple:{title:'Past simple',keyIdeas:[['yesterday','last week','ago','past time'],['finished','completed','past tense','verb']],hint:'Use the past simple for a finished event at a finished past time.',model:'I visited my friend yesterday.',follow:'Can you describe a finished event and say when it happened?'},
     countable:{title:'Much vs many',keyIdeas:[['many','countable','people','books'],['much','uncountable','water','time','money']],hint:'Use many with plural countable nouns and much with uncountable nouns.',model:'How many books? How much time?',follow:'Can you give one example with a countable noun and one with an uncountable noun?'},
-    comparatives:{title:'Comparatives',keyIdeas:[['-er','than','comparative'],['more','than']],hint:'Comparatives compare two people or things, often adjective + -er or more + adjective, followed by than.',model:'This book is shorter than that one. / This task is more difficult than the last.',follow:'Can you compare two things using than?'},
+    comparatives:{title:'Comparatives',keyIdeas:[['shorter','faster','comparative'],['more','than']],hint:'Comparatives compare two people or things, often adjective + -er or more + adjective, followed by than.',model:'This book is shorter than that one. / This task is more difficult than the last.',follow:'Can you compare two things using than?'},
     willGoingTo:{title:'Will vs going to',keyIdeas:[['will','decision','offer'],['going to','plan','evidence']],hint:'Going to often describes a plan or evidence-based prediction; will often describes a quick decision, offer, or prediction.',model:'I’m going to study tonight. / I’ll help you with that.',follow:'Can you give one planned action and one quick decision or offer?'},
-    presentSimple:{title:'Present simple',keyIdeas:[['routine','usually','every day','habit'],['s','he','she','it']],hint:'Use present simple for habits and general facts. With he/she/it, most verbs take -s or -es.',model:'I study every day. / She studies every day.',follow:'Can you describe a habit and make a sentence with she or he?'}
+    presentSimple:{title:'Present simple',keyIdeas:[['routine','usually','every day','habit'],['he','she','it','third person']],hint:'Use present simple for habits and general facts. With he/she/it, most verbs take -s or -es.',model:'I study every day. / She studies every day.',follow:'Can you describe a habit and make a sentence with she or he?'}
   };
 
   function currentMonthWord() {
@@ -4255,7 +4255,12 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
         const topicKey=$('#teach-topic')?.value||'sinceFor',topic=TEACH_TOPICS[topicKey]||TEACH_TOPICS.sinceFor;
         const explanation=String($('#teach-explanation')?.value||'').trim(),example=String($('#teach-example')?.value||'').trim(),all=(explanation+' '+example).toLowerCase();
         const enough=explanation.split(/\s+/).filter(Boolean).length>=8;
-        const hits=topic.keyIdeas.filter(group=>group.some(term=>all.includes(term.toLowerCase()))).length;
+        const normalized=all.toLowerCase().replace(/[’‘]/g,"'").replace(/[^a-z0-9'+-]+/g,' ').trim();
+        const includesTerm=term=>{
+          const needle=String(term).toLowerCase().replace(/[’‘]/g,"'").trim();
+          return !!needle && (' '+normalized+' ').includes(' '+needle+' ');
+        };
+        const hits=topic.keyIdeas.filter(group=>group.some(includesTerm)).length;
         const hasExample=example.length>=5||/\b(example|for instance|such as)\b/i.test(explanation);
         const complete=enough&&hits>=Math.min(2,topic.keyIdeas.length)&&hasExample;
         state.teachMeAttempts.push({topic:topicKey,date:dayKey(),ideaHits:hits,hasExample,complete});state.teachMeAttempts=state.teachMeAttempts.slice(-100);recordLearningActivity({attempts:1});save();
