@@ -1,4 +1,4 @@
-const CACHE_NAME = 'epiphany-shell-v103-story-reader-scroll-preservation';
+const CACHE_NAME = 'epiphany-shell-v104-story-writer-filters-resume';
 const CORE_ASSETS = ['./', './index.html', './style.css', './app.js', './data.js', './data-expansion.js', './data-mistakes.js', './data-spot.js', './data-typing.js', './data-wotd.js', './data-aha.js', './data-stories.js', './data-world.js', './data-world-sprites.js', './data-minigames.js', './data-translation-ar.js', './mini-games.css', './supabase-config.js', './account.js', './manifest.webmanifest', './icon.svg', './notifications.js'];
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(CORE_ASSETS)).then(() => self.skipWaiting()));
