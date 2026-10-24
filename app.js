@@ -2743,15 +2743,23 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
   }
   function sfx(kind) {
     epiphanyHaptic(kind);
-
     if (!state.sound) return;
     try {
-      ac = ac || new (window.AudioContext || window.webkitAudioContext)();
+      const Audio = window.AudioContext || window.webkitAudioContext;
+      if (!Audio) return;
+      ac = ac || new Audio();
       if (ac.state === 'suspended') ac.resume();
-      const seq = {ok:[[659, 0, .12], [880, .1, .22]], no:[[262, 0, .18, 'triangle'], [196, .15, .24, 'triangle']],
-        done:[[523, 0, .14], [659, .12, .14], [784, .24, .14], [1047, .36, .34]]}[kind];
-      seq.forEach(a => tone(a[0], a[1], a[2], a[3]));
-    } catch { /* audio is optional */ }
+      // Keep each feedback sound short and recognizable. "wrong" is used
+      // by dialogue activities; map it to the same gentle cue as "no".
+      const seq = {
+        ok: [[659, 0, .12, 'sine', .075], [880, .1, .18, 'sine', .075]],
+        no: [[294, 0, .14, 'triangle', .055], [220, .13, .18, 'triangle', .05]],
+        wrong: [[294, 0, .14, 'triangle', .055], [220, .13, .18, 'triangle', .05]],
+        done: [[523, 0, .13, 'sine', .065], [659, .11, .13, 'sine', .065], [784, .22, .15, 'sine', .065], [1047, .35, .25, 'sine', .07]]
+      }[kind];
+      if (!seq) return;
+      seq.forEach(a => tone(a[0], a[1], a[2], a[3], a[4]));
+    } catch { /* audio is optional; never block an activity */ }
   }
 
   let toastTimer;
