@@ -32,7 +32,7 @@
   <script src="account.js?v=developer-access-20261023" defer></script>
   <script src="notifications.js?v=notifications-20261023" defer></script>
   <script src="data-translation-ar.js?v=translation-library-v23-task-prompts-20261024"></script>
-  <script src="app.js?v=order-story-arabic-v9-20261024" defer></script>
+  <script src="app.js?v=my-tools-real-life-words-v1-20261024" defer></script>
   <script src="think-lab.js?v=think-lab-stable-adaptive-policy-v3-20261024" defer></script>
   <script src="practice-lab.js?v=speaking-dictation-lab-20261024" defer></script>
   <script src="life-skills.js?v=life-skills-studio-v5-20261024" defer></script>
@@ -75,13 +75,14 @@
       <button class="tab" data-view="arcade"><span class="tab-emoji" aria-hidden="true">🎮</span>Arcade</button>
       <button class="tab" data-view="thinklab"><span class="tab-emoji" aria-hidden="true">⌕</span>Think Lab</button>
       <button class="tab" data-view="lifeskills"><span class="tab-emoji" aria-hidden="true">✳</span>Life Skills</button>
+      <button class="tab" data-view="mytools"><span class="tab-emoji" aria-hidden="true">✎</span>My Tools</button>
       <button class="tab" data-view="words"><svg><use href="#i-book"/></svg>Words</button>
       <button class="tab" data-view="trophies"><svg><use href="#i-trophy"/></svg>Trophies</button>
       <button class="tab" data-view="progress"><span class="tab-emoji" aria-hidden="true">📈</span>Progress</button>
       <button class="tab" data-view="profile"><span class="tab-emoji" aria-hidden="true">✦</span>Profile</button>
     </nav>
 
-    <details class="mobile-menu"><summary aria-label="Open navigation menu" title="Menu"><span></span><span></span><span></span></summary><nav aria-label="Mobile navigation"><button class="tab" data-view="home">Play</button><button class="tab" data-view="stories">Stories</button><button class="tab" data-view="world">World</button><button class="tab" data-view="arcade">Arcade</button><button class="tab" data-view="thinklab">Think Lab</button><button class="tab" data-view="lifeskills">Life Skills</button><button class="tab" data-view="words">Words</button><button class="tab" data-view="trophies">Trophies</button><button class="tab" data-view="progress">Progress</button><button class="tab" data-view="profile">Profile</button></nav></details>
+    <details class="mobile-menu"><summary aria-label="Open navigation menu" title="Menu"><span></span><span></span><span></span></summary><nav aria-label="Mobile navigation"><button class="tab" data-view="home">Play</button><button class="tab" data-view="stories">Stories</button><button class="tab" data-view="world">World</button><button class="tab" data-view="arcade">Arcade</button><button class="tab" data-view="thinklab">Think Lab</button><button class="tab" data-view="lifeskills">Life Skills</button><button class="tab" data-view="mytools">My Tools</button><button class="tab" data-view="words">Words</button><button class="tab" data-view="trophies">Trophies</button><button class="tab" data-view="progress">Progress</button><button class="tab" data-view="profile">Profile</button></nav></details>
 
     <div class="top-right">
       <button class="icon-btn notification-bell" id="notification-bell" type="button" aria-label="Open notifications" aria-expanded="false" aria-controls="notification-panel" title="Notifications"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span id="notification-count" class="notification-count" hidden>0</span></button>
@@ -281,6 +282,19 @@
 
 
 
+  <!-- MY TOOLS: personal tools for learning from everyday life -->
+  <section class="view" id="mytools-view" aria-labelledby="mytools-title">
+    <div class="page mytools-page">
+      <div class="intro mytools-intro">
+        <p class="kicker">YOUR PERSONAL TOOLKIT</p>
+        <h1 id="mytools-title" tabindex="-1">Make everyday life your classroom.</h1>
+        <p class="lead">A calm home for small tools that help you notice, keep, and use the English you meet in real life.</p>
+      </div>
+      <div class="mytools-welcome-note"><span aria-hidden="true">✦</span><p><strong>Curiosity over perfection.</strong> You don’t need to know every meaning or write a perfect sentence. Save what caught your attention, and come back to it when you’re ready.</p></div>
+      <div id="mytools-content" aria-live="polite"></div>
+    </div>
+  </section>
+
   <!-- PROFILE: goals and personal progress -->
   <section class="view" id="profile-view" aria-labelledby="profile-title">
     <div class="page">
@@ -414,6 +428,7 @@
 <div class="dock-more-panel" id="dock-more-panel" hidden aria-label="More destinations">
   <button class="dock-more-link" data-view="thinklab" type="button"><span>⌕</span><span><strong>Think Lab</strong><small>Logic, clues and natural English</small></span></button>
   <button class="dock-more-link" data-view="lifeskills" type="button"><span>✳</span><span><strong>Life Skills Studio</strong><small>Practical English for everyday life</small></span></button>
+  <button class="dock-more-link" data-view="mytools" type="button"><span>✎</span><span><strong>My Tools</strong><small>Personal vocabulary and everyday learning tools</small></span></button>
   <button class="dock-more-link" data-view="stories" type="button"><span>📖</span><span><strong>Stories</strong><small>Branching stories and writing</small></span></button>
   <button class="dock-more-link" data-view="words" type="button"><span>📚</span><span><strong>Words</strong><small>Your saved vocabulary</small></span></button>
   <button class="dock-more-link" data-view="trophies" type="button"><span>🏆</span><span><strong>Trophies</strong><small>Achievements and rewards</small></span></button>
