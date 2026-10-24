@@ -4801,3 +4801,14 @@ window.EPIPHANY_AR_TRANSLATION_PHRASES = Object.assign(window.EPIPHANY_AR_TRANSL
   "The team meets next week.":"يجتمع الفريق الأسبوع المقبل.",
   "The product is redesigned tomorrow.":"يُعاد تصميم المنتج غدًا."
 });
+
+window.EPIPHANY_AR_TRANSLATION_PHRASES = Object.assign(window.EPIPHANY_AR_TRANSLATION_PHRASES || {}, {
+  "Notwithstanding the objections, the committee upheld its decision.":"رغم الاعتراضات، أيدت اللجنة قرارها.",
+  "Notwithstanding of the objections, the committee upheld its decision.":"صياغة غير صحيحة",
+  "Notwithstanding the objections, the committee has uphold its decision.":"صياغة غير صحيحة",
+  "Notwithstanding to the objections, the committee upheld its decision.":"صياغة غير صحيحة",
+  "They think the criticism is too strong, though they may see problems.":"يرون أن النقد مبالغ فيه، رغم احتمال إدراكهم وجود مشكلات.",
+  "They are certain the project was a complete success.":"هم متأكدون من أن المشروع كان نجاحًا كاملًا.",
+  "They refuse to discuss the project at all.":"يرفضون مناقشة المشروع إطلاقًا.",
+  "They are asking someone to repeat the statement.":"يطلبون من شخص إعادة العبارة."
+});
