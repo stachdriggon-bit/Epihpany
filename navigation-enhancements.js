@@ -280,8 +280,80 @@
   window.addEventListener('popstate', () => routeFromHash());
   window.addEventListener('hashchange', () => routeFromHash());
 
+
+  function setupFinalPolish() {
+    // A pointer click should not leave a purple keyboard-focus ring on a heading.
+    document.addEventListener('pointerdown', () => document.body.classList.add('navigation-pointer'), { passive: true });
+    document.addEventListener('keydown', event => {
+      if (event.key === 'Tab' || event.key.startsWith('Arrow') || event.key === 'Enter' || event.key === ' ') {
+        document.body.classList.remove('navigation-pointer');
+      }
+    });
+
+    // Hide the sticky header while scrolling down; reveal it on upward movement.
+    const header = $('.top');
+    let lastY = window.scrollY || 0;
+    let scrollTicking = false;
+    window.addEventListener('scroll', () => {
+      if (scrollTicking) return;
+      scrollTicking = true;
+      window.requestAnimationFrame(() => {
+        const y = window.scrollY || 0;
+        const modalOpen = !!$('.game:not([hidden]), .global-search-overlay:not([hidden]), .help-language-modal:not([hidden])');
+        if (header) {
+          if (y < 90 || y < lastY - 3 || modalOpen) header.classList.remove('is-hidden-on-scroll');
+          else if (y > lastY + 5 && y > 140) header.classList.add('is-hidden-on-scroll');
+        }
+        lastY = y;
+        scrollTicking = false;
+      });
+    }, { passive: true });
+    window.addEventListener('resize', () => header?.classList.remove('is-hidden-on-scroll'), { passive: true });
+
+    // Convert lazy-feature failures into a useful, retryable message inside that section.
+    const groupViews = { stories: 'stories', world: 'world', arcade: 'arcade', thinklab: 'thinklab', lifeskills: 'lifeskills' };
+    if (typeof window.EPIPHANY_LAZY_LOAD === 'function' && !window.__epiphanyLoadErrorHandlerInstalled) {
+      const originalLoad = window.EPIPHANY_LAZY_LOAD;
+      window.EPIPHANY_LAZY_LOAD = function (group, ...args) {
+        return originalLoad.call(this, group, ...args).catch(error => {
+          const viewName = groupViews[group];
+          const view = viewName && $('#' + viewName + '-view');
+          if (view && view.classList.contains('is-active')) {
+            let panel = $('#load-error-' + viewName);
+            if (!panel) {
+              panel = document.createElement('section');
+              panel.id = 'load-error-' + viewName;
+              panel.className = 'section-load-error';
+              panel.setAttribute('role', 'alert');
+              panel.innerHTML = '<span class="load-error-icon" aria-hidden="true">↻</span><div><h2>Could not load this section</h2><p>Something interrupted loading. Your progress is safe. Check your connection, then try again.</p><button type="button" class="btn btn-go" data-retry-section="' + viewName + '">Try again</button></div>';
+              const page = $('.page', view) || view;
+              const intro = $('.intro', page);
+              if (intro) intro.insertAdjacentElement('afterend', panel);
+              else page.prepend(panel);
+              panel.querySelector('[data-retry-section]').addEventListener('click', async event => {
+                const button = event.currentTarget;
+                button.disabled = true;
+                button.textContent = 'Trying again…';
+                try {
+                  await originalLoad.call(window, group);
+                  // Reloading restores the current hash and reruns the section initializer cleanly.
+                  window.location.reload();
+                } catch (_) {
+                  button.disabled = false;
+                  button.textContent = 'Try again';
+                }
+              });
+            }
+          }
+          throw error;
+        });
+      };
+      window.__epiphanyLoadErrorHandlerInstalled = true;
+    }
+  }
+
   function init() {
-    setupMobileLabel(); setupBreadcrumb(); setupSearch(); setupDropdowns();
+    setupMobileLabel(); setupBreadcrumb(); setupSearch(); setupDropdowns(); setupFinalPolish();
     const view = currentView();
     syncCurrentNav(view);
     routeFromHash();
