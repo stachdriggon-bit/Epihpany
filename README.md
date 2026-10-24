@@ -34,3 +34,9 @@ World: story missions (fixed) + endless Practice runs (random layout, generated 
 - The app shell and core learning data are cached separately from deferred features. A deferred feature is available offline after it has loaded successfully once while online.
 - Google Fonts stylesheets/font files and the Supabase CDN library use a cache-first service-worker strategy after their first successful online load. If a font has not been cached yet, the site falls back to system fonts; fonts are cached for offline reuse, not bundled as local font binaries.
 - Optional anonymous usage/error telemetry remains disabled until the learner opts in.
+
+## Content quality and discovery
+- `npm test:fast` runs structural checks for question duplicates, answer indexes, story-choice translations, and Word of the Day translations.
+- GitHub Actions runs the content quality tests on pushes to `main` and on pull requests.
+- `ARABIC-STYLE-GUIDE.md` defines the consistent simple-Modern-Standard-Arabic policy.
+- The landing screen lets visitors preview Epiphany before entering the app; `wotd-card.html` generates a daily Word of the Day PNG for sharing.
