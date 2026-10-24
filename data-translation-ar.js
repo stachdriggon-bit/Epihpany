@@ -266,3 +266,163 @@ window.EPIPHANY_AR_TRANSLATION_PHRASES = {
   'your choice changes what happens next':'اختيارك يغيّر ما يحدث بعد ذلك.'
 
 };
+
+
+/* Reviewed sentence translations for the writing and error-discovery banks.
+   These translations preserve blanks and do not identify the incorrect word. */
+window.EPIPHANY_AR_TRANSLATION_PHRASES = Object.assign(window.EPIPHANY_AR_TRANSLATION_PHRASES || {}, {
+  "She ___ to school every day.":"هي ___ إلى المدرسة كل يوم.",
+  "They ___ happy today.":"هم ___ سعداء اليوم.",
+  "I ___ a student.":"أنا ___ طالب.",
+  "He ___ football on Fridays.":"هو ___ كرة القدم أيام الجمعة.",
+  "We ___ in Algeria.":"نحن ___ في الجزائر.",
+  "She has ___ orange.":"لديها ___ برتقالة.",
+  "There ___ two cats outside.":"هناك ___ قطتان في الخارج.",
+  "My brother ___ 10 years old.":"عمر أخي ___ عشر سنوات.",
+  "I ___ coffee every morning.":"أنا ___ القهوة كل صباح.",
+  "He ___ not like tea.":"هو ___ لا يحب الشاي.",
+  "She has ___ here since May.":"هي ___ هنا منذ شهر مايو.",
+  "I ___ him yesterday.":"أنا ___ إياه أمس.",
+  "They are interested ___ music.":"هم مهتمون ___ بالموسيقى.",
+  "He doesn't ___ meat.":"هو لا ___ اللحم.",
+  "We have already ___ lunch.":"نحن ___ الغداء بالفعل.",
+  "This is ___ than mine.":"هذا ___ من الذي أملكه.",
+  "There isn't ___ milk left.":"لم يتبقَّ ___ من الحليب.",
+  "I look forward to ___ you.":"أتطلع إلى ___ بك.",
+  "She ___ TV when I called.":"كانت هي ___ التلفاز عندما اتصلت.",
+  "If it rains, we ___ home.":"إذا أمطرت، فسوف ___ في المنزل.",
+  "If I ___ more time, I'd learn Italian.":"لو كان لديّ ___ وقت أكثر، لتعلّمت الإيطالية.",
+  "She has worked here ___ 2022.":"هي تعمل هنا ___ عام 2022.",
+  "The report ___ by the team yesterday.":"التقرير ___ من قِبل الفريق أمس.",
+  "I wish I ___ more confident.":"أتمنى لو كنت ___ أكثر ثقةً.",
+  "He suggested ___ a taxi.":"اقترح ___ سيارة أجرة.",
+  "By the time we arrived, they ___ .":"بحلول وقت وصولنا، كانوا قد ___.",
+  "Neither answer ___ correct.":"لا واحدة من الإجابتين ___ صحيحة.",
+  "She asked me where I ___ .":"سألتني أين ___.",
+  "I'm used to ___ early.":"أنا معتاد على ___ مبكرًا.",
+  "The film was ___ than I expected.":"كان الفيلم ___ مما توقعت.",
+  "Had I ___ earlier, I would have caught the train.":"لو أنني ___ مبكرًا، للحقت بالقطار.",
+  "The committee recommended that he ___ immediately.":"أوصت اللجنة بأن ___ فورًا.",
+  "No sooner had she arrived ___ the phone rang.":"ما إن وصلت حتى ___ الهاتف.",
+  "The findings are consistent ___ earlier research.":"تتوافق النتائج ___ مع الأبحاث السابقة.",
+  "Were it not for your help, I ___ failed.":"لولا مساعدتك، لكنت ___ قد فشلت.",
+  "The device needs ___ before use.":"يحتاج الجهاز إلى ___ قبل الاستخدام.",
+  "He denied ___ the document.":"أنكر ___ المستند.",
+  "The results, together with the appendix, ___ included.":"النتائج، إلى جانب الملحق، ___ مُدرجة.",
+  "She speaks as though she ___ everything.":"تتحدث كما لو أنها ___ كل شيء.",
+  "The more you practise, the ___ you become.":"كلما تدربت أكثر، أصبحت ___ .",
+  "My sister ___ ten years old.":"عمر أختي ___ عشر سنوات.",
+  "We ___ English at school.":"نحن ___ الإنجليزية في المدرسة.",
+  "There isn’t ___ sugar in the jar.":"لا يوجد ___ من السكر في المرطبان.",
+  "I have known her ___ five years.":"أنا أعرفها ___ خمس سنوات.",
+  "If I had studied harder, I ___ the exam.":"لو درست بجد أكثر، لكنت ___ الامتحان.",
+  "She suggested ___ a taxi.":"اقترحت ___ سيارة أجرة.",
+  "No sooner had we sat down ___ the alarm rang.":"ما إن جلسنا حتى ___ جهاز الإنذار.",
+  "The report needs ___ before publication.":"يحتاج التقرير إلى ___ قبل النشر.",
+  "Not until the figures were verified ___ the report released.":"لم يُنشر التقرير إلا بعد أن ___ الأرقام.",
+  "Her account was consistent ___ the available evidence.":"كانت روايتها متسقة ___ مع الأدلة المتاحة.",
+  "Were the premise ___ false, the inference would collapse.":"لو كانت الفرضية ___ خاطئة، لانْهار الاستنتاج.",
+  "The evidence is suggestive, but not ___.":"تشير الأدلة إلى ذلك، لكنها ليست ___ .",
+  "My sister ___ (like) apples.":"أختي ___ (like) التفاح.",
+  "They ___ students.":"هم ___ طلاب.",
+  "I was tired, ___ I went to bed early.":"كنت متعبًا، ___ ذهبت إلى النوم مبكرًا.",
+  "How ___ water do we need?":"كم ___ من الماء نحتاج؟",
+  "If I ___ (know) about the meeting, I would have attended.":"لو أنني ___ (know) بالاجتماع، لحضرته.",
+  "She suggested ___ (take) the earlier train.":"اقترحت ___ (take) القطار الأسبق.",
+  "No sooner had he arrived ___ it began to rain.":"ما إن وصل حتى ___ المطر.",
+  "The instructions were so vague that they were open ___ interpretation.":"كانت التعليمات غامضة جدًا لدرجة أنها كانت قابلة ___ للتأويل.",
+  "Only after the audit ___ the discrepancy discovered.":"لم يُكتشف التباين إلا بعد أن ___ التدقيق.",
+  "The proposal, ___ initially controversial, was eventually adopted.":"تم اعتماد المقترح في النهاية، رغم أنه كان ___ مثيرًا للجدل في البداية.",
+  "The results are contingent ___ the sample size.":"تعتمد النتائج ___ على حجم العينة.",
+  "Were the data ___ independently, the conclusion might differ.":"لو جرى ___ البيانات بشكل مستقل، فقد يختلف الاستنتاج.",
+  "So compelling ___ the evidence that the panel reopened the case.":"كانت الأدلة مقنعة ___ لدرجة أن اللجنة أعادت فتح القضية.",
+  "The claim is not borne ___ by the available evidence.":"لا تدعم الأدلة المتاحة الادعاء ___ .",
+  "Much ___ I admire her work, I disagree with this conclusion.":"على ___ من إعجابي بعملها، فإنني أختلف مع هذا الاستنتاج.",
+  "The witness's account was internally ___, with no contradictions.":"كانت رواية الشاهد ___ من الداخل، دون تناقضات.",
+  "She can ___ (swim) very well.":"هي تستطيع أن ___ (swim) جيدًا جدًا.",
+  "Those ___ my shoes.":"تلك ___ أحذيتي.",
+  "I'm interested ___ learning French.":"أنا مهتم ___ بتعلّم الفرنسية.",
+  "We ___ (see) that film last week.":"نحن ___ (see) ذلك الفيلم الأسبوع الماضي.",
+  "If I had known, I ___ (come).":"لو كنت أعلم، لكنت ___ (come).",
+  "The lecture was so ___ that I nearly fell asleep. (bore)":"كانت المحاضرة ___ لدرجة أنني كدت أنام. (bore)",
+  "Despite ___ exhausted, she finished the report. (be)":"على الرغم من ___ منهكة، فقد أنهت التقرير. (be)",
+  "The new evidence casts doubt ___ the original theory.":"تثير الأدلة الجديدة شكوكًا ___ حول النظرية الأصلية.",
+  "Were the plan ___ properly, it might succeed. (implement)":"لو جرى ___ الخطة بشكل صحيح، فقد تنجح. (implement)",
+  "The decision gave rise ___ considerable debate.":"أدى القرار ___ إلى نقاش واسع.",
+  "So complex ___ the evidence that no firm conclusion could be drawn.":"كانت الأدلة معقدة ___ لدرجة تعذّر معها التوصل إلى استنتاج حاسم.",
+  "The hypothesis remains to be ___ independently. (test)":"لا تزال الفرضية بحاجة إلى أن تُ___ بشكل مستقل. (test)",
+  "My brother ___ a bicycle.":"أخي ___ دراجة.",
+  "We are ___ to school now. (go)":"نحن ___ إلى المدرسة الآن. (go)",
+  "I didn't ___ him yesterday. (see)":"أنا لم ___ إياه أمس. (see)",
+  "This bag is ___ than that one. (cheap)":"هذه الحقيبة ___ من تلك. (cheap)",
+  "I've been waiting ___ two hours.":"أنا أنتظر منذ ___ ساعتين.",
+  "She asked me where I ___ going.":"سألتني إلى أين ___ ذاهبًا.",
+  "Had I known, I would ___ you earlier.":"لو كنت أعلم، لكنت ___ إليك في وقت أبكر.",
+  "The manager insisted ___ our leaving early.":"أصرّ المدير ___ على مغادرتنا مبكرًا.",
+  "Not until the data had been analysed ___ the pattern become clear.":"لم يتضح النمط إلا بعد أن ___ تحليل البيانات.",
+  "The findings are at odds ___ the initial hypothesis.":"تتعارض النتائج ___ مع الفرضية الأولية.",
+  "Under no circumstances ___ these files be shared.":"لا يجوز تحت أي ظرف ___ مشاركة هذه الملفات.",
+  "The proposal is contingent ___ external approval.":"يتوقف المقترح ___ على موافقة خارجية.",
+  "My sister ___ eight years old.":"عمر أختي ___ ثماني سنوات.",
+  "They ___ football every Friday. (play)":"هم ___ كرة القدم كل يوم جمعة. (play)",
+  "We ___ a film when you called. (watch)":"كنا ___ فيلمًا عندما اتصلت. (watch)",
+  "There isn't ___ juice left.":"لم يتبقَّ ___ من العصير.",
+  "She suggested ___ a taxi. (take)":"اقترحت ___ سيارة أجرة. (take)",
+  "I look forward to ___ from you. (hear)":"أتطلع إلى ___ أخبار منك. (hear)",
+  "Not only ___ she miss the train, but she also lost her ticket.":"لم ___ تفوّت القطار فحسب، بل أضاعت تذكرتها أيضًا.",
+  "The results depend ___ several factors.":"تعتمد النتائج ___ على عدة عوامل.",
+  "The board insisted that he ___ the report immediately. (submit)":"أصرّ المجلس على أن ___ التقرير فورًا. (submit)",
+  "Scarcely had we arrived ___ the storm began.":"ما إن وصلنا حتى ___ العاصفة.",
+  "The extent to which these claims are valid ___ unclear. (remain)":"لا يزال مدى صحة هذه الادعاءات ___ غير واضح. (remain)",
+  "The new policy is liable ___ causing confusion.":"من المحتمل أن تؤدي السياسة الجديدة ___ إلى الارتباك.",
+  "Were it not for her advice, I would have ___ a costly mistake. (make)":"لولا نصيحتها، لكنت قد ___ خطأً مكلفًا. (make)",
+  "The author alludes ___ a well-known debate.":"يشير الكاتب ___ إلى نقاش معروف.",
+  "Only when the figures were checked ___ the discrepancy emerge?":"هل لم يظهر التباين إلا عندما ___ الأرقام؟",
+  "The findings lend credence ___ the hypothesis.":"تمنح النتائج مصداقية ___ للفرضية.",
+  "It is essential that every applicant ___ informed promptly.":"من الضروري أن ___ كل متقدم على علم فورًا.",
+  "Had I known about the closure, I ___ a different route. (take)":"لو كنت أعلم بالإغلاق، لكنت ___ طريقًا مختلفًا. (take)",
+  "Little ___ she realise how consequential the decision would be.":"لم تكن تدرك ___ مدى أهمية القرار.",
+  "The claim is predicated ___ an assumption that remains untested.":"يقوم الادعاء ___ على افتراض لم يُختبر بعد.",
+  "Be that as it may, the evidence ___ not support the conclusion.":"ومهما يكن، فإن الأدلة ___ لا تدعم الاستنتاج.",
+  "The theory is not so much disproven ___ inadequately supported.":"النظرية ليست مدحوضة بقدر ما هي ___ مدعومة بشكل غير كافٍ.",
+  "Had the issue been addressed, the consequences ___ have been less severe.":"لو عولجت المسألة، لكانت العواقب ___ أقل حدة.",
+  "The distinction is subtle, not to say ___. (imperceptible)":"الفرق دقيق، بل يكاد يكون ___. (imperceptible)",
+  "Under no circumstances ___ the confidential data be disclosed.":"لا يجوز تحت أي ظرف ___ الكشف عن البيانات السرية.",
+  "The argument is compelling insofar ___ it accounts for the exceptions.":"الحجة مقنعة بقدر ما ___ تفسر الاستثناءات.",
+  "Such was the ambiguity that neither interpretation could be ___ out. (rule)":"كان الغموض شديدًا لدرجة تعذّر ___ أيٍّ من التفسيرين. (rule)",
+  "The recommendation rests on premises whose implications ___ yet to be explored.":"تستند التوصية إلى مقدمات لم تُستكشف ___ تداعياتها بعد."
+});
+
+/* Reuse authored Arabic fields across every loaded game bank and story dataset.
+   This is data-driven: adding an *_ar field automatically makes its English pair translatable. */
+(function registerAuthoredArabicPairs(){
+  const phrases=window.EPIPHANY_AR_TRANSLATION_PHRASES;
+  const norm=value=>String(value||'').toLowerCase().replace(/[“”]/g,'"').replace(/[‘’]/g,"'").replace(/[.!?…,:;]+$/,'').replace(/\s+/g,' ').trim();
+  const put=(en,ar)=>{if(typeof en==='string'&&en.trim()&&typeof ar==='string'&&ar.trim())phrases[norm(en)]=ar;};
+  const seen=new Set();
+  function visit(value){
+    if(!value||typeof value!=='object'||seen.has(value))return;
+    seen.add(value);
+    if(Array.isArray(value)){value.forEach(visit);return;}
+    for(const key of Object.keys(value)){
+      if(key.endsWith('_ar')){
+        const base=key.slice(0,-3), en=value[base], ar=value[key];
+        if(typeof en==='string'&&typeof ar==='string')put(en,ar);
+        if(Array.isArray(en)&&Array.isArray(ar))en.forEach((item,index)=>put(item,ar[index]));
+      }
+    }
+    if(typeof value.en==='string'&&typeof value.ar==='string')put(value.en,value.ar);
+    Object.values(value).forEach(visit);
+  }
+  const sources=[];
+  if(typeof GAMES!=='undefined')sources.push(GAMES);
+  if(typeof MISTAKE_QUESTIONS!=='undefined')sources.push(MISTAKE_QUESTIONS);
+  if(typeof SPOT_QUESTIONS!=='undefined')sources.push(SPOT_QUESTIONS);
+  if(typeof TYPING_QUESTIONS!=='undefined')sources.push(TYPING_QUESTIONS);
+  if(typeof STORIES!=='undefined')sources.push(STORIES);
+  if(typeof WORLD_MAP!=='undefined')sources.push(WORLD_MAP);
+  if(typeof WOTD_WORDS!=='undefined')sources.push(WOTD_WORDS);
+  if(typeof AHA_NOTES!=='undefined')sources.push(AHA_NOTES);
+  if(typeof EPIPHANY_EXPANSION!=='undefined')sources.push(EPIPHANY_EXPANSION);
+  sources.forEach(visit);
+})();
