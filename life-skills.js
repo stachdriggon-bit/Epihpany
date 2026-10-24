@@ -226,6 +226,10 @@
   Object.assign(arText, {
     'SAMPLE FORM':'استمارة تجريبية','Practice only · fictional details':'للتدريب فقط · بيانات خيالية','Review my form ↗':'راجع الاستمارة ↗','⚑ Do not enter real personal or sensitive information.':'⚑ لا تدخل بيانات شخصية حقيقية أو حساسة.','YOUR ORDER':'ترتيبك','Shuffle steps':'إعادة خلط الخطوات','Check recipe order ↗':'تحقق من ترتيب الوصفة ↗','CASE':'حالة','MISSION':'المهمة','All life skills':'كل المهارات الحياتية','GUIDED':'تدريجي','STEADY':'مستقر','CHALLENGE':'تحدٍّ','First name':'الاسم الأول','Date of birth':'تاريخ الميلاد','Nationality':'الجنسية','Marital status':'الحالة الاجتماعية','Preferred contact method':'طريقة التواصل المفضلة','Surname / Family name':'اسم العائلة','Postcode / ZIP code':'الرمز البريدي','Additional notes (optional)':'ملاحظات إضافية (اختياري)','e.g. Martin':'مثال: مارتن','e.g. 16000':'مثال: 16000','Leave blank if not needed':'اتركها فارغة إن لم تكن مطلوبة'
   });
+  Object.assign(arText, {
+    'Splitting a bill':'تقسيم الفاتورة','Travel connection':'تبديل وسيلة النقل','Booking deadline':'الموعد النهائي للحجز','Behind a service desk':'خلف مكتب الخدمة','Low doorway':'مدخل منخفض','Museum entrance':'مدخل المتحف','Application form':'استمارة طلب','Contact details':'بيانات التواصل','Form instructions':'تعليمات الاستمارة','A deadline is unrealistic':'موعد نهائي غير واقعي','Diplomatic':'دبلوماسي','Firm but polite':'حازم ومهذب','Service desk':'مكتب الخدمة','Kitchen sequence':'ترتيب خطوات المطبخ','Shopping decision':'قرار تسوق','Compare grocery prices':'مقارنة أسعار البقالة','Safe chopping station':'مكان تقطيع آمن',
+    'Read the full recipe and preheat the oven if instructed.':'اقرأ الوصفة كاملة وسخّن الفرن مسبقًا إذا طُلب ذلك.','Measure the ingredients.':'قِس المكونات.','Mix the ingredients in the stated order.':'اخلط المكونات بالترتيب المذكور.','Place the mixture in the prepared tin.':'ضع الخليط في الصينية المجهزة.','Bake for the stated time and check it safely.':'اخبز للمدة المحددة وتحقق من النضج بأمان.','Clean and stabilise the work area before cutting.':'نظّف مكان العمل وثبّته قبل التقطيع.','Wash your hands and clear the work surface.':'اغسل يديك وأخلِ سطح العمل.','Place a stable chopping board on the counter.':'ضع لوح تقطيع ثابتًا على سطح العمل.','Cut slowly with the knife pointed away from your fingers.':'قطّع ببطء مع توجيه السكين بعيدًا عن أصابعك.','Clean the area and store the knife safely.':'نظّف المكان واحفظ السكين بأمان.'
+  });
   const arExplainText = {
     '£3.75 is three pounds and seventy-five pence.':'3.75 جنيه تعني ثلاثة جنيهات وخمسة وسبعين بنسًا.',
     'Quarter past six means 6:15.':'السادسة والربع تعني 6:15.',
@@ -329,10 +333,7 @@
     return list[state.round%list.length];
   }
   function header(m) {
-    const policy = window.EpiphanyThinkLab && window.EpiphanyThinkLab.getGameDifficulty
-      ? window.EpiphanyThinkLab.getGameDifficulty('life-'+m.id, m.skill)
-      : {level:state.difficulty||'guided',hintLevel:1,confidence:'low'};
-    const level = tx(policy.level === 'challenge' ? 'CHALLENGE' : policy.level === 'steady' ? 'STEADY' : 'GUIDED');
+    const level = tx(state.difficulty === 'challenge' ? 'CHALLENGE' : state.difficulty === 'steady' ? 'STEADY' : 'GUIDED');
     return '<div class="ls-workbar"><button type="button" class="ls-back" data-ls-home>'+tx('All life skills')+'</button><span class="ls-progress">'+tx('MISSION')+' '+String(state.round+1).padStart(2,'0')+' · '+level+'</span><button type="button" class="ls-help-toggle '+(state.showArabic?'is-on':'')+'" data-ls-ar aria-pressed="'+state.showArabic+'">ع <span>Arabic help</span></button></div><div class="ls-mission-head"><span class="ls-eyebrow">'+esc(tx(m.eyebrow))+'</span><h2>'+esc(tx(m.title))+'</h2><p'+(arabicOn()?' lang="ar" dir="rtl"':'')+'>'+esc(tx(m.desc))+'</p></div>';
   }
   function answerOptions(item) {
