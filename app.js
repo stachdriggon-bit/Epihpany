@@ -16,7 +16,7 @@
   ];
 
   /* ---------- state ---------- */
-  const defaults = () => ({xp:0, quests:0, words:[], review:[], adaptiveOffset:0, adaptiveStreak:0, adaptiveSignals:{}, dailyChallengeDate:null, dailyChallengeResult:null, oneLifeBest:0, translationEnabled:true, storyReaderSettings:{fontScale:1,lineSpacing:1.75,nightMode:false}, placementDone:false, assessedLevel:'A1', placementResult:null, xpAtLevelStart:null, promotionHistory:[], promotionAttempts:{}, lastPromotionResult:null, completed:[], streak:0, lastDay:null, daily:0, level:'A1', sound:true, helpArabic:false, theme:'light', streakFreezes:1, dailyQuestDate:null, dailyQuestProgress:0, dailyQuestClaimed:false, dailyCorrect:0, dailyXp:0, weeklyKey:null, weeklyProgress:0, weeklyClaimed:false, mistakeTrapErrors:{}, mistakeQuestionErrors:{}, mistakeTrapCorrect:{}, mistakeQuestionCorrect:{}, mistakeTrapSrs:{}, modes:{}, weakTraps:{}, recentQuestions:{}, stories:{}, world:{done:[],stars:{}}});
+  const defaults = () => ({xp:0, quests:0, words:[], review:[], adaptiveOffset:0, adaptiveStreak:0, adaptiveSignals:{}, learningActivity:{days:{}}, dailyChallengeDate:null, dailyChallengeResult:null, oneLifeBest:0, translationEnabled:true, storyReaderSettings:{fontScale:1,lineSpacing:1.75,nightMode:false}, placementDone:false, assessedLevel:'A1', placementResult:null, xpAtLevelStart:null, promotionHistory:[], promotionAttempts:{}, lastPromotionResult:null, completed:[], streak:0, lastDay:null, daily:0, level:'A1', sound:true, helpArabic:false, theme:'light', streakFreezes:1, dailyQuestDate:null, dailyQuestProgress:0, dailyQuestClaimed:false, dailyCorrect:0, dailyXp:0, weeklyKey:null, weeklyProgress:0, weeklyClaimed:false, mistakeTrapErrors:{}, mistakeQuestionErrors:{}, mistakeTrapCorrect:{}, mistakeQuestionCorrect:{}, mistakeTrapSrs:{}, modes:{}, weakTraps:{}, recentQuestions:{}, stories:{}, world:{done:[],stars:{}}});
   let state;
   try { state = {...defaults(), ...JSON.parse(localStorage.getItem('epiphany-progress') || '{}')}; } catch { state = defaults(); }
   if (!LEVELS.some(level => level.id === state.assessedLevel)) { state.assessedLevel = 'A1'; state.placementDone = false; state.placementResult = null; }
@@ -25,6 +25,8 @@
   if (!state.promotionAttempts || typeof state.promotionAttempts !== 'object' || Array.isArray(state.promotionAttempts)) state.promotionAttempts = {};
   if (!Array.isArray(state.review)) state.review = [];
   if (!state.adaptiveSignals || typeof state.adaptiveSignals !== 'object' || Array.isArray(state.adaptiveSignals)) state.adaptiveSignals = {};
+  if (!state.learningActivity || typeof state.learningActivity !== 'object' || Array.isArray(state.learningActivity)) state.learningActivity = {days:{}};
+  if (!state.learningActivity.days || typeof state.learningActivity.days !== 'object' || Array.isArray(state.learningActivity.days)) state.learningActivity.days = {};
   if (!state.mistakeTrapErrors || typeof state.mistakeTrapErrors !== 'object' || Array.isArray(state.mistakeTrapErrors)) state.mistakeTrapErrors = {};
   if (!state.mistakeQuestionErrors || typeof state.mistakeQuestionErrors !== 'object' || Array.isArray(state.mistakeQuestionErrors)) state.mistakeQuestionErrors = {};
   if (!state.mistakeTrapCorrect || typeof state.mistakeTrapCorrect !== 'object' || Array.isArray(state.mistakeTrapCorrect)) state.mistakeTrapCorrect = {};
@@ -292,6 +294,17 @@
     $('#freeze-note').textContent = state.streakFreezes > 0 ? 'Your streak has a little safety net.' : 'No freezes left right now. Keep your streak going!';
   }
 
+  function recordLearningActivity({minutes=0,words=0,attempts=0}={}) {
+    if (DEV_MODE.active && hasDeveloperAccess()) return;
+    if (!state.learningActivity || typeof state.learningActivity !== 'object') state.learningActivity={days:{}};
+    if (!state.learningActivity.days || typeof state.learningActivity.days !== 'object') state.learningActivity.days={};
+    const today=dayKey(), day=state.learningActivity.days[today]||(state.learningActivity.days[today]={minutes:0,words:0,attempts:0});
+    day.minutes=(Number(day.minutes)||0)+Math.max(0,Number(minutes)||0);
+    day.words=(Number(day.words)||0)+Math.max(0,Number(words)||0);
+    day.attempts=(Number(day.attempts)||0)+Math.max(0,Number(attempts)||0);
+    const cutoff=new Date();cutoff.setDate(cutoff.getDate()-370);const minKey=dayKey(cutoff);
+    Object.keys(state.learningActivity.days).forEach(key=>{if(key<minKey)delete state.learningActivity.days[key];});
+  }
   function recordAdaptiveResult(skill, topic, correct) {
     if (DEV_MODE.active && hasDeveloperAccess()) return;
     if (!state.adaptiveSignals || typeof state.adaptiveSignals !== 'object') state.adaptiveSignals = {};
@@ -302,7 +315,8 @@
     const key=String(topic||skill).slice(0,120), item=bucket.topics[key]||(bucket.topics[key]={attempts:0,errors:0,correct:0});
     item.attempts=(Number(item.attempts)||0)+1;
     if(correct)item.correct=(Number(item.correct)||0)+1;else item.errors=(Number(item.errors)||0)+1;
-    bucket.lastAt=Date.now();save();
+    bucket.lastAt=Date.now();
+    const attempts=Number(bucket.attempts)||0;recordLearningActivity({attempts:1,minutes:attempts%5===1?1:0});save();
   }
   function adaptiveRecommendation(){
     const signals=state.adaptiveSignals||{},review=(state.review||[]).filter(w=>w&&w.word);
@@ -347,7 +361,8 @@
     const insight = list.length
       ? '<ul class="weakness-list">'+list.map(x=>'<li><span>'+esc(x.label)+'</span><b>'+x.count+' '+(x.count===1?'miss':'misses')+'</b></li>').join('')+'</ul>'
       : '<p class="weakness-note">Your pattern report will appear after you practise a few common-mistake questions. It is not a grade — it helps choose what to practise next.</p>';
-    panel.innerHTML = '<section class="review-panel weakness-panel"><div class="review-head"><div><p class="kicker">PERSONAL PRACTICE</p><h2>'+(repeated.length?'Let’s work on your patterns':'Build your learning profile')+'</h2></div><span class="review-count">'+(repeated.length?repeated.length+' focus':'Adaptive')+'</span></div><p class="review-note">'+(repeated.length?'These patterns have tripped you up more than once. Your next practice gives them extra weight.':total?'We’ve started tracking the patterns you miss. A few more answers will help personalise practice.':'Practice normally and Epiphany will learn which patterns need more attention.')+'</p>'+insight+'<button type="button" class="btn '+(repeated.length?'':'btn-ghost')+'" data-game="personalized">'+(repeated.length?'Practise my weak spots':'Try a personal review')+' · 5 questions</button></section>';
+    const markup = '<section class="review-panel weakness-panel"><div class="review-head"><div><p class="kicker">PERSONAL PRACTICE</p><h2>'+(repeated.length?'Let’s work on your patterns':'Build your learning profile')+'</h2></div><span class="review-count">'+(repeated.length?repeated.length+' focus':'Adaptive')+'</span></div><p class="review-note">'+(repeated.length?'These patterns have tripped you up more than once. Your next practice gives them extra weight.':total?'We’ve started tracking the patterns you miss. A few more answers will help personalise practice.':'Practice normally and Epiphany will learn which patterns need more attention.')+'</p>'+insight+'<button type="button" class="btn '+(repeated.length?'':'btn-ghost')+'" data-game="personalized">'+(repeated.length?'Practise my weak spots':'Try a personal review')+' · 5 questions</button></section>';
+    panel.innerHTML=markup;const profilePanel=$('#profile-weakness-panel');if(profilePanel)profilePanel.innerHTML=markup;
   }
 
   function renderArcade() {
@@ -672,15 +687,18 @@
 
   function renderTrophies() {
     const idx = levelIndex();
+    const masteredWords=(state.review||[]).filter(w=>w&&w.mastered).length;
     const all = [
-      ['spark', 'First Spark',     'Complete your first quest.', Math.min(state.quests, 1), 1],
-      ['book',  'Word Gatherer',   'Discover 5 useful words.',   Math.min(state.words.length, 5), 5],
-      ['bolt',  'Momentum',        'Complete 5 quests.',         Math.min(state.quests, 5), 5],
-      ['flame', 'Habit Builder',   'Return for 3 days in a row.', Math.min(state.streak || 0, 3), 3],
-      ['globe', 'World Traveler',  'Reach B1.',                  Math.min(idx, 2), 2],
-      ['crown', 'Mastermind',      'Reach C1.',                  Math.min(idx, 4), 4],
-      ['search', 'Mistake Hunter', 'Complete 10 Common Mistakes quests.', Math.min((state.modes.mistakes||0)+(state.modes.spot||0),10),10],
-      ['pencil', 'Wordsmith', 'Complete 10 Type It quests.', Math.min(state.modes.typing||0,10),10]
+      ['spark','First Quest','Finish your first learning quest.',Math.min(state.quests,1),1],
+      ['book','Word Collector','Save 25 useful words to your word vault.',Math.min(state.words.length,25),25],
+      ['book','100 Words Learned','Collect 100 words in your personal word vault.',Math.min(state.words.length,100),100],
+      ['check-circle','Word Master','Master 25 words through review.',Math.min(masteredWords,25),25],
+      ['flame','3-Day Streak','Practise on 3 consecutive days.',Math.min(state.streak||0,3),3],
+      ['flame','7-Day Streak','Practise on 7 consecutive days.',Math.min(state.streak||0,7),7],
+      ['globe','World Explorer','Reach B1 in your English journey.',Math.min(idx,2),2],
+      ['crown','Advanced Learner','Reach C1 in your English journey.',Math.min(idx,4),4],
+      ['search','Mistake Detective','Complete 10 Common Mistakes or Spot the Mistake quests.',Math.min((state.modes.mistakes||0)+(state.modes.spot||0),10),10],
+      ['pencil','Confident Writer','Complete 10 Type It quests.',Math.min(state.modes.typing||0,10),10]
     ];
     const got = all.filter(a => a[3] >= a[4]).length;
     $('#trophies-count').textContent = got + ' of ' + all.length + ' unlocked';
@@ -767,7 +785,15 @@
     if (GAMES[selected.value] || MINI[selected.value]) { openView('home'); startGame(selected.value); }
   }
 
-  function renderAll() { renderHeader(); renderHome(); renderArcade(); renderStories(); renderWords(); renderTrophies(); const grammarInsight=$('#grammar-progress-insight'); if(grammarInsight) grammarInsight.innerHTML=renderGrammarMap(); syncSettings(); }
+  function renderLearningInsights(){
+    const root=$('#learning-insights'),profileRoot=$('#profile-learning-insights');if(!root&&!profileRoot)return;
+    const days=state.learningActivity?.days||{},now=new Date(),week=[];
+    for(let offset=6;offset>=0;offset--){const d=new Date(now.getFullYear(),now.getMonth(),now.getDate()-offset),key=dayKey(d),row=days[key]||{};week.push({key,label:d.toLocaleDateString('en',{weekday:'short'}),date:d.toLocaleDateString('en',{month:'short',day:'numeric'}),minutes:Number(row.minutes)||0,words:Number(row.words)||0});}
+    const totalMinutes=week.reduce((n,d)=>n+d.minutes,0),totalWords=week.reduce((n,d)=>n+d.words,0),maxMinutes=Math.max(1,...week.map(d=>d.minutes)),maxWords=Math.max(1,...week.map(d=>d.words));
+    const markup='<section class="block learning-insights"><div class="block-head"><div><p class="kicker">YOUR LAST 7 DAYS</p><h2>Learning rhythm</h2><p>Minutes and new words recorded during practice.</p></div><span class="activity-total">'+totalMinutes+' min · '+totalWords+' words</span></div><div class="weekly-bars"><div class="weekly-chart"><h3>Minutes</h3><div class="weekly-bar-list">'+week.map(d=>'<div class="weekly-bar-col" title="'+d.date+': '+d.minutes+' minutes"><span>'+d.minutes+'</span><i style="height:'+Math.max(d.minutes?8:2,d.minutes/maxMinutes*100)+'%"></i><small>'+d.label+'</small></div>').join('')+'</div></div><div class="weekly-chart"><h3>Words learned</h3><div class="weekly-bar-list">'+week.map(d=>'<div class="weekly-bar-col words" title="'+d.date+': '+d.words+' words"><span>'+d.words+'</span><i style="height:'+Math.max(d.words?8:2,d.words/maxWords*100)+'%"></i><small>'+d.label+'</small></div>').join('')+'</div></div></div><div class="activity-heat-wrap"><div class="activity-head"><h3>Activity map</h3><span>Last 12 weeks</span></div><div class="activity-heatmap" role="img" aria-label="Daily learning activity over the last 12 weeks">'+Array.from({length:84},(_,i)=>{const d=new Date(now.getFullYear(),now.getMonth(),now.getDate()-(83-i)),key=dayKey(d),row=days[key]||{},score=(Number(row.minutes)||0)+(Number(row.words)||0)+(Number(row.attempts)||0);return '<span class="activity-cell level-'+(score===0?0:score<3?1:score<8?2:score<16?3:4)+'" title="'+key+': '+(Number(row.minutes)||0)+' min, '+(Number(row.words)||0)+' words"></span>';}).join('')+'</div><div class="activity-legend"><span>Less</span><i class="level-0"></i><i class="level-1"></i><i class="level-2"></i><i class="level-3"></i><i class="level-4"></i><span>More</span></div></div></section>';
+    if(root)root.innerHTML=markup;if(profileRoot)profileRoot.innerHTML=markup;
+  }
+  function renderAll() { renderHeader(); renderHome(); renderArcade(); renderStories(); renderWords(); renderTrophies(); renderWeaknessPanel(); renderLearningInsights(); const grammarInsight=$('#grammar-progress-insight'); if(grammarInsight) grammarInsight.innerHTML=renderGrammarMap(); syncSettings(); }
   document.addEventListener('epiphany-auth-changed', () => { renderAll(); if (WORLD && WORLD.mode === 'regions') worldShowRegions(); });
 
 
@@ -971,7 +997,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
   function normalizeDictationText(value){return String(value||'').toLowerCase().normalize('NFC').replace(/[’']/g,'').replace(/[^\p{L}\p{N}\s]/gu,' ').replace(/\s+/g,' ').trim();}
   function checkStoryDictation(form){if(!ST||!form)return;ST.dictationAnswer=$('#story-dictation-answer')?.value||'';const typed=normalizeDictationText(ST.dictationAnswer),target=normalizeDictationText(ST.story.pages[ST.page].text);ST.dictationChecked=true;ST.dictationCorrect=typed===target;if(ST.dictationCorrect)toast('Excellent — your dictation matches the sentence.');renderStoryPage();}
   function openStoryWord(raw,display){const key=String(raw||'').toLowerCase(),entry=storyLookup(key);const meaning=entry?entry.meaning:'No explanation has been added for this word yet.',arabic=entry?entry.ar:'لم نضف شرحاً لهذه الكلمة بعد',pron=entry?entry.pronunciation:key,example=entry?entry.example:'';const card=$('#story-word-card');if(!card)return;card.hidden=false;card.innerHTML='<button class="story-card-close" data-story-action="close-word" aria-label="Close word card">×</button><p class="kicker">WORD IN CONTEXT</p><h3>'+esc(display||key)+'</h3><p class="story-pronunciation">'+esc(pron||key)+'</p><p>'+esc(meaning)+'</p><p class="arabic story-word-ar" lang="ar" dir="rtl">'+esc(arabic)+'</p>'+(example?'<p class="story-example">“'+esc(example)+'”</p>':'')+'<div class="story-word-actions"><button class="btn btn-ghost" data-story-action="listen-word" data-value="'+esc(key)+'">🔊 Listen</button><button class="btn" data-story-action="save-word" data-value="'+esc(key)+'" data-meaning="'+esc(meaning)+'" '+(storyIsSaved(key)?'disabled':'')+'>'+(storyIsSaved(key)?'✓ Saved':'Save word')+'</button></div>';}
-  function saveStoryWord(word,meaning){const key=word.toLowerCase(),level=ST?.story?.level||currentLevel().id,definition=meaning||'No explanation has been added for this word yet.';if(!storyIsSaved(key))state.words.push([word,definition,level]);if(!state.review.some(item=>String(item.word).toLowerCase()===key))state.review.push({word,meaning:definition,level,due:dayKey(),box:1,interval:0,streak:0,attempts:0,errors:0,exerciseStage:0,mastered:false});if(ST&&!ST.savedDuring.some(w=>w.toLowerCase()===key))ST.savedDuring.push(word);save();renderWords();renderHeader();toast('Word saved to Words and daily review.');}
+  function saveStoryWord(word,meaning){const key=word.toLowerCase(),level=ST?.story?.level||currentLevel().id,definition=meaning||'No explanation has been added for this word yet.';if(!storyIsSaved(key)){state.words.push([word,definition,level]);recordLearningActivity({words:1});}if(!state.review.some(item=>String(item.word).toLowerCase()===key))state.review.push({word,meaning:definition,level,due:dayKey(),box:1,interval:0,streak:0,attempts:0,errors:0,exerciseStage:0,mastered:false});if(ST&&!ST.savedDuring.some(w=>w.toLowerCase()===key))ST.savedDuring.push(word);save();renderWords();renderHeader();toast('Word saved to Words and daily review.');}
   function storyNext(){if(ST.story.decision&&!ST.decisionDone&&ST.page===ST.story.decision.afterPage){ST.mode='decision';ST.decisionResumePage=ST.page+1;renderStoryDecision();return;}if(ST.page<ST.story.pages.length-1){ST.page++;renderStoryPage();return;}ST.mode='quiz';ST.qi=0;ST.score=0;ST.results=[];ST.answered=false;renderStoryQuestion();}
   function renderStoryDecision(){const d=ST.story.decision;if(!d)return;$('#steps').innerHTML=ST.story.pages.map((_,i)=>'<span class="step '+(i<=ST.page?'ok':'')+'"></span>').join('');$('#game-body').innerHTML='<div class="story-reader story-decision"><div class="q-meta"><span class="pill">Your turn</span><span class="q-count">Story choice</span></div><div class="story-scene" style="--story-tone:'+esc(ST.story.tone)+'" aria-hidden="true">💭</div><h2 class="story-reader-title">'+esc(d.prompt)+'</h2>'+(state.helpArabic&&d.prompt_ar?'<p class="story-page-ar arabic" lang="ar" dir="rtl">'+esc(d.prompt_ar)+'</p>':'')+'<p class="story-decision-intro">Choose how you would respond. There is no score penalty for exploring a different approach.</p><div class="story-decision-options" role="group" aria-label="Choose what to do next">'+d.options.map((o,i)=>'<button type="button" class="story-decision-option" data-story-decision="'+i+'"><span class="story-decision-letter">'+String.fromCharCode(65+i)+'</span><span>'+esc(o.text)+'</span>'+(state.helpArabic&&o.text_ar?'<span class="story-option-ar arabic" lang="ar" dir="rtl">'+esc(o.text_ar)+'</span>':'')+'</button>').join('')+'</div>'+(state.helpArabic?'<p class="story-page-ar arabic" lang="ar" dir="rtl">اختر ما ستفعله في هذا الموقف، ثم اقرأ أثر اختيارك.</p>':'')+'</div>';$('#game-scroll').scrollTop=0;}
   function answerStoryDecision(index){if(!ST||ST.mode!=='decision'||ST.decisionDone)return;const d=ST.story.decision,o=d&&d.options[index];if(!o)return;ST.decisionDone=true;ST.decisionChoice=index;if(o.branchPage&&ST.decisionResumePage!==null){ST.story.pages.splice(ST.decisionResumePage,0,normalizeStoryPage(o.branchPage));if(o.endingPage)ST.story.pages[ST.story.pages.length-1]=normalizeStoryPage(o.endingPage);}persistStoryReaderProgress();ST.mode='decision-feedback';showSheet(true,'<h3><span class="sheet-mark">'+ic('git-branch')+'</span>Your choice shapes the story</h3><p><strong>'+esc(o.text)+'</strong></p><p>'+esc(o.response)+'</p>'+(state.helpArabic&&o.response_ar?'<p class="story-page-ar arabic" lang="ar" dir="rtl">'+esc(o.response_ar)+'</p>':'')+'<p class="story-choice-impact">There is no right or wrong choice here. Each option leads to a different path.</p><div class="sheet-actions"><button class="btn" id="story-decision-next">Continue story '+ic('arrow')+'</button></div>');$('#sheet').classList.add('story-choice-sheet');}
@@ -999,6 +1025,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     $('.view').forEach(v => v.classList.toggle('is-active', v.id === name + '-view'));
     $('[data-view]').forEach(b => b.setAttribute('aria-current', b.dataset.view === name ? 'page' : 'false'));
     if (name === 'arcade') renderArcade();
+    if (name === 'progress' || name === 'profile') { renderWeaknessPanel(); renderLearningInsights(); }
     const more = $('#dock-more-toggle');
     if (more) more.setAttribute('aria-current', ['words','trophies','stories'].includes(name) ? 'page' : 'false');
     window.scrollTo(0, 0);
@@ -1791,7 +1818,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     const act=e.target.closest('[data-story-action]');
     const speed=e.target.closest('[data-story-rate]');if(speed&&ST){const draft=$('#story-dictation-answer');if(draft&&ST.dictationActive)ST.dictationAnswer=draft.value;ST.audioRate=Number(speed.dataset.storyRate);renderStoryPage();return;}if(act&&ST){const action=act.dataset.storyAction;if(action==='next'){persistStoryReaderProgress();storyNext();return;}if(action==='prev'&&ST.page>0){ST.page--;ST.textHidden=false;ST.dictationActive=false;ST.dictationChecked=false;persistStoryReaderProgress();renderStoryPage();return;}if(action==='listen-page'){speakStoryPage();return;}if(action==='toggle-text'){ST.textHidden=!ST.textHidden;ST.dictationActive=false;renderStoryPage();return;}if(action==='dictation'){ST.dictationActive=!ST.dictationActive;ST.textHidden=ST.dictationActive;ST.dictationChecked=false;ST.dictationAnswer='';renderStoryPage();if(ST.dictationActive)speakStoryPage();return;}if(action==='comprehension'){ST.comprehensionOnly=true;ST.textHidden=true;ST.dictationActive=false;ST.mode='quiz';ST.qi=0;ST.score=0;ST.results=[];ST.answered=false;try{window.speechSynthesis?.cancel();}catch{}renderStoryQuestion();return;}if(action==='listen-word'){speak(act.dataset.value);return;}if(action==='save-word'){saveStoryWord(act.dataset.value,act.dataset.meaning);openStoryWord(act.dataset.value,act.dataset.value);return;}if(action==='close-word'){const card=$('#story-word-card');if(card)card.hidden=true;return;}if(action==='back-reading'){ST.mode='read';ST.comprehensionOnly=false;ST.page=ST.story.pages.length-1;hideSheet();renderStoryPage();return;}if(action==='another'){const old=ST.story.id;ST=null;const next=STORIES.find(s=>s.id!==old&&storyLevelIndex(s.level)<=storyLevelIndex(currentLevel().id));startStory((next||STORIES[0]).id);return;}if(action==='words'){ST=null;closeGame();openView('words');return;}if(action==='close'){ST=null;closeGame();openView('stories');return;}}
     if(ST&&ST.mode==='quiz'&&e.target.closest('#go-next')){hideSheet();if(ST.qi<2){ST.qi++;ST.answered=false;renderStoryQuestion();}else finishStory();return;}
-    if(e.target.closest('#wotd-save')){const box=$('#wotd-card'),w=WOTD_WORDS.find(x=>x.word===box.dataset.word);if(w&&!state.words.some(x=>String(x[0]).toLowerCase()===w.word.toLowerCase())){state.words.push([w.word,w.meaning,w.level]);addReview([w.word,w.meaning,w.level],w.meaning);save();renderAll();toast('Word saved to your vault and daily review.');}return;}
+    if(e.target.closest('#wotd-save')){const box=$('#wotd-card'),w=WOTD_WORDS.find(x=>x.word===box.dataset.word);if(w&&!state.words.some(x=>String(x[0]).toLowerCase()===w.word.toLowerCase())){state.words.push([w.word,w.meaning,w.level]);recordLearningActivity({words:1});addReview([w.word,w.meaning,w.level],w.meaning);save();renderAll();toast('Word saved to your vault and daily review.');}return;}
     const themeButton = e.target.closest('#theme-toggle');
     if (!themeButton) return;
     e.preventDefault();
@@ -2235,7 +2262,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     if (!state.completed.includes(before.id)) state.completed.push(before.id);
     const after = currentLevel();
     G.words.forEach(w => {
-      if (!state.words.some(e => e[0].toLowerCase() === w[0].toLowerCase())) state.words.push([w[0], w[1], w[2] || after.id]);
+      if (!state.words.some(e => e[0].toLowerCase() === w[0].toLowerCase())) { state.words.push([w[0], w[1], w[2] || after.id]); recordLearningActivity({words:1}); }
       if (!state.review.some(e => e.word.toLowerCase() === String(w[0]).toLowerCase())) state.review.push({word:String(w[0]),meaning:String(w[1]||'Review this word in context.'),level:w[2]||after.id,due:dayKey(),box:1,interval:0,streak:0,attempts:0,errors:0,exerciseStage:0,mastered:false});
     });
     save(); renderAll();
@@ -2797,7 +2824,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
   function worldAwardPractice(stars, t) {
     if (DEV_MODE.active && hasDeveloperAccess()) return 0;
     const gain = stars * 3; state.xp += gain;
-    (t.words || []).forEach(w => { if (!state.words.some(v => String(v[0]).toLowerCase() === String(w[0]).toLowerCase())) state.words.push(w); });
+    (t.words || []).forEach(w => { if (!state.words.some(v => String(v[0]).toLowerCase() === String(w[0]).toLowerCase())) { state.words.push(w); recordLearningActivity({words:1}); } });
     state.world.runs = state.world.runs || 0; save(); renderHeader(); renderWords(); return gain;
   }
   function worldAward(stars,t){
@@ -2826,7 +2853,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
       if(!state.weeklyClaimed&&state.weeklyProgress>=5){state.weeklyClaimed=true;state.xp+=60;}
       const lvl=currentLevel();if(!state.completed.includes(lvl.id))state.completed.push(lvl.id);
     }
-    (t.words||[]).forEach(w=>{if(!state.words.some(v=>String(v[0]).toLowerCase()===String(w[0]).toLowerCase()))state.words.push(w);});
+    (t.words||[]).forEach(w=>{if(!state.words.some(v=>String(v[0]).toLowerCase()===String(w[0]).toLowerCase())){state.words.push(w);recordLearningActivity({words:1});}});
     save();renderHeader();renderWords();renderTrophies();return earned;
   }
   function worldShell(inner){const t=worldTask(),progress=WORLD&&WORLD.tasks.length?Math.round(((WORLD.index+(WORLD.mode==='success'?1:0))/WORLD.tasks.length)*100):0;return '<div class="world-top"><div class="world-task-count">Task <b>'+(WORLD.index+1)+'</b> / '+WORLD.tasks.length+'<span class="world-progress-track" role="progressbar" aria-label="Mission progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="'+progress+'"><span style="width:'+progress+'%"></span></span></div>'+(t&&t.dialogue?'<div class="world-dialogue">'+esc(t.dialogue)+'</div>':'')+'<div class="world-instruction"><strong>'+esc(t?t.instruction:'Adventure complete!')+'</strong><span>Explore the map and follow the instruction.</span>'+(t&&WORLD&&WORLD.mode==='play'?'<button type="button" class="translate-btn" data-translate-world aria-expanded="false">ع ترجمة التعليمات</button><p id="world-translation" class="translation-result" lang="ar" dir="rtl" hidden></p>':'')+'</div><div class="world-top-actions"><button type="button" class="world-home" data-world-home>⌂ Home</button><button class="world-exit" data-world-exit aria-label="Exit World">✕</button></div></div>'+inner;}
@@ -3494,12 +3521,25 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
 
   function shufflePlacement(list){const items=list.slice();for(let i=items.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[items[i],items[j]]=[items[j],items[i]];}return items;}
   const PLACEMENT_SKILLS = ['vocabulary','grammar','story','listening','advanced'];
-  function placementQuestions(level){
-    return shufflePlacement(PLACEMENT_SKILLS.map(gameId => {
-      const pool = (GAMES[gameId]?.questions || []).filter(q => q.level === level.id && Array.isArray(q.answers) && q.answers.length >= 2 && Number.isInteger(q.correct) && q.correct >= 0 && q.correct < q.answers.length);
-      const picked = shufflePlacement(pool)[0];
-      return picked ? {...picked, placementLevel:level.id, placementSkill:gameId} : null;
-    }).filter(Boolean));
+  function placementQuestions15(){
+    const distribution=[['A1',3],['A2',3],['B1',3],['B2',2],['C1',2],['C2',2]],bank=[];
+    for(const [levelId,needed] of distribution){
+      const candidates=[];
+      PLACEMENT_SKILLS.forEach(gameId=>{
+        const pool=(GAMES[gameId]?.questions||[]).filter(q=>q.level===levelId&&Array.isArray(q.answers)&&q.answers.length>=2&&Number.isInteger(q.correct)&&q.correct>=0&&q.correct<q.answers.length);
+        shufflePlacement(pool).slice(0,Math.max(1,Math.ceil(needed/PLACEMENT_SKILLS.length))).forEach(q=>candidates.push({...q,placementLevel:levelId,placementSkill:gameId}));
+      });
+      bank.push(...shufflePlacement(candidates).slice(0,needed));
+    }
+    if(bank.length<15){
+      const used=new Set(bank.map(q=>q.id||q.q)),fallback=[];
+      Object.entries(GAMES).forEach(([gameId,game])=>(game.questions||[]).forEach(q=>{
+        if(!Array.isArray(q.answers)||q.answers.length<2||!Number.isInteger(q.correct)||q.correct<0||q.correct>=q.answers.length)return;
+        const key=q.id||q.q;if(used.has(key))return;fallback.push({...q,placementLevel:q.level||'A1',placementSkill:gameId});
+      }));
+      bank.push(...shufflePlacement(fallback).slice(0,15-bank.length));
+    }
+    return shufflePlacement(bank).slice(0,15);
   }
   let placement={questions:[],index:0,answers:[],stage:0,highestPassed:0,stageCorrect:0,scoreByLevel:{}};
   // Promotion rules: XP is a gate, not a level score. Thresholds are intentionally configurable.
@@ -3588,16 +3628,16 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
 
   function showPlacement(){
     if(state.placementDone)return;
-    placement={questions:placementQuestions(LEVELS[0]),index:0,answers:[],stage:0,highestPassed:0,stageCorrect:0,scoreByLevel:{}};
+    placement={questions:placementQuestions15(),index:0,answers:[],stage:0,highestPassed:0,stageCorrect:0,scoreByLevel:{}};
     $('#placement').hidden=false;lockPage(true);renderPlacementQuestion();
   }
   window.__epiphanyShowPlacement = showPlacement;
   function renderPlacementQuestion(){
     const q=placement.questions[placement.index];
-    $('#placement-progress').textContent='Level '+LEVELS[placement.stage].id+' · Question '+(placement.index+1)+' of '+placement.questions.length+' (up to 30)';
+    $('#placement-progress').textContent='Question '+(placement.index+1)+' of '+placement.questions.length+' · Level '+(q.placementLevel||'A1');
     $('#placement-content').innerHTML='<h2>'+esc(q.q)+'</h2><p>'+esc(q.sub||'Choose the best answer.')+'</p><div class="answers">'+q.answers.map((x,i)=>'<button class="answer" data-place-answer="'+i+'"><span class="key">'+(i+1)+'</span><span>'+esc(x)+'</span></button>').join('')+'</div>';
   }
-  function closePlacement(){ $('#placement').hidden=true;lockPage(false);$('#placement-skip').hidden=false;$('#placement-title').textContent='Find your English level';$('.placement-card .kicker').textContent='A QUICK START';$('.placement-intro').textContent='Answer up to 30 questions across vocabulary, grammar, reading and comprehension. You advance only after a strong result at each band; this is an estimate, not an official exam.';renderAll(); }
+  function closePlacement(){ $('#placement').hidden=true;lockPage(false);$('#placement-skip').hidden=false;$('#placement-title').textContent='Find your English level';$('.placement-card .kicker').textContent='A QUICK START';$('.placement-intro').textContent='Answer 15 short questions across vocabulary, grammar, conversation and comprehension. We use your results to estimate a starting CEFR level; this is not an official exam.';renderAll(); }
   function skipPlacement(){
     state.assessedLevel='A1';state.level='A1';state.placementDone=true;state.placementResult={level:'A1',skipped:true,testedAt:new Date().toISOString()};
     save();closePlacement();toast('Level check skipped. Your estimated starting level remains A1.');
@@ -3605,30 +3645,20 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
   $('#placement-skip').addEventListener('click',skipPlacement);
   $('#placement-retake')?.addEventListener('click',()=>{state.placementDone=false;save();showPlacement();});
   function finishPlacement(){
-    const target=LEVELS[placement.highestPassed] || LEVELS[0];
+    const scores={};
+    placement.answers.forEach(a=>{const row=scores[a.level]||(scores[a.level]={correct:0,total:0});row.total++;if(a.ok)row.correct++;});
+    const passing=LEVELS.filter(level=>{const row=scores[level.id];return row&&row.correct/row.total>=.67;});
+    const target=passing.length?passing[passing.length-1]:LEVELS[0];
     state.assessedLevel=target.id;state.level=target.id;state.placementDone=true;
-    state.placementResult={level:target.id,skipped:false,testedAt:new Date().toISOString(),answered:placement.answers.length,correct:placement.answers.filter(a=>a.ok).length,scores:placement.scoreByLevel};
-    save();closePlacement();
+    state.placementResult={level:target.id,skipped:false,testedAt:new Date().toISOString(),answered:placement.answers.length,correct:placement.answers.filter(a=>a.ok).length,scores};
+    save();closePlacement();renderAll();
     toast('Estimated CEFR level: '+target.id+'. XP is separate from your English assessment.');
   }
   function answerPlacement(choice){
-    const q=placement.questions[placement.index];
-    const ok=choice===q.correct;
-    placement.answers.push({level:q.placementLevel,skill:q.placementSkill,ok});
-    placement.stageCorrect += ok ? 1 : 0;
+    const q=placement.questions[placement.index],ok=choice===q.correct;
+    placement.answers.push({level:q.placementLevel||'A1',skill:q.placementSkill,ok});
     placement.index++;
     if(placement.index<placement.questions.length){renderPlacementQuestion();return;}
-    const stageLevel=LEVELS[placement.stage];
-    placement.scoreByLevel[stageLevel.id]={correct:placement.stageCorrect,total:placement.questions.length};
-    if(placement.stageCorrect>=4){
-      placement.highestPassed=placement.stage;
-      if(placement.stage<LEVELS.length-1){
-        placement.stage++;
-        placement.questions=placementQuestions(LEVELS[placement.stage]);
-        placement.index=0;placement.stageCorrect=0;
-        renderPlacementQuestion();return;
-      }
-    }
     finishPlacement();
   }
   document.addEventListener('click',e=>{const p=e.target.closest('[data-place-answer]');if(p&&!$('#placement').hidden){answerPlacement(Number(p.dataset.placeAnswer));return;}});

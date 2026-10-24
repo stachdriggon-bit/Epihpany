@@ -72,7 +72,7 @@
       <button class="tab" data-view="words"><svg><use href="#i-book"/></svg>Words</button>
       <button class="tab" data-view="trophies"><svg><use href="#i-trophy"/></svg>Trophies</button>
       <button class="tab" data-view="progress"><span class="tab-emoji" aria-hidden="true">📈</span>Progress</button>
-      <button class="tab" data-view="profile"><span class="tab-emoji" aria-hidden="true">👤</span>Profile</button>
+      <button class="tab" data-view="profile"><span class="tab-emoji" aria-hidden="true">✦</span>Profile</button>
     </nav>
 
     <div class="top-right">
@@ -176,6 +176,7 @@
           <div id="lv-bar-wrap" hidden><i id="lv-bar"></i></div>
         </aside>
         <div id="weakness-panel" aria-live="polite"></div>
+        <div id="learning-insights" aria-live="polite"></div>
         <section class="block" aria-labelledby="path-title">
         <div class="block-head"><h2 id="path-title">Your path</h2><p>Six levels, from first words to fluent ideas.</p></div>
         <ol class="track" id="track"></ol>
@@ -279,6 +280,7 @@
             <button class="btn btn-go" id="player-profile-save" type="submit">Save my profile</button>
           </form>
         </div>
+        <section class="block profile-learning-summary" aria-labelledby="profile-learning-title"><div class="block-head"><div><p class="profile-eyebrow">YOUR LEARNING SNAPSHOT</p><h2 id="profile-learning-title">Your progress, in one place</h2><p>Your weak spots and recent learning activity update as you practise.</p></div></div><div id="profile-weakness-panel" aria-live="polite"></div><div id="profile-learning-insights"></div></section>
         <section class="profile-posts" id="my-english-corner">
           <div class="profile-posts-heading"><div><h3>My English corner</h3><p>Share a short thought, a new phrase or a tiny win.</p></div><span class="profile-post-count" id="player-post-count">0 posts</span></div>
           <form id="player-post-form" class="player-post-form"><label for="player-post-text">Write something in English</label><textarea id="player-post-text" rows="3" maxlength="500" placeholder="Today I learned a new word: resilient…" required></textarea><div class="post-compose-footer"><span>Up to 500 characters</span><button class="btn btn-go" id="player-post-submit" type="submit">Share post</button></div></form>
@@ -375,7 +377,7 @@
   <button class="dock-item" data-view="world"><span class="dock-ic">🌍</span><span>World</span></button>
   <button class="dock-item" data-view="arcade"><span class="dock-ic">🎮</span><span>Arcade</span></button>
   <button class="dock-item" data-view="progress"><span class="dock-ic">📈</span><span>Progress</span></button>
-  <button class="dock-item" data-view="profile"><span class="dock-ic">👤</span><span>Profile</span></button>
+  <button class="dock-item" data-view="profile"><span class="dock-ic">✦</span><span>Profile</span></button>
   <button class="dock-item dock-more-toggle" id="dock-more-toggle" type="button" aria-expanded="false" aria-controls="dock-more-panel"><span class="dock-ic">•••</span><span>More</span></button>
 </nav>
 
@@ -400,7 +402,7 @@
 
 <!-- FIRST-VISIT PLACEMENT TEST -->
 <div class="placement" id="placement" hidden role="dialog" aria-modal="true" aria-labelledby="placement-title">
-  <div class="placement-card"><p class="kicker">A QUICK START</p><h1 id="placement-title">Find your English level</h1><p class="placement-intro">Answer up to 30 questions across vocabulary, grammar, reading and comprehension. You advance only after a strong result at each band; this is an estimate, not an official exam.</p><div class="placement-progress" id="placement-progress">Question 1 of 12</div><div id="placement-content"></div><button class="btn btn-ghost placement-skip" id="placement-skip" type="button">Skip for now</button></div>
+  <div class="placement-card"><p class="kicker">A QUICK START</p><h1 id="placement-title">Find your English level</h1><p class="placement-intro">Answer 15 short questions across vocabulary, grammar, conversation and comprehension. We use your results to estimate a starting CEFR level; this is not an official exam.</p><div class="placement-progress" id="placement-progress">Question 1 of 12</div><div id="placement-content"></div><button class="btn btn-ghost placement-skip" id="placement-skip" type="button">Skip for now</button></div>
 </div>
 
 
