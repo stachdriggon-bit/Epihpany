@@ -9,3 +9,7 @@ alter table public.player_profiles add column if not exists accent_color text no
 insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
 values ('player-avatars', 'player-avatars', true, 5242880, array['image/png','image/jpeg','image/webp'])
 on conflict (id) do update set public=true,file_size_limit=5242880,allowed_mime_types=array['image/png','image/jpeg','image/webp'];
+
+-- Three-way profile visibility. "friends" stays hidden until friend relationships are implemented.
+alter table public.player_profiles add column if not exists visibility text not null default 'private' check (visibility in ('public','friends','private'));
+update public.player_profiles set visibility = case when is_private = false then 'public' else 'private' end where visibility = 'private';
