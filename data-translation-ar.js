@@ -406,12 +406,13 @@ window.EPIPHANY_AR_TRANSLATION_PHRASES = Object.assign(window.EPIPHANY_AR_TRANSL
     if(Array.isArray(value)){value.forEach(visit);return;}
     for(const key of Object.keys(value)){
       if(key.endsWith('_ar')){
-        const base=key.slice(0,-3), en=value[base], ar=value[key];
+        const base=key==='why_ar'?'why_en':key.slice(0,-3), en=value[base], ar=value[key];
         if(typeof en==='string'&&typeof ar==='string')put(en,ar);
         if(Array.isArray(en)&&Array.isArray(ar))en.forEach((item,index)=>put(item,ar[index]));
       }
     }
     if(typeof value.en==='string'&&typeof value.ar==='string')put(value.en,value.ar);
+    if(typeof value.explain==='string'&&typeof value.ar==='string'&&value.ar.trim()&&!value.explain_ar)put(value.explain,value.ar);
     Object.values(value).forEach(visit);
   }
   const sources=[];
