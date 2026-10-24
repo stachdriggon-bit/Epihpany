@@ -49,10 +49,7 @@
     const safeDetails = {};
     if (eventName === 'client_error') {
       safeDetails.name = String(details.name || 'Error').replace(/[^a-zA-Z0-9 _.-]/g, '').slice(0, 50);
-      safeDetails.message = String(details.message || 'Unknown error')
-        .replace(/[\w.+-]+@[\w.-]+\.[a-z]{2,}/gi, '[email]')
-        .replace(/https?:\/\/\S+/gi, '[url]')
-        .replace(/\s+/g, ' ').slice(0, 180);
+      safeDetails.message = 'Client-side error; raw message omitted for privacy';
     }
     try {
       Promise.resolve(supabase.from('epiphany_telemetry').insert({
