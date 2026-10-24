@@ -100,7 +100,19 @@
     if (has(/\b(much, many|few, little|a few|a little|quantifier|some or any|some\/any)\b/)) return 'quantifiers';
     if (has(/\b(word order|order of words|sentence order|adverb position|place the adverb)\b/)) return 'word-order';
     if (has(/\b(adjective order|order of adjectives|adjectives before nouns)\b/)) return 'adjective-order';
-    if (has(/\b(word choice|choose the correct word|confusing words|collocation)\b/)) return 'word-choice';
+    if (has(/\b(word choice|choose the correct word|confusing words|collocation|fixed expression|standard expression|say .+ not)\b/)) return 'word-choice';
+    if (has(/\b(doesn't|does not|after does|after doesn't|base form of the verb|base verb)\b/)) return 'present-simple';
+    if (has(/\b(past continuous|was \+ verb-ing|were \+ verb-ing|action was in progress|when another past event)\b/)) return 'past-time';
+    if (has(/\b(wish i|i wish|wish he|wish she|if i .* i'd|second conditional|if clause)\b/)) return 'wish';
+    if (has(/\b(suggested|look forward to|used to|followed by .*ing|followed by a noun or an -ing|enjoy|avoid)\b/)) return 'verb-patterns';
+    if (has(/\b(past perfect|by the time|had arrived|had already|earlier past action)\b/)) return 'past-time';
+    if (has(/\b(neither .* nor|neither answer|subject-verb agreement|agrees with the subject|agreement with the subject)\b/)) return 'be-verbs';
+    if (has(/\b(asked me where|reported speech|indirect question|reported question)\b/)) return 'reported-speech';
+    if (has(/\b(explain something to someone|married to|comprises? .*without of|despite .*of|in spite of|look forward to|no sooner .* than|although .* but|concession|contrast)\b/)) return 'formal-collocations';
+    if (has(/\b(demand that|subjunctive|base-form subjunctive|formal english often uses the base)\b/)) return 'subjunctive';
+    if (has(/\b(inversion|no sooner|not only .* but also|hardly had|rarely do)\b/)) return 'inversion';
+    if (has(/\b(use on with days|days of the week|on monday|in monday|at monday)\b/)) return 'in-on-at';
+    if (has(/\b(use the base verb with i|base verb with i for a regular habit|regular habit|verb after does stays)\b/)) return 'present-simple';
     return null;
   }
   GAMES.spot = {title:'Spot the Mistake',category:'GRAMMAR',xp:40,desc:'Tap the one incorrect word in a short text.',questions:SPOT_QUESTIONS.map(q=>({...q,q:q.text,sub:'Tap the one incorrect word.',answers:[q.fix],correct:q.wrongIndex,explain:q.why_en,trap:inferGrammarTrap(q),aha:null,mode:'spot'}))};
