@@ -64,3 +64,23 @@ const STORY_DECISIONS = {"a1-lost-key":{"afterPage":1,"prompt":"What should Mia 
 }
 for (const story of STORIES) { if (STORY_DECISIONS[story.id]) story.decision = STORY_DECISIONS[story.id]; }
 for (const s of STORIES) { s.pages=s.pages.map(([scene,text,ar])=>({scene,text,ar})); s.questions=s.questions.map(([q,answers,correct,explain])=>({q,sub:'Choose the best answer.',answers,correct,explain})); const vocab={}; for(const [k,v] of Object.entries(s.vocab))vocab[k]={meaning:v[0],ar:v[1],pronunciation:v[2],example:v[3]};s.vocab=vocab; }
+
+// Arabic question bank: translations are keyed to the exact English prompt,
+// and keep answer order aligned with the original correct-answer index.
+const STORY_QUESTION_AR = {
+  'Where does Mia find the key?': {q_ar:'أين تجد ميا المفتاح؟', answers_ar:['في الحديقة','في حقيبتها','تحت الكرسي'], explain_ar:'يقود الكلب ميا إلى الحديقة، حيث ترى المفتاح.'},
+  'What does “shiny” mean here?': {q_ar:'ما معنى كلمة «لامع» هنا؟', answers_ar:['يعكس الضوء','قديم جدًا','ناعم جدًا'], explain_ar:'يعكس المفتاح الضوء، لذلك يبدو لامعًا.'},
+  'Who helps Mia find the key?': {q_ar:'من يساعد ميا في العثور على المفتاح؟', answers_ar:['كلبها','أختها','معلمتها'], explain_ar:'تتبع ميا كلبها الصغير إلى الحديقة.'},
+  'Why do they leave the tree?': {q_ar:'لماذا يغادرون المكان قرب الشجرة؟', answers_ar:['بدأ المطر يهطل','شعروا بالجوع','الجو حار جدًا'], explain_ar:'بدأ المطر البارد بالهطول، لذلك انتقلوا إلى المقهى.'},
+  'What does “dry” mean?': {q_ar:'ما معنى كلمة «جاف»؟', answers_ar:['غير مبتل','بارد جدًا','مليء بالطعام'], explain_ar:'أصبحوا في مأمن من المطر داخل المقهى.'},
+  'What do they do in the café?': {q_ar:'ماذا يفعلون في المقهى؟', answers_ar:['يتقاسمون طعامهم','يشترون شجرة','يذهبون للسباحة'], explain_ar:'يتناولون طعام النزهة معًا ويضحكون.'},
+  'Why did Nora go back with the man?': {q_ar:'لماذا عادت نورا مع الرجل؟', answers_ar:['للبحث عن حقيبته','لشراء تذكرة','للعثور على مقهى'], explain_ar:'كان الرجل قد ترك حقيبته الزرقاء قرب مكتب المحطة.'},
+  'What does “delayed” mean?': {q_ar:'ما معنى كلمة «متأخر»؟', answers_ar:['يحدث في وقت لاحق من المتوقع','مزدحم جدًا','غادر بالفعل'], explain_ar:'اضطرت نورا إلى الانتظار لأن القطار لم يصل في موعده.'},
+  'How did Nora feel at the end?': {q_ar:'كيف شعرت نورا في النهاية؟', answers_ar:['سعيدة لأنها ساعدت','غاضبة','خائفة'], explain_ar:'شعرت بالرضا لأن تذكّر تفصيل صغير ساعد شخصًا آخر.'}
+};
+for (const story of STORIES) {
+  for (const q of story.questions) {
+    const ar = STORY_QUESTION_AR[q.q];
+    if (ar) Object.assign(q, ar);
+  }
+}
