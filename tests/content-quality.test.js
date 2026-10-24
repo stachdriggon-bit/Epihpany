@@ -7,7 +7,7 @@ const vm = require('node:vm');
 const root = path.resolve(__dirname, '..');
 
 function loadData() {
-  const context = vm.createContext({ console, window: {}, globalThis: {} });
+  const context = vm.createContext({ console, window: {} });
   const files = ['data.js', 'data-expansion.js', 'data-stories.js', 'data-stories-expansion.js'];
   for (const file of files) {
     const fullPath = path.join(root, file);
