@@ -426,7 +426,7 @@
     const mod=e.target.closest('[data-ls-module]');if(mod){chooseModule(mod.dataset.lsModule);return;}
     if(e.target.closest('[data-ls-home]')){landing();return;}
     if(e.target.closest('[data-ls-ar]')){state.showArabic=!state.showArabic;render();return;}
-    const freeReply=e.target.closest('[data-ls-check-reply]');if(freeReply&&!state.locked){coachOwnReply(itemFor(),$(' [data-ls-free-reply]')?.value || $('[data-ls-free-reply]')?.value || '');return;}
+    const freeReply=e.target.closest('[data-ls-check-reply]');if(freeReply&&!state.locked){coachOwnReply(itemFor(),$('[data-ls-free-reply]')?.value || '');return;}
     const ans=e.target.closest('[data-ls-answer]');if(ans&&!state.locked){const item=itemFor();const n=Number(ans.dataset.lsAnswer);const correct=n===item.answer;if(correct)state.score++;feedback(item,correct);return;}
     if(e.target.closest('[data-ls-next]')){if(state.round>=state.pool.length-1){const m=modules.find(x=>x.id===state.module);root.innerHTML='<div class="ls-finish"><span>✳ MISSION COMPLETE</span><h2>Real-world confidence, one step at a time.</h2><p>You completed '+(data[m.id].length+(challengeData[m.id]||[]).length)+' practice cards and earned '+state.score+' first-choice successes. The goal is progress, not perfection.</p><button class="ls-primary" type="button" data-ls-home>Back to Life Skills ↗</button></div>';state.module=null;return;}state.round++;state.locked=false;state.feedback=null;state.sequence=[];render();return;}
     const step=e.target.closest('[data-ls-step]');if(step){const arr=state.sequence;const i=arr.indexOf(Number(step.dataset.lsStep));if(i>0)[arr[i-1],arr[i]]=[arr[i],arr[i-1]];else if(i===0&&arr.length>1)[arr[0],arr[1]]=[arr[1],arr[0]];render();return;}
