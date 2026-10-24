@@ -84,7 +84,11 @@
     return list[state.round%list.length];
   }
   function header(m) {
-    return '<div class="ls-workbar"><button type="button" class="ls-back" data-ls-home>← All life skills</button><span class="ls-progress">MISSION '+String(state.round+1).padStart(2,'0')+'</span><button type="button" class="ls-help-toggle '+(state.showArabic?'is-on':'')+'" data-ls-ar aria-pressed="'+state.showArabic+'">ع <span>Arabic help</span></button></div><div class="ls-mission-head"><span class="ls-eyebrow">'+esc(m.eyebrow)+'</span><h2>'+esc(m.title)+'</h2><p>'+esc(m.desc)+'</p></div>';
+    const policy = window.EpiphanyThinkLab && window.EpiphanyThinkLab.getGameDifficulty
+      ? window.EpiphanyThinkLab.getGameDifficulty('life-'+m.id, m.skill)
+      : {level:'guided',hintLevel:1,confidence:'low'};
+    const level = policy.level === 'challenge' ? 'CHALLENGE' : policy.level === 'steady' ? 'STEADY' : 'GUIDED';
+    return '<div class="ls-workbar"><button type="button" class="ls-back" data-ls-home>← All life skills</button><span class="ls-progress">MISSION '+String(state.round+1).padStart(2,'0')+' · '+level+'</span><button type="button" class="ls-help-toggle '+(state.showArabic?'is-on':'')+'" data-ls-ar aria-pressed="'+state.showArabic+'">ع <span>Arabic help</span></button></div><div class="ls-mission-head"><span class="ls-eyebrow">'+esc(m.eyebrow)+'</span><h2>'+esc(m.title)+'</h2><p>'+esc(m.desc)+'</p></div>';
   }
   function answerOptions(item) {
     const ar=arabicOn()&&item.ar?'<p class="ls-arabic" lang="ar" dir="rtl">'+esc(item.ar)+'</p>':'';
