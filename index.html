@@ -25,7 +25,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Cairo:wght@500;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=20261024s">
+  <link rel="stylesheet" href="style.css?v=20261024t">
   <link rel="stylesheet" href="life-skills.css?v=00e4c835">
   <script src="data.js?v=7f0faa36" defer></script>
   <script src="data-mistakes.js?v=e7fd865a" defer></script>
@@ -37,7 +37,7 @@
   <script src="data-expansion.js?v=20261024ax" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
   <script src="supabase-config.js?v=7a16f4a2" defer></script>
-  <script src="account.js?v=ea18c314" defer></script>
+  <script src="account.js?v=ea18c315" defer></script>
   <script src="notifications.js?v=bc8b50b6" defer></script>
 <script src="telemetry.js?v=20261024m" defer></script>
 <script src="lazy-data.js?v=20261024o" defer></script>
@@ -390,21 +390,14 @@
             <div class="player-avatar-wrap"><img id="player-avatar-preview" alt="Your profile avatar" hidden><span id="player-avatar-emoji" aria-hidden="true">🦊</span></div>
             <div class="player-profile-heading"><span class="profile-eyebrow">YOUR EPIPHANY ID</span><h3 id="player-profile-display-name">Your name</h3><p id="player-profile-bio-preview">A little English, a little progress, every day.</p><div class="profile-hero-meta"><span class="profile-level-chip">LEVEL <b id="player-profile-level">A1</b></span><span class="profile-privacy-chip"><span class="privacy-dot"></span> Privacy is yours to choose</span></div></div>
           </div>
-          <p class="profile-save-status" id="player-profile-status" role="status" aria-live="polite">Sign in to create your player profile.</p>
+          <p class="profile-save-status" id="player-profile-status" role="status" aria-live="polite">You can customize as a guest. Changes stay on this device until you sign in.</p>
+<div class="profile-editor-layout"><div class="profile-live-preview" aria-label="Live profile preview"><span class="profile-eyebrow">LIVE PREVIEW</span><div class="profile-live-card"><div class="profile-live-banner" id="profile-live-banner"><div class="profile-live-avatar player-avatar-wrap" id="profile-live-avatar"><img id="profile-live-image" alt="" hidden><span id="profile-live-emoji" aria-hidden="true">🦊</span></div></div><div class="profile-live-copy"><h3 id="profile-live-name">English learner</h3><p id="profile-live-bio">Learning English one day at a time ✨</p><span class="profile-live-chip">EPIPHANY LEARNER</span></div></div><p class="profile-small-note">Your preview updates as you edit.</p></div><div class="profile-editor-fields">
           <form id="player-profile-form" class="player-profile-form">
             <label for="player-display-name">Display name</label>
             <input id="player-display-name" maxlength="32" placeholder="The name you want others to see" autocomplete="nickname">
             <label for="player-bio">A short bio <span>English is encouraged</span></label>
             <textarea id="player-bio" maxlength="180" rows="2" placeholder="I'm learning English one day at a time."></textarea>
-            <fieldset class="privacy-setting">
-              <legend>Account visibility</legend>
-              <label class="privacy-toggle" for="player-profile-private">
-                <input id="player-profile-private" type="checkbox" checked>
-                <span class="privacy-switch" aria-hidden="true"></span>
-                <span class="privacy-toggle-copy"><strong>Keep my account private</strong><small>ON: only you can see your profile and posts. Turn it off to share them with the Epiphany community.</small></span>
-              </label>
-              <p class="profile-small-note"><strong>Important:</strong> click “Save my profile” below to apply this setting. Your learning progress is always private.</p>
-            </fieldset>
+            <fieldset class="privacy-setting profile-visibility-setting"><legend>Who can see your profile?</legend><div class="profile-visibility-options" role="group" aria-label="Profile visibility"><label><input type="radio" name="profile-visibility" value="public"><span><strong>🌍 Public</strong><small>Other learners can see your profile and shared posts.</small></span></label><label><input type="radio" name="profile-visibility" value="friends"><span><strong>👥 Friends only</strong><small>Hidden from the community until friend connections are supported.</small></span></label><label><input type="radio" name="profile-visibility" value="private" checked><span><strong>🔒 Private</strong><small>Only you can see your profile and posts.</small></span></label></div><p class="profile-privacy-explainer" id="profile-privacy-explainer">Private: your profile and posts are hidden from other learners. Your learning progress is always private.</p></fieldset>
             <div class="profile-avatar-options" id="profile-customize"><div class="profile-customize-heading"><span class="profile-eyebrow">MAKE IT YOURS</span><h3>Personalize your avatar</h3><p>Choose a character, set its colors, or upload a picture that feels like you.</p></div>
               <div><h4>Choose your cartoon avatar</h4><p>Pick a character and a background.</p></div>
               <label for="avatar-search">Find a cartoon avatar</label>
@@ -425,8 +418,7 @@
               <label for="profile-accent-color">Profile accent color</label><div class="avatar-color-row"><input id="profile-accent-color" type="color" value="#7c6cff" aria-label="Profile accent color"><span>Changes your profile page only.</span></div>
               <p class="profile-small-note">Cover images are optimized before upload to keep the page fast.</p>
             </div>
-            <button class="btn btn-go" id="player-profile-save" type="submit">Save my profile</button>
-          </form>
+            <div class="profile-editor-actions"><button class="btn btn-ghost" id="player-profile-undo" type="button">↶ Undo last change</button><button class="btn btn-go" id="player-profile-save" type="submit">Save my profile</button><span class="profile-autosave-state" id="profile-autosave-state" role="status" aria-live="polite">Changes are previewed live.</span></div></div></div></form>
           <div class="avatar-crop-modal" id="avatar-crop-modal" hidden role="dialog" aria-modal="true" aria-labelledby="avatar-crop-title"><div class="avatar-crop-card"><div><p class="profile-eyebrow">YOUR PICTURE</p><h3 id="avatar-crop-title">Crop and zoom</h3><p>Drag the image to position it inside the circle.</p></div><canvas id="avatar-crop-canvas" width="256" height="256" aria-label="Avatar crop preview"></canvas><label for="avatar-crop-zoom">Zoom</label><input id="avatar-crop-zoom" type="range" min="1" max="3" step="0.05" value="1"><div class="avatar-crop-actions"><button type="button" class="btn btn-ghost" id="avatar-crop-cancel">Cancel</button><button type="button" class="btn btn-go" id="avatar-crop-save">Use this picture</button></div></div></div>
         </div>
         <section class="block profile-learning-summary" aria-labelledby="profile-learning-title"><div class="block-head"><div><p class="profile-eyebrow">YOUR LEARNING SNAPSHOT</p><h2 id="profile-learning-title">Your progress, in one place</h2><p>Your weak spots and recent learning activity update as you practise.</p></div></div><div id="profile-weakness-panel" aria-live="polite"></div><div id="profile-learning-insights"></div></section>
