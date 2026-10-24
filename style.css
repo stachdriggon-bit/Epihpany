@@ -2075,3 +2075,50 @@ body[data-theme="dark"] .forecast-level-card{background:var(--ground)}
 body[data-theme="dark"] .forecast-level-card.is-current{background:#302c4c}
 @media(max-width:650px){.forecast-level-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.forecast-level-card{padding:11px;gap:8px}}
 @media(max-width:360px){.forecast-level-grid{grid-template-columns:1fr}}
+
+/* Deeper learning rituals */
+.depth-tools-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin:18px 0 26px}
+.depth-tool-card{min-width:0;padding:clamp(18px,2.5vw,26px);border:1px solid var(--line);border-radius:24px;background:var(--surface);box-shadow:0 12px 35px rgba(42,38,88,.045)}
+.depth-tool-card h2{margin:7px 0 10px;font-size:clamp(20px,2vw,27px);letter-spacing:-.035em}
+.depth-tool-card>p{color:var(--ink-2);line-height:1.65}
+.depth-tool-kicker{font-size:10px;font-weight:900;letter-spacing:.12em;color:var(--ink-2);text-transform:uppercase}
+.depth-tool-title-row{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.depth-tool-title-row h2{font-size:clamp(29px,4vw,40px);overflow-wrap:anywhere}
+.depth-tool-level{flex:none;border-radius:999px;background:var(--violet-soft);color:var(--focus);padding:7px 10px;font-size:11px;font-weight:900}
+.depth-tool-card blockquote{margin:13px 0;padding:12px 15px;border-left:3px solid var(--focus);border-radius:0 12px 12px 0;background:var(--ground);line-height:1.6}
+.depth-tool-progress,.immersion-status{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;margin:14px 0;color:var(--ink-2);font-size:12px}
+.depth-tool-actions{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 18px}
+.depth-tool-card label{display:block;margin:12px 0 6px;font-size:12px;font-weight:800}
+.depth-tool-card input,.depth-tool-card textarea,.depth-tool-card select{width:100%;min-width:0;padding:12px 13px;border:1px solid var(--line);border-radius:12px;background:var(--ground);color:var(--ink);font:inherit;line-height:1.5}
+.depth-tool-card textarea{resize:vertical}
+.depth-tool-card .btn{margin-top:10px}
+.depth-tool-card .tool-helper{font-size:12px;line-height:1.65;color:var(--ink-2)}
+.treasure-card{background:linear-gradient(145deg,var(--surface),var(--violet-soft))}
+.treasure-reveal{margin:15px 0;padding:17px;border-radius:18px;background:var(--surface);border:1px solid var(--line)}
+.treasure-kind{font-size:10px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:var(--focus)}
+.treasure-reveal h3{font-size:21px;margin:8px 0}
+.treasure-reveal p{line-height:1.65}
+.treasure-opened-note{font-size:12px;color:var(--ink-2)}
+.teach-feedback{margin-top:14px}
+.teach-feedback-result{padding:15px;border-radius:16px;background:var(--ground);border:1px solid var(--line)}
+.teach-feedback-result h3{margin:0 0 8px;font-size:17px}
+.teach-feedback-result p{line-height:1.65}
+.teach-feedback-result.is-ready{border-color:color-mix(in srgb,var(--good) 40%,var(--line))}
+.teach-feedback-result.is-gentle{border-color:color-mix(in srgb,var(--focus) 35%,var(--line))}
+.teach-feedback-result details{margin-top:12px;padding-top:10px;border-top:1px solid var(--line)}
+.teach-feedback-result summary{cursor:pointer;font-weight:800;font-size:12px}
+.immersion-card{background:linear-gradient(145deg,var(--surface),color-mix(in srgb,var(--mint) 9%,var(--surface)))}
+.immersion-status strong{font-size:20px;color:var(--good)}
+.monthly-word-thread{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:8px 16px;margin:15px 0 22px;padding:16px 20px;border:1px solid color-mix(in srgb,var(--focus) 25%,var(--line));border-radius:18px;background:var(--violet-soft)}
+.monthly-word-thread-kicker{grid-column:1/-1;font-size:10px;letter-spacing:.1em;font-weight:900;text-transform:uppercase;color:var(--focus)}
+.monthly-word-thread>div{display:flex;align-items:baseline;flex-wrap:wrap;gap:10px}
+.monthly-word-thread strong{font-size:22px}
+.monthly-word-thread>div span,.monthly-word-thread p,.monthly-word-thread small{color:var(--ink-2);line-height:1.5}
+.monthly-word-thread p{grid-column:1/-1;margin:0;font-size:13px}
+.monthly-word-thread small{grid-column:1/-1;font-size:11px}
+.monthly-word-thread .btn{grid-column:2;grid-row:2;white-space:nowrap}
+body.immersion-week-active .ar-toggle,body.immersion-week-active #game-ar{opacity:.5;cursor:not-allowed}
+body.immersion-week-active .translate-btn{display:none!important}
+body[data-theme="dark"] .depth-tool-card,body[data-theme="dark"] .treasure-reveal{background:var(--ground)}
+body[data-theme="dark"] .monthly-word-thread{background:#302c4c}
+@media(max-width:760px){.depth-tools-grid{grid-template-columns:1fr}.monthly-word-thread{grid-template-columns:1fr}.monthly-word-thread .btn{grid-column:1;grid-row:auto;justify-self:start}.monthly-word-thread-kicker,.monthly-word-thread p,.monthly-word-thread small{grid-column:1}}
