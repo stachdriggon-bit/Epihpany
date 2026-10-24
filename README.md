@@ -28,3 +28,9 @@ World: story missions (fixed) + endless Practice runs (random layout, generated 
 - Profile page horizontal overflow (hidden privacy checkbox).
 - Create Your Story: word-bank count on result screen; coach checks for was/were and past negatives.
 - Story search now searches all levels; heading focus outline removed.
+
+## Performance and offline behavior
+- Stories, World data/art, Arcade practice tools, Think Lab, Life Skills, and the expanded Arabic translation catalogue load on first use rather than on every initial page visit.
+- The app shell and core learning data are cached separately from deferred features. A deferred feature is available offline after it has loaded successfully once while online.
+- Google Fonts stylesheets/font files and the Supabase CDN library use a cache-first service-worker strategy after their first successful online load. If a font has not been cached yet, the site falls back to system fonts; fonts are cached for offline reuse, not bundled as local font binaries.
+- Optional anonymous usage/error telemetry remains disabled until the learner opts in.
