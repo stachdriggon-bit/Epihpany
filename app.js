@@ -1561,7 +1561,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     categoryReturnFocus = null;
   }
   function injectMonthlyWordThread(name) {
-    const host=name==='home'?$('#home-view .daily-session-card'):name==='stories'?$('#stories-view .intro'):name==='arcade'?$('#arcade-view .intro'):null;
+    const host=name==='home'?$('#home-view .daily-session-card'):null;
     if(!host)return;const old=$('#monthly-word-thread-'+name);if(old)old.remove();const word=currentMonthWord(),progress=state.wordMonthProgress[word.monthKey]||{uses:0};
     const card=document.createElement('aside');card.id='monthly-word-thread-'+name;card.className='monthly-word-thread';
     card.innerHTML='<span class="monthly-word-thread-kicker">THIS MONTH’S WORD · '+esc(word.theme)+'</span><div><strong>'+esc(word.word)+'</strong><span>'+esc(word.meaning)+'</span></div><p>'+esc(word.example)+'</p><small>'+Number(progress.uses||0)+' real-life uses recorded · Notice it across stories, games and everyday life.</small><button type="button" class="btn btn-ghost" data-view="mytools">Explore the monthly word →</button>';
@@ -1573,7 +1573,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     $$('.view').forEach(v => v.classList.toggle('is-active', v.id === name + '-view'));
     $$('[data-view]').forEach(b => b.setAttribute('aria-current', b.dataset.view === name ? 'page' : 'false'));
     if (name === 'mytools') { renderMyTools(); }
-    if (['home','stories','arcade'].includes(name)) injectMonthlyWordThread(name);
+    if (name === 'home') injectMonthlyWordThread(name);
     if (name === 'progress') renderProgressForecast();
     if (name === 'home') renderHome();
     if (name === 'arcade') renderArcade();
@@ -1581,7 +1581,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     const more = $('#dock-more-toggle');
     if (more) more.setAttribute('aria-current', ['words','trophies','stories','lifeskills','mytools'].includes(name) ? 'page' : 'false');
     window.scrollTo(0, 0);
-    const h = $('#' + name + '-title'); if (h) h.focus({preventScroll: true});
+    const h = $('#' + name + '-title'); if (h) { h.classList.add('programmatic-view-focus'); h.addEventListener('keydown', () => h.classList.remove('programmatic-view-focus'), { once: true }); h.focus({preventScroll: true}); }
   }
 
   /* ---------- unified, offline Arabic translation ---------- */
