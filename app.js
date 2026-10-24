@@ -814,6 +814,21 @@
     if (typeof raw==='string'&&raw.trim()) return {word:raw.trim(),meaning:String(fallback||'Review this word in context.'),level:currentLevel().id};
     return null;
   }
+  const CONTRAST_PAIRS=[
+    {id:'affect-effect',a:'affect',b:'effect',prompt:'The new schedule will ___ how we study.',answer:'affect',explain:'Affect is usually a verb meaning “to influence”. Effect is usually a noun meaning “a result”.'},
+    {id:'bored-boring',a:'bored',b:'boring',prompt:'I felt ___ during the long lecture.',answer:'bored',explain:'Bored describes how a person feels. Boring describes the thing that causes that feeling.'},
+    {id:'borrow-lend',a:'borrow',b:'lend',prompt:'Could you ___ me your pen for a minute?',answer:'lend',explain:'Borrow means receive something temporarily. Lend means give something temporarily.'},
+    {id:'say-tell',a:'say',b:'tell',prompt:'Please ___ me the truth.',answer:'tell',explain:'Tell commonly takes a person as its object: tell me. Say focuses on the words: say something.'},
+    {id:'fun-funny',a:'fun',b:'funny',prompt:'We had a lot of ___ at the party.',answer:'fun',explain:'Fun means enjoyable. Funny usually means amusing or strange.'},
+    {id:'rise-raise',a:'rise',b:'raise',prompt:'Prices usually ___ when demand increases.',answer:'rise',explain:'Rise means go up by itself. Raise means lift or increase something and usually needs an object.'}
+  ];
+  function renderContrastPractice(){
+    if(!state.contrastPractice||typeof state.contrastPractice!=='object')state.contrastPractice={index:0,attempts:{}};
+    const progress=state.contrastPractice, pair=CONTRAST_PAIRS[((Number(progress.index)||0)%CONTRAST_PAIRS.length+CONTRAST_PAIRS.length)%CONTRAST_PAIRS.length];
+    const last=progress.lastAnswer&&progress.lastAnswer.id===pair.id?progress.lastAnswer:null;
+    const options=[pair.a,pair.b];
+    return '<section class="contrast-practice"><div class="review-head"><div><p class="kicker">SMART VOCABULARY</p><h2>Words that look alike</h2></div><span class="review-count">'+(((Number(progress.index)||0)%CONTRAST_PAIRS.length)+1)+' / '+CONTRAST_PAIRS.length+'</span></div><p class="review-note">Choose the word that best completes the sentence. Compare the meaning, not just the spelling.</p><p class="contrast-prompt">'+esc(pair.prompt).replace('___','<span class="contrast-blank">_____</span>')+'</p><div class="contrast-options">'+options.map(word=>'<button type="button" class="btn '+(last?(word===pair.answer?'':'btn-ghost'):'btn-ghost')+'" data-contrast-answer="'+esc(word)+'" data-contrast-pair="'+esc(pair.id)+'" '+(last?'disabled':'')+'>'+esc(word)+'</button>').join('')+'</div>'+(last?'<p class="contrast-feedback '+(last.correct?'is-correct':'is-incorrect')+'">'+(last.correct?'Correct — well distinguished.':'Not quite. The best answer is '+esc(pair.answer)+'.')+' '+esc(pair.explain)+'</p><button type="button" class="btn" data-contrast-next>Next pair</button>':'')+'</section>';
+  }
   const REVIEW_INTERVALS=[1,3,7,14,30];
   function recordReviewOutcome(item, correct) {
     if(!Array.isArray(item.answerHistory))item.answerHistory=[];
@@ -877,7 +892,7 @@
     const hard=state.review.filter(w=>(Number(w.errors)||0)>=2);
     const head='<div class="review-head"><div><p class="kicker">SPACED REPETITION</p><h2>Daily word review</h2></div><span class="review-count">'+due.length+' due</span></div>';
     const hardPanel='<section class="hard-words"><div class="review-head"><div><p class="kicker">PERSONAL WORD LIST</p><h2>My difficult words</h2></div><span class="review-count">'+hard.length+'</span></div>'+(hard.length?'<div class="hard-word-list">'+hard.slice().sort((a,b)=>(b.errors||0)-(a.errors||0)).slice(0,8).map(x=>'<article class="hard-word"><b>'+esc(x.word)+'</b><span>'+esc(x.meaning)+'</span><small>'+Number(x.errors||0)+' mistakes</small><button class="btn btn-ghost" data-hard-review="'+esc(x.word)+'">Practise</button></article>').join('')+'</div>':'<p class="review-note">Words you miss twice or more will appear here automatically.</p>')+'</section>';
-    if(!due.length)return '<section class="review-panel">'+head+'<p class="review-note">You’re all caught up. Your next review is scheduled automatically.</p></section>'+hardPanel;
+    if(!due.length)return '<section class="review-panel">'+head+'<p class="review-note">You’re all caught up. Your next review is scheduled automatically.</p></section>'+renderContrastPractice()+hardPanel;
     const w=due[0], ctx=wordContext(w.word,w.meaning), stage=Math.max(0,Math.min(3,Number(w.exerciseStage)||0));
     const stageNames=['Recall the meaning','Understand it in context','Write it from listening','Use it in a sentence'];
     let exercise='';
@@ -886,7 +901,7 @@
     if(stage===2)exercise='<p class="review-note">Listen to the word, then type exactly what you hear.</p><button class="btn btn-ghost" data-speak="'+esc(w.word)+'">'+ic('sound')+' Play word</button><form class="word-dictation" data-word-dictation="'+esc(w.word)+'"><input name="typedWord" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Type the word you heard" required><button class="btn" type="submit">Check spelling</button></form>';
     if(stage===3)exercise='<p class="review-note">Write your own sentence using the word. The goal is meaningful use, not memorising a definition.</p><textarea class="word-own-sentence" data-own-sentence="'+esc(w.word)+'" rows="2" placeholder="Write a sentence with '+esc(w.word)+'…"></textarea><button class="btn" data-review-sentence="'+esc(w.word)+'">Check my sentence</button><p class="review-note">Self-check: is the sentence understandable and is the word used correctly?</p>';
     const box=Math.max(1,Math.min(5,Number(w.box)||1));
-    return '<section class="review-panel">'+head+'<p class="review-note">Box '+box+' of 5 · Next interval: '+REVIEW_INTERVALS[box-1]+' day'+(REVIEW_INTERVALS[box-1]===1?'':'s')+' · Exercise '+(stage+1)+' of 4</p><article class="review-card"><div class="review-word"><b>'+esc(w.word)+'</b><button class="listen-btn" data-speak="'+esc(w.word)+'" aria-label="Listen to '+esc(w.word)+'">'+ic('sound')+' Listen</button></div><p class="review-stage-title">'+stageNames[stage]+'</p>'+exercise+((stage===0)?'<div class="review-actions" id="review-actions" hidden><button class="btn btn-ghost" data-review="again" data-word="'+esc(w.word)+'">I need more practice</button><button class="btn" data-review="known" data-word="'+esc(w.word)+'">I recalled it</button></div>':'')+'</article></section>'+hardPanel;
+    return '<section class="review-panel">'+head+'<p class="review-note">Box '+box+' of 5 · Next interval: '+REVIEW_INTERVALS[box-1]+' day'+(REVIEW_INTERVALS[box-1]===1?'':'s')+' · Exercise '+(stage+1)+' of 4</p><article class="review-card"><div class="review-word"><b>'+esc(w.word)+'</b><button class="listen-btn" data-speak="'+esc(w.word)+'" aria-label="Listen to '+esc(w.word)+'">'+ic('sound')+' Listen</button></div><p class="review-stage-title">'+stageNames[stage]+'</p>'+exercise+((stage===0)?'<div class="review-actions" id="review-actions" hidden><button class="btn btn-ghost" data-review="again" data-word="'+esc(w.word)+'">I need more practice</button><button class="btn" data-review="known" data-word="'+esc(w.word)+'">I recalled it</button></div>':'')+'</article></section>'+renderContrastPractice()+hardPanel;
   }
   function renderWotd() {
     const box=$('#wotd-card'); if(!box) return;
