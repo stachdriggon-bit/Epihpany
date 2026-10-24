@@ -2222,3 +2222,21 @@ body[data-theme="dark"] .learning-insights-empty{background:var(--surface);borde
 
 .story-audio-tools [data-story-action="start-recording"],.story-audio-tools [data-story-action="stop-recording"]{border-color:var(--violet);font-weight:700}
 .story-audio-tools [data-story-action="stop-recording"]{color:#c43b4d}
+
+
+/* Monthly level check */
+.monthly-assessment-card{margin:18px 0;padding:clamp(18px,3vw,26px);border:1px solid color-mix(in srgb,var(--focus) 28%,var(--line));border-radius:22px;background:linear-gradient(140deg,var(--surface),var(--violet-soft))}
+.monthly-assessment-top{display:flex;align-items:flex-start;gap:14px}
+.monthly-assessment-icon{display:grid;place-items:center;flex:none;width:48px;height:48px;border-radius:15px;background:var(--surface);color:var(--focus);font-size:26px;font-weight:900}
+.monthly-assessment-top .kicker{margin:0 0 6px;color:var(--focus);font-size:10px;font-weight:900;letter-spacing:.1em}
+.monthly-assessment-top h2{margin:0 0 7px;font-size:clamp(20px,3vw,26px)}
+.monthly-assessment-top p:not(.kicker){margin:0;color:var(--ink-2);font-size:13px;line-height:1.65}
+.monthly-assessment-last{display:flex;flex-wrap:wrap;align-items:center;gap:8px 15px;margin-top:17px;padding:12px 14px;border-radius:13px;background:var(--surface);font-size:12px;color:var(--ink-2)}
+.monthly-assessment-last strong{color:var(--ink)}
+.monthly-assessment-footer{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;margin-top:17px;font-size:12px;color:var(--ink-2)}
+.monthly-assessment-kind{margin:14px 0 0;color:var(--ink-2);font-size:12px;line-height:1.6}
+.monthly-assessment-result{padding:16px;border:1px solid var(--line);border-radius:16px;background:var(--surface)}
+.monthly-assessment-result p{line-height:1.65}
+.monthly-assessment-actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:14px}
+body[data-theme="dark"] .monthly-assessment-card{background:linear-gradient(140deg,var(--surface),#302c4c)}
+@media(max-width:600px){.monthly-assessment-top{gap:10px}.monthly-assessment-icon{width:40px;height:40px}.monthly-assessment-footer{align-items:flex-start;flex-direction:column}}
