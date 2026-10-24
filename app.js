@@ -1845,14 +1845,14 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
       if (adaptivePool.length < 5) {
         const levels = LEVELS.map(l=>l.id), center = levels.indexOf(level);
         const nearby = game.questions.filter(q => !q.level || Math.abs(levels.indexOf(q.level) - center) <= 1);
-        adaptivePool = nearby.length >= 5 ? nearby : game.questions.slice();
+        adaptivePool = nearby.length ? nearby : adaptivePool;
       }
       // Prioritise due topics and repeated errors while keeping a little variety.
       selected = shuffle(weightedGrammarPick(adaptivePool, 5));
     } else if (type === 'mistakes') {
       const levels = LEVELS.map(l=>l.id), center = levels.indexOf(level);
       let pool = game.questions.filter(q => Math.abs(levels.indexOf(q.level) - center) <= 1);
-      if (pool.length < 5) pool = game.questions.slice();
+      if (pool.length < 5) pool = pool.length ? pool : levelPool;
       selected = shuffle(weightedGrammarPick(pool, 5));
     } else {
       // Never silently mix easier or harder CEFR levels into a normal round.
@@ -1878,7 +1878,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     } else if (type === 'mistakes') {
       const levels = LEVELS.map(l => l.id), center = levels.indexOf(level);
       let pool = game.questions.filter(q => Math.abs(levels.indexOf(q.level) - center) <= 1);
-      if (pool.length < 5) pool = game.questions.slice();
+      if (pool.length < 5) pool = pool.length ? pool : levelPool;
       freshPool = pool.filter(q => !recentIds.has(questionKey(q)));
     } else {
       freshPool = levelPool.filter(q => !recentIds.has(questionKey(q)));
