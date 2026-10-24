@@ -398,7 +398,7 @@ window.EPIPHANY_AR_TRANSLATION_PHRASES = Object.assign(window.EPIPHANY_AR_TRANSL
 (function registerAuthoredArabicPairs(){
   const phrases=window.EPIPHANY_AR_TRANSLATION_PHRASES;
   const norm=value=>String(value||'').toLowerCase().replace(/[“”]/g,'"').replace(/[‘’]/g,"'").replace(/[.!?…,:;]+$/,'').replace(/\s+/g,' ').trim();
-  const put=(en,ar)=>{if(typeof en==='string'&&en.trim()&&typeof ar==='string'&&ar.trim())phrases[norm(en)]=ar;};
+  const put=(en,ar)=>{if(typeof en==='string'&&en.trim()&&typeof ar==='string'&&ar.trim()&&/[\u0600-\u06FF]/.test(ar))phrases[norm(en)]=ar;};
   const seen=new Set();
   function visit(value){
     if(!value||typeof value!=='object'||seen.has(value))return;
