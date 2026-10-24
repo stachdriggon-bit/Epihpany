@@ -31,7 +31,7 @@ window.EPIPHANY_AR_TRANSLATION_WORDS = {
   'don\'t':'لا', 'won\'t':'لن', 'let\'s':'دعنا', 'word-for-word':'حرفيًا'
 ,
   // Overrides for known context and wording errors.
-  naturally:"بطريقة طبيعية", customer:"عميل", supply:"يُزوّد", demand:"يطلب", article:"مقال", objective:"هدف", application:"تطبيق", function:"دالة", tense:"زمن", fit:"مناسب", bright:"ذكي", light:"فاتح", complete:"أكمل", attempt:"محاولة", change:"تغيير", right:"يمين", mean:"يعني", expensive:"باهظ الثمن", wet:"مبلل", delayed:"متأخر", blamed:"ألقى اللوم", assumed:"افترض", evidence:"دليل", key:"مفتاح", garden:"حديقة", shiny:"لامع", suitcase:"حقيبة سفر", station:"محطة", cyclist:"راكب دراجة", route:"مسار", sensor:"مستشعر", draft:"تيار هواء", readings:"قراءات", productive:"مثمر", assumption:"افتراض", contingency:"خطة بديلة", supplier:"مورّد", schedule:"جدول زمني", delegation:"تفويض", responsibility:"مسؤولية", confidence:"ثقة"
+  naturally:"بطريقة طبيعية", expensive:"باهظ الثمن", wet:"مبلل", delayed:"متأخر", blamed:"ألقى اللوم", assumed:"افترض", key:"مفتاح", garden:"حديقة", shiny:"لامع", suitcase:"حقيبة سفر", station:"محطة", cyclist:"راكب دراجة", route:"مسار", sensor:"مستشعر", draft:"تيار هواء", readings:"قراءات", productive:"مثمر", assumption:"افتراض", contingency:"خطة بديلة", supplier:"مورّد", schedule:"جدول زمني", delegation:"تفويض", responsibility:"مسؤولية", confidence:"ثقة"
 };
 window.EPIPHANY_AR_TRANSLATION_PHRASES = {
   'choose the correct answer':'اختر الإجابة الصحيحة.',
