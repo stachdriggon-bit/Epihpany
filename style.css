@@ -2130,3 +2130,33 @@ body[data-theme="dark"] .monthly-word-thread{background:#302c4c}
 .monthly-word-in-feedback .btn{margin-top:4px}
 .story-month-word{margin:12px 0 16px}
 body[data-theme="dark"] .monthly-word-in-feedback,body[data-theme="dark"] .story-month-word{background:#302c4c}
+
+
+/* Navigation clarity pass: grouped menus with plain-language descriptions */
+.top-in{align-items:center}
+.tabs{position:relative;display:flex;align-items:center;justify-content:center;gap:5px;flex-wrap:wrap;max-width:100%;border-radius:22px;padding:5px;overflow:visible}
+.tabs>.tab,.nav-group>summary{min-height:42px;display:flex;align-items:center;justify-content:center;gap:8px;padding:9px 13px;border:0;border-radius:15px;background:transparent;color:var(--ink-2);font:inherit;font-size:14px;font-weight:800;white-space:nowrap;cursor:pointer}
+.tabs>.tab:hover,.nav-group>summary:hover,.nav-group[open]>summary{background:var(--navy-soft);color:var(--ink)}
+.tabs>.nav-home{background:var(--ink);color:#fff}
+.tabs>.nav-home:hover{background:var(--ink-2);color:#fff}
+.nav-group{position:relative;flex:none}
+.nav-group>summary{list-style:none}
+.nav-group>summary::-webkit-details-marker{display:none}
+.nav-group .nav-chevron{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:transform .15s}
+.nav-group[open] .nav-chevron{transform:rotate(180deg)}
+.nav-submenu{position:absolute;z-index:100;top:calc(100% + 8px);left:0;min-width:270px;max-width:min(340px,calc(100vw - 28px));padding:8px;display:grid;gap:4px;border:1px solid var(--line);border-radius:17px;background:var(--surface);box-shadow:0 16px 42px rgba(20,25,45,.18)}
+.nav-submenu .tab{width:100%;justify-content:flex-start;text-align:left;white-space:normal;border-radius:11px;padding:10px 12px;display:grid;grid-template-columns:auto 1fr;column-gap:9px;row-gap:3px;font-size:14px}
+.nav-submenu .tab small{grid-column:2;color:var(--muted);font-size:12px;font-weight:500;line-height:1.35}
+.nav-submenu .tab[aria-current=page]{background:var(--ink);color:#fff}
+.nav-submenu .tab[aria-current=page] small{color:#e3e7ff}
+@media(max-width:1180px){
+  .tabs{gap:2px}
+  .tabs>.tab,.nav-group>summary{padding:8px 10px;font-size:13px}
+}
+@media(max-width:900px){
+  .tabs{display:none}
+  .mobile-menu{display:block}
+}
+@media(min-width:901px){
+  .mobile-menu{display:none}
+}
