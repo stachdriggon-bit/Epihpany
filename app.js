@@ -2499,6 +2499,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
       (G.words.length ? '<div class="found"><div class="found-title">Added to your vault</div>' + G.words.map(w => '<span class="w">' + esc(w[0]) + '</span>').join('') + '</div>' : '') + (G.originalQuestions ? '<p class="review-complete">You also reviewed ' + G.originalQuestions.filter((item,i)=>G.originalResults[i]==='no').length + ' missed question(s).</p>' : '') +
       '<div class="result-actions"><button class="btn" id="res-share">' + ic('spark') + 'Share result card</button>' +
       '<button class="btn btn-ghost" id="res-download">Download result image</button>' +
+      (state.dailySessionStep === 'story' ? '<button class="btn" id="res-daily-session">Continue daily session · read your story ' + ic('arrow') + '</button>' : '') +
       '<button class="btn" id="res-next">' + ic('play') + 'Next: ' + esc(GAMES[nxt].title) + '</button>' +
       '<button class="btn btn-ghost" id="res-home">Back to home</button>' +
       '<button class="btn btn-link" id="res-again">Play this quest again</button></div></div>';
@@ -2510,6 +2511,8 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     $('#res-next').addEventListener('click', () => startGame(nxt));
     $('#res-home').addEventListener('click', () => { closeGame(); openView('home'); });
     $('#res-again').addEventListener('click', () => startGame(type));
+    const dailySessionResult = $('#res-daily-session');
+    if (dailySessionResult) dailySessionResult.addEventListener('click', () => { closeGame(); openView('home'); startDailySession(); });
     $('#res-next').focus({preventScroll: true});
   }
 
