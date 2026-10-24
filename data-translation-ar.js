@@ -3785,3 +3785,8 @@ window.EPIPHANY_AR_TRANSLATION_PHRASES = Object.assign(window.EPIPHANY_AR_TRANSL
   "There is no single correct answer here. Choose the response that best fits your approach.":"لا توجد إجابة واحدة صحيحة هنا. اختر الرد الذي يعبر عن النهج الذي تراه أنسب.",
   "Your choice changes what happens next.":"يغيّر اختيارك ما سيحدث بعد ذلك."
 });
+
+window.EPIPHANY_AR_TRANSLATION_PHRASES = Object.assign(window.EPIPHANY_AR_TRANSLATION_PHRASES || {}, {
+  "“The toilets are down the hall on your left.” Where should the listener go?":"«دورات المياه في نهاية الممر على يسارك». إلى أين ينبغي للمستمع أن يذهب؟",
+  "Which definition best fits “pervasive”? ":"أي تعريف يناسب كلمة «pervasive»؟"
+});
