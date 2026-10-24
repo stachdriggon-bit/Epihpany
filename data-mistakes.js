@@ -7,6 +7,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Choose the correct sentence.",
     "sub_ar": "اختر الجملة الصحيحة.",
     "prompt": "She ___ very tall.",
+    "q_ar": "هي ___ طويلة جدًا.",
     "options": [
       "am",
       "is",
@@ -25,6 +26,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Complete the sentence.",
     "sub_ar": "أكمل الجملة.",
     "prompt": "I ___ ready for the lesson.",
+    "q_ar": "أنا ___ مستعدًا للدرس.",
     "options": [
       "is",
       "are",
@@ -43,6 +45,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Choose the correct form.",
     "sub_ar": "اختر الصيغة الصحيحة.",
     "prompt": "He ___ to work by bus every day.",
+    "q_ar": "هو ___ إلى العمل بالحافلة كل يوم.",
     "options": [
       "go",
       "goes",
@@ -61,6 +64,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Complete the sentence.",
     "sub_ar": "أكمل الجملة.",
     "prompt": "They ___ at home right now.",
+    "q_ar": "هم ___ في المنزل الآن.",
     "options": [
       "is",
       "am",
@@ -79,6 +83,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Which sentence is correct?",
     "sub_ar": "أيّ جملة صحيحة؟",
     "prompt": "My brother ___ not interested in football.",
+    "q_ar": "أخي ___ غير مهتم بكرة القدم.",
     "options": [
       "do",
       "does",
@@ -97,6 +102,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Choose the correct question.",
     "sub_ar": "اختر السؤال الصحيح.",
     "prompt": "___ you familiar with this process?",
+    "q_ar": "___ أنت على دراية بهذه العملية؟",
     "options": [
       "Do",
       "Are",
@@ -115,6 +121,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Complete the sentence.",
     "sub_ar": "أكمل الجملة.",
     "prompt": "The results ___ consistent with the initial estimate.",
+    "q_ar": "النتائج ___ متوافقة مع التقدير الأولي.",
     "options": [
       "is",
       "are",
@@ -133,6 +140,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Select the standard form.",
     "sub_ar": "اختر الصيغة القياسية.",
     "prompt": "Neither explanation ___ entirely convincing.",
+    "q_ar": "لا يبدو أي من التفسيرين ___ مقنعًا تمامًا.",
     "options": [
       "are",
       "were",
@@ -151,6 +159,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Choose the correct preposition.",
     "sub_ar": "اختر حرف الجر الصحيح.",
     "prompt": "My birthday is ___ May.",
+    "q_ar": "عيد ميلادي في شهر ___.",
     "options": [
       "at",
       "on",
@@ -169,6 +178,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Complete the sentence.",
     "sub_ar": "أكمل الجملة.",
     "prompt": "The class starts ___ 8:30.",
+    "q_ar": "يبدأ الدرس ___ الساعة 8:30.",
     "options": [
       "in",
       "on",
@@ -187,6 +197,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Choose the natural sentence.",
     "sub_ar": "اختر الجملة الطبيعية في الإنجليزية.",
     "prompt": "We have a meeting ___ Monday.",
+    "q_ar": "لدينا اجتماع ___ يوم الاثنين.",
     "options": [
       "in",
       "at",
@@ -205,6 +216,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Choose the correct option.",
     "sub_ar": "اختر الخيار الصحيح.",
     "prompt": "She lives ___ Algiers.",
+    "q_ar": "هي تعيش ___ الجزائر العاصمة.",
     "options": [
       "at",
       "in",
@@ -223,6 +235,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Complete the expression.",
     "sub_ar": "أكمل التعبير.",
     "prompt": "I’m good ___ solving practical problems.",
+    "q_ar": "أنا جيد ___ حل المشكلات العملية.",
     "options": [
       "in",
       "at",
@@ -241,6 +254,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Choose the correct phrase.",
     "sub_ar": "اختر العبارة الصحيحة.",
     "prompt": "The report was submitted ___ time, before the deadline.",
+    "q_ar": "سُلّم التقرير ___ الموعد، قبل آخر أجل.",
     "options": [
       "in",
       "on",
@@ -259,6 +273,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Complete the sentence.",
     "sub_ar": "أكمل الجملة.",
     "prompt": "The policy came ___ effect at the start of the year.",
+    "q_ar": "دخلت السياسة حيز ___ في بداية العام.",
     "options": [
       "in",
       "on",
@@ -277,6 +292,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Choose the idiomatic phrase.",
     "sub_ar": "اختر التعبير الاصطلاحي المناسب.",
     "prompt": "Her argument is ___ odds with the available evidence.",
+    "q_ar": "حجتها ___ تعارض مع الأدلة المتاحة.",
     "options": [
       "in",
       "on",
@@ -295,6 +311,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Choose the natural phrase.",
     "sub_ar": "اختر التعبير الطبيعي في الإنجليزية.",
     "prompt": "She bought a ___ bag.",
+    "q_ar": "اشترت حقيبة ___ .",
     "options": [
       "leather small",
       "small leather",
@@ -313,6 +330,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Choose the correct phrase.",
     "sub_ar": "اختر العبارة الصحيحة.",
     "prompt": "He drives a ___ car.",
+    "q_ar": "يقود سيارة ___.",
     "options": [
       "red fast",
       "fast red",
@@ -331,6 +349,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Which sounds most natural?",
     "sub_ar": "أيّ الخيارات يبدو أكثر طبيعية؟",
     "prompt": "They live in a ___ house.",
+    "q_ar": "يعيشون في منزل ___.",
     "options": [
       "wooden beautiful old",
       "old beautiful wooden",
@@ -349,6 +368,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Complete the phrase.",
     "sub_ar": "أكمل العبارة.",
     "prompt": "We stayed in a ___ hotel.",
+    "q_ar": "أقمنا في فندق ___.",
     "options": [
       "comfortable modern Italian",
       "Italian comfortable modern",
@@ -367,6 +387,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Choose the best phrase for a report.",
     "sub_ar": "اختر أفضل تعبير لتقرير.",
     "prompt": "The team developed an ___ system.",
+    "q_ar": "طوّر الفريق نظامًا ___.",
     "options": [
       "control efficient new",
       "new control efficient",
@@ -385,6 +406,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Select the natural description.",
     "sub_ar": "اختر الوصف الطبيعي.",
     "prompt": "It was an ___ decision.",
+    "q_ar": "كان قرارًا ___.",
     "options": [
       "unexpected political major",
       "major unexpected political",
@@ -403,6 +425,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Choose the most idiomatic phrase.",
     "sub_ar": "اختر التعبير الاصطلاحي الأكثر شيوعًا.",
     "prompt": "They proposed a ___ framework.",
+    "q_ar": "اقترحوا إطار عمل ___.",
     "options": [
       "regulatory comprehensive new",
       "new comprehensive regulatory",
@@ -421,6 +444,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Choose the most natural noun phrase.",
     "sub_ar": "اختر العبارة الاسمية الأكثر طبيعية.",
     "prompt": "The study offers a ___ account of the dispute.",
+    "q_ar": "تقدم الدراسة عرضًا ___ للنزاع.",
     "options": [
       "historical nuanced unusually",
       "nuanced unusually historical",
@@ -439,6 +463,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Choose the correct sentence.",
     "sub_ar": "اختر الجملة الصحيحة.",
     "prompt": "I ___ my homework yesterday.",
+    "q_ar": "أنا ___ واجبي المنزلي أمس.",
     "options": [
       "have finished",
       "finished",
@@ -457,6 +482,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Complete the sentence.",
     "sub_ar": "أكمل الجملة.",
     "prompt": "She ___ in this town since 2021.",
+    "q_ar": "هي ___ في هذه البلدة منذ عام 2021.",
     "options": [
       "lived",
       "has lived",
@@ -475,6 +501,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Use “have been” to describe experience without a finished past time.",
     "sub_ar": "استخدم «have been» لوصف تجربة دون تحديد وقت ماضٍ منتهٍ.",
     "prompt": "Choose the correct sentence about life experience.",
+    "q_ar": "اختر الجملة الصحيحة للتحدث عن تجربة في الحياة.",
     "options": [
       "went to London three times",
       "have been to London three times",
@@ -493,6 +520,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Choose the best option.",
     "sub_ar": "اختر الخيار الأنسب.",
     "prompt": "I can’t open the file. I ___ my password.",
+    "q_ar": "لا أستطيع فتح الملف. لقد ___ كلمة المرور.",
     "options": [
       "forgot",
       "have forgotten",
@@ -511,6 +539,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Complete the sentence.",
     "sub_ar": "أكمل الجملة.",
     "prompt": "We ___ the museum last weekend.",
+    "q_ar": "نحن ___ المتحف في عطلة نهاية الأسبوع الماضية.",
     "options": [
       "have visited",
       "visited",
@@ -529,6 +558,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Choose the correct sentence.",
     "sub_ar": "اختر الجملة الصحيحة.",
     "prompt": "By the time I arrived, the meeting ___.",
+    "q_ar": "بحلول وقت وصولي، كان الاجتماع قد ___.",
     "options": [
       "has started",
       "had started",
@@ -547,6 +577,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Complete the sentence naturally.",
     "sub_ar": "أكمل الجملة بصياغة طبيعية.",
     "prompt": "This is the first time I ___ such a detailed analysis.",
+    "q_ar": "هذه أول مرة ___ فيها تحليلًا بهذه الدرجة من التفصيل.",
     "options": [
       "saw",
       "have seen",
@@ -565,6 +596,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Choose the precise option.",
     "sub_ar": "اختر الخيار الأكثر دقة.",
     "prompt": "The committee ___ three revisions so far, and it may request another.",
+    "q_ar": "قدّمت اللجنة ___ مراجعات حتى الآن، وقد تطلب مراجعة أخرى.",
     "options": [
       "requested",
       "has requested",
@@ -583,6 +615,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Choose the correct sentence.",
     "sub_ar": "اختر الجملة الصحيحة.",
     "prompt": "Can you give me some ___?",
+    "q_ar": "هل يمكنك إعطائي بعض ___؟",
     "options": [
       "advices",
       "advice",
@@ -601,6 +634,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Complete the sentence.",
     "sub_ar": "أكمل الجملة.",
     "prompt": "I need some ___ about the bus schedule.",
+    "q_ar": "أحتاج إلى بعض ___ عن جدول الحافلات.",
     "options": [
       "informations",
       "information",
@@ -619,6 +653,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Choose the correct phrase.",
     "sub_ar": "اختر العبارة الصحيحة.",
     "prompt": "There are ___ on the table.",
+    "q_ar": "هناك ___ على الطاولة.",
     "options": [
       "three bread",
       "three breads",
@@ -637,6 +672,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Choose the natural sentence.",
     "sub_ar": "اختر الجملة الطبيعية في الإنجليزية.",
     "prompt": "The equipment ___ very expensive.",
+    "q_ar": "المعدات ___ باهظة الثمن.",
     "options": [
       "are",
       "is",
@@ -655,6 +691,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Complete the sentence.",
     "sub_ar": "أكمل الجملة.",
     "prompt": "We received ___ useful feedback after the presentation.",
+    "q_ar": "تلقينا ___ مفيدة بعد العرض التقديمي.",
     "options": [
       "many",
       "a few",
@@ -673,6 +710,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Choose the correct option.",
     "sub_ar": "اختر الخيار الصحيح.",
     "prompt": "The research ___ that the method is reliable.",
+    "q_ar": "تشير الأبحاث ___ الطريقة موثوقة.",
     "options": [
       "suggest",
       "suggests",
@@ -691,6 +729,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Choose the natural phrase.",
     "sub_ar": "اختر التعبير الطبيعي في الإنجليزية.",
     "prompt": "The company has made considerable ___ in efficiency.",
+    "q_ar": "حققت الشركة ___ ملحوظًا في الكفاءة.",
     "options": [
       "progresses",
       "progress",
@@ -709,6 +748,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Choose the formal sentence.",
     "sub_ar": "اختر الجملة الرسمية.",
     "prompt": "The evidence ___ insufficient to support the claim.",
+    "q_ar": "الأدلة ___ غير كافية لدعم الادعاء.",
     "options": [
       "are",
       "were",
@@ -727,6 +767,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Choose the correct sentence.",
     "sub_ar": "اختر الجملة الصحيحة.",
     "prompt": "I ___ with you.",
+    "q_ar": "أنا ___ معك.",
     "options": [
       "am agree",
       "agree",
@@ -745,6 +786,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Complete the expression.",
     "sub_ar": "أكمل التعبير.",
     "prompt": "It depends ___ the weather.",
+    "q_ar": "يعتمد الأمر ___ الطقس.",
     "options": [
       "of",
       "from",
@@ -763,6 +805,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Choose the correct sentence.",
     "sub_ar": "اختر الجملة الصحيحة.",
     "prompt": "She is married ___ a doctor.",
+    "q_ar": "هي متزوجة ___ طبيب.",
     "options": [
       "with",
       "to",
@@ -781,6 +824,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Choose the natural sentence.",
     "sub_ar": "اختر الجملة الطبيعية في الإنجليزية.",
     "prompt": "He suggested ___ the train instead.",
+    "q_ar": "اقترح أن ___ القطار بدلًا من ذلك.",
     "options": [
       "to take",
       "taking",
@@ -799,6 +843,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Complete the sentence.",
     "sub_ar": "أكمل الجملة.",
     "prompt": "We discussed ___ the deadline.",
+    "q_ar": "ناقشنا ___ الموعد النهائي.",
     "options": [
       "about extending",
       "to extend",
@@ -817,6 +862,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Choose the correct sentence.",
     "sub_ar": "اختر الجملة الصحيحة.",
     "prompt": "I look forward to ___ from you.",
+    "q_ar": "أتطلع إلى ___ أخبارك.",
     "options": [
       "hear",
       "hearing",
@@ -835,6 +881,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Choose the natural sentence.",
     "sub_ar": "اختر الجملة الطبيعية في الإنجليزية.",
     "prompt": "The outcome depends ___ whether funding is approved.",
+    "q_ar": "تعتمد النتيجة ___ ما إذا كان التمويل سيُعتمد.",
     "options": [
       "of",
       "on",
@@ -853,6 +900,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Choose the formal construction.",
     "sub_ar": "اختر التركيب الرسمي.",
     "prompt": "The chair insisted that every member ___ present.",
+    "q_ar": "أصرّ رئيس الجلسة على أن ___ كل عضو حاضرًا.",
     "options": [
       "is",
       "was being",
@@ -871,6 +919,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Choose the correct sentence.",
     "sub_ar": "اختر الجملة الصحيحة.",
     "prompt": "I have ___ umbrella.",
+    "q_ar": "لدي ___ مظلة.",
     "options": [
       "a",
       "an",
@@ -889,6 +938,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Choose the correct form.",
     "sub_ar": "اختر الصيغة الصحيحة.",
     "prompt": "My parents ___ at home.",
+    "q_ar": "والداي ___ في المنزل.",
     "options": [
       "is",
       "am",
@@ -907,6 +957,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Complete the sentence.",
     "sub_ar": "أكمل الجملة.",
     "prompt": "There isn't ___ milk in the fridge.",
+    "q_ar": "لا يوجد ___ من الحليب في الثلاجة.",
     "options": [
       "many",
       "some",
@@ -925,6 +976,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Choose the correct form.",
     "sub_ar": "اختر الصيغة الصحيحة.",
     "prompt": "They ___ home an hour ago.",
+    "q_ar": "لقد ___ إلى المنزل قبل ساعة.",
     "options": [
       "come",
       "came",
@@ -943,6 +995,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Complete the sentence.",
     "sub_ar": "أكمل الجملة.",
     "prompt": "He apologized ___ being late.",
+    "q_ar": "اعتذر عن ___ متأخرًا.",
     "options": [
       "for",
       "to",
@@ -961,6 +1014,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Choose the correct form.",
     "sub_ar": "اختر الصيغة الصحيحة.",
     "prompt": "If I ___ more time, I would learn Japanese.",
+    "q_ar": "لو كان لدي وقت أكثر، لتعلمت اليابانية.",
     "options": [
       "have",
       "had",
@@ -979,6 +1033,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Choose the correct preposition.",
     "sub_ar": "اختر حرف الجر الصحيح.",
     "prompt": "We need to take ___ account the cost of travel.",
+    "q_ar": "علينا أن نأخذ تكلفة السفر ___ الاعتبار.",
     "options": [
       "in",
       "into",
@@ -997,6 +1052,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Choose the correct form.",
     "sub_ar": "اختر الصيغة الصحيحة.",
     "prompt": "He denied ___ the confidential file.",
+    "q_ar": "أنكر ___ الملف السري.",
     "options": [
       "to open",
       "opening",
@@ -1015,6 +1071,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Choose the correct sentence.",
     "sub_ar": "اختر الجملة الصحيحة.",
     "prompt": "Only after the review ___ the error discovered.",
+    "q_ar": "لم يُكتشف الخطأ إلا بعد المراجعة.",
     "options": [
       "the team did",
       "did the team",
@@ -1033,6 +1090,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Choose the formal construction.",
     "sub_ar": "اختر التركيب الرسمي.",
     "prompt": "They recommended that the proposal ___ revised.",
+    "q_ar": "أوصوا بأن ___ الاقتراح.",
     "options": [
       "is",
       "be",
@@ -1051,6 +1109,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Choose the correct sentence.",
     "sub_ar": "اختر الجملة الصحيحة.",
     "prompt": "Rarely ___ such a compelling argument.",
+    "q_ar": "نادرًا ما ___ حجة مقنعة كهذه.",
     "options": [
       "we have heard",
       "have we heard",
@@ -1069,6 +1128,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Complete the phrase.",
     "sub_ar": "أكمل العبارة.",
     "prompt": "The conclusion is predicated ___ several assumptions.",
+    "q_ar": "يستند الاستنتاج ___ عدة افتراضات.",
     "options": [
       "in",
       "on",
@@ -1087,6 +1147,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Choose the correct article.",
     "sub_ar": "اختر أداة التعريف أو التنكير الصحيحة.",
     "prompt": "She has ___ apple.",
+    "q_ar": "لديها ___ تفاحة.",
     "options": [
       "a",
       "an",
@@ -1105,6 +1166,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Choose the correct form.",
     "sub_ar": "اختر الصيغة الصحيحة.",
     "prompt": "I ___ ready now.",
+    "q_ar": "أنا ___ مستعد الآن.",
     "options": [
       "is",
       "are",
@@ -1123,6 +1185,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Choose the correct verb.",
     "sub_ar": "اختر الفعل الصحيح.",
     "prompt": "He ___ TV every evening.",
+    "q_ar": "هو ___ التلفاز كل مساء.",
     "options": [
       "watch",
       "watches",
@@ -1141,6 +1204,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Choose the correct pronoun.",
     "sub_ar": "اختر الضمير الصحيح.",
     "prompt": "Sara is my friend. ___ is kind.",
+    "q_ar": "سارة صديقتي. ___ لطيفة.",
     "options": [
       "He",
       "They",
@@ -1159,6 +1223,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Choose the plural form.",
     "sub_ar": "اختر صيغة الجمع.",
     "prompt": "I have three ___.",
+    "q_ar": "لدي ثلاثة ___.",
     "options": [
       "box",
       "boxs",
@@ -1177,6 +1242,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Choose the correct form.",
     "sub_ar": "اختر الصيغة الصحيحة.",
     "prompt": "My brother can ___ fast.",
+    "q_ar": "أخي يستطيع أن ___ بسرعة.",
     "options": [
       "runs",
       "running",
@@ -1195,6 +1261,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Choose the correct question.",
     "sub_ar": "اختر السؤال الصحيح.",
     "prompt": "___ you like music?",
+    "q_ar": "___ تحب الموسيقى؟",
     "options": [
       "Are",
       "Do",
@@ -1213,6 +1280,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Choose the correct word.",
     "sub_ar": "اختر الكلمة الصحيحة.",
     "prompt": "This is ___ book; I own it.",
+    "q_ar": "هذا ___ كتاب؛ أنا أملكه.",
     "options": [
       "me",
       "my",
@@ -1231,6 +1299,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Choose the correct form.",
     "sub_ar": "اختر الصيغة الصحيحة.",
     "prompt": "We ___ our grandparents yesterday.",
+    "q_ar": "زرنا أجدادنا أمس.",
     "options": [
       "visit",
       "visited",
@@ -1249,6 +1318,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Choose the correct word.",
     "sub_ar": "اختر الكلمة الصحيحة.",
     "prompt": "How ___ apples do you need?",
+    "q_ar": "كم ___ تحتاج من التفاح؟",
     "options": [
       "much",
       "many",
@@ -1267,6 +1337,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Choose the correct form.",
     "sub_ar": "اختر الصيغة الصحيحة.",
     "prompt": "This road is ___ than that one.",
+    "q_ar": "هذا الطريق ___ من ذلك الطريق.",
     "options": [
       "more narrow",
       "narrower",
@@ -1285,6 +1356,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Choose the correct preposition.",
     "sub_ar": "اختر حرف الجر الصحيح.",
     "prompt": "The meeting starts ___ nine.",
+    "q_ar": "يبدأ الاجتماع ___ الساعة التاسعة.",
     "options": [
       "in",
       "on",
@@ -1303,6 +1375,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Choose the correct form.",
     "sub_ar": "اختر الصيغة الصحيحة.",
     "prompt": "I have never ___ sushi.",
+    "q_ar": "لم ___ السوشي قط.",
     "options": [
       "eat",
       "ate",
@@ -1321,6 +1394,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Choose the correct form.",
     "sub_ar": "اختر الصيغة الصحيحة.",
     "prompt": "She wants ___ a doctor.",
+    "q_ar": "هي تريد ___ طبيبة.",
     "options": [
       "be",
       "being",
@@ -1339,6 +1413,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Choose the correct form.",
     "sub_ar": "اختر الصيغة الصحيحة.",
     "prompt": "They avoided ___ about the problem.",
+    "q_ar": "تجنبوا ___ عن المشكلة.",
     "options": [
       "to talk",
       "talk",
@@ -1357,6 +1432,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Choose the correct form.",
     "sub_ar": "اختر الصيغة الصحيحة.",
     "prompt": "If I were you, I ___ apologise.",
+    "q_ar": "لو كنت مكانك، ___ أعتذر.",
     "options": [
       "will",
       "would",
@@ -1375,6 +1451,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Choose the correct form.",
     "sub_ar": "اختر الصيغة الصحيحة.",
     "prompt": "He asked me where I ___.",
+    "q_ar": "سألني أين ___.",
     "options": [
       "live",
       "did I live",
@@ -1393,6 +1470,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Choose the correct preposition.",
     "sub_ar": "اختر حرف الجر الصحيح.",
     "prompt": "I've worked here ___ 2021.",
+    "q_ar": "أعمل هنا ___ عام 2021.",
     "options": [
       "for",
       "since",
@@ -1411,6 +1489,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Choose the correct form.",
     "sub_ar": "اختر الصيغة الصحيحة.",
     "prompt": "She is interested in ___ abroad.",
+    "q_ar": "هي مهتمة بـ ___ في الخارج.",
     "options": [
       "study",
       "to study",
@@ -1429,6 +1508,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Choose the correct article.",
     "sub_ar": "اختر أداة التعريف أو التنكير الصحيحة.",
     "prompt": "He hopes to become ___ engineer.",
+    "q_ar": "يأمل أن يصبح ___ مهندسًا.",
     "options": [
       "a",
       "an",
@@ -1447,6 +1527,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Choose the correct word.",
     "sub_ar": "اختر الكلمة الصحيحة.",
     "prompt": "The long journey was ___.",
+    "q_ar": "كانت الرحلة الطويلة ___.",
     "options": [
       "tired",
       "tiring",
@@ -1465,6 +1546,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Choose the correct form.",
     "sub_ar": "اختر الصيغة الصحيحة.",
     "prompt": "You ___ wear a seat belt; it is the law.",
+    "q_ar": "___ عليك ارتداء حزام الأمان؛ فهذا هو القانون.",
     "options": [
       "might",
       "must",
@@ -1483,6 +1565,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Choose the correct relative pronoun.",
     "sub_ar": "اختر ضمير الوصل الصحيح.",
     "prompt": "The woman ___ called you is my aunt.",
+    "q_ar": "المرأة ___ اتصلت بك هي عمتي.",
     "options": [
       "which",
       "whose",
@@ -1501,6 +1584,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Choose the correct phrase.",
     "sub_ar": "اختر العبارة الصحيحة.",
     "prompt": "Please ___ attention to the instructions.",
+    "q_ar": "يرجى ___ الانتباه إلى التعليمات.",
     "options": [
       "do",
       "make",
@@ -1519,6 +1603,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Choose the correct sentence.",
     "sub_ar": "اختر الجملة الصحيحة.",
     "prompt": "Not until midnight ___ home.",
+    "q_ar": "لم يعودوا إلى المنزل إلا عند منتصف الليل.",
     "options": [
       "they returned",
       "did they return",
@@ -1537,6 +1622,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Choose the correct form.",
     "sub_ar": "اختر الصيغة الصحيحة.",
     "prompt": "He admitted ___ the mistake.",
+    "q_ar": "اعترف بارتكاب الخطأ.",
     "options": [
       "to make",
       "make",
@@ -1555,6 +1641,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Choose the correct preposition.",
     "sub_ar": "اختر حرف الجر الصحيح.",
     "prompt": "The new policy is consistent ___ our values.",
+    "q_ar": "تتوافق السياسة الجديدة ___ قيمنا.",
     "options": [
       "to",
       "with",
@@ -1573,6 +1660,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Choose the correct form.",
     "sub_ar": "اختر الصيغة الصحيحة.",
     "prompt": "I wish I ___ more time yesterday.",
+    "q_ar": "أتمنى لو أن لدي وقتًا أكثر أمس.",
     "options": [
       "have",
       "had",
@@ -1591,6 +1679,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Choose the correct article.",
     "sub_ar": "اختر أداة التعريف أو التنكير الصحيحة.",
     "prompt": "She plays ___ piano beautifully.",
+    "q_ar": "هي تعزف ___ البيانو ببراعة.",
     "options": [
       "a",
       "an",
@@ -1609,6 +1698,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Choose the correct form.",
     "sub_ar": "اختر الصيغة الصحيحة.",
     "prompt": "I had my laptop ___ yesterday.",
+    "q_ar": "أصلحتُ حاسوبي المحمول أمس.",
     "options": [
       "repair",
       "repaired",
@@ -1627,6 +1717,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Choose the best connector.",
     "sub_ar": "اختر أداة الربط الأنسب.",
     "prompt": "___ the heavy rain, the match continued.",
+    "q_ar": "___ الأمطار الغزيرة، استمرت المباراة.",
     "options": [
       "Although",
       "Despite",
@@ -1645,6 +1736,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Choose the correct form.",
     "sub_ar": "اختر الصيغة الصحيحة.",
     "prompt": "She denied ___ the confidential email.",
+    "q_ar": "أنكرت إرسال البريد الإلكتروني السري.",
     "options": [
       "to send",
       "sending",
@@ -1663,6 +1755,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Choose the correct phrase.",
     "sub_ar": "اختر العبارة الصحيحة.",
     "prompt": "There is ___ chance of success without more data.",
+    "q_ar": "هناك ___ فرصة للنجاح دون مزيد من البيانات.",
     "options": [
       "few",
       "little",
@@ -1681,6 +1774,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Choose the correct verb.",
     "sub_ar": "اختر الفعل الصحيح.",
     "prompt": "The findings ___ light on the cause.",
+    "q_ar": "تسلط النتائج ___ على السبب.",
     "options": [
       "put",
       "shed",
@@ -1699,6 +1793,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Choose the correct form.",
     "sub_ar": "اختر الصيغة الصحيحة.",
     "prompt": "Had we left earlier, we ___ the traffic.",
+    "q_ar": "لو غادرنا مبكرًا، ___نا الازدحام.",
     "options": [
       "would avoid",
       "would have avoided",
@@ -1717,6 +1812,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Choose the correct form.",
     "sub_ar": "اختر الصيغة الصحيحة.",
     "prompt": "The instructions were ___ clear.",
+    "q_ar": "كانت التعليمات واضحة ___.",
     "options": [
       "remarkable",
       "remarkably",
@@ -1735,6 +1831,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Choose the formal construction.",
     "sub_ar": "اختر التركيب الرسمي.",
     "prompt": "The chair requested that each member ___ present.",
+    "q_ar": "طلب رئيس الجلسة أن يكون كل عضو ___.",
     "options": [
       "is",
       "be",
@@ -1753,6 +1850,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Choose the correct form.",
     "sub_ar": "اختر الصيغة الصحيحة.",
     "prompt": "Rarely ___ such a convincing explanation.",
+    "q_ar": "نادرًا ما ___ تفسيرًا مقنعًا كهذا.",
     "options": [
       "we have heard",
       "have we heard",
@@ -1771,6 +1869,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Choose the correct preposition.",
     "sub_ar": "اختر حرف الجر الصحيح.",
     "prompt": "The decision is contingent ___ approval.",
+    "q_ar": "يتوقف القرار ___ الموافقة.",
     "options": [
       "of",
       "on",
@@ -1789,6 +1888,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Choose the correct form.",
     "sub_ar": "اختر الصيغة الصحيحة.",
     "prompt": "The report warrants ___ further.",
+    "q_ar": "يستحق التقرير ___ إضافيًا.",
     "options": [
       "to examine",
       "examining",
@@ -1807,6 +1907,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Choose the best connector.",
     "sub_ar": "اختر أداة الربط الأنسب.",
     "prompt": "Much ___ I respect her, I disagree with this conclusion.",
+    "q_ar": "مع أنني ___ أحترمها، فإنني أختلف مع هذا الاستنتاج.",
     "options": [
       "as",
       "although",
@@ -1825,6 +1926,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Choose the correct word.",
     "sub_ar": "اختر الكلمة الصحيحة.",
     "prompt": "The proposal, ___ merits remain disputed, was approved.",
+    "q_ar": "تمت الموافقة على الاقتراح، الذي لا تزال مزاياه محل خلاف.",
     "options": [
       "which",
       "whose",
@@ -1843,6 +1945,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Choose the correct form.",
     "sub_ar": "اختر الصيغة الصحيحة.",
     "prompt": "It is imperative that the files ___ securely stored.",
+    "q_ar": "من الضروري أن ___ الملفات محفوظة بأمان.",
     "options": [
       "are",
       "be",
@@ -1861,6 +1964,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Choose the correct preposition.",
     "sub_ar": "اختر حرف الجر الصحيح.",
     "prompt": "Her account is at variance ___ the official record.",
+    "q_ar": "تختلف روايتها ___ السجل الرسمي.",
     "options": [
       "to",
       "with",
@@ -1879,6 +1983,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Choose the correct form.",
     "sub_ar": "اختر الصيغة الصحيحة.",
     "prompt": "Only after the audit ___ the discrepancy discovered.",
+    "q_ar": "لم يُكتشف التباين إلا بعد التدقيق.",
     "options": [
       "the team did",
       "did the team",
@@ -1897,6 +2002,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Choose the most cautious wording.",
     "sub_ar": "اختر الصياغة الأكثر تحفّظًا.",
     "prompt": "The evidence ___ suggest a correlation, but it is not conclusive.",
+    "q_ar": "قد ___ الأدلة إلى وجود ارتباط، لكنها ليست قاطعة.",
     "options": [
       "may",
       "must",
@@ -1915,6 +2021,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Choose the correct word.",
     "sub_ar": "اختر الكلمة الصحيحة.",
     "prompt": "The new rule may ___ existing inequalities.",
+    "q_ar": "قد ___ القاعدة الجديدة أوجه عدم المساواة القائمة.",
     "options": [
       "exacerbate",
       "exasperate",
@@ -1933,6 +2040,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Choose the correct preposition.",
     "sub_ar": "اختر حرف الجر الصحيح.",
     "prompt": "The findings lend credence ___ the hypothesis.",
+    "q_ar": "تضفي النتائج مصداقية ___ الفرضية.",
     "options": [
       "for",
       "to",
@@ -1951,6 +2059,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Choose the correct form.",
     "sub_ar": "اختر الصيغة الصحيحة.",
     "prompt": "Under no circumstances ___ the original data be altered.",
+    "q_ar": "لا يجوز تحت أي ظرف ___ البيانات الأصلية.",
     "options": [
       "the researchers should",
       "should the researchers",
@@ -1969,6 +2078,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Choose the correct preposition.",
     "sub_ar": "اختر حرف الجر الصحيح.",
     "prompt": "The argument is predicated ___ an untested assumption.",
+    "q_ar": "تستند الحجة ___ افتراض لم يُختبر.",
     "options": [
       "in",
       "on",
@@ -1987,6 +2097,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Choose the formal construction.",
     "sub_ar": "اختر التركيب الرسمي.",
     "prompt": "The statute requires that every applicant ___ the form in person.",
+    "q_ar": "يشترط القانون أن ___ كل متقدم الاستمارة شخصيًا.",
     "options": [
       "completes",
       "complete",
@@ -2005,6 +2116,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Choose the correct construction.",
     "sub_ar": "اختر التركيب الصحيح.",
     "prompt": "Be that ___ it may, the conclusion remains unsupported.",
+    "q_ar": "مهما ___ الأمر، يظل الاستنتاج بلا دعم.",
     "options": [
       "as",
       "so",
@@ -2023,6 +2135,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Choose the closest meaning of “ostensible”.",
     "sub_ar": "اختر أقرب معنى لكلمة «ostensible».",
     "prompt": "The ostensible purpose of the visit was to inspect the building.",
+    "q_ar": "كان الغرض الظاهري من الزيارة هو تفقد المبنى.",
     "options": [
       "appearing to be true or real, though not necessarily so",
       "proven beyond any doubt",
@@ -2041,6 +2154,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Choose the correct form.",
     "sub_ar": "اختر الصيغة الصحيحة.",
     "prompt": "The evidence, together with the appendices, ___ been reviewed.",
+    "q_ar": "تمت مراجعة الأدلة، إلى جانب الملاحق.",
     "options": [
       "have",
       "has",
@@ -2059,6 +2173,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Choose the correct phrase.",
     "sub_ar": "اختر العبارة الصحيحة.",
     "prompt": "The claim is difficult to reconcile ___ the available evidence.",
+    "q_ar": "يصعب التوفيق بين الادعاء ___ الأدلة المتاحة.",
     "options": [
       "to",
       "with",
@@ -2077,6 +2192,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Choose the correct form.",
     "sub_ar": "اختر الصيغة الصحيحة.",
     "prompt": "Not once ___ the witness contradict the original statement.",
+    "q_ar": "لم ___ الشاهد يناقض التصريح الأصلي ولو مرة واحدة.",
     "options": [
       "the witness did",
       "did the witness",
@@ -2095,6 +2211,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Choose the best word.",
     "sub_ar": "اختر الكلمة الأنسب.",
     "prompt": "The distinction is ___; it changes the interpretation of the entire clause.",
+    "q_ar": "التمييز ___؛ فهو يغيّر تفسير الجملة بأكملها.",
     "options": [
       "material",
       "materiel",
@@ -2113,6 +2230,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Choose the correct phrase.",
     "sub_ar": "اختر العبارة الصحيحة.",
     "prompt": "The distinction matters ___ the interpretation of the statute is concerned.",
+    "q_ar": "يكتسب التمييز أهمية ___ تفسير القانون.",
     "options": [
       "insofar as",
       "insofar",
@@ -2131,6 +2249,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Choose the correct word.",
     "sub_ar": "اختر الكلمة الصحيحة.",
     "prompt": "The premises do not ___ entail the conclusion.",
+    "q_ar": "المقدمات لا ___ الاستنتاج بالضرورة.",
     "options": [
       "necessarily",
       "necessary",
@@ -2149,6 +2268,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Choose the correct form.",
     "sub_ar": "اختر الصيغة الصحيحة.",
     "prompt": "Were the evidence more robust, the claim ___ be defensible.",
+    "q_ar": "لو كانت الأدلة أقوى، ___ أن يكون الادعاء قابلًا للدفاع عنه.",
     "options": [
       "might",
       "must have",
