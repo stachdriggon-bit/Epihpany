@@ -2052,3 +2052,26 @@ body[data-theme="dark"] .focus-tool-card{background:linear-gradient(135deg,#302c
   .forecast-estimate{align-items:flex-start;flex-direction:column;gap:3px}
   .forecast-levels{font-size:10px}
 }
+
+
+/* CEFR-wide adaptive progress forecast */
+.forecast-journey{margin-top:24px;padding-top:20px;border-top:1px solid var(--line)}
+.forecast-journey-heading h3{margin:0 0 5px;font-size:17px}
+.forecast-journey-heading p{margin:0 0 15px;color:var(--ink-2);font-size:12px;line-height:1.6}
+.forecast-level-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.forecast-level-card{display:flex;align-items:flex-start;gap:10px;min-width:0;padding:13px;border:1px solid var(--line);border-radius:14px;background:var(--ground)}
+.forecast-level-card>div{min-width:0}
+.forecast-level-dot{display:grid;place-items:center;flex:none;width:29px;height:29px;border-radius:10px;background:var(--line);color:var(--ink-2);font-size:12px;font-weight:900}
+.forecast-level-card b{display:block;font-size:14px}
+.forecast-level-card small{display:block;margin-top:2px;color:var(--ink-2);font-size:10px;line-height:1.4}
+.forecast-level-card p{margin:7px 0 0;color:var(--ink-2);font-size:10px;line-height:1.5}
+.forecast-level-card.is-complete{border-color:color-mix(in srgb,var(--good) 40%,var(--line))}
+.forecast-level-card.is-complete .forecast-level-dot{background:color-mix(in srgb,var(--good) 14%,var(--surface));color:var(--good)}
+.forecast-level-card.is-current{border-color:var(--focus);background:var(--violet-soft)}
+.forecast-level-card.is-current .forecast-level-dot{background:var(--focus);color:#fff}
+.forecast-level-card.is-next{border-color:color-mix(in srgb,var(--mint) 55%,var(--line))}
+.forecast-level-card.is-next .forecast-level-dot{background:color-mix(in srgb,var(--mint) 18%,var(--surface));color:var(--good)}
+body[data-theme="dark"] .forecast-level-card{background:var(--ground)}
+body[data-theme="dark"] .forecast-level-card.is-current{background:#302c4c}
+@media(max-width:650px){.forecast-level-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.forecast-level-card{padding:11px;gap:8px}}
+@media(max-width:360px){.forecast-level-grid{grid-template-columns:1fr}}
