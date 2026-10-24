@@ -361,7 +361,8 @@
       {id:'words',title:'Words',desc:'Build your vocabulary and recognise words.',icon:'Aa',tone:'violet',games:[['vocabulary','Word collector'],['spelling','Word detective'],['match','Word Match']]},
       {id:'grammar',title:'Grammar',desc:'Make sentences clearer and more accurate.',icon:'S+V',tone:'coral',games:[['grammar','Sentence shaper'],['mistakes','Common mistakes'],['spot','Spot the mistake'],['typing','Type It']]},
       {id:'reading',title:'Reading & Listening',desc:'Understand stories, messages and meaning.',icon:'◖',tone:'sky',games:[['story','Lost in London'],['listening','Meaning detective'],['order','Order the Story'],['directions','Directions']]},
-      {id:'challenge',title:'Challenge',desc:'Train your ear for nuance and precise meaning.',icon:'✦',tone:'ink',games:[['advanced','Nuance navigator']]}
+      {id:'challenge',title:'Challenge',desc:'Train your ear for nuance and precise meaning.',icon:'✦',tone:'ink',games:[['advanced','Nuance navigator']]},
+      {id:'minigames',title:'Mini-games',desc:'Quick, playful rounds that adapt to what you need to practise.',icon:'⚡',tone:'mint',games:[['speed','60-second Speed Round'],['audioImage','Sound & Picture Match'],['sentenceOrder','Sentence Builder']]}
     ];
     window.__gameCategories = gameCategories;
     $('#games').innerHTML = gameCategories.map(cat =>
@@ -2243,7 +2244,10 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
   const MINI = {
     order:     {label:'Order the Story', tone:'mint',   glyph:'1·2·3', time:4, blurb:'Put the events of a story in order.', xp:30},
     match:     {label:'Word Match',      tone:'violet', glyph:'⇄',     time:3, blurb:'Match each word with its meaning.',   xp:25},
-    directions:{label:'Directions',      tone:'sky',    glyph:'↱',     time:4, blurb:'Follow directions on a town map.',    xp:35}
+    directions:{label:'Directions',      tone:'sky',    glyph:'↱',     time:4, blurb:'Follow directions on a town map.',    xp:35},
+    speed:{label:'Speed Round',tone:'coral',glyph:'⚡',time:1,blurb:'A 60-second sprint focused on your weak words.',xp:45},
+    audioImage:{label:'Sound & Picture Match',tone:'sky',glyph:'🔊',time:3,blurb:'Listen to a word and choose the matching picture.',xp:30},
+    sentenceOrder:{label:'Sentence Builder',tone:'mint',glyph:'↔',time:3,blurb:'Arrange shuffled words and hear the sentence when correct.',xp:35}
   };
   Object.assign(META, MINI); Object.keys(MINI).forEach(k => { UNLOCK[k] = 0; });
   const NUM_WORDS = ['zero','one','two','three','four'];
@@ -2281,21 +2285,62 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     $('#game').className = 'game t-' + m.tone; $('#game').hidden = false; lockPage(true); hideSheet();
     if (type === 'order') miniOrderSetup();
     else if (type === 'match') miniMatchSetup();
-    else miniDirSetup();
+    else if (type === 'directions') miniDirSetup();
+    else if (type === 'speed') miniSpeedSetup();
+    else if (type === 'audioImage') miniAudioImageSetup();
+    else if (type === 'sentenceOrder') miniSentenceSetup();
   }
+  let miniTimer = null;
+  function miniWeakWordPool() {
+    const items=[],seen=new Set();
+    const add=(word,meaning,icon)=>{const w=String(word||'').trim(),m=String(meaning||'').trim(),key=w.toLowerCase();if(!w||!m||seen.has(key))return;seen.add(key);items.push({word:w,meaning:m,icon:icon||'🔤'});};
+    (state.review||[]).forEach(x=>{if(x&&x.word)add(x.word,x.meaning||x.translation||'Review this word in context.');});
+    (state.words||[]).forEach(x=>{if(Array.isArray(x))add(x[0],x[1]);else if(x&&x.word)add(x.word,x.meaning);});
+    (WOTD_WORDS||[]).forEach(x=>add(x.word,x.meaning));
+    return items;
+  }
+  function miniSpeech(text) {
+    const synth=window.speechSynthesis;
+    if(!synth||!('SpeechSynthesisUtterance' in window)){toast('Audio is not supported in this browser.');return;}
+    try{synth.cancel();const u=new SpeechSynthesisUtterance(String(text));const v=pickVoice();u.lang=v?String(v.lang||'en-US').replace('_','-'):'en-US';if(v)u.voice=v;u.rate=.92;synth.speak(u);}catch{toast('Could not play the audio.');}
+  }
+  function miniSpeedSetup() {
+    if(miniTimer){clearInterval(miniTimer);miniTimer=null;}
+    const pool=miniWeakWordPool();
+    MG.pool=pool.length>=4?pool:SHUF(pool.concat([
+      {word:'borrow',meaning:'to take something and return it later'},{word:'careful',meaning:'giving attention to avoid mistakes'},
+      {word:'improve',meaning:'to become or make something better'},{word:'choose',meaning:'to select from possibilities'},
+      {word:'journey',meaning:'travel from one place to another'},{word:'quiet',meaning:'making little or no noise'}
+    ]));
+    MG.seconds=60;MG.total=0;MG.score=0;MG.answered=false;MG.current=null;miniSpeedRender();
+    miniTimer=setInterval(()=>{if(!MG||MG.type!=='speed'){clearInterval(miniTimer);miniTimer=null;return;}MG.seconds--;const t=$('#mini-speed-time');if(t)t.textContent=MG.seconds+'s';const bar=$('.mini-speed-meter span');if(bar)bar.style.width=Math.max(0,MG.seconds/60*100)+'%';if(MG.seconds<=0){clearInterval(miniTimer);miniTimer=null;miniFinish('60 seconds');}},1000);
+  }
+  function miniSpeedRender() {
+    const pool=MG.pool;let q=pool[Math.floor(Math.random()*pool.length)];if(pool.length>1&&MG.current&&q.word===MG.current.word)q=pool[(pool.indexOf(q)+1)%pool.length];MG.current=q;MG.answered=false;
+    const opts=SHUF([q,...SHUF(pool.filter(x=>x.word!==q.word)).slice(0,3)]);
+    $('#game-body').innerHTML='<div class="q-meta"><span class="pill">⚡ Speed Round</span><span class="q-count" id="mini-speed-time">'+MG.seconds+'s</span></div><div class="mini-speed-meter"><span style="width:'+Math.max(0,MG.seconds/60*100)+'%"></span></div><p class="q-sub">Choose the meaning. Saved and difficult words are prioritised when available.</p><h2 class="mini-target-word">'+esc(q.word)+'</h2><div class="mini-choice-grid">'+opts.map(o=>'<button type="button" class="mini-choice" data-mini-speed-answer="'+encodeURIComponent(o.word)+'">'+esc(o.meaning)+'</button>').join('')+'</div><p class="mini-live-score">Correct: <b>'+MG.score+'</b> · Answered: <b>'+MG.total+'</b></p>';
+  }
+  const MINI_AUDIO_ITEMS=[{word:'apple',meaning:'a round fruit',icon:'🍎'},{word:'book',meaning:'something you read',icon:'📘'},{word:'umbrella',meaning:'keeps you dry in rain',icon:'☂️'},{word:'key',meaning:'opens a lock',icon:'🔑'},{word:'train',meaning:'a vehicle that runs on rails',icon:'🚆'},{word:'bread',meaning:'food made from flour',icon:'🍞'},{word:'clock',meaning:'shows the time',icon:'🕒'},{word:'lamp',meaning:'gives light',icon:'💡'},{word:'chair',meaning:'a seat for one person',icon:'🪑'},{word:'phone',meaning:'a device for calls',icon:'📱'},{word:'tree',meaning:'a tall plant with a trunk',icon:'🌳'},{word:'water',meaning:'a drink we need',icon:'💧'}];
+  function miniAudioImageSetup(){MG.pool=SHUF(MINI_AUDIO_ITEMS);MG.total=10;MG.i=0;MG.score=0;MG.answered=false;miniAudioImageRender();}
+  function miniAudioImageRender(){const q=MG.pool[MG.i%MG.pool.length],opts=SHUF([q,...SHUF(MINI_AUDIO_ITEMS.filter(x=>x.word!==q.word)).slice(0,3)]);MG.current=q;MG.answered=false;miniSteps();$('#game-body').innerHTML='<div class="q-meta"><span class="pill">🔊 Sound & Picture</span><span class="q-count">'+(MG.i+1)+' of '+MG.total+'</span></div><h2 class="q-text" id="q-text" tabindex="-1">Listen, then choose the picture</h2><button type="button" class="mini-listen-button" data-mini-audio-play>🔊 Play word</button><div class="mini-picture-grid">'+opts.map(o=>'<button type="button" class="mini-picture" data-mini-audio-answer="'+o.word+'" aria-label="Picture: '+esc(o.word)+'"><span class="mini-picture-art" aria-hidden="true">'+o.icon+'</span><span>'+esc(o.word)+'</span></button>').join('')+'</div>'+(state.helpArabic?'<p class="q-sub arabic" lang="ar" dir="rtl">استمع إلى الكلمة الإنجليزية ثم اختر الصورة المناسبة.</p>':'');}
+  const MINI_SENTENCES=[{text:'I drink water every morning.',ar:'أشرب الماء كل صباح.'},{text:'She is reading a book.',ar:'هي تقرأ كتابًا.'},{text:'We are going to school.',ar:'نحن ذاهبون إلى المدرسة.'},{text:'He bought a new phone.',ar:'اشترى هاتفًا جديدًا.'},{text:'Please open the window.',ar:'من فضلك افتح النافذة.'},{text:'They play football after school.',ar:'يلعبون كرة القدم بعد المدرسة.'},{text:'I would like a cup of tea.',ar:'أود كوبًا من الشاي.'},{text:'The train arrives at six.',ar:'يصل القطار عند السادسة.'},{text:'My friend lives near the park.',ar:'يعيش صديقي بالقرب من الحديقة.'},{text:'Could you help me, please?',ar:'هل يمكنك مساعدتي من فضلك؟'}];
+  function miniSentenceSetup(){MG.pool=SHUF(MINI_SENTENCES);MG.total=8;MG.i=0;MG.score=0;MG.answered=false;miniSentenceRender();}
+  function miniSentenceRender(){const q=MG.pool[MG.i%MG.pool.length];MG.current=q;MG.tokens=SHUF(q.text.replace(/[.!?]$/,'').split(/\s+/).map((word,id)=>({word,id})));MG.placed=[];MG.answered=false;miniSteps();$('#game-body').innerHTML='<div class="q-meta"><span class="pill">↔ Sentence Builder</span><span class="q-count">'+(MG.i+1)+' of '+MG.total+'</span></div><h2 class="q-text" id="q-text" tabindex="-1">Put the words in the right order</h2>'+(state.helpArabic?'<p class="q-sub arabic" lang="ar" dir="rtl">'+esc(q.ar)+'</p>':'<p class="q-sub">Tap words below to build a natural sentence.</p>')+'<div class="mini-sentence-answer" aria-live="polite">'+(MG.placed.length?MG.placed.map((t,i)=>'<button type="button" class="mini-word-token" data-mini-sentence-remove="'+i+'">'+esc(t.word)+'</button>').join(' '):'<span>Tap words to build the sentence…</span>')+'</div><div class="mini-sentence-bank">'+MG.tokens.filter(t=>!MG.placed.some(p=>p.id===t.id)).map(t=>'<button type="button" class="mini-word-token" data-mini-sentence-word="'+t.id+'">'+esc(t.word)+'</button>').join(' ')+'</div><div class="mini-sentence-actions"><button type="button" class="btn" data-mini-sentence-check>Check sentence</button><button type="button" class="btn btn-ghost" data-mini-sentence-reset>Reset</button></div>'+(MG.feedback?'<p class="mini-feedback">'+esc(MG.feedback)+'</p>':'');MG.feedback='';}
+
   function miniSteps(done) {
     $('#steps').innerHTML = Array.from({length: MG.total}, (_, i) => '<span class="step ' + (MG.results[i] === 'ok' ? 'ok' : MG.results[i] === 'no' ? 'no' : (i === MG.i && !done ? 'current' : '')) + '"></span>').join('');
   }
   function miniFinish(note) {
+    if(miniTimer){clearInterval(miniTimer);miniTimer=null;}
     const m = META[MG.type];
-    let ratio = MG.total ? MG.score / MG.total : 1;
+    let ratio = MG.type==='speed' ? Math.max(0,Math.min(1,MG.score/Math.max(1,MG.total))) : MG.total ? MG.score / MG.total : 1;
     if (MG.type === 'match') ratio = Math.max(.4, Math.min(1, MG.total * 1.6 / Math.max(1, MG.attempts)));
     const gain = DEV_MODE.active ? 0 : Math.max(8, Math.round(m.xp * (.4 + .6 * ratio)));
     const bonus = awardActivity(gain, MG.score);
     const stars = ratio >= .9 ? '★★★' : ratio >= .6 ? '★★☆' : '★☆☆';
     miniSteps(true); hideSheet();
     const type = MG.type;
-    $('#game-body').innerHTML = '<div class="result story-result"><div class="burst">' + (type === 'order' ? '📚' : type === 'match' ? '🧩' : '🧭') + '</div><p class="kicker">' + esc(m.label.toUpperCase()) + ' COMPLETE</p><h2>' + (ratio >= .9 ? 'Brilliant work!' : ratio >= .6 ? 'Nicely done!' : 'Good practice!') + '</h2><div class="story-stars">' + stars + '</div>' +
+    $('#game-body').innerHTML = '<div class="result story-result"><div class="burst">' + (type === 'speed' ? '⚡' : type === 'audioImage' ? '🔊' : type === 'sentenceOrder' ? '↔' : type === 'order' ? '📚' : type === 'match' ? '🧩' : '🧭') + '</div><p class="kicker">' + esc(m.label.toUpperCase()) + ' COMPLETE</p><h2>' + (ratio >= .9 ? 'Brilliant work!' : ratio >= .6 ? 'Nicely done!' : 'Good practice!') + '</h2><div class="story-stars">' + stars + '</div>' +
       '<div class="stats3"><div class="stat"><b>+' + gain + '</b><span>XP earned</span></div><div class="stat"><b>' + MG.score + '/' + MG.total + '</b><span>' + (type === 'match' ? 'Pairs' : 'Correct') + '</span></div><div class="stat"><b>' + esc(note || '') + '</b><span>' + (type === 'match' ? 'Attempts' : 'Rounds') + '</span></div></div>' +
       (bonus ? '<p class="challenge-bonus">' + esc(bonus) + '</p>' : '') +
       '<div class="result-actions"><button class="btn" data-mini-again="' + type + '">Play again</button><button class="btn btn-ghost" data-mini-close>Back to Play</button></div></div>';
@@ -2421,7 +2466,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
 
   function miniNext() {
     if (!MG) return; hideSheet();
-    if (MG.i < MG.total - 1) { MG.i++; MG.answered = false; if (MG.type === 'order') miniOrderRender(); else if (MG.type === 'directions') miniDirRender(); }
+    if (MG.i < MG.total - 1) { MG.i++; MG.answered = false; if (MG.type === 'order') miniOrderRender(); else if (MG.type === 'directions') miniDirRender(); else if (MG.type === 'audioImage') miniAudioImageRender(); else if (MG.type === 'sentenceOrder') miniSentenceRender(); }
     else miniFinish(String(MG.total));
   }
   function miniClick(e) {
@@ -2429,6 +2474,13 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     const close = el.closest('[data-mini-close]'); if (close) { closeGame(); openView('home'); return true; }
     const again = el.closest('[data-mini-again]'); if (again) { startMini(again.dataset.miniAgain); return true; }
     if (MG.done) return false;
+    const speedAnswer=el.closest('[data-mini-speed-answer]');if(speedAnswer&&MG.type==='speed'){if(MG.answered)return true;MG.total++;const picked=decodeURIComponent(speedAnswer.dataset.miniSpeedAnswer);const ok=picked===MG.current.word;if(ok)MG.score++;sfx(ok?'ok':'no');miniSpeedRender();return true;}
+    if(el.closest('[data-mini-audio-play]')&&MG.type==='audioImage'){miniSpeech(MG.current.word);return true;}
+    const audioAnswer=el.closest('[data-mini-audio-answer]');if(audioAnswer&&MG.type==='audioImage'){if(MG.answered)return true;MG.answered=true;const ok=audioAnswer.dataset.miniAudioAnswer===MG.current.word;if(ok)MG.score++;MG.results[MG.i]=ok?'ok':'no';sfx(ok?'ok':'no');$('.mini-picture-grid').querySelectorAll('button').forEach(b=>{b.disabled=true;if(b.dataset.miniAudioAnswer===MG.current.word)b.classList.add('is-right');else if(b===audioAnswer)b.classList.add('is-wrong');});showSheet(ok,'<h3>'+(ok?'That’s it!':'Not quite')+'</h3><p>The word is <b>'+esc(MG.current.word)+'</b> — '+esc(MG.current.meaning)+'.</p><div class="sheet-actions"><button class="btn" id="go-next">'+(MG.i===MG.total-1?'See results':'Next word')+ic('arrow')+'</button></div>');return true;}
+    const sentenceWord=el.closest('[data-mini-sentence-word]');if(sentenceWord&&MG.type==='sentenceOrder'&&!MG.answered){const token=MG.tokens.find(t=>t.id===Number(sentenceWord.dataset.miniSentenceWord));if(token)MG.placed.push(token);miniSentenceRender();return true;}
+    const sentenceRemove=el.closest('[data-mini-sentence-remove]');if(sentenceRemove&&MG.type==='sentenceOrder'&&!MG.answered){MG.placed.splice(Number(sentenceRemove.dataset.miniSentenceRemove),1);miniSentenceRender();return true;}
+    if(el.closest('[data-mini-sentence-reset]')&&MG.type==='sentenceOrder'){MG.placed=[];MG.feedback='';miniSentenceRender();return true;}
+    if(el.closest('[data-mini-sentence-check]')&&MG.type==='sentenceOrder'){if(MG.answered)return true;const expected=MG.current.text.replace(/[.!?]$/,'').toLowerCase();const actual=MG.placed.map(t=>t.word).join(' ').toLowerCase();if(actual===expected){MG.answered=true;MG.score++;MG.results[MG.i]='ok';sfx('ok');miniSpeech(MG.current.text);showSheet(true,'<h3>Perfect sentence!</h3><p>'+esc(MG.current.text)+'</p><div class="sheet-actions"><button class="btn" id="go-next">'+(MG.i===MG.total-1?'See results':'Next sentence')+ic('arrow')+'</button></div>');}else{MG.feedback='Not quite yet. Rearrange the words and try again.';sfx('no');miniSentenceRender();}return true;}
     if (el.closest('#go-next')) { miniNext(); return true; }
     const place = el.closest('[data-mg-place]');
     if (place && MG.type === 'order') { const r = MG.rounds[MG.i]; if (MG.answered) return true; const k = Number(place.dataset.mgPlace); r.pool = r.pool.filter(v => v !== k); r.placed.push(k); miniOrderRender(); return true; }
@@ -2442,7 +2494,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
   }
 
   function closeGame() {
-    $('#game').hidden = true; hideSheet(); G = null; ST = null; MG = null;
+    if(miniTimer){clearInterval(miniTimer);miniTimer=null;} try{window.speechSynthesis?.cancel();}catch{} $('#game').hidden = true; hideSheet(); G = null; ST = null; MG = null;
     lockPage(false); renderAll();
     const h = $('.view.is-active h1'); if (h) h.focus({preventScroll: true});
   }
@@ -3341,7 +3393,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     }
     if (e.target.closest('#developer-start')) { launchDeveloperActivity(); return; }
     const gm = e.target.closest('[data-game]');
-    if (gm) { closeCategoryPicker(false); startGame(gm.dataset.game); return; }
+    if (gm) { closeCategoryPicker(false); if(MINI[gm.dataset.game])startMini(gm.dataset.game);else startGame(gm.dataset.game); return; }
     const lv = e.target.closest('[data-level]');
     if (lv) {
       const i = Number(lv.dataset.level), l = LEVELS[i];
