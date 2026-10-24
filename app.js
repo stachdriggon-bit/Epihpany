@@ -3501,6 +3501,12 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
       return;
     }
     if (e.target.closest('#developer-start')) { launchDeveloperActivity(); return; }
+    if (e.target.closest('#daily-session-start')) {
+      const due = (state.review || []).filter(w => !w.due || w.due <= dayKey());
+      if (due.length) { openView('words'); toast('Start with your due words, then choose a short lesson and story.'); }
+      else { startGame(pickNext()); toast('Your daily session has started. Next, try a short story.'); }
+      return;
+    }
     const gm = e.target.closest('[data-game]');
     if (gm) { closeCategoryPicker(false); if(gm.dataset.game==='personalized')preparePersonalizedGame(); if(MINI[gm.dataset.game])startMini(gm.dataset.game);else startGame(gm.dataset.game); return; }
     const lv = e.target.closest('[data-level]');

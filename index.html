@@ -101,6 +101,15 @@
   </div>
 </header>
 
+
+<nav class="bottom-nav" aria-label="Quick navigation">
+  <button type="button" data-view="home" aria-label="Home"><span aria-hidden="true">⌂</span><small>Home</small></button>
+  <button type="button" data-view="arcade" aria-label="Learn"><span aria-hidden="true">✦</span><small>Learn</small></button>
+  <button type="button" data-view="stories" aria-label="Stories"><span aria-hidden="true">▤</span><small>Stories</small></button>
+  <button type="button" data-view="world" aria-label="World"><span aria-hidden="true">🌍</span><small>World</small></button>
+  <button type="button" data-view="profile" aria-label="My profile"><span aria-hidden="true">♙</span><small>Me</small></button>
+</nav>
+
 <main id="main">
 
   <!-- PLAY -->
@@ -113,6 +122,13 @@
         <h1 id="home-title" tabindex="-1">Ready for a <span class="hl">spark</span>?</h1>
         <p class="lead">One short quest a day builds real English.</p>
       </div>
+
+
+      <section class="daily-session-card" aria-labelledby="daily-session-title">
+        <div class="daily-session-copy"><p class="kicker">YOUR DAILY SPARK · 10 MIN</p><h2 id="daily-session-title">Start today’s session</h2><p>Review a few words, practise one skill, then enjoy a short story. Small steps, every day.</p>
+          <div class="daily-session-steps" aria-label="Session plan"><span><b>1</b> Review · 3 min</span><span><b>2</b> Lesson · 4 min</span><span><b>3</b> Story · 3 min</span></div>
+        </div><button class="btn daily-session-start" id="daily-session-start" type="button"><span aria-hidden="true">▶</span> Start session</button>
+      </section>
 
       <section class="block" aria-labelledby="games-title">
         <div class="block-head"><h2 id="games-title">Or choose a game</h2><p>Every game trains a different part of your English.</p></div>
