@@ -29,7 +29,7 @@
   if (!Number.isFinite(Number(state.focusTimer.remaining))) state.focusTimer.remaining = Number(state.focusTimer.duration) || 1500;
   if (!state.xpActivity || typeof state.xpActivity !== 'object' || Array.isArray(state.xpActivity)) state.xpActivity = {days:{}};
   if (!state.xpActivity.days || typeof state.xpActivity.days !== 'object' || Array.isArray(state.xpActivity.days)) state.xpActivity.days = {};
-  if (!Number.isFinite(Number(state._lastSavedXp))) state._lastSavedXp = Number(state.xp) || 0;
+  if (state._lastSavedXp === null || state._lastSavedXp === undefined || !Number.isFinite(Number(state._lastSavedXp))) state._lastSavedXp = Number(state.xp) || 0;
   if (!state.adaptiveSignals || typeof state.adaptiveSignals !== 'object' || Array.isArray(state.adaptiveSignals)) state.adaptiveSignals = {};
   if (!state.learningActivity || typeof state.learningActivity !== 'object' || Array.isArray(state.learningActivity)) state.learningActivity = {days:{}};
   if (!state.learningActivity.days || typeof state.learningActivity.days !== 'object' || Array.isArray(state.learningActivity.days)) state.learningActivity.days = {};
