@@ -2599,7 +2599,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
   });
 
   function lockPage(on) {
-    ['.top', 'main', '.dock'].forEach(s => { const el = $(s); if (el) el.inert = on; });
+    ['.top', 'main', '.bottom-nav'].forEach(s => { const el = $(s); if (el) el.inert = on; });
     document.body.classList.toggle('no-scroll', on);
   }
 
