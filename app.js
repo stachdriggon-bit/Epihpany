@@ -3146,7 +3146,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     if (!G || !G.questions || !G.questions[G.i]) return '';
     const q = G.questions[G.i].q || {};
     const candidate = q.word ? wordParts(q.word, q.explain).word : (Array.isArray(q.answers) && Number.isInteger(q.correct) ? q.answers[q.correct] : '');
-    return String(candidate || '').trim().split(/\\s+/).slice(0,4).join(' ');
+    return String(candidate || '').trim().split(/\s+/).slice(0,4).join(' ');
   }
   function shareCurrentQuestion() {
     const word = currentShareWord();
