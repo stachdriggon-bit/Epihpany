@@ -2283,3 +2283,12 @@ body[data-theme="dark"] .monthly-assessment-card{background:linear-gradient(140d
 .contrast-options .btn:disabled{opacity:.78;cursor:default}
 @media(max-width:520px){.contrast-practice{padding:1rem;border-radius:16px}.contrast-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.contrast-options .btn{width:100%;min-width:0}}
 body.ar-on .contrast-practice{direction:rtl;text-align:right}
+
+/* Three-context vocabulary learning */
+.three-contexts{display:grid;gap:.7rem;margin:1rem 0}
+.context-card{display:grid;grid-template-columns:2rem minmax(0,1fr);align-items:start;gap:.75rem;padding:.85rem 1rem;border:1px solid var(--line);border-radius:14px;background:var(--surface,var(--ground))}
+.context-number{display:grid;place-items:center;width:2rem;height:2rem;border-radius:50%;font-size:.85rem;font-weight:850;background:var(--violet-soft);color:var(--ink)}
+.context-card b{display:block;margin:.1rem 0 .25rem}
+.context-card p{margin:0;line-height:1.65;color:var(--ink-2)}
+body.ar-on .three-contexts{direction:rtl;text-align:right}
+@media(max-width:520px){.context-card{padding:.75rem;gap:.55rem;grid-template-columns:1.8rem minmax(0,1fr)}.context-number{width:1.8rem;height:1.8rem}}
