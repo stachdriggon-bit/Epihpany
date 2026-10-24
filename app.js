@@ -3,7 +3,45 @@
 (() => {
   'use strict';
   const $ = s => document.querySelector(s);
-  const $$ = s => [...document.querySelectorAll(s)];
+  const $ = s => [...document.querySelectorAll(s)];
+  let bidiLastMode = null;
+  let bidiObserver = null;
+  function processBidiTree(root) {
+    if (!root || !document.body.classList.contains('ar-on')) return;
+    if (root.nodeType === 3) root = root.parentNode;
+    if (!root || !root.querySelectorAll && root.nodeType !== 1 && root.nodeType !== 9) return;
+    const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+    const nodes = [];
+    let node;
+    while ((node = walker.nextNode())) {
+      const parent = node.parentElement;
+      if (!parent || parent.closest('script,style,noscript,textarea,input,option,pre,code,svg,[contenteditable="true"],bdi[data-ep-bidi]')) continue;
+      if (/[A-Za-z]/.test(node.nodeValue || '')) nodes.push(node);
+    }
+    nodes.forEach(textNode => {
+      if (!textNode.parentNode || textNode.parentElement?.closest('bdi[data-ep-bidi]')) return;
+      const isolated = document.createElement('bdi');
+      isolated.setAttribute('dir', 'auto');
+      isolated.setAttribute('data-ep-bidi', '1');
+      textNode.parentNode.insertBefore(isolated, textNode);
+      isolated.appendChild(textNode);
+    });
+  }
+  function syncBidiIsolation(force = false) {
+    const active = document.body.classList.contains('ar-on');
+    if (!force && active === bidiLastMode) return;
+    bidiLastMode = active;
+    if (active) {
+      processBidiTree(document.body);
+    } else {
+      document.querySelectorAll('bdi[data-ep-bidi]').forEach(node => {
+        const parent = node.parentNode;
+        if (!parent) return;
+        while (node.firstChild) parent.insertBefore(node.firstChild, node);
+        node.remove();
+      });
+    }
+  }
   const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const ic = n => '<svg aria-hidden="true"><use href="#i-' + n + '"/></svg>';
   if(!document.querySelector('link[href*="mini-games.css"]')) { const miniStyle=document.createElement('link'); miniStyle.rel='stylesheet'; miniStyle.href='mini-games.css?v=mini-games-20261024'; document.head.appendChild(miniStyle); }
@@ -2475,6 +2513,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     document.body.classList.toggle('ar-on', !!state.helpArabic);
     document.documentElement.dir = state.helpArabic ? 'rtl' : 'ltr';
     document.body.dir = state.helpArabic ? 'rtl' : 'ltr';
+    syncBidiIsolation();
     $$('#ar-toggle, #game-ar').forEach(b => b.setAttribute('aria-pressed', String(!!state.helpArabic)));
     const helpToggle = $('#ar-toggle');
     if (helpToggle) {
@@ -4825,4 +4864,13 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
   let accountWelcomeDismissed = false;
   try { accountWelcomeDismissed = localStorage.getItem('epiphany-account-welcome-dismissed') === '1'; } catch {}
   if(!state.placementDone && accountWelcomeDismissed)showPlacement();
+  bidiLastMode = null;
+  syncBidiIsolation(true);
+  if (window.MutationObserver) {
+    bidiObserver = new MutationObserver(records => {
+      if (!document.body.classList.contains('ar-on')) return;
+      records.forEach(record => record.addedNodes.forEach(node => processBidiTree(node)));
+    });
+    bidiObserver.observe(document.body, {childList:true,subtree:true});
+  }
 })();
