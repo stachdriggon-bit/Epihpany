@@ -1,5 +1,5 @@
-const CACHE_NAME = 'epiphany-shell-v105-daily-session-summary';
-const CORE_ASSETS = ['./', './index.html', './style.css', './app.js', './data.js', './data-expansion.js', './data-mistakes.js', './data-spot.js', './data-typing.js', './data-wotd.js', './data-aha.js', './data-stories.js', './data-world.js', './data-world-sprites.js', './data-minigames.js', './data-translation-ar.js', './mini-games.css', './supabase-config.js', './account.js', './manifest.webmanifest', './icon.svg', './notifications.js'];
+const CACHE_NAME = 'epiphany-shell-v106-speaking-dictation-lab';
+const CORE_ASSETS = ['./', './index.html', './style.css', './app.js', './practice-lab.js', './data.js', './data-expansion.js', './data-mistakes.js', './data-spot.js', './data-typing.js', './data-wotd.js', './data-aha.js', './data-stories.js', './data-world.js', './data-world-sprites.js', './data-minigames.js', './data-translation-ar.js', './mini-games.css', './supabase-config.js', './account.js', './manifest.webmanifest', './icon.svg', './notifications.js'];
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(CORE_ASSETS)).then(() => self.skipWaiting()));
 });
