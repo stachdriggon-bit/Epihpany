@@ -1429,8 +1429,8 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
   }
   function enhanceTranslationControls(root) {
     if(!root||!state.translationEnabled||(ST&&root.id!=='sheet'))return;
-    root.querySelectorAll('.q-text,.q-sub,.typing-prompt,.spot-text,.mg-route,.answer,.mg-card,.mg-tile,.sheet p:not(.arabic),.sheet h3').forEach(el=>{
-      if(el.closest('#story-answers,.story-reader,.story-screen,[data-story-mode]'))return;
+    root.querySelectorAll('.q-text,.q-sub,.typing-prompt,.spot-text,.mg-route,.answer,.mg-card,.mg-tile,.question-text,.prompt-text,.instruction-text,.story-prompt,.story-response,.story-option,.world-instruction,.world-dialogue,.wotd-definition,.aha-note,.sheet p:not(.arabic),.sheet h3').forEach(el=>{
+      // Story/World/WOTD elements are included only through explicit semantic selectors above.
       if(el.classList.contains('mg-route')&&el.nextElementSibling&&el.nextElementSibling.classList.contains('mg-route-ar'))return;
       addTranslationControl(el,(el.classList.contains('answer')||el.classList.contains('mg-card')||el.classList.contains('mg-tile'))?'answer':'question');
     });
