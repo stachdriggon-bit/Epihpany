@@ -1,5 +1,5 @@
-const CACHE_NAME = 'epiphany-shell-20261024z';
-const VENDOR_CACHE = 'epiphany-vendor-20261024k';
+const CACHE_NAME = 'epiphany-shell-20261024aa';
+const VENDOR_CACHE = 'epiphany-vendor-20261024l';
 const CORE_ASSETS = ['./', './index.html', './style.css', './life-skills.css', './app.js', './data.js', './data-expansion.js', './data-mistakes.js', './data-spot.js', './data-typing.js', './data-wotd.js', './data-aha.js', './data-minigames.js', './mini-games.css', './supabase-config.js', './account.js', './telemetry.js', './lazy-data.js', './manifest.webmanifest', './icon.svg', './social-preview.svg', './wotd-card.html', './notifications.js'];
 self.addEventListener('install', event => {
   event.waitUntil((async () => {
