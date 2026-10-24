@@ -907,7 +907,31 @@
     advice:['give advice','ask for advice','a piece of advice'], experience:['gain experience','a valuable experience','work experience'],
     opportunity:['seize an opportunity','a great opportunity','opportunity to learn'], achieve:['achieve a goal','achieve success','achieve results'],
     curious:['curious about something','a curious person','curiosity about'], notice:['notice a difference','notice a change','barely notice'],
-    journey:['go on a journey','a long journey','learning journey'], confident:['feel confident','confident about','build confidence']
+    journey:['go on a journey','a long journey','learning journey'], confident:['feel confident','confident about','build confidence'],
+    time:['spend time','save time','on time'], problem:['solve a problem','a serious problem','problem-solving'],
+    question:['ask a question','answer a question','a difficult question'], answer:['give an answer','the correct answer','answer a question'],
+    plan:['make a plan','plan ahead','a detailed plan'], goal:['set a goal','achieve a goal','reach your goal'],
+    progress:['make progress','steady progress','progress towards a goal'], change:['make a change','a major change','change your mind'],
+    choice:['make a choice','a difficult choice','have no choice'], mistake:['make a mistake','learn from a mistake','a common mistake'],
+    reason:['for this reason','the main reason','reason to believe'], result:['as a result','get results','the end result'],
+    attention:['pay attention','attention to detail','attract attention'], relationship:['build a relationship','a close relationship','working relationship'],
+    support:['give support','support a friend','support system'], learn:['learn a skill','learn from experience','learn by doing'],
+    knowledge:['gain knowledge','share knowledge','background knowledge'], skill:['develop a skill','communication skills','practical skills'],
+    research:['do research','research shows','research project'], homework:['do homework','finish your homework','homework assignment'],
+    exercise:['do exercise','physical exercise','breathing exercise'], photo:['take a photo','a family photo','photo album'],
+    look:['look for','look after','look forward to'], depend:['depend on','depend heavily on','it depends'],
+    interested:['interested in','become interested in','deeply interested in'], responsible:['responsible for','take responsibility','a responsible decision'],
+    afraid:['afraid of','afraid to ask','not afraid of'], aware:['aware of','become aware of','fully aware'],
+    familiar:['familiar with','look familiar','a familiar face'], similar:['similar to','very similar','a similar situation'],
+    different:['different from','a different approach','make a difference'], important:['important to remember','play an important role','an important decision'],
+    advantage:['take advantage of','a major advantage','competitive advantage'], habit:['break a habit','develop a habit','a healthy habit'],
+    feeling:['express a feeling','mixed feelings','a feeling of relief'], opinion:['in my opinion','share an opinion','strong opinion'],
+    permission:['ask for permission','give permission','without permission'], information:['get information','useful information','a piece of information'],
+    traffic:['heavy traffic','traffic jam','traffic lights'], weather:['bad weather','weather forecast','cold weather'],
+    health:['good health','mental health','health care'], safety:['safety first','safety rules','ensure safety'],
+    energy:['save energy','energy source','renewable energy'], power:['power supply','power station','power consumption'],
+    control:['take control','control system','under control'], system:['operating system','control system','system failure'],
+    issue:['raise an issue','deal with an issue','a major issue'], solution:['find a solution','practical solution','solution to a problem']
   };
   const WORD_FAMILIES={
     happy:['happy (adjective)','happiness (noun)','unhappy (adjective)','happily (adverb)'],
@@ -2959,6 +2983,26 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     {match:/future perfect|will have/i,title:'Future perfect',rule:'Use will have + past participle for an action completed before a future point.',examples:['By June, she will have finished.','They will have arrived by noon.']}
   ];
   function grammarLesson(q){const found=GRAMMAR_LESSONS.find(x=>x.match.test(q.explain+' '+q.q));if(found)return found;return {title:'Grammar focus',rule:(q.explain||'Check the grammatical pattern and the meaning of the whole sentence.').split(/[.!?]/)[0]+'.',examples:[q.q.replace(/_{3,}/g,q.answers[q.correct]),'Read the sentence aloud and notice how the form fits its meaning.']};}
+  function conciseFeedbackRule(q){
+    const rules={
+      'present-simple':'Present simple: use the base verb with I/you/we/they, and add -s/-es with he/she/it.',
+      'past-simple':'Past time: use the past simple with a finished time such as yesterday or last year.',
+      'past-time':'Finished past time: use the past simple with yesterday, last week, or another completed time.',
+      'be-verbs':'Subject–verb agreement: match the verb to the real subject, not a nearby noun.',
+      'countable-uncountable':'Countability: use many/fewer with countable plural nouns; much/less with uncountable nouns.',
+      'verb-patterns':'Verb patterns: some verbs are followed by -ing, while others take to + base verb. Learn the pattern with the verb.',
+      'conditionals':'Conditionals: choose the tense pattern that matches whether the situation is real, possible, or imagined.',
+      'inversion':'Inversion: after a negative or limiting expression at the start, put the auxiliary before the subject.',
+      'concession':'Contrast: use although + clause, or despite/in spite of + noun or -ing; do not combine although with but.',
+      'articles':'Articles: use a/an for one nonspecific countable singular noun; use the when the listener knows which one.',
+      'prepositions':'Prepositions: learn the preposition as part of the expression, for example interested in or depend on.',
+      'comparatives':'Comparisons: use the comparative form with than; avoid adding a second comparative marker.',
+      'subject-verb-agreement':'Subject–verb agreement: the verb must agree with the subject in number.',
+      'past-continuous':'Past continuous: use was/were + verb-ing for an action in progress at a past moment.'
+    };
+    const key=q.trap||inferGrammarTrap({prompt:q.q,why_en:q.explain,hint:q.hint,answer:q.answers&&q.answers[q.correct]});
+    return rules[key]||'Learning tip: compare the corrected sentence with your choice and notice which word or form changes the meaning.';
+  }
   function renderGrammarMap(){
     const source=typeof MISTAKE_QUESTIONS!=='undefined'?MISTAKE_QUESTIONS:[],topics=[...new Set(source.map(q=>q.trap).filter(Boolean))],label=x=>x.replace(/-/g,' ').replace(/\b\w/g,c=>c.toUpperCase());
     const rows=topics.map(topic=>{const total=source.filter(q=>q.trap===topic).length,errors=Number(state.mistakeTrapErrors[topic])||0,correct=Number(state.mistakeTrapCorrect[topic])||0,attempts=errors+correct,srs=state.mistakeTrapSrs[topic]||{},due=!!srs.due&&srs.due<=dayKey(),status=attempts===0?'not-started':errors>=3&&errors>correct?'needs-practice':attempts>=5&&correct/attempts>=0.8&&Number(srs.box)>=3&&!due?'mastered':'in-progress';return {topic,label:label(topic),total,errors,correct,attempts,status,due,box:Number(srs.box)||0,accuracy:attempts?correct/attempts:0};});
@@ -3089,7 +3133,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     showSheet(ok,
       '<h3><span class="sheet-mark">' + ic(ok ? 'check' : 'lightbulb') + '</span>' + (ok ? 'Exactly right!' : 'Not quite yet — let’s learn from it.') + '</h3>' +
       (ok ? '' : '<p class="retry-hint-note">' + ((state.translationEnabled || state.helpArabic) ? 'المحاولة جزء من التعلّم. انظر إلى الإجابة، ثم ركّز على القرينة التي تساعدك في المرة القادمة.' : 'Every attempt helps you learn. Take a look at the answer, then notice the clue that can help next time.') + '</p><p><strong>' + ((state.translationEnabled || state.helpArabic) ? 'الإجابة الأنسب:' : 'Best answer:') + '</strong> <b>' + esc(q.answers[q.correct]) + '</b></p>') +
-      '<p>' + esc(q.explain) + '</p>' + (!ok ? '<p class="arabic answer-explanation-ar" lang="ar" dir="rtl">' + esc(q.explain_ar || q.why_ar || q.arabic_hint || (q.aha&&q.aha.ar) || 'راجع معنى الجملة كاملةً، ولا تعتمد على ترجمة الكلمة وحدها لاختيار الصياغة الأنسب.') + '</p>' : (state.helpArabic && q.explain_ar ? '<p class="arabic" lang="ar" dir="rtl">' + esc(q.explain_ar) + '</p>' : '')) +
+      '<p>' + esc(q.explain) + '</p>' + (!ok ? '<aside class="aha-note"><div><strong>Quick rule</strong><p>' + esc(conciseFeedbackRule(q)) + '</p><p><strong>Example:</strong> ' + esc(q.q.replace(/_{3,}/g, q.answers[q.correct])) + '</p></div></aside>' : '') + (!ok ? '<p class="arabic answer-explanation-ar" lang="ar" dir="rtl">' + esc(q.explain_ar || q.why_ar || q.arabic_hint || (q.aha&&q.aha.ar) || 'راجع معنى الجملة كاملةً، ولا تعتمد على ترجمة الكلمة وحدها لاختيار الصياغة الأنسب.') + '</p>' : (state.helpArabic && q.explain_ar ? '<p class="arabic" lang="ar" dir="rtl">' + esc(q.explain_ar) + '</p>' : '')) +
       (!ok && G.type === 'mistakes' ? '<section class="trap-explanation" aria-label="Why Arabic speakers make this mistake"><h4>Why do Arabic speakers make this mistake?</h4><p class="arabic" lang="ar" dir="rtl">' + esc(q.why_ar || q.ar) + '</p><p class="trap-hint arabic" lang="ar" dir="rtl">' + esc(q.arabic_hint || '') + '</p></section>' : '') +
       (!ok && q.aha ? '<aside class="aha-note"><span aria-hidden="true">💡</span><div><strong>Aha moment</strong><p>'+esc(q.aha.en)+'</p><p class="arabic ar-only" lang="ar" dir="rtl">'+esc(q.aha.ar)+'</p></div></aside>' : '') +
       (ok && q.word ? '<div class="newword"><span>New word</span><b>' + esc(q.word[0]) + '</b><span>' + esc(q.word[1]) + '</span></div>' : '') +
