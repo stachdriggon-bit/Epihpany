@@ -84,6 +84,7 @@
     const why = String(q.why_en || '').toLowerCase();
     // Prefer the question's explicit hint and sentence structure over incidental words in explanations.
     if (/\b(he|she|it) (?:go|live|play|work)\b|\b(?:every day|on fridays)\b/.test(prompt) && /\b(?:go|live|play|work|study)\b/.test(prompt)) return 'present-simple';
+    if (/\bi am agree\b|\bremove am\b/.test(prompt+' '+why)) return 'verb-patterns';
     if (/\b(?:they|we|you|i|he|she|it) (?:is|are|am|was|were)\b|\b(?:this are|those is|there is many|there are a cat|friends is|we was|they is|he are|i is)\b/.test(prompt)) return 'am-is-are';
     if (/\b(?:despite of|in spite the|although .* but)\b/.test(prompt)) return 'concession';
     if (/\b(?:last year|yesterday|two days ago|last week)\b/.test(prompt) && /\b(?:has|have|had)\b/.test(prompt)) return 'past-time';
