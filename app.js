@@ -1613,7 +1613,17 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
   const storyIsSaved=word=>state.words.some(w=>String(w[0]).toLowerCase()===String(word).toLowerCase());
   function renderStories(){
     const root=$('#stories-content');if(!root)return;
-    if(typeof STORIES==='undefined'){window.EPIPHANY_LAZY_LOAD('stories').then(()=>{syncSettings();renderStories();}).catch(()=>toast('Stories could not load. Connect to the internet and try again.'));return;}
+    if(typeof STORIES==='undefined'){
+      root.setAttribute('aria-busy','true');
+      root.innerHTML='<section class="story-loading" role="status" aria-label="Loading stories"><div class="story-skeleton-feature"><span class="story-skeleton-art"></span><span class="story-skeleton-copy"><i></i><i></i><i></i></span></div><div class="story-skeleton-heading"></div><div class="story-skeleton-grid">'+Array.from({length:4},()=>'<div class="story-skeleton-card"><span class="story-skeleton-art"></span><span class="story-skeleton-copy"><i></i><i></i></span></div>').join('')+'</div><p class="story-loading-note">Preparing your reading space…</p></section>';
+      window.EPIPHANY_LAZY_LOAD('stories').then(()=>{root.removeAttribute('aria-busy');syncSettings();renderStories();}).catch(()=>{
+        root.removeAttribute('aria-busy');
+        root.innerHTML='<section class="story-load-error" role="status"><span aria-hidden="true">📚</span><h2>Stories are taking a little longer</h2><p>Your progress is safe. Check your connection and try again.</p><button type="button" class="btn btn-go" data-story-load-retry>Try again</button></section>';
+        root.querySelector('[data-story-load-retry]')?.addEventListener('click',renderStories,{once:true});
+      });
+      return;
+    }
+    root.removeAttribute('aria-busy');
     const unlocked=hasDeveloperAccess()?LEVELS.length-1:storyLevelIndex(currentLevel().id),ordered=STORIES.slice().sort((a,b)=>storyLevelIndex(a.level)-storyLevelIndex(b.level)||a.title.localeCompare(b.title));
     const featured=ordered.find(s=>!s.season&&storyLevelIndex(s.level)<=unlocked&&!(state.stories[s.id]&&state.stories[s.id].done))||ordered.find(s=>!s.season&&storyLevelIndex(s.level)<=unlocked)||ordered.find(s=>storyLevelIndex(s.level)<=unlocked)||ordered[0];
     const filtered=ordered.filter(s=>{const saved=state.stories[s.id]||{},done=!!saved.done,reading=!done&&Number.isInteger(saved.lastPage)&&saved.lastPage>=0&&!!saved.readerSession;const query=STORY_FILTER.query.trim().toLowerCase();return (!query||(s.title+' '+s.level+' '+(s.description||'')+' '+(s.pages||[]).map(p=>p.text||'').join(' ')).toLowerCase().includes(query))&&(STORY_FILTER.level==='all'||s.level===(STORY_FILTER.level==='current'?currentLevel().id:STORY_FILTER.level))&&(STORY_FILTER.length==='all'||(STORY_FILTER.length==='short'?(s.minutes||0)<=5:(s.minutes||0)>5))&&(STORY_FILTER.status==='all'||(STORY_FILTER.status==='unread'&&!reading&&!done)||(STORY_FILTER.status==='reading'&&reading)||(STORY_FILTER.status==='done'&&done));});
