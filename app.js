@@ -16,7 +16,7 @@
   ];
 
   /* ---------- state ---------- */
-  const defaults = () => ({xp:0, quests:0, words:[], review:[], encounteredWords:[], adaptiveOffset:0, adaptiveStreak:0, adaptiveSignals:{}, learningActivity:{days:{}}, dailyChallengeDate:null, dailyChallengeResult:null, dailySessionDate:null, dailySessionStep:'review', dailySessionDone:false, oneLifeBest:0, translationEnabled:true, storyReaderSettings:{fontScale:1,lineSpacing:1.75,nightMode:false}, placementDone:false, assessedLevel:'A1', placementResult:null, xpAtLevelStart:null, promotionHistory:[], promotionAttempts:{}, lastPromotionResult:null, completed:[], streak:0, lastDay:null, daily:0, level:'A1', sound:true, helpArabic:false, theme:'light', streakFreezes:1, dailyQuestDate:null, dailyQuestProgress:0, dailyQuestClaimed:false, dailyCorrect:0, dailyXp:0, weeklyKey:null, weeklyProgress:0, weeklyClaimed:false, mistakeTrapErrors:{}, mistakeQuestionErrors:{}, mistakeTrapCorrect:{}, mistakeQuestionCorrect:{}, mistakeTrapSrs:{}, modes:{}, weakTraps:{}, recentQuestions:{}, stories:{}, world:{done:[],stars:{}}});
+  const defaults = () => ({xp:0, quests:0, words:[], review:[], encounteredWords:[], focusTimer:{mode:'focus',duration:1500,remaining:1500,endsAt:null,running:false,sessions:0}, xpActivity:{days:{}}, _lastSavedXp:null, adaptiveOffset:0, adaptiveStreak:0, adaptiveSignals:{}, learningActivity:{days:{}}, dailyChallengeDate:null, dailyChallengeResult:null, dailySessionDate:null, dailySessionStep:'review', dailySessionDone:false, oneLifeBest:0, translationEnabled:true, storyReaderSettings:{fontScale:1,lineSpacing:1.75,nightMode:false}, placementDone:false, assessedLevel:'A1', placementResult:null, xpAtLevelStart:null, promotionHistory:[], promotionAttempts:{}, lastPromotionResult:null, completed:[], streak:0, lastDay:null, daily:0, level:'A1', sound:true, helpArabic:false, theme:'light', streakFreezes:1, dailyQuestDate:null, dailyQuestProgress:0, dailyQuestClaimed:false, dailyCorrect:0, dailyXp:0, weeklyKey:null, weeklyProgress:0, weeklyClaimed:false, mistakeTrapErrors:{}, mistakeQuestionErrors:{}, mistakeTrapCorrect:{}, mistakeQuestionCorrect:{}, mistakeTrapSrs:{}, modes:{}, weakTraps:{}, recentQuestions:{}, stories:{}, world:{done:[],stars:{}}});
   let state;
   try { state = {...defaults(), ...JSON.parse(localStorage.getItem('epiphany-progress') || '{}')}; } catch { state = defaults(); }
   if (!LEVELS.some(level => level.id === state.assessedLevel)) { state.assessedLevel = 'A1'; state.placementDone = false; state.placementResult = null; }
@@ -25,6 +25,11 @@
   if (!state.promotionAttempts || typeof state.promotionAttempts !== 'object' || Array.isArray(state.promotionAttempts)) state.promotionAttempts = {};
   if (!Array.isArray(state.review)) state.review = [];
   if (!Array.isArray(state.encounteredWords)) state.encounteredWords = [];
+  if (!state.focusTimer || typeof state.focusTimer !== 'object') state.focusTimer = defaults().focusTimer;
+  if (!Number.isFinite(Number(state.focusTimer.remaining))) state.focusTimer.remaining = Number(state.focusTimer.duration) || 1500;
+  if (!state.xpActivity || typeof state.xpActivity !== 'object' || Array.isArray(state.xpActivity)) state.xpActivity = {days:{}};
+  if (!state.xpActivity.days || typeof state.xpActivity.days !== 'object' || Array.isArray(state.xpActivity.days)) state.xpActivity.days = {};
+  if (!Number.isFinite(Number(state._lastSavedXp))) state._lastSavedXp = Number(state.xp) || 0;
   if (!state.adaptiveSignals || typeof state.adaptiveSignals !== 'object' || Array.isArray(state.adaptiveSignals)) state.adaptiveSignals = {};
   if (!state.learningActivity || typeof state.learningActivity !== 'object' || Array.isArray(state.learningActivity)) state.learningActivity = {days:{}};
   if (!state.learningActivity.days || typeof state.learningActivity.days !== 'object' || Array.isArray(state.learningActivity.days)) state.learningActivity.days = {};
@@ -63,6 +68,21 @@
   let saveWarned = false;
   function save() {
     if (DEV_MODE.active && hasDeveloperAccess()) return;
+    const currentXp = Math.max(0, Number(state.xp) || 0);
+    const previousXp = Number(state._lastSavedXp);
+    if (Number.isFinite(previousXp)) {
+      const gained = Math.max(0, currentXp - previousXp);
+      if (gained > 0) {
+        if (!state.xpActivity || typeof state.xpActivity !== 'object') state.xpActivity = {days:{}};
+        if (!state.xpActivity.days || typeof state.xpActivity.days !== 'object') state.xpActivity.days = {};
+        const today = dayKey(), row = state.xpActivity.days[today] || (state.xpActivity.days[today] = {xp:0});
+        row.xp = (Number(row.xp) || 0) + gained;
+        const cutoff = new Date(); cutoff.setDate(cutoff.getDate() - 90);
+        const cutoffKey = dayKey(cutoff);
+        Object.keys(state.xpActivity.days).forEach(key => { if (key < cutoffKey) delete state.xpActivity.days[key]; });
+      }
+    }
+    state._lastSavedXp = currentXp;
     try { localStorage.setItem('epiphany-progress', JSON.stringify(state)); }
     catch { if (!saveWarned) { saveWarned = true; toast('Progress can’t be saved in this browser. It will last for this visit only.'); } }
     if (window.EpiphanyAuth && typeof window.EpiphanyAuth.queueSave === 'function') {
@@ -854,6 +874,136 @@
     document.body.appendChild(link); link.click(); link.remove(); URL.revokeObjectURL(url);
     toast(rows.length + ' words exported.');
   }
+  let focusClockInterval = null;
+  let tesseractLoadPromise = null;
+  function focusRemainingSeconds() {
+    const timer = state.focusTimer || (state.focusTimer = defaults().focusTimer);
+    if (timer.running && Number(timer.endsAt)) return Math.max(0, Math.ceil((Number(timer.endsAt) - Date.now()) / 1000));
+    return Math.max(0, Number(timer.remaining) || 0);
+  }
+  function focusClockTick() {
+    const timer = state.focusTimer;
+    if (!timer || !timer.running) return;
+    const left = focusRemainingSeconds();
+    timer.remaining = left;
+    const label = $('#focus-timer-time');
+    if (label) label.textContent = String(Math.floor(left / 60)).padStart(2,'0') + ':' + String(left % 60).padStart(2,'0');
+    const ring = $('#focus-timer-ring');
+    if (ring) ring.style.setProperty('--timer-progress', String(Math.max(0, Math.min(1, left / Math.max(1, Number(timer.duration) || 1500)))));
+    if (left <= 0) {
+      const finishedMode = timer.mode || 'focus';
+      timer.running = false; timer.endsAt = null; timer.remaining = 0;
+      if (finishedMode === 'focus') {
+        timer.sessions = (Number(timer.sessions) || 0) + 1;
+        recordLearningActivity({minutes:Math.round((Number(timer.duration) || 1500) / 60)});
+      }
+      save();
+      if (focusClockInterval) { clearInterval(focusClockInterval); focusClockInterval = null; }
+      toast(finishedMode === 'focus' ? 'Focus session complete. Take a small, guilt-free break.' : 'Break complete. Continue when you feel ready.');
+      if ($('#mytools-view')?.classList.contains('is-active')) renderMyTools();
+      return;
+    }
+    if (Math.floor(left) % 5 === 0) save();
+  }
+  function ensureFocusClock() {
+    if (!focusClockInterval && state.focusTimer?.running) focusClockInterval = setInterval(focusClockTick, 1000);
+  }
+  function loadTesseract() {
+    if (window.Tesseract) return Promise.resolve(window.Tesseract);
+    if (tesseractLoadPromise) return tesseractLoadPromise;
+    tesseractLoadPromise = new Promise((resolve, reject) => {
+      const script = document.createElement('script');
+      script.src = 'https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js';
+      script.async = true;
+      script.onload = () => window.Tesseract ? resolve(window.Tesseract) : reject(new Error('OCR library did not initialize.'));
+      script.onerror = () => reject(new Error('Could not load OCR. Check your internet connection and try again.'));
+      document.head.appendChild(script);
+    }).catch(error => { tesseractLoadPromise = null; throw error; });
+    return tesseractLoadPromise;
+  }
+  function convertExpression(text, direction) {
+    let result = String(text || ''), changes = [];
+    const rules = direction === 'casual'
+      ? [
+        [/\bgoing to\b/gi,'gonna','going to → gonna'],
+        [/\bwant to\b/gi,'wanna','want to → wanna'],
+        [/\bhave to\b/gi,'gotta','have to → gotta'],
+        [/\bkind of\b/gi,'kinda','kind of → kinda'],
+        [/\bsort of\b/gi,'sorta','sort of → sorta'],
+        [/\blet me\b/gi,'lemme','let me → lemme'],
+        [/\bgive me\b/gi,'gimme','give me → gimme'],
+        [/\bdo not know\b/gi,"dunno",'do not know → dunno'],
+        [/\bdon't know\b/gi,"dunno","don't know → dunno"],
+        [/\bbecause\b/gi,"'cause",'because → ’cause'],
+        [/\byou all\b/gi,"y'all",'you all → y’all']
+      ]
+      : [
+        [/\bgonna\b/gi,'going to','gonna → going to'],
+        [/\bwanna\b/gi,'want to','wanna → want to'],
+        [/\bgotta\b/gi,'have to','gotta → have to'],
+        [/\bkinda\b/gi,'kind of','kinda → kind of'],
+        [/\bsorta\b/gi,'sort of','sorta → sort of'],
+        [/\blemme\b/gi,'let me','lemme → let me'],
+        [/\bgimme\b/gi,'give me','gimme → give me'],
+        [/\bdunno\b/gi,"don't know",'dunno → don’t know'],
+        [/'cause\b/gi,'because','’cause → because'],
+        [/\by'all\b/gi,'you all','y’all → you all']
+      ];
+    rules.forEach(([pattern,replacement,label]) => {
+      if (pattern.test(result)) {
+        pattern.lastIndex = 0;
+        result = result.replace(pattern, match => {
+          changes.push(label);
+          const first = match[0] === match[0].toUpperCase();
+          return first ? replacement[0].toUpperCase() + replacement.slice(1) : replacement;
+        });
+      }
+    });
+    return {text:result,changes:[...new Set(changes)]};
+  }
+  function runExpressionConverter() {
+    const input = $('#expression-input'), output = $('#expression-output'), mode = $('#expression-mode');
+    if (!input || !output || !mode) return;
+    const result = convertExpression(input.value, mode.value);
+    output.value = result.text;
+    const notes = $('#expression-notes');
+    if (notes) notes.textContent = result.changes.length
+      ? 'Suggestions applied: ' + result.changes.join(' · ') + '. Read the result in context before using it.'
+      : 'No known phrase pattern found. The original wording is preserved; not every expression has a direct equivalent.';
+  }
+  function renderProgressForecast() {
+    const root = $('#progress-forecast');
+    if (!root) return;
+    const days = state.xpActivity?.days || {};
+    const now = new Date();
+    const rows = [];
+    for (let offset = 13; offset >= 0; offset--) {
+      const d = new Date(now.getFullYear(), now.getMonth(), now.getDate() - offset);
+      const row = days[dayKey(d)] || {};
+      rows.push({key:dayKey(d),xp:Math.max(0,Number(row.xp)||0)});
+    }
+    const active = rows.filter(row => row.xp > 0);
+    const totalXp = active.reduce((sum,row)=>sum+row.xp,0);
+    const perActiveDay = active.length ? totalXp / active.length : 0;
+    const status = promotionStatus();
+    const currentIndex = levelIndex();
+    const b2Index = LEVELS.findIndex(level=>level.id==='B2');
+    let remaining = 0;
+    if (currentIndex < b2Index) {
+      for (let i=currentIndex;i<b2Index;i++) {
+        const requirement = PROMOTION_XP[i] || 0;
+        const earned = i===currentIndex ? Math.max(0,(Number(state.xp)||0)-(Number(state.xpAtLevelStart)||0)) : 0;
+        remaining += Math.max(0,requirement-earned);
+      }
+    }
+    const estimate = active.length >= 3 && perActiveDay > 0 ? Math.ceil(remaining / perActiveDay) : null;
+    const forecastText = currentIndex >= b2Index
+      ? '<div class="forecast-reached"><span>✦</span><div><b>You’ve reached the B2 milestone.</b><p>Your next milestone is '+esc(LEVELS[Math.min(currentIndex+1,LEVELS.length-1)].id)+'.</p></div></div>'
+      : estimate !== null
+        ? '<div class="forecast-estimate"><strong>'+estimate+'</strong><span>active learning day'+(estimate===1?'':'s')+' at your recent pace</span></div><p class="forecast-detail">You earned '+Math.round(totalXp)+' XP across '+active.length+' active day'+(active.length===1?'':'s')+' in the last 14 days (about '+Math.round(perActiveDay)+' XP per active day). About '+Math.round(remaining)+' XP remains before the B2 promotion tests are unlocked. You’ll still need to pass each level test; XP alone does not change your CEFR level.</p>'
+        : '<div class="forecast-building"><span aria-hidden="true">↗</span><div><b>Your personal estimate is taking shape.</b><p>Keep learning as usual. Once EPIPHANY has tracked XP on at least 3 active days, it can estimate your route to B2 from your own recent pace instead of guessing.</p></div></div>';
+    root.innerHTML = '<section class="block progress-forecast-card"><div class="block-head"><div><p class="kicker">YOUR OWN LEARNING PACE</p><h2>Estimate your route to B2</h2><p>A practical forecast based on XP you actually earn — not a fixed promise.</p></div><span class="forecast-badge">Personal estimate</span></div><div class="forecast-progress-line"><span style="width:'+Math.max(0,Math.min(100,currentIndex/b2Index*100))+'%"></span></div><div class="forecast-levels"><span>'+esc(currentLevel().id)+' · current assessed level</span><span>B2 · milestone</span></div>'+forecastText+'<p class="forecast-caveat">This is an estimate of active learning days, not calendar days. Your pace can change, and each promotion still requires the existing assessment.</p></section>';
+  }
   function renderMyTools() {
     if (!Array.isArray(state.encounteredWords)) state.encounteredWords = [];
     const entries = state.encounteredWords.slice().reverse();
@@ -862,10 +1012,13 @@
       (entry.meaning ? '<p class="encountered-meaning">' + esc(entry.meaning) + '</p>' : '<p class="encountered-meaning encountered-muted">Meaning not added yet</p>') +
       '<blockquote>' + esc(entry.context) + '</blockquote><div class="encountered-entry-foot"><span>' + esc(entry.level || currentLevel().id) + '</span><span>' + esc(entry.date || '') + '</span><span class="encountered-review-tag">Added to review</span></div></article>'
     ).join('') + '</div>' : '<div class="encountered-empty"><span aria-hidden="true">✦</span><h3>Your real-life vocabulary starts here.</h3><p>Add a word from a conversation, a film, a song, or something you read. Keep the context that made you curious — we’ll connect the word to your existing review system.</p></div>';
-    const count = entries.length;
     const target = $('#mytools-content');
     if (!target) return;
-    target.innerHTML = '<section class="tool-feature-hero"><div class="tool-feature-icon" aria-hidden="true">✎</div><div><p class="kicker">YOUR EVERYDAY ENGLISH</p><h2>Words I encountered today</h2><p>Collect the words that matter to you, in the situation where you found them. No grades, no pressure — just curiosity that stays with you.</p><div class="tool-feature-stats"><span>' + count + ' saved ' + (count === 1 ? 'note' : 'notes') + '</span><span>Connected to spaced review</span></div></div></section>' +
+    const timer = state.focusTimer || (state.focusTimer = defaults().focusTimer);
+    const seconds = focusRemainingSeconds();
+    const timerTime = String(Math.floor(seconds/60)).padStart(2,'0')+':'+String(seconds%60).padStart(2,'0');
+    const mode = timer.mode === 'break' ? 'break' : 'focus';
+    target.innerHTML = '<section class="tool-feature-hero"><div class="tool-feature-icon" aria-hidden="true">✎</div><div><p class="kicker">YOUR EVERYDAY ENGLISH</p><h2>Words I encountered today</h2><p>Collect the words that matter to you, in the situation where you found them. No grades, no pressure — just curiosity that stays with you.</p><div class="tool-feature-stats"><span>' + entries.length + ' saved ' + (entries.length === 1 ? 'note' : 'notes') + '</span><span>Connected to spaced review</span></div></div></section>' +
       '<section class="encountered-form-card" aria-labelledby="encountered-form-title"><div class="block-head"><div><h2 id="encountered-form-title">Save a word from real life</h2><p>You can leave the meaning blank if you are not sure yet.</p></div></div>' +
       '<form id="encountered-word-form" class="encountered-form"><label for="encountered-word">Word or phrase <span>Required</span></label><input id="encountered-word" name="word" maxlength="100" required autocomplete="off" placeholder="e.g. it slipped my mind">' +
       '<label for="encountered-meaning">Meaning (if you know it)</label><input id="encountered-meaning" name="meaning" maxlength="240" placeholder="A meaning in your own words">' +
@@ -873,15 +1026,12 @@
       '<label for="encountered-source">Where did you find it?</label><select id="encountered-source" name="source"><option>Conversation</option><option>Film or series</option><option>Song</option><option>Book or article</option><option>Game or social media</option><option>Work or study</option><option>Everyday life</option><option>Other</option></select>' +
       '<div class="encountered-form-note"><span aria-hidden="true">↗</span><p>The word will be added to your Word Vault and scheduled for review using EPIPHANY’s existing system. Your original context stays saved here.</p></div><button class="btn" type="submit">Save word and context <span aria-hidden="true">→</span></button></form></section>' +
       '<section class="encountered-saved-section"><div class="block-head"><div><p class="kicker">YOUR PERSONAL COLLECTION</p><h2>Words from your world</h2><p>Every entry keeps the context that helps the word make sense.</p></div></div>' + list + '</section>' +
-      '<section class="tool-roadmap" aria-label="More tools planned"><div class="block-head"><div><p class="kicker">GROWING WITH YOU</p><h2>More tools, one home</h2><p>We’ll add these here one at a time, after checking what EPIPHANY already does.</p></div></div><div class="tool-roadmap-grid">' +
-      '<article><span>▧</span><b>Learn from a photo</b><small>Find useful words in real-world text</small><em>Coming next</em></article>' +
-      '<article><span>↔</span><b>Natural expressions</b><small>Explore casual and formal alternatives</small><em>Planned</em></article>' +
-      '<article><span>◷</span><b>Focus sessions</b><small>Make space for short, calm practice</small><em>Planned</em></article>' +
-      '<article><span>♫</span><b>Smart reader</b><small>Read and listen at your own pace</small><em>Planned</em></article>' +
-      '<article><span>↗</span><b>Level journey estimate</b><small>See a realistic, personal learning forecast</small><em>Planned</em></article>' +
-      '</div></section>';
+      '<section class="tool-feature-section" aria-labelledby="photo-words-title"><div class="tool-section-heading"><div><p class="kicker">NOTICE WORDS AROUND YOU</p><h2 id="photo-words-title">Learn from a photo</h2><p>Choose a photo of a sign, page, menu or note. Text recognition runs in your browser after its OCR engine loads on demand.</p></div><span class="tool-section-symbol">▧</span></div><div class="photo-tool-grid"><div class="photo-upload-panel"><label for="photo-ocr-file">Choose a picture</label><input id="photo-ocr-file" type="file" accept="image/*" capture="environment"><p class="tool-helper">Use a clear, well-lit image. The first scan needs an internet connection to load the recognition engine.</p><img id="photo-ocr-preview" alt="Selected image preview" hidden><button class="btn" type="button" data-tool-action="run-ocr" disabled>Extract text from photo</button><p id="photo-ocr-status" role="status" aria-live="polite">Your image is processed in this browser.</p></div><div class="photo-result-panel"><label for="photo-ocr-result">Recognized text</label><textarea id="photo-ocr-result" rows="8" maxlength="6000" placeholder="Text from the image will appear here. You can edit it before saving a word."></textarea><div class="photo-result-actions"><button class="btn btn-ghost" type="button" data-tool-action="use-ocr-context">Use as context</button><button class="btn btn-ghost" type="button" data-tool-action="use-ocr-selection">Use selected word</button></div></div></div></section>' +
+      '<section class="tool-feature-section" aria-labelledby="expression-tool-title"><div class="tool-section-heading"><div><p class="kicker">SAY IT YOUR WAY</p><h2 id="expression-tool-title">Casual ↔ more formal</h2><p>Explore common everyday alternatives. These are suggestions, not universal replacements — context and tone matter.</p></div><span class="tool-section-symbol">↔</span></div><div class="expression-tool-card"><label for="expression-mode">Direction</label><select id="expression-mode"><option value="formal">Casual → clearer / more formal</option><option value="casual">More formal → casual</option></select><label for="expression-input">Your sentence</label><textarea id="expression-input" rows="3" maxlength="1200" placeholder="e.g. I wanna go, but I gotta work."></textarea><button class="btn" type="button" data-tool-action="convert-expression">Suggest alternatives</button><label for="expression-output">Suggested version</label><textarea id="expression-output" rows="3" readonly placeholder="Your suggestion will appear here."></textarea><p id="expression-notes" class="tool-helper" aria-live="polite">We’ll show which common phrases were changed. Review the result before using it.</p><button class="btn btn-ghost" type="button" data-tool-action="copy-expression">Copy suggestion</button></div></section>' +
+      '<section class="tool-feature-section" aria-labelledby="focus-tool-title"><div class="tool-section-heading"><div><p class="kicker">MAKE A LITTLE SPACE</p><h2 id="focus-tool-title">Focus session</h2><p>A gentle 25-minute focus / 5-minute break cycle. No streak penalties and no pressure to be perfect.</p></div><span class="tool-section-symbol">◷</span></div><div class="focus-tool-card"><div class="focus-timer-orb '+(mode==='break'?'is-break':'')+'" id="focus-timer-ring" style="--timer-progress:'+Math.max(0,Math.min(1,seconds/Math.max(1,Number(timer.duration)||1500)))+'"><span>'+(mode==='break'?'REST':'FOCUS')+'</span><strong id="focus-timer-time">'+timerTime+'</strong><small>'+(timer.running?'In progress':seconds===0?'Session complete':'Ready when you are')+'</small></div><div class="focus-tool-controls"><div class="focus-presets"><button type="button" class="btn btn-ghost" data-focus-preset="15">15 min</button><button type="button" class="btn btn-ghost" data-focus-preset="25">25 min</button><button type="button" class="btn btn-ghost" data-focus-preset="45">45 min</button></div><div class="focus-main-actions"><button type="button" class="btn" data-tool-action="'+(timer.running?'pause-timer':'start-timer')+'">'+(timer.running?'Pause':'Start focus')+'</button><button type="button" class="btn btn-ghost" data-tool-action="start-break">Take a 5-min break</button><button type="button" class="btn btn-ghost" data-tool-action="reset-timer">Reset</button></div><p class="tool-helper">'+(Number(timer.sessions)||0)+' focus session'+(Number(timer.sessions)===1?'':'s')+' completed · focus time counts toward your learning activity when the timer finishes.</p></div></div></section>' +
+      '</section>';
+    ensureFocusClock();
   }
-
   function renderWords() {
     resetDailySessionIfNeeded();
     if (state.dailySessionStep === 'review' && !(state.review || []).some(w => !w.due || w.due <= dayKey())) { state.dailySessionStep = 'lesson'; save(); }
@@ -1005,7 +1155,7 @@
     const markup='<section class="block learning-insights"><div class="block-head"><div><p class="kicker">YOUR LAST 7 DAYS</p><h2>Learning rhythm</h2><p>Estimated practice minutes and newly saved words.</p></div><span class="activity-total">'+totalMinutes+' min · '+totalWords+' words</span></div><div class="weekly-bars"><div class="weekly-chart"><h3>Minutes</h3><div class="weekly-bar-list">'+week.map(d=>'<div class="weekly-bar-col" title="'+d.date+': '+d.minutes+' minutes"><span>'+d.minutes+'</span><i style="height:'+Math.max(d.minutes?8:2,d.minutes/maxMinutes*100)+'%"></i><small>'+d.label+'</small></div>').join('')+'</div></div><div class="weekly-chart"><h3>Words learned</h3><div class="weekly-bar-list">'+week.map(d=>'<div class="weekly-bar-col words" title="'+d.date+': '+d.words+' words"><span>'+d.words+'</span><i style="height:'+Math.max(d.words?8:2,d.words/maxWords*100)+'%"></i><small>'+d.label+'</small></div>').join('')+'</div></div></div><div class="activity-heat-wrap"><div class="activity-head"><h3>Activity map</h3><span>Last 12 weeks</span></div><div class="activity-heatmap" role="img" aria-label="Daily learning activity over the last 12 weeks">'+Array.from({length:84},(_,i)=>{const d=new Date(now.getFullYear(),now.getMonth(),now.getDate()-(83-i)),key=dayKey(d),row=days[key]||{},score=(Number(row.minutes)||0)+(Number(row.words)||0)+(Number(row.attempts)||0);return '<span class="activity-cell level-'+(score===0?0:score<3?1:score<8?2:score<16?3:4)+'" title="'+key+': '+(Number(row.minutes)||0)+' min, '+(Number(row.words)||0)+' words"></span>';}).join('')+'</div><div class="activity-legend"><span>Less</span><i class="level-0"></i><i class="level-1"></i><i class="level-2"></i><i class="level-3"></i><i class="level-4"></i><span>More</span></div></div></section>';
     if(root)root.innerHTML=markup;if(profileRoot)profileRoot.innerHTML=markup;
   }
-  function renderAll() { renderHeader(); renderHome(); renderArcade(); renderStories(); renderWords(); renderTrophies(); renderWeaknessPanel(); renderLearningInsights(); const grammarInsight=$('#grammar-progress-insight'); if(grammarInsight) grammarInsight.innerHTML=renderGrammarMap(); syncSettings(); }
+  function renderAll() { renderHeader(); renderHome(); renderArcade(); renderStories(); renderWords(); renderTrophies(); renderWeaknessPanel(); renderLearningInsights(); renderProgressForecast(); const grammarInsight=$('#grammar-progress-insight'); if(grammarInsight) grammarInsight.innerHTML=renderGrammarMap(); syncSettings(); }
   document.addEventListener('epiphany-auth-changed', () => { renderAll(); if (WORLD && WORLD.mode === 'regions') worldShowRegions(); });
 
 
@@ -1327,7 +1477,8 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     closeDockMore();
     $$('.view').forEach(v => v.classList.toggle('is-active', v.id === name + '-view'));
     $$('[data-view]').forEach(b => b.setAttribute('aria-current', b.dataset.view === name ? 'page' : 'false'));
-    if (name === 'mytools') renderMyTools();
+    if (name === 'mytools') { renderMyTools(); }
+    if (name === 'progress') renderProgressForecast();
     if (name === 'home') renderHome();
     if (name === 'arcade') renderArcade();
     if (name === 'progress' || name === 'profile') { renderWeaknessPanel(); renderLearningInsights(); }
@@ -3818,8 +3969,88 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
 
   /* ---------- events ---------- */
   document.addEventListener('input', e => { if(e.target&&e.target.id==='story-dictation-answer'&&ST&&ST.dictationActive)ST.dictationAnswer=e.target.value; });
+  document.addEventListener('change', e => { if (e.target && e.target.id === 'photo-ocr-file') { const file=e.target.files&&e.target.files[0], preview=$('#photo-ocr-preview'), button=$('[data-tool-action="run-ocr"]'), status=$('#photo-ocr-status'); if (!file) return; if (!file.type.startsWith('image/')) { if(status)status.textContent='Please choose an image file.'; return; } if(preview){preview.src=URL.createObjectURL(file);preview.hidden=false;} if(button)button.disabled=false; if(status)status.textContent='Image ready. Extract text when you are ready.'; } });
   document.addEventListener('submit', e => { if(e.target && e.target.id==='typing-form'){e.preventDefault();checkTyping();return;}if(e.target&&e.target.id==='story-dictation-form'){e.preventDefault();checkStoryDictation(e.target);return;} });
-  document.addEventListener('click', e => {
+  document.addEventListener('click', async e => {
+    const action = e.target.closest('[data-tool-action]');
+    if (action) {
+      const name = action.dataset.toolAction;
+      if (name === 'convert-expression') { runExpressionConverter(); return; }
+      if (name === 'copy-expression') {
+        const output = $('#expression-output');
+        if (!output || !output.value.trim()) { toast('Create a suggestion first.'); return; }
+        try { await navigator.clipboard.writeText(output.value); toast('Suggestion copied.'); }
+        catch { output.focus(); output.select(); toast('Select the text and copy it.'); }
+        return;
+      }
+      if (name === 'use-ocr-context') {
+        const result = $('#photo-ocr-result'), context = $('#encountered-context');
+        if (!result || !context || !result.value.trim()) { toast('Extract or enter some text first.'); return; }
+        context.value = result.value.trim();
+        context.scrollIntoView({behavior:'smooth',block:'center'});
+        context.focus();
+        toast('Text added as the word’s context. Add the word above it.');
+        return;
+      }
+      if (name === 'use-ocr-selection') {
+        const result = $('#photo-ocr-result'), word = $('#encountered-word'), context = $('#encountered-context');
+        if (!result || !word || !context || !result.value.trim()) { toast('Extract some text first.'); return; }
+        const selected = result.value.slice(result.selectionStart,result.selectionEnd).trim();
+        if (!selected) { toast('Select a word or short phrase in the recognized text first.'); result.focus(); return; }
+        word.value = selected.slice(0,100);
+        context.value = result.value.trim();
+        word.scrollIntoView({behavior:'smooth',block:'center'});
+        word.focus();
+        toast('Selected phrase added. Review it, then save the word and context.');
+        return;
+      }
+      if (name === 'run-ocr') {
+        const fileInput = $('#photo-ocr-file'), file = fileInput?.files?.[0], status = $('#photo-ocr-status'), result = $('#photo-ocr-result');
+        if (!file) { toast('Choose a photo first.'); return; }
+        action.disabled = true;
+        if (status) status.textContent = 'Loading text recognition… this may take a moment the first time.';
+        try {
+          const Tesseract = await loadTesseract();
+          const worker = await Tesseract.createWorker('eng');
+          try {
+            const recognized = await worker.recognize(file);
+            if (result) result.value = String(recognized.data.text || '').trim();
+            if (status) status.textContent = result.value ? 'Text extracted. Review the result, select a word if you like, then save it with its context.' : 'No text was recognized. Try a sharper, brighter photo.';
+          } finally { await worker.terminate(); }
+        } catch (error) {
+          if (status) status.textContent = error.message || 'Text recognition could not start. Check your connection and try again.';
+        } finally { action.disabled = false; }
+        return;
+      }
+      if (name === 'start-timer' || name === 'pause-timer' || name === 'start-break' || name === 'reset-timer' || action.hasAttribute('data-focus-preset')) {
+        const timer = state.focusTimer || (state.focusTimer = defaults().focusTimer);
+        if (name === 'start-timer') {
+          if (!timer.remaining) timer.remaining = Number(timer.duration) || 1500;
+          timer.running = true; timer.endsAt = Date.now() + timer.remaining * 1000;
+          ensureFocusClock();
+        } else if (name === 'pause-timer') {
+          timer.remaining = focusRemainingSeconds(); timer.running = false; timer.endsAt = null;
+          if (focusClockInterval) { clearInterval(focusClockInterval); focusClockInterval = null; }
+        } else if (name === 'start-break') {
+          timer.mode = 'break'; timer.duration = 300; timer.remaining = 300; timer.running = true; timer.endsAt = Date.now()+300000;
+          ensureFocusClock();
+        } else if (name === 'reset-timer') {
+          timer.running = false; timer.endsAt = null; timer.remaining = Number(timer.duration) || 1500;
+          if (focusClockInterval) { clearInterval(focusClockInterval); focusClockInterval = null; }
+        } else if (action.dataset.focusPreset) {
+          timer.running = false; timer.endsAt = null; timer.mode = 'focus'; timer.duration = Number(action.dataset.focusPreset)*60; timer.remaining = timer.duration;
+          if (focusClockInterval) { clearInterval(focusClockInterval); focusClockInterval = null; }
+        }
+        save(); renderMyTools(); return;
+      }
+    }
+    const preset = e.target.closest('[data-focus-preset]');
+    if (preset) {
+      const timer = state.focusTimer || (state.focusTimer = defaults().focusTimer);
+      timer.running = false; timer.endsAt = null; timer.mode = 'focus'; timer.duration = Number(preset.dataset.focusPreset)*60; timer.remaining = timer.duration;
+      if (focusClockInterval) { clearInterval(focusClockInterval); focusClockInterval = null; }
+      save(); renderMyTools(); return;
+    }
     const removeEncountered = e.target.closest('[data-remove-encountered]');
     if (removeEncountered) {
       const id = removeEncountered.dataset.removeEncountered;
