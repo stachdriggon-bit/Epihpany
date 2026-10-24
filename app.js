@@ -369,6 +369,19 @@
       renderHome();
       return {xp:gain};
     },
+    getDifficulty(skill) {
+      const allowed = ['vocabulary','grammar','listening','conversation','reading','spelling'];
+      const safeSkill = allowed.includes(skill) ? skill : 'vocabulary';
+      const b = state.adaptiveSignals && state.adaptiveSignals[safeSkill] || {};
+      const attempts = Math.max(0, Number(b.attempts) || 0);
+      const correct = Math.max(0, Number(b.correct) || 0);
+      const errors = Math.max(0, Number(b.errors) || 0);
+      const accuracy = attempts ? Math.round(correct / attempts * 100) : null;
+      const level = attempts < 3 ? 'guided' : attempts >= 6 && accuracy >= 80 ? 'challenge' : accuracy < 55 ? 'guided' : 'steady';
+      const hintLevel = attempts < 2 || (accuracy !== null && accuracy < 55) || errors >= 4 ? 2
+        : (accuracy !== null && accuracy < 75) || errors >= 2 ? 1 : 0;
+      return {skill:safeSkill, attempts, accuracy, errors, level, hintLevel};
+    },
     getInsights() {
       const defs = [
         {id:'vocabulary',label:'Vocabulary',game:'odd',hint:'Spot meaning patterns and word relationships.'},
