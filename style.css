@@ -2240,3 +2240,25 @@ body[data-theme="dark"] .learning-insights-empty{background:var(--surface);borde
 .monthly-assessment-actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:14px}
 body[data-theme="dark"] .monthly-assessment-card{background:linear-gradient(140deg,var(--surface),#302c4c)}
 @media(max-width:600px){.monthly-assessment-top{gap:10px}.monthly-assessment-icon{width:40px;height:40px}.monthly-assessment-footer{align-items:flex-start;flex-direction:column}}
+
+
+/* Meaningful achievements: evidence of learning, not another XP economy */
+.meaningful-section{margin:8px 0 30px}
+.meaningful-heading{max-width:720px;margin-bottom:18px}
+.meaningful-heading .kicker{margin:0 0 6px;color:var(--focus);font-size:10px;font-weight:900;letter-spacing:.12em}
+.meaningful-heading h2{margin:0 0 8px;font-size:clamp(22px,3vw,30px)}
+.meaningful-heading>p:not(.kicker){margin:0;color:var(--ink-2);font-size:13px;line-height:1.7}
+.meaningful-count{display:inline-flex;margin-top:12px;padding:6px 10px;border:1px solid var(--line);border-radius:999px;color:var(--ink-2);font-size:11px;font-weight:750}
+.meaningful-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.meaningful-card{display:flex;align-items:flex-start;gap:12px;min-width:0;padding:17px;border:1px solid var(--line);border-radius:18px;background:var(--surface)}
+.meaningful-card.is-earned{border-color:color-mix(in srgb,var(--focus) 45%,var(--line))}
+.meaningful-card-icon{display:grid;place-items:center;flex:none;width:42px;height:42px;border-radius:13px;background:var(--surface-2,var(--bg));color:var(--focus)}
+.meaningful-card-copy{flex:1;min-width:0}
+.meaningful-card h3{margin:1px 0 6px;font-size:15px}
+.meaningful-card p{margin:0;color:var(--ink-2);font-size:12px;line-height:1.6}
+.meaningful-progress{height:5px;margin:12px 0 7px;overflow:hidden;border-radius:99px;background:var(--line)}
+.meaningful-progress i{display:block;height:100%;border-radius:inherit;background:var(--focus)}
+.meaningful-card small{color:var(--ink-2);font-size:11px;line-height:1.5}
+.meaningful-earned{display:grid;place-items:center;flex:none;width:24px;height:24px;border-radius:50%;background:var(--focus);color:white;font-weight:900}
+.meaningful-note{margin:13px 0 0;color:var(--ink-2);font-size:12px;line-height:1.6}
+@media(max-width:620px){.meaningful-grid{grid-template-columns:1fr}.meaningful-card{padding:14px}}
