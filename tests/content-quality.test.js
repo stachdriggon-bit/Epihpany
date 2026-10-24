@@ -8,7 +8,7 @@ const root = path.resolve(__dirname, '..');
 
 function loadData() {
   const context = vm.createContext({ console, window: {} });
-  const files = ['data.js', 'data-expansion.js', 'data-stories.js', 'data-stories-expansion.js', 'data-wotd.js'];
+  const files = ['data.js', 'data-wotd.js', 'data-expansion.js', 'data-stories.js', 'data-stories-expansion.js'];
   for (const file of files) {
     const fullPath = path.join(root, file);
     if (!fs.existsSync(fullPath)) continue;
