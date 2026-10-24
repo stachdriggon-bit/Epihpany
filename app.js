@@ -2124,7 +2124,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     if (e.target && e.target.id === 'encountered-word-form') {
       e.preventDefault();
       const form = e.target;
-      const word = String(form.elements.word.value || '').trim().replace(/\\s+/g, ' ');
+      const word = String(form.elements.word.value || '').trim().replace(/\s+/g, ' ');
       const meaning = String(form.elements.meaning.value || '').trim();
       const context = String(form.elements.context.value || '').trim();
       const source = String(form.elements.source.value || 'Everyday life').trim();
