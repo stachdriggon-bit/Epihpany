@@ -1086,13 +1086,27 @@
   });
 
   // Apply authored Arabic translations to original and expansion questions alike.
+  // Generic prompts may be reused with different answer choices; never attach an
+  // option translation to a different option set by matching the prompt alone.
+  const answerSetsByPrompt = new Map();
+  Object.keys(GAMES).forEach(game => {
+    (GAMES[game].questions || []).forEach(q => {
+      if (!q || !q.q) return;
+      const signature = JSON.stringify(q.answers || []);
+      if (!answerSetsByPrompt.has(q.q)) answerSetsByPrompt.set(q.q, new Set());
+      answerSetsByPrompt.get(q.q).add(signature);
+    });
+  });
   Object.keys(GAMES).forEach(game => {
     (GAMES[game].questions || []).forEach(q => {
       const authored = AR_EXPANSION_TRANSLATIONS[q.q];
       if (!authored) return;
       q.q_ar = q.q_ar || authored[0] || '';
-      q.answers_ar = q.answers_ar && q.answers_ar.length ? q.answers_ar : (Array.isArray(authored[1]) ? authored[1] : []);
-      q.explain_ar = q.explain_ar || authored[2] || '';
+      const uniqueOptionSet = (answerSetsByPrompt.get(q.q) || new Set()).size === 1;
+      if (uniqueOptionSet) {
+        q.answers_ar = q.answers_ar && q.answers_ar.length ? q.answers_ar : (Array.isArray(authored[1]) ? authored[1] : []);
+        q.explain_ar = q.explain_ar || authored[2] || '';
+      }
     });
   });
 
