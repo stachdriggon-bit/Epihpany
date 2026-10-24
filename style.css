@@ -1680,3 +1680,13 @@ body[data-theme="dark"] .adaptive-note{background:#302C4C;color:#F1EEFF}
 @keyframes world-rain-fall{from{background-position:0 0}to{background-position:-24px 48px}}
 @media(prefers-reduced-motion:reduce){.world-stage[data-world-weather="rain"]::after{animation:none}}
 body[data-theme="dark"] .world-conversation-card{background:var(--surface,#1b2030);color:var(--ink,#f2f3ff)}
+
+/* Persistent Home shortcut in World */
+.world-top-actions{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.world-home{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:38px;padding:8px 13px;border:1px solid var(--line,#d8deeb);border-radius:12px;background:var(--surface,#fff);color:var(--ink,#18233c);font:700 13px/1 var(--body,system-ui);white-space:nowrap;cursor:pointer;box-shadow:0 2px 8px #1a24400a}
+.world-home:hover,.world-home:focus-visible{border-color:var(--accent,#6c5ce7);outline:2px solid transparent;background:var(--surface-2,#f4f2ff)}
+.world-page-actions{display:flex;justify-content:flex-start;align-items:center;width:100%;margin-bottom:10px}
+.world-top .world-home{align-self:center}
+.world-intro .world-page-actions{justify-content:space-between}
+.world-region-hub .world-page-actions{position:sticky;top:0;z-index:5;padding:6px 0;background:var(--surface,#fff)}
+@media(max-width:520px){.world-top-actions{gap:5px}.world-home{min-height:35px;padding:7px 10px;font-size:12px}.world-top{gap:8px}}
