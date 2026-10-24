@@ -351,7 +351,7 @@
     return '<div class="ls-own-reply"><label for="ls-own-reply">'+tx('Or write your own reply')+'</label><textarea id="ls-own-reply" data-ls-free-reply rows="2" maxlength="500" placeholder="'+tx('Write what you would naturally say…')+'"></textarea><button type="button" class="ls-secondary" data-ls-check-reply>'+tx('Coach my wording ↗')+'</button><p>'+tx('Different wording can work. We look for your meaning and how clearly and politely you express it.')+'</p></div>';
   }
   function coachOwnReply(item, reply) {
-    const text = reply.toLowerCase().replace(/[^a-z0-9' ]/g,' ').replace(/\\s+/g,' ').trim();
+    const text = reply.toLowerCase().replace(/[^a-z0-9' ]/g,' ').replace(/\s+/g,' ').trim();
     const scene = (item.scene || '').toLowerCase();
     const prompt = (item.prompt || '').toLowerCase();
     const rules = [
