@@ -1737,6 +1737,21 @@ h1[tabindex="-1"]:focus:not(:focus-visible),h2[tabindex="-1"]:focus:not(:focus-v
 /* Deeper mobile UX: thumb navigation, daily session and accessible targets */
 .bottom-nav{display:none}
 .daily-session-card{display:flex;align-items:center;justify-content:space-between;gap:24px;margin:0 0 30px;padding:clamp(20px,3.5vw,30px);border:1px solid var(--line);border-radius:26px;background:linear-gradient(125deg,var(--surface),var(--violet-soft));box-shadow:0 12px 35px rgba(27,32,60,.06)}
+
+/* A small, calm celebration when the full daily path is complete. */
+.daily-celebration{position:relative;overflow:hidden;margin:0 0 24px;padding:clamp(18px,3vw,26px);border:1px solid var(--mint);border-radius:22px;background:linear-gradient(135deg,var(--mint-soft),var(--surface) 78%);text-align:center;animation:dailySparkIn .48s cubic-bezier(.2,.75,.25,1) both}
+.daily-celebration-spark{color:var(--focus);font-size:22px;letter-spacing:.18em;animation:dailySparkTwinkle 1.8s ease-in-out .35s both}
+.daily-celebration .kicker{margin:5px 0 7px;color:var(--focus);font-size:11px;font-weight:900;letter-spacing:.1em}
+.daily-celebration h3{margin:0;font-size:clamp(20px,3vw,27px);line-height:1.2}
+.daily-celebration>p:not(.kicker){max-width:560px;margin:9px auto 14px;color:var(--ink-2);line-height:1.6}
+.daily-celebration-stats{display:flex;justify-content:center;flex-wrap:wrap;gap:8px}
+.daily-celebration-stats span{padding:7px 10px;border:1px solid var(--line);border-radius:999px;background:var(--surface);font-size:12px;font-weight:750}
+.daily-celebration .daily-celebration-streak{margin:13px 0 0;font-size:13px;font-weight:800;color:var(--ink)}
+.daily-session-card.is-complete{border-color:var(--mint);background:linear-gradient(125deg,var(--surface),var(--mint-soft))}
+@keyframes dailySparkIn{from{opacity:0;transform:translateY(9px) scale(.985)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes dailySparkTwinkle{0%,100%{transform:translateY(0);opacity:.8}45%{transform:translateY(-3px);opacity:1}}
+@media(prefers-reduced-motion:reduce){.daily-celebration,.daily-celebration-spark{animation:none}}
+
 .daily-session-copy{min-width:0;flex:1}.daily-session-copy .kicker{margin:0 0 8px;color:var(--focus);font-weight:900;font-size:11px;letter-spacing:.08em}.daily-session-copy h2{margin:0;font-size:clamp(23px,3vw,32px);line-height:1.12}.daily-session-copy>p:not(.kicker){max-width:620px;color:var(--ink-2);line-height:1.6;margin:9px 0 14px}.daily-session-steps{display:flex;gap:8px;flex-wrap:wrap}.daily-session-steps span{display:inline-flex;align-items:center;gap:6px;padding:7px 10px;border:1px solid var(--line);border-radius:999px;background:var(--surface);font-size:12px;font-weight:750;color:var(--ink-2)}.daily-session-steps b{display:grid;place-items:center;width:20px;height:20px;border-radius:50%;background:var(--violet-soft);color:var(--focus)}.daily-session-start{flex:0 0 auto;min-height:54px;padding:0 22px;white-space:nowrap;font-size:15px}
 body[data-theme="dark"] .daily-session-card{background:linear-gradient(125deg,var(--surface),#2b2948);box-shadow:none}
 .bottom-nav button{min-width:0;min-height:54px;border:0;background:transparent;color:var(--ink-2);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font:700 11px/1.2 var(--body,system-ui);cursor:pointer;border-radius:12px}.bottom-nav button>span{font-size:21px;line-height:1.1}.bottom-nav button[aria-current="page"]{color:var(--focus);background:var(--violet-soft)}.bottom-nav button:focus-visible{outline:3px solid var(--focus);outline-offset:1px}
