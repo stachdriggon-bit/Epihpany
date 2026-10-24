@@ -6,13 +6,15 @@
     world: ['data-world.js?v=e99f5bf6', 'data-world-sprites.js?v=6fff0f70']
   };
   const pending = new Map();
+  const loaded = new Set();
 
   function loadScript(src) {
+    if (loaded.has(src)) return Promise.resolve();
     return new Promise((resolve, reject) => {
       const script = document.createElement('script');
       script.src = src;
       script.async = false;
-      script.onload = () => resolve();
+      script.onload = () => { loaded.add(src); resolve(); };
       script.onerror = () => {
         script.remove();
         reject(new Error('Unable to load feature data: ' + src.split('?')[0]));
