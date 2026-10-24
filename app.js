@@ -15,7 +15,7 @@
   ];
 
   /* ---------- state ---------- */
-  const defaults = () => ({xp:0, quests:0, words:[], review:[], translationEnabled:true, placementDone:false, assessedLevel:'A1', placementResult:null, xpAtLevelStart:null, promotionHistory:[], promotionAttempts:{}, lastPromotionResult:null, completed:[], streak:0, lastDay:null, daily:0, level:'A1', sound:true, helpArabic:false, theme:'light', streakFreezes:1, dailyQuestDate:null, dailyQuestProgress:0, dailyQuestClaimed:false, dailyCorrect:0, dailyXp:0, weeklyKey:null, weeklyProgress:0, weeklyClaimed:false, mistakeTrapErrors:{}, mistakeQuestionErrors:{}, mistakeTrapCorrect:{}, mistakeQuestionCorrect:{}, modes:{}, weakTraps:{}, recentQuestions:{}, stories:{}, world:{done:[],stars:{}}});
+  const defaults = () => ({xp:0, quests:0, words:[], review:[], translationEnabled:true, placementDone:false, assessedLevel:'A1', placementResult:null, xpAtLevelStart:null, promotionHistory:[], promotionAttempts:{}, lastPromotionResult:null, completed:[], streak:0, lastDay:null, daily:0, level:'A1', sound:true, helpArabic:false, theme:'light', streakFreezes:1, dailyQuestDate:null, dailyQuestProgress:0, dailyQuestClaimed:false, dailyCorrect:0, dailyXp:0, weeklyKey:null, weeklyProgress:0, weeklyClaimed:false, mistakeTrapErrors:{}, mistakeQuestionErrors:{}, mistakeTrapCorrect:{}, mistakeQuestionCorrect:{}, mistakeTrapSrs:{}, modes:{}, weakTraps:{}, recentQuestions:{}, stories:{}, world:{done:[],stars:{}}});
   let state;
   try { state = {...defaults(), ...JSON.parse(localStorage.getItem('epiphany-progress') || '{}')}; } catch { state = defaults(); }
   if (!LEVELS.some(level => level.id === state.assessedLevel)) { state.assessedLevel = 'A1'; state.placementDone = false; state.placementResult = null; }
@@ -26,6 +26,7 @@
   if (!state.mistakeTrapErrors || typeof state.mistakeTrapErrors !== 'object' || Array.isArray(state.mistakeTrapErrors)) state.mistakeTrapErrors = {};
   if (!state.mistakeQuestionErrors || typeof state.mistakeQuestionErrors !== 'object' || Array.isArray(state.mistakeQuestionErrors)) state.mistakeQuestionErrors = {};
   if (!state.mistakeTrapCorrect || typeof state.mistakeTrapCorrect !== 'object' || Array.isArray(state.mistakeTrapCorrect)) state.mistakeTrapCorrect = {};
+  if (!state.mistakeTrapSrs || typeof state.mistakeTrapSrs !== 'object' || Array.isArray(state.mistakeTrapSrs)) state.mistakeTrapSrs = {};
   if (!state.mistakeQuestionCorrect || typeof state.mistakeQuestionCorrect !== 'object' || Array.isArray(state.mistakeQuestionCorrect)) state.mistakeQuestionCorrect = {};
   if (!state.modes || typeof state.modes !== 'object' || Array.isArray(state.modes)) state.modes = {};
   if (!state.weakTraps || typeof state.weakTraps !== 'object' || Array.isArray(state.weakTraps)) state.weakTraps = {};
@@ -91,6 +92,42 @@
     const twoDaysAgo = new Date(); twoDaysAgo.setDate(twoDaysAgo.getDate() - 2);
     return state.lastDay === dayKey() || state.lastDay === dayKey(y) || (state.lastDay === dayKey(twoDaysAgo) && state.streakFreezes > 0) ? (state.streak || 0) : 0;
   };
+  const GRAMMAR_SRS_DAYS = [1, 3, 7, 14, 30];
+  function updateGrammarSrs(q, correct) {
+    if (!q || !q.trap || !q.id) return;
+    const today = dayKey(), old = state.mistakeTrapSrs[q.trap] || {};
+    const next = {...old, attempts:(Number(old.attempts)||0)+1, correct:(Number(old.correct)||0)+(correct?1:0), errors:(Number(old.errors)||0)+(correct?0:1), lastResult:correct?'correct':'wrong', lastSeen:today};
+    if (!correct) {
+      next.box = 0; next.streak = 0; next.due = today;
+    } else {
+      next.streak = (Number(old.streak)||0)+1;
+      next.box = Math.min(GRAMMAR_SRS_DAYS.length, Math.max(1, Number(old.box)||0) + 1);
+      const dueDate = new Date(); dueDate.setHours(12,0,0,0); dueDate.setDate(dueDate.getDate()+GRAMMAR_SRS_DAYS[next.box-1]);
+      next.due = dayKey(dueDate);
+    }
+    state.mistakeTrapSrs[q.trap] = next;
+  }
+  function grammarQuestionWeight(q) {
+    const topic = state.mistakeTrapSrs[q.trap] || {}, errors = Number(state.mistakeTrapErrors[q.trap])||0, correct = Number(state.mistakeTrapCorrect[q.trap])||0;
+    const qErrors = Number(state.mistakeQuestionErrors[q.id])||0, qCorrect = Number(state.mistakeQuestionCorrect[q.id])||0;
+    const due = !!topic.due && topic.due <= dayKey(), overdueDays = due ? Math.max(0, Math.floor((new Date(dayKey()+'T12:00:00') - new Date(topic.due+'T12:00:00')) / 86400000)) : 0;
+    const box = Number(topic.box)||0, attempts = Number(topic.attempts)||0, accuracy = attempts ? (Number(topic.correct)||0)/attempts : (errors+correct ? correct/(errors+correct) : 0);
+    const unresolved = Math.max(0, errors - correct * .6);
+    let weight = 1 + Math.min(9, unresolved * 1.4) + Math.min(5, qErrors * 1.5) + Math.min(5, qErrors - qCorrect > 0 ? (qErrors-qCorrect)*1.2 : 0);
+    if (due) weight += 7 + Math.min(6, overdueDays);
+    if (attempts >= 5 && accuracy >= .8 && box >= 3 && !due) weight *= .35;
+    return Math.max(.25, weight);
+  }
+  function weightedGrammarPick(pool, count) {
+    const remaining = pool.slice(), chosen = [];
+    while (chosen.length < Math.min(count, remaining.length) && remaining.length) {
+      const weights = remaining.map(grammarQuestionWeight), total = weights.reduce((sum,w)=>sum+w,0);
+      let roll = Math.random()*total, at = 0;
+      for (; at < weights.length-1; at++) { roll -= weights[at]; if (roll < 0) break; }
+      chosen.push(remaining.splice(at,1)[0]);
+    }
+    return chosen;
+  }
   function pickNext() {
     const rotation = ['vocabulary', 'spelling', 'grammar', 'story', 'listening', 'advanced', 'mistakes', 'spot', 'typing'];
     const ok = rotation.filter(g => UNLOCK[g] <= levelIndex());
@@ -1688,29 +1725,13 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     // Use five questions from the learner's current CEFR level whenever possible.
     let selected;
     if (type === 'personalized') {
-      const all = game.questions.slice();
-      const weak = all.filter(q => Number(state.mistakeTrapErrors[q.trap] || 0) > 0 || Number(state.mistakeQuestionErrors[q.id] || 0) > 0);
-      const pool = weak.length >= 5 ? weak : all;
-      const remaining = pool.slice(), chosen = [];
-      while (chosen.length < Math.min(5, remaining.length) && remaining.length) {
-        const weights = remaining.map(q => 1 + Math.min(12, Number(state.mistakeTrapErrors[q.trap] || 0) * 3) + Math.min(5, Number(state.mistakeQuestionErrors[q.id] || 0) * 2));
-        const totalWeight = weights.reduce((sum,w)=>sum+w,0); let roll = Math.random()*totalWeight, at = 0;
-        for (; at < weights.length - 1; at++) { roll -= weights[at]; if (roll < 0) break; }
-        chosen.push(remaining.splice(at,1)[0]);
-      }
-      selected = shuffle(chosen);
+      // Prioritise topics that are due for review or still cause errors, while keeping a little variety.
+      selected = shuffle(weightedGrammarPick(game.questions, 5));
     } else if (type === 'mistakes') {
       const levels = LEVELS.map(l=>l.id), center = levels.indexOf(level);
       let pool = game.questions.filter(q => Math.abs(levels.indexOf(q.level) - center) <= 1);
       if (pool.length < 5) pool = game.questions.slice();
-      const remaining = pool.slice(), chosen = [];
-      while (chosen.length < 5 && remaining.length) {
-        const weights = remaining.map(q => 1 + Math.min(6, Number(state.mistakeTrapErrors[q.trap] || 0) * 2) + Math.min(3, Number(state.mistakeQuestionErrors[q.id] || 0)));
-        const totalWeight = weights.reduce((sum,w)=>sum+w,0); let roll = Math.random()*totalWeight, at = 0;
-        for (; at < weights.length - 1; at++) { roll -= weights[at]; if (roll < 0) break; }
-        chosen.push(remaining.splice(at,1)[0]);
-      }
-      selected = shuffle(chosen);
+      selected = shuffle(weightedGrammarPick(pool, 5));
     } else {
       // Never silently mix easier or harder CEFR levels into a normal round.
       // Use up to five unique questions from the player's own level only.
@@ -1724,9 +1745,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     const recentIds = new Set(recentList);
     let freshPool;
     if (type === 'personalized') {
-      const all = game.questions.slice();
-      const weak = all.filter(q => Number(state.mistakeTrapErrors[q.trap] || 0) > 0 || Number(state.mistakeQuestionErrors[q.id] || 0) > 0);
-      freshPool = (weak.length >= 5 ? weak : all).filter(q => !recentIds.has(questionKey(q)));
+      freshPool = game.questions.filter(q => !recentIds.has(questionKey(q)));
     } else if (type === 'mistakes') {
       const levels = LEVELS.map(l => l.id), center = levels.indexOf(level);
       let pool = game.questions.filter(q => Math.abs(levels.indexOf(q.level) - center) <= 1);
@@ -1736,7 +1755,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
       freshPool = levelPool.filter(q => !recentIds.has(questionKey(q)));
     }
     if (selected.some(q => recentIds.has(questionKey(q))) && freshPool.length >= selected.length) {
-      selected = shuffle(freshPool).slice(0, selected.length);
+      selected = ['personalized','mistakes'].includes(type) ? shuffle(weightedGrammarPick(freshPool, selected.length)) : shuffle(freshPool).slice(0, selected.length);
     }
     state.recentQuestions[recentKey] = [...recentList, ...selected.map(questionKey)].filter(Boolean).slice(-12);
     save();
@@ -1843,12 +1862,13 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     if (!G || G.answered) return;
     G.answered = true;
     const game = GAMES[G.type], item = G.questions[G.i], q = item.q, ok = choice === q.correct;
-    if (ok) { G.score++; const wp=wordParts(q.word,q.explain); if(wp)G.words.push([wp.word,wp.meaning,wp.level]); if(!G.reviewMode&&['mistakes','personalized'].includes(G.type)&&q.id){state.mistakeTrapCorrect[q.trap]=(Number(state.mistakeTrapCorrect[q.trap])||0)+1;state.mistakeQuestionCorrect[q.id]=(Number(state.mistakeQuestionCorrect[q.id])||0)+1;save();} }
+    if (ok) { G.score++; const wp=wordParts(q.word,q.explain); if(wp)G.words.push([wp.word,wp.meaning,wp.level]); if(!G.reviewMode&&['mistakes','personalized'].includes(G.type)&&q.id){state.mistakeTrapCorrect[q.trap]=(Number(state.mistakeTrapCorrect[q.trap])||0)+1;state.mistakeQuestionCorrect[q.id]=(Number(state.mistakeQuestionCorrect[q.id])||0)+1;updateGrammarSrs(q,true);save();} }
     else if (!G.reviewMode) {
       addReview(q.word,q.explain);
       if (['mistakes','personalized'].includes(G.type) && q.id) {
         state.mistakeTrapErrors[q.trap] = (Number(state.mistakeTrapErrors[q.trap]) || 0) + 1;
         state.mistakeQuestionErrors[q.id] = (Number(state.mistakeQuestionErrors[q.id]) || 0) + 1;
+        updateGrammarSrs(q,false);
       }
       const weakKey = q.trap || (G.type === 'spot' ? 'spot-' + q.level : G.type);
       state.weakTraps[weakKey] = (Number(state.weakTraps[weakKey]) || 0) + 1;
