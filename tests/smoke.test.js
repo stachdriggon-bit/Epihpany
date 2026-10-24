@@ -52,10 +52,20 @@ test('main navigation tabs open without uncaught page errors', async t => {
       });
       await page.goto(baseUrl, { waitUntil: 'domcontentloaded' });
       await dismissFirstVisitOverlays(page);
-      await page.waitForSelector('button[data-view="' + view + '"]', { timeout: 10000 });
+      const viewSelector = 'button[data-view="' + view + '"]';
+      await page.waitForSelector(viewSelector, { state: 'attached', timeout: 10000 });
+      const visibleViewButton = page.locator(viewSelector + ':visible').first();
+      if (!(await visibleViewButton.count())) {
+        const group = page.locator('details.nav-group').filter({ has: page.locator(viewSelector) }).first();
+        if (await group.count()) await group.locator('summary').click();
+        else {
+          const mobileMenu = page.locator('.mobile-menu');
+          if (await mobileMenu.isVisible()) await mobileMenu.locator('summary').click();
+        }
+      }
       const eagerDeferred = requested.filter(path => /\/(data-translation-ar|data-stories|data-world(?:-sprites)?|think-lab|practice-lab|life-skills)\.js$/.test(path));
       assert.deepEqual(eagerDeferred, [], 'deferred files should not load at startup for ' + view);
-      await page.locator('button[data-view="' + view + '"]').first().click();
+      await page.locator(viewSelector + ':visible').first().click();
       await page.waitForTimeout(350);
       if (view !== 'world') {
         const target = page.locator('#' + view + '-view');
