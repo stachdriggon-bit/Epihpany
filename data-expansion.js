@@ -1059,12 +1059,54 @@
     add(game, level, q, answers, correct, explain, {sub:'Level '+level+' · choose the best answer.', ar, why_ar:ar});
   });
 
+  // Apply authored Arabic translations to original and expansion questions alike.
+  Object.keys(GAMES).forEach(game => {
+    (GAMES[game].questions || []).forEach(q => {
+      const authored = AR_EXPANSION_TRANSLATIONS[q.q];
+      if (!authored) return;
+      q.q_ar = q.q_ar || authored[0] || '';
+      q.answers_ar = q.answers_ar && q.answers_ar.length ? q.answers_ar : (Array.isArray(authored[1]) ? authored[1] : []);
+      q.explain_ar = q.explain_ar || authored[2] || '';
+    });
+  });
+
   const coreTaggedQuestions = ['vocabulary','spelling','grammar','story','listening','advanced'].flatMap(game => GAMES[game].questions.filter(q => q.level));
   window.EpiphanyExpansion = {
     count: coreTaggedQuestions.length,
     byLevel: Object.fromEntries(['A1','A2','B1','B2','C1','C2'].map(level => [level, coreTaggedQuestions.filter(q => q.level === level).length])),
     byGame: Object.fromEntries(['vocabulary','spelling','grammar','story','listening','advanced'].map(game => [game, Object.fromEntries(['A1','A2','B1','B2','C1','C2'].map(level => [level, GAMES[game].questions.filter(q => q.level === level).length]))])),
-    addedStories:16, longFormStories:4, extraQuestions:extraQuestionBank.length, addedWords:moreWords.length
+    addedStories:16, longFormStories:4, extraQuestions:extraQuestionBank.length, addedWords:moreWords.length,
+'What does “borrow” mean?':['ماذا تعني كلمة “borrow”؟',['أن يمنح شيئًا لشخص آخر','أن يأخذ شيئًا مؤقتًا ثم يعيده','أن يشتري شيئًا جديدًا','أن يفقد شيئًا'],'Borrow تعني أخذ شيء يخص شخصًا آخر لاستخدامه ثم إعادته.'],
+    'She was absolutely delighted.':['كانت سعيدة للغاية. ما معنى delighted؟',['سعيدة ومسرورة جدًا','مرتبكة قليلًا','متعبة للغاية','قلقة إلى حد ما'],'Delighted تعني سعيدًا أو مسرورًا جدًا.'],
+    'Which word means “happening often”?':['أي كلمة تعني «يحدث كثيرًا»؟',['نادر','متكرر','غير محتمل','قصير'],'Frequent تعني متكررًا أو يحدث كثيرًا.'],
+    '“I need to figure it out.” What does it mean?':['ماذا تعني عبارة “I need to figure it out”؟',['أن أرسم صورة','أن أجد حلًا أو أفهم الأمر','أن أنسى الأمر','أن أشرحه بصوت مرتفع'],'Figure it out تعني أن تفهم شيئًا أو تجد حلًا له.'],
+    'She ___ to school every day.':['أكمل الجملة: هي ___ إلى المدرسة كل يوم.',['go','goes','going','gone'],'في المضارع البسيط نضيف غالبًا s إلى الفعل مع he أو she أو it.'],
+    'They ___ dinner when I arrived.':['أكمل الجملة: كانوا ___ العشاء عندما وصلت.',['يتناولون','يتناولون بصيغة الماضي المستمر','يتناولون الآن','تناولوا قد تناولوا'],'يصف الماضي المستمر فعلًا كان جاريًا عندما وقع حدث آخر في الماضي.'],
+    'If I ___ more time, I would learn Italian.':['أكمل الجملة: لو كان لدي وقت أكثر، لتعلمت الإيطالية.',['have','will have','had','would have'],'يستخدم الشرط الثاني الماضي البسيط بعد if للتعبير عن حالة افتراضية.'],
+    'Neither of the answers ___ correct.':['أكمل الجملة: لا تُعد أيٌّ من الإجابتين صحيحة.',['are','were','is','be'],'تُعامل neither عادةً كمفرد في هذا التركيب الرسمي.'],
+    'You need to find the train station. What do you ask?':['تريد العثور على محطة القطار. ماذا تسأل؟',['Where train station?','هل يمكنك إخباري كيف أصل إلى محطة القطار؟','You tell station now.','How I am station?'],'عبارة “Could you tell me how to get to…?” طريقة مهذبة وطبيعية لطلب الاتجاهات.'],
+    'The person says, “It’s just around the corner.” What do they mean?':['يقول الشخص: “It’s just around the corner.” ماذا يقصد؟',['إنه بعيد جدًا','إنه قريب، بعد المنعطف التالي','إنه في الطابق العلوي','إنه مغلق اليوم'],'تعني عبارة around the corner عادةً أن المكان قريب جدًا.'],
+    'You did not hear the directions clearly. You say…':['لم تسمع الاتجاهات بوضوح. ماذا تقول؟',['قلها مرة أخرى!','ماذا؟','عذرًا، هل تمانع في تكرار ذلك؟','أنت مخطئ.'],'طلب التكرار بهذه الصيغة مهذب وطبيعي.'],
+    'The person helps you. What is a natural response?':['يساعدك شخص ما. ما الرد الطبيعي؟',['أقدّر مساعدتك، شكرًا لك.','I am appreciating you help.','Thanks for your helps.','I thank you much.'],'“I appreciate your help” تعبير طبيعي عن الامتنان.'],
+    'Message: “The meeting has been pushed back to half past three.” When is it now?':['تقول الرسالة إن الاجتماع أُجّل إلى half past three. ما موعده الآن؟',['3:00','3:15','3:30','4:30'],'Half past three تعني الثالثة والنصف، وpushed back تعني التأجيل إلى وقت لاحق.'],
+    '“Although it was raining, we decided to go hiking.” What happened?':['ماذا حدث رغم هطول المطر؟',['بقوا في المنزل بسبب المطر','ذهبوا للتنزه رغم المطر','توقف المطر قبل مغادرتهم','قرروا الذهاب يومًا آخر'],'Although تدل على التباين: كان المطر يهطل، لكنهم ذهبوا للتنزه.'],
+    'A notice says: “No later than Friday.” What is the deadline?':['تقول الملاحظة: “No later than Friday.” ما آخر موعد؟',['بعد الجمعة','أي وقت في الأسبوع القادم','الجمعة كحد أقصى','قبل الاثنين فقط'],'تعني العبارة أن يوم الجمعة هو آخر موعد مقبول.'],
+    '“I’d rather you didn’t mention it.” The speaker is asking you to…':['ماذا يطلب المتحدث بعبارة “I’d rather you didn’t mention it”؟',['إخبار الجميع','تجنب الحديث عن الأمر','كتابة الأمر','شرحه مرة أخرى'],'تعبّر “I’d rather you didn’t…” عن تفضيل ألا يقوم الشخص بفعل شيء.'],
+    'Which spelling is correct?':['أي الكلمات مكتوبة إملائيًا بصورة صحيحة؟',['Definately','Definitely','Definitly','Definetely'],'التهجئة الصحيحة هي Definitely.'],
+    'Choose the correct word.':['اختر الكلمة المكتوبة بصورة صحيحة.',['reliable','relyable','reliabel','relyible'],'التهجئة الصحيحة هي reliable.'],
+    '“Her explanation was plausible, but not entirely convincing.” This means it was…':['ما معنى أن شرحها كان plausible لكنه لم يكن مقنعًا تمامًا؟',['خاطئًا بوضوح','معقولًا ظاهريًا لكنه غير مقنع بالكامل','مثبتًا تمامًا','مستحيل الفهم'],'Plausible تعني معقولًا أو قابلًا للتصديق ظاهريًا، ولا تعني بالضرورة أنه مثبت.'],
+    'Choose the best connector: “The evidence was limited; ___, the conclusion was tentative.”':['اختر أداة الربط الأنسب: كانت الأدلة محدودة؛ ___ كان الاستنتاج مؤقتًا.',['nevertheless','consequently','whereas','meanwhile'],'Consequently تفيد النتيجة؛ فمحدودية الأدلة أدت إلى استنتاج غير حاسم.'],
+    '“He was reluctant to endorse the proposal.” He was…':['ماذا تعني الجملة بأنه كان reluctant to endorse the proposal؟',['متحمسًا لدعمه','مترددًا أو غير راغب في دعمه','غير قادر على فهمه','متأكدًا من رفضه علنًا'],'Reluctant تعني مترددًا أو غير راغب، ولا تعني بالضرورة الرفض التام.'],
+    'Which phrase most clearly signals a concession?':['أي عبارة تشير بوضوح إلى الإقرار بنقطة قبل طرح تحفظ؟',['In addition','For instance','Admittedly','As a result'],'تُستخدم Admittedly للإقرار بنقطة أو قيد قبل تقديم فكرة مغايرة أو مؤهلة.'],
+    '“The findings are inconclusive.” This means the findings…':['ماذا تعني عبارة “The findings are inconclusive”؟',['تثبت الفرضية','لا تؤدي إلى استنتاج حاسم','لا صلة لها بالموضوع','تم دحضها'],'الأدلة غير الحاسمة لا تحسم المسألة في أي من الاتجاهين.'],
+    '“Her account was ___ with the available evidence.”':['أكمل الجملة: كانت روايتها ___ مع الأدلة المتاحة.',['consistent','consistency','consistently','consist'],'Consistent with تعني متوافقًا مع الأدلة أو غير متعارض معها.'],
+    '“The policy is not without its drawbacks.” This means…':['ماذا تعني عبارة “The policy is not without its drawbacks”؟',['ليس لها أي عيوب','لها بعض العيوب','إنها عديمة الفائدة تمامًا','تم سحبها'],'Not without أسلوب غير مباشر يفيد أن الشيء يتضمن بالفعل الصفة المذكورة.'],
+    '“The findings lend weight to the hypothesis.” This means they…':['ماذا تعني عبارة “The findings lend weight to the hypothesis”؟',['تجعل الفرضية أقل احتمالًا','تدعم الفرضية','تثبتها دون أي شك','لا علاقة لها بها'],'Lend weight تعني تقديم دعم أو أدلة لصالح ادعاء دون إثباته بالضرورة بشكل قاطع.'],
+    '“Could you help me?” is…':['عبارة “Could you help me?” هي…',['طلب مهذب','أمر بالمغادرة','حدث في الماضي','اعتذار'],'Could you…? طريقة مهذبة لطلب المساعدة.'],
+    '“I’d like some water” means…':['ماذا تعني عبارة “I’d like some water”؟',['أريد بعض الماء بطريقة مهذبة','لا أحب الماء','شربت الماء أمس','أبيع الماء'],'I’d like طريقة مهذبة للتعبير عن الرغبة في شيء.'],
+    'Which phrase is more polite?':['أي عبارة أكثر تهذيبًا؟',['Give me that.','Could I have that, please?','You give now.','That is mine.'],'تجعل Could I have… please? الطلب أكثر لطفًا.'],
+    '“Maybe” shows…':['إلى ماذا تشير كلمة “Maybe”؟',['اليقين','الاحتمال','عادة في الماضي','أمر'],'Maybe تدل على أن الأمر ممكن لكنه غير مؤكد.']
+
   };
 })();
 
