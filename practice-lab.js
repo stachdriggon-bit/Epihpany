@@ -23,7 +23,7 @@
   const voiceLocale = {gb:'en-GB', us:'en-US', au:'en-AU'};
   const phrase = () => samples[sampleIndex];
   const save = () => { try { localStorage.setItem(STORE, JSON.stringify(data)); } catch {} };
-  const pickNext = () => { const old = sampleIndex; if (samples.length > 1) while (sampleIndex === old) sampleIndex = Math.floor(Math.random() * samples.length); lastTranscript=''; renderPhrase(); };
+  const pickNext = () => { const old = sampleIndex; const filter=document.querySelector('#pl-level-filter')?.value||'all'; const choices=samples.map((item,i)=>({...item,i})).filter(item=>filter==='all'||item.level===filter); if(choices.length>1){let next=old;while(next===old){next=choices[Math.floor(Math.random()*choices.length)].i;}sampleIndex=next;}else if(choices.length)sampleIndex=choices[0].i;lastTranscript='';renderPhrase();};
   const scoreWords = (expected, actual) => {
     const target = norm(expected).split(' ').filter(Boolean);
     const said = norm(actual).split(' ').filter(Boolean);
@@ -38,8 +38,7 @@
   const voicesFor = locale => {
     if (!('speechSynthesis' in window)) return [];
     const voices = speechSynthesis.getVoices();
-    const exact = voices.filter(v => v.lang.toLowerCase() === locale.toLowerCase());
-    return exact.length ? exact : voices.filter(v => v.lang.toLowerCase().startsWith(locale.slice(0,2).toLowerCase()));
+    return voices.filter(v => v.lang.toLowerCase() === locale.toLowerCase());
   };
   const speak = (text, rate) => {
     if (!('speechSynthesis' in window) || !('SpeechSynthesisUtterance' in window)) {
