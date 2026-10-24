@@ -84,6 +84,10 @@
     const why = String(q.why_en || '').toLowerCase();
     // Prefer the question's explicit hint and sentence structure over incidental words in explanations.
     // High-priority distinctions: these sentence patterns should win over generic collocation words in explanations.
+    if (/\b(?:little did .* (?:know|knew|realise|realised)|not only did .* miss(?:ed)?|only when .* did .* (?:emerge|emerged)|after did)\b/.test(prompt)) return 'past-simple';
+    if (/\b(?:it is high time|high time we|high time he|high time she)\b/.test(prompt)) return 'past-time';
+    if (/\b(?:data (?:shows|indicates)|implications has|each of the proposals have|neither of the options are|neither answer are)\b/.test(prompt)) return 'be-verbs';
+
     if (/\b(?:look forward to|used to|suggest(?:ed)? .*ing|denied .*ing|avoid .*ing|enjoy .*ing|insist(?:ed)? on .*ing|needs? testing|needs? revising|suggested him to|suggested to applying)\b/.test(prompt)) return 'verb-patterns';
     if (/\b(?:no sooner|hardly .* when|hardly i arrived|little did .*|not only did .*|only when .* did|rarely .* reached|not until .* did|scarcely .* when)\b/.test(prompt)) return 'inversion';
     if (/\b(?:despite of|in spite the|although .* but|not so much .* than|much as .* admire|despite .* exhausted)\b/.test(prompt)) return 'concession';
