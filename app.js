@@ -841,7 +841,7 @@
     if (e.target.id === 'voice-rate') { voicePref.rate = Number(e.target.value); saveVoicePref(); const o = $('#voice-rate-out'); if (o) o.textContent = voicePref.rate.toFixed(2) + '×'; }
   });
   document.addEventListener('input', e => {
-    if(e.target&&e.target.matches('[data-writer-part]')){CREATE_STORY.lastPart=e.target.dataset.writerPart;CREATE_STORY.drafts[CREATE_STORY.lastPart]=e.target.value;updateWriterFeedback();return;}
+    if(e.target&&e.target.matches('[data-writer-part]')){CREATE_STORY.lastPart=e.target.dataset.writerPart;CREATE_STORY.drafts[CREATE_STORY.lastPart]=e.target.value;try{localStorage.setItem('epiphany-story-draft',JSON.stringify({topic:CREATE_STORY.topic,name:CREATE_STORY.name,friend:CREATE_STORY.friend,place:CREATE_STORY.place,problem:CREATE_STORY.problem,writerLevel:CREATE_STORY.writerLevel,drafts:CREATE_STORY.drafts,updatedAt:Date.now()}));}catch{}updateWriterFeedback();return;}
  if (e.target.id === 'voice-rate') { const o = $('#voice-rate-out'); if (o) o.textContent = Number(e.target.value).toFixed(2) + '×'; } });
   document.addEventListener('click', e => {
     if (e.target.closest('#open-voice')) { const d = $('.tools-menu'); if (d) d.open = false; openVoiceSheet(); }
@@ -1544,7 +1544,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
   function startGuidedStory(form){
     if(!form)return;
     const data=new FormData(form),topic=String(data.get('topic')||'mystery'),name=String(data.get('name')||'Robin').trim().slice(0,24)||'Robin',friend=String(data.get('friend')||'Maya').trim().slice(0,24)||'Maya',place=String(data.get('place')||CREATE_STORY_PLACES[0]),problem=String(data.get('problem')||'lost'),t=CREATE_STORY_TOPICS[topic]||CREATE_STORY_TOPICS.mystery;
-    CREATE_STORY={...CREATE_STORY,topic,genreLabel:t.label,name,friend,place,problem,problemLabel:STORY_PROBLEMS[problem]||STORY_PROBLEMS.lost,writerLevel:currentLevel().id,mode:'writer',drafts:{},challengeWords:[],lastPart:'opening',story:null,answer:''};
+    let savedDraft={};try{const raw=JSON.parse(localStorage.getItem('epiphany-story-draft')||'null');if(raw&&raw.topic===topic&&raw.drafts&&typeof raw.drafts==='object'&&!Array.isArray(raw.drafts))savedDraft=raw;}catch{}\n    CREATE_STORY={...CREATE_STORY,topic,genreLabel:t.label,name:savedDraft.name||name,friend:savedDraft.friend||friend,place:savedDraft.place||place,problem:savedDraft.problem||problem,problemLabel:STORY_PROBLEMS[savedDraft.problem||problem]||STORY_PROBLEMS.lost,writerLevel:savedDraft.writerLevel||currentLevel().id,mode:'writer',drafts:savedDraft.drafts||{},challengeWords:[],lastPart:'opening',story:null,answer:''};
     renderCreateStory();
   }
   function updateWriterFeedback(){
