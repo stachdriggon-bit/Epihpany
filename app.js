@@ -530,7 +530,7 @@
     if (GAMES[selected.value] || MINI[selected.value]) { openView('home'); startGame(selected.value); }
   }
 
-  function renderAll() { renderHeader(); renderHome(); renderStories(); renderWords(); renderTrophies(); syncSettings(); }
+  function renderAll() { renderHeader(); renderHome(); renderStories(); renderWords(); renderTrophies(); const grammarInsight=$('#grammar-progress-insight'); if(grammarInsight) grammarInsight.innerHTML=renderGrammarMap(); syncSettings(); }
   document.addEventListener('epiphany-auth-changed', () => { renderAll(); if (WORLD && WORLD.mode === 'regions') worldShowRegions(); });
 
 
@@ -1783,7 +1783,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
   }
   function renderGrammarIntro(){
     const q=G.questions[0].q,lesson=grammarLesson(q);$('#steps').innerHTML='';
-    $('#game-body').innerHTML='<div class="grammar-intro"><div class="q-meta"><span class="pill">GRAMMAR LAB</span><span class="q-count">'+G.questions.length+' questions</span></div><p class="kicker">BEFORE YOU PRACTISE</p><h2 class="q-text">'+esc(lesson.title)+'</h2><div class="grammar-rule-card"><p>'+esc(lesson.rule)+'</p><p>Pay attention to the subject, tense, and meaning of the whole sentence.</p><p>Use the rule in context instead of translating word for word.</p></div><h3>Examples</h3><div class="grammar-examples">'+lesson.examples.map((x,i)=>'<p><b>'+(i+1)+'.</b> '+esc(x)+'</p>').join('')+'</div><p class="review-note">Choose how you want to practise.</p><div class="grammar-mode-grid"><button class="btn" data-grammar-mode="mcq">Multiple choice</button><button class="btn btn-ghost" data-grammar-mode="fix">Correct the sentence</button><button class="btn btn-ghost" data-grammar-mode="order">Arrange the words</button><button class="btn btn-ghost" data-grammar-mode="own">Complete in your own words</button></div><div class="grammar-map-intro"><h3>My grammar map</h3><p class="review-note">See what you have practised, what is improving, and which topics need another try. Select any topic to practise it.</p></div>'+renderGrammarMap()+'</div>';$('#game-scroll').scrollTop=0;
+    $('#game-body').innerHTML='<div class="grammar-intro"><div class="q-meta"><span class="pill">GRAMMAR LAB</span><span class="q-count">'+G.questions.length+' questions</span></div><p class="kicker">BEFORE YOU PRACTISE</p><h2 class="q-text">'+esc(lesson.title)+'</h2><div class="grammar-rule-card"><p>'+esc(lesson.rule)+'</p><p>Pay attention to the subject, tense, and meaning of the whole sentence.</p><p>Use the rule in context instead of translating word for word.</p></div><h3>Examples</h3><div class="grammar-examples">'+lesson.examples.map((x,i)=>'<p><b>'+(i+1)+'.</b> '+esc(x)+'</p>').join('')+'</div><p class="review-note">Choose how you want to practise.</p><div class="grammar-mode-grid"><button class="btn" data-grammar-mode="mcq">Multiple choice</button><button class="btn btn-ghost" data-grammar-mode="fix">Correct the sentence</button><button class="btn btn-ghost" data-grammar-mode="order">Arrange the words</button><button class="btn btn-ghost" data-grammar-mode="own">Complete in your own words</button></div></div>';$('#game-scroll').scrollTop=0;
   }
   function renderGrammarModeQuestion(){
     if(G.grammarMode==='mcq'){renderQuestion();return;}
