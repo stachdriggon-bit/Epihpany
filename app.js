@@ -16,7 +16,7 @@
   ];
 
   /* ---------- state ---------- */
-  const defaults = () => ({xp:0, quests:0, words:[], review:[], adaptiveOffset:0, adaptiveStreak:0, adaptiveSignals:{}, learningActivity:{days:{}}, dailyChallengeDate:null, dailyChallengeResult:null, dailySessionDate:null, dailySessionStep:'review', dailySessionDone:false, oneLifeBest:0, translationEnabled:true, storyReaderSettings:{fontScale:1,lineSpacing:1.75,nightMode:false}, placementDone:false, assessedLevel:'A1', placementResult:null, xpAtLevelStart:null, promotionHistory:[], promotionAttempts:{}, lastPromotionResult:null, completed:[], streak:0, lastDay:null, daily:0, level:'A1', sound:true, helpArabic:false, theme:'light', streakFreezes:1, dailyQuestDate:null, dailyQuestProgress:0, dailyQuestClaimed:false, dailyCorrect:0, dailyXp:0, weeklyKey:null, weeklyProgress:0, weeklyClaimed:false, mistakeTrapErrors:{}, mistakeQuestionErrors:{}, mistakeTrapCorrect:{}, mistakeQuestionCorrect:{}, mistakeTrapSrs:{}, modes:{}, weakTraps:{}, recentQuestions:{}, stories:{}, world:{done:[],stars:{}}});
+  const defaults = () => ({xp:0, quests:0, words:[], review:[], encounteredWords:[], adaptiveOffset:0, adaptiveStreak:0, adaptiveSignals:{}, learningActivity:{days:{}}, dailyChallengeDate:null, dailyChallengeResult:null, dailySessionDate:null, dailySessionStep:'review', dailySessionDone:false, oneLifeBest:0, translationEnabled:true, storyReaderSettings:{fontScale:1,lineSpacing:1.75,nightMode:false}, placementDone:false, assessedLevel:'A1', placementResult:null, xpAtLevelStart:null, promotionHistory:[], promotionAttempts:{}, lastPromotionResult:null, completed:[], streak:0, lastDay:null, daily:0, level:'A1', sound:true, helpArabic:false, theme:'light', streakFreezes:1, dailyQuestDate:null, dailyQuestProgress:0, dailyQuestClaimed:false, dailyCorrect:0, dailyXp:0, weeklyKey:null, weeklyProgress:0, weeklyClaimed:false, mistakeTrapErrors:{}, mistakeQuestionErrors:{}, mistakeTrapCorrect:{}, mistakeQuestionCorrect:{}, mistakeTrapSrs:{}, modes:{}, weakTraps:{}, recentQuestions:{}, stories:{}, world:{done:[],stars:{}}});
   let state;
   try { state = {...defaults(), ...JSON.parse(localStorage.getItem('epiphany-progress') || '{}')}; } catch { state = defaults(); }
   if (!LEVELS.some(level => level.id === state.assessedLevel)) { state.assessedLevel = 'A1'; state.placementDone = false; state.placementResult = null; }
@@ -24,6 +24,7 @@
   if (!Array.isArray(state.promotionHistory)) state.promotionHistory = [];
   if (!state.promotionAttempts || typeof state.promotionAttempts !== 'object' || Array.isArray(state.promotionAttempts)) state.promotionAttempts = {};
   if (!Array.isArray(state.review)) state.review = [];
+  if (!Array.isArray(state.encounteredWords)) state.encounteredWords = [];
   if (!state.adaptiveSignals || typeof state.adaptiveSignals !== 'object' || Array.isArray(state.adaptiveSignals)) state.adaptiveSignals = {};
   if (!state.learningActivity || typeof state.learningActivity !== 'object' || Array.isArray(state.learningActivity)) state.learningActivity = {days:{}};
   if (!state.learningActivity.days || typeof state.learningActivity.days !== 'object' || Array.isArray(state.learningActivity.days)) state.learningActivity.days = {};
@@ -795,7 +796,8 @@
   function wordContext(word,meaning){
     const key=String(word||'').toLowerCase();
     const daily=typeof WOTD_WORDS!=='undefined'&&WOTD_WORDS.find(x=>x.word.toLowerCase()===key);
-    const examples=daily?[daily.example, 'I learned the word '+word+' by using it in a real situation.']:[
+    const personal=(state.encounteredWords||[]).filter(x=>String(x.word||'').toLowerCase()===key&&x.context).slice(-2);
+    const examples=personal.length?personal.map(x=>x.context):daily?[daily.example, 'I learned the word '+word+' by using it in a real situation.']:[
       'I used “'+word+'” while talking about '+(meaning||'everyday life')+'.',
       'Try to use “'+word+'” in a conversation today.'
     ];
@@ -852,6 +854,34 @@
     document.body.appendChild(link); link.click(); link.remove(); URL.revokeObjectURL(url);
     toast(rows.length + ' words exported.');
   }
+  function renderMyTools() {
+    if (!Array.isArray(state.encounteredWords)) state.encounteredWords = [];
+    const entries = state.encounteredWords.slice().reverse();
+    const list = entries.length ? '<div class="encountered-list">' + entries.map(entry =>
+      '<article class="encountered-entry"><div class="encountered-entry-head"><div><span class="encountered-source">' + esc(entry.source || 'Everyday life') + '</span><h3>' + esc(entry.word) + '</h3></div><button type="button" class="encountered-remove" data-remove-encountered="' + esc(entry.id) + '" aria-label="Remove this note" title="Remove this note">×</button></div>' +
+      (entry.meaning ? '<p class="encountered-meaning">' + esc(entry.meaning) + '</p>' : '<p class="encountered-meaning encountered-muted">Meaning not added yet</p>') +
+      '<blockquote>' + esc(entry.context) + '</blockquote><div class="encountered-entry-foot"><span>' + esc(entry.level || currentLevel().id) + '</span><span>' + esc(entry.date || '') + '</span><span class="encountered-review-tag">Added to review</span></div></article>'
+    ).join('') + '</div>' : '<div class="encountered-empty"><span aria-hidden="true">✦</span><h3>Your real-life vocabulary starts here.</h3><p>Add a word from a conversation, a film, a song, or something you read. Keep the context that made you curious — we’ll connect the word to your existing review system.</p></div>';
+    const count = entries.length;
+    const target = $('#mytools-content');
+    if (!target) return;
+    target.innerHTML = '<section class="tool-feature-hero"><div class="tool-feature-icon" aria-hidden="true">✎</div><div><p class="kicker">YOUR EVERYDAY ENGLISH</p><h2>Words I encountered today</h2><p>Collect the words that matter to you, in the situation where you found them. No grades, no pressure — just curiosity that stays with you.</p><div class="tool-feature-stats"><span>' + count + ' saved ' + (count === 1 ? 'note' : 'notes') + '</span><span>Connected to spaced review</span></div></div></section>' +
+      '<section class="encountered-form-card" aria-labelledby="encountered-form-title"><div class="block-head"><div><h2 id="encountered-form-title">Save a word from real life</h2><p>You can leave the meaning blank if you are not sure yet.</p></div></div>' +
+      '<form id="encountered-word-form" class="encountered-form"><label for="encountered-word">Word or phrase <span>Required</span></label><input id="encountered-word" name="word" maxlength="100" required autocomplete="off" placeholder="e.g. it slipped my mind">' +
+      '<label for="encountered-meaning">Meaning (if you know it)</label><input id="encountered-meaning" name="meaning" maxlength="240" placeholder="A meaning in your own words">' +
+      '<label for="encountered-context">Sentence or context <span>Required</span></label><textarea id="encountered-context" name="context" rows="3" maxlength="700" required placeholder="Where did you hear it? What was happening? Write the sentence if you remember it."></textarea>' +
+      '<label for="encountered-source">Where did you find it?</label><select id="encountered-source" name="source"><option>Conversation</option><option>Film or series</option><option>Song</option><option>Book or article</option><option>Game or social media</option><option>Work or study</option><option>Everyday life</option><option>Other</option></select>' +
+      '<div class="encountered-form-note"><span aria-hidden="true">↗</span><p>The word will be added to your Word Vault and scheduled for review using EPIPHANY’s existing system. Your original context stays saved here.</p></div><button class="btn" type="submit">Save word and context <span aria-hidden="true">→</span></button></form></section>' +
+      '<section class="encountered-saved-section"><div class="block-head"><div><p class="kicker">YOUR PERSONAL COLLECTION</p><h2>Words from your world</h2><p>Every entry keeps the context that helps the word make sense.</p></div></div>' + list + '</section>' +
+      '<section class="tool-roadmap" aria-label="More tools planned"><div class="block-head"><div><p class="kicker">GROWING WITH YOU</p><h2>More tools, one home</h2><p>We’ll add these here one at a time, after checking what EPIPHANY already does.</p></div></div><div class="tool-roadmap-grid">' +
+      '<article><span>▧</span><b>Learn from a photo</b><small>Find useful words in real-world text</small><em>Coming next</em></article>' +
+      '<article><span>↔</span><b>Natural expressions</b><small>Explore casual and formal alternatives</small><em>Planned</em></article>' +
+      '<article><span>◷</span><b>Focus sessions</b><small>Make space for short, calm practice</small><em>Planned</em></article>' +
+      '<article><span>♫</span><b>Smart reader</b><small>Read and listen at your own pace</small><em>Planned</em></article>' +
+      '<article><span>↗</span><b>Level journey estimate</b><small>See a realistic, personal learning forecast</small><em>Planned</em></article>' +
+      '</div></section>';
+  }
+
   function renderWords() {
     resetDailySessionIfNeeded();
     if (state.dailySessionStep === 'review' && !(state.review || []).some(w => !w.due || w.due <= dayKey())) { state.dailySessionStep = 'lesson'; save(); }
@@ -1297,11 +1327,12 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     closeDockMore();
     $$('.view').forEach(v => v.classList.toggle('is-active', v.id === name + '-view'));
     $$('[data-view]').forEach(b => b.setAttribute('aria-current', b.dataset.view === name ? 'page' : 'false'));
+    if (name === 'mytools') renderMyTools();
     if (name === 'home') renderHome();
     if (name === 'arcade') renderArcade();
     if (name === 'progress' || name === 'profile') { renderWeaknessPanel(); renderLearningInsights(); }
     const more = $('#dock-more-toggle');
-    if (more) more.setAttribute('aria-current', ['words','trophies','stories','lifeskills'].includes(name) ? 'page' : 'false');
+    if (more) more.setAttribute('aria-current', ['words','trophies','stories','lifeskills','mytools'].includes(name) ? 'page' : 'false');
     window.scrollTo(0, 0);
     const h = $('#' + name + '-title'); if (h) h.focus({preventScroll: true});
   }
@@ -2090,6 +2121,34 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
   }
   // Capture the theme action before the settings popover closes.
   document.addEventListener('submit', e => {
+    if (e.target && e.target.id === 'encountered-word-form') {
+      e.preventDefault();
+      const form = e.target;
+      const word = String(form.elements.word.value || '').trim().replace(/\\s+/g, ' ');
+      const meaning = String(form.elements.meaning.value || '').trim();
+      const context = String(form.elements.context.value || '').trim();
+      const source = String(form.elements.source.value || 'Everyday life').trim();
+      if (!word || !context) { toast('Add the word and the context you remember.'); return; }
+      const key = word.toLocaleLowerCase();
+      const id = String(Date.now()) + '-' + String(state.encounteredWords.length + 1);
+      state.encounteredWords.push({id, word, meaning, context, source, level:currentLevel().id, date:new Date().toLocaleDateString()});
+      if (!state.words.some(item => String(item[0] || '').toLocaleLowerCase() === key)) {
+        state.words.push([word, meaning || 'Meaning to discover in context', currentLevel().id]);
+        recordLearningActivity({words:1});
+      }
+      const reviewItem = state.review.find(item => String(item.word || '').toLocaleLowerCase() === key);
+      if (reviewItem) {
+        reviewItem.due = dayKey();
+        if (meaning) reviewItem.meaning = meaning;
+      } else {
+        state.review.push({word, meaning:meaning || 'Meaning to discover in context', level:currentLevel().id, due:dayKey(), box:1, interval:0, streak:0, attempts:0, errors:0, exerciseStage:0, mastered:false, context});
+      }
+      save();
+      renderMyTools();
+      form.reset();
+      toast('Saved. Your word is ready for review.');
+      return;
+    }
     if(e.target && e.target.matches('[data-word-dictation]')){
       e.preventDefault();
       const form=e.target, word=form.dataset.wordDictation, item=state.review.find(w=>w.word===word), input=form.querySelector('[name="typedWord"]');
@@ -3759,6 +3818,15 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
   document.addEventListener('input', e => { if(e.target&&e.target.id==='story-dictation-answer'&&ST&&ST.dictationActive)ST.dictationAnswer=e.target.value; });
   document.addEventListener('submit', e => { if(e.target && e.target.id==='typing-form'){e.preventDefault();checkTyping();return;}if(e.target&&e.target.id==='story-dictation-form'){e.preventDefault();checkStoryDictation(e.target);return;} });
   document.addEventListener('click', e => {
+    const removeEncountered = e.target.closest('[data-remove-encountered]');
+    if (removeEncountered) {
+      const id = removeEncountered.dataset.removeEncountered;
+      state.encounteredWords = (state.encounteredWords || []).filter(item => String(item.id) !== String(id));
+      save();
+      renderMyTools();
+      toast('Context note removed. Your Word Vault and review schedule are unchanged.');
+      return;
+    }
     const dictionaryExport = e.target.closest('[data-dictionary-export]');
     if (dictionaryExport) { exportPersonalDictionary(dictionaryExport.dataset.dictionaryExport); return; }
     if(e.target.closest('#wotd-save')){const box=$('#wotd-card'),w=WOTD_WORDS.find(x=>x.word===box.dataset.word);if(w&&!state.words.some(x=>String(x[0]).toLowerCase()===w.word.toLowerCase())){state.words.push([w.word,w.meaning,w.level]);recordLearningActivity({words:1});save();renderAll();toast('Word saved to your vault.');}return;}
