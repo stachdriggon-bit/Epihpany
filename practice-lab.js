@@ -20,7 +20,7 @@
   let recognition = null;
   let listening = false;
   let lastTranscript = '';
-  const voiceLocale = {gb:'en-GB', us:'en-US', au:'en-AU'};
+  const voiceLocale = 'en-US';
   const phrase = () => samples[sampleIndex];
   const save = () => { try { localStorage.setItem(STORE, JSON.stringify(data)); } catch {} };
   const pickNext = () => { const old = sampleIndex; const filter=document.querySelector('#pl-level-filter')?.value||'all'; const choices=samples.map((item,i)=>({...item,i})).filter(item=>filter==='all'||item.level===filter); if(choices.length>1){let next=old;while(next===old){next=choices[Math.floor(Math.random()*choices.length)].i;}sampleIndex=next;}else if(choices.length)sampleIndex=choices[0].i;lastTranscript='';renderPhrase();};
@@ -35,10 +35,9 @@
     });
   };
   const wordMarkup = (expected, actual) => scoreWords(expected, actual).map(item => '<span class="pl-word '+(item.ok?'is-match':'is-missing')+'">'+esc(item.word)+'</span>').join(' ');
-  const voicesFor = locale => {
+  const voicesFor = () => {
     if (!('speechSynthesis' in window)) return [];
-    const voices = speechSynthesis.getVoices();
-    return voices.filter(v => v.lang.toLowerCase() === locale.toLowerCase());
+    return speechSynthesis.getVoices().filter(v => v.lang.toLowerCase().startsWith('en-'));
   };
   const speak = (text, rate) => {
     if (!('speechSynthesis' in window) || !('SpeechSynthesisUtterance' in window)) {
@@ -46,10 +45,9 @@
     }
     speechSynthesis.cancel();
     const utterance = new SpeechSynthesisUtterance(text);
-    const locale = voiceLocale[document.querySelector('#pl-accent')?.value || 'gb'];
-    utterance.lang = locale;
+    utterance.lang = voiceLocale;
     utterance.rate = rate;
-    const voices = voicesFor(locale);
+    const voices = voicesFor();
     if (voices.length) utterance.voice = voices[0];
     utterance.onerror = () => status('pl-speaking-status', 'Could not play audio. Try another voice or browser.', 'error');
     speechSynthesis.speak(utterance);
@@ -79,7 +77,7 @@
     section.className='block practice-lab'; section.id='practice-lab';
     section.innerHTML = '<div class="block-head"><div><p class="kicker">NEW · SPEAK · LISTEN · REPEAT</p><h2>Speaking & listening lab</h2><p>Practise aloud, compare the words you said, and train your ear with short dictations.</p></div></div>'+
       '<div class="pl-stats" id="pl-stats" aria-live="polite"></div>'+
-      '<div class="pl-controls"><label>Voice accent<select id="pl-accent"><option value="gb">British English</option><option value="us">American English</option><option value="au">Australian English</option></select></label><label>Practice level<select id="pl-level-filter"><option value="all">All levels</option><option>A1</option><option>A2</option><option>B1</option><option>B2</option></select></label></div>'+
+      '<div class="pl-controls"><label>Practice level<select id="pl-level-filter"><option value="all">All levels</option><option>A1</option><option>A2</option><option>B1</option><option>B2</option></select></label></div>'+
       '<div class="pl-mode-tabs" role="tablist" aria-label="Practice mode"><button type="button" class="is-active" data-pl-mode="speaking" role="tab" aria-selected="true">🎙 Speaking & shadowing</button><button type="button" data-pl-mode="dictation" role="tab" aria-selected="false">✍ Dictation</button></div>'+
       '<div class="pl-card" id="pl-speaking-panel"><div class="pl-phrase-meta"><span class="pl-level" id="pl-level">A1</span><span>Listen, then repeat aloud</span></div><p class="pl-target" id="pl-target"></p><div class="pl-actions"><button type="button" class="btn" data-pl-action="listen">▶ Listen</button><button type="button" class="btn btn-ghost" data-pl-action="slow">🐢 Slow audio</button><button type="button" class="btn btn-ghost" data-pl-action="next">New sentence</button></div><div class="pl-actions"><button type="button" class="btn" data-pl-action="record">🎙 Start speaking</button><button type="button" class="btn btn-ghost" data-pl-action="stop" disabled>Stop</button></div><p class="pl-small-note">Your browser turns speech into text. This checks recognised words, not the exact quality of your pronunciation.</p><label for="pl-transcript">Recognised speech (you can edit it)</label><textarea id="pl-transcript" rows="3" placeholder="Your recognised words will appear here…"></textarea><div class="pl-actions"><button type="button" class="btn" data-pl-action="compare">Compare words</button></div><div id="pl-word-comparison" class="pl-word-comparison" aria-live="polite"></div><p id="pl-speaking-status" class="pl-status" aria-live="polite">Listen first, then repeat the sentence.</p><p class="pl-legend"><span class="pl-word is-match">Green = recognised</span><span class="pl-word is-missing">Red = missing / different</span></p></div>'+
       '<div class="pl-card" id="pl-dictation-panel" hidden><div class="pl-phrase-meta"><span class="pl-level" id="pl-dictation-level">Listen</span><span>Type what you hear</span></div><p class="pl-target">Listen carefully. The sentence stays hidden until you check your answer.</p><div class="pl-actions"><button type="button" class="btn" data-pl-action="dictation-listen">▶ Normal speed</button><button type="button" class="btn btn-ghost" data-pl-action="dictation-slow">🐢 Slow speed</button><button type="button" class="btn btn-ghost" data-pl-action="dictation-new">New sentence</button></div><label for="pl-dictation-answer">Your answer</label><textarea id="pl-dictation-answer" rows="3" placeholder="Write the sentence you heard…"></textarea><div class="pl-actions"><button type="button" class="btn" data-pl-action="check-dictation">Check answer</button></div><div id="pl-dictation-result" class="pl-dictation-result" aria-live="polite"></div><p id="pl-dictation-status" class="pl-status" aria-live="polite">Play the sentence, then type what you hear.</p></div>';
@@ -115,7 +113,7 @@
       if(!SR){status('pl-speaking-status','Speech recognition is not available in this browser. Try a supported version of Chrome.','error');return;}
       try{
         if(recognition){recognition.abort();recognition=null;}
-        recognition=new SR();recognition.lang=voiceLocale[document.querySelector('#pl-accent').value];recognition.interimResults=true;recognition.continuous=false;
+        recognition=new SR();recognition.lang=voiceLocale;recognition.interimResults=true;recognition.continuous=false;
         listening=true;button.disabled=true;const stopButton=document.querySelector('[data-pl-action="stop"]');if(stopButton)stopButton.disabled=false;
         status('pl-speaking-status','Listening… say the sentence now.');
         recognition.onresult=e=>{lastTranscript=Array.from(e.results).map(r=>r[0].transcript).join(' ');const input=document.querySelector('#pl-transcript');if(input)input.value=lastTranscript;};
