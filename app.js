@@ -1641,7 +1641,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     choose:'اختر',select:'اختر',tap:'اضغط',click:'انقر',read:'اقرأ',listen:'استمع',write:'اكتب',type:'اكتب',answer:'إجابة',answers:'إجابات',question:'سؤال',correct:'صحيح',incorrect:'خاطئ',wrong:'خاطئ',best:'أفضل',closest:'الأقرب',meaning:'المعنى',mean:'يعني',means:'تعني',word:'كلمة',words:'كلمات',sentence:'جملة',complete:'أكمل',fill:'املأ',blank:'الفراغ',missing:'الناقص',only:'فقط',one:'واحد',more:'أكثر',again:'مجدّدًا',practice:'تدرّب',try:'حاول',explain:'اشرح',
     not:'لا',never:'أبدًا',always:'دائمًا',often:'غالبًا',sometimes:'أحيانًا',take:'يأخذ',takes:'يأخذ',took:'أخذ',go:'يذهب',goes:'يذهب',went:'ذهب',come:'يأتي',came:'جاء',have:'لديه',has:'لديه',had:'كان لديه',want:'يريد',wants:'يريد',need:'يحتاج',needs:'يحتاج',make:'يصنع',makes:'يصنع',made:'صنع',get:'يحصل على',give:'يعطي',find:'يجد',found:'وجد',use:'يستخدم',help:'يساعد',like:'يحب',know:'يعرف',think:'يعتقد',feel:'يشعر',say:'يقول',said:'قال',see:'يرى',saw:'رأى',friend:'صديق',friends:'أصدقاء',family:'العائلة',people:'الناس',happy:'سعيد',sad:'حزين',tired:'متعب',hungry:'جائع',rain:'مطر',raining:'تمطر',umbrella:'مظلة',house:'منزل',home:'المنزل',school:'مدرسة',work:'عمل',water:'ماء',food:'طعام',book:'كتاب',day:'يوم',today:'اليوم',yesterday:'أمس',tomorrow:'غدًا',time:'وقت',early:'مبكرًا',late:'متأخرًا',before:'قبل',after:'بعد',first:'أول',last:'أخير',new:'جديد',old:'قديم',small:'صغير',big:'كبير',large:'كبير',long:'طويل',short:'قصير',fast:'سريع',slow:'بطيء',good:'جيد',bad:'سيئ',easy:'سهل',difficult:'صعب',important:'مهم',different:'مختلف',borrow:'يستعير',buy:'يشتري',bought:'اشترى',sell:'يبيع',return:'يعيد',delighted:'سعيد للغاية',happening:'يحدث',happened:'حدث',absolutely:'تمامًا',very:'جدًا',extremely:'للغاية',confused:'مرتبك',worried:'قلق',pleased:'مسرور',glad:'سعيد',clear:'واضح',instructions:'تعليمات',instruction:'تعليمات',option:'خيار',options:'خيارات'
   };
-  Object.assign(AR_TRANSLATION_WORDS, window.EPIPHANY_AR_TRANSLATION_WORDS || {});
+  let arTranslationCatalogLoaded = false;
 
   function normalizeTranslationKey(value) {
     return String(value||'').toLowerCase().replace(/[“”]/g,'\"').replace(/[‘’]/g,"'").replace(/\s+/g,' ').trim().replace(/[.!?…,:;]+$/,'').trim();
@@ -2199,7 +2199,20 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     ["It means never questioning either side","يعني عدم التشكيك في أي طرف مطلقًا."],
     ["It is achieved by using equally long quotations","يتحقق باستخدام اقتباسات متساوية الطول."]
   ].map(([en,ar])=>[normalizeTranslationKey(en),ar])));
-  Object.assign(AR_TRANSLATION_PHRASES, Object.fromEntries(Object.entries(window.EPIPHANY_AR_TRANSLATION_PHRASES || {}).map(([en,ar])=>[normalizeTranslationKey(en),ar])));
+  function mergeArabicTranslationCatalog() {
+    if (arTranslationCatalogLoaded) return;
+    Object.assign(AR_TRANSLATION_WORDS, window.EPIPHANY_AR_TRANSLATION_WORDS || {});
+    Object.assign(AR_TRANSLATION_PHRASES, Object.fromEntries(Object.entries(window.EPIPHANY_AR_TRANSLATION_PHRASES || {}).map(([en,ar])=>[normalizeTranslationKey(en),ar])));
+    arTranslationCatalogLoaded = true;
+  }
+  window.EPIPHANY_MERGE_AR_TRANSLATIONS = mergeArabicTranslationCatalog;
+  function ensureArabicTranslationCatalog() {
+    if (arTranslationCatalogLoaded) return Promise.resolve();
+    return window.EPIPHANY_LAZY_LOAD('arabic').then(() => {
+      mergeArabicTranslationCatalog();
+      return true;
+    });
+  }
 
   function translateKnownPhrase(source) {
     const lower=normalizeTranslationKey(source);
@@ -2373,6 +2386,11 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
   }
   document.addEventListener('click',e=>{
     const button=e.target.closest('[data-translate-target]');if(!button)return;
+    if (!arTranslationCatalogLoaded) {
+      e.preventDefault(); e.stopPropagation();
+      ensureArabicTranslationCatalog().then(() => button.click()).catch(() => toast('The expanded Arabic catalogue could not load; built-in translations remain available.'));
+      return;
+    }
     e.preventDefault();e.stopPropagation();
     const target=document.getElementById(button.dataset.translateTarget),output=document.getElementById(button.dataset.translateTarget+'-arabic');if(!target||!output)return;
     if(output.hidden){if(target.classList.contains('answer')&&typeof G!=='undefined'&&G&&G.type==='spelling'){output.textContent='في تحدّي التهجئة، الخيارات تهجئات مختلفة للكلمة نفسها؛ ركّز على ترتيب الحروف. نعرض هذه الملاحظة بدل ترجمة قد تكشف الخيار الصحيح.';output.classList.remove('translation-approximate');output.title='مساعدة تحافظ على عدالة سؤال التهجئة';output.hidden=false;button.setAttribute('aria-expanded','true');button.innerHTML='<span aria-hidden="true">ع</span> إخفاء الترجمة';return;}const answerText=target.querySelector(':scope > span:not(.key)');const cardText=target.querySelector(':scope > span');const storyChoiceText=target.classList.contains('story-decision-option')?[...target.children].find(el=>!el.classList.contains('story-decision-letter')&&!el.classList.contains('story-option-ar')):null;const sourceText=target.classList.contains('story-decision-option')?(storyChoiceText||target).textContent:(target.classList.contains('answer')||target.classList.contains('mg-card')||target.classList.contains('mg-tile'))?(answerText||cardText||target).textContent:target.textContent;const directArabic=target.dataset.translationAr;const storyOption=target.classList.contains('story-decision-option')&&typeof ST!=='undefined'&&ST&&ST.story&&ST.story.decision&&ST.story.decision.options[Number(target.dataset.storyDecision)];const result=directArabic?{text:directArabic,exact:true}:storyOption&&storyOption.text_ar?{text:storyOption.text_ar,exact:true}:translateToArabic(sourceText);output.textContent=result.text;output.classList.toggle('translation-approximate',!result.exact&&!result.unavailable);output.title=result.exact?'ترجمة محلية':result.unavailable?'لا توجد ترجمة موثوقة لهذا النص بعد':'ترجمة مساعدة محلية؛ قد تبقى بعض الكلمات الإنجليزية دون ترجمة';output.hidden=false;button.setAttribute('aria-expanded','true');button.innerHTML='<span aria-hidden="true">ع</span> إخفاء الترجمة';}
@@ -2427,6 +2445,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
   function toggleArabic() {
     if (state.immersionWeek?.active && state.immersionWeek.endsAt && Date.now() < Number(state.immersionWeek.endsAt)) { toast('Arabic help is paused during your optional immersion week. You can end it in My Tools.'); return; }
     state.helpArabic = !state.helpArabic; try { localStorage.setItem('epiphany-help-language-choice', state.helpArabic ? 'ar' : 'en'); } catch {} save(); syncSettings();
+    if (state.helpArabic) ensureArabicTranslationCatalog().then(() => { renderAll(); if (G && G.answered) setSheetSpace(); }).catch(() => toast('Arabic help is available with built-in translations; the expanded catalogue could not load.'));
     if (G) { if (G.answered) setSheetSpace(); } else toast(state.helpArabic ? 'Arabic help is on' : 'Arabic help is off');
   }
   // Capture the theme action before the settings popover closes.
@@ -2604,7 +2623,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
   $('#ar-toggle').addEventListener('click', toggleArabic);
   $('#game-ar').addEventListener('click', toggleArabic);
   const translationToggle = $('#translation-toggle');
-  if (translationToggle) translationToggle.addEventListener('click', () => { if (state.immersionWeek?.active && state.immersionWeek.endsAt && Date.now() < Number(state.immersionWeek.endsAt)) { toast('Arabic translation is paused during immersion week. You can end it in My Tools.'); return; } state.translationEnabled = !state.translationEnabled; save(); syncSettings(); enhanceTranslationControls($('#game-body')); document.querySelectorAll('.translate-btn').forEach(b => { b.hidden = !state.translationEnabled; }); document.querySelectorAll('.translation-result').forEach(el => { if (!state.translationEnabled) el.hidden = true; }); toast(state.translationEnabled ? 'Arabic translation is on' : 'Arabic translation is off'); });
+  if (translationToggle) translationToggle.addEventListener('click', () => { if (state.immersionWeek?.active && state.immersionWeek.endsAt && Date.now() < Number(state.immersionWeek.endsAt)) { toast('Arabic translation is paused during immersion week. You can end it in My Tools.'); return; } state.translationEnabled = !state.translationEnabled; save(); syncSettings(); enhanceTranslationControls($('#game-body')); document.querySelectorAll('.translate-btn').forEach(b => { b.hidden = !state.translationEnabled; }); document.querySelectorAll('.translation-result').forEach(el => { if (!state.translationEnabled) el.hidden = true; }); if (state.translationEnabled) ensureArabicTranslationCatalog().then(() => { renderAll(); enhanceTranslationControls($('#game-body')); }).catch(() => toast('The expanded Arabic catalogue could not load; built-in translations remain available.')); toast(state.translationEnabled ? 'Arabic translation is on' : 'Arabic translation is off'); });
   $('#sound-toggle').addEventListener('click', () => {
     state.sound = !state.sound; save(); syncSettings();
     toast(state.sound ? 'Sound is on' : 'Sound is off');
@@ -4694,6 +4713,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
   try { helpLanguageChoice = localStorage.getItem('epiphany-help-language-choice') || ''; } catch {}
   let hasExistingProgress = false;
   try { hasExistingProgress = !!localStorage.getItem('epiphany-progress'); } catch {}
+  if (state.helpArabic || state.translationEnabled) ensureArabicTranslationCatalog().then(() => renderAll()).catch(() => {});
   if (helpLanguageModal && !helpLanguageChoice && !hasExistingProgress) {
     helpLanguageModal.hidden = false;
     const firstChoice = helpLanguageModal.querySelector('[data-help-language="en"]');
