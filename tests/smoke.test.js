@@ -15,7 +15,7 @@ test('main navigation tabs open without uncaught page errors', async t => {
     try { pathname = decodeURIComponent(new URL(req.url, 'http://127.0.0.1').pathname); }
     catch { res.writeHead(400); res.end('Bad request'); return; }
     const requested = path.resolve(root, '.' + pathname);
-    if (!requested.startsWith(root + path.sep) && requested !== path.join(root, 'index.html')) { res.writeHead(403); res.end('Forbidden'); return; }
+    if (pathname !== '/' && !requested.startsWith(root + path.sep) && requested !== path.join(root, 'index.html')) { res.writeHead(403); res.end('Forbidden'); return; }
     const file = pathname === '/' ? path.join(root, 'index.html') : requested;
     fs.readFile(file, (err, data) => {
       if (err) { res.writeHead(404); res.end('Not found'); return; }
