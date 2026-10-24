@@ -1846,3 +1846,6 @@ body[data-theme="dark"] .writer-story-card,body[data-theme="dark"] .writer-part,
 body[data-theme="dark"] .pl-word.is-match,body[data-theme="dark"] .pl-char.is-correct,body[data-theme="dark"] .pl-status.is-success{background:#173d2c;color:#b9f3d1}
 body[data-theme="dark"] .pl-word.is-missing,body[data-theme="dark"] .pl-char.is-wrong,body[data-theme="dark"] .pl-char.is-missing,body[data-theme="dark"] .pl-status.is-error{background:#4b2525;color:#ffd0ce}
 @media(max-width:560px){.pl-actions{display:grid;grid-template-columns:1fr 1fr}.pl-actions .btn{width:100%;white-space:normal}.pl-mode-tabs button{min-width:100%;text-align:left}.pl-target{font-size:20px}}
+
+.story-option-translation-row{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:8px;min-width:0}.story-option-translation-row .story-decision-option{grid-column:1;min-width:0}.story-option-translation-row .translate-btn{grid-column:2;grid-row:1;align-self:center}.story-option-translation-row .translation-result{grid-column:1/-1;width:100%;box-sizing:border-box}
+@media(max-width:520px){.story-option-translation-row{gap:6px}.story-option-translation-row .translate-btn{padding:6px 8px;font-size:11px}}
