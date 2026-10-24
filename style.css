@@ -1552,3 +1552,17 @@ body[data-theme="dark"] .dock{background:rgba(27,32,48,.97)}
 .create-story-scoreline>strong{font-variant-numeric:tabular-nums}
 .create-story-scorebar{grid-column:1/-1;height:7px;overflow:hidden;border-radius:999px;background:var(--line)}
 .create-story-scorebar>span{display:block;height:100%;border-radius:inherit;background:var(--focus);transition:width .2s ease}
+
+/* Words: contextual vocabulary, five-box review, and difficult-word list */
+.review-stage-title{font-weight:750;margin:.75rem 0;color:var(--ink,#25263a)}
+.word-examples{display:grid;gap:.45rem;margin:.8rem 0}
+.word-examples p{margin:0;padding:.65rem .8rem;border-radius:12px;background:var(--surface-soft,rgba(120,110,180,.08));line-height:1.55}
+.word-collocations{margin:.65rem 0;padding:.7rem .8rem;border:1px solid var(--line,rgba(100,100,130,.2));border-radius:12px;line-height:1.6}
+.word-dictation{display:flex;gap:.6rem;flex-wrap:wrap;margin:.8rem 0}
+.word-dictation input,.word-own-sentence{min-width:0;flex:1;width:100%;padding:.8rem 1rem;border:1px solid var(--line,rgba(100,100,130,.25));border-radius:12px;background:var(--surface,#fff);color:inherit;font:inherit}
+.word-own-sentence{display:block;margin:.7rem 0;resize:vertical}
+.hard-words{margin:1rem 0;padding:1rem;border:1px solid var(--line,rgba(100,100,130,.2));border-radius:18px}
+.hard-word-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:.65rem}
+.hard-word{display:grid;gap:.35rem;padding:.8rem;border-radius:13px;background:var(--surface-soft,rgba(120,110,180,.07));min-width:0}
+.hard-word span{line-height:1.45}.hard-word small{opacity:.72}.hard-word .btn{justify-self:start}
+@media(max-width:520px){.word-dictation{display:grid}.word-dictation input,.word-dictation button{width:100%}.hard-words{padding:.75rem}}
