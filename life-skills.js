@@ -261,6 +261,40 @@
     'Simmer means cook gently in a liquid with small, occasional bubbles.':'تعني simmer الطهي برفق في سائل تظهر فيه فقاعات صغيرة متباعدة.'
   };
 
+  Object.assign(arExplainText, {
+    '“Excuse me, do you have a moment?” recognises that the other person may be busy.':'تُظهر عبارة «عذرًا، هل لديك لحظة؟» مراعاة احتمال انشغال الشخص الآخر.',
+    'Thanking them first softens the refusal, while a clear answer avoids confusion.':'يخفف الشكر في البداية من حدة الرفض، بينما تمنع الإجابة الواضحة الالتباس.',
+    'Acknowledge the other view, then suggest an alternative without attacking the person.':'اعترف بوجهة النظر الأخرى ثم اقترح بديلًا دون مهاجمة الشخص.',
+    'Could you…? and please make a request sound courteous.':'تجعل عبارتا Could you…? وplease الطلب أكثر تهذيبًا.',
+    '“No worries” is a relaxed way to accept an apology when the issue is minor.':'تُستخدم No worries لقبول الاعتذار ببساطة عندما يكون الأمر بسيطًا.',
+    'Ask about the specific part you missed rather than blaming the speaker.':'اسأل عن الجزء الذي لم تفهمه بدلًا من لوم المتحدث.',
+    'A brief “No, thank you” is enough. You do not need to invent a reason.':'تكفي عبارة قصيرة مثل No, thank you. لا تحتاج إلى اختلاق سبب.',
+    'A useful apology names the mistake and gives the correction.':'يذكر الاعتذار المفيد الخطأ ويقدم التصحيح.',
+    'This phrase shows appreciation and clearly signals that you need to leave.':'تُظهر هذه العبارة التقدير وتوضح أنك بحاجة إلى المغادرة.',
+    'Acknowledge the concern, then investigate before promising a specific solution.':'أظهر تفهمك للمشكلة ثم تحقق منها قبل الوعد بحل محدد.',
+    'State your request politely and clearly. This is a routine booking, not an emergency.':'اذكر طلبك بوضوح وأدب. هذا حجز عادي وليس حالة طارئة.',
+    'This gives a preference while leaving room for the receptionist to check availability.':'توضح تفضيلك مع ترك المجال لموظف الاستقبال للتحقق من المواعيد المتاحة.',
+    'Repeat the day and time to confirm you heard them correctly.':'كرر اليوم والوقت للتأكد من أنك سمعتهما بشكل صحيح.',
+    'Explain the issue calmly and let the agent investigate.':'اشرح المشكلة بهدوء واترك للموظف فرصة التحقق منها.',
+    'Answer the specific question with the information requested. In a real call, share sensitive details only through verified channels.':'أجب عن السؤال المحدد بالمعلومة المطلوبة. في مكالمة حقيقية، شارك المعلومات الحساسة عبر قنوات موثوقة فقط.',
+    'A calm acknowledgement keeps the conversation cooperative.':'يساعد الرد الهادئ على إبقاء المحادثة تعاونية.',
+    'Ask a focused question and name the item and size.':'اطرح سؤالًا محددًا واذكر المنتج والمقاس.',
+    'Give the needed detail in a short, natural reply.':'قدّم المعلومة المطلوبة بإجابة قصيرة وطبيعية.',
+    'A polite request with a clear time limit is easy to act on.':'يسهل تنفيذ الطلب المهذب عندما يحدد مدة واضحة.'
+  });
+  Object.assign(arText, {
+    'English for the ':'الإنجليزية من أجل ',
+    'outside world.':'العالم خارج الصف.',
+    'Real-life situations need more than picking a word. Read the room, make a decision, practise a conversation and handle everyday tasks in English.':'تتطلب المواقف الواقعية أكثر من اختيار كلمة. افهم الموقف واتخذ قرارًا وتدرّب على المحادثة وأنجز المهام اليومية بالإنجليزية.',
+    'CHOOSE YOUR PRACTICE':'اختر طريقة التدريب',
+    'Six studios. Six different ways to learn.':'ستة استوديوهات، وست طرق مختلفة للتعلم.',
+    'Each studio has its own interaction—not the same multiple-choice screen repeated.':'لكل استوديو طريقة تفاعل مختلفة، بدل تكرار شاشة الاختيار من متعدد.',
+    'Not another quiz loop.':'ليست مجرد جولة أسئلة أخرى.',
+    'Number decoding, environmental signs, a fictional form, tone decisions, recipe sequencing and a branching phone conversation each use a different interaction pattern. Arabic help is optional.':'فهم الأرقام واللافتات والاستمارات الخيالية واختيار نبرة الحديث وترتيب الوصفات والمكالمات المتسلسلة تستخدم أساليب تفاعل مختلفة. المساعدة العربية اختيارية.',
+    'Arabic help':'مساعدة بالعربية','REAL LIFE · REAL LANGUAGE · REAL CONFIDENCE':'الحياة الواقعية · لغة عملية · ثقة حقيقية',
+    '06':'06','skill studios':'استوديوهات مهارات','6':'6','different play styles':'أنماط لعب مختلفة','A1–B2':'A1–B2','practical language':'لغة عملية'
+  });
+
   function tx(text, kind) {
     if (!arabicOn() || !text) return text;
     if (kind === 'option') return arOptionText[text] || text;
