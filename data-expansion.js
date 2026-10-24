@@ -7,7 +7,8 @@
     GAMES[game].questions.push({
       id: 'exp-' + level.toLowerCase() + '-' + game + '-' + (GAMES[game].questions.length + 1),
       level, q, sub: localized.sub || 'Choose the best answer.', answers, correct, explain,
-      ar: localized.ar || '', why_ar: localized.why_ar || '', word: localized.word || null, q_ar: localized.q_ar || '', answers_ar: localized.answers_ar || [], explain_ar: localized.explain_ar || '', sub_ar: localized.sub_ar || ''
+      ar: localized.ar || '', why_ar: localized.why_ar || '', word: localized.word || null, q_ar: localized.q_ar || '', explain_ar: localized.explain_ar || '', sub_ar: localized.sub_ar || '',
+      ...(Array.isArray(localized.answers_ar) && localized.answers_ar.length ? {answers_ar: localized.answers_ar} : {})
     });
   };
   // Authored Arabic translations for the advanced expansion questions.
