@@ -2,6 +2,19 @@
    Saved progress keeps the same localStorage key and shape as the first prototype. */
 (() => {
   'use strict';
+  const coreDataReady =
+    typeof LEVELS !== 'undefined' && Array.isArray(LEVELS) && LEVELS.length >= 6 &&
+    typeof GAMES !== 'undefined' && GAMES && typeof GAMES === 'object' &&
+    Object.values(GAMES).length > 0 &&
+    Object.values(GAMES).every(game => game && Array.isArray(game.questions) && game.questions.length > 0);
+  if (!coreDataReady) {
+    const errorPanel = document.createElement('div');
+    errorPanel.setAttribute('role', 'alert');
+    errorPanel.textContent = 'Epiphany could not load its lesson data. Please check your connection and reload the page.';
+    errorPanel.style.cssText = 'position:fixed;inset:0;z-index:99999;display:grid;place-items:center;padding:2rem;background:#f5f6fc;color:#282442;font:600 1.1rem/1.6 system-ui;text-align:center';
+    document.body.appendChild(errorPanel);
+    return;
+  }
   const $ = s => document.querySelector(s);
   const $$ = s => [...document.querySelectorAll(s)];
   let bidiLastMode = null;
