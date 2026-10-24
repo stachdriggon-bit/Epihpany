@@ -1165,6 +1165,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     closeDockMore();
     $('.view').forEach(v => v.classList.toggle('is-active', v.id === name + '-view'));
     $('[data-view]').forEach(b => b.setAttribute('aria-current', b.dataset.view === name ? 'page' : 'false'));
+    if (name === 'home') renderHome();
     if (name === 'arcade') renderArcade();
     if (name === 'progress' || name === 'profile') { renderWeaknessPanel(); renderLearningInsights(); }
     const more = $('#dock-more-toggle');
