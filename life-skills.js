@@ -196,6 +196,9 @@
     'Wash your hands and prepare a clean surface.':'اغسل يديك وجهّز سطحًا نظيفًا.','Take two slices of bread.':'أحضر شريحتي خبز.','Add cheese and any chosen vegetables.':'أضف الجبن والخضروات التي تختارها.','Put the second slice on top.':'ضع الشريحة الثانية في الأعلى.','Cut the sandwich and serve it.':'اقطع الشطيرة وقدّمها.','Fill the kettle with water.':'املأ الغلاية بالماء.','Boil the water safely.':'اغلِ الماء بأمان.','Put a tea bag in a cup.':'ضع كيس شاي في كوب.','Pour the hot water into the cup.':'اسكب الماء الساخن في الكوب.','Let it steep, then remove the tea bag.':'اترك الشاي لينقع ثم أخرج الكيس.','Wash the fruit.':'اغسل الفاكهة.','Place a chopping board on a stable surface.':'ضع لوح التقطيع على سطح ثابت.','Cut the fruit into small pieces.':'قطّع الفاكهة إلى قطع صغيرة.','Put the pieces in a bowl.':'ضع القطع في وعاء.','Mix gently and serve.':'اخلط برفق وقدّمها.','Fill a pot with water.':'املأ قدرًا بالماء.','Bring the water to a boil.':'اترك الماء حتى يغلي.','Add the pasta carefully.':'أضف المعكرونة بحذر.','Cook according to the packet instructions.':'اطهُ وفق تعليمات العبوة.','Drain carefully and add the sauce.':'صفِّ الماء بحذر وأضف الصلصة.','Wash the vegetables.':'اغسل الخضروات.','Chop the vegetables into small pieces.':'قطّع الخضروات إلى قطع صغيرة.','Beat the eggs in a bowl.':'اخفق البيض في وعاء.','Cook the vegetables and add the eggs.':'اطهُ الخضروات ثم أضف البيض.','Cook until the eggs are set.':'اطهُ حتى يتماسك البيض.',
     'The goal is progress, not perfection.':'الهدف هو التقدم، لا الكمال.','MISSION COMPLETE':'اكتملت المهمة','Real-world confidence, one step at a time.':'ثقة في الحياة الواقعية، خطوة بخطوة.'
   });
+  Object.assign(arText, {
+    'SAMPLE FORM':'استمارة تجريبية','Practice only · fictional details':'للتدريب فقط · بيانات خيالية','Review my form ↗':'راجع الاستمارة ↗','⚑ Do not enter real personal or sensitive information.':'⚑ لا تدخل بيانات شخصية حقيقية أو حساسة.','YOUR ORDER':'ترتيبك','Shuffle steps':'إعادة خلط الخطوات','Check recipe order ↗':'تحقق من ترتيب الوصفة ↗','CASE':'حالة','MISSION':'المهمة','All life skills':'كل المهارات الحياتية','GUIDED':'تدريجي','STEADY':'مستقر','CHALLENGE':'تحدٍّ','First name':'الاسم الأول','Date of birth':'تاريخ الميلاد','Nationality':'الجنسية','Marital status':'الحالة الاجتماعية','Preferred contact method':'طريقة التواصل المفضلة','Surname / Family name':'اسم العائلة','Postcode / ZIP code':'الرمز البريدي','Additional notes (optional)':'ملاحظات إضافية (اختياري)','e.g. Martin':'مثال: مارتن','e.g. 16000':'مثال: 16000','Leave blank if not needed':'اتركها فارغة إن لم تكن مطلوبة'
+  });
   const arExplainText = {
     '£3.75 is three pounds and seventy-five pence.':'3.75 جنيه تعني ثلاثة جنيهات وخمسة وسبعين بنسًا.',
     'Quarter past six means 6:15.':'السادسة والربع تعني 6:15.',
@@ -256,7 +259,7 @@
       ? window.EpiphanyThinkLab.getGameDifficulty('life-'+id, module.skill) : {level:'guided'};
     state.difficulty = policy.level || 'guided';
     state.pool = id === 'forms' ? [data.forms[0]] : (data[id] || []).slice();
-    if (state.difficulty === 'challenge') state.pool = state.pool.concat(challengeData[id] || []);
+    if (state.difficulty === 'challenge' && id !== 'forms') state.pool = state.pool.concat(challengeData[id] || []);
     // Keep challenge cards later in the run, so a round never changes level mid-session.
     render();
   }
@@ -272,8 +275,7 @@
     return '<div class="ls-workbar"><button type="button" class="ls-back" data-ls-home>'+tx('All life skills')+'</button><span class="ls-progress">'+tx('MISSION')+' '+String(state.round+1).padStart(2,'0')+' · '+level+'</span><button type="button" class="ls-help-toggle '+(state.showArabic?'is-on':'')+'" data-ls-ar aria-pressed="'+state.showArabic+'">ع <span>Arabic help</span></button></div><div class="ls-mission-head"><span class="ls-eyebrow">'+esc(tx(m.eyebrow))+'</span><h2>'+esc(tx(m.title))+'</h2><p'+(arabicOn()?' lang="ar" dir="rtl"':'')+'>'+esc(tx(m.desc))+'</p></div>';
   }
   function answerOptions(item) {
-    const ar=arabicOn()&&item.ar?'<p class="ls-arabic" lang="ar" dir="rtl">'+esc(item.ar)+'</p>':'';
-    return ar+'<div class="ls-choice-list">'+optionsMarkup(item)+'</div>';
+    return '<div class="ls-choice-list">'+optionsMarkup(item)+'</div>';
   }
   function feedback(item,correct) {
     state.locked=true;
@@ -299,7 +301,8 @@
     }
     if(m.id==='forms') {
       const fields=[{id:'first',label:'First name',placeholder:'e.g. Alex',type:'text'},{id:'birth',label:'Date of birth',placeholder:'DD / MM / YYYY',type:'date'},{id:'nationality',label:'Nationality',options:['Algerian','French','British','Canadian','Other']},{id:'status',label:'Marital status',options:['Single','Married','Prefer not to say']},{id:'contact',label:'Preferred contact method',options:['Email','Phone','Text message']}];
-      return '<div class="ls-form-paper"><div class="ls-form-paper-head"><span>✳ '+tx('SAMPLE FORM')+'</span><small>'+tx('Practice only · fictional details')+'</small></div><p'+(arabicOn()?' lang="ar" dir="rtl"':'')+'>'+(arabicOn()?'أكمل هذه الاستمارة الخيالية باستخدام بيانات افتراضية. لن تُرسل أي معلومات.':'Complete this imaginary registration form. Use fictional details; nothing is submitted.')+'</p><form data-ls-form>'+fields.map(f=>'<label class="ls-form-field"><span>'+esc(tx(f.label))+'</span>'+(f.options?'<select name="'+f.id+'" required><option value="">Choose…</option>'+f.options.map(o=>'<option>'+esc(tx(o))+'</option>').join('')+'</select>':'<input name="'+f.id+'" type="'+(f.type==='date'?'text':'text')+'" placeholder="'+esc(f.placeholder)+'" value="'+esc(state.formValues[f.id]||'')+'" '+(f.id==='first'?'required':'')+' autocomplete="off">')+'</label>').join('')+'<button type="submit" class="ls-primary">Review my form ↗</button></form><p class="ls-privacy-note">⚑ Do not enter real personal or sensitive information.</p></div>';
+      if(state.difficulty==='challenge') fields.splice(1,0,{id:'surname',label:'Surname / Family name',placeholder:'e.g. Martin',type:'text'},{id:'postcode',label:'Postcode / ZIP code',placeholder:'e.g. 16000',type:'text'},{id:'optional',label:'Additional notes (optional)',placeholder:'Leave blank if not needed',type:'text'});
+      return '<div class="ls-form-paper"><div class="ls-form-paper-head"><span>✳ '+tx('SAMPLE FORM')+'</span><small>'+tx('Practice only · fictional details')+'</small></div><p'+(arabicOn()?' lang="ar" dir="rtl"':'')+'>'+(arabicOn()?'أكمل هذه الاستمارة الخيالية باستخدام بيانات افتراضية. لن تُرسل أي معلومات.':'Complete this imaginary registration form. Use fictional details; nothing is submitted.')+'</p><form data-ls-form>'+fields.map(f=>'<label class="ls-form-field"><span>'+esc(tx(f.label))+'</span>'+(f.options?'<select name="'+f.id+'" required><option value="">Choose…</option>'+f.options.map(o=>'<option>'+esc(tx(o))+'</option>').join('')+'</select>':'<input name="'+f.id+'" type="'+(f.type==='date'?'text':'text')+'" placeholder="'+esc(tx(f.placeholder))+'" value="'+esc(state.formValues[f.id]||'')+'" '+(f.id==='first'?'required':'')+' autocomplete="off">')+'</label>').join('')+'<button type="submit" class="ls-primary">'+tx('Review my form ↗')+'</button></form><p class="ls-privacy-note">'+tx('⚑ Do not enter real personal or sensitive information.')+'</p></div>';
     }
     return '';
   }
