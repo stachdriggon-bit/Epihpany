@@ -17,7 +17,7 @@ function loadData() {
   }
   return vm.runInContext(`({
     games: typeof GAMES !== 'undefined' ? GAMES : {},
-    stories: typeof STORIES !== 'undefined' ? STORIES : []
+    stories: typeof STORIES !== 'undefined' ? STORIES : [],\n    words: typeof WOTD_WORDS !== 'undefined' ? WOTD_WORDS : []
   })`, context);
 }
 
@@ -26,9 +26,9 @@ function clean(value) {
     .normalize('NFKC')
     .toLocaleLowerCase('en')
     .replace(/[“”‘’"']/g, '')
-    .replace(/[^\\p{L}\\p{N}]+/gu, ' ')
+    .replace(/[^\p{L}\p{N}]+/gu, ' ')
     .trim()
-    .replace(/\\s+/g, ' ');
+    .replace(/\s+/g, ' ');
 }
 
 function describeQuestion(q) {
