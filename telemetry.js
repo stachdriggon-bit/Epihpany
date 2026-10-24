@@ -6,7 +6,7 @@
   const SESSION_KEY = 'epiphany-telemetry-session';
   const FIRST_SEEN_KEY = 'epiphany-telemetry-first-seen';
   const SENT_DAYS_KEY = 'epiphany-telemetry-sent-days';
-  const FIRST_QUEST_KEY = 'epiphany-telemetry-first-quest';
+  const FIRST_SESSION_KEY = 'epiphany-telemetry-first-session';
   const VERSION = '20261024k';
   const config = window.EPIPHANY_SUPABASE_CONFIG;
   const sdk = window.supabase;
@@ -112,12 +112,11 @@
   }, true);
   window.addEventListener('epiphany:progress-saved', event => {
     if (!enabled || !consent()) return;
-    const quests = Number(event.detail && event.detail.quests) || 0;
-    if (quests > 0) {
+    if (event.detail && event.detail.dailySessionDone) {
       try {
-        if (localStorage.getItem(FIRST_QUEST_KEY) !== 'yes') {
-          send('first_quest_complete');
-          localStorage.setItem(FIRST_QUEST_KEY, 'yes');
+        if (localStorage.getItem(FIRST_SESSION_KEY) !== 'yes') {
+          send('first_session_complete');
+          localStorage.setItem(FIRST_SESSION_KEY, 'yes');
         }
       } catch {}
     }
