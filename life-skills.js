@@ -287,6 +287,7 @@
     'A polite request with a clear time limit is easy to act on.':'يسهل تنفيذ الطلب المهذب عندما يحدد مدة واضحة.'
   });
   Object.assign(arText, {
+    'Or write your own reply':'أو اكتب ردك بطريقتك','Write what you would naturally say…':'اكتب ما ستقوله بصورة طبيعية…','Coach my wording ↗':'ساعدني على تحسين الصياغة ↗','Different wording can work. We look for your meaning and how clearly and politely you express it.':'قد تنجح صياغات مختلفة. نهتم بالمعنى الذي تقصده وبمدى وضوحك ولباقتك.','Your intended meaning comes through, and your wording sounds considerate. Many phrasings can work—compare it with the example to learn another natural expression.':'وصل المعنى الذي تقصده، وتبدو صياغتك مراعية. توجد صيغ كثيرة مناسبة؛ قارنها بالنموذج لتتعلم تعبيرًا طبيعيًا آخر.','Your main idea seems clear. To make it more considerate, try adding a phrase such as “Could you…?”, “please”, or “thank you”, depending on the situation.':'تبدو فكرتك الأساسية واضحة. لجعلها أكثر لباقة، جرّب إضافة عبارة مثل “Could you…?” أو “please” أو “thank you” بحسب الموقف.','This does not mean your answer is wrong. It may simply use wording this practice checker cannot recognise. Check that your reply says what you want, fits the situation, and uses an appropriate tone. You can compare it with the example if helpful.':'لا يعني هذا أن إجابتك خاطئة؛ فقد تكون صياغتك مختلفة عما يستطيع هذا الفاحص البسيط التعرّف عليه. تأكد من أن ردك يوضح ما تريده ويلائم الموقف ويحافظ على نبرة مناسبة. يمكنك مقارنته بالنموذج إن رغبت.','Write a reply in your own words first. We are not looking for an exact match—we want to understand your intention and help make it clear.':'اكتب ردك بطريقتك أولًا. لا نبحث عن تطابق حرفي؛ نريد فهم قصدك ومساعدتك على توضيحه.',
     'English for the ':'الإنجليزية من أجل ',
     'outside world.':'العالم خارج الصف.',
     'Real-life situations need more than picking a word. Read the room, make a decision, practise a conversation and handle everyday tasks in English.':'تتطلب المواقف الواقعية أكثر من اختيار كلمة. افهم الموقف واتخذ قرارًا وتدرّب على المحادثة وأنجز المهام اليومية بالإنجليزية.',
@@ -346,10 +347,53 @@
     if(window.EpiphanyThinkLab&&window.EpiphanyThinkLab.recordResult) window.EpiphanyThinkLab.recordResult(m.skill,'life-'+state.module,correct,state.round===(state.pool.length-1));
     render();
   }
+  function ownReplyMarkup() {
+    return '<div class="ls-own-reply"><label for="ls-own-reply">'+tx('Or write your own reply')+'</label><textarea id="ls-own-reply" data-ls-free-reply rows="2" maxlength="500" placeholder="'+tx('Write what you would naturally say…')+'"></textarea><button type="button" class="ls-secondary" data-ls-check-reply>'+tx('Coach my wording ↗')+'</button><p>'+tx('Different wording can work. We look for your meaning and how clearly and politely you express it.')+'</p></div>';
+  }
+  function coachOwnReply(item, reply) {
+    const text = reply.toLowerCase().replace(/[^a-z0-9' ]/g,' ').replace(/\\s+/g,' ').trim();
+    const scene = (item.scene || '').toLowerCase();
+    const prompt = (item.prompt || '').toLowerCase();
+    const rules = [
+      [/clinic|appointment|doctor/, /appointment|book|schedule|available|time|visit|see the doctor/],
+      [/bill|charge|customer service/, /bill|charge|cost|explain|check|review|payment|item/],
+      [/shop|jacket|product/, /product|item|jacket|size|medium|colour|color|hold|keep|available|buy/],
+      [/interrupt|colleague/, /excuse|sorry|moment|minute|question|interrupt/],
+      [/cannot attend|dinner|invites you/, /thank|can't|cannot|unable|busy|another time|next time|tonight|today/],
+      [/disagree|unrealistic|deadline|task/, /could|would|alternative|option|consider|complete|finish|time|by |instead|work for you/],
+      [/misinformation|incorrect/, /check|update|different|information|fact|verify|look at/],
+      [/private information|private contact/, /can't|cannot|permission|private|share|confidential/],
+      [/help in a shop|right size/, /help|size|please|could|would|find/],
+      [/apologises for being late|apologizes for being late/, /no worries|that's okay|it is okay|thanks|thank you|fine/],
+      [/clarification|did not understand|did not hear/, /repeat|clarify|explain|again|last|understand|sorry/],
+      [/extra item|do not want it/, /no|not interested|thank|don't need|do not need|all set/],
+      [/small mistake|wrong attachment/, /sorry|apolog|wrong|correct|attach|attached|file|here is/],
+      [/leave a conversation/, /lovely|nice|talking|go|leave|get going|take care/],
+      [/customer complains|order is wrong/, /sorry|check|look|fix|correct|help|order|happened/]
+    ];
+    const relevant = rules.find(([scenePattern]) => scenePattern.test(scene) || scenePattern.test(prompt));
+    const intent = relevant ? relevant[1].test(text) : text.length >= 8;
+    const polite = /please|could|would|thank|sorry|excuse|appreciate|may i|i'd|i would|i can|if possible|no worries/.test(text);
+    const ar = arabicOn();
+    let message;
+    if (text.length < 3) {
+      message = ar ? 'اكتب ردك بطريقتك أولًا. لا نبحث عن جملة مطابقة للنموذج؛ نريد فهم قصدك ومساعدتك على توضيحه.' : 'Write a reply in your own words first. We are not looking for an exact match—we want to understand your intention and help make it clear.';
+    } else if (intent && polite) {
+      message = ar ? 'وصل المعنى، وصياغتك تبدو مراعية أيضًا. توجد طرق كثيرة صحيحة للتعبير عن الفكرة نفسها؛ يمكنك مقارنة ردك بالنموذج لمعرفة تعبير جديد.' : 'Your intended meaning comes through, and your wording sounds considerate. Many phrasings can work—compare it with the example to learn another natural expression.';
+    } else if (intent) {
+      message = ar ? 'يبدو أن فكرتك الأساسية واضحة. لتحسينها، جرّب إضافة عبارة مهذبة مثل “Could you…?”, “Please”, أو “Thank you”، بحسب الموقف.' : 'Your main idea seems clear. To make it more considerate, try adding a phrase such as “Could you…?”, “please”, or “thank you”, depending on the situation.';
+    } else {
+      message = ar ? 'لا يعني هذا أن إجابتك خاطئة. قد تكون الصياغة مختلفة عن الإشارات التي نستطيع التعرّف عليها هنا. تأكد فقط من أن ردك يوضح ما تريده، ويرتبط بالموقف، ويحافظ على نبرة مناسبة. قارن بالنموذج إن أردت.' : 'This does not mean your answer is wrong. It may simply use wording this practice checker cannot recognise. Check that your reply says what you want, fits the situation, and uses an appropriate tone. You can compare it with the example if helpful.';
+    }
+    state.locked = true;
+    state.feedback = {correct:true, explain:message};
+    // Free-form coaching is deliberately not scored: this lightweight checker must not pretend to judge meaning perfectly.
+    render();
+  }
   function renderQuestion(item,m) {
     if(m.id==='numbers') return '<div class="ls-number-board"><span class="ls-scene-tag">'+esc(tx(item.scene))+'</span><span class="ls-number-icon">'+(item.kind==='price'?'£':item.kind==='time'?'◷':item.kind==='date'?'▦':'#')+'</span><span class="ls-kind">'+esc(item.kind.toUpperCase())+'</span></div><h3>'+esc(promptText(item))+'</h3>'+answerOptions(item);
     if(m.id==='signs') return '<div class="ls-sign-scene"><span class="ls-scene-tag">'+esc(tx(item.place))+'</span><div class="ls-real-sign"><span>'+esc(item.symbol)+'</span><strong>'+esc(item.sign)+'</strong></div></div><h3>'+esc(promptText(item))+'</h3>'+answerOptions(item);
-    if(m.id==='polite') return '<div class="ls-tone-card"><span class="ls-scene-tag">'+esc(tx(item.scene))+'</span><span class="ls-tone-label">'+esc(item.level)+'</span></div><h3>'+esc(promptText(item))+'</h3>'+answerOptions(item);
+    if(m.id==='polite') return '<div class="ls-tone-card"><span class="ls-scene-tag">'+esc(tx(item.scene))+'</span><span class="ls-tone-label">'+esc(item.level)+'</span></div><h3>'+esc(promptText(item))+'</h3>'+answerOptions(item)+ownReplyMarkup();
     if(m.id==='kitchen') {
       if(item.steps) {
         if(!state.sequence.length) state.sequence=item.steps.map((_,i)=>i).sort(()=>Math.random()-.5);
@@ -359,7 +403,7 @@
     }
     if(m.id==='phone') {
       const turn=item;
-      return '<div class="ls-phone-shell"><div class="ls-phone-status"><span>● CALL IN PROGRESS</span><span>00:0'+(state.round+1)+'</span></div><div class="ls-caller"><span>☎</span><div><strong>'+esc(turn.speaker)+'</strong><small>'+esc(tx(item.scene))+'</small></div></div><blockquote class="ls-dialogue">'+esc(tx(turn.line))+'</blockquote><div class="ls-listen-label">YOUR TURN</div><h3>'+esc(promptText(turn))+'</h3>'+answerOptions(turn);
+      return '<div class="ls-phone-shell"><div class="ls-phone-status"><span>● CALL IN PROGRESS</span><span>00:0'+(state.round+1)+'</span></div><div class="ls-caller"><span>☎</span><div><strong>'+esc(turn.speaker)+'</strong><small>'+esc(tx(item.scene))+'</small></div></div><blockquote class="ls-dialogue">'+esc(tx(turn.line))+'</blockquote><div class="ls-listen-label">YOUR TURN</div><h3>'+esc(promptText(turn))+'</h3>'+answerOptions(turn)+ownReplyMarkup();
     }
     if(m.id==='forms') {
       const fields=[{id:'first',label:'First name',placeholder:'e.g. Alex',type:'text'},{id:'birth',label:'Date of birth',placeholder:'DD / MM / YYYY',type:'date'},{id:'nationality',label:'Nationality',options:['Algerian','French','British','Canadian','Other']},{id:'status',label:'Marital status',options:['Single','Married','Prefer not to say']},{id:'contact',label:'Preferred contact method',options:['Email','Phone','Text message']}];
@@ -382,6 +426,7 @@
     const mod=e.target.closest('[data-ls-module]');if(mod){chooseModule(mod.dataset.lsModule);return;}
     if(e.target.closest('[data-ls-home]')){landing();return;}
     if(e.target.closest('[data-ls-ar]')){state.showArabic=!state.showArabic;render();return;}
+    const freeReply=e.target.closest('[data-ls-check-reply]');if(freeReply&&!state.locked){coachOwnReply(itemFor(),$(' [data-ls-free-reply]')?.value || $('[data-ls-free-reply]')?.value || '');return;}
     const ans=e.target.closest('[data-ls-answer]');if(ans&&!state.locked){const item=itemFor();const n=Number(ans.dataset.lsAnswer);const correct=n===item.answer;if(correct)state.score++;feedback(item,correct);return;}
     if(e.target.closest('[data-ls-next]')){if(state.round>=state.pool.length-1){const m=modules.find(x=>x.id===state.module);root.innerHTML='<div class="ls-finish"><span>✳ MISSION COMPLETE</span><h2>Real-world confidence, one step at a time.</h2><p>You completed '+(data[m.id].length+(challengeData[m.id]||[]).length)+' practice cards and earned '+state.score+' first-choice successes. The goal is progress, not perfection.</p><button class="ls-primary" type="button" data-ls-home>Back to Life Skills ↗</button></div>';state.module=null;return;}state.round++;state.locked=false;state.feedback=null;state.sequence=[];render();return;}
     const step=e.target.closest('[data-ls-step]');if(step){const arr=state.sequence;const i=arr.indexOf(Number(step.dataset.lsStep));if(i>0)[arr[i-1],arr[i]]=[arr[i],arr[i-1]];else if(i===0&&arr.length>1)[arr[0],arr[1]]=[arr[1],arr[0]];render();return;}
