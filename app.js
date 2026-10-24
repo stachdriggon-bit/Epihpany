@@ -464,10 +464,12 @@
       return;
     }
     if (state.dailySessionStep === 'story') {
-      openView('stories');
       const available = (typeof STORIES !== 'undefined' ? STORIES : []).filter(s => storyLevelIndex(s.level) <= storyLevelIndex(currentLevel().id));
       const chosen = available.find(s => !(state.stories[s.id] && state.stories[s.id].done) && (Number(s.minutes)||0) <= 5) || available.find(s => !(state.stories[s.id] && state.stories[s.id].done)) || available[0];
-      if (chosen) { startStory(chosen.id); toast('Read the story to complete today’s session.'); }
+      if (!chosen) { toast('No suitable story is available right now. Your session is saved — please try again shortly.'); return; }
+      openView('stories');
+      startStory(chosen.id);
+      toast('Read the story to complete today’s session.');
     }
   }
 
