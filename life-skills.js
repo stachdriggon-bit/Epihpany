@@ -293,7 +293,7 @@
     const m=modules.find(x=>x.id===state.module);
     if(!m) { landing(); return; }
     const item=itemFor();
-    root.innerHTML='<div class="ls-studio ls-'+m.tone+'">'+header(m)+'<div class="ls-stage">'+(state.feedback?'<div class="ls-feedback '+(state.feedback.correct?'is-correct':'is-wrong')+'"><span>'+(state.feedback.correct?tx(state.feedback.correct?'✓ NICE WORK':'↗ TRY AGAIN'))+'</span><p>'+esc(state.feedback.explain)+'</p><button type="button" class="ls-primary" data-ls-next>'+(state.round>=state.pool.length-1?tx('Finish mission'):tx('Next situation →'))+'</button></div>':renderQuestion(item,m))+'</div><div class="ls-stage-foot"><span>'+esc(m.eyebrow)+'</span><span>CASE '+String(state.round+1).padStart(2,'0')+' / '+data[m.id].length+'</span></div></div>';
+    root.innerHTML='<div class="ls-studio ls-'+m.tone+'">'+header(m)+'<div class="ls-stage">'+(state.feedback?'<div class="ls-feedback '+(state.feedback.correct?'is-correct':'is-wrong')+'"><span>'+(tx(state.feedback.correct?'✓ NICE WORK':'↗ TRY AGAIN'))+'</span><p>'+esc(state.feedback.explain)+'</p><button type="button" class="ls-primary" data-ls-next>'+(state.round>=state.pool.length-1?tx('Finish mission'):tx('Next situation →'))+'</button></div>':renderQuestion(item,m))+'</div><div class="ls-stage-foot"><span>'+esc(m.eyebrow)+'</span><span>CASE '+String(state.round+1).padStart(2,'0')+' / '+data[m.id].length+'</span></div></div>';
   }
   function landing() {
     state.module=null;
