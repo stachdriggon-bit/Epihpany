@@ -287,6 +287,7 @@
     'A polite request with a clear time limit is easy to act on.':'يسهل تنفيذ الطلب المهذب عندما يحدد مدة واضحة.'
   });
   Object.assign(arText, {
+    'Let’s clarify the meaning':'لنوضّح المقصود','The meaning may have changed':'قد يتغيّر المعنى','The meaning may need clarifying':'المعنى يحتاج توضيحًا','Understandable; soften the tone':'المعنى مفهوم؛ حسّن النبرة','Make it sound more natural':'يمكن جعلها أكثر طبيعية','Clear message; explore a natural alternative':'صياغة واضحة؛ تعلّم بديلًا طبيعيًا',
     'Or write your own reply':'أو اكتب ردك بطريقتك','Write what you would naturally say…':'اكتب ما ستقوله بصورة طبيعية…','Coach my wording ↗':'ساعدني على تحسين الصياغة ↗','Different wording can work. We look for your meaning and how clearly and politely you express it.':'قد تنجح صياغات مختلفة. نهتم بالمعنى الذي تقصده وبمدى وضوحك ولباقتك.','Your intended meaning comes through, and your wording sounds considerate. Many phrasings can work—compare it with the example to learn another natural expression.':'وصل المعنى الذي تقصده، وتبدو صياغتك مراعية. توجد صيغ كثيرة مناسبة؛ قارنها بالنموذج لتتعلم تعبيرًا طبيعيًا آخر.','Your main idea seems clear. To make it more considerate, try adding a phrase such as “Could you…?”, “please”, or “thank you”, depending on the situation.':'تبدو فكرتك الأساسية واضحة. لجعلها أكثر لباقة، جرّب إضافة عبارة مثل “Could you…?” أو “please” أو “thank you” بحسب الموقف.','This does not mean your answer is wrong. It may simply use wording this practice checker cannot recognise. Check that your reply says what you want, fits the situation, and uses an appropriate tone. You can compare it with the example if helpful.':'لا يعني هذا أن إجابتك خاطئة؛ فقد تكون صياغتك مختلفة عما يستطيع هذا الفاحص البسيط التعرّف عليه. تأكد من أن ردك يوضح ما تريده ويلائم الموقف ويحافظ على نبرة مناسبة. يمكنك مقارنته بالنموذج إن رغبت.','Write a reply in your own words first. We are not looking for an exact match—we want to understand your intention and help make it clear.':'اكتب ردك بطريقتك أولًا. لا نبحث عن تطابق حرفي؛ نريد فهم قصدك ومساعدتك على توضيحه.',
     'English for the ':'الإنجليزية من أجل ',
     'outside world.':'العالم خارج الصف.',
@@ -351,43 +352,62 @@
     return '<div class="ls-own-reply"><label for="ls-own-reply">'+tx('Or write your own reply')+'</label><textarea id="ls-own-reply" data-ls-free-reply rows="2" maxlength="500" placeholder="'+tx('Write what you would naturally say…')+'"></textarea><button type="button" class="ls-secondary" data-ls-check-reply>'+tx('Coach my wording ↗')+'</button><p>'+tx('Different wording can work. We look for your meaning and how clearly and politely you express it.')+'</p></div>';
   }
   function coachOwnReply(item, reply) {
-    const text = reply.toLowerCase().replace(/[^a-z0-9' ]/g,' ').replace(/\s+/g,' ').trim();
+    const raw = String(reply || '').trim();
+    const text = raw.toLowerCase().replace(/[^a-z0-9' ]/g,' ').replace(/\s+/g,' ').trim();
     const scene = (item.scene || '').toLowerCase();
     const prompt = (item.prompt || '').toLowerCase();
-    const rules = [
-      [/clinic|appointment|doctor/, /appointment|book|schedule|available|time|visit|see the doctor/],
-      [/bill|charge|customer service/, /bill|charge|cost|explain|check|review|payment|item/],
-      [/shop|jacket|product/, /product|item|jacket|size|medium|colour|color|hold|keep|available|buy/],
-      [/interrupt|colleague/, /excuse|sorry|moment|minute|question|interrupt/],
-      [/cannot attend|dinner|invites you/, /thank|can't|cannot|unable|busy|another time|next time|tonight|today/],
-      [/disagree|unrealistic|deadline|task/, /could|would|alternative|option|consider|complete|finish|time|by |instead|work for you/],
-      [/misinformation|incorrect/, /check|update|different|information|fact|verify|look at/],
-      [/private information|private contact/, /can't|cannot|permission|private|share|confidential/],
-      [/help in a shop|right size/, /help|size|please|could|would|find/],
-      [/apologises for being late|apologizes for being late/, /no worries|that's okay|it is okay|thanks|thank you|fine/],
-      [/clarification|did not understand|did not hear/, /repeat|clarify|explain|again|last|understand|sorry/],
-      [/extra item|do not want it/, /no|not interested|thank|don't need|do not need|all set/],
-      [/small mistake|wrong attachment/, /sorry|apolog|wrong|correct|attach|attached|file|here is/],
-      [/leave a conversation/, /lovely|nice|talking|go|leave|get going|take care/],
-      [/customer complains|order is wrong/, /sorry|check|look|fix|correct|help|order|happened/]
-    ];
-    const relevant = rules.find(([scenePattern]) => scenePattern.test(scene) || scenePattern.test(prompt));
-    const intent = relevant ? relevant[1].test(text) : text.length >= 8;
-    const polite = /please|could|would|thank|sorry|excuse|appreciate|may i|i'd|i would|i can|if possible|no worries/.test(text);
     const ar = arabicOn();
-    let message;
+    const has = pattern => pattern.test(text);
+    const polite = has(/\b(please|could|would|thank|thanks|sorry|excuse|appreciate|may i|i'd|i would|if possible|no worries|kindly)\b/);
+    const completeEnough = text.split(' ').filter(Boolean).length >= 5 && /\b(i|we|you|it|that|this|could|would|can|will|i'm|i am|i'd|i have|please|thanks|thank)\b/.test(text);
+    const contextRules = [
+      {when:/calling a clinic|appointment|clinic|doctor/, wants:/\b(appointment|book|schedule|wednesday|tuesday|thursday|morning|afternoon|time|available|visit|see the doctor)\b/, conflict:/\b(cancel|don't want|do not want|can't come|cannot come|not coming)\b/},
+      {when:/bill|charge|customer service/, wants:/\b(bill|charge|cost|explain|check|review|payment|item|higher|dated)\b/, conflict:/\b(password|pin code|one.time code|ignore the bill)\b/},
+      {when:/shop|jacket|product|hold the item/, wants:/\b(product|item|jacket|size|medium|colour|color|hold|keep|available|buy|blue)\b/, conflict:/\b(don't want|do not want|cancel|keep it forever)\b/},
+      {when:/cannot attend|dinner|invites you|busy/, wants:/\b(thank|can't|cannot|unable|busy|another time|next time|tonight|today|sorry)\b/, conflict:/\b(yes|i'll come|i will come|definitely coming)\b/},
+      {when:/disagree|unrealistic|deadline|task|plan/, wants:/\b(could|would|alternative|option|consider|complete|finish|time|instead|work for you|check|different)\b/, conflict:/\b(stupid|idiot|shut up|you're wrong|you are wrong)\b/},
+      {when:/misinformation|incorrect/, wants:/\b(check|update|different|information|fact|verify|look at|confirm)\b/, conflict:/\b(stupid|idiot|shut up)\b/},
+      {when:/private information|private contact/, wants:/\b(can't|cannot|permission|private|share|confidential|ask them)\b/, conflict:/\b(here is|here's|i'll send|i will send|their number is)\b/},
+      {when:/help in a shop|right size/, wants:/\b(help|size|please|could|would|find|medium)\b/, conflict:/\b(go away|leave me alone|don't help|do not help)\b/},
+      {when:/apologises for being late|apologizes for being late/, wants:/\b(no worries|that's okay|it is okay|thanks|thank you|fine|don't worry|do not worry)\b/, conflict:/\b(terrible|idiot|never forgive|shut up)\b/},
+      {when:/clarification|did not understand|did not hear/, wants:/\b(repeat|clarify|explain|again|last|understand|sorry|mean)\b/, conflict:/\b(shut up|speak properly|stupid)\b/},
+      {when:/extra item|do not want it|don't want it/, wants:/\b(no|not interested|thank|don't need|do not need|all set|already have)\b/, conflict:/\b(yes|i'll take|i will take|give me)\b/},
+      {when:/small mistake|wrong attachment/, wants:/\b(sorry|apolog|wrong|correct|attach|attached|file|here is|resend)\b/, conflict:/\b(not my problem|didn't do it|did not do it)\b/},
+      {when:/leave a conversation/, wants:/\b(lovely|nice|talking|go|leave|get going|take care|goodbye|bye)\b/, conflict:/\b(shut up|finished with you|stop talking)\b/},
+      {when:/customer complains|order is wrong/, wants:/\b(sorry|check|look|fix|correct|help|order|happened|resolve)\b/, conflict:/\b(your fault|not my problem|you're wrong|you are wrong)\b/}
+    ];
+    const rule = contextRules.find(r => r.when.test(scene) || r.when.test(prompt));
+    let kind = 'clear';
+    let message = '';
+    let label = '';
     if (text.length < 3) {
-      message = ar ? 'اكتب ردك بطريقتك أولًا. لا نبحث عن جملة مطابقة للنموذج؛ نريد فهم قصدك ومساعدتك على توضيحه.' : 'Write a reply in your own words first. We are not looking for an exact match—we want to understand your intention and help make it clear.';
-    } else if (intent && polite) {
-      message = ar ? 'وصل المعنى، وصياغتك تبدو مراعية أيضًا. توجد طرق كثيرة صحيحة للتعبير عن الفكرة نفسها؛ يمكنك مقارنة ردك بالنموذج لمعرفة تعبير جديد.' : 'Your intended meaning comes through, and your wording sounds considerate. Many phrasings can work—compare it with the example to learn another natural expression.';
-    } else if (intent) {
-      message = ar ? 'يبدو أن فكرتك الأساسية واضحة. لتحسينها، جرّب إضافة عبارة مهذبة مثل “Could you…?”, “Please”, أو “Thank you”، بحسب الموقف.' : 'Your main idea seems clear. To make it more considerate, try adding a phrase such as “Could you…?”, “please”, or “thank you”, depending on the situation.';
+      kind = 'unclear';
+      label = ar ? 'لنوضّح المقصود' : 'Let’s clarify the meaning';
+      message = ar ? 'الرد قصير جدًا حتى نعرف قصدك. أضف ما تريد فعله أو طلبه، ثم جرّب مرة أخرى. هذا ليس حكمًا على مستواك.' : 'This is too short for the coach to understand your intention. Add what you want to do or ask, then try again. This is not a judgement of your level.';
+    } else if (rule && rule.conflict.test(text) && !rule.wants.test(text)) {
+      kind = 'meaning';
+      label = ar ? 'قد يتغيّر المعنى' : 'The meaning may have changed';
+      message = ar ? 'انتبه: قد يوصل هذا الرد معنى معاكسًا لما يتطلبه الموقف. راجع ما تريد تحقيقه أولًا، ثم أعد صياغته. قد لا يلتقط هذا الفاحص البسيط كل السياق، لذلك اعتبرها ملاحظة للمراجعة لا حكمًا نهائيًا.' : 'Careful: this wording may communicate the opposite of what the situation calls for. Check what you want to achieve, then rephrase it. This simple coach may miss context, so treat this as a prompt to review—not a final verdict.';
+    } else if (rule && !rule.wants.test(text)) {
+      kind = 'unclear';
+      label = ar ? 'المعنى يحتاج توضيحًا' : 'The meaning may need clarifying';
+      message = ar ? 'لم أستطع تحديد الجزء الذي يجيب عن الموقف. هذا لا يعني أن ردك خطأ؛ استخدم كلمات أوضح لطلبك أو قرارك، أو قارنه بالنموذج لترى الفكرة التي ينبغي إيصالها.' : 'I could not identify the part of your reply that addresses the situation. That does not mean it is wrong. Make your request or decision more explicit, or compare it with the example to see the message to convey.';
+    } else if (!polite && (rule || completeEnough)) {
+      kind = 'tone';
+      label = ar ? 'المعنى مفهوم؛ حسّن النبرة' : 'Understandable; soften the tone';
+      message = ar ? 'يبدو أن فكرتك وصلت. لتحسين النبرة، يمكنك إضافة طلب مهذب أو شكر أو اعتذار مناسب للموقف. لا تحتاج إلى نسخ الجملة النموذجية حرفيًا.' : 'Your main idea seems to come through. To improve the tone, consider adding a polite request, thanks, or an apology that fits the situation. You do not need to copy the model sentence.';
+    } else if (!completeEnough && text.split(' ').length <= 4) {
+      kind = 'natural';
+      label = ar ? 'يمكن جعلها أكثر طبيعية' : 'Make it sound more natural';
+      message = ar ? 'قد يفهم المستمع مقصدك، لكن الرد القصير جدًا قد يبدو مقتضبًا. جرّب جملة كاملة أو أضف كلمة توضح الطلب أو السبب.' : 'A listener may understand you, but a very short reply can sound abrupt. Try a complete sentence or add a word that clarifies your request or reason.';
     } else {
-      message = ar ? 'لا يعني هذا أن إجابتك خاطئة. قد تكون الصياغة مختلفة عن الإشارات التي نستطيع التعرّف عليها هنا. تأكد فقط من أن ردك يوضح ما تريده، ويرتبط بالموقف، ويحافظ على نبرة مناسبة. قارن بالنموذج إن أردت.' : 'This does not mean your answer is wrong. It may simply use wording this practice checker cannot recognise. Check that your reply says what you want, fits the situation, and uses an appropriate tone. You can compare it with the example if helpful.';
+      kind = 'natural';
+      label = ar ? 'صياغة واضحة؛ تعلّم بديلًا طبيعيًا' : 'Clear message; explore a natural alternative';
+      message = ar ? 'لا حاجة إلى مطابقة النموذج. إذا كان ردك يعبّر عن قصدك، فهذا أمر جيد؛ يمكنك مقارنة الصيغتين لتتعلم تعبيرًا أكثر شيوعًا أو أنسب للموقف.' : 'There is no need to match the model exactly. If your reply expresses your intention, that is a good start; compare the two versions to learn a more common or context-appropriate expression.';
     }
     state.locked = true;
-    state.feedback = {correct:true, explain:message};
-    // Free-form coaching is deliberately not scored: this lightweight checker must not pretend to judge meaning perfectly.
+    state.feedback = {correct:true, kind, label, explain:message};
+    // Free-form coaching is intentionally not scored: a heuristic cannot reliably grade meaning.
     render();
   }
   function renderQuestion(item,m) {
@@ -416,7 +436,7 @@
     const m=modules.find(x=>x.id===state.module);
     if(!m) { landing(); return; }
     const item=itemFor();
-    root.innerHTML='<div class="ls-studio ls-'+m.tone+'">'+header(m)+'<div class="ls-stage">'+(state.feedback?'<div class="ls-feedback '+(state.feedback.correct?'is-correct':'is-wrong')+'"><span>'+(tx(state.feedback.correct?'✓ NICE WORK':'↗ TRY AGAIN'))+'</span><p>'+esc(state.feedback.explain)+'</p><button type="button" class="ls-primary" data-ls-next>'+(state.round>=state.pool.length-1?tx('Finish mission'):tx('Next situation →'))+'</button></div>':renderQuestion(item,m))+'</div><div class="ls-stage-foot"><span>'+esc(tx(m.eyebrow))+'</span><span>'+tx('CASE')+' '+String(state.round+1).padStart(2,'0')+' / '+state.pool.length+'</span></div></div>';
+    root.innerHTML='<div class="ls-studio ls-'+m.tone+'">'+header(m)+'<div class="ls-stage">'+(state.feedback?'<div class="ls-feedback '+(state.feedback.correct?'is-correct':'is-wrong')+(state.feedback.kind?' ls-feedback-'+state.feedback.kind:'')+'"><span>'+esc(state.feedback.label||tx(state.feedback.correct?'✓ NICE WORK':'↗ TRY AGAIN'))+'</span><p>'+esc(state.feedback.explain)+'</p><button type="button" class="ls-primary" data-ls-next>'+(state.round>=state.pool.length-1?tx('Finish mission'):tx('Next situation →'))+'</button></div>':renderQuestion(item,m))+'</div><div class="ls-stage-foot"><span>'+esc(tx(m.eyebrow))+'</span><span>'+tx('CASE')+' '+String(state.round+1).padStart(2,'0')+' / '+state.pool.length+'</span></div></div>';
   }
   function landing() {
     state.module=null;
