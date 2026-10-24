@@ -17,7 +17,8 @@ function loadData() {
   }
   return vm.runInContext(`({
     games: typeof GAMES !== 'undefined' ? GAMES : {},
-    stories: typeof STORIES !== 'undefined' ? STORIES : [],\n    words: typeof WOTD_WORDS !== 'undefined' ? WOTD_WORDS : []
+    stories: typeof STORIES !== 'undefined' ? STORIES : [],
+    words: typeof WOTD_WORDS !== 'undefined' ? WOTD_WORDS : []
   })`, context);
 }
 
