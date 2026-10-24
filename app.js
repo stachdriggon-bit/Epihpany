@@ -987,25 +987,38 @@
     const active = rows.filter(row => row.xp > 0);
     const totalXp = active.reduce((sum,row)=>sum+row.xp,0);
     const perActiveDay = active.length ? totalXp / active.length : 0;
-    const status = promotionStatus();
     const currentIndex = levelIndex();
-    const b2Index = LEVELS.findIndex(level=>level.id==='B2');
-    let remaining = 0;
-    if (currentIndex < b2Index) {
-      for (let i=currentIndex;i<b2Index;i++) {
-        const requirement = PROMOTION_XP[i] || 0;
-        const earned = i===currentIndex ? Math.max(0,(Number(state.xp)||0)-(Number(state.xpAtLevelStart)||0)) : 0;
-        remaining += Math.max(0,requirement-earned);
+    const current = currentLevel();
+    const next = LEVELS[currentIndex + 1] || null;
+    const earned = Math.max(0,(Number(state.xp)||0)-(Number(state.xpAtLevelStart)||0));
+    const required = next ? (PROMOTION_XP[currentIndex] || 0) : 0;
+    const remaining = Math.max(0,required-earned);
+    const estimate = next && active.length >= 3 && perActiveDay > 0 ? Math.ceil(remaining/perActiveDay) : null;
+    const levelCards = LEVELS.map((level,index) => {
+      let status, note;
+      if (index < currentIndex) {
+        status = 'complete'; note = 'Assessment passed';
+      } else if (index === currentIndex) {
+        status = 'current'; note = 'Your assessed level';
+      } else if (index === currentIndex + 1) {
+        status = 'next'; note = Math.max(0,(PROMOTION_XP[currentIndex]||0)-earned) + ' XP to unlock test';
+      } else {
+        status = 'later'; note = 'Unlock after the previous level';
       }
+      return '<article class="forecast-level-card is-'+status+'"><span class="forecast-level-dot">'+(status==='complete'?'✓':status==='current'?'●':String(index+1))+'</span><div><b>'+esc(level.id)+'</b><small>'+esc(level.name || '')+'</small><p>'+esc(note)+'</p></div></article>';
+    }).join('');
+    let forecastText;
+    if (!next) {
+      forecastText = '<div class="forecast-reached"><span>✦</span><div><b>You’ve reached the highest assessed CEFR level, '+esc(current.id)+'.</b><p>Keep practising to maintain and deepen your skills. Your personal estimate updates as your learning activity changes.</p></div></div>';
+    } else if (estimate !== null) {
+      forecastText = '<div class="forecast-estimate"><strong>'+estimate+'</strong><span>active learning day'+(estimate===1?'':'s')+' at your recent pace to unlock the '+esc(next.id)+' test</span></div><p class="forecast-detail">You earned '+Math.round(totalXp)+' XP across '+active.length+' active day'+(active.length===1?'':'s')+' in the last 14 days (about '+Math.round(perActiveDay)+' XP per active day). You have '+Math.round(remaining)+' XP left to unlock the next level test. Passing the test is still required to advance.</p>';
+    } else {
+      forecastText = '<div class="forecast-building"><span aria-hidden="true">↗</span><div><b>Your personal estimate is taking shape.</b><p>Keep learning as usual. Once EPIPHANY has tracked XP on at least 3 active days, it can estimate the time to your next level test from your own recent pace.</p></div></div>';
     }
-    const estimate = active.length >= 3 && perActiveDay > 0 ? Math.ceil(remaining / perActiveDay) : null;
-    const forecastText = currentIndex >= b2Index
-      ? '<div class="forecast-reached"><span>✦</span><div><b>You’ve reached the B2 milestone.</b><p>'+(currentIndex===LEVELS.length-1?'You’ve reached the highest assessed CEFR level.':'Your next milestone is '+esc(LEVELS[currentIndex+1].id)+'.')+'</p></div></div>'
-      : estimate !== null
-        ? '<div class="forecast-estimate"><strong>'+estimate+'</strong><span>active learning day'+(estimate===1?'':'s')+' at your recent pace</span></div><p class="forecast-detail">You earned '+Math.round(totalXp)+' XP across '+active.length+' active day'+(active.length===1?'':'s')+' in the last 14 days (about '+Math.round(perActiveDay)+' XP per active day). About '+Math.round(remaining)+' XP remains before the B2 promotion tests are unlocked. You’ll still need to pass each level test; XP alone does not change your CEFR level.</p>'
-        : '<div class="forecast-building"><span aria-hidden="true">↗</span><div><b>Your personal estimate is taking shape.</b><p>Keep learning as usual. Once EPIPHANY has tracked XP on at least 3 active days, it can estimate your route to B2 from your own recent pace instead of guessing.</p></div></div>';
-    root.innerHTML = '<section class="block progress-forecast-card"><div class="block-head"><div><p class="kicker">YOUR OWN LEARNING PACE</p><h2>Estimate your route to B2</h2><p>A practical forecast based on XP you actually earn — not a fixed promise.</p></div><span class="forecast-badge">Personal estimate</span></div><div class="forecast-progress-line"><span style="width:'+Math.max(0,Math.min(100,currentIndex/b2Index*100))+'%"></span></div><div class="forecast-levels"><span>'+esc(currentLevel().id)+' · current assessed level</span><span>B2 · milestone</span></div>'+forecastText+'<p class="forecast-caveat">This is an estimate of active learning days, not calendar days. Your pace can change, and each promotion still requires the existing assessment.</p></section>';
+    const currentProgress = next && required > 0 ? Math.max(0,Math.min(100,earned/required*100)) : 100;
+    root.innerHTML = '<section class="block progress-forecast-card"><div class="block-head"><div><p class="kicker">YOUR OWN LEARNING PACE</p><h2>'+(next?'Your next step: '+esc(current.id)+' → '+esc(next.id):'Your learning journey')+'</h2><p>The estimate follows your current level. When you pass a promotion test, it automatically moves to the next milestone.</p></div><span class="forecast-badge">Personal estimate</span></div><div class="forecast-progress-line"><span style="width:'+currentProgress+'%"></span></div><div class="forecast-levels"><span>'+esc(current.id)+' · '+Math.round(currentProgress)+'% of XP needed for next test</span><span>'+(next?esc(next.id)+' · next milestone':'All assessed levels complete')+'</span></div>'+forecastText+'<div class="forecast-journey"><div class="forecast-journey-heading"><h3>Your full CEFR path</h3><p>XP unlocks each promotion test; passing the test changes your assessed level.</p></div><div class="forecast-level-grid">'+levelCards+'</div></div><p class="forecast-caveat">This estimates active learning days, not calendar days. It uses your recent XP pace, which may change. Future levels are not promised dates: each transition depends on passing its assessment.</p></section>';
   }
+
   function renderMyTools() {
     if (!Array.isArray(state.encounteredWords)) state.encounteredWords = [];
     const entries = state.encounteredWords.slice().reverse();
