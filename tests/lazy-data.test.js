@@ -53,6 +53,9 @@ test('feature data loader does not request large datasets until requested', asyn
 test('initial HTML defers stories and World data and keeps loader in offline shell', () => {
   const html = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
   const sw = fs.readFileSync(path.join(root, 'service-worker.js'), 'utf8');
+  const expansion = fs.readFileSync(path.join(root, 'data-expansion.js'), 'utf8');
+  assert.doesNotMatch(expansion, /STORIES\.push\(/);
+  assert.match(fs.readFileSync(path.join(root, 'lazy-data.js'), 'utf8'), /data-stories-expansion\.js/);
   assert.doesNotMatch(html, /<script[^>]+src="data-stories\.js/);
   assert.doesNotMatch(html, /<script[^>]+src="data-world(?:-sprites)?\.js/);
   assert.match(html, /lazy-data\.js\?v=20261024n/);
