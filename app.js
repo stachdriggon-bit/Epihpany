@@ -4509,6 +4509,18 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     try { localStorage.setItem('epiphany-progress', JSON.stringify(state)); } catch {}
     renderAll();
   };
+  // Navigation uses capture phase so an earlier settings handler cannot swallow tab clicks.
+  document.addEventListener('click', e => {
+    const view = e.target.closest('.tabs [data-view], .mobile-menu [data-view]');
+    if (!view) return;
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    document.querySelectorAll('.nav-group[open]').forEach(group => group.removeAttribute('open'));
+    const mobileMenu = view.closest('.mobile-menu');
+    if (mobileMenu) mobileMenu.removeAttribute('open');
+    if (view.dataset.view === 'world') { closeDockMore(); startWorld(); }
+    else openView(view.dataset.view);
+  }, true);
   renderAll();
   enhanceTranslationControls($('#game-body'));
   let accountWelcomeDismissed = false;
