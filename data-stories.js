@@ -62,7 +62,14 @@ const STORY_DECISIONS = {"a1-lost-key":{"afterPage":1,"prompt":"What should Mia 
 "c2-ambiguous-promise":{"afterPage":0,"prompt":"A partner treats a qualified forecast as a firm promise. What should the director clarify?","options":[{"text":"State the target, conditions, and checkpoint explicitly.","response":"Separating an aspiration from its conditions makes expectations testable and reduces interpretive risk."},{"text":"Insist the partner should have guessed the intended meaning.","response":"When wording permits two plausible readings, relying on inference leaves the mismatch unresolved."},{"text":"Remove all dates from future discussions.","response":"Avoiding dates sacrifices useful planning rather than making commitments clearer."}]},
 "c2-missing-counterfactual":{"afterPage":0,"prompt":"An outcome improves after a policy change, but other factors changed too. What conclusion is justified?","options":[{"text":"Compare plausible alternatives and qualify the causal claim.","response":"A counterfactual comparison helps estimate the intervention’s contribution without overstating certainty."},{"text":"Attribute the entire improvement to the policy.","response":"Timing alone does not establish causation when other changes coincide."},{"text":"Conclude the policy had no effect at all.","response":"Confounding factors limit certainty; they do not automatically prove the intervention had no effect."}]}
 }
-for (const story of STORIES) { if (STORY_DECISIONS[story.id]) story.decision = STORY_DECISIONS[story.id]; }
+// Keep the fully localized, branching author-authored decisions where available.
+// The fallback map currently contains English-only versions for those same stories.
+for (const story of STORIES) {
+  const mapped = STORY_DECISIONS[story.id];
+  if (!mapped) continue;
+  const authored = story.decision;
+  story.decision = authored && authored.prompt_ar ? authored : mapped;
+}
 for (const s of STORIES) { s.pages=s.pages.map(([scene,text,ar])=>({scene,text,ar})); s.questions=s.questions.map(([q,answers,correct,explain])=>({q,sub:'Choose the best answer.',answers,correct,explain})); const vocab={}; for(const [k,v] of Object.entries(s.vocab))vocab[k]={meaning:v[0],ar:v[1],pronunciation:v[2],example:v[3]};s.vocab=vocab; }
 
 // Arabic question bank: translations are keyed to the exact English prompt,
