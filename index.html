@@ -214,6 +214,8 @@
         </div><button class="btn daily-session-start" id="daily-session-start" type="button"><span aria-hidden="true">▶</span> Start session</button>
       </section>
 
+      <div class="quick-actions" aria-label="Quick learning modes"><button type="button" class="btn btn-ghost" id="listen-only-start">🎧 Listen-only session</button><button type="button" class="btn btn-ghost" id="quick-practice-start">⚡ Quick exercise</button><button type="button" class="btn btn-ghost" id="quick-review-start">📘 My review</button></div>
+
       <section class="block" aria-labelledby="games-title">
         <div class="block-head"><h2 id="games-title">Or choose a game</h2><p>Every game trains a different part of your English.</p></div>
         <div class="games" id="games"></div>
@@ -544,6 +546,7 @@
   <header class="game-top">
     <button class="icon-btn" id="game-close" type="button" aria-label="Leave quest"><svg><use href="#i-x"/></svg></button>
     <div class="steps" id="steps" aria-hidden="true"></div>
+    <button class="icon-btn" id="focus-mode-toggle" type="button" aria-pressed="false" aria-label="Toggle focus mode" title="Focus mode">⛶</button>
     <button class="ar-toggle" id="game-ar" type="button" aria-pressed="false" title="Arabic help">
       <span class="ar-long" lang="ar">العربية</span><span class="ar-short" lang="ar" aria-hidden="true">ع</span><span class="sr-only">Arabic help</span>
     </button>
