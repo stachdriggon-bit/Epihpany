@@ -815,6 +815,30 @@
     return null;
   }
   const REVIEW_INTERVALS=[1,3,7,14,30];
+  function recordReviewOutcome(item, correct) {
+    if(!Array.isArray(item.answerHistory))item.answerHistory=[];
+    item.answerHistory.push({correct:!!correct,at:new Date().toISOString()});
+    item.answerHistory=item.answerHistory.slice(-10);
+  }
+  function scheduleReviewFromPerformance(item) {
+    const box=Math.max(1,Math.min(5,Number(item.box)||1));
+    const history=Array.isArray(item.answerHistory)?item.answerHistory.slice(-5):[];
+    const accuracy=history.length?history.filter(x=>x&&x.correct).length/history.length:null;
+    let targetBox=box;
+    if(item.confidence==='low')targetBox=1;
+    else if(item.confidence==='medium')targetBox=Math.min(targetBox,3);
+    if(accuracy!==null&&history.length>=2) {
+      if(accuracy<0.6)targetBox=Math.min(targetBox,2);
+      else if(accuracy<0.8)targetBox=Math.min(targetBox,3);
+    }
+    item.box=targetBox;
+    item.interval=REVIEW_INTERVALS[targetBox-1];
+    item.exerciseStage=0;
+    item.streak=(Number(item.streak)||0)+1;
+    item.mastered=targetBox>=5&&item.confidence==='high'&&(accuracy===null||history.length<2||accuracy>=0.8);
+    const due=new Date();due.setDate(due.getDate()+item.interval);item.due=dayKey(due);
+    return {box:targetBox,interval:item.interval,accuracy};
+  }
   const WORD_COLLOCATIONS={
     decision:['make a decision','a difficult decision','decision-making'], improve:['improve your skills','improve performance','greatly improve'],
     take:['take a break','take responsibility','take your time'], make:['make a mistake','make progress','make a difference'],
@@ -2487,8 +2511,10 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
       if(!item||!input)return;
       item.attempts=(item.attempts||0)+1;
       if(input.value.trim().toLowerCase()===item.word.toLowerCase()){
+        recordReviewOutcome(item,true);
         item.exerciseStage=3;save();renderWords();toast('Correct spelling! Now use the word in your own sentence.');
       }else{
+        recordReviewOutcome(item,false);
         item.errors=(Number(item.errors)||0)+1;item.box=1;item.interval=0;item.streak=0;item.exerciseStage=0;item.mastered=false;item.due=dayKey();
         save();renderWords();toast('Not quite. The word returned to Box 1 for extra practice.');
       }
@@ -4330,6 +4356,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
       item.confidenceHistory.push({value:item.confidence,at:item.confidenceAt});
       item.confidenceHistory=item.confidenceHistory.slice(-20);
       if(item.confidence==='low'){item.box=1;item.interval=0;item.streak=0;item.mastered=false;}
+      else if(item.confidence==='medium'){item.box=Math.min(Math.max(1,Number(item.box)||1),3);item.mastered=false;}
       else if((Number(item.box)||1)<5)item.mastered=false;
       item.exerciseStage=1;
       save();renderWords();
@@ -4343,14 +4370,9 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
       const sentence=field?field.value.trim():'';
       const tokens=sentence.toLowerCase().split(/[^a-z'-]+/).filter(Boolean);
       if(item&&tokens.length>=3&&tokens.includes(item.word.toLowerCase())){
-        const completedBox=Math.max(1,Math.min(5,Number(item.box)||1));
-        item.interval=REVIEW_INTERVALS[completedBox-1];
-        item.box=Math.min(5,completedBox+1);
-        item.exerciseStage=0;
-        item.streak=(item.streak||0)+1;
-        item.mastered=item.box>=5;
-        const due=new Date();due.setDate(due.getDate()+item.interval);item.due=dayKey(due);
-        save();renderWords();toast('Nice sentence. Your word moved to Box '+item.box+'.');
+        recordReviewOutcome(item,true);
+        const scheduled=scheduleReviewFromPerformance(item);
+        save();renderWords();toast('Nice sentence. Next review in '+scheduled.interval+' day'+(scheduled.interval===1?'':'s')+'.');
       }else toast('Write a sentence of at least three words that uses the target word.');
       return;
     }
