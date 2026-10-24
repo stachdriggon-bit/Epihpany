@@ -865,7 +865,7 @@
     const progress=state.contrastPractice, pair=CONTRAST_PAIRS[((Number(progress.index)||0)%CONTRAST_PAIRS.length+CONTRAST_PAIRS.length)%CONTRAST_PAIRS.length];
     const last=progress.lastAnswer&&progress.lastAnswer.id===pair.id?progress.lastAnswer:null;
     const options=[pair.a,pair.b];
-    return '<section class="contrast-practice"><div class="review-head"><div><p class="kicker">SMART VOCABULARY</p><h2>Words that look alike</h2></div><span class="review-count">'+(((Number(progress.index)||0)%CONTRAST_PAIRS.length)+1)+' / '+CONTRAST_PAIRS.length+'</span></div><p class="review-note">Choose the word that best completes the sentence. Compare the meaning, not just the spelling.</p><p class="contrast-prompt">'+esc(pair.prompt).replace('___','<span class="contrast-blank">_____</span>')+'</p><div class="contrast-options">'+options.map(word=>'<button type="button" class="btn '+(last?(word===pair.answer?'':'btn-ghost'):'btn-ghost')+'" data-contrast-answer="'+esc(word)+'" data-contrast-pair="'+esc(pair.id)+'" '+(last?'disabled':'')+'>'+esc(word)+'</button>').join('')+'</div>'+(last?'<p class="contrast-feedback '+(last.correct?'is-correct':'is-incorrect')+'">'+(last.correct?'Correct — well distinguished.':'Not quite. The best answer is '+esc(pair.answer)+'.')+' '+esc(pair.explain)+'</p><button type="button" class="btn" data-contrast-next>Next pair</button>':'')+'</section>';
+    return '<section class="contrast-practice"><div class="review-head"><div><p class="kicker">SMART VOCABULARY</p><h2>Words that look alike</h2></div><span class="review-count">'+(((Number(progress.index)||0)%CONTRAST_PAIRS.length)+1)+' / '+CONTRAST_PAIRS.length+'</span></div><p class="review-note">Choose the word that best completes the sentence. Compare the meaning, not just the spelling.</p><p class="contrast-prompt">'+esc(pair.prompt).replace('___','<span class="contrast-blank">_____</span>')+'</p><div class="contrast-options">'+options.map(word=>'<button type="button" class="btn '+(last?(word===pair.answer?'':'btn-ghost'):'btn-ghost')+'" data-contrast-answer="'+esc(word)+'" data-contrast-pair="'+esc(pair.id)+'" '+(last?'disabled':'')+'>'+esc(word)+'</button>').join('')+'</div>'+(last?'<p class="contrast-feedback '+(last.correct?'is-correct':'is-incorrect')+'">'+(last.correct?'Correct — well distinguished.':'Good attempt. The best answer is '+esc(pair.answer)+'. Compare the two sounds and try the next pair.')+' '+esc(pair.explain)+'</p><button type="button" class="btn" data-contrast-next>Next pair</button>':'')+'</section>';
   }
   const REVIEW_INTERVALS=[1,3,7,14,30];
   function recordReviewOutcome(item, correct) {
@@ -2587,7 +2587,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
       }else{
         recordReviewOutcome(item,false);
         item.errors=(Number(item.errors)||0)+1;item.box=1;item.interval=0;item.streak=0;item.exerciseStage=0;item.mastered=false;item.due=dayKey();
-        save();renderWords();toast('Not quite. The word returned to Box 1 for extra practice.');
+        save();renderWords();toast((state.translationEnabled||state.helpArabic)?'لا بأس، هذه فرصة إضافية للتدرّب. أعدنا الكلمة إلى المربع الأول.':'No worries — this is another chance to practise. The word is back in Box 1.');
       }
       return;
     }
@@ -3027,10 +3027,10 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     $('#answers').classList.add('done');
     renderSteps(); sfx(ok ? 'ok' : 'no');
     const last = G.i === game.questions.length - 1;
-    if(G.type==='grammar'&&G.grammarMode==='fix'){showSheet(ok,'<h3>'+(ok?'Sentence repaired!':'Not quite.')+'</h3><p>'+(ok?'You chose the correct form.':'Correct form: <b>'+esc(q.answers[q.correct])+'</b>')+'</p><p>'+esc(q.explain)+'</p><div class="sheet-actions"><button class="btn" id="go-next">'+(last?'See results':'Continue')+ic('arrow')+'</button></div>');return;}
+    if(G.type==='grammar'&&G.grammarMode==='fix'){showSheet(ok,'<h3>'+(ok?'Sentence repaired!':'Almost — here’s how to fix it.')+'</h3><p>'+(ok?'You chose the correct form.':'Mistakes help reveal the rule. The corrected form is: <b>'+esc(q.answers[q.correct])+'</b>')+'</p><p>'+esc(q.explain)+'</p><div class="sheet-actions"><button class="btn" id="go-next">'+(last?'See results':'Continue')+ic('arrow')+'</button></div>');return;}
     showSheet(ok,
-      '<h3><span class="sheet-mark">' + ic(ok ? 'check' : 'x') + '</span>' + (ok ? 'Exactly right!' : 'Not quite — and that’s okay.') + '</h3>' +
-      (ok ? '' : '<p>Correct answer: <b>' + esc(q.answers[q.correct]) + '</b></p>') +
+      '<h3><span class="sheet-mark">' + ic(ok ? 'check' : 'lightbulb') + '</span>' + (ok ? 'Exactly right!' : 'Not quite yet — let’s learn from it.') + '</h3>' +
+      (ok ? '' : '<p class="retry-hint-note">' + ((state.translationEnabled || state.helpArabic) ? 'المحاولة جزء من التعلّم. انظر إلى الإجابة، ثم ركّز على القرينة التي تساعدك في المرة القادمة.' : 'Every attempt helps you learn. Take a look at the answer, then notice the clue that can help next time.') + '</p><p><strong>' + ((state.translationEnabled || state.helpArabic) ? 'الإجابة الأنسب:' : 'Best answer:') + '</strong> <b>' + esc(q.answers[q.correct]) + '</b></p>') +
       '<p>' + esc(q.explain) + '</p>' + (!ok ? '<p class="arabic answer-explanation-ar" lang="ar" dir="rtl">' + esc(q.explain_ar || q.why_ar || q.arabic_hint || (q.aha&&q.aha.ar) || 'راجع معنى الجملة كاملةً، ولا تعتمد على ترجمة الكلمة وحدها لاختيار الصياغة الأنسب.') + '</p>' : (state.helpArabic && q.explain_ar ? '<p class="arabic" lang="ar" dir="rtl">' + esc(q.explain_ar) + '</p>' : '')) +
       (!ok && G.type === 'mistakes' ? '<section class="trap-explanation" aria-label="Why Arabic speakers make this mistake"><h4>Why do Arabic speakers make this mistake?</h4><p class="arabic" lang="ar" dir="rtl">' + esc(q.why_ar || q.ar) + '</p><p class="trap-hint arabic" lang="ar" dir="rtl">' + esc(q.arabic_hint || '') + '</p></section>' : '') +
       (!ok && q.aha ? '<aside class="aha-note"><span aria-hidden="true">💡</span><div><strong>Aha moment</strong><p>'+esc(q.aha.en)+'</p><p class="arabic ar-only" lang="ar" dir="rtl">'+esc(q.aha.ar)+'</p></div></aside>' : '') +
@@ -3051,7 +3051,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     if(/^remove\s/i.test(q.fix)){corrected=words.filter((_,i)=>i!==q.wrongIndex).join(' ');}
     else {words[q.wrongIndex]=q.fix;corrected=words.join(' ');}
     const correctDisplay=corrected;
-    showSheet(ok,'<h3><span class="sheet-mark">'+ic(ok?'check':'x')+'</span>'+(ok?'Exactly right!':'Good try — spot the pattern.')+'</h3><p><strong>Corrected sentence:</strong></p><p class="spot-corrected">'+esc(correctDisplay)+'</p>'+(!ok?'<p class="spot-reveal">You selected: <span class="spot-wrong-word">'+esc(words[index]||'')+'</span></p>':'')+'<p>'+esc(q.why_en)+'</p><p class="arabic ar-only" lang="ar" dir="rtl">'+esc(q.why_ar)+'</p>'+( !ok&&q.aha?'<aside class="aha-note"><span aria-hidden="true">💡</span><div><strong>Aha moment</strong><p>'+esc(q.aha.en)+'</p><p class="arabic ar-only" lang="ar" dir="rtl">'+esc(q.aha.ar)+'</p></div></aside>':'')+'<div class="sheet-actions"><button class="btn" id="go-next">'+(G.i===G.questions.length-1?'See results':'Continue')+ic('arrow')+'</button></div>');
+    showSheet(ok,'<h3><span class="sheet-mark">'+ic(ok?'check':'lightbulb')+'</span>'+(ok?'Exactly right!':'Good effort — let’s spot the pattern together.')+'</h3>'+(!ok?'<p class="retry-hint-note">Finding the pattern takes practice. Compare the corrected sentence with the original and notice what changed.</p>':'')+'<p><strong>Corrected sentence:</strong></p><p class="spot-corrected">'+esc(correctDisplay)+'</p>'+(!ok?'<p class="spot-reveal">You selected: <span class="spot-wrong-word">'+esc(words[index]||'')+'</span></p>':'')+'<p>'+esc(q.why_en)+'</p><p class="arabic ar-only" lang="ar" dir="rtl">'+esc(q.why_ar)+'</p>'+( !ok&&q.aha?'<aside class="aha-note"><span aria-hidden="true">💡</span><div><strong>Aha moment</strong><p>'+esc(q.aha.en)+'</p><p class="arabic ar-only" lang="ar" dir="rtl">'+esc(q.aha.ar)+'</p></div></aside>':'')+'<div class="sheet-actions"><button class="btn" id="go-next">'+(G.i===G.questions.length-1?'See results':'Continue')+ic('arrow')+'</button></div>');
     renderSteps();sfx(ok?'ok':'no');
   }
   function editDistanceOne(a,b) {
@@ -3067,14 +3067,14 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     if(!answer){feedback.textContent='Type an answer first.';feedback.className='typing-feedback bad';input.focus();return;}
     const accepted=q.accept.map(x=>String(x).trim().replace(/\s+/g,' ').toLowerCase());
     if(accepted.includes(answer)){finishTyping(true);return;}
-    if(!G.typingRetry&&accepted.some(x=>editDistanceOne(answer,x))){G.typingRetry=true;feedback.textContent='Very close! Check the spelling and try once more — no stars lost.';feedback.className='typing-feedback near';input.select();return;}
+    if(!G.typingRetry&&accepted.some(x=>editDistanceOne(answer,x))){G.typingRetry=true;feedback.textContent=(state.translationEnabled||state.helpArabic?'قريب جدًا! راجع التهجئة وحاول مرة أخرى — لن تخسر أي نجوم.':'So close! Check the spelling and try once more — no stars lost.');feedback.className='typing-feedback near';input.select();return;}
     finishTyping(false);
   }
   function finishTyping(ok) {
     const item=G.questions[G.i],q=item.q;G.answered=true;
     if(ok)G.score++;else{const key='typing-'+q.level;state.weakTraps[key]=(Number(state.weakTraps[key])||0)+1;save();}
     G.results[G.i]=ok?'ok':'no';renderSteps();sfx(ok?'ok':'no');
-    showSheet(ok,'<h3><span class="sheet-mark">'+ic(ok?'check':'x')+'</span>'+(ok?'Exactly right!':'Not quite — keep going.')+'</h3>'+(!ok?'<p><strong>Accepted answer:</strong> '+esc(q.accept.join(' / '))+'</p>':'')+'<p>'+esc(q.why_en)+'</p><p class="arabic ar-only" lang="ar" dir="rtl">'+esc(q.why_ar)+'</p>'+(!ok&&q.aha?'<aside class="aha-note"><span aria-hidden="true">💡</span><div><strong>Aha moment</strong><p>'+esc(q.aha.en)+'</p><p class="arabic ar-only" lang="ar" dir="rtl">'+esc(q.aha.ar)+'</p></div></aside>':'')+'<div class="sheet-actions"><button class="btn" id="go-next">'+(G.i===G.questions.length-1?'See results':'Continue')+ic('arrow')+'</button></div>');
+    showSheet(ok,'<h3><span class="sheet-mark">'+ic(ok?'check':'lightbulb')+'</span>'+(ok?'Exactly right!':'Not yet — this is useful practice.')+'</h3>'+(!ok?'<p class="retry-hint-note">Your spelling or wording can improve with practice. Compare your answer with an accepted version; you can keep learning from this attempt.</p><p><strong>One accepted answer:</strong> '+esc(q.accept[0])+'</p>':'')+'<p>'+esc(q.why_en)+'</p><p class="arabic ar-only" lang="ar" dir="rtl">'+esc(q.why_ar)+'</p>'+(!ok&&q.aha?'<aside class="aha-note"><span aria-hidden="true">💡</span><div><strong>Aha moment</strong><p>'+esc(q.aha.en)+'</p><p class="arabic ar-only" lang="ar" dir="rtl">'+esc(q.aha.ar)+'</p></div></aside>':'')+'<div class="sheet-actions"><button class="btn" id="go-next">'+(G.i===G.questions.length-1?'See results':'Continue')+ic('arrow')+'</button></div>');
   }
 
   function next() {
