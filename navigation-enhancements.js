@@ -116,6 +116,10 @@
       searchReturnFocus = document.activeElement;
       overlay.hidden = false; document.body.classList.add('no-scroll');
       input.value = ''; renderResults(''); setTimeout(() => input.focus(), 0);
+      // Search is the only place where loading story metadata early is useful.
+      if (typeof window.EPIPHANY_LAZY_LOAD === 'function' && typeof STORIES === 'undefined') {
+        window.EPIPHANY_LAZY_LOAD('stories').then(() => renderResults(input.value)).catch(() => {});
+      }
     }
     function close() {
       overlay.hidden = true; document.body.classList.remove('no-scroll');
@@ -130,6 +134,22 @@
       Object.entries(labels).forEach(([view, label]) => {
         if (normalize(label).includes(q)) found.push({ title: label, detail: 'Open section', view, score: 1 });
       });
+      // Story titles are searchable even before the Story Library has been opened.
+      if (typeof STORIES !== 'undefined' && Array.isArray(STORIES)) {
+        STORIES.forEach(story => {
+          const title = String(story.title || '');
+          const searchable = normalize([title, story.level, story.topic, story.description].filter(Boolean).join(' '));
+          if (title && searchable.includes(q)) found.push({ title, detail: 'Story · ' + String(story.level || ''), view: 'stories', storyId: story.id, score: 0 });
+        });
+      }
+      // Game names and descriptions are searchable from the shared search.
+      if (typeof GAMES !== 'undefined' && GAMES && typeof GAMES === 'object') {
+        Object.entries(GAMES).forEach(([id, game]) => {
+          const title = String(game.title || game.name || id).replace(/[-_]/g, ' ');
+          const searchable = normalize([title, game.description, game.subtitle, id].filter(Boolean).join(' '));
+          if (title && searchable.includes(q)) found.push({ title, detail: 'Game · Arcade', view: 'arcade', score: 1 });
+        });
+      }
       // Search all currently-rendered section content, including hidden views.
       $$('.view').forEach(section => {
         const view = section.id.replace(/-view$/, '');
@@ -152,7 +172,14 @@
         button.addEventListener('click', () => {
           close();
           navigate(item.view);
-          if (item.element && item.element.isConnected) setTimeout(() => item.element.scrollIntoView({ behavior: 'smooth', block: 'center' }), 80);
+          if (item.storyId) {
+            setTimeout(() => {
+              const storyCard = $('[data-story-open="' + CSS.escape(item.storyId) + '"]');
+              if (storyCard) storyCard.click();
+            }, 180);
+          } else if (item.element && item.element.isConnected) {
+            setTimeout(() => item.element.scrollIntoView({ behavior: 'smooth', block: 'center' }), 80);
+          }
         });
         results.append(button);
       });
