@@ -2914,7 +2914,10 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     const ok = it.answer[0] === cx && it.answer[1] === cy; if (ok) MG.score++; MG.results[MG.i] = ok ? 'ok' : 'no';
     $('.mg-map-wrap').innerHTML = dirMapSvg(it, true, [cx, cy]); miniSteps(); sfx(ok ? 'ok' : 'no');
     const right = DIRECTION_BLOCKS[it.answer[1]][it.answer[0]];
-    showSheet(ok, '<h3><span class="sheet-mark">' + ic(ok ? 'check' : 'x') + '</span>' + (ok ? 'Exactly right!' : 'Not quite.') + '</h3><p>' + (ok ? 'You followed the route to the ' : 'The route ends at the ') + '<b>' + esc(right[1]) + '</b>. The dotted line shows the way.</p><div class="sheet-actions"><button class="btn" id="go-next">' + (MG.i === MG.total - 1 ? 'See results' : 'Continue') + ic('arrow') + '</button></div>');
+    const arabicFeedback = ok
+      ? 'أحسنت! اتبعت المسار حتى وصلت إلى ' + (right[2] || right[1]) + '. يوضّح الخط المنقّط الطريق.'
+      : 'ليس تمامًا. ينتهي المسار عند ' + (right[2] || right[1]) + '. اتبع الخط المنقّط لمعرفة الطريق.';
+    showSheet(ok, '<h3><span class="sheet-mark">' + ic(ok ? 'check' : 'x') + '</span>' + (ok ? 'Exactly right!' : 'Not quite.') + '</h3><p>' + (ok ? 'You followed the route to the ' : 'The route ends at the ') + '<b>' + esc(right[1]) + '</b>. The dotted line shows the way.</p>' + (state.translationEnabled ? '<p class="story-page-ar arabic" lang="ar" dir="rtl">' + esc(arabicFeedback) + '</p>' : '') + '<div class="sheet-actions"><button class="btn" id="go-next">' + (MG.i === MG.total - 1 ? 'See results' : 'Continue') + ic('arrow') + '</button></div>');
   }
 
   function miniNext() {
