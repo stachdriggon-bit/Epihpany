@@ -20,7 +20,7 @@ test('app shows a readable recovery message when core lesson data is missing', (
   const guardStart = app.indexOf('const coreDataReady');
   const setupStart = app.indexOf('const $ = s => document.querySelector(s)');
   assert.ok(guardStart >= 0 && setupStart > guardStart, 'guard should precede app setup');
-  const guardSource = '(() => { \'use strict\';\\n' + app.slice(guardStart, setupStart) + '\\n})();';
+  const guardSource = '(() => { \'use strict\';\n' + app.slice(guardStart, setupStart) + '\n})();';
   vm.runInNewContext(guardSource, { document }, { filename: 'app-data-readiness-guard.js', timeout: 1000 });
 
   assert.equal(panels.length, 1);
