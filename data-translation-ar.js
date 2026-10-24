@@ -1864,3 +1864,9 @@ window.EPIPHANY_AR_TRANSLATION_PHRASES = Object.assign(window.EPIPHANY_AR_TRANSL
   "What is implied by “a calm sentence can still mislead”?":"ما الذي توحي به عبارة «قد تضلل الجملة الهادئة رغم ذلك»؟",
   "Which best captures the author’s view of neutrality?":"أي خيار يعبّر بأفضل صورة عن رأي الكاتب في الحياد؟"
 });
+
+/* Short standalone prompts that also appear in the original core bank. */
+window.EPIPHANY_AR_TRANSLATION_PHRASES = Object.assign(window.EPIPHANY_AR_TRANSLATION_PHRASES || {}, {
+  "She was absolutely delighted.":"كانت سعيدة للغاية.",
+  "She ___ to school every day.":"هي ___ إلى المدرسة كل يوم."
+});
