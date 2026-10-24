@@ -70,7 +70,8 @@ test('initial HTML defers stories and World data and keeps loader in offline she
   assert.match(sw, /const cached = await cache\.match\(request\);\s*if \(cached\) return cached;/);
   const app = fs.readFileSync(path.join(root, 'app.js'), 'utf8');
   assert.match(app, /window\.EPIPHANY_MERGE_AR_TRANSLATIONS = mergeArabicTranslationCatalog/);
-  assert.match(app, /if \(state\.helpArabic \|\| state\.translationEnabled\) ensureArabicTranslationCatalog\(\)/);
+  assert.doesNotMatch(app, /if \(state\.helpArabic \|\| state\.translationEnabled\) ensureArabicTranslationCatalog\(\)/);
+  assert.match(app, /if \(state\.helpArabic\) ensureArabicTranslationCatalog\(\)/);
   assert.match(app, /if \(state\.helpArabic\) ensureArabicTranslationCatalog\(\)/);
   assert.doesNotMatch(sw, /'\.\/data-translation-ar\.js'/);
 });
