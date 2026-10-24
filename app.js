@@ -93,7 +93,7 @@
     state._lastSavedXp = currentXp;
     try { localStorage.setItem('epiphany-progress', JSON.stringify(state)); }
     catch { if (!saveWarned) { saveWarned = true; toast('Progress can’t be saved in this browser. It will last for this visit only.'); } }
-    try { window.dispatchEvent(new CustomEvent('epiphany:progress-saved', {detail:{quests:Number(state.quests)||0}})); } catch {}
+    try { window.dispatchEvent(new CustomEvent('epiphany:progress-saved', {detail:{quests:Number(state.quests)||0,dailySessionDone:!!state.dailySessionDone}})); } catch {}
     if (window.EpiphanyAuth && typeof window.EpiphanyAuth.queueSave === 'function') {
       window.EpiphanyAuth.queueSave(state);
     }
