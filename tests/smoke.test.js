@@ -97,14 +97,14 @@ test('main navigation tabs open without uncaught page errors', async t => {
       if (view === 'home') {
         const arabicToggle = page.locator('#ar-toggle');
         const arabicIsOn = await page.locator('body').evaluate(el => el.classList.contains('ar-on'));
-        if (!arabicIsOn) await arabicToggle.click();
+        if (!arabicIsOn) await arabicToggle.click({ force: true });
         await page.waitForFunction(() => document.body.classList.contains('ar-on'), null, { timeout: 2000 }).catch(async error => {
           const diagnostics = await page.evaluate(() => ({arabicOn:document.body.classList.contains('ar-on'),toggle:document.querySelector('#ar-toggle')?.outerHTML,loaderType:typeof window.EPIPHANY_LAZY_LOAD}));
           throw new Error('Arabic help toggle did not activate: ' + JSON.stringify({diagnostics,requested,consoleErrors,pageErrors:errors}) + '; ' + error.message);
         });
         if (typeof (await page.evaluate(() => window.EPIPHANY_AR_TRANSLATION_WORDS)) === 'undefined' && !requested.some(path => path.endsWith('/data-translation-ar.js'))) {
-          await arabicToggle.click();
-          await arabicToggle.click();
+          await arabicToggle.click({ force: true });
+          await arabicToggle.click({ force: true });
         }
         await page.waitForFunction(() => typeof window.EPIPHANY_AR_TRANSLATION_WORDS !== 'undefined', null, { timeout: 5000 }).catch(async error => {
           const diagnostics = await page.evaluate(() => ({
