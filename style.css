@@ -2406,3 +2406,5 @@ body.focus-mode .top,body.focus-mode .bottom-nav{display:none!important}
 .avatar-category-filters button.is-selected{border-color:var(--profile-accent);background:color-mix(in srgb,var(--profile-accent) 10%,var(--surface));color:var(--profile-accent)}
 #profile-view .profile-nav a[aria-current="location"]{color:var(--profile-accent);border-color:var(--profile-accent)}
 #profile-view .block-head h2{text-decoration:underline;text-decoration-color:color-mix(in srgb,var(--profile-accent) 36%,transparent);text-decoration-thickness:3px;text-underline-offset:7px}
+
+.avatar-choice[hidden]{display:none!important}
