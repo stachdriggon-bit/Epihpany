@@ -2415,7 +2415,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     document.body.classList.toggle('immersion-week-active', immersionActive);
     const translationToggle = $('#translation-toggle');
     if (translationToggle) { translationToggle.disabled = immersionActive; translationToggle.title = immersionActive ? 'Arabic translation is paused during immersion week.' : 'Toggle Arabic translation'; translationToggle.setAttribute('aria-pressed', String(!!state.translationEnabled)); const label=translationToggle.querySelector('span'); if(label) label.textContent = immersionActive ? 'Immersion week: English only' : state.translationEnabled ? 'Arabic translation: On' : 'Arabic translation: Off'; }
-    $$('#ar-toggle, #game-ar').forEach(b => { b.disabled = immersionActive; if (immersionActive) b.title = 'Arabic help is paused during immersion week.'; });
+    $$$('#ar-toggle, #game-ar').forEach(b => { b.disabled = immersionActive; if (immersionActive) b.title = 'Arabic help is paused during immersion week.'; });
     document.body.classList.toggle('ar-on', !!state.helpArabic);
     document.documentElement.dir = state.helpArabic ? 'rtl' : 'ltr';
     document.body.dir = state.helpArabic ? 'rtl' : 'ltr';
@@ -2918,7 +2918,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
       else { state.adaptiveStreak = 0; state.adaptiveOffset = Math.max(-2, (Number(state.adaptiveOffset) || 0) - 1); G.adaptiveMessage = 'Let’s adjust the next round to a more comfortable level.'; }
       save();
     }
-    $$('#answers .answer').forEach((b, k) => { b.disabled = true; if (k === q.correct) b.classList.add('correct'); else if (k === choice) b.classList.add('wrong'); });
+    $$$( '#answers .answer').forEach((b, k) => { b.disabled = true; if (k === q.correct) b.classList.add('correct'); else if (k === choice) b.classList.add('wrong'); });
     $('#answers').classList.add('done');
     renderSteps(); sfx(ok ? 'ok' : 'no');
     const last = G.i === game.questions.length - 1;
