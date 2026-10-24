@@ -37,11 +37,13 @@ test('main navigation tabs open without uncaught page errors', async t => {
   try {
     browser = await chromium.launch({ headless: true });
     const errors = [];
+    const consoleErrors = [];
     const views = ['home','stories','world','arcade','words','trophies','progress','profile'];
     for (const view of views) {
       const page = await browser.newPage();
       const requested = [];
       page.on('pageerror', error => errors.push(view + ': ' + error.message));
+      page.on('console', message => { if (message.type() === 'error') consoleErrors.push(view + ': ' + message.text()); });
       page.on('request', request => {
         try {
           const url = new URL(request.url());
@@ -80,7 +82,10 @@ test('main navigation tabs open without uncaught page errors', async t => {
         const arabicToggle = page.locator('#ar-toggle');
         const arabicIsOn = await page.locator('body').evaluate(el => el.classList.contains('ar-on'));
         if (!arabicIsOn) await arabicToggle.click();
-        await page.waitForFunction(() => document.body.classList.contains('ar-on'), null, { timeout: 2000 });
+        await page.waitForFunction(() => document.body.classList.contains('ar-on'), null, { timeout: 2000 }).catch(async error => {
+          const diagnostics = await page.evaluate(() => ({arabicOn:document.body.classList.contains('ar-on'),toggle:document.querySelector('#ar-toggle')?.outerHTML,loaderType:typeof window.EPIPHANY_LAZY_LOAD}));
+          throw new Error('Arabic help toggle did not activate: ' + JSON.stringify({diagnostics,requested,consoleErrors,pageErrors:errors}) + '; ' + error.message);
+        });
         if (typeof (await page.evaluate(() => window.EPIPHANY_AR_TRANSLATION_WORDS)) === 'undefined' && !requested.some(path => path.endsWith('/data-translation-ar.js'))) {
           await arabicToggle.click();
           await arabicToggle.click();
@@ -92,7 +97,7 @@ test('main navigation tabs open without uncaught page errors', async t => {
             mergerType: typeof window.EPIPHANY_MERGE_AR_TRANSLATIONS,
             translationTogglePressed: document.querySelector('#translation-toggle')?.getAttribute('aria-pressed')
           }));
-          throw new Error('Arabic catalogue did not load: ' + JSON.stringify({diagnostics, requested, pageErrors: errors}) + '; ' + error.message);
+          throw new Error('Arabic catalogue did not load: ' + JSON.stringify({diagnostics, requested, consoleErrors, pageErrors: errors}) + '; ' + error.message);
         });
         assert.ok(requested.some(path => path.endsWith('/data-translation-ar.js')), 'Arabic catalogue should load only after Arabic help is enabled');
       }
