@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f8f7ff"/><stop offset="1" stop-color="#e4f7f4"/></linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#7557e8"/><stop offset="1" stop-color="#3ab9a6"/></linearGradient>
+  </defs>
+  <rect width="1200" height="630" rx="36" fill="url(#bg)"/>
+  <circle cx="1030" cy="90" r="180" fill="#7557e8" opacity=".08"/>
+  <circle cx="120" cy="590" r="220" fill="#3ab9a6" opacity=".12"/>
+  <rect x="80" y="78" width="74" height="74" rx="23" fill="url(#accent)"/>
+  <path d="M117 92l8 22 23 8-23 8-8 23-8-23-23-8 23-8z" fill="#fff"/>
+  <text x="178" y="130" font-family="Arial,sans-serif" font-size="42" font-weight="700" fill="#282442">epiphany</text>
+  <text x="82" y="270" font-family="Arial,sans-serif" font-size="65" font-weight="700" fill="#282442">Real English.</text>
+  <text x="82" y="346" font-family="Arial,sans-serif" font-size="65" font-weight="700" fill="#7557e8">Small daily quests.</text>
+  <text x="85" y="410" font-family="Arial,sans-serif" font-size="27" fill="#5d5a70">Practise words, stories and real-life skills.</text>
+  <text x="85" y="450" font-family="Arial,sans-serif" font-size="27" fill="#5d5a70">Start for free. No account needed to try.</text>
+  <rect x="82" y="495" width="265" height="65" rx="18" fill="url(#accent)"/>
+  <text x="116" y="537" font-family="Arial,sans-serif" font-size="24" font-weight="700" fill="#fff">Start learning →</text>
+  <rect x="770" y="185" width="345" height="285" rx="28" fill="#fff" stroke="#e6e1f7" stroke-width="2"/>
+  <rect x="800" y="215" width="285" height="58" rx="16" fill="#f1edff"/>
+  <text x="824" y="251" font-family="Arial,sans-serif" font-size="20" font-weight="700" fill="#5e49c7">WORD OF THE DAY</text>
+  <text x="805" y="328" font-family="Arial,sans-serif" font-size="42" font-weight="700" fill="#282442">resilient</text>
+  <text x="805" y="366" font-family="Arial,sans-serif" font-size="20" fill="#5d5a70">Able to recover after difficulty.</text>
+  <rect x="805" y="400" width="195" height="38" rx="12" fill="#e5f7f3"/>
+  <text x="824" y="425" font-family="Arial,sans-serif" font-size="17" font-weight="700" fill="#247d70">Learn in context</text>
+</svg>
