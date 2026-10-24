@@ -94,8 +94,9 @@
     if (attempt < 24) setTimeout(() => openDeepStory(id, attempt + 1), 150);
   }
   function routeFromHash() {
-    const raw = location.hash.slice(1);
-    if (!raw || raw.startsWith('word=') || raw.startsWith('word%3D')) return;
+    let raw = location.hash.slice(1);
+    if (raw.startsWith('word=') || raw.startsWith('word%3D')) return;
+    if (!raw) raw = 'home';           // the very first history entry has no hash: that is the home page
     const parts = decodeURIComponent(raw).split('/');
     const view = parts[0].split(/[?&]/)[0];
     if (!labels[view]) return;
@@ -234,9 +235,11 @@
       group.addEventListener('mouseenter', () => { if (desktop()) { closeMenus(group); group.open = true; } });
       group.addEventListener('mouseleave', () => { if (desktop()) group.open = false; });
       const summary = $('summary', group);
-      if (summary) summary.addEventListener('click', () => {
-        // Let the native <details> action toggle the clicked group; only close siblings here.
+      if (summary) summary.addEventListener('click', event => {
         closeMenus(group);
+        // On desktop the pointer already opened the menu on hover, so a click must keep it open
+        // (the native <details> toggle would close it again and the menu would seem broken).
+        if (desktop()) { event.preventDefault(); group.open = true; }
       });
     });
     document.addEventListener('click', event => {
@@ -352,11 +355,29 @@
     }
   }
 
+  // Every way of changing page (top tabs, menus, buttons, search, code) toggles .is-active on a .view.
+  // Watching that single signal keeps the address bar and the browser Back button in sync no matter
+  // which handler ran. (app.js stops the click event for the top tabs, so click-based tracking missed them.)
+  function setupHistorySync() {
+    if (!location.hash) history.replaceState({ epiphanyView: 'home' }, '', '#home');
+    const observer = new MutationObserver(() => {
+      const view = currentView();
+      const target = routeFor(view);
+      const onStoryRoute = view === 'stories' && location.hash.startsWith('#stories/');
+      if (!restoringHistory && location.hash !== target && !onStoryRoute) {
+        history.pushState({ epiphanyView: view }, '', target);
+      }
+      syncCurrentNav(view);
+    });
+    $$('.view').forEach(section => observer.observe(section, { attributes: true, attributeFilter: ['class'] }));
+  }
+
   function init() {
     setupMobileLabel(); setupBreadcrumb(); setupSearch(); setupDropdowns(); setupFinalPolish();
     const view = currentView();
     syncCurrentNav(view);
     routeFromHash();
+    setupHistorySync();
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, { once: true });
   else init();

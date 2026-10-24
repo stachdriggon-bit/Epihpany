@@ -2158,6 +2158,8 @@ body[data-theme="dark"] .monthly-word-in-feedback,body[data-theme="dark"] .story
 .nav-group[open] .nav-chevron{transform:rotate(180deg)}
 .nav-submenu{position:absolute;z-index:100;top:calc(100% + 8px);left:0;min-width:270px;max-width:min(340px,calc(100vw - 28px));padding:8px;display:grid;gap:4px;
   border:1px solid var(--line);border-radius:17px;background:var(--surface);box-shadow:0 16px 42px rgba(20,25,45,.18)}
+/* invisible bridge over the 8px gap so hover-open menus do not close while the pointer travels into them */
+.nav-submenu::before{content:"";position:absolute;left:0;right:0;top:-10px;height:10px}
 .nav-submenu .tab{width:100%;justify-content:flex-start;text-align:left;white-space:normal;border-radius:11px;padding:10px 12px;display:grid;
   grid-template-columns:auto 1fr;column-gap:9px;row-gap:3px;font-size:14px}
 .nav-submenu .tab small{grid-column:2;color:var(--muted);font-size:12px;font-weight:500;line-height:1.35}

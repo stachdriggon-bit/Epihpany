@@ -25,7 +25,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Cairo:wght@500;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=6cbab91e">
+  <link rel="stylesheet" href="style.css?v=da5c470f">
   <link rel="stylesheet" href="life-skills.css?v=00e4c835">
   <script src="data.js?v=7f0faa36" defer></script>
   <script src="data-mistakes.js?v=e7fd865a" defer></script>
@@ -34,16 +34,31 @@
   <script src="data-wotd.js?v=baf8d44d" defer></script>
   <script src="data-aha.js?v=47fc5af7" defer></script>
   <script src="data-minigames.js?v=d1b6b5a4" defer></script>
-  <script src="data-expansion.js?v=20261024ax" defer></script>
+  <script src="data-expansion.js?v=cf6b8775" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
   <script src="supabase-config.js?v=7a16f4a2" defer></script>
-  <script src="account.js?v=ea18c315" defer></script>
-  <script src="notifications.js?v=bc8b50b6" defer></script>
-<script src="telemetry.js?v=20261024m" defer></script>
-<script src="lazy-data.js?v=20261024o" defer></script>
-  <script src="app.js?v=20261024az" defer></script>
-  <script src="navigation-enhancements.js?v=38261bdc" defer></script>
+  <script src="account.js?v=f8648063" defer></script>
+  <script src="notifications.js?v=a6066189" defer></script>
+<script src="telemetry.js?v=e5eac23f" defer></script>
+<script src="lazy-data.js?v=a94cc15e" defer></script>
+  <script src="app.js?v=40d4ce1e" defer></script>
+  <script src="navigation-enhancements.js?v=7ed863ac" defer></script>
+<script>
+  /* Returning visitors skip the landing page: it is only for the very first visit. */
+  try { if (localStorage.getItem('epiphany-landing-seen') === '1') document.documentElement.classList.add('landing-seen'); } catch (e) {}
+</script>
 <style>
+  /* First visit: show ONLY the landing page. Language, welcome and placement dialogs wait until the visitor presses Start,
+     and then appear one at a time (language first) instead of stacked on top of each other. */
+  body:not(.epiphany-entered) #account-welcome-modal,
+  body:not(.epiphany-entered) #help-language-modal,
+  body:not(.epiphany-entered) #placement { display:none !important; }
+  body.account-modal-open:not(.epiphany-entered) { overflow:auto; }
+  body:has(#help-language-modal:not([hidden])) #account-welcome-modal { display:none !important; }
+  html.landing-seen #landing-screen { display:none !important; }
+  html.landing-seen body:not(.epiphany-entered) > header.top,
+  html.landing-seen body:not(.epiphany-entered) > .bottom-nav,
+  html.landing-seen body:not(.epiphany-entered) > main#main { display:revert !important; }
   body:not(.epiphany-entered) > header.top,
   body:not(.epiphany-entered) > .bottom-nav,
   body:not(.epiphany-entered) > main#main { display:none !important; }
@@ -304,7 +319,7 @@
   </section>
 
   <!-- STORIES -->
-  <section class="view" id="stories-view" aria-labelledby="stories-title"><div class="page"><div class="intro"><p class="kicker">READ · TAP · REMEMBER</p><h1 id="stories-title" tabindex="-1">Stories</h1><p class="lead">Choose a story mode: explore branching stories, or build your own story and practise explaining words from context.</p></div><div id="stories-content"></div></div></section>
+  <section class="view" id="stories-view" aria-labelledby="stories-title"><div class="page"><div class="intro"><p class="kicker">READ · TAP · REMEMBER</p><h1 id="stories-title" tabindex="-1">Stories</h1><p class="lead">Read branching stories, or build your own.</p></div><div id="stories-content"></div></div></section>
 
   <!-- ARCADE: standalone games and practice library -->
   <section class="view" id="arcade-view" aria-labelledby="arcade-title">
@@ -343,7 +358,7 @@
       <div class="intro">
         <p class="kicker">REAL LIFE · REAL LANGUAGE · REAL CONFIDENCE</p>
         <h1 id="lifeskills-title" tabindex="-1">Life Skills <span class="hl">Studio</span></h1>
-        <p class="lead">Practical English for everyday decisions, forms, signs, shopping and conversations.</p>
+        <p class="lead">Practical English for forms, signs, shopping and talking.</p>
       </div>
       <div id="life-skills-content" aria-live="polite"></div>
     </div>
@@ -597,9 +612,16 @@
 
 <script>
   (() => {
+    if (document.documentElement.classList.contains('landing-seen')) {
+      document.body.classList.add('epiphany-entered');
+      const landing = document.getElementById('landing-screen');
+      if (landing) landing.remove();
+      return;
+    }
     const start = document.getElementById('landing-start');
     if (!start) return;
     start.addEventListener('click', () => {
+      try { localStorage.setItem('epiphany-landing-seen', '1'); } catch (e) {}
       document.body.classList.add('epiphany-entered');
       const landing = document.getElementById('landing-screen');
       if (landing) landing.remove();

@@ -2,6 +2,8 @@
    Saved progress keeps the same localStorage key and shape as the first prototype. */
 (() => {
   'use strict';
+  // Read BEFORE the app saves its defaults; afterwards the key always exists and every visitor would look "returning".
+  const HAD_SAVED_PROGRESS_AT_LOAD = (() => { try { return !!localStorage.getItem('epiphany-progress'); } catch { return false; } })();
   const coreDataReady =
     typeof LEVELS !== 'undefined' && Array.isArray(LEVELS) && LEVELS.length >= 6 &&
     typeof GAMES !== 'undefined' && GAMES && typeof GAMES === 'object' &&
@@ -5173,7 +5175,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
   let helpLanguageChoice = '';
   try { helpLanguageChoice = localStorage.getItem('epiphany-help-language-choice') || ''; } catch {}
   let hasExistingProgress = false;
-  try { hasExistingProgress = !!localStorage.getItem('epiphany-progress'); } catch {}
+  hasExistingProgress = HAD_SAVED_PROGRESS_AT_LOAD;
   if (state.helpArabic) ensureArabicTranslationCatalog().then(() => renderAll()).catch(() => {});
   if (helpLanguageModal && !helpLanguageChoice && !hasExistingProgress) {
     helpLanguageModal.hidden = false;

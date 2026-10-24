@@ -20,6 +20,8 @@ First time only: `npm install` then `npm run test:install`.
 | `static.test.js` → offline | a new `.js`/`.css` file missing from `CORE_ASSETS` (works online, breaks offline) |
 | `static.test.js` → stamps | forgetting to bump versions |
 | `static.test.js` → navigation CSS | navigation layout rules scattered around `style.css` |
+| `first-visit.test.js` | landing page, language choice and welcome dialog stacked on each other; returning visitors forced through the landing page again |
+| `smoke.test.js` | service worker / offline / Arabic lazy-loading regressions |
 | `navigation.test.js` | any menu button that can't be clicked or doesn't open its page, at 4 screen widths, plus any runtime error |
 
 ## Rules of thumb
@@ -33,3 +35,12 @@ First time only: `npm install` then `npm run test:install`.
 - **New data/script file:** add it to `index.html` *and* `CORE_ASSETS` in `service-worker.js`, then `npm run stamp`.
 - **Fonts/libraries from a CDN** don't work offline. Prefer hosting them in the repo.
 - Keep new code in small, readable functions (one statement per line) in a new file per feature rather than extending `app.js`.
+
+## Lazy-loaded files (lazy-data.js)
+`npm run stamp` also refreshes the `?v=` hashes inside `lazy-data.js` and regenerates `LAZY_ASSETS` in `service-worker.js`
+(background offline cache for Stories, World, Think Lab…). To add a lazy file, list it in a group in `lazy-data.js`, then run `npm run stamp`.
+The Arabic catalogue is deliberately never precached (it loads only when Arabic help is on).
+
+## Browser history
+Page changes are tracked by watching `.view.is-active` in `navigation-enhancements.js`, not by click handlers
+(`app.js` stops the click for the top tabs). Anything that switches page therefore gets a Back-button entry automatically.
