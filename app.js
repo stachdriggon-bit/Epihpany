@@ -871,13 +871,17 @@
   };
   function wordContext(word,meaning){
     const key=String(word||'').toLowerCase();
-    const daily=typeof WOTD_WORDS!=='undefined'&&WOTD_WORDS.find(x=>x.word.toLowerCase()===key);
-    const personal=(state.encounteredWords||[]).filter(x=>String(x.word||'').toLowerCase()===key&&x.context).slice(-2);
-    const examples=personal.length?personal.map(x=>x.context):daily?[daily.example, 'I learned the word '+word+' by using it in a real situation.']:[
-      'I used “'+word+'” while talking about '+(meaning||'everyday life')+'.',
-      'Try to use “'+word+'” in a conversation today.'
-    ];
-    return {examples,collocations:WORD_COLLOCATIONS[key]||['use '+key+' naturally','learn the word in context','a common use of '+key]};
+    const daily=typeof WOTD_WORDS!=='undefined'&&WOTD_WORDS.find(x=>String(x.word||'').toLowerCase()===key);
+    const personal=(state.encounteredWords||[]).filter(x=>String(x.word||'').toLowerCase()===key&&x.context).slice(-3);
+    const examples=[];
+    const addExample=(text,source)=>{const value=String(text||'').trim();if(value&&!examples.some(x=>x.text.toLowerCase()===value.toLowerCase()))examples.push({text:value,source});};
+    if(daily)addExample(daily.example,'Everyday example');
+    personal.forEach((x,i)=>addExample(x.context,'Your own context '+(i+1)));
+    if(examples.length<1)addExample('I learned “'+word+'” while talking about '+(meaning||'everyday life')+'.','Everyday life');
+    if(examples.length<2)addExample('Try using “'+word+'” when you talk about something you did today.','Your daily life');
+    if(examples.length<3)addExample('Imagine explaining “'+word+'” to a friend using a new sentence.','Conversation');
+    const contexts=[{title:'See it',kind:'example',text:examples[0].text},{title:'Connect it to your life',kind:examples[1].source.indexOf('Your own context')===0?'example':'prompt',text:examples[1].text},{title:'Use it somewhere new',kind:examples[2].source.indexOf('Your own context')===0?'example':'prompt',text:examples[2].text}];
+    return {examples:examples.map(x=>x.text),contexts,collocations:WORD_COLLOCATIONS[key]||['use '+key+' naturally','learn the word in context','a common use of '+key]};
   }
   function addReview(raw,fallback) {
     const p=wordParts(raw,fallback); if(!p)return;
@@ -897,7 +901,7 @@
     const stageNames=['Recall the meaning','Understand it in context','Write it from listening','Use it in a sentence'];
     let exercise='';
     if(stage===0)exercise='<p class="review-note">First, try to recall the meaning without looking. There is no penalty for uncertainty.</p><p id="review-meaning" hidden>'+esc(w.meaning)+'</p><button class="btn btn-ghost" id="reveal-review">Reveal meaning</button><div class="review-confidence" id="review-actions" hidden><p class="review-confidence-prompt">How well did you remember it?</p><div class="review-confidence-options"><button type="button" class="btn btn-ghost" data-review-confidence="low" data-word="'+esc(w.word)+'">Not sure</button><button type="button" class="btn btn-ghost" data-review-confidence="medium" data-word="'+esc(w.word)+'">A little</button><button type="button" class="btn" data-review-confidence="high" data-word="'+esc(w.word)+'">Confident</button></div></div>';
-    if(stage===1)exercise='<p class="review-note">Read the examples and collocations. Can you explain how the word is used?</p><div class="word-examples">'+ctx.examples.map((x,i)=>'<p><b>Example '+(i+1)+':</b> '+esc(x)+'</p>').join('')+'</div><p class="word-collocations"><b>Common combinations:</b> '+ctx.collocations.map(esc).join(' · ')+'</p><button class="btn" data-review-stage-success="'+esc(w.word)+'">I understand the context</button>';
+    if(stage===1)exercise='<p class="review-note">Meet the word in three different contexts. Notice what stays the same and what changes.</p><div class="three-contexts">'+ctx.contexts.map((x,i)=>'<article class="context-card"><span class="context-number">'+(i+1)+'</span><div><b>'+esc(x.title)+'</b><p>'+esc(x.text)+'</p></div></article>').join('')+'</div><p class="word-collocations"><b>Common combinations:</b> '+ctx.collocations.map(esc).join(' · ')+'</p><p class="review-note">Before continuing, try to create one new example of your own.</p><button class="btn" data-review-stage-success="'+esc(w.word)+'">I can use it in context</button>';
     if(stage===2)exercise='<p class="review-note">Listen to the word, then type exactly what you hear.</p><button class="btn btn-ghost" data-speak="'+esc(w.word)+'">'+ic('sound')+' Play word</button><form class="word-dictation" data-word-dictation="'+esc(w.word)+'"><input name="typedWord" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Type the word you heard" required><button class="btn" type="submit">Check spelling</button></form>';
     if(stage===3)exercise='<p class="review-note">Write your own sentence using the word. The goal is meaningful use, not memorising a definition.</p><textarea class="word-own-sentence" data-own-sentence="'+esc(w.word)+'" rows="2" placeholder="Write a sentence with '+esc(w.word)+'…"></textarea><button class="btn" data-review-sentence="'+esc(w.word)+'">Check my sentence</button><p class="review-note">Self-check: is the sentence understandable and is the word used correctly?</p>';
     const box=Math.max(1,Math.min(5,Number(w.box)||1));
@@ -1176,7 +1180,7 @@
     const n=state.words.length, due=state.review.filter(w=>!w.due||w.due<=dayKey()).length;
     $('#words-count').textContent=n+(n===1?' word':' words')+' · '+due+' to review';
     const vault=!n?'<div class="empty"><div class="empty-ic">'+ic('book')+'</div><h2>Your vault is empty, for now.</h2><p>Answer vocabulary questions correctly to collect useful words.</p><button class="btn" data-game="vocabulary">'+ic('play')+'Find your first word</button></div>':
-      '<div class="vault">'+state.words.slice().reverse().map(w=>{const info=wordContext(w[0],w[1]);return '<article class="word"><div class="word-title"><b>'+esc(w[0])+'</b><button class="listen-btn" data-speak="'+esc(w[0])+'" aria-label="Listen to '+esc(w[0])+'">'+ic('sound')+' Listen</button></div><span>'+esc(w[1])+'</span><em>'+esc(w[2]||'A1')+'</em><div class="word-examples">'+info.examples.map((x,i)=>'<p><b>Example '+(i+1)+':</b> '+esc(x)+'</p>').join('')+'</div><p class="word-collocations"><b>Common combinations:</b> '+info.collocations.map(esc).join(' · ')+'</p></article>';}).join('')+'</div>';
+      '<div class="vault">'+state.words.slice().reverse().map(w=>{const info=wordContext(w[0],w[1]);return '<article class="word"><div class="word-title"><b>'+esc(w[0])+'</b><button class="listen-btn" data-speak="'+esc(w[0])+'" aria-label="Listen to '+esc(w[0])+'">'+ic('sound')+' Listen</button></div><span>'+esc(w[1])+'</span><em>'+esc(w[2]||'A1')+'</em><div class="three-contexts">'+info.contexts.map((x,i)=>'<article class="context-card"><span class="context-number">'+(i+1)+'</span><div><b>'+esc(x.title)+'</b><p>'+esc(x.text)+'</p></div></article>').join('')+'</div><p class="word-collocations"><b>Common combinations:</b> '+info.collocations.map(esc).join(' · ')+'</p></article>';}).join('')+'</div>';
     const dailyContinue = ['lesson','story'].includes(state.dailySessionStep)
       ? '<section class="review-panel daily-session-return"><p class="kicker">YOUR DAILY PATH</p><h2>'+(state.dailySessionStep==='lesson'?'Word review complete':'Practice complete')+'</h2><p class="review-note">'+(state.dailySessionStep==='lesson'?'You’re ready for the personalised practice activity.':'Your short story is ready whenever you are.')+'</p><button type="button" class="btn" data-daily-session-continue>'+(state.dailySessionStep==='lesson'?'Continue to practice':'Continue daily session')+' '+ic('arrow')+'</button></section>'
       : '';
