@@ -4368,6 +4368,28 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     if(e.target.closest('[data-order-check]')){const actual=G.orderPicked.map(i=>G.orderWords[i]).join(' ').replace(/[.!?]$/,'').toLowerCase(),ok=actual===G.orderTarget;if(ok)G.score++;G.answered=true;G.results[G.i]=ok?'ok':'no';showSheet(ok,'<h3>'+(ok?'Correct sentence!':'Not quite yet.')+'</h3><p>Suggested answer: <b>'+esc(G.orderTarget)+'</b></p><p>'+esc(G.questions[G.i].q.explain)+'</p><div class="sheet-actions"><button class="btn" id="go-next">'+(G.i===G.questions.length-1?'See results':'Continue')+ic('arrow')+'</button></div>');return;}
     const dailyContinue=e.target.closest('[data-daily-session-continue]');
     if(dailyContinue){startDailySession();return;}
+    const contrastAnswer=e.target.closest('[data-contrast-answer]');
+    if(contrastAnswer){
+      const pair=CONTRAST_PAIRS.find(p=>p.id===contrastAnswer.dataset.contrastPair);
+      if(pair){
+        if(!state.contrastPractice||typeof state.contrastPractice!=='object')state.contrastPractice={index:0,attempts:{}};
+        const correct=contrastAnswer.dataset.contrastAnswer===pair.answer;
+        state.contrastPractice.lastAnswer={id:pair.id,word:contrastAnswer.dataset.contrastAnswer,correct,at:new Date().toISOString()};
+        if(!state.contrastPractice.attempts||typeof state.contrastPractice.attempts!=='object')state.contrastPractice.attempts={};
+        const stats=state.contrastPractice.attempts[pair.id]||{correct:0,wrong:0};
+        stats[correct?'correct':'wrong']=(Number(stats[correct?'correct':'wrong'])||0)+1;
+        state.contrastPractice.attempts[pair.id]=stats;
+        save();renderWords();
+      }
+      return;
+    }
+    if(e.target.closest('[data-contrast-next]')){
+      if(!state.contrastPractice||typeof state.contrastPractice!=='object')state.contrastPractice={index:0,attempts:{}};
+      state.contrastPractice.index=((Number(state.contrastPractice.index)||0)+1)%CONTRAST_PAIRS.length;
+      state.contrastPractice.lastAnswer=null;
+      save();renderWords();
+      return;
+    }
     const confidenceButton=e.target.closest('[data-review-confidence]');
     if(confidenceButton){const item=state.review.find(w=>w.word===confidenceButton.dataset.word);if(item){
       item.attempts=(Number(item.attempts)||0)+1;
