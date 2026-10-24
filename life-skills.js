@@ -116,12 +116,105 @@
     'Two tomatoes':'حبتا طماطم','Two tomato cans of paint':'علبتان من طلاء الطماطم','A saucepan of water':'قدر من الماء','Move a spoon around the soup':'حرّك الملعقة داخل الحساء','Cut the soup into pieces':'قطّع الحساء إلى قطع','Freeze the soup':'جمّد الحساء','Cut them into pieces':'قطّعها إلى قطع','Wash them without cutting':'اغسلها دون تقطيع','Boil them whole for an hour':'اسلقها كاملة لمدة ساعة','Cool and refrigerate it promptly in a suitable container':'اتركه يبرد واحفظه في الثلاجة سريعًا داخل وعاء مناسب','Leave it out overnight':'اتركه خارج الثلاجة طوال الليل','Put hot food directly on the floor':'ضع الطعام الساخن مباشرة على الأرض','Cook gently just below a full boil':'اطهه برفق قبل الغليان الكامل','Freeze for ten minutes':'جمّده لعشر دقائق','Cook at the highest heat possible':'اطهه على أعلى حرارة ممكنة',
     '“Hello, I’d like to make an appointment, please.”':'«مرحبًا، أود حجز موعد من فضلك»','“Doctor. Now.”':'«الطبيب. الآن»','“I need a hospital building.”':'«أحتاج إلى مبنى مستشفى»','“Afternoon would be better, if possible.”':'«بعد الظهر أفضل إن أمكن»','“You decide, I refuse.”':'«أنت قرر، أنا أرفض»','“Yesterday afternoon.”':'«بعد ظهر الأمس»','“Thursday at half past three works for me. Thank you.”':'«الخميس الساعة الثالثة والنصف يناسبني. شكرًا»','“Three thirty yesterday.”':'«الثالثة والنصف أمس»','“I cannot hear colours.”':'«لا أستطيع سماع الألوان»','“I’m calling because my bill seems higher than usual.”':'«أتصل لأن فاتورتي تبدو أعلى من المعتاد»','“Your office is terrible.”':'«مكتبكم سيئ»','“Give me free things.”':'«أعطني أشياء مجانية»','“Yes, it’s dated 12 October.”':'«نعم، تاريخها 12 أكتوبر»','“I will not tell you anything.”':'«لن أخبرك بأي شيء»','“The date is a chair.”':'«التاريخ كرسي»','“Thank you. I appreciate you checking.”':'«شكرًا لك، أقدّر قيامك بالتحقق»','“Do it faster, useless person.”':'«افعل ذلك أسرع أيها عديم الفائدة»','“Goodbye” while they are still speaking':'«إلى اللقاء» بينما لا يزال يتحدث','“Could you tell me if this jacket is available in a medium?”':'«هل يمكنك إخباري إن كان هذا المعطف متوفرًا بمقاس متوسط؟»','“Send jacket now.”':'«أرسل المعطف الآن»','“Do you sell weather?”':'«هل تبيعون الطقس؟»','“Blue, please, if you have it.”':'«الأزرق من فضلك، إن كان متوفرًا»','“The colour of Thursday.”':'«لون يوم الخميس»','“Any colour is wrong.”':'«كل الألوان خاطئة»','“Yes, please. Could you hold it until this evening?”':'«نعم من فضلك. هل يمكنك الاحتفاظ به حتى هذا المساء؟»','“Hold the entire shop.”':'«احتفظ بالمتجر كله»','“No” when you mean yes':'«لا» بينما تقصد نعم'
   };
+
+  Object.assign(arText, {
+    'You want to book a routine appointment. What is a clear opening?':'تريد حجز موعد عادي. ما البداية الواضحة المناسبة؟',
+    'Either time works, but afternoon is slightly better.':'الوقتان مناسبان، لكن فترة بعد الظهر أفضل قليلًا.',
+    'You can attend. Confirm the time.':'يمكنك الحضور. أكّد الموعد.',
+    'You think your latest bill is higher than expected.':'تعتقد أن فاتورتك الأخيرة أعلى مما توقعت.',
+    'You have the bill in front of you.':'الفاتورة أمامك.',
+    'You want to acknowledge the help.':'تريد شكر الموظف على المساعدة.',
+    'You want to ask whether a jacket is available in medium.':'تريد السؤال إن كان المعطف متوفرًا بمقاس متوسط.',
+    'You prefer the blue one.':'تفضّل اللون الأزرق.',
+    'You want them to keep it until this evening.':'تريد منهم الاحتفاظ به حتى هذا المساء.',
+    'First name':'الاسم الأول','Surname / Family name':'اسم العائلة','Postcode / ZIP code':'الرمز البريدي',
+    'At a market':'في السوق','Meeting a friend':'لقاء صديق','Booking a visit':'حجز زيارة','Leaving a message':'ترك رسالة','Paying at a café':'الدفع في مقهى','At the station':'في المحطة','A deadline':'موعد نهائي','Queue ticket':'تذكرة انتظار','Comparing offers':'مقارنة العروض','Running late':'التأخر عن الموعد','Confirming a number':'تأكيد رقم','A discount':'خصم',
+    'Supermarket entrance':'مدخل متجر','Busy walkway':'ممر مزدحم','Public restroom':'دورة مياه عامة','Staff-only corridor':'ممر مخصص للموظفين','Train platform':'رصيف القطار','Inside a public building':'داخل مبنى عام','Office door':'باب مكتب','Ticket counter':'شباك التذاكر','Library':'مكتبة','Swimming pool':'مسبح',
+    'Recipe sequence':'ترتيب الوصفة','Shopping choice':'اختيار أثناء التسوق','Kitchen vocabulary':'مفردات المطبخ','Food safety':'سلامة الطعام',
+    'Calling a clinic':'الاتصال بعيادة','Calling about a bill':'الاتصال بشأن فاتورة','Calling a shop':'الاتصال بمتجر',
+    'You need to interrupt a colleague':'تحتاج إلى مقاطعة زميل','You cannot attend':'لا يمكنك الحضور','You disagree at work':'تختلف مع زميل في العمل','You need help in a shop':'تحتاج إلى المساعدة في متجر','Someone apologises for being late':'شخص يعتذر عن التأخر','You need clarification':'تحتاج إلى توضيح','A salesperson offers an extra item':'يعرض البائع منتجًا إضافيًا','You made a small mistake':'ارتكبت خطأ بسيطًا','You want to leave a conversation':'تريد إنهاء محادثة','A customer complains':'يشكو أحد العملاء',
+    'You need to ask a quick question while they are working. Choose the most considerate opening.':'تحتاج إلى سؤال سريع بينما زميلك يعمل. اختر البداية الأكثر مراعاة.',
+    'A friend invites you to dinner, but you are busy. What sounds warm and clear?':'دعاك صديق إلى العشاء لكنك مشغول. ما الرد الودود والواضح؟',
+    'Your teammate suggests a plan you think may fail. What is constructive?':'اقترح زميلك خطة تعتقد أنها قد تفشل. ما الرد البنّاء؟',
+    'You cannot find the right size. What should you say?':'لم تجد المقاس المناسب. ماذا تقول؟',
+    'They say, “Sorry I’m late.” You were only waiting a few minutes. What fits?':'قال الشخص: «آسف على التأخر». لم تنتظر سوى دقائق. ما الرد المناسب؟',
+    'You did not understand the instruction. What is best?':'لم تفهم التعليمة. ما أفضل رد؟',
+    'You do not want it. Which reply is clear but courteous?':'لا تريد المنتج. أي رد واضح ومهذب؟',
+    'You sent the wrong attachment. What should your message say?':'أرسلت المرفق الخطأ. ماذا ينبغي أن تكتب؟',
+    'You need to go, but want to end warmly. Choose a natural phrase.':'تحتاج إلى المغادرة وتريد إنهاء الحديث بود. اختر عبارة طبيعية.',
+    'A customer says their order is wrong. What is a helpful first response?':'يقول عميل إن طلبه غير صحيح. ما الرد الأول المفيد؟',
+    'The label says £3.75. What do you pay for one item?':'يظهر على الملصق السعر 3.75 جنيه. كم تدفع مقابل قطعة واحدة؟',
+    'Your friend says, “Let’s meet at quarter past six.” When?':'قال صديقك: «لنلتقِ عند السادسة والربع». متى؟',
+    'A form asks for your date of birth: 14/09/2002. In day/month/year format, what is it?':'تطلب الاستمارة تاريخ الميلاد 14/09/2002 بصيغة يوم/شهر/سنة. ما التاريخ؟',
+    'Someone reads “zero seven, double four, eight one two.” What does “double four” mean?':'قرأ شخص رقمًا وقال double four. ماذا تعني؟',
+    'Your bill is £8.40. Which phrase says the amount naturally?':'فاتورتك 8.40 جنيه. أي عبارة تنطق المبلغ بشكل طبيعي؟',
+    'The display says 18:30. What is this in everyday 12-hour time?':'تعرض الشاشة 18:30. كيف تقول الوقت بنظام 12 ساعة؟',
+    '“Please submit it by the third of May.” Which date is meant?':'تعني عبارة «سلّمه بحلول الثالث من مايو» أي تاريخ؟',
+    'Your ticket number is 308. Which is the natural reading?':'رقم تذكرتك 308. ما القراءة الطبيعية؟',
+    'Which is cheaper: £4.20 or £4.02?':'أيهما أرخص: 4.20 أم 4.02 جنيه؟',
+    'You say, “I’ll be there in twenty minutes.” It is 10:10 now. When will you arrive?':'قلت إنك ستصل بعد عشرين دقيقة، والوقت الآن 10:10. متى تصل؟',
+    'For clarity, how should you read 506 when giving a reference number?':'لتوضيح الرقم المرجعي 506، كيف تقرأه؟',
+    'A £20 item has a £5 discount. What is the new price?':'منتج سعره 20 جنيهًا عليه خصم 5 جنيهات. ما السعر الجديد؟',
+    'You see this sign near a freshly mopped floor. What should you do?':'ترى هذه اللافتة قرب أرضية تم تنظيفها للتو. ماذا تفعل؟',
+    'What does this instruction ask people to do?':'ماذا تطلب هذه التعليمة من الناس؟',
+    'The sign is on a toilet door. What is the best action?':'اللافتة على باب دورة مياه. ما التصرف الأنسب؟',
+    'You are looking for reception. This sign is on a side door. What next?':'تبحث عن الاستقبال وترى هذه اللافتة على باب جانبي. ماذا تفعل؟',
+    'What should you watch for when boarding?':'ما الذي ينبغي الانتباه إليه عند الصعود؟',
+    'When is this route intended to be used?':'متى يُفترض استخدام هذا المسار؟',
+    'The word is printed on the door. What action is expected?':'الكلمة مكتوبة على الباب. ما التصرف المطلوب؟',
+    'The show is marked SOLD OUT. What does this mean?':'كُتب SOLD OUT على العرض. ماذا يعني ذلك؟',
+    'A phone rings loudly. What is the considerate response?':'يرن الهاتف بصوت مرتفع في المكتبة. ما التصرف المراعي للآخرين؟',
+    'What does the notice tell you?':'ماذا تخبرك هذه اللافتة؟',
+    'Wash your hands and prepare a clean surface.':'اغسل يديك وجهّز سطحًا نظيفًا.','Take two slices of bread.':'أحضر شريحتي خبز.','Add cheese and any chosen vegetables.':'أضف الجبن وأي خضروات تختارها.','Put the second slice on top.':'ضع الشريحة الثانية في الأعلى.','Cut the sandwich and serve it.':'اقطع الشطيرة وقدّمها.',
+    'Fill the kettle with water.':'املأ الغلاية بالماء.','Boil the water safely.':'اغلِ الماء بأمان.','Put a tea bag in a cup.':'ضع كيس شاي في كوب.','Pour the hot water into the cup.':'اسكب الماء الساخن في الكوب.','Let it steep, then remove the tea bag.':'اترك الشاي لينقع ثم أخرج الكيس.',
+    'Wash the fruit.':'اغسل الفاكهة.','Place a chopping board on a stable surface.':'ضع لوح التقطيع على سطح ثابت.','Cut the fruit into small pieces.':'قطّع الفاكهة إلى قطع صغيرة.','Put the pieces in a bowl.':'ضع القطع في وعاء.','Mix gently and serve.':'اخلط برفق وقدّمها.',
+    'Fill a pot with water.':'املأ قدرًا بالماء.','Bring the water to a boil.':'اترك الماء حتى يغلي.','Add the pasta carefully.':'أضف المعكرونة بحذر.','Cook according to the packet instructions.':'اطهُ وفق تعليمات العبوة.','Drain carefully and add the sauce.':'صفِّ الماء بحذر وأضف الصلصة.',
+    'Wash the vegetables.':'اغسل الخضروات.','Chop the vegetables into small pieces.':'قطّع الخضروات إلى قطع صغيرة.','Beat the eggs in a bowl.':'اخفق البيض في وعاء.','Cook the vegetables and add the eggs.':'اطهُ الخضروات ثم أضف البيض.','Cook until the eggs are set.':'اطهُ حتى يتماسك البيض.',
+    'Good morning, Green Street Clinic. How can I help?':'صباح الخير، عيادة غرين ستريت. كيف يمكنني مساعدتك؟','Of course. Is morning or afternoon better for you?':'بالتأكيد. هل يناسبك الصباح أم بعد الظهر؟','I can offer Thursday at 3:30 p.m.':'يمكنني عرض موعد الخميس الساعة 3:30 مساءً.','How can I help you today?':'كيف يمكنني مساعدتك اليوم؟','I can check the charges. Could you tell me the date on the bill?':'يمكنني التحقق من الرسوم. هل تخبرني بتاريخ الفاتورة؟','I’ll review the charges and explain them.':'سأراجع الرسوم وأشرحها لك.','Hello, Riverside Store. How can I help?':'مرحبًا، متجر ريفرسايد. كيف يمكنني مساعدتك؟','Which colour are you looking for?':'ما اللون الذي تبحث عنه؟','We have blue in medium. Would you like us to hold it?':'لدينا اللون الأزرق بمقاس متوسط. هل تريد أن نحتفظ به لك؟'
+  });
+  const arExplainText = {
+    '£3.75 is three pounds and seventy-five pence.':'3.75 جنيه تعني ثلاثة جنيهات وخمسة وسبعين بنسًا.',
+    'Quarter past six means 6:15.':'السادسة والربع تعني 6:15.',
+    '14/09/2002 is the fourteenth of September, 2002, when the form uses day/month/year.':'في تنسيق يوم/شهر/سنة، يعني 14/09/2002 الرابع عشر من سبتمبر 2002.',
+    '“Double four” means the digit 4 is repeated twice.':'تعني double four تكرار الرقم 4 مرتين.',
+    'People commonly say “eight pounds forty” or “eight pounds and forty pence”.':'من الشائع قول eight pounds forty أو eight pounds and forty pence.',
+    '18:30 is 6:30 p.m., or half past six in the evening.':'18:30 تساوي 6:30 مساءً، أي السادسة والنصف مساءً.',
+    'The third of May is May 3. Check the date format used in the country.':'الثالث من مايو هو 3 مايو. تحقق من تنسيق التاريخ المستخدم في البلد.',
+    '308 is “three hundred and eight” (also “three hundred eight” in some varieties).':'يُقرأ 308: three hundred and eight، وتُستخدم أيضًا صيغة three hundred eight في بعض اللهجات القياسية.',
+    'Four pounds and two pence (£4.02) is less than four pounds and twenty pence (£4.20).':'4.02 جنيه أقل من 4.20 جنيه.',
+    'Ten minutes takes us to 10:20; another ten makes 10:30.':'بعد عشر دقائق يصبح الوقت 10:20، وبعد عشر دقائق أخرى يصبح 10:30.',
+    'For reference codes, “five oh six” makes each digit clear.':'في الأرقام المرجعية، تساعد عبارة five oh six على توضيح كل رقم.',
+    'Twenty minus five is fifteen: the new price is £15.':'عشرون ناقص خمسة يساوي خمسة عشر؛ السعر الجديد 15 جنيهًا.',
+    'A wet floor can be slippery. Slow down and use another route if possible.':'قد تكون الأرضية المبللة زلقة. تمهّل واستخدم مسارًا آخر إن أمكن.',
+    'Keep left means remain on the left side while moving.':'تعني Keep left البقاء في الجانب الأيسر أثناء الحركة.',
+    'Out of order means the equipment or facility is not working and should not be used.':'تعني Out of order أن الجهاز أو المرفق معطّل ولا ينبغي استخدامه.',
+    'No entry means you must not go through that entrance.':'تعني No entry أنه لا يجوز المرور من ذلك المدخل.',
+    'There may be a gap between the platform edge and the train. Step carefully.':'قد توجد فجوة بين حافة الرصيف والقطار. اصعد بحذر.',
+    'An emergency exit is a route for leaving during an emergency. Follow official instructions.':'مخرج الطوارئ مخصص للخروج أثناء الطوارئ. اتبع التعليمات الرسمية.',
+    'Push means apply force to move the door away from you.':'تعني Push دفع الباب بعيدًا عنك.',
+    'Sold out means all available tickets have been sold.':'تعني Sold out أن جميع التذاكر المتاحة قد بيعت.',
+    'The sign asks visitors to keep noise to a minimum.':'تطلب اللافتة من الزوار خفض الضوضاء قدر الإمكان.',
+    'Maintenance is work done to keep equipment or a facility in good condition.':'الصيانة هي أعمال تُجرى للحفاظ على المعدات أو المرافق في حالة جيدة.',
+    'Prepare first, assemble the ingredients, close the sandwich, then serve.':'جهّز الأدوات أولًا، ثم أضف المكونات وأغلق الشطيرة وقدّمها.',
+    'Boil the water before pouring it over the tea bag. Handle hot water carefully.':'اغلِ الماء قبل سكبه على كيس الشاي، وتعامل مع الماء الساخن بحذر.',
+    'Wash before cutting, use a stable board, then mix the pieces.':'اغسل الفاكهة قبل تقطيعها، واستخدم لوحًا ثابتًا، ثم اخلط القطع.',
+    'Bring water to a boil before adding pasta; drain carefully when cooked.':'اغلِ الماء قبل إضافة المعكرونة، ثم صفِّها بحذر بعد نضجها.',
+    'Prepare the vegetables, beat the eggs, then cook until fully set.':'حضّر الخضروات واخفق البيض ثم اطهه حتى يتماسك تمامًا.',
+    'A shopping list records ingredients you need and do not already have.':'تسجل قائمة التسوق المكونات التي تحتاج إليها ولا تتوفر لديك.',
+    'Stir means move a spoon or utensil around a liquid or mixture.':'تعني stir تحريك ملعقة أو أداة داخل سائل أو خليط.',
+    'Chop means cut food into pieces. Use a knife carefully on a stable board.':'تعني chop تقطيع الطعام إلى قطع. استخدم السكين بحذر وعلى لوح ثابت.',
+    'Store leftovers promptly and follow local food-safety guidance; do not leave cooked food out overnight.':'احفظ بقايا الطعام سريعًا واتبع إرشادات سلامة الغذاء المحلية؛ لا تترك الطعام المطهو خارج الثلاجة طوال الليل.',
+    'Simmer means cook gently in a liquid with small, occasional bubbles.':'تعني simmer الطهي برفق في سائل تظهر فيه فقاعات صغيرة متباعدة.'
+  };
+  const originalExplanationText = explanationText;
+  explanationText = function(item) { return arabicOn() ? (item.arExplain || arExplainText[item.explain] || item.explain || 'واصل التدريب على استخدام الإنجليزية في المواقف اليومية.') : (item.explain || 'Good work. Keep practising the language you would use in real life.'); };
+
   function tx(text, kind) {
     if (!arabicOn() || !text) return text;
     if (kind === 'option') return arOptionText[text] || text;
     return arText[text] || text;
   }
-  function promptText(item) { return arabicOn() && item.ar ? item.ar : tx(item.prompt); }
+  function promptText(item) { return arabicOn() ? (item.ar || arText[item.prompt] || item.prompt) : item.prompt; }
   function explanationText(item) { return arabicOn() && item.arExplain ? item.arExplain : tx(item.explain); }
   function optionsMarkup(item) {
     return item.options.map((opt,i)=>'<button type="button" class="ls-choice" data-ls-answer="'+i+'"><span class="ls-choice-key">'+String.fromCharCode(65+i)+'</span><span>'+esc(arabicOn() && item.arOptions ? item.arOptions[i] : tx(opt,'option'))+'</span></button>').join('');
@@ -192,7 +285,7 @@
     const m=modules.find(x=>x.id===state.module);
     if(!m) { landing(); return; }
     const item=itemFor();
-    root.innerHTML='<div class="ls-studio ls-'+m.tone+'">'+header(m)+'<div class="ls-stage">'+(state.feedback?'<div class="ls-feedback '+(state.feedback.correct?'is-correct':'is-wrong')+'"><span>'+(state.feedback.correct?tx(state.feedback.correct?'✓ NICE WORK':'↗ TRY AGAIN'))+'</span><p>'+esc(state.feedback.explain)+'</p><button type="button" class="ls-primary" data-ls-next>'+(state.round>=state.pool.length-1?tx('Finish mission'):'Next situation →')+'</button></div>':renderQuestion(item,m))+'</div><div class="ls-stage-foot"><span>'+esc(m.eyebrow)+'</span><span>CASE '+String(state.round+1).padStart(2,'0')+' / '+data[m.id].length+'</span></div></div>';
+    root.innerHTML='<div class="ls-studio ls-'+m.tone+'">'+header(m)+'<div class="ls-stage">'+(state.feedback?'<div class="ls-feedback '+(state.feedback.correct?'is-correct':'is-wrong')+'"><span>'+(state.feedback.correct?tx(state.feedback.correct?'✓ NICE WORK':'↗ TRY AGAIN'))+'</span><p>'+esc(state.feedback.explain)+'</p><button type="button" class="ls-primary" data-ls-next>'+(state.round>=state.pool.length-1?tx('Finish mission'):tx('Next situation →'))+'</button></div>':renderQuestion(item,m))+'</div><div class="ls-stage-foot"><span>'+esc(m.eyebrow)+'</span><span>CASE '+String(state.round+1).padStart(2,'0')+' / '+data[m.id].length+'</span></div></div>';
   }
   function landing() {
     state.module=null;
