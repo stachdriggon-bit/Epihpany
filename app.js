@@ -15,7 +15,7 @@
   ];
 
   /* ---------- state ---------- */
-  const defaults = () => ({xp:0, quests:0, words:[], review:[], translationEnabled:true, placementDone:false, assessedLevel:'A1', placementResult:null, xpAtLevelStart:null, promotionHistory:[], promotionAttempts:{}, lastPromotionResult:null, completed:[], streak:0, lastDay:null, daily:0, level:'A1', sound:true, helpArabic:false, theme:'light', streakFreezes:1, dailyQuestDate:null, dailyQuestProgress:0, dailyQuestClaimed:false, dailyCorrect:0, dailyXp:0, weeklyKey:null, weeklyProgress:0, weeklyClaimed:false, mistakeTrapErrors:{}, mistakeQuestionErrors:{}, mistakeTrapCorrect:{}, mistakeQuestionCorrect:{}, mistakeTrapSrs:{}, modes:{}, weakTraps:{}, recentQuestions:{}, stories:{}, world:{done:[],stars:{}}});
+  const defaults = () => ({xp:0, quests:0, words:[], review:[], adaptiveOffset:0, adaptiveStreak:0, dailyChallengeDate:null, dailyChallengeResult:null, oneLifeBest:0, translationEnabled:true, placementDone:false, assessedLevel:'A1', placementResult:null, xpAtLevelStart:null, promotionHistory:[], promotionAttempts:{}, lastPromotionResult:null, completed:[], streak:0, lastDay:null, daily:0, level:'A1', sound:true, helpArabic:false, theme:'light', streakFreezes:1, dailyQuestDate:null, dailyQuestProgress:0, dailyQuestClaimed:false, dailyCorrect:0, dailyXp:0, weeklyKey:null, weeklyProgress:0, weeklyClaimed:false, mistakeTrapErrors:{}, mistakeQuestionErrors:{}, mistakeTrapCorrect:{}, mistakeQuestionCorrect:{}, mistakeTrapSrs:{}, modes:{}, weakTraps:{}, recentQuestions:{}, stories:{}, world:{done:[],stars:{}}});
   let state;
   try { state = {...defaults(), ...JSON.parse(localStorage.getItem('epiphany-progress') || '{}')}; } catch { state = defaults(); }
   if (!LEVELS.some(level => level.id === state.assessedLevel)) { state.assessedLevel = 'A1'; state.placementDone = false; state.placementResult = null; }
@@ -36,6 +36,10 @@
   if (!Array.isArray(state.world.done)) state.world.done = [];
   if (!state.world.stars || typeof state.world.stars !== 'object' || Array.isArray(state.world.stars)) state.world.stars = {};
   if (!Number.isFinite(state.streakFreezes)) state.streakFreezes = 1;
+  if (!Number.isFinite(state.adaptiveOffset)) state.adaptiveOffset = 0;
+  state.adaptiveOffset = Math.max(-2, Math.min(2, Math.round(state.adaptiveOffset)));
+  if (!Number.isFinite(state.adaptiveStreak)) state.adaptiveStreak = 0;
+  if (!Number.isFinite(state.oneLifeBest)) state.oneLifeBest = 0;
   if (state.lastDay !== dayKey()) state.daily = 0;
   if (state.dailyQuestDate !== dayKey()) {
     const hadDailyQuest = !!state.dailyQuestDate;
@@ -1828,11 +1832,30 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     document.body.classList.toggle('no-scroll', on);
   }
 
-  function startGame(type) {
+  function todayForChallenge() { return dayKey(); }
+  function dailyChallengeNumber(date = new Date()) {
+    const start = Date.UTC(date.getUTCFullYear(), 0, 1);
+    return Math.floor((Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()) - start) / 86400000) + 1;
+  }
+  function stableHash(value) { let h = 2166136261; for (const ch of String(value)) { h ^= ch.charCodeAt(0); h = Math.imul(h, 16777619); } return h >>> 0; }
+  function startDailyChallenge() {
+    const today = dayKey();
+    if (state.dailyChallengeDate === today && state.dailyChallengeResult) { toast('You have completed today’s Daily Challenge. Come back tomorrow!'); return; }
+    const eligible = ORDER.filter(type => GAMES[type] && (GAMES[type].questions || []).some(q => Number.isInteger(q.correct) && q.answers && q.answers.length > 1));
+    if (!eligible.length) { toast('Daily Challenge is not available right now.'); return; }
+    startGame(eligible[stableHash('epiphany-game-' + today) % eligible.length], 'daily');
+  }
+  function startOneLife() { const type = pickNext(); startGame(GAMES[type] ? type : 'vocabulary', 'oneLife'); }
+
+  function startGame(type, challengeMode = '') {
     if (MINI[type]) { startMini(type); return; }
     const game = GAMES[type]; if (!game) return;
     const level = currentLevel().id;
-    const levelPool = game.questions.filter(q => q.level === level);
+    const levelIds = LEVELS.map(l => l.id);
+    const currentIndex = Math.max(0, levelIds.indexOf(level));
+    const targetIndex = Math.max(0, Math.min(levelIds.length - 1, currentIndex + (challengeMode ? 0 : state.adaptiveOffset)));
+    const targetLevel = levelIds[targetIndex] || level;
+    const levelPool = game.questions.filter(q => q.level === targetLevel);
     const generalPool = game.questions.filter(q => !q.level);
     const shuffle = list => {
       const copy = list.slice();
@@ -1841,7 +1864,10 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     };
     // Use five questions from the learner's current CEFR level whenever possible.
     let selected;
-    if (['personalized','grammar','spot','typing'].includes(type) && game.questions.some(q=>q.trap&&q.id)) {
+    if (challengeMode === 'daily') {
+      const pool = game.questions.filter(q => Number.isInteger(q.correct) && Array.isArray(q.answers) && q.answers.length > 1);
+      selected = pool.slice().sort((a,b) => stableHash(todayForChallenge() + '|' + String(a.id || a.q || a.text)) - stableHash(todayForChallenge() + '|' + String(b.id || b.q || b.text))).slice(0, 5);
+    } else if (['personalized','grammar','spot','typing'].includes(type) && game.questions.some(q=>q.trap&&q.id)) {
       // Keep adaptive practice at the learner's CEFR level when the bank has enough items.
       // If that level is small, widen only as much as needed instead of mixing every level by default.
       let adaptivePool = levelPool.slice();
@@ -1891,11 +1917,11 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     }
     state.recentQuestions[recentKey] = [...recentList, ...selected.map(questionKey)].filter(Boolean).slice(-12);
     save();
-    const paired = shuffle(selected).map(source => {
+    const paired = (challengeMode === 'daily' ? selected.slice() : shuffle(selected)).map(source => {
       const q = {...source, answers:[...(source.answers||[])]};
       // Randomise answer positions while keeping the answer key aligned.
       // Spot-the-mistake and typing modes use different answer semantics.
-      if (!['spot','typing'].includes(type) && Number.isInteger(q.correct) && q.answers.length > 1) {
+      if (challengeMode !== 'daily' && !['spot','typing'].includes(type) && Number.isInteger(q.correct) && q.answers.length > 1) {
         const correctText=q.answers[q.correct], distractors=q.answers.filter((_,i)=>i!==q.correct);
         const shuffleAnswers=list=>{for(let i=list.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[list[i],list[j]]=[list[j],list[i]];}return list;};
         shuffleAnswers(distractors);
@@ -1905,10 +1931,10 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
       }
       return {q, ar: q.ar || 'راجع معنى الإجابة الصحيحة وحاول تذكّرها في سياق جديد.'};
     });
-    G = {type, questions: paired, i:0, score:0, words:[], answered:false, results:[], originalMode:type};
+    G = {type, mode:challengeMode, questions: paired, i:0, score:0, words:[], answered:false, results:[], originalMode:type, adaptiveTargetLevel:targetLevel};
     const el = $('#game'); el.className = 'game t-' + META[type].tone; el.hidden = false;
     lockPage(true);
-    if(type==='grammar'){G.grammarMode='mcq';renderGrammarIntro();return;}
+    if(type==='grammar' && !challengeMode){G.grammarMode='mcq';renderGrammarIntro();return;}
     renderQuestion();
   }
 
@@ -1982,8 +2008,9 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
       $('#game-body').innerHTML = '<div class="q-meta"><span class="pill">Type It</span><span class="q-count">Question '+(G.i+1)+' of '+G.questions.length+'</span></div><h2 class="q-text" id="q-text" tabindex="-1">Complete the sentence</h2><p class="typing-prompt">'+esc(q.q.replace(/_{3,}/g,'________'))+'</p><p class="q-sub">'+esc(q.sub)+'</p><form id="typing-form" class="typing-form"><label for="typing-answer">Your answer</label><input id="typing-answer" name="answer" autocomplete="off" autocapitalize="none" spellcheck="false" required aria-describedby="typing-feedback"><p id="typing-feedback" class="typing-feedback" aria-live="polite"></p><button class="btn" type="submit">Check answer</button></form><p class="ar-only arabic" lang="ar" dir="rtl">اكتب الكلمة أو العبارة الناقصة ثم اضغط تحقق.</p>';
       $('#game-scroll').scrollTop=0; $('#q-text').focus({preventScroll:true}); const input=$('#typing-answer'); input.addEventListener('focus',()=>setTimeout(()=>input.scrollIntoView({block:'center',behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'}),180)); return;
     }
+    const modeLabel = G.mode === 'daily' ? 'Daily #' + dailyChallengeNumber() : G.mode === 'oneLife' ? 'ONE LIFE · No retries' : (G.reviewMode ? 'Practice again' : m.label);
     $('#game-body').innerHTML =
-      '<div class="q-meta"><span class="pill">' + (G.reviewMode ? 'Practice again' : m.label) + '</span><span class="q-count">Question ' + (G.i + 1) + ' of ' + G.questions.length + '</span></div>' +
+      '<div class="q-meta"><span class="pill">' + modeLabel + '</span><span class="q-count">Question ' + (G.i + 1) + ' of ' + G.questions.length + '</span></div>' +
       '<h2 class="q-text" id="q-text" tabindex="-1">' + esc(q.q) + '</h2>' + (state.helpArabic && G.questions[G.i].q_ar ? '<p class="arabic question-ar" lang="ar" dir="rtl">' + esc(G.questions[G.i].q_ar) + '</p>' : '') + (q.word ? '<button class="listen-btn question-listen" data-speak="' + esc(wordParts(q.word, q.explain).word) + '">' + ic('sound') + ' Listen to word</button>' : '') + '<p class="q-sub">' + esc(q.sub) + '</p>' + (state.helpArabic && G.questions[G.i].sub_ar ? '<p class="arabic" lang="ar" dir="rtl">' + esc(G.questions[G.i].sub_ar) + '</p>' : '') +
       '<p class="ar-only ar-guide arabic" lang="ar" dir="rtl">' + guidance[G.type] + '</p>' +
       '<div class="answers" id="answers" role="group" aria-labelledby="q-text">' +
@@ -2009,6 +2036,11 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
       save();
     }
     G.results[G.i] = ok ? 'ok' : 'no';
+    if (!G.mode && !G.reviewMode) {
+      if (ok) { state.adaptiveStreak = (Number(state.adaptiveStreak) || 0) + 1; if (state.adaptiveStreak >= 3) { state.adaptiveOffset = Math.min(2, (Number(state.adaptiveOffset) || 0) + 1); state.adaptiveStreak = 0; G.adaptiveMessage = 'Three correct answers in a row — the next round will be a little harder.'; } }
+      else { state.adaptiveStreak = 0; state.adaptiveOffset = Math.max(-2, (Number(state.adaptiveOffset) || 0) - 1); G.adaptiveMessage = 'Let’s adjust the next round to a more comfortable level.'; }
+      save();
+    }
     $$('#answers .answer').forEach((b, k) => { b.disabled = true; if (k === q.correct) b.classList.add('correct'); else if (k === choice) b.classList.add('wrong'); });
     $('#answers').classList.add('done');
     renderSteps(); sfx(ok ? 'ok' : 'no');
@@ -2022,7 +2054,8 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
       (!ok && q.aha ? '<aside class="aha-note"><span aria-hidden="true">💡</span><div><strong>Aha moment</strong><p>'+esc(q.aha.en)+'</p><p class="arabic ar-only" lang="ar" dir="rtl">'+esc(q.aha.ar)+'</p></div></aside>' : '') +
       (ok && q.word ? '<div class="newword"><span>New word</span><b>' + esc(q.word[0]) + '</b><span>' + esc(q.word[1]) + '</span></div>' : '') +
       '<p class="ar-only arabic" lang="ar" dir="rtl"><strong>' + (ok ? 'أحسنت!' : 'معلومة للتعلّم') + '</strong> ' + esc(item.ar) + '</p>' +
-      '<div class="sheet-actions"><button class="btn" id="go-next">' + (last ? 'See results' : 'Continue') + ic('arrow') + '</button></div>');
+      (G.adaptiveMessage && !G.mode ? '<p class="adaptive-note">' + esc(G.adaptiveMessage) + '</p>' : '') +
+      '<div class="sheet-actions"><button class="btn" id="go-next">' + (G.mode === 'oneLife' && !ok ? 'End run & see results' : last ? 'See results' : 'Continue') + ic('arrow') + '</button></div>');
   }
 
   function selectSpot(index) {
@@ -2064,7 +2097,9 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
 
   function next() {
     if (!G || !G.answered) return;
-    if (G.i < G.questions.length - 1) { G.i++; if(G.type==='grammar'&&!G.reviewMode)renderGrammarModeQuestion();else renderQuestion(); }
+    if (G.mode === 'oneLife' && G.results[G.i] === 'no') { showResults(); return; }
+    if (G.i < G.questions.length - 1) { G.i++; if(G.type==='grammar'&&!G.reviewMode&&!G.mode)renderGrammarModeQuestion();else renderQuestion(); }
+    else if (G.mode) { showResults(); return; }
     else if (!G.reviewMode && G.questions.some((item,i)=>G.results[i]==='no')) {
       G.originalQuestions=G.questions.slice(); G.originalResults=G.results.slice(); G.originalScore=G.score; G.originalTotal=G.questions.length;
       G.questions=G.originalQuestions.filter((item,i)=>G.originalResults[i]==='no'); G.reviewMode=true; G.i=0; G.score=0; G.results=[]; G.answered=false;
@@ -2075,6 +2110,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
   function showResults() {
     const game = GAMES[G.type], total = G.originalTotal || G.questions.length;
     const finalScore = G.originalScore == null ? G.score : G.originalScore;
+    if (G.mode === 'daily' || G.mode === 'oneLife') { showChallengeResults(finalScore, total); return; }
     if (DEV_MODE.active && hasDeveloperAccess()) {
       const testType = G.type;
       hideSheet(); renderSteps(true); sfx('done');
@@ -2140,6 +2176,19 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     $('#res-next').focus({preventScroll: true});
   }
 
+  function showChallengeResults(score, total) {
+    const mode = G.mode, dailyNo = dailyChallengeNumber(), results = G.results.slice(), isDaily = mode === 'daily';
+    if (isDaily) { state.dailyChallengeDate = dayKey(); state.dailyChallengeResult = {score, total, results, date:dayKey()}; } else state.oneLifeBest = Math.max(Number(state.oneLifeBest) || 0, score);
+    save(); hideSheet(); renderSteps(true); sfx('done');
+    const squares = results.map(r => r === 'ok' ? '🟩' : '🟥').join(' ');
+    const shareData = {game:isDaily?'Daily #'+dailyNo:'One Life Challenge',score,total,xp:0,level:currentLevel().id,streak:liveStreak(),challengeMode:mode,results,dailyNo};
+    $('#game-body').innerHTML = '<div class="result challenge-result"><div class="burst">'+ic('spark')+'</div><p class="kicker">'+(isDaily?'DAILY CHALLENGE #'+dailyNo:'ONE LIFE MODE')+'</p><h2>'+(score===total?'Flawless run!':score>=Math.ceil(total*.6)?'Strong effort!':'Every attempt builds skill.')+'</h2><p>You got <b>'+score+' / '+total+'</b> on the first try.'+(isDaily?' Everyone gets the same questions today.':' One mistake ends the run — your best score is '+state.oneLifeBest+'.')+'</p>'+(isDaily?'<div class="daily-score-grid" aria-label="Question results">'+results.map((r,i)=>'<span class="daily-score-cell '+(r==='ok'?'is-correct':'is-wrong')+'" title="Question '+(i+1)+'">'+(r==='ok'?'✓':'×')+'</span>').join('')+'</div><p class="daily-share-text">'+squares+'</p>':'<p class="one-life-note">Best score: '+state.oneLifeBest+' / '+total+'</p>')+'<div class="stats3"><div class="stat"><b>'+score+'/'+total+'</b><span>First-try score</span></div><div class="stat"><b>'+(isDaily?'#'+dailyNo:'1 life')+'</b><span>'+(isDaily?'Today’s challenge':'Challenge mode')+'</span></div><div class="stat"><b>'+state.adaptiveOffset+'</b><span>Practice adjustment</span></div></div><div class="result-actions"><button class="btn" id="challenge-share">'+ic('spark')+'Share result card</button><button class="btn btn-ghost" id="challenge-home">Back to home</button>'+(isDaily?'':'<button class="btn btn-link" id="challenge-again">Try One Life again</button>')+'</div></div>';
+    $('#game-scroll').scrollTop = 0;
+    $('#challenge-share').addEventListener('click', () => shareResult(shareData));
+    $('#challenge-home').addEventListener('click', () => { closeGame(); openView('home'); });
+    const again = $('#challenge-again'); if (again) again.addEventListener('click', startOneLife);
+  }
+
   async function shareResult(data, downloadOnly = false) {
     const canvas = document.createElement('canvas'); canvas.width = 1080; canvas.height = 1080;
     const ctx = canvas.getContext('2d'); if (!ctx) { toast('Could not create the result card in this browser.'); return; }
@@ -2149,12 +2198,16 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     ctx.fillStyle = '#121A3A'; ctx.font = '800 62px Arial'; ctx.fillText('epiphany', 90, 125);
     ctx.font = '700 26px Arial'; ctx.fillStyle = '#655F7D'; ctx.fillText('A LITTLE ENGLISH. A BIG STEP.', 94, 175);
     ctx.fillStyle = '#FFFFFF'; ctx.strokeStyle = '#121A3A'; ctx.lineWidth = 5; ctx.beginPath(); if (ctx.roundRect) ctx.roundRect(70, 240, 940, 590, 42); else ctx.rect(70, 240, 940, 590); ctx.fill(); ctx.stroke();
-    ctx.textAlign = 'center'; ctx.fillStyle = '#6552A3'; ctx.font = '800 30px Arial'; ctx.fillText('QUEST COMPLETE', 540, 315);
+    ctx.textAlign = 'center'; ctx.fillStyle = '#6552A3'; ctx.font = '800 30px Arial'; ctx.fillText(data.challengeMode === 'daily' ? 'DAILY #' + data.dailyNo : data.challengeMode === 'oneLife' ? 'ONE LIFE CHALLENGE' : 'QUEST COMPLETE', 540, 315);
     ctx.fillStyle = '#121A3A'; ctx.font = '800 58px Arial'; const words = String(data.game || 'English quest').split(' '); let lines = [], line = '';
     words.forEach(word => { const test = line ? line + ' ' + word : word; if (ctx.measureText(test).width > 820 && line) { lines.push(line); line = word; } else line = test; }); if (line) lines.push(line); lines.slice(0,2).forEach((l,i) => ctx.fillText(l, 540, 390 + i * 65));
     ctx.fillStyle = '#655F7D'; ctx.font = '600 28px Arial'; ctx.fillText('FIRST-TRY SCORE', 540, 515);
     ctx.fillStyle = '#121A3A'; ctx.font = '800 100px Arial'; ctx.fillText(data.score + ' / ' + data.total, 540, 625);
-    ctx.fillStyle = '#6552A3'; ctx.font = '800 40px Arial'; ctx.fillText('+' + data.xp + ' XP', 540, 700);
+    if (data.challengeMode === 'daily') {
+      const cells = (data.results || []).slice(0, 10), cell = 58, gap = 14, totalWidth = cells.length * cell + Math.max(0, cells.length - 1) * gap, startX = (1080 - totalWidth) / 2;
+      cells.forEach((result, i) => { ctx.fillStyle = result === 'ok' ? '#25A56A' : '#E45D5D'; ctx.beginPath(); if (ctx.roundRect) ctx.roundRect(startX + i * (cell + gap), 655, cell, cell, 12); else ctx.rect(startX + i * (cell + gap), 655, cell, cell); ctx.fill(); ctx.fillStyle = '#FFFFFF'; ctx.font = '800 34px Arial'; ctx.textAlign = 'center'; ctx.fillText(result === 'ok' ? '✓' : '×', startX + i * (cell + gap) + cell / 2, 696); });
+      ctx.fillStyle = '#655F7D'; ctx.font = '600 25px Arial'; ctx.textAlign = 'center'; ctx.fillText('Same questions for everyone today', 540, 745);
+    } else { ctx.fillStyle = '#6552A3'; ctx.font = '800 40px Arial'; ctx.fillText('+' + data.xp + ' XP', 540, 700); }
     ctx.fillStyle = '#121A3A'; ctx.font = '700 28px Arial'; ctx.fillText(data.level + ' LEVEL   •   ' + data.streak + ' DAY STREAK', 540, 770);
     ctx.textAlign = 'left'; ctx.fillStyle = '#121A3A'; ctx.font = '700 28px Arial'; ctx.fillText('Keep your spark going!', 95, 910);
     ctx.fillStyle = '#655F7D'; ctx.font = '500 22px Arial'; ctx.fillText('Learn a little every day · Epiphany', 95, 955);
@@ -3213,6 +3266,8 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     const ans = e.target.closest('.answer');
     if (ans && G) { selectAnswer(Number(ans.dataset.i)); return; }
     if (e.target.closest('#go-next')) { next(); return; }
+    if (e.target.closest('#daily-challenge-start')) { startDailyChallenge(); return; }
+    if (e.target.closest('#one-life-start')) { startOneLife(); return; }
     if (e.target.closest('#daily-start')) {
       if (state.dailyQuestClaimed) { toast('Today’s challenge is complete — come back tomorrow!'); return; }
       startGame(pickNext()); return;
