@@ -2371,3 +2371,6 @@ body.dark-mode .listen-only-card,body.dark-mode .shared-word-card{background:var
 @media(max-width:600px){.quick-actions{display:grid;grid-template-columns:1fr 1fr}.quick-actions .btn{font-size:.9rem;padding-inline:10px}.quick-actions .btn:first-child{grid-column:1/-1}}
 
 .ep-notification-open{display:inline-block;margin:.25rem 0 .4rem;color:var(--accent,#6551c7);font-weight:800;text-decoration:underline;text-underline-offset:3px}
+
+/* Match the actual application shell selectors in focus mode. */
+body.focus-mode .top,body.focus-mode .bottom-nav{display:none!important}
