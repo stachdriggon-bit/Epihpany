@@ -1564,7 +1564,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     const host=name==='home'?$('#home-view .daily-session-card'):null;
     if(!host)return;const old=$('#monthly-word-thread-'+name);if(old)old.remove();const word=currentMonthWord(),progress=state.wordMonthProgress[word.monthKey]||{uses:0};
     const card=document.createElement('aside');card.id='monthly-word-thread-'+name;card.className='monthly-word-thread';
-    card.innerHTML='<span class="monthly-word-thread-kicker">THIS MONTH’S WORD · '+esc(word.theme)+'</span><div><strong>'+esc(word.word)+'</strong><span>'+esc(word.meaning)+'</span></div><p>'+esc(word.example)+'</p><small>'+Number(progress.uses||0)+' real-life uses recorded · Notice it across stories, games and everyday life.</small><button type="button" class="btn btn-ghost" data-view="mytools">Explore the monthly word →</button>';
+    card.innerHTML='<span class="monthly-word-thread-kicker">THIS MONTH’S WORD · '+esc(word.theme)+'</span><div><strong>'+esc(word.word)+'</strong><span>'+esc(word.meaning)+'</span></div><p>'+esc(word.example)+'</p><small>'+(Number(progress.uses||0)>0?Number(progress.uses||0)+' real-life uses recorded · Keep noticing it across stories, games and everyday life.':'Your first step: use this word in one sentence today. Your progress will appear here.')+'</small><button type="button" class="btn btn-ghost" data-view="mytools">Explore the monthly word →</button>';
     host.insertAdjacentElement('afterend',card);
   }
   function openView(name) {
