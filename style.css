@@ -2369,3 +2369,5 @@ body.focus-mode #game .game-body{max-width:760px;margin-inline:auto}
 .listen-only-close,.shared-word-close{float:right}
 body.dark-mode .listen-only-card,body.dark-mode .shared-word-card{background:var(--surface,#211f30);color:var(--text,#f6f3ff)}
 @media(max-width:600px){.quick-actions{display:grid;grid-template-columns:1fr 1fr}.quick-actions .btn{font-size:.9rem;padding-inline:10px}.quick-actions .btn:first-child{grid-column:1/-1}}
+
+.ep-notification-open{display:inline-block;margin:.25rem 0 .4rem;color:var(--accent,#6551c7);font-weight:800;text-decoration:underline;text-underline-offset:3px}
