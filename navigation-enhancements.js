@@ -175,15 +175,8 @@
       group.addEventListener('mouseleave', () => { if (desktop()) group.open = false; });
       const summary = $('summary', group);
       if (summary) summary.addEventListener('click', () => {
-        if (desktop()) {
-          // Keep click as an accessible alternative to hover.
-          const willOpen = !group.open;
-          closeMenus(group);
-          group.open = willOpen;
-        } else {
-          closeMenus(group);
-          group.open = !group.open;
-        }
+        // Let the native <details> action toggle the clicked group; only close siblings here.
+        closeMenus(group);
       });
     });
     document.addEventListener('click', event => {
