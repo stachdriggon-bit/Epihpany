@@ -1939,7 +1939,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
   document.addEventListener('click',e=>{
     const b=e.target.closest('[data-translate-world]');if(!b||!WORLD||!state.translationEnabled)return;
     const output=$('#world-translation'),task=worldTask();if(!output||!task)return;
-    if(output.hidden){const result=translateToArabic(task.instruction);output.textContent=result.text;output.hidden=false;output.classList.toggle('translation-approximate',!result.exact);b.setAttribute('aria-expanded','true');b.textContent='ع إخفاء الترجمة';}
+    if(output.hidden){const result=task.ar?{text:task.ar,exact:true}:translateToArabic(task.instruction);output.textContent=result.text;output.hidden=false;output.classList.toggle('translation-approximate',!result.exact);b.setAttribute('aria-expanded','true');b.textContent='ع إخفاء الترجمة';}
     else{output.hidden=true;b.setAttribute('aria-expanded','false');b.textContent='ع ترجمة التعليمات';}
   });
 
