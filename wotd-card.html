@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#f5f6fc">
+<meta name="description" content="Create and share today's English word from Epiphany.">
+<title>Word of the Day — Epiphany</title>
+<link rel="icon" type="image/svg+xml" href="icon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=Cairo:wght@500;700&family=DM+Sans:wght@400;700&display=swap" rel="stylesheet">
+<script src="data-wotd.js?v=baf8d44d" defer></script>
+<style>
+*{box-sizing:border-box}body{margin:0;min-height:100vh;background:#f5f6fc;color:#282442;font-family:"DM Sans",sans-serif;padding:24px}
+main{max-width:1040px;margin:0 auto}.top{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}.brand{font:800 1.35rem "Bricolage Grotesque",sans-serif;text-decoration:none;color:inherit;letter-spacing:-.04em}.brand span{color:#7557e8}.top a.back{color:#6357a3;text-decoration:none;font-weight:700}.intro{margin:44px 0 24px}.eyebrow{color:#6650ca;font-size:.78rem;font-weight:800;letter-spacing:.12em}.intro h1{font:800 clamp(2rem,5vw,3.5rem)/1.05 "Bricolage Grotesque",sans-serif;letter-spacing:-.05em;margin:12px 0}.intro p{color:#706b80;line-height:1.65}.layout{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(240px,.6fr);gap:24px;align-items:start}.card{position:relative;overflow:hidden;aspect-ratio:1200/630;min-height:300px;border-radius:26px;padding:clamp(22px,4vw,48px);background:radial-gradient(circle at 92% 5%,#e7ddff,transparent 35%),linear-gradient(135deg,#fff,#e7f8f4);box-shadow:0 18px 55px #30265d16;border:1px solid #e5e0f2;display:flex;flex-direction:column;justify-content:space-between}.card:after{content:"✦";position:absolute;right:5%;bottom:-15%;font-size:clamp(8rem,18vw,15rem);color:#7557e812;pointer-events:none}.card-head,.card-body,.card-foot{position:relative;z-index:1}.card-head{display:flex;justify-content:space-between;gap:12px;align-items:center}.logo{display:flex;align-items:center;gap:10px;font:800 clamp(.9rem,2vw,1.3rem) "Bricolage Grotesque",sans-serif}.spark{display:grid;place-items:center;width:35px;height:35px;border-radius:12px;background:linear-gradient(135deg,#7557e8,#3ab9a6);color:white}.level{border-radius:10px;background:#eee9ff;color:#5e49c7;padding:8px 11px;font-size:clamp(.65rem,1.3vw,.85rem);font-weight:800}.label{font-size:clamp(.65rem,1.4vw,.9rem);letter-spacing:.14em;font-weight:800;color:#746b91}.word{font:800 clamp(2.1rem,6vw,4.7rem)/1 "Bricolage Grotesque",sans-serif;letter-spacing:-.06em;margin:12px 0}.pron{color:#706b80;font-size:clamp(.8rem,1.6vw,1.05rem)}.meaning{font-size:clamp(.95rem,2vw,1.35rem);font-weight:700;margin:18px 0 8px}.example{font-size:clamp(.8rem,1.6vw,1.05rem);color:#5d586f;line-height:1.5}.arabic{font-family:Cairo,sans-serif;direction:rtl;text-align:right;color:#4f4770;margin-top:7px;font-size:clamp(.75rem,1.5vw,.98rem)}.card-foot{display:flex;justify-content:space-between;gap:10px;align-items:center;color:#7a748b;font-size:clamp(.65rem,1.3vw,.8rem);font-weight:700}.panel{background:#fff;border:1px solid #e7e3f1;border-radius:22px;padding:22px;box-shadow:0 12px 35px #30265d0b}.panel h2{font-size:1.05rem;margin:0 0 8px}.panel p{font-size:.92rem;line-height:1.6;color:#716c80;margin:0 0 18px}.btn{width:100%;border:0;border-radius:13px;padding:13px 15px;margin-top:10px;background:linear-gradient(120deg,#7557e8,#3ab9a6);color:white;font:700 1rem "DM Sans",sans-serif;cursor:pointer}.btn.secondary{background:#f0edfb;color:#5e49c7}.status{min-height:1.4em;color:#267c6e;font-size:.85rem;margin-top:12px}.note{font-size:.8rem;color:#898397;line-height:1.5;margin-top:16px}@media(max-width:760px){body{padding:16px}.layout{grid-template-columns:1fr}.intro{margin-top:32px}.card{min-height:280px;border-radius:20px}.panel{order:2}}@media(max-width:400px){.card{padding:17px;min-height:260px}.word{font-size:2.2rem}}
+</style>
+</head>
+<body>
+<main>
+  <div class="top"><a class="brand" href="index.html">✦ epiphany<span>.</span></a><a class="back" href="index.html">← Back to learning</a></div>
+  <header class="intro"><div class="eyebrow">A SMALL SPARK, EVERY DAY</div><h1>Word of the Day</h1><p>A ready-to-share English word card, with a simple meaning and an example in English and Arabic.</p></header>
+  <div class="layout">
+    <article class="card" id="word-card" aria-live="polite">
+      <div class="card-head"><div class="logo"><span class="spark">✦</span> epiphany</div><span class="level" id="word-level">WORD OF THE DAY</span></div>
+      <div class="card-body"><div class="label">TODAY'S WORD</div><div class="word" id="word">Loading…</div><div class="pron" id="pronunciation"></div><div class="meaning" id="meaning"></div><div class="example" id="example"></div><div class="arabic" id="meaning-ar" lang="ar"></div><div class="arabic" id="example-ar" lang="ar"></div></div>
+      <div class="card-foot"><span>Learn a little. Grow every day.</span><span id="card-date"></span></div>
+    </article>
+    <aside class="panel"><h2>Share today's word</h2><p>The card is generated from Epiphany's existing word library. The same word appears for everyone on the same date.</p><button class="btn" id="download">Download image (PNG)</button><button class="btn secondary" id="share">Share word</button><button class="btn secondary" id="copy">Copy text</button><div class="status" id="status" role="status"></div><div class="note">Tip: post the PNG to WhatsApp Status, Instagram Stories, Facebook or LinkedIn.</div></aside>
+  </div>
+</main>
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const today = new Date();
+  const dateText = new Intl.DateTimeFormat('en', { day:'numeric', month:'short', year:'numeric' }).format(today);
+  function currentWord() {
+    if (!Array.isArray(window.WOTD_WORDS) || !window.WOTD_WORDS.length) {
+      // Top-level const declarations are lexical, not properties on window.
+      try { return WOTD_WORDS; } catch { return []; }
+    }
+    return window.WOTD_WORDS;
+  }
+  function render() {
+    const words = currentWord();
+    if (!words.length) { $('word').textContent = 'Word unavailable'; $('status').textContent = 'The word list could not be loaded. Refresh while online.'; return; }
+    const day = Math.floor(Date.UTC(today.getFullYear(),today.getMonth(),today.getDate()) / 86400000);
+    const item = words[((day % words.length) + words.length) % words.length];
+    $('word').textContent = item.word || '';
+    $('pronunciation').textContent = item.pronunciation ? '/' + item.pronunciation + '/' : '';
+    $('meaning').textContent = item.meaning || '';
+    $('example').textContent = item.example ? '“' + item.example + '”' : '';
+    $('meaning-ar').textContent = item.meaning_ar || '';
+    $('example-ar').textContent = item.example_ar || '';
+    $('word-level').textContent = (item.level || 'ENGLISH').toUpperCase();
+    $('card-date').textContent = dateText;
+    document.title = (item.word || 'Word of the Day') + ' — Epiphany';
+  }
+  function drawImage() {
+    const words = currentWord();
+    if (!words.length) throw new Error('The word list is not available yet.');
+    const day = Math.floor(Date.UTC(today.getFullYear(),today.getMonth(),today.getDate()) / 86400000);
+    const item = words[((day % words.length) + words.length) % words.length];
+    const canvas = document.createElement('canvas'); canvas.width = 1200; canvas.height = 630;
+    const ctx = canvas.getContext('2d');
+    const bg = ctx.createLinearGradient(0,0,1200,630); bg.addColorStop(0,'#fbfaff'); bg.addColorStop(1,'#e7f8f4'); ctx.fillStyle=bg; ctx.fillRect(0,0,1200,630);
+    ctx.fillStyle='#e7ddff'; ctx.beginPath(); ctx.arc(1110,60,230,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle='#e2f5ef'; ctx.beginPath(); ctx.arc(80,660,260,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle='#7557e8'; ctx.fillRect(68,58,56,56); ctx.fillStyle='#fff'; ctx.font='bold 44px Arial'; ctx.fillText('✦',78,100);
+    ctx.fillStyle='#282442'; ctx.font='bold 36px Arial'; ctx.fillText('epiphany',145,99);
+    ctx.fillStyle='#6650ca'; ctx.font='bold 22px Arial'; ctx.fillText("WORD OF THE DAY · "+(item.level||'ENGLISH'),72,170);
+    ctx.fillStyle='#282442'; ctx.font='bold 76px Arial'; ctx.fillText(item.word||'',72,270);
+    ctx.fillStyle='#706b80'; ctx.font='28px Arial'; ctx.fillText(item.pronunciation ? '/'+item.pronunciation+'/' : '',75,315);
+    ctx.fillStyle='#282442'; ctx.font='bold 30px Arial'; ctx.fillText(item.meaning||'',72,385,{maxWidth:1050});
+    ctx.fillStyle='#5d586f'; ctx.font='italic 25px Arial'; ctx.fillText(item.example ? '“'+item.example+'”' : '',72,440,{maxWidth:1050});
+    ctx.direction='rtl'; ctx.textAlign='right'; ctx.fillStyle='#4f4770'; ctx.font='26px Arial'; ctx.fillText(item.meaning_ar||'',1125,500,{maxWidth:1000});
+    ctx.font='22px Arial'; ctx.fillText(item.example_ar||'',1125,540,{maxWidth:1000});
+    ctx.direction='ltr'; ctx.textAlign='left'; ctx.fillStyle='#7a748b'; ctx.font='bold 18px Arial'; ctx.fillText('Learn a little. Grow every day. · '+dateText,72,590);
+    return canvas;
+  }
+  $('download').addEventListener('click', () => {
+    try { const canvas=drawImage(); const a=document.createElement('a'); a.download='epiphany-word-of-the-day.png'; a.href=canvas.toDataURL('image/png'); a.click(); $('status').textContent='Your PNG is ready.'; }
+    catch(e) { $('status').textContent=e.message; }
+  });
+  function shareText() {
+    const words=currentWord(); if(!words.length) return 'Word of the Day — Epiphany';
+    const day=Math.floor(Date.UTC(today.getFullYear(),today.getMonth(),today.getDate())/86400000);
+    const w=words[((day%words.length)+words.length)%words.length];
+    return w.word+' ('+w.pronunciation+') — '+w.meaning+'\n'+w.example+'\n'+(w.meaning_ar||'')+'\nLearn English with Epiphany.';
+  }
+  $('copy').addEventListener('click', async () => { try { await navigator.clipboard.writeText(shareText()); $('status').textContent='Word copied to clipboard.'; } catch { $('status').textContent=shareText(); } });
+  $('share').addEventListener('click', async () => { try { if(navigator.share) await navigator.share({title:'Word of the Day — Epiphany',text:shareText()}); else { await navigator.clipboard.writeText(shareText()); $('status').textContent='Sharing is unavailable here; the text was copied.'; } } catch(e) { if(e.name!=='AbortError') $('status').textContent='You can download the PNG and share it manually.'; } });
+  if (document.readyState==='loading') document.addEventListener('DOMContentLoaded',render); else render();
+})();
+</script>
+</body>
+</html>
