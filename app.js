@@ -650,16 +650,19 @@
 
     renderChallenges();
     renderDailySessionCard();
-    const g = pickNext(), game = GAMES[g], m = META[g];
-    $('#next-card').className = 'next t-' + m.tone;
-    $('#next-cat').textContent = m.label;
-    $('#next-title').textContent = game.title;
-    $('#next-desc').textContent = game.desc;
-    $('#next-count').textContent = '5-question quest · ' + game.questions.length + ' in bank';
-    $('#next-time').textContent = m.time + ' min';
-    $('#next-xp').textContent = '+' + game.xp + ' XP';
-    $('#next-art').innerHTML = '<div class="glyph">' + glyph(g) + '</div>';
-    $('#next-start').dataset.game = g;
+    const recommendation = adaptiveRecommendation();
+    const recommendedGame = (GAMES[recommendation.game] || MINI[recommendation.game]) ? recommendation.game : pickNext();
+    const game = GAMES[recommendedGame] || MINI[recommendedGame] || GAMES.vocabulary;
+    const m = META[recommendedGame] || META.vocabulary;
+    $('#next-card').className = 'next t-' + (m.tone || 'violet');
+    $('#next-cat').textContent = m.label || 'Personal practice';
+    $('#next-title').textContent = recommendation.title || game.title || m.label;
+    $('#next-desc').textContent = recommendation.reason + (recommendation.detail ? ' Focus: ' + recommendation.detail + '.' : '');
+    $('#next-count').textContent = recommendation.kind === 'starter' ? 'A first step · adapts as you practise' : 'Chosen from your practice history';
+    $('#next-time').textContent = (m.time || 3) + ' min';
+    $('#next-xp').textContent = '+' + (game.xp || m.xp || 25) + ' XP';
+    $('#next-art').innerHTML = '<div class="glyph">' + glyph(recommendedGame) + '</div>';
+    $('#next-start').dataset.game = recommendedGame;
     renderWeaknessPanel();
     renderDeveloperLab();
 
