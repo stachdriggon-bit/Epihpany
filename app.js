@@ -2615,6 +2615,12 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
         return;
       }
       if(!state.translationEnabled) return;
+      if(target.dataset.translationManualEnglish==='1'){
+        button.setAttribute('aria-expanded','false');
+        const englishLabel='<span aria-hidden="true">ع</span> ترجمة '+(button.dataset.translationLabel||'السؤال');
+        if(button.innerHTML!==englishLabel) button.innerHTML=englishLabel;
+        return;
+      }
       if(!target.dataset.translationSource) target.dataset.translationSource=target.textContent.trim();
       const text=target.dataset.translationSource;
       const directArabic=target.dataset.translationAr;
@@ -2644,6 +2650,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
       if(!target.dataset.translationSource) target.dataset.translationSource=target.textContent.trim();
       if(button.getAttribute('aria-expanded')==='true'){
         target.textContent=target.dataset.translationSource;
+        target.dataset.translationManualEnglish='1';
         output.hidden=true;delete output.dataset.autoShown;delete output.dataset.translationText;
         button.setAttribute('aria-expanded','false');
         button.innerHTML='<span aria-hidden="true">ع</span> ترجمة '+(button.dataset.translationLabel||'السؤال');
@@ -2651,7 +2658,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
         const source=target.dataset.translationSource,directArabic=target.dataset.translationAr;
         const result=directArabic?{text:directArabic,exact:true}:translateToArabic(source);
         if(!result.text||result.unavailable){toast('لا تتوفر ترجمة موثوقة لهذا السؤال بعد.');return;}
-        target.textContent=result.text;output.hidden=true;output.dataset.translationText=result.text;
+        target.textContent=result.text;delete target.dataset.translationManualEnglish;output.hidden=true;output.dataset.translationText=result.text;
         button.setAttribute('aria-expanded','true');button.innerHTML='<span aria-hidden="true">EN</span> English';
       }
       return;
