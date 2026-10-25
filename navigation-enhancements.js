@@ -372,8 +372,90 @@
     $$('.view').forEach(section => observer.observe(section, { attributes: true, attributeFilter: ['class'] }));
   }
 
+
+  function setupCalmNavigation() {
+    const gameTop = $('.game-top');
+    const close = $('#game-close');
+    if (gameTop && close && !$('#game-finish-here')) {
+      const finish = document.createElement('button');
+      finish.type = 'button'; finish.id = 'game-finish-here'; finish.className = 'btn btn-link';
+      finish.textContent = 'Finish here';
+      finish.setAttribute('aria-label', 'Finish here and leave this activity');
+      finish.title = 'You can stop at any step. Completed answers are saved as you go.';
+      close.insertAdjacentElement('afterend', finish);
+      finish.addEventListener('click', () => close.click());
+    }
+
+    const tools = $('.tools-panel');
+    if (tools && !$('#quick-nav-customize')) {
+      const customize = document.createElement('button');
+      customize.type = 'button'; customize.id = 'quick-nav-customize'; customize.className = 'tools-action';
+      customize.textContent = '☆ Customize quick navigation';
+      const install = $('#install-app', tools);
+      (install || tools.lastElementChild)?.insertAdjacentElement('beforebegin', customize);
+      customize.addEventListener('click', openQuickNavPicker);
+    }
+    renderQuickNav();
+  }
+
+  const QUICK_NAV_DEFAULT = ['arcade','words','world'];
+  const QUICK_NAV_OPTIONS = [
+    ['arcade','Arcade','✦'],['stories','Stories','▤'],['thinklab','Think Lab','⌕'],
+    ['world','World','◎'],['lifeskills','Life Skills','✳'],['words','Words','Aa'],
+    ['mytools','My Tools','✎'],['trophies','Trophies','◇'],['progress','Progress','↗']
+  ];
+  function getQuickNav() {
+    try {
+      const value = JSON.parse(localStorage.getItem('epiphany-quick-nav') || 'null');
+      if (Array.isArray(value) && value.length === 3 && value.every(id => QUICK_NAV_OPTIONS.some(x => x[0] === id)) && new Set(value).size === 3) return value;
+    } catch (_) {}
+    return QUICK_NAV_DEFAULT.slice();
+  }
+  function renderQuickNav() {
+    const nav = $('.bottom-nav');
+    if (!nav) return;
+    const selected = getQuickNav();
+    const ids = ['home',...selected,'profile'];
+    const labels = {home:['Home','⌂'],profile:['Me','♙']};
+    nav.innerHTML = ids.map(id => {
+      const option = QUICK_NAV_OPTIONS.find(x => x[0] === id);
+      const label = labels[id] || [option[1],option[2]];
+      return '<button type="button" data-view="'+id+'" aria-label="'+label[0]+'"><span aria-hidden="true">'+label[1]+'</span><small>'+label[0]+'</small></button>';
+    }).join('');
+    syncCurrentNav(currentView());
+  }
+  function openQuickNavPicker() {
+    let dialog = $('#quick-nav-picker');
+    if (!dialog) {
+      dialog = document.createElement('div');
+      dialog.id = 'quick-nav-picker'; dialog.className = 'global-search-overlay'; dialog.hidden = true;
+      dialog.innerHTML = '<section class="global-search-panel quick-nav-panel" role="dialog" aria-modal="true" aria-labelledby="quick-nav-title"><div class="global-search-head"><h2 id="quick-nav-title">Your quick navigation</h2><button type="button" class="icon-btn" data-quick-nav-close aria-label="Close">×</button></div><p>Choose three destinations. Home and Profile stay available.</p><div id="quick-nav-options" class="quick-nav-options"></div><p id="quick-nav-count" role="status"></p><div class="quick-nav-actions"><button type="button" class="btn" id="quick-nav-save">Save choices</button><button type="button" class="btn btn-link" data-quick-nav-close>Cancel</button></div></section>';
+      document.body.append(dialog);
+      dialog.querySelectorAll('[data-quick-nav-close]').forEach(el => el.addEventListener('click', () => {dialog.hidden = true;document.body.classList.remove('no-scroll');}));
+      dialog.addEventListener('change', event => {
+        if (!event.target.matches('input[type=checkbox]')) return;
+        const checked = $('input[type=checkbox]:checked', dialog);
+        if (checked.length > 3) { event.target.checked = false; }
+        const count = $('input[type=checkbox]:checked', dialog).length;
+        $('#quick-nav-count', dialog).textContent = count + ' of 3 selected';
+        $('#quick-nav-save', dialog).disabled = count !== 3;
+      });
+      $('#quick-nav-save', dialog).addEventListener('click', () => {
+        const chosen = $('input[type=checkbox]:checked', dialog).map(input => input.value);
+        if (chosen.length !== 3) return;
+        try { localStorage.setItem('epiphany-quick-nav', JSON.stringify(chosen)); } catch (_) {}
+        renderQuickNav(); dialog.hidden = true; document.body.classList.remove('no-scroll');
+      });
+    }
+    const chosen = getQuickNav();
+    $('#quick-nav-options', dialog).innerHTML = QUICK_NAV_OPTIONS.map(([id,label,icon]) => '<label class="quick-nav-option"><input type="checkbox" value="'+id+'" '+(chosen.includes(id)?'checked':'')+'><span aria-hidden="true">'+icon+'</span><b>'+label+'</b></label>').join('');
+    $('#quick-nav-count', dialog).textContent = '3 of 3 selected';
+    $('#quick-nav-save', dialog).disabled = false;
+    dialog.hidden = false; document.body.classList.add('no-scroll');
+  }
+
   function init() {
-    setupMobileLabel(); setupBreadcrumb(); setupSearch(); setupDropdowns(); setupFinalPolish();
+    setupMobileLabel(); setupBreadcrumb(); setupSearch(); setupDropdowns(); setupFinalPolish(); setupCalmNavigation();
     const view = currentView();
     syncCurrentNav(view);
     routeFromHash();
