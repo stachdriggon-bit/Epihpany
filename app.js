@@ -2605,24 +2605,28 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
       if(!button||!output) return;
       if(!state.helpArabic) {
         if(output.dataset.autoShown==='1') {
+          if(target.dataset.translationSource && target.textContent!==target.dataset.translationSource) target.textContent=target.dataset.translationSource;
           output.hidden=true;
           delete output.dataset.autoShown;
+          delete output.dataset.translationText;
           button.setAttribute('aria-expanded','false');
           button.innerHTML='<span aria-hidden="true">ع</span> ترجمة '+(button.dataset.translationLabel||'السؤال');
         }
         return;
       }
       if(!state.translationEnabled) return;
-      const text=target.textContent.trim();
+      if(!target.dataset.translationSource) target.dataset.translationSource=target.textContent.trim();
+      const text=target.dataset.translationSource;
       const directArabic=target.dataset.translationAr;
       const result=directArabic?{text:directArabic,exact:true}:translateToArabic(text);
       if(!result.text || result.unavailable) return;
-      if(output.textContent!==result.text) output.textContent=result.text;
-      output.classList.toggle('translation-approximate',!result.exact);
-      output.hidden=false;
+      if(target.textContent!==result.text) target.textContent=result.text;
+      output.hidden=true;
       output.dataset.autoShown='1';
+      output.dataset.translationText=result.text;
+      output.classList.toggle('translation-approximate',!result.exact);
       button.setAttribute('aria-expanded','true');
-      const expandedLabel='<span aria-hidden="true">ع</span> إخفاء الترجمة';
+      const expandedLabel='<span aria-hidden="true">EN</span> English';
       if(button.innerHTML!==expandedLabel) button.innerHTML=expandedLabel;
     });
   }
@@ -2635,6 +2639,23 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     }
     e.preventDefault();e.stopPropagation();
     const target=document.getElementById(button.dataset.translateTarget),output=document.getElementById(button.dataset.translateTarget+'-arabic');if(!target||!output)return;
+    const primaryQuestion=target.matches('.q-text,.typing-prompt,.spot-text,.question-text,.prompt-text,.story-prompt,.story-text');
+    if(primaryQuestion){
+      if(!target.dataset.translationSource) target.dataset.translationSource=target.textContent.trim();
+      if(button.getAttribute('aria-expanded')==='true'){
+        target.textContent=target.dataset.translationSource;
+        output.hidden=true;delete output.dataset.autoShown;delete output.dataset.translationText;
+        button.setAttribute('aria-expanded','false');
+        button.innerHTML='<span aria-hidden="true">ع</span> ترجمة '+(button.dataset.translationLabel||'السؤال');
+      }else{
+        const source=target.dataset.translationSource,directArabic=target.dataset.translationAr;
+        const result=directArabic?{text:directArabic,exact:true}:translateToArabic(source);
+        if(!result.text||result.unavailable){toast('لا تتوفر ترجمة موثوقة لهذا السؤال بعد.');return;}
+        target.textContent=result.text;output.hidden=true;output.dataset.translationText=result.text;
+        button.setAttribute('aria-expanded','true');button.innerHTML='<span aria-hidden="true">EN</span> English';
+      }
+      return;
+    }
     if(output.hidden){if(target.classList.contains('answer')&&typeof G!=='undefined'&&G&&G.type==='spelling'){output.textContent='في تحدّي التهجئة، الخيارات تهجئات مختلفة للكلمة نفسها؛ ركّز على ترتيب الحروف. نعرض هذه الملاحظة بدل ترجمة قد تكشف الخيار الصحيح.';output.classList.remove('translation-approximate');output.title='مساعدة تحافظ على عدالة سؤال التهجئة';output.hidden=false;button.setAttribute('aria-expanded','true');button.innerHTML='<span aria-hidden="true">ع</span> إخفاء الترجمة';return;}const answerText=target.querySelector(':scope > span:not(.key)');const cardText=target.querySelector(':scope > span');const storyChoiceText=target.classList.contains('story-decision-option')?[...target.children].find(el=>!el.classList.contains('story-decision-letter')&&!el.classList.contains('story-option-ar')):null;const sourceText=target.classList.contains('story-decision-option')?(storyChoiceText||target).textContent:(target.classList.contains('answer')||target.classList.contains('mg-card')||target.classList.contains('mg-tile'))?(answerText||cardText||target).textContent:target.textContent;const directArabic=target.dataset.translationAr;const storyOption=target.classList.contains('story-decision-option')&&typeof ST!=='undefined'&&ST&&ST.story&&ST.story.decision&&ST.story.decision.options[Number(target.dataset.storyDecision)];const result=directArabic?{text:directArabic,exact:true}:storyOption&&storyOption.text_ar?{text:storyOption.text_ar,exact:true}:translateToArabic(sourceText);output.textContent=result.text;output.classList.toggle('translation-approximate',!result.exact&&!result.unavailable);output.title=result.exact?'ترجمة محلية':result.unavailable?'لا توجد ترجمة موثوقة لهذا النص بعد':'ترجمة مساعدة محلية؛ قد تبقى بعض الكلمات الإنجليزية دون ترجمة';output.hidden=false;button.setAttribute('aria-expanded','true');button.innerHTML='<span aria-hidden="true">ع</span> إخفاء الترجمة';}
     else{output.hidden=true;button.setAttribute('aria-expanded','false');button.innerHTML='<span aria-hidden="true">ع</span> ترجمة '+(button.dataset.translationLabel|| (target.classList.contains('answer')?'الإجابة':'السؤال'));}
   });
