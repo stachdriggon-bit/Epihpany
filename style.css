@@ -2859,3 +2859,8 @@ body[data-theme="dark"] .quick-nav-option:has(input:checked){background:#302c4c;
 @media(max-width:480px){.quick-nav-options{grid-template-columns:minmax(0,1fr)}.quick-nav-panel{padding:18px}.quick-nav-option{min-height:44px}}
 
 @media(max-width:700px){.navigation-breadcrumb .breadcrumb-back{font-size:0}.navigation-breadcrumb .breadcrumb-back::before{content:"← Back";font-size:13px}}
+
+/* Quiet 150ms page changes: fade only, no sideways motion. */
+@keyframes calmViewFade{from{opacity:0}to{opacity:1}}
+.view.is-active{animation:calmViewFade .15s ease both}
+@media(prefers-reduced-motion:reduce){.view.is-active{animation:none!important}}
