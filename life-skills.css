@@ -73,3 +73,46 @@
 .ls-feedback-tone>span:before{content:"✳";font-size:1.1em}
 .ls-feedback-natural>span:before{content:"✓";font-size:1.1em}
 .ls-own-reply .ls-secondary{white-space:normal}
+
+
+/* UI refinement pass — consistent spacing, clear action hierarchy, and less button crowding. */
+.life-skills-page .ls-landing-tools{align-items:center;gap:20px}
+.life-skills-page .ls-module-grid{align-items:stretch;gap:18px}
+.life-skills-page .ls-module{min-width:0;min-height:238px;padding:clamp(16px,2vw,22px);gap:13px}
+.life-skills-page .ls-module strong{line-height:1.22;overflow-wrap:anywhere}
+.life-skills-page .ls-module-desc{font-size:.82rem;line-height:1.7}
+.life-skills-page .ls-module-bottom{flex-wrap:wrap;row-gap:7px;line-height:1.45}
+.life-skills-page .ls-studio{overflow:visible}
+.life-skills-page .ls-workbar{display:flex;align-items:center;flex-wrap:wrap;gap:8px}
+.life-skills-page .ls-workbar>*{min-width:0}
+.life-skills-page .ls-stage{min-width:0}
+.life-skills-page .ls-stage button,.life-skills-page .ls-inline-actions button{max-width:100%;white-space:normal;overflow-wrap:anywhere}
+.life-skills-page .ls-choice{min-width:0;align-items:flex-start;padding:14px 15px;line-height:1.55}
+.life-skills-page .ls-choice-key{margin-top:1px}
+.life-skills-page .ls-sequence{gap:10px}
+.life-skills-page .ls-step{min-width:0;align-items:flex-start;line-height:1.55}
+.life-skills-page .ls-step>span{flex-shrink:0}
+.life-skills-page .ls-step b{flex-shrink:0}
+.life-skills-page .ls-inline-actions{justify-content:flex-start;align-items:stretch}
+.life-skills-page .ls-inline-actions>*{min-width:150px}
+.life-skills-page :is(button,input,select,textarea):focus-visible{outline:3px solid color-mix(in srgb,var(--ls-accent,#b96731) 65%,white);outline-offset:3px}
+@media(max-width:900px){
+ .life-skills-page .ls-module-grid{gap:12px}
+ .life-skills-page .ls-module{min-height:220px}
+ .life-skills-page .ls-hero-art{min-width:0}
+}
+@media(max-width:640px){
+ .life-skills-page .ls-module-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+ .life-skills-page .ls-module{padding:14px;gap:10px;border-radius:16px}
+ .life-skills-page .ls-module strong{font-size:1.02rem}
+ .life-skills-page .ls-module-desc{font-size:.75rem}
+ .life-skills-page .ls-module-bottom{align-items:flex-start;flex-direction:column}
+ .life-skills-page .ls-inline-actions{display:grid;grid-template-columns:minmax(0,1fr);gap:8px}
+ .life-skills-page .ls-inline-actions>*{width:100%;min-width:0}
+ .life-skills-page .ls-stage-foot{display:grid;grid-template-columns:minmax(0,1fr);gap:8px}
+ .life-skills-page .ls-stage-foot>*{width:100%;min-width:0}
+}
+@media(max-width:380px){
+ .life-skills-page .ls-module-grid{grid-template-columns:minmax(0,1fr)}
+ .life-skills-page .ls-module{min-height:0}
+}
