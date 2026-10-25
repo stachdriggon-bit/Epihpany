@@ -2677,11 +2677,32 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
       }
       return;
     }
-    if(output.hidden){if(target.classList.contains('answer')&&typeof G!=='undefined'&&G&&G.type==='spelling'){output.textContent='في تحدّي التهجئة، الخيارات تهجئات مختلفة للكلمة نفسها؛ ركّز على ترتيب الحروف. نعرض هذه الملاحظة بدل ترجمة قد تكشف الخيار الصحيح.';output.classList.remove('translation-approximate');output.title='مساعدة تحافظ على عدالة سؤال التهجئة';output.hidden=false;button.setAttribute('aria-expanded','true');button.innerHTML='<span aria-hidden="true">ع</span> إخفاء الترجمة';return;}const answerText=target.querySelector(':scope > span:not(.key)');const cardText=target.querySelector(':scope > span');const storyChoiceText=target.classList.contains('story-decision-option')?[...target.children].find(el=>!el.classList.contains('story-decision-letter')&&!el.classList.contains('story-option-ar')):null;const sourceText=target.classList.contains('story-decision-option')?(storyChoiceText||target).textContent:(target.classList.contains('answer')||target.classList.contains('mg-card')||target.classList.contains('mg-tile'))?(answerText||cardText||target).textContent:target.textContent;const directArabic=target.dataset.translationAr;const storyOption=target.classList.contains('story-decision-option')&&typeof ST!=='undefined'&&ST&&ST.story&&ST.story.decision&&ST.story.decision.options[Number(target.dataset.storyDecision)];let result=directArabic?{text:directArabic,exact:true}:storyOption&&storyOption.text_ar?{text:storyOption.text_ar,exact:true}:translateToArabic(sourceText);
-    if(!result.text||result.unavailable) result={text:translateKnownPhrase(sourceText),exact:false};
-    if(!result.text) result={text:sourceText,exact:false};
-    output.textContent=result.text;output.classList.toggle('translation-approximate',!result.exact);output.title=result.exact?'ترجمة محلية':'ترجمة مساعدة محلية؛ قد تبقى بعض الكلمات الإنجليزية دون ترجمة';output.hidden=false;button.setAttribute('aria-expanded','true');button.innerHTML='<span aria-hidden="true">ع</span> إخفاء الترجمة';}
-    else{output.hidden=true;button.setAttribute('aria-expanded','false');button.innerHTML='<span aria-hidden="true">ع</span> ترجمة '+(button.dataset.translationLabel|| (target.classList.contains('answer')?'الإجابة':'السؤال'));}
+    const answerText=target.querySelector(':scope > span:not(.key)');
+    const cardText=target.querySelector(':scope > span');
+    const storyChoiceText=target.classList.contains('story-decision-option')?[...target.children].find(el=>!el.classList.contains('story-decision-letter')&&!el.classList.contains('story-option-ar')):null;
+    const contentNode=storyChoiceText||(target.classList.contains('answer')?answerText:target.classList.contains('mg-card')||target.classList.contains('mg-tile')?cardText:target);
+    if(target.classList.contains('answer')&&typeof G!=='undefined'&&G&&G.type==='spelling'){
+      output.hidden=true;toast('في تحدّي التهجئة، ركّز على ترتيب الحروف حتى لا تكشف الترجمة الإجابة.');return;
+    }
+    if(!contentNode)return;
+    if(!contentNode.dataset.translationSource)contentNode.dataset.translationSource=contentNode.textContent.trim();
+    if(button.getAttribute('aria-expanded')==='true'){
+      contentNode.textContent=contentNode.dataset.translationSource;
+      output.hidden=true;button.setAttribute('aria-expanded','false');
+      button.innerHTML='<span aria-hidden="true">ع</span> ترجمة '+(button.dataset.translationLabel||(target.classList.contains('answer')?'الإجابة':'النص'));
+      return;
+    }
+    const sourceText=contentNode.dataset.translationSource;
+    const directArabic=target.dataset.translationAr||contentNode.dataset.translationAr;
+    const storyOption=target.classList.contains('story-decision-option')&&typeof ST!=='undefined'&&ST&&ST.story&&ST.story.decision&&ST.story.decision.options[Number(target.dataset.storyDecision)];
+    let result=directArabic?{text:directArabic,exact:true}:storyOption&&storyOption.text_ar?{text:storyOption.text_ar,exact:true}:translateToArabic(sourceText);
+    if(!result.text||result.unavailable)result={text:translateKnownPhrase(sourceText),exact:false};
+    if(!result.text)result={text:sourceText,exact:false};
+    contentNode.textContent=result.text;
+    output.hidden=true;output.textContent='';
+    target.classList.toggle('translation-approximate',!result.exact);
+    button.setAttribute('aria-expanded','true');
+    button.innerHTML='<span aria-hidden="true">EN</span> English';
   });
   const translationObserver=new MutationObserver(()=>{enhanceTranslationControls($('#game-body'));enhanceTranslationControls($('#world-game'));});
   if($('#game-body'))translationObserver.observe($('#game-body'),{childList:true,subtree:true});
