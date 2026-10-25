@@ -101,6 +101,14 @@ test('main navigation tabs open without uncaught page errors', async t => {
         if (await page.locator('#game-body .answer').count()) await page.locator('#game-body .answer').first().click();
       }
       if (view === 'home') {
+        assert.equal(await page.locator('.mobile-nav-group').count(), 4, 'mobile navigation should group destinations by purpose');
+        assert.equal(await page.locator('.mobile-menu nav [data-view]').count(), 11, 'all destinations should remain available in the mobile menu');
+        const quickActions = page.locator('.quick-actions-more');
+        assert.equal(await quickActions.evaluate(el => el.open), false, 'secondary practice options should start collapsed');
+        assert.equal(await page.locator('#listen-only-start').isVisible(), false, 'collapsed secondary actions should not clutter the home screen');
+        await quickActions.locator('summary').click();
+        assert.equal(await page.locator('#listen-only-start').isVisible(), true, 'secondary practice actions should be available when expanded');
+        await quickActions.locator('summary').click();
         const arabicToggle = page.locator('#ar-toggle');
         const arabicIsOn = await page.locator('body').evaluate(el => el.classList.contains('ar-on'));
         if (!arabicIsOn) await page.evaluate(() => document.querySelector('#ar-toggle').click());
