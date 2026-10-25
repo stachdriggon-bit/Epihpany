@@ -236,23 +236,6 @@
         </div><button class="btn daily-session-start" id="daily-session-start" type="button"><span aria-hidden="true">▶</span> Start session</button>
       </section>
 
-      <details class="quick-actions-more"><summary><span class="quick-actions-more-icon" aria-hidden="true">＋</span><span>More ways to practise</span><small>Choose a focused activity</small></summary><div class="quick-actions" aria-label="Quick learning modes"><button type="button" class="btn btn-ghost" id="listen-only-start">🎧 Listen-only session</button><button type="button" class="btn btn-ghost" id="quick-practice-start">⚡ Quick exercise</button><button type="button" class="btn btn-ghost" id="quick-review-start">📘 My review</button></div></details>
-
-      <section class="block" aria-labelledby="games-title">
-        <div class="block-head"><h2 id="games-title">Or choose a game</h2><p>Every game trains a different part of your English.</p></div>
-        <div class="games" id="games"></div>
-      </section>
-
-      <section class="block developer-lab" id="developer-lab" hidden aria-labelledby="developer-lab-title">
-        <div class="block-head"><div><h2 id="developer-lab-title">🛠 Developer Mode</h2><p>Test any CEFR level and activity without changing your real progress.</p></div></div>
-        <div class="developer-lab-controls">
-          <label for="developer-level">Test level</label><select id="developer-level" class="field-select"></select>
-          <label for="developer-activity">Activity</label><select id="developer-activity" class="field-select"></select>
-          <label for="developer-story">Story</label><select id="developer-story" class="field-select"></select>
-        </div>
-        <p id="developer-session-status" class="developer-session-status">Choose a level, then start a safe test session.</p>
-        <div class="developer-lab-actions"><button type="button" class="btn btn-ghost" id="developer-session-toggle">Start safe test session</button><button type="button" class="btn" id="developer-start" disabled>Launch selected activity →</button></div>
-      </section>
       <div class="focus home-focus">
         <article class="next" id="next-card">
           <div class="next-body">
@@ -277,6 +260,28 @@
       
 
 
+
+
+      <details class="quick-actions-more"><summary><span class="quick-actions-more-icon" aria-hidden="true">＋</span><span>More ways to practise</span><small>Choose a focused activity</small></summary><div class="quick-actions" aria-label="Quick learning modes"><button type="button" class="btn btn-ghost" id="listen-only-start">🎧 Listen-only session</button><button type="button" class="btn btn-ghost" id="quick-practice-start">⚡ Quick exercise</button><button type="button" class="btn btn-ghost" id="quick-review-start">📘 My review</button></div></details>
+
+      <details class="home-game-explorer">
+        <summary><span class="home-game-explorer-icon" aria-hidden="true">✦</span><span>Explore games</span><small>Choose a focused activity</small></summary>
+      <section class="block" aria-labelledby="games-title">
+        <div class="block-head"><h2 id="games-title">Or choose a game</h2><p>Every game trains a different part of your English.</p></div>
+        <div class="games" id="games"></div>
+      </section>
+      </details>
+
+      <section class="block developer-lab" id="developer-lab" hidden aria-labelledby="developer-lab-title">
+        <div class="block-head"><div><h2 id="developer-lab-title">🛠 Developer Mode</h2><p>Test any CEFR level and activity without changing your real progress.</p></div></div>
+        <div class="developer-lab-controls">
+          <label for="developer-level">Test level</label><select id="developer-level" class="field-select"></select>
+          <label for="developer-activity">Activity</label><select id="developer-activity" class="field-select"></select>
+          <label for="developer-story">Story</label><select id="developer-story" class="field-select"></select>
+        </div>
+        <p id="developer-session-status" class="developer-session-status">Choose a level, then start a safe test session.</p>
+        <div class="developer-lab-actions"><button type="button" class="btn btn-ghost" id="developer-session-toggle">Start safe test session</button><button type="button" class="btn" id="developer-start" disabled>Launch selected activity →</button></div>
+      </section>
 
       <p class="foot-note">Your progress is saved on this device.</p>
     </div>
