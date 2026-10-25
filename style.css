@@ -2888,3 +2888,20 @@ body[data-theme="dark"] .quick-nav-option:has(input:checked){background:#302c4c;
   #thinklab-view .tl-case{padding:16px}
   #thinklab-view .tl-mission h2{font-size:clamp(1.8rem,7vw,2.5rem)}
 }
+
+
+/* Think Lab: calmer hierarchy — fewer competing labels and tighter, readable cards. */
+#thinklab-view .tl-cases{gap:14px}
+#thinklab-view .tl-case{position:relative;min-width:0;border-radius:18px;box-shadow:none}
+#thinklab-view .tl-case-tag{color:var(--ink-3);background:transparent;border:0;padding:0}
+#thinklab-view .tl-case-desc{font-size:.9rem;line-height:1.6;color:var(--ink-2);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+#thinklab-view .tl-case-bottom{gap:10px;flex-wrap:wrap}
+#thinklab-view .tl-mission{box-shadow:none}
+#thinklab-view .tl-mission-meta{gap:8px;flex-wrap:wrap}
+#thinklab-view .tl-mission-meta span{padding:6px 10px;font-size:.76rem}
+#thinklab-view .tl-game-card{box-shadow:none}
+@media(max-width:820px){
+  #thinklab-view .tl-cases{gap:10px}
+  #thinklab-view .tl-case-desc{-webkit-line-clamp:2}
+  #thinklab-view .tl-mission-meta span{padding:5px 8px}
+}
