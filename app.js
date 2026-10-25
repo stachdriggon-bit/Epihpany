@@ -3229,10 +3229,10 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     const modeLabel = G.mode === 'daily' ? 'Daily #' + dailyChallengeNumber() : G.mode === 'oneLife' ? 'ONE LIFE · No retries' : (G.reviewMode ? 'Practice again' : m.label);
     $('#game-body').innerHTML =
       '<div class="q-meta"><span class="pill">' + modeLabel + '</span><span class="q-count">Question ' + (G.i + 1) + ' of ' + G.questions.length + '</span></div>' +
-      '<h2 class="q-text'+(state.translationEnabled?' question-translated':'')+'" id="q-text" tabindex="-1" lang="'+(state.translationEnabled?'ar':'en')+'" dir="'+(state.translationEnabled?'rtl':'auto')+'">' + esc(state.translationEnabled ? (G.questions[G.i].q_ar || translateToArabic(q.q).text) : q.q) + '</h2>' + (q.word ? '<button class="listen-btn question-listen" data-speak="' + esc(wordParts(q.word, q.explain).word) + '">' + ic('sound') + ' Listen to word</button>' : '') + '<p class="q-sub">' + esc(q.sub) + '</p><button type="button" class="btn btn-ghost share-question-btn" data-share-current-question>↗ Share this question</button>' + (state.helpArabic && G.questions[G.i].sub_ar ? '<p class="arabic" lang="ar" dir="rtl">' + esc(G.questions[G.i].sub_ar) + '</p>' : '') +
+      '<h2 class="q-text" id="q-text" tabindex="-1" lang="en" dir="auto">' + esc(q.q) + '</h2>' + (q.word ? '<button class="listen-btn question-listen" data-speak="' + esc(wordParts(q.word, q.explain).word) + '">' + ic('sound') + ' Listen to word</button>' : '') + '<p class="q-sub">' + esc(q.sub) + '</p><button type="button" class="btn btn-ghost share-question-btn" data-share-current-question>↗ Share this question</button>' +
       '<p class="ar-only ar-guide arabic" lang="ar" dir="rtl">' + guidance[G.type] + '</p>' +
       '<div class="answers" id="answers" role="group" aria-labelledby="q-text">' +
-      q.answers.map((a, i) => '<button class="answer" data-i="' + i + '"><span class="key">' + (i + 1) + '</span><span>' + esc(a) + '</span>' + (state.helpArabic && G.questions[G.i].answers_ar && G.questions[G.i].answers_ar[i] ? '<span class="answer-ar arabic" lang="ar" dir="rtl">' + esc(G.questions[G.i].answers_ar[i]) + '</span>' : '') + '</button>').join('') + '</div>';
+      q.answers.map((a, i) => '<button class="answer" data-i="' + i + '"><span class="key">' + (i + 1) + '</span><span>' + esc(a) + '</span></button>').join('') + '</div>';
     $('#game-scroll').scrollTop = 0;
     $('#q-text').focus({preventScroll: true});
   }
