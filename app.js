@@ -2543,7 +2543,9 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     templateMatch=source.match(/^Choose the (natural phrase|best word|correct word|best response|correct answer|best answer|best option):\s*(.+)$/i);
     if(templateMatch)return {text:({'natural phrase':'اختر التعبير الطبيعي:','best word':'اختر الكلمة الأنسب:','correct word':'اختر الكلمة الصحيحة:','best response':'اختر أفضل رد:','correct answer':'اختر الإجابة الصحيحة:','best answer':'اختر أفضل إجابة:','best option':'اختر الخيار الأنسب:'})[templateMatch[1].toLowerCase()]+' '+templateMatch[2],exact:false};
     const translated=translateKnownPhrase(source);
-    const unavailable={text:'لم تتوفر ترجمة موثوقة لهذا النص بعد. يمكنك متابعة النص بالإنجليزية أو تجربة سؤال آخر.',exact:false,unavailable:true};
+    // Never substitute a warning for the source text: callers may use .text as an inline fallback.
+    // Preserve the original English so the question/answer remains visible when no Arabic entry exists.
+    const unavailable={text:source,exact:false,unavailable:true};
     const untranslated=(translated.match(/[A-Za-z]+(?:['’-][A-Za-z]+)*/g)||[]);
     if(untranslated.length)return unavailable;
     const tokens=source.match(/[A-Za-z]+(?:['’-][A-Za-z]+)*/g)||[];
