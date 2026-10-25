@@ -2727,7 +2727,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
   function toggleArabic() {
     if (state.immersionWeek?.active && state.immersionWeek.endsAt && Date.now() < Number(state.immersionWeek.endsAt)) { toast('Arabic help is paused during your optional immersion week. You can end it in My Tools.'); return; }
     state.helpArabic = !state.helpArabic;
-    if(state.helpArabic) state.translationEnabled = true;
+    // Keep Arabic help separate from the explicit translation toggle.
     try { localStorage.setItem('epiphany-help-language-choice', state.helpArabic ? 'ar' : 'en'); } catch {}
     save(); syncSettings();
     const syncCurrentQuestion = () => {
