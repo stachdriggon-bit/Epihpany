@@ -2607,45 +2607,9 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     syncQuestionArabicTranslations(root);
   }
   function syncQuestionArabicTranslations(root) {
-    if(!root) return;
-    const primarySelector='.q-text,.typing-prompt,.spot-text,.question-text,.prompt-text,.story-prompt,.story-text';
-    root.querySelectorAll(primarySelector).forEach(target=>{
-      if(!target.id) return;
-      const button=document.querySelector('[data-translate-target="'+CSS.escape(target.id)+'"]');
-      const output=document.getElementById(target.id+'-arabic');
-      if(!button||!output) return;
-      if(!state.helpArabic) {
-        if(output.dataset.autoShown==='1') {
-          if(target.dataset.translationSource && target.textContent!==target.dataset.translationSource) target.textContent=target.dataset.translationSource;
-          output.hidden=true;
-          delete output.dataset.autoShown;
-          delete output.dataset.translationText;
-          button.setAttribute('aria-expanded','false');
-          button.innerHTML='<span aria-hidden="true">ع</span> ترجمة '+(button.dataset.translationLabel||'السؤال');
-        }
-        return;
-      }
-      if(!state.translationEnabled) return;
-      if(target.dataset.translationManualEnglish==='1'){
-        button.setAttribute('aria-expanded','false');
-        const englishLabel='<span aria-hidden="true">ع</span> ترجمة '+(button.dataset.translationLabel||'السؤال');
-        if(button.innerHTML!==englishLabel) button.innerHTML=englishLabel;
-        return;
-      }
-      if(!target.dataset.translationSource) target.dataset.translationSource=target.textContent.trim();
-      const text=target.dataset.translationSource;
-      const directArabic=target.dataset.translationAr;
-      const result=directArabic?{text:directArabic,exact:true}:translateToArabic(text);
-      if(!result.text || result.unavailable) return;
-      if(target.textContent!==result.text) target.textContent=result.text;
-      output.hidden=true;
-      output.dataset.autoShown='1';
-      output.dataset.translationText=result.text;
-      output.classList.toggle('translation-approximate',!result.exact);
-      button.setAttribute('aria-expanded','true');
-      const expandedLabel='<span aria-hidden="true">EN</span> English';
-      if(button.innerHTML!==expandedLabel) button.innerHTML=expandedLabel;
-    });
+    // Translation is intentionally user-controlled. Do not auto-replace question text
+    // based on help-language settings; the matching button owns the in-place toggle.
+    if(!root)return;
   }
   document.addEventListener('click',e=>{
     const button=e.target.closest('[data-translate-target]');if(!button)return;
