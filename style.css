@@ -2615,3 +2615,112 @@ body.navigation-pointer :focus-visible{outline:none;box-shadow:none}
   #stories-view .story-reader-actions{grid-template-columns:minmax(0,1fr)}
   #stories-view .story-reader-actions button:last-child{grid-column:auto}
 }
+
+
+/* EPIPHANY THINK LAB — structural redesign: challenge first, progress second. */
+#thinklab-view .tl-page-heading{
+  margin:0 0 20px;
+  padding:0 0 17px;
+  border-bottom:1px solid var(--line);
+}
+#thinklab-view .tl-page-heading h1{font-size:clamp(2.1rem,4.6vw,3.6rem);letter-spacing:-.055em;margin:4px 0 7px}
+#thinklab-view .tl-page-heading .lead{font-size:.94rem;line-height:1.55;max-width:55ch}
+#thinklab-view .tl-heading-seal{display:none}
+#thinklab-view #think-lab-content:has(.tl-mission){
+  display:grid;
+  grid-template-columns:minmax(0,1fr);
+  grid-template-areas:"intro" "chooser" "cases" "progress" "note";
+  gap:0;
+}
+#thinklab-view .tl-mission{grid-area:intro;display:block;padding:clamp(22px,3vw,32px);border-radius:20px;background:#f5f3ff;border:1px solid #e7e2fa;color:#26243d;box-shadow:none}
+#thinklab-view .tl-mission>div:first-child{max-width:760px}
+#thinklab-view .tl-mission .tl-eyebrow{color:#6b5bc8;letter-spacing:.09em;font-size:.65rem}
+#thinklab-view .tl-mission .tl-eyebrow i{background:#7a68df;box-shadow:none}
+#thinklab-view .tl-mission h2{font-size:clamp(2rem,4.3vw,3.4rem);line-height:1.03;letter-spacing:-.055em;margin:13px 0 10px;color:#27243e}
+#thinklab-view .tl-mission h2 br{display:none}
+#thinklab-view .tl-mission h2 em{color:#6553c7}
+#thinklab-view .tl-mission p{max-width:650px;color:#625f78;font-size:.94rem;line-height:1.7}
+#thinklab-view .tl-mission-meta{margin-top:17px;gap:7px}
+#thinklab-view .tl-mission-meta span{padding:6px 10px;border:1px solid #ded8f4;border-radius:9px;background:rgba(255,255,255,.65);color:#5c557c;font-size:.72rem}
+#thinklab-view .tl-orbit{display:none}
+#thinklab-view .tl-mastery{grid-area:progress;margin:24px 0 4px;padding:20px;border:1px solid var(--line);border-radius:18px;background:var(--surface);box-shadow:none}
+#thinklab-view .tl-section-heading{align-items:flex-start;gap:14px;margin-bottom:15px}
+#thinklab-view .tl-section-heading h3{margin:5px 0;font-size:1.25rem;letter-spacing:-.025em}
+#thinklab-view .tl-section-heading p{max-width:58ch;font-size:.8rem;line-height:1.55}
+#thinklab-view .tl-mastery-count{min-width:92px;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:var(--ground);text-align:center}
+#thinklab-view .tl-mastery-count b{font-size:1.35rem}
+#thinklab-view .tl-mastery-count span{font-size:.65rem}
+#thinklab-view .tl-mastery-grid{grid-template-columns:minmax(0,1.2fr) minmax(210px,.8fr);gap:18px}
+#thinklab-view .tl-skill-list{gap:13px}
+#thinklab-view .tl-skill-row{gap:6px}
+#thinklab-view .tl-skill-track{height:6px;border-radius:99px;background:var(--ground)}
+#thinklab-view .tl-recommendation{padding:17px;border:1px solid #e3def9;border-radius:14px;background:#f8f6ff}
+#thinklab-view .tl-recommendation h4{font-size:1.15rem;margin:8px 0}
+#thinklab-view .tl-recommendation p{font-size:.8rem;line-height:1.6}
+#thinklab-view .tl-mastery-foot{margin:14px 0 0;padding-top:12px;border-top:1px solid var(--line);font-size:.75rem;line-height:1.6}
+#thinklab-view .tl-daily{grid-area:chooser;align-items:flex-end;margin-top:25px;padding:0 0 13px;border-bottom:0}
+#thinklab-view .tl-daily h3{font-size:1.4rem;letter-spacing:-.035em;margin:5px 0}
+#thinklab-view .tl-daily p{max-width:620px;font-size:.84rem;line-height:1.55}
+#thinklab-view .tl-case-stamp{display:none}
+#thinklab-view .tl-cases{grid-area:cases;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:0}
+#thinklab-view .tl-case{
+  display:grid;
+  grid-template-columns:44px minmax(0,1fr);
+  grid-template-rows:auto auto auto auto;
+  grid-template-areas:"icon tag" "icon title" "desc desc" "bottom bottom";
+  align-items:start;
+  column-gap:13px;
+  row-gap:4px;
+  min-height:0;
+  padding:16px;
+  border-radius:15px;
+  box-shadow:none;
+  text-align:start;
+  transition:border-color .15s ease,background .15s ease;
+}
+#thinklab-view .tl-case:hover{transform:none;border-color:#c6bced;background:var(--surface);box-shadow:none}
+#thinklab-view .tl-case-top{display:contents}
+#thinklab-view .tl-case-number{grid-area:tag;align-self:center;font-size:.58rem;letter-spacing:.08em}
+#thinklab-view .tl-case-icon{grid-area:icon;width:42px;height:42px;border-radius:12px;background:#f0edff;color:#6657c9;font-size:1.3rem}
+#thinklab-view .tl-case-tag{grid-area:tag;align-self:end;margin:0;font-size:.55rem;letter-spacing:.08em}
+#thinklab-view .tl-case>strong{grid-area:title;font-size:1.08rem;line-height:1.3;letter-spacing:-.02em}
+#thinklab-view .tl-case-desc{grid-area:desc;margin:8px 0 5px;font-size:.8rem;line-height:1.6;color:var(--ink-2)}
+#thinklab-view .tl-case-bottom{grid-area:bottom;margin:8px 0 0;padding-top:11px;font-size:.68rem}
+#thinklab-view .tl-case-bottom b{display:inline-flex;gap:5px;align-items:center;padding:7px 9px;border-radius:9px;background:#f0edff;color:#5f50be;white-space:nowrap}
+#thinklab-view .tl-case-bottom b:after{content:"↗"}
+#thinklab-view .tl-footer-note{grid-area:note;justify-content:flex-start;margin:15px 0 0;font-size:.75rem}
+#thinklab-view .tl-game-head{gap:12px;margin:0 0 13px}
+#thinklab-view .tl-game-card{max-width:720px;border-radius:18px;padding:clamp(18px,3vw,30px);box-shadow:none}
+#thinklab-view .tl-game-card h2{font-size:clamp(1.55rem,3.4vw,2.2rem);line-height:1.16;letter-spacing:-.035em}
+#thinklab-view .tl-game-instruction{margin-bottom:18px;font-size:.9rem;line-height:1.65}
+#thinklab-view .tl-option{min-height:54px;padding:11px 13px;border-radius:12px;box-shadow:none}
+#thinklab-view .tl-game-actions{margin-top:18px;padding-top:13px}
+#thinklab-view .tl-next{min-height:44px;padding:11px 15px;border-radius:11px}
+#thinklab-view .tl-finish{box-shadow:none}
+body[data-theme="dark"] #thinklab-view .tl-mission{background:linear-gradient(135deg,#22263a,#25283e);border-color:#3d4260;color:var(--ink)}
+body[data-theme="dark"] #thinklab-view .tl-mission h2{color:var(--ink)}
+body[data-theme="dark"] #thinklab-view .tl-mission h2 em{color:#b7adff}
+body[data-theme="dark"] #thinklab-view .tl-mission p{color:#c4c9db}
+body[data-theme="dark"] #thinklab-view .tl-mission-meta span{background:#292d43;border-color:#464b68;color:#d5d8e8}
+body[data-theme="dark"] #thinklab-view .tl-recommendation{background:#25283e;border-color:#424665}
+body[data-theme="dark"] #thinklab-view .tl-case-bottom b{background:#302d4c;color:#d2caff}
+body[data-theme="dark"] #thinklab-view .tl-case-icon{background:#302d4c;color:#d2caff}
+@media(max-width:720px){
+  #thinklab-view #think-lab-content:has(.tl-mission){gap:0}
+  #thinklab-view .tl-mission{padding:21px 18px;border-radius:17px}
+  #thinklab-view .tl-mission h2{font-size:clamp(1.9rem,8vw,2.6rem)}
+  #thinklab-view .tl-mission p{font-size:.87rem}
+  #thinklab-view .tl-daily{align-items:flex-start;margin-top:22px;padding-bottom:12px}
+  #thinklab-view .tl-daily h3{font-size:1.22rem}
+  #thinklab-view .tl-cases{grid-template-columns:minmax(0,1fr);gap:9px}
+  #thinklab-view .tl-case{grid-template-columns:42px minmax(0,1fr);padding:14px}
+  #thinklab-view .tl-case-desc{margin-top:5px}
+  #thinklab-view .tl-mastery{padding:15px;margin-top:20px}
+  #thinklab-view .tl-section-heading{flex-direction:column}
+  #thinklab-view .tl-mastery-count{display:flex;align-items:center;gap:8px;min-width:0;padding:7px 10px}
+  #thinklab-view .tl-mastery-count b{font-size:1.05rem}
+  #thinklab-view .tl-mastery-grid{grid-template-columns:minmax(0,1fr);gap:14px}
+  #thinklab-view .tl-word-options{grid-template-columns:minmax(0,1fr)}
+  #thinklab-view .tl-game-head{flex-wrap:wrap}
+}
+@media(prefers-reduced-motion:reduce){#thinklab-view .tl-case{transition:none}}
