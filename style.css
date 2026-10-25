@@ -2764,3 +2764,75 @@ body[data-theme="dark"] #home-view .home-focus .next-art{border-color:var(--line
   #home-view .home-focus .next-body{padding:20px}
 }
 
+
+
+/* Calm interface pass · 2026-10-25
+   Quiet secondary actions, improve reading rhythm, and keep motion respectful. */
+:root{
+  --violet:#7772a6;--violet-soft:#eeedf5;
+  --coral:#b67f75;--coral-soft:#f5eeeb;
+  --mint:#6d9f91;--mint-soft:#eaf2ee;
+  --sky:#7898ad;--sky-soft:#edf2f5;
+  --pink:#b58b9c;--pink-soft:#f5eef1;
+  --focus:#746f9c;
+}
+.block{margin-top:clamp(36px,5.5vw,58px)}
+.intro{margin-bottom:clamp(20px,3vw,30px)}
+.lead{max-width:65ch;line-height:1.7}
+.view .intro .lead{max-width:65ch}
+.story-reader{max-width:66ch}
+.story-text{max-width:65ch;line-height:1.85}
+.create-story-reader,.create-story-writer,.create-story-published{max-width:68ch}
+.writer-reader-page p,.create-story-paragraph,.writer-part p{max-width:65ch;line-height:1.8}
+#thinklab-view .tl-game-instruction,#lifeskills-view .ls-stage p{max-width:65ch}
+.btn{transition:background-color .15s ease,border-color .15s ease,box-shadow .15s ease,transform .15s ease}
+.btn-ghost,.icon-btn,.chip,.ar-toggle{box-shadow:none}
+.quick-actions-more,.home-game-explorer{border-color:color-mix(in srgb,var(--line) 82%,transparent)}
+.quick-actions-more>summary,.home-game-explorer>summary{font-weight:750}
+.quick-actions-more>summary small,.home-game-explorer>summary small{font-weight:500}
+.quick-actions .btn{background:transparent;border-color:var(--line);box-shadow:none;min-height:46px;font-size:15px}
+.quick-actions .btn:hover{background:var(--ground);border-color:var(--line-2)}
+#home-view .daily-session-card{gap:18px;border-color:var(--line);box-shadow:none}
+#home-view .daily-session-steps{gap:7px}
+#home-view .daily-session-steps span{background:var(--ground);border-color:transparent}
+#home-view .daily-session-steps b{background:var(--surface);color:var(--ink-2)}
+/* Only the primary action gets a strong fill; supporting actions read as links. */
+#home-view .daily-session-start{box-shadow:none}
+#home-view .home-focus .next .btn{box-shadow:none;border-color:transparent}
+#home-view .home-focus .next .btn-link{background:transparent}
+.view .block-head p,.view .foot-note{max-width:65ch;line-height:1.7}
+.story-reader-actions button,.story-filter-row button{box-shadow:none}
+.story-reader-actions{max-width:520px}
+.navigation-breadcrumb{max-width:1120px;margin:0 auto;padding:0 24px 8px;color:var(--ink-2);font-size:13px}
+.navigation-breadcrumb .breadcrumb-link{min-height:30px}
+.navigation-breadcrumb[hidden]{display:none!important}
+.top.is-hidden-on-scroll{transform:none!important;box-shadow:0 5px 22px rgba(18,26,58,.05)}
+.top.is-hidden-on-scroll .tabs,
+.top.is-hidden-on-scroll .mobile-menu,
+.top.is-hidden-on-scroll .top-right>:not(#global-search-toggle){display:none!important}
+.top.is-hidden-on-scroll .top-in{height:54px;min-height:54px;flex-wrap:nowrap;padding-block:4px}
+.top.is-hidden-on-scroll .logo-mark{width:30px;height:30px}
+.top.is-hidden-on-scroll .logo-word{font-size:21px}
+.top.is-hidden-on-scroll .top-right{display:flex!important;margin-inline-start:auto}
+.top.is-hidden-on-scroll .top-right>#global-search-toggle{display:grid!important}
+#global-search-toggle{flex:0 0 auto}
+body[data-theme="dark"] .top.is-hidden-on-scroll{box-shadow:0 5px 22px rgba(0,0,0,.18)}
+/* Session exit stays clear and low-emphasis beside the close control. */
+#game-finish-here{width:auto;min-width:0;padding:0 12px;border-radius:999px;background:transparent;border:1px solid var(--line);box-shadow:none;font-size:13px;font-weight:750;white-space:nowrap}
+#game-finish-here:hover{background:var(--ground)}
+#game-finish-here:active{transform:none}
+@media(max-width:700px){
+  .navigation-breadcrumb{padding:0 16px 6px}
+  .navigation-breadcrumb .breadcrumb-parent{display:none}
+  .navigation-breadcrumb .breadcrumb-current{display:none}
+  .navigation-breadcrumb .breadcrumb-back{display:inline-flex;align-items:center;gap:7px;min-height:32px;color:var(--ink-2);font-weight:750}
+  .story-reader{max-width:65ch}
+  .story-text{font-size:clamp(18px,4.7vw,22px)}
+  #game-finish-here{padding:0 9px;font-size:12px}
+}
+@media(prefers-reduced-motion:reduce){
+  html:focus-within{scroll-behavior:auto}
+  .view.is-active{animation:none!important}
+  .top,.top *,.story-card,.btn,.life-skills-page *,.think-lab-page *{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+  .top.is-hidden-on-scroll{transform:none!important}
+}
