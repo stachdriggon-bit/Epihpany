@@ -522,10 +522,12 @@
 
   function adaptiveRecommendation(){
     const signals=state.adaptiveSignals||{},review=(state.review||[]).filter(w=>w&&w.word);
+    const dueReview=review.filter(w=>!w.due||w.due<=dayKey());
     const hard=review.filter(w=>(Number(w.errors)||0)>=2).sort((a,b)=>(Number(b.errors)||0)-(Number(a.errors)||0));
     const traps=Object.entries(state.mistakeTrapErrors||{}).map(([key,errors])=>({key,errors:Number(errors)||0,correct:Number((state.mistakeTrapCorrect||{})[key])||0})).filter(x=>x.errors>0).sort((a,b)=>(b.errors-Math.floor(b.correct/2))-(a.errors-Math.floor(a.correct/2)));
     const sig=skill=>{const b=signals[skill]||{},topics=Object.entries(b.topics||{}).map(([key,v])=>({key,errors:Number(v.errors)||0,correct:Number(v.correct)||0}));topics.sort((a,b)=>(b.errors-Math.floor(b.correct/2))-(a.errors-Math.floor(a.correct/2)));return{errors:Number(b.errors)||0,correct:Number(b.correct)||0,topic:topics[0]};};
     const c=[];
+    if(dueReview.length)c.push({priority:100+Math.min(dueReview.length,20),game:'speed',title:'Review words due today',reason:'Some saved words are ready for review. A short round helps strengthen your memory before moving on.',detail:dueReview.slice(0,3).map(w=>w.word).join(', '),kind:'review'});
     if(traps[0]&&traps[0].errors>=2)c.push({priority:traps[0].errors-Math.floor(traps[0].correct/2),game:'personalized',title:'Your grammar weak spots',reason:'You have missed this grammar pattern more than once. This short review prioritises patterns you find difficult.',detail:traps[0].key.replace(/[-_]+/g,' '),kind:'grammar'});
     const v=sig('vocabulary');if(hard.length||v.errors>=2)c.push({priority:Math.max(hard.length?Number(hard[0].errors)||0:0,v.errors),game:'speed',title:'Review your difficult words',reason:'Speed Round gives extra attention to saved words and words you have missed before.',detail:hard.length?hard.slice(0,3).map(w=>w.word).join(', '):(v.topic&&v.topic.key)||'vocabulary',kind:'vocabulary'});
     const l=sig('listening');if(l.errors>=2)c.push({priority:l.errors-Math.floor(l.correct/2),game:'audioImage',title:'Train listening recognition',reason:'You have missed several sound-to-word matches. Practise hearing a word and connecting it to its meaning.',detail:(l.topic&&l.topic.key)||'sound and meaning',kind:'listening'});
