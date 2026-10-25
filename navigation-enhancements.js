@@ -375,7 +375,7 @@
 
 
   function setupExpandableDescriptions() {
-    $('.view .intro .lead').forEach((paragraph, index) => {
+    $$('.view .intro .lead').forEach((paragraph, index) => {
       if (paragraph.dataset.expandableReady || paragraph.textContent.trim().length < 155) return;
       paragraph.dataset.expandableReady = 'true';
       paragraph.classList.add('description-collapsed');
