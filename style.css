@@ -2836,3 +2836,24 @@ body[data-theme="dark"] .top.is-hidden-on-scroll{box-shadow:0 5px 22px rgba(0,0,
   .top,.top *,.story-card,.btn,.life-skills-page *,.think-lab-page *{animation:none!important;transition:none!important;scroll-behavior:auto!important}
   .top.is-hidden-on-scroll{transform:none!important}
 }
+
+
+/* Calm-interface controls */
+.description-collapsed{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.description-toggle{display:inline-flex;align-items:center;min-height:34px;margin-top:5px;padding:2px 0;color:var(--ink-2);font-weight:750;font-size:13px;text-decoration:underline;text-underline-offset:3px}
+.description-toggle:hover{color:var(--ink)}
+.progress-item.is-new-start b{font-size:12px;font-weight:750;color:var(--ink-2);max-width:90px;line-height:1.25}
+.quick-nav-panel>p{color:var(--ink-2);font-size:14px;line-height:1.6;margin:0 0 16px}
+.quick-nav-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.quick-nav-option{display:flex;align-items:center;gap:10px;min-height:48px;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:var(--surface);cursor:pointer}
+.quick-nav-option:has(input:checked){border-color:var(--focus);background:color-mix(in srgb,var(--violet-soft) 55%,var(--surface))}
+.quick-nav-option input{accent-color:var(--focus);width:17px;height:17px;flex:none}
+.quick-nav-option>span{color:var(--ink-2);font-size:17px}
+.quick-nav-option b{font-size:14px}
+#quick-nav-count{min-height:22px;margin-top:12px;color:var(--ink-2);font-size:12px}
+.quick-nav-actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:12px}
+.quick-nav-actions .btn{min-height:44px;font-size:14px;box-shadow:none}
+.quick-nav-actions .btn-link{background:transparent}
+body[data-theme="dark"] .quick-nav-option{background:var(--surface);border-color:var(--line)}
+body[data-theme="dark"] .quick-nav-option:has(input:checked){background:#302c4c;border-color:#aaa0f3}
+@media(max-width:480px){.quick-nav-options{grid-template-columns:minmax(0,1fr)}.quick-nav-panel{padding:18px}.quick-nav-option{min-height:44px}}
