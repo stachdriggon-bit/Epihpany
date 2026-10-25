@@ -109,6 +109,14 @@ test('main navigation tabs open without uncaught page errors', async t => {
         await quickActions.locator('summary').click();
         assert.equal(await page.locator('#listen-only-start').isVisible(), true, 'secondary practice actions should be available when expanded');
         await quickActions.locator('summary').click();
+        const gameExplorer = page.locator('.home-game-explorer');
+        assert.equal(await gameExplorer.evaluate(el => el.open), false, 'game browsing should start collapsed behind the main daily action');
+        assert.equal(await page.locator('#games').isVisible(), false, 'the game catalogue should not compete with the daily action before expansion');
+        await gameExplorer.locator('summary').click();
+        assert.equal(await gameExplorer.evaluate(el => el.open), true, 'all game choices should remain available when requested');
+        assert.equal(await page.locator('#games').isVisible(), true, 'expanding the game explorer should reveal the existing catalogue');
+        assert.ok(await page.locator('#games button').count() > 0, 'the existing game buttons should remain available');
+        await gameExplorer.locator('summary').click();
         const arabicToggle = page.locator('#ar-toggle');
         const arabicIsOn = await page.locator('body').evaluate(el => el.classList.contains('ar-on'));
         if (!arabicIsOn) await page.evaluate(() => document.querySelector('#ar-toggle').click());
