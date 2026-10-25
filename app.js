@@ -3268,7 +3268,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     $$('#answers .answer').forEach((b, k) => { b.disabled = true; if (k === q.correct) b.classList.add('correct'); else if (k === choice) b.classList.add('wrong'); });
     $('#answers').classList.add('done');
     renderSteps(); sfx(ok ? 'ok' : 'no');
-    const last = G.i === game.questions.length - 1;
+    const last = G.i === G.questions.length - 1;
     if(G.type==='grammar'&&G.grammarMode==='fix'){showSheet(ok,'<h3>'+(ok?'Sentence repaired!':'Almost — here’s how to fix it.')+'</h3><p>'+(ok?'You chose the correct form.':'Mistakes help reveal the rule. The corrected form is: <b>'+esc(q.answers[q.correct])+'</b>')+'</p><p>'+esc(q.explain)+'</p><div class="sheet-actions"><button class="btn" id="go-next">'+(last?'See results':'Continue')+ic('arrow')+'</button></div>');return;}
     showSheet(ok,
       '<h3><span class="sheet-mark">' + ic(ok ? 'check' : 'lightbulb') + '</span>' + (ok ? 'Exactly right!' : 'Not quite yet — let’s learn from it.') + '</h3>' +
