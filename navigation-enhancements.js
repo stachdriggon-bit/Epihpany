@@ -40,7 +40,7 @@
       crumb.hidden = view === 'home';
       crumb.replaceChildren();
       const home = document.createElement('button');
-      home.type = 'button'; home.className = 'breadcrumb-link breadcrumb-parent breadcrumb-back'; home.textContent = '← Back'; home.setAttribute('aria-label', 'Back to Home');
+      home.type = 'button'; home.className = 'breadcrumb-link breadcrumb-parent breadcrumb-back'; home.textContent = 'Home'; home.setAttribute('aria-label', 'Back to Home');
       home.addEventListener('click', () => navigate('home'));
       crumb.append(home);
       const sep = document.createElement('span'); sep.setAttribute('aria-hidden', 'true'); sep.textContent = '›'; crumb.append(sep);
