@@ -2724,3 +2724,29 @@ body[data-theme="dark"] #thinklab-view .tl-case-icon{background:#302d4c;color:#d
   #thinklab-view .tl-game-head{flex-wrap:wrap}
 }
 @media(prefers-reduced-motion:reduce){#thinklab-view .tl-case{transition:none}}
+
+/* Home: make the next step primary and put the activity catalogue behind an intentional choice. */
+#home-view > .page > .home-focus{margin:0 0 24px}
+#home-view .home-focus .next{max-width:none;min-height:250px;border-radius:26px}
+#home-view .home-focus .next-body{padding:clamp(22px,4vw,34px)}
+#home-view .home-focus .next h2{max-width:18ch}
+.home-game-explorer{margin:0 0 26px;border:1px solid var(--line);border-radius:18px;background:var(--surface);overflow:hidden}
+.home-game-explorer>summary{display:flex;align-items:center;gap:11px;min-height:62px;padding:12px 16px;list-style:none;cursor:pointer;font-weight:850;color:var(--ink)}
+.home-game-explorer>summary::-webkit-details-marker{display:none}
+.home-game-explorer>summary::after{content:"⌄";margin-inline-start:auto;color:var(--ink-3);font-size:19px;transition:transform .18s ease}
+.home-game-explorer[open]>summary::after{transform:rotate(180deg)}
+.home-game-explorer-icon{display:grid;place-items:center;flex:0 0 34px;height:34px;border-radius:11px;background:var(--violet-soft);color:var(--focus);font-size:17px}
+.home-game-explorer>summary small{margin-inline-start:auto;color:var(--ink-3);font-size:11px;font-weight:650}
+.home-game-explorer[open]>summary{border-bottom:1px solid var(--line);background:color-mix(in srgb,var(--violet-soft) 28%,var(--surface))}
+.home-game-explorer>.block{margin:0;padding:20px 16px 16px}
+.home-game-explorer .block-head{margin-bottom:15px}
+body[data-theme="dark"] .home-game-explorer{background:var(--surface);border-color:var(--line)}
+body[data-theme="dark"] .home-game-explorer[open]>summary{background:#302c4c}
+@media(max-width:820px){
+  #home-view > .page > .home-focus{margin-bottom:20px}
+  #home-view .home-focus .next{min-height:0;border-radius:22px}
+  .home-game-explorer>summary{min-height:58px;padding:10px 12px}
+  .home-game-explorer>summary small{display:none}
+}
+@media(prefers-reduced-motion:reduce){.home-game-explorer>summary::after{transition:none}}
+
