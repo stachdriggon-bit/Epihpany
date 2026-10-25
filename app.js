@@ -2438,6 +2438,22 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     });
   }
 
+  function normalizeMixedArabicTranslation(value) {
+    let text=String(value==null?'':value);
+    const replacements=[
+      [/\\blook forward to\\b/gi,'يتطلّع إلى'],
+      [/\\bbe looking forward to\\b/gi,'يتطلّع إلى'],
+      [/\\bfollowed by\\b/gi,'يتبعها'],
+      [/\\blook forward to doing something\\b/gi,'يتطلّع إلى فعل شيء'],
+      [/\\bverb ending in -ing\\b/gi,'فعل ينتهي بصيغة -ing'],
+      [/\\bnoun or verb ending in -ing\\b/gi,'اسم أو فعل ينتهي بصيغة -ing'],
+      [/\\bbase form of the verb\\b/gi,'الصيغة الأساسية للفعل'],
+      [/\\bpast participle\\b/gi,'التصريف الثالث للفعل'],
+      [/\\bsubject-verb agreement\\b/gi,'توافق الفعل مع الفاعل']
+    ];
+    for(const [pattern,replacement] of replacements)text=text.replace(pattern,replacement);
+    return text;
+  }
   function translateKnownPhrase(source) {
     const lower=normalizeTranslationKey(source);
     if(AR_TRANSLATION_PHRASES[lower])return AR_TRANSLATION_PHRASES[lower];
@@ -2663,7 +2679,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
         // as a best-effort inline translation, and keep the original source for toggling back.
         if(!result.text||result.unavailable) result={text:translateKnownPhrase(source),exact:false};
         if(!result.text) result={text:source,exact:false};
-        target.textContent=result.text;delete target.dataset.translationManualEnglish;output.hidden=true;output.dataset.translationText=result.text;
+        target.textContent=normalizeMixedArabicTranslation(result.text);delete target.dataset.translationManualEnglish;output.hidden=true;output.dataset.translationText=result.text;
         button.setAttribute('aria-expanded','true');button.innerHTML='<span aria-hidden="true">EN</span> English';
       }
       return;
@@ -2689,7 +2705,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     let result=directArabic?{text:directArabic,exact:true}:storyOption&&storyOption.text_ar?{text:storyOption.text_ar,exact:true}:translateToArabic(sourceText);
     if(!result.text||result.unavailable)result={text:translateKnownPhrase(sourceText),exact:false};
     if(!result.text)result={text:sourceText,exact:false};
-    contentNode.textContent=result.text;
+    contentNode.textContent=normalizeMixedArabicTranslation(result.text);
     output.hidden=true;output.textContent='';
     target.classList.toggle('translation-approximate',!result.exact);
     button.setAttribute('aria-expanded','true');
@@ -2702,7 +2718,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     const b=e.target.closest('[data-translate-world]');if(!b||!WORLD||!state.translationEnabled)return;
     if(!arTranslationCatalogLoaded){ensureArabicTranslationCatalog().then(()=>b.click()).catch(()=>toast('The expanded Arabic catalogue could not load; built-in translations remain available.'));return;}
     const output=$('#world-translation'),task=worldTask();if(!output||!task)return;
-    if(output.hidden){const result=task.ar?{text:task.ar,exact:true}:translateToArabic(task.instruction);output.textContent=result.text;output.hidden=false;output.classList.toggle('translation-approximate',!result.exact);b.setAttribute('aria-expanded','true');b.textContent='ع إخفاء الترجمة';}
+    if(output.hidden){const result=task.ar?{text:task.ar,exact:true}:translateToArabic(task.instruction);output.textContent=normalizeMixedArabicTranslation(result.text);output.hidden=false;output.classList.toggle('translation-approximate',!result.exact);b.setAttribute('aria-expanded','true');b.textContent='ع إخفاء الترجمة';}
     else{output.hidden=true;b.setAttribute('aria-expanded','false');b.textContent='ع ترجمة التعليمات';}
   });
 
