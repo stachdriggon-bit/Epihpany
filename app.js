@@ -3085,12 +3085,16 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
       // Randomise answer positions while keeping the answer key aligned.
       // Spot-the-mistake and typing modes use different answer semantics.
       if (challengeMode !== 'daily' && !['spot','typing'].includes(type) && Number.isInteger(q.correct) && q.answers.length > 1) {
-        const correctText=q.answers[q.correct], distractors=q.answers.filter((_,i)=>i!==q.correct);
+        const pairedAnswers=q.answers.map((text,index)=>({text,ar:Array.isArray(q.answers_ar)?q.answers_ar[index]:undefined,originalIndex:index}));
+        const correctPair=pairedAnswers[q.correct];
+        const distractors=pairedAnswers.filter((_,i)=>i!==q.correct);
         const shuffleAnswers=list=>{for(let i=list.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[list[i],list[j]]=[list[j],list[i]];}return list;};
         shuffleAnswers(distractors);
-        const target=Math.floor(Math.random()*q.answers.length);
-        distractors.splice(target,0,correctText);
-        q.answers=distractors;q.correct=target;
+        const target=Math.floor(Math.random()*pairedAnswers.length);
+        distractors.splice(target,0,correctPair);
+        q.answers=distractors.map(item=>item.text);
+        if(Array.isArray(q.answers_ar))q.answers_ar=distractors.map(item=>item.ar);
+        q.correct=target;
       }
       return {q, ar: q.ar || 'راجع معنى الإجابة الصحيحة وحاول تذكّرها في سياق جديد.'};
     });
