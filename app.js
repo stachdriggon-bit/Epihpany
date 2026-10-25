@@ -177,7 +177,7 @@
   };
   const ORDER = ['vocabulary', 'spelling', 'grammar', 'story', 'listening', 'advanced', 'mistakes', 'typing'];
   const UNLOCK = {vocabulary:0, spelling:0, grammar:1, story:2, listening:3, advanced:4, mistakes:0, spot:0, typing:0};
-  GAMES.mistakes = {title:'Common Mistakes', category:'GRAMMAR', xp:40, desc:'Understand common mistakes made by English learners.', questions:MISTAKE_QUESTIONS.map(q=>({q:q.prompt,sub:q.sub,answers:q.options,correct:q.answer,explain:q.why_en,word:null,level:q.level,ar:q.arabic_hint,id:q.id,trap:q.trap,why_ar:q.why_ar,arabic_hint:q.arabic_hint,aha:null}))};
+  GAMES.mistakes = {title:'Common Mistakes', category:'GRAMMAR', xp:40, desc:'Understand common mistakes made by English learners.', questions:MISTAKE_QUESTIONS.map(q=>({q:q.prompt,q_ar:q.q_ar,sub:q.sub,sub_ar:q.sub_ar,answers:q.options,answers_ar:q.options_ar,correct:q.answer,explain:q.why_en,explain_ar:q.why_ar,word:null,level:q.level,ar:q.arabic_hint,id:q.id,trap:q.trap,why_ar:q.why_ar,arabic_hint:q.arabic_hint,aha:null}))};
   GAMES.personalized = {title:'Your Weak Spots',category:'PERSONAL REVIEW',xp:45,desc:'A short practice set built from the mistake patterns you have missed before.',questions:GAMES.mistakes.questions.slice()};
   // Assign a topic only when the prompt or its explanation provides a clear grammar signal.
   // These tags let writing and error-spotting rounds share the same review history as grammar.
