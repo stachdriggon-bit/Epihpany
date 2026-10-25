@@ -25,7 +25,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Cairo:wght@500;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=ui-redesign-20261025">
+  <link rel="stylesheet" href="style.css?v=modern-balanced-20261025">
   <link rel="stylesheet" href="life-skills.css?v=ui-redesign-20261025">
   <script src="data.js?v=7f0faa36" defer></script>
   <script src="data-mistakes.js?v=e7fd865a" defer></script>
@@ -172,7 +172,13 @@
       <button class="tab nav-profile" data-view="profile"><span aria-hidden="true">✦</span><span>Profile</span></button>
     </nav>
 
-    <details class="mobile-menu"><summary aria-label="Open navigation menu" title="Menu"><span></span><span></span><span></span></summary><nav aria-label="Mobile navigation"><button class="tab" data-view="home">Play</button><button class="tab" data-view="stories">Stories</button><button class="tab" data-view="world">World</button><button class="tab" data-view="arcade">Arcade</button><button class="tab" data-view="thinklab">Think Lab</button><button class="tab" data-view="lifeskills">Life Skills</button><button class="tab" data-view="mytools">My Tools</button><button class="tab" data-view="words">Words</button><button class="tab" data-view="trophies">Trophies</button><button class="tab" data-view="progress">Progress</button><button class="tab" data-view="profile">✦ Profile</button></nav></details>
+    <details class="mobile-menu"><summary aria-label="Open navigation menu" title="Menu"><span></span><span></span><span></span></summary><nav aria-label="Mobile navigation">
+      <button class="tab mobile-nav-home" data-view="home">⌂ <span>Start learning</span></button>
+      <div class="mobile-nav-group"><span class="mobile-nav-label">LEARN</span><button class="tab" data-view="stories">📖 <span>Stories</span></button></div>
+      <div class="mobile-nav-group"><span class="mobile-nav-label">PLAY &amp; THINK</span><button class="tab" data-view="arcade">🎮 <span>Arcade</span></button><button class="tab" data-view="thinklab">⌕ <span>Think Lab</span></button></div>
+      <div class="mobile-nav-group"><span class="mobile-nav-label">REAL LIFE</span><button class="tab" data-view="world">🌍 <span>World</span></button><button class="tab" data-view="lifeskills">✳ <span>Life Skills</span></button></div>
+      <div class="mobile-nav-group"><span class="mobile-nav-label">YOUR SPACE</span><button class="tab" data-view="words">📘 <span>Words</span></button><button class="tab" data-view="mytools">✎ <span>My Tools</span></button><button class="tab" data-view="trophies">🏆 <span>Trophies</span></button><button class="tab" data-view="progress">📈 <span>Progress</span></button><button class="tab" data-view="profile">✦ <span>Profile</span></button></div>
+    </nav></details>
 
     <div class="top-right">
       <button class="icon-btn notification-bell" id="notification-bell" type="button" aria-label="Open notifications" aria-expanded="false" aria-controls="notification-panel" title="Notifications"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span id="notification-count" class="notification-count" hidden>0</span></button>
@@ -230,7 +236,7 @@
         </div><button class="btn daily-session-start" id="daily-session-start" type="button"><span aria-hidden="true">▶</span> Start session</button>
       </section>
 
-      <div class="quick-actions" aria-label="Quick learning modes"><button type="button" class="btn btn-ghost" id="listen-only-start">🎧 Listen-only session</button><button type="button" class="btn btn-ghost" id="quick-practice-start">⚡ Quick exercise</button><button type="button" class="btn btn-ghost" id="quick-review-start">📘 My review</button></div>
+      <details class="quick-actions-more"><summary><span class="quick-actions-more-icon" aria-hidden="true">＋</span><span>More ways to practise</span><small>Choose a focused activity</small></summary><div class="quick-actions" aria-label="Quick learning modes"><button type="button" class="btn btn-ghost" id="listen-only-start">🎧 Listen-only session</button><button type="button" class="btn btn-ghost" id="quick-practice-start">⚡ Quick exercise</button><button type="button" class="btn btn-ghost" id="quick-review-start">📘 My review</button></div></details>
 
       <section class="block" aria-labelledby="games-title">
         <div class="block-head"><h2 id="games-title">Or choose a game</h2><p>Every game trains a different part of your English.</p></div>
