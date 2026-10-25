@@ -406,7 +406,7 @@
       if (homeStreak) {
         const value = Number(homeStreak.textContent.trim()) || 0;
         if (value === 0) {
-          homeStreak.textContent = 'Start today';
+          if (homeStreak.textContent.trim() !== 'Start today') homeStreak.textContent = 'Start today';
           homeStreak.setAttribute('aria-label', 'Start your streak today');
           homeStreak.closest('.progress-item')?.classList.add('is-new-start');
         } else {
