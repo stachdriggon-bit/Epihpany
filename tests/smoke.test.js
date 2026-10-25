@@ -101,6 +101,9 @@ test('main navigation tabs open without uncaught page errors', async t => {
         if (await page.locator('#game-body .answer').count()) await page.locator('#game-body .answer').first().click();
       }
       if (view === 'home') {
+        assert.ok((await page.locator('#next-title').innerText()).trim(), 'home should show a recommended next activity');
+        assert.ok((await page.locator('#next-desc').innerText()).trim(), 'home should explain why the activity is recommended');
+        assert.ok((await page.locator('#next-start').getAttribute('data-game'))?.trim(), 'recommended activity should have a working game target');
         assert.equal(await page.locator('.mobile-nav-group').count(), 4, 'mobile navigation should group destinations by purpose');
         assert.equal(await page.locator('.mobile-menu nav [data-view]').count(), 11, 'all destinations should remain available in the mobile menu');
         const quickActions = page.locator('.quick-actions-more');
@@ -141,6 +144,23 @@ test('main navigation tabs open without uncaught page errors', async t => {
       }
       await page.close();
     }
+    const adaptivePage = await browser.newPage();
+    await adaptivePage.setViewportSize({ width: 800, height: 900 });
+    adaptivePage.on('pageerror', error => errors.push('adaptive-home: ' + error.message));
+    await adaptivePage.addInitScript(() => {
+      localStorage.setItem('epiphany-progress', JSON.stringify({
+        review:[{word:'although',meaning:'despite',due:'2000-01-01',errors:0,box:1,attempts:0}],
+        adaptiveSignals:{grammar:{attempts:4,errors:3,correct:1,topics:{}}},
+        quests:0,level:'A1'
+      }));
+    });
+    await adaptivePage.goto(baseUrl, { waitUntil: 'domcontentloaded' });
+    await dismissFirstVisitOverlays(adaptivePage);
+    await adaptivePage.waitForFunction(() => document.querySelector('#next-title')?.textContent === 'Review words due today', null, { timeout: 5000 });
+    assert.equal(await adaptivePage.locator('#next-start').getAttribute('data-game'), 'speed', 'words due for spaced review should take priority over a generic activity rotation');
+    assert.match(await adaptivePage.locator('#next-desc').innerText(), /although/i, 'the recommendation should name the words that need attention');
+    await adaptivePage.close();
+
     const offlinePage = await browser.newPage();
     await offlinePage.setViewportSize({ width: 800, height: 900 });
     offlinePage.on('pageerror', error => errors.push('offline: ' + error.message));
