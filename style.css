@@ -2141,13 +2141,13 @@ body[data-theme="dark"] .monthly-word-in-feedback,body[data-theme="dark"] .story
    at 4 screen widths and fails if anything covers or clips one. */
 
 /* --- desktop tabs --- */
-.tabs{position:relative;display:flex;align-items:center;justify-content:flex-start;gap:5px;flex-wrap:wrap;
-  min-width:0;max-width:100%;margin:0 auto;padding:5px;border:1.5px solid var(--line);border-radius:22px;background:#fff;overflow:visible}
+.tabs{position:relative;display:flex;align-items:center;justify-content:center;gap:7px;flex-wrap:wrap;
+  min-width:0;max-width:100%;margin:0 auto;padding:8px;border:1px solid var(--line);border-radius:20px;background:var(--surface);overflow:visible;box-shadow:0 5px 18px rgba(25,35,55,.045)}
 .top-in > .tabs{order:3;flex:1 0 100%;width:100%;margin:0}
-.tabs>.tab,.nav-group>summary{min-height:42px;display:flex;align-items:center;justify-content:center;gap:8px;padding:9px 13px;
-  border:0;border-radius:15px;background:transparent;color:var(--ink-2);font:inherit;font-size:14px;font-weight:800;white-space:nowrap;cursor:pointer}
-.tabs>.tab:hover,.nav-group>summary:hover,.nav-group[open]>summary{background:var(--navy-soft);color:var(--ink)}
-.tabs>.nav-home{background:var(--ink);color:#fff}
+.tabs>.tab,.nav-group>summary{min-height:44px;display:flex;align-items:center;justify-content:center;gap:8px;padding:10px 14px;
+  border:1px solid transparent;border-radius:13px;background:transparent;color:var(--ink-2);font:inherit;font-size:13px;font-weight:750;white-space:nowrap;cursor:pointer;transition:background .16s ease,color .16s ease,border-color .16s ease}
+.tabs>.tab:hover,.nav-group>summary:hover,.nav-group[open]>summary{background:var(--navy-soft);border-color:color-mix(in srgb,var(--line) 65%,transparent);color:var(--ink)}
+.tabs>.nav-home{background:var(--ink);color:#fff;box-shadow:0 3px 8px rgba(20,30,55,.14)}
 .tabs>.nav-home:hover{background:var(--ink-2);color:#fff}
 
 /* --- dropdown groups --- */
@@ -2156,13 +2156,13 @@ body[data-theme="dark"] .monthly-word-in-feedback,body[data-theme="dark"] .story
 .nav-group>summary::-webkit-details-marker{display:none}
 .nav-group .nav-chevron{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:transform .15s}
 .nav-group[open] .nav-chevron{transform:rotate(180deg)}
-.nav-submenu{position:absolute;z-index:100;top:calc(100% + 8px);left:0;min-width:270px;max-width:min(340px,calc(100vw - 28px));padding:8px;display:grid;gap:4px;
-  border:1px solid var(--line);border-radius:17px;background:var(--surface);box-shadow:0 16px 42px rgba(20,25,45,.18)}
+.nav-submenu{position:absolute;z-index:100;top:calc(100% + 8px);left:0;min-width:280px;max-width:min(350px,calc(100vw - 28px));padding:9px;display:grid;gap:5px;
+  border:1px solid var(--line);border-radius:16px;background:var(--surface);box-shadow:0 18px 48px rgba(20,25,45,.16)}
 /* invisible bridge over the 8px gap so hover-open menus do not close while the pointer travels into them */
 .nav-submenu::before{content:"";position:absolute;left:0;right:0;top:-10px;height:10px}
-.nav-submenu .tab{width:100%;justify-content:flex-start;text-align:left;white-space:normal;border-radius:11px;padding:10px 12px;display:grid;
-  grid-template-columns:auto 1fr;column-gap:9px;row-gap:3px;font-size:14px}
-.nav-submenu .tab small{grid-column:2;color:var(--muted);font-size:12px;font-weight:500;line-height:1.35}
+.nav-submenu .tab{width:100%;min-height:50px;justify-content:flex-start;text-align:left;white-space:normal;border-radius:11px;padding:11px 12px;display:grid;
+  grid-template-columns:auto minmax(0,1fr);column-gap:9px;row-gap:4px;font-size:13px;line-height:1.35}
+.nav-submenu .tab small{grid-column:2;color:var(--muted);font-size:11px;font-weight:500;line-height:1.45}
 .nav-submenu .tab[aria-current=page]{background:var(--ink);color:#fff}
 .nav-submenu .tab[aria-current=page] small{color:#e3e7ff}
 
@@ -2171,9 +2171,9 @@ body[data-theme="dark"] .monthly-word-in-feedback,body[data-theme="dark"] .story
 .mobile-menu>summary{list-style:none;width:38px;height:38px;border:1px solid var(--line);border-radius:12px;background:var(--surface);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer}
 .mobile-menu>summary::-webkit-details-marker{display:none}
 .mobile-menu>summary span{display:block;width:17px;height:2px;border-radius:3px;background:var(--ink)}
-.mobile-menu nav{position:absolute;right:0;top:calc(100% + 9px);z-index:100;width:min(240px,calc(100vw - 24px));max-height:70vh;overflow:auto;padding:8px;
-  border:1px solid var(--line);border-radius:16px;background:var(--surface);box-shadow:0 12px 35px rgba(20,25,45,.15);display:grid;gap:4px}
-.mobile-menu nav .tab{justify-content:flex-start;border-radius:10px;padding:10px 12px;font-size:14px}
+.mobile-menu nav{position:absolute;right:0;top:calc(100% + 9px);z-index:100;width:min(300px,calc(100vw - 24px));max-height:min(72vh,560px);overflow:auto;padding:9px;
+  border:1px solid var(--line);border-radius:17px;background:var(--surface);box-shadow:0 18px 48px rgba(20,25,45,.16);display:grid;gap:5px}
+.mobile-menu nav .tab{justify-content:flex-start;min-height:44px;border-radius:11px;padding:11px 13px;font-size:14px;text-align:start}
 
 /* --- responsive --- */
 @media(max-width:1180px){
@@ -2508,4 +2508,77 @@ body.navigation-pointer :focus-visible{outline:none;box-shadow:none}
 }
 @media(prefers-reduced-motion:reduce){
  .story-reader-actions button,.story-audio-tools button{transition:none!important}
+}
+
+
+/* Reader comfort redesign: quiet groups, consistent targets, and less visual noise. */
+.story-reader .story-audio-tools{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  align-items:stretch;
+  gap:8px;
+  padding:16px;
+  margin:18px 0 22px;
+  border:1px solid var(--line);
+  border-radius:18px;
+  background:color-mix(in srgb,var(--surface) 94%,var(--ground));
+}
+.story-reader .story-audio-tools>span{
+  grid-column:1/-1;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  margin:8px 0 0;
+  padding-top:10px;
+  border-top:1px solid var(--line);
+  color:var(--ink-2);
+  font-size:11px;
+  font-weight:850;
+  letter-spacing:.035em;
+}
+.story-reader .story-audio-tools>span:first-child{margin-top:0;padding-top:0;border-top:0}
+.story-reader .story-audio-tools .btn,
+.story-reader .story-audio-tools .story-speed{
+  width:100%;
+  min-width:0;
+  min-height:42px;
+  margin:0;
+  padding:9px 10px;
+  border:1px solid var(--line);
+  border-radius:11px;
+  background:var(--ground);
+  color:var(--ink);
+  font-size:12px;
+  font-weight:750;
+  line-height:1.35;
+  white-space:normal;
+  overflow-wrap:anywhere;
+}
+.story-reader .story-audio-tools .story-speed{background:var(--surface)}
+.story-reader .story-audio-tools .story-speed.is-active,
+.story-reader .story-audio-tools .story-speed[aria-pressed=true]{
+  border-color:var(--violet);
+  background:var(--violet-soft);
+  color:var(--ink);
+  box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--violet) 25%,transparent);
+}
+.story-reader .story-audio-tools .btn:hover,
+.story-reader .story-audio-tools .story-speed:hover{border-color:var(--violet)}
+.story-reader .story-reader-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:22px}
+.story-reader .story-reader-actions button{min-width:0;min-height:46px;white-space:normal}
+.story-reader .story-reader-actions [data-story-action=comprehension]{grid-column:1/-1}
+.story-reader .story-text{max-width:68ch;margin-inline:auto}
+.story-reader .story-help-note{max-width:68ch;margin:16px auto 0;line-height:1.65}
+.story-reader-night .story-audio-tools{background:#22283A;border-color:#41485E}
+.story-reader-night .story-audio-tools>span{color:#D6D9E8}
+.story-reader-night .story-audio-tools .btn,
+.story-reader-night .story-audio-tools .story-speed{background:#292F43;color:#F2F1FA;border-color:#4A526A}
+@media(max-width:700px){
+ .story-reader .story-audio-tools{grid-template-columns:repeat(2,minmax(0,1fr));padding:12px;gap:7px}
+ .story-reader .story-audio-tools .btn,.story-reader .story-audio-tools .story-speed{min-height:44px;font-size:12px}
+ .story-reader .story-reader-actions{grid-template-columns:minmax(0,1fr)}
+ .story-reader .story-reader-actions [data-story-action=comprehension]{grid-column:auto}
+}
+@media(prefers-reduced-motion:reduce){
+ .tabs>.tab,.nav-group>summary{transition:none}
 }
