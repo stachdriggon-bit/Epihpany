@@ -2566,3 +2566,52 @@ body.navigation-pointer :focus-visible{outline:none;box-shadow:none}
 @media(max-width:900px){.story-reader .story-audio-tools{grid-template-columns:minmax(0,1fr)}.story-reader .reader-tool-buttons{grid-template-columns:repeat(3,minmax(0,1fr))}.story-reader .reader-tool-group:nth-child(2) .reader-tool-buttons .btn{grid-column:auto}.story-reader .reader-tool-group:nth-child(3) .reader-tool-buttons .btn:nth-child(n+2){grid-column:auto}}
 @media(max-width:700px){.story-reader .reader-tool-buttons{grid-template-columns:repeat(2,minmax(0,1fr))}.story-reader .story-reader-actions{grid-template-columns:minmax(0,1fr)}.story-reader .story-reader-actions [data-story-action=comprehension]{grid-column:auto}}
 @media(prefers-reduced-motion:reduce){.life-skills-page .ls-module{transition:none}.life-skills-page .ls-module:hover{transform:none}}
+
+
+/* EPIPHANY UI RESET — story discovery and reader controls use a clear hierarchy. */
+#stories-view .story-mode-switch{
+  display:flex;
+  gap:6px;
+  padding:5px;
+  border:1px solid var(--line);
+  border-radius:16px;
+  background:var(--ground);
+}
+#stories-view .story-mode-switch button{
+  flex:1;
+  min-width:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:9px;
+  padding:11px 14px;
+  border:1px solid transparent;
+  border-radius:11px;
+  background:transparent;
+  box-shadow:none;
+}
+#stories-view .story-mode-switch button>span{width:30px;height:30px;font-size:19px;border-radius:9px}
+#stories-view .story-mode-switch button strong{font-size:14px}
+#stories-view .story-mode-switch button small{font-size:11px}
+#stories-view .story-mode-switch button.is-active{border-color:var(--line);background:var(--surface);box-shadow:0 2px 7px rgba(18,26,58,.06)}
+#stories-view .story-filters{gap:10px;padding:13px;border-radius:16px;box-shadow:none}
+#stories-view .story-level-tabs{gap:6px;padding-bottom:3px}
+#stories-view .story-level-tabs button{padding:7px 11px;font-size:11px}
+#stories-view .story-search input{min-height:46px}
+#stories-view .story-advanced-filters{border-top:1px solid var(--line);padding-top:9px}
+#stories-view .story-advanced-filters>summary{display:flex;align-items:center;justify-content:space-between;gap:12px;cursor:pointer;font-size:13px;font-weight:800;color:var(--ink-2)}
+#stories-view .story-advanced-filters>summary span{font-size:11px;font-weight:600;color:var(--ink-3)}
+#stories-view .story-filter-row{grid-template-columns:repeat(2,minmax(0,1fr));margin-top:12px}
+#stories-view .story-results-count{margin-top:0;font-size:12px}
+#stories-view .story-reader-actions{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+#stories-view .story-reader-actions button{min-width:0;min-height:48px;padding:11px 13px;border-radius:13px;font-size:14px}
+#stories-view .story-reader-actions button:last-child{grid-column:1/-1}
+#stories-view .story-card{box-shadow:none}
+#stories-view .story-card:hover:not(.is-locked){box-shadow:0 5px 16px rgba(18,26,58,.06)}
+@media(max-width:560px){
+  #stories-view .story-mode-switch{display:grid;grid-template-columns:1fr;gap:4px}
+  #stories-view .story-mode-switch button{justify-content:flex-start;padding:9px 11px}
+  #stories-view .story-filter-row{grid-template-columns:minmax(0,1fr)}
+  #stories-view .story-reader-actions{grid-template-columns:minmax(0,1fr)}
+  #stories-view .story-reader-actions button:last-child{grid-column:auto}
+}
