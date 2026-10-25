@@ -2554,7 +2554,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     const button=document.createElement('button');button.type='button';button.className='translate-btn';button.dataset.translateTarget=target.id;button.setAttribute('aria-expanded','false');const label=kind==='answer'?'الإجابة':target.closest('.sheet')?'التفسير':target.classList.contains('q-sub')?'التوجيه':target.classList.contains('mg-route')?'التعليمات':target.classList.contains('spot-text')?'النص':target.classList.contains('typing-prompt')?'الجملة':'السؤال';button.dataset.translationLabel=label;button.innerHTML='<span aria-hidden="true">ع</span> ترجمة '+label;button.hidden=!state.translationEnabled;
     if(kind==='answer'&&!target.classList.contains('story-decision-option')){const row=document.createElement('div');const mini=target.classList.contains('mg-card')||target.classList.contains('mg-tile');row.className='answer-translation-row'+(mini?' mini-answer-translation-row':'');target.parentNode.insertBefore(row,target);row.appendChild(target);row.appendChild(button);row.appendChild(output);}
     else if(target.classList.contains('story-decision-option')){const row=document.createElement('div');row.className='story-option-translation-row';target.parentNode.insertBefore(row,target);row.appendChild(target);row.appendChild(button);row.appendChild(output);}
-    else{target.insertAdjacentElement('afterend',button);button.insertAdjacentElement('afterend',output);}
+    else{target.insertAdjacentElement('beforebegin',output);target.insertAdjacentElement('afterend',button);}
   }
   function directQuestionArabic(el) {
     if(!el || typeof G==='undefined' || !G || !Array.isArray(G.questions)) return '';
@@ -2592,6 +2592,37 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
       const directArabic=directQuestionArabic(el);
       if(directArabic) el.dataset.translationAr=directArabic;
       addTranslationControl(el,(el.classList.contains('answer')||el.classList.contains('mg-card')||el.classList.contains('mg-tile')||el.classList.contains('story-decision-option'))?'answer':'question');
+    });
+    syncQuestionArabicTranslations(root);
+  }
+  function syncQuestionArabicTranslations(root) {
+    if(!root) return;
+    const primarySelector='.q-text,.typing-prompt,.spot-text,.question-text,.prompt-text,.story-prompt,.story-text';
+    root.querySelectorAll(primarySelector).forEach(target=>{
+      if(!target.id) return;
+      const button=document.querySelector('[data-translate-target="'+CSS.escape(target.id)+'"]');
+      const output=document.getElementById(target.id+'-arabic');
+      if(!button||!output) return;
+      if(!state.helpArabic) {
+        if(output.dataset.autoShown==='1') {
+          output.hidden=true;
+          delete output.dataset.autoShown;
+          button.setAttribute('aria-expanded','false');
+          button.innerHTML='<span aria-hidden="true">ع</span> ترجمة '+(button.dataset.translationLabel||'السؤال');
+        }
+        return;
+      }
+      if(!state.translationEnabled) return;
+      const text=target.textContent.trim();
+      const directArabic=target.dataset.translationAr;
+      const result=directArabic?{text:directArabic,exact:true}:translateToArabic(text);
+      if(!result.text || result.unavailable) return;
+      output.textContent=result.text;
+      output.classList.toggle('translation-approximate',!result.exact);
+      output.hidden=false;
+      output.dataset.autoShown='1';
+      button.setAttribute('aria-expanded','true');
+      button.innerHTML='<span aria-hidden="true">ع</span> إخفاء الترجمة';
     });
   }
   document.addEventListener('click',e=>{
@@ -2656,9 +2687,26 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
   }
   function toggleArabic() {
     if (state.immersionWeek?.active && state.immersionWeek.endsAt && Date.now() < Number(state.immersionWeek.endsAt)) { toast('Arabic help is paused during your optional immersion week. You can end it in My Tools.'); return; }
-    state.helpArabic = !state.helpArabic; try { localStorage.setItem('epiphany-help-language-choice', state.helpArabic ? 'ar' : 'en'); } catch {} save(); syncSettings();
-    if (state.helpArabic) ensureArabicTranslationCatalog().then(() => { renderAll(); if (G && G.answered) setSheetSpace(); }).catch(() => toast('Arabic help is available with built-in translations; the expanded catalogue could not load.'));
-    if (G) { if (G.answered) setSheetSpace(); } else toast(state.helpArabic ? 'Arabic help is on' : 'Arabic help is off');
+    state.helpArabic = !state.helpArabic;
+    if(state.helpArabic) state.translationEnabled = true;
+    try { localStorage.setItem('epiphany-help-language-choice', state.helpArabic ? 'ar' : 'en'); } catch {}
+    save(); syncSettings();
+    const syncCurrentQuestion = () => {
+      enhanceTranslationControls($('#game-body'));
+      syncQuestionArabicTranslations($('#game-body'));
+      if($('#world-game')) enhanceTranslationControls($('#world-game'));
+    };
+    if (state.helpArabic) {
+      ensureArabicTranslationCatalog().then(() => {
+        renderAll();
+        syncCurrentQuestion();
+        if (G && G.answered) setSheetSpace();
+      }).catch(() => { syncCurrentQuestion(); toast('Arabic help is available with built-in translations; the expanded catalogue could not load.'); });
+    } else {
+      syncCurrentQuestion();
+    }
+    if (G && G.answered) setSheetSpace();
+    if (!G) toast(state.helpArabic ? 'Arabic help and question translations are on' : 'Arabic help is off');
   }
   // Capture the theme action before the settings popover closes.
   document.addEventListener('submit', e => {
