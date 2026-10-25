@@ -66,11 +66,16 @@ test('initial HTML defers stories and World data and keeps loader in offline she
   assert.doesNotMatch(html, /<script[^>]+src="data-translation-ar\.js/);
   assert.doesNotMatch(html, /<script[^>]+src="(?:think-lab|practice-lab|life-skills)\.js/);
   assert.match(sw, /'\.\/lazy-data\.js'/);
-  assert.doesNotMatch(sw, /'\.\/data-stories\.js'/);
-  assert.doesNotMatch(sw, /'\.\/data-world\.js'/);
-  assert.doesNotMatch(sw, /'\.\/data-world-sprites\.js'/);
-  assert.doesNotMatch(sw, /'\.\/(?:think-lab|practice-lab|life-skills)\.js'/);
-  assert.doesNotMatch(sw, /'\.\/data-translation-ar\.js'/);
+  const coreAssets = sw.match(/const CORE_ASSETS = \[([^\]]*)\];/)?.[1] || '';
+  const lazyAssets = sw.match(/const LAZY_ASSETS = \[([^\]]*)\];/)?.[1] || '';
+  assert.ok(coreAssets, 'service worker should define core offline assets');
+  assert.ok(lazyAssets, 'service worker should define lazy offline assets');
+  for (const asset of ['data-stories.js', 'data-world.js', 'data-world-sprites.js', 'think-lab.js', 'practice-lab.js', 'life-skills.js', 'data-translation-ar.js']) {
+    assert.ok(!coreAssets.includes("'./" + asset + "'"), asset + ' should not be a core startup asset');
+  }
+  for (const asset of ['data-stories.js', 'data-world.js', 'data-world-sprites.js', 'think-lab.js', 'practice-lab.js', 'life-skills.js']) {
+    assert.ok(lazyAssets.includes("'./" + asset + "'"), asset + ' should be cached as a lazy offline asset');
+  }
   assert.match(sw, /const cached = await cache\.match\(request\);\s*if \(cached\) return cached;/);
   const app = fs.readFileSync(path.join(root, 'app.js'), 'utf8');
   assert.match(app, /window\.EPIPHANY_MERGE_AR_TRANSLATIONS = mergeArabicTranslationCatalog/);
