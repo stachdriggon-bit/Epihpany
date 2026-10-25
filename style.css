@@ -2483,3 +2483,29 @@ body.navigation-pointer :focus-visible{outline:none;box-shadow:none}
   .top{transition:none!important}
   .top.is-hidden-on-scroll{transition:none!important}
 }
+
+
+/* Reader and practice controls: stable grid, predictable button widths, readable wrapping. */
+.story-reader{width:min(100%,760px);padding-inline:clamp(0px,1.5vw,12px)}
+.story-reader-actions{grid-template-columns:repeat(2,minmax(0,1fr));align-items:stretch;gap:10px}
+.story-reader-actions button{width:100%;min-width:0;min-height:48px;padding:11px 14px;line-height:1.35;white-space:normal;overflow-wrap:anywhere}
+.story-reader-actions button:last-child{grid-column:1/-1}
+.story-reader-actions [data-story-action="comprehension"]{grid-column:1/-1}
+.story-audio-tools{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,110px),1fr));align-items:stretch;gap:8px}
+.story-audio-tools>span{grid-column:1/-1;margin:0}
+.story-audio-tools .btn,.story-audio-tools .story-speed{width:100%;min-width:0;min-height:42px;padding:9px 11px;white-space:normal;line-height:1.25}
+.story-audio-tools .btn{display:inline-flex;align-items:center;justify-content:center}
+.story-reader .story-dictation-form .btn{max-width:100%;white-space:normal}
+.story-word-actions{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,150px),1fr));gap:8px}
+.story-word-actions button{min-width:0;white-space:normal;line-height:1.3}
+@media(max-width:560px){
+ .story-reader-actions{grid-template-columns:minmax(0,1fr);gap:8px;margin-top:16px}
+ .story-reader-actions button:last-child,.story-reader-actions [data-story-action="comprehension"]{grid-column:auto}
+ .story-audio-tools{grid-template-columns:repeat(2,minmax(0,1fr));padding:11px}
+ .story-audio-tools>span{grid-column:1/-1}
+ .story-audio-tools .btn,.story-audio-tools .story-speed{min-height:44px;padding:9px 8px;font-size:.9rem}
+ .story-word-actions{grid-template-columns:minmax(0,1fr)}
+}
+@media(prefers-reduced-motion:reduce){
+ .story-reader-actions button,.story-audio-tools button{transition:none!important}
+}
