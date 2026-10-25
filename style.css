@@ -407,8 +407,6 @@ body[data-theme="dark"] .ring-bg{stroke:#343B52}
 body[data-theme="dark"] .challenge-bonus{background:#1F403B;color:var(--ink)}
 body[data-theme="dark"] .answer.correct{background:#1F403B}
 body[data-theme="dark"] .answer.wrong{background:#482C2C}
-body.ar-on .top-in,body.ar-on .top-right,body.ar-on .tabs{direction:rtl}
-body.ar-on .page,body.ar-on .challenge-card,body.ar-on .you,body.ar-on .block,body.ar-on .review-panel{ text-align:right }
 body.ar-on .lead,body.ar-on .next-body>p{ text-align:right }
 body.ar-on .next-art{border-left:0;border-right:2px solid var(--ink)}
 body.ar-on .tab,body.ar-on .tile,body.ar-on .btn{direction:rtl}
