@@ -40,11 +40,11 @@
       crumb.hidden = view === 'home';
       crumb.replaceChildren();
       const home = document.createElement('button');
-      home.type = 'button'; home.className = 'breadcrumb-link'; home.textContent = 'Home';
+      home.type = 'button'; home.className = 'breadcrumb-link breadcrumb-parent breadcrumb-back'; home.textContent = '← Back'; home.setAttribute('aria-label', 'Back to Home');
       home.addEventListener('click', () => navigate('home'));
       crumb.append(home);
       const sep = document.createElement('span'); sep.setAttribute('aria-hidden', 'true'); sep.textContent = '›'; crumb.append(sep);
-      const current = document.createElement('span'); current.setAttribute('aria-current', 'page'); current.textContent = labels[view] || view; crumb.append(current);
+      const current = document.createElement('span'); current.className = 'breadcrumb-current'; current.setAttribute('aria-current', 'page'); current.textContent = labels[view] || view; crumb.append(current);
     }
   }
   function closeMenus(except) {
@@ -81,7 +81,7 @@
       current.addEventListener('keydown', event => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); navigate('stories'); } });
     }
     const sep = document.createElement('span'); sep.setAttribute('aria-hidden', 'true'); sep.textContent = '›';
-    const leaf = document.createElement('span'); leaf.setAttribute('aria-current', 'page'); leaf.textContent = title;
+    const leaf = document.createElement('span'); leaf.className = 'breadcrumb-current'; leaf.setAttribute('aria-current', 'page'); leaf.textContent = title;
     crumb.append(sep, leaf);
   }
   function openDeepStory(id, attempt = 0) {
@@ -373,6 +373,61 @@
   }
 
 
+
+  function setupExpandableDescriptions() {
+    $('.view .intro .lead').forEach((paragraph, index) => {
+      if (paragraph.dataset.expandableReady || paragraph.textContent.trim().length < 155) return;
+      paragraph.dataset.expandableReady = 'true';
+      paragraph.classList.add('description-collapsed');
+      const toggle = document.createElement('button');
+      toggle.type = 'button'; toggle.className = 'description-toggle';
+      toggle.textContent = 'More'; toggle.setAttribute('aria-expanded', 'false');
+      toggle.setAttribute('aria-controls', paragraph.id || ('intro-description-' + index));
+      if (!paragraph.id) paragraph.id = 'intro-description-' + index;
+      paragraph.insertAdjacentElement('afterend', toggle);
+      toggle.addEventListener('click', () => {
+        const expanded = paragraph.classList.toggle('description-collapsed') === false;
+        toggle.textContent = expanded ? 'Less' : 'More';
+        toggle.setAttribute('aria-expanded', String(expanded));
+      });
+    });
+  }
+
+  function setupGentleProgressCopy() {
+    const update = () => {
+      const streakChip = $('.chip-streak');
+      const streak = $('#chip-streak');
+      if (streakChip && streak) {
+        const count = Number(streak.textContent.trim()) || 0;
+        streakChip.hidden = count < 1;
+        streakChip.setAttribute('aria-label', count ? count + ' day streak' : 'Start your streak today');
+      }
+      const homeStreak = $('#home-streak');
+      if (homeStreak) {
+        const value = Number(homeStreak.textContent.trim()) || 0;
+        if (value === 0) {
+          homeStreak.textContent = 'Start today';
+          homeStreak.setAttribute('aria-label', 'Start your streak today');
+          homeStreak.closest('.progress-item')?.classList.add('is-new-start');
+        } else {
+          homeStreak.setAttribute('aria-label', value + ' day streak');
+          homeStreak.closest('.progress-item')?.classList.remove('is-new-start');
+        }
+      }
+      const ringText = $('#ring-text');
+      if (ringText && /^0\s*\/\s*\d+$/.test(ringText.textContent.trim())) {
+        ringText.textContent = 'Start today';
+        ringText.setAttribute('aria-label', 'Start today’s learning goal');
+      }
+    };
+    update();
+    const observer = new MutationObserver(update);
+    ['#chip-streak','#home-streak','#ring-text'].forEach(selector => {
+      const node = $(selector);
+      if (node) observer.observe(node, {childList:true,characterData:true,subtree:true});
+    });
+  }
+
   function setupCalmNavigation() {
     const gameTop = $('.game-top');
     const close = $('#game-close');
@@ -455,7 +510,7 @@
   }
 
   function init() {
-    setupMobileLabel(); setupBreadcrumb(); setupSearch(); setupDropdowns(); setupFinalPolish(); setupCalmNavigation();
+    setupMobileLabel(); setupBreadcrumb(); setupSearch(); setupDropdowns(); setupFinalPolish(); setupCalmNavigation(); setupExpandableDescriptions(); setupGentleProgressCopy();
     const view = currentView();
     syncCurrentNav(view);
     routeFromHash();
