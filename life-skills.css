@@ -116,3 +116,43 @@
  .life-skills-page .ls-module-grid{grid-template-columns:minmax(0,1fr)}
  .life-skills-page .ls-module{min-height:0}
 }
+
+
+/* Life Skills redesign: fewer columns, more breathing room, predictable action hierarchy. */
+.life-skills-page .ls-module-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;align-items:stretch}
+.life-skills-page .ls-module{
+  min-height:230px;
+  padding:clamp(18px,2.4vw,25px);
+  border-radius:20px;
+  box-shadow:0 3px 12px rgba(32,42,55,.035);
+  gap:14px;
+}
+.life-skills-page .ls-module:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(32,42,55,.08)}
+.life-skills-page .ls-module-top{gap:12px}
+.life-skills-page .ls-module-icon{width:46px;height:46px;border-radius:15px}
+.life-skills-page .ls-module-index{font-size:.65rem;letter-spacing:.08em}
+.life-skills-page .ls-module .ls-eyebrow{font-size:.65rem;letter-spacing:.045em}
+.life-skills-page .ls-module strong{font-size:clamp(1.12rem,1.5vw,1.3rem);line-height:1.28;overflow-wrap:normal}
+.life-skills-page .ls-module-desc{font-size:.87rem;line-height:1.72;color:#5f6b7b}
+.life-skills-page .ls-module-bottom{margin-top:auto;padding-top:14px;gap:10px;font-size:.7rem}
+.life-skills-page .ls-module-bottom b{display:inline-flex;align-items:center;gap:5px}
+.life-skills-page .ls-landing-tools{margin:24px 0 18px}
+.life-skills-page .ls-studio{box-shadow:0 10px 32px rgba(32,42,55,.07)}
+.life-skills-page .ls-workbar{padding:14px 20px}
+.life-skills-page .ls-progress{letter-spacing:.06em}
+.life-skills-page .ls-stage{padding:clamp(18px,3vw,30px);min-height:260px}
+.life-skills-page .ls-choice-list{gap:11px}
+.life-skills-page .ls-choice{padding:15px 17px;border-radius:14px;font-size:.88rem}
+.life-skills-page .ls-choice-key{flex-basis:31px;height:31px}
+.life-skills-page .ls-inline-actions{gap:10px}
+.life-skills-page .ls-inline-actions>*{min-height:44px}
+.life-skills-page .ls-primary,.life-skills-page .ls-secondary{min-height:44px;padding:12px 16px;border-radius:12px;font-size:.8rem}
+@media(max-width:760px){
+ .life-skills-page .ls-module-grid{grid-template-columns:minmax(0,1fr);gap:12px}
+ .life-skills-page .ls-module{min-height:0;padding:17px;gap:11px}
+ .life-skills-page .ls-module-desc{font-size:.84rem}
+ .life-skills-page .ls-module-bottom{flex-direction:row;align-items:center}
+ .life-skills-page .ls-stage{padding:17px;min-height:0}
+ .life-skills-page .ls-workbar{padding:12px 15px}
+}
+@media(prefers-reduced-motion:reduce){.life-skills-page .ls-module{transition:none}.life-skills-page .ls-module:hover{transform:none}}
