@@ -2441,7 +2441,29 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
   function translateKnownPhrase(source) {
     const lower=normalizeTranslationKey(source);
     if(AR_TRANSLATION_PHRASES[lower])return AR_TRANSLATION_PHRASES[lower];
-    return source.replace(/[A-Za-z]+(?:['’-][A-Za-z]+)*/g,token=>{
+    // Translate common multi-word grammar collocations before the word-level fallback.
+    // Keep grammatical forms such as -ing and "to + verb" readable rather than
+    // leaving an English collocation embedded in an otherwise Arabic explanation.
+    const phraseReplacements=[
+      [/\\blook forward to\\b/gi,'يتطلّع إلى'],
+      [/\\bbe looking forward to\\b/gi,'يتطلّع إلى'],
+      [/\\bfollowed by\\b/gi,'يتبعها'],
+      [/\\bnoun or verb ending in -ing\\b/gi,'اسم أو فعل ينتهي بـ ing'],
+      [/\\bverb ending in -ing\\b/gi,'فعل ينتهي بـ ing'],
+      [/\\bending in -ing\\b/gi,'منتهيًا بـ ing'],
+      [/\\bbase form of the verb\\b/gi,'الصيغة الأساسية للفعل'],
+      [/\\bbase verb\\b/gi,'الفعل بصيغته الأساسية'],
+      [/\\bpast participle\\b/gi,'التصريف الثالث للفعل'],
+      [/\\bpresent participle\\b/gi,'اسم الفاعل أو صيغة الفعل المنتهية بـ ing'],
+      [/\\bgerund\\b/gi,'المصدر بصيغة ing'],
+      [/\\binfinitive\\b/gi,'المصدر'],
+      [/\\bsubject-verb agreement\\b/gi,'توافق الفعل مع الفاعل'],
+      [/\\bphrasal verb\\b/gi,'فعل مركّب'],
+      [/\\bmodal verb\\b/gi,'فعل مساعد ناقص']
+    ];
+    let prepared=String(source||'');
+    for(const [pattern,arabic] of phraseReplacements)prepared=prepared.replace(pattern,arabic);
+    return prepared.replace(/[A-Za-z]+(?:['’-][A-Za-z]+)*/g,token=>{
       const key=token.toLowerCase();
       if(Object.prototype.hasOwnProperty.call(AR_TRANSLATION_WORDS,key))return AR_TRANSLATION_WORDS[key];
       if(typeof STORY_WORDS_AR!=='undefined'&&STORY_WORDS_AR[key])return STORY_WORDS_AR[key];
