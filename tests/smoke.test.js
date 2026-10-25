@@ -161,6 +161,24 @@ test('main navigation tabs open without uncaught page errors', async t => {
     assert.match(await adaptivePage.locator('#next-desc').innerText(), /although/i, 'the recommendation should name the words that need attention');
     await adaptivePage.close();
 
+    const grammarReviewPage = await browser.newPage();
+    await grammarReviewPage.setViewportSize({ width: 800, height: 900 });
+    grammarReviewPage.on('pageerror', error => errors.push('adaptive-grammar-review: ' + error.message));
+    await grammarReviewPage.addInitScript(() => {
+      localStorage.setItem('epiphany-progress', JSON.stringify({
+        review:[],
+        mistakeTrapSrs:{'past-simple':{attempts:4,correct:2,errors:2,box:0,streak:0,due:'2000-01-01'}},
+        mistakeTrapErrors:{'past-simple':2},mistakeTrapCorrect:{'past-simple':1},
+        quests:0,level:'A1'
+      }));
+    });
+    await grammarReviewPage.goto(baseUrl, { waitUntil: 'domcontentloaded' });
+    await dismissFirstVisitOverlays(grammarReviewPage);
+    await grammarReviewPage.waitForFunction(() => document.querySelector('#next-title')?.textContent === 'Review grammar patterns due today', null, { timeout: 5000 });
+    assert.equal(await grammarReviewPage.locator('#next-start').getAttribute('data-game'), 'personalized', 'due grammar SRS should surface when no vocabulary review is due');
+    assert.match(await grammarReviewPage.locator('#next-desc').innerText(), /past simple/i, 'grammar review recommendation should name the due pattern');
+    await grammarReviewPage.close();
+
     const offlinePage = await browser.newPage();
     await offlinePage.setViewportSize({ width: 800, height: 900 });
     offlinePage.on('pageerror', error => errors.push('offline: ' + error.message));
