@@ -3247,7 +3247,9 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     const monthly = typeof currentMonthWord === 'function' ? currentMonthWord() : null;
     const monthlyPrompt = monthly ? '<aside class="monthly-word-in-feedback"><span>WORD OF THE MONTH</span><strong>'+esc(monthly.word)+'</strong><p>'+esc(monthly.example)+'</p><button type="button" class="btn btn-ghost" data-depth-action="use-month-word">I used it today</button></aside>' : '';
     s.innerHTML = '<div class="sheet-in">' + html + monthlyPrompt + '</div>';
-    enhanceTranslationControls(s);
+    // Feedback sheets already contain curated bilingual explanations where available.
+    // Auto-inserting a translate button on every paragraph creates duplicate controls
+    // and makes the panel crowded, so keep this panel's content as authored.
     requestAnimationFrame(() => {
       s.classList.add('show'); setSheetSpace();
       const sel = $('#answers .correct'); if (sel) sel.scrollIntoView({block:'nearest', behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});
