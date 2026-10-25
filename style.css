@@ -2857,3 +2857,5 @@ body[data-theme="dark"] .top.is-hidden-on-scroll{box-shadow:0 5px 22px rgba(0,0,
 body[data-theme="dark"] .quick-nav-option{background:var(--surface);border-color:var(--line)}
 body[data-theme="dark"] .quick-nav-option:has(input:checked){background:#302c4c;border-color:#aaa0f3}
 @media(max-width:480px){.quick-nav-options{grid-template-columns:minmax(0,1fr)}.quick-nav-panel{padding:18px}.quick-nav-option{min-height:44px}}
+
+@media(max-width:700px){.navigation-breadcrumb .breadcrumb-back{font-size:0}.navigation-breadcrumb .breadcrumb-back::before{content:"← Back";font-size:13px}}
