@@ -2905,3 +2905,11 @@ body[data-theme="dark"] .quick-nav-option:has(input:checked){background:#302c4c;
   #thinklab-view .tl-case-desc{-webkit-line-clamp:2}
   #thinklab-view .tl-mission-meta span{padding:5px 8px}
 }
+
+
+/* Word Match: keep long phrases inside the card instead of letting them stretch the grid. */
+.mg-grid{grid-template-columns:repeat(3,minmax(0,1fr));align-items:stretch;}
+.mg-tile{min-width:0;max-width:100%;overflow-wrap:anywhere;word-break:normal;hyphens:auto;white-space:normal;font-size:clamp(13px,1.8vw,18px);line-height:1.25;padding:8px 6px;}
+.mg-tile.is-open,.mg-tile.is-done{font-size:clamp(12px,1.5vw,15px);line-height:1.3;}
+.mini-answer-translation-row .translate-btn{display:none!important;}
+@media(max-width:520px){.mg-grid{gap:7px}.mg-tile{min-height:82px;padding:7px 4px;font-size:12px}.mg-tile.is-open,.mg-tile.is-done{font-size:11px}}
