@@ -2617,12 +2617,13 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
       const directArabic=target.dataset.translationAr;
       const result=directArabic?{text:directArabic,exact:true}:translateToArabic(text);
       if(!result.text || result.unavailable) return;
-      output.textContent=result.text;
+      if(output.textContent!==result.text) output.textContent=result.text;
       output.classList.toggle('translation-approximate',!result.exact);
       output.hidden=false;
       output.dataset.autoShown='1';
       button.setAttribute('aria-expanded','true');
-      button.innerHTML='<span aria-hidden="true">ع</span> إخفاء الترجمة';
+      const expandedLabel='<span aria-hidden="true">ع</span> إخفاء الترجمة';
+      if(button.innerHTML!==expandedLabel) button.innerHTML=expandedLabel;
     });
   }
   document.addEventListener('click',e=>{
