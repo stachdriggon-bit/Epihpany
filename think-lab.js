@@ -20,7 +20,7 @@
       {title:'The quiet library', clues:['A sign says “Study in progress”.','Everyone is speaking softly.','A phone starts ringing loudly.'], question:'What should happen next?', options:['Turn the volume up.','Ignore the sign.','Silence the phone.'], answer:2, explain:'The clues show that quiet is expected, so silencing the phone best fits the situation.'}
     ]
   };
-  let mode = null, index = 0, score = 0, locked = false, clueCount = 0, ladderPath = [], ladderWordNote = null, ladderMistakeRecorded = false, roundMistakes = 0, activePool = null, activeDifficulty = null;
+  let mode = null, index = 0, score = 0, locked = false, clueCount = 0, ladderPath = [], ladderWordNote = null, ladderMistakeRecorded = false, roundMistakes = 0, activePool = null, activeDifficulty = null, forgePlaced = [], scramblePlaced = [];
 
   rounds.forge = [
     {prompt:'Forge the word from the letter tiles.',clue:'A small animal often kept as a pet.',letters:'TAC',answerWord:'cat',explain:'CAT uses all three letters and matches the clue.'},
@@ -477,6 +477,26 @@ bark dark core hand land lane data duty melt`
     const route = findLadderPath(current, item.goal, new Set(path.slice(0, -1)));
     return route && route.length > 1 ? route[1] : null;
   }
+  function forgeBoard(item) {
+    const chars=[...item.letters];
+    return '<div class="tl-forge-board"><div class="tl-forge-slots" aria-label="Word answer slots">'+forgePlaced.map((tile,i)=>'<button type="button" class="tl-puzzle-slot '+(tile===null?'is-empty':'is-filled')+'" data-forge-slot="'+i+'" aria-label="Letter slot '+(i+1)+'">'+(tile===null?'':esc(chars[tile]))+'</button>').join('')+'</div><div class="tl-forge-letters" aria-label="Available letter tiles">'+chars.map((ch,i)=>'<button type="button" class="tl-letter-tile" data-forge-tile="'+i+'" draggable="'+(!forgePlaced.includes(i))+'" '+(forgePlaced.includes(i)||locked?'disabled':'')+'>'+esc(ch)+'</button>').join('')+'</div><p class="tl-puzzle-help">Drag a letter into a slot, or tap a letter and then a slot. Tap a placed letter to return it.</p></div>';
+  }
+  function scrambleBoard(item) {
+    return '<div class="tl-scramble-board"><div class="tl-scramble-slots" aria-label="Sentence word slots">'+scramblePlaced.map((tile,i)=>'<button type="button" class="tl-puzzle-slot tl-word-slot '+(tile===null?'is-empty':'is-filled')+'" data-scramble-slot="'+i+'" aria-label="Word position '+(i+1)+'">'+(tile===null?'':esc(item.words[tile]))+'</button>').join('')+'</div><div class="tl-scramble-bank" aria-label="Available word tiles">'+item.words.map((word,i)=>'<button type="button" class="tl-word-chip" data-scramble-tile="'+i+'" draggable="'+(!scramblePlaced.includes(i))+'" '+(scramblePlaced.includes(i)||locked?'disabled':'')+'>'+esc(word)+'</button>').join('')+'</div><p class="tl-puzzle-help">Drag words into position, or tap a word and then a slot. Tap a placed word to return it.</p></div>';
+  }
+  function refreshPuzzleBoard(kind) {
+    const board=root.querySelector(kind==='forge'?'.tl-forge-board':'.tl-scramble-board');
+    const pool=activePool||getRoundPool(mode),item=pool[index%pool.length];
+    if(board)board.outerHTML=kind==='forge'?forgeBoard(item):scrambleBoard(item);
+  }
+  function placePuzzleTile(kind,tileIndex,slotIndex) {
+    const placed=kind==='forge'?forgePlaced:scramblePlaced;
+    if(locked||placed.includes(tileIndex)||slotIndex<0||slotIndex>=placed.length)return;
+    if(placed[slotIndex]!==null)return;
+    const empty=placed.indexOf(null);
+    placed[empty===-1?slotIndex:slotIndex]=tileIndex;
+    refreshPuzzleBoard(kind);
+  }
   function renderGame() {
     const pool = activePool || getRoundPool(mode);
     const item = pool[index % pool.length];
@@ -500,9 +520,9 @@ bark dark core hand land lane data duty melt`
         : item.hint;
       intro = '<div class="tl-ladder-targets"><div><span>START</span><strong>'+esc(item.start)+'</strong></div><span class="tl-ladder-arrow">→</span><div><span>GOAL</span><strong>'+esc(item.goal)+'</strong></div></div><p class="tl-ladder-hint">'+esc(activeHint)+'</p><div class="tl-ladder-path">'+path.map((w,i)=>'<span class="tl-ladder-word '+(i===path.length-1?'is-current':'')+'">'+esc(w)+'</span>').join('<span class="tl-ladder-step">↓</span>')+'</div>'+(ladderWordNote?'<aside class="tl-ladder-meaning" aria-live="polite"><strong>'+esc(ladderWordNote.word)+'</strong><p>'+esc(ladderWordNote.meaning||'No definition is available for this word yet.')+'</p></aside>':'')+(path[path.length-1]===item.goal?'<p class="tl-ladder-success">Ladder complete! Every move is valid.</p>':'<form class="tl-ladder-form" data-think-ladder-form><label for="tl-ladder-input">Next word</label><div><input id="tl-ladder-input" name="ladder-word" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Type the next word" required><button class="tl-next" type="submit">Make move →</button></div><small>Use a word from the game’s word bank. Change one letter and keep a route open to the goal.</small></form>');
     }
-    if (mode === 'forge') intro='<div class="tl-word-clue"><span>WORD CLUE</span><p>'+esc(item.clue)+'</p></div><div class="tl-forge-letters" aria-label="Available letters">'+[...item.letters].map(ch=>'<span>'+esc(ch)+'</span>').join('')+'</div><form class="tl-forge-form" data-think-forge-form><label for="tl-forge-input">Build the word</label><div><input id="tl-forge-input" name="forge-word" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Type your word" maxlength="'+item.answerWord.length+'" required><button class="tl-next" type="submit">Forge word →</button></div><small>Use the letter tiles above. No word choices are provided.</small></form>';
+    if (mode === 'forge') { forgePlaced=Array(item.answerWord.length).fill(null); intro='<div class="tl-word-clue"><span>WORD CLUE</span><p>'+esc(item.clue)+'</p></div>'+forgeBoard(item)+'<button class="tl-next" type="button" data-forge-check>Check word →</button><button class="tl-secondary" type="button" data-forge-reset>Reset tiles</button>'; }
     if (mode === 'connections') intro='<div class="tl-connection-grid">'+item.words.map(w=>'<span class="tl-connection-word">'+esc(w)+'</span>').join('')+'</div><div class="tl-answer-options">'+item.options.map((w,i)=>'<button type="button" class="tl-option" data-think-answer="'+i+'"><span class="tl-option-index">'+String.fromCharCode(65+i)+'</span><strong>'+esc(w)+'</strong></button>').join('')+'</div>';
-    if (mode === 'scramble') intro='<div class="tl-scramble-bank">'+item.words.map(w=>'<span class="tl-word-chip">'+esc(w)+'</span>').join('')+'</div><form class="tl-scramble-form" data-think-scramble-form><label for="tl-scramble-input">Build the sentence</label><div><input id="tl-scramble-input" name="scramble-sentence" autocomplete="off" placeholder="Type the words in the right order" required><button class="tl-next" type="submit">Check sentence →</button></div><small>Arrange the words yourself. Punctuation is optional.</small></form>';
+    if (mode === 'scramble') { scramblePlaced=Array(item.words.length).fill(null); intro=scrambleBoard(item)+'<button class="tl-next" type="button" data-scramble-check>Check sentence →</button><button class="tl-secondary" type="button" data-scramble-reset>Reset words</button>'; }
     if (mode === 'chain') intro='<div class="tl-chain-path">'+esc(item.prompt.replace('Continue the word association chain: ',''))+'</div><div class="tl-answer-options">'+item.options.map((w,i)=>'<button type="button" class="tl-option" data-think-answer="'+i+'"><span class="tl-option-index">'+String.fromCharCode(65+i)+'</span><strong>'+esc(w)+'</strong></button>').join('')+'</div>';
     if (mode === 'maze') intro = '<div class="tl-maze-target"><span class="tl-maze-sound">♫</span><div><span>LISTEN FOR THIS WORD</span><strong>Find the matching word</strong></div><button type="button" class="tl-secondary" data-think-speak>▶ Play word</button></div><div class="tl-maze-path"><span class="tl-maze-start">START</span><span>···</span><span class="tl-maze-finish">EXIT</span></div><div class="tl-answer-options">'+item.options.map((w,i)=>'<button type="button" class="tl-option" data-think-answer="'+i+'"><span class="tl-option-index">'+String.fromCharCode(65+i)+'</span><strong>'+esc(w)+'</strong></button>').join('')+'</div>';
     if (mode === 'detective') intro = '<div class="tl-clue-list">'+item.clues.slice(0,Math.min(item.clues.length,clueCount+1+(difficulty.hintLevel>=2?1:0))).map((c,i)=>'<div class="tl-clue"><span>CLUE 0'+(i+1)+'</span><p>'+esc(c)+'</p></div>').join('')+'</div><div class="tl-reveal-row">'+(clueCount<item.clues.length-1?'<button class="tl-secondary" type="button" data-think-clue>Reveal next clue +</button>':'<span class="tl-all-clues">All evidence revealed</span>')+'</div><h3 class="tl-question">'+item.question+'</h3><div class="tl-answer-options">'+item.options.map((w,i)=>'<button type="button" class="tl-option" data-think-answer="'+i+'"><span class="tl-option-index">'+String.fromCharCode(65+i)+'</span><strong>'+esc(w)+'</strong></button>').join('')+'</div>';
@@ -511,63 +531,79 @@ bark dark core hand land lane data duty melt`
   function speakTarget() { const pool=activePool || getRoundPool('maze');const item=pool[index%pool.length]; if(!('speechSynthesis' in window)||!window.SpeechSynthesisUtterance){const fb=root.querySelector('#tl-feedback');if(fb){fb.hidden=false;fb.className='tl-feedback is-wrong';fb.textContent='Speech playback is not available in this browser.';}return;} window.speechSynthesis.cancel(); const utterance=new SpeechSynthesisUtterance(item.target); utterance.lang='en-US'; utterance.rate=.82; window.speechSynthesis.speak(utterance); }
   function start(id) { mode=id; index=0; score=0; clueCount=0; roundMistakes=0; ladderPath=[]; ladderWordNote=null; ladderMistakeRecorded=false; activeDifficulty=difficultyForMode(id); activePool=getRoundPool(id,activeDifficulty.level); renderGame(); if(id==='maze') speakTarget(); }
   root.addEventListener('submit', e => {
-    const scrambleForm=e.target.closest('[data-think-scramble-form]');
-    if(scrambleForm&&mode==='scramble'){
-      e.preventDefault();
-      if(locked)return;
-      const pool=activePool||getRoundPool('scramble'),item=pool[index%pool.length],input=scrambleForm.querySelector('input');
-      const normalize=value=>value.toLowerCase().replace(/[.,!?;:]/g,'').replace(/\\s+/g,' ').trim();
-      const target=normalize(item.options[item.answer]),attempt=normalize(input.value);
-      const fb=root.querySelector('#tl-feedback');
-      if(attempt!==target){
-        roundMistakes++;
-        fb.hidden=false;fb.className='tl-feedback is-wrong';
-        fb.innerHTML='<strong>Not quite—rebuild the sentence.</strong><p>Check the subject and verb first, then place time phrases, adverbs, and clauses where they sound natural.</p>';
-        input.select();
-        return;
-      }
-      score++;locked=true;
-      if(window.EpiphanyThinkLab)window.EpiphanyThinkLab.recordResult('grammar','sentence-scramble',true,index===pool.length-1);
-      root.querySelectorAll('[data-think-scramble-form] input, [data-think-scramble-form] button').forEach(el=>el.disabled=true);
-      fb.hidden=false;fb.className='tl-feedback is-correct';
-      fb.innerHTML='<strong>✓ Sentence built!</strong><p>'+esc(item.options[item.answer])+' — '+esc(item.explain)+'</p>';
-      const next=root.querySelector('[data-think-next]');if(next)next.hidden=false;
-      return;
-    }
-    const forgeForm=e.target.closest('[data-think-forge-form]');
-    if(forgeForm&&mode==='forge'){
-      e.preventDefault();
-      if(locked)return;
-      const pool=activePool||getRoundPool('forge'),item=pool[index%pool.length],input=forgeForm.querySelector('input'),answer=input.value.trim().toLowerCase().replace(/[^a-z]/g,'');
-      const fb=root.querySelector('#tl-feedback');
-      if(answer!==item.answerWord){
-        roundMistakes++;
-        fb.hidden=false;fb.className='tl-feedback is-wrong';
-        fb.innerHTML='<strong>Not forged yet—try again.</strong><p>Check the clue and make sure every letter comes from the set above. Rearrange the letters and try another spelling.</p>';
-        input.select();
-        return;
-      }
-      score++;locked=true;
-      if(window.EpiphanyThinkLab)window.EpiphanyThinkLab.recordResult('spelling','word-forge',true,index===pool.length-1);
-      root.querySelectorAll('[data-think-forge-form] input, [data-think-forge-form] button').forEach(el=>el.disabled=true);
-      fb.hidden=false;fb.className='tl-feedback is-correct';
-      fb.innerHTML='<strong>✓ Word forged!</strong><p><b>'+esc(item.answerWord.toUpperCase())+'</b> — '+esc(item.explain)+'</p>';
-      const next=root.querySelector('[data-think-next]');if(next)next.hidden=false;
-      return;
-    }
-    const form=e.target.closest('[data-think-ladder-form]');if(!form||mode!=='wordladder')return;e.preventDefault();if(locked)return;
-    const pool=activePool || getRoundPool('wordladder'),item=pool[index%pool.length],input=form.querySelector('input'),word=input.value.trim().toLowerCase(),previous=ladderPath[ladderPath.length-1];
+    const form=e.target.closest('[data-think-ladder-form]');
+    if(!form||mode!=='wordladder')return;
+    e.preventDefault();if(locked)return;
+    const pool=activePool||getRoundPool('wordladder'),item=pool[index%pool.length],input=form.querySelector('input'),word=input.value.trim().toLowerCase(),previous=ladderPath[ladderPath.length-1];
     ladderWordNote={word,meaning:ladderMeanings[word]||null};
     const differs=ladderDiffersByOne(previous,word),alreadyUsed=ladderPath.includes(word);
     const route=findLadderPath(word,item.goal,new Set([...ladderPath,word]));
     const allowed=ladderWordBank.has(word)&&differs&&!alreadyUsed&&!!route;
     if(!allowed){roundMistakes++;const fb=root.querySelector('#tl-feedback');fb.hidden=false;fb.className='tl-feedback is-wrong';const reason=!differs?'Change exactly one letter from “'+esc(previous)+'”.':!ladderWordBank.has(word)?'That word is not in this game’s curated word bank yet. Try another common English word.':alreadyUsed?'You have already used that word. Choose a new step.':'That move closes off the route to the goal. Try a word that keeps a valid path open.';fb.innerHTML='<strong>Not quite—check the move.</strong><p>'+reason+'</p>'+(ladderWordNote.meaning?'<p><strong>'+esc(word)+':</strong> '+esc(ladderWordNote.meaning)+'</p>':'')+(roundMistakes>=2?'<p>'+esc(adaptiveHint('wordladder'))+'</p>':'')+(roundMistakes>=3&&nextLadderWord(item,ladderPath)&&ladderMeanings[nextLadderWord(item,ladderPath)]?'<aside class="tl-ladder-meaning tl-ladder-next-hint" role="note"><strong>Meaning hint for the next word</strong><p>'+esc(ladderMeanings[nextLadderWord(item,ladderPath)])+'</p></aside>':'');if(!ladderMistakeRecorded&&window.EpiphanyThinkLab){window.EpiphanyThinkLab.recordResult('spelling','word-ladder',false,false);ladderMistakeRecorded=true;}input.select();return;}
     ladderPath.push(word);
-    if(window.EpiphanyThinkLab)window.EpiphanyThinkLab.recordResult('spelling','word-ladder',true,word===item.goal&&index===(activePool || getRoundPool('wordladder')).length-1);
+    if(window.EpiphanyThinkLab)window.EpiphanyThinkLab.recordResult('spelling','word-ladder',true,word===item.goal&&index===(activePool||getRoundPool('wordladder')).length-1);
     if(word===item.goal){score++;locked=true;roundMistakes=0;renderGame();const fb=root.querySelector('#tl-feedback');fb.hidden=false;fb.className='tl-feedback is-correct';fb.innerHTML='<strong>✓ Ladder complete!</strong><p>'+esc(item.explain)+'</p>';const next=root.querySelector('[data-think-next]');if(next)next.hidden=false;}
     else{renderGame();const input2=root.querySelector('#tl-ladder-input');if(input2)input2.focus();}
   });
+  root.addEventListener('dragstart', e => {
+    const tile=e.target.closest('[data-forge-tile],[data-scramble-tile]');
+    if(!tile||locked)return;
+    const kind=tile.hasAttribute('data-forge-tile')?'forge':'scramble';
+    e.dataTransfer.setData('text/plain',kind+':'+(kind==='forge'?tile.dataset.forgeTile:tile.dataset.scrambleTile));
+    e.dataTransfer.effectAllowed='move';
+  });
+  root.addEventListener('dragover', e => {if(e.target.closest('[data-forge-slot],[data-scramble-slot],[data-forge-tile],[data-scramble-tile]'))e.preventDefault();});
+  root.addEventListener('drop', e => {
+    const target=e.target.closest('[data-forge-slot],[data-scramble-slot],[data-forge-tile],[data-scramble-tile]');
+    if(!target||locked)return;
+    const raw=e.dataTransfer.getData('text/plain'),parts=raw.split(':');
+    if(parts.length!==2)return;
+    e.preventDefault();const kind=parts[0],tileIndex=Number(parts[1]),placed=kind==='forge'?forgePlaced:scramblePlaced;
+    if(kind==='forge'&&!target.hasAttribute('data-forge-slot')&&!target.hasAttribute('data-forge-tile'))return;
+    if(kind==='scramble'&&!target.hasAttribute('data-scramble-slot')&&!target.hasAttribute('data-scramble-tile'))return;
+    const current=placed.indexOf(tileIndex);
+    if(target.hasAttribute(kind==='forge'?'data-forge-tile':'data-scramble-tile')){
+      const targetIndex=Number(target.getAttribute(kind==='forge'?'data-forge-tile':'data-scramble-tile'));
+      if(current>=0&&targetIndex!==tileIndex){const other=placed.indexOf(targetIndex);if(other>=0){placed[other]=tileIndex;placed[current]=targetIndex;}else{placed[current]=null;const empty=placed.indexOf(null);if(empty>=0)placed[empty]=tileIndex;}}
+      else if(current<0){const empty=placed.indexOf(null);if(empty>=0)placed[empty]=tileIndex;}
+    }else{
+      const slot=Number(target.getAttribute(kind==='forge'?'data-forge-slot':'data-scramble-slot'));
+      if(current>=0)placed[current]=null;
+      if(placed[slot]!==null){if(current>=0)placed[current]=placed[slot];else return;}
+      placed[slot]=tileIndex;
+    }
+    refreshPuzzleBoard(kind);
+  });
   root.addEventListener('click', e => {
+    const forgeTile=e.target.closest('[data-forge-tile]');
+    const forgeSlot=e.target.closest('[data-forge-slot]');
+    const scrambleTile=e.target.closest('[data-scramble-tile]');
+    const scrambleSlot=e.target.closest('[data-scramble-slot]');
+    if(forgeTile&&!locked){const i=Number(forgeTile.dataset.forgeTile);if(!forgePlaced.includes(i)){const slot=forgePlaced.indexOf(null);if(slot>=0){forgePlaced[slot]=i;refreshPuzzleBoard('forge');}}return;}
+    if(forgeSlot&&!locked){const slot=Number(forgeSlot.dataset.forgeSlot);forgePlaced[slot]=null;refreshPuzzleBoard('forge');return;}
+    if(scrambleTile&&!locked){const i=Number(scrambleTile.dataset.scrambleTile);if(!scramblePlaced.includes(i)){const slot=scramblePlaced.indexOf(null);if(slot>=0){scramblePlaced[slot]=i;refreshPuzzleBoard('scramble');}}return;}
+    if(scrambleSlot&&!locked){const slot=Number(scrambleSlot.dataset.scrambleSlot);scramblePlaced[slot]=null;refreshPuzzleBoard('scramble');return;}
+    if(e.target.closest('[data-forge-reset]')){forgePlaced=Array(forgePlaced.length).fill(null);refreshPuzzleBoard('forge');return;}
+    if(e.target.closest('[data-scramble-reset]')){scramblePlaced=Array(scramblePlaced.length).fill(null);refreshPuzzleBoard('scramble');return;}
+    if(e.target.closest('[data-forge-check]')){
+      if(locked)return;
+      const pool=activePool||getRoundPool('forge'),item=pool[index%pool.length],answer=forgePlaced.every(x=>x!==null)?forgePlaced.map(i=>[...item.letters][i]).join('').toLowerCase():'',fb=root.querySelector('#tl-feedback');
+      if(answer!==item.answerWord){roundMistakes++;fb.hidden=false;fb.className='tl-feedback is-wrong';fb.innerHTML='<strong>Not forged yet—try again.</strong><p>Use each letter tile once and check the clue. You can move letters between slots.</p>';return;}
+      score++;locked=true;if(window.EpiphanyThinkLab)window.EpiphanyThinkLab.recordResult('spelling','word-forge',true,index===pool.length-1);
+      root.querySelectorAll('[data-forge-tile],[data-forge-slot],[data-forge-check],[data-forge-reset]').forEach(el=>el.disabled=true);
+      fb.hidden=false;fb.className='tl-feedback is-correct';fb.innerHTML='<strong>✓ Word forged!</strong><p><b>'+esc(item.answerWord.toUpperCase())+'</b> — '+esc(item.explain)+'</p>';const next=root.querySelector('[data-think-next]');if(next)next.hidden=false;return;
+    }
+    if(e.target.closest('[data-scramble-check]')){
+      if(locked)return;
+      const pool=activePool||getRoundPool('scramble'),item=pool[index%pool.length],fb=root.querySelector('#tl-feedback');
+      const attempt=scramblePlaced.every(x=>x!==null)?scramblePlaced.map(i=>item.words[i]).join(' ').toLowerCase().replace(/[.,!?;:]/g,'').trim():'';
+      const target=item.options[item.answer].toLowerCase().replace(/[.,!?;:]/g,'').trim();
+      if(attempt!==target){roundMistakes++;fb.hidden=false;fb.className='tl-feedback is-wrong';fb.innerHTML='<strong>Not quite—rearrange the word tiles.</strong><p>Check the subject and verb first, then place adverbs and time phrases where they sound natural.</p>';return;}
+      score++;locked=true;if(window.EpiphanyThinkLab)window.EpiphanyThinkLab.recordResult('grammar','sentence-scramble',true,index===pool.length-1);
+      root.querySelectorAll('[data-scramble-tile],[data-scramble-slot],[data-scramble-check],[data-scramble-reset]').forEach(el=>el.disabled=true);
+      fb.hidden=false;fb.className='tl-feedback is-correct';fb.innerHTML='<strong>✓ Sentence built!</strong><p>'+esc(item.options[item.answer])+' — '+esc(item.explain)+'</p>';const next=root.querySelector('[data-think-next]');if(next)next.hidden=false;return;
+    }
+
     const recommended=e.target.closest('[data-think-recommended]'); if(recommended){start(recommended.dataset.thinkRecommended);return;}
     const launch=e.target.closest('[data-think-game]'); if(launch){start(launch.dataset.thinkGame);return;}
     if(e.target.closest('[data-think-back]')){if(window.speechSynthesis)window.speechSynthesis.cancel();landing();return;}
