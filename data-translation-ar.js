@@ -2769,7 +2769,7 @@ window.EPIPHANY_AR_TRANSLATION_PHRASES = Object.assign(window.EPIPHANY_AR_TRANSL
   "Good night yesterday.":"راجع الجملة الإنجليزية: “Good night yesterday.”",
   "let them use it and expect it back":"تسمح لهم باستخدامه وتتوقع إعادته",
   "buy it from them":"تشتريه منهم",
-  "throw it away":"ترميه بعيدًا",
+  "throw it away":"التخلّص منه",
   "went":"ذهب",
   "have go":"الصيغة الإنجليزية: «have go»",
   "going":"ذاهب / الذهاب",
