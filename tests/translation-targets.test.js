@@ -102,3 +102,32 @@ test('sentence-level distractor translations preserve the English target instead
     assert.ok(!phrases[english].includes('صياغة غير صحيحة'), 'translation must not reveal that the option is incorrect: ' + english);
   }
 });
+
+
+test('Arabic translations do not label grammar distractors as incorrect', () => {
+  const phrases = translations();
+  const options = [
+    'was I live', 'we had reach', 'did we reached',
+    'would not have reconstruct', 'has witness', 'did they made',
+    'we saw have', 'did we have saw', 'would had been',
+    'would make yesterday', 'recognised to', 'are have',
+    'had have', 'will lived', 'would have being',
+    'had they discovering', 'they did suspected', 'had they suspect',
+    'revealed was', 'did she finished', "couldn't to", "mustn't to",
+    'in so far it follow to', 'inasmuch it follows to',
+    'insofar that it follow', 'despite of', 'whereas that',
+    'unless of', 'run yesterday', 'some an', 'although of',
+    'unless to', 'arrive will', 'is arrive', 'with to',
+    'was being to', 'she did identified', 'in spite that',
+    'did he acknowledged', 'he acknowledge did', 'will completed',
+    'have completing', 'would contains', 'commands yesterday',
+    'we have saw', 'did we saw', 'with of', 'can to', 'will can',
+    'did they announced', 'most good', 'has explaining',
+    'do I lived', 'I did lived', 'they did returned'
+  ];
+  for (const english of options) {
+    assert.ok(phrases[english], 'missing Arabic translation for: ' + english);
+    assert.ok(phrases[english].includes(english), 'must preserve the English option: ' + english);
+    assert.ok(!phrases[english].includes('صياغة غير صحيحة'), 'must not label the option incorrect: ' + english);
+  }
+});
