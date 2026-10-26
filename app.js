@@ -3395,6 +3395,8 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     const monthly = typeof currentMonthWord === 'function' ? currentMonthWord() : null;
     const monthlyPrompt = monthly ? '<aside class="monthly-word-in-feedback"><span>WORD OF THE MONTH</span><strong>'+esc(monthly.word)+'</strong><p>'+esc(monthly.example)+'</p><button type="button" class="btn btn-ghost" data-depth-action="use-month-word">I used it today</button></aside>' : '';
     s.innerHTML = '<div class="sheet-in">' + html + monthlyPrompt + '</div>';
+    // Clean legacy per-paragraph controls even when Arabic help is disabled; only one panel control is allowed.
+    s.querySelectorAll('.sheet-in .translate-btn:not([data-translate-group]),.sheet-in .translation-result').forEach(el=>el.remove());
     enhanceTranslationControls(s);
     requestAnimationFrame(() => {
       s.classList.add('show'); setSheetSpace();
