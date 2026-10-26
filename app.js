@@ -1845,6 +1845,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     if (name === 'home') renderHome();
     if (name === 'arcade') { renderArcade(); window.EPIPHANY_LAZY_LOAD('arcade').catch(() => toast('Practice tools could not load. Connect to the internet and try again.')); }
     if (name === 'stories') renderStories();
+    if (name === 'resonance') window.EPIPHANY_LAZY_LOAD('resonance').then(() => window.EPIPHANY_RESONANCE?.open()).catch(() => toast('The Resonance could not load. Check your connection and try again.'));
     if (name === 'thinklab') window.EPIPHANY_LAZY_LOAD('thinklab').catch(() => toast('Think Lab could not load. Connect to the internet and try again.'));
     if (name === 'lifeskills') window.EPIPHANY_LAZY_LOAD('lifeskills').catch(() => toast('Life Skills could not load. Connect to the internet and try again.'));
     if (name === 'progress' || name === 'profile') { renderWeaknessPanel(); renderLearningInsights(); }
