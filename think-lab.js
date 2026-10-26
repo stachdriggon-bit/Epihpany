@@ -23,12 +23,12 @@
   let mode = null, index = 0, score = 0, locked = false, clueCount = 0, ladderPath = [], ladderWordNote = null, ladderMistakeRecorded = false, roundMistakes = 0, activePool = null, activeDifficulty = null;
 
   rounds.forge = [
-    {prompt:'Which word can you forge from these letters?',clue:'A small animal often kept as a pet.',letters:'T A C',options:['act','cat','tac'],answer:1,explain:'CAT uses all three letters and matches the clue.'},
-    {prompt:'Which word can you forge from these letters?',clue:'A place where you borrow books.',letters:'Y B R R A L I',options:['library','railway','bright'],answer:0,explain:'LIBRARY is where people borrow books or read and study.'},
-    {prompt:'Which word can you forge from these letters?',clue:'The opposite of noisy.',letters:'T E Q U I',options:['quite','quiet','quote'],answer:1,explain:'QUIET means making little or no noise.'},
-    {prompt:'Which word can you forge from these letters?',clue:'A person whose job is to help students learn.',letters:'C E H T A R E',options:['teacher','cheater','reached'],answer:0,explain:'A TEACHER helps people learn.'},
-    {prompt:'Which word can you forge from these letters?',clue:'Move through the air.',letters:'Y F L',options:['fly','fry','lay'],answer:0,explain:'FLY means to move through the air.'},
-    {prompt:'Which word can you forge from these letters?',clue:'Feeling pleased or content.',letters:'P Y H A P',options:['puppy','happy','hobby'],answer:1,explain:'HAPPY describes a feeling of pleasure or contentment.'}
+    {prompt:'Which word can you forge from these letters?',clue:'A small animal often kept as a pet.',letters:'TAC',options:['act','cat','tac'],answer:1,explain:'CAT uses all three letters and matches the clue.'},
+    {prompt:'Which word can you forge from these letters?',clue:'A place where you borrow books.',letters:'YBRRALI',options:['library','railway','bright'],answer:0,explain:'LIBRARY is where people borrow books or read and study.'},
+    {prompt:'Which word can you forge from these letters?',clue:'The opposite of noisy.',letters:'TEQUI',options:['quite','quiet','quote'],answer:1,explain:'QUIET means making little or no noise.'},
+    {prompt:'Which word can you forge from these letters?',clue:'A person whose job is to help students learn.',letters:'CEHTARE',options:['teacher','cheater','reached'],answer:0,explain:'A TEACHER helps people learn.'},
+    {prompt:'Which word can you forge from these letters?',clue:'Move through the air.',letters:'YFL',options:['fly','fry','lay'],answer:0,explain:'FLY means to move through the air.'},
+    {prompt:'Which word can you forge from these letters?',clue:'Feeling pleased or content.',letters:'PYHAP',options:['puppy','happy','hobby'],answer:1,explain:'HAPPY describes a feeling of pleasure or contentment.'}
   ];
   rounds.connections = [
     {prompt:'Which category connects these four words?',words:['rose','tulip','daisy','lily'],options:['Flowers','Tools','Weather'],answer:0,explain:'Rose, tulip, daisy and lily are all flowers.'},
