@@ -2781,6 +2781,9 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     if(heading)heading.insertAdjacentElement('afterend',button);else inner.insertAdjacentElement('afterbegin',button);
   }
   function enhanceSheet(sheet){
+    // Older feedback templates can still contain their own per-paragraph translation buttons.
+    // The feedback panel now has one consistent screen-level control, so remove legacy duplicates.
+    sheet.querySelectorAll('.sheet-in .translate-btn:not([data-translate-group]),.sheet-in .translation-result').forEach(el=>el.remove());
     sheet.querySelectorAll('.sheet-in h3,.sheet-in p,.sheet-in li').forEach(el=>{
       if(el.closest('.monthly-word-in-feedback,.sheet-actions,.newword,[data-tx-ar-only]')||el.classList.contains('adaptive-note'))return;
       if(el.dataset.translationEnhanced==='1'||!cleanTx(el.textContent))return;
