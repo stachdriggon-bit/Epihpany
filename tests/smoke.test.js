@@ -97,6 +97,31 @@ test('main navigation tabs open without uncaught page errors', async t => {
         await page.locator('#resonance-view [data-res-action="journal"]').first().click();
         await page.locator('#res-journal').waitFor({ state: 'visible' });
         await page.locator('#res-journal').getByText('E-01', { exact: true }).waitFor({ state: 'visible' });
+        await page.locator('#res-journal [data-res-action="close-journal"]').click();
+        await page.locator('[data-res-action="meet"]').click();
+        await page.locator('[data-res-choice="careful"]').click();
+        await page.locator('[data-res-action="continue"]').click();
+        await page.locator('[data-res-action="relay"]').click();
+        await page.locator('[data-res-action="chapter-end"]').click();
+        await page.locator('[data-res-action="chapter-2"]').click();
+        await page.locator('[data-res-action="signal-inspect"]').click();
+        await page.locator('[data-res-action="signal-record"]').click();
+        await page.locator('[data-res-action="chapter-3"]').click();
+        await page.locator('[data-res-action="truth-record"]').click();
+        await page.locator('[data-res-action="truth-evidence"]').click();
+        await page.locator('[data-res-action="chapter-4"]').click();
+        await page.locator('[data-res-action="archive-open"]').click();
+        await page.locator('[data-res-action="archive-evidence"]').click();
+        await page.locator('[data-res-action="chapter-5"]').click();
+        await page.locator('[data-res-action="resonance-inspect"]').click();
+        await page.locator('[data-res-action="resonance-record"]').click();
+        await page.locator('[data-res-action="ending-b"]').click();
+        await page.locator('#resonance-view').getByText('ENDING B · THE UNFINISHED SIGNAL').waitFor({ state: 'visible' });
+        await page.locator('#resonance-view [data-res-action="journal"]').first().click();
+        await page.locator('#res-journal').waitFor({ state: 'visible' });
+        for (const id of ['E-01','E-08','E-09','E-10','E-11','E-12']) {
+          await page.locator('#res-journal').getByText(id, { exact: true }).waitFor({ state: 'visible' });
+        }
       }
       if (view === 'world') {
         await page.waitForFunction(() => typeof WORLD_DATA !== 'undefined', null, { timeout: 5000 });
