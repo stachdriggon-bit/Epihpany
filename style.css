@@ -2941,3 +2941,16 @@ body[data-theme="dark"] .quick-nav-option:has(input:checked){background:#302c4c;
 .mg-card>span{min-width:0;flex:1 1 auto}
 .mini-choice{min-width:0;overflow-wrap:anywhere}
 .mg-tile.is-open>span.tx-is-ar,.mg-tile.is-done>span.tx-is-ar{font-size:clamp(13px,3.6vw,16px)}
+
+/* The current-section label would collide with the points pill; the bottom tab bar already shows the section,
+   so keep the label for screen readers only. */
+@media(max-width:900px){
+  .mobile-menu>summary .mobile-current-section{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;border:0}
+}
+
+/* Keep the monthly-word card inside narrow phones (320px). */
+@media(max-width:760px){
+  .monthly-word-thread{grid-template-columns:minmax(0,1fr)}
+  .monthly-word-thread .btn{white-space:normal;max-width:100%}
+  .monthly-word-thread-kicker{overflow-wrap:anywhere}
+}
