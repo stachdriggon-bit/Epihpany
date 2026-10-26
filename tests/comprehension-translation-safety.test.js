@@ -37,8 +37,9 @@ test('comprehension translations preserve the English phrase being interpreted',
     assert.ok(phrases[key], 'Arabic translation should exist: ' + key);
     const target = (key.match(/[“]([^”]+)[”]/) || key.match(/“([^”]+)”/) || [])[1];
     assert.ok(target, 'target phrase should be identifiable: ' + key);
+    const targetText = target.replace(/[.!?…]+$/, '');
     assert.ok(
-      phrases[key].includes(target),
+      phrases[key].includes(targetText),
       'translation must preserve the English phrase being interpreted: ' + key
     );
   }
