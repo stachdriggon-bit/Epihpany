@@ -30,5 +30,6 @@ jobs:
           node --check navigation-enhancements.js
           node --check data.js
           node --check data-expansion.js
+          node --check think-lab.js
       - name: Run unit, static, and browser smoke tests
         run: npm test
