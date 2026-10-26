@@ -66,7 +66,13 @@ test('sentence-level distractor translations preserve the English target instead
     'She good at to draw.',
     'You are apology.',
     'He told that he busy.',
-    'Little did realise she the risk.'
+    'Little did realise she the risk.',
+    'By no means this establishes causation.',
+    'By no means does this established causation.',
+    'By no means this do establish causation.',
+    'I never have went to Spain.',
+    'I have never went to Spain.',
+    'I never been to Spain.'
   ]) {
     assert.ok(phrases[english], 'missing Arabic prompt for: ' + english);
     assert.ok(phrases[english].includes(english), 'translation must preserve the original distractor: ' + english);
