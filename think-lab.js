@@ -155,18 +155,53 @@ bark dark core hand land lane data duty melt`
     const minSteps = level === 'challenge' ? 3 : 1;
     const maxSteps = level === 'guided' ? 3 : level === 'challenge' ? 7 : 5;
     const candidates = [], words = [...ladderWordBank];
-    for (const start of words) for (const goal of words) {
-      if (start.length !== goal.length || start === goal) continue;
-      const path = findLadderPath(start, goal);
-      if (!path) continue;
-      const steps = path.length - 1;
-      if (steps < minSteps || steps > maxSteps) continue;
-      candidates.push({start,goal,path:path.slice(1),hint:'Change one letter at a time. Use real words and keep a route open to the goal.',explain:path.join(' → ')+' is one valid route. Each move changes exactly one letter.'});
+
+    // Run one BFS per start word, then reuse its shortest paths for every goal.
+    // The old nested start/goal loop ran a fresh BFS for each pair and froze the UI.
+    for (const start of words) {
+      const queue = [start];
+      const previous = new Map([[start, null]]);
+      const distance = new Map([[start, 0]]);
+
+      while (queue.length) {
+        const current = queue.shift();
+        for (const candidate of words) {
+          if (previous.has(candidate) || !ladderDiffersByOne(current, candidate)) continue;
+          previous.set(candidate, current);
+          distance.set(candidate, distance.get(current) + 1);
+          queue.push(candidate);
+        }
+      }
+
+      for (const goal of words) {
+        if (start === goal || start.length !== goal.length || !distance.has(goal)) continue;
+        const steps = distance.get(goal);
+        if (steps < minSteps || steps > maxSteps) continue;
+
+        const path = [];
+        for (let word = goal; word !== null; word = previous.get(word)) path.push(word);
+        path.reverse();
+        candidates.push({
+          start, goal, path: path.slice(1),
+          hint: 'Change one letter at a time. Use real words and keep a route open to the goal.',
+          explain: path.join(' → ') + ' is one valid route. Each move changes exactly one letter.'
+        });
+      }
     }
-    for (let i=candidates.length-1;i>0;i--) { const j=Math.floor(Math.random()*(i+1)); [candidates[i],candidates[j]]=[candidates[j],candidates[i]]; }
-    const chosen=[],pairs=new Set();
-    for (const item of candidates) { const key=item.start+':'+item.goal; if(pairs.has(key))continue; chosen.push(item); pairs.add(key); if(chosen.length>=count)break; }
-    return chosen.length >= Math.min(6,count) ? chosen : [...rounds.wordladder];
+
+    for (let i = candidates.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [candidates[i], candidates[j]] = [candidates[j], candidates[i]];
+    }
+    const chosen = [], pairs = new Set();
+    for (const item of candidates) {
+      const key = item.start + ':' + item.goal;
+      if (pairs.has(key)) continue;
+      chosen.push(item);
+      pairs.add(key);
+      if (chosen.length >= count) break;
+    }
+    return chosen.length >= Math.min(6, count) ? chosen : [...rounds.wordladder];
   }
   function getRoundPool(id, selectedLevel) {
     const level = selectedLevel || difficultyForMode(id).level;
