@@ -21,6 +21,40 @@
     ]
   };
   let mode = null, index = 0, score = 0, locked = false, clueCount = 0, ladderPath = [], ladderWordNote = null, ladderMistakeRecorded = false, roundMistakes = 0, activePool = null, activeDifficulty = null;
+
+  rounds.forge = [
+    {prompt:'Which word can you forge from these letters?',clue:'A small animal often kept as a pet.',letters:'T A C',options:['act','cat','tac'],answer:1,explain:'CAT uses all three letters and matches the clue.'},
+    {prompt:'Which word can you forge from these letters?',clue:'A place where you borrow books.',letters:'Y B R R A L I',options:['library','railway','bright'],answer:0,explain:'LIBRARY is where people borrow books or read and study.'},
+    {prompt:'Which word can you forge from these letters?',clue:'The opposite of noisy.',letters:'T E Q U I',options:['quite','quiet','quote'],answer:1,explain:'QUIET means making little or no noise.'},
+    {prompt:'Which word can you forge from these letters?',clue:'A person whose job is to help students learn.',letters:'C E H T A R E',options:['teacher','cheater','reached'],answer:0,explain:'A TEACHER helps people learn.'},
+    {prompt:'Which word can you forge from these letters?',clue:'Move through the air.',letters:'Y F L',options:['fly','fry','lay'],answer:0,explain:'FLY means to move through the air.'},
+    {prompt:'Which word can you forge from these letters?',clue:'Feeling pleased or content.',letters:'P Y H A P',options:['puppy','happy','hobby'],answer:1,explain:'HAPPY describes a feeling of pleasure or contentment.'}
+  ];
+  rounds.connections = [
+    {prompt:'Which category connects these four words?',words:['rose','tulip','daisy','lily'],options:['Flowers','Tools','Weather'],answer:0,explain:'Rose, tulip, daisy and lily are all flowers.'},
+    {prompt:'Which category connects these four words?',words:['eagle','sparrow','robin','owl'],options:['Fish','Birds','Mammals'],answer:1,explain:'Eagle, sparrow, robin and owl are all birds.'},
+    {prompt:'Which category connects these four words?',words:['shirt','jacket','socks','scarf'],options:['Things you wear','Tableware','Furniture'],answer:0,explain:'A shirt, jacket, socks and scarf are all items of clothing.'},
+    {prompt:'Which category connects these four words?',words:['minute','hour','second','day'],options:['Seasons','Units or periods of time','Directions'],answer:1,explain:'Minute, hour, second and day are all units or periods of time.'},
+    {prompt:'Which category connects these four words?',words:['whisper','shout','murmur','scream'],options:['Ways of speaking','Ways of moving','Ways of cooking'],answer:0,explain:'Whisper, shout, murmur and scream describe ways of speaking.'},
+    {prompt:'Which category connects these four words?',words:['tiny','small','little','minute'],options:['Very large','Very loud','Small in size'],answer:2,explain:'Tiny, small, little and minute can all mean small in size.'}
+  ];
+  rounds.scramble = [
+    {prompt:'Choose the correctly ordered sentence.',words:['usually','coffee','I','morning','drink','the','in'],options:['Usually coffee I drink in the morning.','I usually drink coffee in the morning.','I drink usually in the coffee morning.'],answer:1,explain:'The natural order is subject + adverb of frequency + verb + object + time phrase.'},
+    {prompt:'Choose the correctly ordered sentence.',words:['already','has','she','finished','work','her'],options:['She has already finished her work.','Already she finished has her work.','She already has finish her work.'],answer:0,explain:'In the present perfect, “already” commonly appears between has and the past participle.'},
+    {prompt:'Choose the correctly ordered sentence.',words:['you','could','me','help','please'],options:['You could me help please.','Could you help me, please?','Could help you me please?'],answer:1,explain:'“Could you help me, please?” is a natural, polite request.'},
+    {prompt:'Choose the correctly ordered sentence.',words:['because','stayed','it','home','raining','was','we'],options:['Because raining it was we stayed home.','We stayed home because it was raining.','We because it was raining stayed home.'],answer:1,explain:'The main clause is followed by “because” and the reason.'},
+    {prompt:'Choose the correctly ordered sentence.',words:['never','such','I','seen','have','a','view','beautiful'],options:['I have never seen such a beautiful view.','I never have such seen a beautiful view.','Never I seen have a beautiful such view.'],answer:0,explain:'“Never” goes between have and the past participle in this sentence.'},
+    {prompt:'Choose the correctly ordered sentence.',words:['if','had','left','earlier','we','would','arrived','have','on','time'],options:['If we had left earlier, we would have arrived on time.','If we would have left earlier, we had arrived on time.','We would arrived on time if had left earlier.'],answer:0,explain:'This is a third conditional: If + past perfect, would have + past participle.'}
+  ];
+  rounds.chain = [
+    {prompt:'Continue the word association chain: RAIN → ?',options:['umbrella','desert','pillow'],answer:0,explain:'An umbrella is commonly used to stay dry in the rain.'},
+    {prompt:'Continue the word association chain: BOOK → ?',options:['oven','library','helmet'],answer:1,explain:'A library is a place associated with books.'},
+    {prompt:'Continue the word association chain: CHEF → ?',options:['airport','kitchen','forest'],answer:1,explain:'A chef usually works in a kitchen.'},
+    {prompt:'Continue the word association chain: SCHOOL → ?',options:['student','pilot','painter'],answer:0,explain:'Students attend school to learn.'},
+    {prompt:'Continue the word association chain: DOCTOR → ?',options:['stadium','hospital','bakery'],answer:1,explain:'Doctors often work in hospitals.'},
+    {prompt:'Continue the word association chain: MUSIC → ?',options:['passport','instrument','blanket'],answer:1,explain:'Music can be played on a musical instrument.'}
+  ];
+
   rounds.wordladder = [
     {start:'cat',goal:'dog',path:['cot','dot','dog'],hint:'Change exactly one letter at each step. Every step must be a real English word.',explain:'cat → cot → dot → dog changes one letter at each step, and every step forms a real word.'},
     {start:'cold',goal:'warm',path:['cord','card','ward','warm'],hint:'Change one letter per move. Keep every intermediate word meaningful.',explain:'cold → cord → card → ward → warm changes one letter at a time and makes valid words.'},
@@ -139,6 +173,7 @@ bark dark core hand land lane data duty`
     if (level === 'guided' && guidedRounds[id]) return guidedRounds[id];
     if (level === 'challenge' && challengeRounds[id]) return challengeRounds[id];
     if (id === 'wordladder') return generateWordLadders(level, 12);
+    if (['forge','connections','scramble','chain'].includes(id)) return rounds[id];
     return rounds[id];
   }
 
@@ -148,7 +183,11 @@ bark dark core hand land lane data duty`
     {id:'detective',num:'02',icon:'⌕',name:'The Language Detective',tag:'CLUES & INFERENCE',desc:'Read the evidence, connect the clues and choose the best-supported conclusion.',time:'3–4 min'},
     {id:'translator',num:'03',icon:'⇄',name:'The Bold Translator',tag:'NATURAL ENGLISH',desc:'Choose the sentence a real speaker would use—not a word-for-word translation.',time:'2–3 min'},
     {id:'wordladder',num:'04',icon:'↗',name:'Word Ladder',tag:'SPELLING & LOGIC',desc:'Transform one word into another, changing just one letter per step.',time:'3–5 min'},
-    {id:'maze',num:'05',icon:'⌁',name:'The Sound Maze',tag:'LISTENING & PRONUNCIATION',desc:'Listen to the target word and find the matching word to move through the maze.',time:'2–3 min'}
+    {id:'maze',num:'05',icon:'⌁',name:'The Sound Maze',tag:'LISTENING & PRONUNCIATION',desc:'Listen to the target word and find the matching word to move through the maze.',time:'2–3 min'},
+    {id:'connections',num:'06',icon:'▦',name:'Word Connections',tag:'CATEGORIES & PATTERNS',desc:'Find the category that connects a group of four words.',time:'2–3 min'},
+    {id:'scramble',num:'07',icon:'↔',name:'Sentence Scramble',tag:'SENTENCE BUILDING',desc:'Study mixed-up words and identify the natural English sentence.',time:'2–4 min'},
+    {id:'forge',num:'08',icon:'✳',name:'Word Forge',tag:'SPELLING & VOCABULARY',desc:'Use a letter set and a clue to identify the word.',time:'2–3 min'},
+    {id:'chain',num:'09',icon:'⤳',name:'Chain Reaction',tag:'WORD ASSOCIATION',desc:'Continue a chain by choosing the strongest word association.',time:'2–3 min'}
   ];
   function insightsMarkup() {
     const data = window.EpiphanyThinkLab && typeof window.EpiphanyThinkLab.getInsights === 'function'
@@ -178,7 +217,7 @@ bark dark core hand land lane data duty`
   }
   // Register each game against the shared adaptive policy. New games should add
   // one entry here; difficulty thresholds, confidence and hint calibration remain central.
-  const gameSkills = {odd:'vocabulary', detective:'reading', translator:'conversation', maze:'listening', wordladder:'spelling'};
+  const gameSkills = {odd:'vocabulary', detective:'reading', translator:'conversation', maze:'listening', wordladder:'spelling', forge:'spelling', connections:'vocabulary', scramble:'grammar', chain:'vocabulary'};
   Object.keys(gameSkills).forEach(id => {
     if (window.EpiphanyThinkLab && typeof window.EpiphanyThinkLab.registerGame === 'function') {
       window.EpiphanyThinkLab.registerGame(id, gameSkills[id]);
@@ -200,7 +239,11 @@ bark dark core hand land lane data duty`
       translator: level >= 2 ? 'Hint: English often uses a common phrase rather than copying each Arabic word directly.' : 'Hint: look for a natural sentence pattern and the correct verb form.',
       detective: level >= 2 ? 'Hint: choose the explanation supported by the most clues, not simply one that could be true.' : 'Hint: connect at least two clues before deciding.',
       maze: level >= 2 ? 'Hint: listen for both the first sound and the ending; replay the word slowly.' : 'Hint: compare the sounds at the beginning and end.',
-      wordladder: level >= 2 ? 'Hint: compare your current word with the next step; exactly one letter must change.' : 'Hint: change one letter and check whether the result is a real word.'
+      wordladder: level >= 2 ? 'Hint: compare your current word with the next step; exactly one letter must change.' : 'Hint: change one letter and check whether the result is a real word.',
+      forge: level >= 2 ? 'Hint: use the letter set and clue together; do not add extra letters.' : 'Hint: say the letters aloud and match them to the clue.',
+      connections: level >= 2 ? 'Hint: look for the most precise shared category.' : 'Hint: think about what all four words have in common.',
+      scramble: level >= 2 ? 'Hint: find the subject and verb first, then check word order.' : 'Hint: start with who or what the sentence is about.',
+      chain: level >= 2 ? 'Hint: choose the most direct association, not merely a related topic.' : 'Hint: what word naturally comes to mind next?'
     };
     return hints[id] || '';
   }
@@ -379,9 +422,13 @@ bark dark core hand land lane data duty`
       const path = ladderPath.length ? ladderPath : [item.start];
       intro = '<div class="tl-ladder-targets"><div><span>START</span><strong>'+esc(item.start)+'</strong></div><span class="tl-ladder-arrow">→</span><div><span>GOAL</span><strong>'+esc(item.goal)+'</strong></div></div><p class="tl-ladder-hint">'+esc(item.hint)+'</p><div class="tl-ladder-path">'+path.map((w,i)=>'<span class="tl-ladder-word '+(i===path.length-1?'is-current':'')+'">'+esc(w)+'</span>').join('<span class="tl-ladder-step">↓</span>')+'</div>'+(ladderWordNote?'<aside class="tl-ladder-meaning" aria-live="polite"><strong>'+esc(ladderWordNote.word)+'</strong><p>'+esc(ladderWordNote.meaning||'No definition is available for this word yet.')+'</p></aside>':'')+(path[path.length-1]===item.goal?'<p class="tl-ladder-success">Ladder complete! Every move is valid.</p>':'<form class="tl-ladder-form" data-think-ladder-form><label for="tl-ladder-input">Next word</label><div><input id="tl-ladder-input" name="ladder-word" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Type the next word" required><button class="tl-next" type="submit">Make move →</button></div><small>Use a word from the game’s word bank. Change one letter and keep a route open to the goal.</small></form>');
     }
+    if (mode === 'forge') intro='<div class="tl-word-clue"><span>WORD CLUE</span><p>'+esc(item.clue)+'</p></div><div class="tl-forge-letters">'+[...item.letters].map(ch=>'<span>'+esc(ch)+'</span>').join('')+'</div><div class="tl-answer-options">'+item.options.map((w,i)=>'<button type="button" class="tl-option" data-think-answer="'+i+'"><span class="tl-option-index">'+String.fromCharCode(65+i)+'</span><strong>'+esc(w)+'</strong></button>').join('')+'</div>';
+    if (mode === 'connections') intro='<div class="tl-connection-grid">'+item.words.map(w=>'<span class="tl-connection-word">'+esc(w)+'</span>').join('')+'</div><div class="tl-answer-options">'+item.options.map((w,i)=>'<button type="button" class="tl-option" data-think-answer="'+i+'"><span class="tl-option-index">'+String.fromCharCode(65+i)+'</span><strong>'+esc(w)+'</strong></button>').join('')+'</div>';
+    if (mode === 'scramble') intro='<div class="tl-scramble-bank">'+item.words.map(w=>'<span class="tl-word-chip">'+esc(w)+'</span>').join('')+'</div><div class="tl-answer-options">'+item.options.map((w,i)=>'<button type="button" class="tl-option" data-think-answer="'+i+'"><span class="tl-option-index">'+String.fromCharCode(65+i)+'</span><strong>'+esc(w)+'</strong></button>').join('')+'</div>';
+    if (mode === 'chain') intro='<div class="tl-chain-path">'+esc(item.prompt.replace('Continue the word association chain: ',''))+'</div><div class="tl-answer-options">'+item.options.map((w,i)=>'<button type="button" class="tl-option" data-think-answer="'+i+'"><span class="tl-option-index">'+String.fromCharCode(65+i)+'</span><strong>'+esc(w)+'</strong></button>').join('')+'</div>';
     if (mode === 'maze') intro = '<div class="tl-maze-target"><span class="tl-maze-sound">♫</span><div><span>LISTEN FOR THIS WORD</span><strong>Find the matching word</strong></div><button type="button" class="tl-secondary" data-think-speak>▶ Play word</button></div><div class="tl-maze-path"><span class="tl-maze-start">START</span><span>···</span><span class="tl-maze-finish">EXIT</span></div><div class="tl-answer-options">'+item.options.map((w,i)=>'<button type="button" class="tl-option" data-think-answer="'+i+'"><span class="tl-option-index">'+String.fromCharCode(65+i)+'</span><strong>'+esc(w)+'</strong></button>').join('')+'</div>';
     if (mode === 'detective') intro = '<div class="tl-clue-list">'+item.clues.slice(0,Math.min(item.clues.length,clueCount+1+(difficulty.hintLevel>=2?1:0))).map((c,i)=>'<div class="tl-clue"><span>CLUE 0'+(i+1)+'</span><p>'+esc(c)+'</p></div>').join('')+'</div><div class="tl-reveal-row">'+(clueCount<item.clues.length-1?'<button class="tl-secondary" type="button" data-think-clue>Reveal next clue +</button>':'<span class="tl-all-clues">All evidence revealed</span>')+'</div><h3 class="tl-question">'+item.question+'</h3><div class="tl-answer-options">'+item.options.map((w,i)=>'<button type="button" class="tl-option" data-think-answer="'+i+'"><span class="tl-option-index">'+String.fromCharCode(65+i)+'</span><strong>'+esc(w)+'</strong></button>').join('')+'</div>';
-    root.innerHTML = '<div class="tl-game-head"><button class="tl-back" type="button" data-think-back>← All cases</button><span class="tl-eyebrow">CASE '+String(index+1).padStart(2,'0')+' / '+pool.length+'</span><span class="tl-score">SOLVED <b>'+score+'</b></span></div><div class="tl-game-card"><div class="tl-game-kicker">'+(mode==='odd'?'PATTERN ANALYSIS':mode==='detective'?'EVIDENCE BOARD':mode==='translator'?'NATURAL EXPRESSION':mode==='wordladder'?'WORD TRANSFORMATION':'LISTENING MAZE')+'</div><div class="tl-level-tag">'+(difficulty.level==='challenge'?'CHALLENGE':difficulty.level==='steady'?'STEADY':'GUIDED')+'</div><h2>'+esc(mode==='detective'?item.title:mode==='wordladder'?'Transform the word':mode==='maze'?'Find the sound path':item.prompt)+'</h2><p class="tl-game-instruction">'+esc(mode==='odd'?item.why:mode==='translator'?'Read the Arabic sentence, then choose the natural English equivalent.':mode==='wordladder'?'Build a chain of real words. Only one letter may change in each move.':mode==='maze'?'Listen carefully, replay the word if needed, then choose the matching spelling.':'Reveal the clues and select the conclusion they support.')+'</p>'+intro+'<div class="tl-feedback" id="tl-feedback" aria-live="polite" hidden></div><div class="tl-game-actions"><span>ROUND '+(index+1)+' OF '+pool.length+'</span><button class="tl-next" type="button" data-think-next hidden>Next round →</button></div></div>';
+    root.innerHTML = '<div class="tl-game-head"><button class="tl-back" type="button" data-think-back>← All cases</button><span class="tl-eyebrow">CASE '+String(index+1).padStart(2,'0')+' / '+pool.length+'</span><span class="tl-score">SOLVED <b>'+score+'</b></span></div><div class="tl-game-card"><div class="tl-game-kicker">'+(mode==='odd'?'PATTERN ANALYSIS':mode==='detective'?'EVIDENCE BOARD':mode==='translator'?'NATURAL EXPRESSION':mode==='wordladder'?'WORD TRANSFORMATION':mode==='forge'?'WORD FORGE':mode==='connections'?'WORD CONNECTIONS':mode==='scramble'?'SENTENCE BUILDING':mode==='chain'?'WORD ASSOCIATION':'LISTENING MAZE')+'</div><div class="tl-level-tag">'+(difficulty.level==='challenge'?'CHALLENGE':difficulty.level==='steady'?'STEADY':'GUIDED')+'</div><h2>'+esc(mode==='detective'?item.title:mode==='wordladder'?'Transform the word':mode==='maze'?'Find the sound path':item.prompt)+'</h2><p class="tl-game-instruction">'+esc(mode==='odd'?item.why:mode==='translator'?'Read the Arabic sentence, then choose the natural English equivalent.':mode==='wordladder'?'Build a chain of real words. Only one letter may change in each move.':mode==='maze'?'Listen carefully, replay the word if needed, then choose the matching spelling.':mode==='forge'?'Use the available letters and the clue to identify the word.':mode==='connections'?'Find the category that best describes all four words.':mode==='scramble'?'Choose the sentence with natural English word order.':mode==='chain'?'Choose the word most directly associated with the starting word.':'Reveal the clues and select the conclusion they support.')+'</p>'+intro+'<div class="tl-feedback" id="tl-feedback" aria-live="polite" hidden></div><div class="tl-game-actions"><span>ROUND '+(index+1)+' OF '+pool.length+'</span><button class="tl-next" type="button" data-think-next hidden>Next round →</button></div></div>';
   }
   function speakTarget() { const pool=activePool || getRoundPool('maze');const item=pool[index%pool.length]; if(!('speechSynthesis' in window)||!window.SpeechSynthesisUtterance){const fb=root.querySelector('#tl-feedback');if(fb){fb.hidden=false;fb.className='tl-feedback is-wrong';fb.textContent='Speech playback is not available in this browser.';}return;} window.speechSynthesis.cancel(); const utterance=new SpeechSynthesisUtterance(item.target); utterance.lang='en-US'; utterance.rate=.82; window.speechSynthesis.speak(utterance); }
   function start(id) { mode=id; index=0; score=0; clueCount=0; roundMistakes=0; ladderPath=[]; ladderWordNote=null; ladderMistakeRecorded=false; activeDifficulty=difficultyForMode(id); activePool=getRoundPool(id,activeDifficulty.level); renderGame(); if(id==='maze') speakTarget(); }
