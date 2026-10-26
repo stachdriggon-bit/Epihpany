@@ -44,7 +44,7 @@ test('incorrect look-forward-to examples are not translated into corrected Arabi
   for (const english of [
     'I look forward to meet you.',
     'I look forward to hear from you.',
-    'We are looking forward to hear from you.'
+    'We are looking forward to hear from you.',
     'I look forward see you.',
     'I look forward for seeing you.',
     'I’m looking forward to see you.'
@@ -54,5 +54,22 @@ test('incorrect look-forward-to examples are not translated into corrected Arabi
       phrases[english].includes(english),
       'Arabic prompt must preserve the original sentence for error analysis: ' + english
     );
+  }
+});
+
+test('sentence-level distractor translations preserve the English target instead of revealing the error', () => {
+  const phrases = translations();
+  for (const english of [
+    'Where does you live?',
+    'Where are you live?',
+    'She is good in draw.',
+    'She good at to draw.',
+    'You are apology.',
+    'He told that he busy.',
+    'Little did realise she the risk.'
+  ]) {
+    assert.ok(phrases[english], 'missing Arabic prompt for: ' + english);
+    assert.ok(phrases[english].includes(english), 'translation must preserve the original distractor: ' + english);
+    assert.ok(!phrases[english].includes('صياغة غير صحيحة'), 'translation must not reveal that the option is incorrect: ' + english);
   }
 });
