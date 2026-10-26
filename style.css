@@ -2981,3 +2981,20 @@ body[data-theme="dark"] .top{background:rgba(17,21,34,.97)}
 body[data-theme="dark"] .answer{box-shadow:0 1px 0 rgba(0,0,0,.35),0 8px 16px -12px rgba(0,0,0,.7)}
 .tx-is-ar{font-weight:500;letter-spacing:0}
 .tx-is-ar .key,.answer .key{font-family:var(--body)}
+
+
+/* Think Lab: visual treatment for the four added word challenges. */
+.tl-word-clue{padding:14px 16px;margin:16px 0;border:1px solid var(--line);border-radius:14px;background:var(--surface)}
+.tl-word-clue>span{font-size:.72rem;font-weight:800;letter-spacing:.09em;color:var(--ink-2)}
+.tl-word-clue p{margin:7px 0 0;color:var(--ink);font-weight:600}
+.tl-forge-letters{display:flex;justify-content:center;gap:9px;flex-wrap:wrap;margin:20px 0}
+.tl-forge-letters span{display:grid;place-items:center;width:44px;height:48px;border:1px solid var(--line);border-radius:12px;background:var(--surface);font-size:1.2rem;font-weight:850;box-shadow:0 3px 0 var(--line)}
+.tl-connection-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin:16px 0}
+.tl-connection-word{display:flex;align-items:center;justify-content:center;min-height:48px;padding:10px;border:1px solid var(--line);border-radius:12px;background:var(--surface);font-weight:750;text-align:center}
+.tl-scramble-bank{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0}
+.tl-word-chip{display:inline-flex;align-items:center;justify-content:center;padding:9px 12px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);font:inherit;font-weight:700}
+.tl-chain-path{margin:16px 0;padding:16px;border:1px solid var(--line);border-radius:14px;background:var(--surface);font-weight:850;text-align:center;letter-spacing:.02em}
+.tl-entry-row{display:flex;gap:9px;align-items:center;flex-wrap:wrap;margin-top:8px}
+.tl-entry-row input{flex:1;min-width:160px;padding:12px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);font:inherit}
+.tl-game-card [data-think-answer]:disabled{opacity:.72;cursor:default}
+@media(max-width:520px){.tl-connection-grid{gap:7px}.tl-connection-word{font-size:.92rem;padding:8px 5px}.tl-forge-letters span{width:40px;height:44px}}
