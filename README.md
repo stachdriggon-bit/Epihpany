@@ -40,3 +40,10 @@ World: story missions (fixed) + endless Practice runs (random layout, generated 
 - GitHub Actions runs the content quality tests on pushes to `main` and on pull requests.
 - `ARABIC-STYLE-GUIDE.md` defines the consistent simple-Modern-Standard-Arabic policy.
 - The landing screen lets visitors preview Epiphany before entering the app; `wotd-card.html` generates a daily Word of the Day PNG for sharing.
+
+## Translation rules (unified)
+
+- English is always the default text. Renderers attach Arabic with `arAttr(ar)` (`data-translation-ar`); the translate buttons swap the same element's text to Arabic and back (`data-translate-target`, `data-translate-group`). Never render an Arabic copy below the English.
+- Use `data-tx-skip` to exclude a unit (e.g. Word Match word cards) and `TX_NO_ANSWER_TYPES` to keep options untranslated where Arabic would reveal the answer (spelling, mistakes, personalized).
+- A missing translation never hides content: `translateToArabic` returns `unavailable` and the English stays.
+- New Arabic strings go into `data-translation-ar-fill.js` (keyed by the exact English text).

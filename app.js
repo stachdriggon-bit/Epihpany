@@ -177,7 +177,7 @@
   };
   const ORDER = ['vocabulary', 'spelling', 'grammar', 'story', 'listening', 'advanced', 'mistakes', 'typing'];
   const UNLOCK = {vocabulary:0, spelling:0, grammar:1, story:2, listening:3, advanced:4, mistakes:0, spot:0, typing:0};
-  GAMES.mistakes = {title:'Common Mistakes', category:'GRAMMAR', xp:40, desc:'Understand common mistakes made by English learners.', questions:MISTAKE_QUESTIONS.map(q=>({q:q.prompt,q_ar:q.q_ar,sub:q.sub,sub_ar:q.sub_ar,answers:q.options,answers_ar:q.options_ar,correct:q.answer,explain:q.why_en,explain_ar:q.why_ar,word:null,level:q.level,ar:q.arabic_hint,id:q.id,trap:q.trap,why_ar:q.why_ar,arabic_hint:q.arabic_hint,aha:null}))};
+  GAMES.mistakes = {title:'Common Mistakes', category:'GRAMMAR', xp:40, desc:'Understand common mistakes made by English learners.', questions:MISTAKE_QUESTIONS.map(q=>({q:q.prompt,sub:q.sub,answers:q.options,correct:q.answer,explain:q.why_en,word:null,level:q.level,ar:q.arabic_hint,id:q.id,trap:q.trap,why_ar:q.why_ar,arabic_hint:q.arabic_hint,q_ar:q.q_ar,sub_ar:q.sub_ar,explain_ar:q.why_ar,aha:null}))};
   GAMES.personalized = {title:'Your Weak Spots',category:'PERSONAL REVIEW',xp:45,desc:'A short practice set built from the mistake patterns you have missed before.',questions:GAMES.mistakes.questions.slice()};
   // Assign a topic only when the prompt or its explanation provides a clear grammar signal.
   // These tags let writing and error-spotting rounds share the same review history as grammar.
@@ -1800,23 +1800,18 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
   }
   function stopStoryPronunciationRecording(){if(storyPronunciationRecorder&&storyPronunciationRecorder.state==='recording')storyPronunciationRecorder.stop();}
   function playStoryPronunciationRecording(){if(!storyPronunciationUrl)return;const audio=new Audio(storyPronunciationUrl);audio.play().catch(()=>toast('Could not play the recording.'));}
-  function renderStoryPage(){const scrollRoot=$('#game-scroll'),oldAnchor=$('#story-page-text')||$('.story-reader-actions')||$('.story-reader-title'),oldAnchorTop=oldAnchor?oldAnchor.getBoundingClientRect().top:null;const s=ST.story,p=s.pages[ST.page],hidden=!!ST.textHidden,dictating=!!ST.dictationActive,prefs=state.storyReaderSettings||{};persistStoryReaderProgress();$('#steps').innerHTML=s.pages.map((_,i)=>'<span class="step '+(i<ST.page?'ok':i===ST.page?'current':'')+'"></span>').join('');$('#game-body').innerHTML='<div class="story-reader '+(prefs.nightMode?'story-reader-night':'')+'" style="--story-font-scale:'+Number(prefs.fontScale||1)+';--story-line-height:'+Number(prefs.lineSpacing||1.75)+'"><div class="q-meta"><span class="pill">'+esc(s.level)+' · Reading & Listening</span><span class="q-count">Page '+(ST.page+1)+' of '+s.pages.length+'</span></div><div class="story-progress-dots">'+s.pages.map((_,i)=>'<span class="'+(i<=ST.page?'active':'')+'"></span>').join('')+'</div><div class="story-scene" style="--story-tone:'+esc(s.tone)+'" aria-hidden="true">'+esc(p.scene)+'</div><h2 class="story-reader-title">'+esc(s.title)+'</h2><aside class="story-month-word"><span>WORD OF THE MONTH · '+esc(currentMonthWord().theme)+'</span><strong>'+esc(currentMonthWord().word)+'</strong><p>'+esc(currentMonthWord().meaning)+'. Try noticing it in this story or use it in your own example.</p></aside><div class="story-audio-tools"><section class="reader-tool-group"><span class="reader-tool-label">Reading comfort</span><div class="reader-tool-buttons"><button type="button" class="story-speed" data-story-setting="font-down" aria-label="Decrease text size">A−</button><button type="button" class="story-speed" data-story-setting="font-up" aria-label="Increase text size">A+</button><button type="button" class="story-speed" data-story-setting="line-down" aria-label="Decrease line spacing">↕−</button><button type="button" class="story-speed" data-story-setting="line-up" aria-label="Increase line spacing">↕+</button><button type="button" class="btn btn-ghost" data-story-setting="night">'+(prefs.nightMode?'☀ Light reader':'☾ Night reader')+'</button></div></section><section class="reader-tool-group"><span class="reader-tool-label">Listen</span><div class="reader-tool-buttons">'+[0.75,1,1.25].map(rate=>'<button type="button" class="story-speed '+(ST.audioRate===rate?'is-active':'')+'" data-story-rate="'+rate+'" aria-pressed="'+(ST.audioRate===rate)+'">'+rate+'×</button>').join('')+'<button type="button" class="btn btn-ghost" data-story-action="listen-page">▶ Listen to model</button></div></section><section class="reader-tool-group"><span class="reader-tool-label">Practise</span><div class="reader-tool-buttons"><button type="button" class="btn btn-ghost" data-story-action="'+(storyPronunciationRecorder&&storyPronunciationRecorder.state==='recording'?'stop-recording':'start-recording')+'">'+(storyPronunciationRecorder&&storyPronunciationRecorder.state==='recording'?'■ Stop recording':'● Record yourself')+'</button>'+(storyPronunciationUrl?'<button type="button" class="btn btn-ghost" data-story-action="play-recording">▶ Play my recording</button>':'')+'<button type="button" class="btn btn-ghost" data-story-action="toggle-text">'+(hidden?'Show text':'Hide text')+'</button><button type="button" class="btn btn-ghost" data-story-action="dictation">'+(dictating?'Cancel dictation':'✍ Dictation')+'</button></div></section></div>'+(hidden?'<div class="story-hidden-note">🔒 Text hidden. Listen first, then reveal it when you are ready.</div>':'<div class="story-text" id="story-page-text">'+storyTextTokens(p.text)+'</div>')+(dictating?'<form class="story-dictation-form" id="story-dictation-form"><label for="story-dictation-answer">Write the sentence you hear</label><textarea id="story-dictation-answer" rows="3" required placeholder="Type what you heard…">'+esc(ST.dictationAnswer||'')+'</textarea><button class="btn" type="submit">Check dictation</button>'+(ST.dictationChecked?'<p class="story-dictation-feedback '+(ST.dictationCorrect?'is-correct':'is-wrong')+'">'+(ST.dictationCorrect?'✓ Great listening!':'Not quite yet. Listen again and compare with the sentence.')+'</p><p class="story-dictation-model"><strong>Sentence:</strong> '+esc(p.text)+'</p>':'')+'</form>':'')+(state.helpArabic&&!hidden?'<p class="story-page-ar arabic" lang="ar" dir="rtl">'+esc(p.ar)+'</p>':'')+'<div class="story-reader-actions"><button class="btn btn-ghost" data-story-action="prev" '+(ST.page===0?'disabled':'')+'>← Previous</button><button class="btn" data-story-action="next">'+(ST.page===s.pages.length-1?'Questions':'Next →')+'</button>'+(ST.page===s.pages.length-1?'<button class="btn btn-ghost" data-story-action="comprehension">🎧 Challenge without text</button>':'')+'</div><p class="story-help-note">Tap any word for its meaning, then save it to your review list. Words highlight as the audio reads them.</p><div class="story-word-card" id="story-word-card" hidden aria-live="polite"></div></div>';if(scrollRoot&&oldAnchorTop!==null){const newAnchor=$('#story-page-text')||$('.story-reader-actions')||$('.story-reader-title');if(newAnchor){const delta=newAnchor.getBoundingClientRect().top-oldAnchorTop;if(Math.abs(delta)>0.5)scrollRoot.scrollTop+=delta;}}}
+  function renderStoryPage(){const scrollRoot=$('#game-scroll'),oldAnchor=$('#story-page-text')||$('.story-reader-actions')||$('.story-reader-title'),oldAnchorTop=oldAnchor?oldAnchor.getBoundingClientRect().top:null;const s=ST.story,p=s.pages[ST.page],hidden=!!ST.textHidden,dictating=!!ST.dictationActive,prefs=state.storyReaderSettings||{};persistStoryReaderProgress();$('#steps').innerHTML=s.pages.map((_,i)=>'<span class="step '+(i<ST.page?'ok':i===ST.page?'current':'')+'"></span>').join('');$('#game-body').innerHTML='<div class="story-reader '+(prefs.nightMode?'story-reader-night':'')+'" style="--story-font-scale:'+Number(prefs.fontScale||1)+';--story-line-height:'+Number(prefs.lineSpacing||1.75)+'"><div class="q-meta"><span class="pill">'+esc(s.level)+' · Reading & Listening</span><span class="q-count">Page '+(ST.page+1)+' of '+s.pages.length+'</span></div><div class="story-progress-dots">'+s.pages.map((_,i)=>'<span class="'+(i<=ST.page?'active':'')+'"></span>').join('')+'</div><div class="story-scene" style="--story-tone:'+esc(s.tone)+'" aria-hidden="true">'+esc(p.scene)+'</div><h2 class="story-reader-title">'+esc(s.title)+'</h2><aside class="story-month-word"><span>WORD OF THE MONTH · '+esc(currentMonthWord().theme)+'</span><strong>'+esc(currentMonthWord().word)+'</strong><p>'+esc(currentMonthWord().meaning)+'. Try noticing it in this story or use it in your own example.</p></aside><div class="story-audio-tools"><section class="reader-tool-group"><span class="reader-tool-label">Reading comfort</span><div class="reader-tool-buttons"><button type="button" class="story-speed" data-story-setting="font-down" aria-label="Decrease text size">A−</button><button type="button" class="story-speed" data-story-setting="font-up" aria-label="Increase text size">A+</button><button type="button" class="story-speed" data-story-setting="line-down" aria-label="Decrease line spacing">↕−</button><button type="button" class="story-speed" data-story-setting="line-up" aria-label="Increase line spacing">↕+</button><button type="button" class="btn btn-ghost" data-story-setting="night">'+(prefs.nightMode?'☀ Light reader':'☾ Night reader')+'</button></div></section><section class="reader-tool-group"><span class="reader-tool-label">Listen</span><div class="reader-tool-buttons">'+[0.75,1,1.25].map(rate=>'<button type="button" class="story-speed '+(ST.audioRate===rate?'is-active':'')+'" data-story-rate="'+rate+'" aria-pressed="'+(ST.audioRate===rate)+'">'+rate+'×</button>').join('')+'<button type="button" class="btn btn-ghost" data-story-action="listen-page">▶ Listen to model</button></div></section><section class="reader-tool-group"><span class="reader-tool-label">Practise</span><div class="reader-tool-buttons"><button type="button" class="btn btn-ghost" data-story-action="'+(storyPronunciationRecorder&&storyPronunciationRecorder.state==='recording'?'stop-recording':'start-recording')+'">'+(storyPronunciationRecorder&&storyPronunciationRecorder.state==='recording'?'■ Stop recording':'● Record yourself')+'</button>'+(storyPronunciationUrl?'<button type="button" class="btn btn-ghost" data-story-action="play-recording">▶ Play my recording</button>':'')+'<button type="button" class="btn btn-ghost" data-story-action="toggle-text">'+(hidden?'Show text':'Hide text')+'</button><button type="button" class="btn btn-ghost" data-story-action="dictation">'+(dictating?'Cancel dictation':'✍ Dictation')+'</button></div></section></div>'+(hidden?'<div class="story-hidden-note">🔒 Text hidden. Listen first, then reveal it when you are ready.</div>':'<div class="story-text" id="story-page-text"'+arAttr(p.ar)+'>'+storyTextTokens(p.text)+'</div>')+(dictating?'<form class="story-dictation-form" id="story-dictation-form"><label for="story-dictation-answer">Write the sentence you hear</label><textarea id="story-dictation-answer" rows="3" required placeholder="Type what you heard…">'+esc(ST.dictationAnswer||'')+'</textarea><button class="btn" type="submit">Check dictation</button>'+(ST.dictationChecked?'<p class="story-dictation-feedback '+(ST.dictationCorrect?'is-correct':'is-wrong')+'">'+(ST.dictationCorrect?'✓ Great listening!':'Not quite yet. Listen again and compare with the sentence.')+'</p><p class="story-dictation-model"><strong>Sentence:</strong> '+esc(p.text)+'</p>':'')+'</form>':'')+'<div class="story-reader-actions"><button class="btn btn-ghost" data-story-action="prev" '+(ST.page===0?'disabled':'')+'>← Previous</button><button class="btn" data-story-action="next">'+(ST.page===s.pages.length-1?'Questions':'Next →')+'</button>'+(ST.page===s.pages.length-1?'<button class="btn btn-ghost" data-story-action="comprehension">🎧 Challenge without text</button>':'')+'</div><p class="story-help-note">Tap any word for its meaning, then save it to your review list. Words highlight as the audio reads them.</p><div class="story-word-card" id="story-word-card" hidden aria-live="polite"></div></div>';if(scrollRoot&&oldAnchorTop!==null){const newAnchor=$('#story-page-text')||$('.story-reader-actions')||$('.story-reader-title');if(newAnchor){const delta=newAnchor.getBoundingClientRect().top-oldAnchorTop;if(Math.abs(delta)>0.5)scrollRoot.scrollTop+=delta;}}}
   function speakStoryPage(){if(!ST||!ST.story)return;const phrase=String(ST.story.pages[ST.page].text||'');const synth=window.speechSynthesis;if(!synth||!('SpeechSynthesisUtterance' in window)){toast('Audio playback is not supported in this browser.');return;}const request=++speechRequest;try{synth.cancel();}catch{}if(naturalAudioPlayer){try{naturalAudioPlayer.pause();naturalAudioPlayer.src='';}catch{}naturalAudioPlayer=null;}const voice=pickVoice(),utterance=new SpeechSynthesisUtterance(phrase);utterance.lang=voice?String(voice.lang||'en-US').replace('_','-'):'en-US';if(voice)utterance.voice=voice;utterance.rate=Number(ST.audioRate)||1;utterance.pitch=1;utterance.volume=1;utterance.onboundary=e=>{if(request!==speechRequest||!ST||ST.mode!=='read')return;const words=$$('#story-page-text [data-story-start]');let active=null;for(const word of words){const start=Number(word.dataset.storyStart),end=Number(word.dataset.storyEnd);word.classList.toggle('is-speaking',e.charIndex>=start&&e.charIndex<end);if(e.charIndex>=start&&e.charIndex<end)active=word;}if(active&&active.getBoundingClientRect().top<0)active.scrollIntoView({block:'nearest',behavior:'auto'});};utterance.onend=()=>{$$('#story-page-text .is-speaking').forEach(el=>el.classList.remove('is-speaking'));};utterance.onerror=()=>{$$('#story-page-text .is-speaking').forEach(el=>el.classList.remove('is-speaking'));if(request===speechRequest)toast('Could not play this page. Try again.');};try{synth.speak(utterance);}catch{toast('Could not start audio playback.');}}
   function normalizeDictationText(value){return String(value||'').toLowerCase().normalize('NFC').replace(/[’']/g,'').replace(/[^\p{L}\p{N}\s]/gu,' ').replace(/\s+/g,' ').trim();}
   function checkStoryDictation(form){if(!ST||!form)return;ST.dictationAnswer=$('#story-dictation-answer')?.value||'';const typed=normalizeDictationText(ST.dictationAnswer),target=normalizeDictationText(ST.story.pages[ST.page].text);ST.dictationChecked=true;ST.dictationCorrect=typed===target;if(ST.dictationCorrect)toast('Excellent — your dictation matches the sentence.');renderStoryPage();}
   function openStoryWord(raw,display){const key=String(raw||'').toLowerCase(),entry=storyLookup(key);const meaning=entry?entry.meaning:'No explanation has been added for this word yet.',arabic=entry?entry.ar:'لم نضف شرحاً لهذه الكلمة بعد',pron=entry?entry.pronunciation:key,example=entry?entry.example:'';const card=$('#story-word-card');if(!card)return;card.hidden=false;card.innerHTML='<button class="story-card-close" data-story-action="close-word" aria-label="Close word card">×</button><p class="kicker">WORD IN CONTEXT</p><h3>'+esc(display||key)+'</h3><p class="story-pronunciation">'+esc(pron||key)+'</p><p>'+esc(meaning)+'</p><p class="arabic story-word-ar" lang="ar" dir="rtl">'+esc(arabic)+'</p>'+(example?'<p class="story-example">“'+esc(example)+'”</p>':'')+'<div class="story-word-actions"><button class="btn btn-ghost" data-story-action="listen-word" data-value="'+esc(key)+'">🔊 Listen</button><button class="btn" data-story-action="save-word" data-value="'+esc(key)+'" data-meaning="'+esc(meaning)+'" '+(storyIsSaved(key)?'disabled':'')+'>'+(storyIsSaved(key)?'✓ Saved':'Save word')+'</button></div>';}
   function saveStoryWord(word,meaning){const key=word.toLowerCase(),level=ST?.story?.level||currentLevel().id,definition=meaning||'No explanation has been added for this word yet.';if(!storyIsSaved(key)){state.words.push([word,definition,level]);recordLearningActivity({words:1});}if(!state.review.some(item=>String(item.word).toLowerCase()===key))state.review.push({word,meaning:definition,level,due:dayKey(),box:1,interval:0,streak:0,attempts:0,errors:0,exerciseStage:0,mastered:false});if(ST&&!ST.savedDuring.some(w=>w.toLowerCase()===key))ST.savedDuring.push(word);save();renderWords();renderHeader();toast('Word saved to Words and daily review.');}
   function storyNext(){if(ST.story.decision&&!ST.decisionDone&&ST.page===ST.story.decision.afterPage){ST.mode='decision';ST.decisionResumePage=ST.page+1;renderStoryDecision();return;}if(ST.page<ST.story.pages.length-1){ST.page++;renderStoryPage();return;}ST.mode='quiz';ST.qi=0;ST.score=0;ST.results=[];ST.answered=false;renderStoryQuestion();}
-  function renderStoryDecision(){
-    const d=ST.story.decision;if(!d)return;
-    $('#steps').innerHTML=ST.story.pages.map((_,i)=>'<span class="step '+(i<=ST.page?'ok':'')+'"></span>').join('');
-    $('#game-body').innerHTML='<div class="story-reader story-decision"><div class="q-meta"><span class="pill">Your turn</span><span class="q-count">Story choice</span></div><div class="story-scene" style="--story-tone:'+esc(ST.story.tone)+'" aria-hidden="true">💭</div><h2 class="story-reader-title">'+esc(d.prompt)+'</h2><p class="story-decision-intro">This is a reflection space, not a scored quiz. Consider what each response might lead to; the feedback will help you explore its likely impact.</p><div class="story-decision-options" role="group" aria-label="Choose what to do next">'+d.options.map((o,i)=>'<button type="button" class="story-decision-option" data-story-decision="'+i+'"><span class="story-decision-letter">'+String.fromCharCode(65+i)+'</span><span>'+esc(o.text)+'</span></button>').join('')+'</div></div>';
-    $('#game-scroll').scrollTop=0;
-  }
-  function answerStoryDecision(index){if(!ST||ST.mode!=='decision'||ST.decisionDone)return;const d=ST.story.decision,o=d&&d.options[index];if(!o)return;ST.decisionDone=true;ST.decisionChoice=index;if(o.branchPage&&ST.decisionResumePage!==null){ST.story.pages.splice(ST.decisionResumePage,0,normalizeStoryPage(o.branchPage));if(o.endingPage)ST.story.pages[ST.story.pages.length-1]=normalizeStoryPage(o.endingPage);}persistStoryReaderProgress();ST.mode='decision-feedback';const showArabic=!!state.translationEnabled;const responseArabic=o.response_ar||translateToArabic(o.response).text;showSheet(true,'<h3><span class="sheet-mark">'+ic('git-branch')+'</span>Explore the impact of your choice</h3><p><strong>'+esc(o.text)+'</strong></p><p>'+esc(o.response)+'</p>'+(showArabic?'<p class="story-page-ar arabic" lang="ar" dir="rtl">'+esc(responseArabic)+'</p>':'')+'<p class="story-choice-impact">This is feedback to help you reflect, not a score or a judgement of you. Consider the context and likely consequences; some approaches may work better than others in a particular situation.</p>'+(showArabic?'<p class="story-page-ar arabic" lang="ar" dir="rtl">هذه ملاحظات تساعدك على التفكير، وليست علامة أو حكمًا عليك. فكّر في السياق والنتائج المحتملة؛ فقد تكون بعض الطرق أنسب من غيرها في موقف معيّن.</p>':'')+'<div class="sheet-actions"><button class="btn" id="story-decision-next">Continue story '+ic('arrow')+'</button></div>');$('#sheet').classList.add('story-choice-sheet');}
-  function renderStoryQuestion(){const q=ST.story.questions[ST.qi];$('#steps').innerHTML=ST.story.questions.map((_,i)=>'<span class="step '+(i<ST.qi?'ok':i===ST.qi?'current':'')+'"></span>').join('');$('#game-body').innerHTML='<div class="story-reader story-comprehension-quiz"><div class="q-meta"><span class="pill">'+(ST.comprehensionOnly?'🎧 Listening comprehension':'Story questions')+'</span><span class="q-count">Question '+(ST.qi+1)+' of '+ST.story.questions.length+'</span></div>'+(ST.comprehensionOnly?'<p class="story-hidden-note">The passage is hidden. Answer from what you remember hearing or reading.</p>':'')+'<h2 class="q-text" id="story-q-title" lang="'+(state.translationEnabled?'ar':'en')+'" dir="'+(state.translationEnabled?'rtl':'auto')+'">'+esc(state.translationEnabled?(q.q_ar||translateToArabic(q.q).text):q.q)+'</h2><p class="q-sub">'+(state.translationEnabled?'اختر أفضل إجابة.':'Choose the best answer.')+'</p><div class="answers" id="story-answers" role="group" aria-labelledby="story-q-title">'+q.answers.map((v,i)=>'<button class="answer" data-story-answer="'+i+'"><span class="key">'+(i+1)+'</span><span>'+(state.translationEnabled?esc((q.answers_ar&&q.answers_ar[i])||translateToArabic(v).text):esc(v))+'</span></button>').join('')+'</div>'+(ST.comprehensionOnly?'':'<button class="btn btn-ghost story-back-reading" data-story-action="back-reading">← Back to story</button>')+'</div>';$('#game-scroll').scrollTop=0;}
-  function answerStoryQuestion(choice){if(!ST||ST.mode!=='quiz'||ST.answered)return;const q=ST.story.questions[ST.qi],ok=choice===q.correct;ST.answered=true;if(ok)ST.score++;else if(q.reviewWord){addReview(q.reviewWord,q.explain);save();}ST.results[ST.qi]={status:ok?'ok':'no',chosen:choice,correct:q.correct,question:q.q,explain:q.explain};$$('#story-answers .answer').forEach((b,i)=>{b.disabled=true;if(i===q.correct)b.classList.add('correct');else if(i===choice)b.classList.add('wrong');});showSheet(ok,'<h3><span class="sheet-mark">'+ic(ok?'check':'x')+'</span>'+(ok?'Exactly right!':'Good try — keep learning.')+'</h3>'+(ok?'':('<p>Correct answer: <b>'+esc(q.answers[q.correct])+'</b></p>')+(state.translationEnabled?'<p class="story-page-ar arabic" lang="ar" dir="rtl">الإجابة الصحيحة: <b>'+esc((q.answers_ar&&q.answers_ar[q.correct])||translateToArabic(q.answers[q.correct]).text)+'</b></p>':'') )+(state.translationEnabled?'<p class="story-page-ar arabic" lang="ar" dir="rtl">'+(ok?'أحسنت! إجابتك صحيحة.':'لا بأس، حاول مرة أخرى في السؤال التالي.')+'</p>':'')+'<p>'+esc(q.explain)+'</p>'+(state.translationEnabled?'<p class="story-page-ar arabic" lang="ar" dir="rtl">'+esc(q.explain_ar||translateToArabic(q.explain).text)+'</p>':'')+'<div class="sheet-actions"><button class="btn" id="go-next">'+(ST.qi===ST.story.questions.length-1?'See story results':'Continue')+ic('arrow')+'</button></div>');}
-  function renderStoryLearningReview(story){const vocab=Object.entries(story.vocab||{}).slice(0,8);const missed=(ST.results||[]).filter(r=>r&&r.status==='no');return '<section class="story-learning-review"><div class="story-review-heading"><span class="kicker">LEARN & REMEMBER</span><h3>Words from this story</h3><p>Review useful words in context before you leave.</p></div><div class="story-review-vocab">'+(vocab.length?vocab.map(([word,v])=>'<article class="story-review-word"><div class="story-review-word-top"><strong>'+esc(word)+'</strong><span>'+esc(v.pronunciation||'')+'</span></div><p>'+esc(v.meaning||'')+'</p><p class="arabic" lang="ar" dir="rtl">'+esc(v.ar||'')+'</p><small>Example: “'+esc(v.example||'')+'”</small><button type="button" class="btn btn-ghost story-review-listen" data-story-action="listen-word" data-value="'+esc(word)+'">🔊 Listen</button></article>').join(''):'<p>No vocabulary notes have been added yet.</p>')+'</div>'+(missed.length?'<div class="story-review-missed"><h3>Questions to revisit</h3>'+missed.map(r=>'<article><p><strong>'+esc(r.question)+'</strong></p>'+(state.translationEnabled?'<p class="story-page-ar arabic" lang="ar" dir="rtl">'+esc(translateToArabic(r.question).text)+'</p>':'')+'<p>'+esc(r.explain||'Read the story again and look for evidence.')+'</p>'+(state.translationEnabled?'<p class="story-page-ar arabic" lang="ar" dir="rtl">'+esc(translateToArabic(r.explain||'Read the story again and look for evidence.').text)+'</p>':'')+'</article>').join('')+'</div>':'<p class="story-review-perfect">Great work — you answered every question correctly.</p>')+'</section>';}
+  function renderStoryDecision(){const d=ST.story.decision;if(!d)return;$('#steps').innerHTML=ST.story.pages.map((_,i)=>'<span class="step '+(i<=ST.page?'ok':'')+'"></span>').join('');$('#game-body').innerHTML='<div class="story-reader story-decision"><div class="q-meta"><span class="pill">Your turn</span><span class="q-count">Story choice</span></div><div class="story-scene" style="--story-tone:'+esc(ST.story.tone)+'" aria-hidden="true">💭</div><h2 class="story-reader-title" data-tx'+arAttr(d.prompt_ar)+'>'+esc(d.prompt)+'</h2><p class="story-decision-intro" data-tx'+arAttr('هذه مساحة للتأمل وليست اختبارًا بدرجات. فكّر فيما قد تؤدي إليه كل إجابة؛ وستساعدك الملاحظات على استكشاف أثرها المحتمل.')+'>This is a reflection space, not a scored quiz. Consider what each response might lead to; the feedback will help you explore its likely impact.</p><div class="story-decision-options" role="group" aria-label="Choose what to do next">'+d.options.map((o,i)=>'<button type="button" class="story-decision-option" data-story-decision="'+i+'"'+arAttr(o.text_ar)+'><span class="story-decision-letter">'+String.fromCharCode(65+i)+'</span><span>'+esc(o.text)+'</span></button>').join('')+'</div></div>';$('#game-scroll').scrollTop=0;}
+  function answerStoryDecision(index){if(!ST||ST.mode!=='decision'||ST.decisionDone)return;const d=ST.story.decision,o=d&&d.options[index];if(!o)return;ST.decisionDone=true;ST.decisionChoice=index;if(o.branchPage&&ST.decisionResumePage!==null){ST.story.pages.splice(ST.decisionResumePage,0,normalizeStoryPage(o.branchPage));if(o.endingPage)ST.story.pages[ST.story.pages.length-1]=normalizeStoryPage(o.endingPage);}persistStoryReaderProgress();ST.mode='decision-feedback';showSheet(true,'<h3'+arAttr('اكتشف أثر اختيارك')+'><span class="sheet-mark">'+ic('git-branch')+'</span>Explore the impact of your choice</h3><p'+arAttr(o.text_ar)+'><strong>'+esc(o.text)+'</strong></p><p'+arAttr(o.response_ar)+'>'+esc(o.response)+'</p><p class="story-choice-impact"'+arAttr('هذه ملاحظات تساعدك على التفكير، وليست علامة أو حكمًا عليك. فكّر في السياق والنتائج المحتملة؛ فقد تكون بعض الطرق أنسب من غيرها في موقف معيّن.')+'>This is feedback to help you reflect, not a score or a judgement of you. Consider the context and likely consequences; some approaches may work better than others in a particular situation.</p><div class="sheet-actions"><button class="btn" id="story-decision-next">Continue story '+ic('arrow')+'</button></div>');$('#sheet').classList.add('story-choice-sheet');}
+  function renderStoryQuestion(){const q=ST.story.questions[ST.qi];$('#steps').innerHTML=ST.story.questions.map((_,i)=>'<span class="step '+(i<ST.qi?'ok':i===ST.qi?'current':'')+'"></span>').join('');const answersAr=Array.isArray(q.answers_ar)&&q.answers_ar.length===q.answers.length?q.answers_ar:[];$('#game-body').innerHTML='<div class="story-reader story-comprehension-quiz"><div class="q-meta"><span class="pill">'+(ST.comprehensionOnly?'🎧 Listening comprehension':'Story questions')+'</span><span class="q-count">Question '+(ST.qi+1)+' of '+ST.story.questions.length+'</span></div>'+(ST.comprehensionOnly?'<p class="story-hidden-note">The passage is hidden. Answer from what you remember hearing or reading.</p>':'')+'<h2 class="q-text" id="story-q-title"'+arAttr(q.q_ar)+'>'+esc(q.q)+'</h2><p class="q-sub"'+arAttr('اختر أفضل إجابة.')+'>Choose the best answer.</p><div class="answers" id="story-answers" role="group" aria-labelledby="story-q-title">'+q.answers.map((v,i)=>'<button class="answer" data-story-answer="'+i+'"'+arAttr(answersAr[i])+'><span class="key">'+(i+1)+'</span><span>'+esc(v)+'</span></button>').join('')+'</div>'+(ST.comprehensionOnly?'':'<button class="btn btn-ghost story-back-reading" data-story-action="back-reading">← Back to story</button>')+'</div>';$('#game-scroll').scrollTop=0;}
+  function answerStoryQuestion(choice){if(!ST||ST.mode!=='quiz'||ST.answered)return;const q=ST.story.questions[ST.qi],ok=choice===q.correct;ST.answered=true;if(ok)ST.score++;else if(q.reviewWord){addReview(q.reviewWord,q.explain);save();}ST.results[ST.qi]={status:ok?'ok':'no',chosen:choice,correct:q.correct,question:q.q,explain:q.explain};$$('#story-answers .answer').forEach((b,i)=>{b.disabled=true;if(i===q.correct)b.classList.add('correct');else if(i===choice)b.classList.add('wrong');});showSheet(ok,'<h3'+arAttr(ok?'صحيح تمامًا!':'محاولة جيدة — واصل التعلّم.')+'><span class="sheet-mark">'+ic(ok?'check':'x')+'</span>'+(ok?'Exactly right!':'Good try — keep learning.')+'</h3>'+(ok?'':('<p'+arAttr('الإجابة الصحيحة: '+((q.answers_ar&&q.answers_ar[q.correct])||q.answers[q.correct]))+'>Correct answer: <b>'+esc(q.answers[q.correct])+'</b></p>'))+'<p'+arAttr(q.explain_ar)+'>'+esc(q.explain)+'</p>'+'<div class="sheet-actions"><button class="btn" id="go-next">'+(ST.qi===ST.story.questions.length-1?'See story results':'Continue')+ic('arrow')+'</button></div>');}
+  function renderStoryLearningReview(story){const vocab=Object.entries(story.vocab||{}).slice(0,8);const missed=(ST.results||[]).filter(r=>r&&r.status==='no');return '<section class="story-learning-review"><div class="story-review-heading"><span class="kicker">LEARN & REMEMBER</span><h3>Words from this story</h3><p>Review useful words in context before you leave.</p></div><div class="story-review-vocab">'+(vocab.length?vocab.map(([word,v])=>'<article class="story-review-word"><div class="story-review-word-top"><strong>'+esc(word)+'</strong><span>'+esc(v.pronunciation||'')+'</span></div><p data-tx'+arAttr(v.ar)+'>'+esc(v.meaning||'')+'</p><small>Example: “'+esc(v.example||'')+'”</small><button type="button" class="btn btn-ghost story-review-listen" data-story-action="listen-word" data-value="'+esc(word)+'">🔊 Listen</button></article>').join(''):'<p>No vocabulary notes have been added yet.</p>')+'</div>'+(missed.length?'<div class="story-review-missed"><h3>Questions to revisit</h3>'+missed.map(r=>'<article><p data-tx><strong>'+esc(r.question)+'</strong></p><p data-tx>'+esc(r.explain||'Read the story again and look for evidence.')+'</p></article>').join('')+'</div>':'<p class="story-review-perfect">Great work — you answered every question correctly.</p>')+'</section>';}
   function finishStory(){const completedDailySession=!DEV_MODE.active&&state.dailySessionStep==='story';if(completedDailySession){state.dailySessionStep='done';state.dailySessionDone=true;}const s=ST.story,score=ST.score,old=state.stories[s.id]||{done:false,score:0},previousBest=Number(old.score)||0,firstCompletion=!DEV_MODE.active&&!old.done,newBest=!DEV_MODE.active&&score>previousBest;let bonus=DEV_MODE.active?'Developer test session · no rewards or progress saved.':'';const chosenOption=s.decision&&ST.decisionChoice!==null?s.decision.options[ST.decisionChoice]:null;if(!DEV_MODE.active){state.stories[s.id]={...old,done:true,score:Math.max(previousBest,score),lastDecision:chosenOption?chosenOption.text:null,lastResponse:chosenOption?chosenOption.response:null,lastConsequence:chosenOption&&chosenOption.branchPage?chosenOption.branchPage[1]:null,lastEnding:chosenOption&&chosenOption.endingPage?chosenOption.endingPage[1]:null};if(firstCompletion){state.xp+=30;state.quests++;state.daily=Math.min(2,state.daily+1);const today=dayKey();if(state.dailyQuestDate!==today){state.dailyQuestDate=today;state.dailyQuestProgress=0;state.dailyQuestClaimed=false;state.dailyCorrect=0;state.dailyXp=0;}if(state.weeklyKey!==weekKey()){state.weeklyKey=weekKey();state.weeklyProgress=0;state.weeklyClaimed=false;}state.dailyXp+=30;state.dailyCorrect+=score;state.dailyQuestProgress=state.daily;state.weeklyProgress=(state.weeklyProgress||0)+1;const task=DAILY_QUESTS[(new Date().getDate()-1)%DAILY_QUESTS.length],progress=task.kind==='quests'?state.daily:task.kind==='xp'?state.dailyXp:state.dailyCorrect;if(!state.dailyQuestClaimed&&progress>=task.target){state.dailyQuestClaimed=true;state.xp+=task.reward;bonus=' Daily bonus +'+task.reward+' XP!';}if(!state.weeklyClaimed&&state.weeklyProgress>=5){state.weeklyClaimed=true;state.xp+=60;bonus+=' Weekly bonus +60 XP!';}if(state.lastDay!==today){const y=new Date();y.setDate(y.getDate()-1);const two=new Date();two.setDate(two.getDate()-2);if(state.lastDay===dayKey(y))state.streak=(state.streak||0)+1;else if(state.lastDay===dayKey(two)&&state.streakFreezes>0){state.streakFreezes--;state.streak=(state.streak||0)+1;bonus+=' Streak freeze protected your streak.';}else state.streak=1;state.lastDay=today;}if(!state.completed.includes(currentLevel().id))state.completed.push(currentLevel().id);}save();renderAll();}hideSheet();$('#steps').innerHTML=s.questions.map(()=>'<span class="step ok"></span>').join('');const ratio=s.questions.length?score/s.questions.length:0,stars=ratio>=.85?'★★★':ratio>=.6?'★★☆':ratio>0?'★☆☆':'☆☆☆';const dailyPraise=['You showed up for yourself today. That matters.','A little practice, a little progress — you did it.','You kept going, and your English grew with you.','Ten minutes invested in yourself. Be proud of that.','Progress is built one small step at a time — today you took yours.','You made room for learning today. Well done.','Your future English self will thank you for today.'];const praiseIndex=Number(dayKey().replace(/\\D/g,''))%dailyPraise.length;const dailyCelebration=completedDailySession?'<section class="daily-celebration" role="status" aria-live="polite"><div class="daily-celebration-spark" aria-hidden="true">✦　✧　✦</div><p class="kicker">YOUR DAILY SPARK · COMPLETE</p><h3>That’s today’s path complete! ✨</h3><p>'+dailyPraise[praiseIndex]+'</p><div class="daily-celebration-stats"><span>✓ Words reviewed</span><span>✓ Skill practised</span><span>✓ Story finished</span></div><p class="daily-celebration-streak">🔥 '+Number(state.streak||0)+' day'+(Number(state.streak||0)===1?'':'s')+' in your learning journey</p></section>':'';$('#game-body').innerHTML='<div class="result story-result">'+dailyCelebration+'<div class="burst">📚</div><p class="kicker">STORY COMPLETE</p><h2>'+esc(s.title)+'</h2><div class="story-stars">'+stars+'</div><div class="stats3"><div class="stat"><b>'+(firstCompletion?'+30':'+0')+'</b><span>'+(firstCompletion?'XP earned':'XP · replay')+'</span></div><div class="stat"><b>'+score+'/'+s.questions.length+'</b><span>Correct answers</span></div><div class="stat"><b>'+ST.savedDuring.length+'</b><span>Words saved</span></div></div>'+(newBest&&old.done?'<p class="challenge-bonus">🏆 New personal best! Your best is now '+score+'/'+s.questions.length+'.</p>':'')+(bonus?'<p class="challenge-bonus">'+esc(bonus.trim())+'</p>':'')+(ST.savedDuring.length?'<div class="found"><div class="found-title">Words you saved</div>'+ST.savedDuring.map(w=>'<span class="w">'+esc(w)+'</span>').join('')+'</div>':'')+(s.decision&&ST.decisionChoice!==null?'<div class="story-choice-recap"><strong>How your decision shaped the story</strong><p class="story-impact-choice"><b>You chose:</b> '+esc(s.decision.options[ST.decisionChoice].text)+'</p><p>'+esc(s.decision.options[ST.decisionChoice].response)+'</p>'+(s.decision.options[ST.decisionChoice].branchPage?'<div class="story-impact-step"><small>THE IMMEDIATE CONSEQUENCE</small><p>'+esc(s.decision.options[ST.decisionChoice].branchPage[1])+'</p></div>':'')+(s.decision.options[ST.decisionChoice].endingPage?'<div class="story-impact-step"><small>HOW THIS PATH ENDED</small><p>'+esc(s.decision.options[ST.decisionChoice].endingPage[1])+'</p></div>':'')+'<p class="story-impact-replay">What if you had chosen the other option? Replay the story to explore the alternative path. Your XP and quest rewards are still awarded only on your first completion.</p><button type="button" class="btn btn-ghost" data-story-action="replay-other">↻ What if I chose differently?</button></div>':'')+renderStoryLearningReview(s)+(s.followUp?'<div class="follow-up-card"><p><b>Take the story into the village</b></p><p>Use the words you just read in a real task.</p><button class="btn" data-story-follow-up="'+esc(s.followUp.taskId)+'">'+esc(s.followUp.label||'Continue in the village')+' →</button></div>':'')+'<div class="result-actions"><button class="btn" data-story-action="another">Read another story</button><button class="btn btn-ghost" data-story-action="words">Open Words</button><button class="btn btn-ghost" data-story-action="close">Back to Stories</button></div></div>';$('#game-scroll').scrollTop=0;ST.mode='result';}
 
   /* ---------- navigation ---------- */
@@ -2438,48 +2433,10 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     });
   }
 
-  function normalizeMixedArabicTranslation(value) {
-    let text=String(value==null?'':value);
-    const replacements=[
-      [/\\blook forward to\\b/gi,'يتطلّع إلى'],
-      [/\\bbe looking forward to\\b/gi,'يتطلّع إلى'],
-      [/\\bfollowed by\\b/gi,'يتبعها'],
-      [/\\blook forward to doing something\\b/gi,'يتطلّع إلى فعل شيء'],
-      [/\\bverb ending in -ing\\b/gi,'فعل ينتهي بصيغة -ing'],
-      [/\\bnoun or verb ending in -ing\\b/gi,'اسم أو فعل ينتهي بصيغة -ing'],
-      [/\\bbase form of the verb\\b/gi,'الصيغة الأساسية للفعل'],
-      [/\\bpast participle\\b/gi,'التصريف الثالث للفعل'],
-      [/\\bsubject-verb agreement\\b/gi,'توافق الفعل مع الفاعل']
-    ];
-    for(const [pattern,replacement] of replacements)text=text.replace(pattern,replacement);
-    return text;
-  }
   function translateKnownPhrase(source) {
     const lower=normalizeTranslationKey(source);
     if(AR_TRANSLATION_PHRASES[lower])return AR_TRANSLATION_PHRASES[lower];
-    // Translate common multi-word grammar collocations before the word-level fallback.
-    // Keep grammatical forms such as -ing and "to + verb" readable rather than
-    // leaving an English collocation embedded in an otherwise Arabic explanation.
-    const phraseReplacements=[
-      [/\\blook forward to\\b/gi,'يتطلّع إلى'],
-      [/\\bbe looking forward to\\b/gi,'يتطلّع إلى'],
-      [/\\bfollowed by\\b/gi,'يتبعها'],
-      [/\\bnoun or verb ending in -ing\\b/gi,'اسم أو فعل ينتهي بـ ing'],
-      [/\\bverb ending in -ing\\b/gi,'فعل ينتهي بـ ing'],
-      [/\\bending in -ing\\b/gi,'منتهيًا بـ ing'],
-      [/\\bbase form of the verb\\b/gi,'الصيغة الأساسية للفعل'],
-      [/\\bbase verb\\b/gi,'الفعل بصيغته الأساسية'],
-      [/\\bpast participle\\b/gi,'التصريف الثالث للفعل'],
-      [/\\bpresent participle\\b/gi,'اسم الفاعل أو صيغة الفعل المنتهية بـ ing'],
-      [/\\bgerund\\b/gi,'المصدر بصيغة ing'],
-      [/\\binfinitive\\b/gi,'المصدر'],
-      [/\\bsubject-verb agreement\\b/gi,'توافق الفعل مع الفاعل'],
-      [/\\bphrasal verb\\b/gi,'فعل مركّب'],
-      [/\\bmodal verb\\b/gi,'فعل مساعد ناقص']
-    ];
-    let prepared=String(source||'');
-    for(const [pattern,arabic] of phraseReplacements)prepared=prepared.replace(pattern,arabic);
-    return prepared.replace(/[A-Za-z]+(?:['’-][A-Za-z]+)*/g,token=>{
+    return source.replace(/[A-Za-z]+(?:['’-][A-Za-z]+)*/g,token=>{
       const key=token.toLowerCase();
       if(Object.prototype.hasOwnProperty.call(AR_TRANSLATION_WORDS,key))return AR_TRANSLATION_WORDS[key];
       if(typeof STORY_WORDS_AR!=='undefined'&&STORY_WORDS_AR[key])return STORY_WORDS_AR[key];
@@ -2489,7 +2446,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
   }
   function translateToArabic(raw) {
     const source=String(raw||'').replace(/\s+/g,' ').trim();
-    if(!source)return {text:'لا يوجد نص لترجمته.',exact:true};
+    if(!source)return {text:'',exact:false,unavailable:true};
     const key=normalizeTranslationKey(source);
     const exact=AR_TRANSLATION_PHRASES[key];
     if(exact)return {text:exact,exact:true};
@@ -2586,9 +2543,9 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     templateMatch=source.match(/^Choose the (natural phrase|best word|correct word|best response|correct answer|best answer|best option):\s*(.+)$/i);
     if(templateMatch)return {text:({'natural phrase':'اختر التعبير الطبيعي:','best word':'اختر الكلمة الأنسب:','correct word':'اختر الكلمة الصحيحة:','best response':'اختر أفضل رد:','correct answer':'اختر الإجابة الصحيحة:','best answer':'اختر أفضل إجابة:','best option':'اختر الخيار الأنسب:'})[templateMatch[1].toLowerCase()]+' '+templateMatch[2],exact:false};
     const translated=translateKnownPhrase(source);
-    // Never substitute a warning for the source text: callers may use .text as an inline fallback.
-    // Preserve the original English so the question/answer remains visible when no Arabic entry exists.
-    const unavailable={text:source,exact:false,unavailable:true};
+    // No reliable Arabic: report it as unavailable with EMPTY text. Callers keep showing the English
+    // and must never treat the English echo as a translation (that is what hid questions before).
+    const unavailable={text:'',exact:false,unavailable:true,source};
     const untranslated=(translated.match(/[A-Za-z]+(?:['’-][A-Za-z]+)*/g)||[]);
     if(untranslated.length)return unavailable;
     const tokens=source.match(/[A-Za-z]+(?:['’-][A-Za-z]+)*/g)||[];
@@ -2600,127 +2557,314 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     return {text:translated,exact:false};
   }
   let translationControlId=0;
-  function addTranslationControl(target,kind) {
-    if(!target||target.dataset.translationEnhanced==='1')return;
-    target.dataset.translationEnhanced='1';
-    if(!target.id)target.id='translation-source-'+(++translationControlId);
-    const output=document.createElement('div');output.className='translation-result';output.hidden=true;output.id=target.id+'-arabic';output.lang='ar';output.dir='rtl';
-    const button=document.createElement('button');button.type='button';button.className='translate-btn';button.dataset.translateTarget=target.id;button.setAttribute('aria-expanded','false');const label=kind==='answer'?'الإجابة':target.closest('.sheet')?'التفسير':target.classList.contains('q-sub')?'التوجيه':target.classList.contains('mg-route')?'التعليمات':target.classList.contains('spot-text')?'النص':target.classList.contains('typing-prompt')?'الجملة':'السؤال';button.dataset.translationLabel=label;button.innerHTML='<span aria-hidden="true">ع</span> ترجمة '+label;button.hidden=!state.translationEnabled;
-    if(kind==='answer'&&!target.classList.contains('story-decision-option')){const row=document.createElement('div');const mini=target.classList.contains('mg-card')||target.classList.contains('mg-tile');row.className='answer-translation-row'+(mini?' mini-answer-translation-row':'');target.parentNode.insertBefore(row,target);row.appendChild(target);row.appendChild(button);row.appendChild(output);}
-    else if(target.classList.contains('story-decision-option')){const row=document.createElement('div');row.className='story-option-translation-row';target.parentNode.insertBefore(row,target);row.appendChild(target);row.appendChild(button);row.appendChild(output);}
-    else{target.insertAdjacentElement('beforebegin',output);target.insertAdjacentElement('afterend',button);}
+  /* ---------- Unified translation layer ----------
+     One rule for every game: English is shown first. A translate button swaps that same text into
+     Arabic in place, and the same button swaps it back. Arabic is never shown automatically, is never
+     added as a second copy under the English, and a missing translation never hides or replaces the
+     English text.
+     Each translatable element ("unit") finds its Arabic in this order:
+       1. data-translation-ar   written by the renderer from the lesson data (exact, index-aligned)
+       2. directQuestionArabic  authored *_ar fields of the current question (fallback)
+       3. translateToArabic     phrase catalogue (exact) or a short, fully-known word-by-word gloss
+     Text that merely echoes the English is never accepted as an Arabic translation. */
+  const TX_UNIT_SELECTOR='[data-tx],.q-text,.q-sub,.typing-prompt,.spot-text,.mg-route,.answer,.question-text,.prompt-text,.instruction-text,.story-prompt,.story-response,.story-decision-option,.story-text,.world-instruction strong,.world-dialogue,.mg-card,.mg-tile,.mini-choice';
+  const TX_ANSWER_SELECTOR='.answer,.mg-card,.mg-tile,.story-decision-option,.mini-choice';
+  // Options that are different spellings / grammatical forms of one phrase are never translated:
+  // an Arabic rendering would give the answer away (the catalogue even marks wrong forms as unnatural).
+  const TX_NO_ANSWER_TYPES=['spelling','mistakes','personalized'];
+  // Icons / number badges that sit beside the text and must survive a language swap.
+  const TX_DECOR='.sheet-mark,.key,.story-decision-letter,svg';
+
+  function hasArabic(value){return /[ء-ي]/.test(String(value==null?'':value));}
+  function txGame(){try{return G;}catch{return null;}}
+  function txMiniGame(){try{return MG;}catch{return null;}}
+  function cleanTx(value){return String(value==null?'':value).replace(/\s+/g,' ').trim();}
+  function arAttr(ar){return hasArabic(ar)?' data-translation-ar="'+esc(cleanTx(ar))+'"':'';}
+  function txIsAnswer(el){return el.matches(TX_ANSWER_SELECTOR);}
+  function txInSheet(el){return !!el.closest('#sheet');}
+  function txInMini(el){return !!(txMiniGame()&&!txGame()&&el.closest('#game-body'));}
+  const txIsDecor=n=>n.nodeType===1&&n.matches(TX_DECOR);
+  /* The element whose text is swapped: the text span of an answer/card, otherwise the element itself. */
+  function txHolder(el){
+    if(el.classList.contains('answer'))return el.querySelector(':scope > span:not(.key)')||el;
+    if(el.classList.contains('story-decision-option'))return [...el.children].find(c=>!c.classList.contains('story-decision-letter'))||el;
+    if(el.classList.contains('mg-card'))return [...el.children].find(c=>c.tagName==='SPAN')||el;
+    if(el.classList.contains('mg-tile'))return el.querySelector(':scope > span')||el;
+    return el;
   }
-  function directQuestionArabic(el) {
-    if(!el || typeof G==='undefined' || !G || !Array.isArray(G.questions)) return '';
-    const q=G.questions[G.i];
+  function txRead(el){
+    const holder=txHolder(el);
+    return cleanTx([...holder.childNodes].filter(n=>!txIsDecor(n)).map(n=>n.textContent).join(''));
+  }
+  /* Swaps the visible text for Arabic (or restores the very same nodes), keeping decorations and any
+     attached state: the original child nodes are stashed, not re-created from HTML. */
+  function txWrite(el,lang,text){
+    const holder=txHolder(el),ar=lang==='ar';
+    if(ar){
+      if(holder._txStash===undefined)holder._txStash=[...holder.childNodes];
+      holder.replaceChildren(...holder._txStash.filter(txIsDecor),document.createTextNode(text));
+      holder.lang='ar';holder.dir='rtl';
+    }else if(holder._txStash!==undefined){
+      holder.replaceChildren(...holder._txStash);
+      delete holder._txStash;
+      holder.removeAttribute('lang');holder.removeAttribute('dir');
+    }
+    holder.classList.toggle('tx-is-ar',ar);
+  }
+  function txCapture(el){if(el.dataset.txEn===undefined)el.dataset.txEn=txRead(el);return el.dataset.txEn;}
+  function txLabel(el){
+    if(el.dataset.txLabel)return el.dataset.txLabel;
+    return txIsAnswer(el)?'الإجابة':txInSheet(el)?'التفسير':el.classList.contains('q-sub')?'التوجيه':el.classList.contains('mg-route')?'التعليمات':el.classList.contains('spot-text')||el.classList.contains('story-text')?'النص':el.classList.contains('typing-prompt')?'الجملة':el.closest('.world-instruction')?'التعليمات':'السؤال';
+  }
+  const TX_BTN_AR='<span aria-hidden="true">EN</span> English';
+  const txBtnEn=label=>'<span aria-hidden="true">ع</span> ترجمة '+label;
+  function txButtonFor(el){return el.id?document.querySelector('[data-translate-target="'+CSS.escape(el.id)+'"]'):null;}
+  function txSetButtonState(button,ar,label){
+    const st=ar?'ar':'en';
+    if(button.dataset.txState===st)return;
+    button.dataset.txState=st;
+    button.setAttribute('aria-pressed',String(ar));
+    button.innerHTML=ar?TX_BTN_AR:txBtnEn(label);
+  }
+  function txSyncButton(el){
+    const button=txButtonFor(el);if(!button)return;
+    txSetButtonState(button,el.dataset.txLang==='ar',button.dataset.translationLabel||txLabel(el));
+  }
+  function txNotice(button,message){
+    if(!button)return;
+    if(button.dataset.txNoticeTimer)clearTimeout(Number(button.dataset.txNoticeTimer));
+    const original=button.dataset.txNoticeOriginal||button.innerHTML;
+    button.dataset.txNoticeOriginal=original;
+    button.textContent=message;button.classList.add('tx-notice');
+    button.dataset.txNoticeTimer=String(setTimeout(()=>{button.classList.remove('tx-notice');button.innerHTML=original;delete button.dataset.txNoticeTimer;delete button.dataset.txNoticeOriginal;},2400));
+  }
+  /* Authored Arabic of the current quiz question that matches the text a unit shows. Fallback only:
+     renderers normally state the Arabic explicitly with data-translation-ar. */
+  function directQuestionArabic(el,shownText) {
+    const g=txGame();
+    if(!el || !g || !Array.isArray(g.questions)) return '';
+    const item=g.questions[g.i]; const q=item&&item.q;
     if(!q || typeof q!=='object') return '';
     const clean=value=>String(value==null?'':value).replace(/\s+/g,' ').trim().replace(/[.!?؟…,:;]+$/,'').toLowerCase();
-    const textOf=el.classList.contains('answer') || el.classList.contains('mg-card') || el.classList.contains('mg-tile')
-      ? (el.querySelector(':scope > span:not(.key)') || el.querySelector(':scope > span') || el).textContent
-      : el.textContent;
-    const shown=clean(textOf);
+    const shown=clean(shownText);
     if(!shown) return '';
-    const fields=[
-      ['q','q_ar'],['prompt','q_ar'],['text','q_ar'],['sub','sub_ar'],
-      ['explain','explain_ar'],['why_en','why_ar'],['instruction','ar'],['prompt','prompt_ar']
-    ];
+    const fields=[['q','q_ar'],['prompt','q_ar'],['text','q_ar'],['sub','sub_ar'],['explain','explain_ar'],['why_en','why_ar']];
     for(const [sourceKey,arabicKey] of fields){
-      if(q[sourceKey] && clean(q[sourceKey])===shown && q[arabicKey]) return String(q[arabicKey]);
+      if(q[sourceKey] && clean(q[sourceKey])===shown && hasArabic(q[arabicKey])) return String(q[arabicKey]);
     }
-    const isAnswer=el.classList.contains('answer') || el.classList.contains('mg-card') || el.classList.contains('mg-tile');
-    if(isAnswer){
-      const pairs=[['answers','answers_ar'],['options','options_ar'],['accept','accept_ar']];
-      for(const [sourceKey,arabicKey] of pairs){
+    if(txIsAnswer(el)){
+      for(const [sourceKey,arabicKey] of [['answers','answers_ar'],['options','options_ar'],['accept','accept_ar']]){
         if(!Array.isArray(q[sourceKey]) || !Array.isArray(q[arabicKey])) continue;
         const index=q[sourceKey].findIndex(value=>clean(value)===shown);
-        if(index>=0 && q[arabicKey][index]) return String(q[arabicKey][index]);
+        if(index>=0 && hasArabic(q[arabicKey][index])) return String(q[arabicKey][index]);
       }
     }
     return '';
   }
+  /* Returns {text,exact} with real Arabic, or null. English is never returned as a "translation". */
+  function txResolve(el){
+    const en=txCapture(el);
+    if(!en)return null;
+    const authored=el.dataset.translationAr||directQuestionArabic(el,en);
+    if(hasArabic(authored))return {text:cleanTx(authored),exact:true};
+    const found=translateToArabic(en);
+    if(found&&!found.unavailable&&hasArabic(found.text)&&cleanTx(found.text)!==en){
+      // A bare dictionary gloss is not a safe translation of an option or of feedback text.
+      if((txIsAnswer(el)||txInSheet(el))&&!found.exact)return null;
+      return {text:cleanTx(found.text),exact:!!found.exact};
+    }
+    return null;
+  }
+  /* Sets one unit to 'ar' or 'en'. Returns false only when Arabic was requested but does not exist. */
+  function txSet(el,lang){
+    const en=txCapture(el);
+    if(lang==='ar'){
+      if(el.dataset.txLang==='ar')return true;
+      const found=txResolve(el);
+      if(!found)return false;
+      txWrite(el,'ar',found.text);
+      el.dataset.txLang='ar';
+      el.classList.toggle('tx-approx',!found.exact);
+    }else{
+      if(el.dataset.txLang!=='ar')return true;
+      txWrite(el,'en',en);
+      el.dataset.txLang='en';
+      el.classList.remove('tx-approx');
+    }
+    txSyncButton(el);
+    return true;
+  }
+  function txUnits(root){
+    return [...root.querySelectorAll('[data-tx-unit]')].filter(el=>!el.hasAttribute('data-tx-skip'));
+  }
+  function txGroupRoot(button){
+    return button.dataset.translateGroup==='sheet'?$('#sheet'):$('#game-body');
+  }
+  function txSyncGroupButtons(){
+    document.querySelectorAll('[data-translate-group]').forEach(button=>{
+      const root=txGroupRoot(button),units=root?txUnits(root):[];
+      txSetButtonState(button,units.some(u=>u.dataset.txLang==='ar'),button.dataset.translationLabel||'الشاشة');
+    });
+    // Arabic-only teaching notes (for example "why Arabic speakers make this mistake") appear on request.
+    const sheet=$('#sheet');
+    if(sheet){
+      const ar=txUnits(sheet).some(u=>u.dataset.txLang==='ar');
+      sheet.querySelectorAll('[data-tx-ar-only]').forEach(note=>{if(note.hidden===ar)note.hidden=!ar;});
+    }
+    const gameAr=$('#game-ar'),game=$('#game');
+    if(gameAr&&game&&!game.hidden){
+      const on=txUnits(game).some(u=>u.dataset.txLang==='ar');
+      if(gameAr.getAttribute('aria-pressed')!==String(on))gameAr.setAttribute('aria-pressed',String(on));
+    }
+  }
+  /* Swaps every unit together. Units without a translation simply stay in English. */
+  function txSetMany(units,lang){
+    let changed=0,missing=0;
+    units.forEach(el=>{
+      if(txSet(el,lang)){if(el.dataset.txLang===lang)changed++;}else{missing++;}
+    });
+    txSyncGroupButtons();
+    return {changed,missing};
+  }
+  function txToggleMany(units,button){
+    const anyAr=units.some(u=>u.dataset.txLang==='ar');
+    const result=txSetMany(units,anyAr?'en':'ar');
+    if(!anyAr&&result.changed===0)txNotice(button,'لا توجد ترجمة متاحة لهذا النص');
+    return anyAr?'en':(result.changed?'ar':'en');
+  }
+  /* A unit may get its own button when we cannot yet tell it has no Arabic. */
+  function txCanDecide(el){return !!el.dataset.translationAr||arTranslationCatalogLoaded;}
+  function addTranslationControl(target){
+    if(!target||target.dataset.translationEnhanced==='1')return;
+    target.dataset.translationEnhanced='1';
+    const en=txCapture(target);
+    if(!en)return;
+    const game=txGame();
+    // Spelling options are spellings of one word: they are never translated (it would reveal the answer).
+    if(txIsAnswer(target)&&game&&TX_NO_ANSWER_TYPES.includes(game.type))return;
+    target.dataset.txUnit='1';
+    // Sheet text and mini-game cards share one screen-level button instead of one button per element.
+    if(txInSheet(target)||txInMini(target))return;
+    // Never offer a dead button once we know there is no Arabic for this text.
+    if(txCanDecide(target)&&!txResolve(target))return;
+    if(!target.id)target.id='translation-source-'+(++translationControlId);
+    const label=txLabel(target);
+    const button=document.createElement('button');
+    button.type='button';button.className='translate-btn';button.dataset.translateTarget=target.id;
+    button.dataset.translationLabel=label;button.setAttribute('aria-pressed','false');
+    button.innerHTML=txBtnEn(label);
+    button.hidden=!state.translationEnabled;
+    if(txIsAnswer(target)&&!target.classList.contains('story-decision-option')){
+      const row=document.createElement('div');
+      row.className='answer-translation-row'+(target.classList.contains('mg-card')||target.classList.contains('mg-tile')?' mini-answer-translation-row':'');
+      target.parentNode.insertBefore(row,target);row.appendChild(target);row.appendChild(button);
+    }else if(target.classList.contains('story-decision-option')){
+      const row=document.createElement('div');
+      row.className='story-option-translation-row';
+      target.parentNode.insertBefore(row,target);row.appendChild(target);row.appendChild(button);
+    }else{
+      target.insertAdjacentElement('afterend',button);
+    }
+  }
+  function ensureSheetButton(sheet){
+    const inner=sheet&&sheet.querySelector('.sheet-in');
+    if(!inner||inner.querySelector('[data-translate-group="sheet"]'))return;
+    if(!txUnits(sheet).length)return;
+    const button=document.createElement('button');
+    button.type='button';button.className='translate-btn tx-group-btn';button.dataset.translateGroup='sheet';button.dataset.translationLabel='التفسير';
+    button.setAttribute('aria-pressed','false');button.innerHTML=txBtnEn('التفسير');button.hidden=!state.translationEnabled;
+    const heading=inner.querySelector('h3');
+    if(heading)heading.insertAdjacentElement('afterend',button);else inner.insertAdjacentElement('afterbegin',button);
+  }
+  function enhanceSheet(sheet){
+    sheet.querySelectorAll('.sheet-in h3,.sheet-in p,.sheet-in li').forEach(el=>{
+      if(el.closest('.monthly-word-in-feedback,.sheet-actions,.newword,[data-tx-ar-only]')||el.classList.contains('adaptive-note'))return;
+      if(el.dataset.translationEnhanced==='1'||!cleanTx(el.textContent))return;
+      el.dataset.translationEnhanced='1';el.dataset.txUnit='1';
+      txCapture(el);
+    });
+    ensureSheetButton(sheet);
+  }
+  /* Mini-games rebuild their markup after every tap, so the chosen language is remembered for the
+     current game screen and re-applied to the fresh elements. A new question starts in English again. */
+  function txMiniKey(){const mg=txMiniGame();return mg?mg.type+':'+mg.i:'';}
+  function txApplyRememberedMini(root){
+    const mg=txMiniGame();
+    if(!mg||txGame())return;
+    const key=txMiniKey();
+    if(mg.txKey!==key){mg.txKey=key;mg.txLang='en';}
+    if(mg.txLang==='ar')txSetMany(txUnits(root),'ar');
+  }
+  function txPruneButtons(root){
+    (root||document).querySelectorAll('[data-translate-target]').forEach(button=>{
+      const el=document.getElementById(button.dataset.translateTarget);
+      if(el&&el.dataset.txLang!=='ar'&&!txResolve(el))button.remove();
+    });
+  }
+  let txCatalogRequested=false;
   function enhanceTranslationControls(root) {
     if(!root||!state.translationEnabled)return;
-    root.querySelectorAll('.q-text,.q-sub,.typing-prompt,.spot-text,.mg-route,.answer,.mg-card,.mg-tile,.question-text,.prompt-text,.instruction-text,.story-prompt,.story-response,.story-option,.story-decision-option,.story-text,.story-reader-title,.story-help-note,.story-pronunciation,.story-example,.world-instruction,.world-dialogue,.wotd-definition,.aha-note,.sheet p:not(.arabic),.sheet h3').forEach(el=>{
-      // Story/World/WOTD elements are included only through explicit semantic selectors above.
-      if(el.classList.contains('mg-route')&&el.nextElementSibling&&el.nextElementSibling.classList.contains('mg-route-ar'))return;
-      const directArabic=directQuestionArabic(el);
-      if(directArabic) el.dataset.translationAr=directArabic;
-      addTranslationControl(el,(el.classList.contains('answer')||el.classList.contains('mg-card')||el.classList.contains('mg-tile')||el.classList.contains('story-decision-option'))?'answer':'question');
+    if(!arTranslationCatalogLoaded&&!txCatalogRequested){
+      txCatalogRequested=true;
+      ensureArabicTranslationCatalog().then(()=>{txPruneButtons(document);}).catch(()=>{txCatalogRequested=false;});
+    }
+    if(root.id==='sheet'){enhanceSheet(root);txSyncGroupButtons();return;}
+    root.querySelectorAll(TX_UNIT_SELECTOR).forEach(el=>{
+      if(el.hasAttribute('data-tx-skip')||el.closest('#sheet'))return;
+      addTranslationControl(el);
     });
-    syncQuestionArabicTranslations(root);
+    txApplyRememberedMini(root);
+    txSyncGroupButtons();
   }
-  function syncQuestionArabicTranslations(root) {
-    // Translation is intentionally user-controlled. Do not auto-replace question text
-    // based on help-language settings; the matching button owns the in-place toggle.
-    if(!root)return;
+  function withArabicCatalog(action,button){
+    if(arTranslationCatalogLoaded){action();return;}
+    if(button)button.setAttribute('aria-busy','true');
+    const done=()=>{if(button)button.removeAttribute('aria-busy');action();};
+    // If the large catalogue cannot load, the authored data and built-in phrases still work.
+    ensureArabicTranslationCatalog().then(done).catch(done);
   }
   document.addEventListener('click',e=>{
+    const group=e.target.closest('[data-translate-group]');
+    if(group){
+      e.preventDefault();e.stopPropagation();
+      withArabicCatalog(()=>{
+        const root=txGroupRoot(group);if(!root)return;
+        const next=txToggleMany(txUnits(root),group);
+        const mg=txMiniGame();
+        if(mg&&!txGame()&&group.dataset.translateGroup==='screen'){mg.txKey=txMiniKey();mg.txLang=next;}
+        txPruneButtons(root);
+      },group);
+      return;
+    }
     const button=e.target.closest('[data-translate-target]');if(!button)return;
-    if (!arTranslationCatalogLoaded) {
-      e.preventDefault(); e.stopPropagation();
-      ensureArabicTranslationCatalog().then(() => button.click()).catch(() => toast('The expanded Arabic catalogue could not load; built-in translations remain available.'));
-      return;
-    }
     e.preventDefault();e.stopPropagation();
-    const target=document.getElementById(button.dataset.translateTarget),output=document.getElementById(button.dataset.translateTarget+'-arabic');if(!target||!output)return;
-    const primaryQuestion=target.matches('.q-text,.typing-prompt,.spot-text,.question-text,.prompt-text,.story-prompt,.story-text');
-    if(primaryQuestion){
-      if(!target.dataset.translationSource) target.dataset.translationSource=target.textContent.trim();
-      if(button.getAttribute('aria-expanded')==='true'){
-        target.textContent=target.dataset.translationSource;
-        target.dataset.translationManualEnglish='1';
-        output.hidden=true;delete output.dataset.autoShown;delete output.dataset.translationText;
-        button.setAttribute('aria-expanded','false');
-        button.innerHTML='<span aria-hidden="true">ع</span> ترجمة '+(button.dataset.translationLabel||'السؤال');
-      }else{
-        const source=target.dataset.translationSource,directArabic=target.dataset.translationAr;
-        let result=directArabic?{text:directArabic,exact:true}:translateToArabic(source);
-        // A missing exact phrase must never disable the control: use the local word/phrase catalogue
-        // as a best-effort inline translation, and keep the original source for toggling back.
-        if(!result.text||result.unavailable) result={text:translateKnownPhrase(source),exact:false};
-        if(!result.text) result={text:source,exact:false};
-        target.textContent=normalizeMixedArabicTranslation(result.text);delete target.dataset.translationManualEnglish;output.hidden=true;output.dataset.translationText=result.text;
-        button.setAttribute('aria-expanded','true');button.innerHTML='<span aria-hidden="true">EN</span> English';
+    withArabicCatalog(()=>{
+      const target=document.getElementById(button.dataset.translateTarget);if(!target)return;
+      const want=target.dataset.txLang==='ar'?'en':'ar';
+      if(!txSet(target,want)){
+        txNotice(button,'لا توجد ترجمة موثوقة لهذا النص');
+        if(arTranslationCatalogLoaded)setTimeout(()=>{if(button.isConnected&&target.dataset.txLang!=='ar')button.remove();},2600);
       }
-      return;
-    }
-    const answerText=target.querySelector(':scope > span:not(.key)');
-    const cardText=target.querySelector(':scope > span');
-    const storyChoiceText=target.classList.contains('story-decision-option')?[...target.children].find(el=>!el.classList.contains('story-decision-letter')&&!el.classList.contains('story-option-ar')):null;
-    const contentNode=storyChoiceText||(target.classList.contains('answer')?answerText:target.classList.contains('mg-card')||target.classList.contains('mg-tile')?cardText:target);
-    if(target.classList.contains('answer')&&typeof G!=='undefined'&&G&&G.type==='spelling'){
-      output.hidden=true;toast('في تحدّي التهجئة، ركّز على ترتيب الحروف حتى لا تكشف الترجمة الإجابة.');return;
-    }
-    if(!contentNode)return;
-    if(!contentNode.dataset.translationSource)contentNode.dataset.translationSource=contentNode.textContent.trim();
-    if(button.getAttribute('aria-expanded')==='true'){
-      contentNode.textContent=contentNode.dataset.translationSource;
-      output.hidden=true;button.setAttribute('aria-expanded','false');
-      button.innerHTML='<span aria-hidden="true">ع</span> ترجمة '+(button.dataset.translationLabel||(target.classList.contains('answer')?'الإجابة':'النص'));
-      return;
-    }
-    const sourceText=contentNode.dataset.translationSource;
-    const directArabic=target.dataset.translationAr||contentNode.dataset.translationAr;
-    const storyOption=target.classList.contains('story-decision-option')&&typeof ST!=='undefined'&&ST&&ST.story&&ST.story.decision&&ST.story.decision.options[Number(target.dataset.storyDecision)];
-    let result=directArabic?{text:directArabic,exact:true}:storyOption&&storyOption.text_ar?{text:storyOption.text_ar,exact:true}:translateToArabic(sourceText);
-    if(!result.text||result.unavailable)result={text:translateKnownPhrase(sourceText),exact:false};
-    if(!result.text)result={text:sourceText,exact:false};
-    contentNode.textContent=normalizeMixedArabicTranslation(result.text);
-    output.hidden=true;output.textContent='';
-    target.classList.toggle('translation-approximate',!result.exact);
-    button.setAttribute('aria-expanded','true');
-    button.innerHTML='<span aria-hidden="true">EN</span> English';
+    },button);
   });
   const translationObserver=new MutationObserver(()=>{enhanceTranslationControls($('#game-body'));enhanceTranslationControls($('#world-game'));});
   if($('#game-body'))translationObserver.observe($('#game-body'),{childList:true,subtree:true});
   if($('#world-game'))translationObserver.observe($('#world-game'),{childList:true,subtree:true});
-  document.addEventListener('click',e=>{
-    const b=e.target.closest('[data-translate-world]');if(!b||!WORLD||!state.translationEnabled)return;
-    if(!arTranslationCatalogLoaded){ensureArabicTranslationCatalog().then(()=>b.click()).catch(()=>toast('The expanded Arabic catalogue could not load; built-in translations remain available.'));return;}
-    const output=$('#world-translation'),task=worldTask();if(!output||!task)return;
-    if(output.hidden){const result=task.ar?{text:task.ar,exact:true}:translateToArabic(task.instruction);output.textContent=normalizeMixedArabicTranslation(result.text);output.hidden=false;output.classList.toggle('translation-approximate',!result.exact);b.setAttribute('aria-expanded','true');b.textContent='ع إخفاء الترجمة';}
-    else{output.hidden=true;b.setAttribute('aria-expanded','false');b.textContent='ع ترجمة التعليمات';}
-  });
+  /* The in-game "ع" button translates everything on the current screen in place (question, instructions,
+     options and feedback). It is per screen: the next question opens in English again. */
+  function txToggleScreen(){
+    if(state.immersionWeek?.active&&state.immersionWeek.endsAt&&Date.now()<Number(state.immersionWeek.endsAt)){toast('Arabic help is paused during your optional immersion week. You can end it in My Tools.');return;}
+    if(!state.translationEnabled){toast('Arabic translation is turned off. Turn it on from the settings menu.');return;}
+    withArabicCatalog(()=>{
+      const root=$('#game');if(!root||root.hidden)return;
+      enhanceTranslationControls($('#game-body'));enhanceTranslationControls($('#sheet'));
+      const next=txToggleMany(txUnits(root),$('#game-ar'));
+      const mg=txMiniGame();
+      if(mg&&!txGame()){mg.txKey=txMiniKey();mg.txLang=next;}
+      txPruneButtons(root);
+    },$('#game-ar'));
+  }
+  window.EPIPHANY_TRANSLATE_PROBE={translateToArabic:raw=>translateToArabic(raw),hasArabic};
 
   /* ---------- settings: Arabic help + sound ---------- */
   function syncSettings() {
@@ -2736,7 +2880,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     document.documentElement.dir = 'ltr';
     document.body.dir = 'ltr';
     syncBidiIsolation();
-    $$('#ar-toggle, #game-ar').forEach(b => b.setAttribute('aria-pressed', String(!!state.helpArabic)));
+    $$('#ar-toggle').forEach(b => b.setAttribute('aria-pressed', String(!!state.helpArabic)));
     const helpToggle = $('#ar-toggle');
     if (helpToggle) {
       const longLabel = helpToggle.querySelector('.ar-long'), shortLabel = helpToggle.querySelector('.ar-short');
@@ -2768,7 +2912,6 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     save(); syncSettings();
     const syncCurrentQuestion = () => {
       enhanceTranslationControls($('#game-body'));
-      syncQuestionArabicTranslations($('#game-body'));
       if($('#world-game')) enhanceTranslationControls($('#world-game'));
     };
     if (state.helpArabic) {
@@ -2960,7 +3103,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
   }
 
   $('#ar-toggle').addEventListener('click', toggleArabic);
-  $('#game-ar').addEventListener('click', toggleArabic);
+  $('#game-ar').addEventListener('click', txToggleScreen);
   const translationToggle = $('#translation-toggle');
   if (translationToggle) translationToggle.addEventListener('click', () => { if (state.immersionWeek?.active && state.immersionWeek.endsAt && Date.now() < Number(state.immersionWeek.endsAt)) { toast('Arabic translation is paused during immersion week. You can end it in My Tools.'); return; } state.translationEnabled = !state.translationEnabled; save(); syncSettings(); enhanceTranslationControls($('#game-body')); document.querySelectorAll('.translate-btn').forEach(b => { b.hidden = !state.translationEnabled; }); document.querySelectorAll('.translation-result').forEach(el => { if (!state.translationEnabled) el.hidden = true; }); if (state.translationEnabled) ensureArabicTranslationCatalog().then(() => { renderAll(); enhanceTranslationControls($('#game-body')); }).catch(() => toast('The expanded Arabic catalogue could not load; built-in translations remain available.')); toast(state.translationEnabled ? 'Arabic translation is on' : 'Arabic translation is off'); });
   $('#sound-toggle').addEventListener('click', () => {
@@ -3123,15 +3266,13 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
       // Randomise answer positions while keeping the answer key aligned.
       // Spot-the-mistake and typing modes use different answer semantics.
       if (challengeMode !== 'daily' && !['spot','typing'].includes(type) && Number.isInteger(q.correct) && q.answers.length > 1) {
-        const pairedAnswers=q.answers.map((text,index)=>({text,ar:Array.isArray(q.answers_ar)?q.answers_ar[index]:undefined,originalIndex:index}));
-        const correctPair=pairedAnswers[q.correct];
-        const distractors=pairedAnswers.filter((_,i)=>i!==q.correct);
+        // Shuffle positions (not texts) so answers_ar / options_ar stay aligned with their English option.
         const shuffleAnswers=list=>{for(let i=list.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[list[i],list[j]]=[list[j],list[i]];}return list;};
-        shuffleAnswers(distractors);
-        const target=Math.floor(Math.random()*pairedAnswers.length);
-        distractors.splice(target,0,correctPair);
-        q.answers=distractors.map(item=>item.text);
-        if(Array.isArray(q.answers_ar))q.answers_ar=distractors.map(item=>item.ar);
+        const others=shuffleAnswers(q.answers.map((_,i)=>i).filter(i=>i!==source.correct));
+        const target=Math.floor(Math.random()*q.answers.length);
+        others.splice(target,0,source.correct);
+        q.answers=others.map(i=>source.answers[i]);
+        if(Array.isArray(source.answers_ar)&&source.answers_ar.length===source.answers.length)q.answers_ar=others.map(i=>source.answers_ar[i]);
         q.correct=target;
       }
       return {q, ar: q.ar || 'راجع معنى الإجابة الصحيحة وحاول تذكّرها في سياق جديد.'};
@@ -3225,9 +3366,9 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     if(G.grammarMode==='mcq'){renderQuestion();return;}
     const item=G.questions[G.i],q=item.q,correct=q.answers[q.correct],sentence=q.q.replace(/_{3,}/,correct);G.answered=false;hideSheet();renderSteps();
     const meta='<div class="q-meta"><span class="pill">Grammar · '+({fix:'Correct the sentence',order:'Arrange the words',own:'Your own answer'}[G.grammarMode]||'Practice')+'</span><span class="q-count">Question '+(G.i+1)+' of '+G.questions.length+'</span></div>';
-    if(G.grammarMode==='fix'){const wrong=q.answers.find((x,i)=>i!==q.correct)||correct,broken=q.q.replace(/_{3,}/,wrong);$('#game-body').innerHTML='<div>'+meta+'<h2 class="q-text">'+esc(broken)+'</h2><p class="q-sub">Choose the correct form to repair the sentence.</p><div class="answers" id="answers">'+q.answers.map((a,i)=>'<button class="answer" data-i="'+i+'">'+esc(a)+'</button>').join('')+'</div></div>';}
-    else if(G.grammarMode==='order'){const words=sentence.replace(/[.!?]$/,'').split(/\s+/),shuffled=words.slice();for(let i=shuffled.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[shuffled[i],shuffled[j]]=[shuffled[j],shuffled[i]];}if(shuffled.length>1&&shuffled.every((w,i)=>w===words[i]))[shuffled[0],shuffled[1]]=[shuffled[1],shuffled[0]];G.orderTarget=words.join(' ').toLowerCase();G.orderPicked=[];G.orderWords=shuffled;$('#game-body').innerHTML='<div>'+meta+'<h2 class="q-text">Arrange the words into a correct sentence</h2><p class="q-sub">'+esc(q.sub||'Build the sentence.')+'</p><div class="grammar-word-bank">'+shuffled.map((w,i)=>'<button type="button" class="grammar-word-chip" data-order-word="'+i+'">'+esc(w)+'</button>').join('')+'</div><div class="grammar-order-answer" id="grammar-order-answer" aria-live="polite">Your sentence will appear here.</div><button class="btn" data-order-check>Check sentence</button><button class="btn btn-ghost" data-order-reset>Start again</button></div>';}
-    else $('#game-body').innerHTML='<div>'+meta+'<h2 class="q-text">Use the same grammar pattern</h2><p class="q-sub">Write your own complete sentence using this grammar rule. Include at least six words.</p><form data-grammar-own-form><textarea name="ownSentence" rows="3" required placeholder="Write your sentence here…"></textarea><button class="btn" type="submit">Check my sentence</button></form><p class="review-note">This checks completeness, then shows a model sentence and the rule for self-review.</p></div>';
+    if(G.grammarMode==='fix'){const wrong=q.answers.find((x,i)=>i!==q.correct)||correct,broken=q.q.replace(/_{3,}/,wrong);$('#game-body').innerHTML='<div>'+meta+'<h2 class="q-text">'+esc(broken)+'</h2><p class="q-sub"'+arAttr('اختر الصيغة الصحيحة لإصلاح الجملة.')+'>Choose the correct form to repair the sentence.</p><div class="answers" id="answers">'+q.answers.map((a,i)=>'<button class="answer" data-i="'+i+'">'+esc(a)+'</button>').join('')+'</div></div>';}
+    else if(G.grammarMode==='order'){const words=sentence.replace(/[.!?]$/,'').split(/\s+/),shuffled=words.slice();for(let i=shuffled.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[shuffled[i],shuffled[j]]=[shuffled[j],shuffled[i]];}if(shuffled.length>1&&shuffled.every((w,i)=>w===words[i]))[shuffled[0],shuffled[1]]=[shuffled[1],shuffled[0]];G.orderTarget=words.join(' ').toLowerCase();G.orderPicked=[];G.orderWords=shuffled;$('#game-body').innerHTML='<div>'+meta+'<h2 class="q-text"'+arAttr('رتّب الكلمات لتكوين جملة صحيحة')+'>Arrange the words into a correct sentence</h2><p class="q-sub"'+arAttr(q.sub_ar)+'>'+esc(q.sub||'Build the sentence.')+'</p><div class="grammar-word-bank">'+shuffled.map((w,i)=>'<button type="button" class="grammar-word-chip" data-order-word="'+i+'">'+esc(w)+'</button>').join('')+'</div><div class="grammar-order-answer" id="grammar-order-answer" aria-live="polite">Your sentence will appear here.</div><button class="btn" data-order-check>Check sentence</button><button class="btn btn-ghost" data-order-reset>Start again</button></div>';}
+    else $('#game-body').innerHTML='<div>'+meta+'<h2 class="q-text"'+arAttr('استخدم النمط النحوي نفسه')+'>Use the same grammar pattern</h2><p class="q-sub"'+arAttr('اكتب جملة كاملة من تأليفك مستخدمًا هذه القاعدة النحوية، وتضم ست كلمات على الأقل.')+'>Write your own complete sentence using this grammar rule. Include at least six words.</p><form data-grammar-own-form><textarea name="ownSentence" rows="3" required placeholder="Write your sentence here…"></textarea><button class="btn" type="submit">Check my sentence</button></form><p class="review-note">This checks completeness, then shows a model sentence and the rule for self-review.</p></div>';
     $('#game-scroll').scrollTop=0;
   }
 
@@ -3247,9 +3388,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     const monthly = typeof currentMonthWord === 'function' ? currentMonthWord() : null;
     const monthlyPrompt = monthly ? '<aside class="monthly-word-in-feedback"><span>WORD OF THE MONTH</span><strong>'+esc(monthly.word)+'</strong><p>'+esc(monthly.example)+'</p><button type="button" class="btn btn-ghost" data-depth-action="use-month-word">I used it today</button></aside>' : '';
     s.innerHTML = '<div class="sheet-in">' + html + monthlyPrompt + '</div>';
-    // Feedback sheets already contain curated bilingual explanations where available.
-    // Auto-inserting a translate button on every paragraph creates duplicate controls
-    // and makes the panel crowded, so keep this panel's content as authored.
+    enhanceTranslationControls(s);
     requestAnimationFrame(() => {
       s.classList.add('show'); setSheetSpace();
       const sel = $('#answers .correct'); if (sel) sel.scrollIntoView({block:'nearest', behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});
@@ -3261,22 +3400,25 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     if (G) G.hintRetryUsed = false;
     const game = GAMES[G.type], q = G.questions[G.i].q, m = META[G.type];
     G.answered = false; hideSheet(); renderSteps();
+    // English is always the starting language. Arabic is attached as data (data-translation-ar) and
+    // only appears, in place, when the learner presses a translate button.
     if (G.type === 'spot') {
-      $('#game-body').innerHTML = '<div class="q-meta"><span class="pill">Common mistakes · Spot it</span><span class="q-count">Question '+(G.i+1)+' of '+G.questions.length+'</span></div><h2 class="q-text" id="q-text" tabindex="-1">Tap the incorrect word</h2><p class="q-sub">Only one word is wrong. Read the whole text first.</p><div class="spot-text" id="spot-text" role="group" aria-label="Tap the incorrect word">'+q.text.split(/\s+/).map((word,i)=>'<button type="button" class="spot-word" data-spot-index="'+i+'" aria-label="Word '+(i+1)+': '+esc(word)+'">'+esc(word)+'</button>').join(' ')+'</div><p class="ar-only arabic" lang="ar" dir="rtl">اضغط على الكلمة الخاطئة الوحيدة.</p>';
+      $('#game-body').innerHTML = '<div class="q-meta"><span class="pill">Common mistakes · Spot it</span><span class="q-count">Question '+(G.i+1)+' of '+G.questions.length+'</span></div><h2 class="q-text" id="q-text" tabindex="-1"'+arAttr('اضغط على الكلمة الخاطئة')+'>Tap the incorrect word</h2><p class="q-sub"'+arAttr('توجد كلمة واحدة فقط خاطئة. اقرأ النص كاملًا أولًا.')+'>Only one word is wrong. Read the whole text first.</p><div class="spot-text" id="spot-text" role="group" aria-label="Tap the incorrect word"'+arAttr(q.q_ar)+'>'+q.text.split(/\s+/).map((word,i)=>'<button type="button" class="spot-word" data-spot-index="'+i+'" aria-label="Word '+(i+1)+': '+esc(word)+'">'+esc(word)+'</button>').join(' ')+'</div>';
       $('#game-scroll').scrollTop=0; $('#q-text').focus({preventScroll:true}); return;
     }
     if (G.type === 'typing') {
       G.typingRetry = false;
-      $('#game-body').innerHTML = '<div class="q-meta"><span class="pill">Type It</span><span class="q-count">Question '+(G.i+1)+' of '+G.questions.length+'</span></div><h2 class="q-text" id="q-text" tabindex="-1">Complete the sentence</h2><p class="typing-prompt">'+esc(q.q.replace(/_{3,}/g,'________'))+'</p><p class="q-sub">'+esc(q.sub)+'</p><form id="typing-form" class="typing-form"><label for="typing-answer">Your answer</label><input id="typing-answer" name="answer" autocomplete="off" autocapitalize="none" spellcheck="false" required aria-describedby="typing-feedback"><p id="typing-feedback" class="typing-feedback" aria-live="polite"></p><button class="btn" type="submit">Check answer</button></form><p class="ar-only arabic" lang="ar" dir="rtl">اكتب الكلمة أو العبارة الناقصة ثم اضغط تحقق.</p>';
+      const hintAr = q.sub_ar ? q.sub_ar + (q.hint ? ' (التلميح: «' + q.hint + '»)' : '') : '';
+      $('#game-body').innerHTML = '<div class="q-meta"><span class="pill">Type It</span><span class="q-count">Question '+(G.i+1)+' of '+G.questions.length+'</span></div><h2 class="q-text" id="q-text" tabindex="-1"'+arAttr('أكمل الجملة')+'>Complete the sentence</h2><p class="typing-prompt"'+arAttr(q.q_ar)+'>'+esc(q.q.replace(/_{3,}/g,'________'))+'</p><p class="q-sub"'+arAttr(hintAr)+'>'+esc(q.sub)+'</p><form id="typing-form" class="typing-form"><label for="typing-answer">Your answer</label><input id="typing-answer" name="answer" autocomplete="off" autocapitalize="none" spellcheck="false" required aria-describedby="typing-feedback"><p id="typing-feedback" class="typing-feedback" aria-live="polite"></p><button class="btn" type="submit">Check answer</button></form>';
       $('#game-scroll').scrollTop=0; $('#q-text').focus({preventScroll:true}); const input=$('#typing-answer'); input.addEventListener('focus',()=>setTimeout(()=>input.scrollIntoView({block:'center',behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'}),180)); return;
     }
     const modeLabel = G.mode === 'daily' ? 'Daily #' + dailyChallengeNumber() : G.mode === 'oneLife' ? 'ONE LIFE · No retries' : (G.reviewMode ? 'Practice again' : m.label);
+    const answersAr = Array.isArray(q.answers_ar) && q.answers_ar.length === q.answers.length ? q.answers_ar : [];
     $('#game-body').innerHTML =
       '<div class="q-meta"><span class="pill">' + modeLabel + '</span><span class="q-count">Question ' + (G.i + 1) + ' of ' + G.questions.length + '</span></div>' +
-      '<h2 class="q-text" id="q-text" tabindex="-1" lang="en" dir="auto">' + esc(q.q) + '</h2>' + (q.word ? '<button class="listen-btn question-listen" data-speak="' + esc(wordParts(q.word, q.explain).word) + '">' + ic('sound') + ' Listen to word</button>' : '') + '<p class="q-sub">' + esc(q.sub) + '</p><button type="button" class="btn btn-ghost share-question-btn" data-share-current-question>↗ Share this question</button>' +
-      '<p class="ar-only ar-guide arabic" lang="ar" dir="rtl">' + guidance[G.type] + '</p>' +
+      '<h2 class="q-text" id="q-text" tabindex="-1"' + arAttr(q.q_ar) + '>' + esc(q.q) + '</h2>' + (q.word ? '<button class="listen-btn question-listen" data-speak="' + esc(wordParts(q.word, q.explain).word) + '">' + ic('sound') + ' Listen to word</button>' : '') + '<p class="q-sub"' + arAttr(q.sub_ar) + '>' + esc(q.sub) + '</p><button type="button" class="btn btn-ghost share-question-btn" data-share-current-question>↗ Share this question</button>' +
       '<div class="answers" id="answers" role="group" aria-labelledby="q-text">' +
-      q.answers.map((a, i) => '<button class="answer" data-i="' + i + '"><span class="key">' + (i + 1) + '</span><span>' + esc(a) + '</span></button>').join('') + '</div>';
+      q.answers.map((a, i) => '<button class="answer" data-i="' + i + '"' + arAttr(answersAr[i]) + '><span class="key">' + (i + 1) + '</span><span>' + esc(a) + '</span></button>').join('') + '</div>';
     $('#game-scroll').scrollTop = 0;
     $('#q-text').focus({preventScroll: true});
   }
@@ -3362,8 +3504,9 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
       G.answered = true;
       G.hintRetryUsed = true;
       const hint = q.hint || q.hint_en || 'Read the whole sentence again. Look for the clue that connects the meaning to the grammar.';
-      const hintAr = q.hint_ar || q.explain_ar || q.why_ar || 'اقرأ الجملة كاملةً مرة أخرى، وابحث عن القرينة التي تربط المعنى بالصياغة الصحيحة.';
-      showSheet(false, '<h3><span class="sheet-mark">💡</span>One more try</h3><p>'+esc(hint)+'</p><p class="arabic" lang="ar" dir="rtl">'+esc(hintAr)+'</p><p class="retry-hint-note">Your first answer is a clue, not a penalty. Try again before seeing the answer.</p><div class="sheet-actions"><button class="btn" id="go-retry-answer">Try again</button></div>');
+      // Only a real translation of THIS hint is attached; the generic English hint has its own generic Arabic.
+      const hintAr = q.hint_ar || ((q.hint || q.hint_en) ? '' : 'اقرأ الجملة كاملةً مرة أخرى، وابحث عن القرينة التي تربط المعنى بالصياغة الصحيحة.');
+      showSheet(false, '<h3'+arAttr('محاولة أخرى')+'><span class="sheet-mark">💡</span>One more try</h3><p'+arAttr(hintAr)+'>'+esc(hint)+'</p><p class="retry-hint-note"'+arAttr('إجابتك الأولى دليل وليست عقوبة. حاول مرة أخرى قبل أن ترى الإجابة.')+'>Your first answer is a clue, not a penalty. Try again before seeing the answer.</p><div class="sheet-actions"><button class="btn" id="go-retry-answer">Try again</button></div>');
       const retry = $('#go-retry-answer');
       if (retry) retry.addEventListener('click', () => {
         if (!G) return;
@@ -3405,15 +3548,22 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     $('#answers').classList.add('done');
     renderSteps(); sfx(ok ? 'ok' : 'no');
     const last = G.i === G.questions.length - 1;
-    if(G.type==='grammar'&&G.grammarMode==='fix'){showSheet(ok,'<h3>'+(ok?'Sentence repaired!':'Almost — here’s how to fix it.')+'</h3><p>'+(ok?'You chose the correct form.':'Mistakes help reveal the rule. The corrected form is: <b>'+esc(q.answers[q.correct])+'</b>')+'</p><p>'+esc(q.explain)+'</p><div class="sheet-actions"><button class="btn" id="go-next">'+(last?'See results':'Continue')+ic('arrow')+'</button></div>');return;}
+    const explainAr = q.explain_ar || q.why_ar || '';
+    const answersAr = Array.isArray(q.answers_ar) && q.answers_ar.length === q.answers.length ? q.answers_ar : [];
+    const ahaMarkup = aha => aha ? '<aside class="aha-note"><span aria-hidden="true">💡</span><div><strong>Aha moment</strong><p'+arAttr(aha.ar)+'>'+esc(aha.en)+'</p></div></aside>' : '';
+    if(G.type==='grammar'&&G.grammarMode==='fix'){showSheet(ok,'<h3'+arAttr(ok?'تم إصلاح الجملة!':'قريب — إليك طريقة الإصلاح.')+'>'+(ok?'Sentence repaired!':'Almost — here’s how to fix it.')+'</h3><p'+arAttr(ok?'اخترت الصيغة الصحيحة.':'')+'>'+(ok?'You chose the correct form.':'Mistakes help reveal the rule. The corrected form is: <b>'+esc(q.answers[q.correct])+'</b>')+'</p><p'+arAttr(explainAr)+'>'+esc(q.explain)+'</p><div class="sheet-actions"><button class="btn" id="go-next">'+(last?'See results':'Continue')+ic('arrow')+'</button></div>');return;}
+    const bestAr = 'الإجابة الأنسب: ' + (answersAr[q.correct] || q.answers[q.correct]);
+    // Arabic-only teaching notes (no English counterpart) stay hidden until the learner asks for Arabic.
+    const arNote = text => text ? '<p class="arabic" lang="ar" dir="rtl" data-tx-ar-only hidden>' + esc(text) + '</p>' : '';
     showSheet(ok,
-      '<h3><span class="sheet-mark">' + ic(ok ? 'check' : 'lightbulb') + '</span>' + (ok ? 'Exactly right!' : 'Not quite yet — let’s learn from it.') + '</h3>' +
-      (ok ? '' : '<p class="retry-hint-note">' + (state.translationEnabled ? 'المحاولة جزء من التعلّم. انظر إلى الإجابة، ثم ركّز على القرينة التي تساعدك في المرة القادمة.' : 'Every attempt helps you learn. Take a look at the answer, then notice the clue that can help next time.') + '</p><p><strong>' + (state.translationEnabled ? 'الإجابة الأنسب:' : 'Best answer:') + '</strong> <b>' + esc(q.answers[q.correct]) + '</b></p>') +
-      '<p>' + esc(q.explain) + '</p>' + (!ok ? '<aside class="aha-note"><div><strong>Quick rule</strong><p>' + esc(conciseFeedbackRule(q)) + '</p><p><strong>Example:</strong> ' + esc(q.q.replace(/_{3,}/g, q.answers[q.correct])) + '</p></div></aside>' : '') + (!ok ? '<p class="arabic answer-explanation-ar" lang="ar" dir="rtl">' + esc(q.explain_ar || q.why_ar || q.arabic_hint || (q.aha&&q.aha.ar) || 'راجع معنى الجملة كاملةً، ولا تعتمد على ترجمة الكلمة وحدها لاختيار الصياغة الأنسب.') + '</p>' : (state.helpArabic && q.explain_ar ? '<p class="arabic" lang="ar" dir="rtl">' + esc(q.explain_ar) + '</p>' : '')) +
-      (!ok && G.type === 'mistakes' ? '<section class="trap-explanation" aria-label="Why Arabic speakers make this mistake"><h4>Why do Arabic speakers make this mistake?</h4><p class="arabic" lang="ar" dir="rtl">' + esc(q.why_ar || q.ar) + '</p><p class="trap-hint arabic" lang="ar" dir="rtl">' + esc(q.arabic_hint || '') + '</p></section>' : '') +
-      (!ok && q.aha ? '<aside class="aha-note"><span aria-hidden="true">💡</span><div><strong>Aha moment</strong><p>'+esc(q.aha.en)+'</p><p class="arabic ar-only" lang="ar" dir="rtl">'+esc(q.aha.ar)+'</p></div></aside>' : '') +
+      '<h3'+arAttr(ok?'صحيح تمامًا!':'ليس بعد — لنتعلّم من هذه المحاولة.')+'><span class="sheet-mark">' + ic(ok ? 'check' : 'lightbulb') + '</span>' + (ok ? 'Exactly right!' : 'Not quite yet — let’s learn from it.') + '</h3>' +
+      (ok ? '' : '<p class="retry-hint-note"'+arAttr('كل محاولة تساعدك على التعلّم. انظر إلى الإجابة، ثم لاحظ القرينة التي تفيدك في المرة القادمة.')+'>Every attempt helps you learn. Take a look at the answer, then notice the clue that can help next time.</p><p'+arAttr(bestAr)+'><strong>Best answer:</strong> <b>' + esc(q.answers[q.correct]) + '</b></p>') +
+      '<p'+arAttr(explainAr)+'>' + esc(q.explain) + '</p>' + (!ok ? '<aside class="aha-note"><div><strong>Quick rule</strong><p>' + esc(conciseFeedbackRule(q)) + '</p><p><strong>Example:</strong> ' + esc(q.q.replace(/_{3,}/g, q.answers[q.correct])) + '</p></div></aside>' : '') +
+      (!ok && !explainAr ? arNote(q.arabic_hint || (q.aha&&q.aha.ar) || 'راجع معنى الجملة كاملةً، ولا تعتمد على ترجمة الكلمة وحدها لاختيار الصياغة الأنسب.') : '') +
+      (!ok && G.type === 'mistakes' && q.arabic_hint ? '<section class="trap-explanation" aria-label="Why Arabic speakers make this mistake" data-tx-ar-only hidden><h4 lang="ar" dir="rtl">لماذا يقع متحدثو العربية في هذا الخطأ؟</h4><p class="trap-hint arabic" lang="ar" dir="rtl">' + esc(q.arabic_hint) + '</p></section>' : '') +
+      (!ok ? ahaMarkup(q.aha) : '') +
       (ok && q.word ? '<div class="newword"><span>New word</span><b>' + esc(q.word[0]) + '</b><span>' + esc(q.word[1]) + '</span></div>' : '') +
-      '<p class="ar-only arabic" lang="ar" dir="rtl"><strong>' + (ok ? 'أحسنت!' : 'معلومة للتعلّم') + '</strong> ' + esc(item.ar) + '</p>' +
+      arNote(item.ar) +
       (G.adaptiveMessage && !G.mode ? '<p class="adaptive-note">' + esc(G.adaptiveMessage) + '</p>' : '') +
       '<div class="sheet-actions"><button class="btn" id="go-next">' + (G.mode === 'oneLife' && !ok ? 'End run & see results' : last ? 'See results' : 'Continue') + ic('arrow') + '</button></div>');
   }
@@ -3429,7 +3579,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     if(/^remove\s/i.test(q.fix)){corrected=words.filter((_,i)=>i!==q.wrongIndex).join(' ');}
     else {words[q.wrongIndex]=q.fix;corrected=words.join(' ');}
     const correctDisplay=corrected;
-    showSheet(ok,'<h3><span class="sheet-mark">'+ic(ok?'check':'lightbulb')+'</span>'+(ok?'Exactly right!':'Good effort — let’s spot the pattern together.')+'</h3>'+(!ok?'<p class="retry-hint-note">Finding the pattern takes practice. Compare the corrected sentence with the original and notice what changed.</p>':'')+'<p><strong>Corrected sentence:</strong></p><p class="spot-corrected">'+esc(correctDisplay)+'</p>'+(!ok?'<p class="spot-reveal">You selected: <span class="spot-wrong-word">'+esc(words[index]||'')+'</span></p>':'')+'<p>'+esc(q.why_en)+'</p><p class="arabic ar-only" lang="ar" dir="rtl">'+esc(q.why_ar)+'</p>'+( !ok&&q.aha?'<aside class="aha-note"><span aria-hidden="true">💡</span><div><strong>Aha moment</strong><p>'+esc(q.aha.en)+'</p><p class="arabic ar-only" lang="ar" dir="rtl">'+esc(q.aha.ar)+'</p></div></aside>':'')+'<div class="sheet-actions"><button class="btn" id="go-next">'+(G.i===G.questions.length-1?'See results':'Continue')+ic('arrow')+'</button></div>');
+    showSheet(ok,'<h3'+arAttr(ok?'صحيح تمامًا!':'محاولة جيدة — لنكتشف النمط معًا.')+'><span class="sheet-mark">'+ic(ok?'check':'lightbulb')+'</span>'+(ok?'Exactly right!':'Good effort — let’s spot the pattern together.')+'</h3>'+(!ok?'<p class="retry-hint-note"'+arAttr('اكتشاف النمط يحتاج إلى تدريب. قارن الجملة المصحّحة بالأصلية ولاحظ ما الذي تغيّر.')+'>Finding the pattern takes practice. Compare the corrected sentence with the original and notice what changed.</p>':'')+'<p'+arAttr('الجملة المصحّحة:')+'><strong>Corrected sentence:</strong></p><p class="spot-corrected">'+esc(correctDisplay)+'</p>'+(!ok?'<p class="spot-reveal">You selected: <span class="spot-wrong-word">'+esc(words[index]||'')+'</span></p>':'')+'<p'+arAttr(q.why_ar)+'>'+esc(q.why_en)+'</p>'+( !ok&&q.aha?'<aside class="aha-note"><span aria-hidden="true">💡</span><div><strong>Aha moment</strong><p'+arAttr(q.aha.ar)+'>'+esc(q.aha.en)+'</p></div></aside>':'')+'<div class="sheet-actions"><button class="btn" id="go-next">'+(G.i===G.questions.length-1?'See results':'Continue')+ic('arrow')+'</button></div>');
     renderSteps();sfx(ok?'ok':'no');
   }
   function editDistanceOne(a,b) {
@@ -3445,14 +3595,14 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     if(!answer){feedback.textContent='Type an answer first.';feedback.className='typing-feedback bad';input.focus();return;}
     const accepted=q.accept.map(x=>String(x).trim().replace(/\s+/g,' ').toLowerCase());
     if(accepted.includes(answer)){finishTyping(true);return;}
-    if(!G.typingRetry&&accepted.some(x=>editDistanceOne(answer,x))){G.typingRetry=true;feedback.textContent=(state.translationEnabled||state.helpArabic?'قريب جدًا! راجع التهجئة وحاول مرة أخرى — لن تخسر أي نجوم.':'So close! Check the spelling and try once more — no stars lost.');feedback.className='typing-feedback near';input.select();return;}
+    if(!G.typingRetry&&accepted.some(x=>editDistanceOne(answer,x))){G.typingRetry=true;feedback.textContent='So close! Check the spelling and try once more — no stars lost.';feedback.className='typing-feedback near';input.select();return;}
     finishTyping(false);
   }
   function finishTyping(ok) {
     const item=G.questions[G.i],q=item.q;G.answered=true;
     if(ok)G.score++;else{const key='typing-'+q.level;state.weakTraps[key]=(Number(state.weakTraps[key])||0)+1;save();}
     G.results[G.i]=ok?'ok':'no';renderSteps();sfx(ok?'ok':'no');
-    showSheet(ok,'<h3><span class="sheet-mark">'+ic(ok?'check':'lightbulb')+'</span>'+(ok?'Exactly right!':'Not yet — this is useful practice.')+'</h3>'+(!ok?'<p class="retry-hint-note">Your spelling or wording can improve with practice. Compare your answer with an accepted version; you can keep learning from this attempt.</p><p><strong>One accepted answer:</strong> '+esc(q.accept[0])+'</p>':'')+'<p>'+esc(q.why_en)+'</p><p class="arabic ar-only" lang="ar" dir="rtl">'+esc(q.why_ar)+'</p>'+(!ok&&q.aha?'<aside class="aha-note"><span aria-hidden="true">💡</span><div><strong>Aha moment</strong><p>'+esc(q.aha.en)+'</p><p class="arabic ar-only" lang="ar" dir="rtl">'+esc(q.aha.ar)+'</p></div></aside>':'')+'<div class="sheet-actions"><button class="btn" id="go-next">'+(G.i===G.questions.length-1?'See results':'Continue')+ic('arrow')+'</button></div>');
+    showSheet(ok,'<h3'+arAttr(ok?'صحيح تمامًا!':'ليس بعد — هذا تدريب مفيد.')+'><span class="sheet-mark">'+ic(ok?'check':'lightbulb')+'</span>'+(ok?'Exactly right!':'Not yet — this is useful practice.')+'</h3>'+(!ok?'<p class="retry-hint-note"'+arAttr('يتحسّن إملاؤك وصياغتك بالتدريب. قارن إجابتك بإحدى الصيغ المقبولة وتعلّم من هذه المحاولة.')+'>Your spelling or wording can improve with practice. Compare your answer with an accepted version; you can keep learning from this attempt.</p><p'+arAttr('إجابة مقبولة: '+q.accept[0])+'><strong>One accepted answer:</strong> '+esc(q.accept[0])+'</p>':'')+'<p'+arAttr(q.why_ar)+'>'+esc(q.why_en)+'</p>'+(!ok&&q.aha?'<aside class="aha-note"><span aria-hidden="true">💡</span><div><strong>Aha moment</strong><p'+arAttr(q.aha.ar)+'>'+esc(q.aha.en)+'</p></div></aside>':'')+'<div class="sheet-actions"><button class="btn" id="go-next">'+(G.i===G.questions.length-1?'See results':'Continue')+ic('arrow')+'</button></div>');
   }
 
   function next() {
@@ -3597,7 +3747,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
   };
   Object.assign(META, MINI); Object.keys(MINI).forEach(k => { UNLOCK[k] = 0; });
   const NUM_WORDS = ['zero','one','two','three','four'];
-  const AR_NUM = ['صفر','واحدة','اثنتين','ثلاث','أربع'];
+  const AR_NUM = ['صفر','كتلة واحدة','كتلتين','ثلاث كتل','أربع كتل'];
   const SHUF = list => { const a = list.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
 
   function awardActivity(xpGain, correct) {
@@ -3645,6 +3795,13 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     (WOTD_WORDS||[]).forEach(x=>add(x.word,x.meaning));
     return items;
   }
+  /* Screen-level translate button used by every mini-game: one tap swaps the whole screen to Arabic
+     in place, another tap swaps it back. Elements without a translation simply stay in English. */
+  const miniTranslateButton = () => '<button type="button" class="translate-btn tx-group-btn" data-translate-group="screen" data-translation-label="الشاشة" aria-pressed="false"' + (state.translationEnabled ? '' : ' hidden') + '><span aria-hidden="true">ع</span> ترجمة الشاشة</button>';
+  function miniMeaningAr(word, meaning) {
+    const hit = (typeof WOTD_WORDS !== 'undefined' ? WOTD_WORDS : []).find(x => String(x.word).toLowerCase() === String(word || '').toLowerCase());
+    return hit && hit.meaning === meaning && hasArabic(hit.meaning_ar) ? hit.meaning_ar : '';
+  }
   function miniSpeech(text) {
     const synth=window.speechSynthesis;
     if(!synth||!('SpeechSynthesisUtterance' in window)){toast('Audio is not supported in this browser.');return;}
@@ -3666,14 +3823,14 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
   function miniSpeedRender() {
     const pool=MG.pool;let q=pool[Math.floor(Math.random()*pool.length)];if(pool.length>1&&MG.current&&q.word===MG.current.word)q=pool[(pool.indexOf(q)+1)%pool.length];MG.current=q;MG.answered=false;
     const opts=SHUF([q,...SHUF(pool.filter(x=>x.word!==q.word)).slice(0,3)]);
-    $('#game-body').innerHTML='<div class="q-meta"><span class="pill">⚡ Speed Round</span><span class="q-count" id="mini-speed-time">'+MG.seconds+'s</span></div><div class="mini-speed-meter"><span style="width:'+Math.max(0,MG.seconds/60*100)+'%"></span></div><p class="q-sub">Choose the meaning. Saved and difficult words are prioritised when available.</p><h2 class="mini-target-word">'+esc(q.word)+'</h2><div class="mini-choice-grid">'+opts.map(o=>'<button type="button" class="mini-choice" data-mini-speed-answer="'+encodeURIComponent(o.word)+'">'+esc(o.meaning)+'</button>').join('')+'</div><p class="mini-live-score">Correct: <b>'+MG.score+'</b> · Answered: <b>'+MG.total+'</b></p>';
+    $('#game-body').innerHTML='<div class="q-meta"><span class="pill">⚡ Speed Round</span><span class="q-count" id="mini-speed-time">'+MG.seconds+'s</span></div><div class="mini-speed-meter"><span style="width:'+Math.max(0,MG.seconds/60*100)+'%"></span></div>'+miniTranslateButton()+'<p class="q-sub"'+arAttr('اختر المعنى الصحيح. تُعطى الأولوية للكلمات المحفوظة والصعبة عند توفرها.')+'>Choose the meaning. Saved and difficult words are prioritised when available.</p><h2 class="mini-target-word">'+esc(q.word)+'</h2><div class="mini-choice-grid">'+opts.map(o=>'<button type="button" class="mini-choice" data-mini-speed-answer="'+encodeURIComponent(o.word)+'"'+arAttr(miniMeaningAr(o.word,o.meaning))+'>'+esc(o.meaning)+'</button>').join('')+'</div><p class="mini-live-score">Correct: <b>'+MG.score+'</b> · Answered: <b>'+MG.total+'</b></p>';
   }
-  const MINI_AUDIO_ITEMS=[{word:'apple',meaning:'a round fruit',icon:'🍎'},{word:'book',meaning:'something you read',icon:'📘'},{word:'umbrella',meaning:'keeps you dry in rain',icon:'☂️'},{word:'key',meaning:'opens a lock',icon:'🔑'},{word:'train',meaning:'a vehicle that runs on rails',icon:'🚆'},{word:'bread',meaning:'food made from flour',icon:'🍞'},{word:'clock',meaning:'shows the time',icon:'🕒'},{word:'lamp',meaning:'gives light',icon:'💡'},{word:'chair',meaning:'a seat for one person',icon:'🪑'},{word:'phone',meaning:'a device for calls',icon:'📱'},{word:'tree',meaning:'a tall plant with a trunk',icon:'🌳'},{word:'water',meaning:'a drink we need',icon:'💧'}];
+  const MINI_AUDIO_ITEMS=[{word:'apple',meaning:'a round fruit',icon:'🍎',wordAr:'تفاحة',ar:'فاكهة مستديرة'},{word:'book',meaning:'something you read',icon:'📘',wordAr:'كتاب',ar:'شيء تقرؤه'},{word:'umbrella',meaning:'keeps you dry in rain',icon:'☂️',wordAr:'مظلة',ar:'تبقيك جافًا تحت المطر'},{word:'key',meaning:'opens a lock',icon:'🔑',wordAr:'مفتاح',ar:'يفتح القفل'},{word:'train',meaning:'a vehicle that runs on rails',icon:'🚆',wordAr:'قطار',ar:'مركبة تسير على القضبان'},{word:'bread',meaning:'food made from flour',icon:'🍞',wordAr:'خبز',ar:'طعام مصنوع من الدقيق'},{word:'clock',meaning:'shows the time',icon:'🕒',wordAr:'ساعة',ar:'تُظهر الوقت'},{word:'lamp',meaning:'gives light',icon:'💡',wordAr:'مصباح',ar:'يعطي ضوءًا'},{word:'chair',meaning:'a seat for one person',icon:'🪑',wordAr:'كرسي',ar:'مقعد لشخص واحد'},{word:'phone',meaning:'a device for calls',icon:'📱',wordAr:'هاتف',ar:'جهاز للمكالمات'},{word:'tree',meaning:'a tall plant with a trunk',icon:'🌳',wordAr:'شجرة',ar:'نبات طويل له جذع'},{word:'water',meaning:'a drink we need',icon:'💧',wordAr:'ماء',ar:'شراب نحتاج إليه'}];
   function miniAudioImageSetup(){MG.pool=SHUF(MINI_AUDIO_ITEMS);MG.total=10;MG.i=0;MG.score=0;MG.answered=false;miniAudioImageRender();}
-  function miniAudioImageRender(){const q=MG.pool[MG.i%MG.pool.length],opts=SHUF([q,...SHUF(MINI_AUDIO_ITEMS.filter(x=>x.word!==q.word)).slice(0,3)]);MG.current=q;MG.answered=false;miniSteps();$('#game-body').innerHTML='<div class="q-meta"><span class="pill">🔊 Sound & Picture</span><span class="q-count">'+(MG.i+1)+' of '+MG.total+'</span></div><h2 class="q-text" id="q-text" tabindex="-1">Listen, then choose the picture</h2><button type="button" class="mini-listen-button" data-mini-audio-play>🔊 Play word</button><div class="mini-picture-grid">'+opts.map(o=>'<button type="button" class="mini-picture" data-mini-audio-answer="'+o.word+'" aria-label="Picture: '+esc(o.word)+'"><span class="mini-picture-art" aria-hidden="true">'+o.icon+'</span><span>'+esc(o.word)+'</span></button>').join('')+'</div>'+(state.translationEnabled?'<p class="q-sub arabic" lang="ar" dir="rtl">استمع إلى الكلمة الإنجليزية ثم اختر الصورة المناسبة.</p>':'');}
+  function miniAudioImageRender(){const q=MG.pool[MG.i%MG.pool.length],opts=SHUF([q,...SHUF(MINI_AUDIO_ITEMS.filter(x=>x.word!==q.word)).slice(0,3)]);MG.current=q;MG.answered=false;miniSteps();$('#game-body').innerHTML='<div class="q-meta"><span class="pill">🔊 Sound & Picture</span><span class="q-count">'+(MG.i+1)+' of '+MG.total+'</span></div><h2 class="q-text" id="q-text" tabindex="-1"'+arAttr('استمع، ثم اختر الصورة المناسبة')+'>Listen, then choose the picture</h2>'+miniTranslateButton()+'<button type="button" class="mini-listen-button" data-mini-audio-play>🔊 Play word</button><div class="mini-picture-grid">'+opts.map(o=>'<button type="button" class="mini-picture" data-mini-audio-answer="'+o.word+'" aria-label="Picture: '+esc(o.word)+'"><span class="mini-picture-art" aria-hidden="true">'+o.icon+'</span><span>'+esc(o.word)+'</span></button>').join('')+'</div>';}
   const MINI_SENTENCES=[{text:'I drink water every morning.',ar:'أشرب الماء كل صباح.'},{text:'She is reading a book.',ar:'هي تقرأ كتابًا.'},{text:'We are going to school.',ar:'نحن ذاهبون إلى المدرسة.'},{text:'He bought a new phone.',ar:'اشترى هاتفًا جديدًا.'},{text:'Please open the window.',ar:'من فضلك افتح النافذة.'},{text:'They play football after school.',ar:'يلعبون كرة القدم بعد المدرسة.'},{text:'I would like a cup of tea.',ar:'أود كوبًا من الشاي.'},{text:'The train arrives at six.',ar:'يصل القطار عند السادسة.'},{text:'My friend lives near the park.',ar:'يعيش صديقي بالقرب من الحديقة.'},{text:'Could you help me, please?',ar:'هل يمكنك مساعدتي من فضلك؟'}];
   function miniSentenceSetup(){MG.pool=SHUF(MINI_SENTENCES);MG.total=8;MG.i=0;MG.score=0;MG.answered=false;miniSentenceRender();}
-  function miniSentenceRender(){const q=MG.pool[MG.i%MG.pool.length];MG.current=q;MG.tokens=SHUF(q.text.replace(/[.!?]$/,'').split(/\s+/).map((word,id)=>({word,id})));MG.placed=[];MG.answered=false;miniSteps();$('#game-body').innerHTML='<div class="q-meta"><span class="pill">↔ Sentence Builder</span><span class="q-count">'+(MG.i+1)+' of '+MG.total+'</span></div><h2 class="q-text" id="q-text" tabindex="-1">Put the words in the right order</h2>'+(state.translationEnabled?'<p class="q-sub arabic" lang="ar" dir="rtl">'+esc(q.ar)+'</p>':'<p class="q-sub">Tap words below to build a natural sentence.</p>')+'<div class="mini-sentence-answer" aria-live="polite">'+(MG.placed.length?MG.placed.map((t,i)=>'<button type="button" class="mini-word-token" data-mini-sentence-remove="'+i+'">'+esc(t.word)+'</button>').join(' '):'<span>Tap words to build the sentence…</span>')+'</div><div class="mini-sentence-bank">'+MG.tokens.filter(t=>!MG.placed.some(p=>p.id===t.id)).map(t=>'<button type="button" class="mini-word-token" data-mini-sentence-word="'+t.id+'">'+esc(t.word)+'</button>').join(' ')+'</div><div class="mini-sentence-actions"><button type="button" class="btn" data-mini-sentence-check>Check sentence</button><button type="button" class="btn btn-ghost" data-mini-sentence-reset>Reset</button></div>'+(MG.feedback?'<p class="mini-feedback">'+esc(MG.feedback)+'</p>':'')+((MG.feedbackAr&&state.translationEnabled)?'<p class="mini-feedback arabic" lang="ar" dir="rtl">'+esc(MG.feedbackAr)+'</p>':'');MG.feedback='';MG.feedbackAr='';}
+  function miniSentenceRender(){const q=MG.pool[MG.i%MG.pool.length];MG.current=q;MG.tokens=SHUF(q.text.replace(/[.!?]$/,'').split(/\s+/).map((word,id)=>({word,id})));MG.placed=[];MG.answered=false;miniSteps();$('#game-body').innerHTML='<div class="q-meta"><span class="pill">↔ Sentence Builder</span><span class="q-count">'+(MG.i+1)+' of '+MG.total+'</span></div><h2 class="q-text" id="q-text" tabindex="-1"'+arAttr('رتّب الكلمات ترتيبًا صحيحًا')+'>Put the words in the right order</h2>'+miniTranslateButton()+'<p class="q-sub"'+arAttr('اضغط على الكلمات بالأسفل لتكوين جملة طبيعية. معنى الجملة: '+q.ar)+'>Tap words below to build a natural sentence.</p><div class="mini-sentence-answer" aria-live="polite">'+(MG.placed.length?MG.placed.map((t,i)=>'<button type="button" class="mini-word-token" data-mini-sentence-remove="'+i+'">'+esc(t.word)+'</button>').join(' '):'<span>Tap words to build the sentence…</span>')+'</div><div class="mini-sentence-bank">'+MG.tokens.filter(t=>!MG.placed.some(p=>p.id===t.id)).map(t=>'<button type="button" class="mini-word-token" data-mini-sentence-word="'+t.id+'">'+esc(t.word)+'</button>').join(' ')+'</div><div class="mini-sentence-actions"><button type="button" class="btn" data-mini-sentence-check>Check sentence</button><button type="button" class="btn btn-ghost" data-mini-sentence-reset>Reset</button></div>'+(MG.feedback?'<p class="mini-feedback" data-tx'+arAttr(MG.feedbackAr)+'>'+esc(MG.feedback)+'</p>':'');MG.feedback='';MG.feedbackAr='';}
 
   function miniSteps(done) {
     $('#steps').innerHTML = Array.from({length: MG.total}, (_, i) => '<span class="step ' + (MG.results[i] === 'ok' ? 'ok' : MG.results[i] === 'no' ? 'no' : (i === MG.i && !done ? 'current' : '')) + '"></span>').join('');
@@ -3704,7 +3861,11 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     const picked = SHUF(pool).slice(0, 3);
     MG.rounds = picked.map(s => {
       const n = Math.min(4, s.pages.length), start = Math.floor(Math.random() * (s.pages.length - n + 1));
-      const items = s.pages.slice(start, start + n).map((p, k) => ({k, text: String(p.text).split(/(?<=[.!?”"])\s+/)[0] || p.text, ar: p.ar}));
+      const items = s.pages.slice(start, start + n).map((p, k) => {
+        const first = String(p.text).split(/(?<=[.!?”"])\s+/)[0] || p.text;
+        // The page's Arabic translates the whole page; reuse it only when the card shows the whole page.
+        return {k, text: first, ar: String(first).trim() === String(p.text).trim() ? p.ar : ''};
+      });
       let order = SHUF(items.map(x => x.k)), tries = 0;
       while (order.every((v, p) => v === p) && tries++ < 10) order = SHUF(order);
       return {title: s.title, items, pool: order, placed: []};
@@ -3713,14 +3874,13 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
   }
   function miniOrderRender() {
     const r = MG.rounds[MG.i]; MG.answered = false; hideSheet(); miniSteps();
-    const textOf = k => r.items.find(x => x.k === k).text;
-    const showArabic = !!state.translationEnabled;
-    const sentenceMarkup = text => '<span>' + esc(text) + '</span>' + (showArabic ? '<span class="story-option-ar arabic" lang="ar" dir="rtl">' + esc(translateToArabic(text).text) + '</span>' : '');
+    const itemOf = k => r.items.find(x => x.k === k);
+    const cardText = k => '<span>' + esc(itemOf(k).text) + '</span>';
     $('#game-body').innerHTML = '<div class="q-meta"><span class="pill">Order the Story</span><span class="q-count">Story ' + (MG.i + 1) + ' of ' + MG.total + '</span></div>' +
-      '<h2 class="q-text" id="q-text" tabindex="-1">Put the events in order</h2>' + (showArabic ? '<p class="q-sub arabic" lang="ar" dir="rtl">رتّب الأحداث حسب تسلسل وقوعها.</p>' : '<p class="q-sub">From “' + esc(r.title) + '”. Tap the sentences in the order they happened.</p>') +
-      '<p class="q-sub">From “' + esc(r.title) + '”.</p>' +
-      '<ol class="mg-slots" aria-label="Your order">' + r.items.map((_, p) => '<li class="mg-slot' + (r.placed[p] !== undefined ? ' is-filled' : '') + '">' + (r.placed[p] !== undefined ? '<button type="button" class="mg-card is-placed" data-mg-unplace="' + p + '"><b>' + (p + 1) + '</b>' + sentenceMarkup(textOf(r.placed[p])) + '</button>' : '<span class="mg-empty">' + (p + 1) + '</span>') + '</li>').join('') + '</ol>' +
-      '<div class="mg-pool" role="group" aria-label="Sentences to place">' + r.pool.map(k => '<button type="button" class="mg-card" data-mg-place="' + k + '">' + sentenceMarkup(textOf(k)) + '</button>').join('') + '</div>' +
+      '<h2 class="q-text" id="q-text" tabindex="-1"' + arAttr('رتّب الأحداث') + '>Put the events in order</h2>' + miniTranslateButton() +
+      '<p class="q-sub"' + arAttr('من قصة «' + r.title + '». اضغط على الجمل بالترتيب الذي حدثت به.') + '>From “' + esc(r.title) + '”. Tap the sentences in the order they happened.</p>' +
+      '<ol class="mg-slots" aria-label="Your order">' + r.items.map((_, p) => '<li class="mg-slot' + (r.placed[p] !== undefined ? ' is-filled' : '') + '">' + (r.placed[p] !== undefined ? '<button type="button" class="mg-card is-placed" data-mg-unplace="' + p + '"' + arAttr(itemOf(r.placed[p]).ar) + '><b>' + (p + 1) + '</b>' + cardText(r.placed[p]) + '</button>' : '<span class="mg-empty">' + (p + 1) + '</span>') + '</li>').join('') + '</ol>' +
+      '<div class="mg-pool" role="group" aria-label="Sentences to place">' + r.pool.map(k => '<button type="button" class="mg-card" data-mg-place="' + k + '"' + arAttr(itemOf(k).ar) + '>' + cardText(k) + '</button>').join('') + '</div>' +
       '<div class="mg-actions"><button class="btn" id="mg-check" ' + (r.pool.length ? 'disabled' : '') + '>Check order</button></div>';
     $('#game-scroll').scrollTop = 0; const h = $('#q-text'); if (h) h.focus({preventScroll: true});
   }
@@ -3730,31 +3890,35 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     if (ok) MG.score++; MG.results[MG.i] = ok ? 'ok' : 'no'; miniSteps();
     $$('.mg-slots .mg-card').forEach((b, p) => { b.disabled = true; b.classList.add(r.placed[p] === p ? 'is-right' : 'is-wrong'); });
     $('#mg-check').disabled = true; sfx(ok ? 'ok' : 'no');
-    showSheet(ok, '<h3><span class="sheet-mark">' + ic(ok ? 'check' : 'x') + '</span>' + (ok ? 'Perfect order!' : correct + ' of ' + r.items.length + ' in the right place') + '</h3>' +
-      (ok ? '' : '<p>Correct order:</p>' + (state.translationEnabled ? '<p class="story-page-ar arabic" lang="ar" dir="rtl">الترتيب الصحيح:</p>' : '') + '<ol class="mg-answer">' + r.items.map(x => '<li>' + esc(x.text) + (state.translationEnabled ? '<span class="story-option-ar arabic" lang="ar" dir="rtl">' + esc(translateToArabic(x.text).text) + '</span>' : '') + '</li>').join('') + '</ol>') +
-      (state.translationEnabled ? '<p class="story-page-ar arabic" lang="ar" dir="rtl">' + (ok ? 'أحسنت! رتّبت الأحداث ترتيبًا صحيحًا.' : 'راجع تسلسل الأحداث ثم حاول مجددًا في القصة التالية.') + '</p>' : '') +
+    showSheet(ok, '<h3' + arAttr(ok ? 'ترتيب ممتاز!' : correct + ' من ' + r.items.length + ' في مكانها الصحيح') + '><span class="sheet-mark">' + ic(ok ? 'check' : 'x') + '</span>' + (ok ? 'Perfect order!' : correct + ' of ' + r.items.length + ' in the right place') + '</h3>' +
+      (ok ? '' : '<p' + arAttr('الترتيب الصحيح:') + '>Correct order:</p><ol class="mg-answer">' + r.items.map(x => '<li' + arAttr(x.ar) + '>' + esc(x.text) + '</li>').join('') + '</ol>') +
+      '<p class="arabic" lang="ar" dir="rtl" data-tx-ar-only hidden>' + (ok ? 'أحسنت! رتّبت الأحداث ترتيبًا صحيحًا.' : 'راجع تسلسل الأحداث ثم حاول مجددًا في القصة التالية.') + '</p>' +
       '<div class="sheet-actions"><button class="btn" id="go-next">' + (MG.i === MG.total - 1 ? 'See results' : 'Next story') + ic('arrow') + '</button></div>');
   }
 
   /* Word Match (memory pairs) */
   function miniShort(text) { const t = String(text || '').replace(/^to /, '').split(/[;,(]/)[0].trim(); return t.length > 34 ? t.slice(0, 32).trim() + '…' : t; }
+  function miniShortAr(text) { const t = String(text || '').split(/[؛،;,(]/)[0].trim(); return t.length > 34 ? t.slice(0, 32).trim() + '…' : t; }
   function miniMatchSetup() {
     const idx = levelIndex(), lvIds = LEVELS.map(l => l.id);
     const seen = new Set(), pairs = [];
-    const add = (w, m) => { const key = String(w).toLowerCase(); if (!w || !m || seen.has(key) || /^معنى/.test(m)) return; seen.add(key); pairs.push({w: String(w), m: miniShort(m)}); };
-    SHUF(state.words.filter(x => x[1] && x[1] !== 'No explanation has been added for this word yet.')).slice(0, 3).forEach(x => add(x[0], x[1]));
+    const add = (w, m, ar) => { const key = String(w).toLowerCase(); if (!w || !m || seen.has(key) || /^معنى/.test(m)) return; seen.add(key); pairs.push({w: String(w), m: miniShort(m), ar: hasArabic(ar) ? miniShortAr(ar) : ''}); };
+    SHUF(state.words.filter(x => x[1] && x[1] !== 'No explanation has been added for this word yet.')).slice(0, 3).forEach(x => add(x[0], x[1], miniMeaningAr(x[0], x[1])));
     const wl = WOTD_WORDS.filter(x => lvIds.indexOf(x.level) <= idx + 1);
-    SHUF(wl.length >= 6 ? wl : WOTD_WORDS).forEach(x => { if (pairs.length < 6) add(x.word, x.meaning); });
-    const cards = SHUF(pairs.flatMap((p, n) => [{id: 'w' + n, n, text: p.w, kind: 'word'}, {id: 'm' + n, n, text: p.m, kind: 'meaning'}]));
+    SHUF(wl.length >= 6 ? wl : WOTD_WORDS).forEach(x => { if (pairs.length < 6) add(x.word, x.meaning, x.meaning_ar); });
+    const cards = SHUF(pairs.flatMap((p, n) => [{id: 'w' + n, n, text: p.w, kind: 'word', ar: ''}, {id: 'm' + n, n, text: p.m, kind: 'meaning', ar: p.ar}]));
     MG.pairs = pairs; MG.cards = cards; MG.open = []; MG.matched = new Set(); MG.attempts = 0; MG.total = pairs.length; MG.lock = false;
     miniMatchRender();
   }
   function miniMatchRender() {
     miniSteps();
-    $('#game-body').innerHTML = '<div class="q-meta"><span class="pill">Word Match</span><span class="q-count">' + MG.matched.size + ' of ' + MG.total + ' pairs</span></div><h2 class="q-text" id="q-text" tabindex="-1">Match each word with its meaning</h2><p class="q-sub">Flip two cards. A word and its meaning make a pair.</p>' +
+    $('#game-body').innerHTML = '<div class="q-meta"><span class="pill">Word Match</span><span class="q-count">' + MG.matched.size + ' of ' + MG.total + ' pairs</span></div><h2 class="q-text" id="q-text" tabindex="-1"' + arAttr('طابِق كل كلمة مع معناها') + '>Match each word with its meaning</h2>' + miniTranslateButton() + '<p class="q-sub"' + arAttr('اقلب بطاقتين. الكلمة ومعناها يكوّنان زوجًا.') + '>Flip two cards. A word and its meaning make a pair.</p>' +
       '<div class="mg-grid" role="group" aria-label="Memory cards">' + MG.cards.map((c, i) => {
-        const open = MG.open.includes(i), done = MG.matched.has(c.n);
-        return '<button type="button" class="mg-tile ' + (done ? 'is-done ' : open ? 'is-open ' : '') + 'mg-' + c.kind + '" data-mg-flip="' + i + '" ' + (done ? 'disabled' : '') + ' aria-label="' + (open || done ? esc(c.text) : 'Hidden card') + '"><span>' + (open || done ? esc(c.text) : '?') + '</span></button>';
+        const open = MG.open.includes(i), done = MG.matched.has(c.n), shown = open || done;
+        // Words stay in English (they are what is being learned); only meanings can switch to Arabic.
+        // Face-down cards carry no translatable text.
+        const tx = shown && c.kind === 'meaning' ? arAttr(c.ar) : ' data-tx-skip';
+        return '<button type="button" class="mg-tile ' + (done ? 'is-done ' : open ? 'is-open ' : '') + 'mg-' + c.kind + '" data-mg-flip="' + i + '" ' + (done ? 'disabled' : '') + ' aria-label="' + (shown ? esc(c.text) : 'Hidden card') + '"' + tx + '><span>' + (shown ? esc(c.text) : '?') + '</span></button>';
       }).join('') + '</div>';
     for (let i = 0; i < MG.total; i++) { MG.results[i] = MG.matched.size > i ? 'ok' : ''; } miniSteps();
   }
@@ -3778,7 +3942,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
   function dirText(it) {
     const en = ['Start at the dot and face the arrow.'], ar = ['ابدأ من النقطة وواجه السهم.'];
     it.steps.forEach((s, i) => {
-      if (s[0] === 'go') { en.push((i === 0 ? 'Walk straight for ' : 'Then walk ') + NUM_WORDS[s[1]] + (s[1] === 1 ? ' block.' : ' blocks.')); ar.push('امشِ ' + AR_NUM[s[1]] + (s[1] === 1 ? ' كتلة.' : ' كتل.')); }
+      if (s[0] === 'go') { en.push((i === 0 ? 'Walk straight for ' : 'Then walk ') + NUM_WORDS[s[1]] + (s[1] === 1 ? ' block.' : ' blocks.')); ar.push('امشِ ' + AR_NUM[s[1]] + '.'); }
       else { en.push('Turn ' + s[1] + '.'); ar.push('انعطف ' + (s[1] === 'left' ? 'يسارًا.' : 'يمينًا.')); }
     });
     en.push('The place is on your ' + it.side + '.'); ar.push('المكان على ' + (it.side === 'left' ? 'يسارك.' : 'يمينك.'));
@@ -3796,7 +3960,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     DIRECTION_BLOCKS.forEach((row, cy) => row.forEach((b, cx) => {
       const isAns = it.answer[0] === cx && it.answer[1] === cy, isCh = chosen && chosen[0] === cx && chosen[1] === cy;
       const cls = reveal ? (isAns ? ' is-right' : isCh ? ' is-wrong' : '') : '';
-      s += '<g class="mg-block' + cls + '" data-mg-block="' + cx + ',' + cy + '" tabindex="0" role="button" aria-label="' + esc(b[1]) + '"><rect x="' + (px(cx) + 12) + '" y="' + (py(cy) + 12) + '" width="' + (C - 24) + '" height="' + (C - 24) + '" rx="12"/><text x="' + (px(cx) + C / 2) + '" y="' + (py(cy) + C / 2 - 2) + '" font-size="22" text-anchor="middle">' + b[0] + '</text><text x="' + (px(cx) + C / 2) + '" y="' + (py(cy) + C / 2 + 17) + '" font-size="10.5" font-weight="700" text-anchor="middle">' + esc(state.helpArabic && b[2] ? b[2] : b[1]) + '</text></g>';
+      s += '<g class="mg-block' + cls + '" data-mg-block="' + cx + ',' + cy + '" tabindex="0" role="button" aria-label="' + esc(b[1]) + '"><rect x="' + (px(cx) + 12) + '" y="' + (py(cy) + 12) + '" width="' + (C - 24) + '" height="' + (C - 24) + '" rx="12"/><text x="' + (px(cx) + C / 2) + '" y="' + (py(cy) + C / 2 - 2) + '" font-size="22" text-anchor="middle">' + b[0] + '</text><text x="' + (px(cx) + C / 2) + '" y="' + (py(cy) + C / 2 + 17) + '" font-size="10.5" font-weight="700" text-anchor="middle">' + esc(b[1]) + '</text></g>';
     }));
     if (reveal) { const pts = dirPath(it); s += '<polyline points="' + pts.map(p => px(p[0]) + ',' + py(p[1])).join(' ') + '" fill="none" stroke="#7C6CFF" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="2 9"/>'; }
     const sx = px(it.start[0]), sy = py(it.start[1]), v = DIR_V[it.dir], ang = Math.atan2(v[1], v[0]) * 180 / Math.PI;
@@ -3805,8 +3969,8 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
   }
   function miniDirRender() {
     const it = MG.items[MG.i]; MG.answered = false; hideSheet(); miniSteps(); const t = dirText(it);
-    $('#game-body').innerHTML = '<div class="q-meta"><span class="pill">Directions</span><span class="q-count">Question ' + (MG.i + 1) + ' of ' + MG.total + '</span></div><h2 class="q-text" id="q-text" tabindex="-1">Where does the route end?</h2><p class="mg-route" data-translation-ar="' + esc(t.ar) + '">' + esc(t.en) + '</p>' + (state.helpArabic ? '<p class="mg-route-ar arabic" lang="ar" dir="rtl">' + esc(t.ar) + '</p>' : '') +
-      '<div class="mg-actions mg-actions-top"><button class="btn btn-ghost" data-mg-listen>🔊 Listen</button></div><p class="q-sub">Tap the building on the map.</p><div class="mg-map-wrap">' + dirMapSvg(it, false) + '</div>';
+    $('#game-body').innerHTML = '<div class="q-meta"><span class="pill">Directions</span><span class="q-count">Question ' + (MG.i + 1) + ' of ' + MG.total + '</span></div><h2 class="q-text" id="q-text" tabindex="-1"' + arAttr('أين ينتهي المسار؟') + '>Where does the route end?</h2>' + miniTranslateButton() + '<p class="mg-route"' + arAttr(t.ar) + '>' + esc(t.en) + '</p>' +
+      '<div class="mg-actions mg-actions-top"><button class="btn btn-ghost" data-mg-listen>🔊 Listen</button></div><p class="q-sub"' + arAttr('اضغط على المبنى في الخريطة.') + '>Tap the building on the map.</p><div class="mg-map-wrap">' + dirMapSvg(it, false) + '</div>';
     $('#game-scroll').scrollTop = 0; const h = $('#q-text'); if (h) h.focus({preventScroll: true});
   }
   function miniDirAnswer(cx, cy) {
@@ -3817,7 +3981,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     const arabicFeedback = ok
       ? 'أحسنت! اتبعت المسار حتى وصلت إلى ' + (right[2] || right[1]) + '. يوضّح الخط المنقّط الطريق.'
       : 'ليس تمامًا. ينتهي المسار عند ' + (right[2] || right[1]) + '. اتبع الخط المنقّط لمعرفة الطريق.';
-    showSheet(ok, '<h3><span class="sheet-mark">' + ic(ok ? 'check' : 'x') + '</span>' + (ok ? 'Exactly right!' : 'Not quite.') + '</h3><p>' + (ok ? 'You followed the route to the ' : 'The route ends at the ') + '<b>' + esc(right[1]) + '</b>. The dotted line shows the way.</p>' + (state.translationEnabled ? '<p class="story-page-ar arabic" lang="ar" dir="rtl">' + esc(arabicFeedback) + '</p>' : '') + '<div class="sheet-actions"><button class="btn" id="go-next">' + (MG.i === MG.total - 1 ? 'See results' : 'Continue') + ic('arrow') + '</button></div>');
+    showSheet(ok, '<h3' + arAttr(ok ? 'صحيح تمامًا!' : 'ليس تمامًا.') + '><span class="sheet-mark">' + ic(ok ? 'check' : 'x') + '</span>' + (ok ? 'Exactly right!' : 'Not quite.') + '</h3><p' + arAttr(arabicFeedback) + '>' + (ok ? 'You followed the route to the ' : 'The route ends at the ') + '<b>' + esc(right[1]) + '</b>. The dotted line shows the way.</p><div class="sheet-actions"><button class="btn" id="go-next">' + (MG.i === MG.total - 1 ? 'See results' : 'Continue') + ic('arrow') + '</button></div>');
   }
 
   function miniNext() {
@@ -3832,11 +3996,11 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     if (MG.done) return false;
     const speedAnswer=el.closest('[data-mini-speed-answer]');if(speedAnswer&&MG.type==='speed'){if(MG.answered)return true;MG.total++;const picked=decodeURIComponent(speedAnswer.dataset.miniSpeedAnswer);const ok=picked===MG.current.word;if(ok)MG.score++;recordAdaptiveResult('vocabulary',MG.current.word,ok);if(!ok)addReview(MG.current.word,MG.current.meaning);sfx(ok?'ok':'no');miniSpeedRender();return true;}
     if(el.closest('[data-mini-audio-play]')&&MG.type==='audioImage'){miniSpeech(MG.current.word);return true;}
-    const audioAnswer=el.closest('[data-mini-audio-answer]');if(audioAnswer&&MG.type==='audioImage'){if(MG.answered)return true;MG.answered=true;const ok=audioAnswer.dataset.miniAudioAnswer===MG.current.word;if(ok)MG.score++;recordAdaptiveResult('listening',MG.current.word,ok);if(!ok)addReview(MG.current.word,MG.current.meaning);MG.results[MG.i]=ok?'ok':'no';sfx(ok?'ok':'no');$('.mini-picture-grid').querySelectorAll('button').forEach(b=>{b.disabled=true;if(b.dataset.miniAudioAnswer===MG.current.word)b.classList.add('is-right');else if(b===audioAnswer)b.classList.add('is-wrong');});showSheet(ok,'<h3>'+(ok?'That’s it!':'Not quite')+'</h3><p>The word is <b>'+esc(MG.current.word)+'</b> — '+esc(MG.current.meaning)+'.</p>'+(state.translationEnabled?'<p class="story-page-ar arabic" lang="ar" dir="rtl">الكلمة هي <b>'+esc(MG.current.word)+'</b>، ومعناها: '+esc(translateToArabic(MG.current.meaning).text)+'.</p>':'')+'<div class="sheet-actions"><button class="btn" id="go-next">'+(MG.i===MG.total-1?'See results':'Next word')+ic('arrow')+'</button></div>');return true;}
+    const audioAnswer=el.closest('[data-mini-audio-answer]');if(audioAnswer&&MG.type==='audioImage'){if(MG.answered)return true;MG.answered=true;const ok=audioAnswer.dataset.miniAudioAnswer===MG.current.word;if(ok)MG.score++;recordAdaptiveResult('listening',MG.current.word,ok);if(!ok)addReview(MG.current.word,MG.current.meaning);MG.results[MG.i]=ok?'ok':'no';sfx(ok?'ok':'no');$('.mini-picture-grid').querySelectorAll('button').forEach(b=>{b.disabled=true;if(b.dataset.miniAudioAnswer===MG.current.word)b.classList.add('is-right');else if(b===audioAnswer)b.classList.add('is-wrong');});showSheet(ok,'<h3'+arAttr(ok?'أحسنت!':'ليس تمامًا')+'>'+(ok?'That’s it!':'Not quite')+'</h3><p'+arAttr('الكلمة هي «'+MG.current.word+'» ('+(MG.current.wordAr||'')+')، ومعناها: '+(MG.current.ar||''))+'>The word is <b>'+esc(MG.current.word)+'</b> — '+esc(MG.current.meaning)+'.</p><div class="sheet-actions"><button class="btn" id="go-next">'+(MG.i===MG.total-1?'See results':'Next word')+ic('arrow')+'</button></div>');return true;}
     const sentenceWord=el.closest('[data-mini-sentence-word]');if(sentenceWord&&MG.type==='sentenceOrder'&&!MG.answered){const token=MG.tokens.find(t=>t.id===Number(sentenceWord.dataset.miniSentenceWord));if(token)MG.placed.push(token);miniSentenceRender();return true;}
     const sentenceRemove=el.closest('[data-mini-sentence-remove]');if(sentenceRemove&&MG.type==='sentenceOrder'&&!MG.answered){MG.placed.splice(Number(sentenceRemove.dataset.miniSentenceRemove),1);miniSentenceRender();return true;}
     if(el.closest('[data-mini-sentence-reset]')&&MG.type==='sentenceOrder'){MG.placed=[];MG.feedback='';miniSentenceRender();return true;}
-    if(el.closest('[data-mini-sentence-check]')&&MG.type==='sentenceOrder'){if(MG.answered)return true;const expected=MG.current.text.replace(/[.!?]$/,'').toLowerCase();const actual=MG.placed.map(t=>t.word).join(' ').toLowerCase();if(actual===expected){recordAdaptiveResult('sentence',MG.current.text,true);MG.answered=true;MG.score++;MG.results[MG.i]='ok';sfx('ok');miniSpeech(MG.current.text);showSheet(true,'<h3>Perfect sentence!</h3><p>'+esc(MG.current.text)+'</p>'+(state.translationEnabled?'<p class="story-page-ar arabic" lang="ar" dir="rtl">'+esc(MG.current.ar)+'</p>':'')+'<div class="sheet-actions"><button class="btn" id="go-next">'+(MG.i===MG.total-1?'See results':'Next sentence')+ic('arrow')+'</button></div>');}else{recordAdaptiveResult('sentence',MG.current.text,false);MG.feedback='Not quite yet. Rearrange the words and try again.';MG.feedbackAr='لم يكتمل ترتيب الجملة بعد. أعد ترتيب الكلمات وحاول مجددًا.';sfx('no');miniSentenceRender();}return true;}
+    if(el.closest('[data-mini-sentence-check]')&&MG.type==='sentenceOrder'){if(MG.answered)return true;const expected=MG.current.text.replace(/[.!?]$/,'').toLowerCase();const actual=MG.placed.map(t=>t.word).join(' ').toLowerCase();if(actual===expected){recordAdaptiveResult('sentence',MG.current.text,true);MG.answered=true;MG.score++;MG.results[MG.i]='ok';sfx('ok');miniSpeech(MG.current.text);showSheet(true,'<h3'+arAttr('جملة ممتازة!')+'>Perfect sentence!</h3><p'+arAttr(MG.current.ar)+'>'+esc(MG.current.text)+'</p>'+'<div class="sheet-actions"><button class="btn" id="go-next">'+(MG.i===MG.total-1?'See results':'Next sentence')+ic('arrow')+'</button></div>');}else{recordAdaptiveResult('sentence',MG.current.text,false);MG.feedback='Not quite yet. Rearrange the words and try again.';MG.feedbackAr='لم يكتمل ترتيب الجملة بعد. أعد ترتيب الكلمات وحاول مجددًا.';sfx('no');miniSentenceRender();}return true;}
     if (el.closest('#go-next')) { miniNext(); return true; }
     const place = el.closest('[data-mg-place]');
     if (place && MG.type === 'order') { const r = MG.rounds[MG.i]; if (MG.answered) return true; const k = Number(place.dataset.mgPlace); r.pool = r.pool.filter(v => v !== k); r.placed.push(k); miniOrderRender(); return true; }
@@ -4124,7 +4288,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     (t.words||[]).forEach(w=>{if(!state.words.some(v=>String(v[0]).toLowerCase()===String(w[0]).toLowerCase())){state.words.push(w);recordLearningActivity({words:1});}});
     save();renderHeader();renderWords();renderTrophies();return earned;
   }
-  function worldShell(inner){const t=worldTask(),progress=WORLD&&WORLD.tasks.length?Math.round(((WORLD.index+(WORLD.mode==='success'?1:0))/WORLD.tasks.length)*100):0;return '<div class="world-top"><div class="world-task-count">Task <b>'+(WORLD.index+1)+'</b> / '+WORLD.tasks.length+'<span class="world-progress-track" role="progressbar" aria-label="Mission progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="'+progress+'"><span style="width:'+progress+'%"></span></span></div>'+(t&&t.dialogue?'<div class="world-dialogue">'+esc(t.dialogue)+'</div>':'')+'<div class="world-instruction"><strong>'+esc(t?t.instruction:'Adventure complete!')+'</strong><span>Explore the map and follow the instruction.</span>'+(t&&WORLD&&WORLD.mode==='play'?'<button type="button" class="translate-btn" data-translate-world aria-expanded="false">ع ترجمة التعليمات</button><p id="world-translation" class="translation-result" lang="ar" dir="rtl" hidden></p>':'')+'</div><div class="world-top-actions"><button type="button" class="world-home" data-world-home>⌂ Home</button><button type="button" class="world-collection-open" data-world-collection>🎒 Word pouch</button><button class="world-exit" data-world-exit aria-label="Exit World">✕</button></div></div>'+inner;}
+  function worldShell(inner){const t=worldTask(),progress=WORLD&&WORLD.tasks.length?Math.round(((WORLD.index+(WORLD.mode==='success'?1:0))/WORLD.tasks.length)*100):0;return '<div class="world-top"><div class="world-task-count">Task <b>'+(WORLD.index+1)+'</b> / '+WORLD.tasks.length+'<span class="world-progress-track" role="progressbar" aria-label="Mission progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="'+progress+'"><span style="width:'+progress+'%"></span></span></div>'+(t&&t.dialogue?'<div class="world-dialogue">'+esc(t.dialogue)+'</div>':'')+'<div class="world-instruction"><strong'+(t?arAttr(t.ar):'')+'>'+esc(t?t.instruction:'Adventure complete!')+'</strong><span>Explore the map and follow the instruction.</span></div><div class="world-top-actions"><button type="button" class="world-home" data-world-home>⌂ Home</button><button type="button" class="world-collection-open" data-world-collection>🎒 Word pouch</button><button class="world-exit" data-world-exit aria-label="Exit World">✕</button></div></div>'+inner;}
   function worldDraw(){
     if(!WORLD||WORLD.mode!=='play')return;if(WORLD.idle){clearTimeout(WORLD.idle);WORLD.idle=0;}const c=$('#world-canvas');if(!c)return;const r=c.getBoundingClientRect(),d=Math.max(1,Math.min(2,devicePixelRatio||1));if(!r.width||!r.height)return;
     if(c.width!==Math.round(r.width*d)||c.height!==Math.round(r.height*d)){c.width=Math.round(r.width*d);c.height=Math.round(r.height*d);}

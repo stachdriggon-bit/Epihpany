@@ -7,7 +7,7 @@
     arcade: ['practice-lab.js?v=0f7e5c76'],
     thinklab: ['think-lab.js?v=72d8145c'],
     lifeskills: ['think-lab.js?v=72d8145c', 'life-skills.js?v=c0ba2ab9'],
-    arabic: ['data-translation-ar.js?v=74c3f4b5']
+    arabic: ['data-translation-ar.js?v=74c3f4b5', 'data-translation-ar-fill.js?v=fill-1']
   };
   const pending = new Map();
   const loaded = new Set();
@@ -23,7 +23,7 @@
       script.onload = () => {
         loaded.add(src);
         loadingScripts.delete(src);
-        if (src.startsWith('data-translation-ar.js?v=74c3f4b5') && typeof window.EPIPHANY_MERGE_AR_TRANSLATIONS === 'function') {
+        if (src.startsWith('data-translation-ar-fill.js') && typeof window.EPIPHANY_MERGE_AR_TRANSLATIONS === 'function') {
           try { window.EPIPHANY_MERGE_AR_TRANSLATIONS(); }
           catch (error) { reject(error); return; }
         }

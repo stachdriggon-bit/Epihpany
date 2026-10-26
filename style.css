@@ -2913,3 +2913,31 @@ body[data-theme="dark"] .quick-nav-option:has(input:checked){background:#302c4c;
 .mg-tile.is-open,.mg-tile.is-done{font-size:clamp(12px,1.5vw,15px);line-height:1.3;}
 .mini-answer-translation-row .translate-btn{display:none!important;}
 @media(max-width:520px){.mg-grid{gap:7px}.mg-tile{min-height:82px;padding:7px 4px;font-size:12px}.mg-tile.is-open,.mg-tile.is-done{font-size:11px}}
+
+/* ===== Unified translation (single source of truth) =====
+   English is the default. A translate button swaps the same text into Arabic in place and back again.
+   Nothing here adds a second line of Arabic under the English. */
+.tx-is-ar{font-family:var(--arabic,'Cairo','Noto Naskh Arabic',system-ui,sans-serif);direction:rtl;text-align:right;line-height:1.7;overflow-wrap:anywhere}
+.q-text.tx-is-ar,h2.tx-is-ar,h3.tx-is-ar{line-height:1.5}
+.answer .tx-is-ar,.story-decision-option .tx-is-ar{flex:1 1 auto;min-width:0}
+.tx-approx{opacity:.92}
+.translate-btn.tx-group-btn{margin:6px 0 10px;align-self:flex-start}
+.sheet .translate-btn.tx-group-btn{margin:2px 0 8px}
+.translate-btn.tx-notice{border-color:var(--muted,#7a7f94);color:var(--muted,#5b6078);font-weight:600}
+.translate-btn[aria-busy="true"]{opacity:.6;cursor:progress}
+.translate-btn[aria-pressed="true"]{background:var(--navy-soft,#eceefb);border-color:var(--ink)}
+#game-ar[aria-pressed="true"]{background:var(--ink);color:#fff}
+.translation-result,.mg-route-ar{display:none!important}
+
+/* Word Match: cards keep a fixed footprint; long text wraps and shrinks instead of overflowing. */
+.mg-grid{grid-template-columns:repeat(3,minmax(0,1fr));grid-auto-rows:minmax(92px,auto);align-items:stretch}
+.mg-tile{display:flex;align-items:center;justify-content:center;min-width:0;max-width:100%;overflow:hidden;box-sizing:border-box;text-align:center;white-space:normal;overflow-wrap:anywhere;word-break:normal;hyphens:auto;padding:8px 6px}
+.mg-tile>span{display:block;max-width:100%;min-width:0;overflow:hidden;overflow-wrap:anywhere;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:5;line-clamp:5}
+.mg-tile.is-open,.mg-tile.is-done{font-size:clamp(12px,1.5vw,15px);line-height:1.3}
+.mg-tile>span.tx-is-ar{text-align:center;font-size:.95em;line-height:1.45;direction:rtl}
+.mini-answer-translation-row,.answer-translation-row .mg-tile{display:block}
+@media(max-width:520px){.mg-grid{gap:7px;grid-auto-rows:minmax(84px,auto)}.mg-tile{padding:6px 4px;font-size:12px}.mg-tile.is-open,.mg-tile.is-done{font-size:11px}}
+.mg-card{min-width:0;overflow-wrap:anywhere}
+.mg-card>span{min-width:0;flex:1 1 auto}
+.mini-choice{min-width:0;overflow-wrap:anywhere}
+.mg-tile.is-open>span.tx-is-ar,.mg-tile.is-done>span.tx-is-ar{font-size:clamp(13px,3.6vw,16px)}
