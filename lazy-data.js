@@ -7,7 +7,7 @@
     arcade: ['practice-lab.js?v=0f7e5c76'],
     thinklab: ['think-lab.js?v=72d8145c'],
     lifeskills: ['think-lab.js?v=72d8145c', 'life-skills.js?v=c0ba2ab9'],
-    arabic: ['data-translation-ar.js?v=question-context-20261026-12', 'data-translation-ar-fill.js?v=fill-4']
+    arabic: ['data-translation-ar.js?v=question-context-20261026-13', 'data-translation-ar-fill.js?v=fill-4']
   };
   const pending = new Map();
   const loaded = new Set();
