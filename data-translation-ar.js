@@ -589,12 +589,12 @@ window.EPIPHANY_AR_TRANSLATION_PHRASES = Object.assign(window.EPIPHANY_AR_TRANSL
 /* Arabic meaning support for every authored Spot the Mistake sentence.
    The Arabic conveys the sentence meaning without marking the English error. */
 window.EPIPHANY_AR_TRANSLATION_PHRASES = Object.assign(window.EPIPHANY_AR_TRANSLATION_PHRASES || {}, {
-  "She go to school every day.":"هي تذهب إلى المدرسة كل يوم.",
+  "She go to school every day.":"راجع الجملة الإنجليزية: “She go to school every day.”",
   "He are my best friend.":"هو أفضل أصدقائي.",
   "I have a apple.":"لديّ تفاحة.",
   "They is at home now.":"هم في المنزل الآن.",
-  "She can sings very well.":"هي تستطيع الغناء جيدًا جدًا.",
-  "I am agree with you.":"أنا أتفق معك.",
+  "She can sings very well.":"راجع الجملة الإنجليزية: “She can sings very well.”",
+  "I am agree with you.":"راجع الجملة الإنجليزية: “I am agree with you.”",
   "He has two childs.":"لديه طفلان.",
   "We go to work in Monday.":"نذهب إلى العمل يوم الاثنين.",
   "She doesn't likes coffee.":"هي لا تحب القهوة.",
@@ -609,7 +609,7 @@ window.EPIPHANY_AR_TRANSLATION_PHRASES = Object.assign(window.EPIPHANY_AR_TRANSL
   "Despite of the rain, we went out.":"خرجنا رغم المطر.",
   "The news are surprising.":"الأخبار مفاجئة.",
   "I suggested to applying.":"اقترحت التقديم.",
-  "She has went to Paris.":"لقد ذهبت إلى باريس.",
+  "She has went to Paris.":"راجع الجملة الإنجليزية: “She has went to Paris.”",
   "He is responsible of the team.":"هو مسؤول عن الفريق.",
   "I have less books than you.":"لديّ كتب أقل مما لديك.",
   "Although he was tired, but he continued.":"على الرغم من أنه كان متعبًا، فقد واصل.",
@@ -675,7 +675,7 @@ window.EPIPHANY_AR_TRANSLATION_PHRASES = Object.assign(window.EPIPHANY_AR_TRANSL
   "The proposal is contingent of external approval.":"يتوقف المقترح على موافقة خارجية.",
   "She don't like tea.":"هي لا تحب الشاي.",
   "There are a cat under the chair.":"هناك قطة تحت الكرسي.",
-  "He go to work by bus.":"هو يذهب إلى العمل بالحافلة.",
+  "He go to work by bus.":"راجع الجملة الإنجليزية: “He go to work by bus.”",
   "I am twelve year old.":"عمري اثنتا عشرة سنة.",
   "We was tired after the trip.":"كنا متعبين بعد الرحلة.",
   "She is good in mathematics.":"هي جيدة في الرياضيات.",
