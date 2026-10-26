@@ -460,10 +460,15 @@ bark dark core hand land lane data duty melt`
     if (mode === 'translator') intro = '<div class="tl-translation-prompt" lang="ar" dir="rtl">'+esc(item.ar)+'</div><div class="tl-answer-options">'+item.options.map((w,i)=>'<button type="button" class="tl-option" data-think-answer="'+i+'"><span class="tl-option-index">'+String.fromCharCode(65+i)+'</span><strong>'+esc(w)+'</strong></button>').join('')+'</div>';
     if (mode === 'wordladder') {
       const path = ladderPath.length ? ladderPath : [item.start];
+      const currentWord = path[path.length - 1] || item.start;
       const nextWord = nextLadderWord(item, path);
       const nextMeaning = nextWord ? ladderMeanings[nextWord] : null;
-      const activeHint = path[path.length - 1] !== item.goal && nextMeaning
-        ? 'Hint for your next word: ' + nextMeaning
+      const changedAt = nextWord ? [...currentWord].findIndex((letter, i) => letter !== nextWord[i]) : -1;
+      const letterPosition = changedAt === 0 ? 'first' : changedAt === currentWord.length - 1 ? 'last' : changedAt === 1 ? 'second' : changedAt === 2 ? 'third' : changedAt >= 0 ? 'fourth' : '';
+      const activeHint = path[path.length - 1] !== item.goal && nextWord
+        ? (nextMeaning
+          ? 'Next-step hint: change the ' + letterPosition + ' letter to make a word meaning “' + nextMeaning + '”.'
+          : 'Next-step hint: change the ' + letterPosition + ' letter. The new word must be real and keep a route to the goal.')
         : item.hint;
       intro = '<div class="tl-ladder-targets"><div><span>START</span><strong>'+esc(item.start)+'</strong></div><span class="tl-ladder-arrow">→</span><div><span>GOAL</span><strong>'+esc(item.goal)+'</strong></div></div><p class="tl-ladder-hint">'+esc(activeHint)+'</p><div class="tl-ladder-path">'+path.map((w,i)=>'<span class="tl-ladder-word '+(i===path.length-1?'is-current':'')+'">'+esc(w)+'</span>').join('<span class="tl-ladder-step">↓</span>')+'</div>'+(ladderWordNote?'<aside class="tl-ladder-meaning" aria-live="polite"><strong>'+esc(ladderWordNote.word)+'</strong><p>'+esc(ladderWordNote.meaning||'No definition is available for this word yet.')+'</p></aside>':'')+(path[path.length-1]===item.goal?'<p class="tl-ladder-success">Ladder complete! Every move is valid.</p>':'<form class="tl-ladder-form" data-think-ladder-form><label for="tl-ladder-input">Next word</label><div><input id="tl-ladder-input" name="ladder-word" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Type the next word" required><button class="tl-next" type="submit">Make move →</button></div><small>Use a word from the game’s word bank. Change one letter and keep a route open to the goal.</small></form>');
     }
