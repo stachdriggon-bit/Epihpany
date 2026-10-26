@@ -131,3 +131,19 @@ test('Arabic translations do not label grammar distractors as incorrect', () => 
     assert.ok(!phrases[english].includes('صياغة غير صحيحة'), 'must not label the option incorrect: ' + english);
   }
 });
+
+
+test('Arabic distractor translations stay neutral beyond the common error label', () => {
+  const phrases = translations();
+  const options = [
+    'the a', 'would stayed', 'has already start', 'was already start',
+    'they suspected did', 'is walk',
+    'The claim has conditions but none matter.',
+    'She has lost the shop'
+  ];
+  for (const english of options) {
+    assert.ok(phrases[english], 'missing Arabic translation for: ' + english);
+    assert.ok(phrases[english].includes(english), 'must preserve the English option: ' + english);
+    assert.ok(!/تركيب غير صحيح|صياغة غير منطقية/.test(phrases[english]), 'must not label the distractor as wrong: ' + english);
+  }
+});
