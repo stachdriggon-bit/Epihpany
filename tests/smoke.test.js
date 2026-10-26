@@ -93,7 +93,10 @@ test('main navigation tabs open without uncaught page errors', async t => {
         assert.ok(requested.some(path => path.endsWith('/resonance.js')), 'The Resonance should load on first open');
         await page.locator('[data-res-action="message"]').first().click();
         await page.locator('[data-res-action="record"]').click();
-        await page.locator('#resonance-view').getByText('E-01', { exact: false }).first().waitFor({ state: 'visible' });
+        // Evidence IDs are intentionally shown in the journal, not in the scene.
+        await page.locator('#resonance-view [data-res-action="journal"]').first().click();
+        await page.locator('#res-journal').waitFor({ state: 'visible' });
+        await page.locator('#res-journal').getByText('E-01', { exact: true }).waitFor({ state: 'visible' });
       }
       if (view === 'world') {
         await page.waitForFunction(() => typeof WORLD_DATA !== 'undefined', null, { timeout: 5000 });
