@@ -479,10 +479,10 @@ bark dark core hand land lane data duty melt`
   }
   function forgeBoard(item) {
     const chars=[...item.letters];
-    return '<div class="tl-forge-board"><div class="tl-forge-slots" aria-label="Word answer slots">'+forgePlaced.map((tile,i)=>'<button type="button" class="tl-puzzle-slot '+(tile===null?'is-empty':'is-filled')+'" data-forge-slot="'+i+'" aria-label="Letter slot '+(i+1)+'">'+(tile===null?'':esc(chars[tile]))+'</button>').join('')+'</div><div class="tl-forge-letters" aria-label="Available letter tiles">'+chars.map((ch,i)=>'<button type="button" class="tl-letter-tile" data-forge-tile="'+i+'" draggable="'+(!forgePlaced.includes(i))+'" '+(forgePlaced.includes(i)||locked?'disabled':'')+'>'+esc(ch)+'</button>').join('')+'</div><p class="tl-puzzle-help">Drag a letter into a slot, or tap a letter and then a slot. Tap a placed letter to return it.</p></div>';
+    return '<div class="tl-forge-board"><div class="tl-forge-slots" aria-label="Word answer slots">'+forgePlaced.map((tile,i)=>'<button type="button" class="tl-puzzle-slot '+(tile===null?'is-empty':'is-filled')+'" data-forge-slot="'+i+'" draggable="'+(tile!==null)+'" aria-label="Letter slot '+(i+1)+'">'+(tile===null?'':esc(chars[tile]))+'</button>').join('')+'</div><div class="tl-forge-letters" aria-label="Available letter tiles">'+chars.map((ch,i)=>'<button type="button" class="tl-letter-tile" data-forge-tile="'+i+'" draggable="'+(!forgePlaced.includes(i))+'" '+(forgePlaced.includes(i)||locked?'disabled':'')+'>'+esc(ch)+'</button>').join('')+'</div><p class="tl-puzzle-help">Drag a letter into a slot, or tap a letter and then a slot. Tap a placed letter to return it.</p></div>';
   }
   function scrambleBoard(item) {
-    return '<div class="tl-scramble-board"><div class="tl-scramble-slots" aria-label="Sentence word slots">'+scramblePlaced.map((tile,i)=>'<button type="button" class="tl-puzzle-slot tl-word-slot '+(tile===null?'is-empty':'is-filled')+'" data-scramble-slot="'+i+'" aria-label="Word position '+(i+1)+'">'+(tile===null?'':esc(item.words[tile]))+'</button>').join('')+'</div><div class="tl-scramble-bank" aria-label="Available word tiles">'+item.words.map((word,i)=>'<button type="button" class="tl-word-chip" data-scramble-tile="'+i+'" draggable="'+(!scramblePlaced.includes(i))+'" '+(scramblePlaced.includes(i)||locked?'disabled':'')+'>'+esc(word)+'</button>').join('')+'</div><p class="tl-puzzle-help">Drag words into position, or tap a word and then a slot. Tap a placed word to return it.</p></div>';
+    return '<div class="tl-scramble-board"><div class="tl-scramble-slots" aria-label="Sentence word slots">'+scramblePlaced.map((tile,i)=>'<button type="button" class="tl-puzzle-slot tl-word-slot '+(tile===null?'is-empty':'is-filled')+'" data-scramble-slot="'+i+'" draggable="'+(tile!==null)+'" aria-label="Word position '+(i+1)+'">'+(tile===null?'':esc(item.words[tile]))+'</button>').join('')+'</div><div class="tl-scramble-bank" aria-label="Available word tiles">'+item.words.map((word,i)=>'<button type="button" class="tl-word-chip" data-scramble-tile="'+i+'" draggable="'+(!scramblePlaced.includes(i))+'" '+(scramblePlaced.includes(i)||locked?'disabled':'')+'>'+esc(word)+'</button>').join('')+'</div><p class="tl-puzzle-help">Drag words into position, or tap a word and then a slot. Tap a placed word to return it.</p></div>';
   }
   function refreshPuzzleBoard(kind) {
     const board=root.querySelector(kind==='forge'?'.tl-forge-board':'.tl-scramble-board');
@@ -546,10 +546,15 @@ bark dark core hand land lane data duty melt`
     else{renderGame();const input2=root.querySelector('#tl-ladder-input');if(input2)input2.focus();}
   });
   root.addEventListener('dragstart', e => {
-    const tile=e.target.closest('[data-forge-tile],[data-scramble-tile]');
+    const tile=e.target.closest('[data-forge-tile],[data-scramble-tile],[data-forge-slot],[data-scramble-slot]');
     if(!tile||locked)return;
-    const kind=tile.hasAttribute('data-forge-tile')?'forge':'scramble';
-    e.dataTransfer.setData('text/plain',kind+':'+(kind==='forge'?tile.dataset.forgeTile:tile.dataset.scrambleTile));
+    const kind=tile.hasAttribute('data-forge-tile')||tile.hasAttribute('data-forge-slot')?'forge':'scramble';
+    let tileIndex;
+    if(tile.hasAttribute('data-forge-tile'))tileIndex=Number(tile.dataset.forgeTile);
+    else if(tile.hasAttribute('data-scramble-tile'))tileIndex=Number(tile.dataset.scrambleTile);
+    else {const placed=kind==='forge'?forgePlaced:scramblePlaced;tileIndex=placed[Number(tile.getAttribute(kind==='forge'?'data-forge-slot':'data-scramble-slot'))];}
+    if(tileIndex===null||tileIndex===undefined)return;
+    e.dataTransfer.setData('text/plain',kind+':'+tileIndex);
     e.dataTransfer.effectAllowed='move';
   });
   root.addEventListener('dragover', e => {if(e.target.closest('[data-forge-slot],[data-scramble-slot],[data-forge-tile],[data-scramble-tile]'))e.preventDefault();});
