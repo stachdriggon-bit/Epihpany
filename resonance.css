@@ -39,3 +39,37 @@
 @keyframes res-arrive{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
 @media(max-width:700px){.res-wayfinder{right:8%;bottom:clamp(205px,42%,250px);width:clamp(120px,38vw,180px);height:clamp(190px,55vw,260px)}.res-wayfinder-caption{font-size:.56rem}.res-wayfinder-caption small{font-size:.48rem}}
 @media(prefers-reduced-motion:reduce){.res-wayfinder{animation:none}}
+
+
+/* Distinct cinematic environments for the later chapters */
+.res-stage-chapter-2 .res-scene-art{
+  background:linear-gradient(180deg,#07121b25 30%,#06121bf5 100%),radial-gradient(ellipse at 50% 42%,#2a879a70 0,transparent 35%),linear-gradient(125deg,#071720,#0e3441 48%,#08121d)
+}
+.res-stage-chapter-2 .res-scene-art:after{
+  content:"";position:absolute;inset:9% 8% 22%;opacity:.48;
+  background:repeating-linear-gradient(0deg,transparent 0 34px,#65b8c744 35px 36px),repeating-linear-gradient(90deg,transparent 0 52px,#65b8c744 53px 54px),radial-gradient(circle at 50% 48%,transparent 0 16%,#5fd3e133 16.5% 17%,transparent 17.5% 27%,#5fd3e122 27.5% 28%,transparent 28.5%)
+}
+.res-stage-chapter-3 .res-scene-art{
+  background:linear-gradient(180deg,#10131a35 24%,#0b1119f5 100%),radial-gradient(ellipse at 50% 38%,#b69b6d55 0,transparent 36%),linear-gradient(120deg,#161b20,#37342d 45%,#10151c)
+}
+.res-stage-chapter-3 .res-scene-art:after{
+  content:"";position:absolute;top:13%;left:18%;width:34%;height:42%;transform:rotate(-4deg);
+  border:1px solid #d8c69a66;background:repeating-linear-gradient(180deg,#d8c69a12 0 16px,#d8c69a66 17px 18px,transparent 19px 28px),linear-gradient(145deg,#d5c49a28,#18202a66);box-shadow:0 12px 40px #0008
+}
+.res-stage-chapter-4 .res-scene-art{
+  background:linear-gradient(180deg,#07121b35 22%,#060e18f5 100%),radial-gradient(ellipse at 72% 36%,#6a7d9966 0,transparent 34%),linear-gradient(110deg,#0a1725,#1c2d3d 48%,#070e18)
+}
+.res-stage-chapter-4 .res-scene-art:after{
+  content:"";position:absolute;inset:5% 6% 18%;opacity:.58;
+  background:repeating-linear-gradient(90deg,transparent 0 8%,#020a13 8.2% 9.2%,#263b4b 9.4% 9.7%,transparent 10% 18%),repeating-linear-gradient(0deg,transparent 0 19%,#7f9aaa44 19.3% 20%,transparent 20.3% 24%);border-bottom:1px solid #8ba6b966
+}
+.res-stage-chapter-5 .res-scene-art{
+  background:linear-gradient(180deg,#070d1b25 25%,#080d1cf5 100%),radial-gradient(ellipse at 50% 36%,#745fc777 0,transparent 34%),radial-gradient(ellipse at 50% 45%,#3c8eaa55 0,transparent 52%),linear-gradient(120deg,#091323,#19213d 50%,#080d19)
+}
+.res-stage-chapter-5 .res-scene-art:after{
+  content:"";position:absolute;left:34%;top:9%;width:32%;height:48%;border-radius:50%;
+  border:1px solid #a9a6ff88;box-shadow:0 0 0 14px #8c8be51b,0 0 0 29px #8c8be514,0 0 0 45px #8c8be50c,0 0 55px #8c8be544
+}
+.res-stage-chapter-2 .res-window,.res-stage-chapter-3 .res-window,.res-stage-chapter-4 .res-window,.res-stage-chapter-5 .res-window{opacity:.18}
+.res-stage-chapter-2 .res-radio,.res-stage-chapter-3 .res-radio,.res-stage-chapter-4 .res-radio,.res-stage-chapter-5 .res-radio,
+.res-stage-chapter-2 .res-paper,.res-stage-chapter-3 .res-paper,.res-stage-chapter-4 .res-paper,.res-stage-chapter-5 .res-paper{opacity:.25}
