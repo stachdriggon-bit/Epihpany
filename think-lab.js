@@ -98,7 +98,7 @@ sand band bend bent sent send tend tent test best vest west went want pant part 
 ring sing sink silk milk mild wild will wall walk talk tale tame time lime line wine wind mind mine fine fire five hive have hate
 make take lake like tide ride side site bite bike hike hide wide wife wise rise rice nice nine pine pane pain pair fair fail call calm palm
 bark dark core hand land lane data duty`
-    .trim().split(/\\s+/));
+    .trim().split(/\s+/));
   function ladderDiffersByOne(a, b) {
     return a.length === b.length && a !== b && [...a].filter((ch, i) => ch !== b[i]).length === 1;
   }
