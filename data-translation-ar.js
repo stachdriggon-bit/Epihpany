@@ -3001,7 +3001,7 @@ window.EPIPHANY_AR_TRANSLATION_PHRASES = Object.assign(window.EPIPHANY_AR_TRANSL
   "age ten years":"عمر عشر سنوات",
   "I’m looking forward to seeing you.":"أتطلع إلى رؤيتك.",
   "I look forward see you.":"راجع الجملة الإنجليزية: “I look forward see you.”",
-  "I’m looking forward to see you.":"صياغة غير صحيحة",
+  "I’m looking forward to see you.":"راجع الجملة الإنجليزية: “I’m looking forward to see you.”",
   "I look forward for seeing you.":"راجع الجملة الإنجليزية: “I look forward for seeing you.”",
   "She is good at drawing.":"إنها ماهرة في الرسم.",
   "She is good in draw.":"صياغة غير صحيحة",
