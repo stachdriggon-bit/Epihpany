@@ -15,7 +15,7 @@ const phrases = window.EPIPHANY_AR_TRANSLATION_PHRASES;
 test('listening prompt translations preserve quoted English targets', () => {
   const relevant = Object.entries(phrases).filter(([key]) =>
     /^Someone says(?::|,)/i.test(key) ||
-    /^(?:A sign says|A bus display says|An email says|A booking email says|A message says|A notice says|A speaker says|A shop sign says)/i.test(key)
+    /^(?:A sign says|A bus display says|An email says|A booking email says|A message says|A notice says|A speaker says|A shop sign says|An announcement says|A notice reads|The person says|You are almost there\\. You hear)/i.test(key) ||\n    /^(?:“[^”]+”)\\s+(?:Who may enter|What should|When can|When must|What is expected|What does|This means|What do they mean)/i.test(key)
   );
   assert.ok(relevant.length >= 25, 'expected the contextual listening prompt set to be present');
 
