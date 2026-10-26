@@ -89,15 +89,56 @@
       {target:'world',options:['word','worry','world','would'],explain:'World contains the /ɜːr/ or /ɝ/ vowel and ends with /ld/.'}
     ]
   };
+  // Curated common English words. A generated puzzle is only shown if graph search finds a valid route.
+  const ladderWordBank = new Set(`
+cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut
+cold cord card ward warm word worm form farm harm hard bard bald bold ball fall fell feel feet meet meat heat head heal teal tell tall tail
+belt bell care dare date late gate game came same sale pale pail pall poll pole pool cool cook book boot boat coat cost cast
+sand band bend bent sent send tend tent test best vest west went want pant part cart case cash dash dish fish wish wash goat
+ring sing sink silk milk mild wild will wall walk talk tale tame time lime line wine wind mind mine fine fire five hive have hate
+make take lake like tide ride side site bite bike hike hide wide wife wise rise rice nice nine pine pane pain pair fair fail call calm palm
+bark dark core hand land lane data duty`
+    .trim().split(/\\s+/));
+  function ladderDiffersByOne(a, b) {
+    return a.length === b.length && a !== b && [...a].filter((ch, i) => ch !== b[i]).length === 1;
+  }
+  function findLadderPath(start, goal, blocked = new Set()) {
+    if (start === goal) return [start];
+    const queue = [[start]], visited = new Set([start]);
+    while (queue.length) {
+      const path = queue.shift(), last = path[path.length - 1];
+      for (const candidate of ladderWordBank) {
+        if (visited.has(candidate) || (blocked.has(candidate) && candidate !== goal) || !ladderDiffersByOne(last, candidate)) continue;
+        const next = [...path, candidate];
+        if (candidate === goal) return next;
+        visited.add(candidate);
+        queue.push(next);
+      }
+    }
+    return null;
+  }
+  function generateWordLadders(level, count = 12) {
+    const minSteps = level === 'challenge' ? 3 : 1;
+    const maxSteps = level === 'guided' ? 3 : level === 'challenge' ? 7 : 5;
+    const candidates = [], words = [...ladderWordBank];
+    for (const start of words) for (const goal of words) {
+      if (start.length !== goal.length || start === goal) continue;
+      const path = findLadderPath(start, goal);
+      if (!path) continue;
+      const steps = path.length - 1;
+      if (steps < minSteps || steps > maxSteps) continue;
+      candidates.push({start,goal,path:path.slice(1),hint:'Change one letter at a time. Use real words and keep a route open to the goal.',explain:path.join(' → ')+' is one valid route. Each move changes exactly one letter.'});
+    }
+    for (let i=candidates.length-1;i>0;i--) { const j=Math.floor(Math.random()*(i+1)); [candidates[i],candidates[j]]=[candidates[j],candidates[i]]; }
+    const chosen=[],pairs=new Set();
+    for (const item of candidates) { const key=item.start+':'+item.goal; if(pairs.has(key))continue; chosen.push(item); pairs.add(key); if(chosen.length>=count)break; }
+    return chosen.length >= Math.min(6,count) ? chosen : [...rounds.wordladder];
+  }
   function getRoundPool(id, selectedLevel) {
     const level = selectedLevel || difficultyForMode(id).level;
     if (level === 'guided' && guidedRounds[id]) return guidedRounds[id];
     if (level === 'challenge' && challengeRounds[id]) return challengeRounds[id];
-    if (id === 'wordladder') {
-      if (level === 'guided') return rounds.wordladder.slice(0,5);
-      if (level === 'challenge') return [...rounds.wordladder].sort((a,b) => b.path.length-a.path.length);
-      return rounds.wordladder;
-    }
+    if (id === 'wordladder') return generateWordLadders(level, 12);
     return rounds[id];
   }
 
@@ -251,12 +292,11 @@
   root.addEventListener('submit', e => {
     const form=e.target.closest('[data-think-ladder-form]');if(!form||mode!=='wordladder')return;e.preventDefault();if(locked)return;
     const pool=activePool || getRoundPool('wordladder'),item=pool[index%pool.length],input=form.querySelector('input'),word=input.value.trim().toLowerCase(),previous=ladderPath[ladderPath.length-1];
-    const validWords=new Set([item.start,...item.path,item.goal]);
     ladderWordNote={word,meaning:ladderMeanings[word]||null};
-    const differs=word.length===previous.length&&word!==previous&&[...word].filter((ch,i)=>ch!==previous[i]).length===1;
-    const expected=item.path[ladderPath.length-1]||item.goal;
-    const allowed=validWords.has(word)&&differs&&word===expected;
-    if(!allowed){roundMistakes++;const fb=root.querySelector('#tl-feedback');fb.hidden=false;fb.className='tl-feedback is-wrong';fb.innerHTML='<strong>Not quite—check the move.</strong><p>'+(!differs?'Change exactly one letter from “'+esc(previous)+'”.':word!==expected?'The next step in this ladder is a different word. Look for a one-letter change that moves you closer to the goal.':'Try a valid word from this ladder.')+'</p>'+(ladderWordNote.meaning?'<p><strong>'+esc(word)+':</strong> '+esc(ladderWordNote.meaning)+'</p>':'')+(roundMistakes>=2?'<p>'+esc(adaptiveHint('wordladder'))+'</p>':'');if(!ladderMistakeRecorded&&window.EpiphanyThinkLab){window.EpiphanyThinkLab.recordResult('spelling','word-ladder',false,false);ladderMistakeRecorded=true;}input.select();return;}
+    const differs=ladderDiffersByOne(previous,word),alreadyUsed=ladderPath.includes(word);
+    const route=findLadderPath(word,item.goal,new Set([...ladderPath,word]));
+    const allowed=ladderWordBank.has(word)&&differs&&!alreadyUsed&&!!route;
+    if(!allowed){roundMistakes++;const fb=root.querySelector('#tl-feedback');fb.hidden=false;fb.className='tl-feedback is-wrong';const reason=!differs?'Change exactly one letter from “'+esc(previous)+'”.':!ladderWordBank.has(word)?'That word is not in this game’s curated word bank yet. Try another common English word.':alreadyUsed?'You have already used that word. Choose a new step.':'That move closes off the route to the goal. Try a word that keeps a valid path open.';fb.innerHTML='<strong>Not quite—check the move.</strong><p>'+reason+'</p>'+(ladderWordNote.meaning?'<p><strong>'+esc(word)+':</strong> '+esc(ladderWordNote.meaning)+'</p>':'')+(roundMistakes>=2?'<p>'+esc(adaptiveHint('wordladder'))+'</p>':'');if(!ladderMistakeRecorded&&window.EpiphanyThinkLab){window.EpiphanyThinkLab.recordResult('spelling','word-ladder',false,false);ladderMistakeRecorded=true;}input.select();return;}
     ladderPath.push(word);
     if(window.EpiphanyThinkLab)window.EpiphanyThinkLab.recordResult('spelling','word-ladder',true,word===item.goal&&index===(activePool || getRoundPool('wordladder')).length-1);
     if(word===item.goal){score++;locked=true;roundMistakes=0;renderGame();const fb=root.querySelector('#tl-feedback');fb.hidden=false;fb.className='tl-feedback is-correct';fb.innerHTML='<strong>✓ Ladder complete!</strong><p>'+esc(item.explain)+'</p>';const next=root.querySelector('[data-think-next]');if(next)next.hidden=false;}
