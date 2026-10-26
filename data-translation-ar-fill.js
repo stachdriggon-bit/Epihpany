@@ -557,6 +557,14 @@ window.EPIPHANY_AR_TRANSLATION_PHRASES = Object.assign(window.EPIPHANY_AR_TRANSL
   "put off":"يؤجّل",
   "Not at all.":"لا مانع إطلاقًا.",
   "Yes, I open window yesterday.":"نعم، فتحتُ النافذة أمس.",
+  "One more try":"محاولة أخرى",
+  "Your first answer is a clue, not a penalty. Try again before seeing the answer.":"إجابتك الأولى دليل يساعدك، وليست عقوبة. حاول مرة أخرى قبل الاطلاع على الإجابة.",
+  "Try again":"حاول مرة أخرى",
+  "Finding the pattern takes practice. Compare the corrected sentence with the original and notice what changed.":"يتطلب اكتشاف النمط تدريبًا. قارن الجملة المصححة بالأصلية ولاحظ ما الذي تغيّر.",
+  "English verbs have their own patterns and prepositions. A direct translation from Arabic can sound unnatural, so learn the verb together with what follows it.":"لكل فعل في الإنجليزية تركيب وحروف جر ترتبط به. قد تبدو الترجمة الحرفية من العربية غير طبيعية، لذا تعلّم الفعل مع التركيب الذي يأتي بعده.",
+  "A verb after a preposition often takes the -ing form.":"يأتي الفعل بعد حرف الجر غالبًا بصيغة تنتهي بـ ing.",
+  "After look forward to, use a verb ending in -ing.":"بعد التعبير الدال على التطلّع إلى شيء، نستخدم الفعل بصيغة تنتهي بـ ing.",
+  "Use the past participle after have or has in the present perfect.":"نستخدم التصريف الثالث للفعل بعد have أو has في زمن المضارع التام.",
   "I am minding.":"أنا أمانع.",
   "No, I wouldn’t mind to.":"لا، لن أمانع في ذلك."
 });
