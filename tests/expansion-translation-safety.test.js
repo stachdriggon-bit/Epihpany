@@ -19,7 +19,6 @@ test('advanced Arabic prompts preserve grammar structures that reveal the answer
   ];
 
   for (const [key, english] of cases) {
-    const escaped = key.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     const line = source.split('\n').find(row => row.includes("'" + key + "':"));
     assert.ok(line, 'question should exist: ' + key);
     assert.ok(
