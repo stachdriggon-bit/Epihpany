@@ -3027,3 +3027,8 @@ body[data-theme="dark"] .answer{box-shadow:0 1px 0 rgba(0,0,0,.35),0 8px 16px -1
 .tl-connection-controls>span{font-size:.9rem;font-weight:750;color:var(--muted);margin-right:4px}
 .tl-connection-count{margin:0;text-align:center;color:var(--muted);font-size:.92rem}
 @media(max-width:520px){.tl-connection-board{grid-template-columns:repeat(2,minmax(0,1fr))}.tl-connection-board .tl-connection-word{min-height:44px;font-size:.9rem}}
+
+/* Chain Reaction: show the links built so far */
+.tl-chain-path{display:flex;align-items:center;justify-content:center;gap:7px;flex-wrap:wrap;line-height:1.7}
+.tl-chain-link{display:inline-flex;align-items:center;padding:5px 10px;border:1px solid var(--line);border-radius:9px;background:var(--ground);font-weight:850}
+.tl-chain-path .tl-ladder-step{font-weight:850;color:var(--muted)}
