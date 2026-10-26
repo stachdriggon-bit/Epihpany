@@ -2669,8 +2669,12 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     if(hasArabic(authored))return {text:cleanTx(authored),exact:true};
     const found=translateToArabic(en);
     if(found&&!found.unavailable&&hasArabic(found.text)&&cleanTx(found.text)!==en){
-      // A bare dictionary gloss is not a safe translation of an option or of feedback text.
-      if((txIsAnswer(el)||txInSheet(el))&&!found.exact)return null;
+      // Never present a word-by-word gloss as a fluent sentence. For longer prompts,
+      // explanations, and feedback, require an authored exact phrase translation;
+      // otherwise mixed Arabic/English output can teach the wrong grammar.
+      const englishWords=(en.match(/[A-Za-z]+(?:['’-][A-Za-z]+)*/g)||[]).length;
+      const isSentenceLike=englishWords>=4||/[.!?]/.test(en)||en.length>=48;
+      if(!found.exact&&(txIsAnswer(el)||txInSheet(el)||isSentenceLike))return null;
       return {text:cleanTx(found.text),exact:!!found.exact};
     }
     return null;
