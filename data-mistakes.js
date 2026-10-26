@@ -1014,7 +1014,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Choose the correct form.",
     "sub_ar": "اختر الصيغة الصحيحة.",
     "prompt": "If I ___ more time, I would learn Japanese.",
-    "q_ar": "لو كان لدي وقت أكثر، لتعلمت اليابانية.",
+    "q_ar": "أكمل الجملة الإنجليزية: “If I ___ more time, I would learn Japanese.”",
     "options": [
       "have",
       "had",
@@ -1071,7 +1071,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Choose the correct sentence.",
     "sub_ar": "اختر الجملة الصحيحة.",
     "prompt": "Only after the review ___ the error discovered.",
-    "q_ar": "لم يُكتشف الخطأ إلا بعد المراجعة.",
+    "q_ar": "أكمل الجملة الإنجليزية: “Only after the review ___ the error discovered.”",
     "options": [
       "the team did",
       "did the team",
@@ -1299,7 +1299,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Choose the correct form.",
     "sub_ar": "اختر الصيغة الصحيحة.",
     "prompt": "We ___ our grandparents yesterday.",
-    "q_ar": "زرنا أجدادنا أمس.",
+    "q_ar": "أكمل الجملة الإنجليزية: “We ___ our grandparents yesterday.”",
     "options": [
       "visit",
       "visited",
@@ -1603,7 +1603,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Choose the correct sentence.",
     "sub_ar": "اختر الجملة الصحيحة.",
     "prompt": "Not until midnight ___ home.",
-    "q_ar": "لم يعودوا إلى المنزل إلا عند منتصف الليل.",
+    "q_ar": "أكمل الجملة الإنجليزية: “Not until midnight ___ home.”",
     "options": [
       "they returned",
       "did they return",
@@ -1622,7 +1622,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Choose the correct form.",
     "sub_ar": "اختر الصيغة الصحيحة.",
     "prompt": "He admitted ___ the mistake.",
-    "q_ar": "اعترف بارتكاب الخطأ.",
+    "q_ar": "أكمل الجملة الإنجليزية: “He admitted ___ the mistake.”",
     "options": [
       "to make",
       "make",
@@ -1660,7 +1660,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Choose the correct form.",
     "sub_ar": "اختر الصيغة الصحيحة.",
     "prompt": "I wish I ___ more time yesterday.",
-    "q_ar": "أتمنى لو أن لدي وقتًا أكثر أمس.",
+    "q_ar": "أكمل الجملة الإنجليزية: “I wish I ___ more time yesterday.”",
     "options": [
       "have",
       "had",
@@ -1698,7 +1698,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Choose the correct form.",
     "sub_ar": "اختر الصيغة الصحيحة.",
     "prompt": "I had my laptop ___ yesterday.",
-    "q_ar": "أصلحتُ حاسوبي المحمول أمس.",
+    "q_ar": "أكمل الجملة الإنجليزية: “I had my laptop ___ yesterday.”",
     "options": [
       "repair",
       "repaired",
@@ -1736,7 +1736,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Choose the correct form.",
     "sub_ar": "اختر الصيغة الصحيحة.",
     "prompt": "She denied ___ the confidential email.",
-    "q_ar": "أنكرت إرسال البريد الإلكتروني السري.",
+    "q_ar": "أكمل الجملة الإنجليزية: “She denied ___ the confidential email.”",
     "options": [
       "to send",
       "sending",
@@ -1926,7 +1926,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Choose the correct word.",
     "sub_ar": "اختر الكلمة الصحيحة.",
     "prompt": "The proposal, ___ merits remain disputed, was approved.",
-    "q_ar": "تمت الموافقة على الاقتراح، الذي لا تزال مزاياه محل خلاف.",
+    "q_ar": "أكمل الجملة الإنجليزية: “The proposal, ___ merits remain disputed, was approved.”",
     "options": [
       "which",
       "whose",
@@ -1983,7 +1983,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Choose the correct form.",
     "sub_ar": "اختر الصيغة الصحيحة.",
     "prompt": "Only after the audit ___ the discrepancy discovered.",
-    "q_ar": "لم يُكتشف التباين إلا بعد التدقيق.",
+    "q_ar": "أكمل الجملة الإنجليزية: “Only after the audit ___ the discrepancy discovered.”",
     "options": [
       "the team did",
       "did the team",
@@ -2154,7 +2154,7 @@ const MISTAKE_QUESTIONS = [
     "sub": "Choose the correct form.",
     "sub_ar": "اختر الصيغة الصحيحة.",
     "prompt": "The evidence, together with the appendices, ___ been reviewed.",
-    "q_ar": "تمت مراجعة الأدلة، إلى جانب الملاحق.",
+    "q_ar": "أكمل الجملة الإنجليزية: “The evidence, together with the appendices, ___ been reviewed.”",
     "options": [
       "have",
       "has",
