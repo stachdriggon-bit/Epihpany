@@ -2961,3 +2961,23 @@ body[data-theme="dark"] .quick-nav-option:has(input:checked){background:#302c4c;
   .monthly-word-thread .btn{white-space:normal;max-width:100%}
   .monthly-word-thread-kicker{overflow-wrap:anywhere}
 }
+
+/* Dark mode: buttons and face-down cards that were unreadable. */
+body[data-theme="dark"] #game-finish-here,
+body[data-theme="dark"] .share-question-btn{color:var(--ink);background:rgba(255,255,255,.06);border-color:var(--line)}
+body[data-theme="dark"] .share-question-btn:hover,body[data-theme="dark"] #game-finish-here:hover{background:rgba(255,255,255,.12)}
+body[data-theme="dark"] .mg-tile:not(.is-open):not(.is-done){background:#2b2f4d;border-color:#4a4f7a;color:#e8ebff;box-shadow:0 3px 0 rgba(0,0,0,.45)}
+.top{background:rgba(245,246,252,.97)}
+body[data-theme="dark"] .top{background:rgba(17,21,34,.97)}
+
+/* Polish: depth, press feedback and answer reactions (all disabled by prefers-reduced-motion above). */
+.answer{box-shadow:0 1px 0 rgba(18,26,58,.06),0 6px 14px -10px rgba(18,26,58,.35)}
+.answer:not(:disabled):hover{border-color:var(--focus);box-shadow:0 2px 0 rgba(18,26,58,.08),0 10px 20px -12px rgba(18,26,58,.4);transform:translateY(-1px)}
+.answer:not(:disabled):active{transform:translateY(1px) scale(.995);box-shadow:none}
+.answer.correct{animation:ans-pop .32s ease-out}
+.answer.wrong{animation:ans-shake .34s ease-in-out}
+@keyframes ans-pop{0%{transform:scale(1)}45%{transform:scale(1.025)}100%{transform:scale(1)}}
+@keyframes ans-shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-5px)}40%{transform:translateX(5px)}60%{transform:translateX(-3px)}80%{transform:translateX(3px)}}
+body[data-theme="dark"] .answer{box-shadow:0 1px 0 rgba(0,0,0,.35),0 8px 16px -12px rgba(0,0,0,.7)}
+.tx-is-ar{font-weight:500;letter-spacing:0}
+.tx-is-ar .key,.answer .key{font-family:var(--body)}

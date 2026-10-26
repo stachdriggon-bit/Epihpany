@@ -2749,6 +2749,8 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     target.dataset.txUnit='1';
     // Sheet text and mini-game cards share one screen-level button instead of one button per element.
     if(txInSheet(target)||txInMini(target))return;
+    // Answer options follow the screen-level button; a button beside every option only adds clutter.
+    if(txIsAnswer(target)&&!target.classList.contains('story-decision-option')&&document.querySelector('#game-ar'))return;
     // Never offer a dead button once we know there is no Arabic for this text.
     if(txCanDecide(target)&&!txResolve(target))return;
     if(!target.id)target.id='translation-source-'+(++translationControlId);
@@ -5179,6 +5181,14 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
       const k = Number(e.key) - 1;
       if (k < G.questions[G.i].q.answers.length) selectAnswer(k);
     } else if (e.key === 'Enter' && G.answered && !(document.activeElement && document.activeElement.tagName === 'BUTTON')) next();
+  });
+
+  // T toggles the Arabic translation of the current game screen (same as the translate button).
+  document.addEventListener('keydown',e=>{
+    if((e.key!=='t'&&e.key!=='T')||e.altKey||e.ctrlKey||e.metaKey)return;
+    const target=e.target;if(target&&(target.isContentEditable||/^(INPUT|TEXTAREA|SELECT)$/.test(target.tagName)))return;
+    const button=$('#game-ar');if(!G||!button||button.hidden||button.offsetParent===null)return;
+    e.preventDefault();button.click();
   });
 
   function shufflePlacement(list){const items=list.slice();for(let i=items.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[items[i],items[j]]=[items[j],items[i]];}return items;}
