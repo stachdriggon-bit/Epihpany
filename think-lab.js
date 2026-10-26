@@ -444,6 +444,11 @@ bark dark core hand land lane data duty melt`
     pale:'Light in colour, or having less colour than usual.',
     pole:'A long, straight, cylindrical piece of material.'
   };
+  function nextLadderWord(item, path) {
+    const current = path[path.length - 1] || item.start;
+    const route = findLadderPath(current, item.goal, new Set(path.slice(0, -1)));
+    return route && route.length > 1 ? route[1] : null;
+  }
   function renderGame() {
     const pool = activePool || getRoundPool(mode);
     const item = pool[index % pool.length];
@@ -455,7 +460,7 @@ bark dark core hand land lane data duty melt`
     if (mode === 'translator') intro = '<div class="tl-translation-prompt" lang="ar" dir="rtl">'+esc(item.ar)+'</div><div class="tl-answer-options">'+item.options.map((w,i)=>'<button type="button" class="tl-option" data-think-answer="'+i+'"><span class="tl-option-index">'+String.fromCharCode(65+i)+'</span><strong>'+esc(w)+'</strong></button>').join('')+'</div>';
     if (mode === 'wordladder') {
       const path = ladderPath.length ? ladderPath : [item.start];
-      const nextWord = item.path[Math.max(0, path.length - 1)];
+      const nextWord = nextLadderWord(item, path);
       const nextMeaning = nextWord ? ladderMeanings[nextWord] : null;
       const activeHint = path[path.length - 1] !== item.goal && nextMeaning
         ? 'Hint for your next word: ' + nextMeaning
@@ -479,7 +484,7 @@ bark dark core hand land lane data duty melt`
     const differs=ladderDiffersByOne(previous,word),alreadyUsed=ladderPath.includes(word);
     const route=findLadderPath(word,item.goal,new Set([...ladderPath,word]));
     const allowed=ladderWordBank.has(word)&&differs&&!alreadyUsed&&!!route;
-    if(!allowed){roundMistakes++;const fb=root.querySelector('#tl-feedback');fb.hidden=false;fb.className='tl-feedback is-wrong';const reason=!differs?'Change exactly one letter from “'+esc(previous)+'”.':!ladderWordBank.has(word)?'That word is not in this game’s curated word bank yet. Try another common English word.':alreadyUsed?'You have already used that word. Choose a new step.':'That move closes off the route to the goal. Try a word that keeps a valid path open.';fb.innerHTML='<strong>Not quite—check the move.</strong><p>'+reason+'</p>'+(ladderWordNote.meaning?'<p><strong>'+esc(word)+':</strong> '+esc(ladderWordNote.meaning)+'</p>':'')+(roundMistakes>=2?'<p>'+esc(adaptiveHint('wordladder'))+'</p>':'')+(roundMistakes>=3&&item.path[Math.max(0,ladderPath.length-1)]&&ladderMeanings[item.path[Math.max(0,ladderPath.length-1)]]?'<aside class="tl-ladder-meaning tl-ladder-next-hint" role="note"><strong>Meaning hint for the next word</strong><p>'+esc(ladderMeanings[item.path[Math.max(0,ladderPath.length-1)]])+'</p></aside>':'');if(!ladderMistakeRecorded&&window.EpiphanyThinkLab){window.EpiphanyThinkLab.recordResult('spelling','word-ladder',false,false);ladderMistakeRecorded=true;}input.select();return;}
+    if(!allowed){roundMistakes++;const fb=root.querySelector('#tl-feedback');fb.hidden=false;fb.className='tl-feedback is-wrong';const reason=!differs?'Change exactly one letter from “'+esc(previous)+'”.':!ladderWordBank.has(word)?'That word is not in this game’s curated word bank yet. Try another common English word.':alreadyUsed?'You have already used that word. Choose a new step.':'That move closes off the route to the goal. Try a word that keeps a valid path open.';fb.innerHTML='<strong>Not quite—check the move.</strong><p>'+reason+'</p>'+(ladderWordNote.meaning?'<p><strong>'+esc(word)+':</strong> '+esc(ladderWordNote.meaning)+'</p>':'')+(roundMistakes>=2?'<p>'+esc(adaptiveHint('wordladder'))+'</p>':'')+(roundMistakes>=3&&nextLadderWord(item,ladderPath)&&ladderMeanings[nextLadderWord(item,ladderPath)]?'<aside class="tl-ladder-meaning tl-ladder-next-hint" role="note"><strong>Meaning hint for the next word</strong><p>'+esc(ladderMeanings[nextLadderWord(item,ladderPath)])+'</p></aside>':'');if(!ladderMistakeRecorded&&window.EpiphanyThinkLab){window.EpiphanyThinkLab.recordResult('spelling','word-ladder',false,false);ladderMistakeRecorded=true;}input.select();return;}
     ladderPath.push(word);
     if(window.EpiphanyThinkLab)window.EpiphanyThinkLab.recordResult('spelling','word-ladder',true,word===item.goal&&index===(activePool || getRoundPool('wordladder')).length-1);
     if(word===item.goal){score++;locked=true;roundMistakes=0;renderGame();const fb=root.querySelector('#tl-feedback');fb.hidden=false;fb.className='tl-feedback is-correct';fb.innerHTML='<strong>✓ Ladder complete!</strong><p>'+esc(item.explain)+'</p>';const next=root.querySelector('[data-think-next]');if(next)next.hidden=false;}
