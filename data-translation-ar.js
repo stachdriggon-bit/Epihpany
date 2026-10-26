@@ -1327,7 +1327,7 @@ window.EPIPHANY_AR_TRANSLATION_PHRASES = Object.assign(window.EPIPHANY_AR_TRANSL
   "have been tomorrow":"كنت غدًا",
   "The man ___ lives next door is a doctor.":"الرجل ___ الذي يسكن في المنزل المجاور طبيب.",
   "which":"الذي لغير العاقل",
-  "whose":"الذي يملك",
+  "whose":"الذي تعود ملكيته إلى / التي تعود ملكيتها إلى",
   "who":"الذي للعاقل",
   "where":"حيث",
   "Despite ___ tired, she finished the report.":"على الرغم من ___ التعب، أنهت التقرير.",
