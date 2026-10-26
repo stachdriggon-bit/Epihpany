@@ -380,7 +380,7 @@ window.EPIPHANY_AR_TRANSLATION_PHRASES = {
   "Explained to a group": "شرح لمجموعة",
   "She looked for evidence": "بحثت عن أدلة",
   "She bought equipment": "اشترت معدات",
-  "She finished first": "أنهت العمل أولًا",
+  "She finished first": "أنهت أولًا",
   "People hid concerns and ideas": "أخفى الناس مخاوفهم وأفكارهم",
   "They were too short": "كانت قصيرة جدًا",
   "The manager cancelled them": "ألغى المدير الاجتماعات",
