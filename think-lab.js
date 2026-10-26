@@ -352,15 +352,19 @@ bark dark core hand land lane data duty`
     hand:'The body part at the end of the arm, used for holding things.',
     land:'The solid surface of the Earth; also to arrive on the ground.',
     lane:'A narrow road or a marked strip for traffic.',
+    same:'Identical; not different.',
+    mind:'The part of a person that thinks, remembers, and feels.',
+    mine:'Belonging to me; also a place where minerals are dug from the ground.',
+    fine:'Good or satisfactory; also a small amount of money paid as a penalty.',
+    fire:'Heat and light produced when something burns.',
+    palm:'The inner surface of the hand between the wrist and fingers.',
     data:'Facts or information collected for reference or analysis.',
     duty:'Something a person is expected or required to do.',
     boot:'A sturdy shoe that covers the foot and often the ankle.',
     boat:'A small vessel used for travelling on water.',
     sale:'An event or period when goods are sold, often at reduced prices.',
     pale:'Light in colour, or having less colour than usual.',
-    pole:'A long, straight, cylindrical piece of material.',
-    pole:'A long, straight, cylindrical piece of material.',
-    warm:'Having a comfortably high temperature; not cold.'
+    pole:'A long, straight, cylindrical piece of material.'
   };
   function renderGame() {
     const pool = activePool || getRoundPool(mode);
