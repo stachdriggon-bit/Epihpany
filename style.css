@@ -203,6 +203,13 @@ body.ar-on .ar-only{display:block}
 .sheet.show{transform:none}
 .sheet.bad{background:var(--coral-soft)}
 .sheet-in{max-width:640px;margin:0 auto;display:grid;gap:12px}
+/* Feedback is a compact, scrollable learning panel on short screens. */
+#sheet{max-height:min(58vh,560px);overflow-y:auto;overscroll-behavior:contain;box-sizing:border-box}
+#sheet .sheet-in{gap:9px}
+#sheet .sheet-in h3{font-size:clamp(20px,4.8vw,25px);line-height:1.25;flex-wrap:wrap}
+#sheet .sheet-in p{font-size:clamp(15px,3.8vw,17px);line-height:1.55;margin:0}
+#sheet .sheet-in .tx-group-btn{white-space:normal;max-width:100%}
+#sheet .sheet-actions .btn{min-width:0;max-width:100%}
 .sheet h3{font-size:26px;font-weight:800;display:flex;align-items:center;gap:12px}
 .sheet-mark{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:var(--good);color:#fff;flex:none}
 .sheet.bad .sheet-mark{background:var(--bad)}
