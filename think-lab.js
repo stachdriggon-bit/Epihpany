@@ -24,7 +24,20 @@
   rounds.wordladder = [
     {start:'cat',goal:'dog',path:['cot','dot','dog'],hint:'Change exactly one letter at each step. Every step must be a real English word.',explain:'cat → cot → dot → dog changes one letter at each step, and every step forms a real word.'},
     {start:'cold',goal:'warm',path:['cord','card','ward','warm'],hint:'Change one letter per move. Keep every intermediate word meaningful.',explain:'cold → cord → card → ward → warm changes one letter at a time and makes valid words.'},
-    {start:'head',goal:'tail',path:['heal','teal','tell','tall','tail'],hint:'A longer ladder: make one valid one-letter change per move.',explain:'head → heal → teal → tell → tall → tail is a valid ladder with one letter changed each time.'}
+    {start:'head',goal:'tail',path:['heal','teal','tell','tall','tail'],hint:'A longer ladder: make one valid one-letter change per move.',explain:'head → heal → teal → tell → tall → tail is a valid ladder with one letter changed each time.'},
+    {start:'fall',goal:'melt',path:['ball','bell','belt','melt'],hint:'Try changing the first letter, then look for a word that differs by one letter.',explain:'fall → ball → bell → belt → melt changes exactly one letter at each step.'},
+    {start:'make',goal:'time',path:['take','tame','time'],hint:'The middle word may change a vowel or consonant—only one letter each time.',explain:'make → take → tame → time is a valid one-letter ladder.'},
+    {start:'sand',goal:'sent',path:['band','bend','bent','sent'],hint:'Small spelling changes can create a completely different word.',explain:'sand → band → bend → bent → sent changes one letter per move.'},
+    {start:'ring',goal:'milk',path:['sing','sink','silk','milk'],hint:'Listen to the word as you change one letter at a time.',explain:'ring → sing → sink → silk → milk is a valid ladder.'},
+    {start:'hate',goal:'five',path:['have','hive','five'],hint:'Look for a familiar word that shares three of the four letters.',explain:'hate → have → hive → five changes exactly one letter each time.'},
+    {start:'cast',goal:'coat',path:['cost','coat'],hint:'A single vowel change may be enough to make the next word.',explain:'cast → cost → coat changes one letter at each step.'},
+    {start:'bark',goal:'care',path:['dark','dare','care'],hint:'You can change a consonant at the start or at the end.',explain:'bark → dark → dare → care is a valid one-letter ladder.'},
+    {start:'wind',goal:'like',path:['wine','line','lime','like'],hint:'Keep checking that each new word differs from the previous one by just one letter.',explain:'wind → wine → line → lime → like changes one letter per move.'},
+    {start:'late',goal:'gate',path:['date','dare','care','came','game','gate'],hint:'This one takes several steps. Focus only on the next move, not the whole route.',explain:'late → date → dare → care → came → game → gate changes one letter at every step.'},
+    {start:'book',goal:'tail',path:['cook','cool','pool','poll','pall','pail','tail'],hint:'A longer challenge: solve one small step at a time. Every intermediate word is part of the puzzle.',explain:'book → cook → cool → pool → poll → pall → pail → tail is a valid ladder.'},
+    {start:'pane',goal:'pine',path:['pine'],hint:'Can you spot the one-letter change immediately?',explain:'pane → pine changes just one letter: A becomes I.'},
+    {start:'cold',goal:'cord',path:['cord'],hint:'Sometimes the shortest ladder is just one move.',explain:'cold → cord changes one letter: L becomes R.'},
+    {start:'game',goal:'gate',path:['gate'],hint:'Compare the final letters carefully.',explain:'game → gate changes one letter: M becomes T.'}
   ];
   rounds.maze = [
     {target:'bridge',options:['bridge','fridge','bright','breeze'],explain:'Bridge is the word you heard. Listen for the opening consonant cluster /br/ and the ending /dʒ/.'},
@@ -81,8 +94,9 @@
     if (level === 'guided' && guidedRounds[id]) return guidedRounds[id];
     if (level === 'challenge' && challengeRounds[id]) return challengeRounds[id];
     if (id === 'wordladder') {
-      if (level === 'guided') return [rounds.wordladder[0],rounds.wordladder[1],rounds.wordladder[2]];
-      if (level === 'challenge') return [rounds.wordladder[2],rounds.wordladder[1],rounds.wordladder[0]];
+      if (level === 'guided') return rounds.wordladder.slice(0,5);
+      if (level === 'challenge') return [...rounds.wordladder].reverse();
+      return rounds.wordladder;
     }
     return rounds[id];
   }
@@ -150,21 +164,70 @@
     return hints[id] || '';
   }
   const ladderMeanings = {
-    cat:'A small domesticated animal related to lions and tigers, often kept as a pet.',
-    cot:'A small, simple bed, often a lightweight one used for camping or by a baby.',
+    cat:'A small domesticated animal often kept as a pet.',
+    cot:'A small bed, often used for a baby or for camping.',
     dot:'A very small round mark or spot.',
-    dog:'A common domesticated animal often kept as a pet; dogs can be trained to work or help people.',
+    dog:'A common domesticated animal often kept as a pet.',
     cold:'Having a low temperature; not warm.',
-    cord:'A long, thin piece of string or rope, or an insulated electrical wire.',
+    cord:'A long, thin piece of string, rope, or insulated wire.',
     card:'A piece of thick paper used for writing, identification, or playing games.',
-    ward:'A section of a hospital, or a person legally under another person’s care.',
+    ward:'A section of a hospital, or a person under another person’s legal care.',
     warm:'Having a comfortably high temperature; not cold.',
     head:'The part of the body that contains the brain, eyes, ears, nose, and mouth.',
     heal:'To become healthy again, or to make an injury or illness better.',
     teal:'A blue-green colour.',
-    tell:'To give information to someone using words; to say or explain something.',
+    tell:'To give information to someone using words.',
     tall:'Having greater than average height.',
-    tail:'The part that extends from the back of an animal’s body.'
+    tail:'The part that extends from the back of an animal’s body.',
+    fall:'To drop down or move towards the ground.',
+    ball:'A round object used in many games and sports.',
+    bell:'A hollow metal object that makes a ringing sound when struck.',
+    belt:'A strip worn around the waist, or a band that transfers motion in machinery.',
+    melt:'To become liquid because of heat.',
+    make:'To create, build, or produce something.',
+    take:'To get or carry something with you.',
+    tame:'Not wild; trained to live with or be handled by people.',
+    time:'What we measure in seconds, minutes, and hours.',
+    sand:'Loose grains of rock often found on beaches and in deserts.',
+    band:'A group of musicians, or a narrow strip of material.',
+    bend:'To curve or cause something to curve.',
+    bent:'Curved rather than straight; also the past tense of bend.',
+    sent:'Past tense of send; caused something to go to someone or somewhere.',
+    ring:'A circular piece of jewellery, or the sound of a bell.',
+    sing:'To make musical sounds with the voice.',
+    sink:'To go down below the surface of water or another liquid.',
+    silk:'A fine, soft thread or fabric produced by silkworms.',
+    milk:'A white liquid produced by mammals to feed their young.',
+    hate:'To strongly dislike someone or something.',
+    have:'To own, hold, or experience something.',
+    hive:'A structure where bees live.',
+    five:'The number after four and before six.',
+    cast:'To throw something, or a group of actors in a production.',
+    cost:'The amount of money needed to buy or do something.',
+    coat:'An outer piece of clothing worn for warmth or protection.',
+    bark:'The outer covering of a tree; also the sound a dog makes.',
+    dark:'Having little or no light.',
+    dare:'To be brave enough to do something, or to challenge someone.',
+    care:'The act of looking after someone or something; attention or concern.',
+    wind:'Moving air; pronounced differently from the verb meaning to twist.',
+    wine:'An alcoholic drink made from fermented grapes.',
+    line:'A long, narrow mark or a row of people or things.',
+    lime:'A small green citrus fruit, or a substance used in building.',
+    like:'To enjoy or find something pleasant.',
+    late:'After the expected or usual time.',
+    date:'A particular day on a calendar; also a social meeting.',
+    came:'Past tense of come.',
+    game:'An activity played for fun, competition, or practice.',
+    gate:'A movable barrier used to close an entrance.',
+    book:'A set of written or printed pages bound together.',
+    cook:'To prepare food using heat.',
+    cool:'Slightly cold; also informal for stylish or impressive.',
+    pool:'A small area of still water, or a game played with cue sticks.',
+    poll:'A survey that collects people’s opinions or votes.',
+    pall:'A cloth spread over a coffin; less commonly, something that casts a gloomy feeling.',
+    pail:'A bucket, usually with a handle.',
+    pane:'A single sheet or section of glass in a window.',
+    pine:'An evergreen tree with needle-like leaves.'
   };
   function renderGame() {
     const pool = activePool || getRoundPool(mode);
