@@ -2998,3 +2998,22 @@ body[data-theme="dark"] .answer{box-shadow:0 1px 0 rgba(0,0,0,.35),0 8px 16px -1
 .tl-entry-row input{flex:1;min-width:160px;padding:12px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);font:inherit}
 .tl-game-card [data-think-answer]:disabled{opacity:.72;cursor:default}
 @media(max-width:520px){.tl-connection-grid{gap:7px}.tl-connection-word{font-size:.92rem;padding:8px 5px}.tl-forge-letters span{width:40px;height:44px}}
+
+
+/* Think Lab: tactile word-building boards */
+.tl-forge-board,.tl-scramble-board{margin:18px 0 12px}
+.tl-forge-slots,.tl-scramble-slots{display:flex;justify-content:center;align-items:stretch;gap:8px;flex-wrap:wrap;min-height:62px;padding:12px;border:1px dashed var(--line);border-radius:16px;background:var(--ground)}
+.tl-puzzle-slot{display:grid;place-items:center;min-width:42px;min-height:48px;padding:7px 10px;border:1px dashed #a8a3d7;border-radius:10px;background:var(--surface);color:var(--ink);font:inherit;font-weight:800;cursor:pointer;transition:transform .12s,border-color .12s,background .12s}
+.tl-puzzle-slot.is-empty{background:color-mix(in srgb,var(--surface) 78%,#8580d9 22%);color:var(--muted)}
+.tl-puzzle-slot.is-filled{border-style:solid;border-color:#8b83df;box-shadow:0 2px 0 var(--line)}
+.tl-puzzle-slot:hover{border-color:#6d63cb;transform:translateY(-1px)}
+.tl-letter-tile{display:grid;place-items:center;width:46px;height:48px;border:1px solid var(--line);border-radius:11px;background:var(--surface);color:var(--ink);font-size:1.2rem;font-weight:850;box-shadow:0 3px 0 var(--line);cursor:grab;touch-action:manipulation}
+.tl-letter-tile:active{cursor:grabbing}
+.tl-letter-tile:disabled,.tl-word-chip:disabled{opacity:.42;cursor:default;box-shadow:none}
+.tl-forge-letters{display:flex;justify-content:center;gap:9px;flex-wrap:wrap;margin:16px 0}
+.tl-scramble-slots{justify-content:flex-start}
+.tl-word-slot{min-width:66px;min-height:43px;font-size:.94rem}
+.tl-scramble-bank{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0}
+.tl-word-chip{display:inline-flex;align-items:center;justify-content:center;padding:9px 12px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);font:inherit;font-weight:700;cursor:grab;box-shadow:0 2px 0 var(--line);touch-action:manipulation}
+.tl-puzzle-help{margin:8px 0 14px;color:var(--muted);font-size:.88rem;line-height:1.5}
+@media(max-width:520px){.tl-forge-slots,.tl-scramble-slots{gap:5px;padding:8px}.tl-puzzle-slot{min-width:34px;min-height:42px;padding:5px 7px}.tl-letter-tile{width:40px;height:43px}.tl-word-slot{min-width:54px;font-size:.84rem}.tl-word-chip{padding:8px 9px}}
