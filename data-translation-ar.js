@@ -285,7 +285,7 @@ window.EPIPHANY_AR_TRANSLATION_PHRASES = {
   "What did Daniel decide?": "ماذا قرر دانيال؟",
   "What caused the strange readings?": "ما الذي تسبب في القراءات الغريبة؟",
   "What does “assumed” mean?": "ما معنى كلمة «assumed»؟",
-  "Why did the teacher praise Amina?": "لماذا أثنت المعلمة على أمينة؟",
+  "Why did the teacher praise Amina?": "ما سبب الإشادة بأمينة؟",
   "Why were the meetings unproductive?": "لماذا لم تكن الاجتماعات مثمرة؟",
   "What does “swept under the rug” mean?": "ما معنى التعبير «swept under the rug»؟",
   "What changed after delegation?": "ما الذي تغيّر بعد تفويض المهام؟",
@@ -920,7 +920,7 @@ window.EPIPHANY_AR_TRANSLATION_PHRASES = Object.assign(window.EPIPHANY_AR_TRANSL
   "a suggestion":"اقتراح",
   "make it more confusing":"يجعله أكثر إرباكًا",
   "resolve or organise it":"يحلّه أو ينظّمه",
-  "throw it away":"يتخلّص منه",
+  "throw it away":"التخلّص منه",
   "postpone it forever":"يؤجّله إلى الأبد",
   "can be trusted":"يمكن الوثوق به",
   "change their mind constantly":"يغيّر رأيه باستمرار",
@@ -5278,7 +5278,7 @@ window.EPIPHANY_AR_TRANSLATION_PHRASES = Object.assign(window.EPIPHANY_AR_TRANSL
   "What did Daniel decide?":"ماذا قرر دانيال؟",
   "What caused the strange readings?":"ما الذي تسبب في القراءات الغريبة؟",
   "What does “assumed” mean?": "ما معنى كلمة «assumed»؟",
-  "Why did the teacher praise Amina?":"لماذا أثنى المعلم على أمينة؟",
+  "Why did the teacher praise Amina?":"ما سبب الإشادة بأمينة؟",
   "Why were the meetings unproductive?":"لماذا كانت الاجتماعات غير مثمرة؟",
   "What does “swept under the rug” mean?": "ما معنى التعبير «swept under the rug»؟",
   "What changed after delegation?":"ما الذي تغير بعد توزيع المسؤوليات؟",
@@ -5642,7 +5642,7 @@ window.EPIPHANY_AR_TRANSLATION_PHRASES = Object.assign(window.EPIPHANY_AR_TRANSL
   "It requires careful judgement about evidence, not mechanical balance": "يتطلب حكمًا دقيقًا بشأن الأدلة، لا توازنًا آليًا",
   "It means never questioning either side": "يعني عدم التشكيك في أي طرف مطلقًا",
   "It is achieved by using equally long quotations": "يتحقق باستخدام اقتباسات متساوية الطول",
-  "A speaker says: “I wouldn't go so far as to call it a failure.”": "يقول أحد المتحدثين: «I wouldn't go so far as to call it a failure.»",
+  "A speaker says: “I wouldn't go so far as to call it a failure.”": "يقول أحد المتحدثين: «I wouldn't go so far as to call it a failure.» ما الذي يقصده؟",
 });
 
 
