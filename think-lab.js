@@ -47,10 +47,24 @@
   rounds.connections = [
     {prompt:'Which category connects these four words?',words:['rose','tulip','daisy','lily'],options:['Flowers','Tools','Weather'],answer:0,explain:'Rose, tulip, daisy and lily are all flowers.'},
     {prompt:'Which category connects these four words?',words:['eagle','sparrow','robin','owl'],options:['Fish','Birds','Mammals'],answer:1,explain:'Eagle, sparrow, robin and owl are all birds.'},
-    {prompt:'Which category connects these four words?',words:['shirt','jacket','socks','scarf'],options:['Things you wear','Tableware','Furniture'],answer:0,explain:'A shirt, jacket, socks and scarf are all items of clothing.'},
-    {prompt:'Which category connects these four words?',words:['minute','hour','second','day'],options:['Seasons','Units or periods of time','Directions'],answer:1,explain:'Minute, hour, second and day are all units or periods of time.'},
-    {prompt:'Which category connects these four words?',words:['whisper','shout','murmur','scream'],options:['Ways of speaking','Ways of moving','Ways of cooking'],answer:0,explain:'Whisper, shout, murmur and scream describe ways of speaking.'},
-    {prompt:'Which category connects these four words?',words:['tiny','small','little','minute'],options:['Very large','Very loud','Small in size'],answer:2,explain:'Tiny, small, little and minute can all mean small in size.'}
+    {prompt:'Which category connects these four words?',words:['shirt','jacket','socks','scarf'],options:['Things you wear','Tableware','Furniture'],answer:0,explain:'All four are items of clothing.'},
+    {prompt:'Which category connects these four words?',words:['minute','hour','second','day'],options:['Seasons','Units or periods of time','Directions'],answer:1,explain:'Each word names a unit or period of time.'},
+    {prompt:'Which category connects these four words?',words:['whisper','shout','murmur','scream'],options:['Ways of speaking','Ways of moving','Ways of cooking'],answer:0,explain:'All four describe ways of speaking.'},
+    {prompt:'Which category connects these four words?',words:['tiny','small','little','minute'],options:['Very large','Very loud','Small in size'],answer:2,explain:'All four can describe something small; “minute” here is pronounced my-NOOT.'},
+    {prompt:'Which category connects these four words?',words:['hammer','screwdriver','wrench','pliers'],options:['Garden plants','Hand tools','Musical instruments'],answer:1,explain:'These are all common hand tools.'},
+    {prompt:'Which category connects these four words?',words:['copper','iron','silver','gold'],options:['Metals','Fabrics','Grains'],answer:0,explain:'Copper, iron, silver and gold are metals.'},
+    {prompt:'Which category connects these four words?',words:['January','March','July','October'],options:['Months','Continents','Languages'],answer:0,explain:'Each is a month of the year.'},
+    {prompt:'Which category connects these four words?',words:['triangle','square','circle','rectangle'],options:['Kitchen appliances','Geometric shapes','Body parts'],answer:1,explain:'These are all geometric shapes.'},
+    {prompt:'Which category connects these four words?',words:['whale','dolphin','seal','otter'],options:['Aquatic or semi-aquatic mammals','Birds of prey','Reptiles'],answer:0,explain:'These animals are mammals associated with water.'},
+    {prompt:'Which category connects these four words?',words:['boil','fry','bake','grill'],options:['Cooking methods','Weather conditions','Ways to travel'],answer:0,explain:'Boil, fry, bake and grill are ways to cook food.'},
+    {prompt:'Which category connects these four words?',words:['honest','truthful','sincere','candid'],options:['Ways to disagree','Similar meanings about truthfulness','Words for speed'],answer:1,explain:'These words all relate to being truthful or genuine.'},
+    {prompt:'Which category connects these four words?',words:['north','south','east','west'],options:['Compass directions','Musical notes','Months'],answer:0,explain:'North, south, east and west are the four cardinal directions.'},
+    {prompt:'Which category connects these four words?',words:['oak','maple','pine','birch'],options:['Trees','Flowers','Insects'],answer:0,explain:'Oak, maple, pine and birch are types of trees.'},
+    {prompt:'Which category connects these four words?',words:['thermometer','barometer','hygrometer','anemometer'],options:['Weather instruments','Kitchen utensils','Sports equipment'],answer:0,explain:'These instruments measure temperature, air pressure, humidity or wind.'},
+    {prompt:'Which category connects these four words?',words:['novel','poem','play','short story'],options:['Literary forms','Building materials','Computer parts'],answer:0,explain:'A novel, poem, play and short story are forms of literature.'},
+    {prompt:'Which category connects these four words?',words:['ankle','elbow','knee','wrist'],options:['Joints in the body','Types of fruit','Clothing fasteners'],answer:0,explain:'Each word names a joint in the human body.'},
+    {prompt:'Which category connects these four words?',words:['generous','kind','considerate','thoughtful'],options:['Positive qualities','Cooking verbs','Weather words'],answer:0,explain:'These words describe positive qualities in how people treat others.'},
+    {prompt:'Which category connects these four words?',words:['evaporate','condense','freeze','melt'],options:['Changes of state','Ways of listening','Ways to write'],answer:0,explain:'These words describe changes of state in matter.'}
   ];
   rounds.scramble = [
     {prompt:'Build the sentence in the correct order.',words:['usually','coffee','I','morning','drink','the','in'],options:['Usually coffee I drink in the morning.','I usually drink coffee in the morning.','I drink usually in the coffee morning.'],answer:1,explain:'The natural order is subject + adverb of frequency + verb + object + time phrase.'},
@@ -80,7 +94,21 @@
     {prompt:'Continue the word association chain: CHEF → ?',options:['airport','kitchen','forest'],answer:1,explain:'A chef usually works in a kitchen.'},
     {prompt:'Continue the word association chain: SCHOOL → ?',options:['student','pilot','painter'],answer:0,explain:'Students attend school to learn.'},
     {prompt:'Continue the word association chain: DOCTOR → ?',options:['stadium','hospital','bakery'],answer:1,explain:'Doctors often work in hospitals.'},
-    {prompt:'Continue the word association chain: MUSIC → ?',options:['passport','instrument','blanket'],answer:1,explain:'Music can be played on a musical instrument.'}
+    {prompt:'Continue the word association chain: MUSIC → ?',options:['passport','instrument','blanket'],answer:1,explain:'Music can be played on a musical instrument.'},
+    {prompt:'Continue the word association chain: BEE → ?',options:['honey','snow','metal'],answer:0,explain:'Bees produce honey.'},
+    {prompt:'Continue the word association chain: CAMERA → ?',options:['photograph','sandwich','thunder'],answer:0,explain:'A camera is used to take photographs.'},
+    {prompt:'Continue the word association chain: WINTER → ?',options:['scarf','cactus','sunburn'],answer:0,explain:'A scarf is commonly worn to keep warm in winter.'},
+    {prompt:'Continue the word association chain: KEY → ?',options:['lock','cloud','pencil'],answer:0,explain:'A key is used to open or secure a lock.'},
+    {prompt:'Continue the word association chain: GARDEN → ?',options:['flower','engine','ticket'],answer:0,explain:'Flowers commonly grow in a garden.'},
+    {prompt:'Continue the word association chain: AIRPORT → ?',options:['luggage','saucepan','pillowcase'],answer:0,explain:'Travellers commonly bring luggage to an airport.'},
+    {prompt:'Continue the word association chain: PAINTER → ?',options:['brush','stethoscope','compass'],answer:0,explain:'A painter uses a brush.'},
+    {prompt:'Continue the word association chain: OCEAN → ?',options:['wave','brick','ladder'],answer:0,explain:'Waves are a familiar feature of the ocean.'},
+    {prompt:'Continue the word association chain: CLOCK → ?',options:['time','flour','forest'],answer:0,explain:'A clock measures or displays time.'},
+    {prompt:'Continue the word association chain: LIBRARY → ?',options:['borrow','bake','whistle'],answer:0,explain:'People often borrow books from a library.'},
+    {prompt:'Continue the word association chain: FIRE → ?',options:['smoke','snowflake','pillow'],answer:0,explain:'Smoke is commonly produced by fire.'},
+    {prompt:'Continue the word association chain: SEED → ?',options:['plant','helmet','receipt'],answer:0,explain:'A seed can grow into a plant.'},
+    {prompt:'Continue the word association chain: BREAD → ?',options:['bakery','garage','pharmacy'],answer:0,explain:'Bread is commonly made and sold at a bakery.'},
+    {prompt:'Continue the word association chain: THUNDER → ?',options:['lightning','footprint','whisper'],answer:0,explain:'Thunder and lightning are often associated during storms.'}
   ];
 
   rounds.wordladder = [
