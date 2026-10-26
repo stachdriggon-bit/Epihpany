@@ -395,7 +395,7 @@ window.EPIPHANY_AR_TRANSLATION_PHRASES = {
   "He lost his notes": "فقد ملاحظاته",
   "Make bad news sound less bad": "جعل الأخبار السيئة تبدو أقل سوءًا",
   "Prepare a dessert": "إعداد حلوى",
-  "Repeat a speech": "إعادة خطاب",
+  "Repeat a speech": "إعادة إلقاء خطاب",
   "Mistakes can become useful experience": "يمكن أن تتحول الأخطاء إلى خبرة مفيدة",
   "He should never speak again": "يجب ألّا يتحدث مجددًا",
   "Winning is the only goal": "الفوز هو الهدف الوحيد",
