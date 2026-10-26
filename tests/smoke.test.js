@@ -59,7 +59,7 @@ test('main navigation tabs open without uncaught page errors', async t => {
     browser = await chromium.launch({ headless: true });
     const errors = [];
     const consoleErrors = [];
-    const views = ['home','stories','world','arcade','words','trophies','progress','profile'];
+    const views = ['home','stories','resonance','world','arcade','words','trophies','progress','profile'];
     for (const view of views) {
       const page = await browser.newPage();
       await page.setViewportSize({ width: 800, height: 900 });
@@ -88,6 +88,13 @@ test('main navigation tabs open without uncaught page errors', async t => {
         await page.waitForFunction(() => typeof STORIES !== 'undefined' && Array.isArray(STORIES) && STORIES.length >= 34, null, { timeout: 5000 });
         assert.ok(requested.some(path => path.endsWith('/data-stories.js')), 'Stories should load its data on first open');
       }
+      if (view === 'resonance') {
+        await page.waitForFunction(() => typeof window.EPIPHANY_RESONANCE !== 'undefined', null, { timeout: 5000 });
+        assert.ok(requested.some(path => path.endsWith('/resonance.js')), 'The Resonance should load on first open');
+        await page.locator('[data-res-action="message"]').first().click();
+        await page.locator('[data-res-action="record"]').click();
+        await page.locator('#resonance-view').getByText('E-01', { exact: false }).first().waitFor({ state: 'visible' });
+      }
       if (view === 'world') {
         await page.waitForFunction(() => typeof WORLD_DATA !== 'undefined', null, { timeout: 5000 });
         assert.ok(requested.some(path => path.endsWith('/data-world.js')), 'World should load its data on first open');
@@ -105,7 +112,7 @@ test('main navigation tabs open without uncaught page errors', async t => {
         assert.ok((await page.locator('#next-desc').innerText()).trim(), 'home should explain why the activity is recommended');
         assert.ok((await page.locator('#next-start').getAttribute('data-game'))?.trim(), 'recommended activity should have a working game target');
         assert.equal(await page.locator('.mobile-nav-group').count(), 4, 'mobile navigation should group destinations by purpose');
-        assert.equal(await page.locator('.mobile-menu nav [data-view]').count(), 11, 'all destinations should remain available in the mobile menu');
+        assert.equal(await page.locator('.mobile-menu nav [data-view]').count(), 12, 'all destinations should remain available in the mobile menu');
         const quickActions = page.locator('.quick-actions-more');
         assert.equal(await quickActions.evaluate(el => el.open), false, 'secondary practice options should start collapsed');
         assert.equal(await page.locator('#listen-only-start').isVisible(), false, 'collapsed secondary actions should not clutter the home screen');
