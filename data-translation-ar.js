@@ -2108,7 +2108,7 @@ window.EPIPHANY_AR_TRANSLATION_PHRASES = Object.assign(window.EPIPHANY_AR_TRANSL
   "“Despite the delay, the team finished on time.” What does despite signal?": "في الجملة «Despite the delay, the team finished on time»، ما وظيفة كلمة «despite»؟",
   "To “overlook” a detail is to ___.":"ما المقصود بالفعل «overlook» عند الحديث عن تفصيل؟ ___.",
   "A “feasible” plan is ___.":"الخطة «feasible» هي خطة ___.",
-  "“I wouldn’t rule it out.” What does the speaker mean?": "ما معنى العبارة «I wouldn’t rule it out»؟ ماذا يقصد المتحدث؟",
+  "“I wouldn’t rule it out.” What does the speaker mean?": "ماذا يقصد المتحدث بعبارة «I wouldn’t rule it out»؟",
   "Which phrase expresses cautious agreement?":"أي عبارة تعبّر عن موافقة حذرة؟",
   "A “discrepancy” is a ___.":"تعني «discrepancy» وجود ___.",
   "No sooner ___ the announcement than the phones started ringing.":"ما إن ___ الإعلان حتى بدأت الهواتف ترن.",
@@ -3464,7 +3464,7 @@ window.EPIPHANY_AR_TRANSLATION_PHRASES = Object.assign(window.EPIPHANY_AR_TRANSL
   "Which word means “not difficult”?":"أي كلمة تعني «غير صعب»؟",
   "Look! The children ___ in the park.":"انظر! الأطفال ___ في الحديقة.",
   "A girl finds a wallet on the floor and gives it to the shop assistant. What does this show?":"تعثر فتاة على محفظة في الأرض وتسلمها إلى مساعد المتجر. ماذا يُظهر ذلك؟",
-  "The classroom is dark, so the teacher turns on the light. Why?":"الفصل مظلم، لذا يشغّل المعلم الضوء. لماذا؟",
+  "The classroom is dark, so the teacher turns on the light. Why?":"الفصل مظلم، لذا يُشغَّل الضوء. لماذا؟",
   "“My phone battery is dead. Can I use yours to call home?” What does the speaker need?":"يقول المتحدث: «My phone battery is dead. Can I use yours to call home?» ما الذي يحتاج إليه؟",
   "Choose the correct question tag: “You are ready, ___?”":"اختر ذيل السؤال الصحيح: «أنت مستعد، ___؟»",
   "Choose the correct phrase: “I have ___ orange.”":"أكمل العبارة الإنجليزية مع الحفاظ على الفراغ: “I have ___ orange.”"
