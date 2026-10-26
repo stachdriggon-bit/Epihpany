@@ -74,12 +74,18 @@ test('the word bank can generate enough solvable puzzles for every difficulty', 
     const maxSteps = level === 'guided' ? 3 : level === 'challenge' ? 7 : 5;
     let count = 0;
     for (const start of words) {
-      for (const goal of words) {
-        if (start === goal || start.length !== goal.length) continue;
-        const route = findPath(start, goal);
-        if (!route) continue;
-        const steps = route.length - 1;
-        if (steps >= minSteps && steps <= maxSteps) count++;
+      const distances = new Map([[start, 0]]);
+      const queue = [start];
+      while (queue.length) {
+        const current = queue.shift();
+        for (const candidate of words) {
+          if (distances.has(candidate) || !differsByOne(current, candidate)) continue;
+          distances.set(candidate, distances.get(current) + 1);
+          queue.push(candidate);
+        }
+      }
+      for (const [goal, steps] of distances) {
+        if (goal !== start && steps >= minSteps && steps <= maxSteps) count++;
       }
     }
     assert.ok(count >= 12, `Expected at least 12 solvable ${level} puzzles, found ${count}`);
