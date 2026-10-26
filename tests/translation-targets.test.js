@@ -45,6 +45,9 @@ test('incorrect look-forward-to examples are not translated into corrected Arabi
     'I look forward to meet you.',
     'I look forward to hear from you.',
     'We are looking forward to hear from you.'
+    'I look forward see you.',
+    'I look forward for seeing you.',
+    'I’m looking forward to see you.'
   ]) {
     assert.ok(phrases[english], 'missing Arabic prompt for: ' + english);
     assert.ok(
