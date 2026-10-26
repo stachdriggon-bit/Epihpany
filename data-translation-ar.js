@@ -5648,8 +5648,8 @@ window.EPIPHANY_AR_TRANSLATION_PHRASES = Object.assign(window.EPIPHANY_AR_TRANSL
 
 /* Exact Arabic support for remaining prompts and answer hints in learner-trap, spot-the-mistake, and typing banks. */
 window.EPIPHANY_AR_TRANSLATION_PHRASES = Object.assign(window.EPIPHANY_AR_TRANSLATION_PHRASES || {}, {
-  "There isn't ___ milk in the fridge.": "لا يوجد ___ من الحليب في الثلاجة.",
-  "I've worked here ___ 2021.": "أعمل هنا ___ عام 2021.",
+  "There isn't ___ milk in the fridge.": "أكمل الجملة الإنجليزية مع الحفاظ على الفراغ: “There isn't ___ milk in the fridge.”",
+  "I've worked here ___ 2021.": "أكمل الجملة الإنجليزية مع الحفاظ على الفراغ: “I've worked here ___ 2021.”",
   "Select the standard form.": "اختر الصيغة القياسية.",
   "Choose the natural sentence.": "اختر الجملة الطبيعية في الإنجليزية.",
   "Choose the idiomatic phrase.": "اختر التعبير الاصطلاحي المناسب.",
@@ -5679,8 +5679,8 @@ window.EPIPHANY_AR_TRANSLATION_PHRASES = Object.assign(window.EPIPHANY_AR_TRANSL
   "If I ___ more time, I'd learn Italian.": "أكمل الجملة الإنجليزية مع الحفاظ على الفراغ: If I ___ more time, I'd learn Italian.",
   "I'm used to ___ early.": "أكمل الجملة الإنجليزية: “I'm used to ___ early.”",
   "The witness's account was internally ___, with no contradictions.": "كانت رواية الشاهد ___ من الداخل، دون أي تناقضات.",
-  "I'm interested ___ learning French.": "أنا مهتمّ ___ تعلّم الفرنسية.",
-  "I didn't ___ him yesterday. (see)": "لم ___ه أمس. («see»)",
+  "I'm interested ___ learning French.": "أكمل الجملة الإنجليزية مع الحفاظ على الفراغ: “I'm interested ___ learning French.”",
+  "I didn't ___ him yesterday. (see)": "أكمل الجملة الإنجليزية مع الحفاظ على الفراغ: “I didn't ___ him yesterday. (see)”",
   "I've been waiting ___ two hours.": "أنا أنتظر منذ ___ ساعتين.",
   "There isn't ___ juice left.": "لم يتبقَّ ___ من العصير.",
   "a/an": "أداة التنكير a/an",
