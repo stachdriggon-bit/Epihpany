@@ -95,7 +95,7 @@
     if (level === 'challenge' && challengeRounds[id]) return challengeRounds[id];
     if (id === 'wordladder') {
       if (level === 'guided') return rounds.wordladder.slice(0,5);
-      if (level === 'challenge') return [...rounds.wordladder].reverse();
+      if (level === 'challenge') return [...rounds.wordladder].sort((a,b) => b.path.length-a.path.length);
       return rounds.wordladder;
     }
     return rounds[id];
