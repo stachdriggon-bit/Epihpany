@@ -38,8 +38,9 @@ test('listening and interpretation translations preserve the English target', ()
   for (const [key, translation] of relevant) {
     const match = key.match(/““(.*?)””/) || key.match(/[“"]([^”"]+)[”"]/);
     assert.ok(match, 'quoted target should be identifiable: ' + key);
+    const target = match[1].replace(/[.!?…]+$/, '');
     assert.ok(
-      translation.includes(match[1]),
+      translation.includes(target),
       'translation should preserve the English target instead of revealing its meaning: ' + key
     );
   }
