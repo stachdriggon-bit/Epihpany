@@ -1,0 +1,128 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1100" viewBox="0 0 1600 1100" role="img" aria-labelledby="title desc">
+<title id="title">EPIPHANY — World Map Draft 02</title>
+<desc id="desc">A schematic, not-to-scale draft showing the relative positions of Ilmar, Orath, Tharima, Nirvan, and the Azmar archipelagos, with thirty approved settlement names.</desc>
+<defs>
+  <linearGradient id="sea" x1="0" y1="0" x2="0.9" y2="1"><stop stop-color="#dcecf0"/><stop offset="1" stop-color="#b7d5df"/></linearGradient>
+  <linearGradient id="land" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#e7dfbd"/><stop offset="1" stop-color="#c6d0a5"/></linearGradient>
+  <style>
+    .region{font:700 29px Georgia,serif;letter-spacing:3px;fill:#394d4a;opacity:.9}
+    .subregion{font:italic 15px Georgia,serif;fill:#536a65}
+    .city{font:15px Arial,sans-serif;fill:#243b46;paint-order:stroke;stroke:#f4f0dd;stroke-width:4px;stroke-linejoin:round}
+    .smallcity{font:13px Arial,sans-serif;fill:#243b46;paint-order:stroke;stroke:#f4f0dd;stroke-width:3.5px;stroke-linejoin:round}
+    .waterlabel{font:italic 22px Georgia,serif;letter-spacing:2px;fill:#477b8d;opacity:.9}
+    .mountain{fill:#aab49b;stroke:#7f907d;stroke-width:1.5}
+    .river{fill:none;stroke:#6ca6bf;stroke-width:4;stroke-linecap:round}
+    .route{fill:none;stroke:#b77e45;stroke-width:2.5;stroke-dasharray:7 7;opacity:.8}
+    .dot{fill:#fbf6dc;stroke:#314f5b;stroke-width:2.5}
+    .isle{fill:#d7d9ae;stroke:#899b86;stroke-width:2}
+  </style>
+</defs>
+<rect width="1600" height="1100" fill="url(#sea)"/>
+<g opacity=".25" fill="none" stroke="#fff" stroke-width="2">
+ <path d="M0 160 Q260 125 500 170 T1000 150 T1600 180"/><path d="M0 235 Q300 200 560 245 T1080 230 T1600 255"/>
+ <path d="M0 900 Q260 865 550 910 T1100 890 T1600 915"/><path d="M0 970 Q300 940 650 980 T1250 960 T1600 985"/>
+</g>
+<text x="800" y="48" text-anchor="middle" font-family="Georgia,serif" font-size="31" letter-spacing="5" fill="#253f4b">EPIPHANY</text>
+<text x="800" y="76" text-anchor="middle" font-family="Arial,sans-serif" font-size="14" letter-spacing="3" fill="#477080">WORLD MAP · DRAFT 02 · NOT TO SCALE</text>
+<!-- Nirvan -->
+<path d="M520 116 L580 96 636 109 682 88 735 103 775 90 820 111 874 103 910 126 957 121 1002 151 1017 182 995 211 963 221 940 248 900 251 872 239 841 257 805 244 777 265 744 248 710 255 684 232 646 229 616 207 577 203 550 181 522 163Z" fill="url(#land)" stroke="#8c9d85" stroke-width="3"/>
+<path d="M574 146 Q622 124 650 151 T712 151 T765 132 T824 158 T890 145 T954 174" fill="none" stroke="#9aa68c" stroke-width="17" stroke-linecap="round" opacity=".65"/>
+<path class="mountain" d="M580 160 l17 -35 18 31 20 -43 20 41 17 -26 18 35 19 -32 17 31 18 -21 19 36 -18 17 -18 -22 -20 19 -21 -20 -18 18 -20 -17 -20 18 -18 -21 -18 10Z"/>
+<text class="region" x="767" y="185" text-anchor="middle">NIRVAN</text>
+<text class="subregion" x="767" y="207" text-anchor="middle">northern forests · broken highland arc</text>
+<!-- Nirvan cities -->
+<circle class="dot" cx="590" cy="188" r="5"/><text class="smallcity" x="552" y="179">Orven Reach</text>
+<circle class="dot" cx="716" cy="224" r="5"/><text class="smallcity" x="674" y="246">Pellisar</text>
+<circle class="dot" cx="830" cy="210" r="5"/><text class="smallcity" x="837" y="214">Varnholt</text>
+<circle class="dot" cx="898" cy="166" r="5"/><text class="smallcity" x="905" y="162">Iskell</text>
+<circle class="dot" cx="947" cy="214" r="5"/><text class="smallcity" x="953" y="219">Mireva</text>
+<circle class="dot" cx="757" cy="248" r="5"/><text class="smallcity" x="765" y="267">Caerun</text>
+<!-- Ilmar -->
+<path d="M143 304 L180 263 229 254 260 270 297 253 330 275 374 267 405 291 431 325 459 351 468 392 451 430 461 468 442 505 414 528 399 567 368 599 335 617 303 606 279 626 246 612 221 580 195 563 174 530 157 491 137 458 130 418 144 383 132 346Z" fill="url(#land)" stroke="#8c9d85" stroke-width="3"/>
+<path class="mountain" d="M166 355 l19 -35 18 27 17 -42 20 35 18 -28 18 33 18 -20 18 33 18 -24 18 34 -15 19 -20 -16 -17 16 -19 -17 -20 20 -17 -17 -19 12 -16 -17 -18 10Z"/>
+<path d="M198 434 Q244 415 274 438 T334 458 T383 489" fill="none" stroke="#94aa89" stroke-width="23" stroke-linecap="round" opacity=".65"/>
+<path class="river" d="M212 370 Q240 397 256 423 T290 466 T329 500 T374 535 T411 553"/>
+<path class="river" d="M277 441 Q303 426 328 438 T365 469"/>
+<text class="region" x="294" y="390" text-anchor="middle">ILMAR</text>
+<text class="subregion" x="294" y="412" text-anchor="middle">Ilan Basin · forests · western uplands</text>
+<circle class="dot" cx="401" cy="539" r="5"/><text class="smallcity" x="409" y="545">Eiraven</text>
+<circle class="dot" cx="170" cy="399" r="5"/><text class="smallcity" x="100" y="393">Westmere</text>
+<circle class="dot" cx="300" cy="448" r="5"/><text class="smallcity" x="242" y="466">Talwen</text>
+<circle class="dot" cx="369" cy="503" r="5"/><text class="smallcity" x="377" y="509">Ilanford</text>
+<circle class="dot" cx="245" cy="322" r="5"/><text class="smallcity" x="252" y="319">Calder Vale</text>
+<circle class="dot" cx="339" cy="587" r="5"/><text class="smallcity" x="347" y="593">Sorell</text>
+<!-- Orath -->
+<path d="M1045 272 L1080 246 1119 253 1143 275 1183 269 1216 291 1250 291 1281 319 1301 353 1328 373 1336 408 1322 444 1342 473 1328 512 1304 543 1288 580 1254 602 1221 587 1190 609 1154 589 1127 561 1100 544 1082 507 1055 484 1043 446 1022 420 1027 383 1012 349 1024 315Z" fill="url(#land)" stroke="#8c9d85" stroke-width="3"/>
+<path class="mountain" d="M1090 302 l20 -31 18 28 18 -37 19 33 17 -22 20 35 18 -31 19 37 19 -24 18 34 -17 18 -19 -14 -18 16 -18 -17 -18 15 -18 -15 -18 14 -18 -19 -17 7Z"/>
+<path class="mountain" d="M1152 372 l18 -30 17 28 18 -42 20 37 17 -25 20 34 18 -30 17 33 18 -20 18 34 -17 16 -18 -13 -18 17 -18 -15 -18 16 -18 -17 -18 13 -18 -17 -18 8Z"/>
+<path class="mountain" d="M1191 444 l19 -29 18 28 18 -36 18 34 18 -23 17 32 18 -25 17 32 18 -15 17 29 -16 17 -18 -13 -17 15 -18 -14 -17 13 -18 -15 -17 13 -18 -14 -17 7Z"/>
+<text class="region" x="1176" y="345" text-anchor="middle">ORATH</text>
+<text class="subregion" x="1176" y="366" text-anchor="middle">Eastern Spine · highlands · inland basin</text>
+<path class="river" d="M1093 380 Q1121 394 1140 421 T1167 461 T1196 493"/>
+<path class="river" d="M1225 380 Q1240 410 1265 425 T1294 461"/>
+<circle class="dot" cx="1104" cy="315" r="5"/><text class="smallcity" x="1063" y="307">Veyrun</text>
+<circle class="dot" cx="1085" cy="428" r="5"/><text class="smallcity" x="1020" y="448">Darsen</text>
+<circle class="dot" cx="1205" cy="416" r="5"/><text class="smallcity" x="1213" y="412">Velisar</text>
+<ellipse cx="1150" cy="494" rx="35" ry="19" fill="#8db8c7" stroke="#6d9eae" stroke-width="2"/>
+<circle class="dot" cx="1150" cy="494" r="5"/><text class="smallcity" x="1099" y="526">Ambrin</text>
+<circle class="dot" cx="1249" cy="548" r="5"/><text class="smallcity" x="1257" y="553">Qadren</text>
+<circle class="dot" cx="1303" cy="395" r="5"/><text class="smallcity" x="1311" y="391">Lethai</text>
+<!-- Tharima -->
+<path d="M440 681 L477 650 518 653 557 633 593 647 629 634 665 649 703 636 740 654 779 643 814 662 853 652 892 675 922 707 951 732 958 770 942 807 920 832 895 859 867 879 833 890 801 877 767 893 731 878 702 892 673 872 641 876 611 857 585 838 551 827 519 800 491 781 474 749 451 727Z" fill="url(#land)" stroke="#8c9d85" stroke-width="3"/>
+<path d="M492 710 Q550 682 598 711 T686 728 T775 711 T864 744" fill="none" stroke="#c8b988" stroke-width="28" opacity=".55"/>
+<path d="M530 758 Q557 740 579 755 T627 774" fill="none" stroke="#9caa86" stroke-width="15" opacity=".8"/>
+<text class="region" x="698" y="756" text-anchor="middle">THARIMA</text>
+<text class="subregion" x="698" y="778" text-anchor="middle">seasonal wadis · drylands · upland springs</text>
+<path class="river" d="M569 685 Q575 718 601 736 T635 773" stroke-dasharray="6 7"/>
+<circle class="dot" cx="620" cy="704" r="5"/><text class="smallcity" x="578" y="697">Namaris</text>
+<circle class="dot" cx="548" cy="759" r="5"/><text class="smallcity" x="492" y="778">Saffra</text>
+<circle class="dot" cx="685" cy="685" r="5"/><text class="smallcity" x="693" y="680">Kharif</text>
+<circle class="dot" cx="744" cy="813" r="5"/><text class="smallcity" x="752" y="819">Rihal</text>
+<circle class="dot" cx="874" cy="832" r="5"/><text class="smallcity" x="882" y="838">Tazir</text>
+<circle class="dot" cx="812" cy="859" r="5"/><text class="smallcity" x="820" y="865">Merzun</text>
+<!-- seas and strait -->
+<text class="waterlabel" x="787" y="405" text-anchor="middle">SEA OF DAWN</text>
+<text class="waterlabel" x="787" y="300" text-anchor="middle" font-size="17">SEA OF STILLNESS</text>
+<text class="waterlabel" x="1420" y="492" text-anchor="middle" font-size="17" transform="rotate(90 1420 492)">EASTERN OUTER OCEAN</text>
+<text class="waterlabel" x="185" y="706" text-anchor="middle" font-size="17" transform="rotate(-70 185 706)">WESTERN OUTER OCEAN</text>
+<text class="waterlabel" x="1093" y="722" text-anchor="middle" font-size="17">STRAIT OF PASSAGE</text>
+<!-- routes -->
+<path class="route" d="M401 539 Q435 601 489 652"/>
+<path class="route" d="M1205 416 Q1165 548 1089 682"/>
+<path class="route" d="M812 859 Q927 844 1006 783 T1089 682"/>
+<!-- Azmar islands: central passages -->
+<g>
+ <path class="isle" d="M738 473 q22 -18 38 0 l-5 19 -27 6 -13 -12Z"/><path class="isle" d="M793 492 q19 -14 34 2 l-6 19 -25 4 -10 -12Z"/>
+ <path class="isle" d="M849 470 q21 -17 35 1 l-6 19 -24 5 -12 -11Z"/><path class="isle" d="M885 512 q18 -14 31 1 l-7 17 -21 3 -9 -10Z"/>
+ <text class="subregion" x="815" y="457" text-anchor="middle">INNER PASSAGES</text>
+ <circle class="dot" cx="775" cy="488" r="5"/><text class="smallcity" x="706" y="510">Selka Haven</text>
+ <circle class="dot" cx="830" cy="505" r="5"/><text class="smallcity" x="837" y="524">Tern Isle</text>
+ <circle class="dot" cx="866" cy="478" r="5"/><text class="smallcity" x="875" y="474">Maret Quay</text>
+ <circle class="dot" cx="907" cy="521" r="5"/><text class="smallcity" x="916" y="526">Vey Shoals</text>
+</g>
+<!-- Harbor islands -->
+<g>
+ <path class="isle" d="M968 570 q24 -19 40 1 l-6 20 -28 5 -13 -13Z"/><path class="isle" d="M1017 599 q19 -15 34 1 l-5 18 -25 4 -10 -11Z"/>
+ <path class="isle" d="M1051 559 q21 -16 34 1 l-6 18 -25 4 -10 -10Z"/>
+ <text class="subregion" x="1019" y="550" text-anchor="middle">HARBOR ISLANDS</text>
+ <circle class="dot" cx="987" cy="584" r="5"/><text class="smallcity" x="929" y="607">Oruven</text>
+</g>
+<!-- Outer Azmar -->
+<g>
+ <path class="isle" d="M1015 925 q25 -21 43 0 l-6 22 -29 5 -13 -14Z"/><path class="isle" d="M1084 950 q18 -14 31 1 l-6 17 -22 4 -9 -10Z"/>
+ <path class="isle" d="M1156 917 q21 -17 37 1 l-7 20 -24 5 -11 -12Z"/>
+ <text class="subregion" x="1093" y="903" text-anchor="middle">OUTER AZMAR</text>
+ <circle class="dot" cx="1038" cy="938" r="5"/><text class="smallcity" x="978" y="962">Far Lantern</text>
+</g>
+<!-- compass / legend -->
+<g transform="translate(1490 130)">
+ <circle cx="0" cy="0" r="35" fill="#f5f1df" fill-opacity=".75" stroke="#8ba4a8"/>
+ <path d="M0 -26 L8 4 0 -2 -8 4Z" fill="#375663"/><path d="M0 26 L7 2 0 7 -7 2Z" fill="#7e9da2"/>
+ <text x="0" y="-43" text-anchor="middle" font-family="Arial" font-size="14" font-weight="bold" fill="#375663">N</text>
+</g>
+<rect x="30" y="1010" width="1540" height="58" rx="12" fill="#f7f3e6" fill-opacity=".88" stroke="#9bb3b6"/>
+<text x="52" y="1035" font-family="Arial,sans-serif" font-size="14" font-weight="bold" fill="#304c57">MAP STATUS</text>
+<text x="52" y="1055" font-family="Arial,sans-serif" font-size="13" fill="#304c57">Relative placement only. Coastlines, scale, exact rivers, distances, political borders and travel times remain provisional.</text>
+<text x="1540" y="1036" text-anchor="end" font-family="Arial,sans-serif" font-size="13" fill="#304c57">30 settlement labels · 5 principal regions · drainage review</text>
+<text x="1540" y="1055" text-anchor="end" font-family="Arial,sans-serif" font-size="12" fill="#54717b">Draft 02 — water choices remain provisional</text>
+</svg>
