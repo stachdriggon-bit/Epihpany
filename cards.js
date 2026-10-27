@@ -46,10 +46,15 @@
     if (token) token.textContent = String(state.tokens);
     if (shelf) shelf.textContent = String(state.tokens);
     if (shards) shards.textContent = String(state.shards);
+    const portalTokens = $('cards-summon-token-count'), portalShards = $('cards-summon-shard-count');
+    if (portalTokens) portalTokens.textContent = String(state.tokens);
+    if (portalShards) portalShards.textContent = String(state.shards);
     if (total) total.textContent = String(ownedCount());
     if (daily) { const used = state.dailyDate === today(); daily.disabled = used; daily.textContent = used ? 'Daily free pull used' : 'Claim daily free pull'; }
     for (const [id,count,cost] of [['cards-pull-one',1,ONE_COST],['cards-pull-three',3,THREE_COST],['cards-pull-five',5,FIVE_COST],['cards-pull-ten',10,TEN_COST]]) { const button=$(id); if(button){button.disabled=state.tokens<cost;button.textContent='Open '+count+' · '+cost+' tokens';} }
-    const pity=$('cards-pity-count'); if(pity)pity.textContent=String(Math.max(0,LEGENDARY_PITY-state.sinceLegendary));
+    const pullsLeft=Math.max(0,LEGENDARY_PITY-state.sinceLegendary);
+    const pity=$('cards-pity-count'); if(pity)pity.textContent=String(pullsLeft);
+    const pityBar=$('cards-pity-progress'); if(pityBar)pityBar.style.width=(Math.min(LEGENDARY_PITY,state.sinceLegendary)/LEGENDARY_PITY*100)+'%';
     const upgradeHint=$('cards-upgrade-balance');if(upgradeHint)upgradeHint.textContent='Upgrade a collected card for '+UPGRADE_COST+' shards · '+MAX_CARD_LEVEL+' levels max';
     renderHistory();
   };
@@ -90,7 +95,7 @@
   const renderGallery = () => {
     const root=$('cards-gallery'); if(!root)return;
     const cards=data().filter(c=>(Number(state.owned[c.id])||0)>0);
-    root.innerHTML=cards.length?cards.map(c=>cardMarkup(c,Number(state.owned[c.id])||0)).join(''):'<div class="cards-empty"><span>✦</span><h3>Your collection starts here</h3><p>Open your first pack to discover a character. Collected cards stay here.</p><button type="button" class="btn btn-primary" data-cards-tab="summon">Explore packs</button></div>';
+    root.innerHTML=cards.length?cards.map(c=>cardMarkup(c,Number(state.owned[c.id])||0)).join(''):'<div class="cards-empty"><span>✦</span><h3>Your collection starts here</h3><p>Open your first pack to discover a character. Collected cards stay here.</p><button type="button" class="btn btn-primary" data-view="summon">Explore packs</button></div>';
     root.querySelectorAll('[data-cards-tab]').forEach(b=>b.addEventListener('click',()=>switchTab('summon')));
     root.querySelectorAll('[data-card-upgrade]').forEach(button=>button.addEventListener('click',()=>upgradeCard(button.dataset.cardUpgrade)));
     const count=$('cards-collection-count'); if(count) count.textContent=cards.length+' / '+data().length+' discovered';
@@ -150,7 +155,7 @@
     $('cards-pull-three')?.addEventListener('click',()=>pull(3,false,selectedPack()));
     $('cards-pull-five')?.addEventListener('click',()=>pull(5,false,selectedPack()));
     $('cards-pull-ten')?.addEventListener('click',()=>pull(10,false,selectedPack()));
-    document.querySelectorAll('[data-card-pack]').forEach(button=>button.addEventListener('click',()=>{document.querySelectorAll('[data-card-pack]').forEach(item=>{const active=item===button;item.classList.toggle('is-active',active);item.setAttribute('aria-pressed',String(active));});const label=$('cards-pack-selected');if(label)label.textContent=button.dataset.cardPackLabel||button.textContent.trim();const art=$('cards-pack-art');if(art)art.dataset.pack=button.dataset.cardPack;const badge=$('cards-pack-type');if(badge)badge.textContent=button.dataset.cardPackLabel||button.textContent.trim();}));
+    document.querySelectorAll('[data-card-pack]').forEach(button=>button.addEventListener('click',()=>{document.querySelectorAll('[data-card-pack]').forEach(item=>{const active=item===button;item.classList.toggle('is-active',active);item.setAttribute('aria-pressed',String(active));});const label=$('cards-pack-selected');if(label)label.textContent=button.dataset.cardPackLabel||button.textContent.trim();const art=$('cards-pack-art');if(art){art.dataset.pack=button.dataset.cardPack;art.setAttribute('aria-label','Selected collectible pack: '+(button.dataset.cardPackLabel||button.textContent.trim()));}const badge=$('cards-pack-type');if(badge)badge.textContent=(button.dataset.cardPackLabel||button.textContent.trim()).toUpperCase();}));
     $('cards-reveal-close')?.addEventListener('click',closeResults);
     $('cards-reveal-modal')?.addEventListener('click',e=>{if(e.target===$('cards-reveal-modal'))closeResults();});
     document.addEventListener('keydown',e=>{if(e.key==='Escape')closeResults();});
