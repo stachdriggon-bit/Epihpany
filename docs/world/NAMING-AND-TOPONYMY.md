@@ -1,6 +1,6 @@
 # EPIPHANY — Naming and Toponymy
 
-**Version:** 0.1  
+**Version:** 0.2  
 **Status:** Provisional framework; no regional naming system is finalized.  
 **Scope:** Place names, personal names, language contact, transliteration, aliases, and naming continuity across the world.
 
@@ -13,7 +13,7 @@ This document is a working method, not a complete conlang specification. It does
 ## 2. Principles
 
 1. **No default real-world analogue.** A region must not be assigned an Arabic, Persian, Scandinavian, or other real-world naming identity simply because of its climate, geography, or first batch of names.
-2. **Names are provisional until reviewed.** Existing city names are working labels. Preserve stable place IDs when renaming a candidate.
+2. **Accepted names stay canon until explicitly changed.** The six names in each of the five current settlement registries (30 names total across Ilmar, Orath, Tharima, Nirvan, and the Azmar archipelagos) are approved by the project owner. Their IDs and approved spellings are stable. Settlement existence, precise placement, and links to anchor locations may still be reconciled without silently renaming a place.
 3. **Geography does not dictate language.** Climate and terrain can shape settlement patterns, but they do not determine what names sound like.
 4. **Regions are not linguistically uniform.** A place may have a local name, an older name, a trade-language name, an outsider's name, and a modern administrative spelling.
 5. **Variation needs causes.** Naming differences can emerge from migration, trade, conquest, neighboring languages, religious or scholarly traditions, sound change, and imperfect record-keeping. Do not add every layer to every place; use only what the story needs.
@@ -73,7 +73,7 @@ Do not invent an etymology merely to justify a sound. Do not translate a proper 
 
 ## 7. Initial audit: Tharima candidates
 
-The six current Tharima names remain provisional. This audit identifies likely reader associations; it does **not** select replacements.
+The six Tharima names have since been approved by the project owner. This audit remains a record of likely reader associations, not a reason to change the accepted names automatically. Associations may be handled through world context and future language development.
 
 | Stable ID | Current working name | Initial association to review | Current action |
 |---|---|---|---|
