@@ -105,3 +105,43 @@ Before treating any draft map as coherent, verify:
 6. Only after this audit, create candidate settlement and route overlays.
 
 Illustrations may help with mood and terrain vocabulary, but this worksheet and the geographic register control consistency until a deliberate revision is recorded.
+
+## 9. First coastline silhouette — topology test only
+
+This is a **cell-level silhouette**, not a drawn coastline. Each letter marks the dominant content of a cell; actual coasts curve through cells and continents span multiple cells. The purpose is to test adjacency and broad arrangement before drawing detailed bays.
+
+Legend: `I` Ilmar land; `N` Nirvan land; `O` Orath land; `S` Sahir land; `a` nearer Azmar islands; `r` remote Azmar islands; `~` open water; `:` narrow channel/strait corridor. Blank cells are open water.
+
+```text
+        A B C D E F G H I J K L
+Row 1   ~ ~ ~ ~ N N N N N ~ ~ ~
+Row 2   ~ ~ I N N N N N N N ~ ~
+Row 3   I I I I N N ~ ~ O O O ~
+Row 4   I I I I ~ ~ ~ O O O O ~
+Row 5   I I I I ~ a ~ O O O O ~
+Row 6   I I I ~ S S S ~ O O : ~
+Row 7   ~ ~ S S S S S S ~ : ~ ~
+Row 8   ~ ~ ~ S S ~ r ~ ~ ~ ~ ~
+```
+
+### What this silhouette tests
+
+- Nirvan occupies the northern band; its southern margin approaches the Sea of Stillness.
+- Ilmar occupies the west and opens onto both western outer waters and the central sea.
+- Orath occupies the east; its western coast faces the central sea, while its eastern coast faces outer waters.
+- Sahir occupies the south and faces the central sea to the north and outer waters farther south.
+- Nearer Azmar groups sit within the central maritime region; remote groups remain scattered farther south/east.
+- The Strait of Passage is a **candidate corridor** near Orath's southeastern reach and Sahir's northeastern side. The schematic does not yet prove its exact width or whether every neighbouring channel connects as intended.
+
+### Problems intentionally left visible
+
+1. The grid is too coarse to encode peninsulas, bays, islands, or the exact Sea of Stillness connection.
+2. The exact meeting point of Nirvan, the northern waters, and Orath's northwest remains open.
+3. The proposed Strait of Passage must be redrawn at finer resolution so that land does not accidentally seal it.
+4. The southwestern Ilmar cape and the separate western/central coast shapes need more than one cell to represent faithfully.
+5. This silhouette does not specify mountains, rivers, borders, settlements, or history.
+
+### Next refinement
+
+Redraw the silhouette as a finer coastline sketch (at least 24 columns wide) while keeping the same broad adjacency. Then overlay the ridge axes and basin rims before adjusting any river mouths. If the finer outline conflicts with the relief or drainage rules, revise the outline and record why; do not bend rivers to preserve an attractive but inconsistent coast.
+
