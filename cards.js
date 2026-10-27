@@ -50,8 +50,26 @@
     if (portalTokens) portalTokens.textContent = String(state.tokens);
     if (portalShards) portalShards.textContent = String(state.shards);
     if (total) total.textContent = String(ownedCount());
-    if (daily) { const used = state.dailyDate === today(); daily.disabled = used; daily.textContent = used ? 'Daily free pull used' : 'Claim daily free pull'; }
-    for (const [id,count,cost] of [['cards-pull-one',1,ONE_COST],['cards-pull-three',3,THREE_COST],['cards-pull-five',5,FIVE_COST],['cards-pull-ten',10,TEN_COST]]) { const button=$(id); if(button){button.disabled=state.tokens<cost;button.textContent='Open '+count+' · '+cost+' tokens';} }
+    if (daily) {
+      const used = state.dailyDate === today();
+      daily.disabled = used;
+      const label = daily.querySelector('[data-daily-label]');
+      const note = daily.querySelector('[data-daily-note]');
+      if (label) label.textContent = used ? 'Daily pull claimed' : 'Daily discovery';
+      else daily.textContent = used ? 'Daily free pull used' : 'Claim daily free pull';
+      if (note) note.textContent = used ? 'Come back tomorrow' : 'Free · 1 character card';
+      daily.setAttribute('aria-label', used ? 'Daily free character pull already claimed' : 'Claim your free daily character card');
+    }
+    for (const [id,count,cost] of [['cards-pull-one',1,ONE_COST],['cards-pull-three',3,THREE_COST],['cards-pull-five',5,FIVE_COST],['cards-pull-ten',10,TEN_COST]]) {
+      const button=$(id);
+      if(button){
+        button.disabled=state.tokens<cost;
+        button.setAttribute('aria-label','Open '+count+' card'+(count===1?'':'s')+' for '+cost+' Tokens');
+        const costLabel=button.querySelector('[data-pull-cost]');
+        if(costLabel) costLabel.textContent='✦ '+cost;
+        else button.textContent='Open '+count+' · '+cost+' tokens';
+      }
+    }
     const pullsLeft=Math.max(0,LEGENDARY_PITY-state.sinceLegendary);
     const pity=$('cards-pity-count'); if(pity)pity.textContent=String(pullsLeft);
     const pityBar=$('cards-pity-progress'); if(pityBar)pityBar.style.width=(Math.min(LEGENDARY_PITY,state.sinceLegendary)/LEGENDARY_PITY*100)+'%';
