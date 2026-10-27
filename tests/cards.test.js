@@ -51,11 +51,11 @@ test('collection rules keep card rewards separate from learning XP', () => {
   assert.match(js, /checkAchievementRewards/);
   assert.match(js, /addHistory/);
   assert.match(js, /upgradeCard/);
+  const html = read('index.html');
   assert.match(html, /cards-history-list/);
   assert.match(html, /cards-upgrade-balance/);
   assert.match(js, /state\.sinceLegendary>=LEGENDARY_PITY-1/);
   assert.match(js, /selectedPack/);
-  const html = read('index.html');
   for (const pack of ['characters','words','artifacts','mixed']) assert.match(html, new RegExp('data-card-pack="'+pack+'"'));
   for (const id of ['cards-pull-three','cards-pull-five','cards-pull-ten']) assert.match(html, new RegExp('id="'+id+'"'));
   assert.match(js, /const TEN_COST = 45/);
