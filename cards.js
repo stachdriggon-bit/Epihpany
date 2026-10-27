@@ -427,6 +427,7 @@
     const m = modalEl();
     if (rv) { rv.timers.forEach(clearTimeout); const wasDone = rv.phase === 'done'; rv = null; if (!wasDone) { updateCounts(); renderGallery(); renderFeatured(); } }
     Fx.clear(); $('cards-reveal-banner')?.classList.remove('show');
+    document.querySelector('.summon-stage')?.classList.remove('is-summoning');
     if (m) { m.hidden = true; ['revealTier','resultCount','phase','orb','fx'].forEach(k => delete m.dataset[k]); m.classList.remove('do-flash','do-shake'); }
     document.body.classList.remove('cards-modal-open');
     summonInProgress = false;
@@ -441,6 +442,7 @@
     if (!free && state.tokens < PULL_COSTS[count]) return;
     if (!packCards(pack).length) { const status=$('summon-ritual-status'); if(status)status.textContent='This pack is still being prepared. Choose another pack.'; return; }
     summonInProgress = true; lastTrigger = document.activeElement;
+    document.querySelector('.summon-stage')?.classList.add('is-summoning');
     const outcome = pull(count, free, pack);
     if (!outcome || !outcome.results.length) { summonInProgress = false; return; }
     const status = $('summon-ritual-status'); if (status) status.textContent = 'The gate is awakening…';
