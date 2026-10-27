@@ -106,7 +106,7 @@ Global wind directions, currents, exact temperature bands, and precise biome bor
 ## 7. Candidate settlement sites — not finalized cities
 
 - **Ilmar:** provisional city-name candidates are tracked in [Ilmar Candidate Cities](CITIES-ILMAR.md). Their positions and roles must be checked against the final physical map.
-- **SET-02 — Pass City:** possible settlement controlling a usable Orath pass.
+- **Orath:** provisional city-name candidates are tracked in [Orath Candidate Cities](CITIES-ORATH.md). Check the overlap notes against the existing anchor locations before treating any candidate as a separate place.
 - **SET-03 — Basin Settlement:** possible settlement near a reliable water source in Tharima.
 - **SET-04 — Nirvan Harbor:** possible protected northern harbor.
 - **SET-05 — Azmar Port:** possible port at a junction of maritime passages.
