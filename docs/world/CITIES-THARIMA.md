@@ -1,8 +1,14 @@
 # EPIPHANY — Tharima: Candidate Cities
 
-**Version:** 0.1  
-**Status:** Provisional naming proposals; none are established canon yet.  
-**Scope:** A small first set of settlement candidates for Tharima. Names and roles should be tested in stories before they become fixed canon.
+**Version:** 0.2  
+**Status:** Settlement names approved by the project owner; settlement existence, roles, placement, and anchor relationships remain provisional.
+**Scope:** A small first set of settlement candidates for Tharima. Names are approved; settlement roles and details can still be tested and refined in stories.
+
+## Canon decision
+
+**Approved names:** The six names in this registry are accepted as the current canonical names for these settlement IDs. Keep their spelling and Arabic-script forms consistent across stories, quests, cards, dialogue, maps, and translations. A later rename requires an explicit decision and must preserve the stable ID.
+
+**What this does not finalize:** These entries are not a complete gazetteer. Exact positions, physical geography, political importance, and possible overlap with existing anchor locations remain open. If an entry and an anchor prove to be the same place, reconcile them under one stable place record rather than inventing two locations.
 
 ## Ground rules
 
@@ -11,7 +17,7 @@
 - Tharima must not be reduced to “a desert continent.” Drylands, uplands, seasonal waterways, fertile pockets, coasts, and varied communities may coexist where the physical map supports them.
 - Water access matters, but not every story or settlement should revolve around scarcity.
 - Before adding a place, check the shared place registry and [Anchor Locations](ANCHOR-LOCATIONS.md). Candidate overlaps are noted below to prevent accidental duplicates.
-- Naming note: the current names and Arabic-script forms are provisional pronunciation/transliteration proposals, not evidence of a finalized language or cultural analogue. See [Naming and Toponymy](NAMING-AND-TOPONYMY.md) for the initial association audit and naming workflow. Keep each settlement's role while names are reviewed; do not rename them automatically.
+- Naming note: the current names and Arabic-script forms are approved for this registry; the Arabic script is a pronunciation/transliteration aid, not evidence of a finalized language or cultural analogue. See [Naming and Toponymy](NAMING-AND-TOPONYMY.md) for the initial association audit and naming workflow. Keep each settlement's role while names are reviewed; do not rename them automatically.
 
 ## Reusable place registry — check before creating or writing a place
 
@@ -21,12 +27,12 @@
 
 | Stable ID | Current name | Core identity | Status |
 |---|---|---|---|
-| TH-CITY-01 | Namaris / ناماريس | Inland oasis-town with gardens and a maintained water network | Provisional |
-| TH-CITY-02 | Saffra / سفرا | Seasonal wadi market and meeting point | Provisional; possible anchor overlap |
-| TH-CITY-03 | Kharif / خريف | Upland settlement built around spring-fed terraces | Provisional; possible anchor overlap |
-| TH-CITY-04 | Rihal / رحال | Caravan service town at the meeting of long-distance routes | Provisional |
-| TH-CITY-05 | Tazir / تازير | Coastal salt-and-fishing town with changing shoreline work | Provisional |
-| TH-CITY-06 | Merzun / مرزون | Hill-country craft town known for pottery and fired-clay goods | Provisional |
+| TH-CITY-01 | Namaris / ناماريس | Inland oasis-town with gardens and a maintained water network | Name accepted; details provisional |
+| TH-CITY-02 | Saffra / سفرا | Seasonal wadi market and meeting point | Name accepted; possible anchor overlap |
+| TH-CITY-03 | Kharif / خريف | Upland settlement built around spring-fed terraces | Name accepted; possible anchor overlap |
+| TH-CITY-04 | Rihal / رحال | Caravan service town at the meeting of long-distance routes | Name accepted; details provisional |
+| TH-CITY-05 | Tazir / تازير | Coastal salt-and-fishing town with changing shoreline work | Name accepted; details provisional |
+| TH-CITY-06 | Merzun / مرزون | Hill-country craft town known for pottery and fired-clay goods | Name accepted; details provisional |
 
 ## Candidate settlement list
 
@@ -111,7 +117,7 @@
 5. **Changes must propagate.** If a place changes materially, update this record first, then check the Atlas, anchor locations, stories, quests, character relationships, cards, and translations.
 6. **Keep uncertainty visible.** Exact water sources, coastlines, routes, political roles, and dates remain open until explicitly decided.
 
-## Open questions
+## Open details (names remain approved)
 
 - Which candidates fit once Tharima's watersheds, coast, and uplands are clearer?
 - Should Saffra and the Wadi Market be one location? Should Kharif and the Spring Steps be one location?
