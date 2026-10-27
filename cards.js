@@ -8,6 +8,9 @@
   const FIVE_COST = 22;
   const TEN_COST = 45;
   const LEGENDARY_PITY = 50;
+  const UPGRADE_COST = 5;
+  const MAX_CARD_LEVEL = 5;
+  const ACHIEVEMENT_REWARDS = [{id:'streak-3',test:a=>Number(a.streak)>=3,tokens:10,label:'3-day learning streak'},{id:'words-10',test:a=>Number(a.masteredWords)>=10,tokens:15,label:'10 mastered words'},{id:'streak-7',test:a=>Number(a.streak)>=7,tokens:25,label:'7-day learning streak'},{id:'words-50',test:a=>Number(a.masteredWords)>=50,tokens:50,label:'50 mastered words'}];
   const STARTER_TOKENS = 15;
   const ADMIN_TEST_TOKENS = 100000;
   const $ = (id) => document.getElementById(id);
@@ -23,17 +26,21 @@
         dailyDate: typeof parsed.dailyDate === 'string' ? parsed.dailyDate : '',
         sinceLegendary: Math.max(0, Math.floor(Number(parsed.sinceLegendary) || 0)),
         adminGrantFor: typeof parsed.adminGrantFor === 'string' ? parsed.adminGrantFor : '',
+        cardLevels: parsed.cardLevels && typeof parsed.cardLevels === 'object' ? parsed.cardLevels : {},
+        history: Array.isArray(parsed.history) ? parsed.history.slice(0,30) : [],
+        achievementRewards: parsed.achievementRewards && typeof parsed.achievementRewards === 'object' ? parsed.achievementRewards : {},
         initialized: true
       };
     } catch (_) {}
-    return {tokens:STARTER_TOKENS, shards:0, owned:{}, dailyDate:'', sinceLegendary:0, adminGrantFor:'', initialized:true};
+    return {tokens:STARTER_TOKENS, shards:0, owned:{}, dailyDate:'', sinceLegendary:0, adminGrantFor:'', cardLevels:{}, history:[], achievementRewards:{}, initialized:true};
   };
   let state = safeState();
   const save = () => { try { localStorage.setItem(STORE, JSON.stringify(state)); } catch (_) {} };
   const esc = (value) => String(value).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const cardArt = (card, compact=false) => '<div class="collectible-art art-'+esc(card.palette)+'" aria-hidden="true"><span>'+esc(card.symbol)+'</span><i></i><b></b></div>';
-  const cardMarkup = (card, count=0, featured=false) => '<article class="collectible-card rarity-'+card.rarity.toLowerCase()+(featured?' is-featured':'')+'">'+cardArt(card)+'<div class="collectible-card-copy"><span class="collectible-rarity">'+esc(card.rarity)+'</span><h3>'+esc(card.name)+'</h3><p class="collectible-card-title">'+esc(card.title)+'</p><p class="collectible-description">'+esc(card.description)+'</p><div class="collectible-card-foot"><code>'+esc(card.id)+'</code><span>'+(count>0?'×'+count:'Not collected')+'</span></div></div></article>';
+  const cardMarkup = (card, count=0, featured=false) => {const level=Math.max(1,Number(state.cardLevels[card.id])||1);return '<article class="collectible-card rarity-'+card.rarity.toLowerCase()+(featured?' is-featured':'')+' level-'+level+'">'+cardArt(card)+'<div class="collectible-card-copy"><span class="collectible-rarity">'+esc(card.rarity)+' · Lv. '+level+'</span><h3>'+esc(card.name)+'</h3><p class="collectible-card-title">'+esc(card.title)+'</p><p class="collectible-description">'+esc(card.description)+'</p><div class="collectible-card-foot"><code>'+esc(card.id)+'</code><span>'+(count>0?'Collected':'Not collected')+'</span></div>'+(count>0&&!featured?'<button type="button" class="cards-upgrade-button" data-card-upgrade="'+esc(card.id)+'" '+(level>=MAX_CARD_LEVEL||state.shards<UPGRADE_COST?'disabled':'')+'>'+(level>=MAX_CARD_LEVEL?'Max level': 'Upgrade · '+UPGRADE_COST+' shards')+'</button>':'')+'</div></article>';};
   const ownedCount = () => Object.values(state.owned).reduce((sum,n)=>sum+Math.max(0,Number(n)||0),0);
+  const addHistory = (entry) => {state.history.unshift({...entry,at:new Date().toISOString()});state.history=state.history.slice(0,30);};
   const updateCounts = () => {
     const token = $('chip-tokens-value'), shelf = $('cards-token-count'), shards = $('cards-shard-count'), total = $('cards-owned-count'), daily = $('cards-daily-pull');
     if (token) token.textContent = String(state.tokens);
@@ -43,6 +50,8 @@
     if (daily) { const used = state.dailyDate === today(); daily.disabled = used; daily.textContent = used ? 'Daily free pull used' : 'Claim daily free pull'; }
     for (const [id,count,cost] of [['cards-pull-one',1,ONE_COST],['cards-pull-three',3,THREE_COST],['cards-pull-five',5,FIVE_COST],['cards-pull-ten',10,TEN_COST]]) { const button=$(id); if(button){button.disabled=state.tokens<cost;button.textContent='Open '+count+' · '+cost+' tokens';} }
     const pity=$('cards-pity-count'); if(pity)pity.textContent=String(Math.max(0,LEGENDARY_PITY-state.sinceLegendary));
+    const upgradeHint=$('cards-upgrade-balance');if(upgradeHint)upgradeHint.textContent='Upgrade a collected card for '+UPGRADE_COST+' shards · '+MAX_CARD_LEVEL+' levels max';
+    renderHistory();
   };
   // Roll rarity first, then choose within that rarity. Otherwise a rarity with
   // many cards accidentally becomes more common just because its catalog is larger.
@@ -77,11 +86,13 @@
     else state.owned[card.id]=1;
     return {...card,duplicate:previous>0};
   };
+  const renderHistory = () => {const root=$('cards-history-list');if(!root)return;root.innerHTML=state.history.length?state.history.map(item=>'<li><span class="cards-history-mark">'+(item.kind==='upgrade'?'✧':item.kind==='achievement'?'✓':'✦')+'</span><div><strong>'+esc(item.title)+'</strong><small>'+esc(item.detail||'')+'</small></div></li>').join(''):'<li class="cards-history-empty">Your discoveries and upgrades will appear here.</li>';};
   const renderGallery = () => {
     const root=$('cards-gallery'); if(!root)return;
     const cards=data().filter(c=>(Number(state.owned[c.id])||0)>0);
     root.innerHTML=cards.length?cards.map(c=>cardMarkup(c,Number(state.owned[c.id])||0)).join(''):'<div class="cards-empty"><span>✦</span><h3>Your collection starts here</h3><p>Open your first pack to discover a character. Collected cards stay here.</p><button type="button" class="btn btn-primary" data-cards-tab="summon">Explore packs</button></div>';
     root.querySelectorAll('[data-cards-tab]').forEach(b=>b.addEventListener('click',()=>switchTab('summon')));
+    root.querySelectorAll('[data-card-upgrade]').forEach(button=>button.addEventListener('click',()=>upgradeCard(button.dataset.cardUpgrade)));
     const count=$('cards-collection-count'); if(count) count.textContent=cards.length+' / '+data().length+' discovered';
   };
   const showResults = (cards, title) => {
@@ -97,6 +108,8 @@
     updateCounts(); renderGallery(); save();
   };
   const closeResults = () => { const m=$('cards-reveal-modal'); if(m){m.hidden=true;delete m.dataset.revealTier;} document.body.classList.remove('cards-modal-open'); };
+  const upgradeCard = (id) => {const card=data().find(c=>c.id===id);if(!card||(Number(state.owned[id])||0)<1)return;const level=Math.max(1,Number(state.cardLevels[id])||1);if(level>=MAX_CARD_LEVEL||state.shards<UPGRADE_COST)return;state.shards-=UPGRADE_COST;state.cardLevels[id]=level+1;addHistory({kind:'upgrade',title:card.name+' upgraded',detail:'Level '+level+' → '+(level+1)+' · −'+UPGRADE_COST+' shards'});save();updateCounts();renderGallery();};
+  const checkAchievementRewards = (achievements) => {if(!achievements||typeof achievements!=='object')return;for(const reward of ACHIEVEMENT_REWARDS){if(!state.achievementRewards[reward.id]&&reward.test(achievements)){state.achievementRewards[reward.id]=true;state.tokens+=reward.tokens;addHistory({kind:'achievement',title:'Achievement reward: '+reward.label,detail:'+'+reward.tokens+' tokens'});}}save();updateCounts();};
   const grantAdminTestTokens = (email) => {
     const normalized=String(email||'').trim().toLowerCase();
     if(!normalized||state.adminGrantFor===normalized)return;
@@ -120,6 +133,7 @@
     }
     const packNames={characters:'Character pack',words:'Word & phrase pack',artifacts:'Artifact pack',mixed:'Mixed pack'};
     const title=free?'Your daily discovery':count+'-card '+(packNames[pack]||'Mixed pack');
+    addHistory({kind:'pull',title,detail:results.map(card=>card.name+(card.duplicate?' (duplicate)':'')).join(', ')||'No cards available'});
     showResults(results,title);
   };
   const selectedPack = () => document.querySelector('[data-card-pack].is-active')?.dataset.cardPack || 'characters';
@@ -143,11 +157,14 @@
     const first=data()[0]; const featured=$('cards-featured-card');
     if(first&&featured)featured.innerHTML=cardMarkup(first,Number(state.owned[first.id])||0,true);
     renderGallery();updateCounts();switchTab('collection');
+    $('cards-history-clear')?.addEventListener('click',()=>{state.history=[];save();renderHistory();});
+    document.addEventListener('epiphany:achievements-updated',()=>checkAchievementRewards(window.EPIPHANY_PROFILE_ACHIEVEMENTS));
+    if(window.EPIPHANY_PROFILE_ACHIEVEMENTS)checkAchievementRewards(window.EPIPHANY_PROFILE_ACHIEVEMENTS);
     const adminEmail=window.EpiphanyAuth?.getDeveloperEmail?.();
     if(adminEmail)grantAdminTestTokens(adminEmail);
     save();
   };
   document.addEventListener('epiphany-auth-changed',event=>{if(event.detail?.isDeveloper&&event.detail?.email)grantAdminTestTokens(event.detail.email);});
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
-  window.EpiphanyCards={getState:()=>({...state,owned:{...state.owned}}),awardAchievementTokens:(amount=5)=>{const n=Math.max(0,Math.floor(Number(amount)||0));state.tokens+=n;save();updateCounts();return state.tokens;}};
+  window.EpiphanyCards={getState:()=>({...state,owned:{...state.owned},cardLevels:{...state.cardLevels},history:[...state.history]}),awardAchievementTokens:(amount=5)=>{const n=Math.max(0,Math.floor(Number(amount)||0));state.tokens+=n;save();updateCounts();return state.tokens;}};
 })();
