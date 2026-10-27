@@ -8,12 +8,12 @@
 
 A continent is not a single culture, climate, personality, or plot. Each should contain contrasts: busy and quiet places, old and new communities, ordinary concerns and unusual discoveries. The concepts below are starting points, not restrictions. A region can host comedy, romance, mystery, conflict, everyday life, or adventure; it should not be trapped in one genre.
 
-Names and broad placements are provisional:
+Names and broad placements are provisional. The current mapped inventory contains **four named continents** and **one archipelago region**; it does not settle how many continents exist across the entire world:
 - **Ilmar / إيلمار** — western continent.
 - **Orath / أوراث** — eastern continent.
 - **Tharima / ثاريما** — southern continent.
 - **Nirvan / نيرفان** — northern continent.
-- **Azmar / أزمار** — scattered archipelagos and maritime passages.
+- **Azmar / أزمار** — scattered archipelagos and maritime passages; not currently counted as a continent.
 
 ## 1. Ilmar / إيلمار — Crossroads of familiar lives
 
@@ -122,4 +122,4 @@ Keep an idea provisional until it is used by a story, game area, character, or m
 
 ## 9. Next practical step
 
-Choose a small set of **anchor locations**—one or two per continent at most—to test these identities through actual story concepts. Do not name every city or define every culture yet. Let the places earn further detail through use.
+Choose a small set of **anchor locations**—one or two per continent or major region at most—to test these identities through actual story concepts. Do not name every city or define every culture yet. Let the places earn further detail through use.
