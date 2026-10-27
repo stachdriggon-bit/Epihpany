@@ -9,8 +9,8 @@ window.EPIPHANY_CARD_DATA = [
   {id:"CHR-006",category:"characters",name:"Yara",title:"Keybearer",rarity:"Epic",symbol:"⚿",palette:"key",art:"yara",description:"Her keys open only the doors whose hidden conditions have been met."},
   {id:"CHR-020",category:"characters",name:"Kaser",title:"The Fallen Heir",rarity:"Epic",symbol:"♜",palette:"royal",art:"kaser",description:"A former heir who left the throne behind for reasons he rarely explains."},
   {id:"CHR-027",category:"characters",name:"Nima",title:"Rain Glassmaker",rarity:"Epic",symbol:"❋",palette:"rain",art:"nima",description:"She shapes glass that catches blurry images of distant places in raindrops."},
-  {id:"CHR-029",category:"characters",name:"Veya",title:"Ember Gardener",rarity:"Epic",symbol:"❧",palette:"ember",art:"veya",description:"She tends unusual plants growing beside blue embers in cold ash."},
-  {id:"CHR-001",category:"characters",name:"Mira",title:"Wayfinder",rarity:"Uncommon",symbol:"⌖",palette:"map",art:"mira",description:"A practical guide who reads maps and helps travelers make sense of their routes."},
+  {id:"CHR-029",category:"characters",name:"Veya",title:"Ember Gardener",rarity:"Uncommon",symbol:"❧",palette:"ember",art:"veya",description:"She tends unusual plants growing beside blue embers in cold ash."},
+  {id:"CHR-001",category:"characters",name:"Mira",title:"Wayfinder",rarity:"Epic",symbol:"⌖",palette:"map",art:"mira",description:"A practical guide who reads maps and helps travelers make sense of their routes."},
   {id:"CHR-007",category:"characters",name:"Zayn",title:"Dune Navigator",rarity:"Common",symbol:"⌁",palette:"dune",art:"zayn",description:"A desert navigator who trusts wind, footprints and shifting dunes as much as maps."}
   ,{id:"WRD-001",category:"words",name:"Serendipity",title:"A fortunate discovery",rarity:"Common",symbol:"✧",palette:"crystal",description:"Finding something good without looking for it."}
   ,{id:"WRD-002",category:"words",name:"Resilient",title:"Able to recover",rarity:"Uncommon",symbol:"↗",palette:"map",description:"Able to recover after difficulty and keep going."}
