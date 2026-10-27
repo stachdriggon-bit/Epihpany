@@ -114,7 +114,7 @@ test('summoning uses shared sound preferences and respects reduced motion', () =
   assert.match(cards, /const beginPull =/);
   assert.match(cards, /playCardCue\('summon'\)/);
   assert.match(cards, /playCardCue\('legendary'\)/);
-  assert.match(cards, /prefers-reduced-motion, reduce/);
+  assert.match(cards, /prefers-reduced-motion: reduce/);
   assert.match(css, /summon-stage\.is-summoning/);
   assert.match(css, /legendary-halo/);
   assert.match(css, /prefers-reduced-motion:reduce/);
