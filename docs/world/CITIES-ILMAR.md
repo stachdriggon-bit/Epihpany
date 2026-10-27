@@ -13,6 +13,30 @@
 - The continent has no confirmed capital yet. One candidate may later become a capital, but that decision should wait until the political history and map require it.
 - Names can be changed. Keep the IDs stable if names change.
 
+## Reusable place registry — check before creating or writing a place
+
+**This file is the reference record for the Ilmar candidates below.** Before adding a city, writing a story set in one, creating a quest, card, dialogue, map label, or localization entry, search this registry and reuse the existing place ID and facts. Do not reintroduce an existing city by copying its description into a new document as if it were a new place. Other documents should link to or reference the place ID and add only story-specific details.
+
+### Quick index
+
+| Stable ID | Current name | Core identity | Status |
+|---|---|---|---|
+| IL-CITY-01 | Eiraven / إيرافين | Major river-market city; possible capital candidate, not designated | Provisional |
+| IL-CITY-02 | Westmere / ويستمير | Western coastal port and ship-repair town | Provisional |
+| IL-CITY-03 | Talwen / تالْوِن | Forest-edge town; timber and crafts | Provisional |
+| IL-CITY-04 | Ilanford / إيلانفورد | River crossing, bridge, ferry, and market | Provisional |
+| IL-CITY-05 | Calder Vale / وادي كالدر | Upland valley town with mills and farms | Provisional |
+| IL-CITY-06 | Sorell / سوريل | Southern route and caravan market | Provisional |
+
+### Continuity rules
+
+1. **Stable IDs beat names.** If a name changes, keep the ID and update this record.
+2. **One place, one record.** Alternate names, historic names, districts, and aliases belong in the same record unless the story establishes that they are genuinely separate places.
+3. **No duplicate city creation.** Search names, aliases, roles, and IDs before inventing another settlement. Similar functions do not automatically mean two places are the same, but possible overlaps must be checked.
+4. **Descriptions are not copy-paste filler.** When another file needs to mention a city, use a short reference to its ID and only the details needed for that scene. Keep the full reusable description here.
+5. **Changes must propagate.** If a city changes materially, update this record first, then check the Atlas, anchor locations, stories, quests, character relationships, cards, and translations that reference it.
+6. **Keep uncertainty visible.** Proposed rivers, coastlines, routes, capital status, and political affiliations remain provisional until explicitly decided.
+
 ## Candidate settlement list
 
 ### IL-CITY-01 — Eiraven / إيرافين
