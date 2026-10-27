@@ -427,7 +427,7 @@
           <button type="button" data-cards-tab="collection" class="is-active" aria-pressed="true">My collection</button>
           <button type="button" data-cards-tab="summon" aria-pressed="false">Open packs</button>
         </div>
-        <div class="cards-panel" data-cards-panel="collection">
+        <div class="cards-panel" data-cards-panel="collection"><p class="cards-upgrade-hint" id="cards-upgrade-balance">Upgrade a collected card for 5 shards · 5 levels max</p>
           <div class="cards-collection-meta"><span id="cards-collection-count">0 discovered</span><span><b id="cards-owned-count">0</b> cards collected</span></div>
           <div class="cards-grid" id="cards-gallery"></div>
         </div>
@@ -436,6 +436,7 @@
             <div class="cards-pack-art" id="cards-pack-art" data-pack="characters" aria-label="A mysterious card pack"><div class="cards-pack-seal"><span>✦</span><small>EPIPHANY</small></div></div>
             <div class="cards-pack-copy"><span class="profile-eyebrow" id="cards-pack-type">CHARACTER PACK</span><h3>Choose your next discovery</h3><p>Pick a pack, then choose a small or large reveal. Duplicate cards become 2 shards. Cards never affect XP or learning progress.</p><div class="cards-pack-types" role="group" aria-label="Pack type"><button type="button" class="is-active" data-card-pack="characters" data-card-pack-label="Character pack" aria-pressed="true">Characters</button><button type="button" data-card-pack="words" data-card-pack-label="Word & phrase pack" aria-pressed="false">Words & phrases</button><button type="button" data-card-pack="artifacts" data-card-pack-label="Artifact pack" aria-pressed="false">Artifacts</button><button type="button" data-card-pack="mixed" data-card-pack-label="Mixed pack" aria-pressed="false">Mixed</button></div><p class="cards-selected-note">Selected: <strong id="cards-pack-selected">Character pack</strong></p><div class="cards-pack-actions"><button class="btn btn-primary" id="cards-daily-pull" type="button">Claim daily free pull</button><button class="btn btn-ghost" id="cards-pull-one" type="button">Open 1 · 5 tokens</button><button class="btn btn-ghost" id="cards-pull-three" type="button">Open 3 · 14 tokens</button><button class="btn btn-ghost" id="cards-pull-five" type="button">Open 5 · 22 tokens</button><button class="btn btn-ghost" id="cards-pull-ten" type="button">Open 10 · 45 tokens</button></div><p class="cards-daily-note">One free character card each day. A Legendary card is guaranteed on the 50th card pulled without one. <strong><span id="cards-pity-count">50</span> pulls until guarantee.</strong></p></div>
           </div>
+          <section class="cards-history"><div class="cards-history-head"><div><h3>Discovery log</h3><p>Your latest pulls, upgrades and milestone rewards.</p></div><button type="button" class="btn btn-ghost" id="cards-history-clear">Clear log</button></div><ol id="cards-history-list" aria-live="polite"><li class="cards-history-empty">Your discoveries and upgrades will appear here.</li></ol></section>
           <div class="cards-featured-wrap"><h3>Featured card design</h3><div id="cards-featured-card"></div></div>
         </div>
       </section>
