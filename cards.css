@@ -435,6 +435,16 @@ body.cards-modal-open{overflow:hidden}
   .rv-skip{padding:0 12px}
 }
 
+/* Active summoning: give the selected pack a quiet, readable pulse while the ritual runs. */
+.summon-stage.is-summoning .summon-pack-art{border-color:color-mix(in srgb,var(--pk) 78%,#fff);box-shadow:inset 0 0 60px #000b,0 0 30px -8px var(--pk)}
+.summon-stage.is-summoning .summon-circle{opacity:.82;filter:drop-shadow(0 0 10px color-mix(in srgb,var(--pk) 55%,transparent))}
+.summon-stage.is-summoning .summon-fan{animation:summon-ritual-pulse 1.15s ease-in-out infinite}
+@keyframes summon-ritual-pulse{0%,100%{filter:brightness(1);transform:scale(1)}50%{filter:brightness(1.18);transform:scale(1.035)}}
+
+/* Legendary halo: extra warmth belongs to the reveal atmosphere, not the card text. */
+.cards-reveal-modal.legendary-halo .rv-rays{opacity:.95;filter:drop-shadow(0 0 28px #ffcf5a88)}
+.cards-reveal-modal.legendary-halo .rv-wave{box-shadow:0 0 28px #ffcf5a88}
+
 /* Legendary pull: restrained gold sheen layered over the reveal, never over the card text. */
 .cards-reveal-modal.cards-legendary-sheen .rv-rays{opacity:.9;background:linear-gradient(115deg,transparent 18%,#fff2 34%,#ffdf7a66 45%,#fff7 50%,#e9a72b55 57%,transparent 74%);background-size:220% 100%;animation:cards-legendary-sheen 2.4s ease-in-out both;}
 @keyframes cards-legendary-sheen{0%{background-position:130% 0;opacity:0}22%{opacity:.95}100%{background-position:-120% 0;opacity:.15}}
@@ -442,8 +452,8 @@ body.cards-modal-open{overflow:hidden}
 /* reduced motion: no cinematics, no tilt, instant flips */
 @media(prefers-reduced-motion:reduce){
   .fcard-frame:before,.fcard-aura,.fcard-motes,.fcard-foil,.fcard-sigil-art svg.ring,.fcard.is-back .fcard-sigil,.fcard[data-hint] .fcard-frame,
-  .summon-sky,.summon-circle .ring-a,.summon-circle .ring-b,.summon-fan .fan-c,.summon-pack-rune,.summon-live-dot,.summon-daily-button:before,
-  .cards-reveal-modal.cards-legendary-sheen .rv-rays,.rv-rays,.rv-portal svg,.rv-portal .g1,.rv-portal .g2,.rv-portal .g3,.rv-orb,.rv-hint,.rv-banner.show,.rv-banner.show strong,
+  .summon-stage.is-summoning .summon-fan,.summon-sky,.summon-circle .ring-a,.summon-circle .ring-b,.summon-fan .fan-c,.summon-pack-rune,.summon-live-dot,.summon-daily-button:before,
+  .cards-reveal-modal.legendary-halo .rv-rays,.cards-reveal-modal.cards-legendary-sheen .rv-rays,.rv-rays,.rv-portal svg,.rv-portal .g1,.rv-portal .g2,.rv-portal .g3,.rv-orb,.rv-hint,.rv-banner.show,.rv-banner.show strong,
   .cards-reveal-modal.do-shake .cards-reveal-dialog,.cards-reveal-modal.do-flash .rv-flash,.cards-reveal-modal.do-flash .rv-wave,.fcard.is-leveled .fcard-frame,
   .cards-reveal-modal,.reveal-result,.reveal-result.is-pop .rv-flip{animation:none!important}
   .fcard-tilt,.rv-flip,.fcard-portrait,.summon-fan,.summon-pull-option,.summon-pack-types button,.summon-pity-track span,.rv-badge{transition:none!important}
