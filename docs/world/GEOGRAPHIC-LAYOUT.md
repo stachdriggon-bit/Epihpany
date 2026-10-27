@@ -23,11 +23,11 @@ Use a simple north-up grid with 12 columns (A–L) and 8 rows (1–8). Each cell
 | **3 — north-central** | Ilmar northwest coast | Ilmar west-central interior; Nirvan extends north of this band | Sea of Stillness and channels | Orath northwest coast / highlands |
 | **4 — central** | Ilmar western uplands | Ilmar's forests and upper Ilan catchment | Sea of Dawn / inner Azmar passages | Orath's Great Highlands and western-draining rivers |
 | **5 — south-central** | Ilmar's southern interior | Ilan Basin and open plains toward central-sea coast | Sea of Dawn; nearer Azmar groups | Orath's Eastern Spine and provisional inland basin |
-| **6 — south** | Ilmar's southwestern cape and outer islands | Sahir's northern transitional margin | Sahir's basin rims and seasonal drainage | Orath's curved southern branch and approach to the strait |
-| **7 — far south** | Southern outer waters | Sahir's arid interior and southern coast | Sahir's southern/eastern reaches; scattered islands offshore | Strait of Passage opens toward outer waters |
+| **6 — south** | Ilmar's southwestern cape and outer islands | Tharima's northern transitional margin | Tharima's basin rims and seasonal drainage | Orath's curved southern branch and approach to the strait |
+| **7 — far south** | Southern outer waters | Tharima's arid interior and southern coast | Tharima's southern/eastern reaches; scattered islands offshore | Strait of Passage opens toward outer waters |
 | **8 — beyond southern waters** | Outer ocean | Outer ocean | Remote Azmar groups / outer waters | Outer ocean |
 
-**Important:** This table intentionally uses broad bands. It is not yet a precise coastline. Nirvan is mainly north of the central sea; Ilmar west, Orath east, and Sahir south. Some land extents overlap across multiple rows.
+**Important:** This table intentionally uses broad bands. It is not yet a precise coastline. Nirvan is mainly north of the central sea; Ilmar west, Orath east, and Tharima south. Some land extents overlap across multiple rows.
 
 ## 3. Major relief anchors
 
@@ -37,7 +37,7 @@ Use a simple north-up grid with 12 columns (A–L) and 8 rows (1–8). Each cell
 | M-05 | Western Ilmar Uplands | Western-to-southwestern Ilmar interior | Divide west-draining coastal rivers from east-draining Ilan headwaters |
 | M-01 | Orath Eastern Spine | North-northeast toward south-central Orath | Curved southern branch toward southeastern coast; not a straight wall |
 | M-02 | Orath Basin Rim | West of Eastern Spine | Partially encloses inland basin; outlet unresolved but currently modelled closed |
-| M-04 | Sahir Basin Rims | North-central interior and selected basin edges | Discontinuous; do not form a full ring |
+| M-04 | Tharima Basin Rims | North-central interior and selected basin edges | Discontinuous; do not form a full ring |
 | I-02 | Central Forest hills | Between Ilmar's western uplands and main lowlands | Rolling hills and forest mosaic; no continuous barrier |
 | I-01 | Ilan Basin | Central/eastern Ilmar | Broad lowland open to central-sea coast |
 | O-03 | Candidate passes | Lower saddles through Orath's ridges | At least northern high, central lower, and southern coastal approaches as candidates only |
@@ -51,7 +51,7 @@ Use a simple north-up grid with 12 columns (A–L) and 8 rows (1–8). Each cell
 | R-002A | Western Orath rivers | Western Great Highlands → western valleys | Sea of Dawn or Sea of Stillness, separate catchments |
 | R-002B | Eastern Orath rivers | Eastern Spine's eastern slopes → eastern coast | Outer ocean, separate catchments |
 | R-008 | Orath basin inflows | Rim/highlands → lowest interior basin | Provisional closed basin and fluctuating lake L-003 |
-| R-003A/B/C | Sahir wadis | Basin rims/steppe → interior depressions or selected coasts | Seasonal and partly disconnected |
+| R-003A/B/C | Tharima wadis | Basin rims/steppe → interior depressions or selected coasts | Seasonal and partly disconnected |
 | R-004A/B/C | Nirvan rivers | Highlands → northern, western, or southern coasts | Distinct watersheds; southern systems reach Sea of Stillness where downhill |
 | L-001 | Forest Lake | Central Ilmar hills | Outlet into an Ilan tributary |
 | L-003 | Orath Inner Lake | Lowest part of closed basin | Shallow, evaporation-sensitive; no outlet in current draft |
@@ -64,7 +64,7 @@ These are qualitative patterns, not finalized wind arrows or rainfall contours:
 - **Coolest overall:** Nirvan, especially higher northern/northwestern relief. Southern lowlands can be milder.
 - **Temperate tendency:** Ilmar, with wetter coastal/upland pockets and a gradual drier transition in some inland/southern areas.
 - **Strong local variation:** Orath, where elevation, exposure, and rain shadow can change over short distances.
-- **Driest interior tendency:** Sahir, with a semi-arid northern transition and localized upland/wadi refuges.
+- **Driest interior tendency:** Tharima, with a semi-arid northern transition and localized upland/wadi refuges.
 - **Maritime variation:** Azmar, where windward/leeward exposure, island elevation, and currents control rainfall and freshwater.
 - **Do not finalize** wind direction, currents, snowline, or biome borders until the latitude and seasonal model is chosen.
 
@@ -79,7 +79,7 @@ Before treating any draft map as coherent, verify:
 5. The Ilan River's estuary is on Ilmar's east-facing coast, while western rivers drain the opposite side of the divide.
 6. The Orath inland basin has no outlet in the current closed-basin draft; revisit this if contours show a lower saddle.
 7. Lakes have plausible catchments and an outlet or a stated closed-basin water balance.
-8. Sahir's seasonal wadis do not accidentally become a permanent continent-wide river.
+8. Tharima's seasonal wadis do not accidentally become a permanent continent-wide river.
 9. Nirvan's lakes, snowmelt, and seasonal routes agree with its relief and future climate model.
 10. Rain shadows and biomes transition plausibly; no dense wet forest appears in a dry region without a local moisture source.
 11. Island freshwater availability is recorded before any settlement is proposed.
@@ -110,7 +110,7 @@ Illustrations may help with mood and terrain vocabulary, but this worksheet and 
 
 This is a **cell-level silhouette**, not a drawn coastline. Each letter marks the dominant content of a cell; actual coasts curve through cells and continents span multiple cells. The purpose is to test adjacency and broad arrangement before drawing detailed bays.
 
-Legend: `I` Ilmar land; `N` Nirvan land; `O` Orath land; `S` Sahir land; `a` nearer Azmar islands; `r` remote Azmar islands; `~` open water; `:` narrow channel/strait corridor. Blank cells are open water.
+Legend: `I` Ilmar land; `N` Nirvan land; `O` Orath land; `S` Tharima land; `a` nearer Azmar islands; `r` remote Azmar islands; `~` open water; `:` narrow channel/strait corridor. Blank cells are open water.
 
 ```text
         A B C D E F G H I J K L
@@ -129,9 +129,9 @@ Row 8   ~ ~ ~ S S ~ r ~ ~ ~ ~ ~
 - Nirvan occupies the northern band; its southern margin approaches the Sea of Stillness.
 - Ilmar occupies the west and opens onto both western outer waters and the central sea.
 - Orath occupies the east; its western coast faces the central sea, while its eastern coast faces outer waters.
-- Sahir occupies the south and faces the central sea to the north and outer waters farther south.
+- Tharima occupies the south and faces the central sea to the north and outer waters farther south.
 - Nearer Azmar groups sit within the central maritime region; remote groups remain scattered farther south/east.
-- The Strait of Passage is a **candidate corridor** near Orath's southeastern reach and Sahir's northeastern side. The schematic does not yet prove its exact width or whether every neighbouring channel connects as intended.
+- The Strait of Passage is a **candidate corridor** near Orath's southeastern reach and Tharima's northeastern side. The schematic does not yet prove its exact width or whether every neighbouring channel connects as intended.
 
 ### Problems intentionally left visible
 
