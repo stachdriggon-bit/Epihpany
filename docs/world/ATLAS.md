@@ -36,7 +36,7 @@ Mountain chains, highlands, plateaus, inland basins, passes, and scattered miner
 - **M-01 — Eastern Spine / العمود الشرقي:** proposed long mountain belt, with branches and traversable passes.
 - **M-02 — Orath Inland Basin Rim / حواف حوض أوراث:** uplands surrounding a possible closed or partly closed basin.
 
-### Sahir (ساهِر) — south
+### Tharima (ثاريما) — south
 Arid and semi-arid areas, steppes, seasonal wadis, and water basins.
 
 - **S-01 — Arid Belt / النطاق الجاف**
@@ -67,7 +67,7 @@ Working arrangement only:
 - Nirvan lies to the north.
 - Ilmar lies to the west.
 - Orath lies to the east.
-- Sahir lies to the south.
+- Tharima lies to the south.
 - Azmar consists of archipelagos distributed around central maritime passages, with some groups farther away.
 - A named “Distant Ocean” is a working label for waters beyond part of the known geographic area. The name does not establish the ocean's edge or the world's extent.
 
@@ -85,7 +85,7 @@ Provisional names:
 
 - **R-001 — Ilan River / نهر إيلان:** proposed to rise in western inland uplands, cross the Ilan Basin, and reach a coastal estuary. Exact source, tributaries, course, and mouth remain provisional.
 - **R-002 — Orath River Network / شبكة أنهار أوراث:** several rivers descend from highlands; some may reach coasts, while others drain into inland basins.
-- **R-003 — Sahir Wadi Network / أودية ساهِر:** seasonal channels fed by irregular rainfall and upland runoff.
+- **R-003 — Tharima Wadi Network / أودية ثاريما:** seasonal channels fed by irregular rainfall and upland runoff.
 - **R-004 — Nirvan Rivers and Lakes / أنهار وبحيرات نيرفان:** water systems influenced by northern uplands, local precipitation, and cold-season conditions.
 
 Do not assign exact lengths or precise tributary counts until map scale and topography are established.
@@ -94,7 +94,7 @@ Do not assign exact lengths or precise tributary counts until map scale and topo
 
 - Temperate and relatively humid areas in parts of Ilmar and some coasts.
 - Mountain climates and rain-shadow effects in Orath and other uplands.
-- Arid and semi-arid zones in Sahir and some inland basins.
+- Arid and semi-arid zones in Tharima and some inland basins.
 - Cold forests, cold uplands, and seasonally constrained routes in Nirvan.
 - Varied maritime climates across Azmar, depending on latitude, currents, and elevation.
 - Transition belts between biomes where geography supports them.
@@ -105,7 +105,7 @@ Global wind directions, currents, exact temperature bands, and precise biome bor
 
 - **SET-01 — Ilan Confluence:** possible river confluence or crossing in Ilmar.
 - **SET-02 — Pass City:** possible settlement controlling a usable Orath pass.
-- **SET-03 — Basin Settlement:** possible settlement near a reliable water source in Sahir.
+- **SET-03 — Basin Settlement:** possible settlement near a reliable water source in Tharima.
 - **SET-04 — Nirvan Harbor:** possible protected northern harbor.
 - **SET-05 — Azmar Port:** possible port at a junction of maritime passages.
 
@@ -116,7 +116,7 @@ These are site concepts, not canonized city names or established historical even
 - **P-01 — Western Passage:** possible link between Ilmar's coast and nearby islands.
 - **P-02 — Strait Route:** maritime route through the proposed Strait of Passage.
 - **P-03 — Orath Passes:** land routes between inland basins and coasts or neighboring regions.
-- **P-04 — Sahir Basin Routes:** routes linking water sources, settlements, and trade.
+- **P-04 — Tharima Basin Routes:** routes linking water sources, settlements, and trade.
 - **P-05 — Northern Routes:** routes whose usability may vary seasonally.
 - **P-06 — Outer Azmar Routes:** routes linking remote island groups to regional navigation.
 
@@ -128,11 +128,11 @@ This section establishes a coherent relative arrangement of coasts and island gr
 
 ### 9.1 Central sea and outer waters
 
-- **Central Sea / بحر الفجر (S-SEA-01):** a broad, irregular sea between eastern Ilmar, western Orath, northern Sahir, and the nearer Azmar island groups. It has several bays and island passages rather than one perfectly open circular basin.
+- **Central Sea / بحر الفجر (S-SEA-01):** a broad, irregular sea between eastern Ilmar, western Orath, northern Tharima, and the nearer Azmar island groups. It has several bays and island passages rather than one perfectly open circular basin.
 - **Sea of Stillness / بحر السكون (S-SEA-02):** lies north of the central sea, between southern Nirvan and northern/northwestern Orath. A set of channels and island gaps connects it to the central sea; the name is cultural, not a promise of calm weather.
 - **Western Outer Ocean / المحيط الغربي البعيد:** open water off Ilmar's western coast. This is a working regional label, not a claim about the world's edge.
-- **Southern Outer Ocean / المحيط الجنوبي البعيد:** open water beyond the southern and southwestern Sahir coast, with routes that can reach outer Azmar groups.
-- **Strait of Passage / مضيق العبور (S-STR-01):** provisionally placed on the southeastern side of the central sea, between the southern reach of Orath and the northeastern coast of Sahir, opening toward the eastern/southeastern outer waters. Its navigability and strategic importance depend on final widths, currents, and alternate routes.
+- **Southern Outer Ocean / المحيط الجنوبي البعيد:** open water beyond the southern and southwestern Tharima coast, with routes that can reach outer Azmar groups.
+- **Strait of Passage / مضيق العبور (S-STR-01):** provisionally placed on the southeastern side of the central sea, between the southern reach of Orath and the northeastern coast of Tharima, opening toward the eastern/southeastern outer waters. Its navigability and strategic importance depend on final widths, currents, and alternate routes.
 
 ### 9.2 Ilmar coast — west
 
@@ -160,7 +160,7 @@ This section establishes a coherent relative arrangement of coasts and island gr
 - **Southeastern reach:** narrows toward the proposed Strait of Passage; the final land shape must preserve a navigable channel unless a later decision deliberately changes the strait concept.
 - **Open decision:** exact number and placement of coastal river outlets, and whether the east coast has a large gulf.
 
-### 9.5 Sahir coast — south
+### 9.5 Tharima coast — south
 
 - **Northern coast:** faces the central sea. It includes several shallow gulfs and stretches of low coast where seasonal rivers may reach the sea, but not every wadi should become a permanent river mouth.
 - **Northeastern reach:** forms the southern side of the proposed Strait of Passage.
@@ -211,7 +211,7 @@ This is the next layer above the coastline topology. It fixes the relative place
 - **O-04 Mineral Zones:** reserve several separated upland pockets rather than one continuous mineral belt. Exact deposits remain open.
 - **Drainage rule:** western slopes may feed rivers toward the central sea; eastern slopes may feed rivers toward the outer ocean. Streams inside the inland basin drain to its lowest point unless a lower natural outlet is explicitly designed.
 
-### 10.3 Sahir — southern continent
+### 10.3 Tharima — southern continent
 
 - **M-04 Basin Rims:** discontinuous uplands in the north-central interior and along selected basin edges. They guide runoff without forming an unbroken ring around the continent.
 - **S-01 Arid Belt:** broad dry interior zones, with local variation near coasts, highlands, and seasonal watercourses.
@@ -292,9 +292,9 @@ For the current draft, use a **provisional closed-basin model** for the inland b
 
 **Consistency check:** no stream may leave the closed basin in the draft map. If a contour sketch later reveals a lower saddle to the sea, the basin must be reclassified as open and its lake/outlet redesigned.
 
-### 13.3 Sahir — episodic water, not a hidden continent-wide river
+### 13.3 Tharima — episodic water, not a hidden continent-wide river
 
-- **R-003A — Northern Wadis / أودية ساهِر الشمالية:** seasonal channels descend from the transitional steppe and northern basin rims into low interior basins. Their flow is brief and flood-prone; they do not form a permanent connected river network.
+- **R-003A — Northern Wadis / أودية ثاريما الشمالية:** seasonal channels descend from the transitional steppe and northern basin rims into low interior basins. Their flow is brief and flood-prone; they do not form a permanent connected river network.
 - **R-003B — Coastal Wadis / أودية الساحل:** selected wadis reach the northern coast and the Sea of Dawn after major rain events. Others lose flow to infiltration, evaporation, or inland depressions before reaching the sea.
 - **R-003C — Southern Basin Channels / قنوات الأحواض الجنوبية:** short, separate channels drain local uplands into closed depressions. Keep these catchments independent unless the relative elevations explicitly connect them.
 - **Lake L-004 — Rain Basin / بحيرة المطر:** a shallow, intermittent lake in one interior depression, appearing or expanding after exceptional seasonal rains and shrinking markedly in dry periods. Its presence is not a guarantee of permanent freshwater.
@@ -326,7 +326,7 @@ For the current draft, use a **provisional closed-basin model** for the inland b
 2. Rivers flowing to opposite coasts remain separate unless an explicit low divide or unusual geological history is documented.
 3. The Orath closed basin is provisional; its status depends on future contours and must be revisited before the map is considered final.
 4. Lakes L-001 to L-006 are proposed geographic features, not all equally large or permanent. Their water balances must be revisited with climate.
-5. Sahir's seasonal channels should vary in length and reliability; some end inland and some reach the sea.
+5. Tharima's seasonal channels should vary in length and reliability; some end inland and some reach the sea.
 6. Nirvan's snowmelt and lake outlets must match elevation and seasonal climate.
 7. Small islands need not have permanent rivers. Freshwater availability is a constraint on settlement, not a decorative detail.
 8. No precise lengths, volumes, navigability, or population capacity are assigned until a scale and climate model exist.
@@ -337,7 +337,7 @@ For the current draft, use a **provisional closed-basin model** for the inland b
 
 ### 14.1 Climate-design assumptions
 
-- Treat Nirvan as the generally coolest major region and Sahir as the generally driest interior region, but neither is uniform.
+- Treat Nirvan as the generally coolest major region and Tharima as the generally driest interior region, but neither is uniform.
 - Latitude is only one control. Elevation, exposure to moist winds, distance from the sea, ocean currents, and seasonal circulation can alter local conditions.
 - Use gradual transitions between humid forest, open woodland, grassland, steppe, and desert. Sharp local boundaries need a physical cause such as a ridge, coast, or abrupt change in elevation.
 - Rain shadows are strongest near the downwind side of major highlands and weaken or change with distance; do not turn every leeward valley into a desert.
@@ -349,7 +349,7 @@ For the current draft, use a **provisional closed-basin model** for the inland b
 - **Nirvan:** coldest overall, with cold highlands in the northern/northwestern arc, cool forests at suitable lower elevations, and a milder southern transitional belt. Seasonal snow and ice are plausible in high areas; permanent ice is not assumed across the entire region.
 - **Ilmar:** broadly temperate, with a wetter western/northwestern margin in exposed places and more seasonally dry areas farther inland or toward the south. The Ilan Basin is potentially fertile where river water and rainfall overlap.
 - **Orath:** highly varied because of the Eastern Spine, Great Highlands, and inland basin. Elevation creates cool highlands; windward slopes can be wet, while selected leeward areas and the enclosed basin can be drier.
-- **Sahir:** warmest and driest overall in its interior, with semi-arid transition zones, locally wetter northern margins, and coastal variations. Some highlands are cooler than surrounding lowlands.
+- **Tharima:** warmest and driest overall in its interior, with semi-arid transition zones, locally wetter northern margins, and coastal variations. Some highlands are cooler than surrounding lowlands.
 - **Azmar:** maritime moderation varies by latitude, island size, relief, and currents. Windward islands may be wet while nearby low or leeward islands can be seasonal or dry.
 
 These are relative tendencies, not fixed temperature numbers or a claim that every point follows the regional average.
@@ -361,7 +361,7 @@ Until a latitude grid and circulation model are drawn, use the following as **te
 1. Moisture-bearing winds reach parts of Ilmar from the western ocean, supporting wetter coastal pockets and upland-facing slopes. Their exact prevailing direction and seasonal strength remain open.
 2. Some western and northwestern slopes in Ilmar receive more rain than interior lowlands, while the Western Ilmar Uplands produce a modest-to-strong rain-shadow gradient toward selected inland and southeastern areas.
 3. Orath's western slopes can receive moisture from the central seas, but the Eastern Spine and associated highlands reduce or redirect moisture into the interior and eastern slopes. Do not assume the entire east coast is dry: local exposure and currents remain decisive.
-4. Sahir receives irregular seasonal rain. The northern transitional belt catches more of the available moisture than the deeper interior; isolated storms can create destructive floods without sustaining permanent rivers.
+4. Tharima receives irregular seasonal rain. The northern transitional belt catches more of the available moisture than the deeper interior; isolated storms can create destructive floods without sustaining permanent rivers.
 5. Nirvan's highlands intercept moisture and snow. The southern belt may receive maritime moisture from the Sea of Stillness, while exposed northern/eastern coasts can be windy and cold without necessarily being the wettest.
 6. Azmar's small islands respond strongly to wind direction and local relief. Windward slopes may be lush; leeward sides can be noticeably drier over short distances.
 
@@ -389,7 +389,7 @@ These labels identify broad physical/ecological regions, not cultures or politic
 - **BIO-OR-05 — Eastern Leeward Valleys:** patchy dry woodland and steppe in rain-shadowed areas, with wetter corridors near rivers and exposed slopes.
 - **BIO-OR-06 — Southern Coastal Transition:** varied foothills and coastal plains near the strait; maritime influence may soften dryness locally.
 
-#### Sahir
+#### Tharima
 
 - **BIO-SA-01 — Northern Semi-arid Steppe:** seasonal grass, shrubs, and scattered trees near more reliable drainage. Green-up may be brief and irregular.
 - **BIO-SA-02 — Interior Arid Belt:** sparse scrub, bare ground, and dry channels. This is not one uninterrupted sand sea; rocky deserts and gravel plains are possible.
@@ -419,7 +419,7 @@ These labels identify broad physical/ecological regions, not cultures or politic
 - **Ilmar western rivers:** shorter and more variable than Ilan in the current model; their flow depends on which side of the upland divide they drain and local exposure.
 - **Orath western rivers:** their catchments should be wetter on selected windward slopes, with flow becoming more seasonal toward drier interiors.
 - **Orath closed basin and Lake L-003:** water level depends on inflow versus evaporation. A persistent large freshwater lake is not assumed; a shallow fluctuating lake, wetland, or salt-flat phase is more plausible for a dry basin.
-- **Sahir wadis:** flood pulses may be powerful but short. Some channels terminate in depressions, and only selected ones reach the coast.
+- **Tharima wadis:** flood pulses may be powerful but short. Some channels terminate in depressions, and only selected ones reach the coast.
 - **Nirvan lakes and rivers:** snowmelt can create a seasonal high-flow period. Exact freeze duration and river permanence remain open until latitude and elevation are chosen.
 - **Azmar freshwater:** a settlement site must have a credible source: rainfall storage, a spring, groundwater, a stream, or regular supply. Island size alone does not guarantee water.
 
@@ -440,6 +440,6 @@ These labels identify broad physical/ecological regions, not cultures or politic
 - Prevailing winds by season and the strength/direction of ocean currents.
 - Relative rainfall and temperature bands.
 - Whether Orath's closed basin remains closed after contours are drafted.
-- Exact biome boundaries and the reliability of springs in Sahir.
+- Exact biome boundaries and the reliability of springs in Tharima.
 - Snowline, seasonal ice, and river freeze patterns in Nirvan.
 - The freshwater capacity of individual Azmar islands.
