@@ -1,13 +1,19 @@
 # EPIPHANY — Ilmar: Candidate Cities
 
-**Version:** 0.1  
-**Status:** Provisional naming proposals; none are established canon yet.  
+**Version:** 0.2  
+**Status:** Settlement names approved by the project owner; settlement existence, roles, placement, and anchor relationships remain provisional.
 **Scope:** A small first pass at memorable settlements for Ilmar. These names are meant to be tested in stories and exploration before they are finalized.
+
+## Canon decision
+
+**Approved names:** The six names in this registry are accepted as the current canonical names for these settlement IDs. Keep their spelling and Arabic-script forms consistent across stories, quests, cards, dialogue, maps, and translations. A later rename requires an explicit decision and must preserve the stable ID.
+
+**What this does not finalize:** These entries are not a complete gazetteer. Exact positions, physical geography, political importance, and possible overlap with existing anchor locations remain open. If an entry and an anchor prove to be the same place, reconcile them under one stable place record rather than inventing two locations.
 
 ## Ground rules
 
 - Ilmar is the western continent in the current working map, but the full world map and all coastlines remain provisional.
-- These are candidate cities and towns, not a complete list of settlements.
+- These are the first approved settlement names, not a complete list of settlements.
 - The roles below are intentionally distinct; not every place needs a mystery or a grand historical secret.
 - Positions are relative descriptions, not exact map coordinates. Do not force rivers, roads, or coastlines to fit a name.
 - The continent has no confirmed capital yet. One candidate may later become a capital, but that decision should wait until the political history and map require it.
@@ -21,12 +27,12 @@
 
 | Stable ID | Current name | Core identity | Status |
 |---|---|---|---|
-| IL-CITY-01 | Eiraven / إيرافين | Major river-market city; possible capital candidate, not designated | Provisional |
-| IL-CITY-02 | Westmere / ويستمير | Western coastal port and ship-repair town | Provisional |
-| IL-CITY-03 | Talwen / تالْوِن | Forest-edge town; timber and crafts | Provisional |
-| IL-CITY-04 | Ilanford / إيلانفورد | River crossing, bridge, ferry, and market | Provisional |
-| IL-CITY-05 | Calder Vale / وادي كالدر | Upland valley town with mills and farms | Provisional |
-| IL-CITY-06 | Sorell / سوريل | Southern route and caravan market | Provisional |
+| IL-CITY-01 | Eiraven / إيرافين | Major river-market city; possible capital candidate, not designated | Name accepted; details provisional |
+| IL-CITY-02 | Westmere / ويستمير | Western coastal port and ship-repair town | Name accepted; details provisional |
+| IL-CITY-03 | Talwen / تالْوِن | Forest-edge town; timber and crafts | Name accepted; details provisional |
+| IL-CITY-04 | Ilanford / إيلانفورد | River crossing, bridge, ferry, and market | Name accepted; details provisional |
+| IL-CITY-05 | Calder Vale / وادي كالدر | Upland valley town with mills and farms | Name accepted; details provisional |
+| IL-CITY-06 | Sorell / سوريل | Southern route and caravan market | Name accepted; details provisional |
 
 ### Continuity rules
 
@@ -95,15 +101,15 @@
 - **Westmere:** depends on the final west-coast bay geometry.
 - **Calder Vale and Sorell:** their positions are deliberately broad so terrain and routes can be refined without breaking city canon.
 
-## Decisions intentionally left open
+## Open details (names remain approved)
 
-1. Which, if any, of these names should become final.
+1. Exact positions and relationships to the final physical map.
 2. Whether Eiraven is a capital, a regional center, or simply a major trade city.
 3. Whether Ilanford and the Three-Arch Ferry are one place or two.
 4. Exact coastline, river courses, distances, and travel times.
 5. Political institutions, rulers, dynasties, and dates.
 6. Which cities actually appear in the first stories or World exploration.
 
-## Naming test before acceptance
+## Naming consistency for future additions
 
-A candidate name should be retained only if it is easy to distinguish when spoken or read, fits the tone of the setting, and can be remembered without making every place sound alike. Names should also remain readable in Arabic and English UI labels.
+For future additions, a proposed name should be retained only if it is easy to distinguish when spoken or read, fits the tone of the setting, and can be remembered without making every place sound alike. Names should also remain readable in Arabic and English UI labels.
