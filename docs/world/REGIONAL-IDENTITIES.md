@@ -11,7 +11,7 @@ A continent is not a single culture, climate, personality, or plot. Each should 
 Names and broad placements are provisional:
 - **Ilmar / إيلمار** — western continent.
 - **Orath / أوراث** — eastern continent.
-- **Sahir / ساهِر** — southern continent.
+- **Tharima / ثاريما** — southern continent.
 - **Nirvan / نيرفان** — northern continent.
 - **Azmar / أزمار** — scattered archipelagos and maritime passages.
 
@@ -45,7 +45,7 @@ Names and broad placements are provisional:
 
 **Avoid reducing Orath to:** A continent of mysterious scholars, mountains, or one all-explaining ancient secret.
 
-## 3. Sahir / ساهِر — Water, distance, and adaptation
+## 3. Tharima / ثاريما — Water, distance, and adaptation
 
 **First impression:** Dry interiors, semi-arid northern transitions, broken uplands, seasonal channels, basins, and coasts where water is precious but local conditions vary.
 
@@ -59,7 +59,7 @@ Names and broad placements are provisional:
 
 **Story opportunities:** A guide must decide whether to take the short route through a dry channel; a community preserves an old water-sharing agreement; an apparent miracle has several plausible explanations; a traveler learns that local hospitality comes with obligations.
 
-**Avoid reducing Sahir to:** Endless sand, a single desert culture, or a place where every plot is about scarcity.
+**Avoid reducing Tharima to:** Endless sand, a single desert culture, or a place where every plot is about scarcity.
 
 ## 4. Nirvan / نيرفان — Seasonal knowledge and sheltered lives
 
