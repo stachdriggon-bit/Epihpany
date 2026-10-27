@@ -105,13 +105,13 @@ Global wind directions, currents, exact temperature bands, and precise biome bor
 
 ## 7. Candidate settlement sites — not finalized cities
 
-- **SET-01 — Ilan Confluence:** possible river confluence or crossing in Ilmar.
+- **Ilmar:** provisional city-name candidates are tracked in [Ilmar Candidate Cities](CITIES-ILMAR.md). Their positions and roles must be checked against the final physical map.
 - **SET-02 — Pass City:** possible settlement controlling a usable Orath pass.
 - **SET-03 — Basin Settlement:** possible settlement near a reliable water source in Tharima.
 - **SET-04 — Nirvan Harbor:** possible protected northern harbor.
 - **SET-05 — Azmar Port:** possible port at a junction of maritime passages.
 
-These are site concepts, not canonized city names or established historical events.
+These are site concepts, not canonized city names or established historical events. No city is currently designated as a capital.
 
 ## 8. Route register
 
