@@ -135,6 +135,19 @@ test('main navigation tabs open without uncaught page errors', async t => {
         await page.locator('#game-body').waitFor({ state: 'visible', timeout: 5000 });
         if (await page.locator('#game-body .answer').count()) await page.locator('#game-body .answer').first().click();
       }
+      if (view === 'summon') {
+        await page.locator('#cards-summon-token-count').waitFor({ state: 'visible', timeout: 5000 });
+        assert.equal(await page.locator('#cards-pull-one').isVisible(), true, 'single-pull control should be visible');
+        assert.equal(await page.locator('#cards-pull-one strong').innerText(), '×1', 'pull button layout should survive wallet updates');
+        await page.locator('[data-card-pack="words"]').click();
+        assert.equal(await page.locator('#cards-pack-art').getAttribute('data-pack'), 'words', 'pack artwork should reflect the selected pack');
+        await page.locator('#cards-pull-one').click();
+        await page.locator('#cards-reveal-modal').waitFor({ state: 'visible', timeout: 5000 });
+        assert.equal(await page.locator('#cards-reveal-results .reveal-result').count(), 1, 'single pull should reveal exactly one card');
+        assert.equal(await page.locator('#cards-reveal-modal').getAttribute('data-result-count'), '1', 'single pull should use the featured reveal state');
+        assert.equal(await page.locator('#cards-summon-token-count').innerText(), '10', 'single pull should deduct five Tokens');
+        await page.locator('#cards-reveal-close').click();
+      }
       if (view === 'home') {
         assert.ok((await page.locator('#next-title').innerText()).trim(), 'home should show a recommended next activity');
         assert.ok((await page.locator('#next-desc').innerText()).trim(), 'home should explain why the activity is recommended');
