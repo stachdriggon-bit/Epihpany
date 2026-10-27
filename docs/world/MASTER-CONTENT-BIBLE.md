@@ -4,6 +4,10 @@
 **Status:** Foundational working reference  
 **Scope:** Shared setting for stories, World exploration, characters, cards, and the in-app Lore archive.
 
+## 0. Shared place registry and continuity
+
+Place descriptions must be stored once in the appropriate regional city/settlement registry and reused by reference. Before inventing or writing about a city, town, landmark, harbor, or named district, search existing stable IDs, names, aliases, and descriptions to avoid duplicates. Keep stable IDs when names change; store aliases and historical names in the same record unless there is a clear in-world reason for separate places. Other files should reference the place ID and add only scene-specific information rather than copying the full description. When a place changes, update its source record and check dependent atlas entries, anchor locations, stories, quests, characters, cards, and translations.
+
 ## 1. Core identity
 
 EPIPHANY takes place in a world that feels geographically recognizable: continents, seas, mountains, rivers, forests, deserts, islands, cities, trade routes, and ordinary human concerns. Unusual phenomena exist within this world rather than replacing its natural and social foundations.
