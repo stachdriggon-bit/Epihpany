@@ -1,15 +1,21 @@
 # EPIPHANY — Nirvan: Candidate Settlements
 
-**Version:** 0.1  
-**Status:** Provisional place and naming proposals; none are established canon yet.  
+**Version:** 0.2  
+**Status:** Settlement names approved by the project owner; settlement existence, roles, placement, and anchor relationships remain provisional.
 **Scope:** A first small registry of settlement candidates for Nirvan, the northern continent in the current working map.
+
+## Canon decision
+
+**Approved names:** The six names in this registry are accepted as the current canonical names for these settlement IDs. Keep their spelling and Arabic-script forms consistent across stories, quests, cards, dialogue, maps, and translations. A later rename requires an explicit decision and must preserve the stable ID.
+
+**What this does not finalize:** These entries are not a complete gazetteer. Exact positions, physical geography, political importance, and possible overlap with existing anchor locations remain open. If an entry and an anchor prove to be the same place, reconcile them under one stable place record rather than inventing two locations.
 
 ## Ground rules
 
 - Nirvan is the northern continent in the current working map; exact coastlines, relief, watersheds, climate boundaries, and scale remain provisional.
 - Cold forests, uplands, lakes, coasts, and seasonal travel conditions may coexist. Nirvan is not assumed to be permanently frozen or culturally uniform.
 - These candidates are not a complete settlement list and do not need all to survive later map development.
-- Names are working placeholders, not a finalized language system or an intended analogue to any real-world culture. Follow [Naming and Toponymy](NAMING-AND-TOPONYMY.md) before accepting names.
+- The names in this registry are approved. They do not establish a finalized language system or an analogue to any real-world culture; follow [Naming and Toponymy](NAMING-AND-TOPONYMY.md) for future naming.
 - Before creating another place, check this registry and [Anchor Locations](ANCHOR-LOCATIONS.md). In particular, NI-CITY-01 may overlap with the existing Last Warm Dock anchor.
 
 ## Reusable place registry
@@ -20,12 +26,12 @@ This file is the reference record for the Nirvan candidates below. Stories, ques
 
 | Stable ID | Current working name | Core identity | Status |
 |---|---|---|---|
-| NI-CITY-01 | Orven Reach / أورڤن ريتش | Sheltered northern harbor and repair stop | Provisional; possible anchor overlap |
-| NI-CITY-02 | Pellisar / بيليسار | Lakeside town with seasonal boat and overland links | Provisional |
-| NI-CITY-03 | Varnholt / ڤارن هولت | Forest-edge timber and winter-supply town | Provisional |
-| NI-CITY-04 | Iskell / إسكِل | Upland settlement supporting a weather-exposed pass | Provisional |
-| NI-CITY-05 | Mireva / ميريفا | Wetland and lake-outlet community | Provisional |
-| NI-CITY-06 | Caerun / كايرون | Transitional-belt market linking northern and milder routes | Provisional |
+| NI-CITY-01 | Orven Reach / أورڤن ريتش | Sheltered northern harbor and repair stop | Name accepted; possible anchor overlap |
+| NI-CITY-02 | Pellisar / بيليسار | Lakeside town with seasonal boat and overland links | Name accepted; details provisional |
+| NI-CITY-03 | Varnholt / ڤارن هولت | Forest-edge timber and winter-supply town | Name accepted; details provisional |
+| NI-CITY-04 | Iskell / إسكِل | Upland settlement supporting a weather-exposed pass | Name accepted; details provisional |
+| NI-CITY-05 | Mireva / ميريفا | Wetland and lake-outlet community | Name accepted; details provisional |
+| NI-CITY-06 | Caerun / كايرون | Transitional-belt market linking northern and milder routes | Name accepted; details provisional |
 
 ## Candidate settlement list
 
@@ -110,7 +116,7 @@ This file is the reference record for the Nirvan candidates below. Stories, ques
 5. Update this registry first when a settlement changes, then check the Atlas, anchors, stories, quests, characters, cards, and translations.
 6. Exact positions, resources, political affiliations, routes, and dates remain open until explicitly established.
 
-## Open questions
+## Open details (names remain approved)
 
 - Does Orven Reach become the same place as The Last Warm Dock?
 - Which candidates fit the final lake, forest, upland, and coastline layout?
