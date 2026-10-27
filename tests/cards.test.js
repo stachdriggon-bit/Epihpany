@@ -36,6 +36,10 @@ test('card prototype is linked from profile and cached offline', () => {
 test('collection rules keep card rewards separate from learning XP', () => {
   const js = read('cards.js');
   assert.match(js, /const STARTER_TOKENS = 15/);
+  assert.match(js, /const ADMIN_TEST_TOKENS = 100000/);
+  assert.match(js, /grantAdminTestTokens/);
+  assert.match(js, /state\.adminGrantFor===normalized/);
+  assert.match(js, /modal\.dataset\.revealTier/);
   assert.match(js, /const DAILY_COST = 5/);
   assert.match(js, /const TEN_COST = 45/);
   assert.match(js, /state\.shards\+=2/);
