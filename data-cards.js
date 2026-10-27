@@ -1,9 +1,9 @@
 /* EPIPHANY collectible-card prototype data. Rarity is cosmetic and collection-only. */
 window.EPIPHANY_CARD_DATA = [
-  {id:"CHR-025",category:"characters",name:"Aster",title:"Starhart",rarity:"Legendary",symbol:"✦",palette:"star",description:"A celestial guide who senses a significant direction, not necessarily the destination you want."},
-  {id:"CHR-067",category:"characters",name:"Zujjaj",title:"Hourglass Jelly",rarity:"Legendary",symbol:"◉",palette:"time",description:"A strange creature whose drifting sand sometimes moves against the hour."},
-  {id:"CHR-070",category:"characters",name:"Hams",title:"Doorstep Visitor",rarity:"Legendary",symbol:"⌂",palette:"mist",description:"A mist-born visitor that slips through unsealed openings, but never through solid walls."},
-  {id:"CHR-073",category:"characters",name:"Layla",title:"Pact Mediator",rarity:"Legendary",symbol:"⚖",palette:"pact",description:"She compares conflicting accounts of old agreements without claiming to know anyone’s true intentions."},
+  {id:"CHR-025",category:"characters",name:"Aster",title:"Starhart",rarity:"Legendary",symbol:"✦",palette:"star",art:"aster",description:"A celestial guide who senses a significant direction, not necessarily the destination you want."},
+  {id:"CHR-067",category:"characters",name:"Zujjaj",title:"Hourglass Jelly",rarity:"Legendary",symbol:"◉",palette:"time",art:"zujjaj",description:"A strange creature whose drifting sand sometimes moves against the hour."},
+  {id:"CHR-070",category:"characters",name:"Hams",title:"Doorstep Visitor",rarity:"Legendary",symbol:"⌂",palette:"mist",art:"hams",description:"A mist-born visitor that slips through unsealed openings, but never through solid walls."},
+  {id:"CHR-073",category:"characters",name:"Layla",title:"Pact Mediator",rarity:"Legendary",symbol:"⚖",palette:"pact",art:"layla",description:"She compares conflicting accounts of old agreements without claiming to know anyone’s true intentions."},
   {id:"CHR-075",category:"characters",name:"The Upward Shadow",title:"The Unturned Path",rarity:"Legendary",symbol:"↟",palette:"shadow",description:"A wandering shadow linked to routes whose conditions change and meetings remembered out of order."},
   {id:"CHR-005",category:"characters",name:"Nibras",title:"Crystal Echo",rarity:"Epic",symbol:"◇",palette:"crystal",description:"A crystalline keeper of echoes that never preserve the whole truth."},
   {id:"CHR-006",category:"characters",name:"Yara",title:"Keybearer",rarity:"Epic",symbol:"⚿",palette:"key",description:"Her keys open only the doors whose hidden conditions have been met."},
