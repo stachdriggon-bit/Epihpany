@@ -71,3 +71,26 @@
 body.cards-modal-open{overflow:hidden}
 @media(max-width:700px){.cards-pack-layout{grid-template-columns:1fr}.cards-pack-art{min-height:210px}.cards-pack-copy h3{font-size:21px}.cards-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.collectible-art{min-height:135px}.collectible-card-copy{padding:10px}.collectible-card-copy h3{font-size:16px}.collectible-description{font-size:11px}.cards-hub{padding:15px;border-radius:18px}.cards-reveal-results{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:390px){.cards-grid{grid-template-columns:1fr 1fr}.cards-pack-actions{display:grid;grid-template-columns:1fr}.cards-wallet{width:100%}.cards-wallet span{flex:1;justify-content:center}}
+
+
+/* Rarity-aware reveal polish: keep common pulls quick and give rare discoveries a little more presence. */
+.cards-reveal-modal[data-reveal-tier="legendary"] .cards-reveal-dialog{
+  border-color:color-mix(in srgb,#e9b84e 65%,var(--line));
+  box-shadow:0 24px 90px #0006,0 0 0 1px #e9b84e24,0 0 42px #e9b84e20;
+}
+.cards-reveal-modal[data-reveal-tier="legendary"] .cards-reveal-head h2{
+  color:color-mix(in srgb,#e9b84e 68%,var(--ink));
+}
+.reveal-result.rarity-legendary{
+  background:linear-gradient(120deg,color-mix(in srgb,#e9b84e 12%,var(--ground)),var(--ground));
+  box-shadow:inset 0 0 0 1px #e9b84e18;
+}
+.reveal-result.rarity-legendary .collectible-art{
+  box-shadow:0 0 20px #e9b84e20;
+}
+.reveal-result.rarity-epic .collectible-art{
+  box-shadow:0 0 16px #ac75f520;
+}
+@media(prefers-reduced-motion:reduce){
+  .reveal-result{animation:none}
+}
