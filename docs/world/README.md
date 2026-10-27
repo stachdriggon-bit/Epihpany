@@ -6,6 +6,7 @@ This directory is the working reference for the fictional world of EPIPHANY. It 
 
 - [Master Content Bible](MASTER-CONTENT-BIBLE.md) — core principles and world rules.
 - [Atlas](ATLAS.md) — geographic reference and map decisions.
+- [Naming and Toponymy](NAMING-AND-TOPONYMY.md) — provisional method for creating, reviewing, transliterating, and tracking names.
 - [Ilmar Candidate Cities](CITIES-ILMAR.md) — provisional names and roles for a small first set of Ilmar settlements.
 - [Orath Candidate Cities](CITIES-ORATH.md) — provisional settlement registry with stable IDs and duplicate-prevention rules.
 - [Tharima Candidate Cities](CITIES-THARIMA.md) — provisional settlement registry with stable IDs and duplicate-prevention rules.
@@ -30,5 +31,6 @@ This directory is the working reference for the fictional world of EPIPHANY. It 
 4. Separate evidence from interpretation and folklore.
 5. Update this directory when a major worldbuilding decision is accepted.
 6. Names and IDs are working identifiers; preserve IDs when names change where practical.
+7. Follow the [Naming and Toponymy](NAMING-AND-TOPONYMY.md) framework when proposing names; do not infer a region's language identity from its geography or first batch of names.
 
 The Atlas currently lists four named continents (Ilmar, Orath, Tharima, Nirvan) and the Azmar archipelagos as five principal mapped regions. Azmar is not currently classified as a continent, and the total number of continents in the entire world remains open. The current material records the initial worldbuilding conversation and is intentionally incomplete. It is not yet a final scaled atlas or a complete historical canon.
