@@ -8,6 +8,7 @@ This directory is the working reference for the fictional world of EPIPHANY. It 
 - [Atlas](ATLAS.md) — geographic reference and map decisions.
 - [Ilmar Candidate Cities](CITIES-ILMAR.md) — provisional names and roles for a small first set of Ilmar settlements.
 - [Orath Candidate Cities](CITIES-ORATH.md) — provisional settlement registry with stable IDs and duplicate-prevention rules.
+- [Tharima Candidate Cities](CITIES-THARIMA.md) — provisional settlement registry with stable IDs and duplicate-prevention rules.
 - [Timeline](TIMELINE.md) — historical framework and chronology standards.
 - [Civilizations](CIVILIZATIONS.md) — societies, cultures, states, and connections.
 - [Characters](CHARACTERS.md) — character-canon template and continuity rules.
