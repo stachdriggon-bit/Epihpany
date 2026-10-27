@@ -25,9 +25,9 @@ test('card prototype is linked from profile and cached offline', () => {
   const html = read('index.html');
   const sw = read('service-worker.js');
   assert.match(html, /id="cards-hub"/);
-  assert.match(html, /data-cards\.js\?v=summoning-gate-2/);
-  assert.match(html, /cards\.js\?v=summoning-gate-2/);
-  assert.match(html, /cards\.css\?v=summoning-gate-2/);
+  assert.match(html, /data-cards\.js\?v=legendary-reveal-1/);
+  assert.match(html, /cards\.js\?v=legendary-reveal-2/);
+  assert.match(html, /cards\.css\?v=legendary-reveal-2/);
   assert.match(html, /chip-tokens-value/);
   assert.match(sw, /\.\/data-cards\.js/);
   assert.match(sw, /\.\/cards\.js/);
@@ -100,4 +100,25 @@ test('Card Portal is a separate gacha view, while the collection stays in the pr
   assert.match(css, /\.summon-pack-art/);
   assert.match(css, /prefers-reduced-motion:reduce/);
   assert.doesNotMatch(html, /data-cards-tab="summon"/);
+});
+
+test('summoning uses shared sound preferences and respects reduced motion', () => {
+  const app = read('app.js');
+  const cards = read('cards.js');
+  const css = read('cards.css');
+  const html = read('index.html');
+  assert.match(app, /window\.EpiphanyPlaySfx = sfx/);
+  assert.match(app, /summon: \[\[392/);
+  assert.match(app, /legendary: \[\[392/);
+  assert.match(app, /if \(!state\.sound\) return/);
+  assert.match(cards, /const beginPull =/);
+  assert.match(cards, /playCardCue\('summon'\)/);
+  assert.match(cards, /playCardCue\('legendary'\)/);
+  assert.match(cards, /prefers-reduced-motion, reduce/);
+  assert.match(css, /summon-stage\.is-summoning/);
+  assert.match(css, /legendary-halo/);
+  assert.match(css, /prefers-reduced-motion:reduce/);
+  assert.match(html, /id="summon-ritual-status"/);
+  assert.match(html, /app\.js\?v=legendary-sfx-1/);
+  assert.match(html, /cards\.js\?v=legendary-reveal-2/);
 });
