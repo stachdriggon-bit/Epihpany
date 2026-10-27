@@ -25,9 +25,9 @@ test('card prototype is linked from profile and cached offline', () => {
   const html = read('index.html');
   const sw = read('service-worker.js');
   assert.match(html, /id="cards-hub"/);
-  assert.match(html, /data-cards\.js\?v=portraits-reveal-2/);
-  assert.match(html, /cards\.js\?v=portraits-reveal-2/);
-  assert.match(html, /cards\.css\?v=portraits-reveal-2/);
+  assert.match(html, /data-cards\\.js\\?v=summoning-gate-1/);
+  assert.match(html, /cards\\.js\\?v=summoning-gate-1/);
+  assert.match(html, /cards\\.css\\?v=summoning-gate-1/);
   assert.match(html, /chip-tokens-value/);
   assert.match(sw, /\.\/data-cards\.js/);
   assert.match(sw, /\.\/cards\.js/);
@@ -79,4 +79,23 @@ test('original portraits cover the full character roster and legendary reveals r
   }
   assert.match(revealCss, /cards-legendary-sheen/);
   assert.match(revealCss, /prefers-reduced-motion:reduce/);
+});
+
+test('Card Portal is a separate gacha view, while the collection stays in the profile', () => {
+  const html = read('index.html');
+  const js = read('cards.js');
+  const css = read('cards.css');
+  assert.match(html, /data-view="summon"/);
+  assert.match(html, /id="summon-view"/);
+  assert.match(html, /id="cards-hub"/);
+  assert.match(html, /id="cards-summon-token-count"/);
+  assert.match(html, /id="cards-daily-pull"/);
+  assert.match(html, /id="cards-pull-ten"/);
+  assert.match(html, /id="cards-pity-progress"/);
+  assert.match(js, /cards-summon-token-count/);
+  assert.match(js, /cards-pity-progress/);
+  assert.match(css, /\.summon-stage/);
+  assert.match(css, /\.summon-pack-art/);
+  assert.match(css, /prefers-reduced-motion:reduce/);
+  assert.doesNotMatch(html, /data-cards-tab="summon"/);
 });
