@@ -5,6 +5,7 @@
   const DAILY_COST = 5;
   const TEN_COST = 45;
   const STARTER_TOKENS = 15;
+  const ADMIN_TEST_TOKENS = 100000;
   const $ = (id) => document.getElementById(id);
   const data = () => Array.isArray(window.EPIPHANY_CARD_DATA) ? window.EPIPHANY_CARD_DATA : [];
   const today = () => { const d = new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); };
@@ -16,10 +17,11 @@
         shards: Math.max(0, Number(parsed.shards) || 0),
         owned: parsed.owned && typeof parsed.owned === 'object' ? parsed.owned : {},
         dailyDate: typeof parsed.dailyDate === 'string' ? parsed.dailyDate : '',
+        adminGrantFor: typeof parsed.adminGrantFor === 'string' ? parsed.adminGrantFor : '',
         initialized: true
       };
     } catch (_) {}
-    return {tokens:STARTER_TOKENS, shards:0, owned:{}, dailyDate:'', initialized:true};
+    return {tokens:STARTER_TOKENS, shards:0, owned:{}, dailyDate:'', adminGrantFor:'', initialized:true};
   };
   let state = safeState();
   const save = () => { try { localStorage.setItem(STORE, JSON.stringify(state)); } catch (_) {} };
@@ -78,12 +80,22 @@
     const modal=$('cards-reveal-modal'), body=$('cards-reveal-results'), heading=$('cards-reveal-title');
     if(!modal||!body)return;
     if(heading)heading.textContent=title;
+    const tierRank={Common:0,Uncommon:1,Rare:2,Epic:3,Legendary:4};
+    const highestTier=cards.reduce((best,card)=>Math.max(best,tierRank[card.rarity]??0),0);
+    modal.dataset.revealTier=Object.keys(tierRank).find(rarity=>tierRank[rarity]===highestTier)?.toLowerCase()||'common';
     body.innerHTML=cards.map((c,i)=>'<div class="reveal-result rarity-'+c.rarity.toLowerCase()+'" style="--reveal-delay:'+Math.min(i,9)*65+'ms">'+cardArt(c,true)+'<div><strong>'+esc(c.name)+'</strong><span>'+esc(c.rarity)+(c.duplicate?' · Duplicate → +2 shards':'')+'</span></div></div>').join('');
     modal.hidden=false; document.body.classList.add('cards-modal-open');
     const close=$('cards-reveal-close'); if(close)close.focus();
     updateCounts(); renderGallery(); save();
   };
-  const closeResults = () => { const m=$('cards-reveal-modal'); if(m)m.hidden=true; document.body.classList.remove('cards-modal-open'); };
+  const closeResults = () => { const m=$('cards-reveal-modal'); if(m){m.hidden=true;delete m.dataset.revealTier;} document.body.classList.remove('cards-modal-open'); };
+  const grantAdminTestTokens = (email) => {
+    const normalized=String(email||'').trim().toLowerCase();
+    if(!normalized||state.adminGrantFor===normalized)return;
+    state.tokens=Math.max(state.tokens,ADMIN_TEST_TOKENS);
+    state.adminGrantFor=normalized;
+    save();updateCounts();
+  };
   const pull = (count, free=false) => {
     if(free){if(state.dailyDate===today())return;state.dailyDate=today();}
     else {const cost=count===10?TEN_COST:DAILY_COST;if(state.tokens<cost)return;state.tokens-=cost;}
@@ -107,8 +119,12 @@
     document.addEventListener('keydown',e=>{if(e.key==='Escape')closeResults();});
     const first=data()[0]; const featured=$('cards-featured-card');
     if(first&&featured)featured.innerHTML=cardMarkup(first,Number(state.owned[first.id])||0,true);
-    renderGallery();updateCounts();switchTab('collection');save();
+    renderGallery();updateCounts();switchTab('collection');
+    const adminEmail=window.EpiphanyAuth?.getDeveloperEmail?.();
+    if(adminEmail)grantAdminTestTokens(adminEmail);
+    save();
   };
+  document.addEventListener('epiphany-auth-changed',event=>{if(event.detail?.isDeveloper&&event.detail?.email)grantAdminTestTokens(event.detail.email);});
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
   window.EpiphanyCards={getState:()=>({...state,owned:{...state.owned}}),awardAchievementTokens:(amount=5)=>{const n=Math.max(0,Math.floor(Number(amount)||0));state.tokens+=n;save();updateCounts();return state.tokens;}};
 })();
