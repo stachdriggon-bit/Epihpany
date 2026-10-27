@@ -3,7 +3,11 @@
   'use strict';
   const STORE = 'epiphany-card-prototype-v1';
   const DAILY_COST = 5;
+  const ONE_COST = 5;
+  const THREE_COST = 14;
+  const FIVE_COST = 22;
   const TEN_COST = 45;
+  const LEGENDARY_PITY = 50;
   const STARTER_TOKENS = 15;
   const ADMIN_TEST_TOKENS = 100000;
   const $ = (id) => document.getElementById(id);
@@ -17,11 +21,12 @@
         shards: Math.max(0, Number(parsed.shards) || 0),
         owned: parsed.owned && typeof parsed.owned === 'object' ? parsed.owned : {},
         dailyDate: typeof parsed.dailyDate === 'string' ? parsed.dailyDate : '',
+        sinceLegendary: Math.max(0, Math.floor(Number(parsed.sinceLegendary) || 0)),
         adminGrantFor: typeof parsed.adminGrantFor === 'string' ? parsed.adminGrantFor : '',
         initialized: true
       };
     } catch (_) {}
-    return {tokens:STARTER_TOKENS, shards:0, owned:{}, dailyDate:'', adminGrantFor:'', initialized:true};
+    return {tokens:STARTER_TOKENS, shards:0, owned:{}, dailyDate:'', sinceLegendary:0, adminGrantFor:'', initialized:true};
   };
   let state = safeState();
   const save = () => { try { localStorage.setItem(STORE, JSON.stringify(state)); } catch (_) {} };
@@ -36,14 +41,16 @@
     if (shards) shards.textContent = String(state.shards);
     if (total) total.textContent = String(ownedCount());
     if (daily) { const used = state.dailyDate === today(); daily.disabled = used; daily.textContent = used ? 'Daily free pull used' : 'Claim daily free pull'; }
-    const one = $('cards-pull-one'); if (one) { one.disabled = state.tokens < DAILY_COST; one.textContent = 'Open 1 · '+DAILY_COST+' tokens'; }
-    const ten = $('cards-pull-ten'); if (ten) { ten.disabled = state.tokens < TEN_COST; ten.textContent = 'Open 10 · '+TEN_COST+' tokens'; }
+    for (const [id,count,cost] of [['cards-pull-one',1,ONE_COST],['cards-pull-three',3,THREE_COST],['cards-pull-five',5,FIVE_COST],['cards-pull-ten',10,TEN_COST]]) { const button=$(id); if(button){button.disabled=state.tokens<cost;button.textContent='Open '+count+' · '+cost+' tokens';} }
+    const pity=$('cards-pity-count'); if(pity)pity.textContent=String(Math.max(0,LEGENDARY_PITY-state.sinceLegendary));
   };
   // Roll rarity first, then choose within that rarity. Otherwise a rarity with
   // many cards accidentally becomes more common just because its catalog is larger.
   const rarityWeight = {Common:58,Uncommon:25,Rare:12,Epic:4,Legendary:1};
-  const chooseCard = () => {
-    const cards=data(); if(!cards.length) return null;
+  const chooseCard = (pack='mixed') => {
+    const all=data();
+    const cards=pack==='mixed'?all:all.filter(card=>card.category===pack);
+    if(!cards.length)return null;
     const groups = new Map();
     for (const card of cards) {
       if (!groups.has(card.rarity)) groups.set(card.rarity, []);
@@ -63,6 +70,7 @@
     const pool = groups.get(available[available.length - 1][0]);
     return pool[Math.floor(Math.random() * pool.length)];
   };
+  const chooseRarityCard = (cards, rarity) => { const pool=cards.filter(card=>card.rarity===rarity); return pool.length?pool[Math.floor(Math.random()*pool.length)]:null; };
   const award = (card) => {
     const previous=Number(state.owned[card.id])||0;
     if(previous>0) state.shards+=2;
@@ -96,13 +104,25 @@
     state.adminGrantFor=normalized;
     save();updateCounts();
   };
-  const pull = (count, free=false) => {
+  const pull = (count, free=false, pack='characters') => {
+    if(![1,3,5,10].includes(count))return;
     if(free){if(state.dailyDate===today())return;state.dailyDate=today();}
-    else {const cost=count===10?TEN_COST:DAILY_COST;if(state.tokens<cost)return;state.tokens-=cost;}
+    else {const cost=({1:ONE_COST,3:THREE_COST,5:FIVE_COST,10:TEN_COST})[count];if(state.tokens<cost)return;state.tokens-=cost;}
     const results=[];
-    for(let i=0;i<count;i++){const card=chooseCard();if(card)results.push(award(card));}
-    showResults(results,free?'Your daily discovery':count===10?'A ten-card discovery':'A new discovery');
+    for(let i=0;i<count;i++){
+      const available=pack==='mixed'?data():data().filter(card=>card.category===pack);
+      let card=null;
+      if(state.sinceLegendary>=LEGENDARY_PITY-1)card=chooseRarityCard(available,'Legendary');
+      if(!card)card=chooseCard(pack);
+      if(!card)continue;
+      if(card.rarity==='Legendary')state.sinceLegendary=0;else state.sinceLegendary++;
+      results.push(award(card));
+    }
+    const packNames={characters:'Character pack',words:'Word & phrase pack',artifacts:'Artifact pack',mixed:'Mixed pack'};
+    const title=free?'Your daily discovery':count+'-card '+(packNames[pack]||'Mixed pack');
+    showResults(results,title);
   };
+  const selectedPack = () => document.querySelector('[data-card-pack].is-active')?.dataset.cardPack || 'characters';
   function switchTab(tab) {
     document.querySelectorAll('[data-cards-panel]').forEach(p=>p.hidden=p.dataset.cardsPanel!==tab);
     document.querySelectorAll('[data-cards-tab]').forEach(b=>{const active=b.dataset.cardsTab===tab;b.classList.toggle('is-active',active);if(b.matches('button'))b.setAttribute('aria-pressed',String(active));});
@@ -112,8 +132,11 @@
     if(!$('cards-hub'))return;
     document.querySelectorAll('[data-cards-tab]').forEach(b=>b.addEventListener('click',()=>switchTab(b.dataset.cardsTab)));
     $('cards-daily-pull')?.addEventListener('click',()=>pull(1,true));
-    $('cards-pull-one')?.addEventListener('click',()=>pull(1,false));
-    $('cards-pull-ten')?.addEventListener('click',()=>pull(10,false));
+    $('cards-pull-one')?.addEventListener('click',()=>pull(1,false,selectedPack()));
+    $('cards-pull-three')?.addEventListener('click',()=>pull(3,false,selectedPack()));
+    $('cards-pull-five')?.addEventListener('click',()=>pull(5,false,selectedPack()));
+    $('cards-pull-ten')?.addEventListener('click',()=>pull(10,false,selectedPack()));
+    document.querySelectorAll('[data-card-pack]').forEach(button=>button.addEventListener('click',()=>{document.querySelectorAll('[data-card-pack]').forEach(item=>{const active=item===button;item.classList.toggle('is-active',active);item.setAttribute('aria-pressed',String(active));});const label=$('cards-pack-selected');if(label)label.textContent=button.dataset.cardPackLabel||button.textContent.trim();const art=$('cards-pack-art');if(art)art.dataset.pack=button.dataset.cardPack;const badge=$('cards-pack-type');if(badge)badge.textContent=button.dataset.cardPackLabel||button.textContent.trim();}));
     $('cards-reveal-close')?.addEventListener('click',closeResults);
     $('cards-reveal-modal')?.addEventListener('click',e=>{if(e.target===$('cards-reveal-modal'))closeResults();});
     document.addEventListener('keydown',e=>{if(e.key==='Escape')closeResults();});
