@@ -71,3 +71,4 @@ When a decision changes:
 | WD-025 | Treat Ilmar as broadly temperate, Nirvan as generally coolest, and Sahir's interior as generally driest, while preserving local variation. | Provisional | Regional tendencies do not imply uniform climate within each land region. |
 | WD-026 | Keep Orath's inland lake shallow and climate-sensitive under the provisional closed-basin model. | Provisional | A large permanent freshwater lake requires a water balance that supports it. |
 | WD-027 | Require a plausible freshwater source for any future Azmar settlement candidate. | Accepted working principle | Rain storage, springs, groundwater, streams, or supply must be accounted for. |
+| WD-028 | Use a north-up 12-by-8 relative planning grid to coordinate future coastline, relief, drainage, and climate drafts. | Accepted working method | Cells are relative anchors only, not coordinates, scale, or final canon; exact outlines remain open. |
