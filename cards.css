@@ -121,3 +121,40 @@ body.cards-modal-open{overflow:hidden}
 .cards-history-mark{display:grid;place-items:center;width:25px;height:25px;flex:0 0 25px;border-radius:8px;background:var(--surface);font-weight:900}
 .cards-history li div{display:grid;gap:3px;min-width:0}.cards-history li strong{font-size:13px}.cards-history li small{font-size:12px;color:var(--ink-2);overflow-wrap:anywhere}
 .cards-history .cards-history-empty{color:var(--ink-2);font-size:13px}
+
+
+/* Card reveal v2: staggered entrance, with a restrained legendary burst. */
+.cards-reveal-modal .cards-reveal-dialog{animation:cards-dialog-in .24s cubic-bezier(.2,.75,.25,1) both}
+@keyframes cards-dialog-in{from{opacity:0;transform:translateY(10px) scale(.985)}to{opacity:1;transform:translateY(0) scale(1)}}
+.reveal-result{position:relative;isolation:isolate;overflow:hidden;animation:cards-reveal-in .34s cubic-bezier(.2,.75,.25,1) both;animation-delay:var(--reveal-delay,0ms)}
+.reveal-result .collectible-art{overflow:hidden;isolation:isolate}
+.reveal-result .collectible-portrait{transition:transform .55s cubic-bezier(.2,.75,.25,1);transform:scale(1.035)}
+.reveal-result:hover .collectible-portrait{transform:scale(1.09)}
+.cards-reveal-modal[data-reveal-tier="legendary"] .reveal-result.rarity-legendary{
+  border-color:#e9b84e;
+  box-shadow:inset 0 0 0 1px #f8df8b35,0 0 0 1px #e9b84e12;
+  animation:cards-legendary-in .72s cubic-bezier(.16,.8,.25,1) both;
+  animation-delay:var(--reveal-delay,0ms);
+}
+.cards-reveal-modal[data-reveal-tier="legendary"] .reveal-result.rarity-legendary:before{
+  content:"";position:absolute;inset:-55% -35%;z-index:-1;pointer-events:none;
+  background:linear-gradient(110deg,transparent 38%,#fff5c82a 48%,#fff9df72 50%,#fff5c820 53%,transparent 64%);
+  transform:translateX(-75%) rotate(8deg);
+  animation:cards-legendary-sheen .95s ease-out both;
+  animation-delay:calc(var(--reveal-delay,0ms) + 120ms);
+}
+.cards-reveal-modal[data-reveal-tier="legendary"] .reveal-result.rarity-legendary .collectible-art{
+  box-shadow:0 0 0 1px #f8d16c,0 0 20px #e6a83c55;
+}
+.cards-reveal-modal[data-reveal-tier="legendary"] .reveal-result.rarity-legendary .collectible-art:after{
+  border-color:#fff0b5;opacity:.75;animation:cards-legendary-orbit 2.8s ease-in-out infinite;
+}
+@keyframes cards-legendary-in{0%{opacity:0;transform:translateY(14px) scale(.94)}55%{opacity:1;transform:translateY(-2px) scale(1.015)}100%{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes cards-legendary-sheen{0%{transform:translateX(-75%) rotate(8deg);opacity:0}20%{opacity:1}100%{transform:translateX(75%) rotate(8deg);opacity:0}}
+@keyframes cards-legendary-orbit{0%,100%{transform:rotate(45deg) scale(1)}50%{transform:rotate(55deg) scale(1.04)}}
+@media(prefers-reduced-motion:reduce){
+ .cards-reveal-modal .cards-reveal-dialog,.reveal-result,.cards-reveal-modal[data-reveal-tier="legendary"] .reveal-result.rarity-legendary,
+ .cards-reveal-modal[data-reveal-tier="legendary"] .reveal-result.rarity-legendary:before,
+ .cards-reveal-modal[data-reveal-tier="legendary"] .reveal-result.rarity-legendary .collectible-art:after{animation:none!important}
+ .reveal-result .collectible-portrait{transition:none}
+}
