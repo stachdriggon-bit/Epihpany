@@ -25,8 +25,8 @@ test('card prototype is linked from profile and cached offline', () => {
   const html = read('index.html');
   const sw = read('service-worker.js');
   assert.match(html, /id="cards-hub"/);
-  assert.match(html, /data-cards\\.js\\?v=portraits-reveal-2/);
-  assert.match(html, /cards\\.js\\?v=portraits-reveal-2/);
+  assert.match(html, /data-cards\.js\?v=portraits-reveal-2/);
+  assert.match(html, /cards\.css\?v=portraits-reveal-2/);
   assert.match(html, /cards\\.css\\?v=portraits-reveal-2/);
   assert.match(html, /chip-tokens-value/);
   assert.match(sw, /\.\/data-cards\.js/);
