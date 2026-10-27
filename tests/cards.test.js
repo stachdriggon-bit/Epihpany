@@ -25,9 +25,9 @@ test('card prototype is linked from profile and cached offline', () => {
   const html = read('index.html');
   const sw = read('service-worker.js');
   assert.match(html, /id="cards-hub"/);
-  assert.match(html, /data-cards\.js\?v=prototype-1/);
-  assert.match(html, /cards\.js\?v=prototype-1/);
-  assert.match(html, /cards\.css\?v=prototype-1/);
+  assert.match(html, /data-cards\\.js\\?v=portraits-reveal-2/);
+  assert.match(html, /cards\\.js\\?v=portraits-reveal-2/);
+  assert.match(html, /cards\\.css\\?v=portraits-reveal-2/);
   assert.match(html, /chip-tokens-value/);
   assert.match(sw, /\.\/data-cards\.js/);
   assert.match(sw, /\.\/cards\.js/);
@@ -66,4 +66,16 @@ test('collection rules keep card rewards separate from learning XP', () => {
   assert.match(js, /groups\.get\(rarity\)/);
   assert.match(js, /awardAchievementTokens/);
   assert.doesNotMatch(js, /state\.xp\s*[+]=/);
+});
+
+test('original portraits cover the full character roster and legendary reveals respect reduced motion', () => {
+  const cards = read('data-cards.js');
+  const portraits = read('assets/cards/epiphany-portraits.svg');
+  const revealCss = read('cards.css');
+  for (const [name, art] of [['Aster','aster'],['Zujjaj','zujjaj'],['Hams','hams'],['Layla','layla'],['The Upward Shadow','shadow'],['Nibras','nibras'],['Yara','yara'],['Kaser','kaser'],['Nima','nima'],['Veya','veya'],['Mira','mira'],['Zayn','zayn']]) {
+    assert.match(cards, new RegExp('name:"' + name.replace(/[.*+?^${}()|[\\]\\\\]/g, '\\\\$&') + '"[^\\n]*art:"' + art + '"'));
+    assert.match(portraits, new RegExp('<symbol id="' + art + '"'));
+  }
+  assert.match(revealCss, /cards-legendary-sheen/);
+  assert.match(revealCss, /prefers-reduced-motion:reduce/);
 });
