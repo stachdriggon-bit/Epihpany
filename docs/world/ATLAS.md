@@ -1,7 +1,7 @@
 # EPIPHANY — Atlas and Geographic Register
 
 **Version:** 0.3  
-**Status:** Provisional geographic master plan; relative relief layout defined, not yet a scaled final map.
+**Status:** Integrated working geographic foundation; relative layout and settlement-siting constraints are established, but this is not yet a scaled final map.
 
 ## 1. Geographic design rules
 
@@ -103,15 +103,17 @@ Do not assign exact lengths or precise tributary counts until map scale and topo
 
 Global wind directions, currents, exact temperature bands, and precise biome borders remain open.
 
-## 7. Candidate settlement sites — not finalized cities
+## 7. Approved settlement names and siting
 
-- **Ilmar:** provisional city-name candidates are tracked in [Ilmar Candidate Cities](CITIES-ILMAR.md). Their positions and roles must be checked against the final physical map.
-- **Orath:** provisional city-name candidates are tracked in [Orath Candidate Cities](CITIES-ORATH.md). Check the overlap notes against the existing anchor locations before treating any candidate as a separate place.
-- **Tharima:** provisional city-name candidates are tracked in [Tharima Candidate Cities](CITIES-THARIMA.md). Check their overlap notes against the anchor locations before treating candidates as separate places.
-- **Nirvan:** provisional settlement candidates are tracked in [Nirvan Candidate Settlements](CITIES-NIRVAN.md). Check the harbor candidate against the existing Last Warm Dock anchor.
-- **Azmar:** provisional island settlement candidates are tracked in [Azmar Candidate Island Settlements](CITIES-AZMAR.md). Compare the harbor candidate with SET-05 — Azmar Port before treating them as separate places.
+The 30 names in the five settlement registries are approved. Their relative placement constraints and default relationships to existing anchor locations are consolidated in [Geographic Foundation and Settlement Siting](GEOGRAPHIC-FOUNDATION.md). Use that document together with each registry; do not create duplicate places from anchor names.
 
-These are site concepts, not canonized city names or established historical events. No city is currently designated as a capital.
+- **Ilmar:** [Settlement Registry](CITIES-ILMAR.md).
+- **Orath:** [Settlement Registry](CITIES-ORATH.md).
+- **Tharima:** [Settlement Registry](CITIES-THARIMA.md).
+- **Nirvan:** [Settlement Registry](CITIES-NIRVAN.md).
+- **Azmar:** [Island Settlement Registry](CITIES-AZMAR.md); Azmar remains an archipelago region, not a classified continent.
+
+Names are accepted canon. Exact positions, survival of proposed site concepts, political roles, and whether a city becomes a capital remain open until the physical map supports those decisions.
 
 ## 8. Route register
 
@@ -445,3 +447,9 @@ These labels identify broad physical/ecological regions, not cultures or politic
 - Exact biome boundaries and the reliability of springs in Tharima.
 - Snowline, seasonal ice, and river freeze patterns in Nirvan.
 - The freshwater capacity of individual Azmar islands.
+
+## 15. Integrated settlement geography — working foundation v0.1
+
+Use [Geographic Foundation and Settlement Siting](GEOGRAPHIC-FOUNDATION.md) as the cross-region placement plan. It integrates the existing coastline, relief, drainage, climate, 30 approved settlement names, route logic, and anchor-location reconciliation without inventing a scale or exact coordinates.
+
+**Current commitment:** preserve the relative adjacency of the five mapped regions; draw watersheds before rivers; connect each settlement to the terrain, water, and route network its role requires; and reconcile narrative anchors with city records before creating duplicate locations. Exact coastlines, elevations, distances, lake outlets, and travel times remain provisional.
