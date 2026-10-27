@@ -14,7 +14,8 @@ test('card catalog has unique stable IDs and supported rarities', () => {
   assert.ok(cards.length >= 10);
   assert.equal(new Set(cards.map(card => card.id)).size, cards.length, 'card IDs must be unique');
   for (const card of cards) {
-    assert.match(card.id, /^CHR-\d{3}$/);
+    assert.match(card.id, /^(CHR|WRD|PHR|ART|SCN|LOC)-\d{3}$/);
+    assert.ok(['characters','words','artifacts','mixed'].includes(card.category));
     assert.ok(['Common', 'Uncommon', 'Rare', 'Epic', 'Legendary'].includes(card.rarity));
     assert.ok(card.name && card.title && card.description);
   }
