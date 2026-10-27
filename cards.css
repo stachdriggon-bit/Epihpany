@@ -435,11 +435,15 @@ body.cards-modal-open{overflow:hidden}
   .rv-skip{padding:0 12px}
 }
 
+/* Legendary pull: restrained gold sheen layered over the reveal, never over the card text. */
+.cards-reveal-modal.cards-legendary-sheen .rv-rays{opacity:.9;background:linear-gradient(115deg,transparent 18%,#fff2 34%,#ffdf7a66 45%,#fff7 50%,#e9a72b55 57%,transparent 74%);background-size:220% 100%;animation:cards-legendary-sheen 2.4s ease-in-out both;}
+@keyframes cards-legendary-sheen{0%{background-position:130% 0;opacity:0}22%{opacity:.95}100%{background-position:-120% 0;opacity:.15}}
+
 /* reduced motion: no cinematics, no tilt, instant flips */
 @media(prefers-reduced-motion:reduce){
   .fcard-frame:before,.fcard-aura,.fcard-motes,.fcard-foil,.fcard-sigil-art svg.ring,.fcard.is-back .fcard-sigil,.fcard[data-hint] .fcard-frame,
   .summon-sky,.summon-circle .ring-a,.summon-circle .ring-b,.summon-fan .fan-c,.summon-pack-rune,.summon-live-dot,.summon-daily-button:before,
-  .rv-rays,.rv-portal svg,.rv-portal .g1,.rv-portal .g2,.rv-portal .g3,.rv-orb,.rv-hint,.rv-banner.show,.rv-banner.show strong,
+  .cards-reveal-modal.cards-legendary-sheen .rv-rays,.rv-rays,.rv-portal svg,.rv-portal .g1,.rv-portal .g2,.rv-portal .g3,.rv-orb,.rv-hint,.rv-banner.show,.rv-banner.show strong,
   .cards-reveal-modal.do-shake .cards-reveal-dialog,.cards-reveal-modal.do-flash .rv-flash,.cards-reveal-modal.do-flash .rv-wave,.fcard.is-leveled .fcard-frame,
   .cards-reveal-modal,.reveal-result,.reveal-result.is-pop .rv-flip{animation:none!important}
   .fcard-tilt,.rv-flip,.fcard-portrait,.summon-fan,.summon-pull-option,.summon-pack-types button,.summon-pity-track span,.rv-badge{transition:none!important}
