@@ -1,13 +1,19 @@
 # EPIPHANY — Orath: Candidate Cities
 
-**Version:** 0.1  
-**Status:** Provisional naming proposals; none are established canon yet.  
+**Version:** 0.2  
+**Status:** Settlement names approved by the project owner; settlement existence, roles, placement, and anchor relationships remain provisional.
 **Scope:** A first, deliberately small set of settlement candidates for Orath. These should be tested in stories before names, borders, routes, or political roles are finalized.
+
+## Canon decision
+
+**Approved names:** The six names in this registry are accepted as the current canonical names for these settlement IDs. Keep their spelling and Arabic-script forms consistent across stories, quests, cards, dialogue, maps, and translations. A later rename requires an explicit decision and must preserve the stable ID.
+
+**What this does not finalize:** These entries are not a complete gazetteer. Exact positions, physical geography, political importance, and possible overlap with existing anchor locations remain open. If an entry and an anchor prove to be the same place, reconcile them under one stable place record rather than inventing two locations.
 
 ## Ground rules
 
 - Orath is the eastern continent in the current working map; its exact coastlines, relief, watersheds, and scale remain provisional.
-- These are candidate settlements, not a complete list and not a claim that all six must exist.
+- These are approved names for the current settlement proposals, not a complete list; geographic details remain provisional.
 - Each candidate has a distinct everyday role and conflict. Not every city needs a mystery, unusual phenomenon, or grand historical secret.
 - Relative placements are conditional. Do not force the map to fit a name or assume a proposed river, lake, pass, or coastline is already canon.
 - Before adding a place, check the shared place registry and [Anchor Locations](ANCHOR-LOCATIONS.md). A candidate may be the same place as an anchor location; do not create duplicates automatically.
@@ -20,12 +26,12 @@
 
 | Stable ID | Current name | Core identity | Status |
 |---|---|---|---|
-| OR-CITY-01 | Veyrun / فيرون | Terraced highland city known for stonework and water management | Provisional |
-| OR-CITY-02 | Darsen / دارسن | River-junction market and cargo-transfer town | Provisional |
-| OR-CITY-03 | Velisar / فيليزار | Mountain-road settlement; may overlap with the Switchback Gate anchor | Provisional |
-| OR-CITY-04 | Ambrin / أمبرين | Inland-shore town shaped by a fluctuating lake | Provisional |
-| OR-CITY-05 | Qadren / قادرن | Dry-plateau caravan stop and metalworking center | Provisional |
-| OR-CITY-06 | Lethai / ليثاي | Eastern coastal harbor and ship-supply town | Provisional |
+| OR-CITY-01 | Veyrun / فيرون | Terraced highland city known for stonework and water management | Name accepted; details provisional |
+| OR-CITY-02 | Darsen / دارسن | River-junction market and cargo-transfer town | Name accepted; details provisional |
+| OR-CITY-03 | Velisar / فيليزار | Mountain-road settlement; may overlap with the Switchback Gate anchor | Name accepted; details provisional |
+| OR-CITY-04 | Ambrin / أمبرين | Inland-shore town shaped by a fluctuating lake | Name accepted; details provisional |
+| OR-CITY-05 | Qadren / قادرن | Dry-plateau caravan stop and metalworking center | Name accepted; details provisional |
+| OR-CITY-06 | Lethai / ليثاي | Eastern coastal harbor and ship-supply town | Name accepted; details provisional |
 
 ## Candidate settlement list
 
@@ -110,11 +116,11 @@
 5. **Changes must propagate.** If a place changes materially, update this record first, then check the Atlas, anchor locations, stories, quests, character relationships, cards, and translations.
 6. **Keep uncertainty visible.** Capital status, political affiliations, exact routes, water systems, and dates remain open until explicitly decided.
 
-## Open questions
+## Open details (names remain approved)
 
-- Which candidates survive once Orath's broad relief and watersheds are clearer?
+- How should the approved settlements fit Orath's final relief and watersheds?
 - Should Velisar and the Switchback Gate be one place? Should Ambrin and the Low-Water Shore be one place?
-- Which, if any, becomes a recurring story hub after being tested in scenes?
-- What naming patterns will emerge naturally from Orath's different languages and communities?
+- Which settlements become recurring story hubs after being tested in scenes?
+- What additional naming patterns emerge naturally from Orath's different languages and communities?
 
-**No answer is required now.** These proposals exist to support stories and gameplay, not to force premature decisions.
+**No answer is required now.** The names are approved for stories and gameplay; geographic and historical details remain flexible.
