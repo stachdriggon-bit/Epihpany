@@ -11,6 +11,7 @@
 - Tharima must not be reduced to “a desert continent.” Drylands, uplands, seasonal waterways, fertile pockets, coasts, and varied communities may coexist where the physical map supports them.
 - Water access matters, but not every story or settlement should revolve around scarcity.
 - Before adding a place, check the shared place registry and [Anchor Locations](ANCHOR-LOCATIONS.md). Candidate overlaps are noted below to prevent accidental duplicates.
+- Naming note: the current names and Arabic-script forms are provisional pronunciation/transliteration proposals, not evidence of a finalized language or cultural analogue. See [Naming and Toponymy](NAMING-AND-TOPONYMY.md) for the initial association audit and naming workflow. Keep each settlement's role while names are reviewed; do not rename them automatically.
 
 ## Reusable place registry — check before creating or writing a place
 
