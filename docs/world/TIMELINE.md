@@ -47,3 +47,8 @@ These are categories, not events already established as canon.
 ## 5. Continuity check
 
 Before adding an event, check whether its travel times, climate, resources, political borders, technologies, and information routes fit the relevant period. If an old source contradicts a modern account, preserve the discrepancy and evaluate the evidence rather than silently rewriting either source.
+
+
+## 6. Stories across different times
+
+EPIPHANY stories may take place in different periods, and their release order does not have to match in-world chronology. Each story should carry a lightweight time marker: a known date or range when useful, a relative period when exact dating is unsupported, or an explicitly uncertain placement. Before linking stories, check only the continuity that matters: character age and life stage, who is alive or present, political and place names in that period, available technology and knowledge, and whether an event has already happened from that character's perspective. Earlier-set stories may reveal context for later stories, but must not accidentally contradict established events. Preserve mysteries and conflicting historical accounts where intentional. Do not force every story into one master plot or complete a detailed chronology before stories need it.
