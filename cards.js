@@ -160,6 +160,41 @@
     addHistory({kind:'pull',title,detail:results.map(card=>card.name+(card.duplicate?' (duplicate)':'')).join(', ')||'No cards available'});
     showResults(results,title);
   };
+  let summonInProgress = false;
+  const playCardCue = kind => { try { window.EpiphanyPlaySfx?.(kind); } catch (_) {} };
+  const beginPull = (count, free=false, pack='characters') => {
+    if (summonInProgress) return;
+    if (free && state.dailyDate===today()) return;
+    if (!free) {
+      const cost=({1:ONE_COST,3:THREE_COST,5:FIVE_COST,10:TEN_COST})[count];
+      if (state.tokens<cost) return;
+    }
+    const available=pack==='mixed'?data():data().filter(card=>card.category===pack);
+    if (!available.length) { const status=$('summon-ritual-status'); if(status)status.textContent='This pack is still being prepared. Choose another pack.'; return; }
+    summonInProgress = true;
+    const stage=document.querySelector('.summon-stage');
+    const art=$('cards-pack-art');
+    const status=$('summon-ritual-status');
+    const controls=['cards-daily-pull','cards-pull-one','cards-pull-three','cards-pull-five','cards-pull-ten'].map($).filter(Boolean);
+    controls.forEach(button=>{button.disabled=true;button.setAttribute('aria-busy','true');});
+    stage?.classList.add('is-summoning');
+    art?.classList.add('is-summoning');
+    if(status)status.textContent='The gate is awakening…';
+    playCardCue('summon');
+    const reduced=window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+    window.setTimeout(()=>{
+      stage?.classList.remove('is-summoning');
+      art?.classList.remove('is-summoning');
+      summonInProgress = false;
+      controls.forEach(button=>{button.removeAttribute('aria-busy');});
+      if(status)status.textContent='Your discovery is ready.';
+      pull(count,free,pack);
+      const modal=$('cards-reveal-modal');
+      if(modal?.dataset.revealTier==='legendary')playCardCue('legendary');
+      else playCardCue('ok');
+      updateCounts();
+    }, reduced?30:620);
+  };
   const selectedPack = () => document.querySelector('[data-card-pack].is-active')?.dataset.cardPack || 'characters';
   function switchTab(tab) {
     document.querySelectorAll('[data-cards-panel]').forEach(p=>p.hidden=p.dataset.cardsPanel!==tab);
@@ -169,11 +204,11 @@
   const init = () => {
     if(!$('cards-hub'))return;
     document.querySelectorAll('[data-cards-tab]').forEach(b=>b.addEventListener('click',()=>switchTab(b.dataset.cardsTab)));
-    $('cards-daily-pull')?.addEventListener('click',()=>pull(1,true));
-    $('cards-pull-one')?.addEventListener('click',()=>pull(1,false,selectedPack()));
-    $('cards-pull-three')?.addEventListener('click',()=>pull(3,false,selectedPack()));
-    $('cards-pull-five')?.addEventListener('click',()=>pull(5,false,selectedPack()));
-    $('cards-pull-ten')?.addEventListener('click',()=>pull(10,false,selectedPack()));
+    $('cards-daily-pull')?.addEventListener('click',()=>beginPull(1,true,'characters'));
+    $('cards-pull-one')?.addEventListener('click',()=>beginPull(1,false,selectedPack()));
+    $('cards-pull-three')?.addEventListener('click',()=>beginPull(3,false,selectedPack()));
+    $('cards-pull-five')?.addEventListener('click',()=>beginPull(5,false,selectedPack()));
+    $('cards-pull-ten')?.addEventListener('click',()=>beginPull(10,false,selectedPack()));
     document.querySelectorAll('[data-card-pack]').forEach(button=>button.addEventListener('click',()=>{document.querySelectorAll('[data-card-pack]').forEach(item=>{const active=item===button;item.classList.toggle('is-active',active);item.setAttribute('aria-pressed',String(active));});const label=$('cards-pack-selected');if(label)label.textContent=button.dataset.cardPackLabel||button.textContent.trim();const art=$('cards-pack-art');if(art){art.dataset.pack=button.dataset.cardPack;art.setAttribute('aria-label','Selected collectible pack: '+(button.dataset.cardPackLabel||button.textContent.trim()));}const badge=$('cards-pack-type');if(badge)badge.textContent=(button.dataset.cardPackLabel||button.textContent.trim()).toUpperCase();}));
     $('cards-reveal-close')?.addEventListener('click',closeResults);
     $('cards-reveal-modal')?.addEventListener('click',e=>{if(e.target===$('cards-reveal-modal'))closeResults();});
