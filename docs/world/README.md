@@ -6,6 +6,7 @@ This directory is the working reference for the fictional world of EPIPHANY. It 
 
 - [Master Content Bible](MASTER-CONTENT-BIBLE.md) — core principles and world rules.
 - [Atlas](ATLAS.md) — geographic reference and map decisions.
+- [Geographic Foundation and Settlement Siting](GEOGRAPHIC-FOUNDATION.md) — integrated relative layout, drainage/relief constraints, placement plan for all 30 approved settlements, anchor reconciliation, and map-drawing order.
 - [Naming and Toponymy](NAMING-AND-TOPONYMY.md) — provisional method for creating, reviewing, transliterating, and tracking names.
 - [Ilmar Settlement Registry](CITIES-ILMAR.md) — six approved names; geographic details remain provisional.
 - [Orath Settlement Registry](CITIES-ORATH.md) — six approved names; geographic details remain provisional.
