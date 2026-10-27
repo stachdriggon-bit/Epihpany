@@ -1,15 +1,21 @@
 # EPIPHANY — Azmar: Candidate Island Settlements
 
-**Version:** 0.1  
-**Status:** Provisional place and naming proposals; none are established canon yet.  
+**Version:** 0.2  
+**Status:** Settlement names approved by the project owner; settlement existence, roles, placement, and anchor relationships remain provisional.
 **Scope:** A small registry for settlement candidates across the Azmar archipelagos. Azmar is a mapped island-region, not currently classified as a continent.
+
+## Canon decision
+
+**Approved names:** The six names in this registry are accepted as the current canonical names for these settlement IDs. Keep their spelling and Arabic-script forms consistent across stories, quests, cards, dialogue, maps, and translations. A later rename requires an explicit decision and must preserve the stable ID.
+
+**What this does not finalize:** These entries are not a complete gazetteer. Exact positions, physical geography, political importance, and possible overlap with existing anchor locations remain open. If an entry and an anchor prove to be the same place, reconcile them under one stable place record rather than inventing two locations.
 
 ## Ground rules
 
 - Azmar consists of island groups and maritime passages; it is not assumed to be one contiguous landmass or one unified culture.
 - Island climates, resources, travel times, and political relationships depend on latitude, currents, elevation, and the final map. Do not make every island tropical, isolated, or dependent on fishing.
 - These are candidate settlements, not a complete list and not a claim that all islands are inhabited.
-- Names are placeholders. They do not establish a shared Azmar language or real-world cultural analogue. See [Naming and Toponymy](NAMING-AND-TOPONYMY.md).
+- The names in this registry are approved. They do not establish a shared Azmar language or real-world cultural analogue. See [Naming and Toponymy](NAMING-AND-TOPONYMY.md).
 - Check [Anchor Locations](ANCHOR-LOCATIONS.md) and the [Atlas](ATLAS.md) before adding a harbor, island, or named passage. Compare candidates with the possible Azmar Port in the Atlas.
 
 ## Reusable place registry
@@ -20,12 +26,12 @@ This file is the reference record for the Azmar settlement candidates below. Oth
 
 | Stable ID | Current working name | Core identity | Status |
 |---|---|---|---|
-| AZ-CITY-01 | Selka Haven / سيلكا هيفن | Busy harbor at a junction of island passages | Provisional; possible overlap with Atlas Azmar Port |
-| AZ-CITY-02 | Tern Isle / جزيرة تيرن | Small island settlement maintaining navigation markers | Provisional |
-| AZ-CITY-03 | Oruven / أوروفن | Freshwater-dependent inland settlement on a larger island | Provisional |
-| AZ-CITY-04 | Maret Quay / رصيف ماريت | Repair and resupply stop for short maritime routes | Provisional |
-| AZ-CITY-05 | Vey Shoals / ضفاف ڤي | Settlement adapting to shifting shoals and exposed channels | Provisional |
-| AZ-CITY-06 | Far Lantern / الفانوس البعيد | Remote out-island community with irregular connections | Provisional |
+| AZ-CITY-01 | Selka Haven / سيلكا هيفن | Busy harbor at a junction of island passages | Name accepted; possible anchor overlap |
+| AZ-CITY-02 | Tern Isle / جزيرة تيرن | Small island settlement maintaining navigation markers | Name accepted; details provisional |
+| AZ-CITY-03 | Oruven / أوروفن | Freshwater-dependent inland settlement on a larger island | Name accepted; details provisional |
+| AZ-CITY-04 | Maret Quay / رصيف ماريت | Repair and resupply stop for short maritime routes | Name accepted; details provisional |
+| AZ-CITY-05 | Vey Shoals / ضفاف ڤي | Settlement adapting to shifting shoals and exposed channels | Name accepted; details provisional |
+| AZ-CITY-06 | Far Lantern / الفانوس البعيد | Remote out-island community with irregular connections | Name accepted; details provisional |
 
 ## Candidate settlement list
 
@@ -110,7 +116,7 @@ This file is the reference record for the Azmar settlement candidates below. Oth
 5. When a place changes, update this registry first, then check the Atlas, anchors, routes, stories, quests, characters, cards, and translations.
 6. Exact island positions, currents, distances, political ties, and travel times remain open until the physical map supports them.
 
-## Open questions
+## Open details (names remain approved)
 
 - Is Selka Haven the same location as the possible Atlas Azmar Port?
 - Which islands can support freshwater and permanent inland settlements?
