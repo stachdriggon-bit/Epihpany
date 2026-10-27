@@ -13,9 +13,11 @@
 - Natural routes influence history but do not determine it completely.
 - Distances, scale, exact coastlines, and precise river courses must not be inferred from concept art.
 
-## 2. Major land regions
+## 2. Geographic classification: four named continents and Azmar archipelagos
 
-All names and arrangements below are **provisional working proposals**.
+**Current working inventory:** four named continents — Ilmar, Orath, Tharima, and Nirvan — plus the Azmar archipelagos. Azmar is a geographic island-region, not currently counted as a continent. This inventory describes the five principal regions mapped so far; it does **not** establish that the entire world contains exactly four continents. Additional continents or major landmasses beyond the current known map remain an open possibility.
+
+All names and arrangements below are **provisional working proposals**. The classification above is the current reference for organizing this draft, not a claim that the world's full extent has been mapped.
 
 ### Ilmar (إيلمار) — west
 Temperate plains, river systems, forests, estuaries, and coastal ports. Internal regions may differ in rainfall and settlement patterns.
@@ -71,7 +73,7 @@ Working arrangement only:
 - Azmar consists of archipelagos distributed around central maritime passages, with some groups farther away.
 - A named “Distant Ocean” is a working label for waters beyond part of the known geographic area. The name does not establish the ocean's edge or the world's extent.
 
-The world may contain additional land beyond these five principal regions.
+The world may contain additional continents, major landmasses, or island groups beyond these five principal regions. The total number of continents in the entire world remains open.
 
 ## 4. Seas and passages
 
