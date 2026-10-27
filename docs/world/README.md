@@ -28,4 +28,4 @@ This directory is the working reference for the fictional world of EPIPHANY. It 
 5. Update this directory when a major worldbuilding decision is accepted.
 6. Names and IDs are working identifiers; preserve IDs when names change where practical.
 
-The current material records the initial worldbuilding conversation and is intentionally incomplete. It is not yet a final scaled atlas or a complete historical canon.
+The Atlas currently lists four named continents (Ilmar, Orath, Tharima, Nirvan) and the Azmar archipelagos as five principal mapped regions. Azmar is not currently classified as a continent, and the total number of continents in the entire world remains open. The current material records the initial worldbuilding conversation and is intentionally incomplete. It is not yet a final scaled atlas or a complete historical canon.
