@@ -24,8 +24,8 @@
   <title>Epiphany — Real English, small daily quests</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Cairo:wght@500;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=legendary-reveal-20261027"><link rel="stylesheet" href="cards.css?v=legendary-reveal-2">
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Cairo:wght@500;700&family=DM+Sans:wght@400;500;700&family=Cinzel:wght@600;700&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=fantasy-cards-20261027"><link rel="stylesheet" href="cards.css?v=fantasy-cards-1">
   <link rel="stylesheet" href="resonance.css?v=resonance-chapters-2-5">
   <link rel="stylesheet" href="life-skills.css?v=calm-studio-20261025">
   <script src="data.js?v=7f0faa36" defer></script>
@@ -44,7 +44,7 @@
 <script src="lazy-data.js?v=resonance-chapters-2-5" defer></script>
   <script src="app.js?v=legendary-sfx-1" defer></script>
   <script src="data-cards.js?v=legendary-reveal-1" defer></script>
-  <script src="cards.js?v=legendary-reveal-2" defer></script>
+  <script src="cards.js?v=fantasy-cards-1" defer></script>
   <script src="navigation-enhancements.js?v=calm-navigation-4-20261025" defer></script>
 <script>
   /* Returning visitors skip the landing page: it is only for the very first visit. */
@@ -230,39 +230,63 @@
         <div><span class="summon-eyebrow"><span>✦</span> EPIPHANY COLLECTION SYSTEM</span><h1 id="cards-summon-title">The <em>Summoning Gate</em></h1><p>Every pack holds a new possibility. Choose your collection, gather your Tokens, and reveal what waits inside.</p></div>
         <div class="summon-wallet" aria-label="Your collection currency"><div><span>✦</span><small>TOKENS</small><strong id="cards-summon-token-count">15</strong></div><div><span>◇</span><small>SHARDS</small><strong id="cards-summon-shard-count">0</strong></div></div>
       </header>
-      <section class="summon-stage" aria-label="Open a collectible pack">
-        <div class="summon-stage-glow" aria-hidden="true"></div><p class="summon-ritual-status" id="summon-ritual-status" role="status" aria-live="polite">The gate is quiet. Your next discovery awaits.</p>
+      <section class="summon-stage" data-pack="characters" aria-label="Open a collectible pack">
+        <div class="summon-sky" aria-hidden="true"></div>
+        <svg class="summon-corner c1" viewBox="0 0 64 64" aria-hidden="true" focusable="false"><use href="assets/cards/card-ornaments.svg#orn-corner"></use></svg><svg class="summon-corner c2" viewBox="0 0 64 64" aria-hidden="true" focusable="false"><use href="assets/cards/card-ornaments.svg#orn-corner"></use></svg><svg class="summon-corner c3" viewBox="0 0 64 64" aria-hidden="true" focusable="false"><use href="assets/cards/card-ornaments.svg#orn-corner"></use></svg><svg class="summon-corner c4" viewBox="0 0 64 64" aria-hidden="true" focusable="false"><use href="assets/cards/card-ornaments.svg#orn-corner"></use></svg>
+        <p class="summon-ritual-status" id="summon-ritual-status" role="status" aria-live="polite">The gate is quiet. Your next discovery awaits.</p>
         <div class="summon-pack-column">
           <div class="summon-pack-caption"><span class="summon-live-dot"></span><span>READY TO DISCOVER</span><span class="summon-pack-category" id="cards-pack-type">CHARACTER PACK</span></div>
-          <div class="cards-pack-art summon-pack-art" id="cards-pack-art" data-pack="characters" aria-label="Selected collectible pack: Characters"><span class="summon-pack-rune summon-rune-one" aria-hidden="true">✧</span><span class="summon-pack-rune summon-rune-two" aria-hidden="true">◇</span><span class="cards-pack-seal"><span>✦</span><small>EPIPHANY</small></span><span class="summon-pack-bottom">MYSTERY COLLECTION</span></div>
+          <div class="cards-pack-art summon-pack-art" id="cards-pack-art" data-pack="characters" aria-label="Selected collectible pack: Characters">
+            <svg class="summon-circle" viewBox="0 0 400 400" aria-hidden="true" focusable="false"><g class="ring-a" fill="none" stroke="currentColor"><defs><path id="sg-ring" d="M200,200 m-165,0 a165,165 0 1,1 330,0 a165,165 0 1,1 -330,0"/></defs><circle cx="200" cy="200" r="192" stroke-width="1.6"/><circle cx="200" cy="200" r="130" stroke-width=".8" stroke-dasharray="3 7"/><text stroke="none"><textPath href="#sg-ring" textLength="1000">EPIPHANY ✦ DISCOVER ✦ REVEAL ✦ EPIPHANY ✦ DISCOVER ✦ REVEAL ✦</textPath></text></g><g class="ring-b" fill="none" stroke="currentColor" opacity=".7"><path d="M200 50 329.9 275 70.1 275Z M200 350 70.1 125 329.9 125Z" stroke-width="1.8" stroke-linejoin="round"/><circle cx="200" cy="200" r="150" stroke-width="1"/></g></svg>
+            <span class="summon-pack-rune summon-rune-one" aria-hidden="true">✧</span><span class="summon-pack-rune summon-rune-two" aria-hidden="true">◇</span>
+            <div class="summon-fan" aria-hidden="true"></div>
+            <span class="summon-pack-bottom">MYSTERY COLLECTION</span>
+          </div>
           <p class="summon-pack-selected">Selected pack <strong id="cards-pack-selected">Character pack</strong></p>
+          <section class="summon-odds" aria-label="Drop rates for the selected pack"><h3>DROP RATES <span id="cards-odds-total"></span></h3><ul id="cards-odds-list"></ul></section>
         </div>
         <div class="summon-controls">
           <span class="summon-step-label">01 / CHOOSE YOUR PACK</span>
           <h2>What will you discover?</h2>
           <p class="summon-control-copy">Each pull adds a card to your collection. Duplicates become 2 Shards.</p>
           <div class="cards-pack-types summon-pack-types" role="group" aria-label="Pack type">
-            <button type="button" class="is-active" data-card-pack="characters" data-card-pack-label="Character pack" aria-pressed="true"><span>✦</span><strong>Characters</strong><small>Meet the cast</small></button>
-            <button type="button" data-card-pack="words" data-card-pack-label="Word & phrase pack" aria-pressed="false"><span>文</span><strong>Words</strong><small>Words & phrases</small></button>
-            <button type="button" data-card-pack="artifacts" data-card-pack-label="Artifact pack" aria-pressed="false"><span>◇</span><strong>Artifacts</strong><small>Rare relics</small></button>
-            <button type="button" data-card-pack="mixed" data-card-pack-label="Mixed pack" aria-pressed="false"><span>☼</span><strong>Mixed</strong><small>A little of everything</small></button>
+            <button type="button" class="is-active" data-card-pack="characters" data-card-pack-label="Character pack" aria-pressed="true"><span>✦</span><strong>Characters</strong><small>Meet the cast</small><em class="pack-owned" data-pack-owned="characters">0/12</em></button>
+            <button type="button" data-card-pack="words" data-card-pack-label="Word & phrase pack" aria-pressed="false"><span>文</span><strong>Words</strong><small>Words & phrases</small><em class="pack-owned" data-pack-owned="words">0/8</em></button>
+            <button type="button" data-card-pack="artifacts" data-card-pack-label="Artifact pack" aria-pressed="false"><span>◇</span><strong>Artifacts</strong><small>Rare relics</small><em class="pack-owned" data-pack-owned="artifacts">0/5</em></button>
+            <button type="button" data-card-pack="mixed" data-card-pack-label="Mixed pack" aria-pressed="false"><span>☼</span><strong>Mixed</strong><small>A little of everything</small><em class="pack-owned" data-pack-owned="mixed">0/27</em></button>
           </div>
           <div class="summon-pull-heading"><span class="summon-step-label">02 / OPEN YOUR PACK</span><span class="summon-free-note">1 free character pull daily</span></div>
           <button class="btn btn-primary summon-daily-button" id="cards-daily-pull" type="button"><span>✦</span><span><strong data-daily-label>Daily discovery</strong><small data-daily-note>Free · 1 character card</small></span><span class="summon-button-arrow">→</span></button>
-          <div class="summon-pull-options" aria-label="Paid with earned Tokens, no purchases">
-            <button class="summon-pull-option" id="cards-pull-one" type="button"><strong>×1</strong><span>Single pull</span><b data-pull-cost>✦ 5</b></button>
-            <button class="summon-pull-option" id="cards-pull-three" type="button"><strong>×3</strong><span>Triple pull</span><b data-pull-cost>✦ 14</b></button>
-            <button class="summon-pull-option" id="cards-pull-five" type="button"><strong>×5</strong><span>Five pull</span><b data-pull-cost>✦ 22</b></button>
-            <button class="summon-pull-option" id="cards-pull-ten" type="button"><strong>×10</strong><span>Ten pull</span><b data-pull-cost>✦ 45</b></button>
+          <div class="summon-pull-options" role="group" aria-label="Pull amount">
+            <button class="summon-pull-option" id="cards-pull-one" type="button"><strong>×1</strong><span>Single pull</span><b data-pull-cost>✦ 5</b><em data-pull-note></em></button>
+            <button class="summon-pull-option" id="cards-pull-three" type="button"><strong>×3</strong><span>Triple pull</span><b data-pull-cost>✦ 14</b><em data-pull-note></em></button>
+            <button class="summon-pull-option" id="cards-pull-five" type="button"><strong>×5</strong><span>Five pull</span><b data-pull-cost>✦ 22</b><em data-pull-note></em></button>
+            <button class="summon-pull-option is-best" id="cards-pull-ten" type="button"><i class="save-tag">BEST VALUE</i><strong>×10</strong><span>Ten pull</span><b data-pull-cost>✦ 45</b><em data-pull-note></em></button>
           </div>
           <p class="summon-no-purchase">Tokens are earned through achievements and milestones. <strong>No purchases. No paywalls.</strong></p>
         </div>
       </section>
       <section class="summon-guarantee" aria-label="Legendary guarantee progress"><div class="summon-guarantee-icon">✧</div><div class="summon-guarantee-copy"><strong>The next legend is never too far away.</strong><span>A Legendary card is guaranteed at 50 pulls without one.</span><div class="summon-pity-track"><span id="cards-pity-progress" style="width:0%"></span></div></div><div class="summon-pity-count"><strong id="cards-pity-count">50</strong><span>pulls left</span></div></section>
       <section class="cards-history summon-history"><div class="cards-history-head"><div><span class="summon-step-label">YOUR JOURNEY</span><h2>Discovery log</h2><p>Your latest pulls, upgrades and milestone rewards.</p></div><button type="button" class="btn btn-ghost" id="cards-history-clear">Clear log</button></div><ol id="cards-history-list" aria-live="polite"><li class="cards-history-empty">Your discoveries will appear here.</li></ol></section>
-      <div class="cards-featured-wrap summon-featured"><h3>FROM THE ARCHIVE</h3><div id="cards-featured-card"></div></div>
+      <section class="summon-featured" aria-label="Card of the day"><div id="cards-featured-card"></div><div class="summon-featured-copy" id="cards-featured-copy"></div></section>
     </div>
-    <div class="cards-reveal-modal summon-reveal-modal" id="cards-reveal-modal" role="dialog" aria-modal="true" aria-labelledby="cards-reveal-title" hidden><div class="cards-reveal-dialog"><div class="cards-reveal-head"><h2 id="cards-reveal-title">Your discovery</h2><button type="button" class="cards-reveal-close" id="cards-reveal-close" aria-label="Close reveal">×</button></div><div class="cards-reveal-results" id="cards-reveal-results"></div></div></div>
+    <div class="cards-reveal-modal summon-reveal-modal" id="cards-reveal-modal" role="dialog" aria-modal="true" aria-labelledby="cards-reveal-title" hidden>
+      <canvas class="rv-fx" id="cards-reveal-fx" aria-hidden="true"></canvas>
+      <div class="rv-rays" aria-hidden="true"></div>
+      <div class="rv-portal" aria-hidden="true"><svg viewBox="0 0 400 400" focusable="false"><g class="g1" fill="none" stroke="currentColor"><defs><path id="rv-ring" d="M200,200 m-165,0 a165,165 0 1,1 330,0 a165,165 0 1,1 -330,0"/></defs><circle cx="200" cy="200" r="192" stroke-width="2"/><circle cx="200" cy="200" r="180" stroke-width=".8" stroke-dasharray="3 7"/><text stroke="none"><textPath href="#rv-ring" textLength="1020">EPIPHANY ✦ DISCOVER ✦ REVEAL ✦ EPIPHANY ✦ DISCOVER ✦ REVEAL ✦</textPath></text></g><g class="g2" fill="none" stroke="currentColor"><path d="M200 50 329.9 275 70.1 275Z M200 350 70.1 125 329.9 125Z" stroke-width="1.8" stroke-linejoin="round"/></g><g class="g3" fill="none" stroke="currentColor"><circle cx="200" cy="200" r="112" stroke-width="1.4" stroke-dasharray="14 10"/><circle cx="200" cy="200" r="96" stroke-width=".8"/></g></svg><div class="rv-orb"></div></div>
+      <div class="rv-wave" aria-hidden="true"></div>
+      <div class="rv-flash" aria-hidden="true"></div>
+      <div class="cards-reveal-dialog">
+        <div class="cards-reveal-head"><h2 id="cards-reveal-title">Your discovery</h2></div>
+        <p class="rv-hint" id="cards-reveal-hint" role="status" aria-live="polite"></p>
+        <div class="cards-reveal-results" id="cards-reveal-results"></div>
+        <div class="rv-summary" id="cards-reveal-summary"></div>
+        <div class="rv-actions"><button type="button" id="cards-reveal-all">Reveal all</button><button type="button" class="rv-primary" id="cards-reveal-done" hidden>Collect</button></div>
+      </div>
+      <div class="rv-banner" id="cards-reveal-banner" aria-hidden="true"></div>
+      <button type="button" class="rv-skip" id="cards-reveal-skip">SKIP ›</button>
+      <button type="button" class="cards-reveal-close" id="cards-reveal-close" aria-label="Close reveal">×</button>
+    </div>
   </section>
   
 
@@ -467,7 +491,8 @@
           <div><span class="profile-eyebrow">YOUR COLLECTOR SPACE</span><h2 id="cards-hub-title">The Collection</h2><p>Your discoveries, favorite characters and upgrades — all in one place. Cards are collection-only and never affect XP or English progress.</p></div>
           <div class="cards-wallet" aria-label="Collection wallet"><span>✦ Tokens <b id="cards-token-count">15</b></span><span>◇ Shards <b id="cards-shard-count">0</b></span></div>
         </div>
-        <div class="cards-collection-toolbar"><div><strong>Your discoveries</strong><span id="cards-collection-count">0 / 27 discovered</span></div></div>
+        <div class="cards-collection-toolbar"><div><strong>Your discoveries</strong><span id="cards-collection-count">0 / 27 discovered</span><div class="cgal-bar" aria-hidden="true"><i id="cards-collection-bar" style="width:0%"></i></div></div>
+          <div class="cgal-filters" id="cards-gallery-filters" role="group" aria-label="Filter your cards"><button type="button" data-gallery-filter="all" aria-pressed="true">All</button><button type="button" data-gallery-filter="characters" aria-pressed="false">Characters</button><button type="button" data-gallery-filter="words" aria-pressed="false">Words</button><button type="button" data-gallery-filter="artifacts" aria-pressed="false">Artifacts</button><button type="button" data-gallery-filter="mixed" aria-pressed="false">Places</button><button type="button" class="cgal-toggle" id="cards-gallery-locked" aria-pressed="true">Hide undiscovered</button></div></div>
         <div class="cards-panel"><p class="cards-upgrade-hint" id="cards-upgrade-balance">Upgrade a collected card for 5 shards · 5 levels max</p>
           <div class="cards-collection-meta"><span>COLLECTION</span><span><b id="cards-owned-count">0</b> cards collected</span></div>
           <div class="cards-grid" id="cards-gallery"></div>

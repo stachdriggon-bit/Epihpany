@@ -3033,10 +3033,3 @@ body[data-theme="dark"] .answer{box-shadow:0 1px 0 rgba(0,0,0,.35),0 8px 16px -1
 .tl-chain-link{display:inline-flex;align-items:center;padding:5px 10px;border:1px solid var(--line);border-radius:9px;background:var(--ground);font-weight:850}
 .tl-chain-path .tl-ladder-step{font-weight:850;color:var(--muted)}
 
-/* Original EPIPHANY vector portraits */
-.collectible-art.has-portrait{overflow:hidden;isolation:isolate;background:#101a3a}
-.collectible-art.has-portrait:before{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(180deg,transparent 62%,rgba(5,10,28,.5));border-radius:inherit}
-.collectible-portrait{display:block;position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.collectible-art.has-portrait span,.collectible-art.has-portrait i,.collectible-art.has-portrait b{display:none}
-.collectible-card.rarity-legendary .collectible-art.has-portrait{box-shadow:inset 0 0 0 1px #f8d16c,0 0 18px #e6a83c55}
-@media(prefers-reduced-motion:reduce){.collectible-art.has-portrait{animation:none!important}}
