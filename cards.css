@@ -1,0 +1,73 @@
+
+/* Collectible cards — first visual prototype */
+.chip-tokens{border:1px solid color-mix(in srgb,var(--spark) 55%,var(--line));background:color-mix(in srgb,var(--spark) 13%,var(--surface));color:var(--ink)}
+.chip-tokens .token-glyph{color:#b78318;font-size:16px;line-height:1}
+.profile-nav a[href="#cards-hub"]{white-space:nowrap}
+.cards-hub{margin:26px 0;padding:clamp(16px,3vw,28px);border:1px solid var(--line);border-radius:24px;background:var(--surface);box-shadow:0 12px 34px rgba(34,31,73,.05);scroll-margin-top:90px}
+.cards-hub-head{display:flex;justify-content:space-between;align-items:flex-start;gap:18px;flex-wrap:wrap;margin-bottom:18px}
+.cards-hub-head h2{margin:3px 0 6px;font-size:clamp(23px,3vw,32px);letter-spacing:-.035em}
+.cards-hub-head p{margin:0;color:var(--ink-2);max-width:620px;line-height:1.6}
+.cards-wallet{display:flex;gap:8px;flex-wrap:wrap}
+.cards-wallet span{display:inline-flex;align-items:center;gap:7px;padding:8px 11px;border:1px solid var(--line);border-radius:12px;background:var(--ground);font-size:13px;font-weight:850}
+.cards-wallet b{font-variant-numeric:tabular-nums}
+.cards-tabs{display:flex;gap:7px;padding:5px;background:var(--ground);border-radius:14px;width:max-content;max-width:100%;margin:18px 0 22px}
+.cards-tabs button{border:0;background:transparent;color:var(--ink-2);border-radius:10px;padding:10px 15px;font:inherit;font-weight:800;cursor:pointer}
+.cards-tabs button.is-active{background:var(--surface);color:var(--ink);box-shadow:0 2px 9px rgba(25,25,60,.08)}
+.cards-panel[hidden]{display:none}
+.cards-pack-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(220px,.8fr);gap:24px;align-items:center}
+.cards-pack-art{position:relative;display:grid;place-items:center;min-height:270px;overflow:hidden;border-radius:20px;background:radial-gradient(circle at 50% 35%,rgba(169,137,255,.28),transparent 40%),linear-gradient(145deg,#191b43,#28245b 58%,#4c367b);isolation:isolate}
+.cards-pack-art:before,.cards-pack-art:after{content:"";position:absolute;border:1px solid rgba(255,255,255,.2);border-radius:50%;width:190px;height:190px;transform:rotate(-25deg);box-shadow:0 0 35px rgba(190,159,255,.16)}
+.cards-pack-art:after{width:235px;height:235px;transform:rotate(38deg)}
+.cards-pack-seal{z-index:1;display:grid;place-items:center;width:116px;height:150px;border:1px solid rgba(255,225,155,.8);border-radius:13px;background:linear-gradient(155deg,#3e2b70,#201a45);box-shadow:0 14px 40px #09091f88,inset 0 0 0 5px #d4b56c22;color:#f6d98e;transform:rotate(-5deg)}
+.cards-pack-seal span{font-size:44px;line-height:1;text-shadow:0 0 20px #d4b56c88}
+.cards-pack-seal small{font-size:10px;letter-spacing:.2em;font-weight:900}
+.cards-pack-copy h3{font-size:23px;margin:0 0 7px}
+.cards-pack-copy p{color:var(--ink-2);line-height:1.65;margin:0 0 16px}
+.cards-pack-actions{display:flex;gap:9px;flex-wrap:wrap}
+.cards-pack-actions button{min-height:43px}
+.cards-daily-note{margin-top:12px;font-size:12px;color:var(--ink-2)}
+.cards-daily-note strong{color:var(--ink)}
+.cards-featured-wrap{margin-top:26px;padding-top:20px;border-top:1px solid var(--line)}
+.cards-featured-wrap>h3{font-size:14px;text-transform:uppercase;letter-spacing:.12em;color:var(--ink-2);margin:0 0 12px}
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:14px}
+.collectible-card{--rarity:#9ca3af;position:relative;overflow:hidden;display:flex;flex-direction:column;min-width:0;border:1px solid color-mix(in srgb,var(--rarity) 60%,var(--line));border-radius:17px;background:var(--surface);box-shadow:0 7px 20px rgba(24,22,55,.07)}
+.rarity-uncommon{--rarity:#4dbb83}.rarity-rare{--rarity:#38a7f5}.rarity-epic{--rarity:#ac75f5}.rarity-legendary{--rarity:#e9b84e}
+.collectible-card.is-featured{max-width:260px}
+.collectible-art{position:relative;display:grid;place-items:center;min-height:175px;overflow:hidden;background:radial-gradient(circle at 50% 43%,color-mix(in srgb,var(--rarity) 32%,transparent),transparent 53%),linear-gradient(145deg,#20213f,#34315d);isolation:isolate}
+.collectible-art:before{content:"";position:absolute;width:128px;height:128px;border:1px solid color-mix(in srgb,var(--rarity) 70%,white);border-radius:50%;opacity:.55;box-shadow:0 0 35px color-mix(in srgb,var(--rarity) 30%,transparent)}
+.collectible-art:after{content:"";position:absolute;width:88px;height:132px;border:1px solid color-mix(in srgb,var(--rarity) 60%,white);border-radius:50%;transform:rotate(45deg);opacity:.45}
+.collectible-art span{position:relative;z-index:2;color:color-mix(in srgb,var(--rarity) 65%,white);font-size:66px;text-shadow:0 0 26px color-mix(in srgb,var(--rarity) 55%,transparent)}
+.collectible-art i,.collectible-art b{position:absolute;width:5px;height:5px;border-radius:50%;background:#fff;box-shadow:0 0 12px #fff;opacity:.8}
+.collectible-art i{top:22%;left:25%}.collectible-art b{right:21%;bottom:24%}
+.art-star{background:radial-gradient(circle at 50% 45%,#7661aa,#222044 68%)}
+.art-time{background:radial-gradient(circle at 50% 45%,#4e7894,#172b48 70%)}
+.art-mist{background:radial-gradient(circle at 50% 45%,#8495b8,#30334f 70%)}
+.art-pact{background:radial-gradient(circle at 50% 45%,#936e83,#35283e 70%)}
+.art-shadow{background:radial-gradient(circle at 50% 45%,#525c87,#14172e 70%)}
+.art-crystal,.art-key,.art-royal,.art-rain,.art-ember{background:radial-gradient(circle at 50% 45%,#7056a2,#25213e 70%)}
+.art-map,.art-dune{background:radial-gradient(circle at 50% 45%,#8a7351,#302b31 70%)}
+.collectible-card-copy{display:flex;flex-direction:column;align-items:flex-start;gap:4px;padding:13px;flex:1}
+.collectible-rarity{font-size:10px;font-weight:950;text-transform:uppercase;letter-spacing:.13em;color:var(--rarity)}
+.collectible-card-copy h3{font-size:18px;line-height:1.25;margin:2px 0 0;overflow-wrap:anywhere}
+.collectible-card-title{font-size:12px;font-weight:800;color:var(--ink-2);margin:0}
+.collectible-description{font-size:12px;line-height:1.5;color:var(--ink-2);margin:7px 0 10px}
+.collectible-card-foot{display:flex;justify-content:space-between;gap:8px;align-items:center;width:100%;margin-top:auto;padding-top:9px;border-top:1px solid var(--line);font-size:11px;color:var(--ink-2)}
+.collectible-card-foot code{font-size:10px;overflow-wrap:anywhere}
+.cards-empty{grid-column:1/-1;text-align:center;padding:35px 18px;border:1px dashed var(--line);border-radius:16px;background:var(--ground)}
+.cards-empty>span{font-size:28px;color:var(--spark)}.cards-empty h3{margin:8px 0}.cards-empty p{color:var(--ink-2);max-width:420px;margin:0 auto 16px}
+.cards-collection-meta{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin:0 0 14px;color:var(--ink-2);font-size:13px}
+.cards-reveal-modal{position:fixed;inset:0;z-index:1000;display:grid;place-items:center;padding:20px;background:rgba(11,12,29,.78);backdrop-filter:blur(8px)}
+.cards-reveal-modal[hidden]{display:none}
+.cards-reveal-dialog{width:min(760px,100%);max-height:min(88vh,900px);overflow:auto;padding:clamp(16px,3vw,26px);border:1px solid #ffffff24;border-radius:22px;background:var(--surface);color:var(--ink);box-shadow:0 24px 80px #0005}
+.cards-reveal-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}
+.cards-reveal-head h2{font-size:clamp(22px,3vw,30px);margin:0}
+.cards-reveal-close{width:40px;height:40px;border:1px solid var(--line);border-radius:12px;background:var(--ground);color:var(--ink);font-size:22px;cursor:pointer}
+.cards-reveal-results{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:10px}
+.reveal-result{display:flex;align-items:center;gap:10px;min-width:0;padding:8px;border:1px solid color-mix(in srgb,var(--rarity) 50%,var(--line));border-radius:13px;background:var(--ground);animation:cards-reveal-in .35s both;animation-delay:var(--reveal-delay,0ms)}
+.reveal-result .collectible-art{min-height:66px;width:54px;flex:0 0 54px;border-radius:9px}
+.reveal-result .collectible-art:before{width:40px;height:40px}.reveal-result .collectible-art:after{width:28px;height:48px}.reveal-result .collectible-art span{font-size:28px}
+.reveal-result>div:last-child{display:grid;gap:4px;min-width:0}.reveal-result strong{font-size:13px;overflow-wrap:anywhere}.reveal-result span{font-size:11px;color:var(--ink-2)}
+@keyframes cards-reveal-in{from{opacity:0;transform:translateY(10px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+body.cards-modal-open{overflow:hidden}
+@media(max-width:700px){.cards-pack-layout{grid-template-columns:1fr}.cards-pack-art{min-height:210px}.cards-pack-copy h3{font-size:21px}.cards-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.collectible-art{min-height:135px}.collectible-card-copy{padding:10px}.collectible-card-copy h3{font-size:16px}.collectible-description{font-size:11px}.cards-hub{padding:15px;border-radius:18px}.cards-reveal-results{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:390px){.cards-grid{grid-template-columns:1fr 1fr}.cards-pack-actions{display:grid;grid-template-columns:1fr}.cards-wallet{width:100%}.cards-wallet span{flex:1;justify-content:center}}
