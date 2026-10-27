@@ -534,7 +534,7 @@
   ]);
   const isDeveloperAccount = () => !!(currentUser && currentUser.email && DEVELOPER_EMAILS.has(String(currentUser.email).trim().toLowerCase()));
   function announceAuthAccess() {
-    document.dispatchEvent(new CustomEvent('epiphany-auth-changed', { detail: { isDeveloper: isDeveloperAccount() } }));
+    document.dispatchEvent(new CustomEvent('epiphany-auth-changed', { detail: { isDeveloper: isDeveloperAccount(), email: isDeveloperAccount() ? String(currentUser.email).trim().toLowerCase() : '' } }));
   }
 
   async function saveStoryToCloud(story, visibility = 'private') {
@@ -556,6 +556,7 @@
 
   window.EpiphanyAuth = {
     isDeveloper: isDeveloperAccount,
+    getDeveloperEmail: () => isDeveloperAccount() ? String(currentUser.email).trim().toLowerCase() : '',
     saveStory: saveStoryToCloud,
     listMyStories: listMyCloudStories,
     listPublicStories: listPublicCloudStories,
