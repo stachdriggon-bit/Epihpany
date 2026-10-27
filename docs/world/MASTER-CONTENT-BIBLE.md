@@ -10,6 +10,8 @@ EPIPHANY takes place in a world that feels geographically recognizable: continen
 
 The world should support long-form, layered storytelling without copying another intellectual property.
 
+For geographic terminology, distinguish continents from archipelagos and other mapped regions. The current working map names four continents — Ilmar, Orath, Tharima, and Nirvan — plus the Azmar archipelagos. This is the current mapped inventory, **not** a declaration that the entire world contains exactly four continents; the world's full extent remains open.
+
 ## 2. Canon principles
 
 - The world's ultimate origin is unknown, including to the author-facing world bible. The earliest surviving record is not necessarily the beginning of the world.
