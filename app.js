@@ -3147,12 +3147,17 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
         ok: [[659, 0, .12, 'sine', .075], [880, .1, .18, 'sine', .075]],
         no: [[294, 0, .14, 'triangle', .055], [220, .13, .18, 'triangle', .05]],
         wrong: [[294, 0, .14, 'triangle', .055], [220, .13, .18, 'triangle', .05]],
-        done: [[523, 0, .13, 'sine', .065], [659, .11, .13, 'sine', .065], [784, .22, .15, 'sine', .065], [1047, .35, .25, 'sine', .07]]
+        done: [[523, 0, .13, 'sine', .065], [659, .11, .13, 'sine', .065], [784, .22, .15, 'sine', .065], [1047, .35, .25, 'sine', .07]],
+        summon: [[392, 0, .13, 'sine', .045], [523, .09, .16, 'sine', .055], [659, .2, .22, 'sine', .06]],
+        legendary: [[392, 0, .18, 'sine', .055], [587, .11, .2, 'sine', .065], [784, .24, .24, 'sine', .07], [1175, .39, .34, 'sine', .075], [1568, .58, .42, 'sine', .06]]
       }[kind];
       if (!seq) return;
       seq.forEach(a => tone(a[0], a[1], a[2], a[3], a[4]));
     } catch { /* audio is optional; never block an activity */ }
   }
+
+  // Shared by collectible reveals so they respect the app-wide sound setting.
+  window.EpiphanyPlaySfx = sfx;
 
   let toastTimer;
   function toast(msg) {
