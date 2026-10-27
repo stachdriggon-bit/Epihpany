@@ -114,6 +114,33 @@
  <text class="subregion" x="1093" y="903" text-anchor="middle">OUTER AZMAR</text>
  <circle class="dot" cx="1038" cy="938" r="5"/><text class="smallcity" x="978" y="962">Far Lantern</text>
 </g>
+
+<!-- Draft 02 drainage refinements: rivers follow valleys; arrows indicate downhill direction only -->
+<g id="draft02-drainage">
+  <!-- Ilan main stem now reaches the east-facing coast through an estuary -->
+  <path d="M411 553 Q427 546 438 533 T456 511" fill="none" stroke="#6ca6bf" stroke-width="4" stroke-linecap="round"/>
+  <path d="M449 515 l7 -4 -1 8" fill="none" stroke="#6ca6bf" stroke-width="2.5"/>
+  <text x="451" y="492" text-anchor="middle" font-family="Arial,sans-serif" font-size="11" fill="#477b8d" paint-order="stroke" stroke="#f4f0dd" stroke-width="3">estuary</text>
+  <!-- Pellisar lake outlet, down a southern valley toward the Sea of Stillness -->
+  <path d="M716 224 Q722 244 746 257 T776 281" fill="none" stroke="#6ca6bf" stroke-width="3.5" stroke-linecap="round"/>
+  <path d="M769 275 l7 6 -1 -9" fill="none" stroke="#6ca6bf" stroke-width="2"/>
+  <!-- Mireva wetland has its own outlet route; it is not joined to Pellisar's catchment -->
+  <path d="M947 214 Q956 232 950 246 T929 265" fill="none" stroke="#6ca6bf" stroke-width="3.5" stroke-linecap="round"/>
+  <path d="M930 257 l-1 8 7 -4" fill="none" stroke="#6ca6bf" stroke-width="2"/>
+  <!-- Closed-basin marker on Ambrin's lake -->
+  <ellipse cx="1150" cy="494" rx="43" ry="27" fill="none" stroke="#b77e45" stroke-width="2" stroke-dasharray="4 4"/>
+  <text x="1150" y="466" text-anchor="middle" font-family="Arial,sans-serif" font-size="11" fill="#8b6036" paint-order="stroke" stroke="#f4f0dd" stroke-width="3">closed basin · provisional</text>
+  <!-- Tharima seasonal wadi remains distinct from spring symbols -->
+  <path d="M548 759 Q562 775 586 782 T615 801" fill="none" stroke="#6ca6bf" stroke-width="3" stroke-dasharray="5 6" stroke-linecap="round"/>
+  <text x="586" y="819" text-anchor="middle" font-family="Arial,sans-serif" font-size="11" fill="#477b8d" paint-order="stroke" stroke="#f4f0dd" stroke-width="3">seasonal wadi</text>
+  <!-- Small spring symbols for the independent Tharima water sources -->
+  <g fill="#6ca6bf" stroke="#f4f0dd" stroke-width="1.5">
+    <circle cx="620" cy="704" r="4"/><circle cx="685" cy="685" r="4"/>
+  </g>
+  <text x="627" y="718" font-family="Arial,sans-serif" font-size="10" fill="#477b8d" paint-order="stroke" stroke="#f4f0dd" stroke-width="3">groundwater</text>
+  <text x="691" y="699" font-family="Arial,sans-serif" font-size="10" fill="#477b8d" paint-order="stroke" stroke="#f4f0dd" stroke-width="3">spring</text>
+</g>
+
 <!-- compass / legend -->
 <g transform="translate(1490 130)">
  <circle cx="0" cy="0" r="35" fill="#f5f1df" fill-opacity=".75" stroke="#8ba4a8"/>
