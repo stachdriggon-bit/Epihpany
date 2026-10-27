@@ -61,3 +61,9 @@ When a decision changes:
 3. Update all affected reference files.
 4. Check connected stories, maps, characters, cards, and Lore entries.
 5. Do not change the main branch unless and until the project owner chooses to merge this branch.
+
+| WD-019 | Define the Ilan as an east-draining river crossing the Ilan Basin and reaching the Sea of Dawn, with separate west-draining rivers on the ocean-facing side of Ilmar's upland divide. | Provisional | River course and estuary position depend on the final relief and coastline sketch. |
+| WD-020 | Use a provisional closed-basin model for Orath's inland basin, with a shallow evaporation-sensitive lake and no outlet in the current draft. | Provisional | Reopen if the contour sketch reveals a lower natural outlet; do not force an outlet through high ground. |
+| WD-021 | Keep Sahir's wadi systems mostly seasonal and partly disconnected, with selected channels reaching the sea and others ending in inland depressions. | Provisional | Permanent rivers require a reliable water source and a plausible water balance. |
+| WD-022 | Give Nirvan separate north-, west-, and south-draining river catchments, plus only those lakes with explicit inlets/outlets or closed-basin status. | Provisional | Snowmelt timing and lake levels must be reconciled with climate later. |
+| WD-023 | Treat freshwater availability on Azmar's islands as variable; harbor quality does not imply reliable freshwater. | Accepted working principle | Island settlement proposals must record a plausible water source. |
