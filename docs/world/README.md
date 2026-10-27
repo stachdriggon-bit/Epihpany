@@ -7,8 +7,10 @@ This directory is the working reference for the fictional world of EPIPHANY. It 
 - [Master Content Bible](MASTER-CONTENT-BIBLE.md) — core principles and world rules.
 - [Atlas](ATLAS.md) — geographic reference and map decisions.
 - [Geographic Foundation and Settlement Siting](GEOGRAPHIC-FOUNDATION.md) — integrated relative layout, drainage/relief constraints, placement plan for all 30 approved settlements, anchor reconciliation, and map-drawing order.
-- [World Map Draft 01](maps/EPIPHANY-WORLD-MAP-DRAFT-01.svg) — first schematic map showing all 30 settlement labels and five principal regions; not to scale.
-- [Map Draft 01 Placement Test](maps/MAP-DRAFT-01-PLACEMENT-TEST.md) — settlement-by-settlement check, coherent features, and unresolved water/route questions.
+- [World Map Draft 02](maps/EPIPHANY-WORLD-MAP-DRAFT-02.svg) — revised schematic with all 30 settlement labels; water and harbor decisions are still provisional and the map is not to scale.
+- [Map Draft 02 Drainage and Placement Review](maps/MAP-DRAFT-02-DRAINAGE-REVIEW.md) — explicit working choices for river/lake outlets, dryland water, Azmar harbor aliases, and remaining checks.
+- [World Map Draft 01](maps/EPIPHANY-WORLD-MAP-DRAFT-01.svg) — preserved first placement test for comparison.
+- [Map Draft 01 Placement Test](maps/MAP-DRAFT-01-PLACEMENT-TEST.md) — initial settlement-by-settlement check.
 - [Naming and Toponymy](NAMING-AND-TOPONYMY.md) — provisional method for creating, reviewing, transliterating, and tracking names.
 - [Ilmar Settlement Registry](CITIES-ILMAR.md) — six approved names; geographic details remain provisional.
 - [Orath Settlement Registry](CITIES-ORATH.md) — six approved names; geographic details remain provisional.
