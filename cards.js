@@ -45,6 +45,7 @@
   /* ---------- catalogue helpers ---------- */
   const ORN = 'assets/cards/card-ornaments.svg';
   const PORTRAITS = 'assets/cards/epiphany-portraits.svg?v=character-art-20261027';
+  const MIRA_SHEET = 'a_polished_high_quality_fantasy_game_ui_screensho.png?v=mira-portrait-20261027';
   const RARITIES = ['Common','Uncommon','Rare','Epic','Legendary'];
   const TIER = {Common:0,Uncommon:1,Rare:2,Epic:3,Legendary:4};
   const TIER_COLOR = {Common:'#cdd5e6',Uncommon:'#46e0a6',Rare:'#5cb6ff',Epic:'#bf7bff',Legendary:'#ffcf5a'};
@@ -60,7 +61,9 @@
   const svgUse = (cls, id, box, file=ORN) => '<svg class="'+cls+'" viewBox="'+box+'" focusable="false" aria-hidden="true"><use href="'+file+'#'+id+'"></use></svg>';
   const cornersMarkup = () => '<div class="fcard-corners" aria-hidden="true">'+['c1','c2','c3','c4'].map(c => svgUse(c,'orn-corner','0 0 64 64')).join('')+'</div>';
   const starsMarkup = rank => '<span class="fcard-stars" aria-hidden="true">'+[0,1,2,3,4].map(i => svgUse(i<=rank?'on':'','orn-star','0 0 24 24')).join('')+'</span>';
-  const artMarkup = card => card.art
+  const artMarkup = card => card.id === 'CHR-001'
+    ? '<img class="fcard-portrait fcard-portrait-image fcard-portrait-mira" src="'+MIRA_SHEET+'" alt="" loading="lazy" decoding="async">'
+    : card.art
     ? '<svg class="fcard-portrait" viewBox="0 0 240 300" preserveAspectRatio="xMidYMin slice" focusable="false"><use href="'+PORTRAITS+'#'+esc(card.art)+'"></use></svg>'
     : '<div class="fcard-sigil-art">'+svgUse('ring','back-sigil','0 0 120 120')+svgUse('ring r2','back-sigil','0 0 120 120')+'<b>'+esc(card.symbol)+'</b></div>';
 
