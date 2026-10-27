@@ -94,6 +94,8 @@ test('Card Portal is a separate gacha view, while the collection stays in the pr
   assert.match(html, /id="cards-pity-progress"/);
   assert.match(js, /cards-summon-token-count/);
   assert.match(js, /cards-pity-progress/);
+  assert.match(js, /modal\.dataset\.resultCount=String\(cards\.length\)/);
+  assert.match(css, /data-result-count="1"/);
   assert.match(css, /\.summon-stage/);
   assert.match(css, /\.summon-pack-art/);
   assert.match(css, /prefers-reduced-motion:reduce/);
