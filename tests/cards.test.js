@@ -40,6 +40,9 @@ test('collection rules keep card rewards separate from learning XP', () => {
   assert.match(js, /const TEN_COST = 45/);
   assert.match(js, /state\.shards\+=2/);
   assert.match(js, /state\.dailyDate===today\(\)/);
+  assert.match(js, /const rarityWeight = \{Common:58,Uncommon:25,Rare:12,Epic:4,Legendary:1\}/);
+  assert.match(js, /const groups = new Map\(\)/, 'rarity must be selected before the card within that rarity');
+  assert.match(js, /groups\.get\(rarity\)/);
   assert.match(js, /awardAchievementTokens/);
   assert.doesNotMatch(js, /state\.xp\s*[+]=/);
 });
