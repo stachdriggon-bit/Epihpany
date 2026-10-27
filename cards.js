@@ -107,12 +107,13 @@
     const tierRank={Common:0,Uncommon:1,Rare:2,Epic:3,Legendary:4};
     const highestTier=cards.reduce((best,card)=>Math.max(best,tierRank[card.rarity]??0),0);
     modal.dataset.revealTier=Object.keys(tierRank).find(rarity=>tierRank[rarity]===highestTier)?.toLowerCase()||'common';
+    modal.dataset.resultCount=String(cards.length);
     body.innerHTML=cards.map((c,i)=>'<div class="reveal-result rarity-'+c.rarity.toLowerCase()+'" style="--reveal-delay:'+Math.min(i,9)*65+'ms">'+cardArt(c,true)+'<div><strong>'+esc(c.name)+'</strong><span>'+esc(c.rarity)+(c.duplicate?' · Duplicate → +2 shards':'')+'</span></div></div>').join('');
     modal.hidden=false; document.body.classList.add('cards-modal-open');
     const close=$('cards-reveal-close'); if(close)close.focus();
     updateCounts(); renderGallery(); save();
   };
-  const closeResults = () => { const m=$('cards-reveal-modal'); if(m){m.hidden=true;delete m.dataset.revealTier;} document.body.classList.remove('cards-modal-open'); };
+  const closeResults = () => { const m=$('cards-reveal-modal'); if(m){m.hidden=true;delete m.dataset.revealTier;delete m.dataset.resultCount;} document.body.classList.remove('cards-modal-open'); };
   const upgradeCard = (id) => {const card=data().find(c=>c.id===id);if(!card||(Number(state.owned[id])||0)<1)return;const level=Math.max(1,Number(state.cardLevels[id])||1);if(level>=MAX_CARD_LEVEL||state.shards<UPGRADE_COST)return;state.shards-=UPGRADE_COST;state.cardLevels[id]=level+1;addHistory({kind:'upgrade',title:card.name+' upgraded',detail:'Level '+level+' → '+(level+1)+' · −'+UPGRADE_COST+' shards'});save();updateCounts();renderGallery();};
   const checkAchievementRewards = (achievements) => {if(!achievements||typeof achievements!=='object')return;for(const reward of ACHIEVEMENT_REWARDS){if(!state.achievementRewards[reward.id]&&reward.test(achievements)){state.achievementRewards[reward.id]=true;state.tokens+=reward.tokens;addHistory({kind:'achievement',title:'Achievement reward: '+reward.label,detail:'+'+reward.tokens+' tokens'});}}save();updateCounts();};
   const grantAdminTestTokens = (email) => {
