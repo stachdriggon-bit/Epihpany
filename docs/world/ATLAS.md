@@ -1,7 +1,7 @@
 # EPIPHANY — Atlas and Geographic Register
 
-**Version:** 0.2  
-**Status:** Provisional geographic master plan; coastline topology is proposed, not yet a scaled final map.
+**Version:** 0.3  
+**Status:** Provisional geographic master plan; relative relief layout defined, not yet a scaled final map.
 
 ## 1. Geographic design rules
 
@@ -189,18 +189,77 @@ The archipelagos should not form a perfect arc or evenly spaced stepping stones.
 7. Coastline detail should vary by region; avoid making every shore equally jagged.
 8. Do not finalize political borders or major cities from coastline alone.
 
-## 10. Open geographic decisions
+## 10. Relief framework — working proposal v0.3
 
-1. Final coastline and continent shapes.
-2. Map scale and approximate distances.
-3. Exact location and orientation of the major mountain belts.
-4. Source, course, tributaries, and mouth of each major river.
-5. Which inland basins are closed, partly drained, or connected to the sea.
-6. Final positions of seas, straits, and Azmar island groups.
-7. Rainfall patterns, winds, currents, and detailed biome borders.
-8. Final city locations, political borders, and historical route changes.
+This is the next layer above the coastline topology. It fixes the relative placement and orientation of major relief features so river drainage can be designed coherently. Heights and distances remain relative rather than numeric.
 
-## 10. Map layers to create
+### 10.1 Ilmar — western continent
+
+- **M-05 Western Ilmar Uplands:** a broken upland belt in the western-to-southwestern interior, not a continuous wall along the coast. It rises inland of parts of the west coast and gradually lowers toward the central plains.
+- **I-01 Ilan Basin:** a broad, gently sloping lowland in the central-to-eastern part of Ilmar, open toward the east-facing coast of the central sea. Reserve a plausible route for the Ilan River from uplands through this basin to an estuary on the central-sea coast; exact course and mouth remain undecided.
+- **I-02 Central Forests:** rolling uplands and low hills between the western uplands and the main river lowlands; not a solid forest wall.
+- **I-03 Open Plains:** broad low-relief country east and southeast of the central forests, broken by tributary valleys and isolated hills.
+- **I-04 Western Coast:** coastal plains are wider in the west-central reach and narrower where headlands approach the sea.
+- **Drainage rule:** rivers rising on the western uplands can flow west to the outer ocean or east toward the Ilan Basin, depending on which side of the local watershed they begin. The watershed must be drawn before assigning tributaries.
+
+### 10.2 Orath — eastern continent
+
+- **M-01 Eastern Spine:** the principal mountain belt trends from the north-northeast toward the south-central interior, with a curved southern branch trending toward the southeastern coast. It is not a perfectly straight north-south wall.
+- **O-01 Great Highlands:** a broad elevated region around and west of the spine, containing secondary ridges and valleys.
+- **M-02 Basin Rim:** lower mountain arcs and plateaus partially enclose an inland basin west of the spine. The basin is provisionally closed or weakly connected; its outlet status must be decided from a contour-level sketch, not assumed.
+- **O-03 Passes:** reserve at least three distinct types of crossing: a northern high pass, a central lower pass connecting inhabited basins, and a southern pass leading toward the central-sea coast. These are candidate corridors, not named roads.
+- **O-04 Mineral Zones:** reserve several separated upland pockets rather than one continuous mineral belt. Exact deposits remain open.
+- **Drainage rule:** western slopes may feed rivers toward the central sea; eastern slopes may feed rivers toward the outer ocean. Streams inside the inland basin drain to its lowest point unless a lower natural outlet is explicitly designed.
+
+### 10.3 Sahir — southern continent
+
+- **M-04 Basin Rims:** discontinuous uplands in the north-central interior and along selected basin edges. They guide runoff without forming an unbroken ring around the continent.
+- **S-01 Arid Belt:** broad dry interior zones, with local variation near coasts, highlands, and seasonal watercourses.
+- **S-02 Water Basins:** separate low basins with different water balances; do not connect them by permanent rivers unless the elevation profile supports it.
+- **S-03 Seasonal Wadis:** main channels descend from basin rims toward low basins or the central/southern coasts. Some terminate inland; only selected channels reach the sea.
+- **S-04 Transitional Steppes:** reserve a band between the wetter northern margins and the drier interior, with width varying by relief and rainfall.
+- **Drainage rule:** seasonal floods may spread across low plains, but the main channel still needs a plausible downhill route. Do not use a wadi as a permanent river without a reliable source.
+
+### 10.4 Nirvan — northern continent
+
+- **M-03 Nirvan Highlands:** a broken mountain and highland arc across the northwestern and northern interior, with branches approaching the coast in selected sectors.
+- **N-02 Cold Highlands:** the highest and coldest zones occur around the main uplands, not uniformly across the whole continent.
+- **N-01 Northern Forests:** occupy lower and middle elevations where temperature and moisture allow; forest cover changes with latitude, altitude, and exposure.
+- **N-03 Coasts and Fjords:** fjord-like inlets are concentrated where steep glacial valleys meet the sea. Other coast sectors remain low or moderately sloped.
+- **N-04 Transitional Belt:** a southern belt of lower terrain provides routes toward the Sea of Stillness and neighboring regions.
+- **Drainage rule:** most major rivers descend from the highlands toward the northern, western, or southern coasts or into local lakes. Each lake needs an inlet/outlet or an explicitly closed-basin status.
+
+### 10.5 Azmar — archipelagos
+
+- **A-01 Inner Passages:** the islands occupy broken chains in the central sea, with several navigable gaps. Some islands may be volcanic or steep, but that is not assumed for all.
+- **A-02 Harbor Islands:** a scattered group nearer the southeastern approaches to the central sea; sheltered harbors depend on island shape and prevailing seas.
+- **A-03 Remote Islands:** more dispersed islands south and southeast of the main maritime region, with variable rainfall and freshwater availability.
+- Island relief is local: some islands are mountainous, others low and coral-like, and others old eroded land. Do not assign a single geology or ecosystem to all of Azmar.
+
+### 10.6 Watershed and contour rules
+
+1. Draw ridgelines and basin rims first; place headwaters on the correct side of each divide.
+2. Rivers descend toward the nearest lower outlet unless a closed basin or unusual geological explanation is deliberately established.
+3. A river may cross a mountain chain only through a plausible gorge, antecedent course, or other explicitly designed geological feature; default designs should route around high ridges.
+4. A lake must have a plausible catchment and either an outlet, evaporation-dominated closed basin, or other recorded water balance.
+5. Mountain rain shadows should influence downstream dryness but must not create instant biome boundaries.
+6. Coastal plains widen where relief retreats inland and narrow where highlands approach the coast.
+7. Passes should align with lower saddles between ridges; they cannot be placed arbitrarily through the highest peaks.
+8. Keep the relief map internally consistent before adding borders, cities, or historical routes.
+
+## 11. Open geographic decisions
+
+1. Draw a consistent outline with a provisional scale and orientation grid.
+2. Refine exact coastlines, bay geometry, and island positions.
+3. Assign relative heights and contour lines to the relief framework.
+4. Decide whether the Orath inland basin has a natural outlet.
+5. Trace each major river and lake from watershed to outlet.
+6. Fix the exact width and navigation constraints of straits and channels.
+7. Determine winds, currents, rainfall, and detailed biome borders.
+8. Place candidate settlements and routes only after the physical layers are checked.
+9. Add political borders and historical routes in later map layers.
+
+## 12. Map layers to create
 
 World overview; physical/topographic map; rivers and drainage basins; climate and biomes; political borders by period; historical routes and migrations; trade and maritime routes; phenomena and evidence; regional/city maps; story and player-discovery maps.
 
