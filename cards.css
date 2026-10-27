@@ -94,3 +94,14 @@ body.cards-modal-open{overflow:hidden}
 @media(prefers-reduced-motion:reduce){
   .reveal-result{animation:none}
 }
+
+.cards-pack-types{display:flex;flex-wrap:wrap;gap:7px;margin:0 0 10px}
+.cards-pack-types button{border:1px solid var(--line);border-radius:11px;background:var(--ground);color:var(--ink-2);padding:9px 11px;font:inherit;font-size:12px;font-weight:800;cursor:pointer}
+.cards-pack-types button.is-active{border-color:color-mix(in srgb,var(--spark) 60%,var(--line));background:color-mix(in srgb,var(--spark) 14%,var(--surface));color:var(--ink)}
+.cards-selected-note{font-size:12px!important;margin:-5px 0 12px!important}
+.cards-pack-art[data-pack="words"]{background:radial-gradient(circle at 50% 35%,rgba(96,184,210,.3),transparent 42%),linear-gradient(145deg,#12354a,#1d5266 58%,#397b84)}
+.cards-pack-art[data-pack="artifacts"]{background:radial-gradient(circle at 50% 35%,rgba(233,184,78,.28),transparent 42%),linear-gradient(145deg,#3c2c1b,#5a4125 58%,#826037)}
+.cards-pack-art[data-pack="mixed"]{background:radial-gradient(circle at 50% 35%,rgba(172,117,245,.3),transparent 42%),linear-gradient(145deg,#252047,#38315e 58%,#4c367b)}
+.cards-pack-art[data-pack="words"] .cards-pack-seal{border-color:#8ed8e8;color:#b7f0f8}
+.cards-pack-art[data-pack="artifacts"] .cards-pack-seal{border-color:#e9b84e;color:#f6d98e}
+.cards-pack-actions button:disabled{opacity:.45;cursor:not-allowed}
