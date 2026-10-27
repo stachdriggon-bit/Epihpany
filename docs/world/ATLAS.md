@@ -331,3 +331,115 @@ For the current draft, use a **provisional closed-basin model** for the inland b
 7. Small islands need not have permanent rivers. Freshwater availability is a constraint on settlement, not a decorative detail.
 8. No precise lengths, volumes, navigability, or population capacity are assigned until a scale and climate model exist.
 
+## 14. Climate and natural regions — working proposal v0.5
+
+**Status:** coherent first-pass climate model; not a final meteorological simulation. The map scale, exact latitude, axial tilt, prevailing wind belts, ocean currents, and mountain heights remain unset. The model below establishes relative patterns and causal links without pretending that exact climate boundaries are known.
+
+### 14.1 Climate-design assumptions
+
+- Treat Nirvan as the generally coolest major region and Sahir as the generally driest interior region, but neither is uniform.
+- Latitude is only one control. Elevation, exposure to moist winds, distance from the sea, ocean currents, and seasonal circulation can alter local conditions.
+- Use gradual transitions between humid forest, open woodland, grassland, steppe, and desert. Sharp local boundaries need a physical cause such as a ridge, coast, or abrupt change in elevation.
+- Rain shadows are strongest near the downwind side of major highlands and weaken or change with distance; do not turn every leeward valley into a desert.
+- Coastal climates can be mild but are not automatically wet. Exposed shores, cold currents, and seasonal winds can create cool or dry coasts.
+- This is a working model for a world with familiar physical geography. Unusual phenomena may locally affect weather or ecosystems later, but they are not used here to explain every climate pattern.
+
+### 14.2 Relative temperature belts
+
+- **Nirvan:** coldest overall, with cold highlands in the northern/northwestern arc, cool forests at suitable lower elevations, and a milder southern transitional belt. Seasonal snow and ice are plausible in high areas; permanent ice is not assumed across the entire region.
+- **Ilmar:** broadly temperate, with a wetter western/northwestern margin in exposed places and more seasonally dry areas farther inland or toward the south. The Ilan Basin is potentially fertile where river water and rainfall overlap.
+- **Orath:** highly varied because of the Eastern Spine, Great Highlands, and inland basin. Elevation creates cool highlands; windward slopes can be wet, while selected leeward areas and the enclosed basin can be drier.
+- **Sahir:** warmest and driest overall in its interior, with semi-arid transition zones, locally wetter northern margins, and coastal variations. Some highlands are cooler than surrounding lowlands.
+- **Azmar:** maritime moderation varies by latitude, island size, relief, and currents. Windward islands may be wet while nearby low or leeward islands can be seasonal or dry.
+
+These are relative tendencies, not fixed temperature numbers or a claim that every point follows the regional average.
+
+### 14.3 Working wind and moisture model
+
+Until a latitude grid and circulation model are drawn, use the following as **testable design assumptions**, not immutable canon:
+
+1. Moisture-bearing winds reach parts of Ilmar from the western ocean, supporting wetter coastal pockets and upland-facing slopes. Their exact prevailing direction and seasonal strength remain open.
+2. Some western and northwestern slopes in Ilmar receive more rain than interior lowlands, while the Western Ilmar Uplands produce a modest-to-strong rain-shadow gradient toward selected inland and southeastern areas.
+3. Orath's western slopes can receive moisture from the central seas, but the Eastern Spine and associated highlands reduce or redirect moisture into the interior and eastern slopes. Do not assume the entire east coast is dry: local exposure and currents remain decisive.
+4. Sahir receives irregular seasonal rain. The northern transitional belt catches more of the available moisture than the deeper interior; isolated storms can create destructive floods without sustaining permanent rivers.
+5. Nirvan's highlands intercept moisture and snow. The southern belt may receive maritime moisture from the Sea of Stillness, while exposed northern/eastern coasts can be windy and cold without necessarily being the wettest.
+6. Azmar's small islands respond strongly to wind direction and local relief. Windward slopes may be lush; leeward sides can be noticeably drier over short distances.
+
+**Open variable:** whether the world has an Earth-like axial tilt and seasonal cycle. This draft uses familiar seasons as a convenient provisional model but does not define astronomical parameters.
+
+### 14.4 Natural-region map units
+
+These labels identify broad physical/ecological regions, not cultures or political territories.
+
+#### Ilmar
+
+- **BIO-IL-01 — Western Coastal Temperate Belt:** mixed woodland, grassland, and coastal wetlands where rainfall, soil, and shelter permit. Exposure varies along the coast.
+- **BIO-IL-02 — Western Upland Mosaic:** cooler uplands, wooded slopes, open ridges, and headwater valleys. Not all uplands are densely forested.
+- **BIO-IL-03 — Central Forest Mosaic:** forest blocks, clearings, wet hollows, and rolling hills. Forest extent varies with elevation and moisture.
+- **BIO-IL-04 — Ilan River Lowlands:** floodplains, tributary valleys, wetlands, and fertile terraces near reliable water. Flood risk and soil drainage vary by subregion.
+- **BIO-IL-05 — Open Plains:** grasslands and mixed open woodland, with local farming potential where soils and rainfall allow. Do not assume all plains are naturally treeless.
+- **BIO-IL-06 — Southern/Drier Transition:** a gradual shift toward open woodland and steppe where rainfall declines; exact boundary remains open.
+
+#### Orath
+
+- **BIO-OR-01 — Western Windward Slopes:** locally moist foothills and valleys facing the central seas; vegetation ranges from forest to open woodland with elevation.
+- **BIO-OR-02 — Great Highland Mosaic:** cool upland forests, grassland, rocky ridges, and alpine-like zones only at sufficiently high elevations.
+- **BIO-OR-03 — Eastern Spine High Country:** cooler ridges and headwaters with strong local exposure effects; snow persistence depends on height and season.
+- **BIO-OR-04 — Inland Basin Drylands:** steppe, scrub, seasonal wetlands, and possible salt flats around the provisional closed lake. The exact balance depends on inflow versus evaporation.
+- **BIO-OR-05 — Eastern Leeward Valleys:** patchy dry woodland and steppe in rain-shadowed areas, with wetter corridors near rivers and exposed slopes.
+- **BIO-OR-06 — Southern Coastal Transition:** varied foothills and coastal plains near the strait; maritime influence may soften dryness locally.
+
+#### Sahir
+
+- **BIO-SA-01 — Northern Semi-arid Steppe:** seasonal grass, shrubs, and scattered trees near more reliable drainage. Green-up may be brief and irregular.
+- **BIO-SA-02 — Interior Arid Belt:** sparse scrub, bare ground, and dry channels. This is not one uninterrupted sand sea; rocky deserts and gravel plains are possible.
+- **BIO-SA-03 — Basin-floor Mosaic:** salt-tolerant vegetation, temporary wetlands after rain, exposed mudflats, and dry lake beds where the water balance supports them.
+- **BIO-SA-04 — Upland Refuges:** cooler slopes and localized vegetation around higher terrain, springs, and shaded valleys.
+- **BIO-SA-05 — Coastal Arid Belt:** dry coastal plains with locally moderated temperatures; fog or coastal moisture is possible only if winds and currents support it.
+- **BIO-SA-06 — Wadi Corridors:** narrow bands of vegetation along channels that receive episodic runoff. Their green appearance is seasonal, not guaranteed year-round.
+
+#### Nirvan
+
+- **BIO-NI-01 — Northern Cold-Coast Mosaic:** cold-tolerant woodland, heath, tundra-like vegetation, or bare rock according to latitude and exposure; do not apply one biome to the entire northern shore.
+- **BIO-NI-02 — Highland Cold Zones:** rocky uplands, cold grassland, persistent snow patches, and possible glaciers only at sufficient elevation and under the chosen climate.
+- **BIO-NI-03 — Boreal Forest Belt:** coniferous or mixed cold forest at suitable lower and middle elevations, broken by lakes, wetlands, and exposed ground.
+- **BIO-NI-04 — Southern Transitional Forests:** more varied woodland and grassland in the lower southern belt, with milder seasonal conditions than the highlands.
+- **BIO-NI-05 — Fjord and Maritime Valleys:** localized wet valleys where topography and maritime exposure concentrate moisture. Fjords alone do not guarantee dense forest.
+
+#### Azmar
+
+- **BIO-AZ-01 — Humid Windward Islands:** forested slopes and short streams on islands receiving reliable maritime rainfall.
+- **BIO-AZ-02 — Seasonal Leeward Islands:** scrub, open woodland, and seasonal watercourses where relief creates a rain shadow.
+- **BIO-AZ-03 — Low Dry Islands:** limited surface freshwater, salt-tolerant plants, and dependence on stored rainwater or groundwater where present.
+- **BIO-AZ-04 — Cool Exposed Islands:** wind-shaped vegetation and limited sheltered growing areas on exposed or higher-latitude islands.
+
+### 14.5 Climate-to-water reconciliation
+
+- **Ilan River:** its headwaters need enough rainfall or upland storage to sustain the main channel. The lower floodplain may flood seasonally; do not assign a huge delta until sediment and coastal conditions support it.
+- **Ilmar western rivers:** shorter and more variable than Ilan in the current model; their flow depends on which side of the upland divide they drain and local exposure.
+- **Orath western rivers:** their catchments should be wetter on selected windward slopes, with flow becoming more seasonal toward drier interiors.
+- **Orath closed basin and Lake L-003:** water level depends on inflow versus evaporation. A persistent large freshwater lake is not assumed; a shallow fluctuating lake, wetland, or salt-flat phase is more plausible for a dry basin.
+- **Sahir wadis:** flood pulses may be powerful but short. Some channels terminate in depressions, and only selected ones reach the coast.
+- **Nirvan lakes and rivers:** snowmelt can create a seasonal high-flow period. Exact freeze duration and river permanence remain open until latitude and elevation are chosen.
+- **Azmar freshwater:** a settlement site must have a credible source: rainfall storage, a spring, groundwater, a stream, or regular supply. Island size alone does not guarantee water.
+
+### 14.6 Map quality checks
+
+1. Do not place a dense rainforest in a dry rain shadow without a local moisture source.
+2. Do not place a broad permanent river in a dry basin without reliable inflow or groundwater.
+3. Do not place permanent glaciers at low elevations without a deliberately unusual climate.
+4. Do not assume every coast is humid or every highland is forested.
+5. Keep biome boundaries gradual except where relief or other strong physical causes justify sharper transitions.
+6. Use the closed-basin lake as a climate-sensitive feature, not a fixed permanent blue patch.
+7. Revisit every proposed river and lake after the wind, rainfall, and biome map is drafted.
+8. Do not yet infer cities, borders, civilizations, or historical events from the biome labels.
+
+### 14.7 Still open
+
+- Exact latitude and seasonal/astronomical parameters.
+- Prevailing winds by season and the strength/direction of ocean currents.
+- Relative rainfall and temperature bands.
+- Whether Orath's closed basin remains closed after contours are drafted.
+- Exact biome boundaries and the reliability of springs in Sahir.
+- Snowline, seasonal ice, and river freeze patterns in Nirvan.
+- The freshwater capacity of individual Azmar islands.
