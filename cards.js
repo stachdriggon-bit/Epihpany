@@ -158,7 +158,7 @@
     if(first&&featured)featured.innerHTML=cardMarkup(first,Number(state.owned[first.id])||0,true);
     renderGallery();updateCounts();switchTab('collection');
     $('cards-history-clear')?.addEventListener('click',()=>{state.history=[];save();renderHistory();});
-    document.addEventListener('epiphany:achievements-updated',()=>checkAchievementRewards(window.EPIPHANY_PROFILE_ACHIEVEMENTS));
+    window.addEventListener('epiphany:achievements-updated',()=>checkAchievementRewards(window.EPIPHANY_PROFILE_ACHIEVEMENTS));
     if(window.EPIPHANY_PROFILE_ACHIEVEMENTS)checkAchievementRewards(window.EPIPHANY_PROFILE_ACHIEVEMENTS);
     const adminEmail=window.EpiphanyAuth?.getDeveloperEmail?.();
     if(adminEmail)grantAdminTestTokens(adminEmail);
