@@ -22,15 +22,20 @@
 | WD-005 | Treat phenomena as varied in distribution, scale, danger, and degree of understanding. | Accepted principle | No universal magic zones or single explanation for all phenomena. |
 | WD-006 | Keep character-card rarity separate from narrative importance. | Accepted principle | Collecting is intended to be enjoyable without real-money purchases. |
 | WD-007 | Use stable IDs for geographic and character records where practical. | Accepted working method | Renaming should not break cross-references. |
+| WD-008 | Use the central Sea of Dawn between eastern Ilmar, western Orath, northern Sahir, and nearer Azmar groups as the working maritime center. | Provisional | Relative placement only; no scale or coordinates fixed. |
+| WD-009 | Place the Sea of Stillness between southern Nirvan and northern/northwestern Orath, connected to the central sea by channels. | Provisional | Channel count and exact geometry remain open. |
+| WD-010 | Place the Strait of Passage provisionally southeast of the central sea, between southern Orath and northeastern Sahir. | Provisional | Must remain navigable under the chosen coastline, unless explicitly revised. |
+| WD-011 | Divide Azmar into inner passages, harbor islands, and remote island groups rather than one uniform archipelago. | Provisional | Groups may change shape and position after the map is drafted. |
+| WD-012 | Define coastline topology before fixing river mouths, cities, or political borders. | Accepted working method | Prevents later geographic contradictions. |
 
 ## Geographic open questions
 
-1. Final coastline and continent outlines.
-2. Map scale and approximate distances.
+1. Draw the coastline topology in a consistent map outline and set a provisional scale.
+2. Finalize exact shapes and relative distances of bays, capes, peninsulas, and island groups.
 3. Exact direction and branches of the Orath mountain belts.
 4. Exact source, course, tributaries, and mouth of the Ilan River.
 5. Drainage status of Orath's inland basins.
-6. Final location of Azmar archipelagos and Strait of Passage.
+6. Final width, depths, and navigability of the Strait of Passage and other channels.
 7. Global winds, currents, rainfall, and precise biome borders.
 8. Final settlement locations, city names, political borders, and routes.
 
