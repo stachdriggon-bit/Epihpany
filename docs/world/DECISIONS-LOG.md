@@ -27,17 +27,24 @@
 | WD-010 | Place the Strait of Passage provisionally southeast of the central sea, between southern Orath and northeastern Sahir. | Provisional | Must remain navigable under the chosen coastline, unless explicitly revised. |
 | WD-011 | Divide Azmar into inner passages, harbor islands, and remote island groups rather than one uniform archipelago. | Provisional | Groups may change shape and position after the map is drafted. |
 | WD-012 | Define coastline topology before fixing river mouths, cities, or political borders. | Accepted working method | Prevents later geographic contradictions. |
+| WD-013 | Place the Western Ilmar Uplands west/southwest of the Ilan Basin, with a watershed separating westward and eastward drainage. | Provisional | Exact ridge lines and river mouths remain open. |
+| WD-014 | Orient Orath's Eastern Spine from north-northeast toward the south-central interior, with a curved southern branch. | Provisional | Relative orientation only; no heights or distances set. |
+| WD-015 | Reserve a partially enclosed inland basin west of Orath's main spine. | Provisional | Whether it is closed or has a natural outlet remains open. |
+| WD-016 | Use discontinuous basin rims and seasonal drainage channels across Sahir rather than one enclosing mountain ring. | Provisional | Supports varied water availability and settlement patterns. |
+| WD-017 | Concentrate Nirvan's highest relief in a broken north/northwestern highland arc, with lower southern routes. | Provisional | Fjords occur only where steep relief and glacial valleys support them. |
+| WD-018 | Design watersheds and basin elevations before final river courses and lakes. | Accepted working method | Rivers and lakes must follow the relief model. |
 
 ## Geographic open questions
 
-1. Draw the coastline topology in a consistent map outline and set a provisional scale.
-2. Finalize exact shapes and relative distances of bays, capes, peninsulas, and island groups.
-3. Exact direction and branches of the Orath mountain belts.
-4. Exact source, course, tributaries, and mouth of the Ilan River.
-5. Drainage status of Orath's inland basins.
-6. Final width, depths, and navigability of the Strait of Passage and other channels.
-7. Global winds, currents, rainfall, and precise biome borders.
-8. Final settlement locations, city names, political borders, and routes.
+1. Draw a consistent coastline outline with a provisional scale and orientation grid.
+2. Finalize exact bay, cape, peninsula, and island geometry.
+3. Refine mountain ridgelines, relative heights, and contour lines.
+4. Decide the drainage status of Orath's inland basin.
+5. Trace the Ilan River and other major rivers from watershed to outlet.
+6. Define lakes and their water balances.
+7. Fix widths, depths, and navigability of straits and channels.
+8. Establish winds, currents, rainfall, and biome borders.
+9. Place candidate settlements and routes after physical geography is checked.
 
 ## Content open questions
 
