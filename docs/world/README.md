@@ -10,6 +10,8 @@ This directory is the working reference for the fictional world of EPIPHANY. It 
 - [Ilmar Candidate Cities](CITIES-ILMAR.md) — provisional names and roles for a small first set of Ilmar settlements.
 - [Orath Candidate Cities](CITIES-ORATH.md) — provisional settlement registry with stable IDs and duplicate-prevention rules.
 - [Tharima Candidate Cities](CITIES-THARIMA.md) — provisional settlement registry with stable IDs and duplicate-prevention rules.
+- [Nirvan Candidate Settlements](CITIES-NIRVAN.md) — provisional northern settlement registry, with naming and anchor-overlap notes.
+- [Azmar Candidate Island Settlements](CITIES-AZMAR.md) — provisional settlements across the archipelagos; Azmar remains an island-region, not a classified continent.
 - [Timeline](TIMELINE.md) — historical framework and chronology standards.
 - [Civilizations](CIVILIZATIONS.md) — societies, cultures, states, and connections.
 - [Characters](CHARACTERS.md) — character-canon template and continuity rules.
