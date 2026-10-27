@@ -37,13 +37,29 @@
     const one = $('cards-pull-one'); if (one) { one.disabled = state.tokens < DAILY_COST; one.textContent = 'Open 1 · '+DAILY_COST+' tokens'; }
     const ten = $('cards-pull-ten'); if (ten) { ten.disabled = state.tokens < TEN_COST; ten.textContent = 'Open 10 · '+TEN_COST+' tokens'; }
   };
+  // Roll rarity first, then choose within that rarity. Otherwise a rarity with
+  // many cards accidentally becomes more common just because its catalog is larger.
   const rarityWeight = {Common:58,Uncommon:25,Rare:12,Epic:4,Legendary:1};
   const chooseCard = () => {
     const cards=data(); if(!cards.length) return null;
-    const total=cards.reduce((n,c)=>n+(rarityWeight[c.rarity]||1),0);
-    let roll=Math.random()*total;
-    for(const c of cards){roll-=(rarityWeight[c.rarity]||1);if(roll<0)return c;}
-    return cards[cards.length-1];
+    const groups = new Map();
+    for (const card of cards) {
+      if (!groups.has(card.rarity)) groups.set(card.rarity, []);
+      groups.get(card.rarity).push(card);
+    }
+    const available = Object.entries(rarityWeight).filter(([rarity, weight]) => weight > 0 && groups.has(rarity));
+    const total = available.reduce((sum, [, weight]) => sum + weight, 0);
+    if (!total) return cards[Math.floor(Math.random() * cards.length)];
+    let roll = Math.random() * total;
+    for (const [rarity, weight] of available) {
+      roll -= weight;
+      if (roll < 0) {
+        const pool = groups.get(rarity);
+        return pool[Math.floor(Math.random() * pool.length)];
+      }
+    }
+    const pool = groups.get(available[available.length - 1][0]);
+    return pool[Math.floor(Math.random() * pool.length)];
   };
   const award = (card) => {
     const previous=Number(state.owned[card.id])||0;
