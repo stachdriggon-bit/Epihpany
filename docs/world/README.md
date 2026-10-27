@@ -7,11 +7,11 @@ This directory is the working reference for the fictional world of EPIPHANY. It 
 - [Master Content Bible](MASTER-CONTENT-BIBLE.md) — core principles and world rules.
 - [Atlas](ATLAS.md) — geographic reference and map decisions.
 - [Naming and Toponymy](NAMING-AND-TOPONYMY.md) — provisional method for creating, reviewing, transliterating, and tracking names.
-- [Ilmar Candidate Cities](CITIES-ILMAR.md) — provisional names and roles for a small first set of Ilmar settlements.
-- [Orath Candidate Cities](CITIES-ORATH.md) — provisional settlement registry with stable IDs and duplicate-prevention rules.
-- [Tharima Candidate Cities](CITIES-THARIMA.md) — provisional settlement registry with stable IDs and duplicate-prevention rules.
-- [Nirvan Candidate Settlements](CITIES-NIRVAN.md) — provisional northern settlement registry, with naming and anchor-overlap notes.
-- [Azmar Candidate Island Settlements](CITIES-AZMAR.md) — provisional settlements across the archipelagos; Azmar remains an island-region, not a classified continent.
+- [Ilmar Settlement Registry](CITIES-ILMAR.md) — six approved names; geographic details remain provisional.
+- [Orath Settlement Registry](CITIES-ORATH.md) — six approved names; geographic details remain provisional.
+- [Tharima Settlement Registry](CITIES-THARIMA.md) — six approved names; geographic details remain provisional.
+- [Nirvan Settlement Registry](CITIES-NIRVAN.md) — six approved names; geographic details and anchor relationships remain provisional.
+- [Azmar Island Settlement Registry](CITIES-AZMAR.md) — six approved names across the archipelagos; Azmar remains an island-region, not a classified continent.
 - [Timeline](TIMELINE.md) — historical framework and chronology standards.
 - [Civilizations](CIVILIZATIONS.md) — societies, cultures, states, and connections.
 - [Characters](CHARACTERS.md) — character-canon template and continuity rules.
@@ -32,7 +32,7 @@ This directory is the working reference for the fictional world of EPIPHANY. It 
 3. When changing geography or chronology, check affected stories, characters, routes, cards, and other documents.
 4. Separate evidence from interpretation and folklore.
 5. Update this directory when a major worldbuilding decision is accepted.
-6. Names and IDs are working identifiers; preserve IDs when names change where practical.
+6. Approved settlement names and IDs are stable canon; preserve IDs if a later explicit decision changes a name.
 7. Follow the [Naming and Toponymy](NAMING-AND-TOPONYMY.md) framework when proposing names; do not infer a region's language identity from its geography or first batch of names.
 
-The Atlas currently lists four named continents (Ilmar, Orath, Tharima, Nirvan) and the Azmar archipelagos as five principal mapped regions. Azmar is not currently classified as a continent, and the total number of continents in the entire world remains open. The current material records the initial worldbuilding conversation and is intentionally incomplete. It is not yet a final scaled atlas or a complete historical canon.
+The five current settlement registries contain 30 approved settlement names across four named continents and the Azmar archipelagos. The Atlas currently lists four named continents (Ilmar, Orath, Tharima, Nirvan) and the Azmar archipelagos as five principal mapped regions. Azmar is not currently classified as a continent, and the total number of continents in the entire world remains open. The current material records the initial worldbuilding conversation and is intentionally incomplete. It is not yet a final scaled atlas or a complete historical canon.
