@@ -137,7 +137,7 @@ body.cards-modal-open{overflow:hidden}
   animation-delay:var(--reveal-delay,0ms);
 }
 .cards-reveal-modal[data-reveal-tier="legendary"] .reveal-result.rarity-legendary:before{
-  content:"";position:absolute;inset:-55% -35%;z-index:-1;pointer-events:none;
+  content:"";position:absolute;inset:-55% -35%;z-index:2;pointer-events:none;
   background:linear-gradient(110deg,transparent 38%,#fff5c82a 48%,#fff9df72 50%,#fff5c820 53%,transparent 64%);
   transform:translateX(-75%) rotate(8deg);
   animation:cards-legendary-sheen .95s ease-out both;
