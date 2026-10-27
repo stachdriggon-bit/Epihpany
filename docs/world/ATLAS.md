@@ -264,3 +264,70 @@ This is the next layer above the coastline topology. It fixes the relative place
 World overview; physical/topographic map; rivers and drainage basins; climate and biomes; political borders by period; historical routes and migrations; trade and maritime routes; phenomena and evidence; regional/city maps; story and player-discovery maps.
 
 Illustrative images are mood references only and must never override this register.
+
+## 13. Drainage network — working proposal v0.4
+
+This section proposes river corridors and lake roles from the relief framework. It does not establish measured lengths, discharge, exact tributary counts, or final map coordinates. The route descriptions are topological: they define which side of a watershed the water occupies and where it ultimately drains.
+
+### 13.1 Ilmar — the Ilan system and western rivers
+
+- **R-001 — Ilan River / نهر إيلان:** headwaters begin on the eastern-facing slopes of the Western Ilmar Uplands. The main river descends into the Ilan Basin, gathers tributaries from the central rolling hills, then bends toward the east-facing coast and enters the Sea of Dawn through an estuary. Keep its lower course broad and gently sloping; the estuary is a proposed feature, not yet a fixed point on the coastline.
+- **R-005 — Westward Rivers / أنهار الساحل الغربي:** several independent, shorter rivers descend from the ocean-facing side of the Western Ilmar Uplands to the Western Outer Ocean. Their catchments are separated from the Ilan system by the main watershed. Do not depict them as tributaries of Ilan.
+- **R-006 — Forest Tributaries / روافد الغابات الوسطى:** smaller streams rise in the Central Forests and rolling hills and join Ilan or its basin tributaries. Some headwater streams may be seasonal in drier southern reaches; do not assume every forest stream is navigable.
+- **R-007 — Plain Rivers / أنهار السهول المفتوحة:** low-gradient tributaries cross the Open Plains and join the lower Ilan system. Reserve room for floodplains, abandoned channels, and wetlands near the lower river, but only where the terrain and sediment supply support them.
+- **Lake L-001 — Forest Lake / بحيرة الغابة:** a modest upland lake in a hollow among the Central Forests, fed by local streams and draining through a small outlet into a tributary of Ilan. This is a proposed lake, not a vast inland sea.
+- **Lake L-002 — Lower Ilan Wetlands / مستنقعات إيلان السفلى:** a seasonal wetland/floodplain complex near the lower river rather than a separate deep lake. Its size varies with floods and seasons.
+
+**Consistency check:** the Ilan source must sit on the basin-facing side of the upland divide; the estuary must lie on Ilmar's east-facing coast. If a later coastline sketch makes this route impossible, revise the route or divide explicitly rather than forcing a river through a ridge.
+
+### 13.2 Orath — outward rivers and an inland closed basin
+
+For the current draft, use a **provisional closed-basin model** for the inland basin west of the Eastern Spine. This gives Orath a distinct hydrological region and avoids inventing an outlet through the Basin Rim before the contour layout supports one. This is a design choice, not a claim that all inland basins in Orath are closed.
+
+- **R-002A — Western Orath Rivers / أنهار أوراث الغربية:** rivers descend from the western slopes of the Great Highlands and lower passes toward the Sea of Dawn or Sea of Stillness. Separate catchments reach different coastal bays; do not combine every western river into one giant trunk.
+- **R-002B — Eastern Orath Rivers / أنهار أوراث الشرقية:** rivers descend from the Eastern Spine's eastern slopes toward the exposed eastern coast. The steepest headwaters can have shorter, faster courses; longer rivers need broader valleys and tributaries. Their mouths do not connect to the western rivers.
+- **R-008 — Basin Inflows / روافد الحوض الداخلي:** intermittent streams and at least one more reliable upland-fed river descend into the enclosed basin west of the spine. They terminate in a lowland lake/wetland system rather than crossing the Basin Rim.
+- **Lake L-003 — Orath Inner Lake / بحيرة أوراث الداخلية:** a shallow, evaporation-sensitive lake in the lowest part of the closed basin. Its shoreline expands and retreats over long wet/dry cycles; in drier periods, exposed mudflats or salt flats may border it. The basin should not be a permanently huge freshwater lake unless later climate and inflow calculations justify that.
+- **Pass drainage:** valleys through the northern, central, and southern candidate passes carry local streams toward whichever basin or coast is downhill. A pass is not automatically a river crossing between opposite sides of the main spine.
+
+**Consistency check:** no stream may leave the closed basin in the draft map. If a contour sketch later reveals a lower saddle to the sea, the basin must be reclassified as open and its lake/outlet redesigned.
+
+### 13.3 Sahir — episodic water, not a hidden continent-wide river
+
+- **R-003A — Northern Wadis / أودية ساهِر الشمالية:** seasonal channels descend from the transitional steppe and northern basin rims into low interior basins. Their flow is brief and flood-prone; they do not form a permanent connected river network.
+- **R-003B — Coastal Wadis / أودية الساحل:** selected wadis reach the northern coast and the Sea of Dawn after major rain events. Others lose flow to infiltration, evaporation, or inland depressions before reaching the sea.
+- **R-003C — Southern Basin Channels / قنوات الأحواض الجنوبية:** short, separate channels drain local uplands into closed depressions. Keep these catchments independent unless the relative elevations explicitly connect them.
+- **Lake L-004 — Rain Basin / بحيرة المطر:** a shallow, intermittent lake in one interior depression, appearing or expanding after exceptional seasonal rains and shrinking markedly in dry periods. Its presence is not a guarantee of permanent freshwater.
+- **Waterhole series W-001 — Basin Springs / عيون الأحواض:** a small set of proposed springs at selected basin margins where groundwater can emerge. Their reliability is local and must be justified by aquifer recharge; do not scatter permanent springs uniformly across the arid belt.
+
+**Consistency check:** draw the wadi's downhill path even if its visible channel disappears into sand or a depression. A dry channel may reach the coast, but it must not be treated as a perennial river without a reliable year-round source.
+
+### 13.4 Nirvan — highland rivers and lake outlets
+
+- **R-004A — Northern Rivers / أنهار نيرفان الشمالية:** streams rise in the highland arc and descend toward northern fjorded or open-coast sectors. Steep upper reaches feed broader lower valleys where relief permits.
+- **R-004B — Western Rivers / أنهار نيرفان الغربية:** separate catchments descend from western slopes toward the northwest coast. They remain independent from rivers flowing south to the Sea of Stillness unless a low divide is deliberately drawn.
+- **R-004C — Southern Rivers / أنهار نيرفان الجنوبية:** longer rivers descend through the lower southern belt toward protected bays on the Sea of Stillness. These valleys can become natural overland corridors, but their banks may be seasonally difficult in cold conditions.
+- **Lake L-005 — Highland Lake / بحيرة المرتفعات:** a glacially shaped lake in a highland hollow, fed by snowmelt and local precipitation, with a defined outlet joining one northern or southern river. Do not leave it as an isolated blue symbol with no water balance.
+- **Lake L-006 — Southern Lake Chain / سلسلة البحيرات الجنوبية:** a small chain of connected lakes in a lower valley, where each lake spills into the next and the final outlet joins a southern river. If later relief cannot support this sequence, keep only the best-supported lake and remove the rest.
+- **Seasonal conditions:** cold-season freezing and snowmelt can alter flow timing, but do not assume every river is frozen all year or that all routes are impassable.
+
+**Consistency check:** any fjord-side river must descend from a real inland catchment; not every fjord needs a major river, and not every river mouth must sit inside a fjord.
+
+### 13.5 Azmar — small catchments and freshwater limits
+
+- **A-01 Inner Passages:** larger inhabited islands may support short streams if their relief and rainfall justify them; low islands may instead rely on rainwater storage, springs, or imports.
+- **A-02 Harbor Islands:** sheltered coves do not imply abundant freshwater. Keep freshwater sources separate from harbor suitability.
+- **A-03 Remote Islands:** some islands have seasonal streams or small freshwater lenses; others are dry and sparsely inhabited. A permanent settlement on a dry island requires a recorded water solution.
+- No single river system connects the archipelagos. Each island has its own catchment, and the sea separates drainage networks.
+
+### 13.6 Network-wide rules and unresolved checks
+
+1. Each main river has a source region, watershed side, destination, and plausible gradient before its tributaries are named.
+2. Rivers flowing to opposite coasts remain separate unless an explicit low divide or unusual geological history is documented.
+3. The Orath closed basin is provisional; its status depends on future contours and must be revisited before the map is considered final.
+4. Lakes L-001 to L-006 are proposed geographic features, not all equally large or permanent. Their water balances must be revisited with climate.
+5. Sahir's seasonal channels should vary in length and reliability; some end inland and some reach the sea.
+6. Nirvan's snowmelt and lake outlets must match elevation and seasonal climate.
+7. Small islands need not have permanent rivers. Freshwater availability is a constraint on settlement, not a decorative detail.
+8. No precise lengths, volumes, navigability, or population capacity are assigned until a scale and climate model exist.
+
