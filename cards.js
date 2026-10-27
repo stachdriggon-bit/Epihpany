@@ -328,8 +328,9 @@
     const count = cards.length, cols = count <= 3 ? count : 5, rows = Math.ceil(count / cols);
     if (heading) heading.textContent = title;
     modal.dataset.revealTier = topName.toLowerCase();
-    modal.dataset.resultCount = String(cards.length);
-    modal.dataset.orb = 'neutral'; modal.dataset.fx = ''; modal.classList.remove('do-flash','do-shake');
+    modal.dataset.resultCount=String(cards.length);
+    modal.dataset.orb = 'neutral'; modal.dataset.fx = ''; modal.classList.remove('do-flash','do-shake','cards-legendary-sheen');
+    if (top >= TIER.Legendary) modal.classList.add('cards-legendary-sheen');
     modal.style.removeProperty('--tier');
     body.style.setProperty('--cols', cols); body.style.setProperty('--rows', rows);
     body.innerHTML = cards.map((c,i) => {
@@ -360,6 +361,7 @@
     if (!rv || rv.phase !== 'charge') return;
     const modal = modalEl(), color = TIER_COLOR[RARITIES[rv.top]];
     modal.dataset.orb = 'tier'; setPhase('burst'); pulse('do-flash', 900);
+    if (rv.top >= TIER.Legendary) playCardCue('legendary');
     Fx.burstCenter(color, 50 + rv.top * 26, 1 + rv.top * .25);
     if (rv.top >= 3) modal.dataset.fx = RARITIES[rv.top].toLowerCase();
     later(showCards, 520);
