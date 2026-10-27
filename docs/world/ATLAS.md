@@ -453,3 +453,12 @@ These labels identify broad physical/ecological regions, not cultures or politic
 Use [Geographic Foundation and Settlement Siting](GEOGRAPHIC-FOUNDATION.md) as the cross-region placement plan. It integrates the existing coastline, relief, drainage, climate, 30 approved settlement names, route logic, and anchor-location reconciliation without inventing a scale or exact coordinates.
 
 **Current commitment:** preserve the relative adjacency of the five mapped regions; draw watersheds before rivers; connect each settlement to the terrain, water, and route network its role requires; and reconcile narrative anchors with city records before creating duplicate locations. Exact coastlines, elevations, distances, lake outlets, and travel times remain provisional.
+
+
+## 16. Draft 02 water-balance decisions
+
+The [Geographic Foundation](GEOGRAPHIC-FOUNDATION.md#10-draft-02--provisional-water-and-route-decisions) records the current Draft 02 choices: the Ilan River drains west-upland slopes across the Ilan Basin to an east-facing estuary; the Ambrin lake is provisionally a closed, fluctuating basin; Pellisar's lake drains toward the Sea of Stillness through a southern valley; Mireva belongs to a separate wetland/outlet catchment; and Tharima's Namaris, Kharif, and Saffra use distinct water mechanisms. These are reversible working decisions, not final measured geography.
+
+For Azmar, Selka Haven, Seven-Mooring Harbor, and SET-05 Azmar Port are provisionally one canonical harbor with legacy references. Rain-Cistern Island remains separate from Oruven until its freshwater and usable land capacity are confirmed. All permanent island settlements require a credible local water source or documented supply arrangement.
+
+See [World Map Draft 02](maps/EPIPHANY-WORLD-MAP-DRAFT-02.svg) and its [Drainage and Placement Review](maps/MAP-DRAFT-02-DRAINAGE-REVIEW.md). Exact coastlines, scale, elevations, coordinates, and travel times remain open.
