@@ -15,7 +15,7 @@
 
 | ID | Decision | Status | Notes |
 |---|---|---|---|
-| WD-001 | Use five principal geographic regions named Ilmar, Orath, Tharima, Nirvan, and Azmar. | Provisional | Names and shapes can change; Azmar refers to archipelagos, not necessarily one landmass. |
+| WD-001 | Use four named continents (Ilmar, Orath, Tharima, Nirvan) and the Azmar archipelagos as the five principal mapped regions in the current draft. | Provisional | Azmar is an archipelago region, not currently counted as a continent. The total number of continents in the entire world remains open; further continents or landmasses may exist beyond the known map. |
 | WD-002 | Place Nirvan generally north, Ilmar west, Orath east, and Tharima south. | Provisional | Relative layout only; not a scaled map. |
 | WD-003 | Develop the geography before finalizing major cities, borders, and historical empires. | Accepted working method | Helps prevent map/history contradictions. |
 | WD-004 | Keep the world's ultimate origin unresolved. | Accepted principle | Earliest records are not proof of the world's beginning. |
@@ -74,3 +74,5 @@ When a decision changes:
 | WD-028 | Use a north-up 12-by-8 relative planning grid to coordinate future coastline, relief, drainage, and climate drafts. | Accepted working method | Cells are relative anchors only, not coordinates, scale, or final canon; exact outlines remain open. |
 
 | WD-030 | Rename the provisional southern continent from Sahir / ساهِر to Tharima / ثاريما. | Accepted naming decision | The former name did not feel sufficiently like a continent name to the project owner; the geography and existing regional concepts remain provisional and unchanged. |
+
+| WD-031 | Distinguish the four currently named continents from the Azmar archipelagos; do not state that the entire world has exactly four continents. | Provisional classification rule | This clarifies the existing Atlas inventory without closing the world's unexplored geography. Before adding cities, use this classification consistently and treat all regional names as provisional. |
