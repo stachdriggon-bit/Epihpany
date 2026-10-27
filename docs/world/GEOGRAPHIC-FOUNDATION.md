@@ -177,3 +177,53 @@ Create the next geographic map in layers, in this order:
 ## 9. Acceptance rule
 
 The relative layout, broad drainage logic, settlement-siting constraints, and default anchor associations in this document are the current working geographic foundation. Exact cartographic details remain provisional. Any future change must update this document and the Atlas, then check the affected settlement registry, anchor locations, routes, stories, quests, cards, and translations.
+
+
+## 10. Draft 02 — provisional water and route decisions
+
+The following choices resolve the first placement test enough to make the next map internally consistent. They are **provisional design decisions**, not ancient history or facts known to every character. They may be revised if the drawn contours contradict them.
+
+### 10.1 Ilan River and Ilanford
+
+- Keep the Ilan source on the eastern-facing slopes of the Western Ilmar Uplands. The main stem descends into the Ilan Basin and exits on Ilmar's east-facing coast through an estuary.
+- Show two or more modest tributaries joining from the Central Forests / open lowlands only where their local terrain slopes toward the main basin. Avoid drawing a tributary across the western watershed.
+- Place Eiraven on the navigable lower river, upstream from the estuary.
+- Treat Ilanford as the established crossing town upstream from Eiraven. The Three-Arch Ferry is a named crossing/landmark associated with Ilanford, not a second competing town or an additional crossing by default.
+- Do not lock the exact river mouth or river length until coastline and scale are chosen.
+
+### 10.2 Orath inland lake — closed-basin default
+
+- For Draft 02, treat the lake associated with Ambrin as a **closed or seasonally contracting basin**. Rivers and runoff enter; evaporation and wetland storage balance the water budget. No permanent outlet is drawn.
+- Seasonal low-water shorelines can expose mudflats or salt-affected ground, supporting the Low-Water Shore anchor.
+- A permanent outlet may be added only if a lower saddle is explicitly drawn and the resulting drainage does not contradict the Eastern Spine or adjacent catchments.
+
+### 10.3 Nirvan lake and wetland chain
+
+- Give Pellisar's lake a visible outlet flowing downhill through a southern valley into the Sea of Stillness. Its outlet must cross a low pass or valley, not the highland crest.
+- Place Mireva at a separate lower lake-chain outlet / wetland system. Its catchment and outlet remain distinct from Pellisar's unless a future watershed sketch demonstrates a shared system.
+- The highland arc divides northern, western, and southern catchments. Draw watershed divides before adding tributaries.
+- Orven Reach remains a sheltered harbor, with Last Warm Dock as a pier/district inside the same harbor place record.
+
+### 10.4 Tharima — three distinct water mechanisms
+
+- Namaris: a groundwater-supported oasis/spring pocket with a defined recharge area on a basin margin. Do not imply an endless source or a large permanent river.
+- Kharif: a separate upland spring fed by local highland recharge. It is not on the same stream as Saffra by default.
+- Saffra: a market on raised ground beside a seasonal wadi. The active flood channel remains clear of the market; seasonal flow descends along the natural gradient and may terminate in a lower depression or reach the sea only if the final contours support it.
+- Record Rihal's water/resupply point as a required route feature before drawing it as a dependable caravan junction.
+
+### 10.5 Azmar — freshwater and harbor identity
+
+- Selka Haven, Seven-Mooring Harbor, and Atlas SET-05 Azmar Port should be treated as **one canonical harbor/place** for now. Preserve all legacy IDs as aliases/references; do not create three separate ports unless later lore gives them clearly distinct physical locations.
+- Keep Rain-Cistern Island as a separate named island/anchor for Draft 02. Place Oruven on a larger inhabited island with a credible spring, rain-catchment, or aquifer and usable interior. Do not assume Oruven is on Rain-Cistern Island until its land area and water capacity support permanent settlement.
+- Every permanent island settlement needs a named local freshwater source or an explicit imported-water/cistern arrangement. No river crosses between islands.
+- Keep Inner Passages, Harbor Islands, and Outer Azmar separated by navigable gaps; no single port or strait should control every viable route.
+
+### 10.6 Route checks before a scaled map
+
+- Ilmar: coastal landing ↔ forest-edge path ↔ Ilan Basin; river crossing at Ilanford; southern approach via Sorell.
+- Orath: distinct northern, central, and southern pass corridors; Velisar is associated with one corridor only.
+- Tharima: route reliability varies by water availability and rainfall; intersecting paths without a resupply source do not count as a viable caravan route.
+- Nirvan: lower southern valleys form the default cross-region routes; high passes remain seasonal.
+- Azmar: retain multiple passage options and planned resupply stops for Outer Azmar.
+
+These decisions are the Draft 02 basis only. Update the Atlas and affected registries if any of them is later accepted as permanent canon.
