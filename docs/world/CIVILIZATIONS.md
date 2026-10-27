@@ -23,7 +23,7 @@ Potential themes: water management, agriculture, river transport, urban centers,
 ### Orath highland and pass societies
 Potential themes: local route and weather knowledge, separated basins, tolls and transit, exchange of knowledge versus strategic secrecy.
 
-### Sahir basin and caravan societies
+### Tharima basin and caravan societies
 Potential themes: water infrastructure, seasonal movement, caravan logistics, unequal access to resources, negotiation among settlements.
 
 ### Nirvan coastal communities
