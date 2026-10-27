@@ -1,7 +1,7 @@
 # EPIPHANY — Atlas and Geographic Register
 
-**Version:** 0.1  
-**Status:** Provisional conceptual geography; not a scaled or finalized map.
+**Version:** 0.2  
+**Status:** Provisional geographic master plan; coastline topology is proposed, not yet a scaled final map.
 
 ## 1. Geographic design rules
 
@@ -122,7 +122,74 @@ These are site concepts, not canonized city names or established historical even
 
 These are route categories, not yet surveyed roads or guaranteed historical trade routes.
 
-## 9. Open geographic decisions
+## 9. Coastline topology — working proposal v0.2
+
+This section establishes a coherent relative arrangement of coasts and island groups so later relief, drainage, and climate layers have a stable base. It is a design proposal, not a claim that exact distances or coordinates have been measured. Do not let concept art silently override it.
+
+### 9.1 Central sea and outer waters
+
+- **Central Sea / بحر الفجر (S-SEA-01):** a broad, irregular sea between eastern Ilmar, western Orath, northern Sahir, and the nearer Azmar island groups. It has several bays and island passages rather than one perfectly open circular basin.
+- **Sea of Stillness / بحر السكون (S-SEA-02):** lies north of the central sea, between southern Nirvan and northern/northwestern Orath. A set of channels and island gaps connects it to the central sea; the name is cultural, not a promise of calm weather.
+- **Western Outer Ocean / المحيط الغربي البعيد:** open water off Ilmar's western coast. This is a working regional label, not a claim about the world's edge.
+- **Southern Outer Ocean / المحيط الجنوبي البعيد:** open water beyond the southern and southwestern Sahir coast, with routes that can reach outer Azmar groups.
+- **Strait of Passage / مضيق العبور (S-STR-01):** provisionally placed on the southeastern side of the central sea, between the southern reach of Orath and the northeastern coast of Sahir, opening toward the eastern/southeastern outer waters. Its navigability and strategic importance depend on final widths, currents, and alternate routes.
+
+### 9.2 Ilmar coast — west
+
+- **West-facing coast:** predominantly open and exposed, with alternating rocky headlands and stretches of lower coast. Do not make the entire coast one uninterrupted cliff or one uninterrupted beach.
+- **Northwest reach:** more indented coast with sheltered coves and a few offshore islets; suitable for small harbors but not automatically for a major capital.
+- **Western-central reach:** a broader coastal plain interrupted by low headlands. At least one river mouth may form an estuary here, provided its drainage basin is confirmed later.
+- **Southwestern reach:** a prominent peninsula or hooked cape is proposed, with smaller islands offshore. It creates a natural change in sailing routes without closing off the western ocean.
+- **East-facing coast:** opens onto the central sea. Include one broad bay and several smaller inlets; keep room for river mouths from the interior, but do not place the Ilan estuary until the river's final course is fixed.
+- **Open decision:** exact bay count, names, peninsula dimensions, and location of the Ilan mouth.
+
+### 9.3 Nirvan coast — north
+
+- **Northern edge:** deeply irregular in selected sectors, with fjord-like inlets where highlands approach the sea; other stretches remain lower and more continuous.
+- **Southern coast:** faces the Sea of Stillness and includes several protected bays and island-studded channels.
+- **Western shoulder:** a transition coast connecting cold northern waters to the open waters northwest of Ilmar. Avoid assuming that all routes remain ice-free year-round.
+- **Eastern shoulder:** more exposed, with fewer sheltered anchorages where the uplands approach the coast.
+- **Coastal islands:** a broken fringe of nearshore islands is proposed, distinct from the main Azmar archipelagos.
+- **Open decision:** exact fjord locations, seasonal ice extent, and whether any major island is connected to the mainland by a shallow shelf.
+
+### 9.4 Orath coast — east
+
+- **Western coast:** faces the central sea and is interrupted by foothills, river mouths, and a few deep bays. Mountain ridges should approach the coast only in selected sections, leaving lowland corridors elsewhere.
+- **Northwestern coast:** forms part of the boundary with the Sea of Stillness, with narrow channels and exposed capes.
+- **Eastern coast:** faces the outer ocean and is comparatively exposed. It alternates between steep headlands and broader coastal pockets rather than mirroring the western coast.
+- **Southeastern reach:** narrows toward the proposed Strait of Passage; the final land shape must preserve a navigable channel unless a later decision deliberately changes the strait concept.
+- **Open decision:** exact number and placement of coastal river outlets, and whether the east coast has a large gulf.
+
+### 9.5 Sahir coast — south
+
+- **Northern coast:** faces the central sea. It includes several shallow gulfs and stretches of low coast where seasonal rivers may reach the sea, but not every wadi should become a permanent river mouth.
+- **Northeastern reach:** forms the southern side of the proposed Strait of Passage.
+- **Southern coast:** faces the southern outer ocean, with long arid stretches broken by occasional natural harbors and coastal highlands.
+- **Southwestern reach:** a low coastal shelf with offshore islands is proposed; reefs or shoals may influence navigation only after currents and sea depth are designed.
+- **Open decision:** whether one major southern gulf exists and which seasonal waterways reach the sea.
+
+### 9.6 Azmar archipelagos
+
+For map consistency, divide Azmar into three spatial groups rather than treating it as one continuous island belt:
+
+- **A-01 — Inner Passages:** the nearer islands in the central sea, arranged in broken chains that create several routes and several bottlenecks. No single island should block all movement between the surrounding continents.
+- **A-02 — Harbor Islands:** a middle group near the eastern and southeastern central-sea approaches, with naturally sheltered coves on some islands and exposed coasts on others.
+- **A-03 — Remote Islands:** smaller, more scattered groups farther south and southeast in the outer waters. They need not all be inhabited or mapped with equal certainty.
+
+The archipelagos should not form a perfect arc or evenly spaced stepping stones. Leave open-water gaps and alternate routes so maritime history can vary by period and technology.
+
+### 9.7 Coastline consistency rules
+
+1. Bays must have a plausible opening to a sea; a narrow opening can create a strait or lagoon but must be intentional.
+2. River mouths must align with drainage basins established on the relief map.
+3. Estuaries and deltas require appropriate sediment, tidal, and river conditions; they are not interchangeable decorative symbols.
+4. Natural harbors should be sheltered by headlands, islands, or bay geometry, while exposed ports need another reason to thrive.
+5. Fjords require steep coastal relief and glacially shaped valleys in the setting's physical history; use them selectively.
+6. Island chains may influence navigation but must leave plausible channels, distances, and alternate routes.
+7. Coastline detail should vary by region; avoid making every shore equally jagged.
+8. Do not finalize political borders or major cities from coastline alone.
+
+## 10. Open geographic decisions
 
 1. Final coastline and continent shapes.
 2. Map scale and approximate distances.
