@@ -3802,7 +3802,9 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     return bonus.trim();
   }
 
+  let miniSessionId = 0;
   function startMini(type) {
+    const sessionId = ++miniSessionId;
     G = null; ST = null;
     MG = {type, i: 0, score: 0, total: 0, answered: false, results: []};
     const m = META[type];
@@ -3842,7 +3844,8 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     const extras=SHUF(defaults.filter(x=>!pool.some(p=>p.word.toLowerCase()===x.word.toLowerCase())));
     MG.pool=pool.length>=4?pool:pool.concat(extras.slice(0,Math.max(4-pool.length,0)));
     MG.seconds=60;MG.total=0;MG.score=0;MG.answered=false;MG.current=null;miniSpeedRender();
-    miniTimer=setInterval(()=>{if(!MG||MG.type!=='speed'){clearInterval(miniTimer);miniTimer=null;return;}MG.seconds--;const t=$('#mini-speed-time');if(t)t.textContent=MG.seconds+'s';const bar=$('.mini-speed-meter span');if(bar)bar.style.width=Math.max(0,MG.seconds/60*100)+'%';if(MG.seconds<=0){clearInterval(miniTimer);miniTimer=null;miniFinish('60 seconds');}},1000);
+    const speedSession = MG, speedSessionId = miniSessionId;
+    miniTimer=setInterval(()=>{if(!MG||MG!==speedSession||miniSessionId!==speedSessionId||MG.type!=='speed'){clearInterval(miniTimer);miniTimer=null;return;}MG.seconds--;const t=$('#mini-speed-time');if(t)t.textContent=MG.seconds+'s';const bar=$('.mini-speed-meter span');if(bar)bar.style.width=Math.max(0,MG.seconds/60*100)+'%';if(MG.seconds<=0){clearInterval(miniTimer);miniTimer=null;miniFinish('60 seconds');}},1000);
   }
   function miniSpeedRender() {
     const pool=MG.pool;let q=pool[Math.floor(Math.random()*pool.length)];if(pool.length>1&&MG.current&&q.word===MG.current.word)q=pool[(pool.indexOf(q)+1)%pool.length];MG.current=q;MG.answered=false;
@@ -3860,7 +3863,9 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     $('#steps').innerHTML = Array.from({length: MG.total}, (_, i) => '<span class="step ' + (MG.results[i] === 'ok' ? 'ok' : MG.results[i] === 'no' ? 'no' : (i === MG.i && !done ? 'current' : '')) + '"></span>').join('');
   }
   function miniFinish(note) {
+    if(!MG || MG.done) return;
     if(miniTimer){clearInterval(miniTimer);miniTimer=null;}
+    const session = MG, sessionId = miniSessionId;
     const m = META[MG.type];
     let ratio = MG.type==='speed' ? Math.max(0,Math.min(1,MG.score/Math.max(1,MG.total))) : MG.total ? MG.score / MG.total : 1;
     if (MG.type === 'match') ratio = Math.max(.4, Math.min(1, MG.total * 1.6 / Math.max(1, MG.attempts)));
@@ -3873,7 +3878,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
       '<div class="stats3"><div class="stat"><b>+' + gain + '</b><span>XP earned</span></div><div class="stat"><b>' + MG.score + '/' + MG.total + '</b><span>' + (type === 'match' ? 'Pairs' : 'Correct') + '</span></div><div class="stat"><b>' + esc(note || '') + '</b><span>' + (type === 'match' ? 'Attempts' : 'Rounds') + '</span></div></div>' +
       (bonus ? '<p class="challenge-bonus">' + esc(bonus) + '</p>' : '') +
       '<div class="result-actions"><button class="btn" data-mini-again="' + type + '">Play again</button><button class="btn btn-ghost" data-mini-close>Back to Play</button></div></div>';
-    $('#game-scroll').scrollTop = 0; MG.done = true; sfx('done');
+    $('#game-scroll').scrollTop = 0; session.done = true; sfx('done');
   }
 
   /* Order the Story */
@@ -3951,9 +3956,10 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     MG.open.push(i); sfx('ok');
     if (MG.open.length < 2) { miniMatchRender(); return; }
     MG.attempts++; const [a, b] = MG.open.map(k => MG.cards[k]);
-    if (a.n === b.n && a.kind !== b.kind) { MG.matched.add(a.n); MG.open = []; MG.score = MG.matched.size; miniMatchRender(); if (MG.matched.size === MG.total) setTimeout(() => { if (MG && MG.type === 'match') miniFinish(String(MG.attempts)); }, 700); return; }
+    if (a.n === b.n && a.kind !== b.kind) { MG.matched.add(a.n); MG.open = []; MG.score = MG.matched.size; miniMatchRender(); if (MG.matched.size === MG.total) { const matchSession = MG, matchSessionId = miniSessionId; setTimeout(() => { if (MG === matchSession && miniSessionId === matchSessionId && MG.type === 'match') miniFinish(String(matchSession.attempts)); }, 700); } return; }
     MG.lock = true; miniMatchRender(); sfx('no');
-    setTimeout(() => { if (!MG || MG.type !== 'match') return; MG.open = []; MG.lock = false; miniMatchRender(); }, 950);
+    const mismatchSession = MG, mismatchSessionId = miniSessionId;
+    setTimeout(() => { if (MG !== mismatchSession || miniSessionId !== mismatchSessionId || MG.type !== 'match' || MG.done) return; MG.open = []; MG.lock = false; miniMatchRender(); }, 950);
   }
 
   /* Directions */
@@ -4038,6 +4044,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
   }
 
   function closeGame() {
+    miniSessionId++;
     if(miniTimer){clearInterval(miniTimer);miniTimer=null;} try{window.speechSynthesis?.cancel();}catch{} $('#game').hidden = true; hideSheet(); G = null; ST = null; MG = null;
     lockPage(false); renderAll();
     const h = $('.view.is-active h1'); if (h) h.focus({preventScroll: true});
