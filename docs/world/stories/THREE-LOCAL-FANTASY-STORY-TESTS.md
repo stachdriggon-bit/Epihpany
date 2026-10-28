@@ -26,7 +26,7 @@ It was only a narrow ribbon, no wider than a cart track, but it shone against th
 
 The rope gave a sharp sideways jerk.
 
-Sacks of flour slid across the deck. A little boy dropped his wooden fish, and it skittered toward the edge. Nera caught the child by his collar while the ferryman planted both boots against the landing post.
+Sacks of flour slid across the deck. A little boy dropped his wooden fish, and it skittered toward the edge. Mira caught the child by his collar while the ferryman planted both boots against the landing post.
 
 “One,” the ferryman counted through his teeth.
 
@@ -34,7 +34,7 @@ The ribbon kept running backward.
 
 “Two. Three.”
 
-The boat swung hard enough to throw the ferryman to one knee. The boy clung to Nera's sleeve. Nobody counted the remaining breaths. They were too busy holding on.
+The boat swung hard enough to throw the ferryman to one knee. The boy clung to Mira's sleeve. Nobody counted the remaining breaths. They were too busy holding on.
 
 When the strange current vanished, the ferry struck the landing with a crack that split a crate and sent apples rolling between everyone's feet. No one had gone overboard. The wooden fish, however, was gone.
 
@@ -44,7 +44,7 @@ By morning, the story had grown larger than the river. A trader said the water h
 
 The bridge keeper wanted a toll from every traveler. The arches needed inspection, the landing post was loose, and the ferry's anchor ring had worn thin. The keeper spoke as if the river itself had presented him with a bill.
 
-Nera folded her blistered hands. “People on foot use this crossing to reach the market. Some carry nothing but a basket. Charge them, and you'll collect the most from the people with the least.”
+Mira folded her blistered hands. “People on foot use this crossing to reach the market. Some carry nothing but a basket. Charge them, and you'll collect the most from the people with the least.”
 
 “And if the rope breaks?” the keeper asked.
 
@@ -52,22 +52,22 @@ Nera folded her blistered hands. “People on foot use this crossing to reach th
 
 That silenced the meeting for a moment.
 
-Nera did not know why the current had reversed. She knew only how the boat had moved when the rope slackened. She persuaded the keeper to inspect the anchor points before they argued any further about the river's intentions.
+Mira did not know why the current had reversed. She knew only how the boat had moved when the rope slackened. She persuaded the keeper to inspect the anchor points before they argued any further about the river's intentions.
 
 The inspection found a worn iron ring and a split timber brace. Neither explained the backward ribbon of water, but both could have turned a strange moment into a drowning.
 
 The community chose a temporary levy on loaded commercial carts. People crossing on foot would pay nothing. The keeper would post the repair costs in the market, and the arrangement would be reviewed once the work was done. The ferryman still grumbled about the ring; the keeper still grumbled about the levy. Neither got everything he wanted.
 
-For the next few evenings, Nera tied a short pale thread around the ferry rope before dusk. It was not a charm, she told the children who asked. It made fraying easier to see in the fading light.
+For the next few evenings, Mira tied a short pale thread around the ferry rope before dusk. It was not a charm, she told the children who asked. It made fraying easier to see in the fading light.
 
-The river flowed forward the next evening. Nera watched the middle arch anyway.
+The river flowed forward the next evening. Mira watched the middle arch anyway.
 
 The current had given them a reason to look closely. It had not told them what a fair crossing should cost.
 
 **What this draft establishes provisionally**
 - The Returning Current is visible and physically hazardous, but confined to a narrow ribbon beneath the middle arch.
 - Witnesses turn an unexplained wonder into competing local beliefs.
-- Nera's practical knowledge helps the community act without pretending to explain the magic.
+- Mira's practical knowledge helps the community act without pretending to explain the magic.
 - The pale thread on the ferry rope is a proposed practical habit, not a magical protection.
 
 **What remains open**
@@ -92,17 +92,17 @@ At dusk, Evin knelt beside the carved groove on the lowest terrace. He had spent
 
 The air smelled of warm stone and crushed mint. A few drops gathered in the groove. They trembled, then crept uphill.
 
-Sami leaned closer.
+Evin leaned closer.
 
 The thread reached the second mark and stopped. A silver bead quivered at its tip before sliding down into the channel.
 
 “Not high enough,” said a gardener behind him. “Someone has taken more than their share.”
 
-Sami looked toward the upper beds. Their leaves hung like folded paper. He wanted the gardener to be right. The maintenance rota had been ignored twice, and the same few households seemed always to be repairing the channels.
+Evin looked toward the upper beds. Their leaves hung like folded paper. He wanted the gardener to be right. The maintenance rota had been ignored twice, and the same few households seemed always to be repairing the channels.
 
 But nobody had measured the thread on earlier evenings. It had never been a measuring cup. It could not tell them how much water had passed through every terrace.
 
-“Then let's look at the channel,” Sami said. “Not at our neighbors.”
+“Then let's look at the channel,” Evin said. “Not at our neighbors.”
 
 They followed it by lantern light. At the third terrace, the water made a thin, hollow sound behind a stone lip. An older repairer pressed his ear to the wall, then tapped the stone with the wooden handle of his tool.
 
@@ -110,19 +110,19 @@ They followed it by lantern light. At the third terrace, the water made a thin, 
 
 They lifted a loose cover stone. Roots had pushed into the channel, and silt had packed around them until the opening was little more than a dark slit. The roots came from a hardy plant growing beside the wall. No one had cut them there deliberately.
 
-They worked until their hands were muddy and the lantern smoked. When the passage opened, water slipped through with a low, bright trickle. It was not enough to fill the upper beds, but it reached farther than before. For a moment, the thin stream caught the lantern light and seemed to climb the stone itself. Sami blinked; it had already settled into its ordinary course.
+They worked until their hands were muddy and the lantern smoked. When the passage opened, water slipped through with a low, bright trickle. It was not enough to fill the upper beds, but it reached farther than before. For a moment, the thin stream caught the lantern light and seemed to climb the stone itself. Evin blinked; it had already settled into its ordinary course.
 
-Sami marked the damaged stone with a small chalk line and wrote down what they had found. His hand hovered over the page before he added what they had *not* found: no proof that anyone had stolen water, and no answer to why the spring itself was weaker. The older repairer read the entry and nodded. He did not praise Sami, but he did not correct the record either.
+Evin marked the damaged stone with a small chalk line and wrote down what they had found. His hand hovered over the page before he added what they had *not* found: no proof that anyone had stolen water, and no answer to why the spring itself was weaker. The older repairer read the entry and nodded. He did not praise Evin, but he did not correct the record either.
 
 The next evening, the Climbing Thread rose a little higher. It wavered in the groove like a tiny silver vine. Then it fell back.
 
-Sami felt the old urge to call it a good sign. Instead, he wrote down how far it had climbed and checked the channel marks. The upper terraces were still short of water.
+Evin felt the old urge to call it a good sign. Instead, he wrote down how far it had climbed and checked the channel marks. The upper terraces were still short of water.
 
 At the meeting, one gardener demanded that the old schedule be enforced exactly. Another pointed out that the schedule had been written when fewer families lived above the steps. The repairer asked why the households who had done the most recent work should be expected to do it all again.
 
 They argued until the lanterns burned low. In the end, they agreed to repair the cracked channel, record the flow at the same marked points each day, and rotate water shares until they understood the shortage better. The schedule would be posted where everyone could see it. Repair duties would rotate too.
 
-Sami returned to the groove at dusk. The thread rose, bright against the darkening stone, and stopped below the highest mark.
+Evin returned to the groove at dusk. The thread rose, bright against the darkening stone, and stopped below the highest mark.
 
 He recorded that too.
 
@@ -131,7 +131,7 @@ The wonder had not measured the water for them. It had reminded them to pay atte
 **What this draft establishes provisionally**
 - The Climbing Thread is a brief, delicate magical effect, not a source of extra water.
 - A physical obstruction is found, but it does not fully explain the reduced spring flow.
-- Sami chooses inspection over accusation and records both evidence and uncertainty.
+- Evin chooses inspection over accusation and records both evidence and uncertainty.
 - The chalk mark and shared flow record are proposed local practices, not magical tools.
 
 **What remains open**
