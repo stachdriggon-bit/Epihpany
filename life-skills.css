@@ -199,7 +199,7 @@
 .life-skills-page .ls-module-index{font-size:.55rem;letter-spacing:.04em}
 .life-skills-page .ls-module>.ls-eyebrow{grid-area:eyebrow;font-size:.61rem;line-height:1.3}
 .life-skills-page .ls-module>strong{grid-area:title;font-size:1.12rem;line-height:1.25}
-.life-skills-page .ls-module-desc{grid-area:desc;font-size:.8rem;line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.life-skills-page .ls-module-desc{grid-area:desc;min-width:0;font-size:.8rem;line-height:1.6;overflow-wrap:anywhere}
 .life-skills-page .ls-module-bottom{
   grid-area:action;
   display:flex;
@@ -231,7 +231,7 @@
   .life-skills-page .ls-module-icon{width:40px;height:40px;border-radius:12px}
   .life-skills-page .ls-module-index{font-size:.5rem}
   .life-skills-page .ls-module>strong{font-size:1.03rem}
-  .life-skills-page .ls-module-desc{font-size:.78rem;-webkit-line-clamp:2}
+  .life-skills-page .ls-module-desc{font-size:.8rem;line-height:1.55;overflow:visible}
   .life-skills-page .ls-module-bottom{flex-direction:row;justify-content:space-between;align-items:center;gap:8px;margin-top:8px;padding:10px 0 0;border-left:0;border-top:1px solid #eee9df;text-align:start}
   .life-skills-page .ls-module-bottom b{padding:7px 9px}
   .life-skills-page .ls-method-note{align-items:flex-start}
