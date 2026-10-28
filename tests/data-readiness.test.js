@@ -59,3 +59,24 @@ test('mastered words leave difficult-word recommendations without deleting their
   assert.match(app, /state\.review\|\|\[\]\)\.filter\(w=>w&&!w\.mastered&&\(Number\(w\.errors\)\|\|0\)>=2\)/,
     'Progress insights should stop surfacing words after mastery.');
 });
+
+
+test('failed word dictation resets the review interval and returns the word to today', () => {
+  const app = fs.readFileSync(path.join(root, 'app.js'), 'utf8');
+  const handler = app.slice(
+    app.indexOf("if(e.target && e.target.matches('[data-word-dictation]'))"),
+    app.indexOf("if(e.target && e.target.matches('[data-grammar-own-form]'))")
+  );
+  assert.match(handler, /recordReviewOutcome\(item,false\)/);
+  assert.match(handler, /item\.box=1;item\.interval=0;item\.streak=0;item\.exerciseStage=0;item\.mastered=false;item\.due=dayKey\(\)/,
+    'A miss must reset the box, clear mastery and schedule another review today.');
+});
+
+test('word mastery requires repeated demonstrated success, high confidence and the final box', () => {
+  const app = fs.readFileSync(path.join(root, 'app.js'), 'utf8');
+  const scheduler = app.slice(app.indexOf('function scheduleReviewFromPerformance'), app.indexOf('const WORD_COLLOCATIONS'));
+  assert.match(scheduler, /const REVIEW_INTERVALS=\[1,3,7,14,30\]/);
+  assert.match(scheduler, /item\.mastered=targetBox>=5&&item\.confidence==='high'&&history\.length>=2&&accuracy>=0\.8/,
+    'One confident response must never mark a word as mastered.');
+  assert.match(scheduler, /if\(accuracy<0\.6\) targetBox=1/);
+});
