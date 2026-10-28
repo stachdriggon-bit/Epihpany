@@ -204,3 +204,24 @@ test('story comprehension questions do not reveal a fixed correct-answer positio
   const largestGroup = Math.max(...positions.values());
   assert.ok(largestGroup / count < 0.8, 'One correct-answer position dominates the story question bank.');
 });
+
+test('story comprehension questions include explanations and distinct answer choices', () => {
+  const { stories } = loadData();
+  const errors = [];
+  for (const [storyIndex, story] of stories.entries()) {
+    const storyName = story.id || story.title || `story[${storyIndex}]`;
+    for (const [questionIndex, question] of (story.questions || []).entries()) {
+      const tuple = Array.isArray(question);
+      const prompt = tuple ? question[0] : (question.q || question.question);
+      const answers = tuple ? question[1] : (question.answers || question.options);
+      const explanation = tuple ? question[3] : (question.explain || question.explanation);
+      const where = `${storyName} question ${questionIndex + 1} (${prompt || 'no prompt'})`;
+      if (!String(explanation || '').trim()) errors.push(`${where}: missing explanation`);
+      if (!Array.isArray(answers)) continue;
+      const normalized = answers.map(clean);
+      if (normalized.some(answer => !answer)) errors.push(`${where}: contains an empty answer choice`);
+      if (new Set(normalized).size !== normalized.length) errors.push(`${where}: contains duplicate answer choices`);
+    }
+  }
+  assert.deepEqual(errors, [], errors.join('\\n'));
+});
