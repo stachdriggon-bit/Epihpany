@@ -2,6 +2,11 @@
 
 This directory is the working reference for the fictional world of EPIPHANY. It is documentation only; it does not change the app runtime.
 
+## Start here
+
+- [Lore Inventory and Canon Audit](LORE-CANON-AUDIT.md) — current evidence-based inventory, unresolved conflicts, canon boundaries, and prioritized next steps. Read this before adding dates, events, or new lore.
+- [Master Content Bible](MASTER-CONTENT-BIBLE.md) — core principles and world rules.
+
 ## Source-of-truth files
 
 - [Master Content Bible](MASTER-CONTENT-BIBLE.md) — core principles and world rules.
@@ -31,6 +36,13 @@ This directory is the working reference for the fictional world of EPIPHANY. It 
 - **Provisional:** useful working proposal; may change with a recorded reason.
 - **Open:** intentionally undecided.
 - **In-world claim:** something a character, culture, document, or institution believes; not automatically objective truth.
+
+## How to use these documents
+
+- The audit is an inventory and workflow guide; it does not override the source registries or owner decisions.
+- The Master Content Bible defines global principles; detailed facts belong in their relevant source registry.
+- The Decision Log records explicit choices and reasons. Drafts and archive entries do not automatically promote provisional material to canon.
+- The World Archive is a presentation/index layer. Keep uncertain dates and relationships uncertain there until the source lore is resolved.
 
 ## Working rules
 
