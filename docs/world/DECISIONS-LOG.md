@@ -49,6 +49,7 @@
 ## Content open questions
 
 - Specific civilization names, languages, institutions, and historical periods.
+- The detailed magic system: access, sources, methods, costs, limits, and the range of non-human life, to be developed through MAGIC-AND-PHENOMENA.md.
 - Which proposed mysteries, if any, become story material.
 - Character records to import from existing project materials.
 - Exact story/Lore/card cross-links after the core canon is developed.
@@ -80,3 +81,4 @@ When a decision changes:
 
 
 | WD-033 | Until the Ambrin / Low-Water Shore identity is evidenced and explicitly decided, use OR-LOC-02 as the sole location reference for the six-episode pilot and do not create duplicate map locations, routes, or events; retain both source IDs meanwhile. | Accepted working method; identity remains open | This resolves the operational duplication risk, not the in-world identity. Do not claim the names are identical or separate without evidence. See WORLD-OVERVIEW.md. |
+| WD-034 | Treat EPIPHANY explicitly as a fantasy setting in which magic and wonder may shape daily life, craft, travel, ecology, and community decisions; define the behavior and limits of recurring phenomena before promoting them to canon. | Accepted creative direction; mechanics remain open | Does not establish a universal magic source, costs, schools, creature catalogue, or cause shared by all phenomena. Use MAGIC-AND-PHENOMENA.md; location-specific hooks there remain prompts, not canon. |
