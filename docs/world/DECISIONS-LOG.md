@@ -100,3 +100,15 @@ When a decision changes:
 
 **Reference:** [Cosmic Laws, Magical Restrictions, and Anomalies](COSMIC-LAWS-AND-ANOMALIES.md).
 
+
+## WD-037 — Provisional sorcery branch model
+
+**Status:** Working model only; branch taxonomy and restriction-to-branch mapping remain open.
+
+- Record a provisional seven-branch catalogue in [Sorcery Branches and Individual Restrictions](SORCERY-BRANCHES-AND-INDIVIDUAL-RESTRICTIONS.md): Control and Transformation; Creation and Replication; Removal and Cancellation; Amplification and Reduction; Interference and Disruption; Structural Relation Alteration; Transfer and Redirection.
+- Keep a character's main ability domain distinct from the operation/branch used, the individual restriction, observed results, and skill/mastery.
+- Test whether each proposed branch has a clear essential operation and whether any branches need splitting or merging. Perception and Detection remains outside the current list pending tests.
+- Test, but do not yet canonize, the hypothesis that a restriction category primarily affects one branch and may have related secondary effects on other branches.
+- Existing hand-symbol rules remain in force: the symbol reveals the restriction category only, not the exact restriction, ability, skill, or mastery. The official category names and symbol designs are not replaced by this proposal.
+- This entry records a framework for testing, not a finalized universal taxonomy or new character abilities. Revise the source document and this log when a foundational rule is explicitly accepted.
+
