@@ -5353,7 +5353,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
       toast('This level’s test bank is still being prepared. Keep practising; the test will unlock when enough questions are available.');
       return;
     }
-    promotionTest = {target:status.next, questions, index:0, answers:[]};
+    promotionTest = {target:status.next, questions, index:0, answers:[], answered:false};
     $('#placement-title').textContent = 'Promotion test · ' + status.next.id;
     $('.placement-card .kicker').textContent = 'PROVE YOUR SKILLS';
     $('.placement-intro').textContent = 'Answer the questions for the next CEFR level. You need at least ' + PROMOTION_PASS_PERCENT + '% to pass. XP unlocks this test; your answers determine whether you advance.';
@@ -5362,6 +5362,8 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     renderPromotionQuestion();
   }
   function renderPromotionQuestion() {
+    if (!promotionTest) return;
+    promotionTest.answered = false;
     const q = promotionTest.questions[promotionTest.index];
     $('#placement-progress').textContent = 'Promotion test · Question ' + (promotionTest.index + 1) + ' of ' + promotionTest.questions.length;
     $('#placement-content').innerHTML = '<h2>' + esc(q.q) + '</h2><p>' + esc(q.sub || 'Choose the best answer.') + '</p><div class="answers">' + q.answers.map((x,i)=>'<button class="answer" data-promotion-answer="' + i + '"><span class="key">' + (i+1) + '</span><span>' + esc(x) + '</span></button>').join('') + '</div>';
@@ -5391,7 +5393,11 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     if (e.target.closest('[data-promotion-start]')) { startPromotionTest(); return; }
     const answer = e.target.closest('[data-promotion-answer]');
     if (answer && promotionTest) {
+      if (promotionTest.answered) return;
+      promotionTest.answered = true;
+      $$('#placement-content [data-promotion-answer]').forEach(button=>{button.disabled=true;});
       const q = promotionTest.questions[promotionTest.index];
+      if (!q) return;
       promotionTest.answers.push({id:q.id || q.q, skill:q.promotionSkill, ok:Number(answer.dataset.promotionAnswer) === q.correct});
       promotionTest.index++;
       if (promotionTest.index < promotionTest.questions.length) renderPromotionQuestion();
@@ -5440,7 +5446,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     placement.answered=true;
     const q=placement.questions[placement.index];
     if(!q)return;
-    $('#placement-content [data-place-answer]').forEach(button=>{button.disabled=true;});
+    $$('#placement-content [data-place-answer]').forEach(button=>{button.disabled=true;});
     const ok=choice===q.correct;
     placement.answers.push({level:q.placementLevel||'A1',skill:q.placementSkill,ok});
     placement.index++;
