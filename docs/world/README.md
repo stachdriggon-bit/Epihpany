@@ -4,6 +4,7 @@ This directory is the working reference for the fictional world of EPIPHANY. It 
 
 ## Start here
 
+- [Unified World Overview](WORLD-OVERVIEW.md) — concise author-facing summary of the setting, current map, societies, phenomena, chronology, and unresolved continuity questions.
 - [Lore Inventory and Canon Audit](LORE-CANON-AUDIT.md) — current evidence-based inventory, unresolved conflicts, canon boundaries, and prioritized next steps. Read this before adding dates, events, or new lore.
 - [Master Content Bible](MASTER-CONTENT-BIBLE.md) — core principles and world rules.
 
