@@ -41,6 +41,8 @@ For geographic terminology, distinguish continents from archipelagos and other m
 
 Events spread through plausible causal paths. A distant event should affect a region only when a route, institution, migration, environment, political relationship, or other mechanism connects them.
 
+Use the [Master Event Registry](EVENT-REGISTRY.md) for stable event IDs and source/status tracking, the [Local History Register](LOCAL-HISTORIES.md) for place-by-place development, and [Communities and Local Institutions](COMMUNITIES-INSTITUTIONS.md) for proposed social mechanisms. These are linked working references: they do not turn provisional story scenes into accepted historical canon.
+
 ## 4. Phenomena and evidence
 
 Phenomena may be:
