@@ -52,7 +52,7 @@ window.EPIPHANY_CARD_DATA = [
   {id:"CHR-050",category:"characters",name:"Ruelle",title:"World Painter",rarity:"Epic",symbol:"✦",palette:"star",image:"risha.PNG",description:"A character from the world of EPIPHANY."},
   {id:"CHR-051",category:"characters",name:"Velis",title:"The Maskwright",rarity:"Rare",symbol:"◇",palette:"pact",image:"marwa.PNG",description:"A character from the world of EPIPHANY."},
   {id:"CHR-052",category:"characters",name:"Perrin",title:"Little Shipwright",rarity:"Common",symbol:"⌖",palette:"rain",image:"younes.PNG",description:"A character from the world of EPIPHANY."},
-  {id:"CHR-053",category:"characters",name:"Dalia",title:"Color Weaver",rarity:"Uncommon",symbol:"⌁",palette:"star",image:"dalia.PNG",description:"A character from the world of EPIPHANY."},
+  {id:"CHR-053",category:"characters",name:"Virelle",title:"Color Weaver",rarity:"Uncommon",symbol:"⌁",palette:"star",image:"dalia.PNG",description:"A character from the world of EPIPHANY."},
   {id:"CHR-054",category:"characters",name:"Ilyan",title:"Map Restorer",rarity:"Rare",symbol:"❋",palette:"map",image:"ilyan.PNG",description:"A character from the world of EPIPHANY."},
   {id:"CHR-055",category:"characters",name:"Suha",title:"Silent Watchmaker",rarity:"Uncommon",symbol:"⚿",palette:"time",image:"suha.PNG",description:"A character from the world of EPIPHANY."},
   {id:"CHR-056",category:"characters",name:"Ruba",title:"Unusual Botanist",rarity:"Common",symbol:"✧",palette:"ember",image:"ruba.PNG",description:"A character from the world of EPIPHANY."},
