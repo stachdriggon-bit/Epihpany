@@ -27,8 +27,8 @@ test('Mira and Mirelle use their distinct approved portrait files', () => {
   const cards = context.window.EPIPHANY_CARD_DATA;
   const mira = cards.find(card => card.id === 'CHR-001');
   const mirelle = cards.find(card => card.id === 'CHR-036');
-  assert.equal(mira.image, 'mira.png');
-  assert.equal(mirelle.image, 'mira99.png');
+  assert.equal(mira.image, 'mira99.png');
+  assert.equal(mirelle.image, 'mirya.PNG');
   assert.notEqual(mira.image, mirelle.image, 'Mira and Mirelle must not accidentally share a portrait file');
 });
 
