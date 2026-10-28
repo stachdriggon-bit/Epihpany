@@ -48,3 +48,14 @@ test('Advanced English quiz results feed the reading/nuance adaptive skill, not 
   );
   assert.match(app, /const allowed = \['vocabulary','grammar','listening','conversation','reading','spelling'\]/);
 });
+
+
+test('mastered words leave difficult-word recommendations without deleting their review history', () => {
+  const app = fs.readFileSync(path.join(root, 'app.js'), 'utf8');
+  assert.match(app, /review\.filter\(w=>!w\.mastered&&\(Number\(w\.errors\)\|\|0\)>=2\)/,
+    'Adaptive recommendations should stop prioritising mastered words.');
+  assert.match(app, /state\.review\.filter\(w=>!w\.mastered&&\(Number\(w\.errors\)\|\|0\)>=2\)/,
+    'The difficult-word list should hide mastered words while preserving saved review records.');
+  assert.match(app, /state\.review\|\|\[\]\)\.filter\(w=>w&&!w\.mastered&&\(Number\(w\.errors\)\|\|0\)>=2\)/,
+    'Progress insights should stop surfacing words after mastery.');
+});
