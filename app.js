@@ -1944,7 +1944,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     if (name === 'lifeskills') window.EPIPHANY_LAZY_LOAD('lifeskills').catch(() => toast('Life Skills could not load. Connect to the internet and try again.'));
     if (name === 'progress' || name === 'profile') { renderWeaknessPanel(); renderLearningInsights(); }
     const more = $('#dock-more-toggle');
-    if (more) more.setAttribute('aria-current', ['words','trophies','stories','lifeskills','mytools'].includes(name) ? 'page' : 'false');
+    if (more) more.setAttribute('aria-current', ['words','trophies','stories','chronicle','lifeskills','mytools'].includes(name) ? 'page' : 'false');
     window.scrollTo(0, 0);
     const h = $('#' + name + '-title'); if (h) { h.classList.add('programmatic-view-focus'); h.addEventListener('keydown', () => h.classList.remove('programmatic-view-focus'), { once: true }); h.focus({preventScroll: true}); }
   }
