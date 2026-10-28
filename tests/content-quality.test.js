@@ -235,6 +235,29 @@ test('story comprehension questions include explanations and distinct answer cho
   assert.deepEqual(errors, [], errors.join('\\n'));
 });
 
+test('story vocabulary questions are grounded in the story or its vocabulary list', () => {
+  const { stories } = loadData();
+  const errors = [];
+  for (const [storyIndex, story] of stories.entries()) {
+    const storyName = story.id || story.title || `story[${storyIndex}]`;
+    const pageText = (story.pages || []).map(page => Array.isArray(page) ? page[1] : page && page.text).join(' ').toLocaleLowerCase('en');
+    const vocab = story.vocab || {};
+    const vocabTerms = (Array.isArray(vocab)
+      ? vocab.map(item => item && (item.word || item.term || item.name)).filter(Boolean)
+      : Object.keys(vocab)).join(' ').toLocaleLowerCase('en');
+    for (const [questionIndex, question] of (story.questions || []).entries()) {
+      const prompt = Array.isArray(question) ? question[0] : (question.q || question.question || '');
+      const match = String(prompt).match(/what does [“"'](.+?)[”"'] mean/i);
+      if (!match) continue;
+      const term = match[1].toLocaleLowerCase('en');
+      if (!pageText.includes(term) && !vocabTerms.includes(term)) {
+        errors.push(`${storyName} question ${questionIndex + 1}: vocabulary term "${match[1]}" appears in neither the story nor its vocabulary list`);
+      }
+    }
+  }
+  assert.deepEqual(errors, [], errors.join('\\n'));
+});
+
 test('story page Arabic translations contain Arabic-script text', () => {
   const { stories } = loadData();
   const errors = [];
