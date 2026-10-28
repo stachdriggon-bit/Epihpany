@@ -1,12 +1,12 @@
 # EPIPHANY — Three Local Fantasy Story Tests
 
-**Version:** 0.2  
+**Version:** 0.3  
 **Status:** Revised provisional short-story drafts for testing the magic framework; not approved historical canon.  
-**Purpose:** Test three distinct magical phenomena through vivid local fantasy, memorable characters, and community choices. No global calendar dates are assigned. These drafts are not registered as historical events; event IDs should be added only after story approval.
+**Purpose:** Test three distinct magical phenomena through vivid local fantasy, memorable characters, and different kinds of story tension: immediate danger, patient investigation, and a community under pressure. No global calendar dates are assigned. These drafts are not registered as historical events; event IDs should be added only after story approval.
 
 ## Revision notes
 
-This revision strengthens the sensory presence of magic, gives each story a clearer character voice and emotional turn, and adds small local practices around each phenomenon. These details remain proposals, not established world canon. The magic stays mysterious and bounded: it changes what characters notice and must respond to, but does not solve every practical or social problem.
+This revision strengthens sensory detail, character distinction, and the contrast between story shapes. The first story is driven by immediate danger, the second by observation and a young caretaker's fear of being wrong, and the third by a shared resource crisis. Small local practices remain proposals, not established world canon. The magic stays mysterious and bounded: it changes what characters notice and must respond to, but does not solve every practical or social problem.
 
 ---
 
@@ -32,9 +32,9 @@ Sacks of flour slid across the deck. A little boy dropped his wooden fish, and i
 
 The ribbon kept running backward.
 
-“Two.”
+“Two. Three.”
 
-The boat swung. The boy clung to Nera's sleeve. Nobody counted after that. They were too busy holding on.
+The boat swung hard enough to throw the ferryman to one knee. The boy clung to Nera's sleeve. Nobody counted the remaining breaths. They were too busy holding on.
 
 When the strange current vanished, the ferry struck the landing with a crack that split a crate and sent apples rolling between everyone's feet. No one had gone overboard. The wooden fish, however, was gone.
 
@@ -88,7 +88,7 @@ The upper terraces had been thirsty for three weeks.
 
 By noon, the last garden beds were dust. The channels still carried water, but less of it reached the upper steps, and every household had a different explanation. Someone had planted too much. Someone had taken an extra turn. Someone had neglected the channel after promising to mend it.
 
-At dusk, Sami knelt beside the carved groove on the lowest terrace. He had been a channel caretaker for only one season, but he knew the Climbing Thread: a line of water as fine as a hair, sometimes rising up the groove before slipping back down.
+At dusk, Sami knelt beside the carved groove on the lowest terrace. He had been a channel caretaker for only one season, and he was afraid the older repairers still saw him as a child carrying tools. He knew the Climbing Thread: a line of water as fine as a hair, sometimes rising up the groove before slipping back down. He had watched it since he was small, but this was the first dry season in which people expected him to explain what it meant.
 
 The air smelled of warm stone and crushed mint. A few drops gathered in the groove. They trembled, then crept uphill.
 
@@ -110,13 +110,13 @@ They followed it by lantern light. At the third terrace, the water made a thin, 
 
 They lifted a loose cover stone. Roots had pushed into the channel, and silt had packed around them until the opening was little more than a dark slit. The roots came from a hardy plant growing beside the wall. No one had cut them there deliberately.
 
-They worked until their hands were muddy and the lantern smoked. When the passage opened, water slipped through with a low, bright trickle. It was not enough to fill the upper beds, but it reached farther than before.
+They worked until their hands were muddy and the lantern smoked. When the passage opened, water slipped through with a low, bright trickle. It was not enough to fill the upper beds, but it reached farther than before. For a moment, the thin stream caught the lantern light and seemed to climb the stone itself. Sami blinked; it had already settled into its ordinary course.
 
-Sami marked the damaged stone with a small chalk line and wrote down what they had found. He also wrote what they had *not* found: no proof that anyone had stolen water, and no answer to why the spring itself was weaker.
+Sami marked the damaged stone with a small chalk line and wrote down what they had found. His hand hovered over the page before he added what they had *not* found: no proof that anyone had stolen water, and no answer to why the spring itself was weaker. The older repairer read the entry and nodded. He did not praise Sami, but he did not correct the record either.
 
 The next evening, the Climbing Thread rose a little higher. It wavered in the groove like a tiny silver vine. Then it fell back.
 
-The upper terraces were still short of water.
+Sami felt the old urge to call it a good sign. Instead, he wrote down how far it had climbed and checked the channel marks. The upper terraces were still short of water.
 
 At the meeting, one gardener demanded that the old schedule be enforced exactly. Another pointed out that the schedule had been written when fewer families lived above the steps. The repairer asked why the households who had done the most recent work should be expected to do it all again.
 
@@ -216,8 +216,8 @@ The child put an ear against the warm stone, as if the old storm might have one 
 | Test | Returning Current | Climbing Thread | Stormglass Echo |
 |---|---|---|---|
 | Magical signature | A ribbon of water runs upstream | A thread of water climbs a groove | A stone returns the sound of a past storm |
-| Emotional center | Fear during a dangerous crossing | Suspicion turning into careful inquiry | Anxiety when a familiar signal disappears |
-| Character's distinct role | Nera notices practical danger and challenges an unfair toll | Sami records what is known and unknown | The record keeper insists on measurement and public records |
+| Emotional center | Fear during a dangerous crossing | A young caretaker risks admitting what he cannot know | Anxiety when a familiar signal disappears |
+| Character's distinct role | Nera acts quickly and challenges an unfair toll | Sami learns that an honest record can include uncertainty | The record keeper makes a difficult decision legible to everyone |
 | Community consequence | Repair costs and access rules | Water shares and maintenance duties | Rationing and cistern repair |
 | What magic cannot do | Explain the broken rope or decide a fair toll | Measure all water or prove guilt | Measure exact volume, test purity, or predict rain |
 
@@ -230,6 +230,7 @@ The three stories share a principle—wonder changes what people must pay attent
 - [ ] Assign stable character IDs only if any of these one-off characters recur in later stories.
 - [ ] Confirm physical details against the final map and water models.
 - [ ] Review tone, originality, character appeal, and intended reading level.
+- [ ] Ensure the three stories do not collapse into the same community-meeting structure; preserve their distinct tension and pacing.
 - [ ] Translate and audit English/Arabic only if these drafts are selected for the learning app.
 - [ ] After story approval, register event IDs and link them from the local histories.
 - [ ] Do not add exact dates, a shared magical origin, or wider effects without an explicit decision.
