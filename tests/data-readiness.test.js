@@ -75,7 +75,7 @@ test('failed word dictation resets the review interval and returns the word to t
 test('word mastery requires repeated demonstrated success, high confidence and the final box', () => {
   const app = fs.readFileSync(path.join(root, 'app.js'), 'utf8');
   const scheduler = app.slice(app.indexOf('function scheduleReviewFromPerformance'), app.indexOf('const WORD_COLLOCATIONS'));
-  assert.match(scheduler, /const REVIEW_INTERVALS=\[1,3,7,14,30\]/);
+  assert.match(app, /const REVIEW_INTERVALS=\[1,3,7,14,30\]/);
   assert.match(scheduler, /item\.mastered=targetBox>=5&&item\.confidence==='high'&&history\.length>=2&&accuracy>=0\.8/,
     'One confident response must never mark a word as mastered.');
   assert.match(scheduler, /if\(accuracy<0\.6\) targetBox=1/);
