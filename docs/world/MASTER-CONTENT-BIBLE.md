@@ -77,7 +77,7 @@ Cards represent established or intentionally mysterious parts of the setting; th
 
 ## 7. Workflow
 
-Use [Magic and Unusual Phenomena](MAGIC-AND-PHENOMENA.md) to design magical effects with clear observable behavior, scope, limits, evidence, and consequences before making them recurring canon.
+Use [Magic and Unusual Phenomena](MAGIC-AND-PHENOMENA.md) to design magical effects with clear observable behavior, scope, limits, evidence, and consequences before making them recurring canon. For region-grounded daily-life proposals, use [Regional Life and Cultural Patterns](REGIONAL-LIFE-AND-CULTURAL-PATTERNS.md) without treating its proposals as accepted facts.
 
 Build in this order where practical:
 1. physical geography and map relationships;
