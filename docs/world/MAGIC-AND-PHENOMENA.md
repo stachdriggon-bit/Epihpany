@@ -10,6 +10,7 @@
 - EPIPHANY is a fantasy setting. Magic and wondrous phenomena belong in the world; they should not be reduced to occasional decorative effects.
 - Extraordinary phenomena exist alongside recognizable geography, work, family, trade, institutions, humor, conflict, and ordinary decisions.
 - Phenomena vary by place, scale, danger, and how well people understand them.
+- Some characters can interact with or use magic, while others cannot. Magical ability is not universal; define each character's specific access, method, knowledge, and limits rather than assuming every person can cast or control magic.
 - No universal magic region, single origin for every phenomenon, or one master explanation for all mysteries is assumed.
 - The world's ultimate origin remains unresolved.
 - Myths, official records, witness accounts, and expert interpretations are not automatically objective truth.
@@ -17,7 +18,7 @@
 ### Still open
 The current references do **not** yet define a complete magic system. Do not assume any of the following without a separate decision:
 - a universal source or energy of magic;
-- who can use magic, whether it can be learned, inherited, borrowed, or accessed by non-human beings;
+- the complete rules of magical access: which people can use it, whether ability can be learned, inherited, borrowed, or accessed by non-human beings, and how any such paths work. It is established that not every character can use magic;
 - costs, exhaustion, materials, gestures, words, symbols, or other requirements;
 - whether magic can heal, revive, transform, predict, teleport, alter memory, or change time;
 - a fixed taxonomy of magical schools;
