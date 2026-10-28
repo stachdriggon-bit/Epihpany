@@ -16,6 +16,7 @@
   let syncing = false;
   let lastSyncedUser = null;
   let saveTimer = null;
+  let pendingCloudProgress = null;
   let lastSaveAt = 0;
 
   function status(message, kind) {
@@ -184,23 +185,43 @@
   }
   async function flushSave(progress) {
     if (!client || !currentUser) return;
+    if (progress) pendingCloudProgress = progress;
     if (syncing) {
       clearTimeout(saveTimer);
-      saveTimer = setTimeout(() => flushSave(progress), 400);
+      saveTimer = setTimeout(() => flushSave(pendingCloudProgress), 400);
       return;
     }
     let owner = '';
     try { owner = localStorage.getItem('epiphany-progress-owner') || ''; } catch {}
-    if (owner !== currentUser.id) return;
+    if (owner !== currentUser.id || !pendingCloudProgress) return;
+    const user = currentUser;
+    const snapshot = pendingCloudProgress;
     try {
-      await writeCloud(progress, currentUser);
+      // Merge with the latest cloud copy before writing to reduce cross-device overwrites.
+      const {data, error} = await client.from('player_progress')
+        .select('progress')
+        .eq('user_id', user.id)
+        .maybeSingle();
+      if (error) throw error;
+      if (currentUser?.id !== user.id) return;
+      const latest = data && data.progress && typeof data.progress === 'object'
+        ? mergeProgress(snapshot, data.progress)
+        : snapshot;
+      if (window.__epiphanyApplyCloudProgress) window.__epiphanyApplyCloudProgress(latest);
+      await writeCloud(latest, user);
+      if (pendingCloudProgress === snapshot) pendingCloudProgress = null;
       lastSaveAt = Date.now();
       status('Progress saved to your account.', 'success');
     } catch (error) {
       console.error('Epiphany cloud save failed:', error);
-      status('Cloud save failed; this device still has your progress.', 'error');
+      status('Cloud save failed; this device still has your progress. It will retry when connection returns.', 'error');
     }
   }
+
+  window.addEventListener('online', () => {
+    if (currentUser && pendingCloudProgress) flushSave(pendingCloudProgress);
+    else if (currentUser && !syncing) syncUserProgress(currentUser);
+  });
 
   let selectedAvatar = '🦊';
   let selectedAvatarColor = '#FFE08A';
@@ -571,6 +592,7 @@
       if (!client || !currentUser) return;
       clearTimeout(saveTimer);
       const snapshot = JSON.parse(JSON.stringify(progress));
+      pendingCloudProgress = snapshot;
       saveTimer = setTimeout(() => flushSave(snapshot), 900);
     }
   };
