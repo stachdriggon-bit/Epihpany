@@ -73,7 +73,7 @@
 
 ### OR-CITY-04 — Ambrin / أمبرين
 
-**Working role:** An inland-shore town whose work and local customs respond to a lake with changing water levels.
+**Working role:** Candidate settlement record for an inland-shore town whose work and local customs respond to a lake with changing water levels.
 
 **Everyday life:** Fishers, reed workers, boat builders, market sellers, and shore farmers adapt to exposed or flooded ground. Old property markers may no longer sit near the water.
 
@@ -81,7 +81,7 @@
 
 **Placement condition:** Requires a lake or broad inland water body with meaningful level variation. The lake's name, cause of variation, and exact location remain undecided.
 
-**Continuity note:** This may be the same place as anchor **OR-LOC-02 — The Low-Water Shore**. Compare their needs before naming them separately; preserve one stable place ID if they are the same.
+**Continuity decision for current story development:** Treat **OR-LOC-02 — The Low-Water Shore** as the sole place reference for the pilot. Ambrin (OR-CITY-04) is a possible settlement name/registry match for that anchor, **not a second town**. Do not place both labels independently on maps or create separate travel routes, quests, or histories for them. The final registry reconciliation remains open: Ambrin may become the settlement name for OR-LOC-02, or the city candidate may be retired if it adds no distinct purpose. Keep both IDs documented until that decision is made; story files should reference OR-LOC-02 only.
 
 ### OR-CITY-05 — Qadren / قادرن
 
