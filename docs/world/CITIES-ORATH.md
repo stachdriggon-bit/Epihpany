@@ -81,7 +81,7 @@
 
 **Placement condition:** Requires a lake or broad inland water body with meaningful level variation. The lake's name, cause of variation, and exact location remain undecided.
 
-**Continuity decision for current story development:** Treat **OR-LOC-02 — The Low-Water Shore** as the sole place reference for the pilot. Ambrin (OR-CITY-04) is a possible settlement name/registry match for that anchor, **not a second town**. Do not place both labels independently on maps or create separate travel routes, quests, or histories for them. The final registry reconciliation remains open: Ambrin may become the settlement name for OR-LOC-02, or the city candidate may be retired if it adds no distinct purpose. Keep both IDs documented until that decision is made; story files should reference OR-LOC-02 only.
+**Continuity decision for current story development:** Use **OR-LOC-02 — The Low-Water Shore** as the sole place reference for the six-episode pilot. **OR-CITY-04 — Ambrin** is a potentially overlapping settlement record, not a second town for current story, map, or archive use. The source material does not yet prove whether Ambrin is the settlement name for this anchor or a distinct nearby place. Therefore, do not show both as separate locations, duplicate routes, or duplicate the pilot events. Keep both stable IDs in their source registries until the project owner records a final identity decision. This is an operational safeguard, not a claim that the names are identical.
 
 ### OR-CITY-05 — Qadren / قادرن
 
