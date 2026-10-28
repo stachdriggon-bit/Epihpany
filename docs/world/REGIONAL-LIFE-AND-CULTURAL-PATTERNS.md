@@ -166,6 +166,8 @@ For any future cultural cluster, record only what the story needs:
 - **Continuity checks:** map, settlement registry, event registry, character records, and magic catalogue.
 - **Open questions:** what remains undecided until evidence or owner approval.
 
+A city-by-city companion now develops the approved settlement candidates into provisional daily-life prompts: [City Culture Profiles](CITY-CULTURE-PROFILES.md). These are proposals, not finalized culture canon.
+
 ## 11. Source references
 
 - [Civilizations and Societies](CIVILIZATIONS.md) — regional patterns and the society-record template.
