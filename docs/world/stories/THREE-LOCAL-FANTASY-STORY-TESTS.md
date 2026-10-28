@@ -56,7 +56,11 @@ Mira did not know why the current had reversed. She knew only how the boat had m
 
 The inspection found a worn iron ring and a split timber brace. Neither explained the backward ribbon of water, but both could have turned a strange moment into a drowning.
 
-The community chose a temporary levy on loaded commercial carts. People crossing on foot would pay nothing. The keeper would post the repair costs in the market, and the arrangement would be reviewed once the work was done. The ferryman still grumbled about the ring; the keeper still grumbled about the levy. Neither got everything he wanted.
+The keeper returned to the market the next day with the repairer's estimate written on a board: the ring and brace first, the landing post after that. He proposed a levy on every traveler until the costs were covered. A porter asked what would happen to people who crossed on foot to buy a single loaf; a trader asked whether loaded carts would pay the same as empty ones. The argument lasted longer than the inspection had.
+
+Mira suggested a shorter trial: only loaded commercial carts would contribute, the repair costs and every payment would be posted publicly, and the rule would end when the repairs were paid for. Foot travelers would pay nothing. The keeper objected that the amount might not be enough. The ferryman pointed out that losing the crossing would cost everyone more, but warned that the levy must not become permanent by neglect.
+
+They agreed to try it, then review the tally together after the first week and again when the work was complete. It was not a perfect answer, and nobody mistook it for one. The keeper still worried about the shortfall; the ferryman still grumbled about the ring. For once, both complaints would have to meet the same public record.
 
 For the next few evenings, Mira tied a short pale thread around the ferry rope before dusk. It was not a charm, she told the children who asked. It made fraying easier to see in the fading light.
 
@@ -150,7 +154,7 @@ The wonder had not measured the water for them. It had reminded them to pay atte
 
 The cistern had a voice, though it never spoke a word. Evren, a resonance tinkerer, had been helping the keeper inspect the fitting, but neither of them treated its sound as a precise measure.
 
-When the keeper tapped the small grey stone fitted into its wall, a faint echo answered: the sound of the storm that had last filled the cistern, folded small enough to hide inside a thumb-sized stone. As the water sank lower, the echo changed pitch. Children tried to hum it. Boat crews listened before taking on supplies. The keepers compared it with their marked measuring rod.
+When the keeper tapped the small grey stone fitted into its wall, a faint echo answered: a trace of the storm that had last filled the cistern, folded small enough to hide inside a thumb-sized stone. As the water sank lower, the echo tended to change pitch, though no one could turn a note into an exact volume. Children tried to hum it. Boat crews listened before taking on supplies. The keepers treated it as a rough clue and checked it against their marked measuring rod.
 
 They called the fitting stormglass, even though it was stone, rough at the edges and cool as shade.
 
@@ -184,9 +188,9 @@ Several days later, Evren helped the keeper refit the repaired stone. The keeper
 
 A thin echo answered, trembling through the stone. Its pitch was lower than the sound people remembered. The record keeper checked the rod before she wrote anything on the board.
 
-“Still not an exact measure?” asked the gardener.
+“So the lower note means we know how much is left?” asked the gardener.
 
-“Still not exact,” she said. “But now we have two things to compare.”
+“No,” the record keeper said. “The note gives us a rough clue. The rod gives us the level at this moment. Neither tells us the exact volume we can safely use, and the sound cannot tell us whether the water is clean.”
 
 That evening, a child tapped the stormglass and listened to the echo fade into the wind moving over the cistern mouth.
 
@@ -197,7 +201,7 @@ The keeper shook his head. “It remembers a sound. It does not promise another 
 The child put an ear against the warm stone, as if the old storm might have one more secret left. The cistern gave no answer beyond its small, fading echo.
 
 **What this draft establishes provisionally**
-- The Stormglass Echo is a maintained local magical fitting that gives an approximate signal related to stored water level.
+- The Stormglass Echo is a maintained local magical fitting whose pitch may shift as the water level falls; it is a qualitative clue, not a calibrated measure of volume.
 - Breaking the fitting removes the signal, not the water itself.
 - The cistern also has an ordinary leak, and fixing it requires inspection and repair.
 - Public readings and ration records help the community act, but do not remove the hardship.
