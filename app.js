@@ -3206,6 +3206,9 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
   function startGame(type, challengeMode = '') {
     if (MINI[type]) { startMini(type); return; }
     const game = GAMES[type]; if (!game) return;
+    // Invalidate pending callbacks from any mini-game before switching activities.
+    miniSessionId++;
+    if (miniTimer) { clearInterval(miniTimer); miniTimer = null; }
     const level = currentLevel().id;
     const levelIds = LEVELS.map(l => l.id);
     const currentIndex = Math.max(0, levelIds.indexOf(level));
@@ -4045,6 +4048,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
 
   function closeGame() {
     miniSessionId++;
+    if (monthlyAssessment) monthlyAssessment = null;
     if(miniTimer){clearInterval(miniTimer);miniTimer=null;} try{window.speechSynthesis?.cancel();}catch{} $('#game').hidden = true; hideSheet(); G = null; ST = null; MG = null;
     lockPage(false); renderAll();
     const h = $('.view.is-active h1'); if (h) h.focus({preventScroll: true});
@@ -5236,7 +5240,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     }
     return shufflePlacement(bank).slice(0,15);
   }
-  let placement={questions:[],index:0,answers:[],stage:0,highestPassed:0,stageCorrect:0,scoreByLevel:{}};
+  let placement={questions:[],index:0,answers:[],stage:0,highestPassed:0,stageCorrect:0,scoreByLevel:{},answered:false};
   // Promotion rules: XP is a gate, not a level score. Thresholds are intentionally configurable.
   const PROMOTION_XP = [300, 500, 700, 1000, 1300]; // A1→A2, A2→B1, B1→B2, B2→C1, C1→C2
   const PROMOTION_PASS_PERCENT = 80;
@@ -5277,10 +5281,11 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     return shufflePlacement(unique).slice(0,12);
   }
   function startMonthlyAssessment(){
+    if(monthlyAssessment)return;
     let questions=monthlyAssessmentQuestions();
     if(questions.length<8)questions=placementQuestions15().slice(0,10);
     if(questions.length<8){toast('The monthly check needs a few more questions. Please try again later.');return;}
-    monthlyAssessment={questions,index:0,answers:[]};
+    monthlyAssessment={questions,index:0,answers:[],answered:false};
     $('#placement-title').textContent='Monthly level check';
     $('.placement-card .kicker').textContent='YOUR MONTHLY CHECK';
     $('.placement-intro').textContent='About 5 minutes · '+questions.length+' short questions. This is a friendly estimate, not an official exam. Your progress and XP stay safe.';
@@ -5289,6 +5294,8 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     renderMonthlyAssessmentQuestion();
   }
   function renderMonthlyAssessmentQuestion(){
+    if(!monthlyAssessment)return;
+    monthlyAssessment.answered=false;
     const q=monthlyAssessment.questions[monthlyAssessment.index];
     $('#placement-progress').textContent='Monthly check · Question '+(monthlyAssessment.index+1)+' of '+monthlyAssessment.questions.length;
     $('#placement-content').innerHTML='<h2>'+esc(q.q)+'</h2><p>'+esc(q.sub||'Choose the best answer.')+'</p><div class="answers">'+q.answers.map((x,i)=>'<button class="answer" data-monthly-answer="'+i+'"><span class="key">'+(i+1)+'</span><span>'+esc(x)+'</span></button>').join('')+'</div><p class="monthly-assessment-kind">Choose what feels right. A mistake helps us understand what to practise next.</p>';
@@ -5334,7 +5341,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
   document.addEventListener('click',e=>{
     if(e.target.closest('[data-monthly-start]')){startMonthlyAssessment();return;}
     const answer=e.target.closest('[data-monthly-answer]');
-    if(answer&&monthlyAssessment){const q=monthlyAssessment.questions[monthlyAssessment.index];monthlyAssessment.answers.push({level:q.placementLevel||'A1',skill:q.placementSkill,ok:Number(answer.dataset.monthlyAnswer)===q.correct});monthlyAssessment.index++;if(monthlyAssessment.index<monthlyAssessment.questions.length)renderMonthlyAssessmentQuestion();else finishMonthlyAssessment();return;}
+    if(answer&&monthlyAssessment){if(monthlyAssessment.answered)return;monthlyAssessment.answered=true;$('#placement-content [data-monthly-answer]').forEach(button=>{button.disabled=true;});const q=monthlyAssessment.questions[monthlyAssessment.index];if(!q)return;monthlyAssessment.answers.push({level:q.placementLevel||'A1',skill:q.placementSkill,ok:Number(answer.dataset.monthlyAnswer)===q.correct});monthlyAssessment.index++;if(monthlyAssessment.index<monthlyAssessment.questions.length)renderMonthlyAssessmentQuestion();else finishMonthlyAssessment();return;}
     const apply=e.target.closest('[data-monthly-apply]');if(apply){applyMonthlyAssessmentLevel(apply.dataset.monthlyApply);return;}
     if(e.target.closest('[data-monthly-close]')){closePlacement();return;}
   });
@@ -5408,10 +5415,11 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
   window.__epiphanyShowPlacement = showPlacement;
   function renderPlacementQuestion(){
     const q=placement.questions[placement.index];
+    placement.answered=false;
     $('#placement-progress').textContent='Question '+(placement.index+1)+' of '+placement.questions.length+' · Level '+(q.placementLevel||'A1');
     $('#placement-content').innerHTML='<h2>'+esc(q.q)+'</h2><p>'+esc(q.sub||'Choose the best answer.')+'</p><div class="answers">'+q.answers.map((x,i)=>'<button class="answer" data-place-answer="'+i+'"><span class="key">'+(i+1)+'</span><span>'+esc(x)+'</span></button>').join('')+'</div>';
   }
-  function closePlacement(){ $('#placement').hidden=true;lockPage(false);$('#placement-skip').hidden=false;$('#placement-title').textContent='Find your English level';$('.placement-card .kicker').textContent='A QUICK START';$('.placement-intro').textContent='Answer 15 short questions across vocabulary, grammar, conversation and comprehension. We use your results to estimate a starting CEFR level; this is not an official exam.';renderAll(); }
+  function closePlacement(){ placement.answered=false; $('#placement').hidden=true;lockPage(false);$('#placement-skip').hidden=false;$('#placement-title').textContent='Find your English level';$('.placement-card .kicker').textContent='A QUICK START';$('.placement-intro').textContent='Answer 15 short questions across vocabulary, grammar, conversation and comprehension. We use your results to estimate a starting CEFR level; this is not an official exam.';renderAll(); }
   function skipPlacement(){
     state.assessedLevel='A1';state.level='A1';state.placementDone=true;state.placementResult={level:'A1',skipped:true,testedAt:new Date().toISOString()};
     save();closePlacement();toast('Level check skipped. Your estimated starting level remains A1.');
@@ -5429,7 +5437,12 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     toast('Estimated CEFR level: '+target.id+'. XP is separate from your English assessment.');
   }
   function answerPlacement(choice){
-    const q=placement.questions[placement.index],ok=choice===q.correct;
+    if(!placement||placement.answered||$('#placement').hidden)return;
+    placement.answered=true;
+    const q=placement.questions[placement.index];
+    if(!q)return;
+    $('#placement-content [data-place-answer]').forEach(button=>{button.disabled=true;});
+    const ok=choice===q.correct;
     placement.answers.push({level:q.placementLevel||'A1',skill:q.placementSkill,ok});
     placement.index++;
     if(placement.index<placement.questions.length){renderPlacementQuestion();return;}
