@@ -96,7 +96,7 @@ test('cloud progress saves retain failed snapshots for online recovery and merge
 
 test('cloud progress saves are queued rather than dropped during an active sync', () => {
   const account = fs.readFileSync(path.join(root, 'account.js'), 'utf8');
-  assert.match(account, /async function flushSave\(progress\) \{\s*if \(!client \|\| !currentUser\) return;\s*if \(syncing\) \{\s*clearTimeout\(saveTimer\);\s*saveTimer = setTimeout\(\(\) => flushSave\(progress\), 400\);/,
+  assert.match(account, /async function flushSave\(progress\) \{\s*if \(!client \|\| !currentUser\) return;\s*(?:if \(progress\) pendingCloudProgress = progress;\s*)?if \(syncing\) \{\s*clearTimeout\(saveTimer\);\s*saveTimer = setTimeout\(\(\) => flushSave\(pendingCloudProgress\), 400\);/,
     'A pending progress snapshot should retry after the current sync finishes.');
   assert.match(account, /queueSave\(progress\) \{\s*if \(!client \|\| !currentUser\) return;/,
     'New snapshots should be queued even when another cloud operation is active.');
