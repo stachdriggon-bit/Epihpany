@@ -1,6 +1,6 @@
 # EPIPHANY World Archive — event registry
 
-**Status:** Initial schema and six story-linked event records; all remain provisional playtest content, not accepted historical canon.
+**Status:** Event registry with six provisional Low-Water Shore pilot records and three accepted, undated local fantasy story-scene records. Accepted story-scene canon is not presented as independently verified history.
 
 The archive separates **events** from **stories**. Events have stable IDs and can be referenced by multiple stories or collections; stories can point to multiple events. Collections reference IDs rather than copying records.
 
