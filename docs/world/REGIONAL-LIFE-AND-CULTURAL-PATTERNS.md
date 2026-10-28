@@ -168,6 +168,8 @@ For any future cultural cluster, record only what the story needs:
 
 A city-by-city companion now develops the approved settlement candidates into provisional daily-life prompts: [City Culture Profiles](CITY-CULTURE-PROFILES.md). These are proposals, not finalized culture canon.
 
+For a deeper first pass at selected cities—including proposed gathering places, non-universal customs, and provisional characters—see [Selected City Life and Local Cast](CITY-LIFE-AND-LOCAL-CAST.md). It is a proposal pack, not finalized canon.
+
 ## 11. Source references
 
 - [Civilizations and Societies](CIVILIZATIONS.md) — regional patterns and the society-record template.
