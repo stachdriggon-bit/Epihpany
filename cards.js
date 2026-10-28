@@ -61,8 +61,8 @@
   const svgUse = (cls, id, box, file=ORN) => '<svg class="'+cls+'" viewBox="'+box+'" focusable="false" aria-hidden="true"><use href="'+file+'#'+id+'"></use></svg>';
   const cornersMarkup = () => '<div class="fcard-corners" aria-hidden="true">'+['c1','c2','c3','c4'].map(c => svgUse(c,'orn-corner','0 0 64 64')).join('')+'</div>';
   const starsMarkup = rank => '<span class="fcard-stars" aria-hidden="true">'+[0,1,2,3,4].map(i => svgUse(i<=rank?'on':'','orn-star','0 0 24 24')).join('')+'</span>';
-  const artMarkup = card => card.id === 'CHR-001'
-    ? '<img class="fcard-portrait fcard-portrait-image fcard-portrait-mira" src="'+MIRA_SHEET+'" alt="" loading="lazy" decoding="async">'
+  const artMarkup = card => card.image
+    ? '<img class="fcard-portrait fcard-portrait-image" src="'+esc(card.image)+'" alt="" loading="lazy" decoding="async">'
     : card.art
     ? '<svg class="fcard-portrait" viewBox="0 0 240 300" preserveAspectRatio="xMidYMin slice" focusable="false"><use href="'+PORTRAITS+'#'+esc(card.art)+'"></use></svg>'
     : '<div class="fcard-sigil-art">'+svgUse('ring','back-sigil','0 0 120 120')+svgUse('ring r2','back-sigil','0 0 120 120')+'<b>'+esc(card.symbol)+'</b></div>';
