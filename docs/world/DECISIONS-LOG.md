@@ -77,3 +77,6 @@ When a decision changes:
 
 | WD-031 | Distinguish the four currently named continents from the Azmar archipelagos; do not state that the entire world has exactly four continents. | Provisional classification rule | This clarifies the existing Atlas inventory without closing the world's unexplored geography. Before adding cities, use this classification consistently and treat all regional names as provisional. |
 | WD-032 | Swap the collectible-card rarities of Mira (CHR-001) and Veya (CHR-029): Mira is Epic and Veya is Uncommon. | Accepted by project owner | Rarity affects collection rarity only; it does not determine narrative importance or rewrite either character’s story. Update card data to match. |
+
+
+| WD-033 | Until the Ambrin / Low-Water Shore identity is evidenced and explicitly decided, use OR-LOC-02 as the sole location reference for the six-episode pilot and do not create duplicate map locations, routes, or events; retain both source IDs meanwhile. | Accepted working method; identity remains open | This resolves the operational duplication risk, not the in-world identity. Do not claim the names are identical or separate without evidence. See WORLD-OVERVIEW.md. |
