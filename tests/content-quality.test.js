@@ -338,7 +338,7 @@ test('world archive event records use stable place/story IDs and preserve unknow
   const lazy = fs.readFileSync(path.join(root, 'lazy-data.js'), 'utf8');
   assert.match(html, /data-view="chronicle"/, 'World Archive must be reachable from navigation.');
   assert.match(html, /id="chronicle-view"/, 'World Archive needs a registered view container.');
-  assert.match(lazy, /chronicle:\s*\['data-world-events\.js/, 'Archive data must be lazy-loaded.');
+  assert.match(lazy, /chronicle:\s*\['data-world-registry\.js\?[^']+',\s*'data-world-events\.js/, 'Place registry must load before archive events.');
   assert.match(app, /function renderChronicle\s*\(/, 'Archive view needs a renderer.');
   assert.match(app, /data-story-open/ , 'Archive entries need a route back to stories.');
   const ids = new Set(), errors = [];
@@ -377,6 +377,6 @@ test('World Archive navigation is registered with its view and lazy data group',
   assert.match(html, /id="chronicle-view"/);
   assert.match(app, /if \(name === 'chronicle'\) renderChronicle\(\)/);
   assert.match(app, /function renderChronicle\(\)/);
-  assert.match(lazy, /chronicle:\s*\['data-world-events\.js\?/);
+  assert.match(lazy, /chronicle:\s*\['data-world-registry\.js\?/);
   assert.match(navigation, /chronicle:\s*'World Archive'/);
 });
