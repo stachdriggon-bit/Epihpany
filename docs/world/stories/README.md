@@ -1,6 +1,6 @@
 # EPIPHANY World Stories — Working Index
 
-This folder contains story drafts linked to the worldbuilding reference. **Drafts in this folder are not live app content and are not automatically final canon.**
+This folder contains editorial references for story content linked to the worldbuilding reference. The six-episode Low-Water Shore arc is now integrated in the app as **provisional playtest content**, but the story and character details are not final canon.
 
 ## The Two Records at the Low-Water Shore
 
