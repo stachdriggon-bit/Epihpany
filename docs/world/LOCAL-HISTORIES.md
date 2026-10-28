@@ -132,12 +132,132 @@ Do not assume every location has a ruler, empire, founding myth, disaster, or su
 - **Continuity checks:** Travel times depend on season and route condition; elevation and weather must match the physical map; information from distant places arrives only through plausible routes or records.
 - **Sources:** `ANCHOR-LOCATIONS.md`; `GEOGRAPHIC-FOUNDATION.md`; `TIMELINE.md`.
 
-## 8. Next location-history candidates
+## 8. Seed record: IL-LOC-02 — The Lanternwood Edge
 
-Use existing stable location IDs and anchor records; do not invent new places to fill this list.
+**Status:** Provisional sequence from the anchor concept. No supernatural forest event is established.
 
-1. **IL-LOC-02 — The Lanternwood Edge:** woodland boundary, route markers, land use, and competing explanations for a path becoming harder to follow.
-2. **TH-LOC-02 — The Spring Steps:** spring water-sharing, terrace maintenance, and local obligations.
-3. **Nirvan and Azmar anchor locations:** choose the next seed after reviewing their existing anchor entries and geographic constraints.
+- **Location ID:** IL-LOC-02
+- **Regional registry source:** `ANCHOR-LOCATIONS.md`; compare with Ilmar settlement candidates before assigning a city ID or declaring overlap.
+- **Current geographic status:** Settlement at the boundary between cultivated land and a large forest; exact forest edge and route placement depend on the final biome and relief model.
+- **Historical date convention:** Relative sequence only — Earlier, Middle, Later.
+- **Environmental history:** Forest extent and trail visibility can change through regrowth, storms, fog, and land use. No single catastrophic cause is established.
+- **Settlement and livelihood history:** Woodcutters, herbalists, charcoal makers, guides, and households use the forest edge. The settlement expands into newly used woodland in the earlier phase; some plots are later abandoned and reclaimed by forest.
+- **Infrastructure and route history:** A marked path with lantern posts becomes a maintained route and a local tradition. Markers can be neglected, obscured, or moved for ordinary reasons.
+- **Institutions and community decisions:** Residents disagree over where the forest boundary lies and who maintains route markers. The authority and rules remain open.
+- **External connections:** Paths connect local settlements and lowland markets in the anchor concept; named partners and exact routes remain unestablished.
+- **Records and oral traditions:** Old lantern posts may help identify former paths or homes; they are not proof of a supernatural disaster.
+- **Major local events:** None registered yet.
+- **Accepted facts:** Stable anchor ID and the general continuity rules only.
+- **Provisional proposals:** Forest-edge settlement expands, a lantern route becomes locally important, and abandoned plots are reclaimed over time.
+- **Open questions:** Potential overlap with Talwen (IL-CITY-03); forest species and moisture; who maintains the path; whether cultivated plots are privately held or shared; and how the route connects to the final map.
+- **Continuity checks:** Forest extent must fit the climate model; path changes should have plausible causes; do not link every unusual forest event to one mystery.
+- **Sources:** `ANCHOR-LOCATIONS.md`; `CITIES-ILMAR.md`; `GEOGRAPHIC-FOUNDATION.md`; `TIMELINE.md`.
 
-These are proposed drafting order, not canon events. Develop distinct local causes and everyday consequences before creating cross-regional wars, empires, or global turning points.
+## 9. Seed record: TH-LOC-02 — The Spring Steps
+
+**Status:** Provisional sequence from the anchor concept; no specific drought, disaster, or political regime is established.
+
+- **Location ID:** TH-LOC-02
+- **Regional registry source:** `ANCHOR-LOCATIONS.md`; check Tharima's settlement registry before assigning a town identity.
+- **Current geographic status:** Upland settlement with terraces below a spring or spring complex; exact elevation, recharge area, and drainage remain provisional.
+- **Historical date convention:** Relative sequence only — Earlier, Middle, Later.
+- **Environmental history:** The spring's flow may weaken or shift. Seasonal variation, catchment damage, upstream use, and unknown causes are competing possibilities, not settled facts.
+- **Settlement and livelihood history:** Gardeners, channel repairers, families maintaining water-sharing rules, and travelers use the terraces and resting place.
+- **Infrastructure and route history:** Terraces and shared channels are built around the known water source. Later, some terraces are abandoned or repurposed; old channel designs may preserve evidence of earlier conditions.
+- **Institutions and community decisions:** Water-sharing customs and maintenance duties become central to community life. Population change may strain an inherited agreement; no final law or authority has been established.
+- **External connections:** Travelers stop before crossing the uplands, but named trade links are not established.
+- **Records and oral traditions:** Maintenance records or inherited agreements are possible story evidence; none are yet specified as a concrete event.
+- **Major local events:** None registered yet.
+- **Accepted facts:** Stable anchor ID and the requirement for plausible water balance.
+- **Provisional proposals:** Shared water infrastructure creates obligations; repairs and changing use can affect distribution.
+- **Open questions:** Spring recharge area; water quantity across seasons; downstream users; decision procedure for rationing; terrace crops; and whether a named settlement record overlaps this anchor.
+- **Continuity checks:** A spring requires a plausible recharge area; do not portray all Tharima as uniformly dry or all uplands as water-rich.
+- **Sources:** `ANCHOR-LOCATIONS.md`; `CITIES-THARIMA.md`; `GEOGRAPHIC-FOUNDATION.md`; `TIMELINE.md`.
+
+## 10. Seed record: NI-LOC-01 — The Last Warm Dock
+
+**Status:** Provisional sequence from the anchor concept; no specific storm, shipwreck, or regional crisis is established.
+
+- **Location ID:** NI-LOC-01
+- **Regional registry source:** `ANCHOR-LOCATIONS.md`; compare with Nirvan's settlement registry before assigning a city ID.
+- **Current geographic status:** Sheltered northern coastal dock before more exposed waters; shelter must have a clear geographic cause in the final coastline and relief.
+- **Historical date convention:** Relative sequence only — Earlier, Middle, Later.
+- **Environmental history:** Weather varies by season and route. The coast is cold but not permanently frozen; one unusual season does not establish a climate shift.
+- **Settlement and livelihood history:** Fishers, shipwrights, cooks, provisioning families, and waiting travelers use the dock. It begins as a small refuge, becomes a staging point through repeated voyages, and later loses some importance as routes and vessels improve.
+- **Infrastructure and route history:** Repair space and a public weather-note board support departures. Later travel improvements reduce the dock's role, while older records remain useful.
+- **Institutions and community decisions:** Departure decisions rely on imperfect weather notes and experience from different routes. No formal harbor authority or universal forecasting system is established.
+- **External connections:** Northern voyages connect the dock to other coasts only where travel time, vessel capability, and seasonal conditions permit.
+- **Records and oral traditions:** Weather notes and ship logs are possible evidence sources; their date coverage and recording methods need specification before use in a plot.
+- **Major local events:** None registered yet.
+- **Accepted facts:** Stable anchor ID and its broad coastal-harbor concept only.
+- **Provisional proposals:** Repeated voyages increase the dock's importance; improved routes later reduce it.
+- **Open questions:** Harbor name; coastline and shelter geometry; provisioning sources; winter access; maintenance responsibility; and possible overlap with a named Nirvan settlement.
+- **Continuity checks:** Seasonal conditions must fit the climate model; the harbor's shelter must be geographically plausible; no vessel should arrive from a distant location without a viable route.
+- **Sources:** `ANCHOR-LOCATIONS.md`; `CITIES-NIRVAN.md`; `GEOGRAPHIC-FOUNDATION.md`; `TIMELINE.md`.
+
+## 11. Seed record: NI-LOC-02 — The Pine Ledger
+
+**Status:** Provisional sequence from the anchor concept; the ledger is a local archive, not an infallible record of objective truth.
+
+- **Location ID:** NI-LOC-02
+- **Regional registry source:** `ANCHOR-LOCATIONS.md`; compare with Nirvan's settlement registry before assigning a city ID.
+- **Current geographic status:** Forest settlement with a record house; forest moisture and temperature must fit Nirvan's regional climate.
+- **Historical date convention:** Relative sequence only — Earlier, Middle, Later.
+- **Environmental history:** Storms, animal movement, and forest boundaries change over time, but no specific storm or ecological crisis is established.
+- **Settlement and livelihood history:** Foresters, builders, craftspeople, and record keepers use practical records to coordinate timber use and shared work. In the middle phase, the archive gains importance; later researchers use it to reconstruct land-use changes.
+- **Infrastructure and route history:** Durable wooden tablets and paper where available preserve entries. Materials and writing practices should match the period selected for a story.
+- **Institutions and community decisions:** Families disagree about sustainable forest use and the meaning of older boundaries. The record house's authority and access rules remain open.
+- **External connections:** Researchers may consult the archive later, but their origin, route, and access must be established if used in a story.
+- **Records and oral traditions:** Old entries may use a different surveying convention or record an agreement not accepted by everyone. A correct record can still be misunderstood if its context is lost.
+- **Major local events:** None registered yet.
+- **Accepted facts:** Stable anchor ID and the archive's intended practical function only.
+- **Provisional proposals:** Record keeping supports cooperation, but records preserve viewpoints and conventions as well as facts.
+- **Open questions:** Who can add or copy entries; how boundaries were measured; what materials were available in each period; whether the archive has public access; and potential overlap with a named settlement.
+- **Continuity checks:** Forest ecology must fit the climate model; preserve ambiguity in old records rather than forcing every conflict into deliberate deception.
+- **Sources:** `ANCHOR-LOCATIONS.md`; `CITIES-NIRVAN.md`; `GEOGRAPHIC-FOUNDATION.md`; `TIMELINE.md`.
+
+## 12. Seed record: AZ-LOC-01 — The Seven-Mooring Harbor
+
+**Status:** Provisional sequence from the anchor concept; the number seven is a local convention, not a magical law.
+
+- **Location ID:** AZ-LOC-01
+- **Regional registry source:** `ANCHOR-LOCATIONS.md`; compare with Azmar's settlement registry before assigning a city or island ID.
+- **Current geographic status:** Island harbor at a passage junction. Exact island positions, channel depth, tides, and route geometry remain open.
+- **Historical date convention:** Relative sequence only — Earlier, Middle, Later.
+- **Environmental history:** Tide, depth, vessel draft, and weather produce different hazards. No supernatural navigation rule is established.
+- **Settlement and livelihood history:** Pilots, ferry crews, merchants, repairers, translators, and local households depend on vessel transfers and news from multiple directions.
+- **Infrastructure and route history:** Seven traditional mooring places are initially known mainly to local pilots; the harbor later becomes a transfer point between island groups; larger vessels eventually use another route while smaller boats continue to depend on it.
+- **Institutions and community decisions:** Pilots' knowledge and official charts can disagree because they describe different conditions. Who maintains markers and resolves disputes remains open.
+- **External connections:** Inter-island routes are central to the concept, but destinations and travel durations must be defined on the map before they become historical links.
+- **Records and oral traditions:** Pilot notes may help explain a navigation dispute; no specific logbook is canon yet.
+- **Major local events:** None registered yet.
+- **Accepted facts:** Stable anchor ID and the local convention of seven moorings only as a design concept.
+- **Provisional proposals:** The harbor's importance changes as vessel sizes and routes change.
+- **Open questions:** Freshwater source; channel depth and tide behavior; which island groups it connects; marker maintenance; and potential overlap with an existing Azmar settlement record.
+- **Continuity checks:** Freshwater and supplies must be plausible; navigation depends on vessel and weather; do not treat the number seven as magical.
+- **Sources:** `ANCHOR-LOCATIONS.md`; `CITIES-AZMAR.md`; `GEOGRAPHIC-FOUNDATION.md`; `TIMELINE.md`.
+
+## 13. Seed record: AZ-LOC-02 — The Rain-Cistern Island
+
+**Status:** Provisional sequence from the anchor concept; no treasure, ancient technology, or water miracle is established.
+
+- **Location ID:** AZ-LOC-02
+- **Regional registry source:** `ANCHOR-LOCATIONS.md`; compare with Azmar's settlement registry before assigning a city or island ID.
+- **Current geographic status:** Small island with a high ridge, sheltered landing, roof catchments, and communal cisterns; final rainfall, storage, and population must balance.
+- **Historical date convention:** Relative sequence only — Earlier, Middle, Later.
+- **Environmental history:** Freshwater limits shape settlement. A nearby harbor does not imply a reliable drinking-water supply.
+- **Settlement and livelihood history:** Cistern keepers, gardeners, boat repairers, visiting crews, and families manage stored water. The cistern system is built after residents learn that local harbor access alone is insufficient.
+- **Infrastructure and route history:** Roofs and stone catchments feed shared cisterns. Maintenance becomes a shared duty; later a new water source or trade route may change the settlement, while old cisterns preserve evidence of earlier constraints.
+- **Institutions and community decisions:** Water rationing and maintenance priorities can create disputes. The rules, emergency authority, and access rights remain open.
+- **External connections:** A visiting vessel may provide supplies, but its arrival is uncertain and must fit the island's routes and weather.
+- **Records and oral traditions:** Maintenance records could document repairs or rationing; none are yet established as a specific historical event.
+- **Major local events:** None registered yet.
+- **Accepted facts:** Stable anchor ID and the working principle that freshwater availability varies across Azmar.
+- **Provisional proposals:** Shared cistern maintenance shapes community obligations; a later water source or trade route may change local life.
+- **Open questions:** Rainfall; catchment area; cistern capacity; population; dry-season length; water priority rules; and potential overlap with an existing settlement record.
+- **Continuity checks:** Freshwater supply must match rainfall, storage, population, and trade; local ecology and livelihoods must vary across the archipelago.
+- **Sources:** `ANCHOR-LOCATIONS.md`; `CITIES-AZMAR.md`; `GEOGRAPHIC-FOUNDATION.md`; `TIMELINE.md`.
+
+## 14. Next phase
+
+All ten anchor concepts now have local-history seed records. Before creating regional or world-scale chronology, compare these anchors with all settlement registries and the final geographic draft. Resolve only overlaps supported by evidence; otherwise preserve the uncertainty. Then develop a small number of local institutions and documented routes that explain how people cooperate, disagree, and exchange information across time.
