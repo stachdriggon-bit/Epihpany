@@ -331,13 +331,23 @@ test('world archive event records use stable place/story IDs and preserve unknow
   const context = vm.createContext({ window: {} });
   vm.runInContext(source, context, { filename: 'data-world-events.js', timeout: 5000 });
   const events = context.window.EPIPHANY_WORLD_EVENTS;
+  const knownStoryIds = new Set(loadData().stories.map(story => story.id));
   assert.equal(events.length, 6, 'Pilot archive should expose six event records.');
+  const html = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
+  const app = fs.readFileSync(path.join(root, 'app.js'), 'utf8');
+  const lazy = fs.readFileSync(path.join(root, 'lazy-data.js'), 'utf8');
+  assert.match(html, /data-view="chronicle"/, 'World Archive must be reachable from navigation.');
+  assert.match(html, /id="chronicle-view"/, 'World Archive needs a registered view container.');
+  assert.match(lazy, /chronicle:\s*\['data-world-events\.js/, 'Archive data must be lazy-loaded.');
+  assert.match(app, /function renderChronicle\s*\(/, 'Archive view needs a renderer.');
+  assert.match(app, /data-story-open/ , 'Archive entries need a route back to stories.');
   const ids = new Set(), errors = [];
   for (const event of events) {
     if (!event.id || ids.has(event.id)) errors.push('Event IDs must be present and unique.');
     ids.add(event.id);
     if (event.placeId !== 'OR-LOC-02') errors.push(event.id + ': unexpected place ID.');
     if (!Array.isArray(event.storyIds) || event.storyIds.length !== 1) errors.push(event.id + ': must link to an existing story.');
+    for (const storyId of event.storyIds || []) if (!knownStoryIds.has(storyId)) errors.push(event.id + ': unknown story link ' + storyId + '.');
     if (event.date?.kind !== 'unknown' || event.date?.label !== 'Date not established') errors.push(event.id + ': must not invent a date.');
     if (event.status !== 'provisional') errors.push(event.id + ': pilot entries must remain provisional.');
     if (!String(event.summary || '').trim()) errors.push(event.id + ': missing summary.');
