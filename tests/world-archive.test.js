@@ -44,3 +44,28 @@ test('World Archive UI exposes place, period, and calendar-date filters', () => 
   assert.match(app, /id="archive-to" type="date"/);
   assert.match(app, /archive-clear-filters/);
 });
+
+
+test('story lore metadata links only registered places and preserves unknown chronology', () => {
+  const context = vm.createContext({ window: {} });
+  for (const file of ['data-stories.js', 'data-stories-expansion.js']) {
+    vm.runInContext(fs.readFileSync(path.join(root, file), 'utf8'), context, { filename: file, timeout: 5000 });
+  }
+  const stories = vm.runInContext('STORIES', context);
+  const registry = loadData('data-world-registry.js');
+  const events = loadData('data-world-events.js').EPIPHANY_WORLD_EVENTS;
+  const placeById = new Map(registry.EPIPHANY_WORLD_PLACES.map(place => [place.id, place]));
+  const loreStories = stories.filter(story => story.lore);
+  assert.equal(loreStories.length, 6, 'only the six explicitly authored Low-Water Shore episodes currently carry archive lore');
+  for (const story of loreStories) {
+    assert.ok(placeById.has(story.lore.placeId), story.id + ' must point to a registered place');
+    assert.equal(story.lore.periodId, 'period-unassigned', story.id + ' must not invent a historical period');
+    assert.deepEqual(JSON.parse(JSON.stringify(story.lore.date)), { kind: 'unknown', label: 'Date not established' });
+    assert.equal(story.lore.dateLabel, 'Date not established');
+    const event = events.find(item => (item.storyIds || []).includes(story.id));
+    assert.ok(event, story.id + ' should have a corresponding archive event');
+    assert.equal(event.placeId, story.lore.placeId);
+    assert.equal(event.periodId, story.lore.periodId);
+    assert.equal(event.date.kind, story.lore.date.kind);
+  }
+});
