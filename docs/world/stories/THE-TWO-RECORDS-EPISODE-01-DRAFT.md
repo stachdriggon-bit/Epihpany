@@ -1,6 +1,6 @@
 # Story Pilot Draft — Episode 1: The Mismatch
 
-**Status:** Draft for editorial review; not app content and not canonized prose.  
+**Status:** Editorial reference for provisional playtest content now integrated in the app as `world-low-water-ep1`; not final canon.  
 **Series:** The Two Records at the Low-Water Shore (working title).  
 **Suggested level:** B1.  
 **Place:** OR-LOC-02 — The Low-Water Shore (provisional anchor). OR-CITY-04 (Ambrin) is a possible registry match, not a separate place in this story; see the Orath registry note.  
