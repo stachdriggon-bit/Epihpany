@@ -84,3 +84,19 @@ When a decision changes:
 | WD-033 | Until the Ambrin / Low-Water Shore identity is evidenced and explicitly decided, use OR-LOC-02 as the sole location reference for the six-episode pilot and do not create duplicate map locations, routes, or events; retain both source IDs meanwhile. | Accepted working method; identity remains open | This resolves the operational duplication risk, not the in-world identity. Do not claim the names are identical or separate without evidence. See WORLD-OVERVIEW.md. |
 | WD-034 | Treat EPIPHANY explicitly as a fantasy setting in which magic and wonder may shape daily life, craft, travel, ecology, and community decisions; define the behavior and limits of recurring phenomena before promoting them to canon. | Accepted creative direction; mechanics remain open | Does not establish a universal magic source, costs, schools, creature catalogue, or cause shared by all phenomena. Use MAGIC-AND-PHENOMENA.md; location-specific hooks there remain prompts, not canon. |
 | WD-035 | Magical ability exists among some characters, but is not universal; character-specific access and limits must be established rather than assumed. | Accepted creative direction; detailed mechanics remain open | Some characters may use, channel, study, or interact with magic; others cannot. This does not define a universal source, school, cost, or access method. Do not infer magical ability from rarity or narrative importance. See `MAGIC-AND-PHENOMENA.md`. |
+
+## WD-036 — Cosmic laws, restrictions, and anomalies
+
+**Status:** Accepted foundational principles; specific causes and mechanisms remain open.
+
+- Cosmic laws may be relevant both to restrictions affecting sorcerers and to anomalies in the world. Anomalies are the observable outcomes of interactions between those laws and the world's conditions.
+- Magic remains open-ended rather than organized into a finalized universal taxonomy of sorcerer classes. Magical access is character-specific, and not everyone can use magic.
+- Individual restrictions can alter or complicate how a sorcerer's ability operates; adapting to a restriction does not automatically remove it.
+- A visible hand symbol appears when a person becomes a sorcerer and remains fixed throughout life. It reveals only the category of the restriction, not the exact restriction, powers, skill, or mastery. Category names and number remain open.
+- Cosmic restrictions remain poorly understood even by the strongest sorcerers. Their relationship to individual restrictions and hand symbols is not established.
+- Unknown entities may exist, but their motives, limits, knowledge, and relationship to cosmic laws are open. No entity or single mechanism is assumed to explain every anomaly.
+- The cause of any particular anomaly must remain open unless evidence and an explicit decision establish it. For example, the Returning Current could hypothetically be caused by an unknown sorcerer's ability, but this is only a possibility, not canon.
+- Preserve the distinction between observed facts, in-world interpretations, hypotheses, and intentionally open questions.
+
+**Reference:** [Cosmic Laws, Magical Restrictions, and Anomalies](COSMIC-LAWS-AND-ANOMALIES.md).
+
