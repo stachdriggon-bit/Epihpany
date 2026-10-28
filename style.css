@@ -3359,7 +3359,7 @@ body.world-fullscreen #world-game .world-help-panel[hidden]{display:none!importa
 
 
 /* Desktop: use the keyboard for play; keep non-movement tools available via shortcuts. */
-@media (min-width:821px){
+@media (min-width:821px) and (hover:hover) and (pointer:fine){
   body.world-fullscreen #world-game .world-overlay-controls{display:none!important}
   body.world-fullscreen #world-game .world-help-panel{
     left:auto;right:16px;bottom:16px;width:min(390px,38vw);
