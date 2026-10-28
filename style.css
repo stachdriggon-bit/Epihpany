@@ -3530,3 +3530,60 @@ body.world-fullscreen #world-game .world-help-panel[hidden]{display:none!importa
     max-height:34dvh;
   }
 }
+
+
+/* Landscape touch HUD: remove the header surface entirely; keep only mission text and floating actions. */
+@media (max-width:1100px) and (orientation:landscape) and (hover:none){
+  body.world-fullscreen #world-game>.world-top{
+    display:grid;
+    background:transparent!important;
+    border:0!important;
+    box-shadow:none!important;
+    backdrop-filter:none!important;
+    -webkit-backdrop-filter:none!important;
+    border-radius:0!important;
+    padding:0!important;
+    left:8px;
+    right:8px;
+    top:max(5px,env(safe-area-inset-top));
+    grid-template-columns:minmax(0,1fr) auto;
+    gap:8px;
+  }
+  body.world-fullscreen #world-game .world-task-count{display:none!important}
+  body.world-fullscreen #world-game .world-instruction{
+    justify-self:start;
+    align-self:start;
+    width:fit-content;
+    max-width:min(58vw,560px);
+    padding:4px 7px;
+    border-radius:8px;
+    background:rgba(248,250,255,.72);
+    box-shadow:0 2px 8px rgba(15,24,40,.08);
+    pointer-events:auto;
+  }
+  body.world-fullscreen #world-game .world-instruction strong{
+    display:block;
+    font-size:clamp(11px,2.3vw,14px);
+    line-height:1.15;
+    -webkit-line-clamp:1;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+  body.world-fullscreen #world-game .world-top-actions{
+    justify-self:end;
+    align-self:start;
+    display:flex;
+    gap:4px;
+    pointer-events:auto;
+  }
+  body.world-fullscreen #world-game .world-top-actions button{
+    min-width:28px;
+    min-height:29px;
+    padding:4px 6px;
+    border:1px solid rgba(255,255,255,.72);
+    background:rgba(248,250,255,.76);
+    box-shadow:0 2px 8px rgba(15,24,40,.12);
+    color:#25263c;
+  }
+}
