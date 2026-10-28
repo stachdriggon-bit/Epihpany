@@ -83,7 +83,7 @@ Do not assume every location has a ruler, empire, founding myth, disaster, or su
 - **Institutions and community decisions:** A dispute concerns whether tolls should fund bridge maintenance or the crossing should remain free because it predates the current market. The final rules, decision-makers, and outcome are open.
 - **External connections:** News and languages pass through the crossing in the middle phase, but specific regions, routes, and dates are not established.
 - **Records and oral traditions:** Conflicting witness memories are a story possibility, not a documented event yet.
-- **Major local events:** None registered yet; create event IDs only when a specific episode or historical event is drafted.
+- **Major local events:** EVT-IL-001 — *Seven Breaths Beneath the Middle Arch* (accepted local story-scene; undated). See `EVENT-REGISTRY.md`.
 - **Accepted facts:** None beyond the stable anchor ID and the general worldbuilding rules.
 - **Provisional proposals:** Bridge construction changes the ferry trade; the crossing becomes a meeting point; a later road changes traffic patterns.
 - **Open questions:** River name and basin; toll authority; who paid for the bridge; how long the phases last; and which route later diverts traffic.
@@ -167,7 +167,7 @@ Do not assume every location has a ruler, empire, founding myth, disaster, or su
 - **Institutions and community decisions:** Water-sharing customs and maintenance duties become central to community life. Population change may strain an inherited agreement; no final law or authority has been established.
 - **External connections:** Travelers stop before crossing the uplands, but named trade links are not established.
 - **Records and oral traditions:** Maintenance records or inherited agreements are possible story evidence; none are yet specified as a concrete event.
-- **Major local events:** None registered yet.
+- **Major local events:** EVT-TH-001 — *The Thread That Climbed* (accepted local story-scene; undated). See `EVENT-REGISTRY.md`.
 - **Accepted facts:** Stable anchor ID and the requirement for plausible water balance.
 - **Provisional proposals:** Shared water infrastructure creates obligations; repairs and changing use can affect distribution.
 - **Open questions:** Spring recharge area; water quantity across seasons; downstream users; decision procedure for rationing; and terrace crops.
@@ -251,7 +251,7 @@ Do not assume every location has a ruler, empire, founding myth, disaster, or su
 - **Institutions and community decisions:** Water rationing and maintenance priorities can create disputes. The rules, emergency authority, and access rights remain open.
 - **External connections:** A visiting vessel may provide supplies, but its arrival is uncertain and must fit the island's routes and weather.
 - **Records and oral traditions:** Maintenance records could document repairs or rationing; none are yet established as a specific historical event.
-- **Major local events:** None registered yet.
+- **Major local events:** EVT-AZ-001 — *When the Stormglass Fell Silent* (accepted local story-scene; undated). See `EVENT-REGISTRY.md`.
 - **Accepted facts:** Stable anchor ID and the working principle that freshwater availability varies across Azmar.
 - **Provisional proposals:** Shared cistern maintenance shapes community obligations; a later water source or trade route may change local life.
 - **Open questions:** Rainfall; catchment area; cistern capacity; population; dry-season length; and water priority rules.
