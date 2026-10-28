@@ -299,3 +299,28 @@ test('story answer shuffling keeps Arabic options paired with their English choi
     assert.equal(prepared.answers_ar[index], originalArabic[originalIndex], 'Each Arabic answer must stay paired with its English answer.');
   }
 });
+
+
+test('Low-Water Shore world-story arc has six complete bilingual episodes', () => {
+  const { stories } = loadData();
+  const arc = stories.filter(story => story.lore && story.lore.seriesId === 'low-water-shore');
+  assert.equal(arc.length, 6, 'Expected exactly six Low-Water Shore episodes.');
+  const errors = [];
+  const episodeNumbers = arc.map(story => story.lore.episode).sort((a, b) => a - b);
+  if (episodeNumbers.join(',') !== '1,2,3,4,5,6') errors.push('Episode numbers must be exactly 1 through 6.');
+  for (const story of arc) {
+    const where = story.id;
+    if (story.lore.placeId !== 'OR-LOC-02') errors.push(where + ': must reference the single Low-Water Shore place ID.');
+    if (story.level !== 'B1') errors.push(where + ': expected B1 level for the pilot arc.');
+    if (!story.season || story.season.episode !== story.lore.episode) errors.push(where + ': season metadata does not match the lore episode.');
+    for (const [index, question] of (story.questions || []).entries()) {
+      const label = where + ' question ' + (index + 1);
+      if (!String(question.q_ar || '').trim()) errors.push(label + ': missing Arabic prompt.');
+      if (!String(question.explain_ar || '').trim()) errors.push(label + ': missing Arabic explanation.');
+      if (!Array.isArray(question.answers_ar) || question.answers_ar.length !== (question.answers || []).length) {
+        errors.push(label + ': Arabic options must align one-to-one with English options.');
+      }
+    }
+  }
+  assert.deepEqual(errors, [], errors.join('\\n'));
+});
