@@ -139,3 +139,49 @@ test('Word of the Day entries have complete Arabic meanings and examples', () =>
   }
   assert.deepEqual(errors, [], errors.join('\\n'));
 });
+
+test('every story page has English text and a non-empty Arabic translation', () => {
+  const { stories } = loadData();
+  const errors = [];
+  for (const [storyIndex, story] of stories.entries()) {
+    const where = `story[${storyIndex}] ${story.id || story.title || "(untitled)"}`;
+    if (!Array.isArray(story.pages) || story.pages.length === 0) {
+      errors.push(`${where}: expected at least one story page`);
+      continue;
+    }
+    for (const [pageIndex, page] of story.pages.entries()) {
+      const isTuple = Array.isArray(page);
+      const english = isTuple ? page[1] : page && page.text;
+      const arabic = isTuple ? page[2] : page && page.ar;
+      if (!String(english || '').trim()) errors.push(`${where}: page ${pageIndex + 1} has no English text`);
+      if (!String(arabic || '').trim()) errors.push(`${where}: page ${pageIndex + 1} has no Arabic translation`);
+    }
+  }
+  assert.deepEqual(errors, [], errors.join('\\n'));
+});
+
+test('every story has a non-empty comprehension question bank', () => {
+  const { stories } = loadData();
+  const errors = [];
+  for (const [index, story] of stories.entries()) {
+    const where = `story[${index}] ${story.id || story.title || "(untitled)"}`;
+    if (!Array.isArray(story.questions) || story.questions.length === 0) {
+      errors.push(`${where}: missing comprehension questions`);
+      continue;
+    }
+    for (const [questionIndex, question] of story.questions.entries()) {
+      if (Array.isArray(question)) {
+        if (!String(question[0] || '').trim()) errors.push(`${where}: question ${questionIndex + 1} has no prompt`);
+        if (!Array.isArray(question[1]) || question[1].length < 2) errors.push(`${where}: question ${questionIndex + 1} needs at least two answer choices`);
+        if (!Number.isInteger(question[2]) || question[2] < 0 || question[2] >= (question[1] || []).length) errors.push(`${where}: question ${questionIndex + 1} has an invalid answer index`);
+      } else {
+        if (!String(question.q || question.question || '').trim()) errors.push(`${where}: question ${questionIndex + 1} has no prompt`);
+        const answers = question.answers || question.options;
+        if (!Array.isArray(answers) || answers.length < 2) errors.push(`${where}: question ${questionIndex + 1} needs at least two answer choices`);
+        const correct = question.correct ?? question.answer;
+        if (!Number.isInteger(correct) || correct < 0 || correct >= (answers || []).length) errors.push(`${where}: question ${questionIndex + 1} has an invalid answer index`);
+      }
+    }
+  }
+  assert.deepEqual(errors, [], errors.join('\\n'));
+});
