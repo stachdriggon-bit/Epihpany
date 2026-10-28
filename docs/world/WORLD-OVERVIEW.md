@@ -158,7 +158,7 @@ Before adding a new fact, event, character, culture, or location:
 - [Timeline](TIMELINE.md)
 - [Civilizations and Societies](CIVILIZATIONS.md)
 - [Regional Life and Cultural Patterns](REGIONAL-LIFE-AND-CULTURAL-PATTERNS.md) — provisional daily-life proposals grounded in the current settlement and anchor registries.
-- [City Culture Profiles](CITY-CULTURE-PROFILES.md) — provisional profiles for all 30 approved settlement candidates; roles, customs, scenes, and magic prompts remain proposals unless separately accepted.
+- [Selected City Life and Local Cast](CITY-LIFE-AND-LOCAL-CAST.md) — five deeper city prototypes with proposed neighborhoods, gathering places, variable customs, and provisional characters; none is canon by default.
 - [Characters](CHARACTERS.md)
 - [Mysteries and Evidence](MYSTERIES-AND-EVIDENCE.md)
 - [Magic and Unusual Phenomena](MAGIC-AND-PHENOMENA.md)
