@@ -72,9 +72,10 @@ test('original portraits cover the full character roster and legendary reveals r
   const cards = read('data-cards.js');
   const portraits = read('assets/cards/epiphany-portraits.svg');
   const revealCss = read('cards.css');
-  for (const [name, art] of [['Aster','aster'],['Zujjaj','zujjaj'],['Hams','hams'],['Layla','layla'],['The Upward Shadow','shadow'],['Nibras','nibras'],['Yara','yara'],['Kaser','kaser'],['Nima','nima'],['Veya','veya'],['Mira','mira'],['Zayn','zayn']]) {
-    const cardLine = cards.split(String.fromCharCode(10)).find(line => line.includes('name:"' + name + '"'));
-    assert.ok(cardLine && cardLine.includes('art:"' + art + '"'), name + ' must link to its original portrait');
+  // Stable IDs identify characters; display names may change as the world is renamed.
+  for (const [id, art] of [['CHR-025','aster'],['CHR-067','zujjaj'],['CHR-070','hams'],['CHR-073','layla'],['CHR-075','shadow'],['CHR-005','nibras'],['CHR-006','yara'],['CHR-020','kaser'],['CHR-027','nima'],['CHR-029','veya'],['CHR-001','mira'],['CHR-007','zayn']]) {
+    const cardLine = cards.split(String.fromCharCode(10)).find(line => line.includes('id:"' + id + '",'));
+    assert.ok(cardLine && cardLine.includes('art:"' + art + '"'), id + ' must link to its original portrait');
     assert.match(portraits, new RegExp('<symbol id="' + art + '"'));
   }
   assert.match(revealCss, /cards-legendary-sheen/);
