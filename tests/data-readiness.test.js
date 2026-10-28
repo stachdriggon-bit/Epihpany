@@ -82,6 +82,18 @@ test('word mastery requires repeated demonstrated success, high confidence and t
 });
 
 
+test('cloud progress saves retain failed snapshots for online recovery and merge remote progress before writing', () => {
+  const account = fs.readFileSync(path.join(root, 'account.js'), 'utf8');
+  assert.match(account, /let pendingCloudProgress = null/);
+  assert.match(account, /pendingCloudProgress = snapshot;\s*saveTimer = setTimeout\(\(\) => flushSave\(snapshot\), 900\)/,
+    'Queueing a local snapshot should keep it available for a later retry.');
+  assert.match(account, /window\.addEventListener\('online',[\s\S]*?pendingCloudProgress\) flushSave\(pendingCloudProgress\)/,
+    'A restored connection should retry a retained snapshot.');
+  assert.match(account, /\.select\('progress'\)[\s\S]*?const latest = data && data\.progress[\s\S]*?mergeProgress\(snapshot, data\.progress\)/,
+    'Before a write, merge with the latest remote progress to reduce lost updates across devices.');
+  assert.match(account, /pendingCloudProgress === snapshot\) pendingCloudProgress = null/);
+});
+
 test('cloud progress saves are queued rather than dropped during an active sync', () => {
   const account = fs.readFileSync(path.join(root, 'account.js'), 'utf8');
   assert.match(account, /async function flushSave\(progress\) \{\s*if \(!client \|\| !currentUser\) return;\s*if \(syncing\) \{\s*clearTimeout\(saveTimer\);\s*saveTimer = setTimeout\(\(\) => flushSave\(progress\), 400\);/,
