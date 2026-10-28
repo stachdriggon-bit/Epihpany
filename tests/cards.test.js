@@ -134,3 +134,16 @@ test('summoning uses shared sound preferences and respects reduced motion', () =
   assert.match(html, /app\.js\?v=legendary-sfx-1/);
   assert.match(html, /cards\.js\?v=legendary-reveal-2/);
 });
+
+test('every character card points to an image file that exists in the repository', () => {
+  const context = { window: {} };
+  vm.runInNewContext(read('data-cards.js'), context);
+  const cards = context.window.EPIPHANY_CARD_DATA;
+  for (const card of cards.filter(item => item.category === 'characters')) {
+    assert.ok(card.image, card.id + ' must declare a portrait file');
+    assert.ok(
+      fs.existsSync(path.join(root, card.image)),
+      card.id + ' (' + card.name + ') references missing image: ' + card.image
+    );
+  }
+});
