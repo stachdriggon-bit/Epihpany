@@ -1,14 +1,14 @@
 # EPIPHANY — Provisional Magical Phenomena Catalog
 
 **Version:** 0.3  
-**Status:** Three original design proposals for story testing; none is accepted global canon yet. Their associated story drafts now use more distinct tension patterns: immediate crossing danger, careful observation under uncertainty, and a cistern reserve crisis.  
+**Status:** Three local magical phenomena accepted for story canon at their named anchor locations. Their causes and exact conditions remain open; no shared origin, global mechanism, or wider distribution is established.  
 **Purpose:** Test how magical phenomena can shape ordinary life without replacing evidence, geography, or character choice. Stable IDs are reserved for continuity if a proposal is retained.
 
-> These entries are author-facing proposals. A story draft can test them, but does not automatically make them accepted canon. Their effects are local to the named anchor unless later evidence and an explicit decision support a wider scope.
+> These entries are accepted local phenomena because the project owner approved the three story drafts. Their effects remain local to the named anchor unless later evidence and an explicit decision support a wider scope. Acceptance does not settle their causes, dates, or any connection to one another.
 
 ## MP-IL-001 — The Returning Current
 
-- **Status:** Provisional proposal
+- **Status:** Accepted local phenomenon
 - **Place:** IL-LOC-01 — The Three-Arch Ferry
 - **Design lens:** Place-bound; water; cyclical or conditional
 - **Observable effect:** On some evenings, a narrow ribbon of water beneath the middle stone arch briefly flows upstream against the river's main current. Local witnesses describe the interval as “seven breaths”; that is a traditional estimate, not a measured universal duration.
@@ -66,9 +66,9 @@
 
 The three proposals intentionally use different magical signatures and different kinds of community decision. Their similarities in involving water do **not** imply a shared origin or mechanism.
 
-## 5. Promotion rule
+## 5. Canon boundary and continuity rule
 
-Keep all three provisional until the project owner approves, revises, or rejects them after reviewing the story tests. If retained, update the relevant anchor and local-history records by reference to these IDs; only register story events after the story text is approved. Do not add calendar dates merely to make the records look complete.
+The project owner has approved all three story drafts and their local phenomena. Their associated story-scene events are registered in `EVENT-REGISTRY.md` as undated accepted records. Keep each phenomenon tied to its named anchor; do not infer a shared source, mechanism, era, or wider effect. The cause, frequency, and detailed conditions remain open. Do not add calendar dates merely to make the records look complete.
 
 ## Related references
 
