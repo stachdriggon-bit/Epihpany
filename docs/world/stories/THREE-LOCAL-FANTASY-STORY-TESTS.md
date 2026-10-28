@@ -142,13 +142,13 @@ The wonder had not measured the water for them. It had reminded them to pay atte
 
 ---
 
-## 3. When the Cistern Fell Silent
+## 3. When the Stormglass Fell Silent
 
 **Place:** AZ-LOC-02 — The Rain-Cistern Island  
 **Phenomenon:** MP-AZ-001 — The Stormglass Echo  
-**Story focus:** A familiar magical sound disappears just as water becomes precious
+**Story focus:** A familiar magical sound disappears during a period of scarce water
 
-The cistern had a voice, though it never spoke a word.
+The cistern had a voice, though it never spoke a word. Evren, a resonance tinkerer, had been helping the keeper inspect the fitting, but neither of them treated its sound as a precise measure.
 
 When the keeper tapped the small grey stone fitted into its wall, a faint echo answered: the sound of the storm that had last filled the cistern, folded small enough to hide inside a thumb-sized stone. As the water sank lower, the echo changed pitch. Children tried to hum it. Boat crews listened before taking on supplies. The keepers compared it with their marked measuring rod.
 
@@ -156,7 +156,7 @@ They called the fitting stormglass, even though it was stone, rough at the edges
 
 One morning, the keeper tapped it and heard nothing.
 
-He tried again, more gently. A dry click came from the cracked fitting. A hairline fracture had spread across its face, so he lifted it from the wall before it broke apart in the socket.
+He tried again, more gently. A dry click came from the cracked fitting. Evren listened closely, but the fracture offered no useful echo. A hairline crack had spread across its face, so the keeper lifted it from the wall before it broke apart in the socket.
 
 By noon, the silence had become everyone's business.
 
@@ -180,7 +180,7 @@ They argued over the ration. Drinking and cooking came first. Gardens would rece
 
 The decision pleased no one completely. A gardener left the meeting with her jaw clenched. The captain said his crew might have to change its route. But the rules were visible, and the water was measured rather than guessed.
 
-Several days later, the fitting was repaired and set back into the wall. The keeper tapped it once.
+Several days later, Evren helped the keeper refit the repaired stone. The keeper tapped it once.
 
 A thin echo answered, trembling through the stone. Its pitch was lower than the sound people remembered. The record keeper checked the rod before she wrote anything on the board.
 
