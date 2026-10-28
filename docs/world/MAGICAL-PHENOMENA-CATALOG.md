@@ -1,7 +1,7 @@
 # EPIPHANY — Provisional Magical Phenomena Catalog
 
-**Version:** 0.2  
-**Status:** Three original design proposals for story testing; none is accepted global canon yet. Their associated story drafts have been revised for stronger sensory detail and character distinction.  
+**Version:** 0.3  
+**Status:** Three original design proposals for story testing; none is accepted global canon yet. Their associated story drafts now use more distinct tension patterns: immediate crossing danger, careful observation under uncertainty, and a cistern reserve crisis.  
 **Purpose:** Test how magical phenomena can shape ordinary life without replacing evidence, geography, or character choice. Stable IDs are reserved for continuity if a proposal is retained.
 
 > These entries are author-facing proposals. A story draft can test them, but does not automatically make them accepted canon. Their effects are local to the named anchor unless later evidence and an explicit decision support a wider scope.
