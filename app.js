@@ -5340,7 +5340,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
   document.addEventListener('click',e=>{
     if(e.target.closest('[data-monthly-start]')){startMonthlyAssessment();return;}
     const answer=e.target.closest('[data-monthly-answer]');
-    if(answer&&monthlyAssessment){if(monthlyAssessment.answered)return;monthlyAssessment.answered=true;$('#placement-content [data-monthly-answer]').forEach(button=>{button.disabled=true;});const q=monthlyAssessment.questions[monthlyAssessment.index];if(!q)return;monthlyAssessment.answers.push({level:q.placementLevel||'A1',skill:q.placementSkill,ok:Number(answer.dataset.monthlyAnswer)===q.correct});monthlyAssessment.index++;if(monthlyAssessment.index<monthlyAssessment.questions.length)renderMonthlyAssessmentQuestion();else finishMonthlyAssessment();return;}
+    if(answer&&monthlyAssessment){if(monthlyAssessment.answered)return;monthlyAssessment.answered=true;$$('#placement-content [data-monthly-answer]').forEach(button=>{button.disabled=true;});const q=monthlyAssessment.questions[monthlyAssessment.index];if(!q)return;monthlyAssessment.answers.push({level:q.placementLevel||'A1',skill:q.placementSkill,ok:Number(answer.dataset.monthlyAnswer)===q.correct});monthlyAssessment.index++;if(monthlyAssessment.index<monthlyAssessment.questions.length)renderMonthlyAssessmentQuestion();else finishMonthlyAssessment();return;}
     const apply=e.target.closest('[data-monthly-apply]');if(apply){applyMonthlyAssessmentLevel(apply.dataset.monthlyApply);return;}
     if(e.target.closest('[data-monthly-close]')){closePlacement();return;}
   });
