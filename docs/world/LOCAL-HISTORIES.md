@@ -1,7 +1,7 @@
 # EPIPHANY — Local History Register
 
 **Version:** 0.1  
-**Status:** Working structure with one provisional pilot-location seed; not a finalized historical gazetteer.  
+**Status:** Working structure with ten provisional anchor-location seeds; not a finalized historical gazetteer.  
 **Purpose:** Build history from particular places before connecting regions or proposing broad world history.
 
 ## 1. Method
@@ -60,7 +60,7 @@ Do not assume every location has a ruler, empire, founding myth, disaster, or su
 - **Institutions and community decisions:** The pilot premise involves a practical local decision affected by records of lake level. The responsible institution, decision procedure, and affected groups still need to be specified in the episode drafts.
 - **External connections:** None yet established for this history. Add trade, migration, or political influence only when the route or mechanism is recorded.
 - **Records and oral traditions:** The pilot plans two local records that appear to differ. Their authors, purposes, observation points, methods, and time coverage must be authored before any interpretation is treated as reliable.
-- **Major local events:** The six entries in `EVENT-REGISTRY.md` associated with the provisional *The Two Records at the Low-Water Shore* pilot. Their IDs and episode sequence must be taken from the registry itself; this document does not create substitute event IDs.
+- **Major local events:** EVT-OR-001 through EVT-OR-006 in `EVENT-REGISTRY.md`, all provisional story-scene records for the six pilot episodes.
 - **Character and story links:** Tarin Vell (OR-CHAR-001), Sella Orin (OR-CHAR-002), and the six-episode provisional pilot.
 - **Accepted facts:** The anchor and story roadmap use OR-LOC-02 as the pilot's sole place reference. The lake-level discrepancy is a story premise, not accepted objective history.
 - **Provisional proposals:** The place has experienced varying lake levels; residents have accumulated records and memories; a new comparable observation may support a practical decision.
