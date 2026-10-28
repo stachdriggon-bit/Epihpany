@@ -4753,7 +4753,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     WORLD.baseObjects=WORLD.objects.map(o=>({...o}));
     WORLD.step=0;WORLD.picked=new Set();WORLD.given=new Set();WORLD.carried=null;WORLD.mode='play';WORLD.usedHelp=false;WORLD.moves=0;WORLD.target=null;WORLD.bonusGiven=false;WORLD.dialogueComplete=false;worldRenderPlay();
   }
-  function startWorld(taskId){if(typeof WORLD_DATA==='undefined'){window.EPIPHANY_LAZY_LOAD('world').then(()=>startWorld(taskId)).catch(()=>toast('World could not load. Connect to the internet and try again.'));return;}if(WORLD&&WORLD.raf)cancelAnimationFrame(WORLD.raf);
+  function startWorld(taskId){if(typeof WORLD_DATA==='undefined'){window.EPIPHANY_LAZY_LOAD('world').then(()=>startWorld(taskId)).catch(()=>toast('World could not load. Connect to the internet and try again.'));return;}if(WORLD){if(WORLD.raf)cancelAnimationFrame(WORLD.raf);if(WORLD.idle){clearTimeout(WORLD.idle);WORLD.idle=0;}}stopWorldHold();try{worldCancelAuto();}catch{}worldSwipeStart=null;
     // Opening the World tab should only build the region menu; do not initialise
     // task state, clone maps/objects, or prepare gameplay until a region is chosen.
     if(!taskId){WORLD={mode:'regions',region:null,regionName:null,raf:0,player:{color:'#FFC531'},outfit:'#6C5CE7',showTranslation:!!state.helpArabic,tries:0,usedHelp:false,moves:0,step:0,carried:null,picked:new Set(),given:new Set(),stars:Object.values((state.world&&state.world.stars)||{}).reduce((a,v)=>a+(Number(v)||0),0),progress:{}};document.body.classList.add('world-fullscreen');lockPage(true);$$('[data-view]').forEach(b=>b.setAttribute('aria-current',b.dataset.view==='world'?'page':'false'));$('#world-game').hidden=false;worldShowRegions();return;}
