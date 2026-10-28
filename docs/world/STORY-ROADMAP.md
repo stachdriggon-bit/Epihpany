@@ -168,3 +168,12 @@ The six-episode arc is now integrated in the app as **provisional playtest conte
 3. Approve character names and records, then review the prose and bilingual questions/explanations as a complete set.
 4. Only after review, add meaningful World/card links; do not create a second town for Ambrin.
 5. Keep the present learning stories available; do not replace them wholesale.
+
+
+## 9. World Archive pilot
+
+The first event registry and an in-app **World Archive** view provide a source-linked pilot for the Low-Water Shore arc. The archive references existing story IDs rather than copying story content. Each event has a stable event ID, place ID, date precision, evidence type, provisional status, and story link.
+
+No calendar dates or era have been invented. The six entries are ordered only by the episode sequence of the provisional story arc; the interface labels this as episode order, not a dated historical chronology. The relationship between OR-LOC-02 and OR-CITY-04 remains unresolved.
+
+Next: expand the place registry from approved world references, add only evidence-backed events, then support date ranges/eras and multiple stories per event. Do not imply exact dates before the calendar has been established.
