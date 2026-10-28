@@ -90,7 +90,7 @@ These labels do not imply that every region shares the same historical phases.
 
 **Continuity anchors:** The lake's water balance must remain plausible; do not assume it is a world-defining anomaly simply because it fluctuates.
 
-**Registry overlap:** Orath candidate city **OR-CITY-04 — Ambrin** may refer to this same settlement. Until reconciled, use **OR-LOC-02** as the story/location reference and do not create a second town, route, or history for Ambrin. The final decision about whether Ambrin becomes the settlement name remains open.
+**Registry reconciliation (current rule):** **OR-CITY-04 — Ambrin** is a potentially overlapping settlement record, but the existing material does not prove whether it is the same place as this anchor or a distinct nearby place. Use **OR-LOC-02** as the sole reference for the six-episode pilot. Do not map both as separate towns or duplicate routes/events. Keep both IDs until a final identity decision is recorded; this rule prevents duplicate content without declaring the names identical. See [Unified World Overview](WORLD-OVERVIEW.md).
 
 ---
 
