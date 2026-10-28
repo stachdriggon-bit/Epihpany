@@ -3957,7 +3957,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     MG.attempts++; const [a, b] = MG.open.map(k => MG.cards[k]);
     if (a.n === b.n && a.kind !== b.kind) { MG.matched.add(a.n); MG.open = []; MG.score = MG.matched.size; miniMatchRender(); if (MG.matched.size === MG.total) setTimeout(() => { if (MG && MG.type === 'match') miniFinish(String(MG.attempts)); }, 700); return; }
     MG.lock = true; miniMatchRender(); sfx('no');
-    setTimeout(() => { if (!MG) return; MG.open = []; MG.lock = false; miniMatchRender(); }, 950);
+    setTimeout(() => { if (!MG || MG.type !== 'match') return; MG.open = []; MG.lock = false; miniMatchRender(); }, 950);
   }
 
   /* Directions */
