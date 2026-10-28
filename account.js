@@ -145,7 +145,14 @@
     if (error) throw error;
   }
   async function syncUserProgress(user) {
-    if (!client || !user || syncing) return;
+    if (!client || !user) return;
+    if (syncing) {
+      // An account can change while another account is syncing; do not drop the new user's sync.
+      setTimeout(() => {
+        if (currentUser?.id === user.id) syncUserProgress(user);
+      }, 400);
+      return;
+    }
     syncing = true;
     status('Loading your saved progress…', 'loading');
     try {
@@ -157,6 +164,8 @@
         .eq('user_id', user.id)
         .maybeSingle();
       if (error) throw error;
+      // Ignore stale responses if the user signed out or switched accounts during the request.
+      if (currentUser?.id !== user.id) return;
 
       let nextProgress;
       if (data && data.progress && typeof data.progress === 'object') {
