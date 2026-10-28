@@ -27,6 +27,11 @@ This folder contains editorial references for story content linked to the worldb
 6. Only then implement the series in the live story data and add meaningful World/card links.
 
 
+## Local fantasy story tests
+
+- [Three Local Fantasy Story Tests](THREE-LOCAL-FANTASY-STORY-TESTS.md) — three provisional stories testing MP-IL-001, MP-TH-001, and MP-AZ-001. They are not yet registered as historical events; IDs should be added after approval.
+- [Provisional Magical Phenomena Catalog](../MAGICAL-PHENOMENA-CATALOG.md) — behavior, limits, open questions, and continuity guardrails for the three proposed phenomena.
+
 ## Event registry links
 
 The six pilot episode drafts are indexed as provisional story-scene records **EVT-OR-001** through **EVT-OR-006** in [the Master Event Registry](../EVENT-REGISTRY.md). They follow the episode sequence only and do not establish a calendar date or final historical canon.

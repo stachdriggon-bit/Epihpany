@@ -134,7 +134,15 @@ Do not add exact dates merely to populate a timeline.
 6. Add event IDs and timeline links after the story text is settled.
 7. Promote a proposal to accepted canon only through an explicit owner decision and the Decision Log.
 
-## 10. Related references
+## 10. First test set
+
+The first three proposals and their short story tests are recorded separately so that design prompts are not mistaken for established rules:
+- [Provisional Magical Phenomena Catalog](MAGICAL-PHENOMENA-CATALOG.md)
+- [Three Local Fantasy Story Tests](stories/THREE-LOCAL-FANTASY-STORY-TESTS.md)
+
+These drafts remain provisional until reviewed by the project owner.
+
+## 11. Related references
 
 - [Master Content Bible](MASTER-CONTENT-BIBLE.md)
 - [Unified World Overview](WORLD-OVERVIEW.md)
