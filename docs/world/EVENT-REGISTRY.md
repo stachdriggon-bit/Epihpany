@@ -141,3 +141,53 @@ These IDs describe the current six episode drafts. They are **story-scene record
 ## Registry maintenance note
 
 If an episode changes, update its event record without recycling the ID. If the story is removed or materially rewritten, mark the affected record superseded or revise its status and source references. A later accepted historical event may reuse this event's evidence only after an explicit canon decision; a story-scene record does not become accepted history automatically.
+
+
+## Approved local fantasy story events
+
+These three records were explicitly approved by the project owner as **local story-scene canon**. They remain undated; approval does not make them independently verified history. Each is confined to its listed anchor and phenomenon. No shared origin, wider geographic effect, or common era is implied.
+
+### EVT-IL-001 — Seven Breaths Beneath the Middle Arch
+
+- **Title:** Seven Breaths Beneath the Middle Arch
+- **Place ID:** IL-LOC-01
+- **Date:** `kind: unknown`; no calendar date or era assigned
+- **Status:** accepted
+- **Evidence type:** story-scene
+- **Story ID:** `world-seven-breaths-beneath-middle-arch`
+- **Phenomenon ID:** MP-IL-001 — The Returning Current
+- **Summary:** During a dangerous ferry crossing, a narrow ribbon of river water briefly flows upstream beneath the middle arch and pulls the ferry rope sideways. Mira helps bring the crossing under control. The event prompts a dispute over maintenance costs; a time-limited levy on loaded commercial carts is proposed with public accounting and review.
+- **What is established in this story:** The local reverse-flow occurs and can make the crossing dangerous; the community considers a bounded, reviewable response to repair costs.
+- **What is not established:** The phenomenon's cause or frequency, any exact date, a wider river effect, or a universal magical rule.
+- **Knowledge boundary:** The characters respond to the observed hazard; they do not discover its ultimate cause.
+- **Source:** `stories/THREE-LOCAL-FANTASY-STORY-TESTS.md`, “Seven Breaths Beneath the Middle Arch”.
+
+### EVT-TH-001 — The Thread That Climbed
+
+- **Title:** The Thread That Climbed
+- **Place ID:** TH-LOC-02
+- **Date:** `kind: unknown`; no calendar date or era assigned
+- **Status:** accepted
+- **Evidence type:** story-scene
+- **Story ID:** `world-the-thread-that-climbed`
+- **Phenomenon ID:** MP-TH-001 — The Climbing Thread
+- **Summary:** During a period of reduced spring flow, Evin investigates accusations around the brief uphill movement of a thread-thin line of water. He and local residents find roots and silt obstructing a side passage, improving flow without fully explaining the spring's shortage. The community agrees to record flow and rotate water shares and repair duties.
+- **What is established in this story:** The brief climbing-water effect is observed; a physical obstruction affects one channel; the obstruction does not fully explain the weak supply.
+- **What is not established:** The phenomenon's cause, the complete cause of the spring shortage, or a universal diagnostic power.
+- **Knowledge boundary:** Evin records both findings and uncertainty; the phenomenon is not treated as a precise gauge or proof of guilt.
+- **Source:** `stories/THREE-LOCAL-FANTASY-STORY-TESTS.md`, “The Thread That Climbed”.
+
+### EVT-AZ-001 — When the Stormglass Fell Silent
+
+- **Title:** When the Stormglass Fell Silent
+- **Place ID:** AZ-LOC-02
+- **Date:** `kind: unknown`; no calendar date or era assigned
+- **Status:** accepted
+- **Evidence type:** story-scene
+- **Story ID:** `world-when-the-stormglass-fell-silent`
+- **Phenomenon ID:** MP-AZ-001 — The Stormglass Echo
+- **Summary:** When a cracked resonant stone fitting falls silent, residents fear their communal cistern is empty. A marked measuring rod shows that water remains, while inspection reveals an ordinary leak. The community repairs the leak and adopts transparent rationing that prioritizes drinking and cooking, reduces garden shares, and allows a limited sale to visiting crews only after household allotments.
+- **What is established in this story:** The maintained fitting can provide a rough acoustic clue but is not an exact measure; its silence does not mean the cistern is empty; direct measurement, inspection, and collective rationing remain necessary.
+- **What is not established:** The fitting's origin, exact accuracy, future weather, or any wider magical mechanism.
+- **Knowledge boundary:** The characters do not treat the echo as a purity test, exact volume reading, or forecast.
+- **Source:** `stories/THREE-LOCAL-FANTASY-STORY-TESTS.md`, “When the Stormglass Fell Silent”.
