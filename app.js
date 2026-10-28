@@ -4049,7 +4049,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     const place = el.closest('[data-mg-place]');
     if (place && MG.type === 'order') { const r = MG.rounds[MG.i]; if (MG.answered) return true; const k = Number(place.dataset.mgPlace); r.pool = r.pool.filter(v => v !== k); r.placed.push(k); miniOrderRender(); return true; }
     const un = el.closest('[data-mg-unplace]');
-    if (un && MG.type === 'order') { const r = MG.rounds[MG.i]; if (MG.answered) return true; const p = Number(un.dataset.mgUnplace), moved = r.placed.splice(p); r.pool.push(...moved); miniOrderRender(); return true; }
+    if (un && MG.type === 'order') { const r = MG.rounds[MG.i]; if (MG.answered) return true; const p = Number(un.dataset.mgUnplace), moved = r.placed.splice(p, 1); r.pool.push(...moved); miniOrderRender(); return true; }
     if (el.closest('#mg-check')) { miniOrderCheck(); return true; }
     const flip = el.closest('[data-mg-flip]'); if (flip && MG.type === 'match') { miniFlip(Number(flip.dataset.mgFlip)); return true; }
     const blk = el.closest('[data-mg-block]'); if (blk && MG.type === 'directions') { const [cx, cy] = blk.dataset.mgBlock.split(',').map(Number); miniDirAnswer(cx, cy); return true; }
