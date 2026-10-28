@@ -86,7 +86,7 @@ Do not assume every location has a ruler, empire, founding myth, disaster, or su
 - **Major local events:** None registered yet; create event IDs only when a specific episode or historical event is drafted.
 - **Accepted facts:** None beyond the stable anchor ID and the general worldbuilding rules.
 - **Provisional proposals:** Bridge construction changes the ferry trade; the crossing becomes a meeting point; a later road changes traffic patterns.
-- **Open questions:** Which settlement registry entry is associated with this anchor; river name and basin; toll authority; who paid for the bridge; how long the phases last; and which route later diverts traffic.
+- **Open questions:** River name and basin; toll authority; who paid for the bridge; how long the phases last; and which route later diverts traffic.
 - **Continuity checks:** Bridge damage must persist until repaired; floods affect access; the crossing must be physically plausible on the final river map.
 - **Sources:** `ANCHOR-LOCATIONS.md`; `GEOGRAPHIC-FOUNDATION.md`; `TIMELINE.md`.
 
@@ -107,7 +107,7 @@ Do not assume every location has a ruler, empire, founding myth, disaster, or su
 - **Major local events:** None registered yet.
 - **Accepted facts:** None beyond the stable anchor ID and general water/continuity rules.
 - **Provisional proposals:** Market activity follows a seasonal travel window; agreements regulate timing; a later road changes some traffic.
-- **Open questions:** Wadi name and catchment; reliable water sources for any permanent residents; downstream users; who can authorize structures; how seasonal market dates are agreed; and which settlement registry entry, if any, is the anchor's town.
+- **Open questions:** Wadi name and catchment; reliable water sources for any permanent residents; downstream users; who can authorize structures; and how seasonal market dates are agreed.
 - **Continuity checks:** Do not treat a dry channel as safe; any permanent settlement needs a plausible water source; a structure's effects must fit the watershed model.
 - **Sources:** `ANCHOR-LOCATIONS.md`; `GEOGRAPHIC-FOUNDATION.md`; `TIMELINE.md`.
 
@@ -128,7 +128,7 @@ Do not assume every location has a ruler, empire, founding myth, disaster, or su
 - **Major local events:** None registered yet.
 - **Accepted facts:** None beyond the stable anchor ID and general continuity rules.
 - **Provisional proposals:** Route reliability and economic importance change over time; a newer route may draw away traffic.
-- **Open questions:** Pass name and precise location; weather-record method; who maintains the station; seasonal closure practices; which route later competes with it; and the matching settlement registry entry.
+- **Open questions:** Pass name and precise location; weather-record method; who maintains the station; seasonal closure practices; and which route later competes with it.
 - **Continuity checks:** Travel times depend on season and route condition; elevation and weather must match the physical map; information from distant places arrives only through plausible routes or records.
 - **Sources:** `ANCHOR-LOCATIONS.md`; `GEOGRAPHIC-FOUNDATION.md`; `TIMELINE.md`.
 
@@ -149,7 +149,7 @@ Do not assume every location has a ruler, empire, founding myth, disaster, or su
 - **Major local events:** None registered yet.
 - **Accepted facts:** Stable anchor ID and the general continuity rules only.
 - **Provisional proposals:** Forest-edge settlement expands, a lantern route becomes locally important, and abandoned plots are reclaimed over time.
-- **Open questions:** Potential overlap with Talwen (IL-CITY-03); forest species and moisture; who maintains the path; whether cultivated plots are privately held or shared; and how the route connects to the final map.
+- **Open questions:** Forest species and moisture; who maintains the path; whether cultivated plots are privately held or shared; and how the route connects to the final map.
 - **Continuity checks:** Forest extent must fit the climate model; path changes should have plausible causes; do not link every unusual forest event to one mystery.
 - **Sources:** `ANCHOR-LOCATIONS.md`; `CITIES-ILMAR.md`; `GEOGRAPHIC-FOUNDATION.md`; `TIMELINE.md`.
 
@@ -170,7 +170,7 @@ Do not assume every location has a ruler, empire, founding myth, disaster, or su
 - **Major local events:** None registered yet.
 - **Accepted facts:** Stable anchor ID and the requirement for plausible water balance.
 - **Provisional proposals:** Shared water infrastructure creates obligations; repairs and changing use can affect distribution.
-- **Open questions:** Spring recharge area; water quantity across seasons; downstream users; decision procedure for rationing; terrace crops; and whether a named settlement record overlaps this anchor.
+- **Open questions:** Spring recharge area; water quantity across seasons; downstream users; decision procedure for rationing; and terrace crops.
 - **Continuity checks:** A spring requires a plausible recharge area; do not portray all Tharima as uniformly dry or all uplands as water-rich.
 - **Sources:** `ANCHOR-LOCATIONS.md`; `CITIES-THARIMA.md`; `GEOGRAPHIC-FOUNDATION.md`; `TIMELINE.md`.
 
@@ -191,7 +191,7 @@ Do not assume every location has a ruler, empire, founding myth, disaster, or su
 - **Major local events:** None registered yet.
 - **Accepted facts:** Stable anchor ID and its broad coastal-harbor concept only.
 - **Provisional proposals:** Repeated voyages increase the dock's importance; improved routes later reduce it.
-- **Open questions:** Harbor name; coastline and shelter geometry; provisioning sources; winter access; maintenance responsibility; and possible overlap with a named Nirvan settlement.
+- **Open questions:** Coastline and shelter geometry; provisioning sources; winter access; and maintenance responsibility.
 - **Continuity checks:** Seasonal conditions must fit the climate model; the harbor's shelter must be geographically plausible; no vessel should arrive from a distant location without a viable route.
 - **Sources:** `ANCHOR-LOCATIONS.md`; `CITIES-NIRVAN.md`; `GEOGRAPHIC-FOUNDATION.md`; `TIMELINE.md`.
 
@@ -212,7 +212,7 @@ Do not assume every location has a ruler, empire, founding myth, disaster, or su
 - **Major local events:** None registered yet.
 - **Accepted facts:** Stable anchor ID and the archive's intended practical function only.
 - **Provisional proposals:** Record keeping supports cooperation, but records preserve viewpoints and conventions as well as facts.
-- **Open questions:** Who can add or copy entries; how boundaries were measured; what materials were available in each period; whether the archive has public access; and potential overlap with a named settlement.
+- **Open questions:** Who can add or copy entries; how boundaries were measured; what materials were available in each period; and whether the archive has public access.
 - **Continuity checks:** Forest ecology must fit the climate model; preserve ambiguity in old records rather than forcing every conflict into deliberate deception.
 - **Sources:** `ANCHOR-LOCATIONS.md`; `CITIES-NIRVAN.md`; `GEOGRAPHIC-FOUNDATION.md`; `TIMELINE.md`.
 
@@ -233,7 +233,7 @@ Do not assume every location has a ruler, empire, founding myth, disaster, or su
 - **Major local events:** None registered yet.
 - **Accepted facts:** Stable anchor ID and the local convention of seven moorings only as a design concept.
 - **Provisional proposals:** The harbor's importance changes as vessel sizes and routes change.
-- **Open questions:** Freshwater source; channel depth and tide behavior; which island groups it connects; marker maintenance; and potential overlap with an existing Azmar settlement record.
+- **Open questions:** Freshwater source; channel depth and tide behavior; which island groups it connects; and marker maintenance.
 - **Continuity checks:** Freshwater and supplies must be plausible; navigation depends on vessel and weather; do not treat the number seven as magical.
 - **Sources:** `ANCHOR-LOCATIONS.md`; `CITIES-AZMAR.md`; `GEOGRAPHIC-FOUNDATION.md`; `TIMELINE.md`.
 
@@ -254,7 +254,7 @@ Do not assume every location has a ruler, empire, founding myth, disaster, or su
 - **Major local events:** None registered yet.
 - **Accepted facts:** Stable anchor ID and the working principle that freshwater availability varies across Azmar.
 - **Provisional proposals:** Shared cistern maintenance shapes community obligations; a later water source or trade route may change local life.
-- **Open questions:** Rainfall; catchment area; cistern capacity; population; dry-season length; water priority rules; and potential overlap with an existing settlement record.
+- **Open questions:** Rainfall; catchment area; cistern capacity; population; dry-season length; and water priority rules.
 - **Continuity checks:** Freshwater supply must match rainfall, storage, population, and trade; local ecology and livelihoods must vary across the archipelago.
 - **Sources:** `ANCHOR-LOCATIONS.md`; `CITIES-AZMAR.md`; `GEOGRAPHIC-FOUNDATION.md`; `TIMELINE.md`.
 
