@@ -100,6 +100,8 @@ test('cloud account sync retries after an in-flight sync and ignores stale accou
     'A new account sync must not be dropped while another user is syncing.');
   assert.match(account, /\.maybeSingle\(\);\s*if \(error\) throw error;\s*\/\/ Ignore stale responses[\s\S]*?if \(currentUser\?\.id !== user\.id\) return;/,
     'A late response for a previous account must not replace the current user’s local progress.');
+  assert.match(account, /onAuthStateChange\(\(event, session\) => \{\s*const nextUser = session && session\.user \? session\.user : null;\s*if \(currentUser\?\.id !== nextUser\?\.id\) \{\s*\/\/ Never carry a queued snapshot[\s\S]*?pendingCloudProgress = null;/,
+    'Queued progress from one account must not be uploaded to another account.');
 });
 
 test('cloud progress saves are queued rather than dropped during an active sync', () => {
