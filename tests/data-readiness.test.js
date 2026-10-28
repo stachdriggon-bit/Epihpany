@@ -37,3 +37,14 @@ test('the core-data guard runs before app initialization', () => {
   assert.ok(guard >= 0, 'core-data guard should exist');
   assert.ok(selectors > guard, 'core-data guard should run before DOM-dependent app setup');
 });
+
+
+test('Advanced English quiz results feed the reading/nuance adaptive skill, not vocabulary', () => {
+  const app = fs.readFileSync(path.join(root, 'app.js'), 'utf8');
+  assert.match(
+    app,
+    /G\.type==='story'\?'conversation':G\.type==='advanced'\?'reading':'vocabulary'/,
+    'Advanced questions assess nuance and comprehension, so they should inform reading adaptation.'
+  );
+  assert.match(app, /const allowed = \['vocabulary','grammar','listening','conversation','reading','spelling'\]/);
+});
