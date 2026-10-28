@@ -2,6 +2,7 @@
 window.EPIPHANY_CARD_DATA = [
   {id:"CHR-001",category:"characters",name:"Mira",title:"Wayfinder",rarity:"Epic",symbol:"⌖",palette:"map",image:"Mira55.jfif",art:"mira",description:"A practical guide who reads maps and helps travelers make sense of their routes."},
   {id:"CHR-005",category:"characters",name:"Nibras",title:"Crystal Echo",rarity:"Epic",symbol:"◇",palette:"crystal",image:"nibras.PNG",art:"nibras",description:"A crystalline keeper of echoes that never preserve the whole truth."},
+  {id:"CHR-006",category:"characters",name:"Yara",title:"Character",rarity:"Uncommon",symbol:"◇",palette:"mist",art:"yara",description:"A character from the world of EPIPHANY."},
   {id:"CHR-007",category:"characters",name:"Zayn",title:"Dune Navigator",rarity:"Common",symbol:"⌁",palette:"dune",image:"zayn.PNG",art:"zayn",description:"A desert navigator who trusts wind, footprints and shifting dunes as much as maps."},
   {id:"CHR-009",category:"characters",name:"Lina",title:"Character",rarity:"Uncommon",symbol:"⌁",palette:"map",image:"lina.jpg",description:"A character from the world of EPIPHANY."},
   {id:"CHR-011",category:"characters",name:"Nadine",title:"Character",rarity:"Common",symbol:"❋",palette:"pact",image:"nadine.PNG",description:"A character from the world of EPIPHANY."},
