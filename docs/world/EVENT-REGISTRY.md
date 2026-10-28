@@ -28,3 +28,11 @@ The relationship between **OR-LOC-02** and **OR-CITY-04 — Ambrin** remains unr
 4. Distinguish an event from a later account of it.
 5. Keep event time, in-world knowledge time, and player discovery time separate.
 6. Link every archive claim to a story or other evidence record.
+
+## Location-history integration
+
+Use [Local History Register](LOCAL-HISTORIES.md) to build the history of each place from its existing stable location ID. A location history summarizes supported changes and open questions; it must reference event IDs from this registry rather than invent parallel event IDs or copy event records. The [Timeline Framework](TIMELINE.md) is a view and method, not a substitute for these source records.
+
+## Canon boundary for the pilot
+
+The six Low-Water Shore entries remain provisional and follow only the episode sequence. They do not establish a calendar date, a universal era, the lake's ultimate cause, a world-scale mystery, or an identity decision about Ambrin. If an episode draft changes, update the corresponding registry entry and check the location history and any dependent archive views.
