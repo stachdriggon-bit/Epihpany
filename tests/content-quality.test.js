@@ -190,19 +190,28 @@ test('story comprehension questions do not reveal a fixed correct-answer positio
   const { stories } = loadData();
   const positions = new Map();
   let count = 0;
+  const fixedStories = [];
   for (const story of stories) {
+    const storyPositions = new Set();
+    let storyQuestionCount = 0;
     for (const question of story.questions || []) {
       const answers = Array.isArray(question) ? question[1] : (question.answers || question.options);
       const correct = Array.isArray(question) ? question[2] : (question.correct ?? question.answer);
       if (!Array.isArray(answers) || !Number.isInteger(correct) || correct < 0 || correct >= answers.length) continue;
       positions.set(correct, (positions.get(correct) || 0) + 1);
+      storyPositions.add(correct);
+      storyQuestionCount++;
       count++;
+    }
+    if (storyQuestionCount >= 3 && storyPositions.size < 2) {
+      fixedStories.push(story.id || story.title || '(untitled story)');
     }
   }
   assert.ok(count >= 3, 'Expected a meaningful story comprehension question bank.');
   assert.ok(positions.size >= 2, 'Correct answers must not always occupy the same position.');
   const largestGroup = Math.max(...positions.values());
   assert.ok(largestGroup / count < 0.8, 'One correct-answer position dominates the story question bank.');
+  assert.deepEqual(fixedStories, [], `Stories must vary correct-answer positions within each question bank: ${fixedStories.join(', ')}`);
 });
 
 test('story comprehension questions include explanations and distinct answer choices', () => {
