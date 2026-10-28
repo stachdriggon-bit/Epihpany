@@ -3807,7 +3807,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
 
   let miniSessionId = 0;
   function startMini(type) {
-    const sessionId = ++miniSessionId;
+    miniSessionId++;
     G = null; ST = null;
     MG = {type, i: 0, score: 0, total: 0, answered: false, results: []};
     const m = META[type];
@@ -3868,7 +3868,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
   function miniFinish(note) {
     if(!MG || MG.done) return;
     if(miniTimer){clearInterval(miniTimer);miniTimer=null;}
-    const session = MG, sessionId = miniSessionId;
+    const session = MG;
     const m = META[MG.type];
     let ratio = MG.type==='speed' ? Math.max(0,Math.min(1,MG.score/Math.max(1,MG.total))) : MG.total ? MG.score / MG.total : 1;
     if (MG.type === 'match') ratio = Math.max(.4, Math.min(1, MG.total * 1.6 / Math.max(1, MG.attempts)));
@@ -4048,7 +4048,6 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
 
   function closeGame() {
     miniSessionId++;
-    if (monthlyAssessment) monthlyAssessment = null;
     if(miniTimer){clearInterval(miniTimer);miniTimer=null;} try{window.speechSynthesis?.cancel();}catch{} $('#game').hidden = true; hideSheet(); G = null; ST = null; MG = null;
     lockPage(false); renderAll();
     const h = $('.view.is-active h1'); if (h) h.focus({preventScroll: true});
