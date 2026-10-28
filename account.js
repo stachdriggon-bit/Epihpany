@@ -183,7 +183,12 @@
     }
   }
   async function flushSave(progress) {
-    if (!client || !currentUser || syncing) return;
+    if (!client || !currentUser) return;
+    if (syncing) {
+      clearTimeout(saveTimer);
+      saveTimer = setTimeout(() => flushSave(progress), 400);
+      return;
+    }
     let owner = '';
     try { owner = localStorage.getItem('epiphany-progress-owner') || ''; } catch {}
     if (owner !== currentUser.id) return;
@@ -563,7 +568,7 @@
     openAccountMode: openAccountFromWelcome,
     isWelcomeOpen: () => !!($('account-welcome-modal') && !$('account-welcome-modal').hidden),
     queueSave(progress) {
-      if (!client || !currentUser || syncing) return;
+      if (!client || !currentUser) return;
       clearTimeout(saveTimer);
       const snapshot = JSON.parse(JSON.stringify(progress));
       saveTimer = setTimeout(() => flushSave(snapshot), 900);
