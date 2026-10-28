@@ -1,12 +1,12 @@
 # EPIPHANY — Three Local Fantasy Story Tests
 
-**Version:** 0.3  
-**Status:** Revised provisional short-story drafts for testing the magic framework; not approved historical canon.  
+**Version:** 0.4  
+**Status:** All three stories approved as local story-scene canon by the project owner; not independently verified history. Events are registered undated in `EVENT-REGISTRY.md`.  
 **Purpose:** Test three distinct magical phenomena through vivid local fantasy, memorable characters, and different kinds of story tension: immediate danger, patient investigation, and a community under pressure. No global calendar dates are assigned. These drafts are not registered as historical events; event IDs should be added only after story approval.
 
 ## Revision notes
 
-This revision strengthens sensory detail, character distinction, and the contrast between story shapes. The first story is driven by immediate danger, the second by observation and a thread seeker's fear of being wrong, and the third by a shared resource crisis. Small local practices remain proposals, not established world canon. The magic stays mysterious and bounded: it changes what characters notice and must respond to, but does not solve every practical or social problem.
+The project owner approved all three stories. Before approval, the third story received a clarity edit: the stormglass returns only a faint echo resembling the last filling storm, not a complete recording. The first story is driven by immediate danger, the second by observation and a thread seeker's fear of being wrong, and the third by a shared resource crisis. Small local practices remain story-specific details, not universal customs. The magic stays bounded: it changes what characters notice and must respond to, but does not solve every practical or social problem.
 
 ---
 
@@ -154,7 +154,7 @@ The wonder had not measured the water for them. It had reminded them to pay atte
 
 The cistern had a voice, though it never spoke a word. Evren, a resonance tinkerer, had been helping the keeper inspect the fitting, but neither of them treated its sound as a precise measure.
 
-When the keeper tapped the small grey stone fitted into its wall, a faint echo answered: a trace of the storm that had last filled the cistern, folded small enough to hide inside a thumb-sized stone. As the water sank lower, the echo tended to change pitch, though no one could turn a note into an exact volume. Children tried to hum it. Boat crews listened before taking on supplies. The keepers treated it as a rough clue and checked it against their marked measuring rod.
+When the keeper tapped the small grey stone fitted into its wall, a faint echo answered, resembling the storm that had last filled the cistern—not a complete recording, only a trace held in the thumb-sized stone. As the water sank lower, the echo tended to change pitch, though no one could turn a note into an exact volume. Children tried to hum it. Boat crews listened before taking on supplies. The keepers treated it as a rough clue and checked it against their marked measuring rod.
 
 They called the fitting stormglass, even though it was stone, rough at the edges and cool as shade.
 
@@ -227,14 +227,14 @@ The child put an ear against the warm stone, as if the old storm might have one 
 
 The three stories share a principle—wonder changes what people must pay attention to—but they do not imply a shared source, mechanism, era, or larger mystery.
 
-## Review checklist before canon approval
+## Approval and continuity record
 
-- [ ] Confirm or revise the three phenomenon designs in the Provisional Magical Phenomena Catalog.
-- [ ] Decide whether the added small practices (rope thread, chalk/flow records, public ration board) should remain local details.
+- [x] The project owner approved all three story drafts.
+- [x] The three local phenomena are accepted at their named anchor locations; causes and exact conditions remain open.
+- [x] Register only these three approved story-scene events and link them from the relevant local histories.
+- [x] Keep all three events undated; no calendar date or era has been invented.
+- [x] Preserve the distinct story structures and keep the added practices local to these stories unless separately approved.
 - [ ] Assign stable character IDs only if any of these one-off characters recur in later stories.
 - [ ] Confirm physical details against the final map and water models.
-- [ ] Review tone, originality, character appeal, and intended reading level.
-- [ ] Ensure the three stories do not collapse into the same community-meeting structure; preserve their distinct tension and pacing.
-- [ ] Translate and audit English/Arabic only if these drafts are selected for the learning app.
-- [ ] After story approval, register event IDs and link them from the local histories.
-- [ ] Do not add exact dates, a shared magical origin, or wider effects without an explicit decision.
+- [ ] Translate and audit English/Arabic if these drafts are selected for the learning app.
+- Do not add a shared magical origin or wider effects without an explicit decision.
