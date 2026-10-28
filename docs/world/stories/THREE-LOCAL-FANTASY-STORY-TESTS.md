@@ -14,9 +14,9 @@ This revision strengthens sensory detail, character distinction, and the contras
 
 **Place:** IL-LOC-01 — The Three-Arch Ferry  
 **Phenomenon:** MP-IL-001 — The Returning Current  
-**Story focus:** A dangerous crossing, a stubborn ferry worker, and who should pay to keep a shared route safe
+**Story focus:** A dangerous crossing, a practical guide, and who should pay to keep a shared route safe
 
-The market bells were still ringing when the ferry rope burned across Nera's palms.
+The market bells were still ringing when the ferry rope burned across Mira's palms.
 
 “Not that knot!” she shouted. “The wet one—pull the wet one!”
 
@@ -217,7 +217,7 @@ The child put an ear against the warm stone, as if the old storm might have one 
 |---|---|---|---|
 | Magical signature | A ribbon of water runs upstream | A thread of water climbs a groove | A stone returns the sound of a past storm |
 | Emotional center | Fear during a dangerous crossing | A young caretaker risks admitting what he cannot know | Anxiety when a familiar signal disappears |
-| Character's distinct role | Nera acts quickly and challenges an unfair toll | Evin learns that an honest record can include uncertainty | The record keeper makes a difficult decision legible to everyone |
+| Character's distinct role | Mira acts quickly and challenges an unfair toll | Evin learns that an honest record can include uncertainty | The record keeper makes a difficult decision legible to everyone |
 | Community consequence | Repair costs and access rules | Water shares and maintenance duties | Rationing and cistern repair |
 | What magic cannot do | Explain the broken rope or decide a fair toll | Measure all water or prove guilt | Measure exact volume, test purity, or predict rain |
 
