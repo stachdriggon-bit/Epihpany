@@ -45,6 +45,8 @@ Use the [Master Event Registry](EVENT-REGISTRY.md) for stable event IDs and sour
 
 ## 4. Phenomena and evidence
 
+EPIPHANY is a fantasy setting: magic and wonder should meaningfully shape some parts of daily life, craft, travel, ecology, and community decisions, not appear only as decorative effects. The detailed mechanics of magic, who can use it, its costs, and the catalogue of creatures remain open until deliberately designed. Use [Magic and Unusual Phenomena](MAGIC-AND-PHENOMENA.md) as the working framework; its location-specific hooks are prompts, not canon facts.
+
 Phenomena may be:
 - well understood and practically managed;
 - partly understood;
@@ -74,6 +76,8 @@ Maps are mutually consistent reference layers: world, physical/topographic, clim
 Cards represent established or intentionally mysterious parts of the setting; they do not dictate world history. Character-card rarity is separate from narrative importance. Collecting should be enjoyable without real-money purchases. Cards may be earned through exploration, stories, achievements, or other in-app play.
 
 ## 7. Workflow
+
+Use [Magic and Unusual Phenomena](MAGIC-AND-PHENOMENA.md) to design magical effects with clear observable behavior, scope, limits, evidence, and consequences before making them recurring canon.
 
 Build in this order where practical:
 1. physical geography and map relationships;
