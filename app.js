@@ -3886,7 +3886,17 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
 
   /* Order the Story */
   function miniOrderSetup() {
-    if (typeof STORIES === 'undefined') { window.EPIPHANY_LAZY_LOAD('stories').then(miniOrderSetup).catch(() => toast('Stories could not load. Connect to the internet and try again.')); return; }
+    const setupSession = MG, setupSessionId = miniSessionId;
+    if (!setupSession || setupSession.type !== 'order') return;
+    if (typeof STORIES === 'undefined') {
+      window.EPIPHANY_LAZY_LOAD('stories').then(() => {
+        if (MG === setupSession && miniSessionId === setupSessionId && MG.type === 'order') miniOrderSetup();
+      }).catch(() => {
+        if (MG === setupSession && miniSessionId === setupSessionId && MG.type === 'order') toast('Stories could not load. Connect to the internet and try again.');
+      });
+      return;
+    }
+    if (MG !== setupSession || miniSessionId !== setupSessionId) return;
     const idx = levelIndex();
     let pool = STORIES.filter(s => storyLevelIndex(s.level) <= idx);
     if (!pool.length) pool = STORIES.slice();
