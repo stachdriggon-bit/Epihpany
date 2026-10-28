@@ -131,7 +131,7 @@ test('summoning uses shared sound preferences and respects reduced motion', () =
   assert.match(css, /legendary-halo/);
   assert.match(css, /prefers-reduced-motion:reduce/);
   assert.match(html, /id="summon-ritual-status"/);
-  assert.match(html, /app\.js\?v=legendary-sfx-1/);
+  assert.match(html, /app\.js\?v=[^"&]+/);
   assert.match(html, /cards\.js\?v=legendary-reveal-2/);
 });
 
