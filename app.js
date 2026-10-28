@@ -3869,6 +3869,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     if(!MG || MG.done) return;
     if(miniTimer){clearInterval(miniTimer);miniTimer=null;}
     const session = MG;
+    session.done = true; // Lock immediately so any re-entrant finish callback is harmless.
     const m = META[MG.type];
     let ratio = MG.type==='speed' ? Math.max(0,Math.min(1,MG.score/Math.max(1,MG.total))) : MG.total ? MG.score / MG.total : 1;
     if (MG.type === 'match') ratio = Math.max(.4, Math.min(1, MG.total * 1.6 / Math.max(1, MG.attempts)));
