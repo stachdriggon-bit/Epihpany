@@ -11,6 +11,8 @@ This directory is the working reference for the fictional world of EPIPHANY. It 
 ## Source-of-truth files
 
 - [Master Content Bible](MASTER-CONTENT-BIBLE.md) — core principles and world rules.
+- [World Laws and Continuity Charter](WORLD-LAWS-AND-CONTINUITY.md) — cross-domain consistency and continuity boundaries.
+- [Cosmic Laws, Magical Restrictions, and Anomalies](COSMIC-LAWS-AND-ANOMALIES.md) — accepted foundational principles about cosmic laws, individual and cosmic restrictions, anomalies, unknown entities, evidence, and intentionally open questions.
 - [Magic and Unusual Phenomena](MAGIC-AND-PHENOMENA.md) — fantasy direction, coherence rules, and phenomenon-record template.
 - [Provisional Magical Phenomena Catalog](MAGICAL-PHENOMENA-CATALOG.md) — three distinct local magic proposals under review.
 - [Three Local Fantasy Story Tests](stories/THREE-LOCAL-FANTASY-STORY-TESTS.md) — short drafts testing the proposals; not yet historical canon.
