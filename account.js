@@ -727,7 +727,14 @@
       }
     });
     client.auth.onAuthStateChange((event, session) => {
-      currentUser = session && session.user ? session.user : null;
+      const nextUser = session && session.user ? session.user : null;
+      if (currentUser?.id !== nextUser?.id) {
+        // Never carry a queued snapshot from one account into another account's cloud record.
+        clearTimeout(saveTimer);
+        saveTimer = null;
+        pendingCloudProgress = null;
+      }
+      currentUser = nextUser;
       announceAuthAccess();
       if (event === 'PASSWORD_RECOVERY') recoveryMode = true;
       if (!currentUser) {
