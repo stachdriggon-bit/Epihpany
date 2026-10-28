@@ -37,6 +37,10 @@ Before using a character in a new story, check chronology, location, knowledge, 
 
 The first lore-linked story pilot has separate, provisional character records for **Tarin Vell (OR-CHAR-001)** and **Sella Orin (OR-CHAR-002)** in [Low-Water Shore Pilot Character Records](stories/LOW-WATER-SHORE-CHARACTERS.md). They are defined only for the draft series and are not yet collectible-card characters or globally finalized canon. Check those records before editing the pilot episodes.
 
-## 5. Status
+## 5. Provisional city-development cast
+
+[Selected City Life and Local Cast](CITY-LIFE-AND-LOCAL-CAST.md) contains ten draft characters with provisional editorial IDs for Eiraven, Veyrun, Namaris, Pellisar, and Tern Isle. They are not finalized global character canon, collectible-card characters, or established witnesses. Reconcile their IDs, names, knowledge, and relationships with this file before any recurring or in-app use.
+
+## 6. Status
 
 This document establishes the general template and continuity rules. Existing character details from other project files or conversations should be imported and reconciled before being treated as complete canon. Story-specific records may remain provisional while a pilot is under review.
