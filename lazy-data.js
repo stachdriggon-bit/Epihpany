@@ -3,7 +3,7 @@
   'use strict';
   const groups = {
     stories: ['data-stories.js?v=6ba335cc', 'data-stories-expansion.js?v=world-archive-pilot-1'],
-    chronicle: ['data-world-events.js?v=world-archive-pilot-1'],
+    chronicle: ['data-world-registry.js?v=world-archive-registry-1', 'data-world-events.js?v=world-archive-registry-1'],
     resonance: ['resonance.js?v=resonance-chapters-2-5'],
     world: ['data-world.js?v=e99f5bf6', 'data-world-sprites.js?v=6fff0f70'],
     arcade: ['practice-lab.js?v=0f7e5c76'],
