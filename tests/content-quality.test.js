@@ -279,7 +279,7 @@ test('story answer shuffling keeps Arabic options paired with their English choi
   const match = appSource.match(/function prepareStoryQuestions\(story\)\{[\s\S]*?\n  \}/);
   assert.ok(match, 'Could not locate prepareStoryQuestions in app.js');
   const prepareStoryQuestions = vm.runInNewContext(match[0] + '; prepareStoryQuestions', {
-    Math: { random: () => 0.42 }
+    Math: { random: () => 0.42, floor: Math.floor }
   });
   const originalAnswers = ['Check the date', 'Move the storehouse', 'Ignore the records'];
   const originalArabic = ['تحقّق من التاريخ', 'انقل المخزن', 'تجاهل السجلات'];
