@@ -1,6 +1,6 @@
 /* EPIPHANY collectible-card data. Character art is loaded from the matching repository image file. */
 window.EPIPHANY_CARD_DATA = [
-  {id:"CHR-001",category:"characters",name:"Mira",title:"Wayfinder",rarity:"Epic",symbol:"⌖",palette:"map",image:"mira99.png",art:"mira",description:"A practical guide who reads maps and helps travelers make sense of their routes."},
+  {id:"CHR-001",category:"characters",name:"Mira",title:"Wayfinder",rarity:"Epic",symbol:"⌖",palette:"map",image:"mira.png",art:"mira",description:"A practical guide who reads maps and helps travelers make sense of their routes."},
   {id:"CHR-005",category:"characters",name:"Nibras",title:"Crystal Echo",rarity:"Epic",symbol:"◇",palette:"crystal",image:"nibras.PNG",art:"nibras",description:"A crystalline keeper of echoes that never preserve the whole truth."},
   {id:"CHR-002",category:"characters",name:"Evren",title:"Resonance Tinkerer",rarity:"Uncommon",symbol:"〰",palette:"crystal",image:"idris.PNG",description:"A tinkerer who studies resonance and turns unusual sounds into practical tools."},
   {id:"CHR-003",category:"characters",name:"Elaris",title:"Veiled Archivist",rarity:"Uncommon",symbol:"✧",palette:"shadow",image:"salma.PNG",description:"A veiled archivist who safeguards knowledge that not everyone is ready to discover."},
@@ -35,7 +35,7 @@ window.EPIPHANY_CARD_DATA = [
   {id:"CHR-033",category:"characters",name:"Radhan",title:"Storm Listener",rarity:"Rare",symbol:"☾",palette:"mist",image:"radhan.PNG",description:"A character from the world of EPIPHANY."},
   {id:"CHR-034",category:"characters",name:"Nyvelle",title:"Dream Cartographer",rarity:"Epic",symbol:"✦",palette:"map",image:"nowra.PNG",description:"A character from the world of EPIPHANY."},
   {id:"CHR-035",category:"characters",name:"Orvian",title:"Master Clockmaker",rarity:"Rare",symbol:"◇",palette:"time",image:"arif.PNG",description:"A character from the world of EPIPHANY."},
-  {id:"CHR-036",category:"characters",name:"Mirelle",title:"Wandering Cook",rarity:"Common",symbol:"⌖",palette:"ember",image:"mirya.PNG",description:"A character from the world of EPIPHANY."},
+  {id:"CHR-036",category:"characters",name:"Mirelle",title:"Wandering Cook",rarity:"Common",symbol:"⌖",palette:"ember",image:"mira99.png",description:"A character from the world of EPIPHANY."},
   {id:"CHR-037",category:"characters",name:"Aelric",title:"Resonant Bard",rarity:"Common",symbol:"⌁",palette:"pact",image:"aelric.PNG",description:"A character from the world of EPIPHANY."},
   {id:"CHR-038",category:"characters",name:"Avenelle",title:"Green Physician",rarity:"Common",symbol:"❋",palette:"ember",image:"dania.PNG",description:"A character from the world of EPIPHANY."},
   {id:"CHR-039",category:"characters",name:"Veyra",title:"Pattern Detective",rarity:"Common",symbol:"⚿",palette:"map",image:"yamna.PNG",description:"A character from the world of EPIPHANY."},
