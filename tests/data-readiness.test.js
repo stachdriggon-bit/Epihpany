@@ -80,3 +80,12 @@ test('word mastery requires repeated demonstrated success, high confidence and t
     'One confident response must never mark a word as mastered.');
   assert.match(scheduler, /if\(accuracy<0\.6\) targetBox=1/);
 });
+
+
+test('cloud progress saves are queued rather than dropped during an active sync', () => {
+  const account = fs.readFileSync(path.join(root, 'account.js'), 'utf8');
+  assert.match(account, /async function flushSave\(progress\) \{\s*if \(!client \|\| !currentUser\) return;\s*if \(syncing\) \{\s*clearTimeout\(saveTimer\);\s*saveTimer = setTimeout\(\(\) => flushSave\(progress\), 400\);/,
+    'A pending progress snapshot should retry after the current sync finishes.');
+  assert.match(account, /queueSave\(progress\) \{\s*if \(!client \|\| !currentUser\) return;/,
+    'New snapshots should be queued even when another cloud operation is active.');
+});
