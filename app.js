@@ -1781,6 +1781,39 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
   }
   
   const storyIsSaved=word=>state.words.some(w=>String(w[0]).toLowerCase()===String(word).toLowerCase());
+  function renderChronicle(){
+    const root=$('#chronicle-content');if(!root)return;
+    if(!Array.isArray(window.EPIPHANY_WORLD_EVENTS)){
+      root.setAttribute('aria-busy','true');
+      root.innerHTML='<section class="archive-loading" role="status"><span aria-hidden="true">🗺️</span><h2>Opening the world archive…</h2><p>Loading the first place and event records.</p></section>';
+      window.EPIPHANY_LAZY_LOAD('chronicle').then(renderChronicle).catch(()=>{
+        root.removeAttribute('aria-busy');
+        root.innerHTML='<section class="archive-empty" role="status"><h2>The archive could not load</h2><p>Your learning progress is safe. Check your connection and try again.</p><button type="button" class="btn" data-archive-retry>Try again</button></section>';
+        root.querySelector('[data-archive-retry]')?.addEventListener('click',renderChronicle,{once:true});
+      });return;
+    }
+    root.removeAttribute('aria-busy');
+    const all=window.EPIPHANY_WORLD_EVENTS;
+    const places=[...new Map(all.map(e=>[e.placeId,{id:e.placeId,name:e.placeName}])).values()];
+    const placeId=root.dataset.place||places[0]?.id||'';
+    const direction=root.dataset.direction||'oldest';
+    const events=all.filter(e=>e.placeId===placeId).slice().sort((a,b)=>{
+      const rank={exact:0,range:1,era:2,relative:3,unknown:4};
+      const precision=(rank[a.date?.kind]??4)-(rank[b.date?.kind]??4);
+      if(precision)return precision;
+      if(a.date?.kind==='exact'&&b.date?.kind==='exact'){
+        const d=String(a.date.value||'').localeCompare(String(b.date.value||''));
+        if(d)return direction==='newest'?-d:d;
+      }
+      const d=(Number(a.relativeOrder)||999)-(Number(b.relativeOrder)||999);
+      return direction==='newest'?-d:d;
+    });
+    const selected=places.find(p=>p.id===placeId);
+    root.innerHTML='<section class="archive-panel"><div class="archive-controls"><label for="archive-place">Explore a place<select id="archive-place">'+places.map(p=>'<option value="'+esc(p.id)+'" '+(p.id===placeId?'selected':'')+'>'+esc(p.name)+'</option>').join('')+'</select></label><label for="archive-order">Order<select id="archive-order"><option value="oldest" '+(direction==='oldest'?'selected':'')+'>Oldest first</option><option value="newest" '+(direction==='newest'?'selected':'')+'>Newest first</option></select></label></div><div class="archive-place-heading"><span class="archive-map-mark" aria-hidden="true">⌖</span><div><p class="kicker">PLACE RECORD · '+esc(placeId)+'</p><h2>'+esc(selected?.name||'Unknown place')+'</h2><p>'+events.length+' linked provisional entries · calendar dates not established</p></div></div><p class="archive-note"><strong>Reading this timeline:</strong> entries follow the episode order of one draft story arc. This is not a dated historical chronology. No connection to Ambrin is assumed.</p><ol class="archive-timeline">'+events.map((e,i)=>'<li class="archive-event"><span class="archive-event-marker" aria-hidden="true">'+String(i+1).padStart(2,'0')+'</span><article><div class="archive-event-meta"><span>'+esc(e.date?.label||'Date not established')+'</span><span class="archive-status">'+esc(e.status||'open')+'</span></div><h3>'+esc(e.title)+'</h3><p>'+esc(e.summary)+'</p><p class="archive-event-source">Source: '+esc(e.evidenceType||'unclassified')+' · '+esc(e.id)+'</p><button type="button" class="btn btn-ghost archive-story-link" data-story-open="'+esc((e.storyIds||[])[0]||'')+'">Read linked story →</button></article></li>').join('')+'</ol></section>';
+    root.querySelector('#archive-place')?.addEventListener('change',e=>{root.dataset.place=e.target.value;renderChronicle();});
+    root.querySelector('#archive-order')?.addEventListener('change',e=>{root.dataset.direction=e.target.value;renderChronicle();});
+  }
+
   function renderStories(){
     const root=$('#stories-content');if(!root)return;
     if(typeof STORIES==='undefined'){
@@ -1904,6 +1937,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     if (name === 'home') renderHome();
     if (name === 'arcade') { renderArcade(); window.EPIPHANY_LAZY_LOAD('arcade').catch(() => toast('Practice tools could not load. Connect to the internet and try again.')); }
     if (name === 'stories') renderStories();
+    if (name === 'chronicle') renderChronicle();
     if (name === 'resonance') window.EPIPHANY_LAZY_LOAD('resonance').then(() => window.EPIPHANY_RESONANCE?.open()).catch(() => toast('The Resonance could not load. Check your connection and try again.'));
     if (name === 'thinklab') window.EPIPHANY_LAZY_LOAD('thinklab').catch(() => toast('Think Lab could not load. Connect to the internet and try again.'));
     if (name === 'lifeskills') window.EPIPHANY_LAZY_LOAD('lifeskills').catch(() => toast('Life Skills could not load. Connect to the internet and try again.'));
