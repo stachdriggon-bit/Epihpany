@@ -90,6 +90,8 @@ These labels do not imply that every region shares the same historical phases.
 
 **Continuity anchors:** The lake's water balance must remain plausible; do not assume it is a world-defining anomaly simply because it fluctuates.
 
+**Registry overlap:** Orath candidate city **OR-CITY-04 — Ambrin** may refer to this same settlement. Until reconciled, use **OR-LOC-02** as the story/location reference and do not create a second town, route, or history for Ambrin. The final decision about whether Ambrin becomes the settlement name remains open.
+
 ---
 
 ## Tharima / ثاريما
