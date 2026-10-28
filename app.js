@@ -3581,7 +3581,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
       '<h3'+arAttr(ok?'صحيح تمامًا!':'لنراجع الإجابة معًا.')+'><span class="sheet-mark">' + ic(ok ? 'check' : 'lightbulb') + '</span>' + (ok ? 'Exactly right!' : 'Let’s review the answer.') + '</h3>' +
       (ok ? '' : '<p'+arAttr(bestAr)+'><strong>Best answer:</strong> <b>' + esc(q.answers[q.correct]) + '</b></p>') +
       (hasExplanation ? '<p'+arAttr(explainAr)+'>' + esc(q.explain) + '</p>' : '') +
-      (!ok ? compactRule : '') +
+      (!ok && !hasExplanation && !(q.aha && (q.aha.en || q.aha.ar)) ? compactRule : '') +
       (!ok && !explainAr ? arNote(q.arabic_hint || (q.aha&&q.aha.ar) || 'راجع معنى الجملة كاملةً، ولا تعتمد على ترجمة الكلمة وحدها لاختيار الصياغة الأنسب.') : '') +
       (!ok && G.type === 'mistakes' && q.arabic_hint && explainAr ? '<section class="trap-explanation" aria-label="Why Arabic speakers make this mistake" data-tx-ar-only hidden><h4 lang="ar" dir="rtl">لماذا يقع متحدثو العربية في هذا الخطأ؟</h4><p class="trap-hint arabic" lang="ar" dir="rtl">' + esc(q.arabic_hint) + '</p></section>' : '') +
       (!ok && !hasExplanation ? ahaMarkup(q.aha) : '') +
