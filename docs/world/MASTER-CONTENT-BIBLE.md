@@ -12,6 +12,8 @@ Naming proposals should follow [Naming and Toponymy](NAMING-AND-TOPONYMY.md). Do
 
 ## 1. Core identity
 
+For a concise synthesis of the current setting and the boundaries between established principles, provisional geography, and open questions, see [Unified World Overview](WORLD-OVERVIEW.md). The overview summarizes this bible and the source registries; it does not override them or promote provisional material to canon.
+
 EPIPHANY takes place in a world that feels geographically recognizable: continents, seas, mountains, rivers, forests, deserts, islands, cities, trade routes, and ordinary human concerns. Unusual phenomena exist within this world rather than replacing its natural and social foundations.
 
 The world should support long-form, layered storytelling without copying another intellectual property.
