@@ -5,6 +5,7 @@ This directory is the working reference for the fictional world of EPIPHANY. It 
 ## Source-of-truth files
 
 - [Master Content Bible](MASTER-CONTENT-BIBLE.md) — core principles and world rules.
+- [Story Roadmap](STORY-ROADMAP.md) — how to integrate lore into Stories without retconning the current learning library; includes a provisional six-episode pilot pitch.
 - [Atlas](ATLAS.md) — geographic reference and map decisions.
 - [Geographic Foundation and Settlement Siting](GEOGRAPHIC-FOUNDATION.md) — integrated relative layout, drainage/relief constraints, placement plan for all 30 approved settlements, anchor reconciliation, and map-drawing order.
 - [World Map Draft 02](maps/EPIPHANY-WORLD-MAP-DRAFT-02.svg) — revised schematic with all 30 settlement labels; water and harbor decisions are still provisional and the map is not to scale.
