@@ -24,7 +24,7 @@
 
 ## MP-TH-001 — The Climbing Thread
 
-- **Status:** Provisional proposal
+- **Status:** Accepted local phenomenon
 - **Place:** TH-LOC-02 — The Spring Steps
 - **Design lens:** Place-bound; water; perceptual/diagnostic
 - **Observable effect:** Shortly after sunset, a thread-thin line of water sometimes climbs a shallow carved groove on one terrace step for a few moments, against gravity, before settling back into the channel. The effect is visible in dim light and is not a large or continuous stream.
@@ -40,7 +40,7 @@
 
 ## MP-AZ-001 — The Stormglass Echo
 
-- **Status:** Provisional proposal
+- **Status:** Accepted local phenomenon
 - **Place:** AZ-LOC-02 — The Rain-Cistern Island
 - **Design lens:** Made or maintained; water; sound
 - **Observable effect:** A small resonant stone fitted into a communal cistern returns a faint echo of the rainstorm that last filled it when tapped gently. As the stored water level falls, the echo's pitch changes. Locals call the stone “stormglass,” though it is stone, not glass.
