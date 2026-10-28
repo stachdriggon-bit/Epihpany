@@ -324,3 +324,23 @@ test('Low-Water Shore world-story arc has six complete bilingual episodes', () =
   }
   assert.deepEqual(errors, [], errors.join('\\n'));
 });
+
+
+test('world archive event records use stable place/story IDs and preserve unknown dates', () => {
+  const source = fs.readFileSync(path.join(root, 'data-world-events.js'), 'utf8');
+  const context = vm.createContext({ window: {} });
+  vm.runInContext(source, context, { filename: 'data-world-events.js', timeout: 5000 });
+  const events = context.window.EPIPHANY_WORLD_EVENTS;
+  assert.equal(events.length, 6, 'Pilot archive should expose six event records.');
+  const ids = new Set(), errors = [];
+  for (const event of events) {
+    if (!event.id || ids.has(event.id)) errors.push('Event IDs must be present and unique.');
+    ids.add(event.id);
+    if (event.placeId !== 'OR-LOC-02') errors.push(event.id + ': unexpected place ID.');
+    if (!Array.isArray(event.storyIds) || event.storyIds.length !== 1) errors.push(event.id + ': must link to an existing story.');
+    if (event.date?.kind !== 'unknown' || event.date?.label !== 'Date not established') errors.push(event.id + ': must not invent a date.');
+    if (event.status !== 'provisional') errors.push(event.id + ': pilot entries must remain provisional.');
+    if (!String(event.summary || '').trim()) errors.push(event.id + ': missing summary.');
+  }
+  assert.deepEqual(errors, [], errors.join('\\n'));
+});
