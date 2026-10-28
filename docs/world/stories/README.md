@@ -25,3 +25,8 @@ This folder contains editorial references for story content linked to the worldb
 4. Approve character names, visuals, and records.
 5. Audit all English and Arabic text, question/answer alignment, explanations, and translation behavior.
 6. Only then implement the series in the live story data and add meaningful World/card links.
+
+
+## Event registry links
+
+The six pilot episode drafts are indexed as provisional story-scene records **EVT-OR-001** through **EVT-OR-006** in [the Master Event Registry](../EVENT-REGISTRY.md). They follow the episode sequence only and do not establish a calendar date or final historical canon.
