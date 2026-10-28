@@ -3516,6 +3516,11 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     modal.addEventListener('click',function(event){if(event.target===modal){stopped=true;runId++;if(window.speechSynthesis)window.speechSynthesis.cancel();modal.hidden=true;}});
   }
 
+  function answerNextLabel(ok, last) {
+    if (G && G.mode === 'oneLife' && !ok) return 'End run & see results';
+    return last ? 'See results' : 'Continue';
+  }
+
   function selectAnswer(choice) {
     if (!G || G.answered) return;
     const item = G.questions[G.i], q = item.q, ok = choice === q.correct;
@@ -3588,7 +3593,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
       (ok && q.word ? '<div class="newword"><span>New word</span><b>' + esc(q.word[0]) + '</b><span>' + esc(q.word[1]) + '</span></div>' : '') +
       arNote(item.ar) +
       (G.adaptiveMessage && !G.mode ? '<p class="adaptive-note">' + esc(G.adaptiveMessage) + '</p>' : '') +
-      '<div class="sheet-actions"><button class="btn" id="go-next">' + (G.mode === 'oneLife' && !ok ? 'End run & see results' : last ? 'See results' : 'Continue') + ic('arrow') + '</button></div>');
+      '<div class="sheet-actions"><button class="btn" id="go-next">' + answerNextLabel(ok, last) + ic('arrow') + '</button></div>');
   }
 
   function selectSpot(index) {
@@ -3602,7 +3607,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     if(/^remove\s/i.test(q.fix)){corrected=words.filter((_,i)=>i!==q.wrongIndex).join(' ');}
     else {words[q.wrongIndex]=q.fix;corrected=words.join(' ');}
     const correctDisplay=corrected;
-    showSheet(ok,'<h3'+arAttr(ok?'صحيح تمامًا!':'محاولة جيدة — لنكتشف النمط معًا.')+'><span class="sheet-mark">'+ic(ok?'check':'lightbulb')+'</span>'+(ok?'Exactly right!':'Good effort — let’s spot the pattern together.')+'</h3>'+(!ok?'<p class="retry-hint-note"'+arAttr('اكتشاف النمط يحتاج إلى تدريب. قارن الجملة المصحّحة بالأصلية ولاحظ ما الذي تغيّر.')+'>Finding the pattern takes practice. Compare the corrected sentence with the original and notice what changed.</p>':'')+'<p'+arAttr('الجملة المصحّحة:')+'><strong>Corrected sentence:</strong></p><p class="spot-corrected">'+esc(correctDisplay)+'</p>'+(!ok?'<p class="spot-reveal">You selected: <span class="spot-wrong-word">'+esc(words[index]||'')+'</span></p>':'')+'<p'+arAttr(q.why_ar)+'>'+esc(q.why_en)+'</p>'+( !ok&&q.aha?'<aside class="aha-note"><span aria-hidden="true">💡</span><div><strong>Aha moment</strong><p'+arAttr(q.aha.ar)+'>'+esc(q.aha.en)+'</p></div></aside>':'')+'<div class="sheet-actions"><button class="btn" id="go-next">'+(G.i===G.questions.length-1?'See results':'Continue')+ic('arrow')+'</button></div>');
+    showSheet(ok,'<h3'+arAttr(ok?'صحيح تمامًا!':'محاولة جيدة — لنكتشف النمط معًا.')+'><span class="sheet-mark">'+ic(ok?'check':'lightbulb')+'</span>'+(ok?'Exactly right!':'Good effort — let’s spot the pattern together.')+'</h3>'+(!ok?'<p class="retry-hint-note"'+arAttr('اكتشاف النمط يحتاج إلى تدريب. قارن الجملة المصحّحة بالأصلية ولاحظ ما الذي تغيّر.')+'>Finding the pattern takes practice. Compare the corrected sentence with the original and notice what changed.</p>':'')+'<p'+arAttr('الجملة المصحّحة:')+'><strong>Corrected sentence:</strong></p><p class="spot-corrected">'+esc(correctDisplay)+'</p>'+(!ok?'<p class="spot-reveal">You selected: <span class="spot-wrong-word">'+esc(words[index]||'')+'</span></p>':'')+'<p'+arAttr(q.why_ar)+'>'+esc(q.why_en)+'</p>'+( !ok&&q.aha?'<aside class="aha-note"><span aria-hidden="true">💡</span><div><strong>Aha moment</strong><p'+arAttr(q.aha.ar)+'>'+esc(q.aha.en)+'</p></div></aside>':'')+'<div class="sheet-actions"><button class="btn" id="go-next">'+answerNextLabel(ok, G.i===G.questions.length-1)+ic('arrow')+'</button></div>');
     renderSteps();sfx(ok?'ok':'no');
   }
   function editDistanceOne(a,b) {
@@ -3625,7 +3630,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     const item=G.questions[G.i],q=item.q;G.answered=true;
     if(ok)G.score++;else{const key='typing-'+q.level;state.weakTraps[key]=(Number(state.weakTraps[key])||0)+1;save();}
     G.results[G.i]=ok?'ok':'no';renderSteps();sfx(ok?'ok':'no');
-    showSheet(ok,'<h3'+arAttr(ok?'صحيح تمامًا!':'ليس بعد — هذا تدريب مفيد.')+'><span class="sheet-mark">'+ic(ok?'check':'lightbulb')+'</span>'+(ok?'Exactly right!':'Not yet — this is useful practice.')+'</h3>'+(!ok?'<p class="retry-hint-note"'+arAttr('يتحسّن إملاؤك وصياغتك بالتدريب. قارن إجابتك بإحدى الصيغ المقبولة وتعلّم من هذه المحاولة.')+'>Your spelling or wording can improve with practice. Compare your answer with an accepted version; you can keep learning from this attempt.</p><p'+arAttr('إجابة مقبولة: '+q.accept[0])+'><strong>One accepted answer:</strong> '+esc(q.accept[0])+'</p>':'')+'<p'+arAttr(q.why_ar)+'>'+esc(q.why_en)+'</p>'+(!ok&&q.aha?'<aside class="aha-note"><span aria-hidden="true">💡</span><div><strong>Aha moment</strong><p'+arAttr(q.aha.ar)+'>'+esc(q.aha.en)+'</p></div></aside>':'')+'<div class="sheet-actions"><button class="btn" id="go-next">'+(G.i===G.questions.length-1?'See results':'Continue')+ic('arrow')+'</button></div>');
+    showSheet(ok,'<h3'+arAttr(ok?'صحيح تمامًا!':'ليس بعد — هذا تدريب مفيد.')+'><span class="sheet-mark">'+ic(ok?'check':'lightbulb')+'</span>'+(ok?'Exactly right!':'Not yet — this is useful practice.')+'</h3>'+(!ok?'<p class="retry-hint-note"'+arAttr('يتحسّن إملاؤك وصياغتك بالتدريب. قارن إجابتك بإحدى الصيغ المقبولة وتعلّم من هذه المحاولة.')+'>Your spelling or wording can improve with practice. Compare your answer with an accepted version; you can keep learning from this attempt.</p><p'+arAttr('إجابة مقبولة: '+q.accept[0])+'><strong>One accepted answer:</strong> '+esc(q.accept[0])+'</p>':'')+'<p'+arAttr(q.why_ar)+'>'+esc(q.why_en)+'</p>'+(!ok&&q.aha?'<aside class="aha-note"><span aria-hidden="true">💡</span><div><strong>Aha moment</strong><p'+arAttr(q.aha.ar)+'>'+esc(q.aha.en)+'</p></div></aside>':'')+'<div class="sheet-actions"><button class="btn" id="go-next">'+answerNextLabel(ok, G.i===G.questions.length-1)+ic('arrow')+'</button></div>');
   }
 
   function next() {
@@ -5053,10 +5058,10 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     if(e.target.closest('#wotd-save')){const box=$('#wotd-card'),w=WOTD_WORDS.find(x=>x.word===box.dataset.word);if(w&&!state.words.some(x=>String(x[0]).toLowerCase()===w.word.toLowerCase())){state.words.push([w.word,w.meaning,w.level]);recordLearningActivity({words:1});save();renderAll();toast('Word saved to your vault.');}return;}
     const sb=e.target.closest('[data-speak]'); if(sb){speak(sb.dataset.speak);return;}
     const grammarMode=e.target.closest('[data-grammar-mode]');if(grammarMode){G.grammarMode=grammarMode.dataset.grammarMode;G.i=0;renderGrammarModeQuestion();return;}
-    const ownRating=e.target.closest('[data-own-rating]');if(ownRating&&G&&G.type==='grammar'&&G.grammarMode==='own'&&!G.answered){const ok=ownRating.dataset.ownRating==='yes';G.answered=true;if(ok)G.score++;G.results[G.i]=ok?'ok':'no';showSheet(ok,'<h3>'+(ok?'Self-check recorded':'Keep practising')+'</h3><p>'+(ok?'You marked that you applied the rule. Compare your sentence with the model to confirm it.':'Use the model sentence and rule to revise your sentence.')+'</p><div class="sheet-actions"><button class="btn" id="go-next">'+(G.i===G.questions.length-1?'See results':'Continue')+ic('arrow')+'</button></div>');return;}
+    const ownRating=e.target.closest('[data-own-rating]');if(ownRating&&G&&G.type==='grammar'&&G.grammarMode==='own'&&!G.answered){const ok=ownRating.dataset.ownRating==='yes';G.answered=true;if(ok)G.score++;G.results[G.i]=ok?'ok':'no';showSheet(ok,'<h3>'+(ok?'Self-check recorded':'Keep practising')+'</h3><p>'+(ok?'You marked that you applied the rule. Compare your sentence with the model to confirm it.':'Use the model sentence and rule to revise your sentence.')+'</p><div class="sheet-actions"><button class="btn" id="go-next">'+answerNextLabel(ok, G.i===G.questions.length-1)+ic('arrow')+'</button></div>');return;}
     const orderWord=e.target.closest('[data-order-word]');if(orderWord&&G&&G.type==='grammar'&&G.grammarMode==='order'){const idx=Number(orderWord.dataset.orderWord);if(G.orderPicked.includes(idx))return;G.orderPicked.push(idx);orderWord.disabled=true;$('#grammar-order-answer').textContent=G.orderPicked.map(i=>G.orderWords[i]).join(' ');return;}
     if(e.target.closest('[data-order-reset]')){G.orderPicked=[];G.orderWords.forEach((_,i)=>{const b=$('[data-order-word="'+i+'"]');if(b)b.disabled=false;});$('#grammar-order-answer').textContent='Your sentence will appear here.';return;}
-    if(e.target.closest('[data-order-check]')){const actual=G.orderPicked.map(i=>G.orderWords[i]).join(' ').replace(/[.!?]$/,'').toLowerCase(),ok=actual===G.orderTarget;if(ok)G.score++;G.answered=true;G.results[G.i]=ok?'ok':'no';showSheet(ok,'<h3>'+(ok?'Correct sentence!':'Not quite yet.')+'</h3><p>Suggested answer: <b>'+esc(G.orderTarget)+'</b></p><p>'+esc(G.questions[G.i].q.explain)+'</p><div class="sheet-actions"><button class="btn" id="go-next">'+(G.i===G.questions.length-1?'See results':'Continue')+ic('arrow')+'</button></div>');return;}
+    if(e.target.closest('[data-order-check]')){const actual=G.orderPicked.map(i=>G.orderWords[i]).join(' ').replace(/[.!?]$/,'').toLowerCase(),ok=actual===G.orderTarget;if(ok)G.score++;G.answered=true;G.results[G.i]=ok?'ok':'no';showSheet(ok,'<h3>'+(ok?'Correct sentence!':'Not quite yet.')+'</h3><p>Suggested answer: <b>'+esc(G.orderTarget)+'</b></p><p>'+esc(G.questions[G.i].q.explain)+'</p><div class="sheet-actions"><button class="btn" id="go-next">'+answerNextLabel(ok, G.i===G.questions.length-1)+ic('arrow')+'</button></div>');return;}
     const dailyContinue=e.target.closest('[data-daily-session-continue]');
     if(dailyContinue){startDailySession();return;}
     const contrastAnswer=e.target.closest('[data-contrast-answer]');
