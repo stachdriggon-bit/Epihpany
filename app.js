@@ -791,36 +791,83 @@
     if (!db) return;
     try { db.transaction('audio', 'readwrite').objectStore('audio').put(blob, key); } catch {}
   }
-  async function playNaturalSpeech(phrase, rate, request) {
-    if (phrase.length > 1800 || !navigator.onLine) return false;
-    const key = 'elevenlabs-george|' + rate.toFixed(2) + '|' + phrase.toLowerCase();
-    let blob = await cachedNaturalAudio(key);
-    if (request !== speechRequest) return true;
-    if (!blob) {
-      let response;
-      try {
-        response = await fetch('/api/tts', {
-          method:'POST',
-          headers:{'Content-Type':'application/json'},
-          body:JSON.stringify({text:phrase, rate:Math.max(0.75, Math.min(1.05, rate))})
-        });
-      } catch { return false; }
-      if (!response.ok) return false;
-      try { blob = await response.blob(); } catch { return false; }
-      if (!blob || !blob.size || request !== speechRequest) return request !== speechRequest;
-      await saveNaturalAudio(key, blob);
+  function splitNaturalTtsChunks(phrase, limit = 1700) {
+    const sentences = String(phrase || '').match(/[^.!?;:]+[.!?;:]*/g) || [String(phrase || '')];
+    const chunks = [];
+    let current = '';
+    const pushLongPart = part => {
+      let rest = part.trim();
+      while (rest.length > limit) {
+        let cut = rest.lastIndexOf(' ', limit);
+        if (cut < Math.floor(limit * 0.55)) cut = limit;
+        chunks.push(rest.slice(0, cut).trim());
+        rest = rest.slice(cut).trim();
+      }
+      return rest;
+    };
+    for (const sentence of sentences) {
+      const part = sentence.trim();
+      if (!part) continue;
+      if ((current + ' ' + part).trim().length <= limit) {
+        current = (current + ' ' + part).trim();
+        continue;
+      }
+      if (current) chunks.push(current);
+      current = '';
+      if (part.length > limit) current = pushLongPart(part);
+      else current = part;
     }
-    if (request !== speechRequest) return true;
-    try {
-      if (naturalAudioPlayer) { naturalAudioPlayer.pause(); naturalAudioPlayer.src = ''; }
-      const url = URL.createObjectURL(blob);
-      const player = new Audio(url);
-      naturalAudioPlayer = player;
-      player.onended = () => { URL.revokeObjectURL(url); if (naturalAudioPlayer === player) naturalAudioPlayer = null; };
-      player.onerror = () => URL.revokeObjectURL(url);
-      await player.play();
-      return true;
-    } catch { return false; }
+    if (current) chunks.push(current);
+    return chunks.length ? chunks : [String(phrase || '').slice(0, limit)];
+  }
+  async function playNaturalSpeech(phrase, rate, request) {
+    if (!navigator.onLine) return false;
+    const chunks = splitNaturalTtsChunks(phrase);
+    let playedAny = false;
+    for (let index = 0; index < chunks.length; index++) {
+      if (request !== speechRequest) return true;
+      const part = chunks[index];
+      const key = 'elevenlabs-george|' + rate.toFixed(2) + '|' + part.toLowerCase();
+      let blob = await cachedNaturalAudio(key);
+      if (request !== speechRequest) return true;
+      if (!blob) {
+        let response;
+        try {
+          response = await fetch('/api/tts', {
+            method:'POST',
+            headers:{'Content-Type':'application/json'},
+            body:JSON.stringify({text:part, rate:Math.max(0.75, Math.min(1.05, rate))})
+          });
+        } catch { return false; }
+        if (!response.ok) return false;
+        try { blob = await response.blob(); } catch { return false; }
+        if (!blob || !blob.size || request !== speechRequest) return request !== speechRequest;
+        await saveNaturalAudio(key, blob);
+      }
+      if (request !== speechRequest) return true;
+      try {
+        if (naturalAudioPlayer) { naturalAudioPlayer.pause(); naturalAudioPlayer.src = ''; }
+        const url = URL.createObjectURL(blob);
+        const player = new Audio(url);
+        naturalAudioPlayer = player;
+        const finished = new Promise(resolve => {
+          let settled = false;
+          const finish = result => {
+            if (settled) return;
+            settled = true;
+            URL.revokeObjectURL(url);
+            if (naturalAudioPlayer === player) naturalAudioPlayer = null;
+            resolve(result);
+          };
+          player.onended = () => finish(true);
+          player.onerror = () => finish(false);
+          player.play().then(() => { playedAny = true; }).catch(() => finish(false));
+        });
+        const ok = await finished;
+        if (!ok) return false;
+      } catch { return false; }
+    }
+    return playedAny;
   }
   const networkConnection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
   const autoSaveData = !!(networkConnection && (networkConnection.saveData || /^(slow-2g|2g)$/.test(networkConnection.effectiveType || '')));
