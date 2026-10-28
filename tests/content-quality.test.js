@@ -272,3 +272,30 @@ test('story page Arabic translations contain Arabic-script text', () => {
   }
   assert.deepEqual(errors, [], errors.join('\\n'));
 });
+
+
+test('story answer shuffling keeps Arabic options paired with their English choices', () => {
+  const appSource = fs.readFileSync(path.join(root, 'app.js'), 'utf8');
+  const match = appSource.match(/function prepareStoryQuestions\\(story\\)\\{[\\s\\S]*?\\n  \\}/);
+  assert.ok(match, 'Could not locate prepareStoryQuestions in app.js');
+  const prepareStoryQuestions = vm.runInNewContext(match[0] + '; prepareStoryQuestions', {
+    Math: { random: () => 0.42 }
+  });
+  const originalAnswers = ['Check the date', 'Move the storehouse', 'Ignore the records'];
+  const originalArabic = ['تحقّق من التاريخ', 'انقل المخزن', 'تجاهل السجلات'];
+  const prepared = prepareStoryQuestions({
+    questions: [{
+      q: 'What should they do?',
+      answers: originalAnswers,
+      answers_ar: originalArabic,
+      correct: 0,
+      explain: 'Check the date first.'
+    }]
+  }).questions[0];
+  assert.equal(prepared.answers_ar[prepared.correct], originalArabic[0], 'The correct Arabic answer must follow the correct English answer.');
+  for (const [index, answer] of prepared.answers.entries()) {
+    const originalIndex = originalAnswers.indexOf(answer);
+    assert.notEqual(originalIndex, -1, 'Shuffling must preserve each original English answer.');
+    assert.equal(prepared.answers_ar[index], originalArabic[originalIndex], 'Each Arabic answer must stay paired with its English answer.');
+  }
+});
