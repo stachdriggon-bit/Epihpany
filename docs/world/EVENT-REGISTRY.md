@@ -1,6 +1,6 @@
 # EPIPHANY World Archive — event registry
 
-**Status:** Initial schema and pilot data; all six entries are provisional, not final canon.
+**Status:** Initial schema and six story-linked event records; all remain provisional playtest content, not accepted historical canon.
 
 The archive separates **events** from **stories**. Events have stable IDs and can be referenced by multiple stories or collections; stories can point to multiple events. Collections reference IDs rather than copying records.
 
@@ -36,3 +36,108 @@ Use [Local History Register](LOCAL-HISTORIES.md) to build the history of each pl
 ## Canon boundary for the pilot
 
 The six Low-Water Shore entries remain provisional and follow only the episode sequence. They do not establish a calendar date, a universal era, the lake's ultimate cause, a world-scale mystery, or an identity decision about Ambrin. If an episode draft changes, update the corresponding registry entry and check the location history and any dependent archive views.
+
+
+## Six pilot event records
+
+These IDs describe the current six episode drafts. They are **story-scene records**, not independently verified history. Keep the episode order as the relative sequence for this pilot only. Event dates remain unknown except that Episode 5 occurs after the first measurement period. Do not turn that sequence into a world-era chronology.
+
+### EVT-OR-001 — The Records Appear to Disagree
+
+- **Title:** The Mismatch
+- **Place ID:** OR-LOC-02
+- **Date:** `kind: unknown`; unassigned relative period
+- **Relative order:** 1 of 6
+- **Status:** provisional
+- **Evidence type:** story-scene
+- **Story ID:** `world-low-water-ep1`
+- **Participants:** Tarin Vell (OR-CHAR-001), Sella Orin (OR-CHAR-002)
+- **Summary:** The lake has receded from the old landing steps. A dock log records that water reached the third step during the previous spring, while a family notebook marks a garden edge after several dry seasons. Tarin is considering moving a small storehouse, but the records do not yet explain the long-term pattern.
+- **What is established in this episode:** The records serve different purposes and do not directly measure the same thing at the same time.
+- **What is not established:** A long-term lake trend, dishonesty, or the ultimate cause of shoreline variation.
+- **Knowledge boundary:** The characters begin without knowing why the records differ.
+- **Source:** `stories/THE-TWO-RECORDS-EPISODE-01-DRAFT.md`.
+
+### EVT-OR-002 — The Records' Original Purposes Are Clarified
+
+- **Title:** Who Wrote It?
+- **Place ID:** OR-LOC-02
+- **Date:** `kind: relative`; follows EVT-OR-001, described as the next morning
+- **Relative order:** 2 of 6
+- **Status:** provisional
+- **Evidence type:** story-scene
+- **Story ID:** `world-low-water-ep2`
+- **Participants:** Tarin Vell (OR-CHAR-001), Sella Orin (OR-CHAR-002)
+- **Summary:** A note inside the dock log explains that water was recorded at loading time when the landing crew needed a safety decision. The family notebook marks the garden edge after dry seasons to track useful planting soil. The records answer different questions.
+- **What is established in this episode:** The dock log is intermittent by design; the garden boundary is not a direct water-level measurement.
+- **What is not established:** Either writer was dishonest or either record alone establishes a long-term lake trend.
+- **Knowledge boundary:** The characters understand the purpose and limits of the two records more clearly.
+- **Source:** `stories/THE-TWO-RECORDS-EPISODES-02-06-DRAFT.md`, Episode 2.
+
+### EVT-OR-003 — The Garden Marker Is Compared with the Shoreline
+
+- **Title:** The Shoreline
+- **Place ID:** OR-LOC-02
+- **Date:** `kind: relative`; follows EVT-OR-002, exact interval unknown
+- **Relative order:** 3 of 6
+- **Status:** provisional
+- **Evidence type:** story-scene
+- **Story ID:** `world-low-water-ep3`
+- **Participants:** Tarin Vell (OR-CHAR-001), Sella Orin (OR-CHAR-002)
+- **Summary:** The characters inspect an old garden marker and a low stone line that may have supported a fence. Sella measures from the marker to the current waterline and records the method so it can be repeated.
+- **What is established in this episode:** A physical marker and a repeatable measurement method are available for comparison.
+- **What is not established:** The garden boundary and shoreline moved by the same distance, or that one clue proves a larger theory.
+- **Knowledge boundary:** The characters begin distinguishing evidence about land use from evidence about lake level.
+- **Source:** `stories/THE-TWO-RECORDS-EPISODES-02-06-DRAFT.md`, Episode 3.
+
+### EVT-OR-004 — Competing Explanations Are Compared
+
+- **Title:** Another Explanation
+- **Place ID:** OR-LOC-02
+- **Date:** `kind: relative`; follows EVT-OR-003, exact interval unknown
+- **Relative order:** 4 of 6
+- **Status:** provisional
+- **Evidence type:** story-scene
+- **Story ID:** `world-low-water-ep4`
+- **Participants:** Tarin Vell (OR-CHAR-001), Sella Orin (OR-CHAR-002)
+- **Summary:** The characters compare three plausible possibilities: seasonal variation in lake level, differences in what the records describe, and a changed garden boundary. They consider what evidence would help distinguish these possibilities.
+- **What is established in this episode:** Multiple explanations remain plausible and may coexist.
+- **What is not established:** One definitive cause for the lake's behavior.
+- **Knowledge boundary:** The characters identify the need for comparable observations rather than selecting the most satisfying explanation.
+- **Source:** `stories/THE-TWO-RECORDS-EPISODES-02-06-DRAFT.md`, Episode 4.
+
+### EVT-OR-005 — A Second Comparable Measurement Is Recorded
+
+- **Title:** One More Observation
+- **Place ID:** OR-LOC-02
+- **Date:** `kind: relative`; after the next season, compared with the first measurement
+- **Relative order:** 5 of 6
+- **Status:** provisional
+- **Evidence type:** story-scene
+- **Story ID:** `world-low-water-ep5`
+- **Participants:** Tarin Vell (OR-CHAR-001), Sella Orin (OR-CHAR-002)
+- **Summary:** The characters return to the same landing step after the next season. The water is at a different height. They record the date, recent weather, and exact point where water meets the stone, then compare this observation with the earlier measurement and older records.
+- **What is established in this episode:** The two measurements describe different moments; the observed level is lower than at the first measurement.
+- **What is not established:** A reliable long-term trend or ultimate cause. Two observations alone are insufficient for that conclusion.
+- **Knowledge boundary:** The characters have a more comparable record but remain cautious about extrapolation.
+- **Source:** `stories/THE-TWO-RECORDS-EPISODES-02-06-DRAFT.md`, Episode 5.
+
+### EVT-OR-006 — The Community Chooses a Practical, Reversible Response
+
+- **Title:** A Careful Decision
+- **Place ID:** OR-LOC-02
+- **Date:** `kind: relative`; follows the additional observation; exact date unknown
+- **Relative order:** 6 of 6
+- **Status:** provisional
+- **Evidence type:** story-scene
+- **Story ID:** `world-low-water-ep6`
+- **Participants:** Tarin Vell (OR-CHAR-001), Sella Orin (OR-CHAR-002), residents of the settlement
+- **Summary:** At a town meeting, residents discuss the incomplete evidence and practical risks. They agree to move the most valuable tools to higher shelves and place a clear marker at the measurement step while continuing observations.
+- **What is established in this episode:** The community adopts a limited protective action that does not require a definitive theory of the lake.
+- **What is not established:** The lake's ultimate cause, a permanent settlement-wide relocation, or a world-scale consequence.
+- **Knowledge boundary:** The characters and residents distinguish a practical decision from a proven explanation.
+- **Source:** `stories/THE-TWO-RECORDS-EPISODES-02-06-DRAFT.md`, Episode 6.
+
+## Registry maintenance note
+
+If an episode changes, update its event record without recycling the ID. If the story is removed or materially rewritten, mark the affected record superseded or revise its status and source references. A later accepted historical event may reuse this event's evidence only after an explicit canon decision; a story-scene record does not become accepted history automatically.
