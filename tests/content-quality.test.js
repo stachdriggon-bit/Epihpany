@@ -366,3 +366,17 @@ test('Low-Water Shore stories expose explicit place and unknown-date metadata', 
     assert.equal(story.lore.dateLabel, 'Date not established');
   }
 });
+
+
+test('World Archive navigation is registered with its view and lazy data group', () => {
+  const html = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
+  const app = fs.readFileSync(path.join(root, 'app.js'), 'utf8');
+  const lazy = fs.readFileSync(path.join(root, 'lazy-data.js'), 'utf8');
+  const navigation = fs.readFileSync(path.join(root, 'navigation-enhancements.js'), 'utf8');
+  assert.match(html, /data-view="chronicle"/);
+  assert.match(html, /id="chronicle-view"/);
+  assert.match(app, /if \(name === 'chronicle'\) renderChronicle\(\)/);
+  assert.match(app, /function renderChronicle\(\)/);
+  assert.match(lazy, /chronicle:\s*\['data-world-events\.js\?/);
+  assert.match(navigation, /chronicle:\s*'World Archive'/);
+});
