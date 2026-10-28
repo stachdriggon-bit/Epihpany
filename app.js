@@ -3600,7 +3600,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
       return;
     }
     G.answered = true;
-    recordAdaptiveResult(['spot','grammar','mistakes','personalized'].includes(G.type)?'grammar':G.type==='listening'?'listening':G.type==='story'?'conversation':'vocabulary',q.trap||q.id||G.type,ok);
+    recordAdaptiveResult(['spot','grammar','mistakes','personalized'].includes(G.type)?'grammar':G.type==='listening'?'listening':G.type==='story'?'conversation':G.type==='advanced'?'reading':'vocabulary',q.trap||q.id||G.type,ok);
     if (ok) { G.score++; const wp=wordParts(q.word,q.explain); if(wp)G.words.push([wp.word,wp.meaning,wp.level]); if(!G.reviewMode&&q.trap&&q.id){state.mistakeTrapCorrect[q.trap]=(Number(state.mistakeTrapCorrect[q.trap])||0)+1;state.mistakeQuestionCorrect[q.id]=(Number(state.mistakeQuestionCorrect[q.id])||0)+1;updateGrammarSrs(q,true);save();} }
     else if (!G.reviewMode) {
       addReview(q.word,q.explain);
