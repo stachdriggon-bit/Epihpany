@@ -69,12 +69,12 @@ Otherwise, preserve it.
 
 ## 4. First proposed world-story arc
 
-### Working title: The Two Records of Ambrin
+### Working title: The Two Records at the Low-Water Shore
 
 **Status:** Pitch only — not approved canon.  
 **Suggested level:** B1, with optional Arabic support.  
 **Region:** Orath, eastern continent (current working map).  
-**Candidate place:** Ambrin / أمبرين — OR-CITY-04, currently described in the settlement registry as an inland-shore town shaped by a fluctuating lake. The settlement's exact placement and details remain provisional; check the anchor-location registry before use and merge records if it is the same place as an existing anchor.  
+**Primary place reference:** OR-LOC-02 — The Low-Water Shore, an existing candidate anchor whose established story hook already concerns a receding lake and records kept over different time spans for different purposes. Its details remain part of the working reference, not final geography. **Possible name reconciliation:** Ambrin / أمبرين (OR-CITY-04) describes a very similar inland-shore settlement. Do not treat Ambrin and The Low-Water Shore as separate places yet. The worldbuilding files explicitly flag this overlap; reconcile the records before implementing the story, preserving one stable ID if they are the same place.  
 **Time:** Leave the exact date and universal era open. Use a relative marker only after the timeline context is chosen.  
 **New characters:** Do not reuse or imply an existing character. Create stable character records and approve their motivations, relationships, and knowledge limits before drafting the final story.
 
@@ -82,7 +82,7 @@ Otherwise, preserve it.
 
 Two local records describe the lake's level differently. People initially disagree about what the mismatch means. The characters compare when, where, and how the observations were made, then gather a fresh observation before recommending a practical response. The story may resolve the immediate question without proving a grand theory about the lake or the world's origins.
 
-This premise grows from Ambrin's provisional settlement concept and the world's evidence rules. It does **not** establish that the lake is supernatural, that a conspiracy exists, or that the records reveal an ancient civilization.
+This premise grows directly from the existing Low-Water Shore anchor hook and the world's evidence rules. It does **not** establish that the lake is supernatural, that a conspiracy exists, or that the records reveal an ancient civilization.
 
 #### Six-episode outline
 
@@ -98,7 +98,7 @@ Each episode should have a small, satisfying narrative turn, distinct English-le
 #### Continuity and evidence ledger for this arc
 
 Before drafting:
-- Check OR-CITY-04 against ANCHOR-LOCATIONS.md and the Atlas; do not create a duplicate place.
+- Reconcile OR-LOC-02 and OR-CITY-04 using ANCHOR-LOCATIONS.md, CITIES-ORATH.md, and the Atlas. Do not create a duplicate place; decide whether Ambrin becomes the settlement name for the anchor, a nearby distinct settlement, or is dropped as a duplicate.
 - Decide whether the lake and its observation points are supported by the current map draft; do not infer scale, exact distances, or final hydrology from concept art.
 - Define each record's author, purpose, date or relative date, measurement method, and limitations.
 - Separate direct observations from witness recollections and later interpretations.
@@ -137,7 +137,7 @@ These are prompts derived from the regional and settlement reference files. They
 | Region / candidate | Possible story seed | Useful tension without a predetermined villain |
 |---|---|---|
 | Ilmar — Eiraven / river-market role in the registry | Two cargo ledgers disagree because goods were recorded at different transfer stages or in different units. | Honest recordkeeping, responsibility, and trade delays. |
-| Orath — Ambrin (OR-CITY-04) | Lake observations appear to conflict until timing, location, or method is compared. | Evidence quality and a practical community decision. |
+| Orath — The Low-Water Shore (OR-LOC-02; possible overlap with Ambrin, OR-CITY-04) | Lake observations appear to conflict until timing, purpose, or method is compared. | Evidence quality and a practical community decision. |
 | Tharima — Namaris (TH-CITY-01) | A water-channel repair reveals an older alteration whose original purpose is uncertain. | Shared maintenance and competing needs, without assuming a lost civilization. |
 | Nirvan — Pellisar (NI-CITY-02) | A familiar lake crossing becomes less reliable across several seasons. | Local observations, safe travel, and adaptation without declaring the lake mysterious. |
 | Azmar — Tern Isle (AZ-CITY-02) | A navigation marker is missing or misaligned. | Damage, recordkeeping, responsibility, or interference are possibilities to distinguish with evidence. |
@@ -161,7 +161,7 @@ All settlement roles and exact placements remain provisional as stated in their 
 
 ## 8. Immediate next actions
 
-1. Review the anchor registry and Atlas for Ambrin/lake overlap and physical constraints.
+1. Reconcile the Low-Water Shore and Ambrin place records, then verify the lake's physical constraints in the Atlas.
 2. Create character records for the pilot only after agreeing on its narrative roles.
 3. Write and review episode one before committing to the six-episode arc.
 4. Keep the present stories available during this work; do not replace them wholesale.
