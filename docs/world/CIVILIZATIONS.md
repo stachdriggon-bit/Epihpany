@@ -59,4 +59,4 @@ Do not repeat a simple pattern of a great civilization rising, collapsing, and b
 
 Specific names, languages, political systems, religions, technologies, state borders, dates, and inter-civilization relationships remain open until developed and recorded.
 
-For a provisional, place-grounded expansion of daily routines, local tensions, and regional scene seeds, see [Regional Life and Cultural Patterns](REGIONAL-LIFE-AND-CULTURAL-PATTERNS.md). That companion document is a proposal pack, not finalized cultural canon.
+For settlement-level scene prompts across all 30 approved names, see [City Culture Profiles](CITY-CULTURE-PROFILES.md). Both companion documents are proposal packs, not finalized cultural canon.
