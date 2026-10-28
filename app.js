@@ -1806,15 +1806,18 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     const search=$('#story-search-input');if(search&&document.activeElement!==search&&STORY_FILTER.query)search.value=STORY_FILTER.query;
   }
   function prepareStoryQuestions(story){
-    const questions=(story.questions||[]).map(q=>({...q,answers:[...(q.answers||[])]}));
+    const questions=(story.questions||[]).map(q=>({...q,answers:[...(q.answers||[])],answers_ar:Array.isArray(q.answers_ar)?[...q.answers_ar]:q.answers_ar}));
     const positionPools={};
     let previousByCount={};
     for(const q of questions){
       if(!q.answers.length)continue;
-      const correctText=q.answers[q.correct];
-      const distractors=q.answers.filter((_,i)=>i!==q.correct);
+      const hasAlignedArabic=Array.isArray(q.answers_ar)&&q.answers_ar.length===q.answers.length;
+      const options=q.answers.map((text,index)=>({text,ar:hasAlignedArabic?q.answers_ar[index]:undefined,isCorrect:index===q.correct}));
+      const correctOption=options.find(option=>option.isCorrect);
+      if(!correctOption)continue;
+      const distractors=options.filter(option=>!option.isCorrect);
       for(let i=distractors.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[distractors[i],distractors[j]]=[distractors[j],distractors[i]];}
-      const count=q.answers.length;
+      const count=options.length;
       if(!positionPools[count]||positionPools[count].length===0){
         positionPools[count]=Array.from({length:count},(_,i)=>i);
         for(let i=count-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[positionPools[count][i],positionPools[count][j]]=[positionPools[count][j],positionPools[count][i]];}
@@ -1822,9 +1825,10 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
       }
       const target=positionPools[count].shift();
       previousByCount[count]=target;
-      distractors.splice(target,0,correctText);
-      q.answers=distractors;
+      distractors.splice(target,0,correctOption);
+      q.answers=distractors.map(option=>option.text);
       q.correct=target;
+      if(hasAlignedArabic)q.answers_ar=distractors.map(option=>option.ar);
     }
     return {...story,questions};
   }
