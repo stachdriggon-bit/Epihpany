@@ -3,6 +3,10 @@
 **Version:** 0.1  
 **Status:** Framework only; no complete world chronology has been established.
 
+## 0. Source records
+
+Use [Master Event Registry](EVENT-REGISTRY.md) as the stable event index and [Local History Register](LOCAL-HISTORIES.md) to develop the history of each place. This framework is not itself a complete timeline; event records remain the source for status, evidence, place IDs, and time confidence. The six Low-Water Shore pilot entries are provisional story-linked records, not proof of a dated historical era.
+
 ## 1. Chronology principles
 
 - The world's ultimate beginning remains unknown.
