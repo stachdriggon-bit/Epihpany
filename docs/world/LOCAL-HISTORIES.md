@@ -74,7 +74,7 @@ Do not assume every location has a ruler, empire, founding myth, disaster, or su
 **Status:** Provisional sequence from the anchor concept; no calendar dates or named historical rulers are established.
 
 - **Location ID:** IL-LOC-01
-- **Regional registry source:** `ANCHOR-LOCATIONS.md`; confirm the eventual settlement connection in the Ilmar registry before assigning a town name.
+- **Regional registry source:** `ANCHOR-LOCATIONS.md`; `CITIES-ILMAR.md`. Current working association: the crossing/landmark within IL-CITY-04 Ilanford, subject to the final river map.
 - **Current geographic status:** River crossing and market stop; the river course, navigability, flood behavior, and bridge placement must fit the final Ilmar relief and drainage plan.
 - **Historical date convention:** relative sequence only — Earlier, Middle, Later.
 - **Environmental history:** Seasonal river-level changes affect crossing conditions. No specific flood or long-term environmental shift is established.
@@ -95,7 +95,7 @@ Do not assume every location has a ruler, empire, founding myth, disaster, or su
 **Status:** Provisional sequence from the anchor concept; no exact dates or region-wide era are established.
 
 - **Location ID:** TH-LOC-01
-- **Regional registry source:** `ANCHOR-LOCATIONS.md`; match to a settlement record only after checking the Tharima registry.
+- **Regional registry source:** `ANCHOR-LOCATIONS.md`; `CITIES-THARIMA.md`. Current working association: the market district or historic site that gives TH-CITY-02 Saffra its role.
 - **Current geographic status:** Seasonal market above the normal channel of a broad wadi; precise channel, catchment, and settlement siting remain provisional.
 - **Historical date convention:** relative sequence only — Earlier, Middle, Later.
 - **Environmental history:** The channel may remain dry for long periods and still flood. No specific historic flood is established.
@@ -116,7 +116,7 @@ Do not assume every location has a ruler, empire, founding myth, disaster, or su
 **Status:** Provisional sequence from the anchor concept; no calendar dates, empire, or final political institution is established.
 
 - **Location ID:** OR-LOC-01
-- **Regional registry source:** `ANCHOR-LOCATIONS.md`; match to a settlement record only after checking the Orath registry.
+- **Regional registry source:** `ANCHOR-LOCATIONS.md`; `CITIES-ORATH.md`. Current working association: the pass checkpoint/roadside cluster associated with OR-CITY-03 Velisar, subject to final relief and route checks.
 - **Current geographic status:** Mountain-pass settlement at the last dependable stop before a climb; exact relief, road geometry, elevation, and seasonal conditions remain provisional.
 - **Historical date convention:** relative sequence only — Earlier, Middle, Later.
 - **Environmental history:** Seasonal weather changes route reliability. No particular storm, avalanche, or climate event is established.
@@ -137,7 +137,7 @@ Do not assume every location has a ruler, empire, founding myth, disaster, or su
 **Status:** Provisional sequence from the anchor concept. No supernatural forest event is established.
 
 - **Location ID:** IL-LOC-02
-- **Regional registry source:** `ANCHOR-LOCATIONS.md`; compare with Ilmar settlement candidates before assigning a city ID or declaring overlap.
+- **Regional registry source:** `ANCHOR-LOCATIONS.md`; `CITIES-ILMAR.md`. Current working association: a forest-edge landmark or nearby district associated with IL-CITY-03 Talwen, not automatically a second town.
 - **Current geographic status:** Settlement at the boundary between cultivated land and a large forest; exact forest edge and route placement depend on the final biome and relief model.
 - **Historical date convention:** Relative sequence only — Earlier, Middle, Later.
 - **Environmental history:** Forest extent and trail visibility can change through regrowth, storms, fog, and land use. No single catastrophic cause is established.
@@ -158,7 +158,7 @@ Do not assume every location has a ruler, empire, founding myth, disaster, or su
 **Status:** Provisional sequence from the anchor concept; no specific drought, disaster, or political regime is established.
 
 - **Location ID:** TH-LOC-02
-- **Regional registry source:** `ANCHOR-LOCATIONS.md`; check Tharima's settlement registry before assigning a town identity.
+- **Regional registry source:** `ANCHOR-LOCATIONS.md`; `CITIES-THARIMA.md`. Current working association: a spring-and-terrace landmark within or beside TH-CITY-03 Kharif.
 - **Current geographic status:** Upland settlement with terraces below a spring or spring complex; exact elevation, recharge area, and drainage remain provisional.
 - **Historical date convention:** Relative sequence only — Earlier, Middle, Later.
 - **Environmental history:** The spring's flow may weaken or shift. Seasonal variation, catchment damage, upstream use, and unknown causes are competing possibilities, not settled facts.
@@ -179,7 +179,7 @@ Do not assume every location has a ruler, empire, founding myth, disaster, or su
 **Status:** Provisional sequence from the anchor concept; no specific storm, shipwreck, or regional crisis is established.
 
 - **Location ID:** NI-LOC-01
-- **Regional registry source:** `ANCHOR-LOCATIONS.md`; compare with Nirvan's settlement registry before assigning a city ID.
+- **Regional registry source:** `ANCHOR-LOCATIONS.md`; `CITIES-NIRVAN.md`. Current working association: the best-known pier or working district of NI-CITY-01 Orven Reach.
 - **Current geographic status:** Sheltered northern coastal dock before more exposed waters; shelter must have a clear geographic cause in the final coastline and relief.
 - **Historical date convention:** Relative sequence only — Earlier, Middle, Later.
 - **Environmental history:** Weather varies by season and route. The coast is cold but not permanently frozen; one unusual season does not establish a climate shift.
@@ -200,7 +200,7 @@ Do not assume every location has a ruler, empire, founding myth, disaster, or su
 **Status:** Provisional sequence from the anchor concept; the ledger is a local archive, not an infallible record of objective truth.
 
 - **Location ID:** NI-LOC-02
-- **Regional registry source:** `ANCHOR-LOCATIONS.md`; compare with Nirvan's settlement registry before assigning a city ID.
+- **Regional registry source:** `ANCHOR-LOCATIONS.md`; `CITIES-NIRVAN.md`. Current working association: a named woodland/trail landmark in the same broad forest-and-route region as NI-CITY-03 Varnholt, not a second settlement unless a story establishes one.
 - **Current geographic status:** Forest settlement with a record house; forest moisture and temperature must fit Nirvan's regional climate.
 - **Historical date convention:** Relative sequence only — Earlier, Middle, Later.
 - **Environmental history:** Storms, animal movement, and forest boundaries change over time, but no specific storm or ecological crisis is established.
@@ -221,7 +221,7 @@ Do not assume every location has a ruler, empire, founding myth, disaster, or su
 **Status:** Provisional sequence from the anchor concept; the number seven is a local convention, not a magical law.
 
 - **Location ID:** AZ-LOC-01
-- **Regional registry source:** `ANCHOR-LOCATIONS.md`; compare with Azmar's settlement registry before assigning a city or island ID.
+- **Regional registry source:** `ANCHOR-LOCATIONS.md`; `CITIES-AZMAR.md`. Current working association: the anchorage or harbor district associated with AZ-CITY-01 Selka Haven. Reconcile with Atlas SET-05 — Azmar Port; do not count three separate harbors by default.
 - **Current geographic status:** Island harbor at a passage junction. Exact island positions, channel depth, tides, and route geometry remain open.
 - **Historical date convention:** Relative sequence only — Earlier, Middle, Later.
 - **Environmental history:** Tide, depth, vessel draft, and weather produce different hazards. No supernatural navigation rule is established.
@@ -242,7 +242,7 @@ Do not assume every location has a ruler, empire, founding myth, disaster, or su
 **Status:** Provisional sequence from the anchor concept; no treasure, ancient technology, or water miracle is established.
 
 - **Location ID:** AZ-LOC-02
-- **Regional registry source:** `ANCHOR-LOCATIONS.md`; compare with Azmar's settlement registry before assigning a city or island ID.
+- **Regional registry source:** `ANCHOR-LOCATIONS.md`; `CITIES-AZMAR.md`. Current working association: AZ-CITY-03 Oruven's island/location or a nearby water-management landmark only if the island geography supports a permanent settlement; otherwise keep it as a separate uninhabited or seasonally used island.
 - **Current geographic status:** Small island with a high ridge, sheltered landing, roof catchments, and communal cisterns; final rainfall, storage, and population must balance.
 - **Historical date convention:** Relative sequence only — Earlier, Middle, Later.
 - **Environmental history:** Freshwater limits shape settlement. A nearby harbor does not imply a reliable drinking-water supply.
