@@ -33,6 +33,10 @@ Every recurring or collectible character should have:
 
 Before using a character in a new story, check chronology, location, knowledge, relationships, motivations, and prior choices. A character should not know information they could not plausibly have learned unless the story establishes a reason.
 
-## 4. Status
+## 4. Provisional story-specific records
 
-This document establishes a template only. Existing character details from other project files or conversations should be imported and reconciled before being treated as complete canon.
+The first lore-linked story pilot has separate, provisional character records for **Tarin Vell (OR-CHAR-001)** and **Sella Orin (OR-CHAR-002)** in [Low-Water Shore Pilot Character Records](stories/LOW-WATER-SHORE-CHARACTERS.md). They are defined only for the draft series and are not yet collectible-card characters or globally finalized canon. Check those records before editing the pilot episodes.
+
+## 5. Status
+
+This document establishes the general template and continuity rules. Existing character details from other project files or conversations should be imported and reconciled before being treated as complete canon. Story-specific records may remain provisional while a pilot is under review.
