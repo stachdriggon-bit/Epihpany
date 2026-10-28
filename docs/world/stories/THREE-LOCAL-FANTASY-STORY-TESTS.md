@@ -88,7 +88,7 @@ The upper terraces had been thirsty for three weeks.
 
 By noon, the last garden beds were dust. The channels still carried water, but less of it reached the upper steps, and every household had a different explanation. Someone had planted too much. Someone had taken an extra turn. Someone had neglected the channel after promising to mend it.
 
-At dusk, Evin knelt beside the carved groove on the lowest terrace. He had been a channel caretaker for only one season, and he was afraid the older repairers still saw him as a child carrying tools. He knew the Climbing Thread: a line of water as fine as a hair, sometimes rising up the groove before slipping back down. He had watched it since he was small, but this was the first dry season in which people expected him to explain what it meant.
+At dusk, Evin knelt beside the carved groove on the lowest terrace. He had spent only one season helping care for the channels, and he worried that the older repairers dismissed his observations too quickly. As the Thread Seeker, he had watched the Climbing Thread—a line of water as fine as a hair, sometimes rising up the groove before slipping back down—but this was the first dry season in which people expected him to explain what it meant.
 
 The air smelled of warm stone and crushed mint. A few drops gathered in the groove. They trembled, then crept uphill.
 
@@ -217,7 +217,7 @@ The child put an ear against the warm stone, as if the old storm might have one 
 |---|---|---|---|
 | Magical signature | A ribbon of water runs upstream | A thread of water climbs a groove | A stone returns the sound of a past storm |
 | Emotional center | Fear during a dangerous crossing | A young caretaker risks admitting what he cannot know | Anxiety when a familiar signal disappears |
-| Character's distinct role | Mira acts quickly and challenges an unfair toll | Evin learns that an honest record can include uncertainty | The record keeper makes a difficult decision legible to everyone |
+| Character's distinct role | Mira acts quickly and challenges an unfair toll | Evin learns that an honest record can include uncertainty | Evren tests the fitting's sound while the record keeper makes a difficult decision legible to everyone |
 | Community consequence | Repair costs and access rules | Water shares and maintenance duties | Rationing and cistern repair |
 | What magic cannot do | Explain the broken rope or decide a fair toll | Measure all water or prove guilt | Measure exact volume, test purity, or predict rain |
 
