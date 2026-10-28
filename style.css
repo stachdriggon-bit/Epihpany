@@ -3033,3 +3033,46 @@ body[data-theme="dark"] .answer{box-shadow:0 1px 0 rgba(0,0,0,.35),0 8px 16px -1
 .tl-chain-link{display:inline-flex;align-items:center;padding:5px 10px;border:1px solid var(--line);border-radius:9px;background:var(--ground);font-weight:850}
 .tl-chain-path .tl-ladder-step{font-weight:850;color:var(--muted)}
 
+
+
+/* Navigation stability pass — 2026-10-28.
+   Keep the sticky header on a solid surface to avoid backdrop-filter repaint flicker
+   during wheel scrolling, and let the mobile menu use the viewport as its boundary. */
+.top{
+  background:var(--ground,#f5f6fc);
+  -webkit-backdrop-filter:none;
+  backdrop-filter:none;
+  isolation:isolate;
+  box-shadow:0 1px 0 rgba(18,26,58,.05);
+}
+body[data-theme="dark"] .top{background:var(--ground,#111522)}
+.top-in{min-width:0}
+.mobile-menu nav{
+  position:fixed;
+  inset-block-start:calc(68px + env(safe-area-inset-top));
+  inset-inline-end:max(12px,env(safe-area-inset-right));
+  inset-inline-start:auto;
+  width:min(320px,calc(100vw - 24px));
+  max-width:calc(100vw - 24px);
+  max-height:calc(100dvh - 92px - env(safe-area-inset-top));
+  overflow-x:hidden;
+  overflow-y:auto;
+  overscroll-behavior:contain;
+  -webkit-overflow-scrolling:touch;
+  box-sizing:border-box;
+}
+@media(max-width:820px){
+  .top{z-index:1000}
+  .mobile-menu nav{
+    inset-block-start:calc(58px + env(safe-area-inset-top));
+    max-height:calc(100dvh - 82px - env(safe-area-inset-top));
+  }
+  .mobile-menu nav .tab{white-space:normal;overflow-wrap:anywhere}
+}
+@media(max-width:380px){
+  .mobile-menu nav{
+    inset-inline-end:8px;
+    width:calc(100vw - 16px);
+    max-width:calc(100vw - 16px);
+  }
+}
