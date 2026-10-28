@@ -3,8 +3,8 @@
 **Status:** Draft for editorial review; not app content and not canonized prose.  
 **Series:** The Two Records at the Low-Water Shore (working title).  
 **Suggested level:** B1.  
-**Place:** OR-LOC-02 — The Low-Water Shore (provisional anchor). Do not use Ambrin as a separate place until the registry overlap is resolved.  
-**Characters:** The record keeper and the boat repairer are role placeholders, not finalized characters. Give them stable character records before publication.  
+**Place:** OR-LOC-02 — The Low-Water Shore (provisional anchor). OR-CITY-04 (Ambrin) is a possible registry match, not a separate place in this story; see the Orath registry note.  
+**Characters:** Tarin Vell (OR-CHAR-001) and Sella Orin (OR-CHAR-002), defined provisionally in [the pilot character records](LOW-WATER-SHORE-CHARACTERS.md). Their roles and relationship are usable for this draft; exact ages and wider backstories remain open.  
 **Event time:** Unassigned relative period; exact date and global era remain open.  
 **In-world knowledge time:** The two records already exist; neither character has yet established why their descriptions differ.  
 **Player discovery time:** Proposed opening episode; release order may differ from the event chronology.
@@ -16,67 +16,67 @@
 
 ## Page 1 — The Steps Above the Water
 
-The lake had pulled away from the old landing steps again. Several lower stones stood dry, and a strip of dark ground had appeared beside the shore. The boat repairer wanted to move a small storehouse closer to the water before the next busy season.
+The lake had pulled away from the old landing steps again. Several lower stones stood dry, and a strip of dark ground had appeared beside the shore. Tarin wanted to move a small storehouse farther inland before the next busy season, but he did not know how far the shoreline might reach in a wet period.
 
-“Last spring, the water reached the third step,” the repairer said, pointing to a line in an old dock log. “If it rises that high again, we should leave this space clear.”
+“Last spring, the water reached the third step,” Tarin said, pointing to a line in an old dock log. “If it rises that high again, we should keep this space clear for loading boats.”
 
-The record keeper opened a second book. “This family notebook says the shore has been low for several years. These records do not seem to agree.”
+Sella opened a second book. “This family notebook shows that the garden edge has moved farther from the water over several dry seasons. At first, it looks as if these records disagree.”
 
-Neither of them knew which record could answer the question.
+Neither of them yet knew what the records could prove about the lake.
 
 ### الصفحة الأولى — الدرجات فوق الماء
 
-كانت مياه البحيرة قد تراجعت مجددًا عن درجات الرصيف القديم. ظهرت عدة درجات سفلية جافة، وانكشفت مساحة من الأرض الداكنة قرب الشاطئ. أراد مصلّح القوارب نقل مخزن صغير إلى مكان أقرب للماء قبل موسم النشاط التالي.
+كانت مياه البحيرة قد تراجعت مجددًا عن درجات الرصيف القديم. ظهرت عدة درجات سفلية جافة، وانكشفت مساحة من الأرض الداكنة قرب الشاطئ. أراد تارين نقل مخزن صغير إلى مكان أبعد عن الشاطئ قبل موسم النشاط التالي، لكنه لم يكن يعرف إلى أي مسافة قد تصل المياه في فترة رطبة.
 
-قال مصلّح القوارب وهو يشير إلى سطر في سجل قديم للرصيف: «في الربيع الماضي، وصل الماء إلى الدرجة الثالثة. إذا ارتفع إلى هذا المستوى مجددًا، فعلينا إبقاء هذه المساحة خالية».
+قال تارين وهو يشير إلى سطر في سجل قديم للرصيف: «في الربيع الماضي، وصل الماء إلى الدرجة الثالثة. إذا ارتفع إلى هذا المستوى مجددًا، فعلينا إبقاء هذه المساحة خالية لتحميل القوارب».
 
-فتح أمين السجلات دفترًا ثانيًا وقال: «يذكر هذا الدفتر العائلي أن مستوى الشاطئ منخفض منذ عدة سنوات. يبدو أن السجلين لا يتفقان».
+فتحت سيلا دفترًا ثانيًا وقالت: «يوضح هذا الدفتر العائلي أن حافة الحديقة ابتعدت عن الماء خلال عدة مواسم جافة. للوهلة الأولى، يبدو أن السجلين لا يتفقان».
 
-لم يكن أيٌّ منهما يعرف أيَّ السجلين يستطيع الإجابة عن السؤال.
+لم يكن أيٌّ منهما يعرف بعد ما الذي يستطيع السجلان إثباته بشأن البحيرة.
 
 ## Page 2 — Two Different Questions
 
-The record keeper placed the books side by side. The dock log did not describe the lake every day. It recorded the water level when workers needed to decide whether loading boats was safe.
+Sella placed the books side by side. The dock log did not describe the lake every day. It recorded the water level when workers needed to decide whether loading boats was safe.
 
 The family notebook served a different purpose. Its writer marked the edge of a garden after each dry season. It did not record the water level at the same date every year.
 
-“Perhaps one of us copied a number incorrectly,” the repairer suggested.
+“Perhaps someone copied a number incorrectly,” Tarin suggested.
 
-“Perhaps,” said the record keeper. “But we should check before we blame a mistake. The books may be describing different moments for different reasons.”
+“Perhaps,” Sella replied. “But we should check before we blame a mistake. The books may be describing different moments for different reasons.”
 
 They still did not know whether the lake was changing over the long term. They had only discovered that the two records were not direct measurements of the same thing.
 
 ### الصفحة الثانية — سؤالان مختلفان
 
-وضع أمين السجلات الدفترين جنبًا إلى جنب. لم يكن سجل الرصيف يصف البحيرة كل يوم؛ بل كان يسجّل مستوى الماء عندما يحتاج العمال إلى تقرير ما إذا كان تحميل القوارب آمنًا.
+وضعت سيلا الدفترين جنبًا إلى جنب. لم يكن سجل الرصيف يصف البحيرة كل يوم؛ بل كان يسجّل مستوى الماء عندما يحتاج العمال إلى تقرير ما إذا كان تحميل القوارب آمنًا.
 
 أما الدفتر العائلي فكان له غرض مختلف. فقد كان كاتبه يحدد حافة الحديقة بعد كل موسم جاف، ولم يكن يسجّل مستوى الماء في التاريخ نفسه من كل عام.
 
-اقترح مصلّح القوارب: «ربما نقل أحدنا رقمًا بطريقة خاطئة».
+اقترح تارين: «ربما نقل أحدهم رقمًا بطريقة خاطئة».
 
-أجاب أمين السجلات: «ربما، لكن علينا التحقق قبل اتهام أحد بالخطأ. قد يصف الدفتران لحظتين مختلفتين ولغرضين مختلفين».
+أجابت سيلا: «ربما، لكن علينا التحقق قبل اتهام أحد بالخطأ. قد يصف الدفتران لحظتين مختلفتين ولغرضين مختلفين».
 
 لم يعرفا بعد ما إذا كان مستوى البحيرة يتغير على المدى الطويل. كل ما اكتشفاه هو أن السجلين لا يقدّمان قياسين مباشرين للشيء نفسه.
 
 ## Page 3 — A Careful First Step
 
-The repairer looked again at the exposed stones. “Then we should not tell the town that the lake is definitely shrinking.”
+Tarin looked again at the exposed stones. “Then we should not tell the town that the lake is definitely shrinking.”
 
-“Not from these pages alone,” the record keeper replied. “Let us mark the water level at the same steps today. We can return to the same place and measure it again after the next season.”
+“Not from these pages alone,” Sella replied. “Let us mark the water level at the same steps today. We can return to the same place and measure it again after the next season.”
 
-They wrote down the date, the weather, and the exact step where the water ended. They also noted that the older records had been made for different purposes.
+They wrote down the date, the weather, and the exact step where the water reached the landing. They also noted that the older records had been made for different purposes.
 
-The storehouse decision could wait until they had better information. The lake had changed its shoreline, but the two books had not yet explained why.
+Tarin could wait before choosing the storehouse's new position; for now, they needed a record that could be compared with a later measurement. The lake had changed its shoreline, but the two books had not yet explained why.
 
 ### الصفحة الثالثة — خطوة أولى حذرة
 
-عاد مصلّح القوارب ينظر إلى الحجارة المكشوفة. وقال: «إذًا، لا ينبغي أن نخبر أهل البلدة بأن البحيرة تنكمش بالتأكيد».
+عاد تارين ينظر إلى الحجارة المكشوفة. وقال: «إذًا، لا ينبغي أن نخبر أهل البلدة بأن البحيرة تنكمش بالتأكيد».
 
-أجاب أمين السجلات: «ليس اعتمادًا على هاتين الصفحتين وحدهما. لنسجّل مستوى الماء عند الدرجات نفسها اليوم، ثم نعود إلى المكان نفسه ونقيسه مجددًا بعد الموسم القادم».
+أجابت سيلا: «ليس اعتمادًا على هاتين الصفحتين وحدهما. لنسجّل مستوى الماء عند الدرجات نفسها اليوم، ثم نعود إلى المكان نفسه ونقيسه مجددًا بعد الموسم القادم».
 
 دوّنا التاريخ وحالة الطقس والدرجة التي وصل إليها الماء بالضبط. كما سجّلا أن الدفاتر القديمة كُتبت لأغراض مختلفة.
 
-أمكن تأجيل قرار نقل المخزن إلى أن تتوافر معلومات أفضل. لقد تغيّر خط الشاطئ، لكن الدفترين لم يفسّرا السبب بعد.
+استطاع تارين تأجيل اختيار الموقع الجديد للمخزن؛ ففي الوقت الحالي، كانا بحاجة إلى سجل يمكن مقارنته بقياس لاحق. لقد تغيّر خط الشاطئ، لكن الدفترين لم يفسّرا السبب بعد.
 
 ## Comprehension questions
 
@@ -128,7 +128,7 @@ C. تقيسان مستوى الماء عند الدرجات نفسها مجدد�
 ## Editorial and canon checks before implementation
 
 - [ ] Resolve whether Ambrin (OR-CITY-04) is the same place as OR-LOC-02; do not create duplicate place records.
-- [ ] Finalize the two characters' names, stable IDs, motives, flaws, relationships, and knowledge boundaries in the character reference.
+- [x] Add provisional character records, stable IDs, motives, flaws, relationship, and knowledge boundaries in [LOW-WATER-SHORE-CHARACTERS.md](LOW-WATER-SHORE-CHARACTERS.md). Names remain provisional and can be revised consistently.
 - [ ] Confirm that “dock log,” “family notebook,” “garden edge,” and the proposed seasonal observation fit the final place and local practices.
 - [ ] Keep the lake's long-term cause open. This episode establishes a record-comparison problem, not a supernatural event or a lost civilization.
 - [ ] Check that all story claims are supported by the prose and that Arabic translations remain aligned with English questions and options.
