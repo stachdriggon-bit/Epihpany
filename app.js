@@ -3014,7 +3014,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     if(e.target.closest('#writer-three-words')){const level=CREATE_STORY.writerLevel||currentLevel().id,topicPools={mystery:['clue','evidence','suspect','notice','investigate','missing','carefully','discover','hidden','solve'],adventure:['compass','trail','explore','journey','brave','survive','distant','suddenly','rescue','discover'],everyday:['receipt','budget','change','borrow','return','polite','explain','carefully','promise','solve'],nature:['shelter','storm','branch','wildlife','protect','quietly','observe','discover','survive','fresh'],communication:['apology','explain','misunderstanding','honest','promise','listen','kindly','forgive','respect','reply'],technology:['battery','charge','device','repair','power','connect','carefully','signal','switch','test'],investigation:['evidence','witness','clue','inspect','compare','suspect','honest','record','confirm','solve']};const levelPools={'A1':['help','look','find','small','happy','go','see','safe','friend','home'],'A2':['notice','decide','carefully','suddenly','search','promise','worried','return','explain','quietly'],'B1':['investigate','discover','relieved','mysterious','evidence','consider','although','realise','solution','respond'],'B2':['consequence','hesitate','persuade','reliable','eventually','recognise','determine','despite','approach','resolve'],'C1':['uncover','uncertain','subtle','confront','significant','conclude','interpret','reluctant','convincing','complicated']};const pool=[...(topicPools[CREATE_STORY.topic]||topicPools.mystery),...(levelPools[level]||levelPools.A1)];CREATE_STORY.challengeWords=[];while(CREATE_STORY.challengeWords.length<3){const w=pool[Math.floor(Math.random()*pool.length)];if(!CREATE_STORY.challengeWords.includes(w))CREATE_STORY.challengeWords.push(w);}toast('New challenge: '+CREATE_STORY.challengeWords.join(' · '));renderCreateStory();return;}
     if(e.target.closest('#writer-finish')){finishGuidedStory();return;}
     if(e.target.closest('#writer-edit')){CREATE_STORY.mode='writer';renderCreateStory();return;}
-    if(e.target.closest('#writer-read-aloud')){const text=(CREATE_STORY.publishedPages||[]).join(' ');if(!('speechSynthesis'in window)){toast('Speech is not available in this browser.');return;}window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang='en-US';u.rate=.88;window.speechSynthesis.speak(u);return;}
+    if(e.target.closest('#writer-read-aloud')){const text=(CREATE_STORY.publishedPages||[]).join(' ');if(!text.trim()){toast('Write or generate your story first.');return;}speak(text,{rate:0.88});return;}
     if(e.target.closest('#writer-save-story')){saveCreatedStory();return;}
     if(e.target.closest('#writer-cloud-save')){saveCreatedStoryToAccount('private');return;}
     if(e.target.closest('#writer-publish-story')){if(window.confirm('Publish this story so other signed-in learners can read it?'))saveCreatedStoryToAccount('public');return;}
@@ -3830,11 +3830,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     const hit = (typeof WOTD_WORDS !== 'undefined' ? WOTD_WORDS : []).find(x => String(x.word).toLowerCase() === String(word || '').toLowerCase());
     return hit && hit.meaning === meaning && hasArabic(hit.meaning_ar) ? hit.meaning_ar : '';
   }
-  function miniSpeech(text) {
-    const synth=window.speechSynthesis;
-    if(!synth||!('SpeechSynthesisUtterance' in window)){toast('Audio is not supported in this browser.');return;}
-    try{synth.cancel();const u=new SpeechSynthesisUtterance(String(text));const v=pickVoice();u.lang=v?String(v.lang||'en-US').replace('_','-'):'en-US';if(v)u.voice=v;u.rate=.92;synth.speak(u);}catch{toast('Could not play the audio.');}
-  }
+  function miniSpeech(text) { speak(text,{rate:voicePref.rate||0.92}); }
   function miniSpeedSetup() {
     if(miniTimer){clearInterval(miniTimer);miniTimer=null;}
     const pool=miniWeakWordPool();
