@@ -161,7 +161,10 @@ All settlement roles and exact placements remain provisional as stated in their 
 
 ## 8. Immediate next actions
 
+A first episode draft is now available at [The Mismatch — Episode 1 draft](stories/THE-TWO-RECORDS-EPISODE-01-DRAFT.md). It is a review draft only and has not been added to the app or canonized.
+
 1. Reconcile the Low-Water Shore and Ambrin place records, then verify the lake's physical constraints in the Atlas.
-2. Create character records for the pilot only after agreeing on its narrative roles.
-3. Write and review episode one before committing to the six-episode arc.
-4. Keep the present stories available during this work; do not replace them wholesale.
+2. Finalize the two characters' records before treating the episode as final canon.
+3. Review the draft for story quality, B1 language level, and whether its record-comparison problem is clear without over-explaining it.
+4. After the pilot passes review, draft the remaining five episodes and audit their questions/translations as a set.
+5. Keep the present stories available during this work; do not replace them wholesale.
