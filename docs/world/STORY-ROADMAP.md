@@ -177,3 +177,10 @@ The first event registry and an in-app **World Archive** view provide a source-l
 No calendar dates or era have been invented. The six entries are ordered only by the episode sequence of the provisional story arc; the interface labels this as episode order, not a dated historical chronology. The relationship between OR-LOC-02 and OR-CITY-04 remains unresolved.
 
 Next: expand the place registry from approved world references, add only evidence-backed events, then support date ranges/eras and multiple stories per event. Do not imply exact dates before the calendar has been established.
+
+
+## 10. World Archive interface and next review
+
+The initial **World Archive** view is now linked from the Stories navigation group. It lists the six provisional Low-Water Shore entries, allows the reader to switch between episode order and reverse episode order, and links each entry back to its existing story. Story cards and the reader show the place and the explicit unknown-date label.
+
+This is an interface pilot, not yet a complete world-history browser: it does not provide a calendar date picker because no supported dates exist for these events. Future work should add additional places only after their stable place records are verified, then introduce date filters that respect date precision and disputed/unknown records.
