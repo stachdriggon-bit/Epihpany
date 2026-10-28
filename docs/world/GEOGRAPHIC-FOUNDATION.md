@@ -129,7 +129,7 @@ Existing anchor locations are narrative anchors, not permission to create duplic
 - **IL-LOC-01 The Three-Arch Ferry ↔ IL-CITY-04 Ilanford:** treat the Three-Arch Ferry as the named crossing/landmark within Ilanford. If the river map makes the crossing unsuitable, revise Ilanford's siting rather than inventing a second nearby crossing without purpose.
 - **IL-LOC-02 The Lanternwood Edge ↔ IL-CITY-03 Talwen:** treat the Edge as a forest-edge landmark or nearby district associated with Talwen, not automatically a second town.
 - **OR-LOC-01 The Switchback Gate ↔ OR-CITY-03 Velisar:** treat the Gate as the pass checkpoint/roadside cluster associated with Velisar. Keep one settlement record unless a story needs a distinct neighboring settlement.
-- **OR-LOC-02 The Low-Water Shore ↔ OR-CITY-04 Ambrin:** treat the Shore as a named lakeside sector/landmark of Ambrin.
+- **OR-LOC-02 The Low-Water Shore / OR-CITY-04 Ambrin:** relationship unresolved under WD-033. Do not treat them as the same place or as separate towns; use OR-LOC-02 alone for the six-episode pilot and preserve both IDs until the project owner records an evidence-backed decision.
 - **TH-LOC-01 The Wadi Market ↔ TH-CITY-02 Saffra:** treat the Wadi Market as the market district or historic site that gives Saffra its role.
 - **TH-LOC-02 The Spring Steps ↔ TH-CITY-03 Kharif:** treat the Spring Steps as a spring-and-terrace landmark within or beside Kharif.
 - **NI-LOC-01 The Last Warm Dock ↔ NI-CITY-01 Orven Reach:** treat the Dock as the harbor's best-known pier or working district.
