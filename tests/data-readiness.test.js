@@ -94,6 +94,14 @@ test('cloud progress saves retain failed snapshots for online recovery and merge
   assert.match(account, /pendingCloudProgress === snapshot\) pendingCloudProgress = null/);
 });
 
+test('cloud account sync retries after an in-flight sync and ignores stale account responses', () => {
+  const account = fs.readFileSync(path.join(root, 'account.js'), 'utf8');
+  assert.match(account, /if \(syncing\) \{[\s\S]*?setTimeout\(\(\) => \{\s*if \(currentUser\?\.id === user\.id\) syncUserProgress\(user\);\s*\}, 400\);/,
+    'A new account sync must not be dropped while another user is syncing.');
+  assert.match(account, /\.maybeSingle\(\);\s*if \(error\) throw error;\s*\/\/ Ignore stale responses[\s\S]*?if \(currentUser\?\.id !== user\.id\) return;/,
+    'A late response for a previous account must not replace the current user’s local progress.');
+});
+
 test('cloud progress saves are queued rather than dropped during an active sync', () => {
   const account = fs.readFileSync(path.join(root, 'account.js'), 'utf8');
   assert.match(account, /async function flushSave\(progress\) \{\s*if \(!client \|\| !currentUser\) return;\s*(?:if \(progress\) pendingCloudProgress = progress;\s*)?if \(syncing\) \{\s*clearTimeout\(saveTimer\);\s*saveTimer = setTimeout\(\(\) => flushSave\(pendingCloudProgress\), 400\);/,
