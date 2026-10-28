@@ -1,6 +1,6 @@
 # The Two Records at the Low-Water Shore — Episodes 2–6
 
-**Status:** Connected episode drafts for editorial review; not yet app content and not final canon.  
+**Status:** Editorial reference for provisional playtest content now integrated in the app as `world-low-water-ep2` through `world-low-water-ep6`; not final canon.  
 **Level:** B1 target.  
 **Characters:** Tarin Vell (OR-CHAR-001) and Sella Orin (OR-CHAR-002); see [pilot character records](LOW-WATER-SHORE-CHARACTERS.md).  
 **Place:** OR-LOC-02 — The Low-Water Shore. Ambrin (OR-CITY-04) remains a possible registry match, not a second location.  
