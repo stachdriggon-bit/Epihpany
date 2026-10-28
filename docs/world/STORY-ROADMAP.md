@@ -74,9 +74,9 @@ Otherwise, preserve it.
 **Status:** Pitch only — not approved canon.  
 **Suggested level:** B1, with optional Arabic support.  
 **Region:** Orath, eastern continent (current working map).  
-**Primary place reference:** OR-LOC-02 — The Low-Water Shore, an existing candidate anchor whose established story hook already concerns a receding lake and records kept over different time spans for different purposes. Its details remain part of the working reference, not final geography. **Possible name reconciliation:** Ambrin / أمبرين (OR-CITY-04) describes a very similar inland-shore settlement. Do not treat Ambrin and The Low-Water Shore as separate places yet. The worldbuilding files explicitly flag this overlap; reconcile the records before implementing the story, preserving one stable ID if they are the same place.  
+**Primary place reference:** OR-LOC-02 — The Low-Water Shore. Use this ID alone for the six-episode pilot. OR-CITY-04 — Ambrin / أمبرين is a potentially overlapping settlement record; the source material does not prove whether the two records describe the same place. Do not map them as separate towns or duplicate the pilot's routes/events. Keep both IDs until the project owner records a final identity decision. This is an operational continuity rule, not a canon claim that the names are identical. See [Unified World Overview](WORLD-OVERVIEW.md).  
 **Time:** Leave the exact date and universal era open. Use a relative marker only after the timeline context is chosen.  
-**New characters:** Do not reuse or imply an existing character. Create stable character records and approve their motivations, relationships, and knowledge limits before drafting the final story.
+**Pilot characters:** Provisional records for Tarin Vell (OR-CHAR-001) and Sella Orin (OR-CHAR-002) now exist in [the pilot character records](stories/LOW-WATER-SHORE-CHARACTERS.md). Use those records and their knowledge limits; do not invent an unrelated cast or treat these draft-specific records as globally finalized canon.
 
 #### Core premise
 
