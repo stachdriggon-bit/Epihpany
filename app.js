@@ -4867,10 +4867,13 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
         if (feedback) feedback.textContent = choice.reply || 'That is a natural response. Well done!';
         WORLD.dialogueComplete = true;
         WORLD.conversationOpen = false;
+        const dialogueWorld = WORLD;
         setTimeout(function () {
+          // Ignore a delayed response if the player has left this World session.
+          if (WORLD !== dialogueWorld || dialogueWorld.mode !== 'play') return;
           const panel = $('#world-conversation');
           if (panel) panel.remove();
-          if (WORLD && WORLD.mode === 'play' && worldEval()) worldComplete();
+          if (worldEval()) worldComplete();
         }, 650);
         recordAdaptiveResult('conversation', task.id || task.title || 'world-dialogue', true);
       } else {
