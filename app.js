@@ -1783,9 +1783,9 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
   const storyIsSaved=word=>state.words.some(w=>String(w[0]).toLowerCase()===String(word).toLowerCase());
   function renderChronicle(){
     const root=$('#chronicle-content');if(!root)return;
-    if(!Array.isArray(window.EPIPHANY_WORLD_EVENTS)){
+    if(!Array.isArray(window.EPIPHANY_WORLD_EVENTS)||!Array.isArray(window.EPIPHANY_WORLD_PLACES)||!Array.isArray(window.EPIPHANY_WORLD_PERIODS)){
       root.setAttribute('aria-busy','true');
-      root.innerHTML='<section class="archive-loading" role="status"><span aria-hidden="true">🗺️</span><h2>Opening the world archive…</h2><p>Loading the first place and event records.</p></section>';
+      root.innerHTML='<section class="archive-loading" role="status"><span aria-hidden="true">🗺️</span><h2>Opening the world archive…</h2><p>Loading the shared place, period, and event records.</p></section>';
       window.EPIPHANY_LAZY_LOAD('chronicle').then(renderChronicle).catch(()=>{
         root.removeAttribute('aria-busy');
         root.innerHTML='<section class="archive-empty" role="status"><h2>The archive could not load</h2><p>Your learning progress is safe. Check your connection and try again.</p><button type="button" class="btn" data-archive-retry>Try again</button></section>';
@@ -1794,10 +1794,22 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     }
     root.removeAttribute('aria-busy');
     const all=window.EPIPHANY_WORLD_EVENTS;
-    const places=[...new Map(all.map(e=>[e.placeId,{id:e.placeId,name:e.placeName}])).values()];
-    const placeId=root.dataset.place||places[0]?.id||'';
+    const places=window.EPIPHANY_WORLD_PLACES;
+    const periods=window.EPIPHANY_WORLD_PERIODS;
+    const placeId=root.dataset.place||places.find(p=>all.some(e=>e.placeId===p.id))?.id||places[0]?.id||'';
+    const periodId=root.dataset.period||'all';
+    const from=root.dataset.from||'';
+    const to=root.dataset.to||'';
     const direction=root.dataset.direction||'oldest';
-    const events=all.filter(e=>e.placeId===placeId).slice().sort((a,b)=>{
+    const selected=places.find(p=>p.id===placeId);
+    const linked=all.filter(e=>e.placeId===placeId);
+    const events=linked.filter(e=>{
+      if(periodId!=='all'&&(e.periodId||'period-unassigned')!==periodId)return false;
+      const value=e.date?.kind==='exact'?String(e.date.value||''):'';
+      if(from&&(!value||value<from))return false;
+      if(to&&(!value||value>to))return false;
+      return true;
+    }).slice().sort((a,b)=>{
       const rank={exact:0,range:1,era:2,relative:3,unknown:4};
       const precision=(rank[a.date?.kind]??4)-(rank[b.date?.kind]??4);
       if(precision)return precision;
@@ -1808,10 +1820,16 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
       const d=(Number(a.relativeOrder)||999)-(Number(b.relativeOrder)||999);
       return direction==='newest'?-d:d;
     });
-    const selected=places.find(p=>p.id===placeId);
-    root.innerHTML='<section class="archive-panel"><div class="archive-controls"><label for="archive-place">Explore a place<select id="archive-place">'+places.map(p=>'<option value="'+esc(p.id)+'" '+(p.id===placeId?'selected':'')+'>'+esc(p.name)+'</option>').join('')+'</select></label><label for="archive-order">Order<select id="archive-order"><option value="oldest" '+(direction==='oldest'?'selected':'')+'>Episode order (undated)</option><option value="newest" '+(direction==='newest'?'selected':'')+'>Reverse episode order</option></select></label></div><div class="archive-place-heading"><span class="archive-map-mark" aria-hidden="true">⌖</span><div><p class="kicker">PLACE RECORD · '+esc(placeId)+'</p><h2>'+esc(selected?.name||'Unknown place')+'</h2><p>'+events.length+' linked provisional entries · calendar dates not established</p></div></div><p class="archive-note"><strong>Reading this timeline:</strong> entries follow the episode order of one draft story arc. This is not a dated historical chronology. No connection to Ambrin is assumed.</p><ol class="archive-timeline">'+events.map((e,i)=>'<li class="archive-event"><span class="archive-event-marker" aria-hidden="true">'+String(i+1).padStart(2,'0')+'</span><article><div class="archive-event-meta"><span>'+esc(e.date?.label||'Date not established')+'</span><span class="archive-status">'+esc(e.status||'open')+'</span></div><h3>'+esc(e.title)+'</h3><p>'+esc(e.summary)+'</p><p class="archive-event-source">Source: '+esc(e.evidenceType||'unclassified')+' · '+esc(e.id)+'</p><button type="button" class="btn btn-ghost archive-story-link" data-story-open="'+esc((e.storyIds||[])[0]||'')+'">Read linked story →</button></article></li>').join('')+'</ol></section>';
+    const placeOptions=places.map(p=>'<option value="'+esc(p.id)+'" '+(p.id===placeId?'selected':'')+'>'+esc(p.name)+' · '+esc(p.region)+'</option>').join('');
+    const periodOptions='<option value="all" '+(periodId==='all'?'selected':'')+'>All periods</option>'+periods.map(p=>'<option value="'+esc(p.id)+'" '+(p.id===periodId?'selected':'')+'>'+esc(p.label)+'</option>').join('');
+    const timeline=events.length?'<ol class="archive-timeline">'+events.map((e,i)=>'<li class="archive-event"><span class="archive-event-marker" aria-hidden="true">'+String(i+1).padStart(2,'0')+'</span><article><div class="archive-event-meta"><span>'+esc(e.date?.label||'Date not established')+'</span><span class="archive-status">'+esc(e.status||'open')+'</span></div><h3>'+esc(e.title)+'</h3><p>'+esc(e.summary)+'</p><p class="archive-event-source">Source: '+esc(e.evidenceType||'unclassified')+' · '+esc(e.id)+'</p><button type="button" class="btn btn-ghost archive-story-link" data-story-open="'+esc((e.storyIds||[])[0]||'')+'">Read linked story →</button></article></li>').join('')+'</ol>':'<section class="archive-empty"><h3>No matching records yet</h3><p>'+(linked.length?'Try clearing the period or date filters.':'This place has a stable registry entry, but no events have been linked to it yet.')+'</p></section>';
+    root.innerHTML='<section class="archive-panel"><div class="archive-controls"><label for="archive-place">Explore a place<select id="archive-place">'+placeOptions+'</select></label><label for="archive-period">Historical period<select id="archive-period">'+periodOptions+'</select></label><label for="archive-from">From date<input id="archive-from" type="date" value="'+esc(from)+'"></label><label for="archive-to">To date<input id="archive-to" type="date" value="'+esc(to)+'"></label><label for="archive-order">Timeline order<select id="archive-order"><option value="oldest" '+(direction==='oldest'?'selected':'')+'>Earlier first</option><option value="newest" '+(direction==='newest'?'selected':'')+'>Later first</option></select></label><button type="button" class="btn btn-ghost" id="archive-clear-filters">Clear filters</button></div><div class="archive-place-heading"><span class="archive-map-mark" aria-hidden="true">⌖</span><div><p class="kicker">PLACE RECORD · '+esc(placeId)+'</p><h2>'+esc(selected?.name||'Unknown place')+'</h2><p>'+esc(selected?.region||'Region not established')+' · '+esc(selected?.type||'Place type not established')+' · '+linked.length+' linked record(s)</p><p>'+esc(selected?.description||'No description recorded yet.')+'</p></div></div><p class="archive-note"><strong>Chronology rules:</strong> relative periods are local to a place, not a shared world-wide era. Date filters only include records with established calendar dates. The current six pilot entries remain undated and in episode order; no unresolved place relationships have been inferred.</p>'+timeline+'</section>';
     root.querySelector('#archive-place')?.addEventListener('change',e=>{root.dataset.place=e.target.value;renderChronicle();});
+    root.querySelector('#archive-period')?.addEventListener('change',e=>{root.dataset.period=e.target.value;renderChronicle();});
+    root.querySelector('#archive-from')?.addEventListener('change',e=>{root.dataset.from=e.target.value;renderChronicle();});
+    root.querySelector('#archive-to')?.addEventListener('change',e=>{root.dataset.to=e.target.value;renderChronicle();});
     root.querySelector('#archive-order')?.addEventListener('change',e=>{root.dataset.direction=e.target.value;renderChronicle();});
+    root.querySelector('#archive-clear-filters')?.addEventListener('click',()=>{delete root.dataset.period;delete root.dataset.from;delete root.dataset.to;delete root.dataset.direction;renderChronicle();});
     root.querySelectorAll('[data-story-open]').forEach(button=>button.addEventListener('click',()=>{const id=button.dataset.storyOpen;if(id){openView('stories');startStory(id);}}));
   }
 
