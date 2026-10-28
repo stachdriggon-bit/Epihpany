@@ -69,13 +69,75 @@ Do not assume every location has a ruler, empire, founding myth, disaster, or su
 - **Continuity checks:** No exact dates; no supernatural explanation assumed; no world-scale effect assumed; no duplicated town or route created for Ambrin; physical details must fit the final relief, drainage, and climate model.
 - **Sources:** `ANCHOR-LOCATIONS.md`; `STORY-ROADMAP.md`; `TIMELINE.md`; `EVENT-REGISTRY.md`; `stories/README.md`; `DECISIONS-LOG.md`.
 
-## 5. Next location-history candidates
+## 5. Seed record: IL-LOC-01 — The Three-Arch Ferry
+
+**Status:** Provisional sequence from the anchor concept; no calendar dates or named historical rulers are established.
+
+- **Location ID:** IL-LOC-01
+- **Regional registry source:** `ANCHOR-LOCATIONS.md`; confirm the eventual settlement connection in the Ilmar registry before assigning a town name.
+- **Current geographic status:** River crossing and market stop; the river course, navigability, flood behavior, and bridge placement must fit the final Ilmar relief and drainage plan.
+- **Historical date convention:** relative sequence only — Earlier, Middle, Later.
+- **Environmental history:** Seasonal river-level changes affect crossing conditions. No specific flood or long-term environmental shift is established.
+- **Settlement and livelihood history:** Ferrymen, mill workers, farmers, carriers, and traders use the crossing. Their relative importance changes as the bridge and market develop.
+- **Infrastructure and route history:** The anchor proposes three stone arches and ferry platforms for larger loads. In the earlier phase, the bridge is newly built and ferry operators lose some business; in the middle phase, the crossing becomes dependable; in the later phase, a new road diverts most traffic and the market shrinks.
+- **Institutions and community decisions:** A dispute concerns whether tolls should fund bridge maintenance or the crossing should remain free because it predates the current market. The final rules, decision-makers, and outcome are open.
+- **External connections:** News and languages pass through the crossing in the middle phase, but specific regions, routes, and dates are not established.
+- **Records and oral traditions:** Conflicting witness memories are a story possibility, not a documented event yet.
+- **Major local events:** None registered yet; create event IDs only when a specific episode or historical event is drafted.
+- **Accepted facts:** None beyond the stable anchor ID and the general worldbuilding rules.
+- **Provisional proposals:** Bridge construction changes the ferry trade; the crossing becomes a meeting point; a later road changes traffic patterns.
+- **Open questions:** Which settlement registry entry is associated with this anchor; river name and basin; toll authority; who paid for the bridge; how long the phases last; and which route later diverts traffic.
+- **Continuity checks:** Bridge damage must persist until repaired; floods affect access; the crossing must be physically plausible on the final river map.
+- **Sources:** `ANCHOR-LOCATIONS.md`; `GEOGRAPHIC-FOUNDATION.md`; `TIMELINE.md`.
+
+## 6. Seed record: TH-LOC-01 — The Wadi Market
+
+**Status:** Provisional sequence from the anchor concept; no exact dates or region-wide era are established.
+
+- **Location ID:** TH-LOC-01
+- **Regional registry source:** `ANCHOR-LOCATIONS.md`; match to a settlement record only after checking the Tharima registry.
+- **Current geographic status:** Seasonal market above the normal channel of a broad wadi; precise channel, catchment, and settlement siting remain provisional.
+- **Historical date convention:** relative sequence only — Earlier, Middle, Later.
+- **Environmental history:** The channel may remain dry for long periods and still flood. No specific historic flood is established.
+- **Settlement and livelihood history:** Carriers, farmers from nearby cultivable patches, livestock traders, water managers, craftspeople, and visiting sellers use the market.
+- **Infrastructure and route history:** Temporary stalls and travel patterns adapt to brief periods of flow. In the earlier phase, a small gathering grows around a dependable travel window; in the middle phase, local agreements and weather shape its timing; in the later phase, a new road reduces some traffic while local exchange and annual gatherings continue.
+- **Institutions and community decisions:** A proposed shortcut or structure may change water reaching downstream users. The dispute concerns evidence, obligations, and trust; the decision and outcome remain open.
+- **External connections:** The market is a possible regional meeting place, but no named trade partner or route is established.
+- **Records and oral traditions:** Incomplete records may matter in a future story; none are yet defined as historical evidence.
+- **Major local events:** None registered yet.
+- **Accepted facts:** None beyond the stable anchor ID and general water/continuity rules.
+- **Provisional proposals:** Market activity follows a seasonal travel window; agreements regulate timing; a later road changes some traffic.
+- **Open questions:** Wadi name and catchment; reliable water sources for any permanent residents; downstream users; who can authorize structures; how seasonal market dates are agreed; and which settlement registry entry, if any, is the anchor's town.
+- **Continuity checks:** Do not treat a dry channel as safe; any permanent settlement needs a plausible water source; a structure's effects must fit the watershed model.
+- **Sources:** `ANCHOR-LOCATIONS.md`; `GEOGRAPHIC-FOUNDATION.md`; `TIMELINE.md`.
+
+## 7. Seed record: OR-LOC-01 — The Switchback Gate
+
+**Status:** Provisional sequence from the anchor concept; no calendar dates, empire, or final political institution is established.
+
+- **Location ID:** OR-LOC-01
+- **Regional registry source:** `ANCHOR-LOCATIONS.md`; match to a settlement record only after checking the Orath registry.
+- **Current geographic status:** Mountain-pass settlement at the last dependable stop before a climb; exact relief, road geometry, elevation, and seasonal conditions remain provisional.
+- **Historical date convention:** relative sequence only — Earlier, Middle, Later.
+- **Environmental history:** Seasonal weather changes route reliability. No particular storm, avalanche, or climate event is established.
+- **Settlement and livelihood history:** Porters, pack-animal handlers, repairers, innkeepers, guides, and officials serve travelers. Earlier use is mostly local with a few traders; regular traffic later supports a settlement; a different route eventually reduces traffic.
+- **Infrastructure and route history:** The road uses broad switchbacks. A local weather station is maintained by travelers. A proposed new route promises a shorter journey but may be unsafe in some seasons; later, the old gate remains useful as a specialist crossing and repository for travel records.
+- **Institutions and community decisions:** Officials attempt to regulate traffic but cannot know every mountain condition. Their exact authority and the rules governing closures or tolls remain open.
+- **External connections:** The gate can carry news and techniques through travelers, but distant events must not affect it without a plausible travel or record route.
+- **Records and oral traditions:** Two maps may show different safe seasons in a future story; no actual conflicting maps have yet been specified as canon.
+- **Major local events:** None registered yet.
+- **Accepted facts:** None beyond the stable anchor ID and general continuity rules.
+- **Provisional proposals:** Route reliability and economic importance change over time; a newer route may draw away traffic.
+- **Open questions:** Pass name and precise location; weather-record method; who maintains the station; seasonal closure practices; which route later competes with it; and the matching settlement registry entry.
+- **Continuity checks:** Travel times depend on season and route condition; elevation and weather must match the physical map; information from distant places arrives only through plausible routes or records.
+- **Sources:** `ANCHOR-LOCATIONS.md`; `GEOGRAPHIC-FOUNDATION.md`; `TIMELINE.md`.
+
+## 8. Next location-history candidates
 
 Use existing stable location IDs and anchor records; do not invent new places to fill this list.
 
-1. **IL-LOC-01 — The Three-Arch Ferry:** infrastructure maintenance, toll disagreement, and the effects of a route changing in importance.
-2. **TH-LOC-01 — The Wadi Market:** seasonal gathering, water-sharing obligations, and how a road or structure may affect downstream users.
-3. **OR-LOC-01 — The Switchback Gate:** a mountain route whose reliability and economic importance change over time.
-4. **Nirvan and Azmar anchor locations:** choose the next seed after reviewing their existing anchor entries and geographic constraints.
+1. **IL-LOC-02 — The Lanternwood Edge:** woodland boundary, route markers, land use, and competing explanations for a path becoming harder to follow.
+2. **TH-LOC-02 — The Spring Steps:** spring water-sharing, terrace maintenance, and local obligations.
+3. **Nirvan and Azmar anchor locations:** choose the next seed after reviewing their existing anchor entries and geographic constraints.
 
 These are proposed drafting order, not canon events. Develop distinct local causes and everyday consequences before creating cross-regional wars, empires, or global turning points.
