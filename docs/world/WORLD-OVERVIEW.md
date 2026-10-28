@@ -158,6 +158,7 @@ Before adding a new fact, event, character, culture, or location:
 - [Timeline](TIMELINE.md)
 - [Civilizations and Societies](CIVILIZATIONS.md)
 - [Regional Life and Cultural Patterns](REGIONAL-LIFE-AND-CULTURAL-PATTERNS.md) — provisional daily-life proposals grounded in the current settlement and anchor registries.
+- [City Culture Profiles](CITY-CULTURE-PROFILES.md) — provisional profiles for all 30 approved settlement candidates; roles, customs, scenes, and magic prompts remain proposals unless separately accepted.
 - [Characters](CHARACTERS.md)
 - [Mysteries and Evidence](MYSTERIES-AND-EVIDENCE.md)
 - [Magic and Unusual Phenomena](MAGIC-AND-PHENOMENA.md)
