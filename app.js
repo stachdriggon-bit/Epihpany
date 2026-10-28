@@ -875,11 +875,17 @@
   function updateLowDataControl(){const c=$('#low-data-toggle');if(c){c.checked=lowDataMode;c.setAttribute('aria-label',lowDataMode?'Data saver on: use device voice':'Data saver off: natural online voice allowed');}}
   updateLowDataControl();
   document.addEventListener('change',e=>{if(e.target&&e.target.id==='low-data-toggle'){lowDataMode=!!e.target.checked;try{localStorage.setItem('epiphany-low-data',lowDataMode?'1':'0');}catch{}if(lowDataMode&&naturalAudioPlayer){try{naturalAudioPlayer.pause();naturalAudioPlayer.src='';}catch{}naturalAudioPlayer=null;}toast(lowDataMode?'Data saver on. Pronunciation uses your device voice.':'Data saver off. Natural online voice may be used.');}});
+  function stopSpeechPlayback() {
+    speechRequest++;
+    try { if (window.speechSynthesis) window.speechSynthesis.cancel(); } catch {}
+    if (naturalAudioPlayer) { try { naturalAudioPlayer.pause(); naturalAudioPlayer.src = ''; } catch {} naturalAudioPlayer = null; }
+  }
   function speak(text, opts) {
     const synth = window.speechSynthesis;
     const phrase = String(text == null ? '' : text).replace(/\s+/g, ' ').trim();
     if (!phrase) { toast('There is no word to pronounce.'); return; }
     const request = ++speechRequest, rate = (opts && opts.rate) || voicePref.rate || 0.92;
+    const onEnd = opts && typeof opts.onEnd === 'function' ? opts.onEnd : null;
     try { if (synth) synth.cancel(); } catch {}
     if (naturalAudioPlayer) { try { naturalAudioPlayer.pause(); naturalAudioPlayer.src = ''; } catch {} naturalAudioPlayer = null; }
     const runNative = () => {
@@ -902,6 +908,7 @@
           u.onerror = event => {
             if (request === speechRequest && event.error !== 'canceled' && event.error !== 'interrupted' && i === 0) toast('Could not play this pronunciation. Try another voice from ⚙ → Voice.');
           };
+          if (i === chunks.length - 1 && onEnd) u.onend = () => { if (request === speechRequest) onEnd(); };
           try { synth.speak(u); } catch { if (i === 0) toast('Could not play this pronunciation. Try again.'); }
         });
         try { if (synth.paused) synth.resume(); } catch {}
@@ -912,6 +919,7 @@
     playNaturalSpeech(phrase, rate, request).then(played => {
       if (request !== speechRequest) return;
       if (!played) runNative();
+      else if (onEnd) onEnd();
     }).catch(runNative);
   }
   function openVoiceSheet() {
@@ -3556,14 +3564,14 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     modal.innerHTML='<section class="listen-only-card" role="dialog" aria-modal="true" aria-labelledby="listen-only-title"><button type="button" class="icon-btn listen-only-close" data-listen-close aria-label="Close listening session">×</button><p class="kicker">EYES-FREE PRACTICE</p><h2 id="listen-only-title">Listen, repeat, remember</h2><p class="listen-only-status" id="listen-only-status" aria-live="polite">Get comfortable. The session will read a word, leave time for you to repeat it, then say its meaning and an example.</p><div class="listen-only-actions"><button type="button" class="btn" data-listen-play>▶ Start / Resume</button><button type="button" class="btn btn-ghost" data-listen-pause>Ⅱ Pause</button><button type="button" class="btn btn-ghost" data-listen-next>Next word →</button><button type="button" class="btn btn-ghost" data-listen-stop>Stop</button></div></section>';
     modal.hidden=false;
     function status(text){const node=document.getElementById('listen-only-status');if(node)node.textContent=text;}
-    function say(text,onEnd){if(stopped)return;const synth=window.speechSynthesis;if(!synth||!window.SpeechSynthesisUtterance){status('Speech is not available in this browser.');return;}const utterance=new SpeechSynthesisUtterance(text);utterance.lang='en-US';utterance.rate=0.84;utterance.onend=function(){if(!stopped&&onEnd)onEnd();};utterance.onerror=function(){status('Audio could not play. Try the device voice settings.');};synth.speak(utterance);}
+    function say(text,onEnd){if(stopped)return;speak(text,{rate:0.84,onEnd:function(){if(!stopped&&onEnd)onEnd();}});}
     function play(){if(stopped)return;const thisRun=++runId;const item=items[index];if(!item){status('Listening session complete. You can close this window or start again.');return;}status('Word '+(index+1)+' of '+items.length+'. Listen, then repeat aloud when you hear “Your turn”.');say(item.word,function(){if(stopped||thisRun!==runId)return;say('Your turn. Repeat the word aloud.',function(){if(stopped||thisRun!==runId)return;setTimeout(function(){if(stopped||thisRun!==runId)return;say('Meaning: '+item.meaning+'. Example: '+item.example,function(){if(stopped||thisRun!==runId)return;index++;if(index<items.length)play();else status('You have finished this listening session. Well done.');});},3500);});});}
-    modal.querySelector('[data-listen-play]').addEventListener('click',function(){if(window.speechSynthesis&&window.speechSynthesis.paused){window.speechSynthesis.resume();return;}stopped=false;play();});
-    modal.querySelector('[data-listen-pause]').addEventListener('click',function(){if(window.speechSynthesis)window.speechSynthesis.pause();status('Paused. Resume whenever you are ready.');});
-    modal.querySelector('[data-listen-next]').addEventListener('click',function(){runId++;if(window.speechSynthesis)window.speechSynthesis.cancel();index=Math.min(index+1,items.length);stopped=false;play();});
-    modal.querySelector('[data-listen-stop]').addEventListener('click',function(){stopped=true;runId++;if(window.speechSynthesis)window.speechSynthesis.cancel();status('Stopped. Your progress is unchanged.');});
-    modal.querySelector('[data-listen-close]').addEventListener('click',function(){stopped=true;runId++;if(window.speechSynthesis)window.speechSynthesis.cancel();modal.hidden=true;});
-    modal.addEventListener('click',function(event){if(event.target===modal){stopped=true;runId++;if(window.speechSynthesis)window.speechSynthesis.cancel();modal.hidden=true;}});
+    modal.querySelector('[data-listen-play]').addEventListener('click',function(){if(naturalAudioPlayer&&naturalAudioPlayer.paused){naturalAudioPlayer.play().catch(()=>status('Tap Start / Resume to continue audio.'));return;}if(window.speechSynthesis&&window.speechSynthesis.paused){window.speechSynthesis.resume();return;}stopped=false;play();});
+    modal.querySelector('[data-listen-pause]').addEventListener('click',function(){if(window.speechSynthesis)window.speechSynthesis.pause();if(naturalAudioPlayer)naturalAudioPlayer.pause();status('Paused. Resume whenever you are ready.');});
+    modal.querySelector('[data-listen-next]').addEventListener('click',function(){runId++;stopSpeechPlayback();index=Math.min(index+1,items.length);stopped=false;play();});
+    modal.querySelector('[data-listen-stop]').addEventListener('click',function(){stopped=true;runId++;stopSpeechPlayback();status('Stopped. Your progress is unchanged.');});
+    modal.querySelector('[data-listen-close]').addEventListener('click',function(){stopped=true;runId++;stopSpeechPlayback();modal.hidden=true;});
+    modal.addEventListener('click',function(event){if(event.target===modal){stopped=true;runId++;stopSpeechPlayback();modal.hidden=true;}});
   }
 
   function answerNextLabel(ok, last) {
