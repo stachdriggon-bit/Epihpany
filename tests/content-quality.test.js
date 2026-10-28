@@ -185,3 +185,22 @@ test('every story has a non-empty comprehension question bank', () => {
   }
   assert.deepEqual(errors, [], errors.join('\\n'));
 });
+
+test('story comprehension questions do not reveal a fixed correct-answer position', () => {
+  const { stories } = loadData();
+  const positions = new Map();
+  let count = 0;
+  for (const story of stories) {
+    for (const question of story.questions || []) {
+      const answers = Array.isArray(question) ? question[1] : (question.answers || question.options);
+      const correct = Array.isArray(question) ? question[2] : (question.correct ?? question.answer);
+      if (!Array.isArray(answers) || !Number.isInteger(correct) || correct < 0 || correct >= answers.length) continue;
+      positions.set(correct, (positions.get(correct) || 0) + 1);
+      count++;
+    }
+  }
+  assert.ok(count >= 3, 'Expected a meaningful story comprehension question bank.');
+  assert.ok(positions.size >= 2, 'Correct answers must not always occupy the same position.');
+  const largestGroup = Math.max(...positions.values());
+  assert.ok(largestGroup / count < 0.8, 'One correct-answer position dominates the story question bank.');
+});
