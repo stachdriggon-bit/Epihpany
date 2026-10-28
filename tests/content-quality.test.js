@@ -344,3 +344,15 @@ test('world archive event records use stable place/story IDs and preserve unknow
   }
   assert.deepEqual(errors, [], errors.join('\\n'));
 });
+
+
+test('Low-Water Shore stories expose explicit place and unknown-date metadata', () => {
+  const { stories } = loadData();
+  const arc = stories.filter(story => story.lore && story.lore.seriesId === 'low-water-shore');
+  assert.equal(arc.length, 6);
+  for (const story of arc) {
+    assert.equal(story.lore.placeId, 'OR-LOC-02');
+    assert.equal(story.lore.placeName, 'The Low-Water Shore');
+    assert.equal(story.lore.dateLabel, 'Date not established');
+  }
+});
