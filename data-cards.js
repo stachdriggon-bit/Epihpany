@@ -30,7 +30,7 @@ window.EPIPHANY_CARD_DATA = [
   {id:"CHR-028",category:"characters",name:"Oris",title:"Hollow Bell Keeper",rarity:"Rare",symbol:"⌖",palette:"time",image:"oris.PNG",description:"A character from the world of EPIPHANY."},
   {id:"CHR-029",category:"characters",name:"Veya",title:"Ember Gardener",rarity:"Uncommon",symbol:"❧",palette:"ember",image:"veya.PNG",art:"veya",description:"She tends unusual plants growing beside blue embers in cold ash."},
   {id:"CHR-030",category:"characters",name:"Daro",title:"Tideglass Diver",rarity:"Rare",symbol:"❋",palette:"rain",image:"daro.PNG",description:"A character from the world of EPIPHANY."},
-  {id:"CHR-031",category:"characters",name:"Solenne",title:"Light Weaver",rarity:"Epic",symbol:"⚿",palette:"star",image:"aurelia.PNG",description:"A character from the world of EPIPHANY."},
+  {id:"CHR-031",category:"characters",name:"Aurelia",title:"Light Weaver",rarity:"Epic",symbol:"⚿",palette:"star",image:"aurelia.PNG",description:"A character from the world of EPIPHANY."},
   {id:"CHR-032",category:"characters",name:"Orynth",title:"Shadow Scribe",rarity:"Rare",symbol:"✧",palette:"shadow",image:"kael.PNG",description:"A character from the world of EPIPHANY."},
   {id:"CHR-033",category:"characters",name:"Radhan",title:"Storm Listener",rarity:"Rare",symbol:"☾",palette:"mist",image:"radhan.PNG",description:"A character from the world of EPIPHANY."},
   {id:"CHR-034",category:"characters",name:"Nowra",title:"Dream Cartographer",rarity:"Epic",symbol:"✦",palette:"map",image:"nowra.PNG",description:"A character from the world of EPIPHANY."},
