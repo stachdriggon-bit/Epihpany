@@ -293,55 +293,18 @@
       }
     });
 
-    // Hide the sticky header while scrolling down, but ignore tiny direction changes.
-    // Accumulated movement prevents flicker on sections with small scroll oscillations.
+    // Keep the header geometry stable during wheel scrolling.
+    // Hiding/collapsing this header changes its height and can trigger scroll anchoring,
+    // causing repeated hide/reveal flicker. The header now remains visible and fixed in size.
     const header = $('.top');
-    let lastY = window.scrollY || 0;
-    let scrollTicking = false;
-    let scrollDirection = 0;
-    let directionTravel = 0;
-    const REVEAL_DISTANCE = 22;
-    const HIDE_DISTANCE = 30;
+    header?.classList.remove('is-hidden-on-scroll');
     window.addEventListener('scroll', () => {
-      if (scrollTicking) return;
-      scrollTicking = true;
-      window.requestAnimationFrame(() => {
-        const y = Math.max(0, window.scrollY || 0);
-        const delta = y - lastY;
-        const modalOpen = !!$('.game:not([hidden]), .global-search-overlay:not([hidden]), .help-language-modal:not([hidden])');
-
-        if (header) {
-          if (y < 90 || modalOpen) {
-            header.classList.remove('is-hidden-on-scroll');
-            scrollDirection = 0;
-            directionTravel = 0;
-          } else if (Math.abs(delta) >= 1) {
-            const nextDirection = delta > 0 ? 1 : -1;
-            if (nextDirection !== scrollDirection) {
-              scrollDirection = nextDirection;
-              directionTravel = 0;
-            }
-            directionTravel += Math.abs(delta);
-
-            if (scrollDirection === -1 && directionTravel >= REVEAL_DISTANCE) {
-              header.classList.remove('is-hidden-on-scroll');
-              directionTravel = 0;
-            } else if (scrollDirection === 1 && y > 140 && directionTravel >= HIDE_DISTANCE) {
-              header.classList.add('is-hidden-on-scroll');
-              directionTravel = 0;
-            }
-          }
-        }
-
-        lastY = y;
-        scrollTicking = false;
-      });
+      if (header?.classList.contains('is-hidden-on-scroll')) {
+        header.classList.remove('is-hidden-on-scroll');
+      }
     }, { passive: true });
     window.addEventListener('resize', () => {
       header?.classList.remove('is-hidden-on-scroll');
-      lastY = window.scrollY || 0;
-      scrollDirection = 0;
-      directionTravel = 0;
     }, { passive: true });
 
     // Convert lazy-feature failures into a useful, retryable message inside that section.
