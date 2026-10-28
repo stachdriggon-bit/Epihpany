@@ -26,6 +26,8 @@ This directory is the working reference for the fictional world of EPIPHANY. It 
 - [Nirvan Settlement Registry](CITIES-NIRVAN.md) — six approved names; geographic details and anchor relationships remain provisional.
 - [Azmar Island Settlement Registry](CITIES-AZMAR.md) — six approved names across the archipelagos; Azmar remains an island-region, not a classified continent.
 - [Timeline](TIMELINE.md) — historical framework and chronology standards.
+- [Master Event Registry](EVENT-REGISTRY.md) — stable event IDs, source/status fields, and the six provisional Low-Water Shore pilot entries.
+- [Local History Register](LOCAL-HISTORIES.md) — place-by-place historical development, starting with the provisional Low-Water Shore seed.
 - [Civilizations](CIVILIZATIONS.md) — societies, cultures, states, and connections.
 - [Characters](CHARACTERS.md) — character-canon template and continuity rules.
 - [Mysteries and Evidence](MYSTERIES-AND-EVIDENCE.md) — mysteries, evidence, competing explanations.
