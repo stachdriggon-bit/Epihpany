@@ -53,7 +53,11 @@ Current regional society documents are design prompts, not finalized cultures or
 
 No real-world language or cultural analogue should be assigned to a region just because of climate, terrain, or the sound of a few names. Languages, institutions, religions, state borders, succession systems, and named civilizations remain open until specifically developed and recorded.
 
-## 4. Unusual phenomena and evidence
+## 4. Magic, unusual phenomena, and evidence
+
+**EPIPHANY is a fantasy world.** Magic and wonder should sometimes shape daily life, craft, travel, ecology, and community decisions; they should not be limited to decorative effects or occasional world-ending threats. A magical setting can include familiar, reliable practices as well as rare, disputed, or poorly understood events.
+
+The current references establish this fantasy direction but do not yet define a complete magic system. Who can use magic, its source, costs, methods, limits, and the full range of non-human creatures remain open. Do not invent universal mechanics while drafting a local scene. Use [Magic and Unusual Phenomena](MAGIC-AND-PHENOMENA.md) for the phenomenon template and continuity safeguards; its suggested hooks are design prompts, not established lore.
 
 Phenomena can be well understood, partly understood, documented but unexplained, disputed, or uncertain because evidence is weak. Their distribution, scale, danger, and causes can differ from place to place. There is no universal division between “normal” and “magical” zones.
 
@@ -155,5 +159,6 @@ Before adding a new fact, event, character, culture, or location:
 - [Civilizations and Societies](CIVILIZATIONS.md)
 - [Characters](CHARACTERS.md)
 - [Mysteries and Evidence](MYSTERIES-AND-EVIDENCE.md)
+- [Magic and Unusual Phenomena](MAGIC-AND-PHENOMENA.md)
 - [Decision Log](DECISIONS-LOG.md)
 - [Lore Inventory and Canon Audit](LORE-CANON-AUDIT.md)
