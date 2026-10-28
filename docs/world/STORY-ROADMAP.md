@@ -161,10 +161,10 @@ All settlement roles and exact placements remain provisional as stated in their 
 
 ## 8. Immediate next actions
 
-A first episode draft is now available at [The Mismatch — Episode 1 draft](stories/THE-TWO-RECORDS-EPISODE-01-DRAFT.md). It is a review draft only and has not been added to the app or canonized.
+The six-episode arc is now integrated in the app as **provisional playtest content** under IDs `world-low-water-ep1` through `world-low-water-ep6`. The editorial references are collected in the [World Story Drafts index](stories/README.md), including [Episode 1](stories/THE-TWO-RECORDS-EPISODE-01-DRAFT.md), [Episodes 2–6](stories/THE-TWO-RECORDS-EPISODES-02-06-DRAFT.md), and the [provisional character records](stories/LOW-WATER-SHORE-CHARACTERS.md). This is not final canon.
 
-1. Reconcile the Low-Water Shore and Ambrin place records, then verify the lake's physical constraints in the Atlas.
-2. Finalize the two characters' records before treating the episode as final canon.
-3. Review the draft for story quality, B1 language level, and whether its record-comparison problem is clear without over-explaining it.
-4. After the pilot passes review, draft the remaining five episodes and audit their questions/translations as a set.
-5. Keep the present stories available during this work; do not replace them wholesale.
+1. Review the complete six-episode arc and B1 language progression in the app.
+2. Verify the lake's physical constraints against the final terrain/water model and decide the final registry relationship between OR-LOC-02 and OR-CITY-04.
+3. Approve character names and records, then review the prose and bilingual questions/explanations as a complete set.
+4. Only after review, add meaningful World/card links; do not create a second town for Ambrin.
+5. Keep the present learning stories available; do not replace them wholesale.
