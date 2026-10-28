@@ -59,7 +59,7 @@ test('main navigation tabs open without uncaught page errors', async t => {
     browser = await chromium.launch({ headless: true });
     const errors = [];
     const consoleErrors = [];
-    const views = ['home','stories','resonance','world','arcade','summon','words','trophies','progress','profile'];
+    const views = ['home','stories','chronicle','resonance','world','arcade','summon','words','trophies','progress','profile'];
     for (const view of views) {
       const page = await browser.newPage();
       await page.setViewportSize({ width: 800, height: 900 });
@@ -87,6 +87,15 @@ test('main navigation tabs open without uncaught page errors', async t => {
       if (view === 'stories') {
         await page.waitForFunction(() => typeof STORIES !== 'undefined' && Array.isArray(STORIES) && STORIES.length >= 34, null, { timeout: 5000 });
         assert.ok(requested.some(path => path.endsWith('/data-stories.js')), 'Stories should load its data on first open');
+      }
+      if (view === 'chronicle') {
+        await page.waitForFunction(() => Array.isArray(window.EPIPHANY_WORLD_EVENTS) && window.EPIPHANY_WORLD_EVENTS.length === 6, null, { timeout: 5000 });
+        assert.ok(requested.some(path => path.endsWith('/data-world-events.js')), 'World Archive should load event records on first open');
+        assert.equal(await page.locator('#chronicle-content .archive-event').count(), 6, 'archive should show all six provisional entries');
+        assert.equal(await page.locator('#chronicle-content').getByText('Date not established').count(), 6, 'unknown dates must remain explicit');
+        await page.locator('#archive-order').selectOption('newest');
+        assert.equal(await page.locator('#chronicle-content .archive-event h3').first().innerText(), 'A careful practical decision is made', 'reverse episode order should reverse the undated pilot sequence');
+        assert.equal(await page.locator('#chronicle-content [data-story-open]').count(), 6, 'each archive event should link to its existing story');
       }
       if (view === 'resonance') {
         await page.waitForFunction(() => typeof window.EPIPHANY_RESONANCE !== 'undefined', null, { timeout: 5000 });
