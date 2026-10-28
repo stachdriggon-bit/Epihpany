@@ -157,6 +157,7 @@ Before adding a new fact, event, character, culture, or location:
 - [Anchor Locations](ANCHOR-LOCATIONS.md)
 - [Timeline](TIMELINE.md)
 - [Civilizations and Societies](CIVILIZATIONS.md)
+- [Regional Life and Cultural Patterns](REGIONAL-LIFE-AND-CULTURAL-PATTERNS.md) — provisional daily-life proposals grounded in the current settlement and anchor registries.
 - [Characters](CHARACTERS.md)
 - [Mysteries and Evidence](MYSTERIES-AND-EVIDENCE.md)
 - [Magic and Unusual Phenomena](MAGIC-AND-PHENOMENA.md)
