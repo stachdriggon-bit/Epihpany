@@ -77,7 +77,7 @@ Cards represent established or intentionally mysterious parts of the setting; th
 
 ## 7. Workflow
 
-Use [Magic and Unusual Phenomena](MAGIC-AND-PHENOMENA.md) to design magical effects with clear observable behavior, scope, limits, evidence, and consequences before making them recurring canon. For region-grounded daily-life proposals, use [Regional Life and Cultural Patterns](REGIONAL-LIFE-AND-CULTURAL-PATTERNS.md); for settlement-level prompts across the 30 approved candidate names, use [City Culture Profiles](CITY-CULTURE-PROFILES.md). Neither proposal pack is accepted canon by default.
+Use [Magic and Unusual Phenomena](MAGIC-AND-PHENOMENA.md) to design magical effects with clear observable behavior, scope, limits, evidence, and consequences before making them recurring canon. For region-grounded daily-life proposals, use [Regional Life and Cultural Patterns](REGIONAL-LIFE-AND-CULTURAL-PATTERNS.md); for settlement-level prompts across the 30 approved candidate names, use [City Culture Profiles](CITY-CULTURE-PROFILES.md); for five deeper prototypes with provisional local casts, use [Selected City Life and Local Cast](CITY-LIFE-AND-LOCAL-CAST.md). These are proposal packs, not accepted canon by default.
 
 Build in this order where practical:
 1. physical geography and map relationships;
