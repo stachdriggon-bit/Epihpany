@@ -150,6 +150,7 @@ Before adding a new fact, event, character, culture, or location:
 
 ## 10. Primary references
 
+- [World Laws and Continuity Charter](WORLD-LAWS-AND-CONTINUITY.md) — consolidated rules, limits, and open design boundaries.
 - [Master Content Bible](MASTER-CONTENT-BIBLE.md)
 - [Atlas](ATLAS.md)
 - [Geographic Foundation](GEOGRAPHIC-FOUNDATION.md)
