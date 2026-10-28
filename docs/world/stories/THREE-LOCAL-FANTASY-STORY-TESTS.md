@@ -94,7 +94,7 @@ One morning, the sound stopped.
 
 A crack had spread across the fitting. The cistern keeper removed it before the fracture widened, and the water answered no more. By noon, people were already arguing. One family said the silence meant the cistern was nearly empty. A visiting boat crew said the water should be reserved for residents first. The gardeners worried that without a trustworthy signal, they would lose their plants before the next rain.
 
-Mira, who helped keep the water records, brought out the measuring rod. They lowered it at the marked place, checked the reading twice, and compared it with the previous entries. The cistern held less water than it had a month earlier, but it was not empty. The rod could measure the level; it could not tell them whether the water was clean, nor when rain would come.
+The record keeper brought out the measuring rod. They lowered it at the marked place, checked the reading twice, and compared it with the previous entries. The cistern held less water than it had a month earlier, but it was not empty. The rod could measure the level; it could not tell them whether the water was clean, nor when rain would come.
 
 They repaired a small crack in the cistern wall and rationed water by written daily allotments. Drinking and cooking came first; gardens received reduced shares, and visiting crews could buy a limited reserve only after the essential household allotments were set. The rules were posted publicly, and the keepers recorded each draw.
 
@@ -102,7 +102,7 @@ The stormglass fitting took several days to mend. When it was set back into the 
 
 That evening, a child tapped the stone and asked whether it could tell them when the next storm would arrive.
 
-“No,” Mira said. “It remembers a sound. It does not promise another one.”
+“No,” the keeper said. “It remembers a sound. It does not promise another one.”
 
 The child listened to the echo until it faded into the island wind.
 
@@ -121,7 +121,7 @@ The child listened to the echo until it faded into the island wind.
 ## Review checklist before canon approval
 
 - [ ] Confirm or revise the three phenomenon designs in the Provisional Magical Phenomena Catalog.
-- [ ] Check character names against existing character records before reuse elsewhere.
+- [ ] Assign stable character IDs only if any of these one-off characters recur in later stories.
 - [ ] Confirm the physical details against the final map and water models.
 - [ ] Review tone, originality, and intended reading level.
 - [ ] Translate and audit English/Arabic only if these drafts are selected for the learning app.
