@@ -48,6 +48,9 @@
 
 ## Content open questions
 
+Use [World Laws and Continuity Charter](WORLD-LAWS-AND-CONTINUITY.md) as a summary of current constraints and deliberately open mechanics. It is a synthesis, not an independent decision that closes the questions listed below.
+
+
 - Specific civilization names, languages, institutions, and historical periods.
 - The detailed magic system: access, sources, methods, costs, limits, and the range of non-human life, to be developed through MAGIC-AND-PHENOMENA.md.
 - Which proposed mysteries, if any, become story material.
