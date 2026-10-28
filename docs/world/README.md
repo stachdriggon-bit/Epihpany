@@ -11,6 +11,7 @@ This directory is the working reference for the fictional world of EPIPHANY. It 
 ## Source-of-truth files
 
 - [Master Content Bible](MASTER-CONTENT-BIBLE.md) — core principles and world rules.
+- [Magic and Unusual Phenomena](MAGIC-AND-PHENOMENA.md) — fantasy direction, coherence rules, phenomenon-record template, and location-grounded story prompts; specific magic mechanics remain open.
 - [Story Roadmap](STORY-ROADMAP.md) — how to integrate lore into Stories without retconning the current learning library; includes the provisional six-episode pilot plan.
 - [World Story Drafts](stories/README.md) — index for the Low-Water Shore pilot, character records, and bilingual episode drafts.
 - [Atlas](ATLAS.md) — geographic reference and map decisions.
