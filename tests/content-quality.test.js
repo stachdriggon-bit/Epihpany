@@ -225,3 +225,18 @@ test('story comprehension questions include explanations and distinct answer cho
   }
   assert.deepEqual(errors, [], errors.join('\\n'));
 });
+
+test('story page Arabic translations contain Arabic-script text', () => {
+  const { stories } = loadData();
+  const errors = [];
+  for (const [storyIndex, story] of stories.entries()) {
+    const storyName = story.id || story.title || `story[${storyIndex}]`;
+    for (const [pageIndex, page] of (story.pages || []).entries()) {
+      const arabic = Array.isArray(page) ? page[2] : page && page.ar;
+      if (String(arabic || '').trim() && !/[\\u0600-\\u06FF]/.test(arabic)) {
+        errors.push(`${storyName} page ${pageIndex + 1}: Arabic translation contains no Arabic-script text`);
+      }
+    }
+  }
+  assert.deepEqual(errors, [], errors.join('\\n'));
+});
