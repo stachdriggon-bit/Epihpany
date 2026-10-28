@@ -3572,15 +3572,19 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     const ahaMarkup = aha => aha ? '<aside class="aha-note"><span aria-hidden="true">💡</span><div><strong>Aha moment</strong><p'+arAttr(aha.ar)+'>'+esc(aha.en)+'</p></div></aside>' : '';
     if(G.type==='grammar'&&G.grammarMode==='fix'){showSheet(ok,'<h3'+arAttr(ok?'تم إصلاح الجملة!':'قريب — إليك طريقة الإصلاح.')+'>'+(ok?'Sentence repaired!':'Almost — here’s how to fix it.')+'</h3><p'+arAttr(ok?'اخترت الصيغة الصحيحة.':'')+'>'+(ok?'You chose the correct form.':'Mistakes help reveal the rule. The corrected form is: <b>'+esc(q.answers[q.correct])+'</b>')+'</p><p'+arAttr(explainAr)+'>'+esc(q.explain)+'</p><div class="sheet-actions"><button class="btn" id="go-next">'+(last?'See results':'Continue')+ic('arrow')+'</button></div>');return;}
     const bestAr = 'الإجابة الأنسب: ' + (answersAr[q.correct] || q.answers[q.correct]);
-    // Arabic-only teaching notes (no English counterpart) stay hidden until the learner asks for Arabic.
+    // Keep feedback focused: correct answers get the explanation; incorrect answers get
+    // the correct choice and one concise teaching cue instead of several repeated notes.
     const arNote = text => text ? '<p class="arabic" lang="ar" dir="rtl" data-tx-ar-only hidden>' + esc(text) + '</p>' : '';
+    const hasExplanation = Boolean(String(q.explain || '').trim());
+    const compactRule = !hasExplanation ? '<aside class="aha-note"><div><strong>Quick rule</strong><p>' + esc(conciseFeedbackRule(q)) + '</p><p><strong>Example:</strong> ' + esc(q.q.replace(/_{3,}/g, q.answers[q.correct])) + '</p></div></aside>' : '';
     showSheet(ok,
-      '<h3'+arAttr(ok?'صحيح تمامًا!':'ليس بعد — لنتعلّم من هذه المحاولة.')+'><span class="sheet-mark">' + ic(ok ? 'check' : 'lightbulb') + '</span>' + (ok ? 'Exactly right!' : 'Not quite yet — let’s learn from it.') + '</h3>' +
-      (ok ? '' : '<p class="retry-hint-note"'+arAttr('كل محاولة تساعدك على التعلّم. انظر إلى الإجابة، ثم لاحظ القرينة التي تفيدك في المرة القادمة.')+'>Every attempt helps you learn. Take a look at the answer, then notice the clue that can help next time.</p><p'+arAttr(bestAr)+'><strong>Best answer:</strong> <b>' + esc(q.answers[q.correct]) + '</b></p>') +
-      '<p'+arAttr(explainAr)+'>' + esc(q.explain) + '</p>' + (!ok ? '<aside class="aha-note"><div><strong>Quick rule</strong><p>' + esc(conciseFeedbackRule(q)) + '</p><p><strong>Example:</strong> ' + esc(q.q.replace(/_{3,}/g, q.answers[q.correct])) + '</p></div></aside>' : '') +
+      '<h3'+arAttr(ok?'صحيح تمامًا!':'لنراجع الإجابة معًا.')+'><span class="sheet-mark">' + ic(ok ? 'check' : 'lightbulb') + '</span>' + (ok ? 'Exactly right!' : 'Let’s review the answer.') + '</h3>' +
+      (ok ? '' : '<p'+arAttr(bestAr)+'><strong>Best answer:</strong> <b>' + esc(q.answers[q.correct]) + '</b></p>') +
+      (hasExplanation ? '<p'+arAttr(explainAr)+'>' + esc(q.explain) + '</p>' : '') +
+      (!ok ? compactRule : '') +
       (!ok && !explainAr ? arNote(q.arabic_hint || (q.aha&&q.aha.ar) || 'راجع معنى الجملة كاملةً، ولا تعتمد على ترجمة الكلمة وحدها لاختيار الصياغة الأنسب.') : '') +
-      (!ok && G.type === 'mistakes' && q.arabic_hint ? '<section class="trap-explanation" aria-label="Why Arabic speakers make this mistake" data-tx-ar-only hidden><h4 lang="ar" dir="rtl">لماذا يقع متحدثو العربية في هذا الخطأ؟</h4><p class="trap-hint arabic" lang="ar" dir="rtl">' + esc(q.arabic_hint) + '</p></section>' : '') +
-      (!ok ? ahaMarkup(q.aha) : '') +
+      (!ok && G.type === 'mistakes' && q.arabic_hint && explainAr ? '<section class="trap-explanation" aria-label="Why Arabic speakers make this mistake" data-tx-ar-only hidden><h4 lang="ar" dir="rtl">لماذا يقع متحدثو العربية في هذا الخطأ؟</h4><p class="trap-hint arabic" lang="ar" dir="rtl">' + esc(q.arabic_hint) + '</p></section>' : '') +
+      (!ok && !hasExplanation ? ahaMarkup(q.aha) : '') +
       (ok && q.word ? '<div class="newword"><span>New word</span><b>' + esc(q.word[0]) + '</b><span>' + esc(q.word[1]) + '</span></div>' : '') +
       arNote(item.ar) +
       (G.adaptiveMessage && !G.mode ? '<p class="adaptive-note">' + esc(G.adaptiveMessage) + '</p>' : '') +
