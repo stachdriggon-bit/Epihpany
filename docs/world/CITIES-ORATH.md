@@ -30,7 +30,7 @@
 | OR-CITY-02 | Darsen / دارسن | River-junction market and cargo-transfer town | Name accepted; details provisional |
 | OR-CITY-03 | Velisar / فيليزار | Mountain-road settlement; may overlap with the Switchback Gate anchor | Name accepted; details provisional |
 | OR-CITY-04 | Ambrin / أمبرين | Inland-shore town shaped by a fluctuating lake | Name accepted; details provisional |
-| OR-CITY-05 | Qadren / قادرن | Dry-plateau caravan stop and metalworking center | Name accepted; details provisional |
+| OR-CITY-05 | Dornwick / دورنويك | Dry-plateau caravan stop and metalworking center | Name accepted; details provisional |
 | OR-CITY-06 | Lethai / ليثاي | Eastern coastal harbor and ship-supply town | Name accepted; details provisional |
 
 ## Candidate settlement list
@@ -83,7 +83,7 @@
 
 **Continuity decision for current story development:** Use **OR-LOC-02 — The Low-Water Shore** as the sole place reference for the six-episode pilot. **OR-CITY-04 — Ambrin** is a potentially overlapping settlement record, not a second town for current story, map, or archive use. The source material does not yet prove whether Ambrin is the settlement name for this anchor or a distinct nearby place. Therefore, do not show both as separate locations, duplicate routes, or duplicate the pilot events. Keep both stable IDs in their source registries until the project owner records a final identity decision. This is an operational safeguard, not a claim that the names are identical.
 
-### OR-CITY-05 — Qadren / قادرن
+### OR-CITY-05 — Dornwick / دورنويك
 
 **Working role:** A dry-plateau caravan stop with a modest metalworking quarter and workshops that repair tools, fittings, and travel equipment.
 
