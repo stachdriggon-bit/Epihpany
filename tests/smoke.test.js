@@ -251,6 +251,7 @@ test('main navigation tabs open without uncaught page errors', async t => {
     await cardsPage.goto(baseUrl, { waitUntil: 'domcontentloaded' });
     await dismissFirstVisitOverlays(cardsPage);
     await clickView(cardsPage, 'profile');
+    await cardsPage.locator('#cards-gallery').scrollIntoViewIfNeeded();
     const galleryOpenedAt = await cardsPage.evaluate(() => performance.now());
     await cardsPage.waitForFunction(() => [...document.querySelectorAll('#cards-gallery .fcard-portrait-image')].some(img => img.complete && img.naturalWidth > 0), null, {timeout:10000});
     const galleryMetrics = await cardsPage.evaluate(async started => {
