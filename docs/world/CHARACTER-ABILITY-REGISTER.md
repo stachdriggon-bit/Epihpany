@@ -111,3 +111,37 @@ Copy this template for each character. Use “Open” rather than inventing an a
 |---|---|---|---|
 | 2026-10-29 | CHR-001 | Added initial ability/restriction test record from scenario-based discussion. | Provisional; not canonized |
 | 2026-10-29 | CHR-001 | Resolved Mira's individual restriction as Magnitude: an intrinsic ceiling on the complexity of spatial relationships she can reliably organize simultaneously. | Accepted; exact threshold open |
+
+
+### CHR-039 — Veyra, Pattern Detective
+
+- **Record status:** Accepted as the current reference concept; operational details remain open.
+- **Card rarity:** Common (existing card data; unchanged and not a measure of ability strength).
+- **Magical access:** Uses magic within the established Aelora Energy / Aren / Aren Art framework.
+- **Ability name:** “Pattern Perception / إدراك الأنماط” — provisional descriptive label, not a final magical name.
+- **Core domain:** Relations and patterns among accessible evidence, traces, objects, and events.
+- **Operation:** Veyra uses a magical art to perceive relationships that may be difficult to assemble from isolated evidence. The perception supports hypotheses and investigation; it does not provide guaranteed explanations.
+- **Natural limits:**
+  - A perceived relation does not prove its cause or interpretation.
+  - The ability does not automatically reveal a person's identity, motives, thoughts, honesty, or the exact time of an event.
+  - It cannot retrieve information from an event that left no accessible evidence.
+  - A pattern may be coincidental or deliberately arranged to mislead.
+  - Perceiving magical traces does not automatically explain an unfamiliar magical mechanism or grant control over it.
+- **Individual restriction:** Accepted as the current reference concept — **Scope**. Veyra has an intrinsic limit on the breadth of the relationship network she can keep in a coherent, reliable analysis at one time.
+- **Restriction effects under the current model:** When the relationships she tries to combine exceed that scope, some connections may no longer be available together, or she may be unable to integrate the evidence into one reliable picture. The exact operational variables and thresholds remain open.
+- **Classification rationale:** Scope is the selected fit because the proposed intrinsic limit concerns the breadth of relations she can analyze together. The precise definition must remain consistent with the project's restraint-category principles; no numerical threshold is established.
+- **Skill and adaptation:** Breaking an investigation into smaller groups, recording confirmed links separately from hypotheses, and comparing partial conclusions can improve practical reliability. These strategies do not remove the intrinsic limit; difficulty may return when groups must be recombined.
+- **Conditions for use:** Access/proximity requirements, whether sight alone is sufficient, deliberate activation, sensory presentation, any special Aelora cost, and any visible mark remain open. Do not invent them.
+- **Test scenarios discussed (hypothetical, not in-world observations):**
+  1. Genuine evidence arranged to mislead an investigator — Veyra may notice inconsistencies but is not a truth detector and can still adopt a false hypothesis.
+  2. A decisive missing clue — she may identify competing explanations but cannot choose the truth without differentiating evidence; missing information alone is not proof of restriction activation.
+  3. A highly complex network of relationships — the principal scenario for testing Scope, as simultaneous integration may exceed the reliable scope.
+  4. An event leaving no accessible trace — outside the ability's natural information boundary.
+  5. Training and experience — improve evidence selection and hypothesis checking but do not erase Scope.
+  6. An unfamiliar magical trace — relationships may be perceived without automatically understanding the underlying magic.
+- **Observed results:** No in-game experiment or canonical story event has been recorded. The cases above are design tests only.
+- **Open questions:** Final magical ability name; access and range conditions; whether deliberate activation is required; perceptual presentation; Aelora cost, if any; exact factors that define Scope; visible mark, if any; age, species/nature, backstory, motives, relationships, and distinctive dialogue.
+- **Canon decision:** On 2026-10-29, the user approved the Veyra reference concept and the Scope restriction for the character file. This accepts the current ability/restriction description as the project reference while leaving the listed operating details open.
+- **Reference card:** [Veyra — CHR-039](../character-reference-cards/CHR-039-VEYRA.md)
+- **Last reviewed:** 2026-10-29 — ability and Scope reference accepted; operational details remain open.
+
