@@ -54,5 +54,6 @@
 
 - [ميرا — CHR-001](./CHR-001-MIRA.md)
 - [إدريس — CHR-002](./CHR-002-IDRIS.md)
+- [Veyra — CHR-039](./CHR-039-VEYRA.md)
 
 سجل القدرات والاختبارات التفصيلي يبقى في [CHARACTER-ABILITY-REGISTER.md](../world/CHARACTER-ABILITY-REGISTER.md)، وتكمل البطاقات ذلك السجل ولا تستبدله.
