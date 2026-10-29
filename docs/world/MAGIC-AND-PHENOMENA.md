@@ -21,7 +21,7 @@ The current references do **not** yet define a complete magic system. Do not ass
 - the complete rules of magical access: which people can use it, whether ability can be learned, inherited, borrowed, or accessed by non-human beings, and how any such paths work. It is established that not every character can use magic;
 - costs, exhaustion, materials, gestures, words, symbols, or other requirements;
 - whether magic can heal, revive, transform, predict, teleport, alter memory, or change time;
-- a fixed taxonomy of magical schools;
+- a fixed taxonomy of magical schools. The current provisional sorcery foundation is ability-first, not branch-first; see [Foundational Sorcery Model](MAGIC-FOUNDATIONS.md);
 - a universal religion, creator, ancient magical civilization, or hidden force behind all phenomena;
 - the full range, nature, intelligence, or origins of fantastic creatures.
 

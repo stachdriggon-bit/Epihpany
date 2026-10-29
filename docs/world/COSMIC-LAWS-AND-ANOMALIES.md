@@ -50,7 +50,7 @@ When a person becomes a sorcerer, a visible symbol appears on their hand.
 - It indicates only the **category of the person's restriction**.
 - It does not reveal the exact individual restriction, the person's abilities, skill, mastery, or a complete classification of the person.
 - The individual restriction must be discovered through practice and experience.
-- The number and names of restriction categories are not yet finalized. Do not treat illustrative category names from brainstorming as established canon.
+- The world's restriction categories and their symbols are established and known in-world. Do not invent replacements or treat a sorcerer's familiarity with the category as complete practical mastery of the individual restriction.
 - Do not assume the symbol explains, identifies, or predicts cosmic restrictions unless a future explicit decision establishes that connection.
 
 ## 6. Cosmic restrictions

@@ -1,10 +1,10 @@
-# Perception and Detection — Working Hypotheses
+# Perception and Detection — Exploratory Note
 
-**Status:** Exploratory working note only. This is not canon and does not establish a formal sorcery branch, a universal progression, or any character's ability. Keep all proposals here provisional unless explicitly approved.
+**Status:** Exploratory note only. This is not canon and does not establish a formal sorcery branch, a universal progression, or any character's ability. The former branch-first framework has been superseded; use [Foundational Sorcery Model](MAGIC-FOUNDATIONS.md) as the current working foundation. Keep all proposals here provisional unless explicitly approved.
 
 ## Purpose
 
-Test whether **Perception and Detection** may be treated as a distinct ability domain or operation family, without deciding yet whether it belongs in the official branch catalogue. Build only the useful foundation; return to edge cases when a story or character requires them.
+Explore whether **Perception and Detection** is a useful description for some abilities, without assuming it is an official branch or fixed operation family. Build only the useful foundation; return to edge cases when a story or character requires them.
 
 ## Current working model
 
@@ -17,7 +17,7 @@ Possible operations to keep in view:
 - **Detecting targets without an obvious magical trace:** This may be an extension of the same broad domain, depending on the perceiver's power and the nature of the target. It is not established that every perceiver can do this.
 - **Reading a target's condition or details:** Potentially a more advanced level than detecting the target itself. Detecting a person does not automatically reveal identity, awareness, injury, possessions, or other details.
 
-These are candidate operations/examples, not mandatory sequential stages. A sorcerer may be able to perform some and not others; this remains open.
+These are candidate examples, not mandatory sequential stages or a fixed taxonomy. A sorcerer may be able to perform some and not others; this remains open.
 
 ## Boundaries to preserve
 
@@ -52,4 +52,4 @@ All six are hypothetical test cases, not canonical events or confirmed mechanics
 
 Keep this note concise and expand it only when a character, scene, or consistency problem makes a detail necessary. When testing a case, record the scenario, provisional interpretation, observation, and unresolved question separately. Do not convert a hypothesis into canon without explicit approval.
 
-**Related reference:** [Sorcery Branches and Individual Restrictions](SORCERY-BRANCHES-AND-INDIVIDUAL-RESTRICTIONS.md).
+**Related reference:** [Foundational Sorcery Model](MAGIC-FOUNDATIONS.md).
