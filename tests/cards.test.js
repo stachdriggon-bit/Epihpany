@@ -176,3 +176,55 @@ test('card portal filters, profiles, and detail dialog are wired accessibly', ()
   assert.match(js, /data-archive-place/);
   assert.match(js, /EPIPHANY_OPEN_ARCHIVE_PLACE/);
 });
+
+
+test('character dossiers preserve the complete reviewed ability records without inventing open canon', () => {
+  const context = { window: {} };
+  vm.runInNewContext(read('data-cards.js'), context);
+  const profiles = context.window.EPIPHANY_CARD_PROFILES;
+  for (const id of ['CHR-001','CHR-002','CHR-004','CHR-039']) {
+    assert.ok(profiles[id], id + ' should have a dossier');
+    assert.ok(profiles[id].name.en && profiles[id].name.ar);
+    assert.ok(profiles[id].summary.en && profiles[id].summary.ar);
+    assert.ok(profiles[id].sections.length > 0);
+    for (const section of profiles[id].sections) {
+      assert.ok(section.title.en && section.title.ar);
+      assert.ok(section.text.en && section.text.ar);
+    }
+    for (const fact of profiles[id].facts || []) {
+      assert.ok(fact.label.en && fact.label.ar);
+      assert.ok(fact.value.en && fact.value.ar);
+    }
+  }
+  const mira = profiles['CHR-001'];
+  assert.ok(mira.sections.length > 1, 'Mira should show multiple distinct dossier sections');
+  assert.ok(mira.sections.every(section => section.text.en !== mira.summary.en), 'Mira overview must not repeat the summary');
+  assert.match(mira.sections.find(section => section.id === 'restriction').text.en, /Magnitude/);
+  assert.match(profiles['CHR-002'].sections.find(section => section.id === 'restriction').text.en, /test hypothesis only/);
+  assert.match(profiles['CHR-039'].sections.find(section => section.id === 'restriction').text.en, /Scope/);
+});
+
+test('card detail uses the real full card face and keeps gallery card nodes across filters', () => {
+  const js = read('cards.js');
+  const css = read('cards.css');
+  assert.match(js, /cardFace\(card,\{level:levelOf\(card\),noTilt:true,fullImage:true\}\)/);
+  assert.match(js, /galleryNodeCache/);
+  assert.match(js, /renderGallery\(true\)/);
+  assert.match(js, /root\.replaceChildren\(fragment\)/);
+  assert.match(js, /opts\.fullImage \? card\.image : \(card\.thumb \|\| card\.image\)/);
+  assert.match(js, /loading="\x27\+\(opts\.fullImage\?'eager':'lazy'\)/);
+  assert.match(css, /\.cards-detail-art \.fcard/);
+  assert.match(css, /@media\(max-width:720px\)/);
+  assert.match(css, /body\[data-theme="light"\] \.cards-detail-dialog/);
+  assert.match(css, /prefers-reduced-motion:reduce/);
+});
+
+test('card art thumbnail tooling is available without adding a runtime dependency', () => {
+  const script = read('tools/make-card-thumbs.py');
+  const docs = read('docs/card-art-prompts.md');
+  assert.match(script, /Image\.Resampling\.LANCZOS/);
+  assert.match(script, /quality=78/);
+  assert.match(script, /assets\/cards\/art\/thumb/);
+  assert.match(docs, /python tools\/make-card-thumbs\.py/);
+  assert.match(docs, /detail dossier and reveal experience use this full image/);
+});
