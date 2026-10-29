@@ -277,7 +277,7 @@ test('main navigation tabs open without uncaught page errors', async t => {
     await cardsPage.locator('#cards-type-filters [data-gallery-type="all"]').click();
     assert.equal(await cardsPage.evaluate(() => document.querySelector('#cards-gallery [data-gallery-card="CHR-001"]') === window.__miraGalleryNode), true, 'filter changes must preserve existing card node identity');
     const galleryMiraImage = cardsPage.locator('#cards-gallery [data-gallery-card="CHR-001"] .fcard-portrait-image');
-    assert.match(await galleryMiraImage.getAttribute('src'), /\\/thumb\\//, 'gallery should request the generated thumbnail');
+    assert.ok(String(await galleryMiraImage.getAttribute('src')).includes('/thumb/'), 'gallery should request the generated thumbnail');
     const miraCard = cardsPage.locator('#cards-gallery [data-gallery-card="CHR-001"] .fcard');
     await miraCard.click();
     const detail = cardsPage.locator('#cards-detail-modal [role="dialog"]');
