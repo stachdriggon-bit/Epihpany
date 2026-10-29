@@ -24,9 +24,9 @@ This is a worldbuilding reference only. It does not change app runtime or charac
    - **Open:** not decided or insufficiently tested.
    - **Test observation:** result of a specific scenario; not automatically a general rule.
    - **Rejected:** tested and set aside; preserve the reason to avoid repeating the same dead end.
-6. Do not promote a test proposal to canon, edit a character card, or finalize a magical branch/category merely because a test seems coherent. Record the result and wait for explicit approval where required.
+6. Do not promote a test proposal to canon or edit a character card merely because a test seems coherent. Record the result and wait for explicit approval where required. Do not force abilities into the superseded branch taxonomy.
 7. If a later test contradicts an earlier one, record the contradiction and compare explanations before rewriting the record.
-8. Keep the branch/taxonomy mapping provisional while the world's sorcery framework remains unfinished. “Perception and Detection” is not currently one of the seven provisional branches.
+8. Use the ability-first [Foundational Sorcery Model](MAGIC-FOUNDATIONS.md). Do not treat the retired branch taxonomy as current law; “Perception and Detection” remains an exploratory note, not an official branch.
 
 ## 2. Character record template
 
@@ -47,7 +47,7 @@ Copy this template for each character. Use “Open” rather than inventing an a
 - **Severity / combined triggers:** [How multiple triggers interact; or Open]
 - **Information boundary:** [What the character must still learn or verify]
 - **Skill and adaptation:** [What training changes; what it cannot remove]
-- **Possible branch/function:** [Provisional only; do not force-fit]
+- **Possible functional description:** [Optional and provisional; do not force-fit]
 - **Test scenarios:** [Links or concise IDs]
 - **Observed results:** [What happened in each test, separated from interpretation]
 - **Open questions / contradictions:** [Unresolved items]
@@ -82,7 +82,7 @@ Copy this template for each character. Use “Open” rather than inventing an a
 - **Proposed restriction effect:** Under relevant conditions, Mira may struggle to distinguish a confirmed relationship from a possible one. A possible connection may feel more reliable than the evidence warrants; she may notice some uncertainty but not all of it.
 - **Adaptation hypothesis:** Dividing a complex network into smaller parts and comparing perceived relationships with real-world evidence can improve reliability, but does not remove the restriction. Some relationships may remain unresolved, especially when the parts must be recombined.
 - **Important distinction:** Missing information or a mistaken inference is not automatically proof that the restriction activated. Evaluate the ability's natural limits, evidence available, interpretation, environment, and skill separately.
-- **Possible branch/function:** Perception and Detection is a possible functional description, not one of the current seven provisional sorcery branches. No branch assignment has been made.
+- **Possible functional description:** Perception and Detection is an exploratory description, not an official branch. No taxonomy assignment has been made.
 - **Test scenarios discussed:**
   1. Clear nearby paths and shared chokepoints — test premise: the ability should be comparatively reliable when relationships are clear.
   2. A possible connection obscured by mist — test premise: a perceived possibility must remain distinct from a confirmed relationship. A more precise outcome was not separately preserved in the record.
@@ -104,7 +104,7 @@ Copy this template for each character. Use “Open” rather than inventing an a
   - What exactly does “more severely impaired” look like without making the ability arbitrary?
   - Can the ability recognize its own uncertainty, and under what conditions?
   - How should this ability be distinguished from navigation, detection, or other characters' powers?
-  - Is there a suitable branch/function classification once the framework is tested further?
+  - Would any optional organizational label help once the ability-first framework is tested further?
 - **Canon decision:** None yet. Do not update CHR-001 card or treat this test as an approved world rule until explicitly authorized.
 - **Last reviewed:** 2026-10-29 — clarified that an important unknown can trigger the restriction alone, while a minor irrelevant unknown does not automatically do so; added a provisional working hypothesis for the combined-trigger effect. No ability, restriction, rarity, or branch has been canonized.
 
