@@ -1,6 +1,6 @@
-# Perception and Detection — Working Hypotheses
+# Perception and Detection — Exploratory Note
 
-**Status:** Exploratory working note only. This is not canon and does not establish a formal sorcery branch, a universal progression, or any character's ability. Keep all proposals here provisional unless explicitly approved.
+**Status:** Exploratory note only. This is not canon and does not establish a formal sorcery branch, a universal progression, or any character's ability. The former branch-first framework has been superseded; use [Foundational Sorcery Model](MAGIC-FOUNDATIONS.md) as the current working foundation. Keep all proposals here provisional unless explicitly approved.
 
 ## Purpose
 
@@ -52,4 +52,4 @@ All six are hypothetical test cases, not canonical events or confirmed mechanics
 
 Keep this note concise and expand it only when a character, scene, or consistency problem makes a detail necessary. When testing a case, record the scenario, provisional interpretation, observation, and unresolved question separately. Do not convert a hypothesis into canon without explicit approval.
 
-**Related reference:** [Sorcery Branches and Individual Restrictions](SORCERY-BRANCHES-AND-INDIVIDUAL-RESTRICTIONS.md).
+**Related reference:** [Foundational Sorcery Model](MAGIC-FOUNDATIONS.md).
