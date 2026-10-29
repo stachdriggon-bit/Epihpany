@@ -183,25 +183,62 @@
   };
 
   /* ---------- collection gallery (profile) ---------- */
-  let galleryFilter = 'all', showLocked = true, lastUpgraded = '';
+  let galleryFilter = 'all', galleryRarity = 'all', showLocked = true, lastUpgraded = '';
+  const GALLERY_FILTER_STORE = 'epiphany-card-gallery-filters-v1';
+  const CATEGORY_REGISTRY = [{id:'characters',label:'Characters'},{id:'words',label:'Words'},{id:'artifacts',label:'Artifacts'},{id:'mixed',label:'Locations'}];
+  try { const saved=JSON.parse(localStorage.getItem(GALLERY_FILTER_STORE)||'null'); if(saved&&typeof saved==='object'){if(typeof saved.category==='string')galleryFilter=saved.category;if(typeof saved.rarity==='string')galleryRarity=saved.rarity;if(typeof saved.showLocked==='boolean')showLocked=saved.showLocked;} } catch (_) {}
+  const saveGalleryFilters=()=>{try{localStorage.setItem(GALLERY_FILTER_STORE,JSON.stringify({category:galleryFilter,rarity:galleryRarity,showLocked}));}catch(_){}};
+  const renderGalleryFilterChips=(all)=>{
+    const rarityRoot=$('cards-rarity-filters'),typeRoot=$('cards-type-filters');
+    if(rarityRoot)rarityRoot.innerHTML=[{id:'all',label:'All'},...RARITIES.map(id=>({id,label:id}))].map(item=>{const total=item.id==='all'?all.length:all.filter(c=>c.rarity===item.id).length,owned=item.id==='all'?all.filter(isOwned).length:all.filter(c=>c.rarity===item.id&&isOwned(c)).length;return '<button type="button" data-gallery-rarity="'+esc(item.id)+'" aria-pressed="'+String(galleryRarity===item.id)+'" '+(item.id!=='all'?'class="rarity-chip rarity-'+item.id.toLowerCase()+'"':'')+'>'+esc(item.label)+' <span>'+owned+'/'+total+'</span></button>';}).join('');
+    const present=new Set(all.map(c=>c.category));
+    const types=CATEGORY_REGISTRY.filter(t=>present.has(t.id));
+    if(typeRoot)typeRoot.innerHTML=[{id:'all',label:'All'},...types].map(item=>'<button type="button" data-gallery-type="'+esc(item.id)+'" aria-pressed="'+String(galleryFilter===item.id)+'">'+esc(item.label)+'</button>').join('');
+    rarityRoot?.querySelectorAll('[data-gallery-rarity]').forEach(b=>b.addEventListener('click',()=>{galleryRarity=b.dataset.galleryRarity;saveGalleryFilters();renderGallery();}));
+    typeRoot?.querySelectorAll('[data-gallery-type]').forEach(b=>b.addEventListener('click',()=>{galleryFilter=b.dataset.galleryType;saveGalleryFilters();renderGallery();}));
+  };
   const renderGallery = () => {
     const root = $('cards-gallery'); if (!root) return;
     const all = data(), owned = all.filter(isOwned);
-    let list = all.filter(c => galleryFilter === 'all' || c.category === galleryFilter);
+    renderGalleryFilterChips(all);
+    let list = all.filter(c => (galleryFilter === 'all' || c.category === galleryFilter) && (galleryRarity === 'all' || c.rarity === galleryRarity));
     if (!showLocked) list = list.filter(isOwned);
     list.sort((a,b) => (isOwned(b)?1:0) - (isOwned(a)?1:0) || TIER[b.rarity] - TIER[a.rarity] || a.name.localeCompare(b.name));
-    const intro = !owned.length ? '<div class="cards-empty"><span>✦</span><h3>Your collection starts here</h3><p>Open your first pack to discover a character. Collected cards stay here — the dark slots below are waiting for you.</p><button type="button" class="btn btn-primary" data-view="summon">Explore packs</button></div>' : '';
-    root.innerHTML = intro + (list.length ? list.map(c => {
-      if (!isOwned(c)) return '<div class="cgal-item">'+cardBack({locked:true,color:TIER_COLOR[c.rarity]})+'<div class="cgal-locked-note">'+c.rarity.toUpperCase()+' · UNDISCOVERED</div></div>';
+    root.innerHTML = list.length ? list.map(c => {
+      if (!isOwned(c)) return '<div class="cgal-item" data-gallery-card="'+esc(c.id)+'">'+cardBack({locked:true,color:TIER_COLOR[c.rarity]})+'<div class="cgal-locked-note">'+esc(c.rarity.toUpperCase())+' · UNDISCOVERED</div></div>';
       const level = levelOf(c), maxed = level >= MAX_CARD_LEVEL;
-      return '<div class="cgal-item">'+cardFace(c,{level,leveled:c.id===lastUpgraded})+'<button type="button" class="cards-upgrade-button" data-card-upgrade="'+esc(c.id)+'" '+(maxed||state.shards<UPGRADE_COST?'disabled':'')+'>'+(maxed?'Max level':'Upgrade · '+UPGRADE_COST+' shards')+'</button></div>';
-    }).join('') : (intro ? '' : '<div class="cards-empty"><h3>Nothing here yet</h3><p>No collected cards match this filter.</p></div>'));
+      return '<div class="cgal-item" data-gallery-card="'+esc(c.id)+'">'+cardFace(c,{level,leveled:c.id===lastUpgraded})+'<button type="button" class="cards-upgrade-button" data-card-upgrade="'+esc(c.id)+'" '+(maxed||state.shards<UPGRADE_COST?'disabled':'')+'>'+(maxed?'Max level':'Upgrade · '+UPGRADE_COST+' shards')+'</button></div>';
+    }).join('') : '<div class="cards-empty"><h3>No matching cards</h3><p>Try another rarity or type, or clear your filters.</p><button type="button" class="btn btn-ghost" id="cards-clear-gallery-filters">Clear filters</button></div>';
     lastUpgraded = '';
-    root.querySelectorAll('[data-card-upgrade]').forEach(button=>button.addEventListener('click',()=>upgradeCard(button.dataset.cardUpgrade)));
+    root.querySelectorAll('[data-card-upgrade]').forEach(button=>button.addEventListener('click',e=>{e.stopPropagation();upgradeCard(button.dataset.cardUpgrade);}));
+    root.querySelectorAll('[data-gallery-card]').forEach(item=>{
+      const card=item.querySelector('.fcard');
+      if(card){card.tabIndex=0;card.setAttribute('role','button');card.setAttribute('aria-haspopup','dialog');card.setAttribute('aria-label','View '+(all.find(c=>c.id===item.dataset.galleryCard)?.name||'card')+' details');}
+      item.addEventListener('click',e=>{if(e.target.closest('[data-card-upgrade]'))return;openCardDetail(item.dataset.galleryCard,item);});
+      item.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target===card){e.preventDefault();openCardDetail(item.dataset.galleryCard,item);}});
+    });
+    $('cards-clear-gallery-filters')?.addEventListener('click',()=>{galleryFilter='all';galleryRarity='all';showLocked=true;saveGalleryFilters();renderGallery();});
     const count = $('cards-collection-count'); if (count) count.textContent = owned.length+' / '+all.length+' discovered';
+    const resultCount=$('cards-filter-result-count'); if(resultCount)resultCount.textContent=list.length+' cards';
     const bar = $('cards-collection-bar'); if (bar) bar.style.width = (all.length ? owned.length / all.length * 100 : 0) + '%';
-    document.querySelectorAll('[data-gallery-filter]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.galleryFilter === galleryFilter)));
     const toggle = $('cards-gallery-locked'); if (toggle) { toggle.setAttribute('aria-pressed', String(showLocked)); toggle.textContent = showLocked ? 'Hide undiscovered' : 'Show undiscovered'; }
+  };
+  let cardDetailTrigger=null;
+  const openCardDetail=(id,trigger)=>{
+    const card=data().find(c=>c.id===id);if(!card)return;
+    cardDetailTrigger=trigger?.querySelector('.fcard')||trigger;
+    let modal=document.getElementById('cards-detail-modal');
+    if(!modal){modal=document.createElement('div');modal.id='cards-detail-modal';modal.className='cards-detail-backdrop';document.body.appendChild(modal);}
+    const owned=isOwned(card),profile=window.EPIPHANY_CARD_PROFILES?.[card.id];
+    const sectionHtml=owned&&profile?(profile.sections||[]).map(s=>'<section class="cards-detail-section"><h3>'+esc(s.title?.en||'')+'</h3><p>'+esc(s.text?.en||'')+'</p></section>').join(''):'<p class="cards-detail-placeholder">'+(owned?'Not documented yet':'Not collected yet')+'</p>';
+    modal.innerHTML='<section class="cards-detail-dialog rarity-'+esc(card.rarity.toLowerCase())+'" role="dialog" aria-modal="true" aria-labelledby="cards-detail-name" tabindex="-1"><button type="button" class="cards-detail-close" aria-label="Close card details">×</button><div class="cards-detail-art '+(!owned?'is-locked':'')+'">'+(owned?cardFace(card,{level:levelOf(card),noTilt:true}):cardBack({locked:true,color:TIER_COLOR[card.rarity]}))+'</div><div class="cards-detail-info" dir="ltr"><div class="cards-detail-tools"><span class="cards-detail-id">'+esc(card.id)+'</span><button type="button" class="cards-detail-translate" '+(!owned||!profile?'hidden':'')+' aria-pressed="false">Translate / عربي</button></div><p class="cards-detail-eyebrow">'+esc(card.rarity)+' · '+esc(KIND_LABEL[kindOf(card)]||'Card')+'</p><h2 id="cards-detail-name">'+esc(card.name)+'</h2><p class="cards-detail-role">'+esc(owned?(profile?.title?.en||card.title):card.title)+'</p><p class="cards-detail-summary">'+esc(owned?(profile?.summary?.en||'Not documented yet'):'This card has not been collected yet.')+'</p><div class="cards-detail-sections">'+sectionHtml+'</div></div></section>';
+    document.body.classList.add('no-scroll');
+    const dialog=modal.querySelector('[role="dialog]')||modal.querySelector('[role="dialog"]'), info=modal.querySelector('.cards-detail-info'), translate=modal.querySelector('.cards-detail-translate');let arabic=false;
+    translate?.addEventListener('click',()=>{arabic=!arabic;info.dir=arabic?'rtl':'ltr';translate.textContent=arabic?'English':'Translate / عربي';translate.setAttribute('aria-pressed',String(arabic));const p=window.EPIPHANY_CARD_PROFILES?.[card.id];if(!p)return;info.querySelector('.cards-detail-role').textContent=p.title?.[arabic?'ar':'en']||card.title;info.querySelector('.cards-detail-summary').textContent=p.summary?.[arabic?'ar':'en']||'Not documented yet';info.querySelectorAll('.cards-detail-section').forEach((el,i)=>{const sec=p.sections[i];if(sec){el.querySelector('h3').textContent=sec.title?.[arabic?'ar':'en']||'';el.querySelector('p').textContent=sec.text?.[arabic?'ar':'en']||'';}});});
+    const close=()=>{if(!modal.isConnected)return;modal.remove();document.body.classList.remove('no-scroll');document.removeEventListener('keydown',keyHandler);cardDetailTrigger?.focus?.({preventScroll:true});};
+    const keyHandler=e=>{if(e.key==='Escape'){close();return;}if(e.key==='Tab'){const f=[...dialog.querySelectorAll('button:not([hidden]):not([disabled]),[tabindex="0"]')].filter(el=>el.getClientRects().length);if(!f.length)return;if(e.shiftKey&&document.activeElement===f[0]){e.preventDefault();f[f.length-1].focus();}else if(!e.shiftKey&&document.activeElement===f[f.length-1]){e.preventDefault();f[0].focus();}}};
+    modal.addEventListener('click',e=>{if(e.target===modal||e.target.closest('.cards-detail-close'))close();});
+    document.addEventListener('keydown',keyHandler);dialog.focus();
   };
   const renderFeatured = () => {
     const holder = $('cards-featured-card'), copy = $('cards-featured-copy'), cards = data(); if (!holder || !cards.length) return;
@@ -491,8 +528,8 @@
     });
     window.addEventListener('resize',()=>{ if (rv) Fx.resize(); });
     // collection gallery controls
-    document.querySelectorAll('[data-gallery-filter]').forEach(b=>b.addEventListener('click',()=>{galleryFilter=b.dataset.galleryFilter;renderGallery();}));
-    $('cards-gallery-locked')?.addEventListener('click',()=>{showLocked=!showLocked;renderGallery();});
+    
+    $('cards-gallery-locked')?.addEventListener('click',()=>{showLocked=!showLocked;saveGalleryFilters();renderGallery();});
     initTilt();
     renderFeatured();renderGallery();updateCounts();renderOdds(selectedPack());
     $('cards-history-clear')?.addEventListener('click',()=>{state.history=[];save();renderHistory();});
