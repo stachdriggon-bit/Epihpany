@@ -267,7 +267,7 @@ test('main navigation tabs open without uncaught page errors', async t => {
     assert.equal(await detail.locator('#cards-detail-name').innerText(), 'Mira');
     assert.equal(await detail.getAttribute('aria-modal'), 'true');
     await cardsPage.locator('.cards-detail-translate').click();
-    assert.match(await detail.locator('.cards-detail-summary').innerText(), /ميرا/);
+    assert.match(await detail.locator('.cards-detail-summary').innerText(), /دليلة عملية/);
     assert.doesNotMatch(await detail.locator('.cards-detail-summary').innerText(), /Mira is a practical guide/);
     await cardsPage.locator('#cards-detail-modal').click({ position:{x:2,y:2} });
     await detail.waitFor({ state:'detached' });
