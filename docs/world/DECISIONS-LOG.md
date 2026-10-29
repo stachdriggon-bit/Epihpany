@@ -103,14 +103,12 @@ When a decision changes:
 
 ## WD-037 — Provisional sorcery branch model
 
-**Status:** Working model only; branch taxonomy and restriction-to-branch mapping remain open.
+**Status:** Superseded by WD-041; historical proposal only.
 
-- Record a provisional seven-branch catalogue in [Sorcery Branches and Individual Restrictions](SORCERY-BRANCHES-AND-INDIVIDUAL-RESTRICTIONS.md): Control and Transformation; Creation and Replication; Removal and Cancellation; Amplification and Reduction; Interference and Disruption; Structural Relation Alteration; Transfer and Redirection.
-- Keep a character's main ability domain distinct from the operation/branch used, the individual restriction, observed results, and skill/mastery.
-- Test whether each proposed branch has a clear essential operation and whether any branches need splitting or merging. Perception and Detection remains outside the current list pending tests.
-- Test, but do not yet canonize, the hypothesis that a restriction category primarily affects one branch and may have related secondary effects on other branches.
-- Existing hand-symbol rules remain in force: the symbol reveals the restriction category only, not the exact restriction, ability, skill, or mastery. The official category names and symbol designs are not replaced by this proposal.
-- This entry records a framework for testing, not a finalized universal taxonomy or new character abilities. Revise the source document and this log when a foundational rule is explicitly accepted.
+- The former seven-branch catalogue was a trial framework, not canon, and is no longer the current model.
+- Do not classify new or existing character abilities by that catalogue or assume restriction categories map to branches.
+- The former proposal is summarized in [Superseded Sorcery Branch Model](archive/SUPERSEDED-SORCERY-BRANCH-MODEL.md) for historical context. The original full file was removed from the active reference path.
+- Use [Foundational Sorcery Model](MAGIC-FOUNDATIONS.md) as the current working reference. It is a provisional ability-first foundation, not a complete rulebook.
 
 
 ## WD-038 — Character ability register and test-status separation
@@ -144,7 +142,7 @@ When a decision changes:
 
 ## WD-040 — Perception and Detection exploration
 
-**Status:** Provisional working model only; not canon and not yet an official branch.
+**Status:** Exploratory note only; not an official branch or taxonomy. Its earlier relationship to the retired branch-first model is superseded by WD-041.
 
 - Record the exploratory model in [Perception and Detection](PERCEPTION-AND-DETECTION.md) so the initial tests and boundaries are not lost.
 - Candidate operations include presence sensing, locating, nature analysis, detecting concealed targets, possible detection without an obvious magical trace, and possible reading of a target's condition/details.
@@ -153,3 +151,18 @@ When a decision changes:
 - Detectability may depend on concealment type, target nature, and the interaction between the concealing sorcerer's power and the perceiver's ability. Strength alone is not a guaranteed outcome.
 - Inferring past events from magical residue remains an open, untested question.
 - Keep details lightweight; revisit them when required by a story, character, or consistency issue. No hypothesis becomes canon without explicit approval.
+
+## WD-041 — Ability-first sorcery foundation
+
+**Status:** Provisional foundational model for development; character-specific mechanics remain open.
+
+- When a person becomes a sorcerer, a basic ability takes shape, a restriction symbol appears on the hand and remains throughout life, and the sorcerer instinctively understands the general nature of the basic ability.
+- The sorcerer knows their restriction within the world's established restriction-symbol system. Knowing the restriction does not automatically teach practical mastery of it.
+- Understanding the basic ability does not mean knowing every application or extension; these are developed or discovered through practice, skill, and experience.
+- Basic abilities may resemble one another. Skill can broaden an ability's possible applications, but does not make every imaginable effect possible; natural limits remain.
+- Individual restrictions are distinct from basic abilities and skill. Their effects depend on the type of restriction. A skilled sorcerer may devise ways to use an ability cleverly while respecting the restriction, without thereby removing or breaching it.
+- There is no universal rule that lets a sorcerer fully analyze another ability by sight. What can be inferred or perceived depends on the method and abilities involved.
+- Exceptional abilities such as copying and perception are to be worked out when the relevant characters are designed. Do not prescribe one universal set of rules for all such abilities.
+- The previous fixed branch taxonomy is retired. Do not force abilities into branches; any future grouping must be an optional organizational aid derived from actual examples, not a rule limiting what magic can do.
+- The source of a particular ability and the relationship between magic and any separate energy resource remain open. Do not infer a prediction rule from personality, interests, or ancestry.
+- Keep this foundation provisional until explicitly approved as final canon. See [Foundational Sorcery Model](MAGIC-FOUNDATIONS.md).
