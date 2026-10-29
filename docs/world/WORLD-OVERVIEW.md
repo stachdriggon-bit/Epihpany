@@ -118,7 +118,17 @@ This is a deliberately explicit continuity rule until further evidence or an own
 
 **Current resolution:** the duplicate-place risk is resolved operationally; the in-world identity remains open. This is not a claim that the two names are definitely identical.
 
-## 8. Canon status at a glance
+## 8. Place-identity reconciliation: Velisar and the Switchback Gate
+
+This is a provisional owner decision recorded in [Decision Log](DECISIONS-LOG.md).
+
+- **OR-LOC-01** is the primary anchor-location ID for **Velisar / فيليزار**.
+- **OR-CITY-03** is the existing Orath settlement-registry ID for that same place; retain it as a linked record for compatibility rather than treating it as a second settlement.
+- **The Switchback Gate** is the former descriptive working name for Velisar, not an additional place.
+- Use one place identity in maps, routes, stories, quests, archive entries, character references, and translations. Preserve both IDs unless a future explicit decision consolidates the records.
+- The decision is provisional: the name/identity link is adopted for current development, while exact geography and other settlement details remain provisional.
+
+## 9. Canon status at a glance
 
 | Category | Current state |
 |---|---|
@@ -132,10 +142,11 @@ This is a deliberately explicit continuity rule until further evidence or an own
 | Tarin and Sella | Provisional story-specific character records |
 | Low-Water Shore pilot chronology | Date and global era unknown; only local episode order known |
 | Ambrin–Low-Water Shore identity | Operational handling defined; final identity remains open |
+| Velisar–Switchback Gate identity | Provisionally resolved as one place; OR-LOC-01 is the anchor ID and OR-CITY-03 is a linked settlement record |
 | All other learning stories as world canon | Not assumed; link selectively |
 | Relationship among mysteries | No single shared cause assumed |
 
-## 9. Rules for future additions
+## 10. Rules for future additions
 
 Before adding a new fact, event, character, culture, or location:
 
@@ -148,7 +159,7 @@ Before adding a new fact, event, character, culture, or location:
 7. Update source registries first, then dependent maps, stories, archive records, cards, and translations.
 8. Keep unresolved questions visible. Do not fill a gap just because a timeline or collection interface would look cleaner with a date.
 
-## 10. Primary references
+## 11. Primary references
 
 - [World Laws and Continuity Charter](WORLD-LAWS-AND-CONTINUITY.md) — consolidated rules, limits, and open design boundaries.
 - [Master Content Bible](MASTER-CONTENT-BIBLE.md)
