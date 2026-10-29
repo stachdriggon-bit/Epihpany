@@ -565,7 +565,8 @@
   }
   const DEVELOPER_EMAILS = new Set([
     'abdulrahimaouadi@gmail.com',
-    'crboy952@gmail.com'
+    'crboy952@gmail.com',
+    'girl32761@gmail.com'
   ]);
   const isDeveloperAccount = () => !!(currentUser && currentUser.email && DEVELOPER_EMAILS.has(String(currentUser.email).trim().toLowerCase()));
   function announceAuthAccess() {
