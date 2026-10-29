@@ -141,3 +141,15 @@ When a decision changes:
 - Tests and story scenes remain non-canonical unless separately approved. Record observations, interpretations, evidence, and unknowns separately.
 
 **Reference:** [Cosmic Laws, Magical Restrictions, and Anomalies](COSMIC-LAWS-AND-ANOMALIES.md).
+
+## WD-040 — Perception and Detection exploration
+
+**Status:** Provisional working model only; not canon and not yet an official branch.
+
+- Record the exploratory model in [Perception and Detection](PERCEPTION-AND-DETECTION.md) so the initial tests and boundaries are not lost.
+- Candidate operations include presence sensing, locating, nature analysis, detecting concealed targets, possible detection without an obvious magical trace, and possible reading of a target's condition/details.
+- These are not necessarily sequential stages, and no sorcerer is assumed to possess all of them.
+- Detection does not automatically imply control, cancellation, removal, overcoming concealment, identification, or full knowledge of the target.
+- Detectability may depend on concealment type, target nature, and the interaction between the concealing sorcerer's power and the perceiver's ability. Strength alone is not a guaranteed outcome.
+- Inferring past events from magical residue remains an open, untested question.
+- Keep details lightweight; revisit them when required by a story, character, or consistency issue. No hypothesis becomes canon without explicit approval.
