@@ -24,6 +24,8 @@ When designing magic or an unexplained event, do not collapse these layers into 
 
 An anomaly may be connected to cosmic laws, but the exact relationship and mechanism need not be known. A sorcerer's inability to affect a phenomenon does not prove that their restriction caused the failure. Likewise, a strange outcome does not automatically prove that a cosmic law, a sorcerer, or an entity caused it.
 
+Terminology is deliberately narrow: **Numera** refers to phenomena connected to cosmic laws, not every supernatural or unexplained event. **Aelora Energy** is the named magical energy resource; **Aren** is its general use in sorcery, and **Aren Art** refers to the skills and techniques a sorcerer develops. These terms do not imply that cosmic laws are conscious, that every anomaly is a Numera, or that all mysteries share one cause.
+
 ## 3. Magic is open-ended, not a closed class system
 
 - Do not define each sorcerer by a rigid universal school such as “fire mage,” “water mage,” or “support mage.”
