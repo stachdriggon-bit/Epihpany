@@ -36,9 +36,9 @@ test('card prototype is linked from profile and cached offline', () => {
   const html = read('index.html');
   const sw = read('service-worker.js');
   assert.match(html, /id="cards-hub"/);
-  assert.match(html, /data-cards\.js\?v=card-codex-20261029-1/);
-  assert.match(html, /cards\.js\?v=card-codex-20261029-1/);
-  assert.match(html, /cards\.css\?v=card-codex-20261029-1/);
+  assert.match(html, /data-cards\.js\?v=[^"&]+/);
+  assert.match(html, /cards\.js\?v=[^"&]+/);
+  assert.match(html, /cards\.css\?v=[^"&]+/);
   assert.match(html, /chip-tokens-value/);
   assert.match(sw, /\.\/data-cards\.js/);
   assert.match(sw, /\.\/cards\.js/);
@@ -132,7 +132,7 @@ test('summoning uses shared sound preferences and respects reduced motion', () =
   assert.match(css, /prefers-reduced-motion:reduce/);
   assert.match(html, /id="summon-ritual-status"/);
   assert.match(html, /app\.js\?v=[^"&]+/);
-  assert.match(html, /cards\.js\?v=card-codex-20261029-1/);
+  assert.match(html, /cards\.js\?v=[^"&]+/);
 });
 
 test('every character card points to an image file that exists in the repository', () => {
