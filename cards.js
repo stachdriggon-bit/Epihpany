@@ -194,8 +194,8 @@
     const present=new Set(all.map(c=>c.category));
     const types=CATEGORY_REGISTRY.filter(t=>present.has(t.id));
     if(typeRoot)typeRoot.innerHTML=[{id:'all',label:'All'},...types].map(item=>'<button type="button" data-gallery-type="'+esc(item.id)+'" aria-pressed="'+String(galleryFilter===item.id)+'">'+esc(item.label)+'</button>').join('');
-    rarityRoot?.querySelectorAll('[data-gallery-rarity]').forEach(b=>b.addEventListener('click',()=>{galleryRarity=b.dataset.galleryRarity;saveGalleryFilters();renderGallery();}));
-    typeRoot?.querySelectorAll('[data-gallery-type]').forEach(b=>b.addEventListener('click',()=>{galleryFilter=b.dataset.galleryType;saveGalleryFilters();renderGallery();}));
+    rarityRoot?.querySelectorAll('[data-gallery-rarity]').forEach(b=>b.addEventListener('click',()=>{galleryRarity=b.dataset.galleryRarity;saveGalleryFilters();renderGallery(true);}));
+    typeRoot?.querySelectorAll('[data-gallery-type]').forEach(b=>b.addEventListener('click',()=>{galleryFilter=b.dataset.galleryType;saveGalleryFilters();renderGallery(true);}));
   };
   let galleryNodeCache = new Map();
   let galleryEventsBound = false;
@@ -234,6 +234,7 @@
     if(!galleryEventsBound){
       galleryEventsBound=true;
       root.addEventListener('click',e=>{
+        if(e.target.closest('#cards-clear-gallery-filters')){galleryFilter='all';galleryRarity='all';showLocked=true;saveGalleryFilters();renderGallery(true);return;}
         const upgrade=e.target.closest('[data-card-upgrade]');
         if(upgrade){e.stopPropagation();upgradeCard(upgrade.dataset.cardUpgrade);return;}
         const item=e.target.closest('[data-gallery-card]');
@@ -304,10 +305,10 @@
     return '<div class="cards-detail-tools"><div class="cards-detail-tags"><span class="cards-detail-id">'+esc(card.id)+'</span><span class="cards-detail-rarity">'+esc(rarity)+'</span><span class="cards-detail-kind">'+esc(ar?kindAr:kind)+'</span>'+stats+'</div><button type="button" class="cards-detail-translate" aria-pressed="'+String(ar)+'">'+(ar?'English':'ترجمة / Translate')+'</button></div>'
       +'<header class="cards-detail-header"><p class="cards-detail-kicker">'+t('CHARACTER DOSSIER','ملف الشخصية')+'</p><h2 id="cards-detail-name">'+esc(card.name)+'</h2><p class="cards-detail-role">'+esc(owned?localized(profile?.title,lang,card.title):card.title)+'</p><p class="cards-detail-summary">'+esc(summary)+'</p></header>'
       +(facts?'<div class="cards-detail-facts">'+facts+'</div>':'')
-      +'<div class="cards-detail-ornament">'+svgUse('','orn-divider','0 0 420 36')+'</div>'
+      +'<div class="cards-detail-ornament">'+svgUse('','orn-crest','0 0 160 44')+'</div>'
       +(sectionIndex?'<nav class="cards-detail-index" aria-label="'+t('Jump to a section','انتقل إلى قسم')+'">'+sectionIndex+'</nav>':'')
       +'<div class="cards-detail-sections">'+sectionMarkup+'</div>'
-      +(!owned?'<p class="cards-detail-placeholder">'+t('Not collected yet','لم تُجمع بعد')+'</p>':'');
+      ;
   };
   let cardDetailTrigger=null, cardDetailReturnRect=null;
   const preloadCardArt=id=>{
@@ -652,8 +653,9 @@
     window.addEventListener('resize',()=>{ if (rv) Fx.resize(); });
     // collection gallery controls
     
-    $('cards-gallery-locked')?.addEventListener('click',()=>{showLocked=!showLocked;saveGalleryFilters();renderGallery();});
+    $('cards-gallery-locked')?.addEventListener('click',()=>{showLocked=!showLocked;saveGalleryFilters();renderGallery(true);});
     initTilt();
+    document.addEventListener('load',e=>{if(e.target?.matches?.('.fcard-portrait-image'))e.target.classList.add('is-loaded');},true);
     renderFeatured();renderGallery();updateCounts();renderOdds(selectedPack());
     $('cards-history-clear')?.addEventListener('click',()=>{state.history=[];save();renderHistory();});
     window.addEventListener('epiphany:achievements-updated',()=>checkAchievementRewards(window.EPIPHANY_PROFILE_ACHIEVEMENTS));
