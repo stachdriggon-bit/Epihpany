@@ -293,7 +293,8 @@ test('main navigation tabs open without uncaught page errors', async t => {
     assert.equal(await detail.locator('#cards-detail-name').innerText(), 'ميرا', 'character name should translate in place');
     assert.match(await detail.locator('.cards-detail-summary').innerText(), /دليلة عملية/);
     assert.doesNotMatch(await detail.locator('.cards-detail-summary').innerText(), /Mira is a practical guide/);
-    await cardsPage.locator('#cards-detail-modal').click({ position:{x:2,y:2} });
+    // On narrow screens the dossier is intentionally full-screen, so close it with its visible close control.
+    await cardsPage.locator('#cards-detail-modal .cards-detail-close').click();
     await detail.waitFor({ state:'detached' });
     assert.equal(await miraCard.evaluate(el => document.activeElement === el), true, 'focus should return to the selected card');
 
