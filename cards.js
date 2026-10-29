@@ -259,6 +259,7 @@
     return value??fallback;
   };
   const profileValueHTML=(value,lang='en')=>{
+    if(value&&typeof value==='object'&&!Array.isArray(value))return profileValueHTML([value],lang);
     if(Array.isArray(value))return value.map(part=>{
       if(typeof part==='string')return esc(part);
       if(!part||typeof part!=='object')return '';
