@@ -1945,6 +1945,13 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     card.innerHTML='<span class="monthly-word-thread-kicker">THIS MONTH’S WORD · '+esc(word.theme)+'</span><div><strong>'+esc(word.word)+'</strong><span>'+esc(word.meaning)+'</span></div><p>'+esc(word.example)+'</p><small>'+(Number(progress.uses||0)>0?Number(progress.uses||0)+' real-life uses recorded · Keep noticing it across stories, games and everyday life.':'Your first step: use this word in one sentence today. Your progress will appear here.')+'</small><button type="button" class="btn btn-ghost" data-view="mytools">Explore the monthly word →</button>';
     host.insertAdjacentElement('afterend',card);
   }
+  window.EPIPHANY_OPEN_ARCHIVE_PLACE = function(placeId){
+    const root=$('#chronicle-content');if(!root||!placeId)return;
+    root.dataset.place=String(placeId);delete root.dataset.period;delete root.dataset.from;delete root.dataset.to;delete root.dataset.direction;
+    openView('chronicle');
+    const land=()=>{renderChronicle();const target=$('#chronicle-content .archive-place-heading');if(target){target.classList.add('archive-place-highlight');target.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'});setTimeout(()=>target.classList.remove('archive-place-highlight'),2000);}};
+    window.EPIPHANY_LAZY_LOAD('chronicle').then(()=>{land();setTimeout(land,120);}).catch(()=>{});
+  };
   function openView(name) {
     closeCategoryPicker(false);
     closeDockMore();
