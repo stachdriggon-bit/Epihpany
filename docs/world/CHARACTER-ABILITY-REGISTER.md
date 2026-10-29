@@ -81,13 +81,20 @@ Copy this template for each character. Use “Open” rather than inventing an a
 - **Adaptation hypothesis:** Dividing a complex network into smaller parts and comparing perceived relationships with real-world evidence can improve reliability, but does not remove the restriction. Some relationships may remain unresolved, especially when the parts must be recombined.
 - **Important distinction:** Missing information or a mistaken inference is not automatically proof that the restriction activated. Evaluate the ability's natural limits, evidence available, interpretation, environment, and skill separately.
 - **Possible branch/function:** Perception and Detection is a possible functional description, not one of the current seven provisional sorcery branches. No branch assignment has been made.
-- **Test scenarios completed:**
-  1. Clear nearby paths and shared chokepoints — working hypothesis: the ability is comparatively reliable when relations are clear.
-  2. A possible connection obscured by mist — working hypothesis: a relation may be perceived as possible without being confirmed.
-  3. A dense old-city network — working hypothesis: high interconnection can activate the restriction.
-  4. A path with an unknown barrier or locked door — working hypothesis: spatial connection and passability are distinct; the restriction may compound uncertainty but is not the sole explanation.
-  5. Dividing a network into smaller parts — working hypothesis: checking and partitioning improve some judgments but do not guarantee a complete answer.
+- **Test scenarios discussed:**
+  1. Clear nearby paths and shared chokepoints — test premise: the ability should be comparatively reliable when relationships are clear.
+  2. A possible connection obscured by mist — test premise: a perceived possibility must remain distinct from a confirmed relationship. A more precise outcome was not separately preserved in the record.
+  3. A dense old-city network — test premise: high interconnection may activate the restriction.
+  4. A path with an unknown barrier or locked door — tests the distinction between spatial connection and passability; the restriction is not assumed to be the only possible cause of uncertainty.
+  5. Dividing a network into smaller parts — tests whether partitioning and checking evidence improve reliability without guaranteeing a complete answer.
   6. Finding a child behind an unfamiliar mechanism — illustrative story test only; the ability does not explain the mechanism itself.
+- **Test observations preserved from the story discussion (not canon):**
+  - In clearer streets, Mira could recognize spatial relationships more readily.
+  - In a densely interconnected alley network, distinguishing reliable relationships from merely possible ones became harder.
+  - Recognizing a possible connection did not establish that a locked door or other barrier could be passed.
+  - Breaking the network into smaller parts and checking available evidence helped her identify an alternative route, but did not resolve every uncertainty.
+  - The ability did not reveal how an unfamiliar locking mechanism worked; Raven and the child provided relevant information.
+  - These are observations from an illustrative test scene, not proof of universal rules. The separate mist scenario needs a more precisely recorded result if it is reused.
 - **Current test conclusion:** The proposed ability/restriction model is coherent enough for an initial test cycle. This is not a final canon decision.
 - **Open questions:**
   - What physical/spatial relationships can be sensed when obstructed from direct view?
@@ -98,6 +105,7 @@ Copy this template for each character. Use “Open” rather than inventing an a
   - How should this ability be distinguished from navigation, detection, or other characters' powers?
   - Is there a suitable branch/function classification once the framework is tested further?
 - **Canon decision:** None yet. Do not update CHR-001 card or treat this test as an approved world rule until explicitly authorized.
+- **Last reviewed:** 2026-10-29 — documentation audit only; test observations separated from hypotheses. No ability, restriction, rarity, or branch has been canonized.
 
 ## 4. Change log
 
