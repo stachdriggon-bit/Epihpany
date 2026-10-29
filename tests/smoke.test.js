@@ -287,6 +287,8 @@ test('main navigation tabs open without uncaught page errors', async t => {
     await cardsPage.locator('#cards-detail-modal [data-archive-place="IL-LOC-01"]').click();
     await cardsPage.waitForSelector('#chronicle-view.is-active #chronicle-content .archive-place-heading h2', {timeout:10000});
     assert.match(await cardsPage.locator('#chronicle-content .archive-place-heading h2').innerText(), /Three-Arch Ferry/);
+    await cardsPage.locator('.archive-back-to-cards').click();
+    await cardsPage.waitForSelector('#profile-view.is-active #cards-gallery');
     await cardsPage.close();
 
     const offlinePage = await browser.newPage();
