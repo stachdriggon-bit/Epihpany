@@ -331,7 +331,7 @@
     let modal=document.getElementById('cards-detail-modal');
     if(!modal){modal=document.createElement('div');modal.id='cards-detail-modal';modal.className='cards-detail-backdrop';document.body.appendChild(modal);}
     const owned=isOwned(card),profile=owned?window.EPIPHANY_CARD_PROFILES?.[card.id]:null;
-    modal.innerHTML='<section class="cards-detail-dialog rarity-'+esc(card.rarity.toLowerCase())+'" role="dialog" aria-modal="true" aria-labelledby="cards-detail-name" tabindex="-1"><button type="button" class="cards-detail-close" aria-label="Close card details">×</button><div class="cards-detail-art '+(!owned?'is-locked':'')+'">'+(owned?cardFace(card,{level:levelOf(card),noTilt:true,fullImage:true}):cardBack({locked:true,color:TIER_COLOR[card.rarity]}))+'</div><div class="cards-detail-info" dir="ltr">'+renderDetailInfo(card,profile,owned,'en')+'</div></section>';
+    modal.innerHTML='<section class="cards-detail-dialog rarity-'+esc(card.rarity.toLowerCase())+'" role="dialog" aria-modal="true" aria-labelledby="cards-detail-name" tabindex="-1"><button type="button" class="cards-detail-close" aria-label="Close card details">×</button><div class="cards-detail-art '+(!owned?'is-locked':'')+'">'+(owned?cardFace(card,{level:levelOf(card),fullImage:true}):cardBack({locked:true,color:TIER_COLOR[card.rarity]}))+'</div><div class="cards-detail-info" dir="ltr">'+renderDetailInfo(card,profile,owned,'en')+'</div></section>';
     document.body.classList.add('no-scroll');
     const dialog=modal.querySelector('[role="dialog"]'),info=modal.querySelector('.cards-detail-info');
     if(cardDetailReturnRect&&dialog&&!reducedMotion()){
