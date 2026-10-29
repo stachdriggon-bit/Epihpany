@@ -303,7 +303,7 @@
     const facts=(profile?.facts||[]).filter(f=>localized(f.value,lang,'')&&localized(f.label,lang,'')).map(f=>'<div class="cards-detail-fact"><span>'+esc(localized(f.label,lang,''))+'</span><strong>'+esc(localized(f.value,lang,''))+'</strong></div>').join('');
     const sectionIndex=sections.map(s=>'<a href="#cards-section-'+esc(s.id)+'">'+esc(s.title)+'</a>').join('');
     const stats=owned?'<span class="cards-detail-owned">'+t('Level','المستوى')+' '+levelOf(card)+' · '+state.shards+' '+t('shards','شظايا')+'</span>':'';
-    return '<div class="cards-detail-tools"><div class="cards-detail-tags"><span class="cards-detail-id">'+esc(card.id)+'</span><span class="cards-detail-rarity">'+esc(rarity)+'</span><span class="cards-detail-kind">'+esc(ar?kindAr:kind)+'</span>'+stats+'</div><button type="button" class="cards-detail-translate" aria-pressed="'+String(ar)+'">'+(ar?'English':'ترجمة / Translate')+'</button></div>'
+    return '<div class="cards-detail-tools"><div class="cards-detail-tags"><span class="cards-detail-id">'+esc(card.id)+'</span><span class="cards-detail-rarity">'+esc(rarity)+'</span><span class="cards-detail-kind">'+esc(ar?kindAr:kind)+'</span>'+stats+'</div><button type="button" class="cards-detail-translate" aria-pressed="'+String(ar)+'">'+(ar?'English':'العربية')+'</button></div>'
       +'<header class="cards-detail-header"><p class="cards-detail-kicker">'+t('CHARACTER DOSSIER','ملف الشخصية')+'</p><h2 id="cards-detail-name">'+esc(card.name)+'</h2><p class="cards-detail-role">'+esc(owned?localized(profile?.title,lang,card.title):card.title)+'</p><p class="cards-detail-summary">'+esc(summary)+'</p></header>'
       +(facts?'<div class="cards-detail-facts">'+facts+'</div>':'')
       +'<div class="cards-detail-ornament">'+svgUse('','orn-crest','0 0 160 44')+'</div>'
@@ -353,7 +353,7 @@
     };
     modal.addEventListener('click',e=>{
       const translate=e.target.closest('.cards-detail-translate');
-      if(translate){arabic=!arabic;info.dir=arabic?'rtl':'ltr';info.lang=arabic?'ar':'en';info.innerHTML=renderDetailInfo(card,profile,owned,arabic?'ar':'en');return;}
+      if(translate){arabic=!arabic;info.dir=arabic?'rtl':'ltr';info.lang=arabic?'ar':'en';modal.querySelector('.cards-detail-close')?.setAttribute('aria-label',arabic?'إغلاق تفاصيل البطاقة':'Close card details');info.innerHTML=renderDetailInfo(card,profile,owned,arabic?'ar':'en');return;}
       const place=e.target.closest('[data-archive-place]');
       if(place){const placeId=place.dataset.archivePlace;close();window.EPIPHANY_OPEN_ARCHIVE_PLACE?.(placeId);return;}
       const character=e.target.closest('[data-profile-character]');
