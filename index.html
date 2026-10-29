@@ -25,7 +25,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Cairo:wght@500;700&family=DM+Sans:wght@400;500;700&family=Cinzel:wght@600;700&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=world-archive-pilot-1"><link rel="stylesheet" href="cards.css?v=legendary-reveal-2">
+  <link rel="stylesheet" href="style.css?v=world-archive-pilot-1"><link rel="stylesheet" href="cards.css?v=card-profile-modal-1">
   <link rel="stylesheet" href="resonance.css?v=resonance-chapters-2-5">
   <link rel="stylesheet" href="life-skills.css?v=calm-studio-20261025">
   <script src="data.js?v=7f0faa36" defer></script>
@@ -43,7 +43,7 @@
 <script src="telemetry.js?v=e5eac23f" defer></script>
 <script src="lazy-data.js?v=world-archive-registry-1" defer></script>
   <script src="app.js?v=world-archive-registry-1" defer></script>
-  <script src="data-cards.js?v=legendary-reveal-1" defer></script>
+  <script src="data-cards.js?v=card-profile-modal-1" defer></script>
   <script src="cards.js?v=legendary-reveal-2" defer></script>
   <script src="navigation-enhancements.js?v=world-archive-pilot-1" defer></script>
 <script>
@@ -495,7 +495,7 @@
           <div class="cards-wallet" aria-label="Collection wallet"><span>✦ Tokens <b id="cards-token-count">15</b></span><span>◇ Shards <b id="cards-shard-count">0</b></span></div>
         </div>
         <div class="cards-collection-toolbar"><div><strong>Your discoveries</strong><span id="cards-collection-count">0 / 27 discovered</span><div class="cgal-bar" aria-hidden="true"><i id="cards-collection-bar" style="width:0%"></i></div></div>
-          <div class="cgal-filters" id="cards-gallery-filters" role="group" aria-label="Filter your cards"><button type="button" data-gallery-filter="all" aria-pressed="true">All</button><button type="button" data-gallery-filter="characters" aria-pressed="false">Characters</button><button type="button" data-gallery-filter="words" aria-pressed="false">Words</button><button type="button" data-gallery-filter="artifacts" aria-pressed="false">Artifacts</button><button type="button" data-gallery-filter="mixed" aria-pressed="false">Places</button><button type="button" class="cgal-toggle" id="cards-gallery-locked" aria-pressed="true">Hide undiscovered</button></div></div>
+          <div class="cgal-filter-stack" id="cards-gallery-filters" aria-label="Filter your cards"><div class="cgal-filter-row"><span class="cgal-filter-label">Rarity</span><div class="cgal-filter-chips" id="cards-rarity-filters" role="group" aria-label="Filter by rarity"></div></div><div class="cgal-filter-row"><span class="cgal-filter-label">Type</span><div class="cgal-filter-chips" id="cards-type-filters" role="group" aria-label="Filter by card type"></div></div><div class="cgal-filter-actions"><span id="cards-filter-result-count" aria-live="polite">Loading cards…</span><button type="button" class="cgal-toggle" id="cards-gallery-locked" aria-pressed="true">Hide undiscovered</button></div></div></div>
         <div class="cards-panel"><p class="cards-upgrade-hint" id="cards-upgrade-balance">Upgrade a collected card for 5 shards · 5 levels max</p>
           <div class="cards-collection-meta"><span>COLLECTION</span><span><b id="cards-owned-count">0</b> cards collected</span></div>
           <div class="cards-grid" id="cards-gallery"></div>
