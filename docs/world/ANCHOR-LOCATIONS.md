@@ -56,7 +56,8 @@ These labels do not imply that every region shares the same historical phases.
 
 ## Orath / أوراث
 
-### OR-LOC-01 — The Switchback Gate
+### OR-LOC-01 — Velisar / فيليزار
+**Former working name:** The Switchback Gate (اسم وصفي سابق للموقع نفسه، وليس موقعًا منفصلًا).  
 **Type:** Mountain pass settlement  
 **Signature:** A road of broad switchbacks, a weather station maintained by local travelers, and a cluster of inns, workshops, and storage buildings at the last dependable stop before the climb.
 
@@ -71,7 +72,9 @@ These labels do not imply that every region shares the same historical phases.
 
 **Story hooks:** A guide refuses a profitable journey; two maps show different safe seasons; a traveler discovers that an old warning was based on a specific event, not a universal rule.
 
-**Continuity anchors:** Travel time depends on season and route condition; information about a distant event arrives only through plausible travelers or records.
+**Continuity anchors:** Travel time depends on season and route condition; information about a distant event arrives only through plausible travelers or records.  
+
+**Place identity (provisional owner decision):** **Velisar / فيليزار** is the current official name for this location. Preserve the stable location ID **OR-LOC-01**. “The Switchback Gate” is retained only as its former descriptive working name; do not create a second place record for it. The exact geography and the settlement's other details remain provisional.
 
 ### OR-LOC-02 — The Low-Water Shore
 **Type:** Inland lake settlement  
