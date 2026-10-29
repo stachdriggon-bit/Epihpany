@@ -92,7 +92,7 @@ When a decision changes:
 - Cosmic laws may be relevant both to restrictions affecting sorcerers and to anomalies in the world. Anomalies are the observable outcomes of interactions between those laws and the world's conditions.
 - Magic remains open-ended rather than organized into a finalized universal taxonomy of sorcerer classes. Magical access is character-specific, and not everyone can use magic.
 - Individual restrictions can alter or complicate how a sorcerer's ability operates; adapting to a restriction does not automatically remove it.
-- A visible hand symbol appears when a person becomes a sorcerer and remains fixed throughout life. It reveals only the category of the restriction, not the exact restriction, powers, skill, or mastery. Category names and number remain open.
+- A visible hand symbol appears when a person becomes a sorcerer and remains fixed throughout life. The established restriction categories and symbols are known in-world. The symbol reveals the category, not the full practical implications of the individual's restriction, ability, skill, or mastery.
 - Cosmic restrictions remain poorly understood even by the strongest sorcerers. Their relationship to individual restrictions and hand symbols is not established.
 - Unknown entities may exist, but their motives, limits, knowledge, and relationship to cosmic laws are open. No entity or single mechanism is assumed to explain every anomaly.
 - The cause of any particular anomaly must remain open unless evidence and an explicit decision establish it. For example, the Returning Current could hypothetically be caused by an unknown sorcerer's ability, but this is only a possibility, not canon.
