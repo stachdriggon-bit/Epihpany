@@ -76,6 +76,8 @@ jobs:
       - name: Verify the generated-thumbnail commit on its new head SHA
         if: steps.thumbnails.outputs.changed == 'true'
         uses: actions/github-script@v7
+        env:
+          GITHUB_HEAD_REF: ${{ github.head_ref }}
         with:
           script: |
             await github.rest.actions.createWorkflowDispatch({
