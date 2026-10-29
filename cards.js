@@ -209,7 +209,7 @@
       if (!isOwned(c)) return '<div class="cgal-item" data-gallery-card="'+esc(c.id)+'">'+cardBack({locked:true,color:TIER_COLOR[c.rarity]})+'<div class="cgal-locked-note">'+esc(c.rarity.toUpperCase())+' · UNDISCOVERED</div></div>';
       const level = levelOf(c), maxed = level >= MAX_CARD_LEVEL;
       return '<div class="cgal-item" data-gallery-card="'+esc(c.id)+'">'+cardFace(c,{level,leveled:c.id===lastUpgraded})+'<button type="button" class="cards-upgrade-button" data-card-upgrade="'+esc(c.id)+'" '+(maxed||state.shards<UPGRADE_COST?'disabled':'')+'>'+(maxed?'Max level':'Upgrade · '+UPGRADE_COST+' shards')+'</button></div>';
-    }).join('') : '<div class="cards-empty"><h3>No matching cards</h3><p>Try another rarity or type, or clear your filters.</p><button type="button" class="btn btn-ghost" id="cards-clear-gallery-filters">Clear filters</button></div>';
+    }).join('') : '<div class="cards-empty"><h3>No matching cards</h3><p>Try another rarity or type, or clear your filters.</p><button type="button" class="btn btn-ghost" id="cards-clear-gallery-filters">Clear filters</button></div>');
     lastUpgraded = '';
     root.querySelectorAll('[data-card-upgrade]').forEach(button=>button.addEventListener('click',e=>{e.stopPropagation();upgradeCard(button.dataset.cardUpgrade);}));
     root.querySelectorAll('[data-gallery-card]').forEach(item=>{
