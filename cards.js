@@ -75,7 +75,7 @@
     if (opts.leveled) cls.push('is-leveled');
     return '<article class="'+cls.join(' ')+'" style="--lv:'+level+'"'+(opts.noTilt?'':' data-tilt')+' data-card-id="'+esc(card.id)+'"><div class="fcard-tilt"><div class="fcard-frame">'
       + '<div class="fcard-body">'
-      +   '<div class="fcard-window" aria-hidden="true"><i class="fcard-aura"></i>'+artMarkup(card)+'<i class="fcard-motes"></i>'
+      +   '<div class="fcard-window" aria-hidden="true"><i class="fcard-aura"></i>'+artMarkup(card,opts)+'<i class="fcard-motes"></i>'
       +     '<span class="fcard-emblem">'+svgUse('','emb-'+(KIND_EMBLEM[kind]||'artifact'),'0 0 24 24')+'</span><span class="fcard-lv">Lv. '+level+'</span></div>'
       +   '<div class="fcard-plate"><div class="fcard-rar">'+esc(card.rarity)+'</div><h3>'+esc(card.name)+'</h3><p class="fcard-sub">'+esc(card.title)+'</p>'
       +     '<div class="fcard-pips" aria-label="Level '+level+' of '+MAX_CARD_LEVEL+'">'+[1,2,3,4,5].map(n => '<i'+(n<=level?' class="on"':'')+'></i>').join('')+'</div></div>'
