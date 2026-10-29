@@ -276,6 +276,8 @@ test('main navigation tabs open without uncaught page errors', async t => {
     await cardsPage.locator('#cards-rarity-filters [data-gallery-rarity="all"]').click();
     await cardsPage.locator('#cards-type-filters [data-gallery-type="all"]').click();
     assert.equal(await cardsPage.evaluate(() => document.querySelector('#cards-gallery [data-gallery-card="CHR-001"]') === window.__miraGalleryNode), true, 'filter changes must preserve existing card node identity');
+    const galleryMiraImage = cardsPage.locator('#cards-gallery [data-gallery-card="CHR-001"] .fcard-portrait-image');
+    assert.match(await galleryMiraImage.getAttribute('src'), /\\/thumb\\//, 'gallery should request the generated thumbnail');
     const miraCard = cardsPage.locator('#cards-gallery [data-gallery-card="CHR-001"] .fcard');
     await miraCard.click();
     const detail = cardsPage.locator('#cards-detail-modal [role="dialog"]');
@@ -286,6 +288,7 @@ test('main navigation tabs open without uncaught page errors', async t => {
     const modalCardBox = await detail.locator('.cards-detail-art .fcard').boundingBox();
     assert.ok(modalCardBox && modalCardBox.width > 0 && modalCardBox.height > 0, 'the real card face must be visible in the modal');
     assert.ok(await detail.locator('.cards-detail-art img, .cards-detail-art svg').count() > 0, 'the modal card must contain its artwork');
+    assert.equal(await detail.locator('.cards-detail-art img').getAttribute('src'), await cardsPage.evaluate(() => window.EPIPHANY_CARD_DATA.find(card => card.id === 'CHR-001').image), 'the modal must load the full-size card art');
     await cardsPage.locator('.cards-detail-translate').click();
     assert.equal(await detail.locator('#cards-detail-name').innerText(), 'ميرا', 'character name should translate in place');
     assert.match(await detail.locator('.cards-detail-summary').innerText(), /دليلة عملية/);
