@@ -28,7 +28,7 @@
 |---|---|---|---|
 | OR-CITY-01 | Veyrun / فيرون | Terraced highland city known for stonework and water management | Name accepted; details provisional |
 | OR-CITY-02 | Darsen / دارسن | River-junction market and cargo-transfer town | Name accepted; details provisional |
-| OR-CITY-03 | Velisar / فيليزار | Mountain-road settlement; may overlap with the Switchback Gate anchor | Name accepted; details provisional |
+| OR-CITY-03 | Velisar / فيليزار | Same settlement as anchor OR-LOC-01 | Name accepted; identity link provisionally resolved |
 | OR-CITY-04 | Ambrin / أمبرين | Inland-shore town shaped by a fluctuating lake | Name accepted; details provisional |
 | OR-CITY-05 | Dornwick / دورنويك | Dry-plateau caravan stop and metalworking center | Name accepted; details provisional |
 | OR-CITY-06 | Lethai / ليثاي | Eastern coastal harbor and ship-supply town | Name accepted; details provisional |
@@ -61,6 +61,8 @@
 
 ### OR-CITY-03 — Velisar / فيليزار
 
+**Identity link (provisional owner decision):** This settlement record refers to the same place as **OR-LOC-01 — Velisar / فيليزار** in [Anchor Locations](ANCHOR-LOCATIONS.md). Keep **OR-LOC-01** as the primary anchor-location ID and preserve **OR-CITY-03** as the existing settlement-registry ID for cross-reference compatibility. These IDs are two records for one place, not two settlements. “The Switchback Gate” is the former descriptive working name of OR-LOC-01, not a separate location.
+
 **Working role:** A settlement serving a difficult mountain road, with guides, pack-animal handlers, lodging, repair stalls, and route notices.
 
 **Everyday life:** Travelers compare weather reports, hire local guides, replace worn equipment, and wait for loads to be redistributed when a path becomes unsafe.
@@ -69,7 +71,7 @@
 
 **Placement condition:** Requires a pass, ridge route, or constrained mountain corridor. Its exact relationship to other settlements remains open.
 
-**Continuity note:** The existing anchor **OR-LOC-01 — The Switchback Gate** already describes a mountain-pass settlement. Velisar may be its eventual name, an associated nearby settlement, or an unnecessary duplicate. Do not treat them as separate until a story or map gives a clear reason.
+**Continuity note:** The anchor **OR-LOC-01 — Velisar / فيليزار** describes this same mountain-pass settlement. Use one location in maps, routes, stories, and archives; preserve both stable IDs as linked records until any later registry consolidation is deliberately planned.
 
 ### OR-CITY-04 — Ambrin / أمبرين
 
@@ -119,7 +121,7 @@
 ## Open details (names remain approved)
 
 - How should the approved settlements fit Orath's final relief and watersheds?
-- Should Velisar and the Switchback Gate be one place? Should Ambrin and the Low-Water Shore be one place?
+- The identity link between Velisar and OR-LOC-01 is provisionally resolved; the Ambrin–Low-Water Shore identity remains open.
 - Which settlements become recurring story hubs after being tested in scenes?
 - What additional naming patterns emerge naturally from Orath's different languages and communities?
 
