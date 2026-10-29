@@ -217,6 +217,9 @@ test('card detail uses the real full card face and keeps gallery card nodes acro
   assert.match(css, /@media\(max-width:720px\)/);
   assert.match(css, /body\[data-theme="light"\] \.cards-detail-dialog/);
   assert.match(css, /prefers-reduced-motion:reduce/);
+  const ornaments = read('assets/cards/card-ornaments.svg');
+  for (const symbol of ['orn-corner','orn-star','back-sigil','orn-crest','emb-character','emb-word','emb-artifact','emb-scene','emb-location']) assert.match(ornaments, new RegExp('id="' + symbol + '"'));
+  assert.match(read('service-worker.js'), /assets\/cards\/card-ornaments\.svg/);
 });
 
 test('card art thumbnail tooling is available without adding a runtime dependency', () => {
