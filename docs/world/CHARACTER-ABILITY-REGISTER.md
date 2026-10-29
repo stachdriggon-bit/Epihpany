@@ -74,9 +74,9 @@ Copy this template for each character. Use “Open” rather than inventing an a
   - Past traces, future outcomes, causal links, and distant magical links are outside the current test scope.
 - **Individual restriction hypothesis:** The restriction is conditional, not a general disability. Either of the following may be enough to activate it:
   1. The paths/relationships are highly intertwined.
-  2. An important unknown makes a relationship difficult to establish.
+  2. An important unknown makes a relationship difficult to establish or meaningfully changes how the spatial relationships should be understood.
   
-  When both conditions occur together, the effect is stronger and may impair the ability more severely. Exact severity and mechanics remain open.
+  A minor unknown that does not materially affect the relevant spatial judgment does not, by itself, trigger the restriction. When high interconnection and an important unknown occur together, the effect is stronger and may impair the ability more severely. Exact severity and mechanics remain open.
 - **Proposed restriction effect:** Under relevant conditions, Mira may struggle to distinguish a confirmed relationship from a possible one. A possible connection may feel more reliable than the evidence warrants; she may notice some uncertainty but not all of it.
 - **Adaptation hypothesis:** Dividing a complex network into smaller parts and comparing perceived relationships with real-world evidence can improve reliability, but does not remove the restriction. Some relationships may remain unresolved, especially when the parts must be recombined.
 - **Important distinction:** Missing information or a mistaken inference is not automatically proof that the restriction activated. Evaluate the ability's natural limits, evidence available, interpretation, environment, and skill separately.
@@ -98,14 +98,12 @@ Copy this template for each character. Use “Open” rather than inventing an a
 - **Current test conclusion:** The proposed ability/restriction model is coherent enough for an initial test cycle. This is not a final canon decision.
 - **Open questions:**
   - What physical/spatial relationships can be sensed when obstructed from direct view?
-  - Is complexity alone sufficient to activate the restriction, even when every relevant relation is known?
-  - Is an important unknown alone sufficient even in a simple layout?
   - What exactly does “more severely impaired” look like without making the ability arbitrary?
   - Can the ability recognize its own uncertainty, and under what conditions?
   - How should this ability be distinguished from navigation, detection, or other characters' powers?
   - Is there a suitable branch/function classification once the framework is tested further?
 - **Canon decision:** None yet. Do not update CHR-001 card or treat this test as an approved world rule until explicitly authorized.
-- **Last reviewed:** 2026-10-29 — documentation audit only; test observations separated from hypotheses. No ability, restriction, rarity, or branch has been canonized.
+- **Last reviewed:** 2026-10-29 — clarified that an important unknown can trigger the restriction alone, while a minor irrelevant unknown does not automatically do so. No ability, restriction, rarity, or branch has been canonized.
 
 ## 4. Change log
 
