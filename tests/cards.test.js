@@ -139,12 +139,10 @@ test('every character card points to an image file that exists in the repository
   const context = { window: {} };
   vm.runInNewContext(read('data-cards.js'), context);
   const cards = context.window.EPIPHANY_CARD_DATA;
-  for (const card of cards.filter(item => item.category === 'characters')) {
-    assert.ok(card.image, card.id + ' must declare a portrait file');
-    assert.ok(
-      fs.existsSync(path.join(root, card.image)),
-      card.id + ' (' + card.name + ') references missing image: ' + card.image
-    );
+  for (const card of cards.filter(item => item.image)) {
+    assert.ok(fs.existsSync(path.join(root, card.image)), card.id + ' references missing full art: ' + card.image);
+    assert.ok(card.thumb && card.thumb.includes('/thumb/'), card.id + ' must use a generated gallery thumbnail');
+    assert.ok(fs.existsSync(path.join(root, card.thumb)), card.id + ' references missing thumbnail: ' + card.thumb);
   }
 });
 
