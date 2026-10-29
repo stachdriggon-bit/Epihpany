@@ -308,8 +308,11 @@ test('main navigation tabs open without uncaught page errors', async t => {
       });
     });
     await cardsPage.keyboard.press('Escape');
+    await cardsPage.locator('#cards-detail-modal').waitFor({state:'detached'});
     await cardsPage.locator('#cards-gallery [data-gallery-card="CHR-001"] .fcard').click();
-    await cardsPage.locator('#cards-detail-modal [data-archive-place="IL-LOC-01"]').click();
+    const archivePlaceLink=cardsPage.locator('#cards-detail-modal [data-archive-place="IL-LOC-01"]');
+    await archivePlaceLink.waitFor({state:'visible',timeout:10000});
+    await archivePlaceLink.click();
     await cardsPage.waitForSelector('#chronicle-view.is-active #chronicle-content .archive-place-heading h2', {timeout:10000});
     assert.match(await cardsPage.locator('#chronicle-content .archive-place-heading h2').innerText(), /Three-Arch Ferry/);
     await cardsPage.locator('.archive-back-to-cards').click();
