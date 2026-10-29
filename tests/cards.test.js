@@ -132,7 +132,7 @@ test('summoning uses shared sound preferences and respects reduced motion', () =
   assert.match(css, /prefers-reduced-motion:reduce/);
   assert.match(html, /id="summon-ritual-status"/);
   assert.match(html, /app\.js\?v=[^"&]+/);
-  assert.match(html, /cards\\.js\\?v=card-profile-modal-2/);
+  assert.match(html, /cards\.js\?v=card-profile-modal-2/);
 });
 
 test('every character card points to an image file that exists in the repository', () => {
