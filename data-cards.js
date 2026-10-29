@@ -112,7 +112,7 @@ window.EPIPHANY_CARD_PROFILES = {
     title:{en:"Resonance Tinkerer",ar:"مبتكر الرنين"},
     summary:{en:"A tinkerer working at the meeting point of resonance and practical invention.",ar:"مبتكر يعمل عند نقطة التقاء الرنين بالابتكار العملي."},
     facts:[
-      {label:{en:"Role",ar:"الدور"},value:{en:"Tinkerer",ar:"مبتكر"},
+      {label:{en:"Role",ar:"الدور"},value:{en:"Tinkerer",ar:"مبتكر"}},
       {label:{en:"Known focus",ar:"مجال الاهتمام"},value:{en:"Resonance and unusual sounds",ar:"الرنين والأصوات غير المألوفة"}}
     ],
     sections:[
