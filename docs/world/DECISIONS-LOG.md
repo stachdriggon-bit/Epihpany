@@ -179,3 +179,16 @@ When a decision changes:
 - These terms are accepted; the source of Aelora Energy, exact recovery mechanics, and the mechanisms and boundaries of individual Numera remain open.
 
 **References:** [Foundational Sorcery Model](MAGIC-FOUNDATIONS.md), [Magic and Unusual Phenomena Framework](MAGIC-AND-PHENOMENA.md), and [Cosmic Laws, Magical Restrictions, and Anomalies](COSMIC-LAWS-AND-ANOMALIES.md).
+
+
+## WD-043 — Provisionally identify Velisar with the Switchback Gate
+
+**Status:** Provisional owner decision.
+
+- **Velisar / فيليزار** is the current official name for the place previously described in the anchor registry as **The Switchback Gate**.
+- Preserve **OR-LOC-01** as the primary anchor-location ID. Preserve **OR-CITY-03** as the existing settlement-registry ID, linked to the same place for cross-reference compatibility.
+- Treat the two IDs as linked records for one settlement, not as evidence of two separate places. “The Switchback Gate” remains a former descriptive working name, not a separate location.
+- Use one place identity in maps, routes, stories, quests, archive entries, character references, and translations. Do not delete or silently merge either ID; any future record consolidation requires a deliberate follow-up.
+- This decision resolves the naming/identity relationship for current development only. Exact placement, geography, and other settlement details remain provisional. Mira's home relationship is not finalized by this decision alone.
+
+**References:** [Anchor Locations](ANCHOR-LOCATIONS.md), [Orath Candidate Cities](CITIES-ORATH.md), and [Unified World Overview](WORLD-OVERVIEW.md).
