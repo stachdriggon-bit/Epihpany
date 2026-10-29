@@ -76,7 +76,9 @@ Copy this template for each character. Use “Open” rather than inventing an a
   1. The paths/relationships are highly intertwined.
   2. An important unknown makes a relationship difficult to establish or meaningfully changes how the spatial relationships should be understood.
   
-  A minor unknown that does not materially affect the relevant spatial judgment does not, by itself, trigger the restriction. When high interconnection and an important unknown occur together, the effect is stronger and may impair the ability more severely. Exact severity and mechanics remain open.
+  A minor unknown that does not materially affect the relevant spatial judgment does not, by itself, trigger the restriction. When high interconnection and an important unknown occur together, the effect is stronger.
+
+  **Working hypothesis for combined severity (not canon):** The first and most consistent effect is poorer calibration: Mira has greater difficulty separating confirmed relationships from plausible ones, and may feel more certain than the evidence justifies. At the stronger end, the confusion may also affect what she can pick out of the network in the first place: she may overlook a real relationship, fail to form a clear reading of it, or temporarily favor a misleading connection. This should remain a graded impairment, not a total shutdown or random failure; the environment and available evidence still matter. Exact thresholds remain open.
 - **Proposed restriction effect:** Under relevant conditions, Mira may struggle to distinguish a confirmed relationship from a possible one. A possible connection may feel more reliable than the evidence warrants; she may notice some uncertainty but not all of it.
 - **Adaptation hypothesis:** Dividing a complex network into smaller parts and comparing perceived relationships with real-world evidence can improve reliability, but does not remove the restriction. Some relationships may remain unresolved, especially when the parts must be recombined.
 - **Important distinction:** Missing information or a mistaken inference is not automatically proof that the restriction activated. Evaluate the ability's natural limits, evidence available, interpretation, environment, and skill separately.
@@ -96,6 +98,7 @@ Copy this template for each character. Use “Open” rather than inventing an a
   - The ability did not reveal how an unfamiliar locking mechanism worked; Raven and the child provided relevant information.
   - These are observations from an illustrative test scene, not proof of universal rules. The separate mist scenario needs a more precisely recorded result if it is reused.
 - **Current test conclusion:** The proposed ability/restriction model is coherent enough for an initial test cycle. This is not a final canon decision.
+- **Working hypothesis — combined-trigger severity (2026-10-29; not canon):** When severe entanglement and an important unknown occur together, the restriction primarily worsens Mira's ability to distinguish confirmed from merely possible relationships. In stronger cases it may also interfere with registering or organizing some relationships at all, including overlooking a real link or temporarily favoring a misleading one. The effect is graded rather than a complete shutdown, and should not become arbitrary. This is an adopted working assumption for future tests, not a finalized rule.
 - **Open questions:**
   - What physical/spatial relationships can be sensed when obstructed from direct view?
   - What exactly does “more severely impaired” look like without making the ability arbitrary?
@@ -103,10 +106,11 @@ Copy this template for each character. Use “Open” rather than inventing an a
   - How should this ability be distinguished from navigation, detection, or other characters' powers?
   - Is there a suitable branch/function classification once the framework is tested further?
 - **Canon decision:** None yet. Do not update CHR-001 card or treat this test as an approved world rule until explicitly authorized.
-- **Last reviewed:** 2026-10-29 — clarified that an important unknown can trigger the restriction alone, while a minor irrelevant unknown does not automatically do so. No ability, restriction, rarity, or branch has been canonized.
+- **Last reviewed:** 2026-10-29 — clarified that an important unknown can trigger the restriction alone, while a minor irrelevant unknown does not automatically do so; added a provisional working hypothesis for the combined-trigger effect. No ability, restriction, rarity, or branch has been canonized.
 
 ## 4. Change log
 
 | Date | Character | Change | Status |
 |---|---|---|---|
 | 2026-10-29 | CHR-001 | Added initial ability/restriction test record from scenario-based discussion. | Provisional; not canonized |
+| 2026-10-29 | CHR-001 | Added a working hypothesis that combined triggers first impair confidence calibration and, at higher severity, can also disrupt registering or organizing some relationships. | Provisional; not canonized |
