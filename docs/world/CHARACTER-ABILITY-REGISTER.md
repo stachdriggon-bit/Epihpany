@@ -106,7 +106,7 @@ Copy this template for each character. Use “Open” rather than inventing an a
   - How should this ability be distinguished from navigation, detection, or other characters' powers?
   - Would any optional organizational label help once the ability-first framework is tested further?
 - **Canon decision:** None yet. Do not update CHR-001 card or treat this test as an approved world rule until explicitly authorized.
-- **Last reviewed:** 2026-10-29 — clarified that an important unknown can trigger the restriction alone, while a minor irrelevant unknown does not automatically do so; added a provisional working hypothesis for the combined-trigger effect. No ability, restriction, rarity, or branch has been canonized.
+- **Last reviewed:** 2026-10-29 — clarified that an important unknown can trigger the restriction alone, while a minor irrelevant unknown does not automatically do so; added a provisional working hypothesis for the combined-trigger effect. No ability or restriction has been canonized.
 
 ## 4. Change log
 
