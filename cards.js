@@ -297,7 +297,7 @@
       ['quotes',profile?.quotes,t('Memorable quotes','اقتباسات مميزة'),'❝']
     ];
     extra.forEach(([id,value,title,icon,spoiler])=>{
-      if(!Array.isArray(value)||!value.length)return;
+      if(value==null||(Array.isArray(value)&&!value.length))return;
       sections.push({id,title,text:value,icon,spoiler:!!spoiler});
     });
     const sectionMarkup=sections.length?sections.map((s,i)=>{
