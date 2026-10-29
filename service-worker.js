@@ -72,14 +72,16 @@ self.addEventListener('fetch', event => {
   }
   // Image assets use stale-while-revalidate: first paint can use the cached file while a fresh copy is fetched.
   if (sameOrigin && request.destination === 'image') {
+    const cachePromise = caches.open(CARD_ART_CACHE);
+    const refresh = fetch(request).then(response => {
+      if (response && response.ok) cachePromise.then(cache => cache.put(request, response.clone()));
+      return response;
+    }).catch(() => null);
+    event.waitUntil(refresh.then(() => undefined));
     event.respondWith((async () => {
-      const cache = await caches.open(CARD_ART_CACHE);
+      const cache = await cachePromise;
       const cached = await cache.match(request);
-      const refresh = fetch(request).then(response => {
-        if (response && response.ok) cache.put(request, response.clone());
-        return response;
-      }).catch(() => null);
-      if (cached) { event.waitUntil(refresh); return cached; }
+      if (cached) return cached;
       const response = await refresh;
       return response || new Response('', {status:503, statusText:'Image unavailable offline'});
     })());
