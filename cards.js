@@ -304,7 +304,7 @@
     const sectionIndex=sections.map(s=>'<a href="#cards-section-'+esc(s.id)+'">'+esc(s.title)+'</a>').join('');
     const stats=owned?'<span class="cards-detail-owned">'+t('Level','المستوى')+' '+levelOf(card)+' · '+state.shards+' '+t('shards','شظايا')+'</span>':'';
     return '<div class="cards-detail-tools"><div class="cards-detail-tags"><span class="cards-detail-id">'+esc(card.id)+'</span><span class="cards-detail-rarity">'+esc(rarity)+'</span><span class="cards-detail-kind">'+esc(ar?kindAr:kind)+'</span>'+stats+'</div><button type="button" class="cards-detail-translate" aria-pressed="'+String(ar)+'">'+(ar?'English':'العربية')+'</button></div>'
-      +'<header class="cards-detail-header"><p class="cards-detail-kicker">'+t('CHARACTER DOSSIER','ملف الشخصية')+'</p><h2 id="cards-detail-name">'+esc(card.name)+'</h2><p class="cards-detail-role">'+esc(owned?localized(profile?.title,lang,card.title):card.title)+'</p><p class="cards-detail-summary">'+esc(summary)+'</p></header>'
+      +'<header class="cards-detail-header"><p class="cards-detail-kicker">'+t('CHARACTER DOSSIER','ملف الشخصية')+'</p><h2 id="cards-detail-name">'+esc(localized(profile?.name,lang,card.name))+'</h2><p class="cards-detail-role">'+esc(owned?localized(profile?.title,lang,card.title):card.title)+'</p><p class="cards-detail-summary">'+esc(summary)+'</p></header>'
       +(facts?'<div class="cards-detail-facts">'+facts+'</div>':'')
       +'<div class="cards-detail-ornament">'+svgUse('','orn-crest','0 0 160 44')+'</div>'
       +(sectionIndex?'<nav class="cards-detail-index" aria-label="'+t('Jump to a section','انتقل إلى قسم')+'">'+sectionIndex+'</nav>':'')
