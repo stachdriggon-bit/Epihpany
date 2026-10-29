@@ -97,6 +97,7 @@ window.EPIPHANY_CARD_DATA = [
    Status labels are preserved: accepted concepts, working hypotheses, and open details are not interchangeable. */
 window.EPIPHANY_CARD_PROFILES = {
   "CHR-001": {
+    name:{en:"Mira",ar:"ميرا"},
     title:{en:"Wayfinder",ar:"دليلة الطرق"},
     summary:{en:"A practical guide who helps travelers understand unfamiliar routes.",ar:"دليلة عملية تساعد المسافرين على فهم الطرق غير المألوفة."},
     facts:[
@@ -115,6 +116,7 @@ window.EPIPHANY_CARD_PROFILES = {
     ]
   },
   "CHR-002": {
+    name:{en:"Evren",ar:"إيفرين"},
     title:{en:"Resonance Tinkerer",ar:"مبتكر الرنين"},
     summary:{en:"A practical, curious experimenter who studies resonance and the physical responses of materials.",ar:"شخص عملي وفضولي ومحب للتجربة، يدرس الرنين والاستجابات الفيزيائية للمواد."},
     facts:[
@@ -135,6 +137,7 @@ window.EPIPHANY_CARD_PROFILES = {
     ]
   },
   "CHR-004": {
+    name:{en:"Darian",ar:"داريان"},
     title:{en:"Exiled Warden",ar:"حارس منفي"},
     summary:{en:"An exiled warden whose former oath remains central to his story.",ar:"حارس منفي لا يزال قسمه السابق محورًا في قصته."},
     facts:[
@@ -149,6 +152,7 @@ window.EPIPHANY_CARD_PROFILES = {
     ]
   },
   "CHR-039": {
+    name:{en:"Veyra",ar:"فييرا"},
     title:{en:"Pattern Detective",ar:"محققة الأنماط"},
     summary:{en:"A researcher and magical investigator who looks for relationships in evidence without treating every pattern as proof.",ar:"باحثة ومحققة سحرية تبحث عن العلاقات بين الأدلة دون اعتبار كل نمط دليلًا على الحقيقة."},
     facts:[
