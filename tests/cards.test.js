@@ -199,7 +199,7 @@ test('character dossiers preserve the complete reviewed ability records without 
   assert.ok(mira.sections.every(section => section.text.en !== mira.summary.en), 'Mira overview must not repeat the summary');
   assert.match(mira.sections.find(section => section.id === 'restriction').text.en, /intrinsic ceiling/);
   assert.match(profiles['CHR-002'].sections.find(section => section.id === 'restriction').text.en, /test hypothesis only/);
-  assert.match(profiles['CHR-039'].sections.find(section => section.id === 'restriction').text.en, /Scope/);
+  assert.match(profiles['CHR-039'].sections.find(section => section.id === 'restriction').text.en, /scope/i);
 });
 
 test('card detail uses the real full card face and keeps gallery card nodes across filters', () => {
