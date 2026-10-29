@@ -71,4 +71,3 @@ jobs:
           name: card-dossier-visual-checks
           path: test-results/card-dossier/
           if-no-files-found: warn
-            });
