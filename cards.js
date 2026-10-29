@@ -280,7 +280,7 @@
     const sections=(profile?.sections||[]).filter(s=>{
       const text=localized(s.text,lang,'');
       return text&&text!==localized(profile?.summary,lang,'');
-    }).map((s,i)=>({id:s.id||('profile-section-'+i),title:localized(s.title,lang,t('Notes','ملاحظات')),text:s.text,icon:s.icon||'✦',spoiler:!!s.spoiler}));
+    }).map((s,i)=>({id:s.id||('profile-section-'+i),title:localized(s.title,lang,t('Notes','ملاحظات')),text:localized(s.text,lang,''),icon:s.icon||'✦',spoiler:!!s.spoiler}));
     const extra=[
       ['appearance',profile?.appearance,t('Appearance','المظهر'),'◉'],
       ['personality',profile?.personality,t('Personality','الشخصية'),'✧'],
