@@ -122,13 +122,13 @@ window.EPIPHANY_CARD_PROFILES = {
   },
   "CHR-004": {
     title:{en:"Exiled Warden",ar:"حارس منفي"},
-    summary:{en:"An exiled warden whose past complicates the rules he once swore to protect.",ar:"حارس منفي يجعل ماضيه القواعد التي أقسم يومًا على حمايتها أكثر تعقيدًا."},
+    summary:{en:"An exiled warden whose former oath remains central to his story.",ar:"حارس منفي لا يزال قسمه السابق محورًا في قصته."},
     facts:[
       {label:{en:"Former role",ar:"الدور السابق"},value:{en:"Warden",ar:"حارس"}},
       {label:{en:"Current status",ar:"الحالة الحالية"},value:{en:"Exiled",ar:"منفي"}}
     ],
     sections:[
-      {id:"overview",title:{en:"Overview",ar:"نظرة عامة"},text:{en:"Darian is an exiled warden, and his past complicates the rules he once swore to protect.",ar:"داريان حارس منفي، ويجعل ماضيه القواعد التي أقسم يومًا على حمايتها أكثر تعقيدًا."}},
+      {id:"overview",title:{en:"Overview",ar:"نظرة عامة"},text:{en:"His past complicates the rules he once swore to protect.",ar:"يجعل ماضيه القواعد التي أقسم يومًا على حمايتها أكثر تعقيدًا."}},
       {id:"combat",title:{en:"Combat approach",ar:"أسلوب القتال"},text:{en:"He is described as a tactical fighter who combines defense, counterattacks, and offensive skills.",ar:"يوصف بأنه مقاتل تكتيكي يجمع بين الدفاع والهجمات المرتدة والمهارات الهجومية."}}
     ]
   },
