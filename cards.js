@@ -61,8 +61,8 @@
   const svgUse = (cls, id, box, file=ORN) => '<svg class="'+cls+'" viewBox="'+box+'" focusable="false" aria-hidden="true"><use href="'+file+'#'+id+'"></use></svg>';
   const cornersMarkup = () => '<div class="fcard-corners" aria-hidden="true">'+['c1','c2','c3','c4'].map(c => svgUse(c,'orn-corner','0 0 64 64')).join('')+'</div>';
   const starsMarkup = rank => '<span class="fcard-stars" aria-hidden="true">'+[0,1,2,3,4].map(i => svgUse(i<=rank?'on':'','orn-star','0 0 24 24')).join('')+'</span>';
-  const artMarkup = card => card.image
-    ? '<img class="fcard-portrait fcard-portrait-image" src="'+esc(card.image)+'" alt="" loading="lazy" decoding="async">'
+  const artMarkup = (card, opts={}) => card.image
+    ? '<img class="fcard-portrait fcard-portrait-image" src="'+esc(opts.fullImage ? card.image : (card.thumb || card.image))+'" '+(opts.fullImage?'fetchpriority="high"':'fetchpriority="low"')+' width="240" height="300" alt="" loading="'+(opts.fullImage?'eager':'lazy')+'" decoding="async">'
     : card.art
     ? '<svg class="fcard-portrait" viewBox="0 0 240 300" preserveAspectRatio="xMidYMin slice" focusable="false"><use href="'+PORTRAITS+'#'+esc(card.art)+'"></use></svg>'
     : '<div class="fcard-sigil-art">'+svgUse('ring','back-sigil','0 0 120 120')+svgUse('ring r2','back-sigil','0 0 120 120')+'<b>'+esc(card.symbol)+'</b></div>';
@@ -75,7 +75,7 @@
     if (opts.leveled) cls.push('is-leveled');
     return '<article class="'+cls.join(' ')+'" style="--lv:'+level+'"'+(opts.noTilt?'':' data-tilt')+' data-card-id="'+esc(card.id)+'"><div class="fcard-tilt"><div class="fcard-frame">'
       + '<div class="fcard-body">'
-      +   '<div class="fcard-window" aria-hidden="true"><i class="fcard-aura"></i>'+artMarkup(card)+'<i class="fcard-motes"></i>'
+      +   '<div class="fcard-window" aria-hidden="true"><i class="fcard-aura"></i>'+artMarkup(card,opts)+'<i class="fcard-motes"></i>'
       +     '<span class="fcard-emblem">'+svgUse('','emb-'+(KIND_EMBLEM[kind]||'artifact'),'0 0 24 24')+'</span><span class="fcard-lv">Lv. '+level+'</span></div>'
       +   '<div class="fcard-plate"><div class="fcard-rar">'+esc(card.rarity)+'</div><h3>'+esc(card.name)+'</h3><p class="fcard-sub">'+esc(card.title)+'</p>'
       +     '<div class="fcard-pips" aria-label="Level '+level+' of '+MAX_CARD_LEVEL+'">'+[1,2,3,4,5].map(n => '<i'+(n<=level?' class="on"':'')+'></i>').join('')+'</div></div>'
@@ -194,55 +194,182 @@
     const present=new Set(all.map(c=>c.category));
     const types=CATEGORY_REGISTRY.filter(t=>present.has(t.id));
     if(typeRoot)typeRoot.innerHTML=[{id:'all',label:'All'},...types].map(item=>'<button type="button" data-gallery-type="'+esc(item.id)+'" aria-pressed="'+String(galleryFilter===item.id)+'">'+esc(item.label)+'</button>').join('');
-    rarityRoot?.querySelectorAll('[data-gallery-rarity]').forEach(b=>b.addEventListener('click',()=>{galleryRarity=b.dataset.galleryRarity;saveGalleryFilters();renderGallery();}));
-    typeRoot?.querySelectorAll('[data-gallery-type]').forEach(b=>b.addEventListener('click',()=>{galleryFilter=b.dataset.galleryType;saveGalleryFilters();renderGallery();}));
+    rarityRoot?.querySelectorAll('[data-gallery-rarity]').forEach(b=>b.addEventListener('click',()=>{galleryRarity=b.dataset.galleryRarity;saveGalleryFilters();renderGallery(true);}));
+    typeRoot?.querySelectorAll('[data-gallery-type]').forEach(b=>b.addEventListener('click',()=>{galleryFilter=b.dataset.galleryType;saveGalleryFilters();renderGallery(true);}));
   };
-  const renderGallery = () => {
+  let galleryNodeCache = new Map();
+  let galleryEventsBound = false;
+  const makeGalleryItem = card => {
+    const ownedCard=isOwned(card);
+    const markup=!ownedCard
+      ? '<div class="cgal-item" data-gallery-card="'+esc(card.id)+'">'+cardBack({locked:true,color:TIER_COLOR[card.rarity]})+'<div class="cgal-locked-note">'+esc(card.rarity.toUpperCase())+' · UNDISCOVERED</div></div>'
+      : '<div class="cgal-item" data-gallery-card="'+esc(card.id)+'">'+cardFace(card,{level:levelOf(card)})+'<button type="button" class="cards-upgrade-button" data-card-upgrade="'+esc(card.id)+'" '+(levelOf(card)>=MAX_CARD_LEVEL||state.shards<UPGRADE_COST?'disabled':'')+'>'+(levelOf(card)>=MAX_CARD_LEVEL?'Max level':'Upgrade · '+UPGRADE_COST+' shards')+'</button></div>';
+    const template=document.createElement('template');template.innerHTML=markup.trim();
+    const item=template.content.firstElementChild, face=item?.querySelector('.fcard');
+    if(face){face.removeAttribute('aria-hidden');face.tabIndex=0;face.setAttribute('role','button');face.setAttribute('aria-haspopup','dialog');face.setAttribute('aria-label','View '+card.name+' details');}
+    return item;
+  };
+  const renderGallery = (preserveNodes=false) => {
     const root = $('cards-gallery'); if (!root) return;
     const all = data(), owned = all.filter(isOwned);
     renderGalleryFilterChips(all);
     let list = all.filter(c => (galleryFilter === 'all' || c.category === galleryFilter) && (galleryRarity === 'all' || c.rarity === galleryRarity));
     if (!showLocked) list = list.filter(isOwned);
     list.sort((a,b) => (isOwned(b)?1:0) - (isOwned(a)?1:0) || TIER[b.rarity] - TIER[a.rarity] || a.name.localeCompare(b.name));
-    const intro = !owned.length ? '<div class="cards-empty"><span>✦</span><h3>Your collection starts here</h3><p>Open your first pack to discover a character. Collected cards stay here — the dark slots below are waiting for you.</p><button type="button" class="btn btn-primary" data-view="summon">Explore packs</button></div>' : '';
-    root.innerHTML = intro + (list.length ? list.map(c => {
-      if (!isOwned(c)) return '<div class="cgal-item" data-gallery-card="'+esc(c.id)+'">'+cardBack({locked:true,color:TIER_COLOR[c.rarity]})+'<div class="cgal-locked-note">'+esc(c.rarity.toUpperCase())+' · UNDISCOVERED</div></div>';
-      const level = levelOf(c), maxed = level >= MAX_CARD_LEVEL;
-      return '<div class="cgal-item" data-gallery-card="'+esc(c.id)+'">'+cardFace(c,{level,leveled:c.id===lastUpgraded})+'<button type="button" class="cards-upgrade-button" data-card-upgrade="'+esc(c.id)+'" '+(maxed||state.shards<UPGRADE_COST?'disabled':'')+'>'+(maxed?'Max level':'Upgrade · '+UPGRADE_COST+' shards')+'</button></div>';
-    }).join('') : '<div class="cards-empty"><h3>No matching cards</h3><p>Try another rarity or type, or clear your filters.</p><button type="button" class="btn btn-ghost" id="cards-clear-gallery-filters">Clear filters</button></div>');
-    lastUpgraded = '';
-    root.querySelectorAll('[data-card-upgrade]').forEach(button=>button.addEventListener('click',e=>{e.stopPropagation();upgradeCard(button.dataset.cardUpgrade);}));
-    root.querySelectorAll('[data-gallery-card]').forEach(item=>{
-      const card=item.querySelector('.fcard');
-      if(card){card.removeAttribute('aria-hidden');card.tabIndex=0;card.setAttribute('role','button');card.setAttribute('aria-haspopup','dialog');card.setAttribute('aria-label','View '+(all.find(c=>c.id===item.dataset.galleryCard)?.name||'card')+' details');}
-      item.addEventListener('click',e=>{if(e.target.closest('[data-card-upgrade]'))return;openCardDetail(item.dataset.galleryCard,item);});
-      item.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target===card){e.preventDefault();openCardDetail(item.dataset.galleryCard,item);}});
-    });
-    $('cards-clear-gallery-filters')?.addEventListener('click',()=>{galleryFilter='all';galleryRarity='all';showLocked=true;saveGalleryFilters();renderGallery();});
+    if(!preserveNodes)galleryNodeCache.clear();
+    all.forEach(card=>{if(!galleryNodeCache.has(card.id))galleryNodeCache.set(card.id,makeGalleryItem(card));});
+    const fragment=document.createDocumentFragment();
+    if(!owned.length){
+      const template=document.createElement('template');
+      template.innerHTML='<div class="cards-empty"><span>✦</span><h3>Your collection starts here</h3><p>Open your first pack to discover a character. Collected cards stay here — the dark slots below are waiting for you.</p><button type="button" class="btn btn-primary" data-view="summon">Explore packs</button></div>';
+      fragment.append(template.content.firstElementChild);
+    }
+    if(list.length)list.forEach(card=>fragment.append(galleryNodeCache.get(card.id)));
+    else if(owned.length){
+      const template=document.createElement('template');
+      template.innerHTML='<div class="cards-empty"><h3>No matching cards</h3><p>Try another rarity or type, or clear your filters.</p><button type="button" class="btn btn-ghost" id="cards-clear-gallery-filters">Clear filters</button></div>';
+      fragment.append(template.content.firstElementChild);
+    }
+    root.replaceChildren(fragment);
+    if(!galleryEventsBound){
+      galleryEventsBound=true;
+      root.addEventListener('click',e=>{
+        if(e.target.closest('#cards-clear-gallery-filters')){galleryFilter='all';galleryRarity='all';showLocked=true;saveGalleryFilters();renderGallery(true);return;}
+        const upgrade=e.target.closest('[data-card-upgrade]');
+        if(upgrade){e.stopPropagation();upgradeCard(upgrade.dataset.cardUpgrade);return;}
+        const item=e.target.closest('[data-gallery-card]');
+        if(item)openCardDetail(item.dataset.galleryCard,item);
+      });
+      root.addEventListener('keydown',e=>{
+        const face=e.target.closest('.fcard[role="button"]');
+        if(face&&(e.key==='Enter'||e.key===' ')){e.preventDefault();const item=face.closest('[data-gallery-card]');if(item)openCardDetail(item.dataset.galleryCard,item);}
+      });
+      root.addEventListener('pointerover',e=>{const item=e.target.closest('[data-gallery-card]');if(item)preloadCardArt(item.dataset.galleryCard);},{passive:true});
+      root.addEventListener('pointerdown',e=>{const item=e.target.closest('[data-gallery-card]');if(item)preloadCardArt(item.dataset.galleryCard);},{passive:true});
+      root.addEventListener('focusin',e=>{const item=e.target.closest('[data-gallery-card]');if(item)preloadCardArt(item.dataset.galleryCard);});
+    }
     const count = $('cards-collection-count'); if (count) count.textContent = owned.length+' / '+all.length+' discovered';
     const resultCount=$('cards-filter-result-count'); if(resultCount)resultCount.textContent=list.length+' cards';
     const bar = $('cards-collection-bar'); if (bar) bar.style.width = (all.length ? owned.length / all.length * 100 : 0) + '%';
+    document.querySelectorAll('[data-gallery-filter]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.galleryFilter === galleryFilter)));
     const toggle = $('cards-gallery-locked'); if (toggle) { toggle.setAttribute('aria-pressed', String(showLocked)); toggle.textContent = showLocked ? 'Hide undiscovered' : 'Show undiscovered'; }
   };
+  const localized=(value,lang,fallback='')=>{
+    if(value&&typeof value==='object'&&!Array.isArray(value))return value[lang]||value.en||fallback;
+    return value??fallback;
+  };
+  const profileValueHTML=(value,lang='en')=>{
+    if(value&&typeof value==='object'&&!Array.isArray(value))return profileValueHTML([value],lang);
+    if(Array.isArray(value))return value.map(part=>{
+      if(typeof part==='string')return esc(part);
+      if(!part||typeof part!=='object')return '';
+      const label=localized(part.label||part.name,lang,'');
+      if(part.place)return '<button type="button" class="cards-detail-chip" data-archive-place="'+esc(part.place)+'">'+esc(label)+'</button>';
+      if(part.characterId)return '<button type="button" class="cards-detail-chip" data-profile-character="'+esc(part.characterId)+'">'+esc(label)+'</button>';
+      if(part.storyId)return '<button type="button" class="cards-detail-chip" data-profile-story="'+esc(part.storyId)+'">'+esc(label)+'</button>';
+      return esc(localized(part.text||part.value,lang,''));
+    }).join('');
+    return esc(localized(value,lang,''));
+  };
+  const renderDetailInfo=(card,profile,owned,lang)=>{
+    const ar=lang==='ar', t=(en,arText)=>ar?arText:en;
+    const rarityNames={Common:['Common','شائع'],Uncommon:['Uncommon','غير شائع'],Rare:['Rare','نادر'],Epic:['Epic','ملحمي'],Legendary:['Legendary','أسطوري']};
+    const rarity=rarityNames[card.rarity]?.[ar?1:0]||card.rarity;
+    const kind=KIND_LABEL[kindOf(card)]||'Card';
+    const kindAr={Character:'شخصية',Word:'كلمة',Phrase:'عبارة',Artifact:'أثر',Scene:'مشهد',Location:'مكان'}[kind]||'بطاقة';
+    const summary=owned?(profile?(localized(profile.summary,lang,card.description)||t('Not documented yet','لم يوثّق بعد')):t('Not documented yet','لم يوثّق بعد')):t('This card has not been collected yet.','لم تُجمع هذه البطاقة بعد.');
+    const sections=(profile?.sections||[]).filter(s=>{
+      const text=localized(s.text,lang,'');
+      return text&&text!==localized(profile?.summary,lang,'');
+    }).map((s,i)=>({id:s.id||('profile-section-'+i),title:localized(s.title,lang,t('Notes','ملاحظات')),text:localized(s.text,lang,''),icon:s.icon||'✦',spoiler:!!s.spoiler}));
+    const extra=[
+      ['appearance',profile?.appearance,t('Appearance','المظهر'),'◉'],
+      ['personality',profile?.personality,t('Personality','الشخصية'),'✧'],
+      ['background',profile?.background,t('Background and history','الخلفية والتاريخ'),'◷'],
+      ['relationships',profile?.relationships,t('Relationships','العلاقات'),'◈'],
+      ['places',profile?.places,t('Notable places','أماكن بارزة'),'⌖'],
+      ['stories',profile?.stories,t('Story appearances','الظهور في القصص'),'▤'],
+      ['timeline',profile?.timeline,t('Timeline','التسلسل الزمني'),'◷'],
+      ['abilities',profile?.abilities,t('Abilities and skills','القدرات والمهارات'),'✧'],
+      ['beliefs',profile?.beliefs,t('Beliefs and values','المعتقدات والقيم'),'◇'],
+      ['secrets',profile?.secrets,t('Secrets and mysteries','الأسرار والألغاز'),'◌',true],
+      ['mysteries',profile?.mysteries,t('Mysteries','الألغاز'),'◌',true],
+      ['trivia',profile?.trivia,t('Trivia','معلومات إضافية'),'✦'],
+      ['quotes',profile?.quotes,t('Memorable quotes','اقتباسات مميزة'),'❝']
+    ];
+    extra.forEach(([id,value,title,icon,spoiler])=>{
+      if(value==null||(Array.isArray(value)&&!value.length))return;
+      sections.push({id,title,text:value,icon,spoiler:!!spoiler});
+    });
+    const sectionMarkup=sections.length?sections.map((s,i)=>{
+      const content=Array.isArray(s.text)?'<div class="cards-detail-list">'+s.text.map(item=>'<p>'+profileValueHTML(item,lang)+'</p>').join('')+'</div>':'<p>'+profileValueHTML(s.text,lang)+'</p>';
+      const body=s.spoiler?'<details class="cards-detail-spoiler"><summary>'+t('Reveal','كشف')+'</summary>'+content+'</details>':content;
+      return '<details class="cards-detail-section" id="cards-section-'+esc(s.id)+'" '+(i===0||!window.matchMedia?.('(max-width: 720px)').matches?'open':'')+'><summary><span class="cards-detail-section-icon">'+esc(s.icon)+'</span><span>'+esc(s.title)+'</span></summary><div class="cards-detail-section-body">'+body+'</div></details>';
+    }).join(''):'<p class="cards-detail-placeholder">'+t('Not documented yet','لم يوثّق بعد')+'</p>';
+    const facts=(profile?.facts||[]).filter(f=>localized(f.value,lang,'')&&localized(f.label,lang,'')).map(f=>'<div class="cards-detail-fact"><span>'+esc(localized(f.label,lang,''))+'</span><strong>'+esc(localized(f.value,lang,''))+'</strong></div>').join('');
+    const sectionIndex=sections.map(s=>'<a href="#cards-section-'+esc(s.id)+'">'+esc(s.title)+'</a>').join('');
+    const stats=owned?'<span class="cards-detail-owned">'+t('Level','المستوى')+' '+levelOf(card)+' · '+state.shards+' '+t('shards','شظايا')+'</span>':'';
+    return '<div class="cards-detail-tools"><div class="cards-detail-tags"><span class="cards-detail-id">'+esc(card.id)+'</span><span class="cards-detail-rarity">'+esc(rarity)+'</span><span class="cards-detail-kind">'+esc(ar?kindAr:kind)+'</span>'+stats+'</div><button type="button" class="cards-detail-translate" aria-pressed="'+String(ar)+'">'+(ar?'English':'العربية')+'</button></div>'
+      +'<header class="cards-detail-header"><p class="cards-detail-kicker">'+t('CHARACTER DOSSIER','ملف الشخصية')+'</p><h2 id="cards-detail-name">'+esc(localized(profile?.name,lang,card.name))+'</h2><p class="cards-detail-role">'+esc(owned?localized(profile?.title,lang,card.title):card.title)+'</p><p class="cards-detail-summary">'+esc(summary)+'</p></header>'
+      +(facts?'<div class="cards-detail-facts">'+facts+'</div>':'')
+      +'<div class="cards-detail-ornament">'+svgUse('','orn-crest','0 0 160 44')+'</div>'
+      +(sectionIndex?'<nav class="cards-detail-index" aria-label="'+t('Jump to a section','انتقل إلى قسم')+'">'+sectionIndex+'</nav>':'')
+      +'<div class="cards-detail-sections">'+sectionMarkup+'</div>'
+      ;
+  };
   let cardDetailTrigger=null, cardDetailReturnRect=null;
-  const profileValueHTML=value=>Array.isArray(value)?value.map(part=>typeof part==='string'?esc(part):(part&&part.place&&part.label?'<button type="button" class="cards-place-link" data-archive-place="'+esc(part.place)+'" title="Open in archive">'+esc(part.label)+'</button>':'')).join(''):esc(value??'');
+  const preloadCardArt=id=>{
+    const card=data().find(c=>c.id===id);if(!card?.image||!isOwned(card))return;
+    if(!window.__epiphanyCardPreloads)window.__epiphanyCardPreloads=new Set();
+    if(window.__epiphanyCardPreloads.has(card.image))return;
+    window.__epiphanyCardPreloads.add(card.image);
+    const image=new Image();image.src=card.image;
+  };
   const openCardDetail=(id,trigger)=>{
     const card=data().find(c=>c.id===id);if(!card)return;
-    cardDetailTrigger=trigger?.querySelector('.fcard')||trigger;cardDetailReturnRect=cardDetailTrigger?.getBoundingClientRect();
+    cardDetailTrigger=trigger?.querySelector('.fcard')||trigger||null;
+    cardDetailReturnRect=cardDetailTrigger?.getBoundingClientRect()||null;
     let modal=document.getElementById('cards-detail-modal');
     if(!modal){modal=document.createElement('div');modal.id='cards-detail-modal';modal.className='cards-detail-backdrop';document.body.appendChild(modal);}
-    const owned=isOwned(card),profile=window.EPIPHANY_CARD_PROFILES?.[card.id];
-    const sectionHtml=owned&&profile?(profile.sections||[]).map(s=>'<section class="cards-detail-section"><h3>'+profileValueHTML(s.title?.en||'')+'</h3><p>'+profileValueHTML(s.text?.en||'')+'</p></section>').join(''):'<p class="cards-detail-placeholder">'+(owned?'Not documented yet':'Not collected yet')+'</p>';
-    modal.innerHTML='<section class="cards-detail-dialog rarity-'+esc(card.rarity.toLowerCase())+'" role="dialog" aria-modal="true" aria-labelledby="cards-detail-name" tabindex="-1"><button type="button" class="cards-detail-close" aria-label="Close card details">×</button><div class="cards-detail-art '+(!owned?'is-locked':'')+'">'+(owned?cardFace(card,{level:levelOf(card),noTilt:true}):cardBack({locked:true,color:TIER_COLOR[card.rarity]}))+'</div><div class="cards-detail-info" dir="ltr"><div class="cards-detail-tools"><span class="cards-detail-id">'+esc(card.id)+'</span><button type="button" class="cards-detail-translate" '+(!owned||!profile?'hidden':'')+' aria-pressed="false">Translate / عربي</button></div><p class="cards-detail-eyebrow">'+esc(card.rarity)+' · '+esc(KIND_LABEL[kindOf(card)]||'Card')+'</p><h2 id="cards-detail-name">'+esc(card.name)+'</h2><p class="cards-detail-role">'+esc(owned?(profile?.title?.en||card.title):card.title)+'</p><p class="cards-detail-summary">'+esc(owned?(profile?.summary?.en||'Not documented yet'):'This card has not been collected yet.')+'</p><div class="cards-detail-sections">'+sectionHtml+'</div></div></section>';
+    const owned=isOwned(card),profile=owned?window.EPIPHANY_CARD_PROFILES?.[card.id]:null;
+    modal.innerHTML='<section class="cards-detail-dialog rarity-'+esc(card.rarity.toLowerCase())+'" role="dialog" aria-modal="true" aria-labelledby="cards-detail-name" tabindex="-1"><button type="button" class="cards-detail-close" aria-label="Close card details">×</button><div class="cards-detail-art '+(!owned?'is-locked':'')+'">'+(owned?cardFace(card,{level:levelOf(card),fullImage:true}):cardBack({locked:true,color:TIER_COLOR[card.rarity]}))+'</div><div class="cards-detail-info" dir="ltr">'+renderDetailInfo(card,profile,owned,'en')+'</div></section>';
     document.body.classList.add('no-scroll');
-    const dialog=modal.querySelector('[role="dialog"]');
-    if(cardDetailReturnRect&&dialog&&!reducedMotion()){const target=dialog.getBoundingClientRect();dialog.style.setProperty('--lift-x',(cardDetailReturnRect.left+cardDetailReturnRect.width/2-target.left-target.width/2)+'px');dialog.style.setProperty('--lift-y',(cardDetailReturnRect.top+cardDetailReturnRect.height/2-target.top-target.height/2)+'px');dialog.style.setProperty('--lift-scale',String(Math.max(.18,Math.min(.5,cardDetailReturnRect.width/target.width,cardDetailReturnRect.height/target.height))));}
-    const info=modal.querySelector('.cards-detail-info'), translate=modal.querySelector('.cards-detail-translate');let arabic=false;
-    translate?.addEventListener('click',()=>{arabic=!arabic;info.dir=arabic?'rtl':'ltr';translate.textContent=arabic?'English':'Translate / عربي';translate.setAttribute('aria-pressed',String(arabic));const p=window.EPIPHANY_CARD_PROFILES?.[card.id];if(!p)return;info.querySelector('.cards-detail-role').textContent=p.title?.[arabic?'ar':'en']||card.title;info.querySelector('.cards-detail-summary').innerHTML=profileValueHTML(p.summary?.[arabic?'ar':'en']||'Not documented yet');info.querySelectorAll('.cards-detail-section').forEach((el,i)=>{const sec=p.sections[i];if(sec){el.querySelector('h3').textContent=sec.title?.[arabic?'ar':'en']||'';el.querySelector('p').innerHTML=profileValueHTML(sec.text?.[arabic?'ar':'en']||'');}});});
-    const close=()=>{if(!modal.isConnected)return;document.removeEventListener('keydown',keyHandler);const finish=()=>{if(modal.isConnected)modal.remove();document.body.classList.remove('no-scroll');cardDetailTrigger?.focus?.({preventScroll:true});};if(!reducedMotion()&&cardDetailReturnRect){dialog.classList.add('is-closing');dialog.addEventListener('animationend',finish,{once:true});window.setTimeout(finish,260);}else finish();};
-    const keyHandler=e=>{if(e.key==='Escape'){close();return;}if(e.key==='Tab'){const f=[...dialog.querySelectorAll('button:not([hidden]):not([disabled]),[tabindex="0"]')].filter(el=>el.getClientRects().length);if(!f.length)return;if(e.shiftKey&&document.activeElement===f[0]){e.preventDefault();f[f.length-1].focus();}else if(!e.shiftKey&&document.activeElement===f[f.length-1]){e.preventDefault();f[0].focus();}}};
-    modal.addEventListener('click',e=>{const place=e.target.closest('[data-archive-place]');if(place){const placeId=place.dataset.archivePlace;close();window.EPIPHANY_OPEN_ARCHIVE_PLACE?.(placeId);return;}if(e.target===modal||e.target.closest('.cards-detail-close'))close();});
-    document.addEventListener('keydown',keyHandler);dialog.focus();
+    const dialog=modal.querySelector('[role="dialog"]'),info=modal.querySelector('.cards-detail-info');
+    if(cardDetailReturnRect&&dialog&&!reducedMotion()){
+      const target=dialog.getBoundingClientRect();
+      dialog.style.setProperty('--lift-x',(cardDetailReturnRect.left+cardDetailReturnRect.width/2-target.left-target.width/2)+'px');
+      dialog.style.setProperty('--lift-y',(cardDetailReturnRect.top+cardDetailReturnRect.height/2-target.top-target.height/2)+'px');
+      dialog.style.setProperty('--lift-scale',String(Math.max(.18,Math.min(.5,cardDetailReturnRect.width/target.width,cardDetailReturnRect.height/target.height))));
+    }
+    let arabic=false,closing=false;
+    const close=()=>{
+      if(closing||!modal.isConnected)return;closing=true;
+      document.removeEventListener('keydown',keyHandler);
+      const finish=()=>{if(modal.isConnected)modal.remove();document.body.classList.remove('no-scroll');cardDetailTrigger?.focus?.({preventScroll:true});};
+      if(!reducedMotion()&&cardDetailReturnRect){dialog.classList.add('is-closing');dialog.addEventListener('animationend',finish,{once:true});window.setTimeout(finish,380);}else finish();
+    };
+    const keyHandler=e=>{
+      if(e.key==='Escape'){close();return;}
+      if(e.key==='Tab'){
+        const f=[...dialog.querySelectorAll('button:not([hidden]):not([disabled]),a[href], [tabindex="0"]')].filter(el=>el.getClientRects().length);
+        if(!f.length)return;
+        if(e.shiftKey&&document.activeElement===f[0]){e.preventDefault();f[f.length-1].focus();}
+        else if(!e.shiftKey&&document.activeElement===f[f.length-1]){e.preventDefault();f[0].focus();}
+      }
+    };
+    modal.addEventListener('click',e=>{
+      const translate=e.target.closest('.cards-detail-translate');
+      if(translate){arabic=!arabic;const previousScroll=info.scrollTop;info.dir=arabic?'rtl':'ltr';info.lang=arabic?'ar':'en';modal.querySelector('.cards-detail-close')?.setAttribute('aria-label',arabic?'إغلاق تفاصيل البطاقة':'Close card details');info.innerHTML=renderDetailInfo(card,profile,owned,arabic?'ar':'en');info.scrollTop=previousScroll;info.querySelector('.cards-detail-translate')?.focus({preventScroll:true});return;}
+      const place=e.target.closest('[data-archive-place]');
+      if(place){const placeId=place.dataset.archivePlace;close();window.EPIPHANY_OPEN_ARCHIVE_PLACE?.(placeId);return;}
+      const character=e.target.closest('[data-profile-character]');
+      if(character){const nextId=character.dataset.profileCharacter;close();window.setTimeout(()=>openCardDetail(nextId,null),390);return;}
+      const story=e.target.closest('[data-profile-story]');
+      if(story){const storyId=story.dataset.profileStory;close();if(window.EPIPHANY_OPEN_STORY)window.EPIPHANY_OPEN_STORY(storyId);else{document.querySelector('[data-view="stories"]')?.click();}return;}
+      if(e.target===modal||e.target.closest('.cards-detail-close'))close();
+    });
+    document.addEventListener('keydown',keyHandler);
+    dialog.focus();
   };
   const renderFeatured = () => {
     const holder = $('cards-featured-card'), copy = $('cards-featured-copy'), cards = data(); if (!holder || !cards.length) return;
@@ -533,8 +660,9 @@
     window.addEventListener('resize',()=>{ if (rv) Fx.resize(); });
     // collection gallery controls
     
-    $('cards-gallery-locked')?.addEventListener('click',()=>{showLocked=!showLocked;saveGalleryFilters();renderGallery();});
+    $('cards-gallery-locked')?.addEventListener('click',()=>{showLocked=!showLocked;saveGalleryFilters();renderGallery(true);});
     initTilt();
+    document.addEventListener('load',e=>{if(e.target?.matches?.('.fcard-portrait-image'))e.target.classList.add('is-loaded');},true);
     renderFeatured();renderGallery();updateCounts();renderOdds(selectedPack());
     $('cards-history-clear')?.addEventListener('click',()=>{state.history=[];save();renderHistory();});
     window.addEventListener('epiphany:achievements-updated',()=>checkAchievementRewards(window.EPIPHANY_PROFILE_ACHIEVEMENTS));

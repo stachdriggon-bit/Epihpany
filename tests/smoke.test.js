@@ -239,6 +239,8 @@ test('main navigation tabs open without uncaught page errors', async t => {
     const cardsPage = await browser.newPage();
     await cardsPage.setViewportSize({ width: 390, height: 844 });
     await cardsPage.addInitScript(() => {
+      window.__cardLongTasks = [];
+      try { new PerformanceObserver(list => window.__cardLongTasks.push(...list.getEntries().map(entry => entry.duration))).observe({type:'longtask', buffered:true}); } catch {}
       localStorage.setItem('epiphany-landing-seen', '1');
       localStorage.setItem('epiphany-card-prototype-v1', JSON.stringify({
         tokens:15, shards:0, owned:{'CHR-001':1,'CHR-002':1,'CHR-004':1,'CHR-039':1,'CHR-005':1},
@@ -249,9 +251,22 @@ test('main navigation tabs open without uncaught page errors', async t => {
     await cardsPage.goto(baseUrl, { waitUntil: 'domcontentloaded' });
     await dismissFirstVisitOverlays(cardsPage);
     await clickView(cardsPage, 'profile');
+    await cardsPage.locator('#cards-gallery').scrollIntoViewIfNeeded();
+    const galleryOpenedAt = await cardsPage.evaluate(() => performance.now());
+    await cardsPage.waitForFunction(() => [...document.querySelectorAll('#cards-gallery .fcard-portrait-image')].some(img => img.complete && img.naturalWidth > 0), null, {timeout:10000});
+    const galleryMetrics = await cardsPage.evaluate(async started => {
+      const images=[...document.querySelectorAll('#cards-gallery .fcard-portrait-image')];
+      const first=images.find(img=>img.complete&&img.naturalWidth>0);
+      let decodeMs=null;
+      if(first){const t=performance.now();try{await first.decode();decodeMs=performance.now()-t;}catch{}}
+      const resources=performance.getEntriesByType('resource').filter(entry=>/\\.(png|jpe?g|webp)(?:[?#]|$)/i.test(entry.name));
+      return {viewport:innerWidth+'x'+innerHeight,imageRequests:resources.length,transferBytes:resources.reduce((sum,item)=>sum+(item.transferSize||0),0),decodedBytes:resources.reduce((sum,item)=>sum+(item.decodedBodySize||0),0),firstImageVisibleMs:Math.round(performance.now()-started),firstImageDecodeMs:decodeMs,longTaskCount:window.__cardLongTasks.length,longTaskMs:Math.round(window.__cardLongTasks.reduce((a,b)=>a+b,0))};
+    }, galleryOpenedAt);
+    console.log('CARD_GALLERY_METRICS '+JSON.stringify(galleryMetrics));
     await cardsPage.waitForSelector('#cards-rarity-filters [data-gallery-rarity="Epic"]');
     await cardsPage.locator('#cards-rarity-filters [data-gallery-rarity="Epic"]').click();
     await cardsPage.locator('#cards-type-filters [data-gallery-type="characters"]').click();
+    await cardsPage.evaluate(() => { window.__miraGalleryNode = document.querySelector('#cards-gallery [data-gallery-card="CHR-001"]'); });
     const filteredIds = await cardsPage.locator('#cards-gallery [data-gallery-card]').evaluateAll(els => els.map(el => el.dataset.galleryCard));
     const invalidFiltered = await cardsPage.evaluate(ids => ids.filter(id => {
       const card = window.EPIPHANY_CARD_DATA.find(item => item.id === id);
@@ -260,16 +275,26 @@ test('main navigation tabs open without uncaught page errors', async t => {
     assert.deepEqual(invalidFiltered, [], 'rarity and type filters must combine');
     await cardsPage.locator('#cards-rarity-filters [data-gallery-rarity="all"]').click();
     await cardsPage.locator('#cards-type-filters [data-gallery-type="all"]').click();
+    assert.equal(await cardsPage.evaluate(() => document.querySelector('#cards-gallery [data-gallery-card="CHR-001"]') === window.__miraGalleryNode), true, 'filter changes must preserve existing card node identity');
+    const galleryMiraImage = cardsPage.locator('#cards-gallery [data-gallery-card="CHR-001"] .fcard-portrait-image');
+    assert.ok(String(await galleryMiraImage.getAttribute('src')).includes('/thumb/'), 'gallery should request the generated thumbnail');
     const miraCard = cardsPage.locator('#cards-gallery [data-gallery-card="CHR-001"] .fcard');
     await miraCard.click();
     const detail = cardsPage.locator('#cards-detail-modal [role="dialog"]');
     await detail.waitFor();
     assert.equal(await detail.locator('#cards-detail-name').innerText(), 'Mira');
     assert.equal(await detail.getAttribute('aria-modal'), 'true');
+    assert.ok(await detail.locator('.cards-detail-section').count() > 1, 'Mira dossier should display multiple distinct sections');
+    const modalCardBox = await detail.locator('.cards-detail-art .fcard').boundingBox();
+    assert.ok(modalCardBox && modalCardBox.width > 0 && modalCardBox.height > 0, 'the real card face must be visible in the modal');
+    assert.ok(await detail.locator('.cards-detail-art img, .cards-detail-art svg').count() > 0, 'the modal card must contain its artwork');
+    assert.equal(await detail.locator('.cards-detail-art img').getAttribute('src'), await cardsPage.evaluate(() => window.EPIPHANY_CARD_DATA.find(card => card.id === 'CHR-001').image), 'the modal must load the full-size card art');
     await cardsPage.locator('.cards-detail-translate').click();
+    assert.equal(await detail.locator('#cards-detail-name').innerText(), 'ميرا', 'character name should translate in place');
     assert.match(await detail.locator('.cards-detail-summary').innerText(), /دليلة عملية/);
     assert.doesNotMatch(await detail.locator('.cards-detail-summary').innerText(), /Mira is a practical guide/);
-    await cardsPage.locator('#cards-detail-modal').click({ position:{x:2,y:2} });
+    // On narrow screens the dossier is intentionally full-screen, so close it with its visible close control.
+    await cardsPage.locator('#cards-detail-modal .cards-detail-close').click();
     await detail.waitFor({ state:'detached' });
     assert.equal(await miraCard.evaluate(el => document.activeElement === el), true, 'focus should return to the selected card');
 
@@ -283,12 +308,49 @@ test('main navigation tabs open without uncaught page errors', async t => {
       });
     });
     await cardsPage.keyboard.press('Escape');
+    await cardsPage.locator('#cards-detail-modal').waitFor({state:'detached'});
     await cardsPage.locator('#cards-gallery [data-gallery-card="CHR-001"] .fcard').click();
-    await cardsPage.locator('#cards-detail-modal [data-archive-place="IL-LOC-01"]').click();
+    const archivePlaceLink=cardsPage.locator('#cards-detail-modal [data-archive-place="IL-LOC-01"]');
+    await archivePlaceLink.waitFor({state:'attached',timeout:10000});
+    const archivePlaceSection=archivePlaceLink.locator('xpath=ancestor::details[contains(@class,"cards-detail-section")][1]');
+    if(!(await archivePlaceSection.evaluate(el=>el.open))){
+      await archivePlaceSection.locator(':scope > summary').click();
+    }
+    await archivePlaceLink.waitFor({state:'visible',timeout:10000});
+    await archivePlaceLink.click();
     await cardsPage.waitForSelector('#chronicle-view.is-active #chronicle-content .archive-place-heading h2', {timeout:10000});
     assert.match(await cardsPage.locator('#chronicle-content .archive-place-heading h2').innerText(), /Three-Arch Ferry/);
     await cardsPage.locator('.archive-back-to-cards').click();
     await cardsPage.waitForSelector('#profile-view.is-active #cards-gallery');
+    await cardsPage.locator('#cards-gallery [data-gallery-card="CHR-003"] .fcard').click();
+    const lockedDetail = cardsPage.locator('#cards-detail-modal [role="dialog"]');
+    await lockedDetail.waitFor();
+    assert.ok(await lockedDetail.locator('.cards-detail-art.is-locked .fcard.is-locked').count(), 'locked cards should show the dimmed silhouette');
+    assert.match(await lockedDetail.locator('.cards-detail-summary').innerText(), /not been collected/i);
+    await cardsPage.keyboard.press('Escape');
+    await lockedDetail.waitFor({state:'detached'});
+
+    const screenshotDir = path.join(root, 'test-results', 'card-dossier');
+    fs.mkdirSync(screenshotDir, {recursive:true});
+    const viewports = [{width:1920,height:1080,label:'1920x1080'},{width:1280,height:800,label:'1280x800'},{width:390,height:844,label:'390x844'}];
+    for (const theme of ['light','dark']) {
+      await cardsPage.evaluate(value => { document.body.dataset.theme=value; }, theme);
+      for (const viewport of viewports) {
+        await cardsPage.setViewportSize({width:viewport.width,height:viewport.height});
+        await cardsPage.locator('#cards-gallery').scrollIntoViewIfNeeded();
+        await cardsPage.screenshot({path:path.join(screenshotDir, theme+'-'+viewport.label+'-gallery.png')});
+        for (const scenario of [{id:'CHR-001',label:'mira-en',translate:false},{id:'CHR-001',label:'mira-ar',translate:true},{id:'CHR-005',label:'no-profile',translate:false},{id:'CHR-003',label:'locked',translate:false}]) {
+          const cardLocator=cardsPage.locator('#cards-gallery [data-gallery-card="'+scenario.id+'"] .fcard');
+          await cardLocator.scrollIntoViewIfNeeded();
+          await cardLocator.click();
+          await cardsPage.locator('#cards-detail-modal [role="dialog"]').waitFor();
+          if(scenario.translate)await cardsPage.locator('.cards-detail-translate').click();
+          await cardsPage.screenshot({path:path.join(screenshotDir,theme+'-'+viewport.label+'-'+scenario.label+'.png')});
+          await cardsPage.keyboard.press('Escape');
+          await cardsPage.locator('#cards-detail-modal').waitFor({state:'detached'});
+        }
+      }
+    }
     await cardsPage.close();
 
     const offlinePage = await browser.newPage();

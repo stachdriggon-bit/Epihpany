@@ -36,9 +36,9 @@ test('card prototype is linked from profile and cached offline', () => {
   const html = read('index.html');
   const sw = read('service-worker.js');
   assert.match(html, /id="cards-hub"/);
-  assert.match(html, /data-cards\.js\?v=card-profile-modal-1/);
-  assert.match(html, /cards\.js\?v=card-profile-modal-2/);
-  assert.match(html, /cards\.css\?v=card-profile-modal-1/);
+  assert.match(html, /data-cards\.js\?v=[^"&]+/);
+  assert.match(html, /cards\.js\?v=[^"&]+/);
+  assert.match(html, /cards\.css\?v=[^"&]+/);
   assert.match(html, /chip-tokens-value/);
   assert.match(sw, /\.\/data-cards\.js/);
   assert.match(sw, /\.\/cards\.js/);
@@ -132,19 +132,17 @@ test('summoning uses shared sound preferences and respects reduced motion', () =
   assert.match(css, /prefers-reduced-motion:reduce/);
   assert.match(html, /id="summon-ritual-status"/);
   assert.match(html, /app\.js\?v=[^"&]+/);
-  assert.match(html, /cards\.js\?v=card-profile-modal-2/);
+  assert.match(html, /cards\.js\?v=[^"&]+/);
 });
 
 test('every character card points to an image file that exists in the repository', () => {
   const context = { window: {} };
   vm.runInNewContext(read('data-cards.js'), context);
   const cards = context.window.EPIPHANY_CARD_DATA;
-  for (const card of cards.filter(item => item.category === 'characters')) {
-    assert.ok(card.image, card.id + ' must declare a portrait file');
-    assert.ok(
-      fs.existsSync(path.join(root, card.image)),
-      card.id + ' (' + card.name + ') references missing image: ' + card.image
-    );
+  for (const card of cards.filter(item => item.image)) {
+    assert.ok(fs.existsSync(path.join(root, card.image)), card.id + ' references missing full art: ' + card.image);
+    assert.ok(card.thumb && card.thumb.includes('/thumb/'), card.id + ' must use a generated gallery thumbnail');
+    assert.ok(fs.existsSync(path.join(root, card.thumb)), card.id + ' references missing thumbnail: ' + card.thumb);
   }
 });
 
@@ -175,4 +173,59 @@ test('card portal filters, profiles, and detail dialog are wired accessibly', ()
   assert.match(js, /Not documented yet/);
   assert.match(js, /data-archive-place/);
   assert.match(js, /EPIPHANY_OPEN_ARCHIVE_PLACE/);
+});
+
+
+test('character dossiers preserve the complete reviewed ability records without inventing open canon', () => {
+  const context = { window: {} };
+  vm.runInNewContext(read('data-cards.js'), context);
+  const profiles = context.window.EPIPHANY_CARD_PROFILES;
+  for (const id of ['CHR-001','CHR-002','CHR-004','CHR-039']) {
+    assert.ok(profiles[id], id + ' should have a dossier');
+    assert.ok(profiles[id].name.en && profiles[id].name.ar);
+    assert.ok(profiles[id].summary.en && profiles[id].summary.ar);
+    assert.ok(profiles[id].sections.length > 0);
+    for (const section of profiles[id].sections) {
+      assert.ok(section.title.en && section.title.ar);
+      assert.ok(section.text.en && section.text.ar);
+    }
+    for (const fact of profiles[id].facts || []) {
+      assert.ok(fact.label.en && fact.label.ar);
+      assert.ok(fact.value.en && fact.value.ar);
+    }
+  }
+  const mira = profiles['CHR-001'];
+  assert.ok(mira.sections.length > 1, 'Mira should show multiple distinct dossier sections');
+  assert.ok(mira.sections.every(section => section.text.en !== mira.summary.en), 'Mira overview must not repeat the summary');
+  assert.match(mira.sections.find(section => section.id === 'restriction').text.en, /intrinsic ceiling/);
+  assert.match(profiles['CHR-002'].sections.find(section => section.id === 'restriction').text.en, /test hypothesis only/);
+  assert.match(profiles['CHR-039'].sections.find(section => section.id === 'restriction').text.en, /scope/i);
+});
+
+test('card detail uses the real full card face and keeps gallery card nodes across filters', () => {
+  const js = read('cards.js');
+  const css = read('cards.css');
+  assert.match(js, /cardFace\(card,\{level:levelOf\(card\),fullImage:true\}\)/);
+  assert.match(js, /galleryNodeCache/);
+  assert.match(js, /renderGallery\(true\)/);
+  assert.match(js, /root\.replaceChildren\(fragment\)/);
+  assert.match(js, /opts\.fullImage \? card\.image : \(card\.thumb \|\| card\.image\)/);
+  assert.match(js, /loading="\x27\+\(opts\.fullImage\?'eager':'lazy'\)/);
+  assert.match(css, /\.cards-detail-art \.fcard/);
+  assert.match(css, /@media\(max-width:720px\)/);
+  assert.match(css, /body\[data-theme="light"\] \.cards-detail-dialog/);
+  assert.match(css, /prefers-reduced-motion:reduce/);
+  const ornaments = read('assets/cards/card-ornaments.svg');
+  for (const symbol of ['orn-corner','orn-star','back-sigil','orn-crest','emb-character','emb-word','emb-artifact','emb-scene','emb-location']) assert.match(ornaments, new RegExp('id="' + symbol + '"'));
+  assert.match(read('service-worker.js'), /assets\/cards\/card-ornaments\.svg/);
+});
+
+test('card art thumbnail tooling is available without adding a runtime dependency', () => {
+  const script = read('tools/make-card-thumbs.py');
+  const docs = read('docs/card-art-prompts.md');
+  assert.match(script, /Image\.Resampling\.LANCZOS/);
+  assert.match(script, /quality=78/);
+  assert.match(script, /assets\/cards\/art\/thumb/);
+  assert.match(docs, /python tools\/make-card-thumbs\.py/);
+  assert.match(docs, /detail dossier and reveal experience use this full image/);
 });
