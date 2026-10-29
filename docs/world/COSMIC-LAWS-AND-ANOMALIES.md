@@ -103,7 +103,58 @@ For every important magical or anomalous event, record:
 
 A proposal becomes established canon only after explicit project-owner approval and appropriate updates to the Decision Log and relevant source records. A possibility mentioned in a story, illustration, conversation, or character's confident claim does not automatically become objective truth.
 
-## 10. Questions intentionally left open
+## 10. Sorcerer restrictions, attempted breach, and life cost
+
+**Status:** Provisional model approved for development; the historical cause and exact mechanics remain open.
+
+The following distinctions govern this topic:
+
+1. **Ordinary use:** Using an ability within the operating limits of its individual restriction does not, by itself, consume the sorcerer's lifespan.
+2. **Restriction:** The restriction limits what the ability can do or how it can operate. It is not itself a general weakening effect, and it is not the same thing as fatigue or spent magical energy.
+3. **Attempted breach:** Trying to act beyond the restriction is categorically different from ordinary use or simply exerting more effort. A breach is extraordinarily difficult and cannot be treated as a reliable technique.
+4. **Magical energy and lifespan:** Magical-energy depletion and loss of lifespan are distinct. One must not automatically be converted into the other.
+5. **Life cost:** Attempting a breach may consume lifespan, but the cost is not automatic for every effort, nor is it established as a fixed exchange rate. The circumstances, the restriction, and what the sorcerer actually attempts may matter.
+6. **Possibility of success:** Whether a restriction can be breached, even temporarily, depends on the nature of that restriction. Do not assume all restrictions share the same answer.
+7. **Outcome variability:** In an exceptional case, an attempted breach might produce a narrow or temporary effect, grow more dangerous as it continues, produce only part of the intended result, or yield an unexpected result. These are possible outcome patterns, not guaranteed stages or a universal sequence.
+8. **Exceptions and incomplete knowledge:** A general pattern may be recognized while rare cases remain unexplained. An apparent exception must not automatically be called a new law; it may reflect incomplete evidence, a misunderstood restriction, unusual conditions, or a genuinely rare case.
+9. **No free escalation:** A breach does not grant unrestricted power, permanently remove the restriction, or prove that the sorcerer can repeat the result. Any apparent success must be recorded with its observed scope and limits.
+10. **No universal recipe:** Do not prescribe one ritual, emotion, injury, energy threshold, or technique as a universal method for breaching restrictions unless a later decision explicitly establishes it.
+
+### What is established versus unknown
+
+The model establishes the separation between ordinary use, restrictions, attempted breach, magical-energy depletion, and lifespan cost. It does **not** yet establish which restriction categories permit a breach, the exact conditions for each, whether the cost can be measured, how a sorcerer detects lifespan loss, or whether all reported cases are interpreted correctly.
+
+When recording an incident, distinguish: what the sorcerer attempted; what observers actually saw; the duration and scope of the effect; signs of energy depletion; evidence of lifespan loss (if any); recovery or lasting consequences; and alternative explanations. Do not infer lifespan loss merely because a sorcerer became tired, collapsed, or lost control.
+
+## 11. The historical change hypothesis
+
+**Status:** Open historical hypothesis; not established history.
+
+One possible history is that sorcery once operated under different constraints and that a major event changed the relationship between sorcery and cosmic laws. If so, its onset might have been sudden while its consequences appeared gradually and unevenly among sorcerers. This could explain why restrictions did not necessarily appear in everyone at the same time, but it does not yet explain why the effects differed.
+
+A related possibility is that some sorcerers lived for centuries or millennia and could develop extraordinary mastery over long periods. Some may eventually have reached a scale of power that threatened the world, and the change may have been a response of the cosmos rather than a conscious punishment. This is only one possible account, not an established cause. Long life does not mean every old sorcerer is powerful, and greater freedom in the past would not mean unlimited ability or the power to do anything.
+
+Keep all of the following open:
+- whether such a world-changing event definitely occurred;
+- whether sorcerers, researchers, a war, a threat to the planet, an interaction of several causes, or something unknown precipitated it;
+- whether cosmic laws responded, changed, or were merely revealed by the event;
+- why restrictions appeared at different times or in different forms;
+- whether lifespan costs existed before the change or became relevant afterward;
+- what evidence, if any, survives and how reliable its interpretation is.
+
+Do not name the event, date it, assign responsibility, describe its exact mechanism, or claim that every restriction originated from it until those choices are explicitly made. Conflicting chronicles, incomplete records, and competing theories may exist in-world, but they remain interpretations rather than objective truth.
+
+## 12. Design rules for stories and tests
+
+- A test scene is not automatically a canonical event.
+- A failed breach attempt does not prove that breaching is universally impossible, and a successful-looking result does not prove that a restriction was truly exceeded.
+- Similar outcomes across two sorcerers do not prove their restrictions share a category, mechanism, or origin.
+- Do not use lifespan loss as a casual penalty for ordinary spell use.
+- Do not use a breach to solve a conflict without establishing the attempt, the unusual circumstances, the actual result, and its limits.
+- Preserve uncertainty where the evidence does not distinguish between a restriction effect, a skill limitation, environmental interference, a cosmic phenomenon, or a mistaken interpretation.
+
+## 13. Questions intentionally left open
+
 
 The following are not settled by this framework:
 
