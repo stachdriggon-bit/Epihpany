@@ -93,10 +93,53 @@ window.EPIPHANY_CARD_DATA = [
 ];
 
 
-/* Verified profile notes. Missing canon is intentionally omitted rather than invented. */
+/* Verified character records. Only details supported by current project sources are included.
+   Empty canon fields are intentionally omitted until the character records are approved. */
 window.EPIPHANY_CARD_PROFILES = {
-  "CHR-001": { title:{en:"Wayfinder",ar:"دليلة الطرق"}, summary:{en:"A practical guide who reads maps and helps travelers make sense of their routes.",ar:"دليلة عملية تقرأ الخرائط وتساعد المسافرين على فهم طرقهم."}, sections:[{title:{en:"Overview",ar:"نظرة عامة"},text:{en:"Mira is a practical guide who reads maps and helps travelers make sense of their routes.",ar:"ميرا دليلة عملية تقرأ الخرائط وتساعد المسافرين على فهم طرقهم."}}] },
-  "CHR-002": { title:{en:"Resonance Tinkerer",ar:"مبتكر الرنين"}, summary:{en:"A tinkerer who studies resonance and turns unusual sounds into practical tools.",ar:"مبتكر يدرس الرنين ويحوّل الأصوات غير المألوفة إلى أدوات عملية."}, sections:[{title:{en:"Overview",ar:"نظرة عامة"},text:{en:"Evren studies resonance and turns unusual sounds into practical tools.",ar:"يدرس إيفرين الرنين ويحوّل الأصوات غير المألوفة إلى أدوات عملية."}}] },
-  "CHR-004": { title:{en:"Exiled Warden",ar:"حارس منفي"}, summary:{en:"An exiled warden whose past complicates the rules he once swore to protect.",ar:"حارس منفي يجعل ماضيه القواعد التي أقسم يومًا على حمايتها أكثر تعقيدًا."}, sections:[{title:{en:"Overview",ar:"نظرة عامة"},text:{en:"Darian is a tactical fighter who combines defense and counterattacks with offensive skills.",ar:"داريان مقاتل تكتيكي يجمع بين الدفاع والهجمات المرتدة والمهارات الهجومية."}}] },
-  "CHR-039": { title:{en:"Pattern Detective",ar:"محققة الأنماط"}, summary:{en:"Veyra's detailed ability profile is being held for canon review so that provisional notes are not presented as final.",ar:"نؤجل تفاصيل قدرة فييرا إلى حين مراجعة قانون العالم، حتى لا تُعرض الملاحظات الأولية بوصفها حقائق نهائية."}, sections:[{title:{en:"Profile status",ar:"حالة الملف"},text:{en:"Her detailed abilities and limits will be added after the character notes receive final review.",ar:"ستُضاف تفاصيل قدراتها وحدودها بعد المراجعة النهائية لملاحظات الشخصية."}}] }
+  "CHR-001": {
+    title:{en:"Wayfinder",ar:"دليلة الطرق"},
+    summary:{en:"A practical guide whose work centers on maps and unfamiliar routes.",ar:"دليلة عملية يتمحور عملها حول الخرائط والطرق غير المألوفة."},
+    facts:[
+      {label:{en:"Role",ar:"الدور"},value:{en:"Guide",ar:"دليلة"}},
+      {label:{en:"Known focus",ar:"مجالها المعروف"},value:{en:"Maps and travel routes",ar:"الخرائط وطرق السفر"}}
+    ],
+    sections:[
+      {id:"overview",title:{en:"Overview",ar:"نظرة عامة"},text:{en:"Mira is a practical guide who reads maps.",ar:"ميرا دليلة عملية تقرأ الخرائط."}},
+      {id:"role",title:{en:"Role in travel",ar:"دورها في السفر"},text:{en:"She helps travelers make sense of their routes.",ar:"تساعد المسافرين على فهم الطرق التي يسلكونها."}}
+    ]
+  },
+  "CHR-002": {
+    title:{en:"Resonance Tinkerer",ar:"مبتكر الرنين"},
+    summary:{en:"A tinkerer working at the meeting point of resonance and practical invention.",ar:"مبتكر يعمل عند نقطة التقاء الرنين بالابتكار العملي."},
+    facts:[
+      {label:{en:"Role",ar:"الدور"},value:{en:"Tinkerer",ar:"مبتكر"},
+      {label:{en:"Known focus",ar:"مجال الاهتمام"},value:{en:"Resonance and unusual sounds",ar:"الرنين والأصوات غير المألوفة"}}
+    ],
+    sections:[
+      {id:"overview",title:{en:"Overview",ar:"نظرة عامة"},text:{en:"Evren studies resonance.",ar:"يدرس إيفرين الرنين."}},
+      {id:"craft",title:{en:"Practical craft",ar:"الابتكار العملي"},text:{en:"He turns unusual sounds into practical tools.",ar:"يحوّل الأصوات غير المألوفة إلى أدوات عملية."}}
+    ]
+  },
+  "CHR-004": {
+    title:{en:"Exiled Warden",ar:"حارس منفي"},
+    summary:{en:"An exiled warden whose past complicates the rules he once swore to protect.",ar:"حارس منفي يجعل ماضيه القواعد التي أقسم يومًا على حمايتها أكثر تعقيدًا."},
+    facts:[
+      {label:{en:"Former role",ar:"الدور السابق"},value:{en:"Warden",ar:"حارس"}},
+      {label:{en:"Current status",ar:"الحالة الحالية"},value:{en:"Exiled",ar:"منفي"}}
+    ],
+    sections:[
+      {id:"overview",title:{en:"Overview",ar:"نظرة عامة"},text:{en:"Darian is an exiled warden, and his past complicates the rules he once swore to protect.",ar:"داريان حارس منفي، ويجعل ماضيه القواعد التي أقسم يومًا على حمايتها أكثر تعقيدًا."}},
+      {id:"combat",title:{en:"Combat approach",ar:"أسلوب القتال"},text:{en:"He is described as a tactical fighter who combines defense, counterattacks, and offensive skills.",ar:"يوصف بأنه مقاتل تكتيكي يجمع بين الدفاع والهجمات المرتدة والمهارات الهجومية."}}
+    ]
+  },
+  "CHR-039": {
+    title:{en:"Pattern Detective",ar:"محققة الأنماط"},
+    summary:{en:"A character whose detailed record is awaiting canon review.",ar:"شخصية لا يزال ملفها التفصيلي بانتظار مراجعة قانون العالم."},
+    facts:[
+      {label:{en:"Profile status",ar:"حالة الملف"},value:{en:"Awaiting canon review",ar:"بانتظار مراجعة قانون العالم"}}
+    ],
+    sections:[
+      {id:"overview",title:{en:"Documented status",ar:"الحالة الموثقة"},text:{en:"The card identifies Veyra as a Pattern Detective. Her detailed abilities and limits have not yet been established in the reviewed project sources.",ar:"تعرّف البطاقة فييرا بأنها محققة الأنماط. ولم تُحدَّد قدراتها وحدودها التفصيلية بعد في مصادر المشروع التي تمت مراجعتها."}}
+    ]
+  }
 };
