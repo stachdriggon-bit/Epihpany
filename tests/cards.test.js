@@ -147,3 +147,32 @@ test('every character card points to an image file that exists in the repository
     );
   }
 });
+
+
+test('card portal filters, profiles, and detail dialog are wired accessibly', () => {
+  const html = read('index.html');
+  const js = read('cards.js');
+  const dataContext = { window: {} };
+  vm.runInNewContext(read('data-cards.js'), dataContext);
+  const profiles = dataContext.window.EPIPHANY_CARD_PROFILES;
+  for (const id of ['CHR-001','CHR-002','CHR-004','CHR-039']) {
+    assert.ok(profiles[id], id + ' should have profile notes');
+    assert.ok(profiles[id].title.en && profiles[id].title.ar);
+    assert.ok(profiles[id].summary.en && profiles[id].summary.ar);
+    for (const section of profiles[id].sections) {
+      assert.ok(section.title.en && section.title.ar);
+      assert.ok(section.text.en && section.text.ar);
+    }
+  }
+  assert.match(html, /id="cards-rarity-filters"/);
+  assert.match(html, /id="cards-type-filters"/);
+  assert.match(html, /id="cards-filter-result-count" aria-live="polite"/);
+  assert.match(js, /epiphany-card-gallery-filters-v1/);
+  assert.match(js, /data-gallery-rarity/);
+  assert.match(js, /data-gallery-type/);
+  assert.match(js, /role="dialog" aria-modal="true"/);
+  assert.match(js, /cards-detail-translate/);
+  assert.match(js, /Not documented yet/);
+  assert.match(js, /data-archive-place/);
+  assert.match(js, /EPIPHANY_OPEN_ARCHIVE_PLACE/);
+});
