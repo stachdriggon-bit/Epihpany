@@ -123,3 +123,21 @@ When a decision changes:
 - Do not treat a story written to test an ability as a canonical event unless separately approved.
 - A failed or unexpected outcome must not automatically be attributed to an individual restriction; assess ability limits, missing information, environment, interpretation, and skill separately.
 - Mira's current entry is a provisional test record, not a finalized ability, restriction, branch assignment, or character-card update.
+
+
+## WD-039 — Individual restrictions, attempted breach, and lifespan cost
+
+**Status:** Provisional model approved for development; historical cause and detailed mechanics remain open.
+
+- The individual restriction limits the sorcerer's ability; it does not simply make the sorcerer weaker.
+- Ordinary use within the restriction does not, by itself, consume lifespan.
+- Attempting to breach a restriction is different from ordinary use or exerting greater effort. Breaching is extraordinarily difficult, and not every restriction is assumed to behave alike.
+- Magical-energy depletion and lifespan loss are distinct; neither should automatically be treated as the other.
+- An attempted breach may consume lifespan, but the cost is not automatic for every attempt and no fixed exchange rate is established.
+- Depending on the restriction and circumstances, an exceptional breach might be temporary or narrow, become more dangerous if sustained, yield only part of the intended effect, or produce an unexpected result. These are possibilities, not a universal sequence.
+- Rare exceptions may exist, or apparent exceptions may reflect incomplete evidence or mistaken interpretation. No single explanation is assumed.
+- A possible historical change in sorcery and the emergence of restrictions remains an open hypothesis. Its cause, timing, mechanism, and connection to lifespan cost are not established.
+- The possibility that some sorcerers historically lived for centuries or millennia, and that a few may have reached world-threatening levels of power, remains a hypothesis; age does not imply power.
+- Tests and story scenes remain non-canonical unless separately approved. Record observations, interpretations, evidence, and unknowns separately.
+
+**Reference:** [Cosmic Laws, Magical Restrictions, and Anomalies](COSMIC-LAWS-AND-ANOMALIES.md).
