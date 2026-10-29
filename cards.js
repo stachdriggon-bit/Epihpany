@@ -185,7 +185,7 @@
   /* ---------- collection gallery (profile) ---------- */
   let galleryFilter = 'all', galleryRarity = 'all', showLocked = true, lastUpgraded = '';
   const GALLERY_FILTER_STORE = 'epiphany-card-gallery-filters-v1';
-  const CATEGORY_REGISTRY = [{id:'characters',label:'Characters'},{id:'words',label:'Words'},{id:'artifacts',label:'Artifacts'},{id:'mixed',label:'Locations'}];
+  const CATEGORY_REGISTRY = [{id:'characters',label:'Characters'},{id:'words',label:'Words'},{id:'artifacts',label:'Artifacts'},{id:'mixed',label:'Places & scenes'}];
   try { const saved=JSON.parse(localStorage.getItem(GALLERY_FILTER_STORE)||'null'); if(saved&&typeof saved==='object'){if(typeof saved.category==='string')galleryFilter=saved.category;if(typeof saved.rarity==='string')galleryRarity=saved.rarity;if(typeof saved.showLocked==='boolean')showLocked=saved.showLocked;} } catch (_) {}
   const saveGalleryFilters=()=>{try{localStorage.setItem(GALLERY_FILTER_STORE,JSON.stringify({category:galleryFilter,rarity:galleryRarity,showLocked}));}catch(_){}};
   const renderGalleryFilterChips=(all)=>{
@@ -214,7 +214,7 @@
     root.querySelectorAll('[data-card-upgrade]').forEach(button=>button.addEventListener('click',e=>{e.stopPropagation();upgradeCard(button.dataset.cardUpgrade);}));
     root.querySelectorAll('[data-gallery-card]').forEach(item=>{
       const card=item.querySelector('.fcard');
-      if(card){card.tabIndex=0;card.setAttribute('role','button');card.setAttribute('aria-haspopup','dialog');card.setAttribute('aria-label','View '+(all.find(c=>c.id===item.dataset.galleryCard)?.name||'card')+' details');}
+      if(card){card.removeAttribute('aria-hidden');card.tabIndex=0;card.setAttribute('role','button');card.setAttribute('aria-haspopup','dialog');card.setAttribute('aria-label','View '+(all.find(c=>c.id===item.dataset.galleryCard)?.name||'card')+' details');}
       item.addEventListener('click',e=>{if(e.target.closest('[data-card-upgrade]'))return;openCardDetail(item.dataset.galleryCard,item);});
       item.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target===card){e.preventDefault();openCardDetail(item.dataset.galleryCard,item);}});
     });
