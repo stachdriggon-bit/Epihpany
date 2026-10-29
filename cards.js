@@ -245,6 +245,7 @@
         if(face&&(e.key==='Enter'||e.key===' ')){e.preventDefault();const item=face.closest('[data-gallery-card]');if(item)openCardDetail(item.dataset.galleryCard,item);}
       });
       root.addEventListener('pointerover',e=>{const item=e.target.closest('[data-gallery-card]');if(item)preloadCardArt(item.dataset.galleryCard);},{passive:true});
+      root.addEventListener('pointerdown',e=>{const item=e.target.closest('[data-gallery-card]');if(item)preloadCardArt(item.dataset.galleryCard);},{passive:true});
       root.addEventListener('focusin',e=>{const item=e.target.closest('[data-gallery-card]');if(item)preloadCardArt(item.dataset.galleryCard);});
     }
     const count = $('cards-collection-count'); if (count) count.textContent = owned.length+' / '+all.length+' discovered';
@@ -275,7 +276,7 @@
     const rarity=rarityNames[card.rarity]?.[ar?1:0]||card.rarity;
     const kind=KIND_LABEL[kindOf(card)]||'Card';
     const kindAr={Character:'شخصية',Word:'كلمة',Phrase:'عبارة',Artifact:'أثر',Scene:'مشهد',Location:'مكان'}[kind]||'بطاقة';
-    const summary=owned?(localized(profile?.summary,lang,card.description)||t('Not documented yet','لم يوثّق بعد')):t('This card has not been collected yet.','لم تُجمع هذه البطاقة بعد.');
+    const summary=owned?(profile?(localized(profile.summary,lang,card.description)||t('Not documented yet','لم يوثّق بعد')):t('Not documented yet','لم يوثّق بعد')):t('This card has not been collected yet.','لم تُجمع هذه البطاقة بعد.');
     const sections=(profile?.sections||[]).filter(s=>{
       const text=localized(s.text,lang,'');
       return text&&text!==localized(profile?.summary,lang,'');
@@ -312,7 +313,7 @@
   };
   let cardDetailTrigger=null, cardDetailReturnRect=null;
   const preloadCardArt=id=>{
-    const card=data().find(c=>c.id===id);if(!card?.image)return;
+    const card=data().find(c=>c.id===id);if(!card?.image||!isOwned(card))return;
     if(!window.__epiphanyCardPreloads)window.__epiphanyCardPreloads=new Set();
     if(window.__epiphanyCardPreloads.has(card.image))return;
     window.__epiphanyCardPreloads.add(card.image);
