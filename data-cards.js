@@ -91,3 +91,12 @@ window.EPIPHANY_CARD_DATA = [
   {id:"SCN-001",category:"mixed",name:"The Rainlit Station",title:"Story scene",rarity:"Uncommon",symbol:"▤",palette:"rain",description:"A quiet station where every departing train leaves a different clue."},
   {id:"LOC-001",category:"mixed",name:"The Whispering Dunes",title:"Hidden location",rarity:"Rare",symbol:"⌁",palette:"dune",description:"A desert crossing where the wind carries fragments of old conversations."}
 ];
+
+
+/* Verified profile notes. Missing canon is intentionally omitted rather than invented. */
+window.EPIPHANY_CARD_PROFILES = {
+  "CHR-001": { title:{en:"Wayfinder",ar:"دليلة الطرق"}, summary:{en:"A practical guide who reads maps and helps travelers make sense of their routes.",ar:"دليلة عملية تقرأ الخرائط وتساعد المسافرين على فهم طرقهم."}, sections:[{title:{en:"Overview",ar:"نظرة عامة"},text:{en:"Mira is a practical guide who reads maps and helps travelers make sense of their routes.",ar:"ميرا دليلة عملية تقرأ الخرائط وتساعد المسافرين على فهم طرقهم."}}] },
+  "CHR-002": { title:{en:"Resonance Tinkerer",ar:"مبتكر الرنين"}, summary:{en:"A tinkerer who studies resonance and turns unusual sounds into practical tools.",ar:"مبتكر يدرس الرنين ويحوّل الأصوات غير المألوفة إلى أدوات عملية."}, sections:[{title:{en:"Overview",ar:"نظرة عامة"},text:{en:"Evren studies resonance and turns unusual sounds into practical tools.",ar:"يدرس إيفرين الرنين ويحوّل الأصوات غير المألوفة إلى أدوات عملية."}}] },
+  "CHR-004": { title:{en:"Exiled Warden",ar:"حارس منفي"}, summary:{en:"An exiled warden whose past complicates the rules he once swore to protect.",ar:"حارس منفي يجعل ماضيه القواعد التي أقسم يومًا على حمايتها أكثر تعقيدًا."}, sections:[{title:{en:"Overview",ar:"نظرة عامة"},text:{en:"Darian is a tactical fighter who combines defense and counterattacks with offensive skills.",ar:"داريان مقاتل تكتيكي يجمع بين الدفاع والهجمات المرتدة والمهارات الهجومية."}}] },
+  "CHR-039": { title:{en:"Pattern Detective",ar:"محققة الأنماط"}, summary:{en:"Veyra's detailed ability profile is being held for canon review so that provisional notes are not presented as final.",ar:"نؤجل تفاصيل قدرة فييرا إلى حين مراجعة قانون العالم، حتى لا تُعرض الملاحظات الأولية بوصفها حقائق نهائية."}, sections:[{title:{en:"Profile status",ar:"حالة الملف"},text:{en:"Her detailed abilities and limits will be added after the character notes receive final review.",ar:"ستُضاف تفاصيل قدراتها وحدودها بعد المراجعة النهائية لملاحظات الشخصية."}}] }
+};

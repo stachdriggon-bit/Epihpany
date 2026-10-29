@@ -36,9 +36,9 @@ test('card prototype is linked from profile and cached offline', () => {
   const html = read('index.html');
   const sw = read('service-worker.js');
   assert.match(html, /id="cards-hub"/);
-  assert.match(html, /data-cards\.js\?v=legendary-reveal-1/);
-  assert.match(html, /cards\.js\?v=legendary-reveal-2/);
-  assert.match(html, /cards\.css\?v=legendary-reveal-2/);
+  assert.match(html, /data-cards\.js\?v=card-profile-modal-1/);
+  assert.match(html, /cards\.js\?v=card-profile-modal-2/);
+  assert.match(html, /cards\.css\?v=card-profile-modal-1/);
   assert.match(html, /chip-tokens-value/);
   assert.match(sw, /\.\/data-cards\.js/);
   assert.match(sw, /\.\/cards\.js/);
@@ -132,7 +132,7 @@ test('summoning uses shared sound preferences and respects reduced motion', () =
   assert.match(css, /prefers-reduced-motion:reduce/);
   assert.match(html, /id="summon-ritual-status"/);
   assert.match(html, /app\.js\?v=[^"&]+/);
-  assert.match(html, /cards\.js\?v=legendary-reveal-2/);
+  assert.match(html, /cards\.js\?v=card-profile-modal-2/);
 });
 
 test('every character card points to an image file that exists in the repository', () => {
@@ -146,4 +146,33 @@ test('every character card points to an image file that exists in the repository
       card.id + ' (' + card.name + ') references missing image: ' + card.image
     );
   }
+});
+
+
+test('card portal filters, profiles, and detail dialog are wired accessibly', () => {
+  const html = read('index.html');
+  const js = read('cards.js');
+  const dataContext = { window: {} };
+  vm.runInNewContext(read('data-cards.js'), dataContext);
+  const profiles = dataContext.window.EPIPHANY_CARD_PROFILES;
+  for (const id of ['CHR-001','CHR-002','CHR-004','CHR-039']) {
+    assert.ok(profiles[id], id + ' should have profile notes');
+    assert.ok(profiles[id].title.en && profiles[id].title.ar);
+    assert.ok(profiles[id].summary.en && profiles[id].summary.ar);
+    for (const section of profiles[id].sections) {
+      assert.ok(section.title.en && section.title.ar);
+      assert.ok(section.text.en && section.text.ar);
+    }
+  }
+  assert.match(html, /id="cards-rarity-filters"/);
+  assert.match(html, /id="cards-type-filters"/);
+  assert.match(html, /id="cards-filter-result-count" aria-live="polite"/);
+  assert.match(js, /epiphany-card-gallery-filters-v1/);
+  assert.match(js, /data-gallery-rarity/);
+  assert.match(js, /data-gallery-type/);
+  assert.match(js, /role="dialog" aria-modal="true"/);
+  assert.match(js, /cards-detail-translate/);
+  assert.match(js, /Not documented yet/);
+  assert.match(js, /data-archive-place/);
+  assert.match(js, /EPIPHANY_OPEN_ARCHIVE_PLACE/);
 });
