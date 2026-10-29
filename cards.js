@@ -282,18 +282,23 @@
       return text&&text!==localized(profile?.summary,lang,'');
     }).map((s,i)=>({id:s.id||('profile-section-'+i),title:localized(s.title,lang,t('Notes','ملاحظات')),text:s.text,icon:s.icon||'✦',spoiler:!!s.spoiler}));
     const extra=[
+      ['appearance',profile?.appearance,t('Appearance','المظهر'),'◉'],
+      ['personality',profile?.personality,t('Personality','الشخصية'),'✧'],
+      ['background',profile?.background,t('Background and history','الخلفية والتاريخ'),'◷'],
       ['relationships',profile?.relationships,t('Relationships','العلاقات'),'◈'],
       ['places',profile?.places,t('Notable places','أماكن بارزة'),'⌖'],
       ['stories',profile?.stories,t('Story appearances','الظهور في القصص'),'▤'],
       ['timeline',profile?.timeline,t('Timeline','التسلسل الزمني'),'◷'],
       ['abilities',profile?.abilities,t('Abilities and skills','القدرات والمهارات'),'✧'],
       ['beliefs',profile?.beliefs,t('Beliefs and values','المعتقدات والقيم'),'◇'],
+      ['secrets',profile?.secrets,t('Secrets and mysteries','الأسرار والألغاز'),'◌',true],
+      ['mysteries',profile?.mysteries,t('Mysteries','الألغاز'),'◌',true],
       ['trivia',profile?.trivia,t('Trivia','معلومات إضافية'),'✦'],
       ['quotes',profile?.quotes,t('Memorable quotes','اقتباسات مميزة'),'❝']
     ];
-    extra.forEach(([id,value,title,icon])=>{
+    extra.forEach(([id,value,title,icon,spoiler])=>{
       if(!Array.isArray(value)||!value.length)return;
-      sections.push({id,title,text:value,icon});
+      sections.push({id,title,text:value,icon,spoiler:!!spoiler});
     });
     const sectionMarkup=sections.length?sections.map((s,i)=>{
       const content=Array.isArray(s.text)?'<div class="cards-detail-list">'+s.text.map(item=>'<p>'+profileValueHTML(item,lang)+'</p>').join('')+'</div>':'<p>'+profileValueHTML(s.text,lang)+'</p>';
@@ -353,7 +358,7 @@
     };
     modal.addEventListener('click',e=>{
       const translate=e.target.closest('.cards-detail-translate');
-      if(translate){arabic=!arabic;info.dir=arabic?'rtl':'ltr';info.lang=arabic?'ar':'en';modal.querySelector('.cards-detail-close')?.setAttribute('aria-label',arabic?'إغلاق تفاصيل البطاقة':'Close card details');info.innerHTML=renderDetailInfo(card,profile,owned,arabic?'ar':'en');return;}
+      if(translate){arabic=!arabic;const previousScroll=info.scrollTop;info.dir=arabic?'rtl':'ltr';info.lang=arabic?'ar':'en';modal.querySelector('.cards-detail-close')?.setAttribute('aria-label',arabic?'إغلاق تفاصيل البطاقة':'Close card details');info.innerHTML=renderDetailInfo(card,profile,owned,arabic?'ar':'en');info.scrollTop=previousScroll;info.querySelector('.cards-detail-translate')?.focus({preventScroll:true});return;}
       const place=e.target.closest('[data-archive-place]');
       if(place){const placeId=place.dataset.archivePlace;close();window.EPIPHANY_OPEN_ARCHIVE_PLACE?.(placeId);return;}
       const character=e.target.closest('[data-profile-character]');
