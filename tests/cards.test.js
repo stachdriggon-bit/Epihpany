@@ -207,7 +207,7 @@ test('character dossiers preserve the complete reviewed ability records without 
 test('card detail uses the real full card face and keeps gallery card nodes across filters', () => {
   const js = read('cards.js');
   const css = read('cards.css');
-  assert.match(js, /cardFace\(card,\{level:levelOf\(card\),noTilt:true,fullImage:true\}\)/);
+  assert.match(js, /cardFace\\(card,\\{level:levelOf\\(card\\),fullImage:true\\}\\)/);
   assert.match(js, /galleryNodeCache/);
   assert.match(js, /renderGallery\(true\)/);
   assert.match(js, /root\.replaceChildren\(fragment\)/);
