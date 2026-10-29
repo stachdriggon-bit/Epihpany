@@ -236,6 +236,59 @@ test('main navigation tabs open without uncaught page errors', async t => {
     assert.match(await grammarReviewPage.locator('#next-desc').innerText(), /past simple/i, 'grammar review recommendation should name the due pattern');
     await grammarReviewPage.close();
 
+    const cardsPage = await browser.newPage();
+    await cardsPage.setViewportSize({ width: 390, height: 844 });
+    await cardsPage.addInitScript(() => {
+      localStorage.setItem('epiphany-landing-seen', '1');
+      localStorage.setItem('epiphany-card-prototype-v1', JSON.stringify({
+        tokens:15, shards:0, owned:{'CHR-001':1,'CHR-002':1,'CHR-004':1,'CHR-039':1,'CHR-005':1},
+        cardLevels:{}, history:[], achievementRewards:{}, initialized:true
+      }));
+    });
+    cardsPage.on('pageerror', error => errors.push('card portal: ' + error.message));
+    await cardsPage.goto(baseUrl, { waitUntil: 'domcontentloaded' });
+    await dismissFirstVisitOverlays(cardsPage);
+    await clickView(cardsPage, 'profile');
+    await cardsPage.waitForSelector('#cards-rarity-filters [data-gallery-rarity="Epic"]');
+    await cardsPage.locator('#cards-rarity-filters [data-gallery-rarity="Epic"]').click();
+    await cardsPage.locator('#cards-type-filters [data-gallery-type="characters"]').click();
+    const filteredIds = await cardsPage.locator('#cards-gallery [data-gallery-card]').evaluateAll(els => els.map(el => el.dataset.galleryCard));
+    const invalidFiltered = await cardsPage.evaluate(ids => ids.filter(id => {
+      const card = window.EPIPHANY_CARD_DATA.find(item => item.id === id);
+      return !card || card.rarity !== 'Epic' || card.category !== 'characters';
+    }), filteredIds);
+    assert.deepEqual(invalidFiltered, [], 'rarity and type filters must combine');
+    await cardsPage.locator('#cards-rarity-filters [data-gallery-rarity="all"]').click();
+    await cardsPage.locator('#cards-type-filters [data-gallery-type="all"]').click();
+    const miraCard = cardsPage.locator('#cards-gallery [data-gallery-card="CHR-001"] .fcard');
+    await miraCard.click();
+    const detail = cardsPage.locator('#cards-detail-modal [role="dialog"]');
+    await detail.waitFor();
+    assert.equal(await detail.locator('#cards-detail-name').innerText(), 'Mira');
+    assert.equal(await detail.getAttribute('aria-modal'), 'true');
+    await cardsPage.locator('.cards-detail-translate').click();
+    assert.match(await detail.locator('.cards-detail-summary').innerText(), /ميرا/);
+    assert.doesNotMatch(await detail.locator('.cards-detail-summary').innerText(), /Mira is a practical guide/);
+    await cardsPage.locator('#cards-detail-modal').click({ position:{x:2,y:2} });
+    await detail.waitFor({ state:'detached' });
+    assert.equal(await miraCard.evaluate(el => document.activeElement === el), true, 'focus should return to the selected card');
+
+    await cardsPage.locator('#cards-gallery [data-gallery-card="CHR-005"] .fcard').click();
+    await cardsPage.locator('#cards-detail-modal .cards-detail-placeholder').waitFor();
+    assert.match(await cardsPage.locator('#cards-detail-modal .cards-detail-placeholder').innerText(), /Not documented yet/);
+    await cardsPage.evaluate(() => {
+      window.EPIPHANY_CARD_PROFILES['CHR-001'].sections.push({
+        title:{en:'Places',ar:'الأماكن'},
+        text:{en:[{place:'IL-LOC-01',label:'The Three-Arch Ferry'}],ar:[{place:'IL-LOC-01',label:'عبّارة الأقواس الثلاثة'}]}
+      });
+    });
+    await cardsPage.keyboard.press('Escape');
+    await cardsPage.locator('#cards-gallery [data-gallery-card="CHR-001"] .fcard').click();
+    await cardsPage.locator('#cards-detail-modal [data-archive-place="IL-LOC-01"]').click();
+    await cardsPage.waitForSelector('#chronicle-view.is-active #chronicle-content .archive-place-heading h2', {timeout:10000});
+    assert.match(await cardsPage.locator('#chronicle-content .archive-place-heading h2').innerText(), /Three-Arch Ferry/);
+    await cardsPage.close();
+
     const offlinePage = await browser.newPage();
     await offlinePage.setViewportSize({ width: 800, height: 900 });
     offlinePage.on('pageerror', error => errors.push('offline: ' + error.message));
