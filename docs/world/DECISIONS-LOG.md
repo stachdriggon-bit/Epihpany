@@ -112,3 +112,14 @@ When a decision changes:
 - Existing hand-symbol rules remain in force: the symbol reveals the restriction category only, not the exact restriction, ability, skill, or mastery. The official category names and symbol designs are not replaced by this proposal.
 - This entry records a framework for testing, not a finalized universal taxonomy or new character abilities. Revise the source document and this log when a foundational rule is explicitly accepted.
 
+
+## WD-038 — Character ability register and test-status separation
+
+**Status:** Accepted working method; individual character ability records remain provisional until explicitly approved.
+
+- Maintain [Character Ability Register](CHARACTER-ABILITY-REGISTER.md) as the central record for each character's ability, natural limits, individual restriction, trigger conditions, adaptation, test scenarios, observations, and open questions.
+- Use stable character IDs and explicit status labels. Keep hypotheses, test observations, accepted decisions, and rejected proposals distinguishable.
+- Do not infer magical access from card rarity or narrative importance; magical ability is character-specific.
+- Do not treat a story written to test an ability as a canonical event unless separately approved.
+- A failed or unexpected outcome must not automatically be attributed to an individual restriction; assess ability limits, missing information, environment, interpretation, and skill separately.
+- Mira's current entry is a provisional test record, not a finalized ability, restriction, branch assignment, or character-card update.
