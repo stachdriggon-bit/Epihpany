@@ -311,6 +311,11 @@ test('main navigation tabs open without uncaught page errors', async t => {
     await cardsPage.locator('#cards-detail-modal').waitFor({state:'detached'});
     await cardsPage.locator('#cards-gallery [data-gallery-card="CHR-001"] .fcard').click();
     const archivePlaceLink=cardsPage.locator('#cards-detail-modal [data-archive-place="IL-LOC-01"]');
+    await archivePlaceLink.waitFor({state:'attached',timeout:10000});
+    const archivePlaceSection=archivePlaceLink.locator('xpath=ancestor::details[contains(@class,"cards-detail-section")][1]');
+    if(!(await archivePlaceSection.evaluate(el=>el.open))){
+      await archivePlaceSection.locator(':scope > summary').click();
+    }
     await archivePlaceLink.waitFor({state:'visible',timeout:10000});
     await archivePlaceLink.click();
     await cardsPage.waitForSelector('#chronicle-view.is-active #chronicle-content .archive-place-heading h2', {timeout:10000});
