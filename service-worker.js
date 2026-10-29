@@ -74,7 +74,7 @@ self.addEventListener('fetch', event => {
   if (sameOrigin && request.destination === 'image') {
     const cachePromise = caches.open(CARD_ART_CACHE);
     const refresh = fetch(request).then(response => {
-      if (response && response.ok) cachePromise.then(cache => cache.put(request, response.clone()));
+      if (response && response.ok) return cachePromise.then(cache => cache.put(request, response.clone())).then(() => response);
       return response;
     }).catch(() => null);
     event.waitUntil(refresh.then(() => undefined));
