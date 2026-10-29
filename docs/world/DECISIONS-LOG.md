@@ -166,3 +166,16 @@ When a decision changes:
 - The previous fixed branch taxonomy is retired. Do not force abilities into branches; any future grouping must be an optional organizational aid derived from actual examples, not a rule limiting what magic can do.
 - The source of a particular ability and the relationship between magic and any separate energy resource remain open. Do not infer a prediction rule from personality, interests, or ancestry.
 - Keep this foundation provisional until explicitly approved as final canon. See [Foundational Sorcery Model](MAGIC-FOUNDATIONS.md).
+
+## WD-042 — Adopted sorcery and cosmic-phenomena terminology
+
+**Status:** Accepted naming decision; detailed mechanics remain open.
+
+- **Aelora Energy (طاقة أيلورا)** is the adopted name for the finite magical energy resource used in sorcery. It can be depleted and restored through rest or other means; exact methods, rates, and deeper source remain open. Tools or abilities may affect capacity, reserves, restoration, transfer, or emergency use, but such effects must be defined individually and do not grant a new basic ability by themselves.
+- **Aren (آرِن)** means the general use of Aelora Energy for sorcery by those able to use magic.
+- **Aren Art (فن آرِن)** means the individual skills, techniques, and methods a sorcerer develops. It is distinct from the energy resource and from the basic ability itself.
+- **Numera (نوميرا)** names phenomena connected to cosmic laws. It does not include every supernatural event or every unexplained occurrence by default; a specific connection must be established.
+- Keep energy depletion, ordinary fatigue, and lifespan loss associated with an attempted restriction breach conceptually separate.
+- These terms are accepted; the source of Aelora Energy, exact recovery mechanics, and the mechanisms and boundaries of individual Numera remain open.
+
+**References:** [Foundational Sorcery Model](MAGIC-FOUNDATIONS.md), [Magic and Unusual Phenomena Framework](MAGIC-AND-PHENOMENA.md), and [Cosmic Laws, Magical Restrictions, and Anomalies](COSMIC-LAWS-AND-ANOMALIES.md).

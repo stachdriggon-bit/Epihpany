@@ -10,6 +10,15 @@ EPIPHANY does not currently use a finalized universal taxonomy of sorcery branch
 
 Do not invent a rule merely to fill an open question. Keep the foundation concise and return to a specific detail when a character, story, or continuity problem makes it necessary.
 
+## Adopted terminology
+
+- **Aelora Energy (طاقة أيلورا):** The finite magical energy resource used in ordinary sorcery. It can be depleted and restored through rest or other means; the exact recovery methods and rates are not universal rules at this stage. Tools or abilities may alter capacity, provide a separate reserve, restore or transfer energy, or enable a conditional emergency burst, but such examples must be defined individually. Energy does not grant a new basic ability by itself.
+- **Aren (آرِن):** The general act of using Aelora Energy for sorcery by those able to use magic.
+- **Aren Art (فن آرِن):** The individual skills, techniques, and methods a sorcerer develops to use their ability. It describes practice and craft, not a separate source of energy or a universal branch of magic.
+- **Numera (نوميرا):** A term for phenomena connected to cosmic laws. It does not automatically cover every supernatural event, every unexplained occurrence, or every phenomenon whose cause is unknown. Whether a particular event is a Numera must be established rather than assumed.
+
+Keep **energy depletion**, **fatigue**, and **lifespan loss from an attempted restriction breach** distinct. Naming Aelora Energy does not settle its ultimate source or every detail of its mechanics.
+
 ## 2. Becoming a sorcerer
 
 The current working model is:
@@ -72,7 +81,7 @@ The exploratory note [Perception and Detection](PERCEPTION-AND-DETECTION.md) rem
 
 ## 8. Open questions deliberately left open
 
-- Whether magic uses a distinct energy resource, and how that might relate to using an ability.
+- The deeper source of Aelora Energy and the detailed rules governing its use and recovery.
 - The broader source or sources of magic, if any.
 - Whether and how abilities can be learned, borrowed, copied, inherited, or otherwise acquired beyond the basic transformation model above.
 - The detailed mechanics of any particular ability or restriction.

@@ -11,15 +11,17 @@
 - Extraordinary phenomena exist alongside recognizable geography, work, family, trade, institutions, humor, conflict, and ordinary decisions.
 - Phenomena vary by place, scale, danger, and how well people understand them.
 - Some characters can interact with or use magic, while others cannot. Magical ability is not universal; define each character's specific access, method, knowledge, and limits rather than assuming every person can cast or control magic.
+- **Aelora Energy** is the adopted name for the finite magical energy resource used in sorcery. **Aren** means the general use of that energy by sorcerers; **Aren Art** means the skills and techniques an individual develops. The name does not establish the ultimate source of the energy or a universal rule for recovery.
+- **Numera** is reserved for phenomena connected to cosmic laws. It is not a blanket term for all supernatural or unexplained events; determine the connection rather than assuming it.
 - No universal magic region, single origin for every phenomenon, or one master explanation for all mysteries is assumed.
 - The world's ultimate origin remains unresolved.
 - Myths, official records, witness accounts, and expert interpretations are not automatically objective truth.
 
 ### Still open
 The current references do **not** yet define a complete magic system. Do not assume any of the following without a separate decision:
-- a universal source or energy of magic;
+- the ultimate source of Aelora Energy or a complete explanation of how it originates;
 - the complete rules of magical access: which people can use it, whether ability can be learned, inherited, borrowed, or accessed by non-human beings, and how any such paths work. It is established that not every character can use magic;
-- costs, exhaustion, materials, gestures, words, symbols, or other requirements;
+- universal costs, exhaustion rules, materials, gestures, words, symbols, or other requirements; Aelora Energy is finite, but exact recovery methods and rates remain open;
 - whether magic can heal, revive, transform, predict, teleport, alter memory, or change time;
 - a fixed taxonomy of magical schools. The current provisional sorcery foundation is ability-first, not branch-first; see [Foundational Sorcery Model](MAGIC-FOUNDATIONS.md);
 - a universal religion, creator, ancient magical civilization, or hidden force behind all phenomena;
