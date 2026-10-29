@@ -204,7 +204,8 @@
     let list = all.filter(c => (galleryFilter === 'all' || c.category === galleryFilter) && (galleryRarity === 'all' || c.rarity === galleryRarity));
     if (!showLocked) list = list.filter(isOwned);
     list.sort((a,b) => (isOwned(b)?1:0) - (isOwned(a)?1:0) || TIER[b.rarity] - TIER[a.rarity] || a.name.localeCompare(b.name));
-    root.innerHTML = list.length ? list.map(c => {
+    const intro = !owned.length ? '<div class="cards-empty"><span>✦</span><h3>Your collection starts here</h3><p>Open your first pack to discover a character. Collected cards stay here — the dark slots below are waiting for you.</p><button type="button" class="btn btn-primary" data-view="summon">Explore packs</button></div>' : '';
+    root.innerHTML = intro + (list.length ? list.map(c => {
       if (!isOwned(c)) return '<div class="cgal-item" data-gallery-card="'+esc(c.id)+'">'+cardBack({locked:true,color:TIER_COLOR[c.rarity]})+'<div class="cgal-locked-note">'+esc(c.rarity.toUpperCase())+' · UNDISCOVERED</div></div>';
       const level = levelOf(c), maxed = level >= MAX_CARD_LEVEL;
       return '<div class="cgal-item" data-gallery-card="'+esc(c.id)+'">'+cardFace(c,{level,leveled:c.id===lastUpgraded})+'<button type="button" class="cards-upgrade-button" data-card-upgrade="'+esc(c.id)+'" '+(maxed||state.shards<UPGRADE_COST?'disabled':'')+'>'+(maxed?'Max level':'Upgrade · '+UPGRADE_COST+' shards')+'</button></div>';
