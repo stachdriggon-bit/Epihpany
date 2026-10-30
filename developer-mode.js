@@ -18,8 +18,7 @@
     const set=(id,value)=>{const el=$('#'+id);if(el)el.textContent=value;};
     set('developer-diagnostic-account',email);
     set('developer-diagnostic-access',allowed()?'Authorized':'Not authorized');
-    let cloud='Local artwork active';
-    try{if(localStorage.getItem('epiphany-character-art-cloud-ready')==='1')cloud='Cloud artwork enabled';}catch{}
+    const cloud=window.EPIPHANY_SUPABASE_CONFIG?.url?'Cloud-only (Supabase)':'Cloud URL not configured';
     set('developer-diagnostic-cloud',cloud);
     let storage='Available';
     try{const key='__epiphany_dev_check__';localStorage.setItem(key,'1');localStorage.removeItem(key);}catch{storage='Blocked'};
@@ -40,8 +39,6 @@
     const lab=$('#developer-lab');
     if(lab){
       $('#developer-tools-host')?.appendChild(lab);
-      const uploadRow=$('#developer-upload-character-art')?.closest('.developer-lab-actions');
-      if(uploadRow)$('#developer-assets-host')?.appendChild(uploadRow);
     }
     refreshEntry();
     $('#open-developer-mode')?.addEventListener('click',open);
