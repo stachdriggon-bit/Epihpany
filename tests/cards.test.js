@@ -142,7 +142,7 @@ test('every character card declares cloud storage object names for full art and 
   const characterCards = cards.filter(item => item.category === 'characters');
   assert.ok(characterCards.length > 0);
   for (const card of characterCards) {
-    assert.ok(card.image && /\.(png|jpe?g|webp)$/i.test(card.image), card.id + ' must declare a cloud original object filename');
+    assert.ok(card.image && /^[^/]+\.(png|jpe?g|webp)$/i.test(card.image), card.id + ' must declare a cloud original object filename');
     assert.ok(card.thumb && /^[^/]+\.webp$/i.test(card.thumb), card.id + ' must declare a cloud thumbnail object filename without a local path');
   }
 });
@@ -249,4 +249,4 @@ test('card artwork runtime and CI do not depend on local portrait files or thumb
   assert.doesNotMatch(sw, /Mira55\.jfif/);
   assert.match(docs, /served exclusively from the public Supabase Storage bucket/);
   assert.match(docs, /object filenames, not local file paths/);
-});;
+});
