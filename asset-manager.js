@@ -73,7 +73,7 @@
       const linked = usages.some(usage => usage.asset_id === asset.id);
       if (activeTab === 'linked' && !linked) return false;
       if (activeTab === 'issues' && asset.status !== 'issue') return false;
-      if (activeTab === 'unassigned' && linked) return false;
+      if (activeTab === 'unassigned' && (linked || asset.status !== 'unassigned')) return false;
       if (category !== 'all' && asset.category !== category) return false;
       if (query && ![asset.original_name, asset.id, asset.category, asset.status].some(value => String(value || '').toLowerCase().includes(query))) return false;
       return true;
@@ -115,6 +115,7 @@
         '<div class="asset-card-body"><div class="asset-card-top"><b>' + escapeHtml(asset.original_name) + '</b><span class="asset-status asset-status-' + escapeHtml(asset.status) + '">' + escapeHtml(asset.status) + '</span></div>' +
         '<p>' + escapeHtml(asset.category) + ' · ' + escapeHtml(size) + '</p>' +
         '<small>' + escapeHtml(asset.width || '—') + ' × ' + escapeHtml(asset.height || '—') + ' · ' + linked.length + (linked.length === 1 ? ' reference' : ' references') + '</small>' +
+        (asset.status === 'issue' && asset.metadata?.legacy_public ? '<small class="asset-legacy-warning">Legacy public file · review visibility</small>' : '') +
         '<code>' + escapeHtml(asset.id.slice(0, 8)) + '</code></div></article>';
     }));
     host.innerHTML = cards.join('');
