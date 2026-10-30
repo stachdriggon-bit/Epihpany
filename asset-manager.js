@@ -124,7 +124,7 @@
     const [assetResult, fileResult, usageResult] = await Promise.all([
       api.from('epiphany_assets').select('*').order('created_at', {ascending:false}).limit(500),
       api.from('epiphany_asset_files').select('*').order('created_at', {ascending:false}).limit(1500),
-      api.from('epiphany_asset_usages').select('*').limit(1500)
+      api.from('epiphany_asset_usages').select('asset_id,owner_type,owner_id,role,is_published,published_bucket,published_original_path,published_thumbnail_path').limit(1500)
     ]);
     const failure = assetResult.error || fileResult.error || usageResult.error;
     if (failure) {
