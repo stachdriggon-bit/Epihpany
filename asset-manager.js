@@ -246,7 +246,6 @@
       const folder = (hasAnyLinkField ? 'linked/' : 'unassigned/') + assetId + '/';
       objectPath = folder + fileName;
       thumbnailPath = folder + 'thumbnail.' + thumbnail.extension;
-      uploadedPaths.push(objectPath, thumbnailPath);
 
       const { data: created, error: createError } = await api.from('epiphany_assets').insert({
         id: assetId,
@@ -261,6 +260,7 @@
         created_by: activeUser.id
       }).select('id').single();
       if (createError) throw createError;
+      uploadedPaths.push(objectPath, thumbnailPath);
 
       const { error: uploadError } = await api.storage.from(PRIVATE_BUCKET).upload(objectPath, file, {
         cacheControl: '3600',
