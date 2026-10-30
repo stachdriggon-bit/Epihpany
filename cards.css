@@ -700,3 +700,14 @@ body[data-theme="light"] .cards-detail-dialog{--detail-panel-strip:#fff9ed}
 @media(max-width:720px){
   .cards-detail-dialog{padding-bottom:calc(28px + env(safe-area-inset-bottom))}
 }
+
+
+/* Character dossier: keep internal registry IDs out of the player-facing details window. */
+.cards-detail-info .cards-detail-id{display:none!important}
+.cards-detail-info .cards-detail-facts{align-items:stretch}
+.cards-detail-info .cards-detail-fact{min-height:66px}
+.cards-detail-info .cards-detail-section>summary{min-height:48px}
+@media(max-width:720px){
+  .cards-detail-info .cards-detail-facts{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  .cards-detail-info .cards-detail-section-body{overflow-wrap:anywhere}
+}
