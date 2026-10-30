@@ -685,3 +685,12 @@ body[data-theme="light"] .cards-detail-dialog{--detail-panel-strip:#fff9ed}
 @media(min-width:721px){
   .cards-detail-art>.fcard{width:min(100%,50svh,390px);max-width:390px}
 }
+
+
+/* Arabic typography on the illustrated card face when the dossier is translated. */
+.fcard.is-arabic .fcard-plate h3,
+.fcard.is-arabic .fcard-sub,
+.fcard.is-arabic .fcard-desc{font-family:Tahoma,Arial,sans-serif;direction:rtl;letter-spacing:0;font-style:normal}
+.fcard.is-arabic .fcard-plate h3{line-height:1.18}
+.fcard.is-arabic .fcard-sub{font-size:4.1cqw}
+.fcard.is-arabic .fcard-desc{font-size:3.7cqw}
