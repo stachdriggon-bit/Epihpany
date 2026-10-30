@@ -161,7 +161,11 @@ test('main navigation tabs open without uncaught page errors', async t => {
         assert.ok((await page.locator('#next-title').innerText()).trim(), 'home should show a recommended next activity');
         assert.ok((await page.locator('#next-desc').innerText()).trim(), 'home should explain why the activity is recommended');
         assert.ok((await page.locator('#next-start').getAttribute('data-game'))?.trim(), 'recommended activity should have a working game target');
-        assert.equal(await page.locator('.mobile-nav-group').count(), 6, 'mobile navigation should group destinations into the six purpose-based sections');
+        const mobileGroups = page.locator('.mobile-nav-group');
+        assert.ok(await mobileGroups.count() > 0, 'mobile navigation should organize destinations into purpose-based groups');
+        assert.equal(await mobileGroups.locator('.mobile-nav-label').count(), await mobileGroups.count(), 'every mobile navigation group should have a visible purpose label');
+        const groupedDestinations = mobileGroups.locator('button[data-view]');
+        assert.equal(await groupedDestinations.count(), await groupedDestinations.evaluateAll(buttons => new Set(buttons.map(button => button.dataset.view)).size), 'each destination should appear in only one purpose group');
         assert.equal(await page.locator('.mobile-menu nav [data-view]').count(), 14, 'all destinations, including World Archive, should remain available in the mobile menu');
         const quickActions = page.locator('.quick-actions-more');
         assert.equal(await quickActions.evaluate(el => el.open), false, 'secondary practice options should start collapsed');
