@@ -590,8 +590,46 @@
     if(error)throw error;return data||[];
   }
 
+  async function migrateCharacterArtAssets(onProgress = () => {}) {
+    if (!client || !currentUser || !isDeveloperAccount()) throw new Error('Sign in with an approved developer account first.');
+    const cards = Array.isArray(window.EPIPHANY_CARD_DATA) ? window.EPIPHANY_CARD_DATA : [];
+    const assets = new Map();
+    for (const card of cards) {
+      if (card && card.image) {
+        const source = String(card.image);
+        assets.set('originals/' + source.split('/').pop(), source);
+      }
+      if (card && card.thumb) {
+        const source = String(card.thumb);
+        assets.set('thumbs/' + source.split('/').pop(), source);
+      }
+    }
+    const entries = [...assets.entries()];
+    let completed = 0;
+    const failures = [];
+    for (const [target, source] of entries) {
+      try {
+        const response = await fetch(new URL(source, document.baseURI).href, {cache:'no-cache'});
+        if (!response.ok) throw new Error('Source image returned HTTP ' + response.status);
+        const blob = await response.blob();
+        const ext = target.split('.').pop().toLowerCase();
+        const mime = blob.type || ({png:'image/png',jpg:'image/jpeg',jpeg:'image/jpeg',webp:'image/webp',avif:'image/avif'}[ext] || 'application/octet-stream');
+        const {error} = await client.storage.from('character-art').upload(target, blob, {
+          upsert:true, cacheControl:'31536000', contentType:mime
+        });
+        if (error) throw error;
+      } catch (error) {
+        failures.push({source,target,message:error && error.message ? error.message : String(error)});
+      }
+      completed++;
+      onProgress({completed,total:entries.length,failed:failures.length,current:source});
+    }
+    return {total:entries.length,uploaded:entries.length-failures.length,failures};
+  }
+
   window.EpiphanyAuth = {
     isDeveloper: isDeveloperAccount,
+    migrateCharacterArtAssets,
     getDeveloperEmail: () => isDeveloperAccount() ? String(currentUser.email).trim().toLowerCase() : '',
     saveStory: saveStoryToCloud,
     listMyStories: listMyCloudStories,
