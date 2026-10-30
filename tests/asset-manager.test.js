@@ -42,3 +42,15 @@ test('developer-only asset access is exposed through the existing account sessio
   assert.match(account, /getAssetManagerUser: \(\) => isDeveloperAccount\(\) && currentUser/);
   assert.match(manager, /window\.EpiphanyAuth\?\.getAssetManagerClient/);
 });
+
+test('legacy character artwork indexing is additive and repeatable', () => {
+  const manager = read('asset-manager.js');
+  const html = read('index.html');
+  assert.match(html, /id="asset-import-legacy"/);
+  assert.match(manager, /legacy_key/);
+  assert.match(manager, /existingFiles/);
+  assert.match(manager, /existingUsages/);
+  const importer = manager.slice(manager.indexOf('async function importLegacyCharacterArt'), manager.indexOf('function init()'));
+  assert.doesNotMatch(importer, /\.remove\s*\(/);
+  assert.doesNotMatch(importer, /\.move\s*\(/);
+});
