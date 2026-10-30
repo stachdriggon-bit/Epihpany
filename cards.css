@@ -531,7 +531,7 @@ body.cards-modal-open{overflow:hidden}
 .cards-detail-spoiler>summary{color:var(--detail-glow);font-weight:800;cursor:pointer}
 .cards-detail-placeholder{padding:14px;border:1px dashed #ffffff35;border-radius:12px;color:#ded3e9;font:600 14px/1.6 "DM Sans",sans-serif}
 .cards-detail-info[dir="rtl"]{padding:0 0 20px 10px;text-align:right;font-family:"Cairo","Tahoma",sans-serif}
-.cards-detail-info[dir="rtl"] .cards-detail-tools{padding:8px 0 12px 48px}
+.cards-detail-info[dir="rtl"] .cards-detail-tools{padding:8px 48px 12px 0}
 .cards-detail-info[dir="rtl"] .cards-detail-kicker,.cards-detail-info[dir="rtl"] .cards-detail-fact span{letter-spacing:0}
 .cards-detail-info[dir="rtl"] .cards-detail-header h2{font-family:"Cairo","Tahoma",sans-serif}
 .cards-detail-info[dir="rtl"] .cards-detail-role{font-family:"Cairo","Tahoma",sans-serif;font-size:18px;font-style:normal}
