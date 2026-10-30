@@ -239,6 +239,8 @@ test('main navigation tabs open without uncaught page errors', async t => {
     const cardsPage = await browser.newPage();
     await cardsPage.setViewportSize({ width: 390, height: 844 });
     await cardsPage.addInitScript(() => {
+      // Keep the browser smoke test deterministic even when external config loading is delayed.
+      window.EPIPHANY_SUPABASE_CONFIG = {url:'https://pqxkmtowialpjwehvuyb.supabase.co'};
       window.__cardLongTasks = [];
       try { new PerformanceObserver(list => window.__cardLongTasks.push(...list.getEntries().map(entry => entry.duration))).observe({type:'longtask', buffered:true}); } catch {}
       localStorage.setItem('epiphany-landing-seen', '1');
