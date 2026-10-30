@@ -3663,3 +3663,10 @@ body.world-fullscreen #world-game .world-help-panel[hidden]{display:none!importa
     border-radius:12px;
   }
 }
+
+
+/* Keep the mobile quick bar below real dialogs, sheets and full-screen activities. */
+@media(max-width:820px){
+  .bottom-nav{z-index:40}
+  .toast{z-index:80}
+}
