@@ -25,8 +25,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Cairo:wght@500;700&family=DM+Sans:wght@400;500;700&family=Cinzel:wght@600;700&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=mobile-touch-targets-20261030-2"><link rel="stylesheet" href="cards.css?v=character-dossier-20261030-1">
-  <link rel="stylesheet" href="resonance.css?v=resonance-chapters-2-5">
+  <link rel="stylesheet" href="style.css?v=interface-polish-20261030-1"><link rel="stylesheet" href="cards.css?v=character-dossier-20261030-1">
+  <link rel="stylesheet" href="resonance.css?v=resonance-touch-20261030-1">
   <link rel="stylesheet" href="life-skills.css?v=calm-studio-20261025">
   <script src="data.js?v=7f0faa36" defer></script>
   <script src="data-mistakes.js?v=e7fd865a" defer></script>
@@ -46,7 +46,7 @@
   <script src="data-cards.js?v=card-codex-20261029-1" defer></script>
   <script src="data-character-profiles.js?v=mira-canon-profile-20261030-1" defer></script>
   <script src="cards.js?v=codex-translation-20261030-2" defer></script>
-  <script src="navigation-enhancements.js?v=world-archive-pilot-1" defer></script>
+  <script src="navigation-enhancements.js?v=interface-polish-20261030-1" defer></script>
   <script src="developer-mode.js?v=1" defer></script>
 <script>
   /* Returning visitors skip the landing page: it is only for the very first visit. */
@@ -160,13 +160,14 @@
       <button class="tab nav-home" data-view="home" aria-current="page"><svg><use href="#i-path"/></svg><span>Start learning</span></button>
       <details class="nav-group">
         <summary><span aria-hidden="true">📚</span><span>Learn</span><svg class="nav-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 10 5 5 5-5"/></svg></summary>
-        <div class="nav-submenu"><button class="tab" data-view="stories">📖 Stories <small>Learn through choices</small></button><button class="tab" data-view="chronicle">🗺 World Archive <small>Explore places and events</small></button><button class="tab" data-view="resonance">〰 The Resonance <small>Visual mystery investigation</small></button></div>
+        <div class="nav-submenu"><button class="tab" data-view="stories">📖 Stories <small>Learn through choices</small></button></div>
       </details>
       <details class="nav-group">
         <summary><span aria-hidden="true">🎮</span><span>Play &amp; think</span><svg class="nav-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 10 5 5 5-5"/></svg></summary>
         <div class="nav-submenu"><button class="tab" data-view="arcade">🎮 Arcade <small>Mini-games and challenges</small></button><button class="tab" data-view="thinklab">⌕ Think Lab <small>Reasoning and language puzzles</small></button></div>
       </details>
       <button class="tab nav-summon" data-view="summon"><span aria-hidden="true">✦</span><span>Card Portal</span></button>
+      <details class="nav-group"><summary><span aria-hidden="true">⌖</span><span>Explore</span><svg class="nav-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 10 5 5 5-5"/></svg></summary><div class="nav-submenu"><button class="tab" data-view="chronicle">🗺 World Archive <small>Explore places and events</small></button><button class="tab" data-view="resonance">〰 The Resonance <small>Visual mystery investigation</small></button></div></details>
       <details class="nav-group">
         <summary><span aria-hidden="true">🌍</span><span>Real life</span><svg class="nav-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 10 5 5 5-5"/></svg></summary>
         <div class="nav-submenu"><button class="tab" data-view="world">🌍 World <small>Practice everyday situations</small></button><button class="tab" data-view="lifeskills">✳ Life Skills <small>Communication and life skills</small></button></div>
@@ -180,7 +181,8 @@
 
     <details class="mobile-menu"><summary aria-label="Open navigation menu" title="Menu"><span></span><span></span><span></span></summary><nav aria-label="Mobile navigation">
       <button class="tab mobile-nav-home" data-view="home">⌂ <span>Start learning</span></button>
-      <div class="mobile-nav-group"><span class="mobile-nav-label">LEARN</span><button class="tab" data-view="stories">📖 <span>Stories</span></button><button class="tab" data-view="chronicle">🗺 <span>World Archive</span></button><button class="tab" data-view="resonance">〰 <span>The Resonance</span></button></div>
+      <div class="mobile-nav-group"><span class="mobile-nav-label">LEARN</span><button class="tab" data-view="stories">📖 <span>Stories</span></button></div>
+      <div class="mobile-nav-group"><span class="mobile-nav-label">EXPLORE</span><button class="tab" data-view="chronicle">🗺 <span>World Archive</span></button><button class="tab" data-view="resonance">〰 <span>The Resonance</span></button></div>
       <div class="mobile-nav-group"><span class="mobile-nav-label">PLAY &amp; THINK</span><button class="tab" data-view="arcade">🎮 <span>Arcade</span></button><button class="tab" data-view="thinklab">⌕ <span>Think Lab</span></button></div>
       <div class="mobile-nav-group"><span class="mobile-nav-label">COLLECT</span><button class="tab" data-view="summon">✦ <span>Card Portal</span></button></div>
       <div class="mobile-nav-group"><span class="mobile-nav-label">REAL LIFE</span><button class="tab" data-view="world">🌍 <span>World</span></button><button class="tab" data-view="lifeskills">✳ <span>Life Skills</span></button></div>
