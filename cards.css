@@ -625,3 +625,63 @@ body[data-theme="light"] .cards-detail-placeholder{color:#5b4d61;border-color:#9
   .cards-detail-art{min-height:420px;padding:20px 10px}
   .cards-detail-art>.fcard{max-width:320px}
 }
+
+
+/* Final codex dialog polish: keep overlays above app navigation and align content. */
+.cards-detail-backdrop{z-index:10050}
+.cards-detail-dialog{align-items:center}
+.cards-detail-art{
+  align-self:center;
+  height:min(72svh,610px);
+  min-height:0;
+  padding:20px 12px;
+}
+.cards-detail-art>.fcard{width:min(100%,50svh,390px);max-width:390px}
+.cards-detail-dialog{--detail-panel-strip:#1c1b35}
+.cards-detail-tools,.cards-detail-index{
+  background:var(--detail-panel-strip)!important;
+  backdrop-filter:none;
+  -webkit-backdrop-filter:none;
+}
+.cards-detail-translate{min-height:44px;margin-inline-end:12px}
+.cards-detail-index{
+  position:relative;
+  mask-image:linear-gradient(to right,#000 0,#000 calc(100% - 28px),transparent 100%);
+  -webkit-mask-image:linear-gradient(to right,#000 0,#000 calc(100% - 28px),transparent 100%);
+}
+.cards-detail-info[dir="rtl"] .cards-detail-index{
+  mask-image:linear-gradient(to left,#000 0,#000 calc(100% - 28px),transparent 100%);
+  -webkit-mask-image:linear-gradient(to left,#000 0,#000 calc(100% - 28px),transparent 100%);
+}
+body[data-theme="light"] .cards-detail-dialog{--detail-panel-strip:#fff9ed}
+@media(max-width:720px){
+  .cards-detail-backdrop{z-index:10050}
+  .cards-detail-dialog{
+    align-items:stretch;
+    gap:16px;
+    padding:60px 14px 28px;
+  }
+  .cards-detail-art{
+    width:min(100%,300px);
+    height:auto;
+    min-height:0;
+    padding:12px;
+  }
+  .cards-detail-art>.fcard{width:min(100%,58vw,220px);max-width:220px}
+  .cards-detail-info{
+    display:flex;
+    flex-direction:column;
+    gap:0;
+  }
+  .cards-detail-header{order:1;padding-top:0}
+  .cards-detail-tools{order:2;margin-top:10px;padding:8px 48px 12px 0}
+  .cards-detail-facts{order:3}
+  .cards-detail-ornament{order:4}
+  .cards-detail-index{order:5;top:0}
+  .cards-detail-sections{order:6}
+  .cards-detail-translate{margin-inline-end:8px}
+  .cards-detail-info[dir="rtl"] .cards-detail-tools{padding:8px 0 12px 48px}
+}
+@media(min-width:721px){
+  .cards-detail-art>.fcard{width:min(100%,50svh,390px);max-width:390px}
+}
