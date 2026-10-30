@@ -279,7 +279,8 @@ test('main navigation tabs open without uncaught page errors', async t => {
     await cardsPage.locator('#cards-type-filters [data-gallery-type="all"]').click();
     assert.equal(await cardsPage.evaluate(() => document.querySelector('#cards-gallery [data-gallery-card="CHR-001"]') === window.__miraGalleryNode), true, 'filter changes must preserve existing card node identity');
     const galleryMiraImage = cardsPage.locator('#cards-gallery [data-gallery-card="CHR-001"] .fcard-portrait-image');
-    assert.ok(String(await galleryMiraImage.getAttribute('data-cloud-src')).includes('/thumbs/'), 'gallery should request the Supabase thumbnail object');
+    assert.equal(await galleryMiraImage.getAttribute('src'), await galleryMiraImage.getAttribute('data-local-fallback'), 'gallery must use the repository thumbnail until cloud migration is complete');
+    assert.ok(String(await galleryMiraImage.getAttribute('data-cloud-src')).includes('/thumbs/'), 'gallery should retain the future Supabase thumbnail URL without requesting it');
     const miraCard = cardsPage.locator('#cards-gallery [data-gallery-card="CHR-001"] .fcard');
     await miraCard.click();
     const detail = cardsPage.locator('#cards-detail-modal [role="dialog"]');
@@ -294,8 +295,9 @@ test('main navigation tabs open without uncaught page errors', async t => {
     const modalArtSrc = await modalArt.getAttribute('data-cloud-src');
     const localArtFallback = await modalArt.getAttribute('data-local-fallback');
     const expectedFullArt = await cardsPage.evaluate(() => window.EPIPHANY_CARD_DATA.find(card => card.id === 'CHR-001').image);
-    assert.ok(modalArtSrc.includes('/character-art/originals/'), 'the modal should request the full-size cloud card art');
-    assert.equal(localArtFallback, expectedFullArt, 'the modal must retain the original repository image as a fallback until cloud migration is complete');
+    assert.ok(modalArtSrc.includes('/character-art/originals/'), 'the modal should retain the future full-size cloud card art URL');
+    assert.equal(await modalArt.getAttribute('src'), expectedFullArt, 'the modal must use the repository image until cloud migration is complete');
+    assert.equal(localArtFallback, expectedFullArt, 'the modal must retain the original repository image as its local source');
     await cardsPage.locator('.cards-detail-translate').click();
     assert.equal(await detail.locator('#cards-detail-name').innerText(), 'ميرا', 'character name should translate in place');
     assert.match(await detail.locator('.cards-detail-summary').innerText(), /دليلة عملية/);
