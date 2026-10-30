@@ -33,6 +33,7 @@ jobs:
           node --check app.js
           node --check cards.js
           node --check data-cards.js
+          node --check data-character-profiles.js
           node --check service-worker.js
           node --check navigation-enhancements.js
           node --check data.js
