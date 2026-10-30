@@ -70,22 +70,19 @@
     const file = characterArtStorageFilename(path).split('/').map(encodeURIComponent).join('/');
     return base.replace(/\/$/,'') + '/storage/v1/object/public/character-art/' + folder + '/' + file;
   };
-  const cloudArtEnabled = () => {
-    if (window.EPIPHANY_SUPABASE_CONFIG?.characterArtCloudReady === true) return true;
-    try { return localStorage.getItem('epiphany-character-art-cloud-ready') === '1'; } catch { return false; }
-  };
+  // Character artwork is served exclusively from Supabase Storage.
+  // Repository image paths are retained only as storage object filenames.
   const cardArtSource = (card, opts={}) => {
-    const localPath = opts.fullImage ? card.image : (card.thumb || card.image);
+    const storagePath = opts.fullImage ? card.image : (card.thumb || card.image);
     const folder = opts.fullImage ? 'originals' : 'thumbs';
-    const cloudPath = characterArtUrl(localPath, folder);
-    return {localPath,cloudPath,source:cloudArtEnabled() && cloudPath ? cloudPath : localPath};
+    return characterArtUrl(storagePath, folder);
   };
   const artMarkup = (card, opts={}) => {
     if (!card.image) return card.art
       ? '<svg class="fcard-portrait" viewBox="0 0 240 300" preserveAspectRatio="xMidYMin slice" focusable="false"><use href="'+PORTRAITS+'#'+esc(card.art)+'"></use></svg>'
       : '<div class="fcard-sigil-art">'+svgUse('ring','back-sigil','0 0 120 120')+svgUse('ring r2','back-sigil','0 0 120 120')+'<b>'+esc(card.symbol)+'</b></div>';
-    const {localPath,cloudPath,source} = cardArtSource(card,opts);
-    return '<img class="fcard-portrait fcard-portrait-image" src="'+esc(source)+'" data-cloud-src="'+esc(cloudPath)+'" data-local-fallback="'+esc(localPath)+'" '+(opts.fullImage?'fetchpriority="high"':'fetchpriority="low"')+' width="240" height="300" alt="" loading="'+(opts.fullImage?'eager':'lazy')+'" decoding="async">';
+    const cloudPath = cardArtSource(card,opts);
+    return '<img class="fcard-portrait fcard-portrait-image" src="'+esc(cloudPath)+'" data-cloud-src="'+esc(cloudPath)+'" '+(opts.fullImage?'fetchpriority="high"':'fetchpriority="low"')+' width="240" height="300" alt="" loading="'+(opts.fullImage?'eager':'lazy')+'" decoding="async">';
   };
 
   // opts: level, count, featured, noTilt, leveled
@@ -341,15 +338,15 @@
   let cardDetailTrigger=null, cardDetailReturnRect=null;
   const preloadCardArt=id=>{
     const card=data().find(c=>c.id===id);if(!card?.image||!isOwned(card))return;
-    const {source}=cardArtSource(card);
-    if(!source)return;
+    const cloudPath=cardArtSource(card);
+    if(!cloudPath)return;
     if(!window.__epiphanyCardPreloads)window.__epiphanyCardPreloads=new Set();
-    if(window.__epiphanyCardPreloads.has(source))return;
-    window.__epiphanyCardPreloads.add(source);
+    if(window.__epiphanyCardPreloads.has(cloudPath))return;
+    window.__epiphanyCardPreloads.add(cloudPath);
     const image=new Image();
     image.decoding='async';
     image.fetchPriority='low';
-    image.src=source;
+    image.src=cloudPath;
   };
   const openCardDetail=(id,trigger)=>{
     const card=data().find(c=>c.id===id);if(!card)return;
@@ -691,21 +688,20 @@
     document.addEventListener('load',e=>{if(e.target?.matches?.('.fcard-portrait-image'))e.target.classList.add('is-loaded');},true);
     document.addEventListener('error',e=>{
       const image=e.target;
-      if(!image?.matches?.('.fcard-portrait-image')||image.dataset.localFallbackTried==='1')return;
-      image.dataset.localFallbackTried='1';
-      const fallback=image.dataset.localFallback;
-      if(image.dataset.cloudSrc && image.currentSrc && image.currentSrc.startsWith(image.dataset.cloudSrc.split('?')[0])){
-        try{
-          const key='epiphany-character-art-fallback-stats-v1';
-          const stats=JSON.parse(localStorage.getItem(key)||'{"count":0,"recent":[]}');
-          stats.count=(Number(stats.count)||0)+1; stats.lastAt=new Date().toISOString();
-          stats.lastSource=fallback||'unknown'; stats.recent=Array.isArray(stats.recent)?stats.recent:[];
-          stats.recent.unshift({at:stats.lastAt,source:fallback||'unknown',cloud:image.dataset.cloudSrc});
-          stats.recent=stats.recent.slice(0,30); localStorage.setItem(key,JSON.stringify(stats));
-          window.dispatchEvent(new CustomEvent('epiphany:character-art-fallback',{detail:{source:fallback,cloud:image.dataset.cloudSrc}}));
-        }catch(_){}
-      }
-      if(fallback)image.src=fallback;
+      if(!image?.matches?.('.fcard-portrait-image')||image.dataset.cloudErrorRecorded==='1')return;
+      image.dataset.cloudErrorRecorded='1';
+      image.classList.add('is-art-unavailable');
+      try{
+        const key='epiphany-character-art-cloud-errors-v1';
+        const stats=JSON.parse(localStorage.getItem(key)||'{"count":0,"recent":[]}');
+        stats.count=(Number(stats.count)||0)+1;
+        stats.lastAt=new Date().toISOString();
+        stats.recent=Array.isArray(stats.recent)?stats.recent:[];
+        stats.recent.unshift({at:stats.lastAt,cloud:image.dataset.cloudSrc||image.currentSrc||image.src});
+        stats.recent=stats.recent.slice(0,30);
+        localStorage.setItem(key,JSON.stringify(stats));
+        window.dispatchEvent(new CustomEvent('epiphany:character-art-cloud-error',{detail:{cloud:image.dataset.cloudSrc||image.currentSrc||image.src}}));
+      }catch(_){}
     },true);
     renderFeatured();renderGallery();updateCounts();renderOdds(selectedPack());
     $('cards-history-clear')?.addEventListener('click',()=>{state.history=[];save();renderHistory();});
