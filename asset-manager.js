@@ -5,7 +5,6 @@
   const PRIVATE_BUCKET = 'epiphany-assets-private';
   const MAX_BYTES = 12 * 1024 * 1024;
   const MIME_TYPES = new Set(['image/png', 'image/jpeg', 'image/webp']);
-  const CATEGORIES = ['characters', 'stories', 'world', 'cards', 'interface', 'other'];
   const $ = (id) => document.getElementById(id);
   const root = () => $('asset-manager');
   let activeTab = 'library';
@@ -99,8 +98,7 @@
     }
     host.innerHTML = '<div class="asset-loading">Preparing previews…</div>';
     const cards = await Promise.all(list.map(async asset => {
-      const url = await previewFor(asset);
-      const linked = usages.filter(usage => usage.asset_id === asset.id);
+      let url = '';\n      try { url = await previewFor(asset); } catch {}\n      const linked = usages.filter(usage => usage.asset_id === asset.id);
       const size = (Number(asset.size_bytes) / 1024 / 1024).toFixed(2) + ' MB';
       return '<article class="asset-card" data-asset-id="' + escapeHtml(asset.id) + '">' +
         (url ? '<img class="asset-card-preview" src="' + escapeHtml(url) + '" alt="" loading="lazy">' : '<div class="asset-card-placeholder"><span>▧</span></div>') +
@@ -135,7 +133,7 @@
     files = fileResult.data || [];
     usages = usageResult.data || [];
     setStatus('Library ready · ' + assets.length + ' registered assets.', 'success');
-    renderAssets();
+    await renderAssets();
   }
 
   function dimensions(file) {
@@ -267,14 +265,27 @@
     } catch (error) {
       let cleanupMessage = '';
       if (assetId) {
+        let safeToDeleteRecord = true;
         if (uploaded && objectPath) {
           const { error: removeError } = await api.storage.from(PRIVATE_BUCKET).remove([objectPath]);
-          if (removeError) cleanupMessage = ' The uploaded file could not be cleaned up automatically; it needs review.';
+          if (removeError) {
+            safeToDeleteRecord = false;
+            cleanupMessage = ' The uploaded file could not be cleaned up automatically; its record was retained for review.';
+            await api.from('epiphany_assets').update({
+              status: 'issue',
+              metadata: { orphaned_private_bucket: PRIVATE_BUCKET, orphaned_private_path: objectPath, cleanup_error: removeError.message || 'Storage cleanup failed.' }
+            }).eq('id', assetId);
+          }
         }
-        await api.from('epiphany_asset_usages').delete().eq('asset_id', assetId);
-        await api.from('epiphany_asset_files').delete().eq('asset_id', assetId);
-        const { error: deleteError } = await api.from('epiphany_assets').delete().eq('id', assetId);
-        if (deleteError) cleanupMessage += ' The incomplete asset record needs review.';
+        if (safeToDeleteRecord) {
+          await api.from('epiphany_asset_usages').delete().eq('asset_id', assetId);
+          await api.from('epiphany_asset_files').delete().eq('asset_id', assetId);
+          const { error: deleteError } = await api.from('epiphany_assets').delete().eq('id', assetId);
+          if (deleteError) {
+            cleanupMessage += ' The incomplete asset record needs review.';
+            await api.from('epiphany_assets').update({status:'issue'}).eq('id', assetId);
+          }
+        }
       }
       setStatus((error?.message || 'Upload failed.') + cleanupMessage, 'error');
       await loadAssets();
