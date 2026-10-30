@@ -35,3 +35,33 @@ test('canonical character profile override loads after card catalog and is cache
   assert.ok(html.indexOf('data-character-profiles.js') < html.indexOf('src="cards.js'));
   assert.match(sw, /\.\/data-character-profiles\.js/);
 });
+
+
+test('Veyra canonical profile follows the shared bilingual Character Details structure', () => {
+  const context = {window:{}};
+  vm.runInNewContext(read('data-cards.js'), context);
+  vm.runInNewContext(read('data-character-profiles.js'), context);
+  const profile = context.window.EPIPHANY_CARD_PROFILES['CHR-039'];
+  assert.ok(profile, 'Veyra profile should exist');
+  assert.equal(profile.name.en, 'Veyra');
+  assert.equal(profile.name.ar, 'فييرا');
+  assert.equal(profile.title.en, 'Pattern Detective');
+  assert.equal(profile.facts.find(f => f.label.en === 'Species').value.en, 'Not documented yet');
+  assert.equal(profile.facts.find(f => f.label.en === 'Age').value.en, 'Not documented yet');
+  assert.equal(profile.facts.find(f => f.label.en === 'Homeland').value.en, 'Willowmere · Eiraven · Ilmar');
+  assert.equal(profile.facts.find(f => f.label.en === 'Current residence').value.en, 'Not documented yet');
+  const expected = ['overview','personality','motivation','abilities','limits','backstory','story-role','relationships','places','quote'];
+  assert.deepEqual(profile.sections.map(section => section.id), expected);
+  for (const section of profile.sections) {
+    assert.ok(section.title.en && section.title.ar, section.id + ' needs bilingual titles');
+    const entries = Array.isArray(section.text) ? section.text : [section.text];
+    for (const entry of entries) {
+      const text = entry.text || entry;
+      assert.ok(text.en, section.id + ' needs English content');
+      assert.ok(text.ar, section.id + ' needs Arabic content');
+    }
+  }
+  const card = context.window.EPIPHANY_CARD_DATA.find(item => item.id === 'CHR-039');
+  assert.equal(card.rarity, 'Common');
+  assert.equal(card.title, 'Pattern Detective');
+});
