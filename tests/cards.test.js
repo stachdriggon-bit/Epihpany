@@ -143,7 +143,7 @@ test('every character card declares cloud storage object names for full art and 
   assert.ok(characterCards.length > 0);
   for (const card of characterCards) {
     assert.ok(card.image && /\.(png|jpe?g|webp)$/i.test(card.image), card.id + ' must declare a cloud original object filename');
-    assert.ok(card.thumb && /^assets\/cards\/art\/thumb\/[^/]+\.webp$/i.test(card.thumb), card.id + ' must declare a cloud thumbnail object path');
+    assert.ok(card.thumb && /^[^/]+\.webp$/i.test(card.thumb), card.id + ' must declare a cloud thumbnail object filename without a local path');
   }
 });
 
@@ -235,12 +235,18 @@ test('card detail uses the real full card face and keeps gallery card nodes acro
   assert.match(read('service-worker.js'), /assets\/cards\/card-ornaments\.svg/);
 });
 
-test('card art thumbnail tooling is available without adding a runtime dependency', () => {
-  const script = read('tools/make-card-thumbs.py');
+test('card artwork runtime and CI do not depend on local portrait files or thumbnail generation', () => {
+  const account = read('account.js');
+  const cards = read('cards.js');
+  const html = read('index.html');
+  const workflow = read('.github/workflows/test.yml');
+  const sw = read('service-worker.js');
   const docs = read('docs/card-art-prompts.md');
-  assert.match(script, /Image\.Resampling\.LANCZOS/);
-  assert.match(script, /quality=78/);
-  assert.match(script, /assets\/cards\/art\/thumb/);
-  assert.match(docs, /python tools\/make-card-thumbs\.py/);
-  assert.match(docs, /detail dossier and reveal experience use this full image/);
-});
+  assert.doesNotMatch(account, /migrateCharacterArtAssets|developer-upload-character-art|storage\.from\('character-art'\)\.upload|new URL\(asset\.source/);
+  assert.doesNotMatch(cards, /MIRA_SHEET|data-local-fallback|localFallback|cloudArtEnabled/);
+  assert.doesNotMatch(html, /developer-upload-character-art|Upload \/ resume missing artwork/);
+  assert.doesNotMatch(workflow, /make-card-thumbs|Pillow|assets\/cards\/art\/thumb/);
+  assert.doesNotMatch(sw, /Mira55\.jfif/);
+  assert.match(docs, /served exclusively from the public Supabase Storage bucket/);
+  assert.match(docs, /object filenames, not local file paths/);
+});;
