@@ -618,10 +618,10 @@
     const host=$('developer-art-report'); if(!host)return;
     if(!report){host.innerHTML='<p class="developer-art-empty">No migration report yet. Run a scan to inspect the cloud bucket.</p>';return;}
     const counts=report.assets.reduce((a,x)=>{a[x.status]=(a[x.status]||0)+1;return a;},{});
-    const total=report.assets.length,loadOk=counts.load_ok||0,loadFailed=counts.load_failed||0,verified=report.assets.filter(x=>x.bucketStatus==='verified'||x.status==='verified'||x.status==='load_ok'||x.status==='load_failed').length,failed=counts.failed||0,missing=counts.missing||0; const fallbackStats=readCharacterArtFallbackStats();
+    const total=report.assets.length,loadOk=counts.load_ok||0,loadFailed=counts.load_failed||0,verified=report.assets.filter(x=>x.bucketStatus==='verified'||x.status==='verified'||x.status==='load_ok'||x.status==='load_failed').length,failed=counts.failed||0,missing=counts.missing||0; const cloudErrors=readCharacterArtCloudErrors();
     const pct=total?Math.round(verified/total*100):0;
     const rows=report.assets.filter(x=>['missing','failed','load_failed'].includes(x.status)).slice(0,80).map(x=>'<tr><td>'+String(x.kind).replace(/[&<>"]/g,'')+'</td><td>'+String(x.source).replace(/[&<>"]/g,'')+'</td><td><code>'+String(x.target).replace(/[&<>"]/g,'')+'</code></td><td>'+String(x.status).replace(/[&<>"]/g,'')+'</td><td>'+String(x.message||'—').replace(/[&<>"]/g,'')+'</td></tr>').join('');
-    host.innerHTML='<div class="developer-art-summary"><div><b>'+verified+' / '+total+'</b><small>Found in bucket</small></div><div><b>'+loadOk+' / '+total+'</b><small>Loaded over HTTP</small></div><div><b>'+loadFailed+'</b><small>Load failures</small></div><div><b>'+fallbackStats.count+'</b><small>Local fallbacks</small></div></div><div class="developer-art-meta">Missing: '+missing+' · Upload failures: '+failed+' · Bucket coverage: '+pct+'%</div><div class="developer-art-progress"><span style="width:'+pct+'%"></span></div><p class="developer-art-meta">Last checked: '+new Date(report.updatedAt||Date.now()).toLocaleString()+' · '+(report.bucket||'character-art')+' · '+(report.mode||'scan')+'</p>'+(report.note?'<p class="developer-art-note">'+String(report.note).replace(/[&<>"]/g,'')+'</p>':'')+(rows?'<details open><summary>Items needing attention ('+(missing+failed+loadFailed)+')</summary><div class="developer-art-table-wrap"><table class="developer-art-table"><thead><tr><th>Type</th><th>Local source</th><th>Cloud key</th><th>Status</th><th>Details</th></tr></thead><tbody>'+rows+'</tbody></table></div></details>':'<p class="developer-art-success">'+(report.mode==='HTTP image-load verification'?'All tested cloud images loaded successfully.':'All expected artwork objects are present in cloud storage.')+'</p>');
+    host.innerHTML='<div class="developer-art-summary"><div><b>'+verified+' / '+total+'</b><small>Found in bucket</small></div><div><b>'+loadOk+' / '+total+'</b><small>Loaded over HTTP</small></div><div><b>'+loadFailed+'</b><small>Load failures</small></div><div><b>'+cloudErrors.count+'</b><small>Cloud image errors</small></div></div><div class="developer-art-meta">Missing: '+missing+' · Upload failures: '+failed+' · Bucket coverage: '+pct+'%</div><div class="developer-art-progress"><span style="width:'+pct+'%"></span></div><p class="developer-art-meta">Last checked: '+new Date(report.updatedAt||Date.now()).toLocaleString()+' · '+(report.bucket||'character-art')+' · '+(report.mode||'scan')+'</p>'+(report.note?'<p class="developer-art-note">'+String(report.note).replace(/[&<>"]/g,'')+'</p>':'')+(rows?'<details open><summary>Items needing attention ('+(missing+failed+loadFailed)+')</summary><div class="developer-art-table-wrap"><table class="developer-art-table"><thead><tr><th>Type</th><th>Local source</th><th>Cloud key</th><th>Status</th><th>Details</th></tr></thead><tbody>'+rows+'</tbody></table></div></details>':'<p class="developer-art-success">'+(report.mode==='HTTP image-load verification'?'All tested cloud images loaded successfully.':'All expected artwork objects are present in cloud storage.')+'</p>');
   }
   async function listCharacterArtFolder(folder) {
     const found=new Set(); let offset=0;
@@ -633,9 +633,12 @@
     }
     return found;
   }
-  const CHARACTER_ART_FALLBACK_KEY = 'epiphany-character-art-fallback-stats-v1';
-  function readCharacterArtFallbackStats() {
-    try { const value=JSON.parse(localStorage.getItem(CHARACTER_ART_FALLBACK_KEY)||'null'); return value&&typeof value==='object'?{count:Number(value.count)||0,lastAt:value.lastAt||'',lastSource:value.lastSource||'',recent:Array.isArray(value.recent)?value.recent:[]}: {count:0,recent:[]}; } catch { return {count:0,recent:[]}; }
+  const CHARACTER_ART_CLOUD_ERRORS_KEY = 'epiphany-character-art-cloud-errors-v1';
+  function readCharacterArtCloudErrors() {
+    try {
+      const value=JSON.parse(localStorage.getItem(CHARACTER_ART_CLOUD_ERRORS_KEY)||'null');
+      return value&&typeof value==='object'?{count:Number(value.count)||0,lastAt:value.lastAt||'',recent:Array.isArray(value.recent)?value.recent:[]}:{count:0,recent:[]};
+    } catch { return {count:0,recent:[]}; }
   }
   async function verifyCharacterArtHttpAssets(onProgress=()=>{}) {
     if(!client||!currentUser||!isDeveloperAccount()) throw new Error('Sign in with an approved developer account first.');
