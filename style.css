@@ -3639,3 +3639,27 @@ body.world-fullscreen #world-game .world-help-panel[hidden]{display:none!importa
 .developer-art-table th{position:sticky;top:0;background:var(--ground);z-index:1}
 .developer-art-table code{overflow-wrap:anywhere;white-space:normal}
 @media(max-width:640px){.developer-art-summary{grid-template-columns:repeat(2,minmax(0,1fr))}.developer-art-actions>*{width:100%}.developer-art-table{min-width:620px}}
+
+
+/* Mobile navigation and small-screen touch-target corrections (2026-10-30). */
+.tools-action{min-height:44px}
+.tools-action input[type="checkbox"]{width:20px;height:20px;min-width:20px;min-height:20px;flex:0 0 20px;accent-color:var(--focus)}
+.navigation-breadcrumb .breadcrumb-link,
+.navigation-breadcrumb .breadcrumb-back{display:inline-flex;align-items:center;min-height:44px;padding-inline:4px}
+.logo{min-height:44px}
+@media(max-width:380px){.logo-mark{width:34px;height:34px}}
+@media(max-width:820px){
+  .mobile-menu nav{
+    max-height:calc(100dvh - 58px - 94px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+    padding-bottom:10px;
+  }
+  .toast{
+    z-index:10000;
+    bottom:calc(84px + env(safe-area-inset-bottom));
+    max-width:min(280px,calc(100vw - 32px));
+    padding:10px 14px;
+    font-size:13px;
+    line-height:1.4;
+    border-radius:12px;
+  }
+}
