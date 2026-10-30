@@ -312,3 +312,12 @@ test('frequent mobile menu and World controls meet a 44px touch target', () => {
   assert.match(css, /\.world-help-actions button\{min-height:44px\}/);
   assert.match(css, /\.story-card-close\{width:44px;height:44px\}/);
 });
+
+
+test('mobile settings expose the shared sound effects preference', () => {
+  const html = read('index.html');
+  const app = read('app.js');
+  assert.match(html, /id="sound-toggle-mobile"/);
+  assert.match(app, /\$\$\('#sound-toggle, #sound-toggle-mobile'\)/);
+  assert.match(app, /sound-toggle-mobile/);
+});
