@@ -63,15 +63,23 @@
   const starsMarkup = rank => '<span class="fcard-stars" aria-hidden="true">'+[0,1,2,3,4].map(i => svgUse(i<=rank?'on':'','orn-star','0 0 24 24')).join('')+'</span>';
   const characterArtUrl = (path, folder) => {
     const base = window.EPIPHANY_SUPABASE_CONFIG?.url;
-    if (!base || !path) return path;
+    if (!base || !path) return '';
     const file = String(path).split('/').pop().split('/').map(encodeURIComponent).join('/');
     return base.replace(/\/$/,'') + '/storage/v1/object/public/character-art/' + folder + '/' + file;
   };
-  const artMarkup = (card, opts={}) => card.image
-    ? '<img class="fcard-portrait fcard-portrait-image" src="'+esc(characterArtUrl(opts.fullImage ? card.image : (card.thumb || card.image), opts.fullImage ? 'originals' : 'thumbs'))+' data-cloud-src="'+esc(characterArtUrl(opts.fullImage ? card.image : (card.thumb || card.image), opts.fullImage ? 'originals' : 'thumbs'))+'" data-local-fallback="'+esc(opts.fullImage ? card.image : (card.thumb || card.image))+'" '+(opts.fullImage?'fetchpriority="high"':'fetchpriority="low"')+' width="240" height="300" alt="" loading="'+(opts.fullImage?'eager':'lazy')+'" decoding="async">'
-    : card.art
-    ? '<svg class="fcard-portrait" viewBox="0 0 240 300" preserveAspectRatio="xMidYMin slice" focusable="false"><use href="'+PORTRAITS+'#'+esc(card.art)+'"></use></svg>'
-    : '<div class="fcard-sigil-art">'+svgUse('ring','back-sigil','0 0 120 120')+svgUse('ring r2','back-sigil','0 0 120 120')+'<b>'+esc(card.symbol)+'</b></div>';
+  const cloudArtEnabled = () => {
+    if (window.EPIPHANY_SUPABASE_CONFIG?.characterArtCloudReady === true) return true;
+    try { return localStorage.getItem('epiphany-character-art-cloud-ready') === '1'; } catch { return false; }
+  };
+  const artMarkup = (card, opts={}) => {
+    if (!card.image) return card.art
+      ? '<svg class="fcard-portrait" viewBox="0 0 240 300" preserveAspectRatio="xMidYMin slice" focusable="false"><use href="'+PORTRAITS+'#'+esc(card.art)+'"></use></svg>'
+      : '<div class="fcard-sigil-art">'+svgUse('ring','back-sigil','0 0 120 120')+svgUse('ring r2','back-sigil','0 0 120 120')+'<b>'+esc(card.symbol)+'</b></div>';
+    const localPath = opts.fullImage ? card.image : (card.thumb || card.image);
+    const cloudPath = characterArtUrl(localPath, opts.fullImage ? 'originals' : 'thumbs');
+    const source = cloudArtEnabled() && cloudPath ? cloudPath : localPath;
+    return '<img class="fcard-portrait fcard-portrait-image" src="'+esc(source)+'" data-cloud-src="'+esc(cloudPath)+'" data-local-fallback="'+esc(localPath)+'" '+(opts.fullImage?'fetchpriority="high"':'fetchpriority="low"')+' width="240" height="300" alt="" loading="'+(opts.fullImage?'eager':'lazy')+'" decoding="async">';
+  };
 
   // opts: level, count, featured, noTilt, leveled
   const cardFace = (card, opts={}) => {
