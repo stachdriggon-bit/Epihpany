@@ -290,3 +290,9 @@ test('mobile navigation, toast and settings controls reserve safe space and usab
   assert.match(css, /max-width:min\(280px,calc\(100vw - 32px\)\)/);
   assert.match(app, /Level check skipped · starting at A1\./);
 });
+
+
+test('mobile story vocabulary card clears the fixed quick-navigation bar', () => {
+  const css = read('style.css');
+  assert.match(css, /\.story-word-card\{position:fixed;left:10px;right:10px;bottom:calc\(84px \+ env\(safe-area-inset-bottom\)\);max-height:min\(55dvh,calc\(100dvh - 150px - env\(safe-area-inset-bottom\)\)\);overflow:auto;z-index:45\}/);
+});
