@@ -3719,3 +3719,12 @@ body[data-theme="dark"] #home-view .home-intro{background:radial-gradient(circle
 .provisional{font-size:11px}
 @media(max-width:1100px){.archive-controls{grid-template-columns:repeat(2,minmax(0,1fr))}.archive-controls #archive-clear-filters{justify-self:start}}
 @media(max-width:560px){.archive-controls{grid-template-columns:minmax(0,1fr)}#home-view .home-intro:after{width:48px;border-radius:15px;font-size:25px}#home-view .home-intro h1,#home-view .home-intro .lead{max-width:calc(100% - 54px)}}
+
+/* Minimum readable labels and comfortable controls across dense interfaces. */
+.life-skills-page .ls-module>.ls-eyebrow{font-size:max(.72rem,11px);line-height:1.35}
+.life-skills-page .ls-stage-foot,.life-skills-page .ls-scene-tag,.life-skills-page .ls-tone-label,.life-skills-page .ls-sequence-label{font-size:max(.72rem,11px)}
+.life-skills-page .ls-form-paper-head,.life-skills-page .ls-form-paper-head small,.life-skills-page .ls-privacy-note,.life-skills-page .ls-phone-status,.life-skills-page .ls-caller small,.life-skills-page .ls-listen-label{font-size:max(.7rem,11px)}
+.res-btn{min-height:44px;padding-block:10px}
+.cgal-filter-chips button,.cgal-filter-actions button,.cards-detail-translate{min-height:44px}
+.cards-detail-close{width:44px;height:44px}
+@media(max-width:820px){.icon-btn,.ar-toggle{min-height:44px}.res-actions .res-btn{min-height:44px}}
