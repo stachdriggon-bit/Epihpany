@@ -317,9 +317,10 @@
 
       $('asset-upload-form')?.reset();
       previewSelectedFile(null);
-      setStatus('Uploaded successfully. The original is stored privately and is not visible in the game.', 'success');
+      setStatus('Uploaded successfully. The original and automatic thumbnail are stored privately and are not visible in the game.', 'success');
       showTab(hasAnyLinkField ? 'linked' : 'unassigned');
-      await loadAssets();
+      try { await loadAssets(); }
+      catch (refreshError) { setStatus('Upload completed, but the library could not refresh. Reload the Asset Manager to see it.', 'success'); }
     } catch (error) {
       let cleanupMessage = '';
       if (assetId) {
