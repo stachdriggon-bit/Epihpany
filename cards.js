@@ -353,8 +353,9 @@
     cardDetailReturnRect=cardDetailTrigger?.getBoundingClientRect()||null;
     let modal=document.getElementById('cards-detail-modal');
     if(!modal){modal=document.createElement('div');modal.id='cards-detail-modal';modal.className='cards-detail-backdrop';document.body.appendChild(modal);}
+    const initialArabic=document.body.classList.contains('ar-on');
     const owned=isOwned(card),profile=owned?window.EPIPHANY_CARD_PROFILES?.[card.id]:null;
-    modal.innerHTML='<section class="cards-detail-dialog rarity-'+esc(card.rarity.toLowerCase())+'" role="dialog" aria-modal="true" aria-labelledby="cards-detail-name" tabindex="-1"><button type="button" class="cards-detail-close" aria-label="Close card details">×</button><div class="cards-detail-art '+(!owned?'is-locked':'')+'">'+(owned?cardFace(card,{level:levelOf(card),fullImage:true}):cardBack({locked:true,color:TIER_COLOR[card.rarity]}))+'</div><div class="cards-detail-info" dir="ltr">'+renderDetailInfo(card,profile,owned,'en')+'</div></section>';
+    modal.innerHTML='<section class="cards-detail-dialog rarity-'+esc(card.rarity.toLowerCase())+'" role="dialog" aria-modal="true" aria-labelledby="cards-detail-name" tabindex="-1"><button type="button" class="cards-detail-close" aria-label="'+(initialArabic?'إغلاق تفاصيل البطاقة':'Close card details')+'">×</button><div class="cards-detail-art '+(!owned?'is-locked':'')+'">'+(owned?cardFace(card,{level:levelOf(card),fullImage:true}):cardBack({locked:true,color:TIER_COLOR[card.rarity]}))+'</div><div class="cards-detail-info" dir="'+(initialArabic?'rtl':'ltr')+'" lang="'+(initialArabic?'ar':'en')+'">'+renderDetailInfo(card,profile,owned,initialArabic?'ar':'en')+'</div></section>';
     document.body.classList.add('no-scroll');
     const dialog=modal.querySelector('[role="dialog"]'),info=modal.querySelector('.cards-detail-info');
     if(cardDetailReturnRect&&dialog&&!reducedMotion()){
@@ -363,7 +364,7 @@
       dialog.style.setProperty('--lift-y',(cardDetailReturnRect.top+cardDetailReturnRect.height/2-target.top-target.height/2)+'px');
       dialog.style.setProperty('--lift-scale',String(Math.max(.18,Math.min(.5,cardDetailReturnRect.width/target.width,cardDetailReturnRect.height/target.height))));
     }
-    let arabic=false,closing=false;
+    let arabic=initialArabic,closing=false;
     const close=()=>{
       if(closing||!modal.isConnected)return;closing=true;
       document.removeEventListener('keydown',keyHandler);
