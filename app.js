@@ -3022,7 +3022,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
       helpToggle.setAttribute('aria-label', state.helpArabic ? 'Help language: Arabic. Click to switch to English.' : 'Help language: English. Click to switch to Arabic.');
       helpToggle.title = state.helpArabic ? 'Help language: Arabic' : 'Help language: English';
     }
-    $('#sound-toggle, #sound-toggle-mobile').forEach(s => {
+    $$('#sound-toggle, #sound-toggle-mobile').forEach(s => {
       s.setAttribute('aria-pressed', String(!!state.sound));
       s.setAttribute('aria-label', state.sound ? 'Turn sound effects off' : 'Turn sound effects on');
       s.title = state.sound ? 'Sound effects on' : 'Sound effects off';
@@ -3241,7 +3241,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
   $('#game-ar').addEventListener('click', txToggleScreen);
   const translationToggle = $('#translation-toggle');
   if (translationToggle) translationToggle.addEventListener('click', () => { if (state.immersionWeek?.active && state.immersionWeek.endsAt && Date.now() < Number(state.immersionWeek.endsAt)) { toast('Arabic translation is paused during immersion week. You can end it in My Tools.'); return; } state.translationEnabled = !state.translationEnabled; save(); syncSettings(); enhanceTranslationControls($('#game-body')); document.querySelectorAll('.translate-btn').forEach(b => { b.hidden = !state.translationEnabled; }); document.querySelectorAll('.translation-result').forEach(el => { if (!state.translationEnabled) el.hidden = true; }); if (state.translationEnabled) ensureArabicTranslationCatalog().then(() => { renderAll(); enhanceTranslationControls($('#game-body')); }).catch(() => toast('The expanded Arabic catalogue could not load; built-in translations remain available.')); toast(state.translationEnabled ? 'Arabic translation is on' : 'Arabic translation is off'); });
-  $('#sound-toggle, #sound-toggle-mobile').forEach(button => button.addEventListener('click', () => {
+  $$('#sound-toggle, #sound-toggle-mobile').forEach(button => button.addEventListener('click', () => {
     state.sound = !state.sound; save(); syncSettings();
     toast(state.sound ? 'Sound is on' : 'Sound is off');
     if (state.sound) sfx('ok');
