@@ -19,8 +19,8 @@ const parseArray = (source, name) => {
 test('every local script and stylesheet referenced by the app exists', () => {
   const html = read('index.html');
   const references = [];
-  for (const match of html.matchAll(/<script\\b[^>]*\\bsrc=["']([^"']+)["'][^>]*>/gi)) references.push(match[1]);
-  for (const match of html.matchAll(/<link\\b(?=[^>]*\\brel=["'][^"']*stylesheet)(?=[^>]*\\bhref=["']([^"']+)["'])[^>]*>/gi)) references.push(match[1]);
+  for (const match of html.matchAll(/<script\b[^>]*\bsrc=["']([^"']+)["'][^>]*>/gi)) references.push(match[1]);
+  for (const match of html.matchAll(/<link\b(?=[^>]*\brel=["'][^"']*stylesheet)(?=[^>]*\bhref=["']([^"']+)["'])[^>]*>/gi)) references.push(match[1]);
   const missing = references
     .map(value => ({ value, file: localPath(value) }))
     .filter(item => item.file && !fs.existsSync(item.file))
@@ -30,28 +30,28 @@ test('every local script and stylesheet referenced by the app exists', () => {
 
 test('every navigation destination has exactly one matching view container', () => {
   const html = read('index.html');
-  const destinations = new Set([...html.matchAll(/\\bdata-view=["']([^"']+)["']/g)].map(match => match[1]));
-  const ids = [...html.matchAll(/\\bid=["']([^"']+)["']/g)].map(match => match[1]);
+  const destinations = new Set([...html.matchAll(/\bdata-view=["']([^"']+)["']/g)].map(match => match[1]));
+  const ids = [...html.matchAll(/\bid=["']([^"']+)["']/g)].map(match => match[1]);
   const errors = [];
   for (const destination of destinations) {
     const target = destination === 'world' ? 'world-game' : destination + '-view';
     const count = ids.filter(id => id === target).length;
     if (count !== 1) errors.push(destination + ' must resolve to exactly one #' + target + ' (found ' + count + ')');
   }
-  assert.deepEqual(errors, [], errors.join('\\n'));
+  assert.deepEqual(errors, [], errors.join('\n'));
 });
 
 test('every lazy-loaded feature file exists and is included in the offline cache', () => {
   const lazy = read('lazy-data.js');
   const sw = read('service-worker.js');
   const lazyAssets = new Set(parseArray(sw, 'LAZY_ASSETS'));
-  const groupsMatch = lazy.match(/const\\s+groups\\s*=\\s*\\{([\\s\\S]*?)\\n\\s*\\};/);
+  const groupsMatch = lazy.match(/const\s+groups\s*=\s*\{([\s\S]*?)\n\s*\};/);
   assert.ok(groupsMatch, 'lazy-data.js must expose its feature groups');
-  const groups = [...groupsMatch[1].matchAll(/([a-z][a-z0-9]*):\\s*\\[([^\\]]*)\\]/g)];
+  const groups = [...groupsMatch[1].matchAll(/([a-z][a-z0-9]*):\s*\[([^\]]*)\]/g)];
   assert.ok(groups.length, 'at least one lazy feature group should be registered');
   const errors = [];
   for (const [, group, entries] of groups) {
-    const files = [...entries.matchAll(/['"]([^'"]+\\.js)(?:\\?[^'"]*)?['"]/g)].map(match => match[1]);
+    const files = [...entries.matchAll(/['"]([^'"]+\.js)(?:\?[^'"]*)?['"]/g)].map(match => match[1]);
     if (!files.length) errors.push(group + ': has no JavaScript files');
     for (const file of files) {
       if (!fs.existsSync(path.join(root, file))) errors.push(group + ': missing ' + file);
@@ -59,7 +59,7 @@ test('every lazy-loaded feature file exists and is included in the offline cache
       else if (group !== 'arabic' && !lazyAssets.has(file)) errors.push(group + ': ' + file + ' is missing from LAZY_ASSETS');
     }
   }
-  assert.deepEqual(errors, [], errors.join('\\n'));
+  assert.deepEqual(errors, [], errors.join('\n'));
 });
 
 test('offline cache entries all point to files that exist in the repository', () => {
