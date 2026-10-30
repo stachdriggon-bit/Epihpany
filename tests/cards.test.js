@@ -272,6 +272,7 @@ test('character codex fixes mobile overlap, name-first layout, language, and ind
   assert.match(css, /\.cards-detail-tools\{order:2/);
   assert.match(css, /mask-image:linear-gradient\(to right,#000 0,#000 calc\(100% - 28px\),transparent 100%\)/);
   assert.match(css, /--detail-panel-strip:#1c1b35/);
+  assert.match(css, /\.cards-detail-info\[dir="rtl"\] \.cards-detail-tools\{padding:8px 48px 12px 0\}/);
   assert.match(js, /const initialArabic=document\.body\.classList\.contains\('ar-on'\)/);
   assert.match(js, /renderDetailInfo\(card,profile,owned,initialArabic\?'ar':'en'\)/);
   assert.match(js, /syncCardFaceLanguage\(language\)/);
