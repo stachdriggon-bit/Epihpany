@@ -296,6 +296,210 @@
     }
   }
 
+  function storageFilename(value) {
+    const filename = String(value || '').split('/').pop();
+    return filename.replace(/[^A-Za-z0-9._-]/g, ch => '-u' + ch.codePointAt(0).toString(16) + '-')
+      .replace(/-+/g, '-').replace(/^-|-$/g, '');
+  }
+
+  async function listBucketFolder(api, folder) {
+    const found = [];
+    let offset = 0;
+    while (true) {
+      const { data, error } = await api.storage.from('character-art').list(folder, {
+        limit: 1000,
+        offset,
+        sortBy: {column:'name', order:'asc'}
+      });
+      if (error) throw error;
+      const page = data || [];
+      found.push(...page.filter(item => item && item.name));
+      if (page.length < 1000) break;
+      offset += page.length;
+    }
+    return found;
+  }
+
+  function legacyMime(item, filename) {
+    const detected = String(item?.metadata?.mimetype || '').toLowerCase();
+    if (MIME_TYPES.has(detected)) return detected;
+    const ext = String(filename || '').split('.').pop().toLowerCase();
+    return ext === 'jpg' || ext === 'jpeg' ? 'image/jpeg' : ext === 'webp' ? 'image/webp' : 'image/png';
+  }
+
+  function legacySize(item) {
+    const value = Number(item?.metadata?.size || item?.metadata?.contentLength || 0);
+    return Number.isFinite(value) && value > 0 ? Math.min(value, MAX_BYTES) : 1;
+  }
+
+  async function importLegacyCharacterArt() {
+    const api = client();
+    const activeUser = user();
+    const button = $('asset-import-legacy');
+    if (busy) return;
+    if (!developer() || !api || !activeUser?.id) {
+      setStatus('Sign in with an approved developer account before indexing legacy artwork.', 'error');
+      return;
+    }
+    const cards = Array.isArray(window.EPIPHANY_CARD_DATA) ? window.EPIPHANY_CARD_DATA.filter(card => card?.id && card?.image) : [];
+    if (!cards.length) {
+      setStatus('Character card data is not available yet. Reload the page and try again.', 'error');
+      return;
+    }
+
+    setBusy(true);
+    if (button) {
+      button.disabled = true;
+      button.textContent = 'Indexing…';
+    }
+    try {
+      setStatus('Scanning existing character originals and thumbnails…');
+      const [originalItems, thumbnailItems] = await Promise.all([
+        listBucketFolder(api, 'originals'),
+        listBucketFolder(api, 'thumbs')
+      ]);
+      const originalMap = new Map(originalItems.map(item => ['originals/' + item.name, item]));
+      const thumbnailMap = new Map(thumbnailItems.map(item => ['thumbs/' + item.name, item]));
+
+      const existingAssetsResult = await api.from('epiphany_assets').select('id,metadata').limit(1500);
+      const existingFilesResult = await api.from('epiphany_asset_files').select('bucket_id,object_path').eq('bucket_id','character-art').limit(2000);
+      const existingUsagesResult = await api.from('epiphany_asset_usages').select('owner_type,owner_id,role').eq('owner_type','character').eq('role','portrait').limit(1500);
+      const queryError = existingAssetsResult.error || existingFilesResult.error || existingUsagesResult.error;
+      if (queryError) throw queryError;
+
+      const existingAssets = new Map((existingAssetsResult.data || [])
+        .filter(asset => asset.metadata?.legacy_source === 'character-art' && asset.metadata?.legacy_key)
+        .map(asset => [asset.metadata.legacy_key, asset.id]));
+      const existingFiles = new Set((existingFilesResult.data || []).map(file => file.bucket_id + ':' + file.object_path));
+      const existingUsages = new Set((existingUsagesResult.data || []).map(usage => usage.owner_type + ':' + usage.owner_id + ':' + usage.role));
+
+      const groups = new Map();
+      const expectedOriginals = new Set();
+      const expectedThumbnails = new Set();
+      for (const card of cards) {
+        const originalPath = 'originals/' + storageFilename(card.image);
+        const thumbnailPath = card.thumb ? 'thumbs/' + storageFilename(card.thumb) : '';
+        expectedOriginals.add(originalPath);
+        if (thumbnailPath) expectedThumbnails.add(thumbnailPath);
+        if (!groups.has(originalPath)) groups.set(originalPath, {originalPath, cards:[], thumbnails:new Set()});
+        const group = groups.get(originalPath);
+        group.cards.push(card);
+        if (thumbnailPath) group.thumbnails.add(thumbnailPath);
+      }
+
+      const assetRows = [];
+      const fileRows = new Map();
+      const usageRows = [];
+      const plannedAssets = new Map();
+      const addAsset = (key, name, category, status, size, mime, metadata) => {
+        const existingId = existingAssets.get(key);
+        const id = existingId || crypto.randomUUID();
+        plannedAssets.set(key, id);
+        if (!existingId) assetRows.push({
+          id,
+          asset_type:'image',
+          category,
+          original_name:String(name || 'legacy-image').slice(0,255),
+          mime_type:mime,
+          size_bytes:Math.max(1,Math.min(Number(size)||1,MAX_BYTES)),
+          status,
+          metadata:{legacy_source:'character-art',legacy_key:key,...metadata},
+          created_by:activeUser.id
+        });
+        return id;
+      };
+      const addFile = (assetId, path, variant, item) => {
+        if (!path || !item || existingFiles.has('character-art:' + path) || fileRows.has(path)) return;
+        fileRows.set(path, {
+          asset_id:assetId,
+          variant,
+          bucket_id:'character-art',
+          object_path:path,
+          visibility:'public',
+          mime_type:legacyMime(item, item.name),
+          size_bytes:legacySize(item)
+        });
+      };
+
+      for (const group of groups.values()) {
+        const original = originalMap.get(group.originalPath);
+        const firstThumbPath = [...group.thumbnails][0] || '';
+        const firstThumb = firstThumbPath ? thumbnailMap.get(firstThumbPath) : null;
+        const key = 'legacy:' + group.originalPath;
+        const id = addAsset(
+          key,
+          group.cards[0]?.image,
+          'characters',
+          original ? 'published' : 'issue',
+          original ? legacySize(original) : legacySize(firstThumb),
+          legacyMime(original || firstThumb, group.cards[0]?.image),
+          {legacy_card_ids:group.cards.map(card => card.id),legacy_original_path:group.originalPath,legacy_public:true}
+        );
+        addFile(id, group.originalPath, 'original', original);
+        for (const thumbPath of group.thumbnails) addFile(id, thumbPath, 'thumbnail', thumbnailMap.get(thumbPath));
+        if (original) {
+          for (const card of group.cards) {
+            const thumbPath = card.thumb ? 'thumbs/' + storageFilename(card.thumb) : '';
+            const usageKey = 'character:' + card.id + ':portrait';
+            if (existingUsages.has(usageKey)) continue;
+            usageRows.push({
+              asset_id:id,
+              owner_type:'character',
+              owner_id:String(card.id),
+              role:'portrait',
+              is_published:true,
+              published_bucket:'character-art',
+              published_original_path:group.originalPath,
+              published_thumbnail_path:thumbPath && thumbnailMap.has(thumbPath) ? thumbPath : null,
+              created_by:activeUser.id
+            });
+            existingUsages.add(usageKey);
+          }
+        }
+      }
+
+      for (const item of originalItems) {
+        const path = 'originals/' + item.name;
+        if (expectedOriginals.has(path)) continue;
+        const key = 'legacy:orphan:' + path;
+        const id = addAsset(key, item.name, 'characters', 'issue', legacySize(item), legacyMime(item,item.name), {legacy_orphan:true,legacy_public:true,legacy_path:path});
+        addFile(id, path, 'original', item);
+      }
+      for (const item of thumbnailItems) {
+        const path = 'thumbs/' + item.name;
+        if (expectedThumbnails.has(path)) continue;
+        const key = 'legacy:orphan:' + path;
+        const id = addAsset(key, item.name, 'characters', 'issue', legacySize(item), legacyMime(item,item.name), {legacy_orphan:true,legacy_public:true,legacy_path:path});
+        addFile(id, path, 'thumbnail', item);
+      }
+
+      if (assetRows.length) {
+        const {error} = await api.from('epiphany_assets').insert(assetRows);
+        if (error) throw error;
+      }
+      if (fileRows.size) {
+        const {error} = await api.from('epiphany_asset_files').insert([...fileRows.values()]);
+        if (error) throw error;
+      }
+      if (usageRows.length) {
+        const {error} = await api.from('epiphany_asset_usages').insert(usageRows);
+        if (error) throw error;
+      }
+
+      setStatus('Legacy artwork indexed without moving or deleting files · ' + assetRows.length + ' new asset records, ' + fileRows.size + ' file records and ' + usageRows.length + ' character links.', 'success');
+      showTab('library');
+      await loadAssets();
+    } catch (error) {
+      setStatus('Legacy indexing stopped: ' + (error?.message || String(error)) + '. You can safely run it again; existing records are checked before adding more.', 'error');
+    } finally {
+      setBusy(false);
+      if (button) {
+        button.disabled = false;
+        button.textContent = 'Index existing artwork';
+      }
+    }
+  }
+
   function init() {
     if (!root()) return;
     root().addEventListener('click', event => {
@@ -309,6 +513,7 @@
     $('asset-category-filter')?.addEventListener('change', renderAssets);
     $('asset-upload-file')?.addEventListener('change', event => previewSelectedFile(event.target.files?.[0] || null));
     $('asset-upload-form')?.addEventListener('submit', uploadAsset);
+    $('asset-import-legacy')?.addEventListener('click', importLegacyCharacterArt);
     document.addEventListener('epiphany-auth-changed', () => loadAssets().catch(error => setStatus(error.message, 'error')));
     showTab('library');
     if (developer()) loadAssets().catch(error => setStatus(error.message, 'error'));
