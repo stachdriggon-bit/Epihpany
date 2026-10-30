@@ -51,7 +51,7 @@ test('Veyra canonical profile follows the shared bilingual Character Details str
   assert.equal(profile.facts.find(f => f.label.en === 'Homeland').value.en, 'Willowmere · Eiraven · Ilmar');
   assert.equal(profile.facts.find(f => f.label.en === 'Current residence').value.en, 'Not documented yet');
   const expected = ['overview','personality','motivation','abilities','limits','backstory','story-role','relationships','places','quote'];
-  assert.deepEqual(profile.sections.map(section => section.id), expected);
+  assert.equal(profile.sections.map(section => section.id).join(','), expected.join(','));
   for (const section of profile.sections) {
     assert.ok(section.title.en && section.title.ar, section.id + ' needs bilingual titles');
     const entries = Array.isArray(section.text) ? section.text : [section.text];
