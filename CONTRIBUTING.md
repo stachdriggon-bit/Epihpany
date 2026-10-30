@@ -22,6 +22,7 @@ First time only: `npm install` then `npm run test:install`.
 | `static.test.js` → navigation CSS | navigation layout rules scattered around `style.css` |
 | `first-visit.test.js` | landing page, language choice and welcome dialog stacked on each other; returning visitors forced through the landing page again |
 | `smoke.test.js` | service worker / offline / Arabic lazy-loading regressions |
+| `repository-contracts.test.js` | broken local script/style references, navigation buttons without a matching view, missing lazy files, and offline-cache entries that point to missing files |
 | `navigation.test.js` | any menu button that can't be clicked or doesn't open its page, at 4 screen widths, plus any runtime error |
 
 ## Rules of thumb
