@@ -45,7 +45,6 @@
   /* ---------- catalogue helpers ---------- */
   const ORN = 'assets/cards/card-ornaments.svg';
   const PORTRAITS = 'assets/cards/epiphany-portraits.svg?v=character-art-20261027';
-  const MIRA_SHEET = 'Mira55.jfif?v=mira55-20261027';
   const RARITIES = ['Common','Uncommon','Rare','Epic','Legendary'];
   const TIER = {Common:0,Uncommon:1,Rare:2,Epic:3,Legendary:4};
   const TIER_COLOR = {Common:'#cdd5e6',Uncommon:'#46e0a6',Rare:'#5cb6ff',Epic:'#bf7bff',Legendary:'#ffcf5a'};
