@@ -26,6 +26,7 @@ test('new image uploads are restricted to common formats and private staging', (
   assert.match(manager, /image\/webp/);
   assert.doesNotMatch(manager, /image\/avif|image\/gif/);
   assert.match(migration, /'epiphany-assets-private','epiphany-assets-private',false/);
+  assert.match(read('supabase/migrations/20261030202518_asset_manager_common_image_formats.sql'), /array\['image\/png','image\/jpeg','image\/webp'\]/);
 });
 
 test('asset tables use row-level security and explicit Data API grants', () => {
