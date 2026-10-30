@@ -61,10 +61,13 @@
   const svgUse = (cls, id, box, file=ORN) => '<svg class="'+cls+'" viewBox="'+box+'" focusable="false" aria-hidden="true"><use href="'+file+'#'+id+'"></use></svg>';
   const cornersMarkup = () => '<div class="fcard-corners" aria-hidden="true">'+['c1','c2','c3','c4'].map(c => svgUse(c,'orn-corner','0 0 64 64')).join('')+'</div>';
   const starsMarkup = rank => '<span class="fcard-stars" aria-hidden="true">'+[0,1,2,3,4].map(i => svgUse(i<=rank?'on':'','orn-star','0 0 24 24')).join('')+'</span>';
+  const characterArtStorageFilename = path => String(path || '').split('/').pop()
+    .replace(/[^A-Za-z0-9._-]/g, ch => '-u' + ch.codePointAt(0).toString(16) + '-')
+    .replace(/-+/g, '-').replace(/^-|-$/g, '');
   const characterArtUrl = (path, folder) => {
     const base = window.EPIPHANY_SUPABASE_CONFIG?.url;
     if (!base || !path) return '';
-    const file = String(path).split('/').pop().split('/').map(encodeURIComponent).join('/');
+    const file = characterArtStorageFilename(path).split('/').map(encodeURIComponent).join('/');
     return base.replace(/\/$/,'') + '/storage/v1/object/public/character-art/' + folder + '/' + file;
   };
   const cloudArtEnabled = () => {
