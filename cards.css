@@ -714,7 +714,7 @@ body[data-theme="light"] .cards-detail-dialog{--detail-panel-strip:#fff9ed}
 
 
 /* Cloud artwork states: keep the card frame intentional while images load or fail offline. */
-.fcard-portrait-image:not(.is-loaded):not(.is-art-unavailable){background:linear-gradient(105deg,#30264e 20%,#4a4168 38%,#30264e 56%);background-size:220% 100%;animation:card-art-shimmer 1.25s ease-in-out infinite}
+.fcard-portrait-image:not(.is-loaded):not(.is-art-unavailable){opacity:1;background:linear-gradient(105deg,#30264e 20%,#4a4168 38%,#30264e 56%);background-size:220% 100%;animation:card-art-shimmer 1.25s ease-in-out infinite}
 @keyframes card-art-shimmer{to{background-position:-220% 0}}
 .fcard-portrait-image.is-loaded{animation:none;background:none}
 .fcard:has(.fcard-portrait-image.is-art-unavailable) .fcard-frame{background:radial-gradient(circle at 50% 38%,#7c6cae 0,transparent 38%),linear-gradient(145deg,#30264e,#151c31)}
