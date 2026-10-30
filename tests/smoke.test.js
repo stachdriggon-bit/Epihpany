@@ -299,7 +299,7 @@ test('main navigation tabs open without uncaught page errors', async t => {
     assert.equal(await modalArt.getAttribute('data-local-fallback'), null, 'the modal must not define a local image fallback');
     await cardsPage.locator('.cards-detail-translate').click();
     assert.equal(await detail.locator('#cards-detail-name').innerText(), 'ميرا', 'character name should translate in place');
-    assert.match(await detail.locator('.cards-detail-summary').innerText(), /دليلة عملية/);
+    assert.match(await detail.locator('.cards-detail-summary').innerText(), /مرشدة بشرية فضولية/);
     assert.doesNotMatch(await detail.locator('.cards-detail-summary').innerText(), /Mira is a practical guide/);
     // On narrow screens the dossier is intentionally full-screen, so close it with its visible close control.
     await cardsPage.locator('#cards-detail-modal .cards-detail-close').click();
