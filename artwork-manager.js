@@ -195,11 +195,29 @@
       }
       setStatus('Updating the game artwork reference…');
       if(isNewAsset){
-        const {error}=await api.from('epiphany_asset_usages').upsert({
-          asset_id:assetId,owner_type:'character',owner_id:target.id,role:'portrait',is_published:true,
-          published_bucket:PUBLIC_BUCKET,published_original_path:originalPath,published_thumbnail_path:thumbnailPath,created_by:user.id
-        },{onConflict:'owner_type,owner_id,role'});
-        if(error)throw error;
+        const {data:publishedRows,error:lookupError}=await api.from('epiphany_asset_usages')
+          .select('id')
+          .eq('owner_type','character')
+          .eq('owner_id',target.id)
+          .eq('role','portrait')
+          .eq('is_published',true)
+          .limit(1);
+        if(lookupError)throw lookupError;
+        const publication={
+          asset_id:assetId,is_published:true,published_bucket:PUBLIC_BUCKET,
+          published_original_path:originalPath,published_thumbnail_path:thumbnailPath
+        };
+        if(publishedRows?.length){
+          const {data,error}=await api.from('epiphany_asset_usages')
+            .update(publication).eq('id',publishedRows[0].id).select('id');
+          if(error)throw error;
+          if(!data?.length)throw new Error('The existing published character reference could not be updated. Reload and try again.');
+        }else{
+          const {error}=await api.from('epiphany_asset_usages').insert({
+            ...publication,owner_type:'character',owner_id:target.id,role:'portrait',created_by:user.id
+          });
+          if(error)throw error;
+        }
       }else{
         const {data,error}=await api.from('epiphany_asset_usages').update({
           published_bucket:PUBLIC_BUCKET,published_original_path:originalPath,published_thumbnail_path:thumbnailPath

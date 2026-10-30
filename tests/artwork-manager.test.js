@@ -42,7 +42,10 @@ test('failed replacement preserves the previous published reference and old file
   const manager=read('artwork-manager.js');
   assert.match(manager,/const suffix=cleanupFailures\.length/);
   assert.match(manager,/The previous published image was not changed/);
-  assert.match(manager,/onConflict:'owner_type,owner_id,role'/);
+  assert.match(manager,/\.eq\('is_published',true\)/);
+  assert.match(manager,/\.update\(publication\)\.eq\('id',publishedRows\[0\]\.id\)/);
+  assert.match(manager,/\.from\('epiphany_asset_usages'\)\.insert\(/);
+  assert.doesNotMatch(manager,/onConflict:'owner_type,owner_id,role'/);
   assert.doesNotMatch(manager,/storage\.from\([^)]*\)\.remove\(\[[^\]]*old/i);
 });
 test('cloud asset replacement updates only published usages and keeps historical file records', () => {
