@@ -56,3 +56,12 @@ test('legacy character artwork indexing is additive and repeatable', () => {
   assert.doesNotMatch(importer, /\.remove\s*\(/);
   assert.doesNotMatch(importer, /\.move\s*\(/);
 });
+
+test('published character asset references override static artwork without removing the fallback', () => {
+  const account = read('account.js');
+  const cards = read('cards.js');
+  assert.match(account, /loadPublishedCharacterAssets/);
+  assert.match(cards, /EPIPHANY_CARD_ASSET_MAP/);
+  assert.match(cards, /publishedAssetUrl/);
+  assert.match(cards, /characterArtUrl\(storagePath, folder\)/);
+});
