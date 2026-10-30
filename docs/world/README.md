@@ -36,6 +36,7 @@ This directory is the working reference for the fictional world of EPIPHANY. It 
 - [Local History Register](LOCAL-HISTORIES.md) — provisional local-history seeds for all ten anchor locations.
 - [Communities and Local Institutions](COMMUNITIES-INSTITUTIONS.md) — place-grounded social functions, obligations, and possible ways communities coordinate or disagree.
 - [Civilizations](CIVILIZATIONS.md) — societies, cultures, states, and connections.
+- [Peoples and Species](PEOPLES-AND-SPECIES.md) — shared foundations and distinctions among peoples, including the Elves.
 - [Characters](CHARACTERS.md) — character-canon template and continuity rules.
 - [Mysteries and Evidence](MYSTERIES-AND-EVIDENCE.md) — mysteries, evidence, competing explanations.
 - [Decision Log](DECISIONS-LOG.md) — accepted, provisional, and open decisions.
