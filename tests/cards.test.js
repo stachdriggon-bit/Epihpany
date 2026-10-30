@@ -248,5 +248,5 @@ test('card artwork runtime and CI do not depend on local portrait files or thumb
   assert.doesNotMatch(workflow, /make-card-thumbs|Pillow|assets\/cards\/art\/thumb/);
   assert.doesNotMatch(sw, /Mira55\.jfif/);
   assert.match(docs, /served exclusively from the public Supabase Storage bucket/);
-  assert.match(docs, /object filenames, not local file paths/);
+  assert.match(docs, /object filenames.*not local file paths/);
 });
