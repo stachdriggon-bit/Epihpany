@@ -274,6 +274,8 @@ test('character codex fixes mobile overlap, name-first layout, language, and ind
   assert.match(css, /--detail-panel-strip:#1c1b35/);
   assert.match(js, /const initialArabic=document\.body\.classList\.contains\('ar-on'\)/);
   assert.match(js, /renderDetailInfo\(card,profile,owned,initialArabic\?'ar':'en'\)/);
+  assert.match(js, /syncCardFaceLanguage\\(language\\)/);
+  assert.match(css, /\\.fcard\\.is-arabic \\.fcard-plate h3/);
 });
 
 test('mobile navigation, toast and settings controls reserve safe space and usable touch targets', () => {
