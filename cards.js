@@ -358,6 +358,20 @@
     modal.innerHTML='<section class="cards-detail-dialog rarity-'+esc(card.rarity.toLowerCase())+'" role="dialog" aria-modal="true" aria-labelledby="cards-detail-name" tabindex="-1"><button type="button" class="cards-detail-close" aria-label="'+(initialArabic?'إغلاق تفاصيل البطاقة':'Close card details')+'">×</button><div class="cards-detail-art '+(!owned?'is-locked':'')+'">'+(owned?cardFace(card,{level:levelOf(card),fullImage:true}):cardBack({locked:true,color:TIER_COLOR[card.rarity]}))+'</div><div class="cards-detail-info" dir="'+(initialArabic?'rtl':'ltr')+'" lang="'+(initialArabic?'ar':'en')+'">'+renderDetailInfo(card,profile,owned,initialArabic?'ar':'en')+'</div></section>';
     document.body.classList.add('no-scroll');
     const dialog=modal.querySelector('[role="dialog"]'),info=modal.querySelector('.cards-detail-info');
+    const syncCardFaceLanguage=lang=>{
+      const face=modal.querySelector('.cards-detail-art .fcard');
+      if(!face)return;
+      const arabic=lang==='ar';
+      face.classList.toggle('is-arabic',arabic);
+      face.dir=arabic?'rtl':'ltr';
+      const name=face.querySelector('.fcard-plate h3');
+      const title=face.querySelector('.fcard-sub');
+      const description=face.querySelector('.fcard-desc span');
+      if(name)name.textContent=localized(profile?.name,lang,card.name);
+      if(title)title.textContent=localized(profile?.title,lang,card.title);
+      if(description)description.textContent=localized(profile?.summary,lang,card.description);
+    };
+    syncCardFaceLanguage(initialArabic?'ar':'en');
     if(cardDetailReturnRect&&dialog&&!reducedMotion()){
       const target=dialog.getBoundingClientRect();
       dialog.style.setProperty('--lift-x',(cardDetailReturnRect.left+cardDetailReturnRect.width/2-target.left-target.width/2)+'px');
@@ -382,7 +396,7 @@
     };
     modal.addEventListener('click',e=>{
       const translate=e.target.closest('.cards-detail-translate');
-      if(translate){arabic=!arabic;const previousScroll=info.scrollTop;info.dir=arabic?'rtl':'ltr';info.lang=arabic?'ar':'en';modal.querySelector('.cards-detail-close')?.setAttribute('aria-label',arabic?'إغلاق تفاصيل البطاقة':'Close card details');info.innerHTML=renderDetailInfo(card,profile,owned,arabic?'ar':'en');info.scrollTop=previousScroll;info.querySelector('.cards-detail-translate')?.focus({preventScroll:true});return;}
+      if(translate){arabic=!arabic;const language=arabic?'ar':'en';const previousScroll=info.scrollTop;info.dir=arabic?'rtl':'ltr';info.lang=language;syncCardFaceLanguage(language);modal.querySelector('.cards-detail-close')?.setAttribute('aria-label',arabic?'إغلاق تفاصيل البطاقة':'Close card details');info.innerHTML=renderDetailInfo(card,profile,owned,language);info.scrollTop=previousScroll;info.querySelector('.cards-detail-translate')?.focus({preventScroll:true});return;}
       const place=e.target.closest('[data-archive-place]');
       if(place){const placeId=place.dataset.archivePlace;close();window.EPIPHANY_OPEN_ARCHIVE_PLACE?.(placeId);return;}
       const character=e.target.closest('[data-profile-character]');
