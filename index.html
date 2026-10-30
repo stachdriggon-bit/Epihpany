@@ -246,6 +246,18 @@
                 </select>
                 <span class="asset-library-count" id="asset-library-count">0 assets</span>
               </div>
+              <section class="asset-link-panel" id="asset-link-panel" hidden>
+                <form id="asset-link-form">
+                  <b id="asset-link-title">Link asset to an item</b>
+                  <div class="asset-upload-fields">
+                    <label>Item type<select id="asset-link-owner-type"><option value="character">Character</option><option value="story">Story</option><option value="world">World location</option><option value="card">Card</option><option value="interface">Interface element</option><option value="other">Other</option></select></label>
+                    <label>Item ID<input id="asset-link-owner-id" type="text" maxlength="120" placeholder="e.g. CHR-002" required></label>
+                    <label>Usage role<input id="asset-link-role" type="text" maxlength="60" placeholder="e.g. portrait" required></label>
+                  </div>
+                  <p class="asset-upload-note">This creates a private reference only. The asset will not appear in the game until it is published.</p>
+                  <div class="asset-link-actions"><button type="button" class="btn btn-ghost" id="asset-link-cancel">Cancel</button><button type="submit" class="btn btn-primary" id="asset-link-submit">Save link</button></div>
+                </form>
+              </section>
               <div class="asset-library-grid" id="asset-library-grid"><div class="asset-empty"><b>Connecting to your library…</b></div></div>
             </section>
             <section class="asset-upload-panel" id="asset-upload-panel" hidden>
