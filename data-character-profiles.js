@@ -69,3 +69,11 @@ window.EPIPHANY_CARD_PROFILES["CHR-001"] = {
     }}
   ]
 };
+
+/* The dossier renderer supports rich text blocks as {text:{en,ar}} entries. Normalize
+   plain bilingual paragraphs to that shape so the language toggle never renders blanks. */
+window.EPIPHANY_CARD_PROFILES["CHR-001"].sections.forEach(section => {
+  if (section.text && !Array.isArray(section.text) && typeof section.text === "object" && ("en" in section.text || "ar" in section.text)) {
+    section.text = [{text:section.text}];
+  }
+});
