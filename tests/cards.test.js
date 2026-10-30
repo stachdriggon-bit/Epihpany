@@ -202,6 +202,18 @@ test('character dossiers preserve the complete reviewed ability records without 
   assert.match(profiles['CHR-039'].sections.find(section => section.id === 'restriction').text.en, /scope/i);
 });
 
+test('card gallery preloads the same cloud-or-local thumbnail source used by the rendered card', () => {
+  const js = read('cards.js');
+  assert.match(js, /const cardArtSource = \(card, opts=\{\}\) =>/);
+  assert.match(js, /const \{localPath,cloudPath,source\} = cardArtSource\(card,opts\)/);
+  assert.match(js, /const folder = opts\.fullImage \? 'originals' : 'thumbs'/);
+  assert.match(js, /const \{source\}=cardArtSource\(card\)/);
+  assert.match(js, /window\.__epiphanyCardPreloads\.has\(source\)/);
+  assert.match(js, /image\.fetchPriority='low'/);
+  assert.match(js, /image\.src=source/);
+  assert.match(js, /data-local-fallback=/);
+});
+
 test('card detail uses the real full card face and keeps gallery card nodes across filters', () => {
   const js = read('cards.js');
   const css = read('cards.css');
