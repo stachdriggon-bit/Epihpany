@@ -282,6 +282,7 @@ test('mobile navigation, toast and settings controls reserve safe space and usab
   const css = read('style.css');
   const app = read('app.js');
   assert.match(css, /max-height:calc\(100dvh - 58px - 94px - env\(safe-area-inset-top\) - env\(safe-area-inset-bottom\)\)/);
+  assert.match(css, /\\.bottom-nav\\{z-index:40\\}/);
   assert.match(css, /width:20px;height:20px;min-width:20px;min-height:20px/);
   assert.match(css, /navigation-breadcrumb \.breadcrumb-link,[\s\S]{0,100}min-height:44px/);
   assert.match(css, /max-width:min\(280px,calc\(100vw - 32px\)\)/);
