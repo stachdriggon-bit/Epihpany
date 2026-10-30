@@ -5,7 +5,7 @@
   const $ = (s, root = document) => root.querySelector(s);
   const $$ = (s, root = document) => [...root.querySelectorAll(s)];
   const labels = {
-    home: 'Start learning', stories: 'Stories', chronicle: 'World Archive', arcade: 'Arcade', thinklab: 'Think Lab',
+    home: 'Start learning', stories: 'Stories', chronicle: 'World Archive', resonance: 'The Resonance', summon: 'Card Portal', arcade: 'Arcade', thinklab: 'Think Lab',
     world: 'World', lifeskills: 'Life Skills', words: 'Words', mytools: 'My Tools',
     trophies: 'Trophies', progress: 'Progress', profile: 'Profile'
   };
