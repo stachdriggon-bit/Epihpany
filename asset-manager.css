@@ -56,3 +56,9 @@
 .asset-link-panel form>b{font-size:.95rem;color:var(--ink);overflow-wrap:anywhere}
 .asset-link-actions{display:flex;justify-content:flex-end;gap:8px;flex-wrap:wrap}
 .asset-card-link{width:100%;margin-top:5px}
+
+.asset-character-picker{display:grid;gap:7px;min-width:0}
+.asset-character-picker[hidden],#asset-link-owner-id-label[hidden]{display:none!important}
+.asset-character-picker>label{font-size:.82rem;font-weight:700;color:var(--ink-2)}
+.asset-character-picker input,.asset-character-picker select{width:100%;min-width:0}
+.asset-character-selected{color:var(--ink-3);font-size:.78rem;overflow-wrap:anywhere}
