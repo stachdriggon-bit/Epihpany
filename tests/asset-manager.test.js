@@ -66,3 +66,12 @@ test('published character asset references override static artwork without remov
   assert.match(cards, /publishedAssetUrl/);
   assert.match(cards, /characterArtUrl\(storagePath, folder\)/);
 });
+
+test('unassigned assets can be linked privately without publishing', () => {
+  const manager = read('asset-manager.js');
+  const html = read('index.html');
+  assert.match(html, /id="asset-link-panel"/);
+  assert.match(manager, /async function saveAssetLink/);
+  assert.match(manager, /is_published:false/);
+  assert.match(manager, /status:'linked'/);
+});
