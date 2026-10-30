@@ -595,6 +595,7 @@ body[data-theme="light"] .cards-detail-placeholder{color:#5b4d61;border-color:#9
 .cards-detail-art{grid-area:art;display:flex;align-items:center;justify-content:center;align-self:stretch;min-width:0;min-height:480px;width:100%;padding:28px 16px}
 .cards-detail-art>.fcard{display:block!important;visibility:visible!important;opacity:1!important;width:min(100%,390px);max-width:390px;min-width:0;flex:none}
 .cards-detail-art .fcard-portrait-image{opacity:1}
+.cards-detail-art .fcard-portrait-image.is-art-unavailable{opacity:0}
 .cards-detail-info{grid-area:info;min-width:0;width:100%}
 @media(max-width:720px){
   .cards-detail-backdrop{display:block;padding:0;overflow-y:auto;overscroll-behavior:contain}
