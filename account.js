@@ -642,7 +642,8 @@
     const base=window.EPIPHANY_SUPABASE_CONFIG?.url;
     if(!base) throw new Error('Supabase project URL is not configured.');
     const report=readCharacterArtReport()||{version:2,bucket:'character-art',assets:getCharacterArtAssets().map(x=>({...x,status:'unchecked',message:''}))};
-    const storageBase=base.endsWith('/')?base.slice(0,-1):base;\n    const queue=report.assets.slice(); let completed=0, ok=0, failed=0;
+    const storageBase=base.endsWith('/')?base.slice(0,-1):base;
+    const queue=report.assets.slice(); let completed=0, ok=0, failed=0;
     const worker=async()=>{while(queue.length){
       const asset=queue.shift(); const file=asset.target.split('/').map(encodeURIComponent).join('/');
       const url=storageBase+'/storage/v1/object/public/character-art/'+file;
