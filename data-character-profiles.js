@@ -14,7 +14,7 @@ window.EPIPHANY_CARD_PROFILES["CHR-001"] = {
     {label:{en:"Homeland",ar:"مسقط الرأس"},value:{en:"Darsen · Orath",ar:"دارسن · أوراث"}},
     {label:{en:"Current residence",ar:"الإقامة الحالية"},value:{en:"Velisar · Orath",ar:"فيليزار · أوراث"}},
     {label:{en:"Current purpose",ar:"سبب الإقامة الحالية"},value:{en:"Developing her ability",ar:"تطوير قدرتها"}},
-    {label:{en:"Card rarity",ar:"ندرة البطاقة"},value:{en:"Epic",ar:"ملحمية"}}
+    {label:{en:"Role",ar:"الدور"},value:{en:"Practical guide and traveler",ar:"مرشدة عملية ومسافرة"}}
   ],
   sections:[
     {id:"overview",title:{en:"Overview",ar:"نبذة"},icon:"✦",text:{
