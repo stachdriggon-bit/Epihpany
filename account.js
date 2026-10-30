@@ -646,6 +646,26 @@
   };
 
   document.addEventListener('DOMContentLoaded', () => {
+    const artUploadButton = $('developer-upload-character-art');
+    artUploadButton?.addEventListener('click', async () => {
+      const status = $('developer-art-upload-status');
+      if (!isDeveloperAccount()) { if (status) status.textContent = 'Developer access is required.'; return; }
+      artUploadButton.disabled = true;
+      if (status) status.textContent = 'Preparing character images…';
+      try {
+        const result = await migrateCharacterArtAssets(progress => {
+          if (status) status.textContent = 'Uploading ' + progress.completed + '/' + progress.total + ' · ' + progress.failed + ' failed';
+        });
+        if (status) status.textContent = result.failures.length
+          ? 'Uploaded ' + result.uploaded + '/' + result.total + '. ' + result.failures.length + ' files need attention.'
+          : 'All ' + result.uploaded + ' character images uploaded successfully. Refresh the page to use cloud copies.';
+        if (result.failures.length) console.error('[EPIPHANY] Character art upload failures', result.failures);
+      } catch (error) {
+        if (status) status.textContent = 'Upload failed: ' + (error && error.message ? error.message : String(error));
+      } finally {
+        artUploadButton.disabled = false;
+      }
+    });
     const form = $('account-form');
     if (!form) return;
     setMode('signin');
