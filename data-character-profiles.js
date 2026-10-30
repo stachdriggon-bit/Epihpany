@@ -60,8 +60,8 @@ window.EPIPHANY_CARD_PROFILES["CHR-001"] = {
       {text:{en:"She may show affection through help, shared discoveries, or quietly staying beside someone. Named relationships and their histories remain undiscovered until stories establish them.",ar:"قد تُظهر المودة من خلال المساعدة أو مشاركة الاكتشافات أو البقاء بهدوء إلى جانب شخص ما. أما العلاقات المحددة وأحداثها فتبقى غير مكتشفة حتى تؤسسها القصص."}}
     ]},
     {id:"places",title:{en:"Places",ar:"الأماكن"},icon:"⌖",text:[
-      {text:{en:"Darsen — her birthplace; a river-junction market and cargo-transfer town in Orath (OR-CITY-02).",ar:"دارسن — مسقط رأسها؛ بلدة سوق عند ملتقى الأنهار وطرق نقل البضائع في أوراث (OR-CITY-02)."}},
-      {text:{en:"Velisar — her current residence while developing her ability; a settlement serving a difficult mountain road (OR-CITY-03 / OR-LOC-01).",ar:"فيليزار — مكان إقامتها الحالي أثناء تطوير قدرتها؛ مستوطنة تخدم طريقًا جبليًا صعبًا (OR-CITY-03 / OR-LOC-01)."}}
+      {text:{en:"Darsen — her birthplace in Orath.",ar:"دارسن — مسقط رأسها؛ بلدة سوق عند ملتقى الأنهار وطرق نقل البضائع في أوراث (OR-CITY-02)."}},
+      {text:{en:"Velisar — her current residence in Orath while she develops her ability.",ar:"فيليزار — مكان إقامتها الحالي أثناء تطوير قدرتها؛ مستوطنة تخدم طريقًا جبليًا صعبًا (OR-CITY-03 / OR-LOC-01)."}}
     ]},
     {id:"quote",title:{en:"Signature Quote",ar:"العبارة المميزة"},icon:"❝",text:{
       en:"“Every path has a story. Most simply go unnoticed.”",
