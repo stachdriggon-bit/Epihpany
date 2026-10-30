@@ -1,7 +1,7 @@
 # EPIPHANY — Ilmar: Candidate Cities
 
 **Version:** 0.2  
-**Status:** Settlement names approved by the project owner; settlement existence, roles, placement, and anchor relationships remain provisional.
+**Status:** The six city names and the associated village name Willowmere are approved by the project owner. Exact site placement, local details, and some city/anchor relationships remain provisional.
 **Scope:** A small first pass at memorable settlements for Ilmar. These names are meant to be tested in stories and exploration before they are finalized.
 
 ## Canon decision
@@ -100,6 +100,19 @@
 - **Eiraven and Ilanford:** their river relationship is a proposal only and must be checked against the eventual river course.
 - **Westmere:** depends on the final west-coast bay geometry.
 - **Calder Vale and Sorell:** their positions are deliberately broad so terrain and routes can be refined without breaking city canon.
+
+## Associated village — IL-VILLAGE-01 — Willowmere / ويلومير
+
+**Status:** Name and parent-city relationship accepted by the project owner on 2026-10-30; exact placement and local details remain open.
+
+- **Type:** Small rural village; it is not a city and does not add another city to Ilmar's six-city registry.
+- **Parent city:** **IL-CITY-01 — Eiraven / إيرافين**. Willowmere is a village belonging to Eiraven.
+- **Continent:** **Ilmar / إيلمار**.
+- **Character connection:** Birthplace and childhood home of **Veyra (CHR-039)**.
+- **Known character context:** Veyra grew up here in a small, close-knit family and a quiet village community. This is a character-background reference, not a complete settlement gazetteer.
+- **Open details:** Exact map position, distance from Eiraven, administrative arrangement, population, local institutions, and any distinctive landmarks or history.
+
+**Continuity rule:** Reuse **IL-VILLAGE-01** whenever Willowmere appears in Veyra's stories, quests, routes, cards, or translations. Do not create another place record for the same village. Keep Eiraven's existing ID **IL-CITY-01**; do not turn Willowmere into a second city or assign it a new city ID.
 
 ## Open details (names remain approved)
 
