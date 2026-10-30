@@ -694,3 +694,9 @@ body[data-theme="light"] .cards-detail-dialog{--detail-panel-strip:#fff9ed}
 .fcard.is-arabic .fcard-plate h3{line-height:1.18}
 .fcard.is-arabic .fcard-sub{font-size:4.1cqw}
 .fcard.is-arabic .fcard-desc{font-size:3.7cqw}
+
+
+/* Reserve the iPhone home-indicator area inside the full-screen card dossier. */
+@media(max-width:720px){
+  .cards-detail-dialog{padding-bottom:calc(28px + env(safe-area-inset-bottom))}
+}
