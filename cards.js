@@ -61,8 +61,14 @@
   const svgUse = (cls, id, box, file=ORN) => '<svg class="'+cls+'" viewBox="'+box+'" focusable="false" aria-hidden="true"><use href="'+file+'#'+id+'"></use></svg>';
   const cornersMarkup = () => '<div class="fcard-corners" aria-hidden="true">'+['c1','c2','c3','c4'].map(c => svgUse(c,'orn-corner','0 0 64 64')).join('')+'</div>';
   const starsMarkup = rank => '<span class="fcard-stars" aria-hidden="true">'+[0,1,2,3,4].map(i => svgUse(i<=rank?'on':'','orn-star','0 0 24 24')).join('')+'</span>';
+  const characterArtUrl = (path, folder) => {
+    const base = window.EPIPHANY_SUPABASE_CONFIG?.url;
+    if (!base || !path) return path;
+    const file = String(path).split('/').pop().split('/').map(encodeURIComponent).join('/');
+    return base.replace(/\/$/,'') + '/storage/v1/object/public/character-art/' + folder + '/' + file;
+  };
   const artMarkup = (card, opts={}) => card.image
-    ? '<img class="fcard-portrait fcard-portrait-image" src="'+esc(opts.fullImage ? card.image : (card.thumb || card.image))+'" '+(opts.fullImage?'fetchpriority="high"':'fetchpriority="low"')+' width="240" height="300" alt="" loading="'+(opts.fullImage?'eager':'lazy')+'" decoding="async">'
+    ? '<img class="fcard-portrait fcard-portrait-image" src="'+esc(characterArtUrl(opts.fullImage ? card.image : (card.thumb || card.image), opts.fullImage ? 'originals' : 'thumbs'))+'" data-local-fallback="'+esc(opts.fullImage ? card.image : (card.thumb || card.image))+'" '+(opts.fullImage?'fetchpriority="high"':'fetchpriority="low"')+' width="240" height="300" alt="" loading="'+(opts.fullImage?'eager':'lazy')+'" decoding="async">'
     : card.art
     ? '<svg class="fcard-portrait" viewBox="0 0 240 300" preserveAspectRatio="xMidYMin slice" focusable="false"><use href="'+PORTRAITS+'#'+esc(card.art)+'"></use></svg>'
     : '<div class="fcard-sigil-art">'+svgUse('ring','back-sigil','0 0 120 120')+svgUse('ring r2','back-sigil','0 0 120 120')+'<b>'+esc(card.symbol)+'</b></div>';
@@ -663,6 +669,13 @@
     $('cards-gallery-locked')?.addEventListener('click',()=>{showLocked=!showLocked;saveGalleryFilters();renderGallery(true);});
     initTilt();
     document.addEventListener('load',e=>{if(e.target?.matches?.('.fcard-portrait-image'))e.target.classList.add('is-loaded');},true);
+    document.addEventListener('error',e=>{
+      const image=e.target;
+      if(!image?.matches?.('.fcard-portrait-image')||image.dataset.localFallbackTried==='1')return;
+      image.dataset.localFallbackTried='1';
+      const fallback=image.dataset.localFallback;
+      if(fallback)image.src=fallback;
+    },true);
     renderFeatured();renderGallery();updateCounts();renderOdds(selectedPack());
     $('cards-history-clear')?.addEventListener('click',()=>{state.history=[];save();renderHistory();});
     window.addEventListener('epiphany:achievements-updated',()=>checkAchievementRewards(window.EPIPHANY_PROFILE_ACHIEVEMENTS));
