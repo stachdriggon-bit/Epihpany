@@ -685,6 +685,17 @@
       if(!image?.matches?.('.fcard-portrait-image')||image.dataset.localFallbackTried==='1')return;
       image.dataset.localFallbackTried='1';
       const fallback=image.dataset.localFallback;
+      if(image.dataset.cloudSrc && image.currentSrc && image.currentSrc.startsWith(image.dataset.cloudSrc.split('?')[0])){
+        try{
+          const key='epiphany-character-art-fallback-stats-v1';
+          const stats=JSON.parse(localStorage.getItem(key)||'{"count":0,"recent":[]}');
+          stats.count=(Number(stats.count)||0)+1; stats.lastAt=new Date().toISOString();
+          stats.lastSource=fallback||'unknown'; stats.recent=Array.isArray(stats.recent)?stats.recent:[];
+          stats.recent.unshift({at:stats.lastAt,source:fallback||'unknown',cloud:image.dataset.cloudSrc});
+          stats.recent=stats.recent.slice(0,30); localStorage.setItem(key,JSON.stringify(stats));
+          window.dispatchEvent(new CustomEvent('epiphany:character-art-fallback',{detail:{source:fallback,cloud:image.dataset.cloudSrc}}));
+        }catch(_){}
+      }
       if(fallback)image.src=fallback;
     },true);
     renderFeatured();renderGallery();updateCounts();renderOdds(selectedPack());
