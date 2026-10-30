@@ -702,8 +702,7 @@
 
   document.addEventListener('DOMContentLoaded', () => {
     const artUploadButton = $('developer-upload-character-art');
-    const assetsHost=$('developer-assets-host');
-    if(artUploadButton&&assetsHost){assetsHost.appendChild(artUploadButton);const status=$('developer-art-upload-status');if(status)assetsHost.appendChild(status);}
+    
     renderCharacterArtReport();
     const verifyButton=$('developer-verify-character-art');
     verifyButton?.addEventListener('click',async()=>{verifyButton.disabled=true;const status=$('developer-art-upload-status');if(status)status.textContent='Checking bucket contents…';try{const report=await inspectCharacterArtAssets();const ok=report.assets.filter(x=>x.status==='verified').length;if(status)status.textContent='Verification complete: '+ok+'/'+report.assets.length+' objects found.';}catch(error){if(status)status.textContent='Verification failed: '+(error?.message||String(error));}finally{verifyButton.disabled=false;}});
