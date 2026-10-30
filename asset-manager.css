@@ -49,3 +49,10 @@
 @media(max-width:600px){.asset-upload-fields{grid-template-columns:1fr}.asset-library-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.asset-card-body{padding:9px}.asset-card-top{display:grid}.asset-manager-toolbar select{flex:1 1 140px}}
 
 .asset-legacy-warning{color:#a56b16!important;font-weight:700}
+
+.asset-link-panel{border:1px solid var(--line);border-radius:16px;background:var(--surface);padding:15px;margin:12px 0}
+.asset-link-panel[hidden]{display:none}
+.asset-link-panel form{display:grid;gap:12px}
+.asset-link-panel form>b{font-size:.95rem;color:var(--ink);overflow-wrap:anywhere}
+.asset-link-actions{display:flex;justify-content:flex-end;gap:8px;flex-wrap:wrap}
+.asset-card-link{width:100%;margin-top:5px}
