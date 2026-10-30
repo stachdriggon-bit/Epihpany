@@ -199,6 +199,7 @@
         <div class="tools-panel" aria-label="App settings">
           <button class="tools-action" id="translation-toggle" type="button" aria-pressed="true" aria-label="Toggle Arabic translation">ع <span>Arabic translation: On</span></button>
           <button class="tools-action" id="theme-toggle" type="button" aria-pressed="false" aria-label="Turn on dark mode">◐ <span>Dark mode</span></button>
+          <button class="tools-action developer-entry" id="open-developer-mode" type="button" hidden>🛠 <span>Developer Mode</span><span class="developer-entry-arrow">→</span></button>
           <button class="tools-action" id="open-voice" type="button" aria-label="Choose reader voice">🔊 <span>Reader voice</span></button>
           <label class="tools-action" for="low-data-toggle"><input id="low-data-toggle" type="checkbox"> <span>Save data · use device voice</span></label>
           <button class="tools-action" id="export-progress" type="button" aria-label="Export progress to a file">↓ <span>Export progress</span></button>
@@ -212,6 +213,24 @@
     </div>
   </div>
 </header>
+
+<div class="developer-overlay" id="developer-overlay" hidden>
+  <section class="developer-dashboard" role="dialog" aria-modal="true" aria-labelledby="developer-dashboard-title">
+    <header class="developer-dashboard-head"><div><p class="developer-eyebrow">EPIPHANY · PRIVATE WORKSPACE</p><h2 id="developer-dashboard-title">Developer Mode</h2><p>Manage, inspect and safely test the learning world.</p></div><button type="button" class="developer-close" id="close-developer-mode" aria-label="Close Developer Mode">×</button></header>
+    <div class="developer-dashboard-body">
+      <aside class="developer-sidebar" aria-label="Developer sections"><button type="button" class="is-active" data-dev-section="overview">⌂ <span>Overview</span></button><button type="button" data-dev-section="testing">◈ <span>Testing Lab</span></button><button type="button" data-dev-section="assets">▧ <span>Assets</span></button><button type="button" data-dev-section="content">▤ <span>Content</span></button><button type="button" data-dev-section="world">◎ <span>World Editor</span></button><button type="button" data-dev-section="diagnostics">⌁ <span>Diagnostics</span></button></aside>
+      <main class="developer-main">
+        <section class="developer-section is-active" data-dev-panel="overview"><div class="developer-welcome"><span class="developer-welcome-icon">✦</span><div><h3>Welcome to your workshop</h3><p>A private control room for building and testing EPIPHANY. Your normal player progress stays protected during safe test sessions.</p></div></div><div class="developer-feature-grid"><button type="button" data-dev-open="testing"><b>◈ Testing Lab</b><span>Try any level, activity, story or World mission.</span><small>Available now →</small></button><button type="button" data-dev-open="assets"><b>▧ Character Assets</b><span>Upload the existing character artwork to cloud storage.</span><small>Available now →</small></button><article><b>▤ Content Manager</b><span>Central editing tools for stories, questions, words and character cards.</span><small>Workspace planned</small></article><article><b>◎ World Editor</b><span>Manage regions, missions, events and world locations.</span><small>Workspace planned</small></article><article><b>⌁ Diagnostics</b><span>Review app health, data loading and storage status.</span><small>Workspace planned</small></article></div></section>
+        <section class="developer-section" data-dev-panel="testing"><div class="developer-section-head"><div><h3>Testing Lab</h3><p>Run temporary test sessions without changing your real learning progress.</p></div></div><div id="developer-tools-host"></div></section>
+        <section class="developer-section" data-dev-panel="assets"><div class="developer-section-head"><div><h3>Character Assets</h3><p>Move the current local character images into the configured Supabase bucket.</p></div></div><div class="developer-info-card"><b>Cloud migration</b><p>Local artwork remains the fallback until every image uploads successfully. Cloud versions are enabled automatically after a complete upload.</p><div id="developer-assets-host"></div></div></section>
+        <section class="developer-section" data-dev-panel="content"><div class="developer-section-head"><div><h3>Content Manager</h3><p>Planned workspace for the content libraries.</p></div></div><div class="developer-info-card"><b>Not connected yet</b><p>Stories, questions, vocabulary and character-card data are still managed in existing project data files. This section will become an editor with validation and safe publishing.</p></div></section>
+        <section class="developer-section" data-dev-panel="world"><div class="developer-section-head"><div><h3>World Editor</h3><p>Planned workspace for EPIPHANY's world content.</p></div></div><div class="developer-info-card"><b>Not connected yet</b><p>Region, mission, event and location editing is not exposed here yet. Existing World testing access remains available in Testing Lab.</p></div></section>
+        <section class="developer-section" data-dev-panel="diagnostics"><div class="developer-section-head"><div><h3>Diagnostics</h3><p>Basic live checks for the current browser session.</p></div></div><div class="developer-diagnostic-grid"><div><small>Signed-in account</small><b id="developer-diagnostic-account">Checking…</b></div><div><small>Developer access</small><b id="developer-diagnostic-access">Checking…</b></div><div><small>Cloud artwork mode</small><b id="developer-diagnostic-cloud">Checking…</b></div><div><small>Local storage</small><b id="developer-diagnostic-storage">Checking…</b></div></div></section>
+      </main>
+    </div>
+  </section>
+</div>
+
 
 
 <nav class="bottom-nav" aria-label="Quick navigation">
