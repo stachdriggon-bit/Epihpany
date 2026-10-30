@@ -5,6 +5,14 @@
   const PRIVATE_BUCKET = 'epiphany-assets-private';
   const MAX_BYTES = 12 * 1024 * 1024;
   const MIME_TYPES = new Set(['image/png', 'image/jpeg', 'image/webp']);
+  const THUMBNAIL_PROFILES = {
+    characters:{maxWidth:560,maxHeight:560,quality:0.84},
+    stories:{maxWidth:1280,maxHeight:720,quality:0.84},
+    world:{maxWidth:1280,maxHeight:960,quality:0.84},
+    cards:{maxWidth:640,maxHeight:900,quality:0.84},
+    interface:{maxWidth:1440,maxHeight:1440,quality:0.86},
+    other:{maxWidth:640,maxHeight:640,quality:0.82}
+  };
   const $ = (id) => document.getElementById(id);
   const root = () => $('asset-manager');
   let activeTab = 'library';
@@ -155,6 +163,29 @@
     });
   }
 
+  async function createThumbnail(file, category) {
+    const profile = THUMBNAIL_PROFILES[category] || THUMBNAIL_PROFILES.other;
+    const bitmap = await createImageBitmap(file);
+    try {
+      const scale = Math.min(1, profile.maxWidth / bitmap.width, profile.maxHeight / bitmap.height);
+      const width = Math.max(1, Math.round(bitmap.width * scale));
+      const height = Math.max(1, Math.round(bitmap.height * scale));
+      const canvas = document.createElement('canvas');
+      canvas.width = width;
+      canvas.height = height;
+      const context = canvas.getContext('2d', {alpha:false});
+      if (!context) throw new Error('Could not prepare the image thumbnail.');
+      context.drawImage(bitmap, 0, 0, width, height);
+      const blob = await new Promise((resolve, reject) => {
+        canvas.toBlob(result => result ? resolve(result) : reject(new Error('Thumbnail generation failed.')), 'image/webp', profile.quality);
+      });
+      const mimeType = blob.type === 'image/webp' ? 'image/webp' : 'image/png';
+      return {blob, width, height, mimeType, extension:mimeType === 'image/webp' ? 'webp' : 'png'};
+    } finally {
+      bitmap.close?.();
+    }
+  }
+
   function previewSelectedFile(file) {
     const host = $('asset-upload-preview');
     if (!host) return;
@@ -204,13 +235,17 @@
     setBusy(true);
     let assetId = '';
     let objectPath = '';
-    let uploaded = false;
+    let thumbnailPath = '';
+    const uploadedPaths = [];
     try {
       const size = await dimensions(file);
       assetId = crypto.randomUUID();
       const category = $('asset-upload-category')?.value || 'other';
+      const thumbnail = await createThumbnail(file, category);
       const fileName = safeName(file.name);
-      objectPath = (hasAnyLinkField ? 'linked/' : 'unassigned/') + assetId + '/' + fileName;
+      const folder = (hasAnyLinkField ? 'linked/' : 'unassigned/') + assetId + '/';
+      objectPath = folder + fileName;
+      thumbnailPath = folder + 'thumbnail.' + thumbnail.extension;
 
       const { data: created, error: createError } = await api.from('epiphany_assets').insert({
         id: assetId,
@@ -232,19 +267,40 @@
         contentType: file.type
       });
       if (uploadError) throw uploadError;
-      uploaded = true;
+      uploadedPaths.push(objectPath);
 
-      const { error: fileError } = await api.from('epiphany_asset_files').insert({
-        asset_id: created.id,
-        variant: 'original',
-        bucket_id: PRIVATE_BUCKET,
-        object_path: objectPath,
-        visibility: 'private',
-        mime_type: file.type,
-        size_bytes: file.size,
-        width: size.width,
-        height: size.height
+      const { error: thumbnailUploadError } = await api.storage.from(PRIVATE_BUCKET).upload(thumbnailPath, thumbnail.blob, {
+        cacheControl: '3600',
+        upsert: false,
+        contentType: thumbnail.mimeType
       });
+      if (thumbnailUploadError) throw thumbnailUploadError;
+      uploadedPaths.push(thumbnailPath);
+
+      const { error: fileError } = await api.from('epiphany_asset_files').insert([
+        {
+          asset_id: created.id,
+          variant: 'original',
+          bucket_id: PRIVATE_BUCKET,
+          object_path: objectPath,
+          visibility: 'private',
+          mime_type: file.type,
+          size_bytes: file.size,
+          width: size.width,
+          height: size.height
+        },
+        {
+          asset_id: created.id,
+          variant: 'thumbnail',
+          bucket_id: PRIVATE_BUCKET,
+          object_path: thumbnailPath,
+          visibility: 'private',
+          mime_type: thumbnail.mimeType,
+          size_bytes: thumbnail.blob.size,
+          width: thumbnail.width,
+          height: thumbnail.height
+        }
+      ]);
       if (fileError) throw fileError;
 
       if (hasAnyLinkField) {
@@ -268,14 +324,14 @@
       let cleanupMessage = '';
       if (assetId) {
         let safeToDeleteRecord = true;
-        if (uploaded && objectPath) {
-          const { error: removeError } = await api.storage.from(PRIVATE_BUCKET).remove([objectPath]);
+        if (uploadedPaths.length) {
+          const { error: removeError } = await api.storage.from(PRIVATE_BUCKET).remove(uploadedPaths);
           if (removeError) {
             safeToDeleteRecord = false;
             cleanupMessage = ' The uploaded file could not be cleaned up automatically; its record was retained for review.';
             await api.from('epiphany_assets').update({
               status: 'issue',
-              metadata: { orphaned_private_bucket: PRIVATE_BUCKET, orphaned_private_path: objectPath, cleanup_error: removeError.message || 'Storage cleanup failed.' }
+              metadata: { orphaned_private_bucket: PRIVATE_BUCKET, orphaned_private_paths: uploadedPaths, cleanup_error: removeError.message || 'Storage cleanup failed.' }
             }).eq('id', assetId);
           }
         }
