@@ -274,15 +274,15 @@ test('character codex fixes mobile overlap, name-first layout, language, and ind
   assert.match(css, /--detail-panel-strip:#1c1b35/);
   assert.match(js, /const initialArabic=document\.body\.classList\.contains\('ar-on'\)/);
   assert.match(js, /renderDetailInfo\(card,profile,owned,initialArabic\?'ar':'en'\)/);
-  assert.match(js, /syncCardFaceLanguage\\(language\\)/);
-  assert.match(css, /\\.fcard\\.is-arabic \\.fcard-plate h3/);
+  assert.match(js, /syncCardFaceLanguage\(language\)/);
+  assert.match(css, /\.fcard\.is-arabic \.fcard-plate h3/);
 });
 
 test('mobile navigation, toast and settings controls reserve safe space and usable touch targets', () => {
   const css = read('style.css');
   const app = read('app.js');
   assert.match(css, /max-height:calc\(100dvh - 58px - 94px - env\(safe-area-inset-top\) - env\(safe-area-inset-bottom\)\)/);
-  assert.match(css, /\\.bottom-nav\\{z-index:40\\}/);
+  assert.match(css, /\.bottom-nav\{z-index:40\}/);
   assert.match(css, /width:20px;height:20px;min-width:20px;min-height:20px/);
   assert.match(css, /navigation-breadcrumb \.breadcrumb-link,[\s\S]{0,100}min-height:44px/);
   assert.match(css, /max-width:min\(280px,calc\(100vw - 32px\)\)/);
