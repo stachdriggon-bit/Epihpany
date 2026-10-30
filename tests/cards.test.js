@@ -21,7 +21,7 @@ test('card catalog has unique stable IDs and supported rarities', () => {
   }
 });
 
-test('Mira and Mirelle use their distinct approved portrait files', () => {
+test('Mira and Mirelle keep distinct approved cloud portrait object names', () => {
   const context = { window: {} };
   vm.runInNewContext(read('data-cards.js'), context);
   const cards = context.window.EPIPHANY_CARD_DATA;
