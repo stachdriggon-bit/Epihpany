@@ -657,9 +657,13 @@
           if (status) status.textContent = 'Uploading ' + progress.completed + '/' + progress.total + ' · ' + progress.failed + ' failed';
         });
         if (status) status.textContent = result.failures.length
-          ? 'Uploaded ' + result.uploaded + '/' + result.total + '. ' + result.failures.length + ' files need attention.'
-          : 'All ' + result.uploaded + ' character images uploaded successfully. Refresh the page to use cloud copies.';
+          ? 'Uploaded ' + result.uploaded + '/' + result.total + '. ' + result.failures.length + ' files need attention. Local images remain active.'
+          : 'All ' + result.uploaded + ' character images uploaded successfully. Cloud copies are now enabled; refreshing…';
         if (result.failures.length) console.error('[EPIPHANY] Character art upload failures', result.failures);
+        else {
+          try { localStorage.setItem('epiphany-character-art-cloud-ready', '1'); } catch {}
+          setTimeout(() => location.reload(), 900);
+        }
       } catch (error) {
         if (status) status.textContent = 'Upload failed: ' + (error && error.message ? error.message : String(error));
       } finally {
