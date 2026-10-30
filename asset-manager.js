@@ -357,6 +357,59 @@
     }
   }
 
+  function characterPickerData() {
+    const cards = Array.isArray(window.EPIPHANY_CARD_DATA) ? window.EPIPHANY_CARD_DATA : [];
+    const profiles = window.EPIPHANY_CARD_PROFILES || {};
+    return cards.filter(card => card?.id && card?.category === 'characters').map(card => {
+      const profile = profiles[card.id] || {};
+      const english = profile.name?.en || card.name || card.id;
+      const arabic = profile.name?.ar || '';
+      return {id:String(card.id),english:String(english),arabic:String(arabic),title:String(card.title || '')};
+    }).sort((a,b) => a.english.localeCompare(b.english));
+  }
+
+  function populateCharacterPicker(query) {
+    const select = $('asset-character-select');
+    if (!select) return;
+    const term = String(query || '').trim().toLocaleLowerCase();
+    const matches = characterPickerData().filter(item =>
+      !term || [item.english,item.arabic,item.id,item.title].some(value => value.toLocaleLowerCase().includes(term))
+    );
+    const previous = select.value;
+    select.innerHTML = '<option value="">Choose a character…</option>' + matches.map(item =>
+      '<option value="' + escapeHtml(item.id) + '">' + escapeHtml(item.english) +
+      (item.arabic ? ' · ' + escapeHtml(item.arabic) : '') +
+      (item.title ? ' — ' + escapeHtml(item.title) : '') + '</option>'
+    ).join('');
+    if (matches.some(item => item.id === previous)) select.value = previous;
+    updateSelectedCharacterLabel();
+  }
+
+  function updateSelectedCharacterLabel() {
+    const select = $('asset-character-select');
+    const label = $('asset-character-selected');
+    const hiddenId = $('asset-link-owner-id');
+    const selected = select?.value || '';
+    if (hiddenId) hiddenId.value = selected;
+    const item = characterPickerData().find(character => character.id === selected);
+    if (label) label.textContent = item
+      ? 'Selected: ' + item.english + (item.arabic ? ' · ' + item.arabic : '') + ' (' + item.id + ')'
+      : 'Select a character from the list.';
+  }
+
+  function syncOwnerPicker() {
+    const isCharacter = $('asset-link-owner-type')?.value === 'character';
+    const picker = $('asset-character-picker');
+    const genericLabel = $('asset-link-owner-id-label');
+    const genericInput = $('asset-link-owner-id');
+    const characterSelect = $('asset-character-select');
+    if (picker) picker.hidden = !isCharacter;
+    if (genericLabel) genericLabel.hidden = isCharacter;
+    if (genericInput) genericInput.required = !isCharacter;
+    if (characterSelect) characterSelect.required = isCharacter;
+    if (isCharacter) updateSelectedCharacterLabel();
+  }
+
   function openLinkPanel(assetId) {
     const asset = assets.find(item => item.id === assetId);
     const panel = $('asset-link-panel');
@@ -370,8 +423,13 @@
     if (role) role.value = asset.category === 'characters' ? 'portrait' : asset.category === 'stories' ? 'cover' : asset.category === 'world' ? 'illustration' : 'image';
     const ownerType = $('asset-link-owner-type');
     if (ownerType) ownerType.value = asset.category === 'characters' ? 'character' : asset.category === 'stories' ? 'story' : asset.category === 'world' ? 'world' : asset.category === 'interface' ? 'interface' : asset.category === 'cards' ? 'card' : 'other';
+    const search = $('asset-character-search');
+    if (search) search.value = '';
+    populateCharacterPicker('');
+    syncOwnerPicker();
     panel.hidden = false;
-    ownerId?.focus({preventScroll:true});
+    if (ownerType?.value === 'character') search?.focus({preventScroll:true});
+    else ownerId?.focus({preventScroll:true});
   }
 
   function closeLinkPanel() {
@@ -390,7 +448,7 @@
       return;
     }
     const ownerType = $('asset-link-owner-type')?.value || '';
-    const ownerId = String($('asset-link-owner-id')?.value || '').trim();
+    const ownerId = String(ownerType === 'character' ? ($('asset-character-select')?.value || '') : ($('asset-link-owner-id')?.value || '')).trim();
     const role = String($('asset-link-role')?.value || '').trim();
     if (!ownerType || !ownerId || !role) {
       setStatus('Complete the item type, item ID and usage role.', 'error');
@@ -644,6 +702,10 @@
     $('asset-upload-form')?.addEventListener('submit', uploadAsset);
     $('asset-link-form')?.addEventListener('submit', saveAssetLink);
     $('asset-link-cancel')?.addEventListener('click', closeLinkPanel);
+    $('asset-link-owner-type')?.addEventListener('change', syncOwnerPicker);
+    $('asset-character-search')?.addEventListener('input', event => populateCharacterPicker(event.target.value));
+    $('asset-character-select')?.addEventListener('change', updateSelectedCharacterLabel);
+    populateCharacterPicker('');
     root().addEventListener('click', event => {
       const button = event.target.closest('[data-asset-link]');
       if (button) openLinkPanel(button.dataset.assetLink);
