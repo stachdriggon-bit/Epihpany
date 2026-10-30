@@ -251,7 +251,14 @@
                   <b id="asset-link-title">Link asset to an item</b>
                   <div class="asset-upload-fields">
                     <label>Item type<select id="asset-link-owner-type"><option value="character">Character</option><option value="story">Story</option><option value="world">World location</option><option value="card">Card</option><option value="interface">Interface element</option><option value="other">Other</option></select></label>
-                    <label>Item ID<input id="asset-link-owner-id" type="text" maxlength="120" placeholder="e.g. CHR-002" required></label>
+                    <div class="asset-character-picker" id="asset-character-picker">
+                      <label for="asset-character-search">Find character</label>
+                      <input id="asset-character-search" type="search" placeholder="Search by English or Arabic name…" autocomplete="off">
+                      <label for="asset-character-select">Choose character</label>
+                      <select id="asset-character-select" required><option value="">Loading characters…</option></select>
+                      <small id="asset-character-selected" class="asset-character-selected">Select a character from the list.</small>
+                    </div>
+                    <label id="asset-link-owner-id-label" hidden>Item ID<input id="asset-link-owner-id" type="text" maxlength="120" placeholder="Enter item ID" required></label>
                     <label>Usage role<input id="asset-link-role" type="text" maxlength="60" placeholder="e.g. portrait" required></label>
                   </div>
                   <p class="asset-upload-note">This creates a private reference only. The asset will not appear in the game until it is published.</p>
