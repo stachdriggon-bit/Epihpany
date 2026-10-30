@@ -262,3 +262,26 @@ test('character portrait originals and thumbnails are not shipped as local repos
   assert.equal(fs.existsSync(path.join(root, 'assets/cards/art/thumb')), false, 'the generated local thumbnail directory must not be shipped');
   assert.equal(fs.existsSync(path.join(root, 'Mira55.jfif')), false, 'the obsolete local Mira sheet must not be shipped');
 });
+
+
+test('character codex fixes mobile overlap, name-first layout, language, and index overflow cue', () => {
+  const css = read('cards.css');
+  const js = read('cards.js');
+  assert.match(css, /\.cards-detail-backdrop\{z-index:10050\}/);
+  assert.match(css, /\.cards-detail-header\{order:1/);
+  assert.match(css, /\.cards-detail-tools\{order:2/);
+  assert.match(css, /mask-image:linear-gradient\(to right,#000 0,#000 calc\(100% - 28px\),transparent 100%\)/);
+  assert.match(css, /--detail-panel-strip:#1c1b35/);
+  assert.match(js, /const initialArabic=document\.body\.classList\.contains\('ar-on'\)/);
+  assert.match(js, /renderDetailInfo\(card,profile,owned,initialArabic\?'ar':'en'\)/);
+});
+
+test('mobile navigation, toast and settings controls reserve safe space and usable touch targets', () => {
+  const css = read('style.css');
+  const app = read('app.js');
+  assert.match(css, /max-height:calc\(100dvh - 58px - 94px - env\(safe-area-inset-top\) - env\(safe-area-inset-bottom\)\)/);
+  assert.match(css, /width:20px;height:20px;min-width:20px;min-height:20px/);
+  assert.match(css, /navigation-breadcrumb \.breadcrumb-link,[\s\S]{0,100}min-height:44px/);
+  assert.match(css, /max-width:min\(280px,calc\(100vw - 32px\)\)/);
+  assert.match(app, /Level check skipped · starting at A1\./);
+});
