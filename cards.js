@@ -74,13 +74,17 @@
     if (window.EPIPHANY_SUPABASE_CONFIG?.characterArtCloudReady === true) return true;
     try { return localStorage.getItem('epiphany-character-art-cloud-ready') === '1'; } catch { return false; }
   };
+  const cardArtSource = (card, opts={}) => {
+    const localPath = opts.fullImage ? card.image : (card.thumb || card.image);
+    const folder = opts.fullImage ? 'originals' : 'thumbs';
+    const cloudPath = characterArtUrl(localPath, folder);
+    return {localPath,cloudPath,source:cloudArtEnabled() && cloudPath ? cloudPath : localPath};
+  };
   const artMarkup = (card, opts={}) => {
     if (!card.image) return card.art
       ? '<svg class="fcard-portrait" viewBox="0 0 240 300" preserveAspectRatio="xMidYMin slice" focusable="false"><use href="'+PORTRAITS+'#'+esc(card.art)+'"></use></svg>'
       : '<div class="fcard-sigil-art">'+svgUse('ring','back-sigil','0 0 120 120')+svgUse('ring r2','back-sigil','0 0 120 120')+'<b>'+esc(card.symbol)+'</b></div>';
-    const localPath = opts.fullImage ? card.image : (card.thumb || card.image);
-    const cloudPath = characterArtUrl(localPath, opts.fullImage ? 'originals' : 'thumbs');
-    const source = cloudArtEnabled() && cloudPath ? cloudPath : localPath;
+    const {localPath,cloudPath,source} = cardArtSource(card,opts);
     return '<img class="fcard-portrait fcard-portrait-image" src="'+esc(source)+'" data-cloud-src="'+esc(cloudPath)+'" data-local-fallback="'+esc(localPath)+'" '+(opts.fullImage?'fetchpriority="high"':'fetchpriority="low"')+' width="240" height="300" alt="" loading="'+(opts.fullImage?'eager':'lazy')+'" decoding="async">';
   };
 
@@ -337,10 +341,15 @@
   let cardDetailTrigger=null, cardDetailReturnRect=null;
   const preloadCardArt=id=>{
     const card=data().find(c=>c.id===id);if(!card?.image||!isOwned(card))return;
+    const {source}=cardArtSource(card);
+    if(!source)return;
     if(!window.__epiphanyCardPreloads)window.__epiphanyCardPreloads=new Set();
-    if(window.__epiphanyCardPreloads.has(card.image))return;
-    window.__epiphanyCardPreloads.add(card.image);
-    const image=new Image();image.src=card.image;
+    if(window.__epiphanyCardPreloads.has(source))return;
+    window.__epiphanyCardPreloads.add(source);
+    const image=new Image();
+    image.decoding='async';
+    image.fetchPriority='low';
+    image.src=source;
   };
   const openCardDetail=(id,trigger)=>{
     const card=data().find(c=>c.id===id);if(!card)return;
