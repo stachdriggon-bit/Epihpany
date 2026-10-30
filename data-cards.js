@@ -1,4 +1,4 @@
-/* EPIPHANY collectible-card data. Character art is loaded from the matching repository image file. */
+/* EPIPHANY collectible-card data. Image filenames map to objects in Supabase Storage; the app never loads local portrait files. */
 window.EPIPHANY_CARD_DATA = [
   {id:"CHR-001",category:"characters",name:"Mira",title:"Wayfinder",rarity:"Epic",symbol:"⌖",palette:"map",image:"mira99.png",thumb:"assets/cards/art/thumb/mira.webp",art:"mira",description:"A practical guide who reads maps and helps travelers make sense of their routes."},
   {id:"CHR-005",category:"characters",name:"Nibras",title:"Crystal Echo",rarity:"Epic",symbol:"◇",palette:"crystal",image:"nibras.PNG",thumb:"assets/cards/art/thumb/nibras.webp",art:"nibras",description:"A crystalline keeper of echoes that never preserve the whole truth."},
