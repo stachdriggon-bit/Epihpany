@@ -583,3 +583,44 @@ body[data-theme="light"] .cards-detail-placeholder{color:#5b4d61;border-color:#9
  .cards-detail-backdrop,.cards-detail-dialog,.cards-detail-dialog.is-closing,.fcard-portrait-image{animation:none!important;transition:none!important}
  .cards-detail-dialog{transform:none!important}
 }
+
+/* Codex dossier layout correction: keep the collectible card visible beside its profile. */
+.cards-detail-dialog{
+  display:grid;
+  grid-template-columns:minmax(320px,.9fr) minmax(0,1.1fr);
+  grid-template-areas:"art info";
+  align-items:stretch;
+  gap:clamp(24px,3vw,42px);
+}
+.cards-detail-art{grid-area:art;display:flex;align-items:center;justify-content:center;align-self:stretch;min-width:0;min-height:480px;width:100%;padding:28px 16px}
+.cards-detail-art>.fcard{display:block!important;visibility:visible!important;opacity:1!important;width:min(100%,390px);max-width:390px;min-width:0;flex:none}
+.cards-detail-art .fcard-portrait-image{opacity:1}
+.cards-detail-info{grid-area:info;min-width:0;width:100%}
+@media(max-width:720px){
+  .cards-detail-backdrop{display:block;padding:0;overflow-y:auto;overscroll-behavior:contain}
+  .cards-detail-dialog{
+    display:grid;
+    grid-template-columns:minmax(0,1fr);
+    grid-template-areas:"art" "info";
+    align-content:start;
+    align-items:start;
+    gap:22px;
+    width:100%;
+    min-height:100svh;
+    max-height:none;
+    padding:68px 16px 32px;
+    overflow:visible;
+    border-radius:0;
+  }
+  .cards-detail-close{position:absolute;top:12px;right:12px;z-index:20;margin:0}
+  .cards-detail-art{width:min(100%,340px);min-height:0;min-height:360px;justify-self:center;align-self:start;padding:22px 16px}
+  .cards-detail-art>.fcard{width:min(100%,270px);max-width:270px}
+  .cards-detail-info{width:100%;max-height:none;overflow:visible;padding:0 2px 24px;mask-image:none}
+  .cards-detail-tools{padding-right:48px}
+  .cards-detail-info[dir="rtl"] .cards-detail-tools{padding-right:0;padding-left:48px}
+}
+@media(min-width:721px) and (max-width:980px){
+  .cards-detail-dialog{grid-template-columns:minmax(260px,.78fr) minmax(0,1.22fr);gap:20px;padding:20px}
+  .cards-detail-art{min-height:420px;padding:20px 10px}
+  .cards-detail-art>.fcard{max-width:320px}
+}
