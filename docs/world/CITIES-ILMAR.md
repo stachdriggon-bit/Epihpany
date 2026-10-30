@@ -46,12 +46,12 @@
 ## Candidate settlement list
 
 ### IL-CITY-01 — Eiraven / إيرافين
-**Role:** Major river-market city; possible future capital candidate, not designated as one.  
-**Relative position:** On the lower Ilan River, inland from its proposed estuary or near a navigable branch. Exact placement depends on the final river course.  
-**Signature:** Busy quays, grain warehouses, ferries, public notice boards, and neighborhoods that grew around different generations of river trade.  
-**Everyday concern:** Flood precautions, river access, market rules, and who pays to maintain the banks.  
-**Story use:** A lost shipment, a dispute between old riverside families and new merchants, or a public notice whose wording changes the outcome of a quest.  
-**Continuity anchor:** Its importance comes from river access and trade, not from an assumed empire or ancient prophecy.
+**Role:** Major city and principal home of the Elves; also an established river-market center. It remains a possible future capital candidate, but has not been designated as a capital.  
+**Relative position:** In Ilmar, within a broad landscape of extensive forests, lakes, valleys, and waterways. Its precise position and relationship to the proposed Ilan River course remain subject to geographic reconciliation.  
+**Signature:** An old city whose built environment is integrated with the surrounding natural landscape. Forests, lakes, valleys, and waterways are part of the city's wider setting rather than merely scenery beyond its walls. Its architecture and settlement pattern are intended to coexist with the environment.  
+**Everyday concern:** Maintaining the relationship between the city and its surrounding ecosystems, managing water and paths, and balancing settlement needs with the living landscape. Specific institutions and practices remain open.  
+**Story use:** A visitor unfamiliar with the land misreads a route or local condition; a change in a waterway affects several neighborhoods; or an Elf notices an environmental shift others have overlooked.  
+**Continuity anchor:** Eiraven is the principal Elf home, not the only place where Elves live. Elves are not a culturally or personally uniform people, and not every Elf is assumed to live in forests or share the same customs. Its importance does not establish it as Ilmar's capital.
 
 ### IL-CITY-02 — Westmere / ويستمير
 **Role:** Western coastal port and ship-repair town.  
