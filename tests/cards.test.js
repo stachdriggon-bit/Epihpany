@@ -302,3 +302,13 @@ test('mobile card detail dialog leaves room for the device home indicator', () =
   const css = read('cards.css');
   assert.match(css, /\.cards-detail-dialog\{padding-bottom:calc\(28px \+ env\(safe-area-inset-bottom\)\)\}/);
 });
+
+
+test('frequent mobile menu and World controls meet a 44px touch target', () => {
+  const css = read('style.css');
+  assert.match(css, /\.mobile-menu>summary\{width:44px;height:44px\}/);
+  assert.match(css, /\.world-dpad>button\{width:44px;height:44px;min-height:44px\}/);
+  assert.match(css, /\.world-dpad>div button\{width:44px;height:44px;min-height:44px\}/);
+  assert.match(css, /\.world-help-actions button\{min-height:44px\}/);
+  assert.match(css, /\.story-card-close\{width:44px;height:44px\}/);
+});
