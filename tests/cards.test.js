@@ -135,14 +135,15 @@ test('summoning uses shared sound preferences and respects reduced motion', () =
   assert.match(html, /cards\.js\?v=[^"&]+/);
 });
 
-test('every character card points to an image file that exists in the repository', () => {
+test('every character card declares cloud storage object names for full art and gallery thumbnails', () => {
   const context = { window: {} };
   vm.runInNewContext(read('data-cards.js'), context);
   const cards = context.window.EPIPHANY_CARD_DATA;
-  for (const card of cards.filter(item => item.image)) {
-    assert.ok(fs.existsSync(path.join(root, card.image)), card.id + ' references missing full art: ' + card.image);
-    assert.ok(card.thumb && card.thumb.includes('/thumb/'), card.id + ' must use a generated gallery thumbnail');
-    assert.ok(fs.existsSync(path.join(root, card.thumb)), card.id + ' references missing thumbnail: ' + card.thumb);
+  const characterCards = cards.filter(item => item.category === 'characters');
+  assert.ok(characterCards.length > 0);
+  for (const card of characterCards) {
+    assert.ok(card.image && /\\.(png|jpe?g|webp)$/i.test(card.image), card.id + ' must declare a cloud original object filename');
+    assert.ok(card.thumb && /assets\\/cards\\/art\\/thumb\\/[^/]+\\.webp$/i.test(card.thumb), card.id + ' must declare a cloud thumbnail object path');
   }
 });
 
@@ -202,16 +203,18 @@ test('character dossiers preserve the complete reviewed ability records without 
   assert.match(profiles['CHR-039'].sections.find(section => section.id === 'restriction').text.en, /scope/i);
 });
 
-test('card gallery preloads the same cloud-or-local thumbnail source used by the rendered card', () => {
+test('character card artwork and preloading use Supabase Storage only, with no local fallback', () => {
   const js = read('cards.js');
   assert.match(js, /const cardArtSource = \(card, opts=\{\}\) =>/);
-  assert.match(js, /const \{localPath,cloudPath,source\} = cardArtSource\(card,opts\)/);
-  assert.match(js, /const folder = opts\.fullImage \? 'originals' : 'thumbs'/);
-  assert.match(js, /const \{source\}=cardArtSource\(card\)/);
-  assert.match(js, /window\.__epiphanyCardPreloads\.has\(source\)/);
+  assert.match(js, /return characterArtUrl\(storagePath, folder\)/);
+  assert.match(js, /const cloudPath = cardArtSource\(card,opts\)/);
+  assert.match(js, /const cloudPath=cardArtSource\(card\)/);
+  assert.match(js, /window\.__epiphanyCardPreloads\.has\(cloudPath\)/);
   assert.match(js, /image\.fetchPriority='low'/);
-  assert.match(js, /image\.src=source/);
-  assert.match(js, /data-local-fallback=/);
+  assert.match(js, /image\.src=cloudPath/);
+  assert.doesNotMatch(js, /data-local-fallback|localFallback|cloudArtEnabled/);
+  assert.match(js, /epiphany-character-art-cloud-errors-v1/);
+  assert.match(js, /is-art-unavailable/);
 });
 
 test('card detail uses the real full card face and keeps gallery card nodes across filters', () => {
