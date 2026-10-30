@@ -277,7 +277,7 @@ test('main navigation tabs open without uncaught page errors', async t => {
     await cardsPage.locator('#cards-type-filters [data-gallery-type="all"]').click();
     assert.equal(await cardsPage.evaluate(() => document.querySelector('#cards-gallery [data-gallery-card="CHR-001"]') === window.__miraGalleryNode), true, 'filter changes must preserve existing card node identity');
     const galleryMiraImage = cardsPage.locator('#cards-gallery [data-gallery-card="CHR-001"] .fcard-portrait-image');
-    assert.ok(String(await galleryMiraImage.getAttribute('src')).includes('/thumbs/'), 'gallery should request the Supabase thumbnail object');
+    assert.ok(String(await galleryMiraImage.getAttribute('data-cloud-src')).includes('/thumbs/'), 'gallery should request the Supabase thumbnail object');
     const miraCard = cardsPage.locator('#cards-gallery [data-gallery-card="CHR-001"] .fcard');
     await miraCard.click();
     const detail = cardsPage.locator('#cards-detail-modal [role="dialog"]');
@@ -289,7 +289,7 @@ test('main navigation tabs open without uncaught page errors', async t => {
     assert.ok(modalCardBox && modalCardBox.width > 0 && modalCardBox.height > 0, 'the real card face must be visible in the modal');
     assert.ok(await detail.locator('.cards-detail-art img, .cards-detail-art svg').count() > 0, 'the modal card must contain its artwork');
     const modalArt = detail.locator('.cards-detail-art img');
-    const modalArtSrc = await modalArt.getAttribute('src');
+    const modalArtSrc = await modalArt.getAttribute('data-cloud-src');
     const localArtFallback = await modalArt.getAttribute('data-local-fallback');
     const expectedFullArt = await cardsPage.evaluate(() => window.EPIPHANY_CARD_DATA.find(card => card.id === 'CHR-001').image);
     assert.ok(modalArtSrc.includes('/character-art/originals/'), 'the modal should request the full-size cloud card art');
