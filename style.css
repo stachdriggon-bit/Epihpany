@@ -3734,3 +3734,9 @@ body[data-theme="dark"] #home-view .home-intro{background:radial-gradient(circle
   .top-right .ar-toggle{width:44px;min-width:44px;height:44px}
   .top-right #sound-toggle,.top-right .chip-streak,.top-right .chip-tokens{display:none!important}
 }
+
+/* Distinct, restrained accents make section identity visible without recolouring whole pages. */
+#stories-view{--section-accent:#8d70d9}#arcade-view{--section-accent:#c58a35}#chronicle-view{--section-accent:#3b938b}#thinklab-view{--section-accent:#547fb0}
+#stories-view .intro .kicker,#arcade-view .intro .kicker,#chronicle-view .intro .kicker,#thinklab-view .intro .kicker{color:var(--section-accent)}
+#stories-view .intro,#arcade-view .intro,#chronicle-view .intro,#thinklab-view .intro{border-inline-start:3px solid color-mix(in srgb,var(--section-accent) 65%,transparent);padding-inline-start:15px}
+#profile-view .page{padding-top:18px}
