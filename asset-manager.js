@@ -405,7 +405,10 @@
     const characterSelect = $('asset-character-select');
     if (picker) picker.hidden = !isCharacter;
     if (genericLabel) genericLabel.hidden = isCharacter;
-    if (genericInput) genericInput.required = !isCharacter;
+    if (genericInput) {
+      genericInput.required = !isCharacter;
+      if (!isCharacter) genericInput.value = '';
+    }
     if (characterSelect) characterSelect.required = isCharacter;
     if (isCharacter) updateSelectedCharacterLabel();
   }
