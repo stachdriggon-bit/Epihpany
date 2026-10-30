@@ -742,6 +742,8 @@
     renderFeatured();renderGallery();updateCounts();renderOdds(selectedPack());
     refreshPublishedCharacterAssets();
     window.addEventListener('epiphany:published-assets-updated', refreshPublishedCharacterAssets);
+    window.addEventListener('epiphany:supabase-ready', refreshPublishedCharacterAssets);
+    document.addEventListener('epiphany-auth-changed', refreshPublishedCharacterAssets);
     $('cards-history-clear')?.addEventListener('click',()=>{state.history=[];save();renderHistory();});
     window.addEventListener('epiphany:achievements-updated',()=>checkAchievementRewards(window.EPIPHANY_PROFILE_ACHIEVEMENTS));
     if(window.EPIPHANY_PROFILE_ACHIEVEMENTS)checkAchievementRewards(window.EPIPHANY_PROFILE_ACHIEVEMENTS);

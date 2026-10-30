@@ -54,3 +54,13 @@ test('cloud asset replacement updates only published usages and keeps historical
   assert.match(manager,/epiphany_asset_files/);
   assert.match(manager,/last_replaced_at/);
 });
+
+
+test('successful character replacement immediately updates the live card artwork map', () => {
+  const manager=read('artwork-manager.js');
+  assert.match(manager,/window\.EPIPHANY_CARD_ASSET_MAP=\{\.\.\.currentMap,\[target\.id\]:\{/);
+  assert.match(manager,/published_bucket:PUBLIC_BUCKET/);
+  assert.match(manager,/published_original_path:originalPath/);
+  assert.match(manager,/published_thumbnail_path:thumbnailPath/);
+  assert.match(manager,/epiphany:published-assets-updated/);
+});

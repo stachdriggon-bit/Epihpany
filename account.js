@@ -732,6 +732,8 @@
       return;
     }
     client = sdk.createClient(config.url, config.publishableKey);
+    // The card gallery may initialize before this DOMContentLoaded callback creates the client.
+    window.dispatchEvent(new CustomEvent('epiphany:supabase-ready'));
     form.addEventListener('submit', async event => {
       event.preventDefault();
       const email = $('account-email-input').value.trim();

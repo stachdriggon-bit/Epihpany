@@ -321,3 +321,15 @@ test('mobile settings expose the shared sound effects preference', () => {
   assert.match(app, /\$\$\('#sound-toggle, #sound-toggle-mobile'\)/);
   assert.match(app, /sound-toggle-mobile/);
 });
+
+
+test('published character artwork refreshes after Supabase initialization and publication', () => {
+  const cards = read('cards.js');
+  const account = read('account.js');
+  const manager = read('artwork-manager.js');
+  assert.match(account, /epiphany:supabase-ready/);
+  assert.match(cards, /window\.addEventListener\('epiphany:supabase-ready', refreshPublishedCharacterAssets\)/);
+  assert.match(cards, /document\.addEventListener\('epiphany-auth-changed', refreshPublishedCharacterAssets\)/);
+  assert.match(manager, /window\.EPIPHANY_CARD_ASSET_MAP=\{\.\.\.currentMap,\[target\.id\]:\{/);
+  assert.match(manager, /epiphany:published-assets-updated/);
+});

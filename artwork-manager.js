@@ -225,6 +225,13 @@
         if(error)throw error;if(!data?.length)throw new Error('This cloud asset no longer has a published reference. Reload the list and try again.');
       }
       committed=true;
+      if(kind==='character'){
+        const currentMap=window.EPIPHANY_CARD_ASSET_MAP||{};
+        window.EPIPHANY_CARD_ASSET_MAP={...currentMap,[target.id]:{
+          owner_id:target.id,published_bucket:PUBLIC_BUCKET,
+          published_original_path:originalPath,published_thumbnail_path:thumbnailPath
+        }};
+      }
       $('artwork-replace-form')?.reset();previewSelectedFile(null);
       window.dispatchEvent(new CustomEvent('epiphany:published-assets-updated'));
       try{await loadTargets();const select=$('artwork-target-select');if(select)select.value=target.id;renderTargetPreview();}catch{}
