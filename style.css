@@ -3676,3 +3676,17 @@ body.world-fullscreen #world-game .world-help-panel[hidden]{display:none!importa
 @media(max-width:820px){.top{z-index:90}}
 
 /* Keep the floating story vocabulary card above the mobile quick-navigation bar. */
+
+
+/* Small-screen touch targets: keep frequent navigation and World controls comfortable. */
+@media(max-width:820px){
+  .mobile-menu>summary{width:44px;height:44px}
+  .tools-menu>summary{width:40px;height:40px}
+}
+@media(max-width:600px){
+  .world-helpbar button{min-height:44px}
+  .world-dpad>button{width:44px;height:44px;min-height:44px}
+  .world-dpad>div button{width:44px;height:44px;min-height:44px}
+  .world-help-actions button{min-height:44px}
+  .story-card-close{width:44px;height:44px}
+}
