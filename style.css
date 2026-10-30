@@ -3670,3 +3670,7 @@ body.world-fullscreen #world-game .world-help-panel[hidden]{display:none!importa
   .bottom-nav{z-index:40}
   .toast{z-index:80}
 }
+
+
+/* Mobile header stays above page content but below modal backdrops. */
+@media(max-width:820px){.top{z-index:90}}
