@@ -32,6 +32,6 @@ test('canonical character profile override loads after card catalog and is cache
   assert.match(html, /data-cards\.js[^\n]*defer/);
   assert.match(html, /data-character-profiles\.js[^\n]*defer/);
   assert.ok(html.indexOf('data-cards.js') < html.indexOf('data-character-profiles.js'));
-  assert.ok(html.indexOf('data-character-profiles.js') < html.indexOf('cards.js'));
+  assert.ok(html.indexOf('data-character-profiles.js') < html.indexOf('src="cards.js'));
   assert.match(sw, /\.\/data-character-profiles\.js/);
 });
