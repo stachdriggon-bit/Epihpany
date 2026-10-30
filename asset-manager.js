@@ -98,7 +98,9 @@
     }
     host.innerHTML = '<div class="asset-loading">Preparing previews…</div>';
     const cards = await Promise.all(list.map(async asset => {
-      let url = '';\n      try { url = await previewFor(asset); } catch {}\n      const linked = usages.filter(usage => usage.asset_id === asset.id);
+      let url = '';
+      try { url = await previewFor(asset); } catch {}
+      const linked = usages.filter(usage => usage.asset_id === asset.id);
       const size = (Number(asset.size_bytes) / 1024 / 1024).toFixed(2) + ' MB';
       return '<article class="asset-card" data-asset-id="' + escapeHtml(asset.id) + '">' +
         (url ? '<img class="asset-card-preview" src="' + escapeHtml(url) + '" alt="" loading="lazy">' : '<div class="asset-card-placeholder"><span>▧</span></div>') +
