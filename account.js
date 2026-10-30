@@ -679,6 +679,8 @@
     inspectCharacterArtAssets,
     getCharacterArtReport: readCharacterArtReport,
     getDeveloperEmail: () => isDeveloperAccount() ? String(currentUser.email).trim().toLowerCase() : '',
+    getAssetManagerClient: () => isDeveloperAccount() ? client : null,
+    getAssetManagerUser: () => isDeveloperAccount() && currentUser ? {id:currentUser.id} : null,
     saveStory: saveStoryToCloud,
     listMyStories: listMyCloudStories,
     listPublicStories: listPublicCloudStories,
