@@ -70,6 +70,67 @@ window.EPIPHANY_CARD_PROFILES["CHR-001"] = {
   ]
 };
 
+
+/* Veyra — bilingual Character Details profile; detailed canon: docs/character-reference-cards/CHR-039-VEYRA.md */
+window.EPIPHANY_CARD_PROFILES["CHR-039"] = {
+  name:{en:"Veyra",ar:"فييرا"},
+  title:{en:"Pattern Detective",ar:"محققة الأنماط"},
+  summary:{en:"A warm, sociable and curious investigator from a quiet village in Ilmar. She enjoys meeting people, hearing their stories and discovering unfamiliar places.",ar:"محققة ودودة واجتماعية وفضولية، نشأت في قرية هادئة في إيلمار. تحب التعرف إلى الناس وسماع حكاياتهم واكتشاف الأماكن الجديدة."},
+  facts:[
+    {label:{en:"Species",ar:"النوع"},value:{en:"Not documented yet",ar:"لم يُوثّق بعد"}},
+    {label:{en:"Age",ar:"العمر"},value:{en:"Not documented yet",ar:"لم يُوثّق بعد"}},
+    {label:{en:"Homeland",ar:"مسقط الرأس"},value:{en:"Willowmere · Eiraven · Ilmar",ar:"ويلومير · إيرافن · إيلمار"}},
+    {label:{en:"Current residence",ar:"الإقامة الحالية"},value:{en:"Not documented yet",ar:"لم يُوثّق بعد"}},
+    {label:{en:"Role",ar:"الدور"},value:{en:"Magical investigator",ar:"محققة سحرية"}}
+  ],
+  sections:[
+    {id:"overview",title:{en:"Overview",ar:"نبذة"},icon:"✦",text:[{text:{en:"Veyra is sociable, cheerful and curious. She enjoys meeting people, hearing their stories and exploring new places. Her magical ability helps her connect clues, but it does not give her guaranteed answers.",ar:"فييرا اجتماعية ومرحة وفضولية. تستمتع بالتعرف إلى الناس وسماع حكاياتهم واستكشاف الأماكن الجديدة. تساعدها قدرتها السحرية على ربط الأدلة، لكنها لا تمنحها إجابات مضمونة."}}]},
+    {id:"personality",title:{en:"Personality",ar:"الشخصية"},icon:"◇",text:[
+      {text:{en:"Warm and sociable; she finds it easy to start conversations and make others feel welcome.",ar:"ودودة واجتماعية؛ يسهل عليها بدء الأحاديث وجعل الآخرين يشعرون بالترحيب."}},
+      {text:{en:"Cheerful and playful; she enjoys humour and spontaneous remarks, but can be serious when needed.",ar:"مرحة ومحبة للمزاح؛ تستمتع بالفكاهة والتعليقات العفوية، لكنها تكون جادة عندما يتطلب الموقف ذلك."}},
+      {text:{en:"Curious and adventurous; she likes exploring places and hearing about lives beyond her village. This curiosity is independent of her magical ability.",ar:"فضولية ومحبة للاستكشاف؛ تحب اكتشاف الأماكن وسماع أخبار الحياة خارج قريتها. وهذا الفضول مستقل عن قدرتها السحرية."}},
+      {text:{en:"Independent and modest; she likes making her own choices and treats people without looking down on them.",ar:"مستقلة ومتواضعة؛ تحب اتخاذ قراراتها بنفسها ولا تتعامل مع الآخرين بتعالٍ."}},
+      {text:{en:"Her curiosity may become intrusive. She can speak before thinking, overpromise when excited, or keep busy rather than discuss a difficult day.",ar:"قد يتحول فضولها إلى تدخل في شؤون الآخرين. وقد تتحدث قبل التفكير أو تبالغ في وعودها عندما تتحمس، أو تشغل نفسها بدل الحديث عن يوم صعب."}}
+    ]},
+    {id:"motivation",title:{en:"Motivation",ar:"الدوافع"},icon:"⌖",text:[
+      {text:{en:"She enjoys discovering unfamiliar places, meeting people and collecting stories from beyond her home village.",ar:"تستمتع باكتشاف الأماكن غير المألوفة والتعرف إلى الناس وجمع الحكايات من خارج قريتها."}},
+      {text:{en:"She was curious about what lay beyond the hills, but did not want to escape or reject her home.",ar:"كانت فضولية بشأن ما يوجد وراء التلال، لكنها لم تكن تريد الهرب من موطنها أو رفضه."}},
+      {text:{en:"Her long-term ambition and any specific personal mission remain open.",ar:"لا يزال طموحها طويل الأمد وأي مهمة شخصية محددة أمرين مفتوحين."}}
+    ]},
+    {id:"abilities",title:{en:"Abilities & Skills",ar:"القدرات والمهارات"},icon:"✧",text:[
+      {text:{en:"Pattern Perception (provisional descriptive name) is a magical ability that helps her perceive relationships among accessible evidence, traces, objects and events.",ar:"إدراك الأنماط (اسم وصفي مؤقت) قدرة سحرية تساعدها على إدراك العلاقات بين الأدلة والآثار والأشياء والأحداث التي تستطيع الوصول إليها."}},
+      {text:{en:"It can help her notice contradictions, connect scattered traces, form possible explanations and identify what to examine next. A perceived relationship does not prove its cause or guarantee a correct interpretation.",ar:"تساعدها على ملاحظة التناقضات وربط الآثار المتفرقة وبناء تفسيرات محتملة وتحديد ما ينبغي فحصه لاحقًا. إدراك علاقة لا يثبت سببها ولا يضمن صحة تفسيرها."}},
+      {text:{en:"It does not automatically reveal identity, motives, thoughts or honesty; recover events with no accessible evidence; or predict the future. Her practical specialties are not documented yet.",ar:"لا تكشف تلقائيًا الهوية أو الدوافع أو الأفكار أو الصدق، ولا تستعيد أحداثًا بلا أدلة متاحة، ولا تتنبأ بالمستقبل. ولم تُوثّق تخصصاتها العملية بعد."}}
+    ]},
+    {id:"limits",title:{en:"Weaknesses & Limits",ar:"نقاط الضعف والقيود"},icon:"⌁",text:[
+      {text:{en:"Her accepted individual restriction is Scope: an intrinsic limit on how broad a relationship network she can keep within one coherent and reliable analysis at the same time.",ar:"قيدها الفردي المعتمد هو النطاق (Scope): حد أصيل لاتساع شبكة العلاقات التي تستطيع إبقاءها ضمن تحليل واحد مترابط وموثوق في الوقت نفسه."}},
+      {text:{en:"Beyond that scope, she may lose access to some connections together or fail to integrate them into one reliable picture. Training can improve her methods but cannot remove the limit; exact operating factors remain open.",ar:"عند تجاوز ذلك النطاق، قد تفقد القدرة على إدراك بعض الروابط معًا أو تعجز عن دمجها في صورة موثوقة. يحسن التدريب أساليبها لكنه لا يلغي الحد؛ وما زالت العوامل التشغيلية الدقيقة مفتوحة."}},
+      {text:{en:"Personal weaknesses include intrusive curiosity, impulsive remarks, overpromising and reluctance to admit when she needs help.",ar:"تشمل نقاط ضعفها الشخصية الفضول المتدخل، والتعليقات المتسرعة، والمبالغة في الوعود، والتردد في الاعتراف بحاجتها إلى المساعدة."}}
+    ]},
+    {id:"backstory",title:{en:"Backstory",ar:"الخلفية"},icon:"◷",text:[
+      {text:{en:"Veyra was born and raised in Willowmere, a small rural village belonging to Eiraven in Ilmar. Its close-knit community gave her childhood friends, while passing travellers and merchants brought stories from elsewhere.",ar:"وُلدت في ويلومير ونشأت فيها، وهي قرية ريفية صغيرة تابعة لإيرافن في إيلمار. أتاح لها مجتمعها المترابط أصدقاء طفولة، وكان المسافرون والتجار العابرون يجلبون حكايات من أماكن أخرى."}},
+      {text:{en:"She was the only child in a small, close-knit family. Her father is quiet and practical, showing care through actions. Her mother is warm and sociable, and Veyra is emotionally closer to her.",ar:"كانت الابنة الوحيدة في عائلة صغيرة ومترابطة. والدها هادئ وعملي ويظهر اهتمامه بالأفعال. أما والدتها فدافئة واجتماعية، وفييرا أقرب إليها عاطفيًا."}},
+      {text:{en:"Her parents love her, though their temperaments differ. Her mother can be more cautious, while her father may disagree when Veyra acts too quickly. Veyra enjoys exploring nearby places and bringing home small keepsakes.",ar:"يحبها والداها رغم اختلاف طباعهما. قد تكون والدتها أكثر حذرًا، بينما قد يختلف والدها معها عندما تتصرف بتسرع. وتحب فييرا استكشاف الأماكن القريبة وإحضار تذكارات صغيرة إلى المنزل."}},
+      {text:{en:"Her upbringing shaped her warmth, sociability, curiosity and independence. It did not cause or predict her magical ability, which took shape when she became a sorcerer.",ar:"أسهمت نشأتها في تكوين دفئها واجتماعيتها وفضولها واستقلاليتها. لكنها لم تتسبب في قدرتها السحرية ولم تتنبأ بها؛ فقد تشكلت قدرتها عندما أصبحت ساحرة."}}
+    ]},
+    {id:"story-role",title:{en:"Story Role",ar:"الدور السردي"},icon:"▤",text:[
+      {text:{en:"Veyra can help a group connect clues, notice contradictions and decide what deserves closer examination, without automatically solving every mystery.",ar:"يمكن لفييرا مساعدة المجموعة على ربط الأدلة وملاحظة التناقضات وتحديد ما يستحق فحصًا أدق، دون أن تحل كل لغز تلقائيًا."}},
+      {text:{en:"Her sociability and humour can connect people, while her curiosity may sometimes lead the group into unexpected situations.",ar:"يمكن لاجتماعيتها وروحها المرحة أن تقرب بين الأشخاص، بينما قد يقود فضولها المجموعة أحيانًا إلى مواقف غير متوقعة."}}
+    ]},
+    {id:"relationships",title:{en:"Relationships",ar:"العلاقات"},icon:"♡",text:[
+      {text:{en:"Mother: the parent she is emotionally closest to. They share everyday details, though they may disagree when her mother urges caution.",ar:"الأم: الوالدة الأقرب إليها عاطفيًا. تتبادلان تفاصيل الحياة اليومية، رغم اختلافهما أحيانًا عندما تدعوها والدتها إلى الحذر."}},
+      {text:{en:"Father: a loving but quieter relationship. He shows care through practical actions, and Veyra may find it harder to discuss feelings with him.",ar:"الأب: علاقة محبة لكنها أكثر هدوءًا. يظهر اهتمامه بالأفعال العملية، وقد تجد فييرا صعوبة أكبر في الحديث معه عن المشاعر."}},
+      {text:{en:"She has childhood friends in Willowmere, but their names and individual histories have not been established.",ar:"لديها أصدقاء طفولة في ويلومير، لكن أسماءهم وتفاصيل علاقاتها الفردية بهم لم تُحدّد."}}
+    ]},
+    {id:"places",title:{en:"Places",ar:"الأماكن"},icon:"⌖",text:[
+      {text:{en:"Willowmere — her birthplace and childhood home; a rural village belonging to Eiraven.",ar:"ويلومير — مسقط رأسها وموطن طفولتها؛ قرية ريفية تابعة لإيرافن."}},
+      {text:{en:"Eiraven — the established river-market city to which Willowmere belongs.",ar:"إيرافن — مدينة السوق النهرية المعروفة التي تتبعها ويلومير."}},
+      {text:{en:"Ilmar — the continent where her home village and its parent city are located.",ar:"إيلمار — القارة التي تقع فيها قريتها والمدينة التابعة لها."}}
+    ]},
+    {id:"quote",title:{en:"Signature Quote",ar:"العبارة المميزة"},icon:"❝",text:[{text:{en:"Not documented yet.",ar:"لم تُوثّق بعد."}}]}
+  ]
+};
+
 /* The dossier renderer supports rich text blocks as {text:{en,ar}} entries. Normalize
    plain bilingual paragraphs to that shape so the language toggle never renders blanks. */
 window.EPIPHANY_CARD_PROFILES["CHR-001"].sections.forEach(section => {
