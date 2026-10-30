@@ -25,7 +25,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Cairo:wght@500;700&family=DM+Sans:wght@400;500;700&family=Cinzel:wght@600;700&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=interface-polish-20261030-2"><link rel="stylesheet" href="cards.css?v=interface-polish-20261030-2">
+  <link rel="stylesheet" href="style.css?v=interface-polish-20261030-2"><link rel="stylesheet" href="cards.css?v=interface-polish-20261030-2"><link rel="stylesheet" href="asset-manager.css?v=asset-manager-20261030-1">
   <link rel="stylesheet" href="resonance.css?v=resonance-touch-20261030-1">
   <link rel="stylesheet" href="life-skills.css?v=calm-studio-20261025">
   <script src="data.js?v=7f0faa36" defer></script>
@@ -38,12 +38,12 @@
   <script src="data-expansion.js?v=cf6b8775" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
   <script src="supabase-config.js?v=7a16f4a2" defer></script>
-  <script src="account.js?v=f8648063" defer></script>
+  <script src="account.js?v=asset-manager-20261030-1" defer></script>\n  <script src="asset-manager.js?v=asset-manager-20261030-1" defer></script>
   <script src="notifications.js?v=a6066189" defer></script>
 <script src="telemetry.js?v=e5eac23f" defer></script>
 <script src="lazy-data.js?v=world-archive-registry-1" defer></script>
   <script src="app.js?v=archive-filters-20261030-1" defer></script>
-  <script src="data-cards.js?v=card-codex-20261029-1" defer></script>
+  <script src="data-cards.js?v=asset-manager-20261030-1" defer></script>
   <script src="data-character-profiles.js?v=mira-canon-profile-20261030-1" defer></script>
   <script src="cards.js?v=codex-translation-20261030-2" defer></script>
   <script src="navigation-enhancements.js?v=interface-polish-20261030-1" defer></script>
@@ -227,7 +227,60 @@
       <main class="developer-main">
         <section class="developer-section is-active" data-dev-panel="overview"><div class="developer-welcome"><span class="developer-welcome-icon">✦</span><div><h3>Welcome to your workshop</h3><p>A private control room for building and testing EPIPHANY. Your normal player progress stays protected during safe test sessions.</p></div></div><div class="developer-feature-grid"><button type="button" data-dev-open="testing"><b>◈ Testing Lab</b><span>Try any level, activity, story or World mission.</span><small>Available now →</small></button><button type="button" data-dev-open="assets"><b>▧ Character Assets</b><span>Verify cloud-hosted character artwork; no local image files are required.</span><small>Available now →</small></button><article><b>▤ Content Manager</b><span>Central editing tools for stories, questions, words and character cards.</span><small>Workspace planned</small></article><article><b>◎ World Editor</b><span>Manage regions, missions, events and world locations.</span><small>Workspace planned</small></article><article><b>⌁ Diagnostics</b><span>Review app health, data loading and storage status.</span><small>Workspace planned</small></article></div></section>
         <section class="developer-section" data-dev-panel="testing"><div class="developer-section-head"><div><h3>Testing Lab</h3><p>Run temporary test sessions without changing your real learning progress.</p></div></div><div id="developer-tools-host"></div></section>
-        <section class="developer-section" data-dev-panel="assets"><div class="developer-section-head"><div><h3>Character Assets</h3><p>Check that every character original and thumbnail is present and loads from Supabase Storage.</p></div></div><div class="developer-info-card developer-art-card"><b>Cloud artwork verification</b><p>Character originals and thumbnails are served directly from Supabase Storage. Scan the bucket and test the public image URLs; the app does not require local character image files.</p><div class="developer-art-actions"><button type="button" class="btn btn-ghost" id="developer-verify-character-art">Scan cloud bucket</button><button type="button" class="btn btn-ghost" id="developer-test-character-art-http">Test image loading</button><span id="developer-art-status" role="status" aria-live="polite">Ready to inspect.</span></div><div id="developer-assets-host"></div><div id="developer-art-report" aria-live="polite"></div></div></section>
+        <section class="developer-section" data-dev-panel="assets">
+          <div class="developer-section-head"><div><h3>Asset Manager</h3><p>One private-first library for EPIPHANY artwork and future media assets.</p></div></div>
+          <div class="asset-manager" id="asset-manager">
+            <div class="asset-manager-head"><div><h4>Asset library</h4><p>New uploads stay private until they are deliberately linked and published. Indexing legacy artwork does not move or delete files.</p></div><button type="button" class="btn btn-ghost" id="asset-import-legacy">Index existing artwork</button></div>
+            <nav class="asset-manager-tabs" aria-label="Asset library sections">
+              <button type="button" class="is-active" data-asset-tab="library" aria-pressed="true">Library</button>
+              <button type="button" data-asset-tab="linked" aria-pressed="false">Linked</button>
+              <button type="button" data-asset-tab="issues" aria-pressed="false">Issues</button>
+              <button type="button" data-asset-tab="unassigned" aria-pressed="false">Unassigned</button>
+              <button type="button" data-asset-tab="upload" aria-pressed="false">＋ Upload</button>
+            </nav>
+            <section class="asset-library-panel" id="asset-library-panel">
+              <div class="asset-manager-toolbar">
+                <input id="asset-search" type="search" placeholder="Search by filename, ID or category" aria-label="Search assets">
+                <select id="asset-category-filter" aria-label="Filter by asset category">
+                  <option value="all">All categories</option><option value="characters">Characters</option><option value="stories">Stories</option><option value="world">World</option><option value="cards">Cards</option><option value="interface">Interface</option><option value="other">Other</option>
+                </select>
+                <span class="asset-library-count" id="asset-library-count">0 assets</span>
+              </div>
+              <section class="asset-link-panel" id="asset-link-panel" hidden>
+                <form id="asset-link-form">
+                  <b id="asset-link-title">Link asset to an item</b>
+                  <div class="asset-upload-fields">
+                    <label>Item type<select id="asset-link-owner-type"><option value="character">Character</option><option value="story">Story</option><option value="world">World location</option><option value="card">Card</option><option value="interface">Interface element</option><option value="other">Other</option></select></label>
+                    <label>Item ID<input id="asset-link-owner-id" type="text" maxlength="120" placeholder="e.g. CHR-002" required></label>
+                    <label>Usage role<input id="asset-link-role" type="text" maxlength="60" placeholder="e.g. portrait" required></label>
+                  </div>
+                  <p class="asset-upload-note">This creates a private reference only. The asset will not appear in the game until it is published.</p>
+                  <div class="asset-link-actions"><button type="button" class="btn btn-ghost" id="asset-link-cancel">Cancel</button><button type="submit" class="btn btn-primary" id="asset-link-submit">Save link</button></div>
+                </form>
+              </section>
+              <div class="asset-library-grid" id="asset-library-grid"><div class="asset-empty"><b>Connecting to your library…</b></div></div>
+            </section>
+            <section class="asset-upload-panel" id="asset-upload-panel" hidden>
+              <form id="asset-upload-form">
+                <label class="asset-upload-file"><b>Choose an image from your device</b><input id="asset-upload-file" type="file" accept="image/png,image/jpeg,image/webp,.png,.jpg,.jpeg,.webp" required><small>PNG, JPG or WEBP · Maximum 12 MB. The original is stored in the private staging bucket.</small></label>
+                <div class="asset-upload-preview" id="asset-upload-preview" hidden></div>
+                <div class="asset-upload-fields">
+                  <label>Category<select id="asset-upload-category"><option value="characters">Characters</option><option value="stories">Stories</option><option value="world">World</option><option value="cards">Cards</option><option value="interface">Interface</option><option value="other">Other</option></select></label>
+                  <label>Item type (optional)<select id="asset-owner-type"><option value="">Keep unlinked</option><option value="character">Character</option><option value="story">Story</option><option value="world">World location</option><option value="card">Card</option><option value="interface">Interface element</option><option value="other">Other</option></select></label>
+                  <label>Item ID (optional)<input id="asset-owner-id" type="text" maxlength="120" placeholder="e.g. CHR-002"></label>
+                  <label>Usage role (optional)<input id="asset-owner-role" type="text" maxlength="60" placeholder="e.g. portrait"></label>
+                </div>
+                <p class="asset-upload-note">Fill in all three item fields to create a private link, or leave all three empty to add the image to Unassigned. Linking does not publish it to the game.</p>
+                <button class="btn btn-primary" id="asset-upload-submit" type="submit">Upload asset</button>
+              </form>
+            </section>
+            <p class="asset-manager-status" id="asset-manager-status" role="status" aria-live="polite">Waiting for developer access.</p>
+          </div>
+          <details class="developer-legacy-tools">
+            <summary>Legacy character artwork checks</summary>
+            <div class="developer-info-card developer-art-card"><b>Existing cloud artwork verification</b><p>These checks remain available while existing character images are indexed into the unified library. They do not move or delete any existing files.</p><div class="developer-art-actions"><button type="button" class="btn btn-ghost" id="developer-verify-character-art">Scan cloud bucket</button><button type="button" class="btn btn-ghost" id="developer-test-character-art-http">Test image loading</button><span id="developer-art-status" role="status" aria-live="polite">Ready to inspect.</span></div><div id="developer-assets-host"></div><div id="developer-art-report" aria-live="polite"></div></div>
+          </details>
+        </section>
         <section class="developer-section" data-dev-panel="content"><div class="developer-section-head"><div><h3>Content Manager</h3><p>Planned workspace for the content libraries.</p></div></div><div class="developer-info-card"><b>Not connected yet</b><p>Stories, questions, vocabulary and character-card data are still managed in existing project data files. This section will become an editor with validation and safe publishing.</p></div></section>
         <section class="developer-section" data-dev-panel="world"><div class="developer-section-head"><div><h3>World Editor</h3><p>Planned workspace for EPIPHANY's world content.</p></div></div><div class="developer-info-card"><b>Not connected yet</b><p>Region, mission, event and location editing is not exposed here yet. Existing World testing access remains available in Testing Lab.</p></div></section>
         <section class="developer-section" data-dev-panel="diagnostics"><div class="developer-section-head"><div><h3>Diagnostics</h3><p>Basic live checks for the current browser session.</p></div></div><div class="developer-diagnostic-grid"><div><small>Signed-in account</small><b id="developer-diagnostic-account">Checking…</b></div><div><small>Developer access</small><b id="developer-diagnostic-access">Checking…</b></div><div><small>Cloud artwork mode</small><b id="developer-diagnostic-cloud">Checking…</b></div><div><small>Local storage</small><b id="developer-diagnostic-storage">Checking…</b></div></div></section>

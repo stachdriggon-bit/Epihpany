@@ -69,9 +69,20 @@
     const file = characterArtStorageFilename(path).split('/').map(encodeURIComponent).join('/');
     return base.replace(/\/$/,'') + '/storage/v1/object/public/character-art/' + folder + '/' + file;
   };
-  // Character artwork is served exclusively from Supabase Storage.
-  // Repository image paths are retained only as storage object filenames.
+  const publishedAssetUrl = (bucket, path) => {
+    const base = window.EPIPHANY_SUPABASE_CONFIG?.url;
+    if (!base || !bucket || !path) return '';
+    const encodedPath = String(path).split('/').map(encodeURIComponent).join('/');
+    return base.replace(/\/$/,'') + '/storage/v1/object/public/' + encodeURIComponent(bucket) + '/' + encodedPath;
+  };
+  // Published Asset Manager references override legacy filenames; static card data remains the offline fallback.
   const cardArtSource = (card, opts={}) => {
+    const published = window.EPIPHANY_CARD_ASSET_MAP?.[card.id];
+    if (published?.published_bucket && published?.published_original_path) {
+      const path = opts.fullImage ? published.published_original_path : (published.published_thumbnail_path || published.published_original_path);
+      const url = publishedAssetUrl(published.published_bucket, path);
+      if (url) return url;
+    }
     const storagePath = opts.fullImage ? card.image : (card.thumb || card.image);
     const folder = opts.fullImage ? 'originals' : 'thumbs';
     return characterArtUrl(storagePath, folder);
@@ -717,7 +728,20 @@
         window.dispatchEvent(new CustomEvent('epiphany:character-art-cloud-error',{detail:{cloud:image.dataset.cloudSrc||image.currentSrc||image.src}}));
       }catch(_){}
     },true);
+    const refreshPublishedCharacterAssets = async () => {
+      try {
+        const rows = await window.EpiphanyAuth?.loadPublishedCharacterAssets?.();
+        if (!Array.isArray(rows)) return;
+        window.EPIPHANY_CARD_ASSET_MAP = Object.fromEntries(rows.map(row => [row.owner_id, row]));
+        renderFeatured();
+        renderGallery();
+      } catch (error) {
+        console.warn('[EPIPHANY] Published character asset references could not be refreshed:', error);
+      }
+    };
     renderFeatured();renderGallery();updateCounts();renderOdds(selectedPack());
+    refreshPublishedCharacterAssets();
+    window.addEventListener('epiphany:published-assets-updated', refreshPublishedCharacterAssets);
     $('cards-history-clear')?.addEventListener('click',()=>{state.history=[];save();renderHistory();});
     window.addEventListener('epiphany:achievements-updated',()=>checkAchievementRewards(window.EPIPHANY_PROFILE_ACHIEVEMENTS));
     if(window.EPIPHANY_PROFILE_ACHIEVEMENTS)checkAchievementRewards(window.EPIPHANY_PROFILE_ACHIEVEMENTS);

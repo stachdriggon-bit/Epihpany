@@ -35,6 +35,8 @@ jobs:
           node --check data-cards.js
           node --check data-character-profiles.js
           node --check service-worker.js
+          node --check asset-manager.js
+          node --check account.js
           node --check navigation-enhancements.js
           node --check data.js
           node --check data-expansion.js

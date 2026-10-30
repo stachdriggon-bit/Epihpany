@@ -679,6 +679,16 @@
     inspectCharacterArtAssets,
     getCharacterArtReport: readCharacterArtReport,
     getDeveloperEmail: () => isDeveloperAccount() ? String(currentUser.email).trim().toLowerCase() : '',
+    getAssetManagerClient: () => isDeveloperAccount() ? client : null,
+    getAssetManagerUser: () => isDeveloperAccount() && currentUser ? {id:currentUser.id} : null,
+    async loadPublishedCharacterAssets() {
+      if (!client) return [];
+      const {data,error} = await client.from('epiphany_asset_usages')
+        .select('owner_id,published_bucket,published_original_path,published_thumbnail_path')
+        .eq('owner_type','character').eq('role','portrait').eq('is_published',true);
+      if (error) throw error;
+      return data || [];
+    },
     saveStory: saveStoryToCloud,
     listMyStories: listMyCloudStories,
     listPublicStories: listPublicCloudStories,
