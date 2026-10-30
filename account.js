@@ -618,10 +618,10 @@
     const host=$('developer-art-report'); if(!host)return;
     if(!report){host.innerHTML='<p class="developer-art-empty">No migration report yet. Run a scan to inspect the cloud bucket.</p>';return;}
     const counts=report.assets.reduce((a,x)=>{a[x.status]=(a[x.status]||0)+1;return a;},{});
-    const total=report.assets.length,verified=counts.verified||0,failed=counts.failed||0,missing=counts.missing||0;
+    const total=report.assets.length,verified=counts.verified||0,failed=counts.failed||0,missing=counts.missing||0,loadOk=counts.load_ok||0,loadFailed=counts.load_failed||0; const fallbackStats=readCharacterArtFallbackStats();
     const pct=total?Math.round(verified/total*100):0;
     const rows=report.assets.filter(x=>x.status!=='verified').slice(0,80).map(x=>'<tr><td>'+String(x.kind).replace(/[&<>"]/g,'')+'</td><td>'+String(x.source).replace(/[&<>"]/g,'')+'</td><td><code>'+String(x.target).replace(/[&<>"]/g,'')+'</code></td><td>'+String(x.status).replace(/[&<>"]/g,'')+'</td><td>'+String(x.message||'—').replace(/[&<>"]/g,'')+'</td></tr>').join('');
-    host.innerHTML='<div class="developer-art-summary"><div><b>'+verified+' / '+total+'</b><small>Verified in cloud</small></div><div><b>'+missing+'</b><small>Missing</small></div><div><b>'+failed+'</b><small>Failed</small></div><div><b>'+pct+'%</b><small>Verified coverage</small></div></div><div class="developer-art-progress"><span style="width:'+pct+'%"></span></div><p class="developer-art-meta">Last checked: '+new Date(report.updatedAt||Date.now()).toLocaleString()+' · '+(report.bucket||'character-art')+' · '+(report.mode||'scan')+'</p>'+(report.note?'<p class="developer-art-note">'+String(report.note).replace(/[&<>"]/g,'')+'</p>':'')+(rows?'<details open><summary>Items needing attention ('+(missing+failed)+')</summary><div class="developer-art-table-wrap"><table class="developer-art-table"><thead><tr><th>Type</th><th>Local source</th><th>Cloud key</th><th>Status</th><th>Details</th></tr></thead><tbody>'+rows+'</tbody></table></div></details>':'<p class="developer-art-success">All expected artwork objects are present in cloud storage.</p>');
+    host.innerHTML='<div class="developer-art-summary"><div><b>'+verified+' / '+total+'</b><small>Found in bucket</small></div><div><b>'+loadOk+' / '+total+'</b><small>Loaded over HTTP</small></div><div><b>'+loadFailed+'</b><small>Load failures</small></div><div><b>'+fallbackStats.count+'</b><small>Local fallbacks</small></div></div><div class="developer-art-meta">Missing: '+missing+' · Upload failures: '+failed+' · Bucket coverage: '+pct+'%</div><div class="developer-art-progress"><span style="width:'+pct+'%"></span></div><p class="developer-art-meta">Last checked: '+new Date(report.updatedAt||Date.now()).toLocaleString()+' · '+(report.bucket||'character-art')+' · '+(report.mode||'scan')+'</p>'+(report.note?'<p class="developer-art-note">'+String(report.note).replace(/[&<>"]/g,'')+'</p>':'')+(rows?'<details open><summary>Items needing attention ('+(missing+failed)+')</summary><div class="developer-art-table-wrap"><table class="developer-art-table"><thead><tr><th>Type</th><th>Local source</th><th>Cloud key</th><th>Status</th><th>Details</th></tr></thead><tbody>'+rows+'</tbody></table></div></details>':'<p class="developer-art-success">All expected artwork objects are present in cloud storage.</p>');
   }
   async function listCharacterArtFolder(folder) {
     const found=new Set(); let offset=0;
@@ -632,6 +632,34 @@
       if(items.length<1000)break; offset+=items.length;
     }
     return found;
+  }
+  const CHARACTER_ART_FALLBACK_KEY = 'epiphany-character-art-fallback-stats-v1';
+  function readCharacterArtFallbackStats() {
+    try { const value=JSON.parse(localStorage.getItem(CHARACTER_ART_FALLBACK_KEY)||'null'); return value&&typeof value==='object'?{count:Number(value.count)||0,lastAt:value.lastAt||'',lastSource:value.lastSource||'',recent:Array.isArray(value.recent)?value.recent:[]}: {count:0,recent:[]}; } catch { return {count:0,recent:[]}; }
+  }
+  async function verifyCharacterArtHttpAssets(onProgress=()=>{}) {
+    if(!client||!currentUser||!isDeveloperAccount()) throw new Error('Sign in with an approved developer account first.');
+    const base=window.EPIPHANY_SUPABASE_CONFIG?.url;
+    if(!base) throw new Error('Supabase project URL is not configured.');
+    const report=readCharacterArtReport()||{version:2,bucket:'character-art',assets:getCharacterArtAssets().map(x=>({...x,status:'unchecked',message:''}))};
+    const queue=report.assets.slice(); let completed=0, ok=0, failed=0;
+    const worker=async()=>{while(queue.length){
+      const asset=queue.shift(); const file=asset.target.split('/').map(encodeURIComponent).join('/');
+      const url=base.replace(/\\/$/,'')+'/storage/v1/object/public/character-art/'+file;
+      try{
+        const response=await fetch(url,{method:'GET',headers:{Range:'bytes=0-31'},cache:'no-store'});
+        const type=String(response.headers.get('content-type')||'').toLowerCase();
+        if(!response.ok) throw new Error('HTTP '+response.status);
+        if(!type.startsWith('image/')) throw new Error('Unexpected content type: '+(type||'unknown'));
+        asset.status='load_ok'; asset.message='HTTP '+response.status+' · '+type; asset.checkedAt=new Date().toISOString(); ok++;
+      }catch(error){asset.status='load_failed';asset.message=error?.message||String(error);asset.checkedAt=new Date().toISOString();failed++;}
+      completed++; saveCharacterArtReport(report); onProgress({completed,total:report.assets.length,ok,failed,current:asset.source});
+    }};
+    await Promise.all(Array.from({length:6},worker));
+    report.mode='HTTP image-load verification';
+    report.note=failed===0?'Every expected cloud image responded successfully with an image content type.':'Some cloud image URLs did not load correctly; inspect the failed rows below.';
+    saveCharacterArtReport(report);
+    return {total:report.assets.length,ok,failed};
   }
   async function inspectCharacterArtAssets() {
     if(!client||!currentUser||!isDeveloperAccount())throw new Error('Sign in with an approved developer account first.');
@@ -704,6 +732,8 @@
     const artUploadButton = $('developer-upload-character-art');
     
     renderCharacterArtReport();
+    const httpButton=$('developer-test-character-art-http');
+    httpButton?.addEventListener('click',async()=>{httpButton.disabled=true;const status=$('developer-art-upload-status');if(status)status.textContent='Testing cloud image URLs (up to 6 at a time)…';try{const result=await verifyCharacterArtHttpAssets(progress=>{if(status)status.textContent='HTTP test '+progress.completed+'/'+progress.total+' · '+progress.ok+' loaded · '+progress.failed+' failed';});if(status)status.textContent='Image loading test: '+result.ok+'/'+result.total+' loaded · '+result.failed+' failed.';}catch(error){if(status)status.textContent='Image test failed: '+(error?.message||String(error));}finally{httpButton.disabled=false;}});
     const verifyButton=$('developer-verify-character-art');
     verifyButton?.addEventListener('click',async()=>{verifyButton.disabled=true;const status=$('developer-art-upload-status');if(status)status.textContent='Checking bucket contents…';try{const report=await inspectCharacterArtAssets();const ok=report.assets.filter(x=>x.status==='verified').length;if(status)status.textContent='Verification complete: '+ok+'/'+report.assets.length+' objects found.';}catch(error){if(status)status.textContent='Verification failed: '+(error?.message||String(error));}finally{verifyButton.disabled=false;}});
     artUploadButton?.addEventListener('click',async()=>{
