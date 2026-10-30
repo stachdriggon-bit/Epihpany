@@ -590,6 +590,13 @@
     if(error)throw error;return data||[];
   }
 
+  // Supabase Storage object keys are kept ASCII-safe. Preserve the original local
+  // filename, but encode non-ASCII characters deterministically for cloud paths.
+  function characterArtStorageFilename(path) {
+    const filename = String(path || '').split('/').pop();
+    return filename.replace(/[^A-Za-z0-9._-]/g, ch => '-u' + ch.codePointAt(0).toString(16) + '-')
+      .replace(/-+/g, '-').replace(/^-|-$/g, '');
+  }
   async function migrateCharacterArtAssets(onProgress = () => {}) {
     if (!client || !currentUser || !isDeveloperAccount()) throw new Error('Sign in with an approved developer account first.');
     const cards = Array.isArray(window.EPIPHANY_CARD_DATA) ? window.EPIPHANY_CARD_DATA : [];
@@ -597,11 +604,11 @@
     for (const card of cards) {
       if (card && card.image) {
         const source = String(card.image);
-        assets.set('originals/' + source.split('/').pop(), source);
+        assets.set('originals/' + characterArtStorageFilename(source), source);
       }
       if (card && card.thumb) {
         const source = String(card.thumb);
-        assets.set('thumbs/' + source.split('/').pop(), source);
+        assets.set('thumbs/' + characterArtStorageFilename(source), source);
       }
     }
     const entries = [...assets.entries()];
