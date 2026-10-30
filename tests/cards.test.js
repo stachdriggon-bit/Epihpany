@@ -250,3 +250,15 @@ test('card artwork runtime and CI do not depend on local portrait files or thumb
   assert.match(docs, /served exclusively from the public Supabase Storage bucket/);
   assert.match(docs, /object filenames.*not local file paths/);
 });
+
+test('character portrait originals and thumbnails are not shipped as local repository files', () => {
+  const context = { window: {} };
+  vm.runInNewContext(read('data-cards.js'), context);
+  const characterCards = context.window.EPIPHANY_CARD_DATA.filter(card => card.category === 'characters');
+  for (const card of characterCards) {
+    assert.equal(fs.existsSync(path.join(root, card.image)), false, card.id + ' original portrait must exist only in cloud storage');
+    assert.equal(fs.existsSync(path.join(root, 'assets/cards/art/thumb', card.thumb)), false, card.id + ' thumbnail must exist only in cloud storage');
+  }
+  assert.equal(fs.existsSync(path.join(root, 'assets/cards/art/thumb')), false, 'the generated local thumbnail directory must not be shipped');
+  assert.equal(fs.existsSync(path.join(root, 'Mira55.jfif')), false, 'the obsolete local Mira sheet must not be shipped');
+});
