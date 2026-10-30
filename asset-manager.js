@@ -20,6 +20,7 @@
   let files = [];
   let usages = [];
   let previewUrl = '';
+  let currentLinkAssetId = '';
   let busy = false;
 
   const escapeHtml = (value) => String(value ?? '').replace(/[&<>"']/g, ch => ({
@@ -63,6 +64,7 @@
     const listing = $('asset-library-panel');
     if (upload) upload.hidden = activeTab !== 'upload';
     if (listing) listing.hidden = activeTab === 'upload';
+    if (activeTab === 'upload') closeLinkPanel();
     renderAssets();
   }
 
@@ -116,7 +118,9 @@
         '<p>' + escapeHtml(asset.category) + ' · ' + escapeHtml(size) + '</p>' +
         '<small>' + escapeHtml(asset.width || '—') + ' × ' + escapeHtml(asset.height || '—') + ' · ' + linked.length + (linked.length === 1 ? ' reference' : ' references') + '</small>' +
         (asset.status === 'issue' && asset.metadata?.legacy_public ? '<small class="asset-legacy-warning">Legacy public file · review visibility</small>' : '') +
-        '<code>' + escapeHtml(asset.id.slice(0, 8)) + '</code></div></article>';
+        '<code>' + escapeHtml(asset.id.slice(0, 8)) + '</code>' +
+        (asset.status === 'unassigned' && linked.length === 0 ? '<button type="button" class="btn btn-ghost asset-card-link" data-asset-link="' + escapeHtml(asset.id) + '">Link to item</button>' : '') +
+        '</div></article>';
     }));
     host.innerHTML = cards.join('');
   }
@@ -353,6 +357,74 @@
     }
   }
 
+  function openLinkPanel(assetId) {
+    const asset = assets.find(item => item.id === assetId);
+    const panel = $('asset-link-panel');
+    if (!asset || !panel) return;
+    currentLinkAssetId = assetId;
+    const title = $('asset-link-title');
+    if (title) title.textContent = 'Link “' + asset.original_name + '” to an item';
+    const ownerId = $('asset-link-owner-id');
+    const role = $('asset-link-role');
+    if (ownerId) ownerId.value = '';
+    if (role) role.value = asset.category === 'characters' ? 'portrait' : asset.category === 'stories' ? 'cover' : asset.category === 'world' ? 'illustration' : 'image';
+    const ownerType = $('asset-link-owner-type');
+    if (ownerType) ownerType.value = asset.category === 'characters' ? 'character' : asset.category === 'stories' ? 'story' : asset.category === 'world' ? 'world' : asset.category === 'interface' ? 'interface' : asset.category === 'cards' ? 'card' : 'other';
+    panel.hidden = false;
+    ownerId?.focus({preventScroll:true});
+  }
+
+  function closeLinkPanel() {
+    const panel = $('asset-link-panel');
+    if (panel) panel.hidden = true;
+    currentLinkAssetId = '';
+  }
+
+  async function saveAssetLink(event) {
+    event.preventDefault();
+    if (busy || !currentLinkAssetId) return;
+    const api = client();
+    const activeUser = user();
+    if (!developer() || !api || !activeUser?.id) {
+      setStatus('Sign in with an approved developer account before linking assets.', 'error');
+      return;
+    }
+    const ownerType = $('asset-link-owner-type')?.value || '';
+    const ownerId = String($('asset-link-owner-id')?.value || '').trim();
+    const role = String($('asset-link-role')?.value || '').trim();
+    if (!ownerType || !ownerId || !role) {
+      setStatus('Complete the item type, item ID and usage role.', 'error');
+      return;
+    }
+    const assetId = currentLinkAssetId;
+    setBusy(true);
+    const submit = $('asset-link-submit');
+    if (submit) submit.disabled = true;
+    try {
+      const {error:usageError} = await api.from('epiphany_asset_usages').insert({
+        asset_id:assetId,
+        owner_type:ownerType,
+        owner_id:ownerId,
+        role,
+        is_published:false,
+        created_by:activeUser.id
+      });
+      if (usageError) throw usageError;
+      const {error:statusError} = await api.from('epiphany_assets').update({status:'linked'}).eq('id',assetId);
+      closeLinkPanel();
+      setStatus(statusError
+        ? 'Private link created. The status label needs refreshing, but the reference is saved.'
+        : 'Private link created. The asset is still unpublished and will not appear in the game.', 'success');
+      try { await loadAssets(); }
+      catch { setStatus('Private link saved, but the library could not refresh. Reload to see it.', 'success'); }
+    } catch (error) {
+      setStatus('Could not link this asset: ' + (error?.message || String(error)), 'error');
+    } finally {
+      setBusy(false);
+      if (submit) submit.disabled = false;
+    }
+  }
+
   function storageFilename(value) {
     const filename = String(value || '').split('/').pop();
     return filename.replace(/[^A-Za-z0-9._-]/g, ch => '-u' + ch.codePointAt(0).toString(16) + '-')
@@ -570,6 +642,12 @@
     $('asset-category-filter')?.addEventListener('change', renderAssets);
     $('asset-upload-file')?.addEventListener('change', event => previewSelectedFile(event.target.files?.[0] || null));
     $('asset-upload-form')?.addEventListener('submit', uploadAsset);
+    $('asset-link-form')?.addEventListener('submit', saveAssetLink);
+    $('asset-link-cancel')?.addEventListener('click', closeLinkPanel);
+    root().addEventListener('click', event => {
+      const button = event.target.closest('[data-asset-link]');
+      if (button) openLinkPanel(button.dataset.assetLink);
+    });
     $('asset-import-legacy')?.addEventListener('click', importLegacyCharacterArt);
     document.addEventListener('epiphany-auth-changed', () => loadAssets().catch(error => setStatus(error.message, 'error')));
     showTab('library');
