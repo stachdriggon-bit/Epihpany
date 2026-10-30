@@ -492,7 +492,7 @@
 
       const existingAssetsResult = await api.from('epiphany_assets').select('id,metadata').limit(1500);
       const existingFilesResult = await api.from('epiphany_asset_files').select('bucket_id,object_path').eq('bucket_id','character-art').limit(2000);
-      const existingUsagesResult = await api.from('epiphany_asset_usages').select('owner_type,owner_id,role').eq('owner_type','character').eq('role','portrait').limit(1500);
+      const existingUsagesResult = await api.from('epiphany_asset_usages').select('owner_type,owner_id,role,is_published').eq('owner_type','character').eq('role','portrait').limit(1500);
       const queryError = existingAssetsResult.error || existingFilesResult.error || existingUsagesResult.error;
       if (queryError) throw queryError;
 
@@ -500,7 +500,7 @@
         .filter(asset => asset.metadata?.legacy_source === 'character-art' && asset.metadata?.legacy_key)
         .map(asset => [asset.metadata.legacy_key, asset.id]));
       const existingFiles = new Set((existingFilesResult.data || []).map(file => file.bucket_id + ':' + file.object_path));
-      const existingUsages = new Set((existingUsagesResult.data || []).map(usage => usage.owner_type + ':' + usage.owner_id + ':' + usage.role));
+      const existingUsages = new Set((existingUsagesResult.data || []).filter(usage => usage.is_published).map(usage => usage.owner_type + ':' + usage.owner_id + ':' + usage.role));
 
       const groups = new Map();
       const expectedOriginals = new Set();
