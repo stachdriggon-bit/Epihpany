@@ -5565,7 +5565,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
   function closePlacement(){ placement.answered=false; monthlyAssessment=null; promotionTest=null; $('#placement').hidden=true;lockPage(false);$('#placement-skip').hidden=false;$('#placement-title').textContent='Find your English level';$('.placement-card .kicker').textContent='A QUICK START';$('.placement-intro').textContent='Answer 15 short questions across vocabulary, grammar, conversation and comprehension. We use your results to estimate a starting CEFR level; this is not an official exam.';renderAll(); }
   function skipPlacement(){
     state.assessedLevel='A1';state.level='A1';state.placementDone=true;state.placementResult={level:'A1',skipped:true,testedAt:new Date().toISOString()};
-    save();closePlacement();toast('Level check skipped. Your estimated starting level remains A1.');
+    save();closePlacement();toast('Level check skipped · starting at A1.');
   }
   $('#placement-skip').addEventListener('click',skipPlacement);
   $('#placement-retake')?.addEventListener('click',()=>{state.placementDone=false;save();showPlacement();});
