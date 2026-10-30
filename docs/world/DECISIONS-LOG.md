@@ -192,3 +192,18 @@ When a decision changes:
 - This decision resolves the naming/identity relationship for current development only. Exact placement, geography, and other settlement details remain provisional. Mira's home relationship is not finalized by this decision alone.
 
 **References:** [Anchor Locations](ANCHOR-LOCATIONS.md), [Orath Candidate Cities](CITIES-ORATH.md), and [Unified World Overview](WORLD-OVERVIEW.md).
+
+
+## WD-044 — Establish the Elves' distinctive affinity and Eiraven as their principal home
+
+**Status:** Accepted foundational direction; detailed biology, culture, and magical mechanics remain open.
+
+- The Elves' distinctive characteristic is an exceptional innate sensitivity to, and understanding of, the places and environments around them.
+- Aelora Energy may have characteristics that differ between peoples; this is an intended way to distinguish peoples, but the Elves' specific Aelora-related expression and its mechanics have not yet been defined.
+- **Eiraven / إيرافين (IL-CITY-01)** is established as the Elves' principal home city in Ilmar.
+- Eiraven is set within a landscape rich in extensive forests, lakes, valleys, and waterways. Its built environment is integrated with and designed to coexist with the surrounding natural environment.
+- Eiraven is a principal center for Elves, not their only settlement or proof that all Elves share one culture or lifestyle.
+- This decision does not designate Eiraven as Ilmar's capital, finalize its exact map position, or define a single Elf government, language, lifespan, appearance, or set of customs.
+- Keep unapproved details open and develop them only when needed by characters, stories, or gameplay.
+
+**References:** [Ilmar Settlement Registry](CITIES-ILMAR.md), [Peoples and Species](PEOPLES-AND-SPECIES.md), and [Aelora Energy foundations](MAGIC-FOUNDATIONS.md).
