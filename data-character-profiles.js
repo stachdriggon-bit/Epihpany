@@ -131,6 +131,73 @@ window.EPIPHANY_CARD_PROFILES["CHR-039"] = {
   ]
 };
 
+
+/* Evren — canonical bilingual Character Details profile; full reference: docs/character-reference-cards/CHR-002-IDRIS.md */
+window.EPIPHANY_CARD_PROFILES["CHR-002"] = {
+  name:{en:"Evren",ar:"إيفرن"},
+  title:{en:"Resonance Tinkerer",ar:"مبتكر الرنين"},
+  summary:{
+    en:"A curious and practical resonance tinkerer who explores how things respond, then turns what he learns into useful tools and solutions for others.",
+    ar:"مبتكر فضولي وعملي يستكشف كيفية استجابة الأشياء، ثم يحوّل ما يتعلمه إلى أدوات وحلول نافعة للآخرين."
+  },
+  facts:[
+    {label:{en:"Species",ar:"النوع"},value:{en:"Not documented yet",ar:"لم يُوثّق بعد"}},
+    {label:{en:"Age",ar:"العمر"},value:{en:"28 years",ar:"28 سنة"}},
+    {label:{en:"Homeland",ar:"مسقط الرأس"},value:{en:"Dornwick · Orath",ar:"دورنويك · أوراث"}},
+    {label:{en:"Current residence",ar:"الإقامة الحالية"},value:{en:"Not documented yet",ar:"لم تُحدّد بعد"}},
+    {label:{en:"Era",ar:"العصر"},value:{en:"The current era (the latest era in the world's era division)",ar:"العصر الحالي (آخر عصور تقسيم العالم)"}},
+    {label:{en:"Role",ar:"الدور"},value:{en:"Resonance tinkerer and practical inventor",ar:"مبتكر في مجال الرنين وصانع حلول عملية"}}
+  ],
+  sections:[
+    {id:"overview",title:{en:"Overview",ar:"نبذة"},icon:"✦",text:[{text:{en:"Evren is a curious, friendly and practical tinkerer. He enjoys discovering how things work and exploring unfamiliar phenomena. He turns what he learns into tools and solutions that can help people, while the desire to explore remains personal and independent.",ar:"إيفرن مبتكر فضولي وودود وعملي. يستمتع باكتشاف كيفية عمل الأشياء واستكشاف الظواهر غير المألوفة. يحوّل ما يتعلمه إلى أدوات وحلول قد تساعد الناس، بينما يظل شغفه بالاستكشاف دافعًا شخصيًا مستقلًا."}}]},
+    {id:"personality",title:{en:"Personality & Behaviour",ar:"الشخصية والسلوك"},icon:"◇",text:[
+      {text:{en:"Curious and observant: he wants to understand why something works, notices small changes, and rarely leaves an interesting question alone.",ar:"فضولي وملاحظ: يريد فهم سبب عمل الأشياء، وينتبه إلى التغيرات الصغيرة، ونادرًا ما يترك سؤالًا يثير اهتمامه دون محاولة فهمه."}},
+      {text:{en:"Practical and inventive: he prefers experiments and verification, and enjoys turning knowledge into useful tools.",ar:"عملي ومبتكر: يفضّل التجربة والتحقق، ويستمتع بتحويل المعرفة إلى أدوات نافعة."}},
+      {text:{en:"Open and friendly: he enjoys meeting people, places and ideas, shares discoveries, and is easy to approach.",ar:"منفتح وودود: يستمتع بالتعرف إلى أشخاص وأماكن وأفكار جديدة، ويحب مشاركة اكتشافاته ويسهل التعامل معه."}},
+      {text:{en:"Persistent and honest: failure makes him reconsider what he missed rather than give up. He respects experience but does not accept claims without thought, and admits when he does not know something.",ar:"مثابر وصريح: يدفعه الفشل إلى مراجعة ما فاته بدل الاستسلام. يحترم الخبرة لكنه لا يقبل الآراء دون تفكير، ويعترف عندما لا يعرف شيئًا."}},
+      {text:{en:"His flaws include becoming absorbed in a discovery and losing track of time, experimenting before considering every possibility, struggling to leave questions unresolved, and sometimes underestimating risks when excited.",ar:"تشمل عيوبه الانغماس في الاكتشاف حتى يفقد الإحساس بالوقت، والتجربة قبل دراسة كل الاحتمالات، وصعوبة ترك الأسئلة دون إجابة، وأحيانًا التقليل من المخاطر عندما يتحمس."}},
+      {text:{en:"He may focus so intensely on a small question that he misses someone nearby who needs his attention. This is distraction, not a lack of care.",ar:"قد ينشغل بسؤال صغير إلى درجة لا ينتبه معها إلى شخص قريب يحتاج اهتمامه. هذا شرود وانغماس، وليس انعدامًا للاهتمام."}}
+    ]},
+    {id:"motivation",title:{en:"Motivation & Goals",ar:"الدوافع والأهداف"},icon:"⌖",text:[
+      {text:{en:"His central personal motivation is exploration: he wants to understand things that catch his curiosity, even when there is no immediate practical reward.",ar:"دافعه الشخصي الأساسي هو الاستكشاف؛ يريد فهم الأشياء التي تثير فضوله حتى عندما لا توجد فائدة عملية مباشرة."}},
+      {text:{en:"His practical purpose is to turn discoveries into tools and solutions that help people. Helping others is an important use of his work, but it is not the reason his curiosity began.",ar:"غايته العملية هي تحويل اكتشافاته إلى أدوات وحلول تساعد الناس. مساعدة الآخرين جانب مهم من عمله، لكنها ليست السبب الذي بدأ منه فضوله."}},
+      {text:{en:"No single lifelong mission or grand invention has been established. His future goals can emerge naturally through stories.",ar:"لم تُحدّد له مهمة نهائية واحدة أو اختراع عظيم يسعى إليه. ويمكن أن تتشكل أهدافه المستقبلية بصورة طبيعية عبر القصص."}}
+    ]},
+    {id:"abilities",title:{en:"Abilities & Skills",ar:"القدرات والمهارات"},icon:"✧",text:[
+      {text:{en:"Core ability — Resonance: Evren can perceive resonance patterns and magically influence them, including modifying vibrations or changing how an object responds, within the limits of his ability.",ar:"القدرة الأساسية — الرنين: يستطيع إيفرن إدراك أنماط الرنين والتأثير فيها سحريًا، بما في ذلك تعديل الاهتزازات أو تغيير طريقة استجابة جسم ما، ضمن حدود قدرته."}},
+      {text:{en:"He must perceive a resonance pattern before he can influence it. Touch is not required, but contact can make perception clearer and control more precise; greater distance makes both harder.",ar:"يجب أن يدرك نمط الرنين قبل أن يؤثر فيه. لا يشترط اللمس، لكن التلامس قد يجعل الإدراك أوضح والتحكم أدق، بينما تزيد المسافة من صعوبة كليهما."}},
+      {text:{en:"His practical strengths include observation, comparison, experimentation and making tools. Perceiving a pattern does not automatically reveal its cause, exact measurements, internal structure or a guaranteed solution.",ar:"تشمل نقاط قوته العملية الملاحظة والمقارنة والتجربة وصناعة الأدوات. إدراك النمط لا يكشف تلقائيًا سببه أو قياساته الدقيقة أو البنية الداخلية للجسم، ولا يضمن الوصول إلى حل."}}
+    ]},
+    {id:"limits",title:{en:"Individual Restriction & Limits",ar:"القيد الفردي والحدود"},icon:"⌁",text:[
+      {text:{en:"Accepted individual restriction — Prohibition: Evren cannot magically originate or impose a completely new resonance pattern by himself. He can influence and modify a resonance pattern that is already present, but cannot create one from nothing through this ability.",ar:"القيد الفردي المعتمد — المنع: لا يستطيع إيفرن إنشاء نمط رنين جديد تمامًا أو فرضه سحريًا من تلقاء نفسه. يمكنه التأثير في نمط رنين موجود وتعديله، لكنه لا يستطيع خلق نمط من العدم باستخدام قدرته."}},
+      {text:{en:"This is an intrinsic restriction, not a gap in knowledge or training. Practice may improve how he perceives and modifies existing patterns, but cannot make the prohibited act available.",ar:"هذا قيد أصيل، وليس نقصًا في المعرفة أو التدريب. قد تحسن الممارسة قدرته على إدراك الأنماط الموجودة وتعديلها، لكنها لا تجعل الفعل المحظور متاحًا."}},
+      {text:{en:"The ability also has natural information limits: he must perceive a pattern first, and perception alone does not explain the phenomenon or guarantee that an experiment will succeed.",ar:"لقدرته أيضًا حدود طبيعية تتعلق بالمعلومات: عليه إدراك النمط أولًا، والإدراك وحده لا يفسر الظاهرة ولا يضمن نجاح التجربة."}}
+    ]},
+    {id:"backstory",title:{en:"Backstory",ar:"الخلفية"},icon:"◷",text:[
+      {text:{en:"Evren is 28 years old and comes from Dornwick, a caravan stop on a dry plateau in Orath, known for metalworking and workshops that repair tools and equipment.",ar:"يبلغ إيفرن 28 عامًا، وينحدر من دورنويك، وهي محطة للقوافل على هضبة جافة في أوراث، وتشتهر بأعمال المعادن وورش إصلاح الأدوات والمعدات."}},
+      {text:{en:"He was an ordinary child until his restraint symbol appeared when he was five. Becoming a sorcerer at such a young age is exceptionally rare; the timing itself was unusual, not the result of a prophecy or a hidden selection.",ar:"كان طفلًا عاديًا حتى ظهر رمز قيده عندما بلغ الخامسة. أن يصبح المرء ساحرًا في هذا العمر المبكر أمر نادر للغاية؛ وكان التوقيت نفسه حالة استثنائية، لا نتيجة نبوءة أو اختيار خفي."}},
+      {text:{en:"Someone noticed the phenomenon and took him along, helping him understand Aelora energy and Aren Art. His curiosity began to develop through this exposure to the magical world; his hometown had not previously given him a particular reason to explore it.",ar:"لاحظ شخص ما هذه الظاهرة واصطحبه معه، وساعده على فهم طاقة الإيلوار وفن الأرن. بدأ فضوله يتشكل من خلال احتكاكه بالعالم السحري؛ فلم يكن في مسقط رأسه ما يدفعه تحديدًا إلى استكشاف هذا المجال من قبل."}},
+      {text:{en:"The person who guided him is a sorcerer with standing and responsibilities within a political institution, combining scholarly knowledge with field and political work. Their identity, institution and exact duties remain open.",ar:"الشخص الذي وجّهه ساحر له مكانة ومسؤوليات داخل مؤسسة سياسية، ويجمع بين المعرفة العلمية والعمل الميداني والسياسي. هويته والمؤسسة ومهامه الدقيقة ما زالت أمورًا مفتوحة."}}
+    ]},
+    {id:"story-role",title:{en:"Story Role & Development",ar:"الدور السردي والتطور"},icon:"▤",text:[
+      {text:{en:"Evren can contribute as an explorer, practical inventor and curious problem-solver. His resonance ability supports investigation and experimentation but should not solve every material or magical problem automatically.",ar:"يمكن أن يؤدي إيفرن دور المستكشف والمبتكر العملي وحلال المشكلات الفضولي. تساعده قدرته على الرنين في البحث والتجربة، لكنها لا ينبغي أن تحل كل مشكلة مادية أو سحرية تلقائيًا."}},
+      {text:{en:"His growth can involve learning to balance curiosity with responsibility, judge risks more carefully, and recognize when people need his attention without losing his enthusiasm for discovery.",ar:"يمكن أن يتضمن تطوره تعلم الموازنة بين الفضول والمسؤولية، وتقدير المخاطر بعناية أكبر، والانتباه إلى احتياجات الآخرين دون فقدان حماسه للاكتشاف."}}
+    ]},
+    {id:"relationships",title:{en:"Relationships",ar:"العلاقات"},icon:"♡",text:[
+      {text:{en:"The sorcerer who introduced him to the magical world is a formative figure. The relationship is important, but its personal dynamics and the sorcerer's identity have not yet been established.",ar:"الساحر الذي عرّفه على العالم السحري شخصية محورية في تكوينه. العلاقة مهمة، لكن طبيعتها الشخصية وهوية الساحر لم تُحدّدا بعد."}},
+      {text:{en:"No specific relationship with Mira, Veyra or other characters has been established. Shared placement in the current era does not mean they already know one another.",ar:"لم تُحدّد علاقة بعينها بينه وبين ميرا أو فييرا أو غيرهما. وجودهم في العصر الحالي نفسه لا يعني أنهم يعرفون بعضهم مسبقًا."}}
+    ]},
+    {id:"places",title:{en:"Places & Era",ar:"الأماكن والعصر"},icon:"⌖",text:[
+      {text:{en:"Dornwick — Evren's hometown in Orath (OR-CITY-05), a dry-plateau caravan stop with metalworking and repair workshops.",ar:"دورنويك — مسقط رأس إيفرن في أوراث (OR-CITY-05)، محطة للقوافل على هضبة جافة تضم أعمالًا معدنية وورشًا للإصلاح."}},
+      {text:{en:"Current era — Evren belongs to the latest era in the world's era division, the same current era as Mira and Veyra. The precise era title should follow the finalized era register.",ar:"العصر الحالي — ينتمي إيفرن إلى آخر عصور تقسيم العالم، وهو العصر الحالي نفسه الذي تنتمي إليه ميرا وفييرا. ويُضبط اسم العصر الدقيق وفق سجل العصور النهائي."}},
+      {text:{en:"His current residence, exact birth date and calendar year are not documented.",ar:"إقامته الحالية وتاريخ ميلاده الدقيق والسنة التقويمية غير موثقة."}}
+    ]},
+    {id:"quote",title:{en:"Signature Quote",ar:"العبارة المميزة"},icon:"❝",text:[
+      {text:{en:"“Every object has a story. You just have to listen.”",ar:"«لكل شيء حكاية، عليك فقط أن تُحسن الإصغاء.»"}}
+    ]}
+  ]
+};
+
 /* The dossier renderer supports rich text blocks as {text:{en,ar}} entries. Normalize
    plain bilingual paragraphs to that shape so the language toggle never renders blanks. */
 window.EPIPHANY_CARD_PROFILES["CHR-001"].sections.forEach(section => {

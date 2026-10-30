@@ -105,12 +105,37 @@ Copy this template for each character. Use “Open” rather than inventing an a
 - **Canon decision:** The user authorized resolving Mira's restriction. The current reference is accepted as **Magnitude**: an intrinsic limit on the amount/complexity of spatial relationships she can reliably organize simultaneously. Exact thresholds and some ability parameters remain open.
 - **Last reviewed:** 2026-10-29 — restriction resolved as Magnitude and marked accepted. Important unknowns matter when they increase effective relational complexity; irrelevant unknowns do not trigger the restriction alone. Exact threshold remains open.
 
+
+### CHR-002 — Evren, Resonance Tinkerer
+
+- **Record status:** Accepted as the current character reference; some operational parameters remain open.
+- **Card rarity:** Uncommon (existing card data; rarity is not a measure of power or narrative importance).
+- **Magical access:** Sorcerer; uses the established Aelora energy and Aren Art framework.
+- **Core domain:** Resonance patterns and the responses of objects/materials.
+- **Operation:** Evren can perceive resonance patterns and magically influence them, including modifying vibrations or changing an object's response within his ability's limits. He must perceive a pattern before influencing it. Touch is not required; contact can improve clarity and control, while distance makes perception and influence harder.
+- **Natural limits:** Perception does not automatically reveal a phenomenon's cause, exact measurements, internal structure, or material composition. Similar responses do not prove shared material or structure. Perception does not guarantee that an interpretation or invention will succeed. His practical inventions also depend on knowledge, tools, experimentation, and verification.
+- **Individual restriction:** Accepted — **Prohibition**. Evren cannot magically originate or impose a completely new resonance pattern by himself. He can influence and modify a pattern that is already present, but cannot create one from nothing through this ability.
+- **Classification rationale:** The essential prohibited act is the magical creation/imposition of a new resonance pattern. This is not a quantitative ceiling on an otherwise available action (Magnitude), nor a restriction on which target categories can be affected (Scope); the act itself is unavailable to him.
+- **Restriction and adaptation:** The restriction is intrinsic and present from the appearance of his restraint symbol. Training can improve perception and modification of existing patterns, but cannot make the prohibited act available. No additional effects or numerical thresholds are established.
+- **Backstory context:** His restraint symbol appeared when he was five, an exceptionally early and rare age. The timing was unusual, not a prophecy or hidden selection. A sorcerer noticed the phenomenon, took him along, and helped him understand Aelora energy and Aren Art. This experience shaped the curiosity that later became central to his character.
+- **Character context:** His personal motivation is exploration and understanding. His practical purpose is to turn discoveries into tools and solutions that help people. He is curious, observant, practical, inventive, open, friendly and persistent; he may become absorbed in discoveries, experiment too quickly, struggle to leave questions unresolved, or underestimate risks when excited.
+- **Conditions for use:** Exact maximum distance, target count, material coverage, perceptual presentation, and any special Aelora cost remain open. Contact improves clarity/control but is not required; greater distance increases difficulty.
+- **Age and place:** 28 years old; from Dornwick / دورنويك, Orath (OR-CITY-05). Current residence and exact calendar birth date remain open.
+- **Era:** The current era, identified by the project owner as the latest era in the world's era division; use the finalized era register's exact title when that register is reconciled. He shares this era with Mira and Veyra.
+- **Relationships:** The sorcerer who introduced him to the magical world has scholarly standing and field/political responsibilities within a political institution. Identity, institution, and exact duties are open. No specific relationship with Mira or Veyra is established.
+- **Observed results:** No in-game experiment or canonical story event has been recorded. The points above are the accepted character reference, not test results.
+- **Open questions:** Exact operating range and target coverage; perceptual presentation and costs, if any; identity and institution of the sorcerer who guided him; current residence; species/nature; exact calendar birth date; future named relationships and story events.
+- **Canon decision:** On 2026-10-30, the user approved resolving Evren's individual restriction and completing his foundational character file. The selected restriction is Prohibition: he cannot originate a new resonance pattern magically, but can modify an existing one.
+- **Reference card:** [Evren — CHR-002](../character-reference-cards/CHR-002-IDRIS.md)
+- **Last reviewed:** 2026-10-30 — name, core personality, motivation, early sorcerer background, resonance ability, Prohibition restriction, age, homeland, current-era placement, and signature quote recorded.
+
 ## 4. Change log
 
 | Date | Character | Change | Status |
 |---|---|---|---|
 | 2026-10-29 | CHR-001 | Added initial ability/restriction test record from scenario-based discussion. | Provisional; not canonized |
 | 2026-10-29 | CHR-001 | Resolved Mira's individual restriction as Magnitude: an intrinsic ceiling on the complexity of spatial relationships she can reliably organize simultaneously. | Accepted; exact threshold open |
+| 2026-10-30 | CHR-002 | Completed Evren's foundational ability record and accepted Prohibition: he cannot magically originate a new resonance pattern, but can modify an existing one. | Accepted; operating parameters remain partly open |
 
 
 ### CHR-039 — Veyra, Pattern Detective

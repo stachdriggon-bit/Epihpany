@@ -65,3 +65,35 @@ test('Veyra canonical profile follows the shared bilingual Character Details str
   assert.equal(card.rarity, 'Common');
   assert.equal(card.title, 'Pattern Detective');
 });
+
+
+test('Evren canonical profile is bilingual and preserves his established identity details', () => {
+  const context = {window:{}};
+  vm.runInNewContext(read('data-cards.js'), context);
+  vm.runInNewContext(read('data-character-profiles.js'), context);
+  const profile = context.window.EPIPHANY_CARD_PROFILES['CHR-002'];
+  assert.ok(profile, 'Evren profile should exist');
+  assert.equal(profile.name.en, 'Evren');
+  assert.equal(profile.name.ar, 'إيفرن');
+  assert.equal(profile.title.en, 'Resonance Tinkerer');
+  assert.equal(profile.facts.find(f => f.label.en === 'Age').value.en, '28 years');
+  assert.equal(profile.facts.find(f => f.label.en === 'Homeland').value.en, 'Dornwick · Orath');
+  assert.equal(profile.facts.find(f => f.label.en === 'Era').value.en, "The current era (the latest era in the world's era division)");
+  const expected = ['overview','personality','motivation','abilities','limits','backstory','story-role','relationships','places','quote'];
+  assert.equal(profile.sections.map(section => section.id).join(','), expected.join(','));
+  for (const section of profile.sections) {
+    assert.ok(section.title.en && section.title.ar, section.id + ' needs bilingual titles');
+    const entries = Array.isArray(section.text) ? section.text : [section.text];
+    for (const entry of entries) {
+      const text = entry.text || entry;
+      assert.ok(text.en, section.id + ' needs English content');
+      assert.ok(text.ar, section.id + ' needs Arabic content');
+    }
+  }
+  assert.ok(profile.sections.find(s => s.id === 'limits').text.some(entry =>
+    (entry.text || entry).en.includes('Prohibition')
+  ));
+  const card = context.window.EPIPHANY_CARD_DATA.find(item => item.id === 'CHR-002');
+  assert.equal(card.rarity, 'Uncommon');
+  assert.equal(card.image, 'idris.PNG', 'preserve the legacy portrait asset mapping');
+});
