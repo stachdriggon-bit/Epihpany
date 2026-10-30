@@ -621,7 +621,7 @@
     const total=report.assets.length,loadOk=counts.load_ok||0,loadFailed=counts.load_failed||0,verified=report.assets.filter(x=>x.bucketStatus==='verified'||x.status==='verified'||x.status==='load_ok'||x.status==='load_failed').length,failed=counts.failed||0,missing=counts.missing||0; const cloudErrors=readCharacterArtCloudErrors();
     const pct=total?Math.round(verified/total*100):0;
     const rows=report.assets.filter(x=>['missing','failed','load_failed'].includes(x.status)).slice(0,80).map(x=>'<tr><td>'+String(x.kind).replace(/[&<>"]/g,'')+'</td><td>'+String(x.source).replace(/[&<>"]/g,'')+'</td><td><code>'+String(x.target).replace(/[&<>"]/g,'')+'</code></td><td>'+String(x.status).replace(/[&<>"]/g,'')+'</td><td>'+String(x.message||'—').replace(/[&<>"]/g,'')+'</td></tr>').join('');
-    host.innerHTML='<div class="developer-art-summary"><div><b>'+verified+' / '+total+'</b><small>Found in bucket</small></div><div><b>'+loadOk+' / '+total+'</b><small>Loaded over HTTP</small></div><div><b>'+loadFailed+'</b><small>Load failures</small></div><div><b>'+cloudErrors.count+'</b><small>Cloud image errors</small></div></div><div class="developer-art-meta">Missing: '+missing+' · Upload failures: '+failed+' · Bucket coverage: '+pct+'%</div><div class="developer-art-progress"><span style="width:'+pct+'%"></span></div><p class="developer-art-meta">Last checked: '+new Date(report.updatedAt||Date.now()).toLocaleString()+' · '+(report.bucket||'character-art')+' · '+(report.mode||'scan')+'</p>'+(report.note?'<p class="developer-art-note">'+String(report.note).replace(/[&<>"]/g,'')+'</p>':'')+(rows?'<details open><summary>Items needing attention ('+(missing+failed+loadFailed)+')</summary><div class="developer-art-table-wrap"><table class="developer-art-table"><thead><tr><th>Type</th><th>Local source</th><th>Cloud key</th><th>Status</th><th>Details</th></tr></thead><tbody>'+rows+'</tbody></table></div></details>':'<p class="developer-art-success">'+(report.mode==='HTTP image-load verification'?'All tested cloud images loaded successfully.':'All expected artwork objects are present in cloud storage.')+'</p>');
+    host.innerHTML='<div class="developer-art-summary"><div><b>'+verified+' / '+total+'</b><small>Found in bucket</small></div><div><b>'+loadOk+' / '+total+'</b><small>Loaded over HTTP</small></div><div><b>'+loadFailed+'</b><small>Load failures</small></div><div><b>'+cloudErrors.count+'</b><small>Cloud image errors</small></div></div><div class="developer-art-meta">Missing: '+missing+' · Upload failures: '+failed+' · Bucket coverage: '+pct+'%</div><div class="developer-art-progress"><span style="width:'+pct+'%"></span></div><p class="developer-art-meta">Last checked: '+new Date(report.updatedAt||Date.now()).toLocaleString()+' · '+(report.bucket||'character-art')+' · '+(report.mode||'scan')+'</p>'+(report.note?'<p class="developer-art-note">'+String(report.note).replace(/[&<>"]/g,'')+'</p>':'')+(rows?'<details open><summary>Items needing attention ('+(missing+failed+loadFailed)+')</summary><div class="developer-art-table-wrap"><table class="developer-art-table"><thead><tr><th>Type</th><th>Object filename</th><th>Cloud key</th><th>Status</th><th>Details</th></tr></thead><tbody>'+rows+'</tbody></table></div></details>':'<p class="developer-art-success">'+(report.mode==='HTTP image-load verification'?'All tested cloud images loaded successfully.':'All expected artwork objects are present in cloud storage.')+'</p>');
   }
   async function listCharacterArtFolder(folder) {
     const found=new Set(); let offset=0;
@@ -672,49 +672,10 @@
     const report={version:2,bucket:'character-art',mode:'verification',updatedAt:new Date().toISOString(),assets:assets.map(asset=>({...asset,status:(asset.target.startsWith('originals/')?originals:thumbs).has(asset.target)?'verified':'missing',message:''}))};
     saveCharacterArtReport(report); return report;
   }
-  async function migrateCharacterArtAssets(onProgress = () => {}) {
-    if (!client || !currentUser || !isDeveloperAccount()) throw new Error('Sign in with an approved developer account first.');
-    const assets=getCharacterArtAssets();
-    const report={version:2,bucket:'character-art',mode:'upload + verification',updatedAt:new Date().toISOString(),assets:assets.map(x=>({...x,status:'pending',message:''}))};
-    saveCharacterArtReport(report);
-    const [originals,thumbs]=await Promise.all([listCharacterArtFolder('originals'),listCharacterArtFolder('thumbs')]);
-    let completed=0;
-    for(const asset of report.assets){
-      const existing=asset.target.startsWith('originals/')?originals:thumbs;
-      if(existing.has(asset.target)){asset.status='uploaded';asset.message='Already present — skipped';}
-      else{
-        try{
-          const response=await fetch(new URL(asset.source,document.baseURI).href,{cache:'no-cache'});
-          if(!response.ok)throw new Error('Source image returned HTTP '+response.status);
-          const blob=await response.blob();
-          const ext=asset.target.split('.').pop().toLowerCase();
-          const mime=blob.type||({png:'image/png',jpg:'image/jpeg',jpeg:'image/jpeg',webp:'image/webp',avif:'image/avif'}[ext]||'application/octet-stream');
-          const {error}=await client.storage.from('character-art').upload(asset.target,blob,{upsert:true,cacheControl:'31536000',contentType:mime});
-          if(error)throw error;
-          asset.status='uploaded'; asset.message='Upload request succeeded';
-        }catch(error){asset.status='failed';asset.message=error?.message||String(error);}
-      }
-      completed++; report.mode='uploading'; saveCharacterArtReport(report);
-      onProgress({completed,total:assets.length,failed:report.assets.filter(x=>x.status==='failed').length,current:asset.source});
-    }
-    report.mode='verification';
-    const [verifiedOriginals,verifiedThumbs]=await Promise.all([listCharacterArtFolder('originals'),listCharacterArtFolder('thumbs')]);
-    for(const asset of report.assets){
-      const exists=(asset.target.startsWith('originals/')?verifiedOriginals:verifiedThumbs).has(asset.target);
-      asset.status=exists?'verified':asset.status==='failed'?'failed':'missing';
-      if(!exists&&!asset.message)asset.message='Object not found in bucket listing after upload';
-    }
-    const verified=report.assets.filter(x=>x.status==='verified').length;
-    report.note=verified===report.assets.length?'Every expected object is present in the bucket listing.':'Cloud mode remains disabled until every object is verified.';
-    saveCharacterArtReport(report);
-    if(verified===report.assets.length){try{localStorage.setItem('epiphany-character-art-cloud-ready','1');}catch{}}
-    else{try{localStorage.removeItem('epiphany-character-art-cloud-ready');}catch{}}
-    return {total:report.assets.length,uploaded:verified,failures:report.assets.filter(x=>x.status!=='verified').map(x=>({source:x.source,target:x.target,message:x.message||x.status}))};
-  }
+
 
   window.EpiphanyAuth = {
     isDeveloper: isDeveloperAccount,
-    migrateCharacterArtAssets,
     inspectCharacterArtAssets,
     getCharacterArtReport: readCharacterArtReport,
     getDeveloperEmail: () => isDeveloperAccount() ? String(currentUser.email).trim().toLowerCase() : '',
@@ -733,25 +694,11 @@
   };
 
   document.addEventListener('DOMContentLoaded', () => {
-    const artUploadButton = $('developer-upload-character-art');
-    
     renderCharacterArtReport();
     const httpButton=$('developer-test-character-art-http');
     httpButton?.addEventListener('click',async()=>{httpButton.disabled=true;const status=$('developer-art-upload-status');if(status)status.textContent='Testing cloud image URLs (up to 6 at a time)…';try{const result=await verifyCharacterArtHttpAssets(progress=>{if(status)status.textContent='HTTP test '+progress.completed+'/'+progress.total+' · '+progress.ok+' loaded · '+progress.failed+' failed';});if(status)status.textContent='Image loading test: '+result.ok+'/'+result.total+' loaded · '+result.failed+' failed.';}catch(error){if(status)status.textContent='Image test failed: '+(error?.message||String(error));}finally{httpButton.disabled=false;}});
     const verifyButton=$('developer-verify-character-art');
     verifyButton?.addEventListener('click',async()=>{verifyButton.disabled=true;const status=$('developer-art-upload-status');if(status)status.textContent='Checking bucket contents…';try{const report=await inspectCharacterArtAssets();const ok=report.assets.filter(x=>x.status==='verified').length;if(status)status.textContent='Verification complete: '+ok+'/'+report.assets.length+' objects found.';}catch(error){if(status)status.textContent='Verification failed: '+(error?.message||String(error));}finally{verifyButton.disabled=false;}});
-    artUploadButton?.addEventListener('click',async()=>{
-      const status=$('developer-art-upload-status');
-      if(!isDeveloperAccount()){if(status)status.textContent='Developer access is required.';return;}
-      artUploadButton.disabled=true;const verify=$('developer-verify-character-art');if(verify)verify.disabled=true;
-      if(status)status.textContent='Preparing resumable upload…';
-      try{
-        const result=await migrateCharacterArtAssets(progress=>{if(status)status.textContent='Processed '+progress.completed+'/'+progress.total+' · '+progress.failed+' failed';});
-        if(status)status.textContent=result.failures.length?'Verified '+result.uploaded+'/'+result.total+'. '+result.failures.length+' need attention. Local artwork remains enabled.':'Verified all '+result.uploaded+'/'+result.total+' cloud objects. Report saved; no automatic reload.';
-        if(result.failures.length)console.error('[EPIPHANY] Character art migration report',result.failures);
-      }catch(error){if(status)status.textContent='Migration stopped: '+(error?.message||String(error));}
-      finally{artUploadButton.disabled=false;if(verify)verify.disabled=false;}
-    });
     const form = $('account-form');
     if (!form) return;
     setMode('signin');
