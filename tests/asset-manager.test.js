@@ -75,3 +75,14 @@ test('unassigned assets can be linked privately without publishing', () => {
   assert.match(manager, /is_published:false/);
   assert.match(manager, /status:'linked'/);
 });
+
+test('character linking uses a searchable name picker instead of requiring manual IDs', () => {
+  const manager = read('asset-manager.js');
+  const html = read('index.html');
+  assert.match(html, /id="asset-character-search"/);
+  assert.match(html, /id="asset-character-select"/);
+  assert.match(manager, /function characterPickerData/);
+  assert.match(manager, /profile\.name\?\.ar/);
+  assert.match(manager, /asset-character-select.*value/);
+  assert.match(manager, /ownerType === 'character'/);
+});
