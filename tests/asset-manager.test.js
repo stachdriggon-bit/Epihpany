@@ -18,7 +18,7 @@ test('Asset Manager files are loaded and cached for offline use', () => {
 test('new image uploads are restricted to common formats and private staging', () => {
   const manager = read('asset-manager.js');
   const migration = read('supabase/migrations/20261030201651_asset_manager_foundation.sql');
-  assert.match(manager, /const PRIVATE_BUCKET = 'epiphany-assets-private'/);
+  assert.match(manager, /const PRIVATE_BUCKET = 'epiphany-assets-private'/);\n  assert.match(manager, /async function createThumbnail/);\n  assert.match(manager, /variant: 'thumbnail'/);
   assert.match(manager, /image\/png/);
   assert.match(manager, /image\/jpeg/);
   assert.match(manager, /image\/webp/);
