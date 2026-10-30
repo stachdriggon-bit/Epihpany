@@ -288,7 +288,12 @@ test('main navigation tabs open without uncaught page errors', async t => {
     const modalCardBox = await detail.locator('.cards-detail-art .fcard').boundingBox();
     assert.ok(modalCardBox && modalCardBox.width > 0 && modalCardBox.height > 0, 'the real card face must be visible in the modal');
     assert.ok(await detail.locator('.cards-detail-art img, .cards-detail-art svg').count() > 0, 'the modal card must contain its artwork');
-    assert.equal(await detail.locator('.cards-detail-art img').getAttribute('src'), await cardsPage.evaluate(() => window.EPIPHANY_CARD_DATA.find(card => card.id === 'CHR-001').image), 'the modal must load the full-size card art');
+    const modalArt = detail.locator('.cards-detail-art img');
+    const modalArtSrc = await modalArt.getAttribute('src');
+    const localArtFallback = await modalArt.getAttribute('data-local-fallback');
+    const expectedFullArt = await cardsPage.evaluate(() => window.EPIPHANY_CARD_DATA.find(card => card.id === 'CHR-001').image);
+    assert.ok(modalArtSrc.includes('/character-art/originals/'), 'the modal should request the full-size cloud card art');
+    assert.equal(localArtFallback, expectedFullArt, 'the modal must retain the original repository image as a fallback until cloud migration is complete');
     await cardsPage.locator('.cards-detail-translate').click();
     assert.equal(await detail.locator('#cards-detail-name').innerText(), 'ميرا', 'character name should translate in place');
     assert.match(await detail.locator('.cards-detail-summary').innerText(), /دليلة عملية/);
