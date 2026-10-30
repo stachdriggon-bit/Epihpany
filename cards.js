@@ -68,7 +68,7 @@
     return base.replace(/\/$/,'') + '/storage/v1/object/public/character-art/' + folder + '/' + file;
   };
   const artMarkup = (card, opts={}) => card.image
-    ? '<img class="fcard-portrait fcard-portrait-image" src="'+esc(characterArtUrl(opts.fullImage ? card.image : (card.thumb || card.image), opts.fullImage ? 'originals' : 'thumbs'))+'" data-local-fallback="'+esc(opts.fullImage ? card.image : (card.thumb || card.image))+'" '+(opts.fullImage?'fetchpriority="high"':'fetchpriority="low"')+' width="240" height="300" alt="" loading="'+(opts.fullImage?'eager':'lazy')+'" decoding="async">'
+    ? '<img class="fcard-portrait fcard-portrait-image" src="'+esc(characterArtUrl(opts.fullImage ? card.image : (card.thumb || card.image), opts.fullImage ? 'originals' : 'thumbs'))+' data-cloud-src="'+esc(characterArtUrl(opts.fullImage ? card.image : (card.thumb || card.image), opts.fullImage ? 'originals' : 'thumbs'))+'" data-local-fallback="'+esc(opts.fullImage ? card.image : (card.thumb || card.image))+'" '+(opts.fullImage?'fetchpriority="high"':'fetchpriority="low"')+' width="240" height="300" alt="" loading="'+(opts.fullImage?'eager':'lazy')+'" decoding="async">'
     : card.art
     ? '<svg class="fcard-portrait" viewBox="0 0 240 300" preserveAspectRatio="xMidYMin slice" focusable="false"><use href="'+PORTRAITS+'#'+esc(card.art)+'"></use></svg>'
     : '<div class="fcard-sigil-art">'+svgUse('ring','back-sigil','0 0 120 120')+svgUse('ring r2','back-sigil','0 0 120 120')+'<b>'+esc(card.symbol)+'</b></div>';
