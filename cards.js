@@ -746,14 +746,20 @@
       }catch(_){}
     },true);
     const refreshPublishedCharacterAssets = async () => {
+      window.EPIPHANY_CARD_ASSETS_REFRESHED = false;
       try {
         const rows = await window.EpiphanyAuth?.loadPublishedCharacterAssets?.();
-        if (!Array.isArray(rows)) return;
-        window.EPIPHANY_CARD_ASSET_MAP = Object.fromEntries(rows.map(row => [row.owner_id, row]));
-        renderFeatured();
-        renderGallery();
+        if (Array.isArray(rows)) {
+          window.EPIPHANY_CARD_ASSET_MAP = Object.fromEntries(rows.map(row => [row.owner_id, row]));
+          renderFeatured();
+          renderGallery();
+        }
       } catch (error) {
         console.warn('[EPIPHANY] Published character asset references could not be refreshed:', error);
+      } finally {
+        // Expose completion so browser smoke tests can begin DOM-identity checks
+        // only after the asynchronous asset refresh has finished.
+        window.EPIPHANY_CARD_ASSETS_REFRESHED = true;
       }
     };
     renderFeatured();renderGallery();updateCounts();renderOdds(selectedPack());
