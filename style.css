@@ -3877,3 +3877,14 @@ body[data-theme="dark"] .account-save-prompt{background:var(--surface);border-co
 .empty-state-inline-link{display:inline-flex;align-items:center;gap:5px;margin-top:8px;color:var(--focus);font-weight:800;text-decoration-thickness:1px;text-underline-offset:3px}
 .empty-state-inline-link:hover{color:var(--ink)}
 .empty-state-inline-link:focus-visible{outline:2px solid var(--focus);outline-offset:4px;border-radius:4px}
+
+
+/* Compact XP indicator in the mobile Home row; desktop navigation stays horizontal. */
+.mobile-home-xp{display:inline-flex;align-items:center;gap:4px;margin-inline-start:auto;padding:4px 8px;border:1px solid rgba(255,255,255,.22);border-radius:999px;background:rgba(255,255,255,.12);color:inherit;font-size:11px;font-weight:850;line-height:1;font-variant-numeric:tabular-nums}
+.mobile-home-xp small{font-size:9px;opacity:.78;letter-spacing:.04em}
+.mobile-menu nav .mobile-nav-home{display:flex;gap:10px}
+.mobile-menu nav .mobile-nav-home>span:nth-child(2){flex:0 0 auto}
+.profile-xp-chip{display:inline-flex;align-items:center;gap:6px;min-height:28px;padding:5px 9px;border:1px solid var(--line);border-radius:999px;background:var(--violet-soft);color:var(--ink);font-size:11px;font-weight:800}
+.profile-xp-chip svg{width:14px;height:14px;color:var(--focus)}
+.profile-xp-chip>span{font-size:9px;letter-spacing:.07em;color:var(--ink-2)}
+.profile-xp-chip>b{font-variant-numeric:tabular-nums}
