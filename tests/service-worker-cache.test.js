@@ -6,7 +6,7 @@ const vm = require('node:vm');
 
 const source = fs.readFileSync(path.join(__dirname, '..', 'service-worker.js'), 'utf8');
 
-function createWorker(cachedAssets = []) {
+function createWorker(cachedAssets = [], navigatorOptions = {}) {
   const handlers = {};
   const added = [];
   const matched = [];
@@ -21,7 +21,7 @@ function createWorker(cachedAssets = []) {
     async put(asset) { refreshed.push(asset); cacheEntries.add(asset); }
   };
   const worker = {
-    navigator: { onLine: true, deviceMemory: 8, hardwareConcurrency: 8 },
+    navigator: { onLine: true, deviceMemory: 8, hardwareConcurrency: 8, ...navigatorOptions },
     skipWaiting: async () => {},
     addEventListener(name, handler) { handlers[name] = handler; }
   };
@@ -70,15 +70,13 @@ test('reconnect does not warm optional assets on constrained devices or data-sav
     { onLine: true, deviceMemory: 8, hardwareConcurrency: 8, connection: { saveData: true } },
     { onLine: false, deviceMemory: 8, hardwareConcurrency: 8 }
   ]) {
-    const worker = createWorker(['./data-stories.js']);
+    const worker = createWorker(['./data-stories.js'], navigator);
+    let wait;
     worker.handlers.message({
       data: { type: 'EPIPHANY_WARM_OPTIONAL_CACHE' },
-      waitUntil(promise) { this.wait = promise; }
+      waitUntil(promise) { wait = promise; }
     });
-    // The helper uses the worker's navigator; override it before dispatch.
-    // (The worker listener itself is synchronous and rechecks every message.)
-    // createWorker's default navigator is replaced for this test case.
-    // eslint-disable-next-line no-underscore-dangle
-    worker.handlers.message._unused = navigator;
+    await Promise.resolve(wait);
+    assert.deepEqual(worker.refreshed, []);
   }
 });
