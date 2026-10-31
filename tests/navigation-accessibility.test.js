@@ -34,7 +34,23 @@ test('mobile profile tabs scroll horizontally and keep touch-sized targets', () 
   const css = read('style.css');
   assert.match(css, /\.profile-nav\s*\{[^}]*overflow-x:auto/s);
   assert.match(css, /\.profile-nav a\s*\{[^}]*min-height:44px/s);
-  assert.match(css, /\.bottom-nav button\s*\{[^}]*font-size:12px!important/s);
+});
+
+test('mobile navigation is a left-side drawer and replaces the bottom quick bar', () => {
+  const html = read('index.html');
+  const css = read('style.css');
+  const app = read('app.js');
+  const nav = read('navigation-enhancements.js');
+  assert.match(html, /class="mobile-menu-backdrop"/);
+  assert.match(html, /id="mobile-navigation-panel"/);
+  assert.doesNotMatch(html, /class="bottom-nav"/);
+  assert.match(css, /\.mobile-menu nav\{[^}]*left:0;right:auto/s);
+  assert.match(css, /\.mobile-menu nav\{[^}]*transform:translateX\(-105%\)/s);
+  assert.match(css, /\.mobile-menu\[open\] nav\{transform:translateX\(0\)\}/);
+  assert.doesNotMatch(css, /\.bottom-nav/);
+  assert.doesNotMatch(app, /\.bottom-nav/);
+  assert.match(nav, /mobile-menu-backdrop/);
+  assert.doesNotMatch(nav, /QUICK_NAV_OPTIONS|renderQuickNav|quick-nav-customize/);
 });
 
 test('mark-all notification action stays outside the independently scrolling list', () => {
