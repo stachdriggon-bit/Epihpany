@@ -10,8 +10,8 @@ test('story recording resources are released when the reader session ends', () =
   assert.match(app, /storyPronunciationStream\?\.getTracks\(\)\.forEach\(track=>track\.stop\(\)\)/);
   assert.match(app, /URL\.revokeObjectURL\(storyPronunciationUrl\)/);
   assert.match(app, /storyPronunciationAudio\.pause\(\)/);
-  assert.match(app, /function closeGame\(\)\s*\{\s*releaseStoryPronunciationResources\(\)/);
-  assert.match(app, /function finishStory\(\)\{releaseStoryPronunciationResources\(\)/);
+  assert.match(app, /function closeGame\(\)\s*\{\s*stopSpeechPlayback\(\);\s*releaseStoryPronunciationResources\(\)/);
+  assert.match(app, /function finishStory\(\)\{stopSpeechPlayback\(\);releaseStoryPronunciationResources\(\)/);
 });
 
 test('late microphone permission responses cannot revive a closed story recording', () => {
