@@ -120,7 +120,7 @@ test('main navigation tabs open without uncaught page errors', async t => {
         } catch {}
       });
       await page.addInitScript(() => {
-        localStorage.setItem('epiphany-progress', '{}');
+        localStorage.setItem('epiphany-progress', JSON.stringify({placementDone:true,assessedLevel:'A1',level:'A1'}));
         localStorage.setItem('epiphany-landing-seen', '1');
       });
       await page.goto(baseUrl, { waitUntil: 'domcontentloaded' });
@@ -299,7 +299,7 @@ test('main navigation tabs open without uncaught page errors', async t => {
       window.__cardLongTasks = [];
       try { new PerformanceObserver(list => window.__cardLongTasks.push(...list.getEntries().map(entry => entry.duration))).observe({type:'longtask', buffered:true}); } catch {}
       localStorage.setItem('epiphany-landing-seen', '1');
-      localStorage.setItem('epiphany-progress', '{}');
+      localStorage.setItem('epiphany-progress', JSON.stringify({placementDone:true,assessedLevel:'A1',level:'A1'}));
       localStorage.setItem('epiphany-card-prototype-v1', JSON.stringify({
         tokens:15, shards:0, owned:{'CHR-001':1,'CHR-002':1,'CHR-004':1,'CHR-039':1,'CHR-005':1},
         cardLevels:{}, history:[], achievementRewards:{}, initialized:true
@@ -453,7 +453,7 @@ test('main navigation tabs open without uncaught page errors', async t => {
     await offlinePage.setViewportSize({ width: 800, height: 900 });
     offlinePage.on('pageerror', error => errors.push('offline: ' + error.message));
     await offlinePage.addInitScript(() => {
-      localStorage.setItem('epiphany-progress', '{}');
+      localStorage.setItem('epiphany-progress', JSON.stringify({placementDone:true,assessedLevel:'A1',level:'A1'}));
       localStorage.setItem('epiphany-landing-seen', '1');
     });
     await offlinePage.goto(baseUrl, { waitUntil: 'domcontentloaded' });
