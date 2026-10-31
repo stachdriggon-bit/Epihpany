@@ -6,15 +6,16 @@ const path = require('node:path');
 const root = path.resolve(__dirname, '..');
 const read = file => fs.readFileSync(path.join(root, file), 'utf8');
 
-test('Asset Manager files are loaded and cached for offline use', () => {
+test('Asset Manager files are deferred until developer mode and cached for offline use', () => {
   const html = read('index.html');
+  const developerMode = read('developer-mode.js');
   const sw = read('service-worker.js');
-  assert.match(html, /asset-manager\.js/);
-  assert.match(html, /asset-manager\.css/);
+  assert.doesNotMatch(html, /asset-manager\.js|asset-manager\.css/);
+  assert.match(developerMode, /asset-manager\.js/);
+  assert.match(developerMode, /asset-manager\.css/);
   assert.match(sw, /['"]\.\/asset-manager\.js['"]/);
   assert.match(sw, /['"]\.\/asset-manager\.css['"]/);
 });
-
 test('new image uploads are restricted to common formats and private staging', () => {
   const manager = read('asset-manager.js');
   const migration = read('supabase/migrations/20261030201651_asset_manager_foundation.sql');

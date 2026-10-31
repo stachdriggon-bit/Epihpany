@@ -5,12 +5,13 @@ const path = require('node:path');
 const root = path.resolve(__dirname, '..');
 const read = file => fs.readFileSync(path.join(root, file), 'utf8');
 
-test('Artwork Manager is included in the app shell and offline cache', () => {
-  const html=read('index.html'),sw=read('service-worker.js');
-  assert.match(html,/artwork-manager\.js/);
-  assert.match(html,/artwork-manager\.css/);
-  assert.match(sw,/['"]\.\/artwork-manager\.js['"]/);
-  assert.match(sw,/['"]\.\/artwork-manager\.css['"]/);
+test('Artwork Manager is deferred until developer mode and cached for offline use', () => {
+  const html=read('index.html'),developerMode=read('developer-mode.js'),sw=read('service-worker.js');
+  assert.ok(!html.includes('artwork-manager.js') && !html.includes('artwork-manager.css'));
+  assert.match(developerMode,/artwork-manager\.js/);
+  assert.match(developerMode,/artwork-manager\.css/);
+  assert.ok(sw.includes("'./artwork-manager.js'") || sw.includes('"./artwork-manager.js"'));
+  assert.ok(sw.includes("'./artwork-manager.css'") || sw.includes('"./artwork-manager.css"'));
 });
 test('Artwork Manager is developer-only and uses the approved account session', () => {
   const manager=read('artwork-manager.js'),html=read('index.html');
