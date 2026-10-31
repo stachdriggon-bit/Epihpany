@@ -854,7 +854,7 @@
         setTimeout(() => syncUserProgress(currentUser), 0);
       }
     });
-    client.auth.getSession().then(({data, error}) => {
+    client.auth.getSession().then(async ({data, error}) => {
       if (error) throw error;
       if (data && data.session && data.session.user) {
         currentUser = data.session.user;
