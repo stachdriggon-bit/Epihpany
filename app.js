@@ -2006,6 +2006,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     if (name === 'progress' || name === 'profile') { renderWeaknessPanel(); renderLearningInsights(); }
     window.scrollTo(0, 0);
     const h = $('#' + name + '-title'); if (h) { h.classList.add('programmatic-view-focus'); h.addEventListener('keydown', () => h.classList.remove('programmatic-view-focus'), { once: true }); h.focus({preventScroll: true}); }
+    document.dispatchEvent(new CustomEvent('epiphany:view-changed', { detail: { view: name } }));
   }
 
   /* ---------- unified, offline Arabic translation ---------- */
