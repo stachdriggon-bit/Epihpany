@@ -36,3 +36,22 @@ test('mobile profile tabs scroll horizontally and keep touch-sized targets', () 
   assert.match(css, /\.profile-nav a\s*\{[^}]*min-height:44px/s);
   assert.match(css, /\.bottom-nav button\s*\{[^}]*font-size:12px!important/s);
 });
+
+test('mark-all notification action stays outside the independently scrolling list', () => {
+  const css = read('style.css');
+  assert.match(css, /Keep bulk notification actions independent from the scrolling message list/);
+  assert.match(css, /\.notification-list\s*\{[^}]*overflow-y:auto/s);
+  assert.match(css, /\.notification-panel-actions\s*\{[^}]*position:sticky/s);
+  assert.match(css, /\.notification-panel-actions \.btn\s*\{[^}]*min-height:42px/s);
+});
+
+test('Resonance mobile hotspots sit above the narration panel', () => {
+  const css = read('resonance.css');
+  assert.match(css, /\.res-hotspot\.radio\s*\{[^}]*bottom:39%[^}]*z-index:2/s);
+  assert.match(css, /\.res-hotspot\.note\s*\{[^}]*bottom:34%[^}]*z-index:2/s);
+});
+
+test('World map control has a visible text label', () => {
+  const app = read('app.js');
+  assert.match(app, /class="world-home" data-world-regions aria-label="Open map" title="Open map">⌖ Map/);
+});
