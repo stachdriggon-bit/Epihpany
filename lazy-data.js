@@ -11,6 +11,52 @@
     lifeskills: ['think-lab.js?v=72d8145c', 'life-skills.js?v=c0ba2ab9'],
     arabic: ['data-translation-ar.js?v=question-context-20261026-20', 'data-translation-ar-fill.js?v=fill-4']
   };
+  const styleGroups = {
+    resonance: ['resonance.css?v=mobile-hotspots-20261031-2'],
+    lifeskills: ['life-skills.css?v=calm-studio-20261025']
+  };
+  const pendingStyles = new Map();
+  const loadedStyles = new Set();
+  const loadingStyles = new Map();
+
+  function loadStyle(href) {
+    if (loadedStyles.has(href)) return Promise.resolve();
+    if (loadingStyles.has(href)) return loadingStyles.get(href);
+    const promise = new Promise((resolve, reject) => {
+      const link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = href;
+      link.onload = () => {
+        loadedStyles.add(href);
+        loadingStyles.delete(href);
+        resolve();
+      };
+      link.onerror = () => {
+        link.remove();
+        loadingStyles.delete(href);
+        reject(new Error('Unable to load feature styles: ' + href.split('?')[0]));
+      };
+      document.head.appendChild(link);
+    });
+    loadingStyles.set(href, promise);
+    return promise;
+  }
+
+  window.EPIPHANY_LAZY_STYLE = function (group) {
+    if (!Object.prototype.hasOwnProperty.call(styleGroups, group)) {
+      return Promise.reject(new Error('Unknown feature style group'));
+    }
+    if (!pendingStyles.has(group)) {
+      const promise = styleGroups[group].reduce((chain, href) => chain.then(() => loadStyle(href)), Promise.resolve())
+        .catch(error => {
+          pendingStyles.delete(group);
+          throw error;
+        });
+      pendingStyles.set(group, promise);
+    }
+    return pendingStyles.get(group);
+  };
+
   const pending = new Map();
   const loaded = new Set();
   const loadingScripts = new Map();
