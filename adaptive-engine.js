@@ -116,11 +116,13 @@
     cleanups.push(on(connection, 'change', refresh));
   } catch {}
 
+  refresh();
+
+  // readCapabilities() creates the media query during the first refresh; attach its
+  // change listener afterwards so OS motion-preference changes are observed.
   try {
     if (mediaQuery) cleanups.push(on(mediaQuery, 'change', refresh));
   } catch {}
-
-  refresh();
 
   const api = Object.freeze({
     version: '1.0.0',
