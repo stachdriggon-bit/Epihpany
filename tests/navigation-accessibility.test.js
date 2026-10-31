@@ -61,5 +61,5 @@ test('profile Overview is placed before the collection in the initial profile la
   assert.match(cards, /Start the profile on its Overview instead of placing the collection first/);
   assert.match(cards, /profileOverview\.before\(profileNav\)/);
   assert.match(cards, /profileOverview\.after\(collectionHub\)/);
-  assert.match(cards, /getAttribute\\('href'\\)===?'#player-profile-title'/);
+  assert.match(cards, /getAttribute\('href'\)==='#player-profile-title'/);
 });
