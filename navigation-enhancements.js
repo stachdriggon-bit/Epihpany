@@ -101,18 +101,15 @@
     const view = parts[0].split(/[?&]/)[0];
     if (!labels[view]) return;
     const activeView = currentView();
-    if (activeView !== view) {
-      // Full-screen World owns body scroll locking and inert page regions; always
-      // release it through its own exit control before switching the underlying route.
-      if (document.body.classList.contains('world-fullscreen')) {
-        const worldExit = $('#world-game [data-world-exit]') || $('#world-game [data-world-home]');
-        worldExit?.click();
-      }
-      // Games share the same full-screen layer. Close it before changing sections,
-      // rather than leaving it mounted above the newly active view.
-      const game = $('#game');
-      if (game && !game.hidden) $('#game-close')?.click();
-    } else if (view === 'stories' && !parts[1] && $('#game') && !$('#game').hidden && $('.story-reader')) {
+    // A hash/history transition must dismiss full-screen layers even when the
+    // underlying active view already matches the destination (World is not a .view).
+    if (document.body.classList.contains('world-fullscreen')) {
+      const worldExit = $('#world-game [data-world-exit]') || $('#world-game [data-world-home]');
+      worldExit?.click();
+    }
+    const game = $('#game');
+    const returningToStoryReader = view === 'stories' && !!parts[1];
+    if (game && !game.hidden && !returningToStoryReader) {
       $('#game-close')?.click();
     }
     if (currentView() !== view) {
