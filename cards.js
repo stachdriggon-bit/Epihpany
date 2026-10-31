@@ -765,7 +765,7 @@
     renderFeatured();renderGallery();updateCounts();renderOdds(selectedPack());
     refreshPublishedCharacterAssets();
     window.addEventListener('epiphany:published-assets-updated', refreshPublishedCharacterAssets);
-    window.addEventListener('epiphany:card-image-views-updated', () => { galleryNodeCache.clear(); renderGallery(); });
+    window.addEventListener('epiphany:card-image-views-updated', () => { galleryNodeCache.clear(); renderFeatured(); renderGallery(); });
     window.addEventListener('epiphany:supabase-ready', refreshPublishedCharacterAssets);
     document.addEventListener('epiphany-auth-changed', refreshPublishedCharacterAssets);
     $('cards-history-clear')?.addEventListener('click',()=>{state.history=[];save();renderHistory();});
