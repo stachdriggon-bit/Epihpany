@@ -53,10 +53,11 @@
     setStatus(dirty?'Unsaved changes.':'Adjust the portrait, then save your changes.');
   }
   async function loadSettings(){
-    if(!isDeveloper()||!client()){root().hidden=true;setStatus('Developer access required.');return;}
-    root().hidden=false;setStatus('Loading saved image framing…');
-    const {data,error}=await client().from(TABLE).select('character_id,position_x,position_y,zoom,fit');
-    if(error)throw error;
+    const host=root(),loader=window.EpiphanyAuth?.loadCardImageViews;
+    if(!loader){if(isDeveloper())setStatus('The shared image settings service is not available yet.','error');return;}
+    if(host)host.hidden=!isDeveloper();
+    if(isDeveloper())setStatus('Loading saved image framing…');
+    const data=await loader();
     settings=Object.fromEntries((data||[]).map(row=>[row.character_id,safeView(row)]));
     window.EPIPHANY_CARD_IMAGE_VIEWS=settings;
     renderOptions();
@@ -65,7 +66,7 @@
     if(select)select.value=selectedId;
     loadSelected();
     window.dispatchEvent(new CustomEvent('epiphany:card-image-views-updated'));
-    setStatus(cards().length+' character portraits ready.','success');
+    if(isDeveloper())setStatus(cards().length+' character portraits ready.','success');
   }
   function updateDraft(patch){draft=safeView({...draft,...patch});dirty=true;renderDraft();setStatus('Unsaved changes. Save to publish this framing.');}
   async function save(){
