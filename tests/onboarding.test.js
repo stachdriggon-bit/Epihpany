@@ -29,6 +29,10 @@ test('first-time visitors can choose an approximate level and start learning wit
   assert.match(account, /whenReady:\s*\(\)\s*=>\s*authReadyPromise/);
   assert.doesNotMatch(account, /showWelcomeModalIfNeeded/, 'the account welcome modal must not interrupt onboarding');
   assert.doesNotMatch(account, /__epiphanyShowPlacement/, 'authentication must not unexpectedly launch the full assessment');
+  assert.match(html, /id="account-google-signin"/);
+  assert.match(html, /id="account-facebook-signin"/);
+  assert.match(account, /account-google-signin.*signInWithProvider\('google'\)/s);
+  assert.match(account, /account-facebook-signin.*signInWithProvider\('facebook'\)/s);
   assert.match(css, /\.level-choice-grid/);
 });
 
