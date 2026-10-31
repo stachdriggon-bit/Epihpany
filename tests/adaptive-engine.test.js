@@ -69,8 +69,7 @@ test('data saver, slow networks, and constrained devices reduce optional work', 
     { connection: { effectiveType: '2g' } },
     { connection: { downlink: 0.4 } },
     { connection: { rtt: 1200 } },
-    { deviceMemory: 2 },
-    { hardwareConcurrency: 2 }
+    { deviceMemory: 2 }
   ]) {
     const { api } = createEngine(options);
     assert.equal(api.shouldPrefetch(), false);
@@ -78,6 +77,14 @@ test('data saver, slow networks, and constrained devices reduce optional work', 
     assert.equal(api.getPolicy().maxConcurrentOptionalLoads, 1);
     assert.equal(api.getPolicy().deferNonEssentialWork, true);
   }
+});
+
+test('low reported core count alone does not classify a device as resource-constrained', () => {
+  const { api, classes } = createEngine({ deviceMemory: 8, hardwareConcurrency: 2 });
+  assert.equal(api.getSnapshot().lowResources, false);
+  assert.equal(api.shouldPrefetch(), true);
+  assert.equal(api.getPolicy().maxConcurrentOptionalLoads, 3);
+  assert.equal(classes.has('ep-adaptive-lite'), false);
 });
 
 test('offline state and reduced-motion preference are respected independently', () => {
