@@ -42,7 +42,17 @@
     });
   }
 
+  function optionalWorkAllowed() {
+    const policy = currentAdaptivePolicy();
+    return !!policy && !policy.deferNonEssentialWork &&
+      document.visibilityState !== 'hidden' &&
+      !(window.navigator && window.navigator.onLine === false);
+  }
+
   function pumpOptionalQueue() {
+    // Keep speculative/background work queued while the page or device is constrained.
+    // Explicit user-priority requests bypass this gate in runWithPriority().
+    if (!optionalWorkAllowed()) return;
     while (activeOptionalLoads < optionalLoadLimit() && optionalQueue.length) {
       const job = optionalQueue.shift();
       if (!job.started) startOptionalJob(job, false);
@@ -244,6 +254,16 @@
 
   try {
     const engine = window.EPIPHANY_ADAPTIVE_ENGINE;
-    if (engine && typeof engine.subscribe === 'function') engine.subscribe(() => pumpOptionalQueue());
+    if (engine && typeof engine.subscribe === 'function') engine.subscribe(() => {
+      const policy = currentAdaptivePolicy();
+      if (!policy || policy.deferNonEssentialWork ||
+          document.visibilityState === 'hidden' ||
+          (window.navigator && window.navigator.onLine === false)) {
+        cancelScheduledPrefetch();
+        return;
+      }
+      pumpOptionalQueue();
+      if (lastIntentGroup) schedulePrefetch(lastIntentGroup);
+    });
   } catch {}
 })();
