@@ -89,6 +89,11 @@ test('main navigation tabs open without uncaught page errors', async t => {
       const answers = firstVisitPage.locator('#game-body .answer');
       if (!(await answers.count())) break;
       await answers.first().click();
+      const retryHint = firstVisitPage.locator('#go-retry-answer');
+      if (await retryHint.isVisible()) {
+        await retryHint.click();
+        await firstVisitPage.locator('#game-body .answer').first().click();
+      }
       await firstVisitPage.locator('#go-next').waitFor({ state: 'visible', timeout: 3000 });
       await firstVisitPage.locator('#go-next').click();
     }
