@@ -20,6 +20,8 @@ test('anonymous telemetry is opt-in and uses only coarse learning events', () =>
   assert.match(script, /observe\('largest-contentful-paint'/);
   assert.match(script, /observe\('layout-shift'/);
   assert.match(script, /observe\('event'/);
+  assert.match(script, /durationThreshold: 40/);
+  assert.match(script, /clsSessionValue/);
   assert.match(script, /send\('web_vital', 'performance'/);
   assert.match(script, /\['LCP', 'CLS', 'INP'\]/);
   assert.match(script, /window\.addEventListener\('pagehide', reportVitals\)/);
