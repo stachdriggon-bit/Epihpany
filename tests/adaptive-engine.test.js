@@ -92,8 +92,9 @@ test('engine tolerates missing browser capability APIs and listener failures', (
   };
   assert.doesNotThrow(() => vm.runInNewContext(source, context));
   assert.equal(context.window.EPIPHANY_ADAPTIVE_ENGINE.shouldPrefetch(), true);
-  const { api } = createEngine();
+  const { api, navConnection } = createEngine();
   const unsubscribe = api.subscribe(() => { throw new Error('consumer failure'); });
+  navConnection.saveData = true;
   assert.doesNotThrow(() => api.refresh());
   unsubscribe();
 });
