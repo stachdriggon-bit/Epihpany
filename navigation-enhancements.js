@@ -448,6 +448,26 @@
     });
   }
 
+  function setupResponsiveHeaderTools() {
+    const helpToggle = $('#ar-toggle');
+    const topRight = $('.top-right');
+    const toolsPanel = $('.tools-panel');
+    if (!helpToggle || !topRight || !toolsPanel) return;
+    const breakpoint = window.matchMedia('(max-width: 1180px)');
+    const syncPlacement = () => {
+      if (breakpoint.matches && helpToggle.parentElement !== toolsPanel) {
+        helpToggle.classList.add('tools-action');
+        toolsPanel.insertBefore(helpToggle, $('#translation-toggle', toolsPanel));
+      } else if (!breakpoint.matches && helpToggle.parentElement !== topRight) {
+        helpToggle.classList.remove('tools-action');
+        topRight.insertBefore(helpToggle, $('#sound-toggle') || $('.tools-menu', topRight));
+      }
+    };
+    syncPlacement();
+    if (breakpoint.addEventListener) breakpoint.addEventListener('change', syncPlacement);
+    else if (breakpoint.addListener) breakpoint.addListener(syncPlacement);
+  }
+
   function setupCalmNavigation() {
     const gameTop = $('.game-top');
     const close = $('#game-close');
@@ -464,7 +484,7 @@
   }
 
   function init() {
-    setupMobileLabel(); setupBreadcrumb(); setupSearch(); setupDropdowns(); setupFinalPolish(); setupCalmNavigation(); setupExpandableDescriptions(); setupGentleProgressCopy();
+    setupMobileLabel(); setupBreadcrumb(); setupSearch(); setupDropdowns(); setupFinalPolish(); setupResponsiveHeaderTools(); setupCalmNavigation(); setupExpandableDescriptions(); setupGentleProgressCopy();
     const view = currentView();
     syncCurrentNav(view);
     routeFromHash();
