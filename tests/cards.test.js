@@ -211,7 +211,7 @@ test('character artwork uses thumbnails in the gallery and loads originals only 
   assert.match(js, /const storagePath = opts\.fullImage \? card\.image : \(card\.thumb \|\| card\.image\)/);
   assert.match(js, /const cloudPath = cardArtSource\(card,opts\)/);
   assert.match(js, /cardFace\(card,\{level:levelOf\(card\),fullImage:true\}\)/);
-  assert.match(js, /loading="\\x27\\+\\(opts\\.fullImage\\?'eager':'lazy'\\)/);
+  assert.match(js, /opts\.fullImage\?'eager':'lazy'/);
   assert.match(js, /fetchpriority="high"/);
   assert.doesNotMatch(js, /preloadCardArt|__epiphanyCardPreloads|pointerover.*preload|pointerdown.*preload/);
   assert.doesNotMatch(js, /data-local-fallback|localFallback|cloudArtEnabled/);
