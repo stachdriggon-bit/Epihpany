@@ -55,3 +55,11 @@ test('World map control has a visible text label', () => {
   const app = read('app.js');
   assert.match(app, /class="world-home" data-world-regions aria-label="Open map" title="Open map">⌖ Map/);
 });
+
+test('profile Overview is placed before the collection in the initial profile layout', () => {
+  const cards = read('cards.js');
+  assert.match(cards, /Start the profile on its Overview instead of placing the collection first/);
+  assert.match(cards, /profileOverview\.before\(profileNav\)/);
+  assert.match(cards, /profileOverview\.after\(collectionHub\)/);
+  assert.match(cards, /href\)===?'#player-profile-title'/);
+});
