@@ -97,3 +97,51 @@ test('Evren canonical profile is bilingual and preserves his established identit
   assert.equal(card.rarity, 'Uncommon');
   assert.equal(card.image, 'idris.PNG', 'preserve the legacy portrait asset mapping');
 });
+
+
+test('Ilaris canonical profile records Reshaping, Magnitude, Epic rarity and reciprocal Evren relationship', () => {
+  const context = {window:{}};
+  vm.runInNewContext(read('data-cards.js'), context);
+  vm.runInNewContext(read('data-character-profiles.js'), context);
+  const profile = context.window.EPIPHANY_CARD_PROFILES['CHR-003'];
+  assert.ok(profile, 'Ilaris profile should exist');
+  assert.equal(profile.name.en, 'Ilaris');
+  assert.equal(profile.name.ar, 'إيلاريس');
+  assert.equal(profile.facts.find(f => f.label.en === 'Homeland').value.en, 'Eiraven · Ilmar');
+  assert.equal(profile.facts.find(f => f.label.en === 'Current residence').value.en, 'Avelorn · Orath');
+  const expected = ['overview','personality','motivation','abilities','limits','backstory','relationships','places','quote'];
+  assert.equal(profile.sections.map(section => section.id).join(','), expected.join(','));
+  for (const section of profile.sections) {
+    assert.ok(section.title.en && section.title.ar, section.id + ' needs bilingual titles');
+    const entries = Array.isArray(section.text) ? section.text : [section.text];
+    for (const entry of entries) {
+      const value = entry.text || entry;
+      assert.ok(value.en, section.id + ' needs English content');
+      assert.ok(value.ar, section.id + ' needs Arabic content');
+    }
+  }
+  const relationship = profile.sections.find(section => section.id === 'relationships');
+  assert.equal(relationship.text[0].characterId, 'CHR-002');
+  assert.ok(relationship.text[1].text.en.includes("when it was five"));
+  assert.ok(profile.sections.find(section => section.id === 'abilities').text.some(entry =>
+    entry.text.en.includes('Reshaping')
+  ));
+  assert.ok(profile.sections.find(section => section.id === 'limits').text.some(entry =>
+    entry.text.en.includes('Magnitude')
+  ));
+  const card = context.window.EPIPHANY_CARD_DATA.find(item => item.id === 'CHR-003');
+  assert.equal(card.rarity, 'Epic');
+  assert.equal(card.image, 'salma.PNG', 'preserve the existing portrait asset mapping');
+});
+
+test('Evren relationship now links reciprocally to Ilaris in Character Details', () => {
+  const context = {window:{}};
+  vm.runInNewContext(read('data-cards.js'), context);
+  vm.runInNewContext(read('data-character-profiles.js'), context);
+  const profile = context.window.EPIPHANY_CARD_PROFILES['CHR-002'];
+  const relationship = profile.sections.find(section => section.id === 'relationships');
+  assert.equal(relationship.text[0].characterId, 'CHR-003');
+  assert.equal(relationship.text[0].label.en, 'Ilaris');
+  assert.ok(relationship.text[1].text.en.includes('Aelora Energy'));
+  assert.match(read('cards.js'), /data-profile-character/);
+});
