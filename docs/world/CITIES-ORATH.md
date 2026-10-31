@@ -32,6 +32,7 @@
 | OR-CITY-04 | Ambrin / أمبرين | Inland-shore town shaped by a fluctuating lake | Name accepted; details provisional |
 | OR-CITY-05 | Dornwick / دورنويك | Dry-plateau caravan stop and metalworking center | Name accepted; details provisional |
 | OR-CITY-06 | Lethai / ليثاي | Eastern coastal harbor and ship-supply town | Name accepted; details provisional |
+| OR-CITY-07 | Avelorn / أفيلورن | Major cultural and scholarly city | Name accepted; broad region fixed; exact placement and details open |
 
 ## Candidate settlement list
 
@@ -108,6 +109,16 @@
 **Placement condition:** Requires a suitable coastline and sheltered landing. The coast, tides, and routes are not fixed; if the eventual map offers no fitting site, revise or discard the candidate.
 
 **Continuity note:** Lethai's role is ship supply and local harbor life. Do not automatically make it Orath's capital, oldest city, or dominant naval power.
+
+### OR-CITY-07 — Avelorn / أفيلورن
+
+**Working role:** A major cultural and scholarly city in Orath, known for learning, libraries, schools, and research institutions. It is intended to attract scholars and researchers from different parts of the continent and beyond.
+
+**Institutional note:** Avelorn is a real city with its own residents, economy, history, and civic life. The independent research-and-knowledge organization that employs Ilaris as an adviser is planned to have its headquarters and research facilities here; it is one prominent institution among others, not the city's sole purpose.
+
+**Placement:** Orath. The exact position within the continent, terrain, nearby waterways, routes, and distance from other settlements remain open. Do not assume it is the political capital.
+
+**Continuity note:** Avelorn is a new major-city candidate, distinct from the six existing Orath settlement records. Its name is approved; its history, population, economy, architecture, political status, and detailed geography have not yet been developed.
 
 ## Cross-city rules
 
