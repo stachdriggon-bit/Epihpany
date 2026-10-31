@@ -254,6 +254,13 @@ test('main navigation tabs open without uncaught page errors', async t => {
       }));
     });
     cardsPage.on('pageerror', error => errors.push('card portal: ' + error.message));
+    // Keep the gallery smoke test independent of external Supabase availability.
+    // It verifies that card image elements load and decode; cloud delivery is covered separately.
+    await cardsPage.route('https://pqxkmtowialpjwehvuyb.supabase.co/storage/v1/object/public/**', route => route.fulfill({
+      status: 200,
+      contentType: 'image/svg+xml',
+      body: '<svg xmlns="http://www.w3.org/2000/svg" width="2" height="2" viewBox="0 0 2 2"><rect width="2" height="2" fill="#777"/></svg>'
+    }));
     await cardsPage.goto(baseUrl, { waitUntil: 'domcontentloaded' });
     await dismissFirstVisitOverlays(cardsPage);
     await clickView(cardsPage, 'profile');
