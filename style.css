@@ -3902,3 +3902,17 @@ body[data-theme="dark"] .account-save-prompt{background:var(--surface);border-co
   .top-in>.tabs>.tab>svg{width:15px;height:15px}
   .top-in>.tabs{gap:3px}
 }
+
+
+/* Keep the first-visit level chooser clear of the fixed mobile header and safe area. */
+@media (max-width:900px){
+  .placement{
+    z-index:1100;
+    place-items:start center;
+    padding:calc(58px + env(safe-area-inset-top) + 14px) 14px calc(16px + env(safe-area-inset-bottom));
+  }
+  .placement-card{
+    max-height:calc(100dvh - 58px - env(safe-area-inset-top) - 30px - env(safe-area-inset-bottom));
+    width:min(640px,100%);
+  }
+}
