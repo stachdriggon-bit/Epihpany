@@ -72,12 +72,15 @@ test('World map control has a visible text label', () => {
   assert.match(app, /class="world-home" data-world-regions aria-label="Open map" title="Open map">⌖ Map/);
 });
 
-test('profile Overview is placed before the collection in the initial profile layout', () => {
+test('Collection is a standalone destination and Profile keeps its own overview', () => {
+  const html = read('index.html');
   const cards = read('cards.js');
-  assert.match(cards, /Start the profile on its Overview instead of placing the collection first/);
-  assert.match(cards, /profileOverview\.before\(profileNav\)/);
-  assert.match(cards, /profileOverview\.after\(collectionHub\)/);
-  assert.match(cards, /getAttribute\('href'\)==='#player-profile-title'/);
+  assert.match(html, /<section class="view" id="collection-view"/);
+  assert.match(html, /<section class="view" id="profile-view"/);
+  assert.match(html, /<button class="tab nav-collection" data-view="collection"/);
+  assert.doesNotMatch(html, /id="cards-hub"[^]*?id="profile-view"/);
+  assert.doesNotMatch(cards, /Start the profile on its Overview instead of placing the collection first/);
+  assert.doesNotMatch(cards, /profileOverview\.before\(profileNav\)/);
 });
 
 
