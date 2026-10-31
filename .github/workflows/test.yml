@@ -37,6 +37,7 @@ jobs:
           node --check service-worker.js
           node --check asset-manager.js
           node --check artwork-manager.js
+          node --check card-image-editor.js
           node --check account.js
           node --check navigation-enhancements.js
           node --check data.js
