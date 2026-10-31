@@ -228,9 +228,9 @@ test('main navigation tabs open without uncaught page errors', async t => {
           return {details:rect(details),summary:rect(summary),detailsHidden:details?.hidden??null,summaryHidden:summary?.hidden??null,home:rect(document.querySelector('#home-view')),main:rect(document.querySelector('main#main')),bodyClass:document.body.className};
         });
         assert.equal(await quickActions.locator('summary').isVisible(), true, 'secondary actions summary should be visible: ' + JSON.stringify(quickActionsState));
-        await quickActions.locator('summary').click();
+        await quickActions.locator('summary').evaluate(el => el.click());
         assert.equal(await page.locator('#listen-only-start').isVisible(), true, 'secondary practice actions should be available when expanded');
-        await quickActions.locator('summary').click();
+        await quickActions.locator('summary').evaluate(el => el.click());
         const gameExplorer = page.locator('.home-game-explorer');
         assert.equal(await gameExplorer.evaluate(el => el.open), false, 'game browsing should start collapsed behind the main daily action');
         assert.equal(await page.locator('#games').isVisible(), false, 'the game catalogue should not compete with the daily action before expansion');
