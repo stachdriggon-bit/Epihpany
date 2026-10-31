@@ -35,9 +35,16 @@
     });
     const mobileLabel = $('#mobile-current-section');
     if (mobileLabel) mobileLabel.textContent = labels[view] || view;
-    $$('.mobile-nav-group').forEach(group => {
-      group.open = !!$('[data-view="' + view + '"]', group);
+    const mobileGroups = $('.mobile-nav-group');
+    let activeMobileGroup = null;
+    mobileGroups.forEach(group => {
+      const containsCurrentView = !!$('[data-view="' + view + '"]', group);
+      group.open = containsCurrentView;
+      if (containsCurrentView) activeMobileGroup = group;
     });
+    // Home and transitional screens (for example, after onboarding) have no
+    // matching group. Keep the drawer useful instead of showing an empty panel.
+    if (!activeMobileGroup && mobileGroups.length) mobileGroups[0].open = true;
     const crumb = $('#navigation-breadcrumb');
     if (crumb) {
       crumb.hidden = view === 'home';
