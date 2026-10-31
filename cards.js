@@ -90,8 +90,8 @@
   const cardImageView = card => {
     const view = window.EPIPHANY_CARD_IMAGE_VIEWS?.[card.id];
     if (!view) return '';
-    const x = Math.max(0, Math.min(100, Number(view.position_x) || 50));
-    const y = Math.max(0, Math.min(100, Number(view.position_y) || 32));
+    const x = Math.max(0, Math.min(100, Number.isFinite(Number(view.position_x)) ? Number(view.position_x) : 50));
+    const y = Math.max(0, Math.min(100, Number.isFinite(Number(view.position_y)) ? Number(view.position_y) : 32));
     const zoom = Math.max(.5, Math.min(2, Number(view.zoom) || 1));
     const fit = view.fit === 'contain' ? 'contain' : 'cover';
     return ' style="--card-image-x:'+x+'%;--card-image-y:'+y+'%;--card-image-zoom:'+zoom+';--card-image-fit:'+fit+'"';
