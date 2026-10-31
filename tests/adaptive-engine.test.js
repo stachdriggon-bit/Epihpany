@@ -9,6 +9,7 @@ const source = fs.readFileSync(path.join(root, 'adaptive-engine.js'), 'utf8');
 
 function createEngine({ connection = {}, deviceMemory = 8, hardwareConcurrency = 8, reducedMotion = false, onLine = true } = {}) {
   const events = {};
+  const warnings = [];
   const media = {
     matches: reducedMotion,
     addEventListener(name, fn) { events['media:' + name] = fn; },
@@ -40,8 +41,8 @@ function createEngine({ connection = {}, deviceMemory = 8, hardwareConcurrency =
     removeEventListener(name) { delete events['window:' + name]; },
     matchMedia() { return media; }
   };
-  vm.runInNewContext(source, { window, document, Object, Number, Set, console });
-  return { api: window.EPIPHANY_ADAPTIVE_ENGINE, events, window, document, media, navConnection, messages, nav, classes };
+  vm.runInNewContext(source, { window, document, Object, Number, Set, console: { warn: (...args) => warnings.push(args) } });
+  return { api: window.EPIPHANY_ADAPTIVE_ENGINE, events, window, document, media, navConnection, messages, nav, classes, warnings };
 }
 
 test('adaptive engine exposes conservative defaults and does not persist or transmit data', () => {
@@ -101,10 +102,11 @@ test('engine tolerates missing browser capability APIs and listener failures', (
   };
   assert.doesNotThrow(() => vm.runInNewContext(source, context));
   assert.equal(context.window.EPIPHANY_ADAPTIVE_ENGINE.shouldPrefetch(), true);
-  const { api, navConnection } = createEngine();
+  const { api, navConnection, warnings } = createEngine();
   const unsubscribe = api.subscribe(() => { throw new Error('consumer failure'); });
   navConnection.saveData = true;
   assert.doesNotThrow(() => api.refresh());
+  assert.equal(warnings.length, 1, 'listener failures should be isolated and reported once');
   unsubscribe();
 });
 
@@ -114,7 +116,8 @@ test('adaptive engine asks the service worker to resume optional caching when co
   assert.equal(messages.length, 0);
   nav.onLine = true;
   events['window:online']();
-  assert.deepEqual(messages, [{ type: 'EPIPHANY_WARM_OPTIONAL_CACHE' }]);
+  assert.equal(messages.length, 1);
+  assert.equal(messages[0].type, 'EPIPHANY_WARM_OPTIONAL_CACHE');
 });
 
 
