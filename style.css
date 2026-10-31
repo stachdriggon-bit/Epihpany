@@ -1445,7 +1445,6 @@ body[data-theme="dark"] .avatar-choice { background:var(--surface); }
   .icon-btn,.ar-toggle{height:35px}
   .icon-btn{width:35px}
   .ar-toggle{width:35px;min-width:35px}
-  .dock{padding-left:6px;padding-right:6px}
 }
 
 
@@ -3149,7 +3148,7 @@ body[data-theme="dark"] .top{background:var(--ground,#111522)}
 @media(prefers-reduced-motion:reduce){.sheet{transition:none}}
 
 
-/* World immersive mobile mode: keep the game above the app dock so controls never leak through. */
+/* World immersive mobile mode: keep the game above the app interface so controls never leak through. */
 body.world-fullscreen{padding-bottom:0!important;overflow:hidden!important}
 body.world-fullscreen 
 body.world-fullscreen #world-game{z-index:10001;inset:0;width:100%;height:100%;height:100dvh;max-height:100dvh;overscroll-behavior:contain;touch-action:pan-y}
