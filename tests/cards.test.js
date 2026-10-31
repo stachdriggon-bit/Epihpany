@@ -44,7 +44,9 @@ test('card collection is a standalone view and cached offline', () => {
   assert.match(html, /data-cards\.js\?v=[^"&]+/);
   assert.match(html, /cards\.js\?v=[^"&]+/);
   assert.match(html, /cards\.css\?v=[^"&]+/);
-  assert.match(html, /chip-tokens-value/);
+  assert.doesNotMatch(html, /chip-tokens-value|cards-token-count/);
+  assert.match(html, /id="cards-summon-token-count"/);
+  assert.match(js, /cards-summon-token-count/);
   assert.match(sw, /\.\/data-cards\.js/);
   assert.match(sw, /\.\/cards\.js/);
   assert.match(sw, /\.\/cards\.css/);
