@@ -387,10 +387,16 @@
 
   /* ---------- rendering: header + home ---------- */
   function renderHeader() {
-    $('#chip-streak').textContent = liveStreak();
-    const homeStreak = $('#home-streak'); if (homeStreak) homeStreak.textContent = liveStreak();
-    $('#chip-xp').textContent = state.xp >= 10000 ? (state.xp / 1000).toFixed(state.xp >= 100000 ? 0 : 1).replace(/\.0$/, '') + 'k' : state.xp;$('#chip-xp').title = String(state.xp);
+    const streak = liveStreak();
+    const streakChip = $('#chip-streak'); if (streakChip) streakChip.textContent = streak;
+    const homeStreak = $('#home-streak'); if (homeStreak) homeStreak.textContent = streak;
+    const totalXp = Math.max(0, Number(state.xp) || 0);
+    const compactXp = totalXp >= 10000 ? (totalXp / 1000).toFixed(totalXp >= 100000 ? 0 : 1).replace(/\.0$/, '') + 'k' : String(totalXp);
+    const mobileXp = $('#mobile-home-xp'); if (mobileXp) mobileXp.textContent = compactXp;
+    if (mobileXp) mobileXp.title = totalXp.toLocaleString() + ' XP';
+    const profileXp = $('#player-profile-xp'); if (profileXp) profileXp.textContent = totalXp.toLocaleString();
   }
+  window.addEventListener('epiphany:progress-saved', renderHeader);
 
   function renderChallenges() {
     const today = new Date(), task = DAILY_QUESTS[(today.getDate() - 1) % DAILY_QUESTS.length];

@@ -199,9 +199,7 @@
     }).join('') : '<li class="cards-history-empty empty-state-guidance">Your discoveries and upgrades will appear here after your first card pull. <a class="empty-state-inline-link" href="#cards-daily-pull">Make your first discovery →</a></li>';
   };
   const updateCounts = () => {
-    const token = $('chip-tokens-value'), shelf = $('cards-token-count'), shards = $('cards-shard-count'), total = $('cards-owned-count'), daily = $('cards-daily-pull');
-    if (token) token.textContent = String(state.tokens);
-    if (shelf) shelf.textContent = String(state.tokens);
+    const shards = $('cards-shard-count'), total = $('cards-owned-count'), daily = $('cards-daily-pull');
     if (shards) shards.textContent = String(state.shards);
     setNumber($('cards-summon-token-count'), state.tokens);
     setNumber($('cards-summon-shard-count'), state.shards);

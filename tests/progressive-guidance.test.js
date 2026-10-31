@@ -59,7 +59,7 @@ test('the tour can be skipped, resumed, or completed and supports keyboard dismi
 
 test('guidance assets are included in the offline shell and cache version is refreshed', () => {
   const sw = read('service-worker.js');
-  assert.match(sw, /epiphany-shell-contextual-guidance/);
+  assert.match(sw, /epiphany-shell-contextual-guidance-help-center-wallet/);
   assert.match(sw, /'\.\/guidance\.js'/);
   assert.match(sw, /'\.\/guidance\.css'/);
 });
