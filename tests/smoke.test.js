@@ -82,7 +82,22 @@ test('main navigation tabs open without uncaught page errors', async t => {
     await firstVisitPage.locator('#game').waitFor({ state: 'visible', timeout: 5000 });
     assert.ok(await firstVisitPage.locator('#game-body .answer').count() >= 2, 'choosing a level should start a real learning activity');
     assert.equal(await firstVisitPage.locator('#account-welcome-modal').isVisible(), false, 'no account prompt should appear before the first activity is completed');
+    assert.equal(await firstVisitPage.locator('.account-save-prompt').count(), 0, 'the result invitation must not appear before an activity result');
     assert.equal(await firstVisitPage.evaluate(() => window.__epiphanyReadProgress().assessedLevel), 'B1', 'the approximate level choice should be saved');
+
+    for (let attempt = 0; attempt < 40; attempt++) {
+      const answers = firstVisitPage.locator('#game-body .answer');
+      if (!(await answers.count())) break;
+      await answers.first().click();
+      await firstVisitPage.locator('#go-next').waitFor({ state: 'visible', timeout: 3000 });
+      await firstVisitPage.locator('#go-next').click();
+    }
+    await firstVisitPage.locator('.account-save-prompt').waitFor({ state: 'visible', timeout: 7000 });
+    assert.equal(await firstVisitPage.locator('.result-actions').isVisible(), true, 'the invitation must not replace or cover the result actions');
+    await firstVisitPage.locator('[data-account-prompt-dismiss]').click();
+    assert.equal(await firstVisitPage.locator('.account-save-prompt').count(), 0, 'guest continuation should dismiss only the invitation');
+    assert.equal(await firstVisitPage.locator('.result-actions').isVisible(), true, 'the result must remain available after dismissing the invitation');
+    assert.equal(await firstVisitPage.evaluate(() => sessionStorage.getItem('epiphany-account-prompt-shown-v1')), '1', 'the invitation dismissal must be remembered for this session');
     await firstVisitPage.close();
 
     const views = ['home','stories','chronicle','resonance','world','arcade','summon','words','trophies','progress','profile'];
