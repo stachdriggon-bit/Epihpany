@@ -253,7 +253,11 @@ test('main navigation tabs open without uncaught page errors', async t => {
         cardLevels:{}, history:[], achievementRewards:{}, initialized:true
       }));
     });
+    const failedCardRequests = [];
     cardsPage.on('pageerror', error => errors.push('card portal: ' + error.message));
+    cardsPage.on('requestfailed', request => {
+      if (request.url().includes('supabase.co/storage/')) failedCardRequests.push({url:request.url(),failure:request.failure()?.errorText || 'unknown'});
+    });
     // Keep the gallery smoke test independent of external Supabase availability.
     // It verifies that card image elements load and decode; cloud delivery is covered separately.
     await cardsPage.route('https://pqxkmtowialpjwehvuyb.supabase.co/storage/v1/object/public/**', route => route.fulfill({
@@ -266,7 +270,21 @@ test('main navigation tabs open without uncaught page errors', async t => {
     await clickView(cardsPage, 'profile');
     await cardsPage.locator('#cards-gallery').scrollIntoViewIfNeeded();
     const galleryOpenedAt = await cardsPage.evaluate(() => performance.now());
-    await cardsPage.waitForFunction(() => [...document.querySelectorAll('#cards-gallery .fcard-portrait-image')].some(img => img.complete && img.naturalWidth > 0), null, {timeout:10000});
+    await cardsPage.waitForFunction(() => [...document.querySelectorAll('#cards-gallery .fcard-portrait-image')].some(img => img.complete && img.naturalWidth > 0), null, {timeout:10000}).catch(async error => {
+      const diagnostics = await cardsPage.evaluate(() => ({
+        configUrl: window.EPIPHANY_SUPABASE_CONFIG?.url || null,
+        galleryVisible: !!document.querySelector('#cards-gallery')?.getClientRects().length,
+        images: [...document.querySelectorAll('#cards-gallery .fcard-portrait-image')].slice(0,8).map(img => ({
+          id: img.dataset.cardImageId,
+          src: img.getAttribute('src'),
+          currentSrc: img.currentSrc,
+          complete: img.complete,
+          naturalWidth: img.naturalWidth,
+          loading: img.loading
+        }))
+      }));
+      throw new Error('Card gallery images did not load: ' + JSON.stringify({diagnostics,failedCardRequests,consoleErrors, pageErrors:errors}) + '; ' + error.message);
+    });
     const galleryMetrics = await cardsPage.evaluate(async started => {
       const images=[...document.querySelectorAll('#cards-gallery .fcard-portrait-image')];
       const first=images.find(img=>img.complete&&img.naturalWidth>0);
