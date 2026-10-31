@@ -69,6 +69,8 @@ test('initial HTML defers stories and World data and keeps loader in offline she
   assert.doesNotMatch(html, /<script[^>]+src="data-stories\.js/);
   assert.doesNotMatch(html, /<script[^>]+src="data-world(?:-sprites)?\.js/);
   assert.match(html, /lazy-data\.js\?v=[^\"&]+/);
+  assert.doesNotMatch(html, /href=\"(?:resonance|life-skills)\.css/);
+  assert.match(fs.readFileSync(path.join(root, 'lazy-data.js'), 'utf8'), /EPIPHANY_LAZY_STYLE/);
   assert.doesNotMatch(html, /<script[^>]+src="data-translation-ar\.js/);
   assert.doesNotMatch(html, /<script[^>]+src="(?:think-lab|practice-lab|life-skills)\.js/);
   assert.match(sw, /'\.\/lazy-data\.js'/);
