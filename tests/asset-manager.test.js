@@ -10,11 +10,11 @@ test('Asset Manager files are deferred until developer mode and cached for offli
   const html = read('index.html');
   const developerMode = read('developer-mode.js');
   const sw = read('service-worker.js');
-  assert.doesNotMatch(html, /asset-manager\\.js|asset-manager\\.css/);
-  assert.match(developerMode, /asset-manager\\.js/);
-  assert.match(developerMode, /asset-manager\\.css/);
-  assert.match(sw, /['"]\\.\\/asset-manager\\.js['"]/);
-  assert.match(sw, /['"]\\.\\/asset-manager\\.css['"]/);
+  assert.doesNotMatch(html, /asset-manager\.js|asset-manager\.css/);
+  assert.match(developerMode, /asset-manager\.js/);
+  assert.match(developerMode, /asset-manager\.css/);
+  assert.match(sw, /['"]\.\/asset-manager\.js['"]/);
+  assert.match(sw, /['"]\.\/asset-manager\.css['"]/);
 });
 test('new image uploads are restricted to common formats and private staging', () => {
   const manager = read('asset-manager.js');
