@@ -286,19 +286,23 @@ test('character codex fixes mobile overlap, name-first layout, language, and ind
 test('mobile navigation, toast and settings controls reserve safe space and usable touch targets', () => {
   const css = read('style.css');
   const app = read('app.js');
-  assert.match(css, /max-height:calc\(100dvh - 58px - 94px - env\(safe-area-inset-top\) - env\(safe-area-inset-bottom\)\)/);
-  assert.match(css, /\.bottom-nav\{z-index:40\}/);
+  // The mobile drawer now uses the available viewport; no bottom bar needs reserving space.
+  assert.match(css, /\.mobile-menu nav\{[^}]*max-height:none/);
+  assert.match(css, /\.mobile-menu-backdrop\{[^}]*z-index:1000/);
+  assert.match(css, /\.mobile-menu nav\{[^}]*z-index:1001/);
+  assert.match(css, /\.mobile-menu>summary\{width:44px;height:44px\}/);
   assert.match(css, /\.top\{z-index:90\}/);
   assert.match(css, /width:20px;height:20px;min-width:20px;min-height:20px/);
   assert.match(css, /navigation-breadcrumb \.breadcrumb-link,[\s\S]{0,100}min-height:44px/);
+  assert.match(css, /bottom:calc\(28px \+ env\(safe-area-inset-bottom\)\)/);
   assert.match(css, /max-width:min\(280px,calc\(100vw - 32px\)\)/);
   assert.match(app, /Level check skipped · starting at A1\./);
 });
 
 
-test('mobile story vocabulary card clears the fixed quick-navigation bar', () => {
+test('mobile story vocabulary card stays within the reading flow without reserving bottom-bar space', () => {
   const css = read('style.css');
-  assert.match(css, /\.story-word-card\{position:fixed;left:10px;right:10px;bottom:calc\(84px \+ env\(safe-area-inset-bottom\)\);max-height:min\(55dvh,calc\(100dvh - 150px - env\(safe-area-inset-bottom\)\)\);overflow:auto;z-index:45\}/);
+  assert.match(css, /\.story-word-card\{position:sticky;bottom:10px;z-index:3/);
 });
 
 
