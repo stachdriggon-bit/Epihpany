@@ -39,10 +39,8 @@
       (Number.isFinite(downlink) && downlink > 0 && downlink < 0.8) ||
       (Number.isFinite(rtt) && rtt >= 800);
     const memory = Number(nav.deviceMemory);
-    const cores = Number(nav.hardwareConcurrency);
     const lowResources =
-      (Number.isFinite(memory) && memory > 0 && memory <= 2) ||
-      (Number.isFinite(cores) && cores > 0 && cores <= 2);
+      (Number.isFinite(memory) && memory > 0 && memory <= 2);
 
     return Object.freeze({
       online: nav.onLine !== false,
