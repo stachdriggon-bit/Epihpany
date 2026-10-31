@@ -166,7 +166,7 @@ test('main navigation tabs open without uncaught page errors', async t => {
         assert.equal(await mobileGroups.locator('.mobile-nav-label').count(), await mobileGroups.count(), 'every mobile navigation group should have a visible purpose label');
         const groupedDestinations = mobileGroups.locator('button[data-view]');
         assert.equal(await groupedDestinations.count(), await groupedDestinations.evaluateAll(buttons => new Set(buttons.map(button => button.dataset.view)).size), 'each destination should appear in only one purpose group');
-        assert.equal(await page.locator('.mobile-menu nav [data-view]').count(), 14, 'all destinations, including World Archive, should remain available in the mobile menu');
+        assert.equal(await page.locator('.mobile-menu nav [data-view]').count(), 15, 'all destinations, including World Archive, should remain available in the mobile menu');
         const quickActions = page.locator('.quick-actions-more');
         assert.equal(await quickActions.evaluate(el => el.open), false, 'secondary practice options should start collapsed');
         assert.equal(await page.locator('#listen-only-start').isVisible(), false, 'collapsed secondary actions should not clutter the home screen');
