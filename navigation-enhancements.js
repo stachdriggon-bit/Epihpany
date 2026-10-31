@@ -5,7 +5,7 @@
   const $ = (s, root = document) => root.querySelector(s);
   const $$ = (s, root = document) => [...root.querySelectorAll(s)];
   const labels = {
-    home: 'Start learning', stories: 'Stories', chronicle: 'World Archive', resonance: 'The Resonance', summon: 'Card Portal', arcade: 'Arcade', thinklab: 'Think Lab',
+    home: 'Home', stories: 'Stories', chronicle: 'Codex', resonance: 'The Resonance', summon: 'Card Portal', arcade: 'Arcade', thinklab: 'Think Lab',
     world: 'World', lifeskills: 'Life Skills', words: 'Words', mytools: 'My Tools',
     trophies: 'Trophies', progress: 'Progress', profile: 'Profile'
   };
@@ -24,7 +24,7 @@
       if (active) button.setAttribute('aria-current', 'page');
       else button.removeAttribute('aria-current');
     });
-    $$('.nav-group').forEach(group => {
+    $('.nav-group, .mobile-nav-group').forEach(group => {
       const activeChild = $('[data-view="' + view + '"]', group);
       group.classList.toggle('has-active-view', !!activeChild);
       const summary = $('summary', group);
@@ -35,6 +35,9 @@
     });
     const mobileLabel = $('#mobile-current-section');
     if (mobileLabel) mobileLabel.textContent = labels[view] || view;
+    $('.mobile-nav-group').forEach(group => {
+      group.open = !!$('[data-view="' + view + '"]', group);
+    });
     const crumb = $('#navigation-breadcrumb');
     if (crumb) {
       crumb.hidden = view === 'home';
@@ -48,8 +51,10 @@
     }
   }
   function closeMenus(except) {
-    $$('.nav-group[open], .mobile-menu[open], .tools-menu[open]').forEach(menu => {
-      if (menu !== except) menu.open = false;
+    $('.nav-group[open], .mobile-nav-group[open], .mobile-menu[open], .tools-menu[open]').forEach(menu => {
+      if (menu === except) return;
+      if (except && menu.classList.contains('mobile-menu') && except.closest('.mobile-menu') === menu) return;
+      menu.open = false;
     });
   }
   function navigate(view, options = {}) {
@@ -125,7 +130,7 @@
     if (summary && !$('#mobile-current-section')) {
       const label = document.createElement('small');
       label.id = 'mobile-current-section'; label.className = 'mobile-current-section';
-      label.textContent = labels[currentView()] || 'Start learning';
+      label.textContent = labels[currentView()] || 'Home';
       label.setAttribute('aria-live', 'polite');
       summary.append(label);
       summary.setAttribute('aria-label', 'Open navigation menu');
@@ -240,7 +245,7 @@
 
   function setupDropdowns() {
     const desktop = () => window.matchMedia('(min-width: 901px)').matches;
-    $$('.nav-group').forEach(group => {
+    $('.nav-group').forEach(group => {
       group.addEventListener('mouseenter', () => { if (desktop()) { closeMenus(group); group.open = true; } });
       group.addEventListener('mouseleave', () => { if (desktop()) group.open = false; });
       const summary = $('summary', group);
@@ -255,7 +260,7 @@
       const mobile = $('.mobile-menu');
       if (mobile && mobile.open && event.target.closest('.mobile-menu-backdrop')) { mobile.open = false; return; }
       if (!event.target.closest('.nav-group, .mobile-menu, .tools-menu')) closeMenus();
-      if (mobile && mobile.open && event.target.closest('.mobile-menu nav [data-view]')) mobile.open = false;
+      if (mobile && mobile.open && event.target.closest('.mobile-menu nav [data-view]')) { mobile.open = false; $('.mobile-nav-group[open]', mobile).forEach(group => { group.open = false; }); }
     });
     document.addEventListener('keydown', event => {
       if (event.key !== 'Escape') return;
@@ -276,7 +281,15 @@
         const closeNotifications = $('#notification-close');
         if (closeNotifications) { event.preventDefault(); closeNotifications.click(); return; }
       }
-      const opened = $('.nav-group[open], .mobile-menu[open], .tools-menu[open]');
+      const mobileDrawer = $('.mobile-menu[open]');
+      if (mobileDrawer) {
+        closeMenus();
+        mobileDrawer.open = false;
+        $('summary', mobileDrawer)?.focus({ preventScroll: true });
+        event.preventDefault();
+        return;
+      }
+      const opened = $('.nav-group[open], .mobile-nav-group[open], .tools-menu[open]');
       closeMenus();
       if (opened) $('summary', opened)?.focus({ preventScroll: true });
     });
