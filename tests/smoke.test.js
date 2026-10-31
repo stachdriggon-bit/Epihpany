@@ -355,10 +355,10 @@ test('main navigation tabs open without uncaught page errors', async t => {
     const mobileMenuTrigger = mobileMenu.locator(':scope > summary');
     await mobileMenuTrigger.click();
     assert.equal(await mobileMenu.evaluate(el => el.open), true, 'the mobile drawer should open from its menu button');
-    const learnGroup = cardsPage.locator('.mobile-nav-group').filter({hasText:'LEARN'}).first();
-    await learnGroup.locator(':scope > summary').click();
+    const playGroup = cardsPage.locator('.mobile-nav-group').filter({hasText:'PLAY'}).first();
+    await playGroup.locator(':scope > summary').click();
     assert.equal(await mobileMenu.evaluate(el => el.open), true, 'opening a group inside the drawer must not close the drawer');
-    assert.equal(await learnGroup.evaluate(el => el.open), true, 'the selected mobile group should expand');
+    assert.equal(await playGroup.evaluate(el => el.open), true, 'the selected mobile group should expand');
     await cardsPage.keyboard.press('Escape');
     assert.equal(await mobileMenu.evaluate(el => el.open), false, 'Escape should close the entire mobile drawer');
     assert.equal(await mobileMenuTrigger.evaluate(el => document.activeElement === el), true, 'Escape should restore focus to the menu button');
