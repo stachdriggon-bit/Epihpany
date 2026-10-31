@@ -32,8 +32,9 @@ test('Mira and Mirelle keep distinct approved cloud portrait object names', () =
   assert.notEqual(mira.image, mirelle.image, 'Mira and Mirelle must not accidentally share a portrait file');
 });
 
-test('card prototype is linked from profile and cached offline', () => {
+test('card collection is a standalone view and cached offline', () => {
   const html = read('index.html');
+  const js = read('cards.js');
   const sw = read('service-worker.js');
   assert.match(html, /id="cards-hub"/);
   assert.match(html, /data-view="collection"/);
