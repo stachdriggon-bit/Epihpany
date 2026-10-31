@@ -78,7 +78,11 @@ test('Collection is a standalone destination and Profile keeps its own overview'
   assert.match(html, /<section class="view" id="collection-view"/);
   assert.match(html, /<section class="view" id="profile-view"/);
   assert.match(html, /<button class="tab nav-collection" data-view="collection"/);
-  assert.doesNotMatch(html, /id="cards-hub"[^]*?id="profile-view"/);
+  const collectionStart = html.indexOf('id="collection-view"');
+  const collectionContent = html.indexOf('id="cards-hub"', collectionStart);
+  const profileStart = html.indexOf('id="profile-view"');
+  assert.ok(collectionStart >= 0 && collectionContent > collectionStart && profileStart > collectionContent,
+    'the card gallery should live in its own view before Profile');
   assert.doesNotMatch(cards, /Start the profile on its Overview instead of placing the collection first/);
   assert.doesNotMatch(cards, /profileOverview\.before\(profileNav\)/);
 });
