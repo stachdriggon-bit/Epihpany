@@ -7,7 +7,7 @@ const read = file => fs.readFileSync(path.join(root, file), 'utf8');
 
 test('Artwork Manager is deferred until developer mode and cached for offline use', () => {
   const html=read('index.html'),developerMode=read('developer-mode.js'),sw=read('service-worker.js');
-  assert.doesNotMatch(html,/artwork-manager\\.js|artwork-manager\\.css/);
+  assert.ok(!html.includes('artwork-manager.js') && !html.includes('artwork-manager.css'));
   assert.match(developerMode,/artwork-manager\.js/);
   assert.match(developerMode,/artwork-manager\.css/);
   assert.ok(sw.includes("'./artwork-manager.js'") || sw.includes('"./artwork-manager.js"'));
