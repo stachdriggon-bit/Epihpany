@@ -3895,3 +3895,13 @@ html.ep-adaptive-lite *::after {
   .top-right>#sound-toggle{display:none}
   .tools-panel .ar-toggle.tools-action{height:auto;min-height:44px;min-width:0;justify-content:flex-start;border-radius:10px;padding:11px 12px;text-align:left}
 }
+
+
+/* First-session level choice */
+.level-choice-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:10px 0 14px}
+.level-choice{display:grid;gap:5px;min-width:0;min-height:94px;padding:14px 15px;border:1.5px solid var(--line);border-radius:16px;background:var(--surface);color:var(--ink);text-align:left;cursor:pointer;transition:border-color .16s,background .16s,transform .16s}
+.level-choice:hover,.level-choice:focus-visible{border-color:var(--focus);background:var(--violet-soft);transform:translateY(-1px)}
+.level-choice strong{font-size:16px}.level-choice span{font-size:13px;line-height:1.4;color:var(--ink-2)}
+.level-choice-unsure{width:100%;min-height:46px;border:1px dashed var(--line-2);border-radius:13px;background:transparent;color:var(--ink-2);font:700 14px inherit;cursor:pointer}
+.level-choice-unsure:hover{border-color:var(--focus);color:var(--ink)}
+@media(max-width:480px){.level-choice-grid{grid-template-columns:1fr;gap:8px}.level-choice{min-height:76px;padding:12px 14px}}
