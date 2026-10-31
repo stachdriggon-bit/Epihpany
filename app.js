@@ -5610,7 +5610,13 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
   function maybeStartVisitorJourney(){
     if(HAD_SAVED_PROGRESS_AT_LOAD || state.placementDone)return;
     if(helpLanguageModal && !helpLanguageChoice && !hasExistingProgress)return;
-    showLevelChoice();
+    const begin=()=>{
+      if(HAD_SAVED_PROGRESS_AT_LOAD || hasExistingProgress || state.placementDone)return;
+      showLevelChoice();
+    };
+    const auth=window.EpiphanyAuth;
+    if(auth&&typeof auth.whenReady==='function')auth.whenReady().then(begin).catch(begin);
+    else begin();
   }
   window.__epiphanyStartOnboarding=maybeStartVisitorJourney;
   function showPlacement(){
