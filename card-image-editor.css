@@ -9,7 +9,7 @@
 .card-image-editor-workspace{display:grid;grid-template-columns:minmax(220px,.8fr) minmax(240px,1.2fr);gap:18px;align-items:center}
 .card-image-editor-preview-wrap{display:grid;gap:8px;justify-items:center}
 .card-image-editor-preview-label{font-size:.8rem;font-weight:800;color:var(--ink-2)}
-.card-image-editor-stage{position:relative;width:min(100%,300px);aspect-ratio:4/5;border:2px solid var(--line);border-radius:20px;overflow:hidden;background:radial-gradient(circle at 50% 35%,#5c557e,#151528 78%);cursor:grab;touch-action:none;box-shadow:0 12px 30px #1112}
+.card-image-editor-stage{position:relative;width:min(100%,360px);aspect-ratio:5/4;border:2px solid var(--line);border-radius:32% 32% 12px 12px;overflow:hidden;background:radial-gradient(circle at 50% 35%,#5c557e,#151528 78%);cursor:grab;touch-action:none;box-shadow:0 12px 30px #1112}
 .card-image-editor-stage:active{cursor:grabbing}
 .card-image-editor-stage img{position:absolute;inset:0;width:100%;height:100%;object-position:50% 32%;object-fit:cover;user-select:none;-webkit-user-drag:none;pointer-events:none}
 .card-image-editor-stage img[hidden]{display:none}
