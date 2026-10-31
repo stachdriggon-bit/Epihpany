@@ -42,6 +42,8 @@ jobs:
           node --check data.js
           node --check data-expansion.js
           node --check think-lab.js
+      - name: Stamp generated asset versions
+        run: npm run stamp
       - name: Run unit, static, and browser smoke tests
         run: npm test
       - name: Upload card dossier visual verification screenshots
