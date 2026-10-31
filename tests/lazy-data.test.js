@@ -406,3 +406,103 @@ test('background optional loads pause while constrained, resume once, and never 
   scripts[3].onload();
   await explicit;
 });
+
+
+test('failed optional assets recover when the page becomes usable and clear after success', async () => {
+  const requested = [];
+  const scripts = [];
+  const listeners = {};
+  const subscribers = [];
+  const document = {
+    visibilityState: 'visible',
+    addEventListener(name, fn) { listeners['document:' + name] = fn; },
+    createElement() {
+      const script = { src: '', async: true, removed: false, remove() { this.removed = true; } };
+      scripts.push(script);
+      return script;
+    },
+    head: { appendChild(script) { requested.push(script.src); } }
+  };
+  const policy = { allowSpeculativePreload: true, deferNonEssentialWork: false, maxConcurrentOptionalLoads: 1 };
+  const window = {
+    EPIPHANY_ADAPTIVE_ENGINE: {
+      getPolicy: () => policy,
+      subscribe(fn) { subscribers.push(fn); return () => {}; }
+    },
+    navigator: { onLine: true },
+    addEventListener(name, fn) { listeners['window:' + name] = fn; }
+  };
+  const context = vm.createContext({ window, document, Promise, Map, Set, Object, Error });
+  vm.runInContext(fs.readFileSync(path.join(root, 'lazy-data.js'), 'utf8'), context);
+
+  const firstAttempt = context.window.EPIPHANY_LAZY_LOAD('stories');
+  await new Promise(resolve => setImmediate(resolve));
+  scripts[0].onerror();
+  await assert.rejects(firstAttempt, /Unable to load feature data: data-stories\.js/);
+
+  // A repeated recovery signal while hidden must not start network work.
+  document.visibilityState = 'hidden';
+  listeners['window:online']();
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(requested.length, 1);
+
+  document.visibilityState = 'visible';
+  listeners['document:visibilitychange']();
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(requested.length, 2, 'visibility recovery should retry the failed optional script');
+  scripts[1].onload();
+  await new Promise(resolve => setImmediate(resolve));
+
+  listeners['window:online']();
+  subscribers.forEach(fn => fn());
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(requested.length, 2, 'a successful recovery must clear the failed-asset record');
+});
+
+test('optional asset recovery is deduplicated and stops after two recovery attempts', async () => {
+  const requested = [];
+  const scripts = [];
+  const listeners = {};
+  const document = {
+    visibilityState: 'visible',
+    addEventListener(name, fn) { listeners['document:' + name] = fn; },
+    createElement() {
+      const script = { src: '', async: true, remove() {} };
+      scripts.push(script);
+      return script;
+    },
+    head: { appendChild(script) { requested.push(script.src); } }
+  };
+  const window = {
+    EPIPHANY_ADAPTIVE_ENGINE: { getPolicy: () => ({
+      allowSpeculativePreload: true, deferNonEssentialWork: false, maxConcurrentOptionalLoads: 1
+    }) },
+    navigator: { onLine: true },
+    addEventListener(name, fn) { listeners['window:' + name] = fn; }
+  };
+  const context = vm.createContext({ window, document, Promise, Map, Set, Object, Error });
+  vm.runInContext(fs.readFileSync(path.join(root, 'lazy-data.js'), 'utf8'), context);
+
+  const firstAttempt = context.window.EPIPHANY_LAZY_LOAD('world');
+  await new Promise(resolve => setImmediate(resolve));
+  scripts[0].onerror();
+  await assert.rejects(firstAttempt, /Unable to load feature data/);
+
+  listeners['window:online']();
+  listeners['document:visibilitychange']();
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(requested.length, 2, 'multiple recovery signals should share one retry');
+  scripts[1].onerror();
+  await new Promise(resolve => setImmediate(resolve));
+
+  listeners['window:online']();
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(requested.length, 3, 'one further recovery attempt should be allowed');
+  scripts[2].onerror();
+  await new Promise(resolve => setImmediate(resolve));
+
+  listeners['window:online']();
+  listeners['document:visibilitychange']();
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(requested.length, 3, 'recovery must stop after the bounded retry budget');
+});

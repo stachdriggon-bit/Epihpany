@@ -49,6 +49,36 @@
       !(window.navigator && window.navigator.onLine === false);
   }
 
+  // Remember failed optional assets so a later meaningful recovery event can retry them.
+  // Retries are bounded and continue to use the normal optional-load scheduler.
+  const failedOptionalLoads = new Map();
+  const recoveringOptionalLoads = new Set();
+  const MAX_OPTIONAL_RECOVERY_ATTEMPTS = 2;
+
+  function rememberFailedOptionalLoad(key, retry) {
+    const previous = failedOptionalLoads.get(key);
+    failedOptionalLoads.set(key, {
+      attempts: previous ? previous.attempts : 0,
+      retry
+    });
+  }
+
+  function clearFailedOptionalLoad(key) {
+    failedOptionalLoads.delete(key);
+  }
+
+  function recoverFailedOptionalLoads() {
+    if (!optionalWorkAllowed()) return;
+    failedOptionalLoads.forEach((entry, key) => {
+      if (entry.attempts >= MAX_OPTIONAL_RECOVERY_ATTEMPTS || recoveringOptionalLoads.has(key)) return;
+      entry.attempts++;
+      recoveringOptionalLoads.add(key);
+      Promise.resolve().then(entry.retry).catch(() => {}).finally(() => {
+        recoveringOptionalLoads.delete(key);
+      });
+    });
+  }
+
   function pumpOptionalQueue() {
     // Keep speculative/background work queued while the page or device is constrained.
     // Explicit user-priority requests bypass this gate in runWithPriority().
@@ -96,7 +126,12 @@
         reject(new Error('Unable to load feature styles: ' + href.split('?')[0]));
       };
       document.head.appendChild(link);
-    }), href).finally(() => loadingStyles.delete(href));
+    }), href).then(() => {
+      clearFailedOptionalLoad('style:' + href);
+    }, error => {
+      rememberFailedOptionalLoad('style:' + href, () => loadStyle(href, 'optional'));
+      throw error;
+    }).finally(() => loadingStyles.delete(href));
     loadingStyles.set(href, promise);
     return promise;
   }
@@ -193,12 +228,16 @@
     document.addEventListener('focusin', handleNavigationIntent);
     document.addEventListener('visibilitychange', () => {
       if (document.visibilityState === 'hidden') cancelScheduledPrefetch();
-      else if (lastIntentGroup) schedulePrefetch(lastIntentGroup);
+      else {
+        recoverFailedOptionalLoads();
+        if (lastIntentGroup) schedulePrefetch(lastIntentGroup);
+      }
     });
   }
   if (window && typeof window.addEventListener === 'function') {
     window.addEventListener('offline', cancelScheduledPrefetch);
     window.addEventListener('online', () => {
+      recoverFailedOptionalLoads();
       if (lastIntentGroup) schedulePrefetch(lastIntentGroup);
     });
   }
@@ -226,7 +265,12 @@
         reject(new Error('Unable to load feature data: ' + src.split('?')[0]));
       };
       document.head.appendChild(script);
-    }), src).finally(() => loadingScripts.delete(src));
+    }), src).then(() => {
+      clearFailedOptionalLoad('script:' + src);
+    }, error => {
+      rememberFailedOptionalLoad('script:' + src, () => loadScript(src, 'optional'));
+      throw error;
+    }).finally(() => loadingScripts.delete(src));
     loadingScripts.set(src, promise);
     return promise;
   }
@@ -263,6 +307,7 @@
         return;
       }
       pumpOptionalQueue();
+      recoverFailedOptionalLoads();
       if (lastIntentGroup) schedulePrefetch(lastIntentGroup);
     });
   } catch {}
