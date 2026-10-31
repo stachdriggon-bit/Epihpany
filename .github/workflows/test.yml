@@ -35,6 +35,7 @@ jobs:
           node --check data-cards.js
           node --check data-character-profiles.js
           node --check service-worker.js
+          node --check adaptive-engine.js
           node --check asset-manager.js
           node --check artwork-manager.js
           node --check card-image-editor.js
