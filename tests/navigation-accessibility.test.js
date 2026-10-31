@@ -79,3 +79,16 @@ test('profile Overview is placed before the collection in the initial profile la
   assert.match(cards, /profileOverview\.after\(collectionHub\)/);
   assert.match(cards, /getAttribute\('href'\)==='#player-profile-title'/);
 });
+
+
+test('compact header moves Help and Sound access into app settings', () => {
+  const html = read('index.html');
+  const css = read('style.css');
+  const nav = read('navigation-enhancements.js');
+  assert.match(html, /id="sound-toggle-mobile"/);
+  assert.match(html, /id="ar-toggle"/);
+  assert.match(nav, /function setupResponsiveHeaderTools/);
+  assert.match(nav, /matchMedia\('\(max-width: 1180px\)'\)/);
+  assert.match(nav, /setupResponsiveHeaderTools\(\)/);
+  assert.match(css, /@media \(max-width:1180px\)\{\s*\.top-right>#sound-toggle\{display:none\}/);
+});
