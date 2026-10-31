@@ -18,3 +18,12 @@ test('card image framing is applied to character portrait markup without changin
   assert.match(css,/object-fit:var\(--card-image-fit,cover\)/);
   assert.match(css,/--card-image-zoom/);
 });
+
+test('shared card image framing is public-readable and developer-write protected',()=>{
+  const migration=read('supabase-card-image-views.sql'),account=read('account.js');
+  assert.match(migration,/enable row level security/i);
+  assert.match(migration,/for select to anon, authenticated/i);
+  assert.match(migration,/Developers can insert card image views/);
+  assert.match(migration,/Developers can update card image views/);
+  assert.match(account,/loadCardImageViews/);
+});
