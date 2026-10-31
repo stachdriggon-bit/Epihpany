@@ -189,3 +189,51 @@ test('feature styles load only when requested', async () => {
   links[1].onload();
   await life;
 });
+
+
+test('navigation intent prefetches optional sections only when the adaptive policy allows it', async () => {
+  const requested = [];
+  const scripts = [];
+  const listeners = {};
+  const timers = [];
+  const document = {
+    visibilityState: 'visible',
+    addEventListener(name, fn) { listeners['document:' + name] = fn; },
+    createElement(tag) {
+      const script = { src: '', async: true, remove() {} };
+      scripts.push(script);
+      return script;
+    },
+    head: { appendChild(script) { requested.push(script.src); } }
+  };
+  const engine = { getPolicy: () => ({
+    allowSpeculativePreload: true, deferNonEssentialWork: false
+  }) };
+  const window = {
+    EPIPHANY_ADAPTIVE_ENGINE: engine,
+    navigator: { onLine: true },
+    addEventListener(name, fn) { listeners['window:' + name] = fn; },
+    setTimeout(fn) { timers.push(fn); return timers.length; },
+    clearTimeout() {}
+  };
+  const context = vm.createContext({ window, document, Promise, Map, Set, Object, Error });
+  vm.runInContext(fs.readFileSync(path.join(root, 'lazy-data.js'), 'utf8'), context);
+  const target = { getAttribute: () => 'stories' };
+  listeners['document:pointerover']({ type: 'pointerover', pointerType: 'mouse', target: { closest: () => target } });
+  assert.equal(requested.length, 0, 'speculative work should wait for the short idle delay');
+  timers.shift()();
+  await new Promise(resolve => setImmediate(resolve));
+  assert.match(requested[0], /^data-stories\.js\?/);
+  scripts[0].onload();
+  await new Promise(resolve => setImmediate(resolve));
+  scripts[1].onload();
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(requested.length, 2);
+
+  const constrained = { ...engine, getPolicy: () => ({
+    allowSpeculativePreload: false, deferNonEssentialWork: true
+  }) };
+  window.EPIPHANY_ADAPTIVE_ENGINE = constrained;
+  listeners['document:pointerover']({ type: 'pointerover', pointerType: 'mouse', target: { closest: () => ({ getAttribute: () => 'world' }) } });
+  assert.equal(requested.length, 2, 'constrained devices must not prefetch optional sections');
+});

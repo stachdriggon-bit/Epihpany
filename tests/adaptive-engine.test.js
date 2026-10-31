@@ -9,6 +9,7 @@ const source = fs.readFileSync(path.join(root, 'adaptive-engine.js'), 'utf8');
 
 function createEngine({ connection = {}, deviceMemory = 8, hardwareConcurrency = 8, reducedMotion = false, onLine = true } = {}) {
   const events = {};
+  const warnings = [];
   const media = {
     matches: reducedMotion,
     addEventListener(name, fn) { events['media:' + name] = fn; },
@@ -19,8 +20,17 @@ function createEngine({ connection = {}, deviceMemory = 8, hardwareConcurrency =
     addEventListener(name, fn) { events['connection:' + name] = fn; },
     removeEventListener(name) { delete events['connection:' + name]; }
   };
-  const nav = { connection: navConnection, deviceMemory, hardwareConcurrency, onLine };
+  const messages = [];
+  const nav = {
+    connection: navConnection, deviceMemory, hardwareConcurrency, onLine,
+    serviceWorker: { controller: { postMessage(message) { messages.push(message); } } }
+  };
+  const classes = new Set();
   const document = {
+    documentElement: { classList: {
+      toggle(name, enabled) { if (enabled) classes.add(name); else classes.delete(name); },
+      contains(name) { return classes.has(name); }
+    } },
     visibilityState: 'visible',
     addEventListener(name, fn) { events['document:' + name] = fn; },
     removeEventListener(name) { delete events['document:' + name]; }
@@ -31,8 +41,8 @@ function createEngine({ connection = {}, deviceMemory = 8, hardwareConcurrency =
     removeEventListener(name) { delete events['window:' + name]; },
     matchMedia() { return media; }
   };
-  vm.runInNewContext(source, { window, document, Object, Number, Set, console });
-  return { api: window.EPIPHANY_ADAPTIVE_ENGINE, events, window, document, media, navConnection };
+  vm.runInNewContext(source, { window, document, Object, Number, Set, console: { warn: (...args) => warnings.push(args) } });
+  return { api: window.EPIPHANY_ADAPTIVE_ENGINE, events, window, document, media, navConnection, messages, nav, classes, warnings };
 }
 
 test('adaptive engine exposes conservative defaults and does not persist or transmit data', () => {
@@ -92,9 +102,33 @@ test('engine tolerates missing browser capability APIs and listener failures', (
   };
   assert.doesNotThrow(() => vm.runInNewContext(source, context));
   assert.equal(context.window.EPIPHANY_ADAPTIVE_ENGINE.shouldPrefetch(), true);
-  const { api, navConnection } = createEngine();
+  const { api, navConnection, warnings } = createEngine();
   const unsubscribe = api.subscribe(() => { throw new Error('consumer failure'); });
   navConnection.saveData = true;
   assert.doesNotThrow(() => api.refresh());
+  assert.equal(warnings.length, 1, 'listener failures should be isolated and reported once');
   unsubscribe();
+});
+
+
+test('adaptive engine asks the service worker to resume optional caching when connectivity returns', () => {
+  const { events, nav, messages } = createEngine({ onLine: false });
+  assert.equal(messages.length, 0);
+  nav.onLine = true;
+  events['window:online']();
+  assert.equal(messages.length, 1);
+  assert.equal(messages[0].type, 'EPIPHANY_WARM_OPTIONAL_CACHE');
+});
+
+
+test('adaptive engine enables lightweight motion only for constrained devices or reduced-motion users', () => {
+  const low = createEngine({ deviceMemory: 2 });
+  assert.equal(low.classes.has('ep-adaptive-lite'), true);
+  const capable = createEngine();
+  assert.equal(capable.classes.has('ep-adaptive-lite'), false);
+  const motion = createEngine({ reducedMotion: true });
+  assert.equal(motion.classes.has('ep-adaptive-lite'), true);
+  motion.media.matches = false;
+  motion.events['media:change']();
+  assert.equal(motion.classes.has('ep-adaptive-lite'), false);
 });

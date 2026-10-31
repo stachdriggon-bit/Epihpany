@@ -60,6 +60,83 @@
   const pending = new Map();
   const loaded = new Set();
   const loadingScripts = new Map();
+  const viewGroups = Object.freeze({
+    stories: 'stories',
+    chronicle: 'chronicle',
+    resonance: 'resonance',
+    world: 'world',
+    arcade: 'arcade',
+    thinklab: 'thinklab',
+    lifeskills: 'lifeskills'
+  });
+  const scheduledPrefetch = new Map();
+  let lastIntentGroup = '';
+
+  function currentAdaptivePolicy() {
+    try {
+      const engine = window.EPIPHANY_ADAPTIVE_ENGINE;
+      return engine && typeof engine.getPolicy === 'function' ? engine.getPolicy() : null;
+    } catch { return null; }
+  }
+
+  function cancelScheduledPrefetch() {
+    scheduledPrefetch.forEach(task => {
+      try {
+        if (task.kind === 'idle' && typeof window.cancelIdleCallback === 'function') window.cancelIdleCallback(task.id);
+        else if (task.kind === 'timer' && typeof window.clearTimeout === 'function') window.clearTimeout(task.id);
+      } catch {}
+    });
+    scheduledPrefetch.clear();
+  }
+
+  function schedulePrefetch(group) {
+    const policy = currentAdaptivePolicy();
+    if (!policy || !policy.allowSpeculativePreload || policy.deferNonEssentialWork ||
+        document.visibilityState === 'hidden' || (window.navigator && window.navigator.onLine === false)) return false;
+    if (!Object.prototype.hasOwnProperty.call(groups, group) || pending.has(group) || scheduledPrefetch.has(group)) return false;
+    lastIntentGroup = group;
+    const run = () => {
+      scheduledPrefetch.delete(group);
+      const current = currentAdaptivePolicy();
+      if (!current || !current.allowSpeculativePreload || current.deferNonEssentialWork ||
+          document.visibilityState === 'hidden' || (window.navigator && window.navigator.onLine === false)) return;
+      const tasks = [window.EPIPHANY_LAZY_LOAD(group)];
+      if (Object.prototype.hasOwnProperty.call(styleGroups, group)) tasks.push(window.EPIPHANY_LAZY_STYLE(group));
+      Promise.all(tasks).catch(() => {});
+    };
+    if (typeof window.requestIdleCallback === 'function') {
+      scheduledPrefetch.set(group, { kind: 'idle', id: window.requestIdleCallback(run, { timeout: 1600 }) });
+    } else if (typeof window.setTimeout === 'function') {
+      scheduledPrefetch.set(group, { kind: 'timer', id: window.setTimeout(run, 350) });
+    } else {
+      Promise.resolve().then(run);
+    }
+    return true;
+  }
+
+  function handleNavigationIntent(event) {
+    if (event.type === 'pointerover' && event.pointerType === 'touch') return;
+    const target = event.target && typeof event.target.closest === 'function'
+      ? event.target.closest('[data-view]') : null;
+    const view = target && target.getAttribute('data-view');
+    const group = viewGroups[view];
+    if (group) schedulePrefetch(group);
+  }
+
+  if (document && typeof document.addEventListener === 'function') {
+    document.addEventListener('pointerover', handleNavigationIntent, { passive: true });
+    document.addEventListener('focusin', handleNavigationIntent);
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'hidden') cancelScheduledPrefetch();
+      else if (lastIntentGroup) schedulePrefetch(lastIntentGroup);
+    });
+  }
+  if (window && typeof window.addEventListener === 'function') {
+    window.addEventListener('offline', cancelScheduledPrefetch);
+    window.addEventListener('online', () => {
+      if (lastIntentGroup) schedulePrefetch(lastIntentGroup);
+    });
+  }
 
   function loadScript(src) {
     if (loaded.has(src)) return Promise.resolve();

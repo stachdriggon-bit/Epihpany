@@ -67,6 +67,24 @@
     snapshot = next;
     if (previous && Object.keys(next).every(key => next[key] === previous[key])) return;
     const policy = buildPolicy(next);
+    // Reduce motion-heavy decoration on constrained devices, and follow the OS motion preference.
+    try {
+      const root = document && document.documentElement;
+      if (root && root.classList && typeof root.classList.toggle === 'function') {
+        root.classList.toggle('ep-adaptive-lite', next.lowResources || next.reducedMotion);
+      }
+    } catch {}
+    // When connectivity returns, ask the service worker to resume optional offline warming.
+    // This is a same-origin message only; the worker independently rechecks device/network limits.
+    if (previous && !previous.online && next.online && policy.allowBackgroundWarmCache &&
+        next.visibility === 'visible') {
+      try {
+        const controller = (window.navigator || {}).serviceWorker?.controller;
+        if (controller && typeof controller.postMessage === 'function') {
+          controller.postMessage({ type: 'EPIPHANY_WARM_OPTIONAL_CACHE' });
+        }
+      } catch {}
+    }
     listeners.forEach(listener => {
       try { listener(next, policy); } catch (error) {
         try { console.warn('[EPIPHANY] Adaptive listener failed safely.', error); } catch {}
@@ -98,11 +116,13 @@
     cleanups.push(on(connection, 'change', refresh));
   } catch {}
 
+  refresh();
+
+  // readCapabilities() creates the media query during the first refresh; attach its
+  // change listener afterwards so OS motion-preference changes are observed.
   try {
     if (mediaQuery) cleanups.push(on(mediaQuery, 'change', refresh));
   } catch {}
-
-  refresh();
 
   const api = Object.freeze({
     version: '1.0.0',
