@@ -47,7 +47,7 @@ These are geographic constraints and working proposals, not a complete physical 
 
 ## 3. Settlements and people
 
-The five regional settlement registries contain **30 approved settlement names and stable IDs**. Approval of a name does not automatically finalize its precise location, role, population, political status, cultural identity, or connection to an anchor location. Use the registries as the source of truth for each named candidate.
+The five regional settlement registries contain **31 approved settlement names and stable IDs**. Approval of a name does not automatically finalize its precise location, role, population, political status, cultural identity, or connection to an anchor location. Use the registries as the source of truth for each named candidate.
 
 Current regional society documents are design prompts, not finalized cultures or states. Useful directions include river and water management in parts of Ilmar; highland routes and passage systems in Orath; seasonal water infrastructure and caravan logistics in Tharima; coastal, forest, and seasonal navigation communities in Nirvan; and navigation, repair, trade, and mediation across Azmar. These themes must not become stereotypes: every region contains internal differences, rivalries, minorities, and changing identities.
 
@@ -134,7 +134,7 @@ This is a provisional owner decision recorded in [Decision Log](DECISIONS-LOG.md
 |---|---|
 | Global principles | Established in the Master Content Bible and Decision Log |
 | Four named continents + Azmar as current mapped regions | Current working classification; total world extent open |
-| 30 settlement names and IDs | Names approved; settlement details and precise placement mostly provisional |
+| 31 settlement names and IDs | Names approved; settlement details and precise placement mostly provisional |
 | Exact world scale and coastlines | Open |
 | Full list of cultures, languages, states, and institutions | Not yet established |
 | Five broad historical period labels | Provisional organizing labels, not synchronized universal eras |
