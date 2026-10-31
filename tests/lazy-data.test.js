@@ -335,3 +335,74 @@ test('explicit navigation bypasses and promotes queued optional loads', async ()
   await explicit;
   scripts[0].onload();
 });
+
+
+test('background optional loads pause while constrained, resume once, and never delay explicit navigation', async () => {
+  const requested = [];
+  const scripts = [];
+  const listeners = {};
+  const timers = [];
+  let policy = { allowSpeculativePreload: true, deferNonEssentialWork: false, maxConcurrentOptionalLoads: 1 };
+  const subscribers = [];
+  const document = {
+    visibilityState: 'visible',
+    addEventListener(name, fn) { listeners['document:' + name] = fn; },
+    createElement() {
+      const script = { src: '', async: true, remove() {} };
+      scripts.push(script);
+      return script;
+    },
+    head: { appendChild(script) { requested.push(script.src); } }
+  };
+  const window = {
+    EPIPHANY_ADAPTIVE_ENGINE: {
+      getPolicy: () => policy,
+      subscribe(fn) { subscribers.push(fn); return () => {}; }
+    },
+    navigator: { onLine: true },
+    addEventListener(name, fn) { listeners['window:' + name] = fn; },
+    setTimeout(fn) { timers.push(fn); return timers.length; },
+    clearTimeout() {}
+  };
+  const context = vm.createContext({ window, document, Promise, Map, Set, Object, Error });
+  vm.runInContext(fs.readFileSync(path.join(root, 'lazy-data.js'), 'utf8'), context);
+  const intent = group => listeners['document:pointerover']({
+    type: 'pointerover', pointerType: 'mouse',
+    target: { closest: () => ({ getAttribute: () => group }) }
+  });
+
+  intent('arcade');
+  timers.shift()();
+  await new Promise(resolve => setImmediate(resolve));
+  assert.deepEqual(requested.map(src => src.split('?')[0]), ['practice-lab.js']);
+
+  intent('thinklab');
+  timers.shift()();
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(requested.length, 1, 'the second optional load should wait for the concurrency slot');
+
+  policy = { ...policy, allowSpeculativePreload: false, deferNonEssentialWork: true };
+  subscribers.forEach(fn => fn());
+  scripts[0].onload();
+  await new Promise(resolve => setImmediate(resolve));
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(requested.length, 1, 'queued optional work must remain paused while constrained');
+
+  policy = { ...policy, allowSpeculativePreload: true, deferNonEssentialWork: false };
+  subscribers.forEach(fn => fn());
+  await new Promise(resolve => setImmediate(resolve));
+  assert.deepEqual(requested.map(src => src.split('?')[0]), ['practice-lab.js', 'think-lab.js'],
+    'queued optional work should resume when conditions improve');
+  scripts[1].onload();
+  await new Promise(resolve => setImmediate(resolve));
+
+  policy = { ...policy, allowSpeculativePreload: false, deferNonEssentialWork: true };
+  const explicit = context.window.EPIPHANY_LAZY_LOAD('world');
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(requested[2].split('?')[0], 'data-world.js',
+    'explicit navigation must bypass background deferral');
+  scripts[2].onload();
+  await new Promise(resolve => setImmediate(resolve));
+  scripts[3].onload();
+  await explicit;
+});
