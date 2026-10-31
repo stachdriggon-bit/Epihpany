@@ -16,46 +16,71 @@
     lifeskills: ['life-skills.css?v=calm-studio-20261025']
   };
   const pendingStyles = new Map();
+  const optionalQueue = [];
+  let activeOptionalLoads = 0;
+
+  function optionalLoadLimit() {
+    try {
+      const policy = window.EPIPHANY_ADAPTIVE_ENGINE?.getPolicy?.();
+      const limit = Number(policy && policy.maxConcurrentOptionalLoads);
+      return Number.isFinite(limit) && limit >= 1 ? Math.floor(limit) : 1;
+    } catch { return 1; }
+  }
+
+  function pumpOptionalQueue() {
+    while (activeOptionalLoads < optionalLoadLimit() && optionalQueue.length) {
+      const job = optionalQueue.shift();
+      if (job.started) continue;
+      job.started = true;
+      activeOptionalLoads++;
+      Promise.resolve().then(job.run).then(job.resolve, job.reject).finally(() => {
+        activeOptionalLoads = Math.max(0, activeOptionalLoads - 1);
+        pumpOptionalQueue();
+      });
+    }
+  }
+
+  function runWithPriority(priority, run) {
+    if (priority !== 'optional') return Promise.resolve().then(run);
+    return new Promise((resolve, reject) => {
+      optionalQueue.push({ run, resolve, reject, started: false });
+      pumpOptionalQueue();
+    });
+  }
   const loadedStyles = new Set();
   const loadingStyles = new Map();
 
-  function loadStyle(href) {
+  function loadStyle(href, priority) {
     if (loadedStyles.has(href)) return Promise.resolve();
     if (loadingStyles.has(href)) return loadingStyles.get(href);
-    const promise = new Promise((resolve, reject) => {
+    const promise = runWithPriority(priority, () => new Promise((resolve, reject) => {
       const link = document.createElement('link');
       link.rel = 'stylesheet';
       link.href = href;
-      link.onload = () => {
-        loadedStyles.add(href);
-        loadingStyles.delete(href);
-        resolve();
-      };
+      link.onload = () => { loadedStyles.add(href); resolve(); };
       link.onerror = () => {
         link.remove();
-        loadingStyles.delete(href);
         reject(new Error('Unable to load feature styles: ' + href.split('?')[0]));
       };
       document.head.appendChild(link);
-    });
+    })).finally(() => loadingStyles.delete(href));
     loadingStyles.set(href, promise);
     return promise;
   }
 
-  window.EPIPHANY_LAZY_STYLE = function (group) {
+  function loadStyleGroup(group, priority) {
     if (!Object.prototype.hasOwnProperty.call(styleGroups, group)) {
       return Promise.reject(new Error('Unknown feature style group'));
     }
     if (!pendingStyles.has(group)) {
-      const promise = styleGroups[group].reduce((chain, href) => chain.then(() => loadStyle(href)), Promise.resolve())
-        .catch(error => {
-          pendingStyles.delete(group);
-          throw error;
-        });
+      const promise = styleGroups[group].reduce((chain, href) => chain.then(() => loadStyle(href, priority)), Promise.resolve())
+        .catch(error => { pendingStyles.delete(group); throw error; });
       pendingStyles.set(group, promise);
     }
     return pendingStyles.get(group);
-  };
+  }
+
+  window.EPIPHANY_LAZY_STYLE = group => loadStyleGroup(group, 'user');
 
   const pending = new Map();
   const loaded = new Set();
@@ -100,8 +125,8 @@
       const current = currentAdaptivePolicy();
       if (!current || !current.allowSpeculativePreload || current.deferNonEssentialWork ||
           document.visibilityState === 'hidden' || (window.navigator && window.navigator.onLine === false)) return;
-      const tasks = [window.EPIPHANY_LAZY_LOAD(group)];
-      if (Object.prototype.hasOwnProperty.call(styleGroups, group)) tasks.push(window.EPIPHANY_LAZY_STYLE(group));
+      const tasks = [loadGroup(group, 'optional')];
+      if (Object.prototype.hasOwnProperty.call(styleGroups, group)) tasks.push(loadStyleGroup(group, 'optional'));
       Promise.all(tasks).catch(() => {});
     };
     if (typeof window.requestIdleCallback === 'function') {
@@ -138,16 +163,15 @@
     });
   }
 
-  function loadScript(src) {
+  function loadScript(src, priority) {
     if (loaded.has(src)) return Promise.resolve();
     if (loadingScripts.has(src)) return loadingScripts.get(src);
-    const promise = new Promise((resolve, reject) => {
+    const promise = runWithPriority(priority, () => new Promise((resolve, reject) => {
       const script = document.createElement('script');
       script.src = src;
       script.async = false;
       script.onload = () => {
         loaded.add(src);
-        loadingScripts.delete(src);
         if (src.startsWith('data-translation-ar-fill.js') && typeof window.EPIPHANY_MERGE_AR_TRANSLATIONS === 'function') {
           try { window.EPIPHANY_MERGE_AR_TRANSLATIONS(); }
           catch (error) { reject(error); return; }
@@ -156,27 +180,30 @@
       };
       script.onerror = () => {
         script.remove();
-        loadingScripts.delete(src);
         reject(new Error('Unable to load feature data: ' + src.split('?')[0]));
       };
       document.head.appendChild(script);
-    });
+    })).finally(() => loadingScripts.delete(src));
     loadingScripts.set(src, promise);
     return promise;
   }
 
-  window.EPIPHANY_LAZY_LOAD = function (group) {
+  function loadGroup(group, priority) {
     if (!Object.prototype.hasOwnProperty.call(groups, group)) {
       return Promise.reject(new Error('Unknown feature data group'));
     }
     if (!pending.has(group)) {
-      const promise = groups[group].reduce((chain, src) => chain.then(() => loadScript(src)), Promise.resolve())
-        .catch(error => {
-          pending.delete(group);
-          throw error;
-        });
+      const promise = groups[group].reduce((chain, src) => chain.then(() => loadScript(src, priority)), Promise.resolve())
+        .catch(error => { pending.delete(group); throw error; });
       pending.set(group, promise);
     }
     return pending.get(group);
-  };
+  }
+
+  window.EPIPHANY_LAZY_LOAD = group => loadGroup(group, 'user');
+
+  try {
+    const engine = window.EPIPHANY_ADAPTIVE_ENGINE;
+    if (engine && typeof engine.subscribe === 'function') engine.subscribe(() => pumpOptionalQueue());
+  } catch {}
 })();
