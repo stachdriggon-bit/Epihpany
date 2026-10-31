@@ -109,7 +109,7 @@ test('desktop and mobile navigation share the approved six-group destination map
   assert.ok(desktop && mobile, 'both navigation surfaces must exist');
   const destinations = source => [...source.matchAll(/data-view="([^"]+)"/g)].map(match => match[1]).sort();
   assert.deepEqual(destinations(desktop[1]), destinations(mobile[1]));
-  assert.deepEqual(destinations(desktop[1]), ['arcade','chronicle','collection','lifeskills','mytools','profile','progress','resonance','stories','summon','thinklab','trophies','words','world'].sort());
+  assert.deepEqual(destinations(desktop[1]), ['home','arcade','chronicle','collection','lifeskills','mytools','profile','progress','resonance','stories','summon','thinklab','trophies','words','world'].sort());
   for (const label of ['Home','Learn','Play','Collect','Discover','Me']) {
     assert.ok(desktop[1].includes('>' + label + '<'), 'desktop navigation is missing ' + label);
     assert.ok(mobile[1].includes('>' + label.toUpperCase() + '<') || mobile[1].includes('>' + label + '<'), 'mobile navigation is missing ' + label);
