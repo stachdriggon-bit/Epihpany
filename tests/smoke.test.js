@@ -64,7 +64,7 @@ test('main navigation tabs open without uncaught page errors', async t => {
     const views = ['home','stories','chronicle','resonance','world','arcade','summon','words','trophies','progress','profile'];
     for (const view of views) {
       const page = await browser.newPage();
-      await page.setViewportSize({ width: 800, height: 900 });
+      await page.setViewportSize({ width: 1280, height: 900 });
       const requested = [];
       page.on('pageerror', error => errors.push(view + ': ' + error.message));
       page.on('console', message => { if (message.type() === 'error') consoleErrors.push(view + ': ' + message.text()); });
