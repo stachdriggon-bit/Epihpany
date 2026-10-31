@@ -28,10 +28,39 @@ self.addEventListener('install', event => {
       (Number.isFinite(Number(nav.hardwareConcurrency)) && Number(nav.hardwareConcurrency) > 0 && Number(nav.hardwareConcurrency) <= 2);
     // Keep offline support for explicitly requested features; skip only speculative warm-cache work.
     if (!saveData && !slowNetwork && !constrainedDevice) {
-      Promise.all((typeof LAZY_ASSETS === 'undefined' ? [] : LAZY_ASSETS).map(asset => cache.add(asset).catch(() => {})));
+      await Promise.all((typeof LAZY_ASSETS === 'undefined' ? [] : LAZY_ASSETS).map(asset => cache.add(asset).catch(() => {})));
     }
   })());
 });
+function canWarmOptionalAssets() {
+  const nav = self.navigator || {};
+  const connection = nav.connection || nav.mozConnection || nav.webkitConnection || null;
+  const effectiveType = String(connection && connection.effectiveType || '').toLowerCase();
+  const downlink = Number(connection && connection.downlink);
+  const rtt = Number(connection && connection.rtt);
+  const saveData = !!(connection && connection.saveData);
+  const slowNetwork = saveData || effectiveType === 'slow-2g' || effectiveType === '2g' ||
+    (Number.isFinite(downlink) && downlink > 0 && downlink < 0.8) ||
+    (Number.isFinite(rtt) && rtt >= 800);
+  const constrainedDevice =
+    (Number.isFinite(Number(nav.deviceMemory)) && Number(nav.deviceMemory) > 0 && Number(nav.deviceMemory) <= 2) ||
+    (Number.isFinite(Number(nav.hardwareConcurrency)) && Number(nav.hardwareConcurrency) > 0 && Number(nav.hardwareConcurrency) <= 2);
+  return nav.onLine !== false && !slowNetwork && !constrainedDevice;
+}
+
+self.addEventListener('message', event => {
+  if (!event.data || event.data.type !== 'EPIPHANY_WARM_OPTIONAL_CACHE' || !canWarmOptionalAssets()) return;
+  event.waitUntil((async () => {
+    const cache = await caches.open(CACHE_NAME);
+    await Promise.all(LAZY_ASSETS.map(async asset => {
+      try {
+        const existing = await cache.match(asset, { ignoreSearch: true });
+        if (!existing) await cache.add(asset);
+      } catch {}
+    }));
+  })());
+});
+
 self.addEventListener('activate', event => {
   event.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(key => (key.startsWith('epiphany-shell-') && key !== CACHE_NAME) || (key.startsWith('epiphany-vendor-') && key !== VENDOR_CACHE) || (key.startsWith('epiphany-card-art-') && key !== CARD_ART_CACHE)).map(key => caches.delete(key)))).then(() => self.clients.claim()));
 });
