@@ -25,8 +25,8 @@ async function clickView(page, view) {
 }
 
 async function dismissFirstVisitOverlays(page) {
-  // New visitors choose an approximate level and start one short lesson; navigation
-  // smoke tests close that lesson so they can inspect the rest of the app.
+  // Navigation smoke tests use a returning-visitor fixture. The dedicated first-visit
+  // test below exercises the complete new onboarding path.
   const landingStart = page.locator('#landing-start');
   if (await landingStart.isVisible()) {
     await landingStart.click();
@@ -34,38 +34,6 @@ async function dismissFirstVisitOverlays(page) {
   }
   const languageChoice = page.locator('#help-language-modal [data-help-language="en"]');
   if (await languageChoice.isVisible()) await languageChoice.click();
-  const levelChoice = page.locator('#placement .level-choice[data-start-level="A1"]');
-  await levelChoice.waitFor({ state: 'visible', timeout: 2500 }).catch(() => {});
-  if (await levelChoice.isVisible()) {
-    await levelChoice.click();
-    await page.locator('#game').waitFor({ state: 'visible', timeout: 5000 });
-    await page.locator('#game-close').click();
-    await page.locator('#game').waitFor({ state: 'hidden', timeout: 5000 });
-    const homeTab = page.locator('button[data-view="home"]:visible').first();
-    if (await homeTab.count()) await homeTab.click();
-    await page.locator('#home-view').waitFor({ state: 'visible', timeout: 5000 }).catch(async error => {
-      const diagnostics = await page.evaluate(() => {
-        const main = document.querySelector('main#main');
-        const home = document.querySelector('#home-view');
-        return {
-          bodyClass: document.body.className,
-          htmlClass: document.documentElement.className,
-          mainDisplay: main ? getComputedStyle(main).display : null,
-          mainHidden: main?.hidden ?? null,
-          mainInert: main?.inert ?? null,
-          homeDisplay: home ? getComputedStyle(home).display : null,
-          homeVisibility: home ? getComputedStyle(home).visibility : null,
-          homeOpacity: home ? getComputedStyle(home).opacity : null,
-          homeRect: home ? (() => { const r = home.getBoundingClientRect(); return { x:r.x, y:r.y, width:r.width, height:r.height }; })() : null,
-          homeHidden: home?.hidden ?? null,
-          homeClass: home?.className || null,
-          gameHidden: document.querySelector('#game')?.hidden ?? null,
-          landingPresent: !!document.querySelector('#landing-screen')
-        };
-      });
-      throw new Error('Home view did not return after closing the onboarding lesson: ' + JSON.stringify(diagnostics) + '; ' + error.message);
-    });
-  }
 }
 const mime = { '.html':'text/html; charset=utf-8', '.js':'text/javascript; charset=utf-8', '.css':'text/css; charset=utf-8', '.json':'application/json; charset=utf-8', '.svg':'image/svg+xml', '.png':'image/png', '.jpg':'image/jpeg', '.webp':'image/webp' };
 let server, browser, baseUrl;
@@ -150,6 +118,10 @@ test('main navigation tabs open without uncaught page errors', async t => {
           const url = new URL(request.url());
           if (url.origin === baseUrl) requested.push(url.pathname);
         } catch {}
+      });
+      await page.addInitScript(() => {
+        localStorage.setItem('epiphany-progress', '{}');
+        localStorage.setItem('epiphany-landing-seen', '1');
       });
       await page.goto(baseUrl, { waitUntil: 'domcontentloaded' });
       await dismissFirstVisitOverlays(page);
@@ -327,6 +299,7 @@ test('main navigation tabs open without uncaught page errors', async t => {
       window.__cardLongTasks = [];
       try { new PerformanceObserver(list => window.__cardLongTasks.push(...list.getEntries().map(entry => entry.duration))).observe({type:'longtask', buffered:true}); } catch {}
       localStorage.setItem('epiphany-landing-seen', '1');
+      localStorage.setItem('epiphany-progress', '{}');
       localStorage.setItem('epiphany-card-prototype-v1', JSON.stringify({
         tokens:15, shards:0, owned:{'CHR-001':1,'CHR-002':1,'CHR-004':1,'CHR-039':1,'CHR-005':1},
         cardLevels:{}, history:[], achievementRewards:{}, initialized:true
@@ -479,6 +452,10 @@ test('main navigation tabs open without uncaught page errors', async t => {
     const offlinePage = await browser.newPage();
     await offlinePage.setViewportSize({ width: 800, height: 900 });
     offlinePage.on('pageerror', error => errors.push('offline: ' + error.message));
+    await offlinePage.addInitScript(() => {
+      localStorage.setItem('epiphany-progress', '{}');
+      localStorage.setItem('epiphany-landing-seen', '1');
+    });
     await offlinePage.goto(baseUrl, { waitUntil: 'domcontentloaded' });
     await dismissFirstVisitOverlays(offlinePage);
     await offlinePage.evaluate(() => navigator.serviceWorker.ready);
