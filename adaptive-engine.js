@@ -74,8 +74,8 @@
         root.classList.toggle('ep-adaptive-lite', next.lowResources || next.reducedMotion);
       }
     } catch {}
-    // When connectivity returns, ask the service worker to resume optional offline warming.
-    // This is a same-origin message only; the worker independently rechecks device/network limits.
+    // When connectivity returns, ask the service worker to refresh only optional files
+    // already cached through use or intent prefetch. The worker rechecks device/network limits.
     if (previous && !previous.online && next.online && policy.allowBackgroundWarmCache &&
         next.visibility === 'visible') {
       try {
