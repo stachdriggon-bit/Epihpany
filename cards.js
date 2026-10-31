@@ -411,7 +411,7 @@
     const close=()=>{
       if(closing||!modal.isConnected)return;closing=true;
       document.removeEventListener('keydown',keyHandler);
-      const finish=()=>{if(modal.isConnected)modal.remove();document.body.classList.remove('no-scroll');cardDetailTrigger?.focus?.({preventScroll:true});};
+      const finish=()=>{if(modal.isConnected)modal.remove();document.body.classList.remove('no-scroll');const focusTarget=cardDetailTrigger?.isConnected?cardDetailTrigger:[...document.querySelectorAll('[data-gallery-card]')].find(item=>item.dataset.galleryCard===card.id)?.querySelector('.fcard');focusTarget?.focus?.({preventScroll:true});};
       if(!reducedMotion()&&cardDetailReturnRect){dialog.classList.add('is-closing');dialog.addEventListener('animationend',finish,{once:true});window.setTimeout(finish,380);}else finish();
     };
     const keyHandler=e=>{
