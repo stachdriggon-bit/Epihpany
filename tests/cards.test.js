@@ -203,15 +203,17 @@ test('character dossiers preserve the complete reviewed ability records without 
   assert.match(profiles['CHR-039'].sections.find(section => section.id === 'restriction').text.en, /scope/i);
 });
 
-test('character card artwork and preloading use Supabase Storage only, with no local fallback', () => {
+test('character artwork uses thumbnails in the gallery and loads originals only in the detail dialog', () => {
   const js = read('cards.js');
   assert.match(js, /const cardArtSource = \(card, opts=\{\}\) =>/);
-  assert.match(js, /return characterArtUrl\(storagePath, folder\)/);
+  assert.match(js, /const path = opts\.fullImage \? published\.published_original_path : published\.published_thumbnail_path/);
+  assert.match(js, /A missing published thumbnail must never make the gallery download the full-size original/);
+  assert.match(js, /const storagePath = opts\.fullImage \? card\.image : \(card\.thumb \|\| card\.image\)/);
   assert.match(js, /const cloudPath = cardArtSource\(card,opts\)/);
-  assert.match(js, /const cloudPath=cardArtSource\(card\)/);
-  assert.match(js, /window\.__epiphanyCardPreloads\.has\(cloudPath\)/);
-  assert.match(js, /image\.fetchPriority='low'/);
-  assert.match(js, /image\.src=cloudPath/);
+  assert.match(js, /cardFace\(card,\{level:levelOf\(card\),fullImage:true\}\)/);
+  assert.match(js, /loading="\\x27\\+\\(opts\\.fullImage\\?'eager':'lazy'\\)/);
+  assert.match(js, /fetchpriority="high"/);
+  assert.doesNotMatch(js, /preloadCardArt|__epiphanyCardPreloads|pointerover.*preload|pointerdown.*preload/);
   assert.doesNotMatch(js, /data-local-fallback|localFallback|cloudArtEnabled/);
   assert.match(js, /epiphany-character-art-cloud-errors-v1/);
   assert.match(js, /is-art-unavailable/);
