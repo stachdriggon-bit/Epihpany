@@ -79,6 +79,9 @@ test('initial HTML defers stories and World data and keeps loader in offline she
   for (const asset of ['data-stories.js', 'data-world.js', 'data-world-sprites.js', 'think-lab.js', 'practice-lab.js', 'life-skills.js', 'data-translation-ar.js']) {
     assert.ok(!coreAssets.includes("'./" + asset + "'"), asset + ' should not be a core startup asset');
   }
+  for (const asset of ['resonance.css', 'life-skills.css']) {
+    assert.ok(lazyAssets.includes("'./" + asset + "'"), asset + ' should be cached as a lazy offline asset');
+  }
   for (const asset of ['data-stories.js', 'data-world.js', 'data-world-registry.js', 'data-world-events.js', 'data-world-sprites.js', 'think-lab.js', 'practice-lab.js', 'life-skills.js']) {
     assert.ok(lazyAssets.includes("'./" + asset + "'"), asset + ' should be cached as a lazy offline asset');
   }
