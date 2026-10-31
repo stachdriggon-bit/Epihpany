@@ -680,6 +680,12 @@
     getCharacterArtReport: readCharacterArtReport,
     getDeveloperEmail: () => isDeveloperAccount() ? String(currentUser.email).trim().toLowerCase() : '',
     getAssetManagerClient: () => isDeveloperAccount() ? client : null,
+    async loadCardImageViews() {
+      if (!client) return [];
+      const {data,error}=await client.from('epiphany_card_image_views').select('character_id,position_x,position_y,zoom,fit');
+      if(error)throw error;
+      return Array.isArray(data)?data:[];
+    },
     getAssetManagerUser: () => isDeveloperAccount() && currentUser ? {id:currentUser.id} : null,
     async loadPublishedCharacterAssets() {
       if (!client) return [];
