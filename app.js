@@ -1967,11 +1967,6 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
   function finishStory(){stopSpeechPlayback();releaseStoryPronunciationResources();const completedDailySession=!DEV_MODE.active&&ST.dailySession===true&&state.dailySessionStep==='story';if(completedDailySession){state.dailySessionStep='done';state.dailySessionDone=true;}const s=ST.story,score=ST.score,old=state.stories[s.id]||{done:false,score:0},previousBest=Number(old.score)||0,firstCompletion=!DEV_MODE.active&&!old.done,newBest=!DEV_MODE.active&&score>previousBest;let bonus=DEV_MODE.active?'Developer test session · no rewards or progress saved.':'';const chosenOption=s.decision&&ST.decisionChoice!==null?s.decision.options[ST.decisionChoice]:null;if(!DEV_MODE.active){state.stories[s.id]={...old,done:true,score:Math.max(previousBest,score),lastDecision:chosenOption?chosenOption.text:null,lastResponse:chosenOption?chosenOption.response:null,lastConsequence:chosenOption&&chosenOption.branchPage?chosenOption.branchPage[1]:null,lastEnding:chosenOption&&chosenOption.endingPage?chosenOption.endingPage[1]:null};if(firstCompletion){state.xp+=30;state.quests++;state.daily=Math.min(2,state.daily+1);const today=dayKey();if(state.dailyQuestDate!==today){state.dailyQuestDate=today;state.dailyQuestProgress=0;state.dailyQuestClaimed=false;state.dailyCorrect=0;state.dailyXp=0;}if(state.weeklyKey!==weekKey()){state.weeklyKey=weekKey();state.weeklyProgress=0;state.weeklyClaimed=false;}state.dailyXp+=30;state.dailyCorrect+=score;state.dailyQuestProgress=state.daily;state.weeklyProgress=(state.weeklyProgress||0)+1;const task=DAILY_QUESTS[(new Date().getDate()-1)%DAILY_QUESTS.length],progress=task.kind==='quests'?state.daily:task.kind==='xp'?state.dailyXp:state.dailyCorrect;if(!state.dailyQuestClaimed&&progress>=task.target){state.dailyQuestClaimed=true;state.xp+=task.reward;bonus=' Daily bonus +'+task.reward+' XP!';}if(!state.weeklyClaimed&&state.weeklyProgress>=5){state.weeklyClaimed=true;state.xp+=60;bonus+=' Weekly bonus +60 XP!';}if(state.lastDay!==today){const y=new Date();y.setDate(y.getDate()-1);const two=new Date();two.setDate(two.getDate()-2);if(state.lastDay===dayKey(y))state.streak=(state.streak||0)+1;else if(state.lastDay===dayKey(two)&&state.streakFreezes>0){state.streakFreezes--;state.streak=(state.streak||0)+1;bonus+=' Streak freeze protected your streak.';}else state.streak=1;state.lastDay=today;}if(!state.completed.includes(currentLevel().id))state.completed.push(currentLevel().id);}save();renderAll();}hideSheet();$('#steps').innerHTML=s.questions.map(()=>'<span class="step ok"></span>').join('');const ratio=s.questions.length?score/s.questions.length:0,stars=ratio>=.85?'★★★':ratio>=.6?'★★☆':ratio>0?'★☆☆':'☆☆☆';const dailyPraise=['You showed up for yourself today. That matters.','A little practice, a little progress — you did it.','You kept going, and your English grew with you.','Ten minutes invested in yourself. Be proud of that.','Progress is built one small step at a time — today you took yours.','You made room for learning today. Well done.','Your future English self will thank you for today.'];const praiseIndex=Number(dayKey().replace(/\\D/g,''))%dailyPraise.length;const dailyCelebration=completedDailySession?'<section class="daily-celebration" role="status" aria-live="polite"><div class="daily-celebration-spark" aria-hidden="true">✦　✧　✦</div><p class="kicker">YOUR DAILY SPARK · COMPLETE</p><h3>That’s today’s path complete! ✨</h3><p>'+dailyPraise[praiseIndex]+'</p><div class="daily-celebration-stats"><span>✓ Words reviewed</span><span>✓ Skill practised</span><span>✓ Story finished</span></div><p class="daily-celebration-streak">🔥 '+Number(state.streak||0)+' day'+(Number(state.streak||0)===1?'':'s')+' in your learning journey</p></section>':'';$('#game-body').innerHTML='<div class="result story-result">'+dailyCelebration+'<div class="burst">📚</div><p class="kicker">STORY COMPLETE</p><h2>'+esc(s.title)+'</h2><div class="story-stars">'+stars+'</div><div class="stats3"><div class="stat"><b>'+(firstCompletion?'+30':'+0')+'</b><span>'+(firstCompletion?'XP earned':'XP · replay')+'</span></div><div class="stat"><b>'+score+'/'+s.questions.length+'</b><span>Correct answers</span></div><div class="stat"><b>'+ST.savedDuring.length+'</b><span>Words saved</span></div></div>'+(newBest&&old.done?'<p class="challenge-bonus">🏆 New personal best! Your best is now '+score+'/'+s.questions.length+'.</p>':'')+(bonus?'<p class="challenge-bonus">'+esc(bonus.trim())+'</p>':'')+(ST.savedDuring.length?'<div class="found"><div class="found-title">Words you saved</div>'+ST.savedDuring.map(w=>'<span class="w">'+esc(w)+'</span>').join('')+'</div>':'')+(s.decision&&ST.decisionChoice!==null?'<div class="story-choice-recap"><strong>How your decision shaped the story</strong><p class="story-impact-choice"><b>You chose:</b> '+esc(s.decision.options[ST.decisionChoice].text)+'</p><p>'+esc(s.decision.options[ST.decisionChoice].response)+'</p>'+(s.decision.options[ST.decisionChoice].branchPage?'<div class="story-impact-step"><small>THE IMMEDIATE CONSEQUENCE</small><p>'+esc(s.decision.options[ST.decisionChoice].branchPage[1])+'</p></div>':'')+(s.decision.options[ST.decisionChoice].endingPage?'<div class="story-impact-step"><small>HOW THIS PATH ENDED</small><p>'+esc(s.decision.options[ST.decisionChoice].endingPage[1])+'</p></div>':'')+'<p class="story-impact-replay">What if you had chosen the other option? Replay the story to explore the alternative path. Your XP and quest rewards are still awarded only on your first completion.</p><button type="button" class="btn btn-ghost" data-story-action="replay-other">↻ What if I chose differently?</button></div>':'')+renderStoryLearningReview(s)+(s.followUp?'<div class="follow-up-card"><p><b>Take the story into the village</b></p><p>Use the words you just read in a real task.</p><button class="btn" data-story-follow-up="'+esc(s.followUp.taskId)+'">'+esc(s.followUp.label||'Continue in the village')+' →</button></div>':'')+'<div class="result-actions"><button class="btn" data-story-action="another">Read another story</button><button class="btn btn-ghost" data-story-action="words">Open Words</button><button class="btn btn-ghost" data-story-action="close">Back to Stories</button></div></div>';$('#game-scroll').scrollTop=0;ST.mode='result';maybeShowAccountPrompt('story', $('#game-body .result'));}
 
   /* ---------- navigation ---------- */
-  function closeDockMore() {
-    const panel = $('#dock-more-panel'), toggle = $('#dock-more-toggle');
-    if (panel) panel.hidden = true;
-    if (toggle) toggle.setAttribute('aria-expanded', 'false');
-  }
   let categoryReturnFocus = null;
   function closeCategoryPicker(restoreFocus = true) {
     const picker = $('#category-picker');
@@ -1996,7 +1991,6 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
   function openView(name) {
     if(ST){stopSpeechPlayback();releaseStoryPronunciationResources();}
     closeCategoryPicker(false);
-    closeDockMore();
     $$('.view').forEach(v => v.classList.toggle('is-active', v.id === name + '-view'));
     $$('[data-view]').forEach(b => b.setAttribute('aria-current', b.dataset.view === name ? 'page' : 'false'));
     if (name === 'mytools') { renderMyTools(); }
@@ -2010,8 +2004,6 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     if (name === 'thinklab') window.EPIPHANY_LAZY_LOAD('thinklab').catch(() => toast('Think Lab could not load. Connect to the internet and try again.'));
     if (name === 'lifeskills') window.EPIPHANY_LAZY_STYLE('lifeskills').then(() => window.EPIPHANY_LAZY_LOAD('lifeskills')).catch(() => toast('Life Skills could not load. Connect to the internet and try again.'));
     if (name === 'progress' || name === 'profile') { renderWeaknessPanel(); renderLearningInsights(); }
-    const more = $('#dock-more-toggle');
-    if (more) more.setAttribute('aria-current', ['words','trophies','stories','chronicle','lifeskills','mytools'].includes(name) ? 'page' : 'false');
     window.scrollTo(0, 0);
     const h = $('#' + name + '-title'); if (h) { h.classList.add('programmatic-view-focus'); h.addEventListener('keydown', () => h.classList.remove('programmatic-view-focus'), { once: true }); h.focus({preventScroll: true}); }
   }
@@ -5309,17 +5301,8 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     }
     const hard=e.target.closest('[data-hard-review]');
     if(hard){const item=state.review.find(w=>w.word===hard.dataset.hardReview);if(item){item.due=dayKey();item.exerciseStage=0;save();renderWords();toast('Added to today’s review.');}return;}
-    const moreToggle = e.target.closest('#dock-more-toggle');
-    if (moreToggle) {
-      const panel = $('#dock-more-panel'), open = !!panel && panel.hidden;
-      if (panel) panel.hidden = !open;
-      moreToggle.setAttribute('aria-expanded', String(open));
-      return;
-    }
-    const morePanel = $('#dock-more-panel');
-    if (morePanel && !morePanel.hidden && !e.target.closest('#dock-more-panel')) closeDockMore();
     const view = e.target.closest('[data-view]');
-    if (view) { if(view.dataset.view==='world'){closeDockMore();startWorld();return;} openView(view.dataset.view); return; }
+    if (view) { if(view.dataset.view==='world'){startWorld();return;} openView(view.dataset.view); return; }
     const spotWord = e.target.closest('[data-spot-index]');
     if (spotWord && G && G.type === 'spot') { selectSpot(Number(spotWord.dataset.spotIndex)); return; }
     const ans = e.target.closest('.answer');
@@ -5395,7 +5378,6 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
   $('#logo').addEventListener('click', e => { e.preventDefault(); openView('home'); });
   $('#game-close').addEventListener('click', closeGame);
   document.addEventListener('keydown', e => {
-    if (e.key === 'Escape' && $('#dock-more-panel') && !$('#dock-more-panel').hidden) { closeDockMore(); $('#dock-more-toggle')?.focus({preventScroll:true}); return; }
     if (e.key === 'Escape' && $('#category-picker') && !$('#category-picker').hidden) { closeCategoryPicker(); return; }
     if(ST&&ST.mode==='quiz'&&!ST.answered&&/^[1-9]$/.test(e.key)){const k=Number(e.key)-1;if(k<ST.story.questions[ST.qi].answers.length)answerStoryQuestion(k);return;}
     if (!G) return;
