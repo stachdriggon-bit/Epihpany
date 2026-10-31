@@ -54,7 +54,9 @@
   // Retries are bounded and continue to use the normal optional-load scheduler.
   const failedOptionalLoads = new Map();
   const recoveringOptionalLoads = new Set();
+  const scheduledRecoveries = new Map();
   const MAX_OPTIONAL_RECOVERY_ATTEMPTS = 2;
+  const OPTIONAL_RECOVERY_DELAYS = [1000, 4000];
 
   function rememberFailedOptionalLoad(key, retry) {
     const previous = failedOptionalLoads.get(key);
@@ -65,18 +67,36 @@
   }
 
   function clearFailedOptionalLoad(key) {
+    const timer = scheduledRecoveries.get(key);
+    if (timer !== undefined) {
+      try { window.clearTimeout(timer); } catch {}
+      scheduledRecoveries.delete(key);
+    }
     failedOptionalLoads.delete(key);
+  }
+
+  function scheduleOptionalRecovery(key, entry) {
+    if (scheduledRecoveries.has(key) || recoveringOptionalLoads.has(key) ||
+        entry.attempts >= MAX_OPTIONAL_RECOVERY_ATTEMPTS ||
+        typeof window.setTimeout !== 'function') return;
+    const delay = OPTIONAL_RECOVERY_DELAYS[entry.attempts] || OPTIONAL_RECOVERY_DELAYS[OPTIONAL_RECOVERY_DELAYS.length - 1];
+    const timer = window.setTimeout(() => {
+      scheduledRecoveries.delete(key);
+      if (failedOptionalLoads.get(key) !== entry || !optionalWorkAllowed()) return;
+      entry.attempts++;
+      recoveringOptionalLoads.add(key);
+      Promise.resolve().then(entry.retry).catch(() => {}).finally(() => {
+        recoveringOptionalLoads.delete(key);
+        if (failedOptionalLoads.has(key)) recoverFailedOptionalLoads();
+      });
+    }, delay);
+    scheduledRecoveries.set(key, timer);
   }
 
   function recoverFailedOptionalLoads() {
     if (!optionalWorkAllowed()) return;
     failedOptionalLoads.forEach((entry, key) => {
-      if (entry.attempts >= MAX_OPTIONAL_RECOVERY_ATTEMPTS || recoveringOptionalLoads.has(key)) return;
-      entry.attempts++;
-      recoveringOptionalLoads.add(key);
-      Promise.resolve().then(entry.retry).catch(() => {}).finally(() => {
-        recoveringOptionalLoads.delete(key);
-      });
+      scheduleOptionalRecovery(key, entry);
     });
   }
 
