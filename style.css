@@ -3905,3 +3905,13 @@ html.ep-adaptive-lite *::after {
 .level-choice-unsure{width:100%;min-height:46px;border:1px dashed var(--line-2);border-radius:13px;background:transparent;color:var(--ink-2);font:700 14px/1.2 "DM Sans",sans-serif;cursor:pointer}
 .level-choice-unsure:hover{border-color:var(--focus);color:var(--ink)}
 @media(max-width:480px){.level-choice-grid{grid-template-columns:1fr;gap:8px}.level-choice{min-height:76px;padding:12px 14px}}
+
+
+/* Optional account invitation inside completed activity results */
+.account-save-prompt{display:grid;gap:12px;width:100%;margin:18px 0 4px;padding:16px 18px;border:1px solid var(--line);border-radius:18px;background:var(--surface);color:var(--ink);text-align:left}
+.account-save-prompt strong{display:block;font-size:16px}
+.account-save-prompt p{margin:4px 0 0;color:var(--ink-2);font-size:13px;line-height:1.5}
+.account-save-prompt-actions{display:flex;flex-wrap:wrap;gap:9px}
+.account-save-prompt-actions .btn{min-height:42px;padding:9px 14px;font-size:13px}
+@media(max-width:520px){.account-save-prompt{padding:14px}.account-save-prompt-actions{display:grid;grid-template-columns:1fr}.account-save-prompt-actions .btn{width:100%}}
+body[data-theme="dark"] .account-save-prompt{background:var(--surface);border-color:var(--line)}
