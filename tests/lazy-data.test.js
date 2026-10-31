@@ -489,7 +489,9 @@ test('failed feature styles recover as a complete style group', async () => {
       allowSpeculativePreload: true, deferNonEssentialWork: false, maxConcurrentOptionalLoads: 1
     }) },
     navigator: { onLine: true },
-    addEventListener(name, fn) { listeners['window:' + name] = fn; }
+    addEventListener(name, fn) { listeners['window:' + name] = fn; },
+    setTimeout(fn, delay) { timers.push({ fn, delay }); return timers.length; },
+    clearTimeout() {}
   };
   const context = vm.createContext({ window, document, Promise, Map, Set, Object, Error });
   vm.runInNewContext(fs.readFileSync(path.join(root, 'lazy-data.js'), 'utf8'), context);
@@ -534,7 +536,9 @@ test('feature-group recovery is deduplicated and stops after two recovery attemp
       allowSpeculativePreload: true, deferNonEssentialWork: false, maxConcurrentOptionalLoads: 1
     }) },
     navigator: { onLine: true },
-    addEventListener(name, fn) { listeners['window:' + name] = fn; }
+    addEventListener(name, fn) { listeners['window:' + name] = fn; },
+    setTimeout(fn, delay) { timers.push({ fn, delay }); return timers.length; },
+    clearTimeout() {}
   };
   const context = vm.createContext({ window, document, Promise, Map, Set, Object, Error });
   vm.runInNewContext(fs.readFileSync(path.join(root, 'lazy-data.js'), 'utf8'), context);
