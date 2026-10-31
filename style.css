@@ -3840,3 +3840,41 @@ body[data-theme="dark"] #home-view .home-intro{background:radial-gradient(circle
   /* The breadcrumb currently describes a desktop path that is too verbose for a narrow header. */
   .navigation-breadcrumb{display:none!important}
 }
+
+
+/* Keep bulk notification actions independent from the scrolling message list. */
+.notification-panel{
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+}
+.notification-panel-head,
+.notification-panel-intro,
+.notification-panel-actions,
+.notification-settings{flex:0 0 auto}
+.notification-list{
+  min-height:0;
+  max-height:min(42dvh,360px);
+  overflow-y:auto;
+  overscroll-behavior:contain;
+  padding:2px 3px 5px 0;
+  scrollbar-gutter:stable;
+}
+.notification-panel-actions{
+  position:sticky;
+  bottom:0;
+  z-index:2;
+  margin-top:10px;
+  padding:12px 0 4px;
+  background:var(--ground);
+  border-top:1px solid var(--line);
+}
+.notification-panel-actions .btn{
+  min-height:42px;
+  white-space:nowrap;
+}
+@media(max-width:760px){
+  .notification-list{max-height:min(38dvh,300px)}
+  .notification-panel-actions{justify-content:stretch}
+  .notification-panel-actions .btn{width:100%}
+}
