@@ -269,6 +269,13 @@ test('main navigation tabs open without uncaught page errors', async t => {
     await dismissFirstVisitOverlays(cardsPage);
     await clickView(cardsPage, 'profile');
     await cardsPage.locator('#cards-gallery').scrollIntoViewIfNeeded();
+    // The browser may defer every lazy image in a long gallery even when its container is in view.
+    // Promote one visible representative image to eager loading so this smoke test checks decoding,
+    // while the separate card tests continue to protect the app's lazy-loading behavior.
+    await cardsPage.locator('#cards-gallery .fcard-portrait-image').first().evaluate(img => {
+      img.loading = 'eager';
+      img.scrollIntoView({block:'center',inline:'nearest'});
+    });
     const galleryOpenedAt = await cardsPage.evaluate(() => performance.now());
     await cardsPage.waitForFunction(() => [...document.querySelectorAll('#cards-gallery .fcard-portrait-image')].some(img => img.complete && img.naturalWidth > 0), null, {timeout:10000}).catch(async error => {
       const diagnostics = await cardsPage.evaluate(() => ({
