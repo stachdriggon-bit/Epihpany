@@ -46,7 +46,8 @@ test('account invitation is session-limited, optional, and only attached to elig
   assert.match(css, /\.account-save-prompt/);
 
   const lesson = section(app, 'function showResults()', 'function showChallengeResults(');
-  assert.match(lesson, /isDailySessionLesson/);
+  assert.match(lesson, /G\.dailySession === true/, 'only an explicitly started daily-session lesson is treated as part of that path');
+  assert.match(lesson, /if\s*\(isDailySessionLesson\)\s*\{\s*state\.dailySessionStep = 'story'/, 'an independent lesson must not advance the daily session');
   assert.match(lesson, /if\s*\(!isDailySessionLesson\)\s*maybeShowAccountPrompt\('lesson'/,
     'a daily-session lesson must not trigger the invitation before the story finishes');
   assert.match(lesson, /G\.mode === 'daily' \|\| G\.mode === 'oneLife'/,
@@ -58,7 +59,12 @@ test('account invitation is session-limited, optional, and only attached to elig
   const miniGame = section(app, 'function miniFinish(', '/* Order the Story */');
   assert.match(miniGame, /maybeShowAccountPrompt\('mini-game'/);
 
+  const dailySession = section(app, 'function startDailySession(', 'function renderHome(');
+  assert.match(dailySession, /if \(G\) G\.dailySession = true/);
+  assert.match(dailySession, /if \(ST\) ST\.dailySession = true/);
+
   const story = section(app, 'function finishStory(', '/* ---------- navigation ---------- */');
+  assert.match(story, /ST\.dailySession===true/);
   assert.match(story, /maybeShowAccountPrompt\('story'/,
     'story completion, including the final daily-session story, is eligible');
 
