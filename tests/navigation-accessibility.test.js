@@ -75,7 +75,7 @@ test('World map control has a visible text label', () => {
 test('Collection is a standalone destination and Profile keeps its own overview', () => {
   const html = read('index.html');
   const cards = read('cards.js');
-  assert.match(html, /<section class="view" id="collection-view"/);
+  assert.match(html, /<section class="view[^"]*" id="collection-view"/);
   assert.match(html, /<section class="view" id="profile-view"/);
   assert.match(html, /<button class="tab nav-collection" data-view="collection"/);
   const collectionStart = html.indexOf('id="collection-view"');
