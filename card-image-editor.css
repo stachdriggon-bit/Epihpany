@@ -1,0 +1,29 @@
+/* EPIPHANY Card Image Editor */
+.card-image-editor{display:grid;gap:14px;margin:18px 0 22px;padding:18px;border:1px solid var(--line);border-radius:20px;background:var(--surface);color:var(--ink)}
+.card-image-editor[hidden]{display:none}
+.card-image-editor-head h4{margin:0;font-size:1.12rem}
+.card-image-editor-head p,.card-image-editor-note{margin:5px 0 0;color:var(--ink-3);font-size:.84rem;line-height:1.5}
+.card-image-editor-fields{display:grid;grid-template-columns:1fr minmax(220px,1.4fr);gap:8px 12px;align-items:center}
+.card-image-editor-fields label,.card-image-editor-controls label{font-size:.82rem;font-weight:750;color:var(--ink-2)}
+.card-image-editor-fields input,.card-image-editor-fields select{width:100%;min-width:0;min-height:42px;padding:9px 11px;border:1px solid var(--line);border-radius:11px;background:var(--surface);color:var(--ink);font:inherit;box-sizing:border-box}
+.card-image-editor-workspace{display:grid;grid-template-columns:minmax(220px,.8fr) minmax(240px,1.2fr);gap:18px;align-items:center}
+.card-image-editor-preview-wrap{display:grid;gap:8px;justify-items:center}
+.card-image-editor-preview-label{font-size:.8rem;font-weight:800;color:var(--ink-2)}
+.card-image-editor-stage{position:relative;width:min(100%,300px);aspect-ratio:4/5;border:2px solid var(--line);border-radius:20px;overflow:hidden;background:radial-gradient(circle at 50% 35%,#5c557e,#151528 78%);cursor:grab;touch-action:none;box-shadow:0 12px 30px #1112}
+.card-image-editor-stage:active{cursor:grabbing}
+.card-image-editor-stage img{position:absolute;inset:0;width:100%;height:100%;object-position:50% 32%;object-fit:cover;user-select:none;-webkit-user-drag:none;pointer-events:none}
+.card-image-editor-stage img[hidden]{display:none}
+.card-image-editor-stage.is-empty:after{content:"Choose a character with an available portrait";position:absolute;inset:0;display:grid;place-items:center;padding:20px;text-align:center;color:#e9e5f7;font-size:.85rem}
+.card-image-editor-guide{position:absolute;inset:5%;border:1px dashed #fff8;border-radius:15px;pointer-events:none;box-shadow:inset 0 0 0 1px #0003}
+.card-image-editor-preview-wrap>small{max-width:320px;text-align:center;color:var(--ink-3);font-size:.75rem;line-height:1.4}
+.card-image-editor-controls{display:grid;gap:12px;align-content:center}
+.card-image-editor-controls label{display:flex;justify-content:space-between;gap:12px}
+#card-image-editor-zoom{width:100%;accent-color:var(--accent,#7557e8)}
+.card-image-editor-actions{display:flex;flex-wrap:wrap;gap:8px}
+.card-image-editor-actions button{min-height:40px}
+.card-image-editor-status{min-height:20px;margin:0;color:var(--ink-3);font-size:.82rem;line-height:1.45}
+.card-image-editor-status[data-state=success]{color:#27856d}
+.card-image-editor-status[data-state=error]{color:#c05b4e}
+.card-image-editor.has-unsaved-changes{border-color:color-mix(in srgb,var(--accent,#7557e8) 45%,var(--line))}
+.card-image-editor.is-busy{opacity:.75}
+@media(max-width:640px){.card-image-editor{padding:13px}.card-image-editor-fields,.card-image-editor-workspace{grid-template-columns:1fr}.card-image-editor-stage{width:min(78%,280px)}.card-image-editor-actions{display:grid;grid-template-columns:1fr 1fr}.card-image-editor-actions #card-image-editor-save{grid-column:1/-1}}
