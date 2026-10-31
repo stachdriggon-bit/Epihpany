@@ -184,7 +184,7 @@ window.EPIPHANY_CARD_PROFILES["CHR-002"] = {
       {text:{en:"His growth can involve learning to balance curiosity with responsibility, judge risks more carefully, and recognize when people need his attention without losing his enthusiasm for discovery.",ar:"يمكن أن يتضمن تطوره تعلم الموازنة بين الفضول والمسؤولية، وتقدير المخاطر بعناية أكبر، والانتباه إلى احتياجات الآخرين دون فقدان حماسه للاكتشاف."}}
     ]},
     {id:"relationships",title:{en:"Relationships",ar:"العلاقات"},icon:"♡",text:[
-      {characterId:"CHR-003",label:{en:"Ilaris",ar:"إيلاريس"}},{text:{en:"Ilaris noticed the appearance of Evren's restraint mark when he was five and took him with her. She helped him understand Aelora Energy and the foundations of Aren Art, becoming the formative sorcerer who introduced him to the magical world. The exact personal dynamics of their relationship remain open.",ar:"لاحظت إيلاريس ظهور علامة قيد إيفرن عندما كان في الخامسة، واصطحبته معها. ساعدته على فهم طاقة أيلورا وأساسيات فن الأرين، وأصبحت الساحرة المحورية التي عرّفته إلى العالم السحري. أما التفاصيل الشخصية الدقيقة لعلاقتهما فما زالت مفتوحة."}},
+      {characterId:"CHR-003",label:{en:"Elaris",ar:"إيلاريس"}},{text:{en:"Elaris noticed the appearance of Evren's restraint mark when he was five and took him with her. She helped him understand Aelora Energy and the foundations of Aren Art, becoming the formative sorcerer who introduced him to the magical world. The exact personal dynamics of their relationship remain open.",ar:"لاحظت إيلاريس ظهور علامة قيد إيفرن عندما كان في الخامسة، واصطحبته معها. ساعدته على فهم طاقة أيلورا وأساسيات فن الأرين، وأصبحت الساحرة المحورية التي عرّفته إلى العالم السحري. أما التفاصيل الشخصية الدقيقة لعلاقتهما فما زالت مفتوحة."}},
       {text:{en:"No specific relationship with Mira, Veyra or other characters has been established. Shared placement in the current era does not mean they already know one another.",ar:"لم تُحدّد علاقة بعينها بينه وبين ميرا أو فييرا أو غيرهما. وجودهم في العصر الحالي نفسه لا يعني أنهم يعرفون بعضهم مسبقًا."}}
     ]},
     {id:"places",title:{en:"Places & Era",ar:"الأماكن والعصر"},icon:"⌖",text:[
@@ -201,7 +201,7 @@ window.EPIPHANY_CARD_PROFILES["CHR-002"] = {
 
 /* Ilaris — accepted foundational bilingual Character Details profile; detailed canon: docs/character-reference-cards/CHR-003-ILARIS.md */
 window.EPIPHANY_CARD_PROFILES["CHR-003"] = {
-  name:{en:"Ilaris",ar:"إيلاريس"},
+  name:{en:"Elaris",ar:"إيلاريس"},
   title:{en:"Veiled Archivist",ar:"أمينة الأرشيف المحجّبة"},
   summary:{
     en:"A seasoned sorcerer and scholarly adviser whose travels and research have led her to an independent organization devoted to research and knowledge in Avelorn.",
@@ -217,7 +217,7 @@ window.EPIPHANY_CARD_PROFILES["CHR-003"] = {
   ],
   sections:[
     {id:"overview",title:{en:"Overview",ar:"نبذة"},icon:"✦",text:[
-      {text:{en:"Ilaris was born in Eiraven, in Ilmar. After becoming a sorcerer, she travelled across the continents. Her path eventually brought her to Avelorn in Orath, where she serves as an adviser to an independent organization devoted to research and knowledge.",ar:"وُلدت إيلاريس في إيرافين بإيلمار. وبعد أن أصبحت ساحرة، بدأت التنقل بين قارات العالم. وانتهى بها المطاف في أفيلورن بأوراث، حيث تعمل مستشارة لدى منظمة مستقلة تُعنى بالبحث والمعرفة."}},
+      {text:{en:"Elaris was born in Eiraven, in Ilmar. After becoming a sorcerer, she travelled across the continents. Her path eventually brought her to Avelorn in Orath, where she serves as an adviser to an independent organization devoted to research and knowledge.",ar:"وُلدت إيلاريس في إيرافين بإيلمار. وبعد أن أصبحت ساحرة، بدأت التنقل بين قارات العالم. وانتهى بها المطاف في أفيلورن بأوراث، حيث تعمل مستشارة لدى منظمة مستقلة تُعنى بالبحث والمعرفة."}},
       {text:{en:"The organization has its headquarters and research facilities in Avelorn. It is one prominent institution among the city's wider civic, cultural and scholarly life; the city is not built around the organization.",ar:"للمنظمة مقر رئيسي ومرافق بحثية في أفيلورن. وهي مؤسسة بارزة ضمن الحياة المدنية والثقافية والعلمية الأوسع للمدينة، فالمدينة ليست مبنية حول المنظمة."}}
     ]},
     {id:"personality",title:{en:"Personality & Behaviour",ar:"الشخصية والسلوك"},icon:"◇",text:[
@@ -233,7 +233,7 @@ window.EPIPHANY_CARD_PROFILES["CHR-003"] = {
       {text:{en:"She values competence, careful reasoning and experience. Her position as an adviser does not make her omniscient, and her knowledge has limits.",ar:"تقدّر الكفاءة والاستدلال المتأني والخبرة. ولا يجعلها موقعها كمستشارة عارفة بكل شيء؛ فمعرفتها لها حدود."}}
     ]},
     {id:"abilities",title:{en:"Ability — Reshaping",ar:"القدرة — إعادة التشكيل"},icon:"✧",text:[
-      {text:{en:"Ilaris can reshape her own magical formations and magical formations created by other sorcerers. Her intervention can alter a formation's function or redirect its course, where its structure allows such a change.",ar:"تستطيع إيلاريس إعادة تشكيل تشكيلاتها السحرية والتشكيلات التي أنشأها سحرة آخرون. ويمكن لتدخلها أن يغيّر وظيفة التشكيل أو يعيد توجيه مساره، إذا كانت بنيته تسمح بذلك."}},
+      {text:{en:"Elaris can reshape her own magical formations and magical formations created by other sorcerers. Her intervention can alter a formation's function or redirect its course, where its structure allows such a change.",ar:"تستطيع إيلاريس إعادة تشكيل تشكيلاتها السحرية والتشكيلات التي أنشأها سحرة آخرون. ويمكن لتدخلها أن يغيّر وظيفة التشكيل أو يعيد توجيه مساره، إذا كانت بنيته تسمح بذلك."}},
       {text:{en:"To intervene in another sorcerer's formation, she must first understand its structure and how it operates. Merely seeing it or recognizing it as magic is not enough; understanding does not automatically grant complete control.",ar:"لكي تتدخل في تشكيل ساحر آخر، عليها أولًا فهم بنيته وطريقة عمله. مجرد رؤيته أو معرفة أنه سحر لا يكفي؛ كما أن فهمه لا يمنحها تحكمًا كاملًا به تلقائيًا."}},
       {text:{en:"Before reshaping an opponent's formation, she must weaken its stability enough to create an opportunity for intervention. Strong, coherent formations—especially those made by highly skilled sorcerers—are consequently harder for her to alter, though not absolutely immune.",ar:"قبل إعادة تشكيل تشكيل الخصم، عليها إضعاف استقراره بما يكفي لتهيئة فرصة للتدخل. لذلك تكون التشكيلات القوية والمتماسكة، ولا سيما التي يصنعها السحرة المتمكنون، أصعب عليها في التعديل، لكنها ليست محصنة تمامًا."}},
       {text:{en:"She can work on more than one formation at a time. There is no fixed target count: the practical load depends on the strength and complexity of the formations. A single powerful, intricate formation may demand most of her attention, while several simple ones may be manageable together.",ar:"يمكنها التعامل مع أكثر من تشكيل في الوقت نفسه. لا يوجد عدد ثابت للأهداف؛ فالعبء العملي يعتمد على قوة التشكيلات وتعقيدها. وقد يستحوذ تشكيل واحد قوي ومعقد على معظم تركيزها، بينما تستطيع التعامل مع عدة تشكيلات بسيطة معًا."}},
@@ -245,15 +245,15 @@ window.EPIPHANY_CARD_PROFILES["CHR-003"] = {
       {text:{en:"The precise thresholds and the detailed ways this ceiling manifests remain intentionally open.",ar:"تظل العتبات الدقيقة والكيفية التفصيلية التي يظهر بها هذا السقف مفتوحة عمدًا."}}
     ]},
     {id:"backstory",title:{en:"Background",ar:"الخلفية"},icon:"◷",text:[
-      {text:{en:"Ilaris was born in Eiraven, Ilmar. She became a sorcerer and later travelled between the world's continents. The details of her childhood, family, early training and individual journeys have not yet been established.",ar:"وُلدت إيلاريس في إيرافين بإيلمار. وأصبحت ساحرة ثم تنقلت بين قارات العالم. لم تُحدّد بعد تفاصيل طفولتها أو عائلتها أو تدريبها المبكر أو رحلاتها الفردية."}},
+      {text:{en:"Elaris was born in Eiraven, Ilmar. She became a sorcerer and later travelled between the world's continents. The details of her childhood, family, early training and individual journeys have not yet been established.",ar:"وُلدت إيلاريس في إيرافين بإيلمار. وأصبحت ساحرة ثم تنقلت بين قارات العالم. لم تُحدّد بعد تفاصيل طفولتها أو عائلتها أو تدريبها المبكر أو رحلاتها الفردية."}},
       {text:{en:"She eventually became an adviser to an independent research and knowledge organization headquartered in Avelorn, Orath. The organization's name and its internal structure remain open.",ar:"أصبحت في نهاية المطاف مستشارة لدى منظمة مستقلة للبحث والمعرفة يقع مقرها الرئيسي في أفيلورن بأوراث. ولم يُحسم اسم المنظمة أو هيكلها الداخلي بعد."}}
     ]},
     {id:"relationships",title:{en:"Relationships",ar:"العلاقات"},icon:"♡",text:[
       {characterId:"CHR-002",label:{en:"Evren",ar:"إيفرن"}},
-      {text:{en:"Ilaris noticed Evren's restraint mark when it appeared at the age of five and took him with her. She introduced him to the magical world and helped him understand Aelora Energy and the foundations of Aren Art. This early guidance was formative in the development of his curiosity. The exact personal dynamics of their relationship, including how it changed over time, remain open.",ar:"لاحظت إيلاريس ظهور علامة قيد إيفرن عندما بلغ الخامسة، واصطحبته معها. عرّفته إلى العالم السحري وساعدته على فهم طاقة أيلورا وأساسيات فن الأرين. وكان لهذا التوجيه المبكر أثر محوري في تشكل فضوله. أما التفاصيل الشخصية الدقيقة لعلاقتهما وكيف تطورت مع الزمن فما زالت مفتوحة."}}
+      {text:{en:"Elaris noticed Evren's restraint mark when it appeared at the age of five and took him with her. She introduced him to the magical world and helped him understand Aelora Energy and the foundations of Aren Art. This early guidance was formative in the development of his curiosity. The exact personal dynamics of their relationship, including how it changed over time, remain open.",ar:"لاحظت إيلاريس ظهور علامة قيد إيفرن عندما بلغ الخامسة، واصطحبته معها. عرّفته إلى العالم السحري وساعدته على فهم طاقة أيلورا وأساسيات فن الأرين. وكان لهذا التوجيه المبكر أثر محوري في تشكل فضوله. أما التفاصيل الشخصية الدقيقة لعلاقتهما وكيف تطورت مع الزمن فما زالت مفتوحة."}}
     ]},
     {id:"places",title:{en:"Places",ar:"الأماكن"},icon:"⌖",text:[
-      {text:{en:"Eiraven — Ilaris's birthplace in Ilmar.",ar:"إيرافين — مسقط رأس إيلاريس في إيلمار."}},
+      {text:{en:"Eiraven — Elaris's birthplace in Ilmar.",ar:"إيرافين — مسقط رأس إيلاريس في إيلمار."}},
       {text:{en:"Avelorn — the major scholarly city in Orath where the independent research and knowledge organization has its headquarters and research facilities.",ar:"أفيلورن — مدينة علمية كبرى في أوراث، تضم المقر الرئيسي للمنظمة المستقلة للبحث والمعرفة ومرافقها البحثية."}}
     ]},
     {id:"quote",title:{en:"Signature Quote",ar:"العبارة المميزة"},icon:"❝",text:[
