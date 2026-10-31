@@ -7,7 +7,8 @@ const css = readFileSync(new URL('../style.css', import.meta.url), 'utf8');
 
 test('World fullscreen layer sits above the site header', () => {
   assert.ok(css.includes('body.world-fullscreen #world-game{position:fixed;z-index:10001;inset:0;'));
-  assert.ok(!css.includes('body.world-fullscreen \\nbody.world-fullscreen #world-game'));
+  assert.ok(!css.includes(`body.world-fullscreen 
+body.world-fullscreen #world-game`));
 });
 
 test('World fullscreen control uses a fullscreen icon on desktop and rotate icon on mobile', () => {
