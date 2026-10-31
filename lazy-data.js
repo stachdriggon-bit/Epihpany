@@ -17,6 +17,7 @@
   };
   const pendingStyles = new Map();
   const optionalQueue = [];
+  const queuedOptionalLoads = new Map();
   let activeOptionalLoads = 0;
 
   function optionalLoadLimit() {
@@ -27,32 +28,51 @@
     } catch { return 1; }
   }
 
-  function pumpOptionalQueue() {
-    while (activeOptionalLoads < optionalLoadLimit() && optionalQueue.length) {
-      const job = optionalQueue.shift();
-      if (job.started) continue;
-      job.started = true;
-      activeOptionalLoads++;
-      Promise.resolve().then(job.run).then(job.resolve, job.reject).finally(() => {
-        activeOptionalLoads = Math.max(0, activeOptionalLoads - 1);
-        pumpOptionalQueue();
-      });
-    }
-  }
-
-  function runWithPriority(priority, run) {
-    if (priority !== 'optional') return Promise.resolve().then(run);
-    return new Promise((resolve, reject) => {
-      optionalQueue.push({ run, resolve, reject, started: false });
+  function startOptionalJob(job, asUser) {
+    if (job.started) return;
+    job.started = true;
+    if (job.key) queuedOptionalLoads.delete(job.key);
+    if (!asUser) activeOptionalLoads++;
+    Promise.resolve().then(job.run).then(job.resolve, job.reject).finally(() => {
+      if (!asUser) activeOptionalLoads = Math.max(0, activeOptionalLoads - 1);
+      if (job.key) queuedOptionalLoads.delete(job.key);
       pumpOptionalQueue();
     });
   }
-  const loadedStyles = new Set();
-  const loadingStyles = new Map();
 
+  function pumpOptionalQueue() {
+    while (activeOptionalLoads < optionalLoadLimit() && optionalQueue.length) {
+      const job = optionalQueue.shift();
+      if (!job.started) startOptionalJob(job, false);
+    }
+  }
+
+  function runWithPriority(priority, run, key) {
+    if (priority !== 'optional') {
+      const queued = key && queuedOptionalLoads.get(key);
+      if (queued) {
+        const index = optionalQueue.indexOf(queued);
+        if (index !== -1) optionalQueue.splice(index, 1);
+        startOptionalJob(queued, true);
+        return queued.promise;
+      }
+      return Promise.resolve().then(run);
+    }
+    return new Promise((resolve, reject) => {
+      const job = { key, run, resolve, reject, started: false, promise: null };
+      job.promise = new Promise((done, fail) => { job.resolve = done; job.reject = fail; });
+      if (key) queuedOptionalLoads.set(key, job);
+      optionalQueue.push(job);
+      pumpOptionalQueue();
+      resolve = null;
+    });
+  }
   function loadStyle(href, priority) {
     if (loadedStyles.has(href)) return Promise.resolve();
-    if (loadingStyles.has(href)) return loadingStyles.get(href);
+    if (loadingStyles.has(href)) {
+      if (priority === 'user') return runWithPriority('user', () => Promise.resolve(), href).then(() => loadingStyles.get(href));
+      return loadingStyles.get(href);
+    }
     const promise = runWithPriority(priority, () => new Promise((resolve, reject) => {
       const link = document.createElement('link');
       link.rel = 'stylesheet';
@@ -63,7 +83,7 @@
         reject(new Error('Unable to load feature styles: ' + href.split('?')[0]));
       };
       document.head.appendChild(link);
-    })).finally(() => loadingStyles.delete(href));
+    }), href).finally(() => loadingStyles.delete(href));
     loadingStyles.set(href, promise);
     return promise;
   }
@@ -165,7 +185,10 @@
 
   function loadScript(src, priority) {
     if (loaded.has(src)) return Promise.resolve();
-    if (loadingScripts.has(src)) return loadingScripts.get(src);
+    if (loadingScripts.has(src)) {
+      if (priority === 'user') return runWithPriority('user', () => Promise.resolve(), src).then(() => loadingScripts.get(src));
+      return loadingScripts.get(src);
+    }
     const promise = runWithPriority(priority, () => new Promise((resolve, reject) => {
       const script = document.createElement('script');
       script.src = src;
@@ -183,7 +206,7 @@
         reject(new Error('Unable to load feature data: ' + src.split('?')[0]));
       };
       document.head.appendChild(script);
-    })).finally(() => loadingScripts.delete(src));
+    }), src).finally(() => loadingScripts.delete(src));
     loadingScripts.set(src, promise);
     return promise;
   }
