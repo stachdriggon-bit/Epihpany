@@ -221,6 +221,13 @@ test('main navigation tabs open without uncaught page errors', async t => {
         const quickActions = page.locator('.quick-actions-more');
         assert.equal(await quickActions.evaluate(el => el.open), false, 'secondary practice options should start collapsed');
         assert.equal(await page.locator('#listen-only-start').isVisible(), false, 'collapsed secondary actions should not clutter the home screen');
+        const quickActionsState = await page.evaluate(() => {
+          const details = document.querySelector('.quick-actions-more');
+          const summary = details?.querySelector('summary');
+          const rect = element => { if (!element) return null; const r = element.getBoundingClientRect(); const s = getComputedStyle(element); return {width:r.width,height:r.height,display:s.display,visibility:s.visibility,opacity:s.opacity}; };
+          return {details:rect(details),summary:rect(summary),detailsHidden:details?.hidden??null,summaryHidden:summary?.hidden??null,home:rect(document.querySelector('#home-view')),main:rect(document.querySelector('main#main')),bodyClass:document.body.className};
+        });
+        assert.equal(await quickActions.locator('summary').isVisible(), true, 'secondary actions summary should be visible: ' + JSON.stringify(quickActionsState));
         await quickActions.locator('summary').click();
         assert.equal(await page.locator('#listen-only-start').isVisible(), true, 'secondary practice actions should be available when expanded');
         await quickActions.locator('summary').click();
