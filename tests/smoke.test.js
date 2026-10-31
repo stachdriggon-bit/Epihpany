@@ -40,6 +40,10 @@ async function dismissFirstVisitOverlays(page) {
     await levelChoice.click();
     await page.locator('#game').waitFor({ state: 'visible', timeout: 5000 });
     await page.locator('#game-close').click();
+    await page.locator('#game').waitFor({ state: 'hidden', timeout: 5000 });
+    const homeTab = page.locator('button[data-view="home"]:visible').first();
+    if (await homeTab.count()) await homeTab.click();
+    await page.locator('#home-view').waitFor({ state: 'visible', timeout: 5000 });
   }
 }
 const mime = { '.html':'text/html; charset=utf-8', '.js':'text/javascript; charset=utf-8', '.css':'text/css; charset=utf-8', '.json':'application/json; charset=utf-8', '.svg':'image/svg+xml', '.png':'image/png', '.jpg':'image/jpeg', '.webp':'image/webp' };
