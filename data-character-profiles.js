@@ -177,7 +177,7 @@ window.EPIPHANY_CARD_PROFILES["CHR-002"] = {
       {text:{en:"Evren is 28 years old and comes from Dornwick, a caravan stop on a dry plateau in Orath, known for metalworking and workshops that repair tools and equipment.",ar:"يبلغ إيفرن 28 عامًا، وينحدر من دورنويك، وهي محطة للقوافل على هضبة جافة في أوراث، وتشتهر بأعمال المعادن وورش إصلاح الأدوات والمعدات."}},
       {text:{en:"He was an ordinary child until his restraint symbol appeared when he was five. Becoming a sorcerer at such a young age is exceptionally rare; the timing itself was unusual, not the result of a prophecy or a hidden selection.",ar:"كان طفلًا عاديًا حتى ظهر رمز قيده عندما بلغ الخامسة. أن يصبح المرء ساحرًا في هذا العمر المبكر أمر نادر للغاية؛ وكان التوقيت نفسه حالة استثنائية، لا نتيجة نبوءة أو اختيار خفي."}},
       {text:{en:"Someone noticed the phenomenon and took him along, helping him understand Aelora energy and Aren Art. His curiosity began to develop through this exposure to the magical world; his hometown had not previously given him a particular reason to explore it.",ar:"لاحظ شخص ما هذه الظاهرة واصطحبه معه، وساعده على فهم طاقة الإيلوار وفن الأرن. بدأ فضوله يتشكل من خلال احتكاكه بالعالم السحري؛ فلم يكن في مسقط رأسه ما يدفعه تحديدًا إلى استكشاف هذا المجال من قبل."}},
-      {text:{en:"The person who guided him is a sorcerer with standing and responsibilities within a political institution, combining scholarly knowledge with field and political work. Their identity, institution and exact duties remain open.",ar:"الشخص الذي وجّهه ساحر له مكانة ومسؤوليات داخل مؤسسة سياسية، ويجمع بين المعرفة العلمية والعمل الميداني والسياسي. هويته والمؤسسة ومهامه الدقيقة ما زالت أمورًا مفتوحة."}}
+      {text:{en:"Ilaris was the sorcerer who noticed his restraint mark when he was five and took him along. She helped him understand Aelora Energy and the foundations of Aren Art. She is an adviser to The Orivane Institute in Avelorn; Evren's connection to the institute is through her, and no formal membership or employment is established.",ar:"إيلاريس هي الساحرة التي لاحظت علامة قيده عندما كان في الخامسة واصطحبته معها. ساعدته على فهم طاقة أيلورا وأساسيات فن الأرين. وهي مستشارة لدى The Orivane Institute في أفيلورن؛ وارتباط إيفرن بالمعهد يأتي من خلالها، دون أن يعني ذلك أنه عضو أو موظف فيه."}}}
     ]},
     {id:"story-role",title:{en:"Story Role & Development",ar:"الدور السردي والتطور"},icon:"▤",text:[
       {text:{en:"Evren can contribute as an explorer, practical inventor and curious problem-solver. His resonance ability supports investigation and experimentation but should not solve every material or magical problem automatically.",ar:"يمكن أن يؤدي إيفرن دور المستكشف والمبتكر العملي وحلال المشكلات الفضولي. تساعده قدرته على الرنين في البحث والتجربة، لكنها لا ينبغي أن تحل كل مشكلة مادية أو سحرية تلقائيًا."}},
@@ -269,3 +269,68 @@ window.EPIPHANY_CARD_PROFILES["CHR-001"].sections.forEach(section => {
     section.text = [{text:section.text}];
   }
 });
+
+
+/* Lucian — accepted foundational bilingual Character Details profile; detailed canon: docs/character-reference-cards/CHR-005-LUCIAN.md */
+window.EPIPHANY_CARD_PROFILES["CHR-005"] = {
+  name:{en:"Lucian",ar:"لوسيان"},
+  title:{en:"Crystal Echo",ar:"صدى البلور"},
+  summary:{
+    en:"A calm, capable former field protector whose crystalline nature lets him respond to lingering magical and physical traces. He travels more from circumstance and companionship than from a love of exploration.",
+    ar:"حامٍ ميداني سابق هادئ وذي خبرة، تتيح له طبيعته البلورية الاستجابة للآثار السحرية والمادية المتبقية. يتنقل بفعل الظروف والرفقة أكثر مما يفعل بدافع حب الاستكشاف."
+  },
+  facts:[
+    {label:{en:"Species",ar:"النوع"},value:{en:"Human with crystalline traits",ar:"إنسان بخصائص بلورية"}},
+    {label:{en:"Age",ar:"العمر"},value:{en:"25 years",ar:"25 سنة"}},
+    {label:{en:"Homeland",ar:"مسقط الرأس"},value:{en:"Urven Reach · Nirvan",ar:"أورفن ريتش · نيرفان"}},
+    {label:{en:"Former organization",ar:"المنظمة السابقة"},value:{en:"Aegis Concord",ar:"Aegis Concord"}},
+    {label:{en:"Role",ar:"الدور"},value:{en:"Former field-protection operative; now a frequent traveler",ar:"عنصر سابق في فرق الحماية الميدانية؛ ومسافر كثير التنقل حاليًا"}},
+    {label:{en:"Ability",ar:"القدرة"},value:{en:"Echo Response",ar:"استجابة الصدى"}}
+  ],
+  sections:[
+    {id:"overview",title:{en:"Overview",ar:"نبذة"},icon:"✦",text:[
+      {text:{en:"Lucian is a human with crystalline traits. He is calm, observant and responsible, with a dry, playful sense of humour. He is comfortable travelling alone, but does not mind good company.",ar:"لوسيان إنسان بخصائص بلورية. هادئ وملاحظ ومسؤول، ويمتلك حسًا فكاهيًا هادئًا ومشاكسًا. يرتاح إلى السفر وحده، لكنه لا يمانع الرفقة الممتعة."}}
+    ]},
+    {id:"personality",title:{en:"Personality & Behaviour",ar:"الشخصية والسلوك"},icon:"◇",text:[
+      {text:{en:"He is measured and watches before acting. He avoids unnecessary risks, but does not hesitate when intervention becomes necessary.",ar:"متزن ويراقب قبل أن يتصرف. يتجنب المخاطرة غير الضرورية، لكنه لا يتردد عندما يصبح التدخل ضروريًا."}},
+      {text:{en:"He is socially capable and adapts easily to different people, yet does not constantly seek new friendships or company.",ar:"يجيد التعامل الاجتماعي والتأقلم مع شخصيات مختلفة، لكنه لا يبحث باستمرار عن صداقات أو رفقة جديدة."}},
+      {text:{en:"Usually serious in appearance, he enjoys quiet teasing and light, sometimes dry humour with people close to him.",ar:"يبدو جادًا في معظم الوقت، لكنه يستمتع بالمشاكسات الخفيفة والمزاح الهادئ، وأحيانًا الساخر، مع المقربين منه."}},
+      {text:{en:"He does not think of himself as a hero. He may step in spontaneously when a situation moves him or irritates him, rather than from a constant desire to save others.",ar:"لا يرى نفسه بطلًا. قد يتدخل بعفوية عندما يؤثر فيه موقف أو يستفزه، لا بدافع دائم لإنقاذ الآخرين."}},
+      {text:{en:"He can spend long periods alone and enjoys independent travel. His current exploration is largely encouraged by the friend who accompanies him.",ar:"يستطيع قضاء فترات طويلة وحده ويستمتع بالترحال المستقل. أما استكشافه الحالي فيأتي إلى حد كبير بتشجيع الصديق الذي يرافقه."}}
+    ]},
+    {id:"motivation",title:{en:"Motivation & Outlook",ar:"الدوافع والنظرة إلى العالم"},icon:"⌖",text:[
+      {text:{en:"Lucian did not originally love travelling or exploring. Financial circumstances pushed him into work that involved travel; over time, the road became a familiar part of his life.",ar:"لم يكن لوسيان يحب الترحال أو الاستكشاف في الأصل. دفعته ظروفه المادية إلى عمل يتطلب التنقل، ومع الوقت أصبح الطريق جزءًا مألوفًا من حياته."}},
+      {text:{en:"He accepted field-protection work at Aegis Concord in part because the pay was good. The heroic impression he sometimes leaves on explorers is not the whole story.",ar:"قبل العمل في الحماية الميدانية لدى Aegis Concord جزئيًا لأن أجره كان جيدًا. والانطباع البطولي الذي يتركه أحيانًا لدى المستكشفين لا يروي القصة كاملة."}},
+      {text:{en:"He does not seek battles, but neither is he defined by avoiding them. He learned to act under pressure and reduce losses as part of his work.",ar:"لا يبحث عن المعارك، لكنه لا يعرّف نفسه بتجنبها أيضًا. تعلم التصرف تحت الضغط وتقليل الخسائر بحكم عمله."}}
+    ]},
+    {id:"abilities",title:{en:"Ability — Echo Response",ar:"القدرة — استجابة الصدى"},icon:"✧",text:[
+      {text:{en:"Echo Response allows the crystalline structure in Lucian's body to respond to residual traces left by interactions and phenomena in its surroundings.",ar:"تتيح استجابة الصدى للبنية البلورية في جسد لوسيان أن تتفاعل مع الآثار المتبقية من التفاعلات والظواهر التي حدثت في محيطها."}},
+      {text:{en:"These traces can be magical, such as residues of spell use and Aelora interactions, or physical, such as vibrations, pressure, impacts, collisions and structural disturbances.",ar:"قد تكون هذه الآثار سحرية، مثل بقايا استخدام التعاويذ وتفاعلات أيلورا، أو مادية، مثل الاهتزازات والضغط والصدمات والتصادمات والاضطرابات البنيوية."}},
+      {text:{en:"The process has three broad stages: sensing an echo, attuning his crystalline structure to its pattern, and responding in a way shaped by the trace.",ar:"تمر العملية بثلاث مراحل عامة: الإحساس بالصدى، ثم تناغم بنيته البلورية مع نمطه، ثم الاستجابة بطريقة تتشكل وفق طبيعة الأثر."}},
+      {text:{en:"Possible applications include responding to resonance and structural changes, reducing some impacts, and sensing or interacting in limited ways with existing magical traces. The ability is not a direct combat power or an all-purpose exploration detector.",ar:"تشمل التطبيقات الممكنة الاستجابة للرنين والتغيرات البنيوية وتخفيف بعض الصدمات، والإحساس بآثار سحرية موجودة أو التفاعل معها بصورة محدودة. ليست القدرة قوة قتالية مباشرة ولا أداة تكشف كل شيء أثناء الاستكشاف."}}
+    ]},
+    {id:"limits",title:{en:"Natural Limits",ar:"الحدود الطبيعية"},icon:"⌁",text:[
+      {text:{en:"Lucian cannot create echoes from nothing, copy spells or other sorcerers' abilities, read an object's memories, or watch the past.",ar:"لا يستطيع لوسيان خلق أصداء من العدم أو نسخ التعاويذ وقدرات السحرة الآخرين أو قراءة ذكريات الأشياء أو مشاهدة الماضي."}},
+      {text:{en:"An echo does not automatically reveal its source or owner, and he cannot exert absolute control over materials or phenomena.",ar:"لا يكشف الصدى تلقائيًا عن مصدره أو صاحبه، ولا يستطيع فرض سيطرة مطلقة على المواد أو الظواهر."}},
+      {text:{en:"Old, weak or overlapping traces are harder to interpret and answer. Attunement can fail, and strong or prolonged use consumes Aelora energy and may exhaust him.",ar:"يصعب التعامل مع الآثار القديمة أو الضعيفة أو المتداخلة. وقد يفشل التناغم، كما يستهلك الاستخدام القوي أو المطوّل طاقة أيلورا وقد يرهقه."}},
+      {text:{en:"His partial crystalline form can help him endure some domain conditions, but it does not make him immune to domains or their effects.",ar:"قد تساعده هيئته البلورية الجزئية على تحمل بعض ظروف الدومينات، لكنها لا تجعله محصنًا ضد الدومينات أو تأثيراتها."}}
+    ]},
+    {id:"appearance",title:{en:"Appearance & Forms",ar:"المظهر والهيئات"},icon:"◇",text:[
+      {text:{en:"Lucian is human in his natural form. His crystalline traits are visible, including his blue crystal-like hair.",ar:"لوسيان بشري في هيئته الطبيعية، وتظهر عليه خصائصه البلورية، ومنها شعره ذو المظهر الأزرق البلوري."}},
+      {text:{en:"He can assume a partial crystalline form while retaining his ordinary human silhouette and facial features. He can use Echo Response without transforming.",ar:"يستطيع اتخاذ هيئة بلورية جزئية مع الاحتفاظ بهيئته وملامحه البشرية المعتادة. ويمكنه استخدام استجابة الصدى دون التحول."}}
+    ]},
+    {id:"backstory",title:{en:"Backstory",ar:"الخلفية"},icon:"◷",text:[
+      {text:{en:"Lucian is 25 and comes from Urven Reach in Nirvan. His family was of moderate means before an event later worsened their circumstances; the event and its details remain undisclosed.",ar:"يبلغ لوسيان 25 عامًا وينحدر من أورفن ريتش في نيرفان. كانت عائلته متوسطة الحال قبل وقوع أمر أدى لاحقًا إلى تدهور ظروفها؛ ولم يُكشف عن ذلك الأمر وتفاصيله بعد."}},
+      {text:{en:"From a young age, he struggled to gather and control his power. This long experience contributed to his skill, though the precise stages of his early training remain open.",ar:"عانى منذ صغره في جمع قوته والتحكم بها. وأسهمت هذه التجربة الطويلة في بناء مهارته، مع بقاء المراحل الدقيقة لتدريبه المبكر مفتوحة."}},
+      {text:{en:"He later worked in field-protection teams for Aegis Concord, a major independent organization headquartered in Urven Reach. Its work includes protecting inhabited areas, routes, convoys and expeditions from domain-related dangers.",ar:"عمل لاحقًا ضمن فرق الحماية الميدانية لدى Aegis Concord، وهي مؤسسة مستقلة كبرى يقع مقرها الرئيسي في أورفن ريتش. تشمل أعمالها حماية المناطق المأهولة والطرق والقوافل والبعثات من أخطار الدومينات."}},
+      {text:{en:"During a mission, something happened inside an unusual or powerful domain and left him trapped there for a long time. Other explorers who encountered him believed he was guarding the domain and began calling him Crystal Echo. Another sorcerer eventually dared to approach and helped him escape. The exact nature of the domain and the incident remains unresolved.",ar:"خلال مهمة، وقع أمر داخل دومين غريب أو قوي وأدى إلى احتجازه فيه مدة طويلة. ظن مستكشفون آخرون صادفوه أنه يحرس الدومين، وبدأوا يطلقون عليه لقب صدى البلور. وفي النهاية تجرأ ساحر آخر على الاقتراب منه وساعده على الخروج. ولا تزال طبيعة الدومين والحادثة نفسها غير محسومة."}}
+    ]},
+    {id:"relationships",title:{en:"Relationships",ar:"العلاقات"},icon:"♡",text:[
+      {text:{en:"The sorcerer who helped Lucian escape the domain is important to his present life. Their identities, personal dynamics and the exact nature of their bond remain open; their relationship may develop into a genuine friendship rather than a lasting debt.",ar:"الساحر الذي ساعد لوسيان على الخروج من الدومين مهم في حياته الحالية. هويتهما وديناميكية العلاقة وطبيعة الرابطة بينهما ما زالت مفتوحة؛ وقد تتطور علاقتهما إلى صداقة حقيقية بدل أن تبقى دينًا دائمًا."}},
+      {text:{en:"Lucian values the rescue and does not forget it, but does not want gratitude to become a permanent obligation. He enjoys the companion's company and may also appreciate the comfort and opportunities that travelling together provides.",ar:"يقدّر لوسيان إنقاذه ولا ينساه، لكنه لا يريد أن يتحول الامتنان إلى التزام دائم. يستمتع برفقة صديقه، وقد يقدّر أيضًا الراحة والفرص التي يوفرها السفر معًا."}}
+    ]},
+    {id:"organization",title:{en:"Former Organization",ar:"المنظمة السابقة"},icon:"⌖",text:[
+      {text:{en:"Aegis Concord is an independent organization with an international presence and agreements with cities and governments. It focuses on protecting inhabited areas and keeping people, goods and expeditions moving despite domain-related dangers. Its structure and internal ranks have not yet been developed.",ar:"Aegis Concord مؤسسة مستقلة ذات حضور دولي واتفاقيات مع المدن والحكومات. تركز على حماية المناطق المأهولة وضمان حركة الأشخاص والبضائع والبعثات رغم أخطار الدومينات. ولم تُبحث بنيتها الداخلية أو رتبها بعد."}}
+    ]}
+  ]
+};
