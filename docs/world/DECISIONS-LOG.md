@@ -207,3 +207,16 @@ When a decision changes:
 - Keep unapproved details open and develop them only when needed by characters, stories, or gameplay.
 
 **References:** [Ilmar Settlement Registry](CITIES-ILMAR.md), [Peoples and Species](PEOPLES-AND-SPECIES.md), and [Aelora Energy foundations](MAGIC-FOUNDATIONS.md).
+
+
+## WD-045 — Add Avelorn as a major scholarly city in Orath
+
+**Status:** Accepted naming and regional-placement decision; detailed city design remains open.
+
+- Add **Avelorn / أفيلورن** as a new major city in **Orath**, using the next available settlement ID, **OR-CITY-07**.
+- Its defining direction is cultural and scholarly: libraries, schools, learning, and research institutions are central to its identity.
+- Avelorn is a full city with its own residents, economy, history, and civic life. It is not merely a headquarters site for one organization.
+- The independent research-and-knowledge organization that employs Ilaris as an adviser is planned to have its headquarters and research facilities in Avelorn; it is one prominent institution among others.
+- The exact position within Orath, terrain, routes, population, economy, history, architecture, and political status remain open. Do not assume Avelorn is Orath's political capital.
+
+**References:** [Orath Candidate Cities](CITIES-ORATH.md), [Unified World Overview](WORLD-OVERVIEW.md).
