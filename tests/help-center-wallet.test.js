@@ -68,7 +68,7 @@ test('new Help Center assets are versioned and included in the offline shell', (
   const sw = read('service-worker.js');
   assert.match(html, /help-center\.css\?v=help-center-wallet-20261031-1/);
   assert.match(html, /help-center\.js\?v=help-center-wallet-20261031-1/);
-  assert.match(sw, /epiphany-shell-help-center-wallet-20261031-1/);
+  assert.match(sw, /epiphany-shell-contextual-guidance-help-center-wallet-20261031-1/);
   assert.match(sw, /\.\/help-center\.css/);
   assert.match(sw, /\.\/help-center\.js/);
 });
