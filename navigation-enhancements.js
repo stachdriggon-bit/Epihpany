@@ -35,7 +35,7 @@
     });
     const mobileLabel = $('#mobile-current-section');
     if (mobileLabel) mobileLabel.textContent = labels[view] || view;
-    $$('.mobile-nav-group').forEach(group => {
+    $$$('.mobile-nav-group').forEach(group => {
       group.open = !!$('[data-view="' + view + '"]', group);
     });
     const crumb = $('#navigation-breadcrumb');
