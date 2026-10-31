@@ -24,7 +24,12 @@ function createEngine({ connection = {}, deviceMemory = 8, hardwareConcurrency =
     connection: navConnection, deviceMemory, hardwareConcurrency, onLine,
     serviceWorker: { controller: { postMessage(message) { messages.push(message); } } }
   };
+  const classes = new Set();
   const document = {
+    documentElement: { classList: {
+      toggle(name, enabled) { if (enabled) classes.add(name); else classes.delete(name); },
+      contains(name) { return classes.has(name); }
+    } },
     visibilityState: 'visible',
     addEventListener(name, fn) { events['document:' + name] = fn; },
     removeEventListener(name) { delete events['document:' + name]; }
@@ -36,7 +41,7 @@ function createEngine({ connection = {}, deviceMemory = 8, hardwareConcurrency =
     matchMedia() { return media; }
   };
   vm.runInNewContext(source, { window, document, Object, Number, Set, console });
-  return { api: window.EPIPHANY_ADAPTIVE_ENGINE, events, window, document, media, navConnection, messages, nav };
+  return { api: window.EPIPHANY_ADAPTIVE_ENGINE, events, window, document, media, navConnection, messages, nav, classes };
 }
 
 test('adaptive engine exposes conservative defaults and does not persist or transmit data', () => {
@@ -110,4 +115,17 @@ test('adaptive engine asks the service worker to resume optional caching when co
   nav.onLine = true;
   events['window:online']();
   assert.deepEqual(messages, [{ type: 'EPIPHANY_WARM_OPTIONAL_CACHE' }]);
+});
+
+
+test('adaptive engine enables lightweight motion only for constrained devices or reduced-motion users', () => {
+  const low = createEngine({ deviceMemory: 2 });
+  assert.equal(low.classes.has('ep-adaptive-lite'), true);
+  const capable = createEngine();
+  assert.equal(capable.classes.has('ep-adaptive-lite'), false);
+  const motion = createEngine({ reducedMotion: true });
+  assert.equal(motion.classes.has('ep-adaptive-lite'), true);
+  motion.media.matches = false;
+  motion.events['media:change']();
+  assert.equal(motion.classes.has('ep-adaptive-lite'), false);
 });
