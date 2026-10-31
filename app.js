@@ -5668,6 +5668,9 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
       if (!link) return;
       profileNav.querySelectorAll('a').forEach(item => item.removeAttribute('aria-current'));
       link.setAttribute('aria-current', 'location');
+      if (window.matchMedia('(max-width: 820px)').matches) {
+        link.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+      }
     });
   }
 
