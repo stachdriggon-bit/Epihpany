@@ -3919,3 +3919,8 @@ body[data-theme="dark"] .account-save-prompt{background:var(--surface);border-co
 
 /* The home welcome panel should align with the main content column. */
 #home-view .home-intro { max-width:none; }
+
+/* The mobile drawer replaces the old bottom dock, so Home no longer reserves its space. */
+@media (max-width:760px) {
+  #home-view .page { padding-bottom:calc(28px + env(safe-area-inset-bottom)); }
+}
