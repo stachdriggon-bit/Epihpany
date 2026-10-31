@@ -67,11 +67,12 @@ test('guidance assets are included in the offline shell and cache version is ref
 test('contextual tips are bilingual, first-visit only, and separate from the tour', () => {
   const source = read('guidance.js');
   assert.match(source, /const CONTEXT_TIPS =/);
-  for (const view of ['stories','words','lifeskills','mytools','arcade','thinklab','summon','collection','chronicle','progress','trophies','profile']) {
+  for (const view of ['stories','words','lifeskills','mytools','arcade','thinklab','summon','collection','chronicle','progress','trophies','profile','resonance']) {
     assert.match(source, new RegExp(view + ': \\{ en:'));
     assert.match(source, new RegExp(view + ': \\{ en:[\\s\\S]*?ar:'));
   }
   assert.match(source, /state\.tipsSeen\.includes\(viewName\)/);
+  assert.match(source, /status:'not-started', step:0, tipsSeen:\[\]/);
   assert.match(source, /state\.tipsSeen\.push\(viewName\)/);
   assert.match(source, /document\.addEventListener\('epiphany:view-changed'/);
   assert.match(read('app.js'), /new CustomEvent\('epiphany:view-changed'/);
