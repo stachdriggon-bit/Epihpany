@@ -3916,3 +3916,6 @@ body[data-theme="dark"] .account-save-prompt{background:var(--surface);border-co
     width:min(640px,100%);
   }
 }
+
+/* The home welcome panel should align with the main content column. */
+#home-view .home-intro { max-width:none; }
