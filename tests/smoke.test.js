@@ -441,8 +441,12 @@ test('main navigation tabs open without uncaught page errors', async t => {
     await detail.waitFor({ state:'detached' });
     assert.equal(await miraCard.evaluate(el => document.activeElement === el), true, 'focus should return to the selected card');
 
+    // Force the no-dossier state explicitly; the card catalog may gain a profile later.
+    await cardsPage.evaluate(() => { delete window.EPIPHANY_CARD_PROFILES['CHR-004']; });
     await cardsPage.locator('#cards-gallery [data-gallery-card="CHR-004"] .fcard').click();
-    await cardsPage.locator('#cards-detail-modal .cards-detail-placeholder').waitFor();
+    const undocumentedDetail = cardsPage.locator('#cards-detail-modal [role="dialog"]');
+    await undocumentedDetail.waitFor({state:'visible'});
+    await cardsPage.locator('#cards-detail-modal .cards-detail-placeholder').waitFor({state:'visible'});
     assert.match(await cardsPage.locator('#cards-detail-modal .cards-detail-placeholder').innerText(), /Not documented yet/);
     await cardsPage.evaluate(() => {
       window.EPIPHANY_CARD_PROFILES['CHR-001'].sections.push({
