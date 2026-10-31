@@ -1744,7 +1744,7 @@ h1[tabindex="-1"]:focus:not(:focus-visible),h2[tabindex="-1"]:focus:not(:focus-v
 
 
 /* Deeper mobile UX: thumb navigation, daily session and accessible targets */
-.bottom-nav{display:none}
+
 .daily-session-card{display:flex;align-items:center;justify-content:space-between;gap:24px;margin:0 0 30px;padding:clamp(20px,3.5vw,30px);border:1px solid var(--line);border-radius:26px;background:linear-gradient(125deg,var(--surface),var(--violet-soft));box-shadow:0 12px 35px rgba(27,32,60,.06)}
 
 /* A small, calm celebration when the full daily path is complete. */
@@ -1763,10 +1763,10 @@ h1[tabindex="-1"]:focus:not(:focus-visible),h2[tabindex="-1"]:focus:not(:focus-v
 
 .daily-session-copy{min-width:0;flex:1}.daily-session-copy .kicker{margin:0 0 8px;color:var(--focus);font-weight:900;font-size:11px;letter-spacing:.08em}.daily-session-copy h2{margin:0;font-size:clamp(23px,3vw,32px);line-height:1.12}.daily-session-copy>p:not(.kicker){max-width:620px;color:var(--ink-2);line-height:1.6;margin:9px 0 14px}.daily-session-steps{display:flex;gap:8px;flex-wrap:wrap}.daily-session-steps span{display:inline-flex;align-items:center;gap:6px;padding:7px 10px;border:1px solid var(--line);border-radius:999px;background:var(--surface);font-size:12px;font-weight:750;color:var(--ink-2)}.daily-session-steps b{display:grid;place-items:center;width:20px;height:20px;border-radius:50%;background:var(--violet-soft);color:var(--focus)}.daily-session-start{flex:0 0 auto;min-height:54px;padding:0 22px;white-space:nowrap;font-size:15px}
 body[data-theme="dark"] .daily-session-card{background:linear-gradient(125deg,var(--surface),#2b2948);box-shadow:none}
-.bottom-nav button{min-width:0;min-height:54px;border:0;background:transparent;color:var(--ink-2);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font:700 11px/1.2 var(--body,system-ui);cursor:pointer;border-radius:12px}.bottom-nav button>span{font-size:21px;line-height:1.1}.bottom-nav button[aria-current="page"]{color:var(--focus);background:var(--violet-soft)}.bottom-nav button:focus-visible{outline:3px solid var(--focus);outline-offset:1px}
+
 button,.btn,.tab,.icon-btn,.ar-toggle,.tools-action{touch-action:manipulation}button:not(.answer):not(.spot-word),.btn,.tab,.icon-btn,.ar-toggle,.tools-action{scroll-margin-bottom:90px}
-@media(max-width:820px){body{padding-bottom:calc(104px + env(safe-area-inset-bottom))}.bottom-nav{position:fixed;z-index:9999;left:10px;right:10px;bottom:calc(8px + env(safe-area-inset-bottom));display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px;padding:6px;border:1px solid var(--line);border-radius:19px;background:color-mix(in srgb,var(--surface) 92%,transparent);backdrop-filter:blur(18px);box-shadow:0 8px 28px rgba(14,20,42,.16)}.bottom-nav button{min-height:52px}.daily-session-card{align-items:stretch;flex-direction:column;gap:18px;margin-bottom:24px;padding:19px;border-radius:22px}.daily-session-start{width:100%;justify-content:center;min-height:54px}.daily-session-steps{gap:6px}.daily-session-steps span{font-size:11px;padding:6px 8px}.top-right .tools-menu{display:block}.top-right .tools-menu .tools-panel{right:0;left:auto;max-width:calc(100vw - 24px)}}
-@media(max-width:380px){.bottom-nav{left:6px;right:6px;gap:2px;padding:5px}.bottom-nav button{font-size:10px}.daily-session-steps span{flex:1;justify-content:center}.daily-session-copy h2{font-size:24px}}
+@media(max-width:820px){.daily-session-card{align-items:stretch;flex-direction:column;gap:18px;margin-bottom:24px;padding:19px;border-radius:22px}.daily-session-start{width:100%;justify-content:center;min-height:54px}.daily-session-steps{gap:6px}.daily-session-steps span{font-size:11px;padding:6px 8px}.top-right .tools-menu{display:block}.top-right .tools-menu .tools-panel{right:0;left:auto;max-width:calc(100vw - 24px)}}
+@media(max-width:380px){.daily-session-steps span{flex:1;justify-content:center}.daily-session-copy h2{font-size:24px}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
 
 
@@ -2180,8 +2180,12 @@ body[data-theme="dark"] .monthly-word-in-feedback,body[data-theme="dark"] .story
 .mobile-menu>summary{list-style:none;width:38px;height:38px;border:1px solid var(--line);border-radius:12px;background:var(--surface);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer}
 .mobile-menu>summary::-webkit-details-marker{display:none}
 .mobile-menu>summary span{display:block;width:17px;height:2px;border-radius:3px;background:var(--ink)}
-.mobile-menu nav{position:absolute;right:0;top:calc(100% + 9px);z-index:100;width:min(300px,calc(100vw - 24px));max-height:min(72vh,560px);overflow:auto;padding:9px;
-  border:1px solid var(--line);border-radius:17px;background:var(--surface);box-shadow:0 18px 48px rgba(20,25,45,.16);display:grid;gap:5px}
+.mobile-menu>summary{position:relative;z-index:1002}
+.mobile-menu-backdrop{display:none;position:fixed;inset:0;z-index:1000;width:100%;height:100%;padding:0;border:0;background:rgba(13,17,35,.48);opacity:0;cursor:default;transition:opacity .22s ease}
+.mobile-menu[open] .mobile-menu-backdrop{display:block;opacity:1}
+.mobile-menu nav{position:fixed;left:0;right:auto;top:calc(68px + env(safe-area-inset-top));bottom:0;z-index:1001;width:min(320px,86vw);max-width:calc(100vw - 24px);height:calc(100dvh - 68px - env(safe-area-inset-top));max-height:none;overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;padding:16px 12px calc(18px + env(safe-area-inset-bottom));box-sizing:border-box;border:1px solid var(--line);border-left:0;border-bottom:0;border-radius:0 18px 0 0;background:var(--surface);box-shadow:12px 0 38px rgba(20,25,45,.18);display:grid;align-content:start;gap:5px;transform:translateX(-105%);transition:transform .24s cubic-bezier(.2,.75,.25,1)}
+.mobile-menu[open] nav{transform:translateX(0)}
+
 .mobile-menu nav .tab{justify-content:flex-start;min-height:44px;border-radius:11px;padding:11px 13px;font-size:14px;text-align:start}
 
 .mobile-menu nav{gap:7px}
@@ -2412,7 +2416,7 @@ body.dark-mode .listen-only-card,body.dark-mode .shared-word-card{background:var
 .ep-notification-open{display:inline-block;margin:.25rem 0 .4rem;color:var(--accent,#6551c7);font-weight:800;text-decoration:underline;text-underline-offset:3px}
 
 /* Match the actual application shell selectors in focus mode. */
-body.focus-mode .top,body.focus-mode .bottom-nav{display:none!important}
+body.focus-mode .top{display:none!important}
 
 
 /* Epiphany profile identity studio */
@@ -3051,34 +3055,14 @@ body[data-theme="dark"] .answer{box-shadow:0 1px 0 rgba(0,0,0,.35),0 8px 16px -1
 }
 body[data-theme="dark"] .top{background:var(--ground,#111522)}
 .top-in{min-width:0}
-.mobile-menu nav{
-  position:fixed;
-  inset-block-start:calc(68px + env(safe-area-inset-top));
-  inset-inline-end:max(12px,env(safe-area-inset-right));
-  inset-inline-start:auto;
-  width:min(320px,calc(100vw - 24px));
-  max-width:calc(100vw - 24px);
-  max-height:calc(100dvh - 92px - env(safe-area-inset-top));
-  overflow-x:hidden;
-  overflow-y:auto;
-  overscroll-behavior:contain;
-  -webkit-overflow-scrolling:touch;
-  box-sizing:border-box;
-}
+.mobile-menu nav{left:0;right:auto}
 @media(max-width:820px){
   .top{z-index:1000}
-  .mobile-menu nav{
-    inset-block-start:calc(58px + env(safe-area-inset-top));
-    max-height:calc(100dvh - 82px - env(safe-area-inset-top));
-  }
+  .mobile-menu nav{top:calc(58px + env(safe-area-inset-top));height:calc(100dvh - 58px - env(safe-area-inset-top))}
   .mobile-menu nav .tab{white-space:normal;overflow-wrap:anywhere}
 }
 @media(max-width:380px){
-  .mobile-menu nav{
-    inset-inline-end:8px;
-    width:calc(100vw - 16px);
-    max-width:calc(100vw - 16px);
-  }
+  .mobile-menu nav{width:min(320px,88vw);max-width:88vw}
 }
 
 
@@ -3202,7 +3186,7 @@ body[data-theme="dark"] .top{background:var(--ground,#111522)}
 
 /* World immersive mobile mode: keep the game above the app dock so controls never leak through. */
 body.world-fullscreen{padding-bottom:0!important;overflow:hidden!important}
-body.world-fullscreen .bottom-nav{display:none!important;pointer-events:none!important}
+body.world-fullscreen 
 body.world-fullscreen #world-game{z-index:10001;inset:0;width:100%;height:100%;height:100dvh;max-height:100dvh;overscroll-behavior:contain;touch-action:pan-y}
 body.world-fullscreen #world-game .world-stage{flex:1 1 auto;min-height:0}
 body.world-fullscreen #world-game #world-canvas{display:block;width:100%;height:100%;min-height:0;max-height:none;touch-action:none}
@@ -3668,9 +3652,9 @@ body.world-fullscreen #world-game .world-help-panel{
 }
 
 
-/* Keep the mobile quick bar below real dialogs, sheets and full-screen activities. */
+/* Keep transient notices above the page content. */
 @media(max-width:820px){
-  .bottom-nav{z-index:40}
+  
   .toast{z-index:80}
 }
 
@@ -3776,8 +3760,8 @@ body[data-theme="dark"] #home-view .home-intro{background:radial-gradient(circle
   .navigation-breadcrumb .breadcrumb-parent,
   .navigation-breadcrumb>span:not(.breadcrumb-current){display:none}
   .navigation-breadcrumb .breadcrumb-current::before{content:'‹ ';color:var(--focus);font-weight:900}
-  .bottom-nav button{color:var(--ink);font-size:12px;font-weight:800}
-  .bottom-nav button small{font-size:11.5px;line-height:1.2;color:inherit}
+  
+  
 }
 
 
@@ -3811,13 +3795,8 @@ body[data-theme="dark"] #home-view .home-intro{background:radial-gradient(circle
     scrollbar-width:thin;
     mask-image:linear-gradient(90deg,#000 0%,#000 88%,transparent 100%);
   }
-  .bottom-nav button{
-    min-height:56px;
-    font-size:12px!important;
-    color:var(--ink)!important;
-    font-weight:800;
-  }
-  .bottom-nav button[aria-current="page"]{color:var(--focus)!important}
+  
+  
   .navigation-breadcrumb{
     padding:6px 14px 0;
     font-size:12px;
@@ -3825,7 +3804,7 @@ body[data-theme="dark"] #home-view .home-intro{background:radial-gradient(circle
   .navigation-breadcrumb .breadcrumb-link{font-size:12px}
 }
 @media(min-width:821px){
-  .bottom-nav button{font-size:12px}
+  
 }
 @media(prefers-reduced-motion:no-preference){
   .profile-nav a{scroll-behavior:smooth}
@@ -3883,4 +3862,29 @@ html.ep-adaptive-lite *::after {
   animation-iteration-count: 1 !important;
   transition-duration: .01ms !important;
   scroll-behavior: auto !important;
+}
+
+
+/* Mobile drawer navigation and balanced responsive header layout. */
+@media (min-width:901px) and (max-width:1199px){
+  .top-in{display:flex;flex-wrap:wrap;align-items:center;row-gap:9px}
+  .top-in>.logo{order:1;margin-right:auto}
+  .top-in>.top-right{order:2;margin-left:0}
+  .top-in>.tabs{order:3;flex:1 0 100%;width:100%;margin:0}
+}
+@media (max-width:900px){
+  .top{z-index:1000}
+  .top-in{display:flex;flex-wrap:nowrap;align-items:center;height:58px;min-height:58px;padding:0 12px;gap:10px}
+  .top-in>.mobile-menu{display:block;order:1;flex:0 0 auto;margin:0}
+  .top-in>.logo{order:2;flex:0 1 auto;margin:0}
+  .top-in>.top-right{order:3;flex:0 0 auto;margin-left:auto}
+  .mobile-menu>summary{width:44px;height:44px}
+  .mobile-menu nav{top:calc(58px + env(safe-area-inset-top));height:calc(100dvh - 58px - env(safe-area-inset-top))}
+}
+@media (max-width:380px){
+  .top-in{padding-inline:8px;gap:7px}
+  .mobile-menu>summary{width:42px;height:42px}
+}
+@media (prefers-reduced-motion:reduce){
+  .mobile-menu nav,.mobile-menu-backdrop{transition:none!important}
 }
