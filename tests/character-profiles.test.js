@@ -115,6 +115,10 @@ test('Ilaris canonical profile records Reshaping, Magnitude, Epic rarity and rec
     assert.ok(section.title.en && section.title.ar, section.id + ' needs bilingual titles');
     const entries = Array.isArray(section.text) ? section.text : [section.text];
     for (const entry of entries) {
+      if (entry.characterId) {
+        assert.ok(entry.label.en && entry.label.ar, section.id + ' character link needs bilingual labels');
+        continue;
+      }
       const value = entry.text || entry;
       assert.ok(value.en, section.id + ' needs English content');
       assert.ok(value.ar, section.id + ' needs Arabic content');
