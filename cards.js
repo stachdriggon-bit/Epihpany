@@ -200,7 +200,6 @@
   };
   const updateCounts = () => {
     const shards = $('cards-shard-count'), total = $('cards-owned-count'), daily = $('cards-daily-pull');
-    if (shelf) shelf.textContent = String(state.tokens);
     if (shards) shards.textContent = String(state.shards);
     setNumber($('cards-summon-token-count'), state.tokens);
     setNumber($('cards-summon-shard-count'), state.shards);
