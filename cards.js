@@ -87,12 +87,21 @@
     const folder = opts.fullImage ? 'originals' : 'thumbs';
     return characterArtUrl(storagePath, folder);
   };
+  const cardImageView = card => {
+    const view = window.EPIPHANY_CARD_IMAGE_VIEWS?.[card.id];
+    if (!view) return '';
+    const x = Math.max(0, Math.min(100, Number(view.position_x) || 50));
+    const y = Math.max(0, Math.min(100, Number(view.position_y) || 32));
+    const zoom = Math.max(.5, Math.min(2, Number(view.zoom) || 1));
+    const fit = view.fit === 'contain' ? 'contain' : 'cover';
+    return ' style="--card-image-x:'+x+'%;--card-image-y:'+y+'%;--card-image-zoom:'+zoom+';--card-image-fit:'+fit+'"';
+  };
   const artMarkup = (card, opts={}) => {
     if (!card.image) return card.art
       ? '<svg class="fcard-portrait" viewBox="0 0 240 300" preserveAspectRatio="xMidYMin slice" focusable="false"><use href="'+PORTRAITS+'#'+esc(card.art)+'"></use></svg>'
       : '<div class="fcard-sigil-art">'+svgUse('ring','back-sigil','0 0 120 120')+svgUse('ring r2','back-sigil','0 0 120 120')+'<b>'+esc(card.symbol)+'</b></div>';
     const cloudPath = cardArtSource(card,opts);
-    return '<img class="fcard-portrait fcard-portrait-image" src="'+esc(cloudPath)+'" data-cloud-src="'+esc(cloudPath)+'" '+(opts.fullImage?'fetchpriority="high"':'fetchpriority="low"')+' width="240" height="300" alt="" loading="'+(opts.fullImage?'eager':'lazy')+'" decoding="async">';
+    return '<img class="fcard-portrait fcard-portrait-image" data-card-image-id="'+esc(card.id)+'"'+cardImageView(card)+' src="'+esc(cloudPath)+'" data-cloud-src="'+esc(cloudPath)+'" '+(opts.fullImage?'fetchpriority="high"':'fetchpriority="low"')+' width="240" height="300" alt="" loading="'+(opts.fullImage?'eager':'lazy')+'" decoding="async">';
   };
 
   // opts: level, count, featured, noTilt, leveled
@@ -756,6 +765,7 @@
     renderFeatured();renderGallery();updateCounts();renderOdds(selectedPack());
     refreshPublishedCharacterAssets();
     window.addEventListener('epiphany:published-assets-updated', refreshPublishedCharacterAssets);
+    window.addEventListener('epiphany:card-image-views-updated', () => { galleryNodeCache.clear(); renderGallery(); });
     window.addEventListener('epiphany:supabase-ready', refreshPublishedCharacterAssets);
     document.addEventListener('epiphany-auth-changed', refreshPublishedCharacterAssets);
     $('cards-history-clear')?.addEventListener('click',()=>{state.history=[];save();renderHistory();});
