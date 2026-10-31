@@ -127,7 +127,14 @@ test('desktop and mobile navigation share the approved six-group destination map
   assert.equal((desktop[1].match(/class="nav-group"/g) || []).length, 5);
   assert.equal((mobile[1].match(/class="mobile-nav-group"/g) || []).length, 5);
   assert.match(nav, /mobile-nav-group\[open\]/);
-});
+
+  assert.ok(nav.includes("const mobileDrawer = $('.mobile-menu[open]')"));
+  assert.ok(nav.includes("mobileDrawer.open = false"));
+  assert.ok(nav.includes("except.closest('.mobile-menu') === menu"));
+  const navStart = css.indexOf('/* ===== NAVIGATION (single source of truth) =====');
+  const navEnd = css.indexOf('/* First-visit help-language choice */', navStart);
+  const navOutside = css.slice(0, navStart) + css.slice(navEnd);
+  assert.doesNotMatch(navOutside, /\\.mobile-menu nav|\\.mobile-menu>summary|\\.mobile-nav-group/);});
 
 test('legacy bottom dock behavior is not left active after adopting the mobile drawer', () => {
   const html = read('index.html');
