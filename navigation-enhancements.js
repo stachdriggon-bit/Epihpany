@@ -248,11 +248,22 @@
       if (mobile && mobile.open && event.target.closest('.mobile-menu nav [data-view]')) mobile.open = false;
     });
     document.addEventListener('keydown', event => {
-      if (event.key === 'Escape') {
-        const opened = $('.nav-group[open], .mobile-menu[open], .tools-menu[open]');
-        closeMenus();
-        if (opened) $('summary', opened)?.focus({ preventScroll: true });
+      if (event.key !== 'Escape') return;
+      // Close the active game layer before handling ordinary navigation menus.
+      const game = $('#game');
+      if (game && !game.hidden) {
+        const closeGame = $('#game-close');
+        if (closeGame) { event.preventDefault(); closeGame.click(); return; }
       }
+      // The notification panel is also a dismissible overlay for keyboard users.
+      const notifications = $('#notification-panel');
+      if (notifications && !notifications.hidden) {
+        const closeNotifications = $('#notification-close');
+        if (closeNotifications) { event.preventDefault(); closeNotifications.click(); return; }
+      }
+      const opened = $('.nav-group[open], .mobile-menu[open], .tools-menu[open]');
+      closeMenus();
+      if (opened) $('summary', opened)?.focus({ preventScroll: true });
     });
   }
 
