@@ -25,7 +25,8 @@ async function clickView(page, view) {
 }
 
 async function dismissFirstVisitOverlays(page) {
-  // The landing screen hides first-visit dialogs until Start is pressed.
+  // New visitors choose an approximate level and start one short lesson; navigation
+  // smoke tests close that lesson so they can inspect the rest of the app.
   const landingStart = page.locator('#landing-start');
   if (await landingStart.isVisible()) {
     await landingStart.click();
@@ -33,10 +34,13 @@ async function dismissFirstVisitOverlays(page) {
   }
   const languageChoice = page.locator('#help-language-modal [data-help-language="en"]');
   if (await languageChoice.isVisible()) await languageChoice.click();
-  const welcomeClose = page.locator('#welcome-modal-close');
-  if (await welcomeClose.isVisible()) await welcomeClose.click();
-  const placementSkip = page.locator('#placement-skip');
-  if (await placementSkip.isVisible()) await placementSkip.click();
+  const levelChoice = page.locator('#placement [data-start-level="A1"]');
+  await levelChoice.waitFor({ state: 'visible', timeout: 2500 }).catch(() => {});
+  if (await levelChoice.isVisible()) {
+    await levelChoice.click();
+    await page.locator('#game').waitFor({ state: 'visible', timeout: 5000 });
+    await page.locator('#game-close').click();
+  }
 }
 const mime = { '.html':'text/html; charset=utf-8', '.js':'text/javascript; charset=utf-8', '.css':'text/css; charset=utf-8', '.json':'application/json; charset=utf-8', '.svg':'image/svg+xml', '.png':'image/png', '.jpg':'image/jpeg', '.webp':'image/webp' };
 let server, browser, baseUrl;
@@ -61,6 +65,26 @@ test('main navigation tabs open without uncaught page errors', async t => {
     browser = await chromium.launch({ headless: true });
     const errors = [];
     const consoleErrors = [];
+
+    const firstVisitPage = await browser.newPage();
+    await firstVisitPage.setViewportSize({ width: 1280, height: 900 });
+    firstVisitPage.on('pageerror', error => errors.push('first-visit: ' + error.message));
+    await firstVisitPage.goto(baseUrl, { waitUntil: 'domcontentloaded' });
+    assert.equal(await firstVisitPage.locator('#landing-start').isVisible(), true, 'a new visitor should first see the landing screen');
+    assert.equal(await firstVisitPage.locator('#account-welcome-modal').isVisible(), false, 'account creation must not interrupt the first visit');
+    await firstVisitPage.locator('#landing-start').click();
+    await firstVisitPage.locator('#help-language-modal [data-help-language="en"]').waitFor({ state: 'visible', timeout: 5000 });
+    await firstVisitPage.locator('#help-language-modal [data-help-language="en"]').click();
+    await firstVisitPage.locator('#placement [data-start-level="B1"]').waitFor({ state: 'visible', timeout: 7000 });
+    assert.equal(await firstVisitPage.locator('#placement-title').innerText(), 'Choose your starting point');
+    assert.equal(await firstVisitPage.locator('#placement-progress').isVisible(), false, 'the full assessment should not be forced at the start');
+    await firstVisitPage.locator('#placement [data-start-level="B1"]').click();
+    await firstVisitPage.locator('#game').waitFor({ state: 'visible', timeout: 5000 });
+    assert.ok(await firstVisitPage.locator('#game-body .answer').count() >= 2, 'choosing a level should start a real learning activity');
+    assert.equal(await firstVisitPage.locator('#account-welcome-modal').isVisible(), false, 'no account prompt should appear before the first activity is completed');
+    assert.equal(await firstVisitPage.evaluate(() => window.__epiphanyReadProgress().assessedLevel), 'B1', 'the approximate level choice should be saved');
+    await firstVisitPage.close();
+
     const views = ['home','stories','chronicle','resonance','world','arcade','summon','words','trophies','progress','profile'];
     for (const view of views) {
       const page = await browser.newPage();
