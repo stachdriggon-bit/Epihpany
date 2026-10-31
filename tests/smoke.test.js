@@ -9,7 +9,7 @@ const root = path.resolve(__dirname, '..');
 
 async function clickView(page, view) {
   const activeView = page.locator('#' + view + '-view.is-active');
-  if (await activeView.count()) return;
+  if (await activeView.count() && await activeView.isVisible()) return;
   const selector = 'button[data-view="' + view + '"]';
   await page.waitForSelector(selector, { state: 'attached', timeout: 10000 });
   if (!(await page.locator(selector + ':visible').count())) {
