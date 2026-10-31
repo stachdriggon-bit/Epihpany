@@ -8,6 +8,7 @@ create table if not exists public.epiphany_card_image_views (
   fit text not null default 'cover' check (fit in ('cover','contain')),
   updated_at timestamptz not null default now()
 );
+alter table public.epiphany_card_image_views add column if not exists fit text not null default 'cover' check (fit in ('cover','contain'));
 alter table public.epiphany_card_image_views enable row level security;
 revoke all on table public.epiphany_card_image_views from anon, authenticated;
 grant select on table public.epiphany_card_image_views to anon, authenticated;
