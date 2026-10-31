@@ -1,4 +1,4 @@
-const CACHE_NAME = 'epiphany-shell-help-center-wallet-20261031-1';
+const CACHE_NAME = 'epiphany-shell-contextual-guidance-help-center-wallet-20261031-1';
 const CARD_ART_CACHE = 'epiphany-card-art-cloud-only-20261030-1';
 const VENDOR_CACHE = 'epiphany-vendor-20261024m';
 const CORE_ASSETS = ['./', './index.html', './style.css', './guidance.css', './help-center.css', './help-center.js', './app.js', './guidance.js', './data.js', './data-expansion.js', './data-mistakes.js', './data-spot.js', './data-typing.js', './data-wotd.js', './data-aha.js', './data-minigames.js', './mini-games.css', './supabase-config.js', './account.js', './asset-manager.js', './asset-manager.css', './artwork-manager.js', './artwork-manager.css', './telemetry.js', './adaptive-engine.js', './lazy-data.js', './navigation-enhancements.js', './manifest.webmanifest', './icon.svg', './social-preview.svg', './wotd-card.html', './notifications.js', './data-cards.js', './data-character-profiles.js', './cards.js', './cards.css', './assets/cards/epiphany-portraits.svg', './assets/cards/card-ornaments.svg'];
