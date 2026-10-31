@@ -49,7 +49,8 @@
       !(window.navigator && window.navigator.onLine === false);
   }
 
-  // Remember failed optional assets so a later meaningful recovery event can retry them.
+  // Remember failed optional groups so recovery can resume the complete feature,
+  // not merely retry one file and leave the rest of the group unloaded.
   // Retries are bounded and continue to use the normal optional-load scheduler.
   const failedOptionalLoads = new Map();
   const recoveringOptionalLoads = new Set();
@@ -126,12 +127,7 @@
         reject(new Error('Unable to load feature styles: ' + href.split('?')[0]));
       };
       document.head.appendChild(link);
-    }), href).then(() => {
-      clearFailedOptionalLoad('style:' + href);
-    }, error => {
-      rememberFailedOptionalLoad('style:' + href, () => loadStyle(href, 'optional'));
-      throw error;
-    }).finally(() => loadingStyles.delete(href));
+    }), href).finally(() => loadingStyles.delete(href));
     loadingStyles.set(href, promise);
     return promise;
   }
@@ -150,7 +146,11 @@
     }
     job = { priority, promise: null };
     job.promise = styleGroups[group].reduce((chain, href) => chain.then(() => loadStyle(href, job.priority)), Promise.resolve())
-      .catch(error => { pendingStyles.delete(group); throw error; });
+      .then(() => clearFailedOptionalLoad('style-group:' + group), error => {
+        pendingStyles.delete(group);
+        rememberFailedOptionalLoad('style-group:' + group, () => loadStyleGroup(group, 'optional'));
+        throw error;
+      });
     pendingStyles.set(group, job);
     return job.promise;
   }
@@ -265,12 +265,7 @@
         reject(new Error('Unable to load feature data: ' + src.split('?')[0]));
       };
       document.head.appendChild(script);
-    }), src).then(() => {
-      clearFailedOptionalLoad('script:' + src);
-    }, error => {
-      rememberFailedOptionalLoad('script:' + src, () => loadScript(src, 'optional'));
-      throw error;
-    }).finally(() => loadingScripts.delete(src));
+    }), src).finally(() => loadingScripts.delete(src));
     loadingScripts.set(src, promise);
     return promise;
   }
@@ -289,7 +284,11 @@
     }
     job = { priority, promise: null };
     job.promise = groups[group].reduce((chain, src) => chain.then(() => loadScript(src, job.priority)), Promise.resolve())
-      .catch(error => { pending.delete(group); throw error; });
+      .then(() => clearFailedOptionalLoad('data-group:' + group), error => {
+        pending.delete(group);
+        rememberFailedOptionalLoad('data-group:' + group, () => loadGroup(group, 'optional'));
+        throw error;
+      });
     pending.set(group, job);
     return job.promise;
   }

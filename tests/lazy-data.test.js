@@ -408,7 +408,7 @@ test('background optional loads pause while constrained, resume once, and never 
 });
 
 
-test('failed optional assets recover when the page becomes usable and clear after success', async () => {
+test('failed feature recovery resumes the complete data group and clears after success', async () => {
   const requested = [];
   const scripts = [];
   const listeners = {};
@@ -417,7 +417,7 @@ test('failed optional assets recover when the page becomes usable and clear afte
     visibilityState: 'visible',
     addEventListener(name, fn) { listeners['document:' + name] = fn; },
     createElement() {
-      const script = { src: '', async: true, removed: false, remove() { this.removed = true; } };
+      const script = { src: '', async: true, remove() {} };
       scripts.push(script);
       return script;
     },
@@ -433,33 +433,75 @@ test('failed optional assets recover when the page becomes usable and clear afte
     addEventListener(name, fn) { listeners['window:' + name] = fn; }
   };
   const context = vm.createContext({ window, document, Promise, Map, Set, Object, Error });
-  vm.runInContext(fs.readFileSync(path.join(root, 'lazy-data.js'), 'utf8'), context);
+  vm.runInNewContext(fs.readFileSync(path.join(root, 'lazy-data.js'), 'utf8'), context);
 
-  const firstAttempt = context.window.EPIPHANY_LAZY_LOAD('stories');
+  const initial = context.window.EPIPHANY_LAZY_LOAD('stories');
   await new Promise(resolve => setImmediate(resolve));
   scripts[0].onerror();
-  await assert.rejects(firstAttempt, /Unable to load feature data: data-stories\.js/);
+  await assert.rejects(initial, /Unable to load feature data: data-stories\.js/);
 
-  // A repeated recovery signal while hidden must not start network work.
   document.visibilityState = 'hidden';
   listeners['window:online']();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested.length, 1);
+  assert.equal(requested.length, 1, 'recovery must not run while the page is hidden');
 
   document.visibilityState = 'visible';
   listeners['document:visibilitychange']();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested.length, 2, 'visibility recovery should retry the failed optional script');
+  assert.equal(requested.length, 2, 'recovery should retry the failed first file');
   scripts[1].onload();
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(requested.length, 3, 'recovery must continue with the remaining group files');
+  scripts[2].onload();
   await new Promise(resolve => setImmediate(resolve));
 
   listeners['window:online']();
   subscribers.forEach(fn => fn());
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested.length, 2, 'a successful recovery must clear the failed-asset record');
+  assert.equal(requested.length, 3, 'successful group recovery must clear its failure record');
 });
 
-test('optional asset recovery is deduplicated and stops after two recovery attempts', async () => {
+test('failed feature styles recover as a complete style group', async () => {
+  const requested = [];
+  const links = [];
+  const listeners = {};
+  const document = {
+    visibilityState: 'visible',
+    addEventListener(name, fn) { listeners['document:' + name] = fn; },
+    createElement() {
+      const link = { rel: '', href: '', remove() {} };
+      links.push(link);
+      return link;
+    },
+    head: { appendChild(link) { requested.push(link.href); } }
+  };
+  const window = {
+    EPIPHANY_ADAPTIVE_ENGINE: { getPolicy: () => ({
+      allowSpeculativePreload: true, deferNonEssentialWork: false, maxConcurrentOptionalLoads: 1
+    }) },
+    navigator: { onLine: true },
+    addEventListener(name, fn) { listeners['window:' + name] = fn; }
+  };
+  const context = vm.createContext({ window, document, Promise, Map, Set, Object, Error });
+  vm.runInNewContext(fs.readFileSync(path.join(root, 'lazy-data.js'), 'utf8'), context);
+
+  const initial = context.window.EPIPHANY_LAZY_STYLE('resonance');
+  await new Promise(resolve => setImmediate(resolve));
+  links[0].onerror();
+  await assert.rejects(initial, /Unable to load feature styles: resonance\.css/);
+
+  listeners['document:visibilitychange']();
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(requested.length, 2, 'visibility recovery should retry the failed stylesheet');
+  links[1].onload();
+  await new Promise(resolve => setImmediate(resolve));
+
+  listeners['window:online']();
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(requested.length, 2, 'successful style recovery must clear its failure record');
+});
+
+test('feature-group recovery is deduplicated and stops after two recovery attempts', async () => {
   const requested = [];
   const scripts = [];
   const listeners = {};
@@ -481,28 +523,28 @@ test('optional asset recovery is deduplicated and stops after two recovery attem
     addEventListener(name, fn) { listeners['window:' + name] = fn; }
   };
   const context = vm.createContext({ window, document, Promise, Map, Set, Object, Error });
-  vm.runInContext(fs.readFileSync(path.join(root, 'lazy-data.js'), 'utf8'), context);
+  vm.runInNewContext(fs.readFileSync(path.join(root, 'lazy-data.js'), 'utf8'), context);
 
-  const firstAttempt = context.window.EPIPHANY_LAZY_LOAD('world');
+  const initial = context.window.EPIPHANY_LAZY_LOAD('world');
   await new Promise(resolve => setImmediate(resolve));
   scripts[0].onerror();
-  await assert.rejects(firstAttempt, /Unable to load feature data/);
+  await assert.rejects(initial, /Unable to load feature data/);
 
   listeners['window:online']();
   listeners['document:visibilitychange']();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested.length, 2, 'multiple recovery signals should share one retry');
+  assert.equal(requested.length, 2, 'multiple recovery signals should share one group retry');
   scripts[1].onerror();
   await new Promise(resolve => setImmediate(resolve));
 
   listeners['window:online']();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested.length, 3, 'one further recovery attempt should be allowed');
+  assert.equal(requested.length, 3, 'one further group recovery attempt should be allowed');
   scripts[2].onerror();
   await new Promise(resolve => setImmediate(resolve));
 
   listeners['window:online']();
   listeners['document:visibilitychange']();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested.length, 3, 'recovery must stop after the bounded retry budget');
+  assert.equal(requested.length, 3, 'group recovery must stop after the bounded retry budget');
 });
