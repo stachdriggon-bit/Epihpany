@@ -20,7 +20,7 @@
       const raw = localStorage.getItem(STORAGE_KEY);
       if (!raw) return { version:VERSION, activityCompleted:false, status:'not-started', step:0, tipsSeen:[] };
       const value = JSON.parse(raw);
-      if (!value || value.version !== VERSION) return { version:VERSION, activityCompleted:false, status:'not-started', step:0 };
+      if (!value || value.version !== VERSION) return { version:VERSION, activityCompleted:false, status:'not-started', step:0, tipsSeen:[] };
       return {
         version:VERSION,
         activityCompleted:value.activityCompleted === true,
@@ -28,7 +28,7 @@
         step:Number.isInteger(value.step) ? Math.max(0,Math.min(STEPS.length-1,value.step)) : 0,
         tipsSeen:Array.isArray(value.tipsSeen) ? value.tipsSeen.filter(item => typeof item === 'string') : []
       };
-    } catch (_) { return { version:VERSION, activityCompleted:false, status:'not-started', step:0 }; }
+    } catch (_) { return { version:VERSION, activityCompleted:false, status:'not-started', step:0, tipsSeen:[] }; }
   }
   let state = readState();
   let overlay = null;
@@ -145,7 +145,8 @@
     chronicle: { en:['Explore the Codex','Start with a place or event, then follow connected records. Some dates are intentionally uncertain.'], ar:['استكشف Codex','ابدأ بمكان أو حدث، ثم تتبّع السجلات المرتبطة به. بعض التواريخ غير مؤكدة عمدًا.'] },
     progress: { en:['Read your progress gently','Look for patterns over time. Use these insights as a guide, not a score to chase.'], ar:['تابع تقدمك بهدوء','لاحظ الأنماط مع مرور الوقت، واستخدم المؤشرات كدليل لا كرقم عليك مطاردته.'] },
     trophies: { en:['Milestones, not perfection','Trophies celebrate effort and meaningful steps, not flawless answers.'], ar:['محطات لا مثالية','تحتفي الكؤوس بالجهد والخطوات المهمة، لا بالإجابات الخالية من الأخطاء.'] },
-    profile: { en:['Your learning space','Manage your profile and choose how you want to share it from here.'], ar:['مساحتك التعليمية','أدر ملفك الشخصي واختر طريقة مشاركته من هذا القسم.'] }
+    profile: { en:['Your learning space','Manage your profile and choose how you want to share it from here.'], ar:['مساحتك التعليمية','أدر ملفك الشخصي واختر طريقة مشاركته من هذا القسم.'] },
+    resonance: { en:['Follow the clues','The Resonance is a story-led investigation. Read carefully and use each clue to decide what to explore next.'], ar:['تتبّع الأدلة','The Resonance تحقيق قصصي. اقرأ بعناية واستخدم كل دليل لتحديد ما ستستكشفه بعد ذلك.'] }
   };
   function showContextTip(viewName) {
     document.querySelectorAll('.guidance-context-tip').forEach(node => node.remove());
@@ -153,8 +154,8 @@
     if (!tip || state.tipsSeen.includes(viewName)) return;
     const view = document.getElementById(viewName + '-view');
     if (!view || !view.classList.contains('is-active')) return;
-    const host = view.querySelector('.page') || view;
-    const anchor = host.querySelector('.intro, .tl-page-heading, .res-intro');
+    const host = viewName === 'resonance' ? view : (view.querySelector('.page') || view);
+    const anchor = viewName === 'resonance' ? null : host.querySelector('.intro, .tl-page-heading, .res-intro');
     const language = helpLanguage();
     const content = tip[language] || tip.en;
     const aside = document.createElement('aside');
@@ -179,6 +180,7 @@
     dismiss.addEventListener('click', () => aside.remove());
     aside.append(copy, dismiss);
     if (anchor && anchor.parentNode) anchor.insertAdjacentElement('afterend', aside);
+    else if (viewName === 'resonance' && host.querySelector('.res-shell')) host.insertBefore(aside, host.querySelector('.res-shell'));
     else host.prepend(aside);
     state.tipsSeen.push(viewName);
     persist();
