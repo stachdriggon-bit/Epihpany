@@ -261,6 +261,11 @@
     });
     document.addEventListener('keydown', event => {
       if (event.key !== 'Escape') return;
+      // Release World fullscreen mode through its own control so body scroll and inert state reset.
+      if (document.body.classList.contains('world-fullscreen')) {
+        const worldExit = $('#world-game [data-world-exit]') || $('#world-game [data-world-home]');
+        if (worldExit) { event.preventDefault(); worldExit.click(); return; }
+      }
       // Close the active game layer before handling ordinary navigation menus.
       const game = $('#game');
       if (game && !game.hidden) {
