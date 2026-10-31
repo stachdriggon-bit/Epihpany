@@ -5374,6 +5374,21 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
       else startGame(LEVEL_GAME[i]);
     }
   });
+  document.addEventListener('click', event => {
+    const dismiss = event.target.closest('[data-account-prompt-dismiss]');
+    if (dismiss) {
+      dismiss.closest('.account-save-prompt')?.remove();
+      return;
+    }
+    const signup = event.target.closest('[data-account-prompt-signup]');
+    if (signup) {
+      const auth = window.EpiphanyAuth;
+      if (!auth || typeof auth.openAccountMode !== 'function') { toast('Account settings are not available right now.'); return; }
+      if ($('#world-game') && !$('#world-game').hidden) closeWorld();
+      else if ($('#game') && !$('#game').hidden) closeGame();
+      auth.openAccountMode('signup');
+    }
+  });
   document.addEventListener('change', e => { if (e.target && e.target.id === 'developer-activity') renderDeveloperLab(); });
   $('#logo').addEventListener('click', e => { e.preventDefault(); openView('home'); });
   $('#game-close').addEventListener('click', closeGame);
