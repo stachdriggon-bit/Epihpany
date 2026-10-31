@@ -34,7 +34,7 @@ async function dismissFirstVisitOverlays(page) {
   }
   const languageChoice = page.locator('#help-language-modal [data-help-language="en"]');
   if (await languageChoice.isVisible()) await languageChoice.click();
-  const levelChoice = page.locator('#placement [data-start-level="A1"]');
+  const levelChoice = page.locator('#placement .level-choice[data-start-level="A1"]');
   await levelChoice.waitFor({ state: 'visible', timeout: 2500 }).catch(() => {});
   if (await levelChoice.isVisible()) {
     await levelChoice.click();
