@@ -35,7 +35,7 @@
     });
     const mobileLabel = $('#mobile-current-section');
     if (mobileLabel) mobileLabel.textContent = labels[view] || view;
-    const mobileGroups = $('.mobile-nav-group');
+    const mobileGroups = $$('.mobile-nav-group');
     let activeMobileGroup = null;
     mobileGroups.forEach(group => {
       const containsCurrentView = !!$('[data-view="' + view + '"]', group);
