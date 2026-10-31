@@ -139,7 +139,20 @@ test('main navigation tabs open without uncaught page errors', async t => {
           if (!el) return false;
           const rect = el.getBoundingClientRect();
           return rect.width > 0 && rect.height > 0 && Number(getComputedStyle(el).opacity) > 0.99;
-        }, null, { timeout: 5000 });
+        }, null, { timeout: 5000 }).catch(async error => {
+          const state = await page.evaluate(() => {
+            const home = document.querySelector('#home-view');
+            const main = document.querySelector('#main');
+            const ancestors = [];
+            for (let node = home; node && ancestors.length < 5; node = node.parentElement) {
+              const rect = node.getBoundingClientRect();
+              const style = getComputedStyle(node);
+              ancestors.push({tag:node.tagName,id:node.id,className:node.className,display:style.display,visibility:style.visibility,opacity:style.opacity,width:rect.width,height:rect.height,hidden:node.hidden,inert:node.inert});
+            }
+            return {bodyClass:document.body.className,mainInert:main?.inert,placementHidden:document.querySelector('#placement')?.hidden,helpHidden:document.querySelector('#help-language-modal')?.hidden,welcomeHidden:document.querySelector('#account-welcome-modal')?.hidden,ancestors};
+          });
+          throw new Error('Home view did not become visible after navigation: ' + JSON.stringify(state) + '; ' + error.message);
+        });
       }
       if (view !== 'world') {
         const target = page.locator('#' + view + '-view');
