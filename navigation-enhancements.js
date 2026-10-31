@@ -256,9 +256,18 @@
         if (desktop()) { event.preventDefault(); group.open = true; }
       });
     });
+    $('.mobile-nav-group').forEach(group => {
+      const summary = $('summary', group);
+      if (summary) summary.addEventListener('click', () => closeMenus(group));
+    });
     document.addEventListener('click', event => {
       const mobile = $('.mobile-menu');
-      if (mobile && mobile.open && event.target.closest('.mobile-menu-backdrop')) { mobile.open = false; return; }
+      if (mobile && mobile.open && event.target.closest('.mobile-menu-backdrop')) {
+        closeMenus();
+        mobile.open = false;
+        $('summary', mobile)?.focus({ preventScroll: true });
+        return;
+      }
       if (!event.target.closest('.nav-group, .mobile-menu, .tools-menu')) closeMenus();
       if (mobile && mobile.open && event.target.closest('.mobile-menu nav [data-view]')) { mobile.open = false; $('.mobile-nav-group[open]', mobile).forEach(group => { group.open = false; }); }
     });
