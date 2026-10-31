@@ -717,6 +717,8 @@
     if (!form) { markAuthReady(); return; }
     setMode('signin');
     wirePlayerProfile();
+    $('account-google-signin')?.addEventListener('click', () => signInWithProvider('google'));
+    $('account-facebook-signin')?.addEventListener('click', () => signInWithProvider('facebook'));
     if (!config || !config.url || !config.publishableKey || !sdk || !sdk.createClient) {
       status('Account service is not configured yet. You can still play and save on this device.', 'error');
       markAuthReady();
