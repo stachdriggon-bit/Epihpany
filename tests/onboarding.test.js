@@ -66,5 +66,5 @@ test('account invitation is session-limited, optional, and only attached to elig
 test('the prompt action preserves guest progress and opens the existing account flow', () => {
   assert.match(app, /dismiss\.closest\('\.account-save-prompt'\)\?\.remove\(\)/);
   assert.match(app, /auth\.openAccountMode\('signup'\)/);
-  assert.match(account, /isSignedIn:\s*\(\)\s*=>\s*!?currentUser/);
+  assert.match(account, /isSignedIn:\s*\(\)\s*=>\s*!!currentUser/);
 });
