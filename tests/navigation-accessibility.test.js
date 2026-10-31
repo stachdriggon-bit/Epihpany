@@ -99,3 +99,34 @@ test('compact header moves Help and Sound access into app settings', () => {
   assert.match(nav, /setupResponsiveHeaderTools\(\)/);
   assert.match(css, /@media \(max-width:1180px\)\{\s*\.top-right>#sound-toggle\{display:none\}/);
 });
+
+
+test('desktop and mobile navigation share the approved six-group destination map', () => {
+  const html = read('index.html');
+  const nav = read('navigation-enhancements.js');
+  const desktop = html.match(/<nav class="tabs" aria-label="Main navigation">([\s\S]*?)<\/nav>/);
+  const mobile = html.match(/<nav id="mobile-navigation-panel" aria-label="Mobile navigation">([\s\S]*?)<\/nav>/);
+  assert.ok(desktop && mobile, 'both navigation surfaces must exist');
+  const destinations = source => [...source.matchAll(/data-view="([^"]+)"/g)].map(match => match[1]).sort();
+  assert.deepEqual(destinations(desktop[1]), destinations(mobile[1]));
+  assert.deepEqual(destinations(desktop[1]), ['arcade','chronicle','collection','lifeskills','mytools','profile','progress','resonance','stories','summon','thinklab','trophies','words','world'].sort());
+  for (const label of ['Home','Learn','Play','Collect','Discover','Me']) {
+    assert.ok(desktop[1].includes('>' + label + '<'), 'desktop navigation is missing ' + label);
+    assert.ok(mobile[1].includes('>' + label.toUpperCase() + '<') || mobile[1].includes('>' + label + '<'), 'mobile navigation is missing ' + label);
+  }
+  assert.match(desktop[1], /data-view="chronicle">📚 Codex/);
+  assert.match(mobile[1], /data-view="chronicle">📚 <span>Codex<\/span>/);
+  assert.match(desktop[1], /data-view="world"/);
+  assert.match(mobile[1], /data-view="world"/);
+  assert.match(nav, /chronicle: 'Codex'/);
+  assert.match(nav, /mobile-nav-group\[open\]/);
+});
+
+test('legacy bottom dock behavior is not left active after adopting the mobile drawer', () => {
+  const html = read('index.html');
+  const css = read('style.css');
+  const app = read('app.js');
+  assert.doesNotMatch(html, /class="bottom-nav"/);
+  assert.doesNotMatch(css, /\.bottom-nav|\.dock-more|\.dock-item|\.dock\{/);
+  assert.doesNotMatch(app, /dock-more-panel|dock-more-toggle|closeDockMore/);
+});
