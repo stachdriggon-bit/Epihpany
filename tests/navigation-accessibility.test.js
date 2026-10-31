@@ -104,6 +104,7 @@ test('compact header moves Help and Sound access into app settings', () => {
 test('desktop and mobile navigation share the approved six-group destination map', () => {
   const html = read('index.html');
   const nav = read('navigation-enhancements.js');
+  const app = read('app.js');
   const desktop = html.match(/<nav class="tabs" aria-label="Main navigation">([\s\S]*?)<\/nav>/);
   const mobile = html.match(/<nav id="mobile-navigation-panel" aria-label="Mobile navigation">([\s\S]*?)<\/nav>/);
   assert.ok(desktop && mobile, 'both navigation surfaces must exist');
