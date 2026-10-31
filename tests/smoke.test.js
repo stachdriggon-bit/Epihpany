@@ -76,6 +76,8 @@ test('main navigation tabs open without uncaught page errors', async t => {
     await firstVisitPage.locator('#help-language-modal [data-help-language="en"]').waitFor({ state: 'visible', timeout: 5000 });
     await firstVisitPage.locator('#help-language-modal [data-help-language="en"]').click();
     await firstVisitPage.locator('#placement [data-start-level="B1"]').waitFor({ state: 'visible', timeout: 7000 });
+    await firstVisitPage.evaluate(() => window.EpiphanyAuth.whenReady());
+    assert.equal(await firstVisitPage.evaluate(() => window.EpiphanyAuth.isSignedIn()), false, 'the fresh visitor should be a guest');
     assert.equal(await firstVisitPage.locator('#placement-title').innerText(), 'Choose your starting point');
     assert.equal(await firstVisitPage.locator('#placement-progress').isVisible(), false, 'the full assessment should not be forced at the start');
     await firstVisitPage.locator('#placement [data-start-level="B1"]').click();
@@ -97,6 +99,12 @@ test('main navigation tabs open without uncaught page errors', async t => {
       await firstVisitPage.locator('#go-next').waitFor({ state: 'visible', timeout: 3000 });
       await firstVisitPage.locator('#go-next').click();
     }
+    const resultState = await firstVisitPage.evaluate(() => ({
+      resultVisible: !!document.querySelector('#game-body .result'),
+      dailySessionStep: window.__epiphanyReadProgress().dailySessionStep,
+      promptSeen: sessionStorage.getItem('epiphany-account-prompt-shown-v1')
+    }));
+    assert.equal(resultState.resultVisible, true, 'the first lesson should reach its result screen: ' + JSON.stringify(resultState));
     await firstVisitPage.locator('.account-save-prompt').waitFor({ state: 'visible', timeout: 7000 });
     assert.equal(await firstVisitPage.locator('.result-actions').isVisible(), true, 'the invitation must not replace or cover the result actions');
     await firstVisitPage.locator('[data-account-prompt-dismiss]').click();
