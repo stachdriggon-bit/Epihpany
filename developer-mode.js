@@ -24,11 +24,60 @@
     try{const key='__epiphany_dev_check__';localStorage.setItem(key,'1');localStorage.removeItem(key);}catch{storage='Blocked'};
     set('developer-diagnostic-storage',storage);
   }
-  function open(){
+  const developerStyles = [
+    'asset-manager.css?v=asset-manager-20261030-1',
+    'artwork-manager.css?v=artwork-manager-20261030-1',
+    'card-image-editor.css?v=card-image-editor-20261031-1'
+  ];
+  const developerScripts = [
+    'asset-manager.js?v=asset-manager-20261030-1',
+    'artwork-manager.js?v=published-art-refresh-20261030-1',
+    'card-image-editor.js?v=card-image-editor-20261031-1'
+  ];
+  let developerToolsPromise = null;
+  function loadStyle(href){
+    if(document.querySelector('link[data-developer-resource="'+href+'"]'))return Promise.resolve();
+    return new Promise((resolve,reject)=>{
+      const link=document.createElement('link');
+      link.rel='stylesheet';link.href=href;link.dataset.developerResource=href;
+      link.onload=resolve;link.onerror=()=>{link.remove();reject(new Error('Could not load developer styles.'));};
+      document.head.appendChild(link);
+    });
+  }
+  function loadScript(src){
+    if(document.querySelector('script[data-developer-resource="'+src+'"]'))return Promise.resolve();
+    return new Promise((resolve,reject)=>{
+      const script=document.createElement('script');
+      script.src=src;script.async=false;script.dataset.developerResource=src;
+      script.onload=resolve;script.onerror=()=>{script.remove();reject(new Error('Could not load a developer tool.'));};
+      document.head.appendChild(script);
+    });
+  }
+  function loadDeveloperTools(){
+    if(!developerToolsPromise){
+      developerToolsPromise=Promise.all(developerStyles.map(loadStyle))
+        .then(()=>developerScripts.reduce((chain,src)=>chain.then(()=>loadScript(src)),Promise.resolve()))
+        .catch(error=>{developerToolsPromise=null;throw error;});
+    }
+    return developerToolsPromise;
+  }
+  async function open(){
     if(!allowed())return;
     const overlay=$('#developer-overlay');if(!overlay)return;
-    overlay.hidden=false;document.body.classList.add('developer-mode-open');showSection('overview');
-    const close=$('#close-developer-mode');close?.focus();
+    const trigger=$('#open-developer-mode');
+    if(trigger)trigger.disabled=true;
+    try{
+      await loadDeveloperTools();
+      if(!allowed())return;
+      overlay.hidden=false;document.body.classList.add('developer-mode-open');showSection('overview');
+      const close=$('#close-developer-mode');close?.focus();
+    }catch(error){
+      console.warn('[EPIPHANY] Developer tools could not be loaded.',error);
+      const status=$('#developer-diagnostic-access');
+      if(status)status.textContent='Developer tools could not load. Please try again.';
+    }finally{
+      if(trigger)trigger.disabled=false;
+    }
   }
   function close(){
     const overlay=$('#developer-overlay');if(!overlay)return;
