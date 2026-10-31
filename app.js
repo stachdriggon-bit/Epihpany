@@ -5723,9 +5723,12 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     if (!view) return;
     e.preventDefault();
     e.stopImmediatePropagation();
-    document.querySelectorAll('.nav-group[open]').forEach(group => group.removeAttribute('open'));
+    document.querySelectorAll('.nav-group[open], .mobile-nav-group[open]').forEach(group => { group.open = false; });
     const mobileMenu = view.closest('.mobile-menu');
-    if (mobileMenu) mobileMenu.removeAttribute('open');
+    if (mobileMenu) {
+      mobileMenu.removeAttribute('open');
+      mobileMenu.querySelector(':scope > summary')?.focus({preventScroll:true});
+    }
     if (view.dataset.view === 'world') { startWorld(); }
     else openView(view.dataset.view);
   }, true);
