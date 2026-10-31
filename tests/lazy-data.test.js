@@ -237,3 +237,101 @@ test('navigation intent prefetches optional sections only when the adaptive poli
   listeners['document:pointerover']({ type: 'pointerover', pointerType: 'mouse', target: { closest: () => ({ getAttribute: () => 'world' }) } });
   assert.equal(requested.length, 2, 'constrained devices must not prefetch optional sections');
 });
+
+
+test('optional lazy loads respect the adaptive concurrency limit', async () => {
+  const requested = [];
+  const scripts = [];
+  const listeners = {};
+  const timers = [];
+  const document = {
+    visibilityState: 'visible',
+    addEventListener(name, fn) { listeners['document:' + name] = fn; },
+    createElement(tag) {
+      const script = { src: '', async: true, remove() {} };
+      scripts.push(script);
+      return script;
+    },
+    head: { appendChild(script) { requested.push(script.src); } }
+  };
+  const window = {
+    EPIPHANY_ADAPTIVE_ENGINE: { getPolicy: () => ({
+      allowSpeculativePreload: true, deferNonEssentialWork: false, maxConcurrentOptionalLoads: 1
+    }) },
+    navigator: { onLine: true },
+    addEventListener(name, fn) { listeners['window:' + name] = fn; },
+    setTimeout(fn) { timers.push(fn); return timers.length; },
+    clearTimeout() {}
+  };
+  const context = vm.createContext({ window, document, Promise, Map, Set, Object, Error });
+  vm.runInContext(fs.readFileSync(path.join(root, 'lazy-data.js'), 'utf8'), context);
+
+  const intent = group => listeners['document:pointerover']({
+    type: 'pointerover', pointerType: 'mouse',
+    target: { closest: () => ({ getAttribute: () => group }) }
+  });
+  intent('arcade');
+  timers.shift()();
+  await new Promise(resolve => setImmediate(resolve));
+  assert.deepEqual(requested.map(src => src.split('?')[0]), ['practice-lab.js']);
+
+  intent('thinklab');
+  timers.shift()();
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(requested.length, 1, 'the second optional load must wait for the concurrency slot');
+
+  scripts[0].onload();
+  await new Promise(resolve => setImmediate(resolve));
+  await new Promise(resolve => setImmediate(resolve));
+  assert.deepEqual(requested.map(src => src.split('?')[0]), ['practice-lab.js', 'think-lab.js']);
+  scripts[1].onload();
+});
+
+test('explicit navigation bypasses and promotes queued optional loads', async () => {
+  const requested = [];
+  const scripts = [];
+  const listeners = {};
+  const timers = [];
+  const document = {
+    visibilityState: 'visible',
+    addEventListener(name, fn) { listeners['document:' + name] = fn; },
+    createElement() {
+      const script = { src: '', async: true, remove() {} };
+      scripts.push(script);
+      return script;
+    },
+    head: { appendChild(script) { requested.push(script.src); } }
+  };
+  const window = {
+    EPIPHANY_ADAPTIVE_ENGINE: { getPolicy: () => ({
+      allowSpeculativePreload: true, deferNonEssentialWork: false, maxConcurrentOptionalLoads: 1
+    }) },
+    navigator: { onLine: true },
+    addEventListener(name, fn) { listeners['window:' + name] = fn; },
+    setTimeout(fn) { timers.push(fn); return timers.length; },
+    clearTimeout() {}
+  };
+  const context = vm.createContext({ window, document, Promise, Map, Set, Object, Error });
+  vm.runInNewContext(fs.readFileSync(path.join(root, 'lazy-data.js'), 'utf8'), context);
+
+  const intent = group => listeners['document:pointerover']({
+    type: 'pointerover', pointerType: 'mouse',
+    target: { closest: () => ({ getAttribute: () => group }) }
+  });
+  intent('arcade');
+  timers.shift()();
+  await new Promise(resolve => setImmediate(resolve));
+  intent('thinklab');
+  timers.shift()();
+  await new Promise(resolve => setImmediate(resolve));
+  assert.deepEqual(requested.map(src => src.split('?')[0]), ['practice-lab.js']);
+
+  const explicit = context.window.EPIPHANY_LAZY_LOAD('thinklab');
+  await new Promise(resolve => setImmediate(resolve));
+  assert.deepEqual(requested.map(src => src.split('?')[0]), ['practice-lab.js', 'think-lab.js'],
+    'an explicit request must promote its matching queued prefetch immediately');
+
+  scripts[1].onload();
+  await explicit;
+  scripts[0].onload();
+});

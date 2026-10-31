@@ -18,44 +18,99 @@
   const pendingStyles = new Map();
   const loadedStyles = new Set();
   const loadingStyles = new Map();
+  const optionalQueue = [];
+  const queuedOptionalLoads = new Map();
+  let activeOptionalLoads = 0;
 
-  function loadStyle(href) {
+  function optionalLoadLimit() {
+    try {
+      const policy = window.EPIPHANY_ADAPTIVE_ENGINE?.getPolicy?.();
+      const limit = Number(policy && policy.maxConcurrentOptionalLoads);
+      return Number.isFinite(limit) && limit >= 1 ? Math.floor(limit) : 1;
+    } catch { return 1; }
+  }
+
+  function startOptionalJob(job, asUser) {
+    if (job.started) return;
+    job.started = true;
+    if (job.key) queuedOptionalLoads.delete(job.key);
+    if (!asUser) activeOptionalLoads++;
+    Promise.resolve().then(job.run).then(job.resolve, job.reject).finally(() => {
+      if (!asUser) activeOptionalLoads = Math.max(0, activeOptionalLoads - 1);
+      if (job.key) queuedOptionalLoads.delete(job.key);
+      pumpOptionalQueue();
+    });
+  }
+
+  function pumpOptionalQueue() {
+    while (activeOptionalLoads < optionalLoadLimit() && optionalQueue.length) {
+      const job = optionalQueue.shift();
+      if (!job.started) startOptionalJob(job, false);
+    }
+  }
+
+  function runWithPriority(priority, run, key) {
+    if (priority !== 'optional') {
+      const queued = key && queuedOptionalLoads.get(key);
+      if (queued) {
+        const index = optionalQueue.indexOf(queued);
+        if (index !== -1) optionalQueue.splice(index, 1);
+        startOptionalJob(queued, true);
+        return queued.promise;
+      }
+      return Promise.resolve().then(run);
+    }
+    const job = { key, run, resolve: null, reject: null, started: false, promise: null };
+    job.promise = new Promise((resolve, reject) => {
+      job.resolve = resolve;
+      job.reject = reject;
+    });
+    if (key) queuedOptionalLoads.set(key, job);
+    optionalQueue.push(job);
+    pumpOptionalQueue();
+    return job.promise;
+  }
+  function loadStyle(href, priority) {
     if (loadedStyles.has(href)) return Promise.resolve();
-    if (loadingStyles.has(href)) return loadingStyles.get(href);
-    const promise = new Promise((resolve, reject) => {
+    if (loadingStyles.has(href)) {
+      if (priority === 'user') runWithPriority('user', () => Promise.resolve(), href);
+      return loadingStyles.get(href);
+    }
+    const promise = runWithPriority(priority, () => new Promise((resolve, reject) => {
       const link = document.createElement('link');
       link.rel = 'stylesheet';
       link.href = href;
-      link.onload = () => {
-        loadedStyles.add(href);
-        loadingStyles.delete(href);
-        resolve();
-      };
+      link.onload = () => { loadedStyles.add(href); resolve(); };
       link.onerror = () => {
         link.remove();
-        loadingStyles.delete(href);
         reject(new Error('Unable to load feature styles: ' + href.split('?')[0]));
       };
       document.head.appendChild(link);
-    });
+    }), href).finally(() => loadingStyles.delete(href));
     loadingStyles.set(href, promise);
     return promise;
   }
 
-  window.EPIPHANY_LAZY_STYLE = function (group) {
+  function loadStyleGroup(group, priority) {
     if (!Object.prototype.hasOwnProperty.call(styleGroups, group)) {
       return Promise.reject(new Error('Unknown feature style group'));
     }
-    if (!pendingStyles.has(group)) {
-      const promise = styleGroups[group].reduce((chain, href) => chain.then(() => loadStyle(href)), Promise.resolve())
-        .catch(error => {
-          pendingStyles.delete(group);
-          throw error;
-        });
-      pendingStyles.set(group, promise);
+    let job = pendingStyles.get(group);
+    if (job) {
+      if (priority === 'user') {
+        job.priority = 'user';
+        styleGroups[group].forEach(href => runWithPriority('user', () => Promise.resolve(), href));
+      }
+      return job.promise;
     }
-    return pendingStyles.get(group);
-  };
+    job = { priority, promise: null };
+    job.promise = styleGroups[group].reduce((chain, href) => chain.then(() => loadStyle(href, job.priority)), Promise.resolve())
+      .catch(error => { pendingStyles.delete(group); throw error; });
+    pendingStyles.set(group, job);
+    return job.promise;
+  }
+
+  window.EPIPHANY_LAZY_STYLE = group => loadStyleGroup(group, 'user');
 
   const pending = new Map();
   const loaded = new Set();
@@ -100,8 +155,8 @@
       const current = currentAdaptivePolicy();
       if (!current || !current.allowSpeculativePreload || current.deferNonEssentialWork ||
           document.visibilityState === 'hidden' || (window.navigator && window.navigator.onLine === false)) return;
-      const tasks = [window.EPIPHANY_LAZY_LOAD(group)];
-      if (Object.prototype.hasOwnProperty.call(styleGroups, group)) tasks.push(window.EPIPHANY_LAZY_STYLE(group));
+      const tasks = [loadGroup(group, 'optional')];
+      if (Object.prototype.hasOwnProperty.call(styleGroups, group)) tasks.push(loadStyleGroup(group, 'optional'));
       Promise.all(tasks).catch(() => {});
     };
     if (typeof window.requestIdleCallback === 'function') {
@@ -138,16 +193,18 @@
     });
   }
 
-  function loadScript(src) {
+  function loadScript(src, priority) {
     if (loaded.has(src)) return Promise.resolve();
-    if (loadingScripts.has(src)) return loadingScripts.get(src);
-    const promise = new Promise((resolve, reject) => {
+    if (loadingScripts.has(src)) {
+      if (priority === 'user') runWithPriority('user', () => Promise.resolve(), src);
+      return loadingScripts.get(src);
+    }
+    const promise = runWithPriority(priority, () => new Promise((resolve, reject) => {
       const script = document.createElement('script');
       script.src = src;
       script.async = false;
       script.onload = () => {
         loaded.add(src);
-        loadingScripts.delete(src);
         if (src.startsWith('data-translation-ar-fill.js') && typeof window.EPIPHANY_MERGE_AR_TRANSLATIONS === 'function') {
           try { window.EPIPHANY_MERGE_AR_TRANSLATIONS(); }
           catch (error) { reject(error); return; }
@@ -156,27 +213,37 @@
       };
       script.onerror = () => {
         script.remove();
-        loadingScripts.delete(src);
         reject(new Error('Unable to load feature data: ' + src.split('?')[0]));
       };
       document.head.appendChild(script);
-    });
+    }), src).finally(() => loadingScripts.delete(src));
     loadingScripts.set(src, promise);
     return promise;
   }
 
-  window.EPIPHANY_LAZY_LOAD = function (group) {
+  function loadGroup(group, priority) {
     if (!Object.prototype.hasOwnProperty.call(groups, group)) {
       return Promise.reject(new Error('Unknown feature data group'));
     }
-    if (!pending.has(group)) {
-      const promise = groups[group].reduce((chain, src) => chain.then(() => loadScript(src)), Promise.resolve())
-        .catch(error => {
-          pending.delete(group);
-          throw error;
-        });
-      pending.set(group, promise);
+    let job = pending.get(group);
+    if (job) {
+      if (priority === 'user') {
+        job.priority = 'user';
+        groups[group].forEach(src => runWithPriority('user', () => Promise.resolve(), src));
+      }
+      return job.promise;
     }
-    return pending.get(group);
-  };
+    job = { priority, promise: null };
+    job.promise = groups[group].reduce((chain, src) => chain.then(() => loadScript(src, job.priority)), Promise.resolve())
+      .catch(error => { pending.delete(group); throw error; });
+    pending.set(group, job);
+    return job.promise;
+  }
+
+  window.EPIPHANY_LAZY_LOAD = group => loadGroup(group, 'user');
+
+  try {
+    const engine = window.EPIPHANY_ADAPTIVE_ENGINE;
+    if (engine && typeof engine.subscribe === 'function') engine.subscribe(() => pumpOptionalQueue());
+  } catch {}
 })();
