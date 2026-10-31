@@ -220,3 +220,19 @@ When a decision changes:
 - The exact position within Orath, terrain, routes, population, economy, history, architecture, and political status remain open. Do not assume Avelorn is Orath's political capital.
 
 **References:** [Orath Candidate Cities](CITIES-ORATH.md), [Unified World Overview](WORLD-OVERVIEW.md).
+
+
+## WD-046 — Establish Ilaris's foundational character record and relationship with Evren
+
+**Status:** Accepted character decision, 2026-10-31; detailed biography and operational parameters remain open.
+
+- **Ilaris / إيلاريس** is character **CHR-003**, born in Eiraven, Ilmar. After becoming a sorcerer, she travelled between continents and eventually became an adviser to an independent research-and-knowledge organization headquartered in Avelorn, Orath.
+- Her accepted core ability is **Reshaping**: she can reshape her own magical formations and those created by other sorcerers, including changing their function or redirecting their course where their structure permits. To intervene in another caster's formation, she must understand its structure and weaken its stability first. The workload of simultaneous formations depends on their strength and complexity, with no fixed target count.
+- Her accepted individual restriction is **Magnitude**, defined for Ilaris as an intrinsic ceiling on the size of the change she can impose on a magical formation. Exact thresholds and manifestations remain open.
+- Ilaris is the same sorcerer who noticed Evren's restraint mark when he was five, took him with her, and introduced him to Aelora Energy and the foundations of Aren Art. This resolves the previously unnamed formative sorcerer in Evren's record. Their wider personal dynamics remain open.
+- Set Ilaris's collectible card rarity to **Epic**. Rarity remains separate from strength and narrative importance.
+- Her personality direction is calm, composed, experienced and dignified, while still warm, lively and capable of humour. Her pride can make admitting mistakes difficult, but does not make reflection impossible.
+- Do not infer her age, species/nature, exact era, family, organization name, detailed travels, full relationship dynamics, or unapproved ability mechanics.
+- The relationship is reciprocal in Character Details: Ilaris links to Evren (CHR-002), and Evren links to Ilaris (CHR-003).
+
+**References:** [Ilaris — CHR-003](../character-reference-cards/CHR-003-ILARIS.md), [Evren — CHR-002](../character-reference-cards/CHR-002-IDRIS.md), and [Character Ability Register](CHARACTER-ABILITY-REGISTER.md).
