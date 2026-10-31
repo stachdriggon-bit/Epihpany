@@ -18,14 +18,15 @@
   function readState() {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
-      if (!raw) return { version:VERSION, activityCompleted:false, status:'not-started', step:0 };
+      if (!raw) return { version:VERSION, activityCompleted:false, status:'not-started', step:0, tipsSeen:[] };
       const value = JSON.parse(raw);
       if (!value || value.version !== VERSION) return { version:VERSION, activityCompleted:false, status:'not-started', step:0 };
       return {
         version:VERSION,
         activityCompleted:value.activityCompleted === true,
         status:['not-started','in-progress','skipped','completed'].includes(value.status) ? value.status : 'not-started',
-        step:Number.isInteger(value.step) ? Math.max(0,Math.min(STEPS.length-1,value.step)) : 0
+        step:Number.isInteger(value.step) ? Math.max(0,Math.min(STEPS.length-1,value.step)) : 0,
+        tipsSeen:Array.isArray(value.tipsSeen) ? value.tipsSeen.filter(item => typeof item === 'string') : []
       };
     } catch (_) { return { version:VERSION, activityCompleted:false, status:'not-started', step:0 }; }
   }
@@ -131,6 +132,61 @@
   document.addEventListener('click', event => {
     if (event.target.closest('[data-view="home"], #logo, #game-close')) maybeStartAfterReturn();
   });
+
+  const CONTEXT_TIPS = {
+    stories: { en:['A gentle starting point','Try a short story first. Your choices shape the path, and you can revisit stories later.'], ar:['بداية هادئة','ابدأ بقصة قصيرة. اختياراتك تؤثر في مسارها، ويمكنك العودة إلى القصص لاحقًا.'] },
+    words: { en:['Your word vault','Words you save appear here. Review the ones that are due whenever you have a moment.'], ar:['خزنة مفرداتك','تظهر هنا الكلمات التي تحفظها. راجع الكلمات المستحقة عندما يتوفر لديك بعض الوقت.'] },
+    lifeskills: { en:['English for everyday life','Practise useful language for real situations, one scenario at a time.'], ar:['الإنجليزية للحياة اليومية','تدرّب على لغة مفيدة لمواقف واقعية، سيناريو واحدًا في كل مرة.'] },
+    mytools: { en:['Your personal toolkit','Save words and notes you meet outside the app. The context will help you remember them.'], ar:['أدواتك الشخصية','احفظ الكلمات والملاحظات التي تصادفها خارج التطبيق؛ فالسياق يساعدك على تذكرها.'] },
+    arcade: { en:['Choose your kind of practice','Pick a short game by skill. You can explore freely without following a fixed order.'], ar:['اختر طريقة التدريب','اختر لعبة قصيرة حسب المهارة. يمكنك الاستكشاف بحرية دون ترتيب إلزامي.'] },
+    thinklab: { en:['Think it through','Take your time: observe clues, connect ideas, and explain your reasoning.'], ar:['فكّر بهدوء','خذ وقتك في ملاحظة الأدلة وربط الأفكار وتوضيح طريقة تفكيرك.'] },
+    summon: { en:['Discover a new card','Card Portal is where you discover cards. Your collected cards are kept in Collection.'], ar:['اكتشف بطاقة جديدة','هنا تكتشف البطاقات، أما البطاقات التي تجمعها فتجدها في قسم Collection.'] },
+    collection: { en:['Your collection','Open a card to explore its details and the connections around it.'], ar:['مجموعتك','افتح أي بطاقة لاستكشاف تفاصيلها والروابط المرتبطة بها.'] },
+    chronicle: { en:['Explore the Codex','Start with a place or event, then follow connected records. Some dates are intentionally uncertain.'], ar:['استكشف Codex','ابدأ بمكان أو حدث، ثم تتبّع السجلات المرتبطة به. بعض التواريخ غير مؤكدة عمدًا.'] },
+    progress: { en:['Read your progress gently','Look for patterns over time. Use these insights as a guide, not a score to chase.'], ar:['تابع تقدمك بهدوء','لاحظ الأنماط مع مرور الوقت، واستخدم المؤشرات كدليل لا كرقم عليك مطاردته.'] },
+    trophies: { en:['Milestones, not perfection','Trophies celebrate effort and meaningful steps, not flawless answers.'], ar:['محطات لا مثالية','تحتفي الكؤوس بالجهد والخطوات المهمة، لا بالإجابات الخالية من الأخطاء.'] },
+    profile: { en:['Your learning space','Manage your profile and choose how you want to share it from here.'], ar:['مساحتك التعليمية','أدر ملفك الشخصي واختر طريقة مشاركته من هذا القسم.'] }
+  };
+  function showContextTip(viewName) {
+    document.querySelectorAll('.guidance-context-tip').forEach(node => node.remove());
+    const tip = CONTEXT_TIPS[viewName];
+    if (!tip || state.tipsSeen.includes(viewName)) return;
+    const view = document.getElementById(viewName + '-view');
+    if (!view || !view.classList.contains('is-active')) return;
+    const host = view.querySelector('.page') || view;
+    const anchor = host.querySelector('.intro, .tl-page-heading, .res-intro');
+    const language = helpLanguage();
+    const content = tip[language] || tip.en;
+    const aside = document.createElement('aside');
+    aside.className = 'guidance-context-tip';
+    aside.setAttribute('role','note');
+    aside.setAttribute('aria-label', language === 'ar' ? 'إرشاد سريع' : 'Quick tip');
+    aside.dir = language === 'ar' ? 'rtl' : 'ltr';
+    const copy = document.createElement('div');
+    const label = document.createElement('span');
+    label.className = 'guidance-context-label';
+    label.textContent = language === 'ar' ? 'إرشاد سريع' : 'A QUICK TIP';
+    const heading = document.createElement('strong');
+    heading.textContent = content[0];
+    const body = document.createElement('p');
+    body.textContent = content[1];
+    copy.append(label, heading, body);
+    const dismiss = document.createElement('button');
+    dismiss.type = 'button';
+    dismiss.className = 'guidance-context-dismiss';
+    dismiss.textContent = '×';
+    dismiss.setAttribute('aria-label', language === 'ar' ? 'إغلاق الإرشاد' : 'Dismiss tip');
+    dismiss.addEventListener('click', () => aside.remove());
+    aside.append(copy, dismiss);
+    if (anchor && anchor.parentNode) anchor.insertAdjacentElement('afterend', aside);
+    else host.prepend(aside);
+    state.tipsSeen.push(viewName);
+    persist();
+  }
+  document.addEventListener('epiphany:view-changed', event => {
+    if (event.detail && typeof event.detail.view === 'string') showContextTip(event.detail.view);
+  });
+
   window.EPIPHANY_GUIDANCE = {
     start: () => start({restart:true}),
     resume: () => start(),
