@@ -170,3 +170,20 @@ Copy this template for each character. Use “Open” rather than inventing an a
 - **Reference card:** [Veyra — CHR-039](../character-reference-cards/CHR-039-VEYRA.md)
 - **Last reviewed:** 2026-10-29 — ability and Scope reference accepted; operational details remain open.
 
+
+
+### CHR-003 — Ilaris, Veiled Archivist
+
+- **Record status:** Foundational ability and individual restriction accepted on 2026-10-31; operational details intentionally remain open.
+- **Card rarity:** Epic (card-system classification only; not a measure of strength or narrative importance).
+- **Homeland:** Eiraven / إيرافين, Ilmar.
+- **Current role/location:** Adviser to an independent research-and-knowledge organization headquartered in Avelorn / أفيلورن, Orath.
+- **Core ability — Reshaping:** Ilaris can reshape her own magical formations and formations created by other sorcerers. Where structure permits, she can change a formation's function or redirect its course.
+- **Requirements for intervening in another caster's formation:** She must understand its structure and operation, then weaken its stability enough to create an opportunity for intervention. Understanding alone does not grant complete control.
+- **Natural operating load:** She can work on multiple formations; no fixed target count is established. Load depends on their strength and complexity. These are natural operating limits, distinct from her individual restriction.
+- **Individual restriction — Magnitude:** An intrinsic ceiling on the size of the change she can impose on a magical formation. Experience may improve efficiency but cannot remove the ceiling.
+- **Relationship:** Ilaris is the sorcerer who noticed Evren's restraint mark when he was five, took him with her, and introduced him to Aelora Energy and the foundations of Aren Art. This identity is now established; their broader personal dynamics remain open.
+- **Open questions:** Exact operational thresholds and manifestations of Magnitude; further mechanics of Reshaping; Ilaris's age, species/nature, exact era, appearance, organization name and structure, personal history, signature quote, and the detailed evolution of her relationship with Evren.
+- **Canon decision:** On 2026-10-31, the user confirmed that Ilaris is the same sorcerer who took Evren along in his childhood and introduced him to the magical world. The user also confirmed the accepted foundational Reshaping ability, Magnitude restriction, and Epic card rarity.
+- **Reference card:** [Ilaris — CHR-003](../character-reference-cards/CHR-003-ILARIS.md)
+- **Last reviewed:** 2026-10-31 — foundational identity, personality, ability, restriction, Evren relationship, and card rarity recorded.
