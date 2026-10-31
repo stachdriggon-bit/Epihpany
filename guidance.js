@@ -69,7 +69,7 @@
     overlay.querySelector('.guidance-kicker').textContent = strings.kicker;
     overlay.querySelector('.guidance-count').textContent = strings.count(state.step+1);
     overlay.querySelector('#guidance-title').textContent = step[0];
-    overlay.querySelector('[data-guidance-intro]').textContent = state.step === 0 ? strings.intro : step[1];
+    overlay.querySelector('[data-guidance-intro]').textContent = state.step === 0 ? step[1] + ' ' + strings.intro : step[1];
     overlay.querySelector('.guidance-progress span').style.width = ((state.step+1)/STEPS.length*100)+'%';
     overlay.querySelector('[data-guidance-back]').textContent = strings.back;
     overlay.querySelector('[data-guidance-back]').hidden = state.step === 0;
