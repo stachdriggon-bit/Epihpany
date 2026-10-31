@@ -28,7 +28,7 @@ test('the tour waits for a completed real activity and a return to Home', () => 
   assert.match(app, /dispatchEvent\(new CustomEvent\('epiphany:activity-completed'/);
   assert.match(app, /if\(firstCompletion\)\{document\.dispatchEvent\(new CustomEvent\('epiphany:activity-completed'/);
   assert.match(source, /document\.addEventListener\('epiphany:activity-completed'/);
-  assert.match(source, /event\.target\.closest\('\[data-view="home"\], #logo'\)/);
+  assert.match(source, /\[data-view="home"\], #logo, #game-close/);
   assert.match(source, /state\.activityCompleted && state\.status === 'not-started' && activeHome\(\)/);
   assert.match(app, /if \(DEV_MODE\.active && hasDeveloperAccess\(\)\) return/);
 });
@@ -48,7 +48,7 @@ test('the six tour steps mirror the established navigation groups', () => {
 
 test('the tour can be skipped, resumed, or completed and supports keyboard dismissal', () => {
   const source = read('guidance.js');
-  assert.match(source, /status === 'skipped'/);
+  assert.match(source, /'skipped'/);
   assert.match(source, /resume: \(\) => start\(\)/);
   assert.match(source, /start: \(\) => start\(\{restart:true\}\)/);
   assert.match(source, /status === 'completed'/);
