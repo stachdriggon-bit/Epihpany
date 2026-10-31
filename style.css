@@ -3873,3 +3873,14 @@ body[data-theme="dark"] #home-view .home-intro{background:radial-gradient(circle
   .notification-panel-actions{justify-content:stretch}
   .notification-panel-actions .btn{width:100%}
 }
+
+
+/* Adaptive engine: reduce decorative work on constrained devices and for reduced-motion users. */
+html.ep-adaptive-lite *,
+html.ep-adaptive-lite *::before,
+html.ep-adaptive-lite *::after {
+  animation-duration: .01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: .01ms !important;
+  scroll-behavior: auto !important;
+}
