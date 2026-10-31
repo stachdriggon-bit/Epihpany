@@ -363,7 +363,7 @@ test('main navigation tabs open without uncaught page errors', async t => {
     assert.equal(await mobileMenu.evaluate(el => el.open), false, 'Escape should close the entire mobile drawer');
     assert.equal(await mobileMenuTrigger.evaluate(el => document.activeElement === el), true, 'Escape should restore focus to the menu button');
     await mobileMenuTrigger.click();
-    await mobileMenu.locator('.mobile-menu-backdrop').click();
+    await mobileMenu.locator('.mobile-menu-backdrop').click({position:{x:360,y:200}});
     assert.equal(await mobileMenu.evaluate(el => el.open), false, 'the backdrop should close the mobile drawer');
     await clickView(cardsPage, 'collection');
     assert.equal(await mobileMenu.evaluate(el => el.open), false, 'choosing a destination should close the mobile drawer');
