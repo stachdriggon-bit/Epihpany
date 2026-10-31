@@ -3888,3 +3888,10 @@ html.ep-adaptive-lite *::after {
 @media (prefers-reduced-motion:reduce){
   .mobile-menu nav,.mobile-menu-backdrop{transition:none!important}
 }
+
+
+/* Move compact help and sound controls into the settings panel when header space is limited. */
+@media (max-width:1180px){
+  .top-right>#sound-toggle{display:none}
+  .tools-panel .ar-toggle.tools-action{height:auto;min-height:44px;min-width:0;justify-content:flex-start;border-radius:10px;padding:11px 12px;text-align:left}
+}
