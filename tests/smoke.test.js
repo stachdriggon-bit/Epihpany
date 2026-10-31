@@ -18,7 +18,7 @@ async function clickView(page, view) {
   const mobileLayout = await page.evaluate(() => window.innerWidth <= 900);
   if (mobileLayout) {
     const mobileMenu = page.locator('.mobile-menu');
-    if (await mobileMenu.isVisible() && !(await mobileMenu.evaluate(el => el.open))) await mobileMenu.locator('summary').click();
+    if (await mobileMenu.isVisible() && !(await mobileMenu.evaluate(el => el.open))) await mobileMenu.locator(':scope > summary').click();
     const group = page.locator('details.mobile-nav-group').filter({ has: page.locator(selector) }).first();
     if (await group.count() && !(await group.evaluate(el => el.open))) await group.locator('summary').click();
   } else {
