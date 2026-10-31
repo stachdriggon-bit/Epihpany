@@ -52,7 +52,7 @@ test('changed scripts are versioned and the offline shell cache is refreshed', (
   assert.match(html, /app\.js\?v=help-center-wallet-20261031-1/);
   assert.match(html, /cards\.js\?v=help-center-wallet-20261031-1/);
   assert.match(html, /account\.js\?v=empty-states-20261031-1/);
-  assert.match(html, /style\.css\?v=home-intro-width-20261031-1/);
+  assert.match(html, /style\.css\?v=home-mobile-spacing-20261031-1/);
   assert.match(read('style.css'), /Helpful empty-state actions/);
-  assert.match(sw, /epiphany-shell-home-intro-width-20261031-1/);
+  assert.match(sw, /epiphany-shell-home-mobile-spacing-20261031-1/);
 });
