@@ -368,7 +368,7 @@ test('Low-Water Shore stories expose explicit place and unknown-date metadata', 
 });
 
 
-test('World Archive navigation is registered with its view and lazy data group', () => {
+test('Codex navigation is registered with its view and lazy data group', () => {
   const html = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
   const app = fs.readFileSync(path.join(root, 'app.js'), 'utf8');
   const lazy = fs.readFileSync(path.join(root, 'lazy-data.js'), 'utf8');
@@ -378,5 +378,5 @@ test('World Archive navigation is registered with its view and lazy data group',
   assert.match(app, /if \(name === 'chronicle'\) renderChronicle\(\)/);
   assert.match(app, /function renderChronicle\(\)/);
   assert.match(lazy, /chronicle:\s*\['data-world-registry\.js\?/);
-  assert.match(navigation, /chronicle:\s*'World Archive'/);
+  assert.match(navigation, /chronicle:\s*'Codex'/);
 });

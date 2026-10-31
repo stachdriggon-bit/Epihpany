@@ -15,14 +15,15 @@ async function clickView(page, view) {
   })) return;
   const selector = 'button[data-view="' + view + '"]';
   await page.waitForSelector(selector, { state: 'attached', timeout: 10000 });
-  if (!(await page.locator(selector + ':visible').count())) {
+  const mobileLayout = await page.evaluate(() => window.innerWidth <= 900);
+  if (mobileLayout) {
+    const mobileMenu = page.locator('.mobile-menu');
+    if (await mobileMenu.isVisible() && !(await mobileMenu.evaluate(el => el.open))) await mobileMenu.locator(':scope > summary').click();
+    const group = page.locator('details.mobile-nav-group').filter({ has: page.locator(selector) }).first();
+    if (await group.count() && !(await group.evaluate(el => el.open))) await group.locator('summary').click();
+  } else {
     const group = page.locator('details.nav-group').filter({ has: page.locator(selector) }).first();
-    if (await group.count() && await group.isVisible()) {
-      if (!(await group.evaluate(el => el.open))) await group.locator('summary').click();
-    } else {
-      const mobileMenu = page.locator('.mobile-menu');
-      if (await mobileMenu.isVisible() && !(await mobileMenu.evaluate(el => el.open))) await mobileMenu.locator('summary').click();
-    }
+    if (await group.count() && !(await group.evaluate(el => el.open))) await group.locator('summary').click();
   }
   await page.locator(selector + ':visible').first().click();
 }
@@ -241,7 +242,7 @@ test('main navigation tabs open without uncaught page errors', async t => {
         assert.equal(await mobileGroups.locator('.mobile-nav-label').count(), await mobileGroups.count(), 'every mobile navigation group should have a visible purpose label');
         const groupedDestinations = mobileGroups.locator('button[data-view]');
         assert.equal(await groupedDestinations.count(), await groupedDestinations.evaluateAll(buttons => new Set(buttons.map(button => button.dataset.view)).size), 'each destination should appear in only one purpose group');
-        assert.equal(await page.locator('.mobile-menu nav [data-view]').count(), 15, 'all destinations, including World Archive, should remain available in the mobile menu');
+        assert.equal(await page.locator('.mobile-menu nav [data-view]').count(), 15, 'all destinations, including Codex, should remain available in the mobile menu');
         const quickActions = page.locator('.quick-actions-more');
         assert.equal(await quickActions.evaluate(el => el.open), false, 'secondary practice options should start collapsed');
         assert.equal(await page.locator('#listen-only-start').isVisible(), false, 'collapsed secondary actions should not clutter the home screen');
@@ -350,7 +351,22 @@ test('main navigation tabs open without uncaught page errors', async t => {
     }));
     await cardsPage.goto(baseUrl, { waitUntil: 'domcontentloaded' });
     await dismissFirstVisitOverlays(cardsPage);
+    const mobileMenu = cardsPage.locator('.mobile-menu');
+    const mobileMenuTrigger = mobileMenu.locator(':scope > summary');
+    await mobileMenuTrigger.click();
+    assert.equal(await mobileMenu.evaluate(el => el.open), true, 'the mobile drawer should open from its menu button');
+    const learnGroup = cardsPage.locator('.mobile-nav-group').filter({hasText:'LEARN'}).first();
+    await learnGroup.locator(':scope > summary').click();
+    assert.equal(await mobileMenu.evaluate(el => el.open), true, 'opening a group inside the drawer must not close the drawer');
+    assert.equal(await learnGroup.evaluate(el => el.open), true, 'the selected mobile group should expand');
+    await cardsPage.keyboard.press('Escape');
+    assert.equal(await mobileMenu.evaluate(el => el.open), false, 'Escape should close the entire mobile drawer');
+    assert.equal(await mobileMenuTrigger.evaluate(el => document.activeElement === el), true, 'Escape should restore focus to the menu button');
+    await mobileMenuTrigger.click();
+    await mobileMenu.locator('.mobile-menu-backdrop').click({position:{x:360,y:200}});
+    assert.equal(await mobileMenu.evaluate(el => el.open), false, 'the backdrop should close the mobile drawer');
     await clickView(cardsPage, 'collection');
+    assert.equal(await mobileMenu.evaluate(el => el.open), false, 'choosing a destination should close the mobile drawer');
     await cardsPage.locator('#cards-gallery').scrollIntoViewIfNeeded();
     // The browser may defer every lazy image in a long gallery even when its container is in view.
     // Promote one visible representative image to eager loading so this smoke test checks decoding,
