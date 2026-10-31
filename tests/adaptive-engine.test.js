@@ -41,7 +41,7 @@ test('adaptive engine exposes conservative defaults and does not persist or tran
   assert.equal(api.shouldPrefetch(), true);
   assert.equal(api.getPolicy().maxConcurrentOptionalLoads, 3);
   assert.equal(Object.prototype.propertyIsEnumerable.call(window, 'EPIPHANY_ADAPTIVE_ENGINE'), false);
-  assert.doesNotMatch(source, /localStorage|sessionStorage|fetch\s*\(|XMLHttpRequest|sendBeacon|supabase/i);
+  assert.doesNotMatch(source, /\b(?:localStorage|sessionStorage|fetch|XMLHttpRequest|sendBeacon|supabase)\b/i);
 });
 
 test('data saver, slow networks, and constrained devices reduce optional work', () => {
