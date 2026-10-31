@@ -5726,7 +5726,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     document.querySelectorAll('.nav-group[open]').forEach(group => group.removeAttribute('open'));
     const mobileMenu = view.closest('.mobile-menu');
     if (mobileMenu) mobileMenu.removeAttribute('open');
-    if (view.dataset.view === 'world') { closeDockMore(); startWorld(); }
+    if (view.dataset.view === 'world') { startWorld(); }
     else openView(view.dataset.view);
   }, true);
   window.addEventListener('pagehide',()=>{stopSpeechPlayback();releaseStoryPronunciationResources();});
