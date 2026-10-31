@@ -178,7 +178,7 @@
       <button class="tab nav-profile" data-view="profile"><span aria-hidden="true">✦</span><span>Profile</span></button>
     </nav>
 
-    <details class="mobile-menu"><summary aria-label="Open navigation menu" title="Menu"><span></span><span></span><span></span></summary><nav aria-label="Mobile navigation">
+    <details class="mobile-menu"><summary aria-label="Open navigation menu" title="Menu" aria-controls="mobile-navigation-panel"><span></span><span></span><span></span></summary><button class="mobile-menu-backdrop" type="button" aria-label="Close navigation menu"></button><nav id="mobile-navigation-panel" aria-label="Mobile navigation">
       <button class="tab mobile-nav-home" data-view="home">⌂ <span>Start learning</span></button>
       <div class="mobile-nav-group"><span class="mobile-nav-label">LEARN</span><button class="tab" data-view="stories">📖 <span>Stories</span></button></div>
       <div class="mobile-nav-group"><span class="mobile-nav-label">EXPLORE</span><button class="tab" data-view="chronicle">🗺 <span>World Archive</span></button><button class="tab" data-view="resonance">〰 <span>The Resonance</span></button></div>
@@ -353,14 +353,6 @@
 </div>
 
 
-
-<nav class="bottom-nav" aria-label="Quick navigation">
-  <button type="button" data-view="home" aria-label="Home"><span aria-hidden="true">⌂</span><small>Home</small></button>
-  <button type="button" data-view="arcade" aria-label="Play"><span aria-hidden="true">✦</span><small>Play</small></button>
-  <button type="button" data-view="words" aria-label="Words"><span aria-hidden="true">📘</span><small>Words</small></button>
-  <button type="button" data-view="world" aria-label="World"><span aria-hidden="true">🌍</span><small>World</small></button>
-  <button type="button" data-view="profile" aria-label="My profile"><span aria-hidden="true">♙</span><small>Me</small></button>
-</nav>
 
 <main id="main">
 
