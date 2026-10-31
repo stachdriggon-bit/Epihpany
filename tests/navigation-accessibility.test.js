@@ -105,6 +105,7 @@ test('desktop and mobile navigation share the approved six-group destination map
   const html = read('index.html');
   const nav = read('navigation-enhancements.js');
   const app = read('app.js');
+  const css = read('style.css');
   const desktop = html.match(/<nav class="tabs" aria-label="Main navigation">([\s\S]*?)<\/nav>/);
   const mobile = html.match(/<nav id="mobile-navigation-panel" aria-label="Mobile navigation">([\s\S]*?)<\/nav>/);
   assert.ok(desktop && mobile, 'both navigation surfaces must exist');
@@ -134,7 +135,8 @@ test('desktop and mobile navigation share the approved six-group destination map
   const navStart = css.indexOf('/* ===== NAVIGATION (single source of truth) =====');
   const navEnd = css.indexOf('/* First-visit help-language choice */', navStart);
   const navOutside = css.slice(0, navStart) + css.slice(navEnd);
-  assert.doesNotMatch(navOutside, /\\.mobile-menu nav|\\.mobile-menu>summary|\\.mobile-nav-group/);});
+  assert.doesNotMatch(navOutside, /\\.mobile-menu nav|\\.mobile-menu>summary|\\.mobile-nav-group/);
+});
 
 test('legacy bottom dock behavior is not left active after adopting the mobile drawer', () => {
   const html = read('index.html');
