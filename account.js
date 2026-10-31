@@ -829,7 +829,6 @@
         pendingCloudProgress = null;
       }
       currentUser = nextUser;
-      markAuthReady();
       announceAuthAccess();
       if (event === 'PASSWORD_RECOVERY') recoveryMode = true;
       if (!currentUser) {
@@ -866,7 +865,7 @@
         loadPlayerProfile().catch(error => console.error('Profile refresh failed:', error));
         if (lastSyncedUser !== currentUser.id) {
           lastSyncedUser = currentUser.id;
-          syncUserProgress(currentUser);
+          await syncUserProgress(currentUser);
         }
       } else {
         renderAccount();
