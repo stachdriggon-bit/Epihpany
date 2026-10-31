@@ -3888,3 +3888,17 @@ body[data-theme="dark"] .account-save-prompt{background:var(--surface);border-co
 .profile-xp-chip svg{width:14px;height:14px;color:var(--focus)}
 .profile-xp-chip>span{font-size:9px;letter-spacing:.07em;color:var(--ink-2)}
 .profile-xp-chip>b{font-variant-numeric:tabular-nums}
+
+
+/* Navigation readability: avoid shrinking desktop labels to 11px on mid-size laptops. */
+@media (min-width:1200px) and (max-width:1349px){
+  .top-in>.tabs>.tab,
+  .top-in>.tabs>.nav-group>summary{
+    padding:7px 7px;
+    font-size:12.5px;
+    gap:6px;
+  }
+  .top-in>.tabs>.nav-group>summary>svg,
+  .top-in>.tabs>.tab>svg{width:15px;height:15px}
+  .top-in>.tabs{gap:3px}
+}
