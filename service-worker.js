@@ -7,7 +7,7 @@ const LAZY_ASSETS = ['./resonance.css', './life-skills.css', './data-stories-exp
 self.addEventListener('install', event => {
   event.waitUntil((async () => {
     const cache = await caches.open(CACHE_NAME);
-    // A single missing optional asset must not prevent the whole app from installing offline.
+    // A single missing core asset must not prevent the whole app from installing offline.
     await Promise.all(CORE_ASSETS.map(async asset => {
       try { await cache.add(asset); } catch (error) { console.warn('[EPIPHANY] Could not pre-cache', asset, error); }
     }));
