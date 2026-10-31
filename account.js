@@ -364,7 +364,7 @@
     $('player-post-list').innerHTML = posts.length ? posts.map(post => {
       const date = post.created_at ? new Date(post.created_at).toLocaleDateString(undefined,{year:'numeric',month:'short',day:'numeric'}) : '';
       return '<article class="player-post"><div class="player-post-top"><span class="player-post-date">' + escapeProfileText(date) + '</span><button type="button" class="player-post-delete" data-delete-post="' + escapeProfileText(post.id) + '">Delete</button></div><p class="player-post-body">' + escapeProfileText(post.body) + '</p></article>';
-    }).join('') : '<div class="profile-empty-posts">Your English corner is ready. Share your first little thought above ✨</div>';
+    }).join('') : '<div class="profile-empty-posts empty-state-guidance">Your English corner is ready. Share a short thought, a new phrase, or a tiny learning win. <a class="empty-state-inline-link" href="#player-post-text">Write your first post →</a></div>';
   }
   async function loadCommunityPosts() {
     const list = $('community-post-list');
@@ -373,7 +373,7 @@
     if (error) throw error;
     const posts = data || [];
     if (!posts.length) {
-      list.innerHTML = '<div class="profile-empty-posts">No posts yet. Be the first to share a little English moment ✨</div>';
+      list.innerHTML = '<div class="profile-empty-posts empty-state-guidance">No community posts yet. Add a small English moment to start the conversation. <a class="empty-state-inline-link" href="#player-post-text">Write the first post →</a></div>';
       return;
     }
     const userIds = [...new Set(posts.map(post => post.user_id))];
