@@ -48,8 +48,8 @@ test('XP is removed from the top bar, shown beside mobile Home, and included in 
   assert.doesNotMatch(header, /chip-xp|chip-tokens/);
   assert.match(html, /id="mobile-home-xp"/);
   assert.match(html, /id="player-profile-xp"/);
-  assert.match(app, /id="mobile-home-xp"/);
-  assert.match(app, /id="player-profile-xp"/);
+  assert.match(app, /\$\('#mobile-home-xp'\)/);
+  assert.match(app, /\$\('#player-profile-xp'\)/);
   assert.match(app, /epiphany:progress-saved/);
 });
 
