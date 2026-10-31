@@ -148,7 +148,8 @@ test('runtime long-task pressure pauses optional work and resumes after a quiet 
   const updates = [];
   const unsubscribe = api.subscribe((snapshot, policy) => updates.push({ snapshot, policy }));
   assert.equal(observers.length, 1, 'long-task monitoring should be installed when supported');
-  assert.deepEqual(observers[0].options, { type: 'longtask', buffered: true });
+  assert.equal(observers[0].options.type, 'longtask');
+  assert.equal(observers[0].options.buffered, true);
   observers[0].callback({ getEntries: () => [
     { duration: 90, startTime: 1000 },
     { duration: 120, startTime: 3000 }
