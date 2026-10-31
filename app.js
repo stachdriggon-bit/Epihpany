@@ -5590,9 +5590,36 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     }
   });
 
+  function showLevelChoice(){
+    if(state.placementDone || HAD_SAVED_PROGRESS_AT_LOAD)return;
+    $('#placement-title').textContent='Choose your starting point';
+    $('.placement-card .kicker').textContent='A GENTLE START';
+    $('.placement-intro').textContent='Choose the level that feels closest to your current English. It is only an estimate — you can take the full assessment later from Progress.';
+    $('#placement-progress').hidden=true;
+    $('#placement-skip').hidden=true;
+    const levels=[['A1','Beginner','I know a few words and simple phrases.'],['A2','Elementary','I can manage familiar everyday situations.'],['B1','Intermediate','I can explain ideas and handle most daily situations.'],['B2','Upper intermediate','I can discuss different topics with some confidence.'],['C1','Advanced','I can use English flexibly for study or work.'],['C2','Proficient','I can understand and express very nuanced ideas.']];
+    $('#placement-content').innerHTML='<div class="level-choice-grid">'+levels.map(([id,label,description])=>'<button type="button" class="level-choice" data-start-level="'+id+'"><strong>'+id+' · '+label+'</strong><span>'+description+'</span></button>').join('')+'</div><button type="button" class="level-choice-unsure" data-start-level="A1">I’m not sure — start gently at A1</button>';
+    $('#placement').hidden=false;lockPage(true);
+  }
+  function chooseStartingLevel(levelId){
+    if(!LEVELS.some(level=>level.id===levelId))return;
+    state.assessedLevel=levelId;state.level=levelId;state.placementDone=true;
+    state.placementResult={level:levelId,skipped:false,approximate:true,source:'self-selected',testedAt:new Date().toISOString()};
+    save();closePlacement();startGame('vocabulary');
+  }
+  function maybeStartVisitorJourney(){
+    if(HAD_SAVED_PROGRESS_AT_LOAD || state.placementDone)return;
+    if(helpLanguageModal && !helpLanguageChoice && !hasExistingProgress)return;
+    showLevelChoice();
+  }
+  window.__epiphanyStartOnboarding=maybeStartVisitorJourney;
   function showPlacement(){
     if(state.placementDone)return;
     placement={questions:placementQuestions15(),index:0,answers:[],stage:0,highestPassed:0,stageCorrect:0,scoreByLevel:{}};
+    $('#placement-title').textContent='Find your English level';
+    $('.placement-card .kicker').textContent='A QUICK START';
+    $('.placement-intro').textContent='Answer 15 short questions across vocabulary, grammar, conversation and comprehension. We use your results to estimate a starting CEFR level; this is not an official exam.';
+    $('#placement-progress').hidden=false;$('#placement-skip').hidden=false;
     $('#placement').hidden=false;lockPage(true);renderPlacementQuestion();
   }
   window.__epiphanyShowPlacement = showPlacement;
@@ -5602,7 +5629,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     $('#placement-progress').textContent='Question '+(placement.index+1)+' of '+placement.questions.length+' · Level '+(q.placementLevel||'A1');
     $('#placement-content').innerHTML='<h2>'+esc(q.q)+'</h2><p>'+esc(q.sub||'Choose the best answer.')+'</p><div class="answers">'+q.answers.map((x,i)=>'<button class="answer" data-place-answer="'+i+'"><span class="key">'+(i+1)+'</span><span>'+esc(x)+'</span></button>').join('')+'</div>';
   }
-  function closePlacement(){ placement.answered=false; monthlyAssessment=null; promotionTest=null; $('#placement').hidden=true;lockPage(false);$('#placement-skip').hidden=false;$('#placement-title').textContent='Find your English level';$('.placement-card .kicker').textContent='A QUICK START';$('.placement-intro').textContent='Answer 15 short questions across vocabulary, grammar, conversation and comprehension. We use your results to estimate a starting CEFR level; this is not an official exam.';renderAll(); }
+  function closePlacement(){ placement.answered=false; monthlyAssessment=null; promotionTest=null; $('#placement').hidden=true;lockPage(false);$('#placement-skip').hidden=false;$('#placement-progress').hidden=false;$('#placement-title').textContent='Find your English level';$('.placement-card .kicker').textContent='A QUICK START';$('.placement-intro').textContent='Answer 15 short questions across vocabulary, grammar, conversation and comprehension. We use your results to estimate a starting CEFR level; this is not an official exam.';renderAll(); }
   function skipPlacement(){
     state.assessedLevel='A1';state.level='A1';state.placementDone=true;state.placementResult={level:'A1',skipped:true,testedAt:new Date().toISOString()};
     save();closePlacement();toast('Level check skipped · starting at A1.');
@@ -5631,7 +5658,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     if(placement.index<placement.questions.length){renderPlacementQuestion();return;}
     finishPlacement();
   }
-  document.addEventListener('click',e=>{const p=e.target.closest('[data-place-answer]');if(p&&!$('#placement').hidden){answerPlacement(Number(p.dataset.placeAnswer));return;}});
+  document.addEventListener('click',e=>{const level=e.target.closest('[data-start-level]');if(level&&!$('#placement').hidden){chooseStartingLevel(level.dataset.startLevel);return;}const p=e.target.closest('[data-place-answer]');if(p&&!$('#placement').hidden){answerPlacement(Number(p.dataset.placeAnswer));return;}});
   window.__epiphanyReadProgress = () => JSON.parse(JSON.stringify(state));
   window.__epiphanyApplyCloudProgress = progress => {
     const incoming = progress && typeof progress === 'object' && !Array.isArray(progress) ? progress : {};
@@ -5735,12 +5762,13 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
       helpLanguageModal.hidden = true;
       if (state.helpArabic) ensureArabicTranslationCatalog().then(() => { renderAll(); if (G && G.answered) setSheetSpace(); }).catch(() => {});
       if (G && G.answered) setSheetSpace();
+      if (!hasExistingProgress) window.__epiphanyStartOnboarding?.();
     });
   });
 
-  let accountWelcomeDismissed = false;
-  try { accountWelcomeDismissed = localStorage.getItem('epiphany-account-welcome-dismissed') === '1'; } catch {}
-  if(!state.placementDone && accountWelcomeDismissed)showPlacement();
+  if ((!helpLanguageModal || helpLanguageChoice || hasExistingProgress) && !hasExistingProgress && !state.placementDone) {
+    window.__epiphanyStartOnboarding?.();
+  }
   bidiLastMode = null;
   syncBidiIsolation(true);
   if (window.MutationObserver) {
