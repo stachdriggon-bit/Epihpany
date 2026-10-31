@@ -52,7 +52,7 @@ test('changed scripts are versioned and the offline shell cache is refreshed', (
   for (const file of ['app.js','account.js','cards.js']) {
     assert.match(html, new RegExp(file.replace('.', '\\.') + '\\?v=empty-states-20261031-1'));
   }
-  assert.match(html, /style\\.css\\?v=empty-states-20261031-1/);
+  assert.match(html, /style\.css\?v=empty-states-20261031-1/);
   assert.match(read('style.css'), /Helpful empty-state actions/);
   assert.match(sw, /epiphany-shell-empty-states-20261031-1/);
 });
