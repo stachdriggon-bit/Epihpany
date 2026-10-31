@@ -1934,8 +1934,10 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
       recorder.start();
       renderStoryPage();
     }catch(error){
-      if(session===storyPronunciationSession)releaseStoryPronunciationResources();
-      toast(error&&error.name==='NotAllowedError'?'Allow microphone access to record your voice.':'Could not start recording on this device.');
+      if(session===storyPronunciationSession){
+        releaseStoryPronunciationResources();
+        toast(error&&error.name==='NotAllowedError'?'Allow microphone access to record your voice.':'Could not start recording on this device.');
+      }
     }
   }
   function stopStoryPronunciationRecording(){if(storyPronunciationRecorder&&storyPronunciationRecorder.state==='recording')storyPronunciationRecorder.stop();}
