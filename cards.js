@@ -79,9 +79,12 @@
   const cardArtSource = (card, opts={}) => {
     const published = window.EPIPHANY_CARD_ASSET_MAP?.[card.id];
     if (published?.published_bucket && published?.published_original_path) {
-      const path = opts.fullImage ? published.published_original_path : (published.published_thumbnail_path || published.published_original_path);
-      const url = publishedAssetUrl(published.published_bucket, path);
-      if (url) return url;
+      const path = opts.fullImage ? published.published_original_path : published.published_thumbnail_path;
+      // A missing published thumbnail must never make the gallery download the full-size original.
+      if (path) {
+        const url = publishedAssetUrl(published.published_bucket, path);
+        if (url) return url;
+      }
     }
     const storagePath = opts.fullImage ? card.image : (card.thumb || card.image);
     const folder = opts.fullImage ? 'originals' : 'thumbs';
@@ -299,9 +302,6 @@
         const face=e.target.closest('.fcard[role="button"]');
         if(face&&(e.key==='Enter'||e.key===' ')){e.preventDefault();const item=face.closest('[data-gallery-card]');if(item)openCardDetail(item.dataset.galleryCard,item);}
       });
-      root.addEventListener('pointerover',e=>{const item=e.target.closest('[data-gallery-card]');if(item)preloadCardArt(item.dataset.galleryCard);},{passive:true});
-      root.addEventListener('pointerdown',e=>{const item=e.target.closest('[data-gallery-card]');if(item)preloadCardArt(item.dataset.galleryCard);},{passive:true});
-      root.addEventListener('focusin',e=>{const item=e.target.closest('[data-gallery-card]');if(item)preloadCardArt(item.dataset.galleryCard);});
     }
     const count = $('cards-collection-count'); if (count) count.textContent = owned.length+' / '+all.length+' discovered';
     const resultCount=$('cards-filter-result-count'); if(resultCount)resultCount.textContent=list.length+' cards';
@@ -373,18 +373,6 @@
       ;
   };
   let cardDetailTrigger=null, cardDetailReturnRect=null;
-  const preloadCardArt=id=>{
-    const card=data().find(c=>c.id===id);if(!card?.image||!isOwned(card))return;
-    const cloudPath=cardArtSource(card);
-    if(!cloudPath)return;
-    if(!window.__epiphanyCardPreloads)window.__epiphanyCardPreloads=new Set();
-    if(window.__epiphanyCardPreloads.has(cloudPath))return;
-    window.__epiphanyCardPreloads.add(cloudPath);
-    const image=new Image();
-    image.decoding='async';
-    image.fetchPriority='low';
-    image.src=cloudPath;
-  };
   const openCardDetail=(id,trigger)=>{
     const card=data().find(c=>c.id===id);if(!card)return;
     cardDetailTrigger=trigger?.querySelector('.fcard')||trigger||null;
