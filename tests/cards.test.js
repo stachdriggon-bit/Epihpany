@@ -224,6 +224,8 @@ test('card detail uses the real full card face and keeps gallery card nodes acro
   const css = read('cards.css');
   assert.match(js, /cardFace\(card,\{level:levelOf\(card\),fullImage:true\}\)/);
   assert.match(js, /galleryNodeCache/);
+  assert.match(js, /if\(!galleryNodeCache\.has\(card\.id\)\)galleryNodeCache\.set\(card\.id,makeGalleryItem\(card\)\)/);
+  assert.doesNotMatch(js, /all\.forEach\(card=>\{if\(!galleryNodeCache\.has\(card\.id\)\)galleryNodeCache\.set\(card\.id,makeGalleryItem\(card\)\);\}\)/);
   assert.match(js, /renderGallery\(true\)/);
   assert.match(js, /root\.replaceChildren\(fragment\)/);
   assert.match(js, /const storagePath = opts\.fullImage \? card\.image : \(card\.thumb \|\| card\.image\)/);
