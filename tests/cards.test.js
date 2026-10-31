@@ -36,6 +36,10 @@ test('card prototype is linked from profile and cached offline', () => {
   const html = read('index.html');
   const sw = read('service-worker.js');
   assert.match(html, /id="cards-hub"/);
+  assert.match(html, /data-view="collection"/);
+  assert.match(html, /id="collection-view"[\s\S]*?id="cards-hub"/);
+  assert.doesNotMatch(html.slice(html.indexOf('id="profile-view"'), html.indexOf('id="collection-view"')), /id="cards-hub"/);
+  assert.doesNotMatch(js, /Start the profile on its Overview/);
   assert.match(html, /data-cards\.js\?v=[^"&]+/);
   assert.match(html, /cards\.js\?v=[^"&]+/);
   assert.match(html, /cards\.css\?v=[^"&]+/);
@@ -93,7 +97,7 @@ test('original portraits cover the full character roster and legendary reveals r
   assert.match(revealCss, /prefers-reduced-motion:reduce/);
 });
 
-test('Card Portal is a separate gacha view, while the collection stays in the profile', () => {
+test('Card Portal and Collection are separate views beside one another, not nested in Profile', () => {
   const html = read('index.html');
   const js = read('cards.js');
   const css = read('cards.css');
