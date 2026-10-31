@@ -204,20 +204,20 @@ window.EPIPHANY_CARD_PROFILES["CHR-003"] = {
   name:{en:"Elaris",ar:"إيلاريس"},
   title:{en:"Veiled Archivist",ar:"أمينة الأرشيف المحجّبة"},
   summary:{
-    en:"A seasoned sorcerer and scholarly adviser whose travels and research have led her to an independent organization devoted to research and knowledge in Avelorn.",
-    ar:"ساحرة متمرسة ومستشارة معرفية قادتها رحلاتها وأبحاثها إلى منظمة مستقلة للبحث والمعرفة في أفيلورن."
+    en:"A seasoned sorcerer and scholarly adviser at The Orivane Institute, an independent research-and-knowledge organization in Avelorn.",
+    ar:"ساحرة متمرسة ومستشارة معرفية لدى The Orivane Institute، وهي منظمة مستقلة للبحث والمعرفة في أفيلورن."
   },
   facts:[
     {label:{en:"Species",ar:"النوع"},value:{en:"Not documented yet",ar:"لم يُوثّق بعد"}},
     {label:{en:"Age",ar:"العمر"},value:{en:"Not documented yet",ar:"لم يُوثّق بعد"}},
     {label:{en:"Homeland",ar:"مسقط الرأس"},value:{en:"Eiraven · Ilmar",ar:"إيرافين · إيلمار"}},
     {label:{en:"Current residence",ar:"الإقامة الحالية"},value:{en:"Avelorn · Orath",ar:"أفيلورن · أوراث"}},
-    {label:{en:"Role",ar:"الدور"},value:{en:"Adviser to an independent research and knowledge organization",ar:"مستشارة لدى منظمة مستقلة للبحث والمعرفة"}},
+    {label:{en:"Role",ar:"الدور"},value:{en:"Adviser to The Orivane Institute",ar:"مستشارة لدى The Orivane Institute"}},
     {label:{en:"Card rarity",ar:"ندرة البطاقة"},value:{en:"Epic",ar:"ملحمية"}}
   ],
   sections:[
     {id:"overview",title:{en:"Overview",ar:"نبذة"},icon:"✦",text:[
-      {text:{en:"Elaris was born in Eiraven, in Ilmar. After becoming a sorcerer, she travelled across the continents. Her path eventually brought her to Avelorn in Orath, where she serves as an adviser to an independent organization devoted to research and knowledge.",ar:"وُلدت إيلاريس في إيرافين بإيلمار. وبعد أن أصبحت ساحرة، بدأت التنقل بين قارات العالم. وانتهى بها المطاف في أفيلورن بأوراث، حيث تعمل مستشارة لدى منظمة مستقلة تُعنى بالبحث والمعرفة."}},
+      {text:{en:"Elaris was born in Eiraven, in Ilmar. After becoming a sorcerer, she travelled across the continents. Her path eventually brought her to Avelorn in Orath, where she serves as an adviser to The Orivane Institute, an independent organization devoted to research and knowledge.",ar:"وُلدت إيلاريس في إيرافين بإيلمار. وبعد أن أصبحت ساحرة، بدأت التنقل بين قارات العالم. وانتهى بها المطاف في أفيلورن بأوراث، حيث تعمل مستشارة لدى منظمة مستقلة تُعنى بالبحث والمعرفة."}},
       {text:{en:"The organization has its headquarters and research facilities in Avelorn. It is one prominent institution among the city's wider civic, cultural and scholarly life; the city is not built around the organization.",ar:"للمنظمة مقر رئيسي ومرافق بحثية في أفيلورن. وهي مؤسسة بارزة ضمن الحياة المدنية والثقافية والعلمية الأوسع للمدينة، فالمدينة ليست مبنية حول المنظمة."}}
     ]},
     {id:"personality",title:{en:"Personality & Behaviour",ar:"الشخصية والسلوك"},icon:"◇",text:[
