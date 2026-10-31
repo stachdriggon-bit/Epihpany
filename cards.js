@@ -683,6 +683,20 @@
 
   const init = () => {
     if(!$('cards-hub'))return;
+    // Start the profile on its Overview instead of placing the collection first.
+    // Keep the section links before the content and the collection as a later section.
+    const profileRoot = document.querySelector('#profile-view .page');
+    const profileNav = profileRoot?.querySelector('.profile-nav');
+    const profileOverview = profileRoot?.querySelector('.player-profile');
+    const collectionHub = $('cards-hub');
+    if(profileRoot && profileNav && profileOverview && collectionHub && collectionHub.previousElementSibling !== profileOverview){
+      profileOverview.before(profileNav);
+      profileOverview.after(collectionHub);
+      profileNav.querySelectorAll('a').forEach(link=>{
+        if(link.getAttribute('href')==='#player-profile-title') link.setAttribute('aria-current','location');
+        else link.removeAttribute('aria-current');
+      });
+    }
     // The overlay must sit above the sticky site header, so it lives directly under <body>.
     if(modalEl()&&modalEl().parentElement!==document.body)document.body.appendChild(modalEl());
     $('cards-daily-pull')?.addEventListener('click',()=>beginPull(1,true,'characters'));
