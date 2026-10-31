@@ -63,6 +63,10 @@
     wordReminder(word) { const target=String(word||'').trim(); if(!target)return; const day=new Date().toISOString().slice(0,10); add({id:'word-reminder-'+day+'-'+target.toLowerCase().replace(/[^a-z0-9]+/g,'-').slice(0,48),kind:'word',title:'Do you remember “'+target+'”?',body:'Try to recall its meaning before checking.',url:'./#word='+encodeURIComponent(target)}); },
     close
   };
+  // Escape dismisses the notification panel without requiring a pointer click.
+  document.addEventListener('keydown', event => {
+    if (event.key === 'Escape' && !$('notification-panel')?.hidden) close();
+  });
   document.addEventListener('DOMContentLoaded', render);
   window.addEventListener('storage', event => { if(event.key===STORE){items=read(STORE,[]);render();} if(event.key===PREFS){prefs={...defaults,...read(PREFS,{})};render();} });
 })();
