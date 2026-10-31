@@ -448,7 +448,7 @@ test('main navigation tabs open without uncaught page errors', async t => {
     await cardsPage.waitForSelector('#chronicle-view.is-active #chronicle-content .archive-place-heading h2', {timeout:10000});
     assert.match(await cardsPage.locator('#chronicle-content .archive-place-heading h2').innerText(), /Three-Arch Ferry/);
     await cardsPage.locator('.archive-back-to-cards').click();
-    await cardsPage.waitForSelector('#profile-view.is-active #cards-gallery');
+    await cardsPage.waitForSelector('#collection-view.is-active #cards-gallery');
     await cardsPage.locator('#cards-gallery [data-gallery-card="CHR-003"] .fcard').click();
     const lockedDetail = cardsPage.locator('#cards-detail-modal [role="dialog"]');
     await lockedDetail.waitFor();
