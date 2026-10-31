@@ -274,14 +274,17 @@
     if (!showLocked) list = list.filter(isOwned);
     list.sort((a,b) => (isOwned(b)?1:0) - (isOwned(a)?1:0) || TIER[b.rarity] - TIER[a.rarity] || a.name.localeCompare(b.name));
     if(!preserveNodes)galleryNodeCache.clear();
-    all.forEach(card=>{if(!galleryNodeCache.has(card.id))galleryNodeCache.set(card.id,makeGalleryItem(card));});
     const fragment=document.createDocumentFragment();
     if(!owned.length){
       const template=document.createElement('template');
       template.innerHTML='<div class="cards-empty"><span>✦</span><h3>Your collection starts here</h3><p>Open your first pack to discover a character. Collected cards stay here — the dark slots below are waiting for you.</p><button type="button" class="btn btn-primary" data-view="summon">Explore packs</button></div>';
       fragment.append(template.content.firstElementChild);
     }
-    if(list.length)list.forEach(card=>fragment.append(galleryNodeCache.get(card.id)));
+    if(list.length)list.forEach(card=>{
+      // Build DOM only for cards in the active result set; keep visited nodes for fast filter changes.
+      if(!galleryNodeCache.has(card.id))galleryNodeCache.set(card.id,makeGalleryItem(card));
+      fragment.append(galleryNodeCache.get(card.id));
+    });
     else if(owned.length){
       const template=document.createElement('template');
       template.innerHTML='<div class="cards-empty"><h3>No matching cards</h3><p>Try another rarity or type, or clear your filters.</p><button type="button" class="btn btn-ghost" id="cards-clear-gallery-filters">Clear filters</button></div>';
