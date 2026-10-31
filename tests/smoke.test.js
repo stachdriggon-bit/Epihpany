@@ -441,7 +441,7 @@ test('main navigation tabs open without uncaught page errors', async t => {
     await detail.waitFor({ state:'detached' });
     assert.equal(await miraCard.evaluate(el => document.activeElement === el), true, 'focus should return to the selected card');
 
-    await cardsPage.locator('#cards-gallery [data-gallery-card="CHR-005"] .fcard').click();
+    await cardsPage.locator('#cards-gallery [data-gallery-card="CHR-004"] .fcard').click();
     await cardsPage.locator('#cards-detail-modal .cards-detail-placeholder').waitFor();
     assert.match(await cardsPage.locator('#cards-detail-modal .cards-detail-placeholder').innerText(), /Not documented yet/);
     await cardsPage.evaluate(() => {
