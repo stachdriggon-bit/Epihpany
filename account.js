@@ -9,6 +9,14 @@
   const statusEl = () => $('account-status');
   let client = null;
   let currentUser = null;
+  let authReady = false;
+  let resolveAuthReady;
+  const authReadyPromise = new Promise(resolve => { resolveAuthReady = resolve; });
+  function markAuthReady() {
+    if (authReady) return;
+    authReady = true;
+    resolveAuthReady();
+  }
   let currentMode = 'signin';
   let recoveryMode = false;
   let pendingVerificationEmail = '';
@@ -25,21 +33,10 @@
     el.textContent = message;
     el.dataset.state = kind || 'info';
   }
-  function hideWelcomeModal(remember = true) {
+  function hideWelcomeModal() {
     const modal = $('account-welcome-modal');
     if (modal) modal.hidden = true;
     document.body.classList.remove('account-modal-open');
-    if (remember) {
-      try { localStorage.setItem('epiphany-account-welcome-dismissed', '1'); } catch {}
-    }
-  }
-  function showWelcomeModalIfNeeded(force = false) {
-    const modal = $('account-welcome-modal');
-    if (!modal || currentUser) return;
-    let dismissed = false;
-    try { dismissed = localStorage.getItem('epiphany-account-welcome-dismissed') === '1'; } catch {}
-    modal.hidden = dismissed && !force;
-    document.body.classList.toggle('account-modal-open', !modal.hidden);
   }
   function openAccountFromWelcome(mode) {
     hideWelcomeModal(true);
@@ -64,7 +61,6 @@
       if (error) throw error;
     } catch (error) {
       status(error && error.message ? error.message : 'Social sign-in could not start.', 'error');
-      showWelcomeModalIfNeeded(true);
     }
   }
 
@@ -700,6 +696,8 @@
     listPublicStories: listPublicCloudStories,
     openAccountMode: openAccountFromWelcome,
     isWelcomeOpen: () => !!($('account-welcome-modal') && !$('account-welcome-modal').hidden),
+    isSignedIn: () => !!currentUser,
+    whenReady: () => authReadyPromise,
     queueSave(progress) {
       if (!client || !currentUser) return;
       clearTimeout(saveTimer);
@@ -716,25 +714,12 @@
     const verifyButton=$('developer-verify-character-art');
     verifyButton?.addEventListener('click',async()=>{verifyButton.disabled=true;const status=$('developer-art-status');if(status)status.textContent='Checking bucket contents…';try{const report=await inspectCharacterArtAssets();const ok=report.assets.filter(x=>x.status==='verified').length;if(status)status.textContent='Verification complete: '+ok+'/'+report.assets.length+' objects found.';}catch(error){if(status)status.textContent='Verification failed: '+(error?.message||String(error));}finally{verifyButton.disabled=false;}});
     const form = $('account-form');
-    if (!form) return;
+    if (!form) { markAuthReady(); return; }
     setMode('signin');
     wirePlayerProfile();
-    showWelcomeModalIfNeeded();
-    $('welcome-create-account')?.addEventListener('click', () => openAccountFromWelcome('signup'));
-    $('welcome-sign-in')?.addEventListener('click', () => openAccountFromWelcome('signin'));
-    $('welcome-google')?.addEventListener('click', () => signInWithProvider('google'));
-    $('welcome-facebook')?.addEventListener('click', () => signInWithProvider('facebook'));
-    $('welcome-continue-guest')?.addEventListener('click', () => { hideWelcomeModal(true); window.__epiphanyShowPlacement?.(); });
-    $('welcome-modal-close')?.addEventListener('click', () => { hideWelcomeModal(true); window.__epiphanyShowPlacement?.(); });
-    $('welcome-modal-backdrop')?.addEventListener('click', () => { hideWelcomeModal(true); window.__epiphanyShowPlacement?.(); });
-    document.addEventListener('keydown', event => {
-      if (event.key === 'Escape' && $('account-welcome-modal') && !$('account-welcome-modal').hidden) {
-        hideWelcomeModal(true);
-        window.__epiphanyShowPlacement?.();
-      }
-    });
     if (!config || !config.url || !config.publishableKey || !sdk || !sdk.createClient) {
       status('Account service is not configured yet. You can still play and save on this device.', 'error');
+      markAuthReady();
       return;
     }
     client = sdk.createClient(config.url, config.publishableKey);
@@ -764,7 +749,6 @@
           if (error) throw error;
           pendingVerificationEmail = '';
           status('Email verified. Preparing your saved progress…', 'success');
-          window.__epiphanyShowPlacement?.();
         } else if (currentMode === 'signin') {
           const {error} = await client.auth.signInWithPassword({email, password});
           if (error) throw error;
@@ -845,6 +829,7 @@
         pendingCloudProgress = null;
       }
       currentUser = nextUser;
+      markAuthReady();
       announceAuthAccess();
       if (event === 'PASSWORD_RECOVERY') recoveryMode = true;
       if (!currentUser) {
@@ -865,7 +850,6 @@
         renderAccount();
         status('Choose a new password for your account.', 'info');
       }
-      if (event === 'SIGNED_IN') window.__epiphanyShowPlacement?.();
       if (lastSyncedUser !== currentUser.id && event !== 'PASSWORD_RECOVERY') {
         lastSyncedUser = currentUser.id;
         setTimeout(() => syncUserProgress(currentUser), 0);
@@ -889,7 +873,9 @@
         setPlayerProfileAccess();
         status('Not signed in. Your progress is saved only on this device until you create an account.', 'info');
       }
+      markAuthReady();
     }).catch(error => {
+      markAuthReady();
       console.error('Epiphany session check failed:', error);
       status('Could not check your account session. You can still play offline.', 'error');
     });
