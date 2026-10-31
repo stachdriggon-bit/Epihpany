@@ -9,7 +9,10 @@ const root = path.resolve(__dirname, '..');
 
 async function clickView(page, view) {
   const activeView = page.locator('#' + view + '-view.is-active');
-  if (await activeView.count() && await activeView.isVisible()) return;
+  if (await activeView.count() && await activeView.evaluate(el => {
+    const rect = el.getBoundingClientRect();
+    return rect.width > 0 && rect.height > 0 && Number(getComputedStyle(el).opacity) > 0.99;
+  })) return;
   const selector = 'button[data-view="' + view + '"]';
   await page.waitForSelector(selector, { state: 'attached', timeout: 10000 });
   if (!(await page.locator(selector + ':visible').count())) {
@@ -130,6 +133,14 @@ test('main navigation tabs open without uncaught page errors', async t => {
       assert.deepEqual(eagerDeferred, [], 'deferred files should not load at startup for ' + view);
       await clickView(page, view);
       await page.waitForTimeout(350);
+      if (view === 'home') {
+        await page.waitForFunction(() => {
+          const el = document.querySelector('#home-view');
+          if (!el) return false;
+          const rect = el.getBoundingClientRect();
+          return rect.width > 0 && rect.height > 0 && Number(getComputedStyle(el).opacity) > 0.99;
+        }, null, { timeout: 5000 });
+      }
       if (view !== 'world') {
         const target = page.locator('#' + view + '-view');
         await target.waitFor({ state: 'attached', timeout: 5000 });
