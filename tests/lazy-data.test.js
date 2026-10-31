@@ -155,3 +155,34 @@ test('failed lazy scripts are removed and can be retried', async () => {
   scripts[2].onload();
   await retry;
 });
+
+
+test('feature styles load only when requested', async () => {
+  const requested = [];
+  const links = [];
+  const document = {
+    createElement(tag) {
+      assert.equal(tag, 'link');
+      const link = { rel: '', href: '', remove() {} };
+      links.push(link);
+      return link;
+    },
+    head: { appendChild(link) { requested.push(link.href); } }
+  };
+  const context = vm.createContext({ window: {}, document });
+  vm.runInContext(fs.readFileSync(path.join(root, 'lazy-data.js'), 'utf8'), context);
+  assert.deepEqual(requested, []);
+  const first = context.window.EPIPHANY_LAZY_STYLE('resonance');
+  const second = context.window.EPIPHANY_LAZY_STYLE('resonance');
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(requested.length, 1);
+  assert.match(requested[0], /^resonance\.css\?v=/);
+  links[0].onload();
+  await Promise.all([first, second]);
+  const life = context.window.EPIPHANY_LAZY_STYLE('lifeskills');
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(requested.length, 2);
+  assert.match(requested[1], /^life-skills\.css\?v=/);
+  links[1].onload();
+  await life;
+});
