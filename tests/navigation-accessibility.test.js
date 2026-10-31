@@ -126,11 +126,6 @@ test('desktop and mobile navigation share the approved six-group destination map
   assert.ok(desktop[1].includes('data-view="lifeskills">✳ Life Skills <small>Everyday English and practical skills'));
   assert.equal((desktop[1].match(/class="nav-group"/g) || []).length, 5);
   assert.equal((mobile[1].match(/class="mobile-nav-group"/g) || []).length, 5);
-  assert.ok(app.includes("document.querySelectorAll('.nav-group[open], .mobile-nav-group[open]')"));
-  assert.ok(app.includes("mobileMenu.removeAttribute('open')"));
-  assert.ok(desktop[1].includes('data-view="lifeskills">✳ Life Skills <small>Everyday English and practical skills'));
-  assert.equal((desktop[1].match(/class="nav-group"/g) || []).length, 5);
-  assert.equal((mobile[1].match(/class="mobile-nav-group"/g) || []).length, 5);
   assert.match(nav, /mobile-nav-group\[open\]/);
 });
 
