@@ -196,7 +196,7 @@
       const mark = item.kind === 'upgrade' ? '✧' : item.kind === 'achievement' ? '✓' : '✦';
       const gems = Array.isArray(item.gems) ? '<span class="hist-gems" aria-hidden="true">'+item.gems.slice(0,10).map(r => '<i class="gem rar-'+esc(String(r).toLowerCase())+'"></i>').join('')+'</span>' : '';
       return '<li><span class="cards-history-mark">'+mark+'</span><div><strong>'+esc(item.title)+'</strong><small>'+esc(item.detail||'')+'</small></div>'+gems+'<span class="hist-time">'+ago(item.at)+'</span></li>';
-    }).join('') : '<li class="cards-history-empty">Your discoveries and upgrades will appear here.</li>';
+    }).join('') : '<li class="cards-history-empty empty-state-guidance">Your discoveries and upgrades will appear here after your first card pull. <a class="empty-state-inline-link" href="#cards-daily-pull">Make your first discovery →</a></li>';
   };
   const updateCounts = () => {
     const token = $('chip-tokens-value'), shelf = $('cards-token-count'), shards = $('cards-shard-count'), total = $('cards-owned-count'), daily = $('cards-daily-pull');
