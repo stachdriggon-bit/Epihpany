@@ -24,3 +24,14 @@ test('story recording playback replaces and releases the previous audio element'
   assert.match(app, /if\(storyPronunciationAudio\)\{storyPronunciationAudio\.pause\(\)/);
   assert.match(app, /storyPronunciationAudio===audio/);
 });
+
+test('story narration stops when the reader closes, navigation leaves it, or the page is hidden', () => {
+  assert.match(app, /function stopSpeechPlayback\(\)/);
+  assert.match(app, /function closeGame\(\)\s*\{\s*stopSpeechPlayback\(\)/);
+  assert.match(app, /function finishStory\(\)\{stopSpeechPlayback\(\)/);
+  assert.match(app, /function openView\(name\)\s*\{\s*if\(ST\)\{stopSpeechPlayback\(\);releaseStoryPronunciationResources\(\);\}/);
+  assert.match(app, /window\.addEventListener\('pagehide',\(\)=>\{stopSpeechPlayback\(\);releaseStoryPronunciationResources\(\);\}\)/);
+  assert.match(app, /window\.addEventListener\('beforeunload',\(\)=>\{stopSpeechPlayback\(\);releaseStoryPronunciationResources\(\);\}\)/);
+  assert.match(app, /speechRequest\+\+/);
+  assert.match(app, /naturalAudioPlayer\.pause\(\); naturalAudioPlayer\.src = ''/);
+});
