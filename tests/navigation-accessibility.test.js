@@ -120,7 +120,7 @@ test('desktop and mobile navigation share the approved six-group destination map
   assert.match(desktop[1], /data-view="world"/);
   assert.match(mobile[1], /data-view="world"/);
   assert.match(nav, /chronicle: 'Codex'/);
-  assert.match(app, /mobile-nav-group\\[open\\]/);
+  assert.ok(app.includes("mobile-nav-group[open]"));
   assert.ok(app.includes("document.querySelectorAll('.nav-group[open], .mobile-nav-group[open]')"));
   assert.ok(app.includes("mobileMenu.removeAttribute('open')"));
   assert.ok(desktop[1].includes('data-view="lifeskills">✳ Life Skills <small>Everyday English and practical skills'));
