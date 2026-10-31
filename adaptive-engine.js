@@ -67,6 +67,13 @@
     snapshot = next;
     if (previous && Object.keys(next).every(key => next[key] === previous[key])) return;
     const policy = buildPolicy(next);
+    // Reduce motion-heavy decoration on constrained devices, and follow the OS motion preference.
+    try {
+      const root = document && document.documentElement;
+      if (root && root.classList && typeof root.classList.toggle === 'function') {
+        root.classList.toggle('ep-adaptive-lite', next.lowResources || next.reducedMotion);
+      }
+    } catch {}
     // When connectivity returns, ask the service worker to resume optional offline warming.
     // This is a same-origin message only; the worker independently rechecks device/network limits.
     if (previous && !previous.online && next.online && policy.allowBackgroundWarmCache &&
