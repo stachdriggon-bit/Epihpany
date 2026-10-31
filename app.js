@@ -5629,7 +5629,8 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     if(HAD_SAVED_PROGRESS_AT_LOAD || state.placementDone)return;
     if(helpLanguageModal && !helpLanguageChoice && !hasExistingProgress)return;
     const begin=()=>{
-      if(HAD_SAVED_PROGRESS_AT_LOAD || hasExistingProgress || state.placementDone)return;
+      const hasRestoredProgress=(Number(state.xp)||0)>0||(Number(state.quests)||0)>0||(state.words||[]).length>0||(state.review||[]).length>0||Object.keys(state.stories||{}).length>0;
+      if(HAD_SAVED_PROGRESS_AT_LOAD || hasExistingProgress || state.placementDone || hasRestoredProgress)return;
       showLevelChoice();
     };
     const auth=window.EpiphanyAuth;
