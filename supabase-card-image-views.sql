@@ -19,9 +19,9 @@ create policy "Card image views are readable by everyone"
 drop policy if exists "Developers can insert card image views" on public.epiphany_card_image_views;
 create policy "Developers can insert card image views"
   on public.epiphany_card_image_views for insert to authenticated
-  with check (lower(coalesce(auth.jwt()->>'email','')) in ('abdulrahimaouadi@gmail.com','crboy952@gmail.com','girl32761@gmail.com'));
+  with check ((select lower(coalesce(auth.jwt()->>'email','')) in ('abdulrahimaouadi@gmail.com','crboy952@gmail.com','girl32761@gmail.com')));
 drop policy if exists "Developers can update card image views" on public.epiphany_card_image_views;
 create policy "Developers can update card image views"
   on public.epiphany_card_image_views for update to authenticated
-  using (lower(coalesce(auth.jwt()->>'email','')) in ('abdulrahimaouadi@gmail.com','crboy952@gmail.com','girl32761@gmail.com'))
-  with check (lower(coalesce(auth.jwt()->>'email','')) in ('abdulrahimaouadi@gmail.com','crboy952@gmail.com','girl32761@gmail.com'));
+  using ((select lower(coalesce(auth.jwt()->>'email','')) in ('abdulrahimaouadi@gmail.com','crboy952@gmail.com','girl32761@gmail.com')))
+  with check ((select lower(coalesce(auth.jwt()->>'email','')) in ('abdulrahimaouadi@gmail.com','crboy952@gmail.com','girl32761@gmail.com')));
