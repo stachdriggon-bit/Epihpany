@@ -58,19 +58,20 @@
       }
       return Promise.resolve().then(run);
     }
-    return new Promise((resolve, reject) => {
-      const job = { key, run, resolve, reject, started: false, promise: null };
-      job.promise = new Promise((done, fail) => { job.resolve = done; job.reject = fail; });
-      if (key) queuedOptionalLoads.set(key, job);
-      optionalQueue.push(job);
-      pumpOptionalQueue();
-      resolve = null;
+    const job = { key, run, resolve: null, reject: null, started: false, promise: null };
+    job.promise = new Promise((resolve, reject) => {
+      job.resolve = resolve;
+      job.reject = reject;
     });
+    if (key) queuedOptionalLoads.set(key, job);
+    optionalQueue.push(job);
+    pumpOptionalQueue();
+    return job.promise;
   }
   function loadStyle(href, priority) {
     if (loadedStyles.has(href)) return Promise.resolve();
     if (loadingStyles.has(href)) {
-      if (priority === 'user') return runWithPriority('user', () => Promise.resolve(), href).then(() => loadingStyles.get(href));
+      if (priority === 'user') runWithPriority('user', () => Promise.resolve(), href);
       return loadingStyles.get(href);
     }
     const promise = runWithPriority(priority, () => new Promise((resolve, reject) => {
@@ -186,7 +187,7 @@
   function loadScript(src, priority) {
     if (loaded.has(src)) return Promise.resolve();
     if (loadingScripts.has(src)) {
-      if (priority === 'user') return runWithPriority('user', () => Promise.resolve(), src).then(() => loadingScripts.get(src));
+      if (priority === 'user') runWithPriority('user', () => Promise.resolve(), src);
       return loadingScripts.get(src);
     }
     const promise = runWithPriority(priority, () => new Promise((resolve, reject) => {
