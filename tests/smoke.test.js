@@ -400,6 +400,9 @@ test('main navigation tabs open without uncaught page errors', async t => {
       return {viewport:innerWidth+'x'+innerHeight,imageRequests:resources.length,transferBytes:resources.reduce((sum,item)=>sum+(item.transferSize||0),0),decodedBytes:resources.reduce((sum,item)=>sum+(item.decodedBodySize||0),0),firstImageVisibleMs:Math.round(performance.now()-started),firstImageDecodeMs:decodeMs,longTaskCount:window.__cardLongTasks.length,longTaskMs:Math.round(window.__cardLongTasks.reduce((a,b)=>a+b,0))};
     }, galleryOpenedAt);
     console.log('CARD_GALLERY_METRICS '+JSON.stringify(galleryMetrics));
+    // The auth-driven published-art refresh can legitimately rebuild card nodes.
+    // Wait for it to finish before measuring the filter cache's node preservation.
+    await cardsPage.waitForFunction(() => window.EPIPHANY_CARD_ASSETS_REFRESHED === true, null, {timeout:10000});
     await cardsPage.waitForSelector('#cards-rarity-filters [data-gallery-rarity="Epic"]');
     await cardsPage.locator('#cards-rarity-filters [data-gallery-rarity="Epic"]').click();
     await cardsPage.locator('#cards-type-filters [data-gallery-type="characters"]').click();
