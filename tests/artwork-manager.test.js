@@ -10,8 +10,8 @@ test('Artwork Manager is deferred until developer mode and cached for offline us
   assert.doesNotMatch(html,/artwork-manager\\.js|artwork-manager\\.css/);
   assert.match(developerMode,/artwork-manager\\.js/);
   assert.match(developerMode,/artwork-manager\\.css/);
-  assert.match(sw,/['"]\\.\\/artwork-manager\\.js['"]/);
-  assert.match(sw,/['"]\\.\\/artwork-manager\\.css['"]/);
+  assert.ok(sw.includes("'./artwork-manager.js'") || sw.includes('"./artwork-manager.js"'));
+  assert.ok(sw.includes("'./artwork-manager.css'") || sw.includes('"./artwork-manager.css"'));
 });
 test('Artwork Manager is developer-only and uses the approved account session', () => {
   const manager=read('artwork-manager.js'),html=read('index.html');
