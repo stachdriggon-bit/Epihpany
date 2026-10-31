@@ -60,7 +60,7 @@ test('Coins are displayed only in Card Portal while collection resources and wal
   assert.match(html, /id="cards-summon-token-count"/);
   assert.match(cards, /cards-summon-token-count/);
   assert.match(cards, /state\.tokens/);
-  assert.doesNotMatch(cards, /chip-tokens-value/);
+  assert.doesNotMatch(cards, /chip-tokens-value|cards-token-count|shelf/);
 });
 
 test('new Help Center assets are versioned and included in the offline shell', () => {
