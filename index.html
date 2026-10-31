@@ -25,7 +25,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Cairo:wght@500;700&family=DM+Sans:wght@400;500;700&family=Cinzel:wght@600;700&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=empty-states-20261031-1"><link rel="stylesheet" href="guidance.css?v=contextual-tips-20261031-1"><link rel="stylesheet" href="cards.css?v=interface-polish-20261030-2">
+  <link rel="stylesheet" href="style.css?v=help-center-wallet-20261031-1"><link rel="stylesheet" href="guidance.css?v=contextual-tips-20261031-1"><link rel="stylesheet" href="help-center.css?v=help-center-wallet-20261031-1"><link rel="stylesheet" href="cards.css?v=interface-polish-20261030-2">
   <script src="data.js?v=7f0faa36" defer></script>
   <script src="data-mistakes.js?v=e7fd865a" defer></script>
   <script src="data-spot.js?v=45301cdb" defer></script>
@@ -41,11 +41,12 @@
 <script src="adaptive-engine.js?v=adaptive-engine-20261031-1" defer></script>
 <script src="telemetry.js?v=e5eac23f" defer></script>
 <script src="lazy-data.js?v=adaptive-load-scheduler-20261031-1" defer></script>
-  <script src="app.js?v=empty-states-20261031-1" defer></script>
+  <script src="app.js?v=help-center-wallet-20261031-1" defer></script>
   <script src="guidance.js?v=contextual-tips-20261031-1" defer></script>
+  <script src="help-center.js?v=help-center-wallet-20261031-1" defer></script>
   <script src="data-cards.js?v=ilaris-epic-20261031-1" defer></script>
   <script src="data-character-profiles.js?v=ilaris-canon-profile-20261031-1" defer></script>
-  <script src="cards.js?v=empty-states-20261031-1" defer></script>
+  <script src="cards.js?v=help-center-wallet-20261031-1" defer></script>
   <script src="navigation-enhancements.js?v=navigation-reorganization-20261031-1" defer></script>
   <script src="developer-mode.js?v=1" defer></script>
 <script>
@@ -193,12 +194,13 @@
           <button class="tab" data-view="progress">📈 Progress <small>Learning history and next steps</small></button>
           <button class="tab" data-view="trophies">🏆 Trophies <small>Milestones and achievements</small></button>
           <button class="tab nav-profile" data-view="profile">✦ Profile <small>Your personal space</small></button>
+          <button class="tab nav-help" type="button" data-help-open aria-haspopup="dialog" aria-controls="help-center-dialog"><svg class="help-nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18h6m-5 3h4m-2-19a7 7 0 0 0-4.2 12.6c.8.6 1.2 1.3 1.2 2.4h4c0-1.1.4-1.8 1.2-2.4A7 7 0 0 0 12 2Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg> Help &amp; Guide <small>Find your way around EPIPHANY</small></button>
         </div>
       </details>
     </nav>
 
     <details class="mobile-menu"><summary aria-label="Open navigation menu" title="Open navigation menu" aria-controls="mobile-navigation-panel"><span></span><span></span><span></span></summary><button class="mobile-menu-backdrop" type="button" aria-label="Close navigation menu"></button><nav id="mobile-navigation-panel" aria-label="Mobile navigation">
-      <button class="tab mobile-nav-home" data-view="home">⌂ <span>Home</span></button>
+      <button class="tab mobile-nav-home" data-view="home">⌂ <span>Home</span><span class="mobile-home-xp" aria-label="Total experience points"><b id="mobile-home-xp">0</b><small>XP</small></span></button>
       <details class="mobile-nav-group">
         <summary><span class="mobile-nav-label">LEARN</span><svg class="mobile-nav-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 10 5 5 5-5"/></svg></summary>
         <div class="mobile-nav-links"><button class="tab" data-view="stories">📖 <span>Stories</span></button><button class="tab" data-view="words">📘 <span>Words</span></button><button class="tab" data-view="lifeskills">✳ <span>Life Skills</span></button><button class="tab" data-view="mytools">✎ <span>My Tools</span></button></div>
@@ -217,15 +219,13 @@
       </details>
       <details class="mobile-nav-group">
         <summary><span class="mobile-nav-label">ME</span><svg class="mobile-nav-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 10 5 5 5-5"/></svg></summary>
-        <div class="mobile-nav-links"><button class="tab" data-view="progress">📈 <span>Progress</span></button><button class="tab" data-view="trophies">🏆 <span>Trophies</span></button><button class="tab" data-view="profile">✦ <span>Profile</span></button></div>
+        <div class="mobile-nav-links"><button class="tab" data-view="progress">📈 <span>Progress</span></button><button class="tab" data-view="trophies">🏆 <span>Trophies</span></button><button class="tab" data-view="profile">✦ <span>Profile</span></button><button class="tab nav-help" type="button" data-help-open aria-haspopup="dialog" aria-controls="help-center-dialog"><svg class="help-nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18h6m-5 3h4m-2-19a7 7 0 0 0-4.2 12.6c.8.6 1.2 1.3 1.2 2.4h4c0-1.1.4-1.8 1.2-2.4A7 7 0 0 0 12 2Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Help &amp; Guide</span></button></div>
       </details>
     </nav></details>
 
     <div class="top-right">
       <button class="icon-btn notification-bell" id="notification-bell" type="button" aria-label="Open notifications" aria-expanded="false" aria-controls="notification-panel" title="Notifications"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span id="notification-count" class="notification-count" hidden>0</span></button>
       <span class="chip chip-streak" title="Day streak"><svg><use href="#i-flame"/></svg><b id="chip-streak">0</b><span class="sr-only"> day streak</span></span>
-      <span class="chip chip-xp" title="Total XP"><svg><use href="#i-spark"/></svg><b id="chip-xp">0</b><span class="sr-only"> XP</span></span>
-       <span class="chip chip-tokens" title="Collection tokens"><span class="token-glyph" aria-hidden="true">✦</span><b id="chip-tokens-value">15</b><span class="sr-only"> Tokens</span></span>
       <button class="ar-toggle" id="ar-toggle" type="button" aria-pressed="false" title="Arabic help: show hints and explanations in Arabic">
         <span class="ar-long" lang="en">Help: English</span><span class="ar-short" lang="en" aria-hidden="true">EN</span><span class="sr-only">Change help language</span>
       </button>
@@ -395,7 +395,7 @@
       <section class="cards-hub" id="cards-hub" aria-labelledby="cards-hub-title">
         <div class="cards-hub-head">
           <div><span class="profile-eyebrow">YOUR COLLECTOR SPACE</span><h2 id="cards-hub-title">The Collection</h2><p>Your discoveries, favorite characters and upgrades — all in one place. Cards are collection-only and never affect XP or English progress.</p></div>
-          <div class="cards-wallet" aria-label="Collection wallet"><span>✦ Tokens <b id="cards-token-count">15</b></span><span>◇ Shards <b id="cards-shard-count">0</b></span></div>
+          <div class="cards-wallet" aria-label="Collection resources"><span>◇ Shards <b id="cards-shard-count">0</b></span></div>
         </div>
         <div class="cards-collection-toolbar"><div><strong>Your discoveries</strong><span id="cards-collection-count">0 / 27 discovered</span><div class="cgal-bar" aria-hidden="true"><i id="cards-collection-bar" style="width:0%"></i></div></div>
           <div class="cgal-filter-stack" id="cards-gallery-filters" aria-label="Filter your cards"><div class="cgal-filter-row"><span class="cgal-filter-label">Rarity</span><div class="cgal-filter-chips" id="cards-rarity-filters" role="group" aria-label="Filter by rarity"></div></div><div class="cgal-filter-row"><span class="cgal-filter-label">Type</span><div class="cgal-filter-chips" id="cards-type-filters" role="group" aria-label="Filter by card type"></div></div><div class="cgal-filter-actions"><span id="cards-filter-result-count" aria-live="polite">Loading cards…</span><button type="button" class="cgal-toggle" id="cards-gallery-locked" aria-pressed="true">Hide undiscovered</button></div></div></div>
@@ -678,7 +678,7 @@ n>
         <div class="player-profile-card">
           <div class="player-profile-hero">
             <div class="player-avatar-wrap"><img id="player-avatar-preview" alt="Your profile avatar" hidden><span id="player-avatar-emoji" aria-hidden="true">🦊</span></div>
-            <div class="player-profile-heading"><span class="profile-eyebrow">YOUR EPIPHANY ID</span><h3 id="player-profile-display-name">Your name</h3><p id="player-profile-bio-preview">A little English, a little progress, every day.</p><div class="profile-hero-meta"><span class="profile-level-chip">LEVEL <b id="player-profile-level">A1</b></span><span class="profile-privacy-chip"><span class="privacy-dot"></span> Privacy is yours to choose</span></div></div>
+            <div class="player-profile-heading"><span class="profile-eyebrow">YOUR EPIPHANY ID</span><h3 id="player-profile-display-name">Your name</h3><p id="player-profile-bio-preview">A little English, a little progress, every day.</p><div class="profile-hero-meta"><span class="profile-level-chip">LEVEL <b id="player-profile-level">A1</b></span><span class="profile-xp-chip"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2 2.3 6.4L21 11l-6.7 2.6L12 20l-2.3-6.4L3 11l6.7-2.6Z" fill="currentColor"/></svg><span>TOTAL XP</span><b id="player-profile-xp">0</b></span><span class="profile-privacy-chip"><span class="privacy-dot"></span> Privacy is yours to choose</span></div></div>
           </div>
           <p class="profile-save-status" id="player-profile-status" role="status" aria-live="polite">You can customize as a guest. Changes stay on this device until you sign in.</p>
 <div class="profile-editor-layout"><div class="profile-live-preview" aria-label="Live profile preview"><span class="profile-eyebrow">LIVE PREVIEW</span><div class="profile-live-card"><div class="profile-live-banner" id="profile-live-banner"><div class="profile-live-avatar player-avatar-wrap" id="profile-live-avatar"><img id="profile-live-image" alt="" hidden><span id="profile-live-emoji" aria-hidden="true">🦊</span></div></div><div class="profile-live-copy"><h3 id="profile-live-name">English learner</h3><p id="profile-live-bio">Learning English one day at a time ✨</p><span class="profile-live-chip">EPIPHANY LEARNER</span></div></div><p class="profile-small-note">Your preview updates as you edit.</p></div><div class="profile-editor-fields">
@@ -884,6 +884,36 @@ n>
       <button type="button" class="help-language-future" disabled aria-describedby="help-language-french-note"><span lang="fr">Français</span><small id="help-language-french-note">French help is not available yet</small></button>
     </div>
     <p class="help-language-foot">You can change this choice any time using the language button at the top.</p>
+  </section>
+</div>
+
+
+<div class="help-center-overlay" id="help-center-dialog" hidden>
+  <button class="help-center-backdrop" type="button" data-help-close aria-label="Close help center"></button>
+  <section class="help-center-panel" role="dialog" aria-modal="true" aria-labelledby="help-center-title" dir="ltr">
+    <header class="help-center-header">
+      <div><span class="help-center-kicker" data-help-en>EPIPHANY COMPANION</span><span class="help-center-kicker" data-help-ar>دليلك في EPIPHANY</span><h2 id="help-center-title"><span data-help-en>Help &amp; Guide</span><span data-help-ar>المساعدة والدليل</span></h2></div>
+      <button type="button" class="help-center-close" data-help-close aria-label="Close help center">×</button>
+    </header>
+    <div class="help-center-content">
+      <section class="help-center-intro"><h3><span data-help-en>How EPIPHANY works</span><span data-help-ar>كيف يعمل EPIPHANY؟</span></h3><p><span data-help-en>Six spaces, each with a clear purpose. You can move between them freely.</span><span data-help-ar>ست مساحات، لكل واحدة هدف واضح. يمكنك التنقل بينها بحرية.</span></p>
+        <div class="help-center-groups">
+          <article><b>⌂ <span data-help-en>Home</span><span data-help-ar>الرئيسية</span></b><p><span data-help-en>Your starting point and daily next step.</span><span data-help-ar>نقطة انطلاقك وخطوتك اليومية التالية.</span></p></article>
+          <article><b>📚 <span data-help-en>Learn</span><span data-help-ar>تعلّم</span></b><p><span data-help-en>Stories, Words, Life Skills and My Tools.</span><span data-help-ar>القصص والمفردات والمهارات الحياتية وأدواتك.</span></p></article>
+          <article><b>🎮 <span data-help-en>Play</span><span data-help-ar>العب</span></b><p><span data-help-en>Arcade games and Think Lab challenges.</span><span data-help-ar>ألعاب Arcade وتحديات Think Lab.</span></p></article>
+          <article><b>▧ <span data-help-en>Collect</span><span data-help-ar>اجمع</span></b><p><span data-help-en>Discover cards in Card Portal and browse your Collection.</span><span data-help-ar>اكتشف البطاقات في Card Portal وتصفح مجموعتك.</span></p></article>
+          <article><b>⌖ <span data-help-en>Discover</span><span data-help-ar>اكتشف</span></b><p><span data-help-en>Explore World, Codex and The Resonance.</span><span data-help-ar>استكشف World وCodex وThe Resonance.</span></p></article>
+          <article><b>✦ <span data-help-en>Me</span><span data-help-ar>مساحتي</span></b><p><span data-help-en>Track Progress, Trophies and your Profile.</span><span data-help-ar>تابع تقدمك وإنجازاتك وملفك الشخصي.</span></p></article>
+        </div>
+      </section>
+      <section class="help-center-section"><div><h3><span data-help-en>Explore the sections</span><span data-help-ar>استكشف الأقسام</span></h3><p><span data-help-en>Jump straight to any section. The help window will close and you will continue there.</span><span data-help-ar>انتقل مباشرة إلى أي قسم. ستُغلق نافذة المساعدة وتتابع من القسم الذي اخترته.</span></p></div>
+        <div class="help-center-links">
+          <button type="button" data-help-view="stories">📖 Stories</button><button type="button" data-help-view="words">📘 Words</button><button type="button" data-help-view="lifeskills">✳ Life Skills</button><button type="button" data-help-view="mytools">✎ My Tools</button><button type="button" data-help-view="arcade">🎮 Arcade</button><button type="button" data-help-view="thinklab">⌕ Think Lab</button><button type="button" data-help-view="summon">✦ Card Portal</button><button type="button" data-help-view="collection">▧ Collection</button><button type="button" data-help-view="world">🌍 World</button><button type="button" data-help-view="chronicle">📚 Codex</button><button type="button" data-help-view="resonance">〰 The Resonance</button><button type="button" data-help-view="progress">📈 Progress</button><button type="button" data-help-view="trophies">🏆 Trophies</button><button type="button" data-help-view="profile">✦ Profile</button>
+        </div>
+      </section>
+      <section class="help-center-section help-center-tip"><div><h3><span data-help-en>Tips &amp; guidance</span><span data-help-ar>التلميحات والإرشادات</span></h3><p><span data-help-en>Short tips appear the first time you visit selected sections. They are brief, non-blocking reminders; dismissing one does not affect your progress. The World has its own in-world instructions.</span><span data-help-ar>تظهر تلميحات قصيرة عند زيارة بعض الأقسام لأول مرة. هي تذكيرات بسيطة لا تعيق استخدامك، وإغلاقها لا يؤثر في تقدمك. أما World فلديه تعليماته الخاصة داخله.</span></p></div></section>
+      <footer class="help-center-footer"><p><span data-help-en>Want to see the introduction again?</span><span data-help-ar>هل تريد مشاهدة المقدمة مرة أخرى؟</span></p><button type="button" class="help-center-replay" data-help-replay><span data-help-en>↻ Replay the introduction</span><span data-help-ar>↻ أعد الجولة التعريفية</span></button></footer>
+    </div>
   </section>
 </div>
 
