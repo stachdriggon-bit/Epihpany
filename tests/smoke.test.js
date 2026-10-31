@@ -15,14 +15,15 @@ async function clickView(page, view) {
   })) return;
   const selector = 'button[data-view="' + view + '"]';
   await page.waitForSelector(selector, { state: 'attached', timeout: 10000 });
-  if (!(await page.locator(selector + ':visible').count())) {
+  const mobileLayout = await page.evaluate(() => window.innerWidth <= 900);
+  if (mobileLayout) {
+    const mobileMenu = page.locator('.mobile-menu');
+    if (await mobileMenu.isVisible() && !(await mobileMenu.evaluate(el => el.open))) await mobileMenu.locator('summary').click();
+    const group = page.locator('details.mobile-nav-group').filter({ has: page.locator(selector) }).first();
+    if (await group.count() && !(await group.evaluate(el => el.open))) await group.locator('summary').click();
+  } else {
     const group = page.locator('details.nav-group').filter({ has: page.locator(selector) }).first();
-    if (await group.count() && await group.isVisible()) {
-      if (!(await group.evaluate(el => el.open))) await group.locator('summary').click();
-    } else {
-      const mobileMenu = page.locator('.mobile-menu');
-      if (await mobileMenu.isVisible() && !(await mobileMenu.evaluate(el => el.open))) await mobileMenu.locator('summary').click();
-    }
+    if (await group.count() && !(await group.evaluate(el => el.open))) await group.locator('summary').click();
   }
   await page.locator(selector + ':visible').first().click();
 }
@@ -241,7 +242,7 @@ test('main navigation tabs open without uncaught page errors', async t => {
         assert.equal(await mobileGroups.locator('.mobile-nav-label').count(), await mobileGroups.count(), 'every mobile navigation group should have a visible purpose label');
         const groupedDestinations = mobileGroups.locator('button[data-view]');
         assert.equal(await groupedDestinations.count(), await groupedDestinations.evaluateAll(buttons => new Set(buttons.map(button => button.dataset.view)).size), 'each destination should appear in only one purpose group');
-        assert.equal(await page.locator('.mobile-menu nav [data-view]').count(), 15, 'all destinations, including World Archive, should remain available in the mobile menu');
+        assert.equal(await page.locator('.mobile-menu nav [data-view]').count(), 15, 'all destinations, including Codex, should remain available in the mobile menu');
         const quickActions = page.locator('.quick-actions-more');
         assert.equal(await quickActions.evaluate(el => el.open), false, 'secondary practice options should start collapsed');
         assert.equal(await page.locator('#listen-only-start').isVisible(), false, 'collapsed secondary actions should not clutter the home screen');
