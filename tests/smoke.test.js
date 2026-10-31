@@ -351,7 +351,22 @@ test('main navigation tabs open without uncaught page errors', async t => {
     }));
     await cardsPage.goto(baseUrl, { waitUntil: 'domcontentloaded' });
     await dismissFirstVisitOverlays(cardsPage);
+    const mobileMenu = cardsPage.locator('.mobile-menu');
+    const mobileMenuTrigger = mobileMenu.locator(':scope > summary');
+    await mobileMenuTrigger.click();
+    assert.equal(await mobileMenu.evaluate(el => el.open), true, 'the mobile drawer should open from its menu button');
+    const learnGroup = cardsPage.locator('.mobile-nav-group').filter({hasText:'LEARN'}).first();
+    await learnGroup.locator(':scope > summary').click();
+    assert.equal(await mobileMenu.evaluate(el => el.open), true, 'opening a group inside the drawer must not close the drawer');
+    assert.equal(await learnGroup.evaluate(el => el.open), true, 'the selected mobile group should expand');
+    await cardsPage.keyboard.press('Escape');
+    assert.equal(await mobileMenu.evaluate(el => el.open), false, 'Escape should close the entire mobile drawer');
+    assert.equal(await mobileMenuTrigger.evaluate(el => document.activeElement === el), true, 'Escape should restore focus to the menu button');
+    await mobileMenuTrigger.click();
+    await mobileMenu.locator('.mobile-menu-backdrop').click();
+    assert.equal(await mobileMenu.evaluate(el => el.open), false, 'the backdrop should close the mobile drawer');
     await clickView(cardsPage, 'collection');
+    assert.equal(await mobileMenu.evaluate(el => el.open), false, 'choosing a destination should close the mobile drawer');
     await cardsPage.locator('#cards-gallery').scrollIntoViewIfNeeded();
     // The browser may defer every lazy image in a long gallery even when its container is in view.
     // Promote one visible representative image to eager loading so this smoke test checks decoding,
