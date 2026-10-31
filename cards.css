@@ -721,3 +721,12 @@ body[data-theme="light"] .cards-detail-dialog{--detail-panel-strip:#fff9ed}
 .fcard:has(.fcard-portrait-image.is-art-unavailable) .fcard-frame:after{content:"✦";position:absolute;inset:0;display:grid;place-items:center;color:#f0d99b;font:500 clamp(34px,7cqw,64px) Georgia,serif;text-shadow:0 0 24px #c6a9ff88;pointer-events:none}
 .cards-detail-art .fcard-portrait-image.is-art-unavailable{opacity:0}
 @media(prefers-reduced-motion:reduce){.fcard-portrait-image:not(.is-loaded){animation:none}}
+
+
+/* Keep decorative card effects idle while cards are far outside the viewport. */
+.fcard.is-offscreen,
+.fcard.is-offscreen *,
+.fcard.is-offscreen::before,
+.fcard.is-offscreen::after{
+  animation-play-state:paused!important;
+}
