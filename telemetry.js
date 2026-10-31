@@ -13,6 +13,9 @@
   let client = null;
   let currentSection = 'home';
   let enabled = false;
+  let vitalObservers = [];
+  let vitalValues = {};
+  let vitalSent = false;
 
   function consent() {
     try { return localStorage.getItem(CONSENT_KEY) === 'yes'; } catch { return false; }
@@ -50,6 +53,12 @@
     if (eventName === 'client_error') {
       safeDetails.name = String(details.name || 'Error').replace(/[^a-zA-Z0-9 _.-]/g, '').slice(0, 50);
       safeDetails.message = 'Client-side error; raw message omitted for privacy';
+    } else if (eventName === 'web_vital') {
+      const metric = ['LCP', 'CLS', 'INP'].includes(details.metric) ? details.metric : null;
+      const value = Number(details.value);
+      if (!metric || !Number.isFinite(value) || value < 0) return;
+      safeDetails.metric = metric;
+      safeDetails.value = Math.round(value * 100) / 100;
     }
     try {
       Promise.resolve(supabase.from('epiphany_telemetry').insert({
@@ -61,11 +70,48 @@
       })).catch(() => {});
     } catch {}
   }
+  function stopVitals() {
+    vitalObservers.forEach(observer => { try { observer.disconnect(); } catch {} });
+    vitalObservers = [];
+    vitalValues = {};
+    vitalSent = false;
+  }
+  function reportVitals() {
+    if (!enabled || !consent() || vitalSent) return;
+    vitalSent = true;
+    Object.entries(vitalValues).forEach(([metric, value]) => send('web_vital', 'performance', { metric, value }));
+  }
+  function startVitals() {
+    if (vitalObservers.length || typeof PerformanceObserver !== 'function') return;
+    const observe = (type, callback) => {
+      try {
+        const observer = new PerformanceObserver(list => callback(list.getEntries()));
+        observer.observe({ type, buffered: true });
+        vitalObservers.push(observer);
+      } catch {}
+    };
+    observe('largest-contentful-paint', entries => {
+      entries.forEach(entry => { vitalValues.LCP = Math.max(vitalValues.LCP || 0, entry.startTime || 0); });
+    });
+    observe('layout-shift', entries => {
+      entries.forEach(entry => { if (!entry.hadRecentInput) vitalValues.CLS = (vitalValues.CLS || 0) + (entry.value || 0); });
+    });
+    observe('event', entries => {
+      entries.forEach(entry => {
+        if (entry.interactionId && entry.duration) vitalValues.INP = Math.max(vitalValues.INP || 0, entry.duration);
+      });
+    });
+  }
+  window.addEventListener('pagehide', reportVitals);
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'hidden') reportVitals();
+  });
   function start() {
     enabled = consent();
     const checkbox = document.getElementById('anonymous-telemetry');
     if (checkbox) checkbox.checked = enabled;
     if (!enabled) return;
+    startVitals();
     const today = dayKey();
     try {
       const firstSeen = localStorage.getItem(FIRST_SEEN_KEY) || today;
@@ -91,6 +137,7 @@
         localStorage.removeItem(CONSENT_KEY);
         localStorage.removeItem(SESSION_KEY);
         enabled = false;
+        stopVitals();
       }
     } catch { enabled = false; }
   }
