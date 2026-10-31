@@ -24,7 +24,7 @@
       if (active) button.setAttribute('aria-current', 'page');
       else button.removeAttribute('aria-current');
     });
-    $('.nav-group, .mobile-nav-group').forEach(group => {
+    $$('.nav-group, .mobile-nav-group').forEach(group => {
       const activeChild = $('[data-view="' + view + '"]', group);
       group.classList.toggle('has-active-view', !!activeChild);
       const summary = $('summary', group);
@@ -51,7 +51,7 @@
     }
   }
   function closeMenus(except) {
-    $('.nav-group[open], .mobile-nav-group[open], .mobile-menu[open], .tools-menu[open]').forEach(menu => {
+    $$('.nav-group[open], .mobile-nav-group[open], .mobile-menu[open], .tools-menu[open]').forEach(menu => {
       if (menu === except) return;
       if (except && menu.classList.contains('mobile-menu') && except.closest('.mobile-menu') === menu) return;
       menu.open = false;
@@ -245,7 +245,7 @@
 
   function setupDropdowns() {
     const desktop = () => window.matchMedia('(min-width: 901px)').matches;
-    $('.nav-group').forEach(group => {
+    $$('.nav-group').forEach(group => {
       group.addEventListener('mouseenter', () => { if (desktop()) { closeMenus(group); group.open = true; } });
       group.addEventListener('mouseleave', () => { if (desktop()) group.open = false; });
       const summary = $('summary', group);
@@ -269,7 +269,7 @@
         return;
       }
       if (!event.target.closest('.nav-group, .mobile-menu, .tools-menu')) closeMenus();
-      if (mobile && mobile.open && event.target.closest('.mobile-menu nav [data-view]')) { mobile.open = false; $('.mobile-nav-group[open]', mobile).forEach(group => { group.open = false; }); }
+      if (mobile && mobile.open && event.target.closest('.mobile-menu nav [data-view]')) { mobile.open = false; $$('.mobile-nav-group[open]', mobile).forEach(group => { group.open = false; }); }
     });
     document.addEventListener('keydown', event => {
       if (event.key !== 'Escape') return;
