@@ -19,7 +19,11 @@ function createEngine({ connection = {}, deviceMemory = 8, hardwareConcurrency =
     addEventListener(name, fn) { events['connection:' + name] = fn; },
     removeEventListener(name) { delete events['connection:' + name]; }
   };
-  const nav = { connection: navConnection, deviceMemory, hardwareConcurrency, onLine };
+  const messages = [];
+  const nav = {
+    connection: navConnection, deviceMemory, hardwareConcurrency, onLine,
+    serviceWorker: { controller: { postMessage(message) { messages.push(message); } } }
+  };
   const document = {
     visibilityState: 'visible',
     addEventListener(name, fn) { events['document:' + name] = fn; },
@@ -32,7 +36,7 @@ function createEngine({ connection = {}, deviceMemory = 8, hardwareConcurrency =
     matchMedia() { return media; }
   };
   vm.runInNewContext(source, { window, document, Object, Number, Set, console });
-  return { api: window.EPIPHANY_ADAPTIVE_ENGINE, events, window, document, media, navConnection };
+  return { api: window.EPIPHANY_ADAPTIVE_ENGINE, events, window, document, media, navConnection, messages, nav };
 }
 
 test('adaptive engine exposes conservative defaults and does not persist or transmit data', () => {
@@ -97,4 +101,13 @@ test('engine tolerates missing browser capability APIs and listener failures', (
   navConnection.saveData = true;
   assert.doesNotThrow(() => api.refresh());
   unsubscribe();
+});
+
+
+test('adaptive engine asks the service worker to resume optional caching when connectivity returns', () => {
+  const { events, nav, messages } = createEngine({ onLine: false });
+  assert.equal(messages.length, 0);
+  nav.onLine = true;
+  events['window:online']();
+  assert.deepEqual(messages, [{ type: 'EPIPHANY_WARM_OPTIONAL_CACHE' }]);
 });
