@@ -49,10 +49,10 @@ test('empty card discovery history points to the daily discovery action', () => 
 test('changed scripts are versioned and the offline shell cache is refreshed', () => {
   const html = read('index.html');
   const sw = read('service-worker.js');
-  for (const file of ['app.js','account.js','cards.js']) {
-    assert.match(html, new RegExp(file.replace('.', '\\.') + '\\?v=empty-states-20261031-1'));
-  }
-  assert.match(html, /style\.css\?v=empty-states-20261031-1/);
+  assert.match(html, /app\\.js\\?v=help-center-wallet-20261031-1/);
+  assert.match(html, /cards\\.js\\?v=help-center-wallet-20261031-1/);
+  assert.match(html, /account\\.js\\?v=empty-states-20261031-1/);
+  assert.match(html, /style\\.css\\?v=help-center-wallet-20261031-1/);
   assert.match(read('style.css'), /Helpful empty-state actions/);
   assert.match(sw, /epiphany-shell-contextual-guidance-help-center-wallet-20261031-1/);
 });
