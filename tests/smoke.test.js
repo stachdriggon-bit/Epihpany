@@ -350,7 +350,7 @@ test('main navigation tabs open without uncaught page errors', async t => {
     }));
     await cardsPage.goto(baseUrl, { waitUntil: 'domcontentloaded' });
     await dismissFirstVisitOverlays(cardsPage);
-    await clickView(cardsPage, 'profile');
+    await clickView(cardsPage, 'collection');
     await cardsPage.locator('#cards-gallery').scrollIntoViewIfNeeded();
     // The browser may defer every lazy image in a long gallery even when its container is in view.
     // Promote one visible representative image to eager loading so this smoke test checks decoding,
