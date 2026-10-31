@@ -121,12 +121,15 @@
     state.activityCompleted = true;
     persist();
   });
-  document.addEventListener('click', event => {
-    const homeButton = event.target.closest('[data-view="home"], #logo');
-    if (!homeButton) return;
+  function maybeStartAfterReturn() {
     window.setTimeout(() => {
-      if (state.activityCompleted && state.status === 'not-started' && activeHome()) start();
+      const game = document.getElementById('game');
+      const gameIsClosed = !game || game.hidden;
+      if (state.activityCompleted && state.status === 'not-started' && activeHome() && gameIsClosed) start();
     }, 0);
+  }
+  document.addEventListener('click', event => {
+    if (event.target.closest('[data-view="home"], #logo, #game-close')) maybeStartAfterReturn();
   });
   window.EPIPHANY_GUIDANCE = {
     start: () => start({restart:true}),
