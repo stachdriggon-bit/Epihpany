@@ -147,6 +147,23 @@
     window.addEventListener('blur', () => { reset(active); active = null; });
   };
 
+  // Pause decorative card animations while collection cards are well outside the viewport.
+  // The observer is scoped to the profile gallery and featured card; summon/reveal sequences stay untouched.
+  let cardVisibilityObserver = null;
+  const refreshCardVisibility = () => {
+    if (!('IntersectionObserver' in window)) return;
+    if (!cardVisibilityObserver) {
+      cardVisibilityObserver = new IntersectionObserver(entries => {
+        entries.forEach(entry => entry.target.classList.toggle('is-offscreen', !entry.isIntersecting));
+      }, {rootMargin:'120px 0px'});
+    }
+    cardVisibilityObserver.disconnect();
+    document.querySelectorAll('#cards-gallery .fcard, #cards-featured-card .fcard').forEach(card => {
+      card.classList.remove('is-offscreen');
+      cardVisibilityObserver.observe(card);
+    });
+  };
+
   /* ---------- odds (derived from the real weights, so the panel can never lie) ---------- */
   // Roll rarity first, then choose within that rarity. Otherwise a rarity with
   // many cards accidentally becomes more common just because its catalog is larger.
@@ -268,6 +285,7 @@
       fragment.append(template.content.firstElementChild);
     }
     root.replaceChildren(fragment);
+    refreshCardVisibility();
     if(!galleryEventsBound){
       galleryEventsBound=true;
       root.addEventListener('click',e=>{
@@ -432,6 +450,7 @@
     const holder = $('cards-featured-card'), copy = $('cards-featured-copy'), cards = data(); if (!holder || !cards.length) return;
     const key = today(), index = [...key].reduce((sum, ch) => sum + ch.charCodeAt(0), 0) % cards.length, card = cards[index];
     holder.innerHTML = cardFace(card, {level:isOwned(card) ? levelOf(card) : 1});
+    refreshCardVisibility();
     if (copy) copy.innerHTML = '<span class="summon-step-label">CARD OF THE DAY</span><h3>'+esc(card.name)+' <small style="font-weight:600;color:var(--ink-2);font-size:.55em">· '+esc(card.title)+'</small></h3><p>'+esc(card.description)+'</p><div class="summon-featured-tags"><span class="rar-'+card.rarity.toLowerCase()+'"><i class="gem"></i>'+card.rarity+'</span><span>'+(KIND_LABEL[kindOf(card)]||'Card')+'</span><span>'+(isOwned(card)?'✓ In your collection':'Not yet collected')+'</span></div>';
   };
   const upgradeCard = (id) => {const card=data().find(c=>c.id===id);if(!card||!isOwned(card))return;const level=levelOf(card);if(level>=MAX_CARD_LEVEL||state.shards<UPGRADE_COST)return;state.shards-=UPGRADE_COST;state.cardLevels[id]=level+1;lastUpgraded=id;addHistory({kind:'upgrade',title:card.name+' upgraded',detail:'Level '+level+' → '+(level+1)+' · −'+UPGRADE_COST+' shards'});playCardCue('epic');save();updateCounts();renderGallery();renderFeatured();};
