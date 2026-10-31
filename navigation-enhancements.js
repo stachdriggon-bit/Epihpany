@@ -35,7 +35,7 @@
     });
     const mobileLabel = $('#mobile-current-section');
     if (mobileLabel) mobileLabel.textContent = labels[view] || view;
-    $$$('.mobile-nav-group').forEach(group => {
+    $$$$('.mobile-nav-group').forEach(group => {
       group.open = !!$('[data-view="' + view + '"]', group);
     });
     const crumb = $('#navigation-breadcrumb');
@@ -256,7 +256,7 @@
         if (desktop()) { event.preventDefault(); group.open = true; }
       });
     });
-    $('.mobile-nav-group').forEach(group => {
+    $$('.mobile-nav-group').forEach(group => {
       const summary = $('summary', group);
       if (summary) summary.addEventListener('click', () => closeMenus(group));
     });
