@@ -83,24 +83,34 @@
   }
   function startVitals() {
     if (vitalObservers.length || typeof PerformanceObserver !== 'function') return;
-    const observe = (type, callback) => {
+    const observe = (type, callback, options = {}) => {
       try {
         const observer = new PerformanceObserver(list => callback(list.getEntries()));
-        observer.observe({ type, buffered: true });
+        observer.observe({ type, buffered: true, ...options });
         vitalObservers.push(observer);
       } catch {}
     };
     observe('largest-contentful-paint', entries => {
       entries.forEach(entry => { vitalValues.LCP = Math.max(vitalValues.LCP || 0, entry.startTime || 0); });
     });
+    let clsSessionValue = 0, clsSessionStart = 0, clsLastShift = 0;
     observe('layout-shift', entries => {
-      entries.forEach(entry => { if (!entry.hadRecentInput) vitalValues.CLS = (vitalValues.CLS || 0) + (entry.value || 0); });
+      entries.forEach(entry => {
+        if (entry.hadRecentInput) return;
+        if (!clsSessionStart || entry.startTime - clsLastShift > 1000 || entry.startTime - clsSessionStart > 5000) {
+          clsSessionValue = 0;
+          clsSessionStart = entry.startTime;
+        }
+        clsSessionValue += entry.value || 0;
+        clsLastShift = entry.startTime;
+        vitalValues.CLS = Math.max(vitalValues.CLS || 0, clsSessionValue);
+      });
     });
     observe('event', entries => {
       entries.forEach(entry => {
         if (entry.interactionId && entry.duration) vitalValues.INP = Math.max(vitalValues.INP || 0, entry.duration);
       });
-    });
+    }, { durationThreshold: 40 });
   }
   window.addEventListener('pagehide', reportVitals);
   document.addEventListener('visibilitychange', () => {
