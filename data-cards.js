@@ -1,7 +1,7 @@
 /* EPIPHANY collectible-card data. Image filenames map to objects in Supabase Storage; the app never loads local portrait files. */
 window.EPIPHANY_CARD_DATA = [
   {id:"CHR-001",category:"characters",name:"Mira",title:"Wayfinder",rarity:"Epic",symbol:"⌖",palette:"map",image:"mira99.png",thumb:"mira.webp",art:"mira",description:"A practical guide who reads maps and helps travelers make sense of their routes."},
-  {id:"CHR-005",category:"characters",name:"Nibras",title:"Crystal Echo",rarity:"Epic",symbol:"◇",palette:"crystal",image:"nibras.PNG",thumb:"nibras.webp",art:"nibras",description:"A crystalline keeper of echoes that never preserve the whole truth."},
+  {id:"CHR-005",category:"characters",name:"Lucian",title:"Crystal Echo",rarity:"Epic",symbol:"◇",palette:"crystal",image:"nibras.PNG",thumb:"nibras.webp",art:"nibras",description:"A human with crystalline traits whose body responds to lingering magical and physical echoes."},
   {id:"CHR-002",category:"characters",name:"Evren",title:"Resonance Tinkerer",rarity:"Uncommon",symbol:"〰",palette:"crystal",image:"idris.PNG",thumb:"evren.webp",description:"A curious resonance tinkerer who explores how things respond and turns discoveries into useful tools."},
   {id:"CHR-003",category:"characters",name:"Elaris",title:"Veiled Archivist",rarity:"Epic",symbol:"✧",palette:"shadow",image:"salma.PNG",thumb:"elaris.webp",description:"A seasoned sorcerer and scholarly adviser known for reshaping magical formations."},
   {id:"CHR-004",category:"characters",name:"Darian",title:"Exiled Warden",rarity:"Uncommon",symbol:"♜",palette:"mist",image:"داريان.PNG",thumb:"darian.webp",description:"An exiled warden whose past complicates the rules he once swore to protect."},
