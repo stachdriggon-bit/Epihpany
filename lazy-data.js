@@ -16,6 +16,8 @@
     lifeskills: ['life-skills.css?v=calm-studio-20261025']
   };
   const pendingStyles = new Map();
+  const loadedStyles = new Set();
+  const loadingStyles = new Map();
   const optionalQueue = [];
   const queuedOptionalLoads = new Map();
   let activeOptionalLoads = 0;
