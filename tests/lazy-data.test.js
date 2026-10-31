@@ -443,16 +443,18 @@ test('failed feature recovery resumes the complete data group and clears after s
   scripts[0].onerror();
   await assert.rejects(initial, /Unable to load feature data: data-stories\.js/);
 
+  assert.equal(timers.length, 1, 'a failed group should schedule recovery automatically');
+  assert.equal(timers[0].delay, 1000, 'the first recovery should use a short initial backoff');
   document.visibilityState = 'hidden';
   listeners['window:online']();
+  timers.shift().fn();
   await new Promise(resolve => setImmediate(resolve));
   assert.equal(requested.length, 1, 'recovery must not run while the page is hidden');
 
   document.visibilityState = 'visible';
   listeners['document:visibilitychange']();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(timers.length, 1);
-  assert.equal(timers[0].delay, 1000, 'the first recovery should use a short initial backoff');
+  assert.equal(timers.length, 1, 'recovery should be rescheduled when the page becomes visible');
   timers.shift().fn();
   await new Promise(resolve => setImmediate(resolve));
   await new Promise(resolve => setImmediate(resolve));
