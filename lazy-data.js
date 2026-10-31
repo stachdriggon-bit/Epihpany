@@ -93,12 +93,19 @@
     if (!Object.prototype.hasOwnProperty.call(styleGroups, group)) {
       return Promise.reject(new Error('Unknown feature style group'));
     }
-    if (!pendingStyles.has(group)) {
-      const promise = styleGroups[group].reduce((chain, href) => chain.then(() => loadStyle(href, priority)), Promise.resolve())
-        .catch(error => { pendingStyles.delete(group); throw error; });
-      pendingStyles.set(group, promise);
+    let job = pendingStyles.get(group);
+    if (job) {
+      if (priority === 'user') {
+        job.priority = 'user';
+        styleGroups[group].forEach(href => runWithPriority('user', () => Promise.resolve(), href));
+      }
+      return job.promise;
     }
-    return pendingStyles.get(group);
+    job = { priority, promise: null };
+    job.promise = styleGroups[group].reduce((chain, href) => chain.then(() => loadStyle(href, job.priority)), Promise.resolve())
+      .catch(error => { pendingStyles.delete(group); throw error; });
+    pendingStyles.set(group, job);
+    return job.promise;
   }
 
   window.EPIPHANY_LAZY_STYLE = group => loadStyleGroup(group, 'user');
@@ -216,12 +223,19 @@
     if (!Object.prototype.hasOwnProperty.call(groups, group)) {
       return Promise.reject(new Error('Unknown feature data group'));
     }
-    if (!pending.has(group)) {
-      const promise = groups[group].reduce((chain, src) => chain.then(() => loadScript(src, priority)), Promise.resolve())
-        .catch(error => { pending.delete(group); throw error; });
-      pending.set(group, promise);
+    let job = pending.get(group);
+    if (job) {
+      if (priority === 'user') {
+        job.priority = 'user';
+        groups[group].forEach(src => runWithPriority('user', () => Promise.resolve(), src));
+      }
+      return job.promise;
     }
-    return pending.get(group);
+    job = { priority, promise: null };
+    job.promise = groups[group].reduce((chain, src) => chain.then(() => loadScript(src, job.priority)), Promise.resolve())
+      .catch(error => { pending.delete(group); throw error; });
+    pending.set(group, job);
+    return job.promise;
   }
 
   window.EPIPHANY_LAZY_LOAD = group => loadGroup(group, 'user');
