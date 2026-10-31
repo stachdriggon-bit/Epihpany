@@ -413,6 +413,7 @@ test('failed feature recovery resumes the complete data group and clears after s
   const scripts = [];
   const listeners = {};
   const subscribers = [];
+  const timers = [];
   const document = {
     visibilityState: 'visible',
     addEventListener(name, fn) { listeners['document:' + name] = fn; },
@@ -430,7 +431,9 @@ test('failed feature recovery resumes the complete data group and clears after s
       subscribe(fn) { subscribers.push(fn); return () => {}; }
     },
     navigator: { onLine: true },
-    addEventListener(name, fn) { listeners['window:' + name] = fn; }
+    addEventListener(name, fn) { listeners['window:' + name] = fn; },
+    setTimeout(fn, delay) { timers.push({ fn, delay }); return timers.length; },
+    clearTimeout() {}
   };
   const context = vm.createContext({ window, document, Promise, Map, Set, Object, Error });
   vm.runInNewContext(fs.readFileSync(path.join(root, 'lazy-data.js'), 'utf8'), context);
@@ -440,13 +443,20 @@ test('failed feature recovery resumes the complete data group and clears after s
   scripts[0].onerror();
   await assert.rejects(initial, /Unable to load feature data: data-stories\.js/);
 
+  assert.equal(timers.length, 1, 'a failed group should schedule recovery automatically');
+  assert.equal(timers[0].delay, 1000, 'the first recovery should use a short initial backoff');
   document.visibilityState = 'hidden';
   listeners['window:online']();
+  timers.shift().fn();
   await new Promise(resolve => setImmediate(resolve));
   assert.equal(requested.length, 1, 'recovery must not run while the page is hidden');
 
   document.visibilityState = 'visible';
   listeners['document:visibilitychange']();
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(timers.length, 1, 'recovery should be rescheduled when the page becomes visible');
+  timers.shift().fn();
+  await new Promise(resolve => setImmediate(resolve));
   await new Promise(resolve => setImmediate(resolve));
   assert.equal(requested.length, 2, 'recovery should retry the failed first file');
   scripts[1].onload();
@@ -465,6 +475,7 @@ test('failed feature styles recover as a complete style group', async () => {
   const requested = [];
   const links = [];
   const listeners = {};
+  const timers = [];
   const document = {
     visibilityState: 'visible',
     addEventListener(name, fn) { listeners['document:' + name] = fn; },
@@ -480,7 +491,9 @@ test('failed feature styles recover as a complete style group', async () => {
       allowSpeculativePreload: true, deferNonEssentialWork: false, maxConcurrentOptionalLoads: 1
     }) },
     navigator: { onLine: true },
-    addEventListener(name, fn) { listeners['window:' + name] = fn; }
+    addEventListener(name, fn) { listeners['window:' + name] = fn; },
+    setTimeout(fn, delay) { timers.push({ fn, delay }); return timers.length; },
+    clearTimeout() {}
   };
   const context = vm.createContext({ window, document, Promise, Map, Set, Object, Error });
   vm.runInNewContext(fs.readFileSync(path.join(root, 'lazy-data.js'), 'utf8'), context);
@@ -491,6 +504,10 @@ test('failed feature styles recover as a complete style group', async () => {
   await assert.rejects(initial, /Unable to load feature styles: resonance\.css/);
 
   listeners['document:visibilitychange']();
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(timers.length, 1);
+  timers.shift().fn();
+  await new Promise(resolve => setImmediate(resolve));
   await new Promise(resolve => setImmediate(resolve));
   assert.equal(requested.length, 2, 'visibility recovery should retry the failed stylesheet');
   links[1].onload();
@@ -505,6 +522,7 @@ test('feature-group recovery is deduplicated and stops after two recovery attemp
   const requested = [];
   const scripts = [];
   const listeners = {};
+  const timers = [];
   const document = {
     visibilityState: 'visible',
     addEventListener(name, fn) { listeners['document:' + name] = fn; },
@@ -520,7 +538,9 @@ test('feature-group recovery is deduplicated and stops after two recovery attemp
       allowSpeculativePreload: true, deferNonEssentialWork: false, maxConcurrentOptionalLoads: 1
     }) },
     navigator: { onLine: true },
-    addEventListener(name, fn) { listeners['window:' + name] = fn; }
+    addEventListener(name, fn) { listeners['window:' + name] = fn; },
+    setTimeout(fn, delay) { timers.push({ fn, delay }); return timers.length; },
+    clearTimeout() {}
   };
   const context = vm.createContext({ window, document, Promise, Map, Set, Object, Error });
   vm.runInNewContext(fs.readFileSync(path.join(root, 'lazy-data.js'), 'utf8'), context);
@@ -533,11 +553,20 @@ test('feature-group recovery is deduplicated and stops after two recovery attemp
   listeners['window:online']();
   listeners['document:visibilitychange']();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested.length, 2, 'multiple recovery signals should share one group retry');
+  assert.equal(timers.length, 1, 'multiple recovery signals should share one scheduled retry');
+  assert.equal(timers[0].delay, 1000);
+  timers.shift().fn();
+  await new Promise(resolve => setImmediate(resolve));
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(requested.length, 2, 'the first bounded recovery attempt should start once');
   scripts[1].onerror();
   await new Promise(resolve => setImmediate(resolve));
+  assert.equal(timers.length, 1, 'a failed retry should schedule the second attempt');
+  assert.equal(timers[0].delay, 4000, 'the second recovery should use a longer backoff');
 
   listeners['window:online']();
+  timers.shift().fn();
+  await new Promise(resolve => setImmediate(resolve));
   await new Promise(resolve => setImmediate(resolve));
   assert.equal(requested.length, 3, 'one further group recovery attempt should be allowed');
   scripts[2].onerror();
