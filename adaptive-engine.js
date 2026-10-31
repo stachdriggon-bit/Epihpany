@@ -11,6 +11,12 @@
   let mediaQuery = null;
   let snapshot = null;
   let destroyed = false;
+  let runtimePressure = false;
+  let pressureTimer = null;
+  let longTaskStarts = [];
+  const LONG_TASK_WINDOW_MS = 10000;
+  const LONG_TASK_THRESHOLD = 3;
+  const PRESSURE_COOLDOWN_MS = 15000;
 
   function readCapabilities() {
     const nav = window.navigator || {};
@@ -45,17 +51,19 @@
       lowBandwidth,
       lowResources,
       reducedMotion,
+      runtimePressure,
       visibility: document && document.visibilityState === 'hidden' ? 'hidden' : 'visible'
     });
   }
 
   function buildPolicy(capabilities) {
-    const constrained = capabilities.lowBandwidth || capabilities.lowResources;
+    const constrained = capabilities.lowBandwidth || capabilities.lowResources || capabilities.runtimePressure;
     return Object.freeze({
       allowSpeculativePreload: !constrained && capabilities.online,
       allowBackgroundWarmCache: !constrained && capabilities.online,
       maxConcurrentOptionalLoads: constrained ? 1 : 3,
       deferNonEssentialWork: constrained || capabilities.visibility === 'hidden',
+      runtimePressure: capabilities.runtimePressure,
       respectReducedMotion: capabilities.reducedMotion
     });
   }
@@ -92,6 +100,48 @@
     });
   }
 
+  function observeRuntimePressure() {
+    const Observer = window.PerformanceObserver;
+    if (typeof Observer !== 'function') return;
+    try {
+      const observer = new Observer(list => {
+        const entries = list && typeof list.getEntries === 'function' ? list.getEntries() : [];
+        let changed = false;
+        entries.forEach(entry => {
+          const duration = Number(entry && entry.duration);
+          if (!Number.isFinite(duration) || duration < 50) return;
+          const start = Number(entry.startTime);
+          const now = Number.isFinite(start) ? start : Date.now();
+          longTaskStarts.push(now);
+          longTaskStarts = longTaskStarts.filter(value => now - value <= LONG_TASK_WINDOW_MS);
+          if (longTaskStarts.length >= LONG_TASK_THRESHOLD) changed = true;
+        });
+        if (!changed) return;
+        if (!runtimePressure) {
+          runtimePressure = true;
+          refresh();
+        }
+        try {
+          if (pressureTimer !== null && typeof window.clearTimeout === 'function') window.clearTimeout(pressureTimer);
+          if (typeof window.setTimeout === 'function') {
+            pressureTimer = window.setTimeout(() => {
+              pressureTimer = null;
+              runtimePressure = false;
+              longTaskStarts = [];
+              refresh();
+            }, PRESSURE_COOLDOWN_MS);
+          }
+        } catch {}
+      });
+      observer.observe({ type: 'longtask', buffered: true });
+      cleanups.push(() => {
+        try { observer.disconnect(); } catch {}
+      });
+    } catch {
+      // Long-task timing is not supported in every browser; the adaptive engine remains optional.
+    }
+  }
+
   function on(target, event, handler) {
     try {
       if (target && typeof target.addEventListener === 'function') {
@@ -124,6 +174,8 @@
     if (mediaQuery) cleanups.push(on(mediaQuery, 'change', refresh));
   } catch {}
 
+  observeRuntimePressure();
+
   const api = Object.freeze({
     version: '1.0.0',
     getSnapshot() {
@@ -146,6 +198,12 @@
       if (destroyed) return;
       destroyed = true;
       cleanups.forEach(cleanup => cleanup());
+      if (pressureTimer !== null && typeof window.clearTimeout === 'function') {
+        try { window.clearTimeout(pressureTimer); } catch {}
+      }
+      pressureTimer = null;
+      longTaskStarts = [];
+      runtimePressure = false;
       listeners.clear();
     }
   });

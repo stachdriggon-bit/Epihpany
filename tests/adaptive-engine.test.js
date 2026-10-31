@@ -21,6 +21,8 @@ function createEngine({ connection = {}, deviceMemory = 8, hardwareConcurrency =
     removeEventListener(name) { delete events['connection:' + name]; }
   };
   const messages = [];
+  const observers = [];
+  const timers = [];
   const nav = {
     connection: navConnection, deviceMemory, hardwareConcurrency, onLine,
     serviceWorker: { controller: { postMessage(message) { messages.push(message); } } }
@@ -39,10 +41,17 @@ function createEngine({ connection = {}, deviceMemory = 8, hardwareConcurrency =
     navigator: nav,
     addEventListener(name, fn) { events['window:' + name] = fn; },
     removeEventListener(name) { delete events['window:' + name]; },
-    matchMedia() { return media; }
+    matchMedia() { return media; },
+    PerformanceObserver: class {
+      constructor(callback) { this.callback = callback; observers.push(this); }
+      observe(options) { this.options = options; }
+      disconnect() { this.disconnected = true; }
+    },
+    setTimeout(fn, delay) { const timer = { fn, delay, cleared: false }; timers.push(timer); return timer; },
+    clearTimeout(timer) { if (timer) timer.cleared = true; }
   };
   vm.runInNewContext(source, { window, document, Object, Number, Set, console: { warn: (...args) => warnings.push(args) } });
-  return { api: window.EPIPHANY_ADAPTIVE_ENGINE, events, window, document, media, navConnection, messages, nav, classes, warnings };
+  return { api: window.EPIPHANY_ADAPTIVE_ENGINE, events, window, document, media, navConnection, messages, nav, classes, warnings, observers, timers };
 }
 
 test('adaptive engine exposes conservative defaults and does not persist or transmit data', () => {
@@ -131,4 +140,61 @@ test('adaptive engine enables lightweight motion only for constrained devices or
   motion.media.matches = false;
   motion.events['media:change']();
   assert.equal(motion.classes.has('ep-adaptive-lite'), false);
+});
+
+
+test('runtime long-task pressure pauses optional work and resumes after a quiet cooldown', () => {
+  const { api, observers, timers, classes } = createEngine();
+  const updates = [];
+  const unsubscribe = api.subscribe((snapshot, policy) => updates.push({ snapshot, policy }));
+  assert.equal(observers.length, 1, 'long-task monitoring should be installed when supported');
+  assert.equal(observers[0].options.type, 'longtask');
+  assert.equal(observers[0].options.buffered, true);
+  observers[0].callback({ getEntries: () => [
+    { duration: 90, startTime: 1000 },
+    { duration: 120, startTime: 3000 }
+  ] });
+  assert.equal(api.getPolicy().runtimePressure, false, 'isolated long tasks should not throttle the app');
+  observers[0].callback({ getEntries: () => [{ duration: 80, startTime: 5000 }] });
+  assert.equal(api.getSnapshot().runtimePressure, true);
+  assert.equal(api.getPolicy().allowSpeculativePreload, false);
+  assert.equal(api.getPolicy().allowBackgroundWarmCache, false);
+  assert.equal(api.getPolicy().maxConcurrentOptionalLoads, 1);
+  assert.equal(api.getPolicy().deferNonEssentialWork, true);
+  assert.equal(updates.length, 1, 'entering pressure should notify the loading scheduler');
+  assert.equal(timers.at(-1).delay, 15000, 'recovery should wait for a quiet period');
+  timers.at(-1).fn();
+  assert.equal(api.getSnapshot().runtimePressure, false);
+  assert.equal(api.getPolicy().allowSpeculativePreload, true);
+  assert.equal(api.getPolicy().maxConcurrentOptionalLoads, 3);
+  assert.equal(updates.length, 2, 'recovery should resume optional work');
+  unsubscribe();
+  api.destroy();
+  assert.equal(observers[0].disconnected, true);
+});
+
+test('runtime pressure cooldown is extended by continuing long tasks and cleaned up on destroy', () => {
+  const { api, observers, timers } = createEngine();
+  observers[0].callback({ getEntries: () => [
+    { duration: 70, startTime: 100 },
+    { duration: 75, startTime: 200 },
+    { duration: 90, startTime: 300 }
+  ] });
+  const firstTimer = timers.at(-1);
+  observers[0].callback({ getEntries: () => [{ duration: 100, startTime: 9000 }] });
+  const secondTimer = timers.at(-1);
+  assert.equal(firstTimer.cleared, true, 'new pressure should extend the quiet-period deadline');
+  assert.notEqual(firstTimer, secondTimer);
+  api.destroy();
+  assert.equal(secondTimer.cleared, true, 'destroy should cancel pending recovery timers');
+});
+
+test('runtime pressure monitoring is optional when PerformanceObserver is unavailable', () => {
+  const context = {
+    window: { navigator: {}, addEventListener() {}, removeEventListener() {}, matchMedia() { return { matches: false }; } },
+    document: { visibilityState: 'visible' },
+    Object, Number, Set, console
+  };
+  assert.doesNotThrow(() => vm.runInNewContext(source, context));
+  assert.equal(context.window.EPIPHANY_ADAPTIVE_ENGINE.getPolicy().runtimePressure, false);
 });
