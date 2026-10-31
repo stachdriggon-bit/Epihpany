@@ -5756,6 +5756,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     button.addEventListener('click', () => {
       const choice = button.dataset.helpLanguage;
       if (!['en','ar'].includes(choice)) return;
+      helpLanguageChoice = choice;
       state.helpArabic = choice === 'ar';
       try { localStorage.setItem('epiphany-help-language-choice', choice); } catch {}
       save(); syncSettings();
