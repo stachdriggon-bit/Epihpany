@@ -131,9 +131,11 @@ test('Elaris canonical profile records Reshaping, Magnitude, Epic rarity and rec
   const relationship = profile.sections.find(section => section.id === 'relationships');
   assert.equal(relationship.text[0].characterId, 'CHR-002');
   assert.ok(relationship.text[1].text.en.includes("at the age of five"));
-  assert.ok(profile.sections.find(section => section.id === 'abilities').text.some(entry =>
-    entry.text.en.includes('Reshaping')
-  ));
+  const abilities = profile.sections.find(section => section.id === 'abilities');
+  assert.ok(abilities.title.en.includes('Reshaping'), 'the canonical ability name belongs in the section title');
+  assert.ok(abilities.text.some(entry =>
+    (entry.text || entry).en.includes('Elaris can reshape her own magical formations')
+  ), 'the ability description should preserve the approved reshaping capability');
   assert.ok(profile.sections.find(section => section.id === 'limits').text.some(entry =>
     entry.text.en.includes('Magnitude')
   ));
