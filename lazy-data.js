@@ -64,6 +64,7 @@
       attempts: previous ? previous.attempts : 0,
       retry
     });
+    recoverFailedOptionalLoads();
   }
 
   function clearFailedOptionalLoad(key) {
