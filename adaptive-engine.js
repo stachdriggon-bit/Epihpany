@@ -67,6 +67,17 @@
     snapshot = next;
     if (previous && Object.keys(next).every(key => next[key] === previous[key])) return;
     const policy = buildPolicy(next);
+    // When connectivity returns, ask the service worker to resume optional offline warming.
+    // This is a same-origin message only; the worker independently rechecks device/network limits.
+    if (previous && !previous.online && next.online && policy.allowBackgroundWarmCache &&
+        next.visibility === 'visible') {
+      try {
+        const controller = (window.navigator || {}).serviceWorker?.controller;
+        if (controller && typeof controller.postMessage === 'function') {
+          controller.postMessage({ type: 'EPIPHANY_WARM_OPTIONAL_CACHE' });
+        }
+      } catch {}
+    }
     listeners.forEach(listener => {
       try { listener(next, policy); } catch (error) {
         try { console.warn('[EPIPHANY] Adaptive listener failed safely.', error); } catch {}
