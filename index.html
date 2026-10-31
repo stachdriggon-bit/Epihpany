@@ -165,6 +165,7 @@
         <summary><span aria-hidden="true">🎮</span><span>Play &amp; think</span><svg class="nav-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 10 5 5 5-5"/></svg></summary>
         <div class="nav-submenu"><button class="tab" data-view="arcade">🎮 Arcade <small>Mini-games and challenges</small></button><button class="tab" data-view="thinklab">⌕ Think Lab <small>Reasoning and language puzzles</small></button></div>
       </details>
+      <button class="tab nav-collection" data-view="collection"><span aria-hidden="true">▧</span><span>Collection</span></button>
       <button class="tab nav-summon" data-view="summon"><span aria-hidden="true">✦</span><span>Card Portal</span></button>
       <details class="nav-group"><summary><span aria-hidden="true">⌖</span><span>Explore</span><svg class="nav-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 10 5 5 5-5"/></svg></summary><div class="nav-submenu"><button class="tab" data-view="chronicle">🗺 World Archive <small>Explore places and events</small></button><button class="tab" data-view="resonance">〰 The Resonance <small>Visual mystery investigation</small></button></div></details>
       <details class="nav-group">
@@ -183,7 +184,7 @@
       <div class="mobile-nav-group"><span class="mobile-nav-label">LEARN</span><button class="tab" data-view="stories">📖 <span>Stories</span></button></div>
       <div class="mobile-nav-group"><span class="mobile-nav-label">EXPLORE</span><button class="tab" data-view="chronicle">🗺 <span>World Archive</span></button><button class="tab" data-view="resonance">〰 <span>The Resonance</span></button></div>
       <div class="mobile-nav-group"><span class="mobile-nav-label">PLAY &amp; THINK</span><button class="tab" data-view="arcade">🎮 <span>Arcade</span></button><button class="tab" data-view="thinklab">⌕ <span>Think Lab</span></button></div>
-      <div class="mobile-nav-group"><span class="mobile-nav-label">COLLECT</span><button class="tab" data-view="summon">✦ <span>Card Portal</span></button></div>
+      <div class="mobile-nav-group"><span class="mobile-nav-label">COLLECT</span><button class="tab" data-view="summon">✦ <span>Card Portal</span></button><button class="tab" data-view="collection">▧ <span>Collection</span></button></div>
       <div class="mobile-nav-group"><span class="mobile-nav-label">REAL LIFE</span><button class="tab" data-view="world">🌍 <span>World</span></button><button class="tab" data-view="lifeskills">✳ <span>Life Skills</span></button></div>
       <div class="mobile-nav-group"><span class="mobile-nav-label">YOUR SPACE</span><button class="tab" data-view="words">📘 <span>Words</span></button><button class="tab" data-view="mytools">✎ <span>My Tools</span></button><button class="tab" data-view="trophies">🏆 <span>Trophies</span></button><button class="tab" data-view="progress">📈 <span>Progress</span></button><button class="tab" data-view="profile">✦ <span>Profile</span></button></div>
     </nav></details>
@@ -355,6 +356,24 @@
 
 
 <main id="main">
+
+  <section class="view cards-collection-view" id="collection-view" aria-labelledby="collection-title">
+    <div class="page cards-collection-page">
+      <div class="intro"><p class="kicker">YOUR COLLECTOR SPACE</p><h1 id="collection-title" tabindex="-1">The Collection</h1><p class="lead">Your discoveries, favorite characters and upgrades — all in one place.</p></div>
+      <section class="cards-hub" id="cards-hub" aria-labelledby="cards-hub-title">
+        <div class="cards-hub-head">
+          <div><span class="profile-eyebrow">YOUR COLLECTOR SPACE</span><h2 id="cards-hub-title">The Collection</h2><p>Your discoveries, favorite characters and upgrades — all in one place. Cards are collection-only and never affect XP or English progress.</p></div>
+          <div class="cards-wallet" aria-label="Collection wallet"><span>✦ Tokens <b id="cards-token-count">15</b></span><span>◇ Shards <b id="cards-shard-count">0</b></span></div>
+        </div>
+        <div class="cards-collection-toolbar"><div><strong>Your discoveries</strong><span id="cards-collection-count">0 / 27 discovered</span><div class="cgal-bar" aria-hidden="true"><i id="cards-collection-bar" style="width:0%"></i></div></div>
+          <div class="cgal-filter-stack" id="cards-gallery-filters" aria-label="Filter your cards"><div class="cgal-filter-row"><span class="cgal-filter-label">Rarity</span><div class="cgal-filter-chips" id="cards-rarity-filters" role="group" aria-label="Filter by rarity"></div></div><div class="cgal-filter-row"><span class="cgal-filter-label">Type</span><div class="cgal-filter-chips" id="cards-type-filters" role="group" aria-label="Filter by card type"></div></div><div class="cgal-filter-actions"><span id="cards-filter-result-count" aria-live="polite">Loading cards…</span><button type="button" class="cgal-toggle" id="cards-gallery-locked" aria-pressed="true">Hide undiscovered</button></div></div></div>
+        <div class="cards-panel"><p class="cards-upgrade-hint" id="cards-upgrade-balance">Upgrade a collected card for 5 shards · 5 levels max</p>
+          <div class="cards-collection-meta"><span>COLLECTION</span><span><b id="cards-owned-count">0</b> cards collected</span></div>
+          <div class="cards-grid" id="cards-gallery"></div>
+        </div>
+      </sectio
+    </div>
+  </section>
 
   <section class="view cards-summon-view" id="summon-view" aria-labelledby="cards-summon-title">
     <div class="page cards-summon-page">
@@ -618,20 +637,9 @@
   <section class="view" id="profile-view" aria-labelledby="profile-title">
     <div class="page">
       <div class="intro profile-intro"><p class="kicker">YOUR LEARNING SPACE</p><h1 id="profile-title" tabindex="-1">Your profile</h1><p class="lead">Your identity, progress and English journey — all in one place.</p></div>
-      <section class="cards-hub" id="cards-hub" aria-labelledby="cards-hub-title">
-        <div class="cards-hub-head">
-          <div><span class="profile-eyebrow">YOUR COLLECTOR SPACE</span><h2 id="cards-hub-title">The Collection</h2><p>Your discoveries, favorite characters and upgrades — all in one place. Cards are collection-only and never affect XP or English progress.</p></div>
-          <div class="cards-wallet" aria-label="Collection wallet"><span>✦ Tokens <b id="cards-token-count">15</b></span><span>◇ Shards <b id="cards-shard-count">0</b></span></div>
-        </div>
-        <div class="cards-collection-toolbar"><div><strong>Your discoveries</strong><span id="cards-collection-count">0 / 27 discovered</span><div class="cgal-bar" aria-hidden="true"><i id="cards-collection-bar" style="width:0%"></i></div></div>
-          <div class="cgal-filter-stack" id="cards-gallery-filters" aria-label="Filter your cards"><div class="cgal-filter-row"><span class="cgal-filter-label">Rarity</span><div class="cgal-filter-chips" id="cards-rarity-filters" role="group" aria-label="Filter by rarity"></div></div><div class="cgal-filter-row"><span class="cgal-filter-label">Type</span><div class="cgal-filter-chips" id="cards-type-filters" role="group" aria-label="Filter by card type"></div></div><div class="cgal-filter-actions"><span id="cards-filter-result-count" aria-live="polite">Loading cards…</span><button type="button" class="cgal-toggle" id="cards-gallery-locked" aria-pressed="true">Hide undiscovered</button></div></div></div>
-        <div class="cards-panel"><p class="cards-upgrade-hint" id="cards-upgrade-balance">Upgrade a collected card for 5 shards · 5 levels max</p>
-          <div class="cards-collection-meta"><span>COLLECTION</span><span><b id="cards-owned-count">0</b> cards collected</span></div>
-          <div class="cards-grid" id="cards-gallery"></div>
-        </div>
-      </section>
+n>
       <nav class="profile-nav" aria-label="Profile sections">
-        <a href="#cards-hub" aria-current="location">Collection</a><a href="#player-profile-title">Overview</a><a href="#profile-customize">Personalize</a><a href="#my-english-corner">My posts</a><a href="#community-wall-title">Community</a><a href="#profile-challenges-title">Achievements</a><a href="#account-block-title">Account</a>
+        <a href="#player-profile-title">Overview</a><a href="#profile-customize">Personalize</a><a href="#my-english-corner">My posts</a><a href="#community-wall-title">Community</a><a href="#profile-challenges-title">Achievements</a><a href="#account-block-title">Account</a>
       </nav>
       <section class="block player-profile" aria-labelledby="player-profile-title">
         <div class="block-head profile-section-head"><div><span class="profile-eyebrow">YOUR PLAYER CARD</span><h2 id="player-profile-title">Your identity</h2><p>Your name, your style, your learning journey.</p></div></div>
