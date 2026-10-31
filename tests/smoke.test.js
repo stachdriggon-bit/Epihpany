@@ -43,7 +43,25 @@ async function dismissFirstVisitOverlays(page) {
     await page.locator('#game').waitFor({ state: 'hidden', timeout: 5000 });
     const homeTab = page.locator('button[data-view="home"]:visible').first();
     if (await homeTab.count()) await homeTab.click();
-    await page.locator('#home-view').waitFor({ state: 'visible', timeout: 5000 });
+    await page.locator('#home-view').waitFor({ state: 'visible', timeout: 5000 }).catch(async error => {
+      const diagnostics = await page.evaluate(() => {
+        const main = document.querySelector('main#main');
+        const home = document.querySelector('#home-view');
+        return {
+          bodyClass: document.body.className,
+          htmlClass: document.documentElement.className,
+          mainDisplay: main ? getComputedStyle(main).display : null,
+          mainHidden: main?.hidden ?? null,
+          mainInert: main?.inert ?? null,
+          homeDisplay: home ? getComputedStyle(home).display : null,
+          homeHidden: home?.hidden ?? null,
+          homeClass: home?.className || null,
+          gameHidden: document.querySelector('#game')?.hidden ?? null,
+          landingPresent: !!document.querySelector('#landing-screen')
+        };
+      });
+      throw new Error('Home view did not return after closing the onboarding lesson: ' + JSON.stringify(diagnostics) + '; ' + error.message);
+    });
   }
 }
 const mime = { '.html':'text/html; charset=utf-8', '.js':'text/javascript; charset=utf-8', '.css':'text/css; charset=utf-8', '.json':'application/json; charset=utf-8', '.svg':'image/svg+xml', '.png':'image/png', '.jpg':'image/jpeg', '.webp':'image/webp' };
