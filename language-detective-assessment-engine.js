@@ -40,9 +40,9 @@ function SemanticMatcher(normalized,snapshot,ctx){
  const text=normalized.data.normalizedText, clauses=normalized.data.clauses, propositions=[],conceptMatches=[],used=new Set();
  for(const concept of snapshot.concepts){
   if((concept.excludePatterns||[]).some(source=>{try{return new RegExp(source,'i').test(text);}catch{return false;}}))continue;
-  let matched=null,matchedId=null;
-  for(const p of concept.patterns||[]){try{const re=new RegExp(p.source,'i');const m=text.match(re);if(m){matched=m[0];matchedId=p.patternId;break;}}catch{}}
-  if(!matched) for(const v of concept.acceptedVariants||[]) if(text.toLowerCase().includes(v.toLowerCase())){matched=v;matchedId='variant:'+v;break;}
+  let matched=null,matchedId=null,sourcePattern=null;
+  for(const p of concept.patterns||[]){try{const re=new RegExp(p.source,'i');const m=text.match(re);if(m){matched=m[0];matchedId=p.patternId;sourcePattern=p;break;}}catch{}}
+  if(!matched) for(const v of concept.acceptedVariants||[]) if(text.toLowerCase().includes(v.toLowerCase())){matched=v;matchedId='variant:'+v;sourcePattern=null;break;}
   if(!matched)continue;
   const clause=clauses.find(c=>c.text.toLowerCase().includes(matched.toLowerCase()))||clauses[0];
   const p={propositionId:'p-'+concept.conceptId,conceptId:concept.conceptId,predicate:concept.predicate||concept.conceptId,polarity:sourcePattern?.semanticPolarity||concept.semanticPolarity||polarity(matched),modality:modality(matched),source:sourcePattern?.attribution||concept.attribution||{kind:'LEARNER_ASSERTION'},epistemicStatus:concept.epistemicStatus||'INFERENCE',clauseId:clause?.clauseId||'clause-1',evidenceRefs:[...(concept.evidenceRefs||[])],matchedText:matched};
