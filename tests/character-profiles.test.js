@@ -174,11 +174,21 @@ test('Riven canonical profile records Ri Vision, Continuity, Veyrun and bilingua
     assert.ok(section.title.en && section.title.ar, section.id + ' needs bilingual titles');
     const entries = Array.isArray(section.text) ? section.text : [section.text];
     for (const entry of entries) {
+      if (entry.characterId) {
+        assert.ok(entry.label.en && entry.label.ar, section.id + ' character link needs bilingual labels');
+        continue;
+      }
       const value = entry.text || entry;
       assert.ok(value.en, section.id + ' needs English content');
       assert.ok(value.ar, section.id + ' needs Arabic content');
     }
   }
+  const relationships = profile.sections.find(section => section.id === 'relationships');
+  const lucianLink = relationships.text.find(entry => entry.characterId === 'CHR-005');
+  assert.ok(lucianLink, 'Riven should link to Lucian in Character Details');
+  assert.equal(lucianLink.label.en, 'Lucian');
+  assert.equal(lucianLink.label.ar, 'لوسيان');
+  assert.match(read('cards.js'), /data-profile-character/);
   const abilities = profile.sections.find(section => section.id === 'abilities');
   assert.ok(abilities.title.en.includes('Ri Vision'));
   assert.ok(abilities.text.some(entry => (entry.text || entry).en.includes('Structural Perception')));
