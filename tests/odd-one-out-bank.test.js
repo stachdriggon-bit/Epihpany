@@ -1,6 +1,10 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const bank = require('../odd-one-out-bank.js');
+const fs = require('node:fs');
+const path = require('node:path');
+const vm = require('node:vm');
+const thinkLabSource = fs.readFileSync(path.join(__dirname, '..', 'think-lab.js'), 'utf8');
 
 test('Odd One Out has independent banks for all six CEFR levels', () => {
   for (const level of ['A1','A2','B1','B2','C1','C2']) {
@@ -42,6 +46,42 @@ test('round targets are adaptive and never pad a short bank with repeats', () =>
   assert.equal(challenge.shortened,true);
   for (const round of [guided,steady,challenge]) {
     assert.equal(new Set(round.questions.map(q=>q.id)).size,round.questions.length);
+  }
+});
+
+function loadThinkLabHarness(cefrLevel = 'A1') {
+  const root = {innerHTML:'',addEventListener(){}};
+  const window = {
+    EPIPHANY_ODD_ONE_OUT_BANK: bank,
+    EpiphanyThinkLab: {
+      getCEFRLevel: () => cefrLevel,
+      getGameDifficulty: () => ({level:'guided',hintLevel:1}),
+      registerGame() {}
+    }
+  };
+  const document = {getElementById: id => id === 'think-lab-content' ? root : null};
+  const instrumented = thinkLabSource.replace(
+    /  landing\\(\\);\\s*\\}\\)\\(\\);\\s*$/,
+    '  window.__oddPool = trainingMode => getRoundPool("odd", trainingMode);\\n  landing();\\n})();'
+  );
+  assert.notEqual(instrumented, thinkLabSource, 'test hook must be inserted before the Think Lab IIFE closes');
+  new vm.Script(instrumented, {filename:'think-lab.js'});
+  vm.runInNewContext(instrumented, {window,document,console,Math}, {filename:'think-lab.js',timeout:5000});
+  return window;
+}
+
+test('Think Lab integration supplies a visible prompt and mode-specific instructions', () => {
+  for (const level of ['A1','A2','B1','B2','C1','C2']) {
+    const harness = loadThinkLabHarness(level);
+    for (const mode of ['guided','steady','challenge']) {
+      const pool = harness.__oddPool(mode);
+      assert.equal(pool.length,8);
+      assert.ok(pool.every(item => item.prompt === 'Which word does not belong?'));
+      assert.ok(pool.every(item => item.cefrLevel === level));
+      assert.ok(pool.every(item => item.trainingMode === mode));
+      assert.ok(pool.every(item => item.why && item.why.length > 15));
+      assert.ok(pool.every(item => item.relationshipLabel));
+    }
   }
 });
 
