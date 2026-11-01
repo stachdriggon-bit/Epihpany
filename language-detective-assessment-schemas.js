@@ -1,3 +1,4 @@
+(() => {
 'use strict';
 
 const ENUMS = Object.freeze({
@@ -108,3 +109,5 @@ function validateEvaluationRequest(value) {
 const LanguageDetectiveSchemas = { ENUMS, validateEvaluationContext, validateProposition, validateCaseSnapshot, validateModuleEnvelope, validateEvaluationRequest };
 if (typeof module !== 'undefined' && module.exports) module.exports = LanguageDetectiveSchemas;
 else if (typeof window !== 'undefined') window.EPIPHANY_LANGUAGE_DETECTIVE_SCHEMAS = LanguageDetectiveSchemas;
+
+})();
