@@ -111,7 +111,9 @@
     if (email) email.textContent = currentUser ? currentUser.email || 'Signed-in player' : '';
     if (!showSignedIn && recoveryMode) setMode('newpassword');
   }
-  function mergeProgress(local, cloud) {
+  const PREFERENCE_KEYS = ['helpArabic', 'translationEnabled', 'sound', 'theme', 'storyReaderSettings'];
+  function mergeProgress(local, cloud, root = true) {
+    let merged;
     if (Array.isArray(local) && Array.isArray(cloud)) {
       const items = new Map();
       [...local, ...cloud].forEach(item => {
@@ -121,11 +123,21 @@
     }
     if (local && cloud && typeof local === 'object' && typeof cloud === 'object' &&
         !Array.isArray(local) && !Array.isArray(cloud)) {
-      const merged = {...local};
+      merged = {...local};
       Object.keys(cloud).forEach(key => {
         merged[key] = Object.prototype.hasOwnProperty.call(local, key)
-          ? mergeProgress(local[key], cloud[key]) : cloud[key];
+          ? mergeProgress(local[key], cloud[key], false) : cloud[key];
       });
+      if (root) {
+        const localStamp = Number(local._preferencesUpdatedAt) || 0;
+        const cloudStamp = Number(cloud._preferencesUpdatedAt) || 0;
+        const preferred = cloudStamp > localStamp ? cloud : local;
+        merged._preferencesUpdatedAt = Math.max(localStamp, cloudStamp);
+        PREFERENCE_KEYS.forEach(key => {
+          if (Object.prototype.hasOwnProperty.call(preferred, key)) merged[key] = preferred[key];
+          else delete merged[key];
+        });
+      }
       return merged;
     }
     if (typeof local === 'number' && typeof cloud === 'number') return Math.max(local, cloud);
