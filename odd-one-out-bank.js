@@ -247,10 +247,10 @@
         "aggravate"
     ],
     "B2-WC-01": [
+        "economics",
         "financial",
         "cost-effective",
-        "historical",
-        "economics"
+        "historical"
     ],
     "B2-CAUSE-01": [
         "excessive workload",
@@ -280,7 +280,7 @@
         "arouse",
         "lodge",
         "harbour",
-        "mount"
+        "compile"
     ],
     "C1-CTX-01": [
         "provisional",
@@ -307,10 +307,10 @@
         "accordingly"
     ],
     "C1-PW-01": [
-        "section",
-        "chapter",
+        "paragraph",
         "subsection",
-        "treatise"
+        "chapter",
+        "publisher"
     ],
     "C2-CON-01": [
         "astute",
@@ -358,7 +358,7 @@
         "hostility",
         "resentment",
         "rancour",
-        "hesitancy"
+        "apathy"
     ]
 };
 
