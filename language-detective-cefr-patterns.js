@@ -119,4 +119,6 @@ const CEFR_CONSTRUCTION_PATTERNS = Object.freeze({
   ]
 });
 
-module.exports = { CEFR_GRAMMAR_CATALOG, CEFR_CONSTRUCTION_PATTERNS, CEFR_ORDER, SEMANTIC_OPERATORS, getCefrProfile, validatePatternLevel };
+const LanguageDetectiveCefr = { CEFR_GRAMMAR_CATALOG, CEFR_CONSTRUCTION_PATTERNS, CEFR_ORDER, SEMANTIC_OPERATORS, getCefrProfile, validatePatternLevel };
+if (typeof module !== 'undefined' && module.exports) module.exports = LanguageDetectiveCefr;
+else if (typeof window !== 'undefined') window.EPIPHANY_LANGUAGE_DETECTIVE_CEFR = LanguageDetectiveCefr;
