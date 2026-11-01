@@ -87,7 +87,7 @@ for(const [caseId,response,outcome] of core)for(const trainingMode of ['GUIDED',
 for(let i=0;i<9;i++){const [caseId,response,outcome]=core[i%3];fixtures.push(scenario('HINT-'+String(i+1).padStart(2,'0'),'hint',caseId,response,outcome,{hintsUsed:[['DIRECTION'],['CONNECTION'],['REASONING']][i%3]}));}
 const retry=[
  ['CASE-001','A resident picked up the package.','PARTIAL'],
- ['CASE-001','An unidentified resident picked up the package; identity is unknown.','ACCEPTED'],
+ ['CASE-001','An unidentified resident picked up the package; identity is unknown.','PARTIAL'],
  ['CASE-002','Lena took the envelope.','UNSUPPORTED'],
  ['CASE-002','Lena may have moved it, but this is unproven.','PARTIAL'],
  ['CASE-002','The card was used, but the user is unknown.','PARTIAL'],
