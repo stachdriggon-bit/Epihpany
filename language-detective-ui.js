@@ -48,6 +48,7 @@
 
   function picker() {
     root.innerHTML = '<section class="ld-shell">' +
+      '<div class="ld-toolbar"><button type="button" class="ld-back" data-ld-exit>← Think Lab</button><span>THREE CASE FILES</span></div>' +
       '<div class="ld-heading"><span class="ld-kicker">THINK LAB · INVESTIGATION</span><h2>The Language Detective</h2><p>Read the evidence, test possible explanations and write a conclusion. The goal is careful reasoning—not guessing the hidden answer.</p></div>' +
       settingsMarkup() +
       '<div class="ld-case-grid">' + Object.keys(caseInfo).map(id => {
@@ -179,6 +180,7 @@
         investigation();
         return;
       }
+      if (event.target.closest('[data-ld-exit]')) { onExit(); return; }
       if (event.target.closest('[data-ld-back]')) {
         state.stage = 'picker';
         state.caseId = null;
