@@ -13,7 +13,7 @@
     arabic: ['data-translation-ar.js?v=question-context-20261026-20', 'data-translation-ar-fill.js?v=fill-4']
   };
   const styleGroups = {
-    thinklab: ['language-detective.css?v=investigation-ui-4'],
+    languageDetective: ['language-detective.css?v=investigation-ui-4'],
     resonance: ['resonance.css?v=mobile-hotspots-20261031-2'],
     lifeskills: ['life-skills.css?v=calm-studio-20261025']
   };
