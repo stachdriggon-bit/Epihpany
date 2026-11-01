@@ -459,11 +459,13 @@
       const level = currentLevel();
       return level && LEVELS.some(item => item.id === level.id) ? level.id : 'A1';
     },
-    recordResult(skill, topic, correct, completed = false) {
+    recordResult(skill, topic, correct, completed = false, options = {}) {
       if (DEV_MODE.active && hasDeveloperAccess()) return {xp:0};
       const allowed = ['vocabulary','grammar','listening','conversation','reading','spelling'];
       const safeSkill = allowed.includes(skill) ? skill : 'vocabulary';
-      recordAdaptiveResult(safeSkill, 'think-lab:' + String(topic || 'challenge').slice(0,100), !!correct);
+      if (options.trackAdaptive !== false) {
+        recordAdaptiveResult(safeSkill, 'think-lab:' + String(topic || 'challenge').slice(0,100), !!correct);
+      }
       const gain = correct ? 3 : 1;
       state.xp = (Number(state.xp) || 0) + gain;
       state.dailyXp = (Number(state.dailyXp) || 0) + gain;
