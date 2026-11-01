@@ -210,3 +210,26 @@ Copy this template for each character. Use “Open” rather than inventing an a
 - **Canon decision:** On 2026-10-31, the user approved the name Lucian / لوسيان instead of the former card name Nibras / نبراس, age 25, Crystal Echo title, human nature with crystalline traits, Urven Reach in Nirvan as homeland and Aegis Concord as his former organization. The core Echo Response concept and its boundaries, personality, work background, domain incident and travel direction were accepted for the character reference.
 - **Reference card:** [Lucian — CHR-005](../character-reference-cards/CHR-005-LUCIAN.md)
 - **Last reviewed:** 2026-10-31 — foundational identity, ability concept, limits, work background and domain mystery recorded.
+
+### CHR-072 — Riven, Passage Scout
+
+- **Record status:** Foundational character, ability name, individual restriction, and homeland accepted on 2026-11-01; detailed operation and story events remain open.
+- **Card rarity:** Uncommon (collection attribute only; not a measure of strength or narrative importance).
+- **Homeland:** Veyrun / فيرون, Orath (OR-CITY-01).
+- **Magical access:** Character-specific magical ability.
+- **Ability name:** **Ri Vision** — accepted.
+- **Core domain:** Vision-based perception of underlying structure and the beginnings/subtle changes of movement.
+- **Operation:**
+  - **Structural Perception:** notices details of the underlying structure of objects and beings, including irregularities, abnormalities and potential weak points.
+  - **Kinetic Perception:** catches the beginnings of movement and subtle changes, helping him analyse attack directions and respond quickly.
+- **Applications:** Combat, defence, exploration, noticing domain irregularities, and recognizing that Lucian's crystalline appearance is not an independent creature.
+- **Natural limits:** The ability does not show the future or reveal complete truth automatically. Perceived details require interpretation, which may be mistaken. Exact range, activation, presentation and other operational parameters remain open.
+- **Individual restriction:** Accepted — **Continuity / الاستمرارية**. Ri Vision's active magical reading depends on Riven maintaining visual tracking and attention on the target being analysed.
+- **Restriction trigger(s):** If visual tracking is interrupted or Riven shifts his attention away from the target, the accumulated magical analysis loses precision.
+- **Effect and adaptation:** When he resumes tracking, he must rebuild the active reading. The restriction affects the active magical analysis, not ordinary memory; he does not forget details previously seen with his normal senses. Exact reset behaviour and partial-attention edge cases remain open.
+- **Classification rationale:** The restriction limits the continuation of the active perceptual operation, rather than the amount or intensity of its effect. Continuity is the accepted fit.
+- **Equipment:** A light, balanced spear-like weapon suitable for speed and precision, usable one- or two-handed. Name and independent magical property remain open; the property should complement rather than duplicate Ri Vision.
+- **Open questions:** Detailed ability parameters; exact restriction edge cases; spear name/property; visible mark; current residence; further appearance details; no numerical duration or energy cost has been established.
+- **Canon decision:** On 2026-11-01, the user accepted the name Ri Vision, its Structural and Kinetic Perception aspects, and the Continuity restriction based on uninterrupted visual tracking and attention.
+- **Reference card:** [Riven — CHR-072](../character-reference-cards/CHR-072-RIVEN.md)
+- **Last reviewed:** 2026-11-01 — foundational ability, restriction and homeland recorded.
