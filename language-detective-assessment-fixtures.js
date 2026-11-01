@@ -128,4 +128,6 @@ const fairness=[
 ];
 fairness.forEach((x,i)=>fixtures.push(scenario('FAIR-'+String(i+1).padStart(2,'0'),'fairness',...x)));
 if(fixtures.length!==57)throw new Error('Expected 57 fixtures, got '+fixtures.length);
-module.exports={cases,fixtures,makeContext};
+const LanguageDetectiveFixtures = {cases,fixtures,makeContext};
+if (typeof module !== 'undefined' && module.exports) module.exports = LanguageDetectiveFixtures;
+else if (typeof window !== 'undefined') window.EPIPHANY_LANGUAGE_DETECTIVE_FIXTURES = LanguageDetectiveFixtures;
