@@ -334,3 +334,73 @@ window.EPIPHANY_CARD_PROFILES["CHR-005"] = {
     ]}
   ]
 };
+
+/* Riven — CHR-072. Canonical bilingual Character Details profile.
+   Detailed character canon: docs/character-reference-cards/CHR-072-RIVEN.md */
+window.EPIPHANY_CARD_PROFILES["CHR-072"] = {
+  name:{en:"Riven",ar:"ريفن"},
+  title:{en:"Passage Scout",ar:"كشّاف الممرات"},
+  summary:{
+    en:"A capable young human explorer from the prosperous old city of Veyrun. His curiosity began with the impossible questions his grandfather shared with him.",
+    ar:"مستكشف بشري شاب وموهوب من مدينة فيرون العريقة والثرية. بدأ فضوله مع الأسئلة التي كان جده يشاركه إياها عن أمور تبدو مستحيلة."
+  },
+  facts:[
+    {label:{en:"Species",ar:"النوع"},value:{en:"Human",ar:"بشري"}},
+    {label:{en:"Age",ar:"العمر"},value:{en:"19 years",ar:"19 سنة"}},
+    {label:{en:"Homeland",ar:"مسقط الرأس"},value:{en:"Veyrun · Orath",ar:"فيرون · أوراث"}},
+    {label:{en:"Current residence",ar:"الإقامة الحالية"},value:{en:"Not documented yet",ar:"لم يُوثّق بعد"}},
+    {label:{en:"Role",ar:"الدور"},value:{en:"Explorer · Passage Scout",ar:"مستكشف · كشّاف الممرات"}}
+  ],
+  sections:[
+    {id:"overview",title:{en:"Overview",ar:"نظرة عامة"},icon:"✦",text:[
+      {text:{en:"Riven is a capable and dependable young explorer. He is good at handling danger, reading situations and dealing with people. He values independence and is drawn to unfamiliar places and difficult questions.",ar:"ريفن مستكشف شاب موهوب ويمكن الاعتماد عليه. يجيد التعامل مع المخاطر وقراءة المواقف والتواصل مع الناس. يقدّر استقلاليته وينجذب إلى الأماكن غير المألوفة والأسئلة الصعبة."}}
+    ]},
+    {id:"personality",title:{en:"Personality",ar:"الشخصية"},icon:"◇",text:[
+      {text:{en:"Independent and self-reliant. He follows his own path and does not need a permanent companion to explore or make decisions.",ar:"مستقل ويعتمد على نفسه. يسلك طريقه الخاص ولا يحتاج إلى رفيق دائم كي يستكشف أو يتخذ قراراته."}},
+      {text:{en:"Curious and adventurous, with a genuine interest in discovering unfamiliar places and understanding how things work.",ar:"فضولي ومحب للاستكشاف، ولديه اهتمام حقيقي باكتشاف الأماكن غير المألوفة وفهم كيفية عمل الأشياء."}},
+      {text:{en:"Talented and reliable despite his age. He can stay useful under pressure and is comfortable interacting with different people.",ar:"موهوب ويمكن الاعتماد عليه رغم صغر سنه. يستطيع الحفاظ على فاعليته تحت الضغط ويرتاح إلى التعامل مع أشخاص مختلفين."}},
+      {text:{en:"His social confidence may be connected to his wealthy family background, but that explanation is not established.",ar:"قد تكون ثقته في التعامل الاجتماعي مرتبطة بخلفية عائلته الثرية، لكن هذا التفسير لم يُعتمد بعد."}}
+    ]},
+    {id:"motivation",title:{en:"Motivation",ar:"الدوافع"},icon:"⌖",text:[
+      {text:{en:"Riven enjoys exploration in its own right, but his central personal pursuit grew from the questions his grandfather shared with him during childhood.",ar:"يستمتع ريفن بالاستكشاف لذاته، لكن مسعاه الشخصي الأساسي نشأ من الأسئلة التي كان جده يشاركه إياها منذ طفولته."}},
+      {text:{en:"After his grandfather became incapacitated, Riven took up the search for a legendary figure associated with an apparently impossible magical achievement. He hopes the knowledge may help save his grandfather.",ar:"بعد عجز جده، حمل ريفن راية البحث عن شخصية أسطورية ارتبط اسمها بإنجاز سحري يبدو مستحيلًا. يأمل أن تساعده المعرفة المرتبطة به على إنقاذ جده."}},
+      {text:{en:"Protecting the family's magical heritage is also part of the crisis. The family remains wealthy; what is at risk is its stewardship of its registered magical legacy, not its ordinary fortune.",ar:"الحفاظ على الإرث السحري للعائلة جزء من الأزمة أيضًا. فالعائلة ما زالت ثرية؛ وما يتهددها هو استمرار وصايتها على إرثها السحري المسجل، لا ثروتها العادية."}}
+    ]},
+    {id:"abilities",title:{en:"Abilities & Skills · Ri Vision",ar:"القدرات والمهارات · Ri Vision"},icon:"✧",text:[
+      {text:{en:"Ri Vision is a vision-based magical ability with two connected aspects: Structural Perception and Kinetic Perception.",ar:"Ri Vision قدرة سحرية قائمة على الرؤية، وتتكون من جانبين مترابطين: الإدراك البنيوي والإدراك الحركي."}},
+      {text:{en:"Structural Perception: Riven can notice details of the underlying structure of objects and beings, including irregularities, abnormalities and potential weak points.",ar:"الإدراك البنيوي: يستطيع ريفن ملاحظة تفاصيل البنية الكامنة للأشياء والكائنات، بما في ذلك الاختلالات والتفاصيل غير الطبيعية ونقاط الضعف المحتملة."}},
+      {text:{en:"Kinetic Perception: he can catch the beginnings of movement and subtle changes, helping him analyse attack directions and respond quickly.",ar:"الإدراك الحركي: يستطيع التقاط بدايات الحركة والتغيرات الدقيقة، مما يساعده على تحليل اتجاهات الهجمات والاستجابة بسرعة."}},
+      {text:{en:"The ability is useful in combat, defence, exploration and noticing irregularities in domains. It can help him recognize that Lucian's crystalline appearance is not an independent creature.",ar:"تفيده القدرة في القتال والدفاع والاستكشاف وملاحظة الاختلالات داخل المجالات. كما تساعده على إدراك أن المظهر البلوري للوسيان ليس كائنًا مستقلًا."}},
+      {text:{en:"Ri Vision does not show the future or reveal the complete truth automatically. What Riven perceives still requires interpretation, and that interpretation can be wrong.",ar:"لا تتيح Ri Vision رؤية المستقبل ولا تكشف الحقيقة كاملة بصورة تلقائية. فما يدركه ريفن يحتاج إلى تفسير، وقد يكون تفسيره خاطئًا."}}
+    ]},
+    {id:"limits",title:{en:"Weaknesses & Individual Restriction",ar:"نقاط الضعف والقيد الفردي"},icon:"⌁",text:[
+      {text:{en:"Individual restriction — Continuity (accepted): Ri Vision depends on maintaining an uninterrupted visual and attentional connection with the target being analysed.",ar:"القيد الفردي — الاستمرارية (معتمد): تعتمد Ri Vision على استمرار اتصال ريفن البصري والانتباهي بالهدف الذي يحلله دون انقطاع."}},
+      {text:{en:"If Riven loses visual tracking or shifts his attention away, the accumulated magical reading loses its precision. He must rebuild the active analysis when he resumes tracking.",ar:"إذا فقد ريفن متابعة الهدف بصريًا أو حوّل انتباهه عنه، تفقد القراءة السحرية المتراكمة دقتها. وعليه إعادة بناء التحليل النشط عندما يستأنف المتابعة."}},
+      {text:{en:"The restriction affects the active magical analysis, not Riven's ordinary memory. He does not forget details he previously saw with his normal senses.",ar:"يؤثر القيد في التحليل السحري النشط، لا في ذاكرة ريفن العادية. فهو لا ينسى التفاصيل التي سبق أن شاهدها بحواسه المعتادة."}},
+      {text:{en:"This restriction creates tactical vulnerabilities when targets move behind obstacles, when several targets demand attention, or when Riven must monitor his surroundings. Exact operational details remain open.",ar:"يخلق هذا القيد نقاط ضعف تكتيكية عندما تختفي الأهداف خلف العوائق، أو تتطلب عدة أهداف انتباهه، أو يضطر إلى مراقبة محيطه. أما التفاصيل التشغيلية الدقيقة فما زالت مفتوحة."}}
+    ]},
+    {id:"backstory",title:{en:"Backstory",ar:"الخلفية"},icon:"◷",text:[
+      {text:{en:"Riven grew up in Veyrun, an old and prosperous terraced highland city in Orath. His family is wealthy and holds a registered magical heritage that includes artifacts requiring recognized authority to control them.",ar:"نشأ ريفن في فيرون، المدينة المرتفعة العريقة والثرية ذات الأحياء المدرّجة في أوراث. تنتمي عائلته إلى أسرة ثرية وتمتلك إرثًا سحريًا مسجلًا يضم آثارًا تتطلب صلاحية معترفًا بها للتحكم فيها."}},
+      {text:{en:"His grandfather became deeply attached to a magical heirloom associated with his late wife. He could not bear to transfer that part of the family heritage to someone else before achieving his personal goal concerning it. This attachment was the principal reason he delayed the transfer of authority to Riven's father.",ar:"تعلق جده بشدة بأثر سحري مرتبط بزوجته الراحلة. ولم يستطع تحمل انتقال ذلك الجزء من إرث العائلة إلى شخص آخر قبل تحقيق هدفه الشخصي المتعلق به. وكان هذا التعلق السبب الرئيسي لتأخيره نقل صلاحيات الإرث إلى والد ريفن."}},
+      {text:{en:"The grandfather shared his questions and research with Riven from an early age. Riven was fascinated by the possibility of doing something thought impossible, even though he was too young to understand the grief and longing behind his grandfather's obsession.",ar:"شارك الجد أسئلته وأبحاثه مع ريفن منذ صغره. وقد فُتن ريفن بإمكانية فعل شيء يراه الآخرون مستحيلًا، رغم أنه كان أصغر من أن يفهم الحزن والشوق الكامنين خلف هوس جده."}},
+      {text:{en:"The grandfather's hypothesis concerns direct control of raw Aelora, distinct from ordinary magic that uses Aelora to produce effects. He wondered whether applying such control to an artifact containing a deceased person's Aelora trace could, in theory, lead beyond preserving an echo and perhaps restore life. This is only a theoretical possibility: no successful return from death is known or established.",ar:"تتعلق فرضية الجد بالتحكم المباشر بالإيلورا الخام، وهو أمر يختلف عن السحر المعتاد الذي يستخدم الإيلورا لإنتاج التأثيرات. وتساءل عما إذا كان تطبيق هذا التحكم على أثر يحمل بقايا إيلورا لشخص متوفى قد يتجاوز نظريًا حفظ صدى منه وربما يؤدي إلى استعادة الحياة. هذا احتمال نظري فقط؛ فلا توجد حالة معروفة أو مثبتة لنجاح إعادة شخص من الموت."}},
+      {text:{en:"The grandfather searched for a legendary, long-lived non-human figure who disappeared inside a domain and was believed to have reached a state of direct raw-Aelora control. The achievement is understood as a theoretically learnable state, not an innate exclusive power; no one else is known to have reproduced it.",ar:"بحث الجد عن شخصية أسطورية من عرق غير بشري طويل العمر اختفت داخل أحد المجالات، ويُعتقد أنها بلغت حالة من التحكم المباشر بالإيلورا الخام. ويُفهم الإنجاز بوصفه حالة يمكن تعلمها نظريًا، لا قدرة فطرية حصرية؛ ولا يُعرف أن أحدًا آخر تمكن من تكرارها."}},
+      {text:{en:"The grandfather later entered an unconscious, coma-like condition in which his body remains alive while raw Aelora is steadily drained. The condition is associated with a known natural or cosmic phenomenon believed to be unsurvivable. Its name, mechanism and exact cause remain open.",ar:"دخل الجد لاحقًا في حالة فقدان وعي تشبه الغيبوبة، يبقى فيها جسده حيًا بينما تُستنزف الإيلورا الخام منه تدريجيًا. وترتبط الحالة بظاهرة طبيعية أو كونية معروفة يُعتقد أن النجاة منها مستحيلة. ولا يزال اسم الحالة وآليتها وسببها الدقيق مفتوحًا."}},
+      {text:{en:"Because the grandfather cannot complete the legally recognized transfer of authority, the family's stewardship of its registered magical heritage is at risk under public-safety rules for artifacts without an authorized controller. The family's ordinary wealth is not being seized.",ar:"وبسبب عجز الجد عن إتمام نقل الصلاحيات المعترف به قانونيًا، أصبحت وصاية العائلة على إرثها السحري المسجل مهددة بموجب قواعد السلامة العامة الخاصة بالآثار التي لا تملك متحكمًا مخولًا. ولا تتعرض ثروة العائلة العادية للمصادرة."}}
+    ]},
+    {id:"story-role",title:{en:"Story Role & Development",ar:"الدور السردي والتطور"},icon:"▤",text:[
+      {text:{en:"Riven's story connects exploration, the search for a legendary achievement, the raw-Aelora hypothesis and the effort to save his grandfather. These are connected parts of one pursuit, not unrelated goals.",ar:"تربط قصة ريفن بين الاستكشاف والبحث عن الإنجاز الأسطوري وفرضية الإيلورا الخام ومحاولة إنقاذ جده. وهذه أجزاء مترابطة من مسعٍ واحد، وليست أهدافًا منفصلة."}},
+      {text:{en:"A central theme in his development is the boundary between persistence as an expression of love and love becoming an obsession that makes a person lose sight of limits. Riven may come to understand his grandfather's drive through his own experiences, including his developing relationship with Lucian; the exact events and outcome remain open.",ar:"من المحاور الأساسية في تطوره الحد الفاصل بين الإصرار بوصفه تعبيرًا عن الحب، وبين تحوّل الحب إلى هوس يجعل الإنسان يفقد القدرة على رؤية الحدود. وقد يفهم ريفن دوافع جده من خلال تجاربه الخاصة، بما فيها تطور علاقته بلوسيان؛ أما الأحداث والنتيجة الدقيقة فما زالت مفتوحة."}}
+    ]},
+    {id:"relationships",title:{en:"Relationships",ar:"العلاقات"},icon:"♡",text:[
+      {text:{en:"Grandfather: the person who shared his most personal research with Riven and helped shape his childhood fascination with exploration and impossible questions. Their bond is a major emotional foundation of Riven's story.",ar:"الجد: الشخص الذي شارك ريفن أكثر أبحاثه خصوصية، وأسهم في تشكيل شغفه الطفولي بالاستكشاف والأسئلة المستحيلة. وتمثل علاقتهما أساسًا عاطفيًا مهمًا في قصة ريفن."}},
+      {text:{en:"Grandmother: she died when Riven was too young to understand the loss. A magical heirloom associated with her became central to the grandfather's private pursuit.",ar:"الجدة: توفيت عندما كان ريفن أصغر من أن يفهم معنى الفقد. وأصبح أثر سحري مرتبط بها محورًا لمسعى الجد الشخصي."}},
+      {text:{en:"Father: the intended successor to the family's magical authority. The grandfather delayed the transfer primarily because he could not relinquish the heirloom associated with his late wife before pursuing his goal. Further family dynamics remain open.",ar:"الأب: الخليفة المقصود لصلاحيات الإرث السحري للعائلة. وقد أخر الجد نقل الصلاحيات أساسًا لأنه لم يستطع التخلي عن الأثر المرتبط بزوجته الراحلة قبل السعي إلى تحقيق هدفه. أما بقية ديناميكيات العائلة فما زالت مفتوحة."}},
+      {text:{en:"Lucian: Riven and Lucian encountered each other by chance while following independent paths inside a domain. Riven did not enter the domain to rescue him. Their relationship and its development remain open.",ar:"لوسيان: التقى ريفن ولوسيان مصادفة بينما كان كل منهما يسلك طريقًا مستقلًا داخل أحد المجالات. لم يدخل ريفن المجال لإنقاذه. وما زالت طبيعة علاقتهما وتطورها مفتوحة."}}
+    ]},
+    {id:"places",title:{en:"Places",ar:"الأماكن"},icon:"⌖",text:[
+      {text:{en:"Veyrun — OR-CITY-01, Orath. Riven's birthplace: an old, prosperous terraced highland city known for stonework and water management. Its broader history, sources of wealth and internal power structures remain open.",ar:"فيرون — OR-CITY-01، أوراث. مسقط رأس ريفن: مدينة مرتفعة عريقة وثرية ذات أحياء مدرّجة، معروفة بأعمال الحجر وإدارة المياه. ولا يزال تاريخها الأوسع ومصادر ثرائها وبنية النفوذ فيها مفتوحة."}}
+    ]},
+    {id:"quote",title:{en:"Signature Quote",ar:"العبارة المميزة"},icon:"❝",text:{en:"Not established yet.",ar:"لم تُحدّد بعد."}}
+  ]
+};
