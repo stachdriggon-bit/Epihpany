@@ -29,9 +29,9 @@ function loadHarness(options = {}) {
   return window;
 }
 
-test('The Bold Translator A1, A2, B1, B2 and C1 banks each have 42 complete questions with three explained options', () => {
+test('The Bold Translator A1, A2, B1, B2, C1 and C2 banks each have 42 complete questions with three explained options', () => {
   const harness = loadHarness();
-  for (const level of ['A1', 'A2', 'B1', 'B2', 'C1']) {
+  for (const level of ['A1', 'A2', 'B1', 'B2', 'C1', 'C2']) {
     const bank = harness.__translatorBanks[level];
     assert.ok(bank, `${level} bank is missing`);
     assert.equal(bank.guided.length, 12, `${level} guided count`);
@@ -47,7 +47,7 @@ test('The Bold Translator A1, A2, B1, B2 and C1 banks each have 42 complete ques
       assert.ok(question.hint.trim(), `${where}: missing hint`);
       assert.equal(question.optionExplanations.length, 3, `${where}: every option needs an explanation`);
       assert.ok(question.optionExplanations.every(explanation => explanation.trim()), `${where}: an option explanation is empty`);
-      if (level === 'C1') {
+      if (level === 'C1' || level === 'C2') {
         const correctExplanationIndexes = question.optionExplanations
           .map((explanation, optionIndex) => /^Correct:/i.test(explanation.trim()) ? optionIndex : -1)
           .filter(optionIndex => optionIndex >= 0);
@@ -65,7 +65,7 @@ test('The Bold Translator round sizes are 8, 10 and 12 questions', () => {
     const pool = harness.__translatorPool('A1', mode);
     assert.equal(pool.length, expected);
     assert.ok(pool.every(question => question.cefrLevel === 'A1' && question.trainingMode === mode));
-  for (const level of ['A2', 'B1', 'B2', 'C1']) {
+  for (const level of ['A2', 'B1', 'B2', 'C1', 'C2']) {
     const pool = harness.__translatorPool(level, mode);
     assert.equal(pool.length, expected);
     assert.ok(pool.every(question => question.cefrLevel === level && question.trainingMode === mode));
@@ -81,19 +81,22 @@ test('The Bold Translator defaults to adaptive CEFR and keeps manual practice se
   assert.match(source, /data-translator-level="adaptive"/);
   assert.match(source, /data-translator-level="'\+level\+'"/);
   assert.match(source, /translatorBanks\[level\] \? '' : 'disabled'/);
-  assert.match(source, /A1, A2, B1, B2 and C1 are available for practice/);
+  assert.match(source, /A1, A2, B1, B2, C1 and C2 are available for practice/);
   assert.ok(loadHarness().__translatorBanks.A2, 'A2 should become selectable only after its bank exists');
   assert.ok(loadHarness().__translatorBanks.B1, 'B1 should become selectable only after its bank exists');
   assert.ok(loadHarness().__translatorBanks.B2, 'B2 should become selectable only after its bank exists');
   assert.ok(loadHarness().__translatorBanks.C1, 'C1 should become selectable only after its bank exists');
-  const c1Bank = loadHarness().__translatorBanks.C1;
-  const c1Answers = ['guided', 'steady', 'challenge'].flatMap(mode => c1Bank[mode].map(question => question.answer));
-  assert.deepEqual([0, 1, 2].map(index => c1Answers.filter(answer => answer === index).length), [14, 14, 14], 'C1 correct answers should be evenly distributed across the three option positions');
+  assert.ok(loadHarness().__translatorBanks.C2, 'C2 should become selectable only after its bank exists');
+  for (const level of ['C1', 'C2']) {
+    const bank = loadHarness().__translatorBanks[level];
+    const answers = ['guided', 'steady', 'challenge'].flatMap(mode => bank[mode].map(question => question.answer));
+    assert.deepEqual([0, 1, 2].map(index => answers.filter(answer => answer === index).length), [14, 14, 14], `${level} correct answers should be evenly distributed across the three option positions`);
+  }
 });
 
 
 test('The Bold Translator selects distinct questions and clearly marks an adaptive fallback', () => {
-  const harness = loadHarness({ cefrLevel: 'C2', math: { random: () => 0, floor: Math.floor } });
+  const harness = loadHarness({ cefrLevel: 'C3', math: { random: () => 0, floor: Math.floor } });
   const pool = harness.__translatorPool('adaptive', 'steady');
   assert.equal(pool.length, 10, 'steady rounds contain ten questions');
   assert.ok(pool.every(question => question.cefrLevel === 'A1'), 'a missing C2 bank temporarily falls back to A1');
@@ -104,7 +107,7 @@ test('The Bold Translator selects distinct questions and clearly marks an adapti
 });
 
 test('Manual C1 practice does not trigger the adaptive fallback notice', () => {
-  const harness = loadHarness({ cefrLevel: 'C2', math: { random: () => 0 } });
+  const harness = loadHarness({ cefrLevel: 'C3', math: { random: () => 0 } });
   const pool = harness.__translatorPool('C1', 'challenge');
   assert.equal(pool.length, 12);
   assert.ok(pool.every(question => question.cefrLevel === 'C1'));
@@ -118,4 +121,14 @@ test('Manual Bold Translator practice keeps rewards but does not update adaptive
   assert.match(appSource, /recordResult\(skill, topic, correct, completed = false, options = \{\}\)/);
   assert.match(appSource, /if \(options\.trackAdaptive !== false\)\s*\{\s*recordAdaptiveResult\(/);
   assert.match(appSource, /const gain = correct \? 3 : 1/);
+});
+
+
+test('Manual C2 practice is available and does not trigger the adaptive fallback notice', () => {
+  const harness = loadHarness({ cefrLevel: 'A1', math: { random: () => 0 } });
+  const pool = harness.__translatorPool('C2', 'challenge');
+  assert.equal(pool.length, 12);
+  assert.ok(pool.every(question => question.cefrLevel === 'C2'));
+  assert.ok(pool.every(question => question.adaptiveFallback === false));
+  assert.ok(pool.every(question => question.requestedCEFRLevel === 'C2'));
 });
