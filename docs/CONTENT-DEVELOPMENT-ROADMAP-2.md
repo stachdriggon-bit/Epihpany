@@ -735,3 +735,70 @@ This inventory is a design-review count. It does not mean 57 automated tests wer
 ### 19.8 Phase 5 status
 
 The 18 combinations and the hint/retry/ambiguity/fairness scenarios have received a manual design review. Phase 5 is **not yet formally approved**: the open decisions above must be resolved, and the behavior must later be implemented and verified with automated tests. No code change or automated test execution is claimed by this record.
+
+
+---
+
+## 20. Phase 6 — Case Data Schema approval
+
+**Status:** Approved design baseline; implementation not started.
+
+The user approved the Phase 6 Case Data Schema direction. The approved decisions are:
+
+### 20.1 Conceptual structure
+
+Each reusable case is organized into:
+- `metadata`: stable case identity, title, CEFR, case type, lifecycle status, and version information;
+- `introduction`: learner-facing case introduction;
+- `evidence`: stable evidence records;
+- `investigation`: intermediate questions and their evidence dependencies;
+- `conclusion`: final task and supported response formats;
+- `evaluation`: authored assessment criteria and semantic rules.
+
+The schema must include a `schemaVersion` so future schema evolution can be handled deliberately.
+
+### 20.2 Evidence records and interpretation
+
+Every evidence item has a stable ID, type, importance/role, and learner-facing content. Internal assessment metadata should describe:
+- what the evidence supports;
+- what it does not establish;
+- known limitations or uncertainty.
+
+These interpretation fields are evaluator guidance and must not be confused with learner-facing content.
+
+An optional evidence item must never become an undisclosed requirement for a fair basic solution or a strong grade.
+
+### 20.3 Semantic answer model
+
+The evaluator must not depend on one exact model-answer sentence. It should represent:
+- required concepts;
+- meaning-equivalent accepted variants;
+- evidence references and relationships;
+- unsupported claims and overreach;
+- relevant uncertainty and limitations.
+
+Equivalent wording should be accepted when it communicates the same supported meaning. Concise, accurate answers must not be disadvantaged.
+
+### 20.4 Schema validation requirements
+
+Before a case can be approved for publication, validation must check at least:
+- unique case identity and version;
+- unique evidence and question IDs within the case;
+- all evidence references resolve;
+- all question dependencies refer to existing evidence;
+- all evaluation references resolve;
+- every required concept has an explicit criterion;
+- optional evidence is not required by core questions or the basic conclusion;
+- unsupported-claim rules include a rationale;
+- the reference conclusion is consistent with the evidence;
+- required content and evaluation sections are complete for the case lifecycle state.
+
+### 20.5 Evaluation architecture and security limitation
+
+Version one remains a local, structured, rule-based evaluator. Separating learner-facing case content from evaluation metadata is an organizational boundary, **not a security boundary**: client-delivered rules and reference answers can be inspected by a technically capable user.
+
+A hybrid server-side evaluator may be reconsidered later if answer confidentiality becomes a product requirement. It is not part of the approved V1 scope.
+
+### 20.6 Status boundary
+
+This approval establishes the conceptual schema direction and validation requirements only. The exact machine-readable schema, field-level types, constraints, sample-case validation, evaluator rules, and automated tests remain to be specified in Phase 6. No code implementation or runtime verification is claimed.
