@@ -67,3 +67,50 @@ test('shuffled options preserve the correct word while varying its position', ()
   assert.equal(selected.words[selected.answer],source.words[source.answer]);
   assert.equal(new Set(selected.words).size,4);
 });
+
+
+test('all 48 questions provide a distinct four-option Challenge set', () => {
+  const result = bank.validateBank();
+  assert.deepEqual(result, {valid:true,errors:[]});
+  for (const items of Object.values(bank.banks)) {
+    for (const item of items) {
+      const challenge = bank.selectRound(item.id.slice(0,2),'challenge',[],()=>0.31)
+        .questions.find(question => question.id === item.id);
+      assert.ok(challenge, item.id + ' should be selectable in Challenge');
+      assert.equal(challenge.words.length,4);
+      assert.equal(new Set(challenge.words.map(word=>word.toLowerCase())).size,4);
+      assert.notDeepEqual(
+        challenge.words.map(word=>word.toLowerCase()).sort(),
+        item.words.map(word=>word.toLowerCase()).sort(),
+        item.id + ' should use dedicated Challenge options'
+      );
+    }
+  }
+});
+
+test('Guided and Steady retain the original option sets', () => {
+  for (const level of ['A1','A2','B1','B2','C1','C2']) {
+    for (const mode of ['guided','steady']) {
+      const round = bank.selectRound(level,mode,[],()=>0.29);
+      for (const question of round.questions) {
+        const source = bank.banks[level].find(item=>item.id===question.id);
+        assert.deepEqual(
+          question.words.map(word=>word.toLowerCase()).sort(),
+          source.words.map(word=>word.toLowerCase()).sort(),
+          question.id + ' must not receive Challenge options in ' + mode
+        );
+      }
+    }
+  }
+});
+
+test('Challenge shuffling keeps the selected answer index valid', () => {
+  for (const level of ['A1','A2','B1','B2','C1','C2']) {
+    const round = bank.selectRound(level,'challenge',[],()=>0.43);
+    for (const question of round.questions) {
+      assert.ok(Number.isInteger(question.answer));
+      assert.ok(question.answer >= 0 && question.answer < 4);
+      assert.equal(new Set(question.words).size,4);
+    }
+  }
+});
