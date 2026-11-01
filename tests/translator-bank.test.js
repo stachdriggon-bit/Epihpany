@@ -6,11 +6,11 @@ const vm = require('node:vm');
 
 const source = fs.readFileSync(path.join(__dirname, '..', 'think-lab.js'), 'utf8');
 
-function loadHarness() {
+function loadHarness(options = {}) {
   const root = { innerHTML: '', addEventListener() {} };
   const window = {
     EpiphanyThinkLab: {
-      getCEFRLevel: () => 'A1',
+      getCEFRLevel: () => options.cefrLevel || 'A1',
       getGameDifficulty: () => ({ level: 'guided', hintLevel: 1 })
     }
   };
@@ -23,7 +23,7 @@ function loadHarness() {
   );
   assert.notEqual(instrumented, source, 'test hook must be inserted before the Think Lab IIFE closes');
   new vm.Script(instrumented, { filename: 'think-lab.js' });
-  vm.runInNewContext(instrumented, { window, document, console, Math }, { filename: 'think-lab.js', timeout: 5000 });
+  vm.runInNewContext(instrumented, { window, document, console, Math: options.math || Math }, { filename: 'think-lab.js', timeout: 5000 });
   return window;
 }
 
@@ -81,4 +81,25 @@ test('The Bold Translator defaults to adaptive CEFR and keeps manual practice se
   const c1Bank = loadHarness().__translatorBanks.C1;
   const c1Answers = ['guided', 'steady', 'challenge'].flatMap(mode => c1Bank[mode].map(question => question.answer));
   assert.deepEqual([0, 1, 2].map(index => c1Answers.filter(answer => answer === index).length), [14, 14, 14], 'C1 correct answers should be evenly distributed across the three option positions');
+});
+
+
+test('The Bold Translator selects distinct questions and clearly marks an adaptive fallback', () => {
+  const harness = loadHarness({ cefrLevel: 'C2', math: { random: () => 0 } });
+  const pool = harness.__translatorPool('adaptive', 'steady');
+  assert.equal(pool.length, 10, 'steady rounds contain ten questions');
+  assert.ok(pool.every(question => question.cefrLevel === 'A1'), 'a missing C2 bank temporarily falls back to A1');
+  assert.ok(pool.every(question => question.adaptiveFallback === true), 'fallback state is attached to every selected question');
+  assert.ok(pool.every(question => question.requestedCEFRLevel === 'C2'), 'the requested adaptive level is preserved');
+  assert.equal(new Set(pool.map(question => question.ar)).size, 10, 'a round must not repeat questions');
+  assert.match(source, /Your current level is '\+esc\(item\.requestedCEFRLevel\)/, 'the fallback must be disclosed in the round UI');
+});
+
+test('Manual C1 practice does not trigger the adaptive fallback notice', () => {
+  const harness = loadHarness({ cefrLevel: 'C2', math: { random: () => 0 } });
+  const pool = harness.__translatorPool('C1', 'challenge');
+  assert.equal(pool.length, 12);
+  assert.ok(pool.every(question => question.cefrLevel === 'C1'));
+  assert.ok(pool.every(question => question.adaptiveFallback === false));
+  assert.ok(pool.every(question => question.requestedCEFRLevel === 'C1'));
 });
