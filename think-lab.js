@@ -333,6 +333,17 @@
     }
   };
 
+  // Keep C2 answer positions evenly distributed without changing the intended answers.
+  const c2Questions = ['guided','steady','challenge'].flatMap(mode => translatorBanks.C2[mode]);
+  c2Questions.forEach((question, index) => {
+    const target = index % 3;
+    if (question.answer === target) return;
+    const current = question.answer;
+    [question.options[current], question.options[target]] = [question.options[target], question.options[current]];
+    [question.optionExplanations[current], question.optionExplanations[target]] = [question.optionExplanations[target], question.optionExplanations[current]];
+    question.answer = target;
+  });
+
   let selectedTranslatorCEFR = 'adaptive';
   let mode = null, index = 0, score = 0, locked = false, clueCount = 0, oddHintStep = 0, ladderPath = [], ladderWordNote = null, ladderMistakeRecorded = false, roundMistakes = 0, activePool = null, activeDifficulty = null, forgePlaced = [], scramblePlaced = [], connectionSelected = [], chainStepIndex = 0, chainPath = [];
 
@@ -992,7 +1003,7 @@ bark dark core hand land lane data duty melt`
     activePool = null;
     activeDifficulty = difficultyForMode('translator');
     const levels = ['A1','A2','B1','B2','C1','C2'];
-    root.innerHTML = '<div class="tl-game-head"><button class="tl-back" type="button" data-think-back>← All cases</button><span class="tl-eyebrow">THE BOLD TRANSLATOR</span></div><div class="tl-game-card"><div class="tl-game-kicker">CHOOSE YOUR PRACTICE LEVEL</div><h2>Where would you like to practise?</h2><p class="tl-game-instruction">Adaptive follows your current learning level. A1, A2, B1, B2 and C1 are available for practice. If your adaptive level does not have a bank yet, the game temporarily uses A1 content. Manual practice does not change your adaptive level.</p><div class="tl-answer-options"><button type="button" class="tl-option" data-translator-level="adaptive"><strong>Adaptive · Recommended</strong><span>Use my current EPIPHANY level</span></button>'+levels.map(level => '<button type="button" class="tl-option" data-translator-level="'+level+'" '+(translatorBanks[level] ? '' : 'disabled')+'><strong>'+level+'</strong><span>'+(translatorBanks[level] ? 'Available' : 'Coming soon')+'</span></button>').join('')+'</div></div>';
+    root.innerHTML = '<div class="tl-game-head"><button class="tl-back" type="button" data-think-back>← All cases</button><span class="tl-eyebrow">THE BOLD TRANSLATOR</span></div><div class="tl-game-card"><div class="tl-game-kicker">CHOOSE YOUR PRACTICE LEVEL</div><h2>Where would you like to practise?</h2><p class="tl-game-instruction">Adaptive follows your current learning level. A1, A2, B1, B2, C1 and C2 are available for practice. If your adaptive level does not have a bank yet, the game temporarily uses A1 content. Manual practice does not change your adaptive level.</p><div class="tl-answer-options"><button type="button" class="tl-option" data-translator-level="adaptive"><strong>Adaptive · Recommended</strong><span>Use my current EPIPHANY level</span></button>'+levels.map(level => '<button type="button" class="tl-option" data-translator-level="'+level+'" '+(translatorBanks[level] ? '' : 'disabled')+'><strong>'+level+'</strong><span>'+(translatorBanks[level] ? 'Available' : 'Coming soon')+'</span></button>').join('')+'</div></div>';
   }
   function start(id) {
     if(id==='translator'){selectedTranslatorCEFR='adaptive';showTranslatorLevelPicker();return;}
