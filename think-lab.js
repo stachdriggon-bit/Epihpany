@@ -344,8 +344,9 @@ bark dark core hand land lane data duty melt`
     if (id === 'translator') {
       const bridge = window.EpiphanyThinkLab;
       const adaptiveLevel = bridge && typeof bridge.getCEFRLevel === 'function' ? bridge.getCEFRLevel() : 'A1';
-      const chosenLevel = selectedTranslatorCEFR === 'adaptive' ? adaptiveLevel : selectedTranslatorCEFR;
-      const bank = translatorBanks[chosenLevel] || translatorBanks.A1;
+      const requestedLevel = selectedTranslatorCEFR === 'adaptive' ? adaptiveLevel : selectedTranslatorCEFR;
+      const chosenLevel = translatorBanks[requestedLevel] ? requestedLevel : 'A1';
+      const bank = translatorBanks[chosenLevel];
       const selectedMode = ['guided','steady','challenge'].includes(level) ? level : 'steady';
       const roundSize = {guided:8,steady:10,challenge:12}[selectedMode] || 10;
       const questions = bank[selectedMode].slice().sort(() => Math.random() - 0.5);
@@ -721,7 +722,7 @@ bark dark core hand land lane data duty melt`
     activePool = null;
     activeDifficulty = difficultyForMode('translator');
     const levels = ['A1','A2','B1','B2','C1','C2'];
-    root.innerHTML = '<div class="tl-game-head"><button class="tl-back" type="button" data-think-back>← All cases</button><span class="tl-eyebrow">THE BOLD TRANSLATOR</span></div><div class="tl-game-card"><div class="tl-game-kicker">CHOOSE YOUR PRACTICE LEVEL</div><h2>Where would you like to practise?</h2><p class="tl-game-instruction">Adaptive follows your current learning level. Manual practice is separate and does not change your adaptive level.</p><div class="tl-answer-options"><button type="button" class="tl-option" data-translator-level="adaptive"><strong>Adaptive · Recommended</strong><span>Use my current EPIPHANY level</span></button>'+levels.map(level => '<button type="button" class="tl-option" data-translator-level="'+level+'" '+(translatorBanks[level] ? '' : 'disabled')+'><strong>'+level+'</strong><span>'+(translatorBanks[level] ? 'Available' : 'Coming soon')+'</span></button>').join('')+'</div></div>';
+    root.innerHTML = '<div class="tl-game-head"><button class="tl-back" type="button" data-think-back>← All cases</button><span class="tl-eyebrow">THE BOLD TRANSLATOR</span></div><div class="tl-game-card"><div class="tl-game-kicker">CHOOSE YOUR PRACTICE LEVEL</div><h2>Where would you like to practise?</h2><p class="tl-game-instruction">Adaptive follows your current learning level. A1 is the only completed bank so far, so other adaptive levels temporarily use A1 content. Manual practice does not change your adaptive level.</p><div class="tl-answer-options"><button type="button" class="tl-option" data-translator-level="adaptive"><strong>Adaptive · Recommended</strong><span>Use my current EPIPHANY level</span></button>'+levels.map(level => '<button type="button" class="tl-option" data-translator-level="'+level+'" '+(translatorBanks[level] ? '' : 'disabled')+'><strong>'+level+'</strong><span>'+(translatorBanks[level] ? 'Available' : 'Coming soon')+'</span></button>').join('')+'</div></div>';
   }
   function start(id) {
     if(id==='translator'){selectedTranslatorCEFR='adaptive';showTranslatorLevelPicker();return;}
