@@ -95,7 +95,7 @@ test('Evren canonical profile is bilingual and preserves his established identit
     }
   }
   assert.ok(profile.sections.find(s => s.id === 'limits').text.some(entry =>
-    (entry.text || entry).en.includes('Prohibition')
+    ((entry.text || entry).en || '').includes('Prohibition')
   ));
   const card = context.window.EPIPHANY_CARD_DATA.find(item => item.id === 'CHR-002');
   assert.equal(card.rarity, 'Uncommon');
@@ -134,7 +134,7 @@ test('Elaris canonical profile records Reshaping, Magnitude, Epic rarity and rec
   const abilities = profile.sections.find(section => section.id === 'abilities');
   assert.ok(abilities.title.en.includes('Reshaping'), 'the canonical ability name belongs in the section title');
   assert.ok(abilities.text.some(entry =>
-    (entry.text || entry).en.includes('Elaris can reshape her own magical formations')
+    ((entry.text || entry).en || '').includes('Elaris can reshape her own magical formations')
   ), 'the ability description should preserve the approved reshaping capability');
   assert.ok(profile.sections.find(section => section.id === 'limits').text.some(entry =>
     entry.text.en.includes('Magnitude')
@@ -191,10 +191,10 @@ test('Riven canonical profile records Ri Vision, Continuity, Veyrun and bilingua
   assert.match(read('cards.js'), /data-profile-character/);
   const abilities = profile.sections.find(section => section.id === 'abilities');
   assert.ok(abilities.title.en.includes('Ri Vision'));
-  assert.ok(abilities.text.some(entry => (entry.text || entry).en.includes('Structural Perception')));
+  assert.ok(abilities.text.some(entry => ((entry.text || entry).en || '').includes('Structural Perception')));
   const limits = profile.sections.find(section => section.id === 'limits');
-  assert.ok(limits.text.some(entry => (entry.text || entry).en.includes('Continuity')));
-  assert.ok(limits.text.some(entry => (entry.text || entry).en.includes('ordinary memory')));
+  assert.ok(limits.text.some(entry => ((entry.text || entry).en || '').includes('Continuity')));
+  assert.ok(limits.text.some(entry => ((entry.text || entry).en || '').includes('ordinary memory')));
   const card = context.window.EPIPHANY_CARD_DATA.find(item => item.id === 'CHR-072');
   assert.equal(card.rarity, 'Uncommon');
   assert.equal(card.title, 'Passage Scout');
@@ -214,9 +214,9 @@ test('Riven and Lucian record the rescue as a reciprocal linked relationship', (
   assert.ok(rivenLink, 'Lucian should link to Riven in Character Details');
   assert.equal(rivenLink.label.en, 'Riven');
   assert.equal(rivenLink.label.ar, 'ريفن');
-  assert.ok(lucianRelationships.text.some(entry => (entry.text || entry).en.includes('helped Lucian escape the domain')));
-  assert.ok(rivenRelationships.text.some(entry => (entry.text || entry).en.includes('he helped Lucian escape')));
-  assert.ok(rivenRelationships.text.some(entry => (entry.text || entry).en.includes('living evidence')));
-  assert.ok(lucianRelationships.text.some(entry => (entry.text || entry).en.includes('permanent obligation')));
+  assert.ok(lucianRelationships.text.some(entry => ((entry.text || entry).en || '').includes('helped Lucian escape the domain')));
+  assert.ok(rivenRelationships.text.some(entry => ((entry.text || entry).en || '').includes('he helped Lucian escape')));
+  assert.ok(rivenRelationships.text.some(entry => ((entry.text || entry).en || '').includes('living evidence')));
+  assert.ok(lucianRelationships.text.some(entry => ((entry.text || entry).en || '').includes('permanent obligation')));
   assert.ok(lucianLink, 'Riven should link back to Lucian in Character Details');
 });
