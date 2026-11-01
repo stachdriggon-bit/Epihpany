@@ -1189,7 +1189,7 @@ bark dark core hand land lane data duty melt`
       const next=root.querySelector('[data-think-next]');if(next)next.hidden=false;
       return;
     }
-    const fb=root.querySelector('#tl-feedback');fb.hidden=false;fb.className='tl-feedback '+(correct?'is-correct':'is-wrong');fb.innerHTML='<strong>'+(correct?(mode==='maze'?'✓ Path cleared!':'✓ Well reasoned.'):'↗ Look at the clues again.')+'</strong><p>'+esc(item.explain)+'</p>'+(mode==='odd'&&item.relationshipLabel?'<p><strong>Relationship:</strong> '+esc(item.relationshipLabel)+'</p>':'')+(!correct&&mode==='odd'&&difficulty.level==='guided'&&!oddHintStep?'<p>'+esc(item.hint)+'</p>':!correct&&adaptiveHint(mode)?'<p>'+esc(adaptiveHint(mode))+'</p>':'')+(mode==='maze'?'<p class="tl-heard-word">Target word: <b>'+esc(item.target)+'</b></p>':'');
+    const fb=root.querySelector('#tl-feedback');fb.hidden=false;fb.className='tl-feedback '+(correct?'is-correct':'is-wrong');fb.innerHTML='<strong>'+(correct?(mode==='maze'?'✓ Path cleared!':'✓ Well reasoned.'):'↗ Look at the clues again.')+'</strong><p>'+esc(item.explain)+'</p>'+(mode==='odd'&&item.relationshipLabel?'<p><strong>Relationship:</strong> '+esc(item.relationshipLabel)+'</p>':'')+(!correct&&mode==='odd'&&activeDifficulty&&activeDifficulty.level==='guided'&&!oddHintStep?'<p>'+esc(item.hint)+'</p>':!correct&&adaptiveHint(mode)?'<p>'+esc(adaptiveHint(mode))+'</p>':'')+(mode==='maze'?'<p class="tl-heard-word">Target word: <b>'+esc(item.target)+'</b></p>':'');
     const next=root.querySelector('[data-think-next]');if(next)next.hidden=false;
   });
   landing();
