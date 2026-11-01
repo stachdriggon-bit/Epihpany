@@ -131,7 +131,7 @@ test('all 57 fixtures pass request validation and traverse the pipeline without 
   const result=engine.evaluate({context:{...fixture.context,responseId:fixture.scenarioId},caseSnapshot:cases[fixture.caseId],response:fixture.response,hintsUsed:fixture.hintsUsed});
   assert.notEqual(result.status,'CONFIGURATION_ERROR',fixture.scenarioId+': '+JSON.stringify(result.errors||[]));
   outcomes.push(result.status);
-  if(fixture.group==='core')assert.equal(result.evaluation.primaryOutcome,fixture.expectedOutcome,fixture.scenarioId+' expected '+fixture.expectedOutcome+' but received '+result.evaluation.primaryOutcome);
+  assert.equal(result.evaluation.primaryOutcome,fixture.expectedOutcome,fixture.scenarioId+' expected '+fixture.expectedOutcome+' but received '+result.evaluation.primaryOutcome+'; diagnostics='+JSON.stringify(result.claims?.findings||[]));
  }
  assert.equal(outcomes.length,57);
 });
