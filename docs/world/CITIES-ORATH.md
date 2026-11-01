@@ -40,6 +40,8 @@
 
 **Working role:** A terraced highland city whose neighborhoods manage steep slopes, runoff, and shared water channels.
 
+**Accepted character:** Veyrun is an old and prosperous city. Its long-established wealth is part of its identity, while the sources of that wealth, its broader history, political structure, and prominent families remain open. Do not infer that one family rules the city merely because it is wealthy.
+
 **Everyday life:** Stonecutters, roofers, gardeners, channel cleaners, and water stewards maintain buildings and terraces. Seasonal maintenance days can matter as much as official festivals.
 
 **Story potential:** A blocked channel affects several districts; a repair technique remembered by older workers is dismissed as outdated, then proves useful in a different way.
