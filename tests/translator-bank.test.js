@@ -91,6 +91,9 @@ test('The Bold Translator defaults to adaptive CEFR and keeps manual practice se
     const bank = loadHarness().__translatorBanks[level];
     const answers = ['guided', 'steady', 'challenge'].flatMap(mode => bank[mode].map(question => question.answer));
     assert.deepEqual([0, 1, 2].map(index => answers.filter(answer => answer === index).length), [14, 14, 14], `${level} correct answers should be evenly distributed across the three option positions`);
+    if (level === 'C2') {
+      assert.notDeepEqual(answers, answers.map((_, index) => index % 3), 'C2 answer positions must not follow an obvious repeating cycle');
+    }
   }
 });
 
