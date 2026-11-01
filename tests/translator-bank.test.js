@@ -29,7 +29,7 @@ function loadHarness() {
 
 test('The Bold Translator A1, A2, B1 and B2 banks each have 42 complete questions with three explained options', () => {
   const harness = loadHarness();
-  for (const level of ['A1', 'A2', 'B1', 'B2']) {
+  for (const level of ['A1', 'A2', 'B1', 'B2', 'C1']) {
     const bank = harness.__translatorBanks[level];
     assert.ok(bank, `${level} bank is missing`);
     assert.equal(bank.guided.length, 12, `${level} guided count`);
