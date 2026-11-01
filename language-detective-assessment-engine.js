@@ -121,4 +121,6 @@ function evaluate(request){
  for(const module of modules)if(validateModuleEnvelope(module).length)return {status:'CONFIGURATION_ERROR',errors:[{code:'INVALID_MODULE_ENVELOPE',module:module.moduleName}]};
  return {status:evaluation.status,context:{...ctx},modules,normalized:normal.data,interpreted:interpreted.data,evidence:evidence.data,claims:claims.data,evaluation:evaluation.data,feedback:feedback.data};
 }
-module.exports={VERSION,DIMENSION_WEIGHTS,normalizeText,TextNormalizer,SemanticMatcher,EvidenceReasoner,ClaimValidator,EvaluationResolver,FeedbackBuilder,evaluate};
+const LanguageDetectiveEngine = {VERSION,DIMENSION_WEIGHTS,normalizeText,TextNormalizer,SemanticMatcher,EvidenceReasoner,ClaimValidator,EvaluationResolver,FeedbackBuilder,evaluate};
+if (typeof module !== 'undefined' && module.exports) module.exports = LanguageDetectiveEngine;
+else if (typeof window !== 'undefined') window.EPIPHANY_LANGUAGE_DETECTIVE_ENGINE = LanguageDetectiveEngine;
