@@ -229,7 +229,7 @@ test('main navigation tabs open without uncaught page errors', async t => {
         assert.equal(await gameCard.locator('h2').innerText(), 'Which word does not belong?', 'Odd One Out must render its question prompt');
         assert.equal(await gameCard.locator('[data-think-answer]').count(), 4, 'Odd One Out must render four answer choices');
         assert.match(await gameCard.locator('.tl-game-kicker').innerText(), /PATTERN ANALYSIS · A1/);
-        assert.match(await gameCard.locator('.tl-game-instruction').innerText(), /relationship/i);
+        assert.match(await gameCard.locator('.tl-game-instruction').first().innerText(), /relationship/i);
         const screenshotDir = path.join(root, 'test-results', 'odd-one-out');
         fs.mkdirSync(screenshotDir, {recursive:true});
         await gameCard.screenshot({path:path.join(screenshotDir,'desktop-guided-question.png')});
