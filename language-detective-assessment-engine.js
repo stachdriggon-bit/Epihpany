@@ -1,3 +1,4 @@
+(() => {
 'use strict';
 const schemaApi = typeof module !== 'undefined' && module.exports ? require('./language-detective-assessment-schemas') : window.EPIPHANY_LANGUAGE_DETECTIVE_SCHEMAS;
 const cefrApi = typeof module !== 'undefined' && module.exports ? require('./language-detective-cefr-patterns') : window.EPIPHANY_LANGUAGE_DETECTIVE_CEFR;
@@ -124,3 +125,5 @@ function evaluate(request){
 const LanguageDetectiveEngine = {VERSION,DIMENSION_WEIGHTS,normalizeText,TextNormalizer,SemanticMatcher,EvidenceReasoner,ClaimValidator,EvaluationResolver,FeedbackBuilder,evaluate};
 if (typeof module !== 'undefined' && module.exports) module.exports = LanguageDetectiveEngine;
 else if (typeof window !== 'undefined') window.EPIPHANY_LANGUAGE_DETECTIVE_ENGINE = LanguageDetectiveEngine;
+
+})();
