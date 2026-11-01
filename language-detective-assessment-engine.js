@@ -1,6 +1,8 @@
 'use strict';
-const { validateEvaluationRequest, validateModuleEnvelope } = require('./language-detective-assessment-schemas');
-const { SEMANTIC_OPERATORS } = require('./language-detective-cefr-patterns');
+const schemaApi = typeof module !== 'undefined' && module.exports ? require('./language-detective-assessment-schemas') : window.EPIPHANY_LANGUAGE_DETECTIVE_SCHEMAS;
+const cefrApi = typeof module !== 'undefined' && module.exports ? require('./language-detective-cefr-patterns') : window.EPIPHANY_LANGUAGE_DETECTIVE_CEFR;
+const { validateEvaluationRequest, validateModuleEnvelope } = schemaApi || {};
+const { SEMANTIC_OPERATORS } = cefrApi || {};
 const VERSION='0.1.0';
 const DIMENSION_WEIGHTS={CONCLUSION_ACCURACY:35,EVIDENCE_REASONING:40,CRITICAL_THINKING:25};
 const LEVELS={100:'EXCELLENT',75:'STRONG',50:'DEVELOPING',25:'LIMITED',0:'NO_CREDIT'};
