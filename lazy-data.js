@@ -329,6 +329,7 @@
                 if ((node.getAttribute('src') || '').split('?')[0].endsWith(file)) node.remove();
               });
             });
+            pending.delete(group);
             throw new Error('The Language Detective files loaded, but one or more required modules did not initialize.');
           }
         }
