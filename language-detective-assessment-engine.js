@@ -44,7 +44,7 @@ function SemanticMatcher(normalized,snapshot,ctx){
   if(!matched) for(const v of concept.acceptedVariants||[]) if(text.toLowerCase().includes(v.toLowerCase())){matched=v;matchedId='variant:'+v;break;}
   if(!matched)continue;
   const clause=clauses.find(c=>c.text.toLowerCase().includes(matched.toLowerCase()))||clauses[0];
-  const p={propositionId:'p-'+concept.conceptId,conceptId:concept.conceptId,predicate:concept.predicate||concept.conceptId,polarity:polarity(matched),modality:modality(matched),source:{kind:'LEARNER_ASSERTION'},epistemicStatus:concept.epistemicStatus||'INFERENCE',clauseId:clause?.clauseId||'clause-1',evidenceRefs:[...(concept.evidenceRefs||[])],matchedText:matched};
+  const p={propositionId:'p-'+concept.conceptId,conceptId:concept.conceptId,predicate:concept.predicate||concept.conceptId,polarity:sourcePattern?.semanticPolarity||concept.semanticPolarity||polarity(matched),modality:modality(matched),source:sourcePattern?.attribution||concept.attribution||{kind:'LEARNER_ASSERTION'},epistemicStatus:concept.epistemicStatus||'INFERENCE',clauseId:clause?.clauseId||'clause-1',evidenceRefs:[...(concept.evidenceRefs||[])],matchedText:matched};
   propositions.push(p);conceptMatches.push({conceptId:concept.conceptId,matchPath:concept.compositional?'COMPOSITIONAL':'DIRECT',clauseIds:[p.clauseId],propositionIds:[p.propositionId],matchedVariantId:matchedId,confidenceClass:'RULE_EXACT'});used.add(p.clauseId);
  }
  const unmatchedClauseIds=clauses.filter(c=>!used.has(c.clauseId)).map(c=>c.clauseId);
@@ -56,7 +56,9 @@ function SemanticMatcher(normalized,snapshot,ctx){
 function EvidenceReasoner(interpreted,snapshot,ctx){
  const propositionAssessments=interpreted.data.propositions.map(p=>{
   const findings=p.evidenceRefs.map(evidenceId=>{const e=snapshot.evidence.find(x=>x.evidenceId===evidenceId);return {evidenceId,relation:e?.relation||'LEAVES_UNRESOLVED',applicableScope:e?.scope||'case-authored scope',limitation:(e?.limitations||[]).join('; ')};});
-  const supportState=findings.some(x=>x.relation==='SUPPORTS')?'SUPPORTED':findings.some(x=>x.relation==='CONSISTENT_WITH')?'CONSISTENT_NOT_PROVEN':findings.some(x=>x.relation==='CONTRADICTS')?'CONTRADICTED':findings.length?'UNRESOLVED':'NO_AUTHORED_RELATION';
+  let supportState=findings.some(x=>x.relation==='SUPPORTS')?'SUPPORTED':findings.some(x=>x.relation==='CONSISTENT_WITH')?'CONSISTENT_NOT_PROVEN':findings.some(x=>x.relation==='CONTRADICTS')?'CONTRADICTED':findings.length?'UNRESOLVED':'NO_AUTHORED_RELATION';
+  const concept=snapshot.concepts.find(x=>x.conceptId===p.conceptId);
+  if(concept?.expectedPolarity && p.polarity!==concept.expectedPolarity && supportState==='SUPPORTED')supportState='CONTRADICTED';
   return {propositionId:p.propositionId,conceptId:p.conceptId,evidenceFindings:findings,supportState};
  });
  const missingEssentialEvidenceRefs=snapshot.evidence.filter(e=>e.role==='ESSENTIAL'&&!propositionAssessments.some(p=>p.evidenceFindings.some(f=>f.evidenceId===e.evidenceId&&f.relation==='SUPPORTS'))).map(e=>e.evidenceId);
