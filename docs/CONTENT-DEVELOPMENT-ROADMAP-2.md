@@ -397,3 +397,215 @@ Before implementation:
 ---
 
 **Checkpoint:** The Language Detective functional design decisions listed in Sections 2–13 are approved and recorded here. The schema and the seven decisions in Section 14 remain open. Implementation has not started.
+
+
+---
+
+## 16. Assessment design and manual calibration record
+
+**Status:** Design work in progress; no assessment-engine implementation has started.
+
+This section records the experimental assessment work completed after the original functional specification. All scores below are **manual design simulations**, not runtime results, automated tests, or evidence that a software engine exists.
+
+### 16.1 Three experimental reference cases
+
+The following cases are design fixtures for validating assessment behavior:
+
+- **CASE-001 — The Missing Package (A2):** an unidentified resident was observed picking up a package from reception; the person's identity and motive remain unknown. Adam's absence from reception does not implicate him. Sara's observation is decisive. The package label is optional and must not be required for a fair conclusion.
+- **CASE-002 — Conflicting Accounts (B1–B2):** an envelope is found in Room B. Lena reported moving papers and her access card was used for the room, but the log does not prove who physically used the card or what was moved. Omar saw unidentified papers, not a positively identified envelope. Other volunteers remain a possible alternative.
+- **CASE-003 — The Uncertain Evidence (C1–C2):** R-4 recorded an unusual increase in signal strength, but its origin is unresolved. A technical fault and an external source remain possible. R-7 is not a direct comparison because its direction and sensitivity differ. The technician's personal note is not a diagnostic test. The weather note is optional and does not establish causality.
+
+These are experimental standalone cases, not approved Lore or Canon.
+
+### 16.2 Shared assessment dimensions and provisional weights
+
+| Dimension | Provisional weight |
+|---|---:|
+| Conclusion Accuracy | 35% |
+| Evidence Reasoning | 40% |
+| Critical Thinking | 25% |
+
+Each case has its own criterion-level rubric. The same three top-level dimensions and weights are retained across CEFR for comparability, while the expected depth and criteria within each dimension are adapted to the case's CEFR level.
+
+The criterion performance scale is provisionally:
+- Excellent — 100% of criterion points
+- Strong — 75%
+- Developing — 50%
+- Limited — 25%
+- No Credit — 0%
+
+Provisional overall grade bands:
+- S: 96–100
+- A+: 90–95
+- A: 80–89
+- B: 70–79
+- C: 60–69
+- D: 40–59
+- F: 0–39
+
+These weights, bands, and grade gates remain open to calibration. A total score alone must not automatically award S. Guided remains capped at A+; S is available in Steady and Challenge when exceptional reasoning is demonstrated.
+
+### 16.3 Manual simulation checkpoint
+
+A first manual simulation set was drafted with eight illustrative answers per case (24 answer scenarios total), including:
+- correct conclusions and meaning-equivalent paraphrases;
+- plausible alternative conclusions;
+- correct guesses with weak evidence reasoning;
+- partial conclusions;
+- unsupported accusations;
+- source-limit errors;
+- excessive skepticism;
+- unsupported causal claims.
+
+The initial score examples are illustrative and provisional. Review identified a need to handle ambiguous answers before assigning a final grade, check that each case's core finding is represented, separate conclusion accuracy from reasoning quality, and avoid rewarding either keyword matching or unjustified certainty.
+
+One example was explicitly revised during review: the CA-S07 response, which accurately explained the access-card limitation but omitted the case's central finding, should receive a lower conclusion score. A revised illustrative split was 18/35 Conclusion, 34/40 Evidence, and 22/25 Critical Thinking (74/100), rather than the earlier draft score. This is a calibration note, not a tested engine output.
+
+### 16.4 CEFR calibration principles
+
+The top-level weights remain provisionally consistent across A1–C2. Criterion definitions and expected reasoning depth change with CEFR:
+
+- A1–A2: direct evidence, simple connections, basic sequencing, and clear distinctions between fact and unsupported guess.
+- B1–B2: multiple accounts, source comparison, contradictions, observation versus inference, and limitations of records.
+- C1–C2: competing hypotheses, source limitations, bias, uncertainty calibration, causal reasoning, and design of discriminating follow-up investigations.
+
+Do not reward answer length, rare vocabulary, or grammatical complexity as substitutes for sound reasoning. Do not penalize a clear and appropriate simple answer at a lower CEFR level. English fluency must not become a hidden component of the academic investigation grade.
+
+### 16.5 Shared assessment safeguards
+
+- Accept meaning-equivalent wording and defensible alternative conclusions.
+- Do not use keyword presence as sufficient evidence of understanding.
+- Separate conclusion accuracy, evidence reasoning, and critical thinking.
+- Award partial credit where the answer demonstrates partial understanding.
+- Distinguish a plausible but unproven hypothesis from an established fact.
+- Treat materially ambiguous responses as requiring clarification rather than forcing an unreliable wrong/right classification.
+- Do not penalize missing Optional or Hidden evidence.
+- Do not penalize hint use in the academic grade; report Independence separately.
+- Preserve the distinction between confirmed facts, inferences, hypotheses, and unknowns.
+- Keep the final grade calculation and grade gates provisional until calibration is complete.
+
+---
+
+## 17. Phase 5 design — Training Modes and Answer Formats
+
+**Status:** Proposed design for review; not yet approved as a final interaction specification and not implemented.
+
+### 17.1 Training Mode behavior
+
+**Guided**
+- Provides clearer orientation and progressive scaffolding.
+- Makes the Direction → Connection → Reasoning hint progression more explicit.
+- Provides fuller explanatory feedback.
+- May remind the learner what kind of information to examine, but must not reveal the answer.
+- Overall grade is capped at A+.
+
+**Steady**
+- Starts with balanced, independent investigation.
+- Offers limited hints on request.
+- Expects the learner to connect evidence without excessive prompting.
+- S is available for genuinely exceptional reasoning.
+
+**Challenge**
+- Uses minimal initial guidance.
+- Hints are less revealing and should not provide the reasoning on the learner's behalf.
+- Expects more independent evidence comparison and uncertainty management.
+- S is available for genuinely exceptional reasoning.
+
+### 17.2 Invariants across Training Modes
+
+Training Mode changes scaffolding and hint presentation, not the truth of the case or the academic standard.
+
+- All Essential evidence required for a fair solution remains available in every mode.
+- A mode must not create a hidden evidence dependency.
+- Optional and Hidden evidence remain nonessential to basic completion and must not cause a grade penalty when missed.
+- The same accepted conclusions, meaning-equivalent alternatives, evidence facts, and unsupported-claim rules apply in every mode.
+- The same provisional 35/40/25 assessment weights apply in every mode.
+- Hint usage affects the separate Independence descriptor, not academic points.
+- CEFR remains independent of Training Mode; Challenge must not silently change the selected language level.
+
+### 17.3 Answer Format behavior
+
+**Standard**
+- Intermediate questions: Multiple Choice.
+- Final conclusion: Multiple Choice.
+
+**Hell Mode**
+- Intermediate questions remain Multiple Choice.
+- Final response contains two distinct fields: **Your Conclusion** and **Your Reasoning**.
+- Hell Mode is available with every CEFR level and Training Mode.
+- Hell Mode does not award bonus points merely for being selected.
+- The academic dimensions and weights remain unchanged.
+- Evaluation must assess the conclusion and its justification, not writing length or advanced grammar.
+
+### 17.4 Core mode/format test matrix
+
+Run the six combinations for each of the three reference cases:
+
+| Test ID | Training Mode | Answer Format |
+|---|---|---|
+| MODE-01 | Guided | Standard |
+| MODE-02 | Guided | Hell Mode |
+| MODE-03 | Steady | Standard |
+| MODE-04 | Steady | Hell Mode |
+| MODE-05 | Challenge | Standard |
+| MODE-06 | Challenge | Hell Mode |
+
+This produces 18 core case/mode/format combinations before adding hint-depth, retry, ambiguity, accessibility, and persistence scenarios.
+
+### 17.5 Mode and format test cases
+
+- MODE-T01: Identical correct Standard conclusion receives the same academic result in Guided, Steady, and Challenge, subject only to the explicit Guided A+ grade cap.
+- MODE-T02: An identical unsupported accusation is not accepted in any Training Mode.
+- MODE-T03: A defensible alternative conclusion remains accepted in all modes.
+- MODE-T04: Using one, two, or three hints does not reduce academic points.
+- MODE-T05: Hint usage changes only the Independence descriptor in accordance with the authored hint policy.
+- MODE-T06: Challenge does not hide Essential evidence or introduce undisclosed dependencies.
+- MODE-T07: Guided scaffolding does not reveal the final answer before the learner responds.
+- MODE-T08: Intermediate questions remain Multiple Choice in Hell Mode.
+- MODE-T09: Standard final conclusion remains Multiple Choice.
+- MODE-T10: Hell Mode final response has separate conclusion and reasoning fields.
+- MODE-T11: A concise, clear Hell Mode answer can receive full credit; verbosity is not rewarded.
+- MODE-T12: Minor grammar errors do not invalidate clear reasoning.
+- MODE-T13: Ambiguous Hell Mode answers can request clarification without prematurely recording a final grade.
+- MODE-T14: CEFR, Training Mode, and Answer Format can be selected independently and are preserved in the session.
+- MODE-T15: Repeated attempts and hint use do not silently alter the selected configuration or rewrite previous attempt records.
+
+### 17.6 Phase 5 acceptance gate
+
+Before Phase 5 can be marked complete, verify:
+1. All six mode/format combinations work for all three reference cases.
+2. Academic criteria remain consistent across Training Modes.
+3. The Guided grade cap is applied without changing dimension scores.
+4. Independence remains separate from academic grade.
+5. Hint use does not reduce academic points.
+6. Essential evidence remains accessible in every mode.
+7. Optional/Hidden evidence never becomes a hidden requirement.
+8. Intermediate and final response formats follow the Standard/Hell rules.
+9. Ambiguity, retries, and configuration persistence behave consistently.
+10. Representative CEFR examples are reviewed for appropriate language and reasoning depth.
+
+No implementation or automated test execution is claimed by this design record.
+
+---
+
+## 18. Assessment work status and next sequence
+
+| Work item | Status |
+|---|---|
+| Three experimental reference cases | Drafted |
+| Criterion-level scoring rubrics | Drafted; provisional |
+| 24-answer manual simulation | Drafted; design exercise only |
+| CEFR-specific criterion calibration | Proposed and reviewed in design |
+| Phase 5 mode/format specification | Proposed for review |
+| Automated assessment tests | Not started |
+| Assessment Engine implementation | Not started |
+| Persistence & Recovery design | Still open |
+
+Next sequence:
+1. Review and approve the Phase 5 behavior and invariants.
+2. Complete mode/format scenario simulations, including hint and ambiguity edge cases.
+3. Calibrate overall grade calculation and grade gates using the expanded results.
+4. Complete the Assessment Engine approval gate.
+5. Only then proceed to the separate Persistence & Recovery design and implementation planning.
+
+**Checkpoint:** The original functional specification remains the approved baseline. The assessment rubrics, manual simulation, CEFR calibration, and Phase 5 details are recorded as provisional design work. No code implementation or automated test run has occurred.
