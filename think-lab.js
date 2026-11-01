@@ -127,7 +127,7 @@
         translatorQuestion('لم أكن معتاداً على الاستيقاظ مبكراً.', ['I didn’t use to wake up early.','I wasn’t used to wake up early.','I wasn’t used to waking up early.'], 2, 'After “be used to”, use a noun or an -ing form.', ['This means the habit did not exist in the past; it is not the same as lacking familiarity.','“Wasn’t used to” needs a noun or gerund after “to”.','Correct: “used to” here means accustomed to, followed by “waking”.']),
         translatorQuestion('كان بإمكانها أن تأتي، لكنها لم تفعل.', ['She could have come, but she didn’t.','She could came, but she didn’t.','She can have come, but she didn’t.'], 0, 'Use the modal perfect to describe an unrealised past possibility.', ['Correct: “could have + past participle” describes a past possibility that did not happen.','The past participle is needed after “could have”.','The present modal does not match the unrealised past situation.'])
       ]
-    }
+    },
 
     B1: {
       guided: [
