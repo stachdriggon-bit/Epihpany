@@ -343,3 +343,88 @@ Do not force every game into the same scoring dimensions. Reuse the design and v
 ---
 
 **Initial checkpoint:** This methodology is recorded as a reusable proposed standard. Its application to The Language Detective is in progress. It is not a claim that implementation or automated verification has occurred.
+
+
+---
+
+## 11. Case study — Phase 5 mode and response-format validation
+
+This case study extends the Language Detective example in Section 9 and demonstrates how the method validates independent configuration dimensions.
+
+### 11.1 Configuration cross-product
+
+Three experimental cases were crossed with:
+- Training Mode: Guided, Steady, Challenge;
+- Answer Format: Standard, Hell Mode.
+
+This yields 3 × 3 × 2 = 18 core scenarios. Each scenario checks semantic equivalence, not merely identical UI input: a Standard multiple-choice answer and a Hell Mode written answer should receive equivalent academic assessment when they communicate the same conclusion and reasoning.
+
+### 11.2 Separate experience from correctness
+
+The review established two distinct classes of behavior:
+
+**Configurable experience**
+- amount and timing of scaffolding;
+- proactive hint suggestions;
+- hint wording and level of detail;
+- feedback depth;
+- independence descriptor.
+
+**Invariant evaluation**
+- case facts and Essential evidence;
+- accepted conclusions and reasonable alternatives;
+- academic dimensions and weights;
+- semantic correctness rules;
+- partial-credit standards;
+- no penalty for hint use;
+- no hidden grammar, vocabulary, or verbosity bonus.
+
+This separation is reusable in any system where difficulty or assistance settings should change the experience without changing the definition of correctness.
+
+### 11.3 Hint validation
+
+A three-level hint ladder was reviewed:
+1. Direction — directs attention.
+2. Connection — helps connect evidence.
+3. Reasoning — clarifies the reasoning task without giving the answer.
+
+A hint is defective if it leaks the answer, directs the learner toward an unsupported theory, or introduces an undisclosed evidence dependency. Such a defect belongs to content quality, not learner scoring.
+
+### 11.4 Retry and learning-history validation
+
+The simulation distinguished:
+- repeated answers within one question;
+- the learner's latest clear demonstrated understanding;
+- final case conclusion;
+- a replay as a separate case attempt.
+
+Earlier responses should remain available for history and learning review. An earlier mistake should not automatically reduce the final academic result after the learner corrects their understanding. The current proposed policy is to assess the latest clear response after feedback while retaining the full attempt history.
+
+### 11.5 Ambiguity as a first-class outcome
+
+A robust evaluator should not force every free-text response into correct or incorrect. The design uses conceptual outcomes such as:
+- accepted;
+- partial;
+- needs clarification;
+- unsupported;
+- contradiction.
+
+This prevents false certainty in a deterministic local evaluator. Unknown wording should not be silently accepted, but it should not automatically be treated as proof of misunderstanding either.
+
+### 11.6 Independence is not academic achievement
+
+The review separated the quality of the learner's reasoning from how much assistance they used. A learner may produce excellent reasoning after using hints. That learner can receive the same academic points as someone who reached the same reasoning unaided, while their Independence descriptors differ.
+
+### 11.7 Reusable lesson
+
+When validating modes, difficulty settings, and response formats:
+- test the full configuration cross-product;
+- compare semantically equivalent outcomes;
+- explicitly list invariant behavior;
+- test hint leakage and missing-information traps;
+- retain retries as history rather than automatic penalties;
+- provide a safe ambiguity path;
+- distinguish assistance/independence from correctness;
+- label all simulations as manual until code is actually executed.
+
+This case study is a manual design record, not evidence of implementation or automated verification.
