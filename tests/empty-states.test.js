@@ -54,5 +54,5 @@ test('changed scripts are versioned and the offline shell cache is refreshed', (
   assert.match(html, /account\.js\?v=empty-states-20261031-1/);
   assert.match(html, /style\.css\?v=home-mobile-spacing-20261031-1/);
   assert.match(read('style.css'), /Helpful empty-state actions/);
-  assert.match(sw, /epiphany-shell-home-mobile-spacing-20261031-1/);
+  assert.match(sw, /epiphany-shell-language-detective-scope-20261101-1/);
 });
