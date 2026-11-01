@@ -29,7 +29,7 @@ test('all six CEFR profiles define operators and feedback register without chang
 });
 
 test('normalizer preserves negation, uncertainty, attribution and causal markers',()=>{
- const result=engine.normalizeText('The report says R-4 may not have failed because the record is incomplete.');
+ const result=engine.normalizeText('The report indicates R-4 may not have failed because the record is incomplete.');
  assert.match(result.normalizedText,/may not/i);
  assert.match(result.normalizedText,/because/i);
  assert.ok(result.clauses[0].operators.negation.length);
