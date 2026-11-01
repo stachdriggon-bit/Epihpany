@@ -14,7 +14,7 @@
       {id:'A1-FUN-01',relationship:'function',words:['knife','scissors','saw','pillow'],answer:3,explain:'A knife, scissors and a saw are used for cutting. A pillow is used for resting your head.',hint:'Think about what each object is used to do.',context:'Common household objects.'},
       {id:'A1-PW-01',relationship:'part-whole',words:['handlebar','pedal','wheel','bicycle'],answer:3,explain:'A handlebar, pedal and wheel are parts of a bicycle. Bicycle names the complete vehicle.',hint:'Which three can be parts of the same thing?',context:'Parts of a familiar vehicle.'},
       {id:'A1-WC-01',relationship:'word-class',words:['quickly','slowly','carefully','careful'],answer:3,explain:'Quickly, slowly and carefully are adverbs describing how an action happens. Careful is an adjective.',hint:'Look at how each word is formed and used.',context:'Simple descriptions of actions.'},
-      {id:'A1-SYN-01',relationship:'synonyms-antonyms',words:['big','large','huge','short'],answer:3,explain:'Big, large and huge have similar meanings about size. Short describes a small length or height and is not a synonym.',hint:'Which three describe size in a similar way?',context:'Basic size vocabulary.'},
+      {id:'A1-SYN-01',relationship:'synonyms-antonyms',words:['wide','broad','expansive','narrow'],answer:3,explain:'Wide, broad and expansive describe a large width or extent. Narrow describes a small width.',hint:'Which three describe size in a similar way?',context:'Basic size vocabulary.'},
       {id:'A1-FUN-02',relationship:'function',words:['key','password','code','plate'],answer:3,explain:'A key, password and code can all give access or unlock something. A plate is used for serving food.',hint:'Which three can help you open or access something?',context:'Simple everyday purposes.'},
       {id:'A1-CAT-03',relationship:'category',words:['Monday','Tuesday','Friday','summer'],answer:3,explain:'Monday, Tuesday and Friday are days of the week. Summer is a season.',hint:'Which three belong to the same calendar group?',context:'Days and seasons.'}
     ],
@@ -24,7 +24,7 @@
       {id:'A2-SYN-01',relationship:'synonyms-antonyms',words:['begin','start','commence','finish'],answer:3,explain:'Begin, start and commence mean to do something at the beginning. Finish means to bring it to an end.',hint:'Three words share a meaning; one is the opposite.',context:'Common verbs with similar meanings.'},
       {id:'A2-PW-01',relationship:'part-whole',words:['chapter','cover','index','novel'],answer:3,explain:'A chapter, cover and index are parts of a book. A novel is a complete kind of book.',hint:'Which three can be found inside or on a book?',context:'Parts of a book.'},
       {id:'A2-WC-01',relationship:'word-class',words:['decision','arrival','movement','decide'],answer:3,explain:'Decision, arrival and movement are nouns naming things or events. Decide is a verb.',hint:'Which word describes an action rather than naming it?',context:'Word families and grammar.'},
-      {id:'A2-CTX-01',relationship:'contextual-meaning',words:['light','bright','sunny','heavy'],answer:3,explain:'In a description of a well-lit room, light, bright and sunny relate to illumination. Heavy describes weight.',hint:'Imagine the words describing a room with plenty of daylight.',context:'Words understood from a shared situation.'},
+      {id:'A2-CTX-01',relationship:'contextual-meaning',words:['light','bright','luminous','heavy'],answer:3,explain:'Light, bright and luminous can all describe a place or object that gives or reflects plenty of light. Heavy describes weight.',hint:'Imagine the words describing a room with plenty of daylight.',context:'Words understood from a shared situation.'},
       {id:'A2-COL-01',relationship:'collocations',words:['make','reach','take','do'],answer:3,explain:'Make a decision, reach a decision and take a decision are established combinations. Do a decision is not a natural English expression.',hint:'Try the words before “a decision”, “homework” and “a break”.',context:'Common verb–noun partnerships.'},
       {id:'A2-REG-01',relationship:'register-tone',words:['kids','children','youngsters','furniture'],answer:3,explain:'Kids, children and youngsters can all refer to young people, with different levels of formality. Furniture is unrelated.',hint:'Which three can refer to the same group of people?',context:'Everyday and more formal vocabulary.'}
     ],
@@ -32,7 +32,7 @@
       {id:'B1-CAUSE-01',relationship:'cause-effect',words:['drought','water shortage','crop failure','harvest festival'],answer:3,explain:'Drought and water shortage can lead to crop failure. A harvest festival is a celebration, not an effect of water scarcity.',hint:'Follow the chain from a lack of rain to its likely result.',context:'Environment and consequences.'},
       {id:'B1-CTX-01',relationship:'contextual-meaning',words:['draft','outline','rough version','final copy'],answer:3,explain:'A draft, outline and rough version are stages or forms of work before completion. A final copy is the completed version.',hint:'Which three describe work that is not yet final?',context:'Preparing a written assignment.'},
       {id:'B1-COL-01',relationship:'collocations',words:['strong','heavy','pouring','bright'],answer:3,explain:'Strong wind, heavy rain and pouring rain are natural collocations. Bright does not normally describe wind or rain in these expressions.',hint:'Think of natural combinations with “wind” or “rain”.',context:'Weather collocations.'},
-      {id:'B1-CTX-01B',relationship:'contextual-meaning',words:['although','despite','whereas','because'],answer:3,explain:'Although, despite and whereas introduce contrast or concession. Because introduces a reason, not a contrast.',hint:'Three connect contrasting ideas; one gives a reason.',context:'Linking ideas in a sentence.'},
+      {id:'B1-CTX-01B',relationship:'contextual-meaning',words:['although','whereas','while','because'],answer:3,explain:'Although, whereas and while can connect clauses that contrast two ideas. Because introduces a reason.',hint:'Three connect contrasting ideas; one gives a reason.',context:'Linking ideas in a sentence.'},
       {id:'B1-FUN-01',relationship:'function',words:['insulate','shield','protect','expose'],answer:3,explain:'Insulate, shield and protect describe keeping something safe or separated from harm. Expose means to leave it open to something.',hint:'Which three help prevent contact or harm?',context:'Actions and their purposes.'},
       {id:'B1-SYN-01',relationship:'synonyms-antonyms',words:['reluctant','unwilling','hesitant','eager'],answer:3,explain:'Reluctant, unwilling and hesitant suggest not being ready or keen to act. Eager means strongly wanting to act.',hint:'Which word expresses the opposite attitude?',context:'Attitudes towards taking action.'},
       {id:'B1-PW-01',relationship:'part-whole',words:['paragraph','sentence','phrase','essay'],answer:3,explain:'A paragraph, sentence and phrase can be structural units within an essay. An essay is the larger complete text.',hint:'Which three can form parts of the larger piece of writing?',context:'Writing structure.'},
@@ -51,7 +51,7 @@
     C1: [
       {id:'C1-REG-01',relationship:'register-tone',words:['assert','maintain','contend','blurt'],answer:3,explain:'Assert, maintain and contend are verbs used to present or defend a position in formal or analytical discussion. Blurt suggests saying something suddenly and without care.',hint:'Which verb implies an uncontrolled or socially abrupt manner?',context:'Presenting a position in a debate.'},
       {id:'C1-CON-01',relationship:'connotation',words:['frugal','thrifty','economical','stingy'],answer:3,explain:'Frugal, thrifty and economical can praise careful use of resources. Stingy usually criticizes an unwillingness to spend or give.',hint:'Which word is most likely to criticize rather than praise?',context:'Describing someone’s approach to money.'},
-      {id:'C1-COL-01',relationship:'collocations',words:['mount','lodge','harbour','nurture'],answer:3,explain:'Mount suspicion, lodge a complaint and harbour doubts are established combinations. Nurture is not normally used with those abstract nouns.',hint:'Test each verb with “suspicion”, “a complaint” and “doubts”.',context:'Advanced abstract-noun collocations.'},
+      {id:'C1-COL-01',relationship:'collocations',words:['mount','lodge','harbour','file'],answer:3,explain:'Mount suspicion, lodge a complaint and harbour doubts are established combinations. File is natural with a complaint, but not with suspicion or doubts in these expressions.',hint:'Test each verb with “suspicion”, “a complaint” and “doubts”.',context:'Advanced abstract-noun collocations.'},
       {id:'C1-CTX-01',relationship:'contextual-meaning',words:['qualified','tentative','provisional','categorical'],answer:3,explain:'A qualified, tentative or provisional statement leaves room for limits or revision. A categorical statement is definite and unreserved.',hint:'Which adjective signals certainty rather than qualification?',context:'Evaluating the strength of a claim.'},
       {id:'C1-SYN-01',relationship:'synonyms-antonyms',words:['scrutinise','examine','inspect','overlook'],answer:3,explain:'Scrutinise, examine and inspect involve looking at something carefully. Overlook can mean to fail to notice it.',hint:'Which verb can mean failing to notice?',context:'Careful analysis and attention.'},
       {id:'C1-CAUSE-01',relationship:'cause-effect',words:['precipitate','trigger','prompt','prevent'],answer:3,explain:'Precipitate, trigger and prompt can describe something that brings an event or response about. Prevent means to stop it from happening.',hint:'Three can initiate an outcome; one blocks it.',context:'Describing how events are brought about.'},
@@ -62,13 +62,305 @@
       {id:'C2-CON-01',relationship:'connotation',words:['discerning','meticulous','scrupulous','pedantic'],answer:3,explain:'Discerning, meticulous and scrupulous can praise good judgement, care or integrity. Pedantic is more often critical, suggesting excessive attention to minor rules or details.',hint:'Which word most readily carries a mildly dismissive tone?',context:'Subtle evaluation of a person’s standards.'},
       {id:'C2-REG-01',relationship:'register-tone',words:['deceased','late','departed','dead'],answer:3,explain:'Deceased, late and departed are softened or euphemistic ways to refer to someone who has died. Dead is direct and can sound blunt in sensitive contexts.',hint:'Which word is the most direct and least euphemistic?',context:'Sensitive formal communication.'},
       {id:'C2-COL-01',relationship:'collocations',words:['bitterly','deeply','profoundly','vehemently'],answer:3,explain:'Bitterly regret, deeply regret and profoundly regret are established combinations. Vehemently is more naturally paired with verbs such as deny or oppose.',hint:'Look for the most established adverb–verb pairings, not merely grammatical ones.',context:'Nuanced adverb–verb collocation.'},
-      {id:'C2-CTX-01',relationship:'contextual-meaning',words:['sanction','approve','authorise','prohibit'],answer:0,explain:'Approve, authorise and prohibit are distinct but clear actions about permission or restriction; sanction is the outsider here because it can mean either officially approve or impose a penalty, making it context-dependent and potentially ambiguous.',hint:'Which word has two contrasting established meanings?',context:'A word whose meaning depends strongly on context.'},
+      {id:'C2-CTX-01',relationship:'contextual-meaning',words:['prohibit','forbid','ban','permit'],answer:3,explain:'Prohibit, forbid and ban all mean to prevent something from being done. Permit means to allow it.',hint:'Which word has two contrasting established meanings?',context:'A word whose meaning depends strongly on context.'},
       {id:'C2-SYN-01',relationship:'synonyms-antonyms',words:['intransigent','unyielding','obdurate','amenable'],answer:3,explain:'Intransigent, unyielding and obdurate describe someone unwilling to change their position. Amenable suggests willingness to agree or be influenced.',hint:'Which adjective suggests openness to persuasion?',context:'Describing a person’s response to negotiation.'},
       {id:'C2-CAUSE-01',relationship:'cause-effect',words:['exacerbate','aggravate','compound','ameliorate'],answer:3,explain:'Exacerbate, aggravate and compound mean to make a problem or situation worse. Ameliorate means to improve it.',hint:'Three worsen a situation; one improves it.',context:'Precise verbs for changes in a situation.'},
       {id:'C2-WC-01',relationship:'word-class',words:['albeit','though','although','despite'],answer:3,explain:'Albeit, though and although can introduce a concessive clause or idea. Despite is a preposition and is followed by a noun phrase or -ing form, not a finite clause.',hint:'Which word has a different grammatical pattern after it?',context:'Fine distinctions in clause structure.'},
       {id:'C2-SYN-02',relationship:'synonyms-antonyms',words:['rancour','resentment','animosity','reluctance'],answer:3,explain:'Rancour, resentment and animosity are forms of ill will or hostility. Reluctance is unwillingness to act and does not itself imply hostility.',hint:'Which noun describes hesitation rather than hostility?',context:'Fine shades among abstract nouns.'}
     ]
   };
+
+  // Dedicated alternatives for Challenge. The odd-one-out index is preserved.
+  const CHALLENGE_WORDS = {
+    "A1-CAT-01": [
+        "orange",
+        "grape",
+        "peach",
+        "notebook"
+    ],
+    "A1-CAT-02": [
+        "tram",
+        "coach",
+        "ferry",
+        "bedroom"
+    ],
+    "A1-FUN-01": [
+        "blade",
+        "shears",
+        "chisel",
+        "blanket"
+    ],
+    "A1-PW-01": [
+        "saddle",
+        "chain",
+        "brake",
+        "cyclist"
+    ],
+    "A1-WC-01": [
+        "quietly",
+        "happily",
+        "easily",
+        "quiet"
+    ],
+    "A1-SYN-01": [
+        "enormous",
+        "massive",
+        "gigantic",
+        "slim"
+    ],
+    "A1-FUN-02": [
+        "passcode",
+        "PIN",
+        "keycard",
+        "bowl"
+    ],
+    "A1-CAT-03": [
+        "Wednesday",
+        "Saturday",
+        "Sunday",
+        "winter"
+    ],
+    "A2-CAT-01": [
+        "surgeon",
+        "carpenter",
+        "cashier",
+        "clinic"
+    ],
+    "A2-FUN-01": [
+        "barometer",
+        "measuring tape",
+        "stopwatch",
+        "backpack"
+    ],
+    "A2-SYN-01": [
+        "commence",
+        "launch",
+        "initiate",
+        "conclude"
+    ],
+    "A2-PW-01": [
+        "preface",
+        "glossary",
+        "contents page",
+        "library"
+    ],
+    "A2-WC-01": [
+        "growth",
+        "refusal",
+        "approval",
+        "refuse"
+    ],
+    "A2-CTX-01": [
+        "radiant",
+        "well-lit",
+        "glowing",
+        "weighty"
+    ],
+    "A2-COL-01": [
+        "reach",
+        "make",
+        "take",
+        "perform"
+    ],
+    "A2-REG-01": [
+        "youths",
+        "young people",
+        "adolescents",
+        "equipment"
+    ],
+    "B1-CAUSE-01": [
+        "water scarcity",
+        "failed crops",
+        "soil erosion",
+        "seasonal celebration"
+    ],
+    "B1-CTX-01": [
+        "preliminary version",
+        "working draft",
+        "first outline",
+        "published edition"
+    ],
+    "B1-COL-01": [
+        "gusty",
+        "strong",
+        "howling",
+        "vivid"
+    ],
+    "B1-CTX-01B": [
+        "even though",
+        "whereas",
+        "while",
+        "since"
+    ],
+    "B1-FUN-01": [
+        "safeguard",
+        "insulate",
+        "defend",
+        "jeopardise"
+    ],
+    "B1-SYN-01": [
+        "averse",
+        "disinclined",
+        "unenthusiastic",
+        "willing"
+    ],
+    "B1-PW-01": [
+        "subsection",
+        "paragraph",
+        "sentence",
+        "publication"
+    ],
+    "B1-REG-01": [
+        "enquire",
+        "request",
+        "ask",
+        "insist"
+    ],
+    "B2-REG-01": [
+        "initiate",
+        "commence",
+        "begin",
+        "get going"
+    ],
+    "B2-COL-01": [
+        "reach",
+        "draw",
+        "come to",
+        "manufacture"
+    ],
+    "B2-CON-01": [
+        "slender",
+        "svelte",
+        "willowy",
+        "gaunt"
+    ],
+    "B2-CTX-01": [
+        "booking",
+        "reservation",
+        "scheduled consultation",
+        "disagreement"
+    ],
+    "B2-SYN-01": [
+        "lessen",
+        "alleviate",
+        "mitigate",
+        "aggravate"
+    ],
+    "B2-WC-01": [
+        "financial",
+        "cost-effective",
+        "historical",
+        "economics"
+    ],
+    "B2-CAUSE-01": [
+        "excessive workload",
+        "fatigue",
+        "burnout",
+        "restoration"
+    ],
+    "B2-PW-01": [
+        "premise",
+        "rebuttal",
+        "supporting evidence",
+        "reasoned case"
+    ],
+    "C1-REG-01": [
+        "aver",
+        "contend",
+        "assert",
+        "mutter"
+    ],
+    "C1-CON-01": [
+        "prudent",
+        "thrifty",
+        "frugal",
+        "miserly"
+    ],
+    "C1-COL-01": [
+        "arouse",
+        "lodge",
+        "harbour",
+        "mount"
+    ],
+    "C1-CTX-01": [
+        "provisional",
+        "tentative",
+        "qualified",
+        "unequivocal"
+    ],
+    "C1-SYN-01": [
+        "peruse",
+        "scrutinise",
+        "inspect",
+        "neglect"
+    ],
+    "C1-CAUSE-01": [
+        "engender",
+        "precipitate",
+        "trigger",
+        "avert"
+    ],
+    "C1-CTX-01B": [
+        "conversely",
+        "nevertheless",
+        "nonetheless",
+        "accordingly"
+    ],
+    "C1-PW-01": [
+        "section",
+        "chapter",
+        "subsection",
+        "treatise"
+    ],
+    "C2-CON-01": [
+        "astute",
+        "scrupulous",
+        "meticulous",
+        "finicky"
+    ],
+    "C2-REG-01": [
+        "passed away",
+        "deceased",
+        "departed",
+        "expired"
+    ],
+    "C2-COL-01": [
+        "bitterly",
+        "deeply",
+        "profoundly",
+        "fervently"
+    ],
+    "C2-CTX-01": [
+        "prohibit",
+        "forbid",
+        "ban",
+        "permit"
+    ],
+    "C2-SYN-01": [
+        "obstinate",
+        "inflexible",
+        "intransigent",
+        "compliant"
+    ],
+    "C2-CAUSE-01": [
+        "exacerbate",
+        "compound",
+        "aggravate",
+        "ameliorate"
+    ],
+    "C2-WC-01": [
+        "albeit",
+        "though",
+        "although",
+        "notwithstanding"
+    ],
+    "C2-SYN-02": [
+        "hostility",
+        "resentment",
+        "rancour",
+        "hesitancy"
+    ]
+};
 
   function validateBank(banks = BANKS) {
     const errors = [];
@@ -85,6 +377,14 @@
         if (!Array.isArray(item.words) || item.words.length !== 4 || item.words.some(w => typeof w !== 'string' || !w.trim())) errors.push(item.id + ': needs four words');
         if (!Number.isInteger(item.answer) || item.answer < 0 || item.answer > 3) errors.push(item.id + ': invalid answer index');
         if (typeof item.explain !== 'string' || item.explain.trim().length < 35) errors.push(item.id + ': explanation too short');
+        const challengeWords = CHALLENGE_WORDS[item.id];
+        if (!Array.isArray(challengeWords) || challengeWords.length !== 4 || challengeWords.some(w => typeof w !== 'string' || !w.trim())) errors.push(item.id + ': needs four challenge words');
+        else {
+          const normalizedChallenge = challengeWords.map(w => w.toLowerCase().trim());
+          if (new Set(normalizedChallenge).size !== 4) errors.push(item.id + ': duplicate challenge words');
+          if (normalizedChallenge[item.answer] === item.words[item.answer].toLowerCase().trim()) errors.push(item.id + ': challenge answer must be independently authored');
+          if (normalizedChallenge.slice().sort().join('|') === item.words.map(w => w.toLowerCase().trim()).sort().join('|')) errors.push(item.id + ': challenge set must differ from base set');
+        }
         const wordSet = Array.isArray(item.words) ? item.words.map(w => w.toLowerCase().trim()).sort().join('|') : '';
         const uniqueSet = level + ':' + wordSet;
         if (sets.has(uniqueSet)) errors.push(item.id + ': duplicate word set in level');
@@ -114,7 +414,8 @@
         if (score > bestScore) { bestScore = score; bestIndex = index; }
       });
       const [item] = pool.splice(bestIndex, 1);
-      const words = item.words.slice();
+      const sourceWords = trainingMode === 'challenge' ? CHALLENGE_WORDS[item.id] : item.words;
+      const words = sourceWords.slice();
       const correctWord = words[item.answer];
       for (let i = words.length - 1; i > 0; i--) {
         const j = Math.max(0, Math.min(i, Math.floor((Number(random()) || 0) * (i + 1))));
