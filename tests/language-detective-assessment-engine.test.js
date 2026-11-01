@@ -21,6 +21,7 @@ test('case schema validates stable unique IDs and evidence references',()=>{
  assert.equal(schemas.validateCaseSnapshot(cases['CASE-001']).length,0);
  const broken=structuredClone(cases['CASE-001']);broken.concepts[0].evidenceRefs=['MISSING'];
  assert.ok(schemas.validateCaseSnapshot(broken).some(x=>x.code==='UNKNOWN_EVIDENCE'));
+ const invalid=structuredClone(cases['CASE-001']);invalid.concepts[0].patterns[0].source='(';assert.ok(schemas.validateCaseSnapshot(invalid).some(x=>x.code==='INVALID_PATTERN'));
 });
 
 test('all six CEFR profiles define operators and feedback register without changing scoring',()=>{
@@ -130,6 +131,7 @@ test('all 57 fixtures pass request validation and traverse the pipeline without 
   const result=engine.evaluate({context:{...fixture.context,responseId:fixture.scenarioId},caseSnapshot:cases[fixture.caseId],response:fixture.response,hintsUsed:fixture.hintsUsed});
   assert.notEqual(result.status,'CONFIGURATION_ERROR',fixture.scenarioId+': '+JSON.stringify(result.errors||[]));
   outcomes.push(result.status);
+  if(fixture.group==='core')assert.equal(result.evaluation.primaryOutcome,fixture.expectedOutcome,fixture.scenarioId+' expected '+fixture.expectedOutcome+' but received '+result.evaluation.primaryOutcome);
  }
  assert.equal(outcomes.length,57);
 });
