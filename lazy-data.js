@@ -9,7 +9,7 @@
     arcade: ['practice-lab.js?v=0f7e5c76'],
     thinklab: ['think-lab.js?v=language-detective-integration-1'],
     languageDetective: ['language-detective-assessment-schemas.js?v=browser-bridge-1', 'language-detective-cefr-patterns.js?v=browser-bridge-1', 'language-detective-assessment-engine.js?v=browser-bridge-1', 'language-detective-assessment-fixtures.js?v=browser-bridge-1', 'language-detective-ui.js?v=investigation-ui-4'],
-    lifeskills: ['think-lab.js?v=72d8145c', 'life-skills.js?v=c0ba2ab9'],
+    lifeskills: ['think-lab.js?v=language-detective-integration-1', 'life-skills.js?v=c0ba2ab9'],
     arabic: ['data-translation-ar.js?v=question-context-20261026-20', 'data-translation-ar-fill.js?v=fill-4']
   };
   const styleGroups = {
