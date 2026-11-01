@@ -7,9 +7,9 @@
     resonance: ['resonance.js?v=resonance-chapters-2-5'],
     world: ['data-world.js?v=e99f5bf6', 'data-world-sprites.js?v=6fff0f70'],
     arcade: ['practice-lab.js?v=0f7e5c76'],
-    thinklab: ['odd-one-out-bank.js?v=odd-one-out-bank-1', 'think-lab.js?v=odd-one-out-cefr-1'],
+    thinklab: ['odd-one-out-bank.js?v=odd-one-out-bank-2', 'think-lab.js?v=odd-one-out-cefr-2'],
     languageDetective: ['language-detective-assessment-schemas.js?v=browser-bridge-1', 'language-detective-cefr-patterns.js?v=browser-bridge-1', 'language-detective-assessment-engine.js?v=browser-bridge-1', 'language-detective-assessment-fixtures.js?v=browser-bridge-1', 'language-detective-ui.js?v=investigation-ui-4'],
-    lifeskills: ['think-lab.js?v=odd-one-out-cefr-1', 'life-skills.js?v=c0ba2ab9'],
+    lifeskills: ['think-lab.js?v=odd-one-out-cefr-2', 'life-skills.js?v=c0ba2ab9'],
     arabic: ['data-translation-ar.js?v=question-context-20261026-20', 'data-translation-ar-fill.js?v=fill-4']
   };
   const styleGroups = {
