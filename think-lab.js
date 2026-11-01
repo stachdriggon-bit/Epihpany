@@ -20,7 +20,7 @@
       {title:'The quiet library', clues:['A sign says “Study in progress”.','Everyone is speaking softly.','A phone starts ringing loudly.'], question:'What should happen next?', options:['Turn the volume up.','Ignore the sign.','Silence the phone.'], answer:2, explain:'The clues show that quiet is expected, so silencing the phone best fits the situation.'}
     ]
   };
-  let mode = null, index = 0, score = 0, locked = false, clueCount = 0, ladderPath = [], ladderWordNote = null, ladderMistakeRecorded = false, roundMistakes = 0, activePool = null, activeDifficulty = null, forgePlaced = [], scramblePlaced = [], connectionSelected = [], chainStepIndex = 0, chainPath = [];
+  let mode = null, index = 0, score = 0, locked = false, clueCount = 0, oddHintStep = 0, ladderPath = [], ladderWordNote = null, ladderMistakeRecorded = false, roundMistakes = 0, activePool = null, activeDifficulty = null, forgePlaced = [], scramblePlaced = [], connectionSelected = [], chainStepIndex = 0, chainPath = [];
 
   rounds.forge = [
     {prompt:'Forge the word from the letter tiles.',clue:'A small animal often kept as a pet.',letters:'TAC',answerWord:'cat',explain:'CAT uses all three letters and matches the clue.'},
@@ -261,11 +261,50 @@ bark dark core hand land lane data duty melt`
   }
   function getRoundPool(id, selectedLevel) {
     const level = selectedLevel || difficultyForMode(id).level;
+    if (id === 'odd' && window.EPIPHANY_ODD_ONE_OUT_BANK) {
+      const bridge = window.EpiphanyThinkLab;
+      const cefr = bridge && typeof bridge.getCEFRLevel === 'function' ? bridge.getCEFRLevel() : 'A1';
+      const trainingMode = ['guided','steady','challenge'].includes(level) ? level : 'steady';
+      const selected = window.EPIPHANY_ODD_ONE_OUT_BANK.selectRound(cefr, trainingMode);
+      const relationshipLabels = {
+        'category':'Category','function':'Function','synonyms-antonyms':'Synonyms & antonyms',
+        'part-whole':'Part & whole','word-class':'Word class','cause-effect':'Cause & effect',
+        'contextual-meaning':'Contextual meaning','collocations':'Collocations',
+        'register-tone':'Register & tone','connotation':'Connotation'
+      };
+      return selected.questions.map(item => ({
+        ...item,
+        cefrLevel:selected.level,
+        trainingMode,
+        relationshipLabel:relationshipLabels[item.relationship] || item.relationship,
+        why:trainingMode === 'guided'
+          ? 'Choose the word that does not fit the shared relationship.'
+          : trainingMode === 'challenge'
+            ? 'Look for the most precise relationship, not a superficial similarity. ' + item.context
+            : item.context
+      }));
+    }
     if (level === 'guided' && guidedRounds[id]) return guidedRounds[id];
     if (level === 'challenge' && challengeRounds[id]) return challengeRounds[id];
     if (id === 'wordladder') return generateWordLadders(level, 12);
     if (['forge','connections','scramble','chain'].includes(id)) return rounds[id];
     return rounds[id];
+  }
+
+  function oddRelationshipHint(relationship) {
+    const hints = {
+      'category':'Check whether three items belong to one clear group.',
+      'function':'Ask what the items are used for; the outsider has a different purpose.',
+      'synonyms-antonyms':'Compare the meanings and notice which words share a close meaning or contrast.',
+      'part-whole':'Look for three components that can belong to one larger whole.',
+      'word-class':'Compare grammatical roles, not just topic or meaning.',
+      'cause-effect':'Look for a cause and its likely effects.',
+      'contextual-meaning':'Use the situation to compare the intended sense of each word.',
+      'collocations':'Test which words form natural, established combinations.',
+      'register-tone':'Compare formality and emotional tone.',
+      'connotation':'Notice positive, neutral or negative associations.'
+    };
+    return hints[relationship] || 'Compare the relationship shared by three of the words.';
   }
 
   const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -532,7 +571,7 @@ bark dark core hand land lane data duty melt`
     locked = false;
     if(mode==='wordladder'&&!ladderPath.length)ladderPath=[item.start];
     let intro = '';
-    if (mode === 'odd') intro = '<div class="tl-word-options">'+item.words.map((w,i)=>'<button type="button" class="tl-option tl-word-option" data-think-answer="'+i+'"><span class="tl-option-index">0'+(i+1)+'</span><strong>'+esc(w)+'</strong></button>').join('')+'</div>';
+    if (mode === 'odd') intro = '<div class="tl-word-options">'+item.words.map((w,i)=>'<button type="button" class="tl-option tl-word-option" data-think-answer="'+i+'"><span class="tl-option-index">0'+(i+1)+'</span><strong>'+esc(w)+'</strong></button>').join('')+'</div>'+(difficulty.level === 'guided' ? '<div class="tl-odd-hint"><button type="button" class="tl-secondary" data-odd-hint>Reveal a hint</button><p class="tl-game-instruction" data-odd-hint-text hidden></p></div>' : '');
     if (mode === 'translator') intro = '<div class="tl-translation-prompt" lang="ar" dir="rtl">'+esc(item.ar)+'</div><div class="tl-answer-options">'+item.options.map((w,i)=>'<button type="button" class="tl-option" data-think-answer="'+i+'"><span class="tl-option-index">'+String.fromCharCode(65+i)+'</span><strong>'+esc(w)+'</strong></button>').join('')+'</div>';
     if (mode === 'wordladder') {
       const path = ladderPath.length ? ladderPath : [item.start];
@@ -554,7 +593,7 @@ bark dark core hand land lane data duty melt`
     if (mode === 'chain') { const steps=chainSteps(item),step=steps[chainStepIndex]; const path=[(item.prompt.match(/chain: ([A-Z]+) →/)||[])[1]||'WORD',...chainPath]; intro='<div class="tl-chain-path">'+path.map((w,i)=>'<span class="tl-chain-link">'+esc(w)+'</span>').join('<span class="tl-ladder-step"> → </span>')+'<span class="tl-ladder-step"> → ?</span></div><p class="tl-connection-count">LINK '+(chainStepIndex+1)+' OF '+steps.length+' · Connect “'+esc(step.from)+'” to the strongest next word.</p><div class="tl-answer-options">'+step.options.map((w,i)=>'<button type="button" class="tl-option" data-chain-answer="'+i+'"><span class="tl-option-index">'+String.fromCharCode(65+i)+'</span><strong>'+esc(w)+'</strong></button>').join('')+'</div>'; }
     if (mode === 'maze') intro = '<div class="tl-maze-target"><span class="tl-maze-sound">♫</span><div><span>LISTEN FOR THIS WORD</span><strong>Find the matching word</strong></div><button type="button" class="tl-secondary" data-think-speak>▶ Play word</button></div><div class="tl-maze-path"><span class="tl-maze-start">START</span><span>···</span><span class="tl-maze-finish">EXIT</span></div><div class="tl-answer-options">'+item.options.map((w,i)=>'<button type="button" class="tl-option" data-think-answer="'+i+'"><span class="tl-option-index">'+String.fromCharCode(65+i)+'</span><strong>'+esc(w)+'</strong></button>').join('')+'</div>';
     if (mode === 'detective') intro = '<div class="tl-clue-list">'+item.clues.slice(0,Math.min(item.clues.length,clueCount+1+(difficulty.hintLevel>=2?1:0))).map((c,i)=>'<div class="tl-clue"><span>CLUE 0'+(i+1)+'</span><p>'+esc(c)+'</p></div>').join('')+'</div><div class="tl-reveal-row">'+(clueCount<item.clues.length-1?'<button class="tl-secondary" type="button" data-think-clue>Reveal next clue +</button>':'<span class="tl-all-clues">All evidence revealed</span>')+'</div><h3 class="tl-question">'+item.question+'</h3><div class="tl-answer-options">'+item.options.map((w,i)=>'<button type="button" class="tl-option" data-think-answer="'+i+'"><span class="tl-option-index">'+String.fromCharCode(65+i)+'</span><strong>'+esc(w)+'</strong></button>').join('')+'</div>';
-    root.innerHTML = '<div class="tl-game-head"><button class="tl-back" type="button" data-think-back>← All cases</button><span class="tl-eyebrow">CASE '+String(index+1).padStart(2,'0')+' / '+pool.length+'</span><span class="tl-score">SOLVED <b>'+score+'</b></span></div><div class="tl-game-card"><div class="tl-game-kicker">'+(mode==='odd'?'PATTERN ANALYSIS':mode==='detective'?'EVIDENCE BOARD':mode==='translator'?'NATURAL EXPRESSION':mode==='wordladder'?'WORD TRANSFORMATION':mode==='forge'?'WORD FORGE':mode==='connections'?'WORD CONNECTIONS':mode==='scramble'?'SENTENCE BUILDING':mode==='chain'?'WORD ASSOCIATION':'LISTENING MAZE')+'</div><div class="tl-level-tag">'+(difficulty.level==='challenge'?'CHALLENGE':difficulty.level==='steady'?'STEADY':'GUIDED')+'</div><h2>'+esc(mode==='detective'?item.title:mode==='wordladder'?'Transform the word':mode==='maze'?'Find the sound path':item.prompt)+'</h2><p class="tl-game-instruction">'+esc(mode==='odd'?item.why:mode==='translator'?'Read the Arabic sentence, then choose the natural English equivalent.':mode==='wordladder'?'Build a chain of real words. Only one letter may change in each move.':mode==='maze'?'Listen carefully, replay the word if needed, then choose the matching spelling.':mode==='forge'?'Use the available letters and clue to build the word yourself.':mode==='connections'?'Select the four tiles that share the category; distractors are mixed into the board.':mode==='scramble'?'Build a natural English sentence from the mixed-up word bank.':mode==='chain'?'Build a three-link association chain. Each choice becomes the starting point for the next link.':'Reveal the clues and select the conclusion they support.')+'</p>'+intro+'<div class="tl-feedback" id="tl-feedback" aria-live="polite" hidden></div><div class="tl-game-actions"><span>ROUND '+(index+1)+' OF '+pool.length+'</span><button class="tl-next" type="button" data-think-next hidden>Next round →</button></div></div>';
+    root.innerHTML = '<div class="tl-game-head"><button class="tl-back" type="button" data-think-back>← All cases</button><span class="tl-eyebrow">CASE '+String(index+1).padStart(2,'0')+' / '+pool.length+'</span><span class="tl-score">SOLVED <b>'+score+'</b></span></div><div class="tl-game-card"><div class="tl-game-kicker">'+(mode==='odd'?'PATTERN ANALYSIS · '+esc(item.cefrLevel || 'A1'):mode==='detective'?'EVIDENCE BOARD':mode==='translator'?'NATURAL EXPRESSION':mode==='wordladder'?'WORD TRANSFORMATION':mode==='forge'?'WORD FORGE':mode==='connections'?'WORD CONNECTIONS':mode==='scramble'?'SENTENCE BUILDING':mode==='chain'?'WORD ASSOCIATION':'LISTENING MAZE')+'</div><div class="tl-level-tag">'+(difficulty.level==='challenge'?'CHALLENGE':difficulty.level==='steady'?'STEADY':'GUIDED')+'</div><h2>'+esc(mode==='detective'?item.title:mode==='wordladder'?'Transform the word':mode==='maze'?'Find the sound path':item.prompt)+'</h2><p class="tl-game-instruction">'+esc(mode==='odd'?item.why:mode==='translator'?'Read the Arabic sentence, then choose the natural English equivalent.':mode==='wordladder'?'Build a chain of real words. Only one letter may change in each move.':mode==='maze'?'Listen carefully, replay the word if needed, then choose the matching spelling.':mode==='forge'?'Use the available letters and clue to build the word yourself.':mode==='connections'?'Select the four tiles that share the category; distractors are mixed into the board.':mode==='scramble'?'Build a natural English sentence from the mixed-up word bank.':mode==='chain'?'Build a three-link association chain. Each choice becomes the starting point for the next link.':'Reveal the clues and select the conclusion they support.')+'</p>'+intro+'<div class="tl-feedback" id="tl-feedback" aria-live="polite" hidden></div><div class="tl-game-actions"><span>ROUND '+(index+1)+' OF '+pool.length+'</span><button class="tl-next" type="button" data-think-next hidden>Next round →</button></div></div>';
   }
   function chainSteps(item) {
     const start=(item.prompt.match(/chain: ([A-Z]+) →/)||[])[1]||'WORD';
@@ -600,7 +639,7 @@ bark dark core hand land lane data duty melt`
     return tiles;
   }
   function speakTarget() { const pool=activePool || getRoundPool('maze');const item=pool[index%pool.length]; if(!('speechSynthesis' in window)||!window.SpeechSynthesisUtterance){const fb=root.querySelector('#tl-feedback');if(fb){fb.hidden=false;fb.className='tl-feedback is-wrong';fb.textContent='Speech playback is not available in this browser.';}return;} window.speechSynthesis.cancel(); const utterance=new SpeechSynthesisUtterance(item.target); utterance.lang='en-US'; utterance.rate=.82; window.speechSynthesis.speak(utterance); }
-  function start(id) { mode=id; index=0; score=0; chainStepIndex=0; chainPath=[]; clueCount=0; roundMistakes=0; ladderPath=[]; ladderWordNote=null; ladderMistakeRecorded=false; activeDifficulty=difficultyForMode(id); if(id==='detective'){activePool=null;const open=()=>{if(mode==='detective'&&window.EPIPHANY_LANGUAGE_DETECTIVE&&window.EPIPHANY_LANGUAGE_DETECTIVE.available)window.EPIPHANY_LANGUAGE_DETECTIVE.mount(root,{onExit:()=>{mode=null;activePool=null;activeDifficulty=null;landing();}});};if(window.EPIPHANY_LANGUAGE_DETECTIVE&&window.EPIPHANY_LANGUAGE_DETECTIVE.available){open();}else{root.innerHTML='<div class="tl-game-card"><p>Preparing the investigation…</p></div>';Promise.all([window.EPIPHANY_LAZY_LOAD('languageDetective'),window.EPIPHANY_LAZY_STYLE('languageDetective')]).then(open).catch(()=>{root.innerHTML='<div class="tl-game-card"><p>The investigation could not load. Check your connection and try again.</p><button type="button" class="tl-back" data-think-back>Back to Think Lab</button></div>';});}return;} activePool=getRoundPool(id,activeDifficulty.level); renderGame(); if(id==='maze') speakTarget(); }
+  function start(id) { mode=id; index=0; score=0; chainStepIndex=0; chainPath=[]; clueCount=0; roundMistakes=0; ladderPath=[]; ladderWordNote=null; ladderMistakeRecorded=false; activeDifficulty=difficultyForMode(id); oddHintStep=0; if(id==='detective'){activePool=null;const open=()=>{if(mode==='detective'&&window.EPIPHANY_LANGUAGE_DETECTIVE&&window.EPIPHANY_LANGUAGE_DETECTIVE.available)window.EPIPHANY_LANGUAGE_DETECTIVE.mount(root,{onExit:()=>{mode=null;activePool=null;activeDifficulty=null;landing();}});};if(window.EPIPHANY_LANGUAGE_DETECTIVE&&window.EPIPHANY_LANGUAGE_DETECTIVE.available){open();}else{root.innerHTML='<div class="tl-game-card"><p>Preparing the investigation…</p></div>';Promise.all([window.EPIPHANY_LAZY_LOAD('languageDetective'),window.EPIPHANY_LAZY_STYLE('languageDetective')]).then(open).catch(()=>{root.innerHTML='<div class="tl-game-card"><p>The investigation could not load. Check your connection and try again.</p><button type="button" class="tl-back" data-think-back>Back to Think Lab</button></div>';});}return;} activePool=getRoundPool(id,activeDifficulty.level); renderGame(); if(id==='maze') speakTarget(); }
   root.addEventListener('submit', e => {
     const form=e.target.closest('[data-think-ladder-form]');
     if(!form||mode!=='wordladder')return;
@@ -707,7 +746,7 @@ bark dark core hand land lane data duty melt`
     const launch=e.target.closest('[data-think-game]'); if(launch){start(launch.dataset.thinkGame);return;}
     if(e.target.closest('[data-think-back]')){if(window.speechSynthesis)window.speechSynthesis.cancel();landing();return;}
     if(e.target.closest('[data-think-clue]')){clueCount=Math.min((activePool || getRoundPool('detective'))[index%(activePool || getRoundPool('detective')).length].clues.length-1,clueCount+1);renderGame();return;}
-    if(e.target.closest('[data-think-next]')){if(window.speechSynthesis)window.speechSynthesis.cancel();index++;chainStepIndex=0;chainPath=[];connectionSelected=[];clueCount=0;roundMistakes=0;ladderPath=[];ladderWordNote=null;ladderMistakeRecorded=false;if(index>=(activePool || getRoundPool(mode)).length){const finished=mode;const totalRounds=(activePool || getRoundPool(finished)).length;root.innerHTML='<div class="tl-finish"><span class="tl-finish-mark">∴</span><span class="tl-eyebrow">CASE FILE CLOSED</span><h2>Good thinking.</h2><p>You solved <b>'+score+' of '+totalRounds+'</b> challenges. The goal is not only to get it right—it’s to understand why.</p><button type="button" class="tl-next" data-think-restart>Try another case ↗</button><button type="button" class="tl-back" data-think-back>Back to Think Lab</button></div>';mode=null;activePool=null;activeDifficulty=null;}else renderGame();return;}
+    if(e.target.closest('[data-think-next]')){if(window.speechSynthesis)window.speechSynthesis.cancel();index++;oddHintStep=0;chainStepIndex=0;chainPath=[];connectionSelected=[];clueCount=0;roundMistakes=0;ladderPath=[];ladderWordNote=null;ladderMistakeRecorded=false;if(index>=(activePool || getRoundPool(mode)).length){const finished=mode;const totalRounds=(activePool || getRoundPool(finished)).length;root.innerHTML='<div class="tl-finish"><span class="tl-finish-mark">∴</span><span class="tl-eyebrow">CASE FILE CLOSED</span><h2>Good thinking.</h2><p>You solved <b>'+score+' of '+totalRounds+'</b> challenges. The goal is not only to get it right—it’s to understand why.</p><button type="button" class="tl-next" data-think-restart>Try another case ↗</button><button type="button" class="tl-back" data-think-back>Back to Think Lab</button></div>';mode=null;activePool=null;activeDifficulty=null;}else renderGame();return;}
     if(e.target.closest('[data-think-restart]')){landing();return;}
     if(e.target.closest('[data-think-speak]')){speakTarget();return;}
     const chainAnswer=e.target.closest('[data-chain-answer]');
@@ -720,13 +759,26 @@ bark dark core hand land lane data duty melt`
       const fb=root.querySelector('#tl-feedback');fb.hidden=false;fb.className='tl-feedback is-correct';fb.innerHTML='<strong>✓ Chain complete!</strong><p>'+esc(step.explain)+'</p>';
       const next=root.querySelector('[data-think-next]');if(next)next.hidden=false;return;
     }
+    if(e.target.closest('[data-odd-hint]') && mode === 'odd' && !locked) {
+      const pool=activePool||getRoundPool('odd'),item=pool[index%pool.length];
+      oddHintStep=Math.min(2,oddHintStep+1);
+      const text=root.querySelector('[data-odd-hint-text]');
+      if(text){
+        const hint=oddHintStep===1?item.hint:oddRelationshipHint(item.relationship);
+        text.hidden=false;
+        text.textContent=(oddHintStep===1?'Hint 1: ':'Hint 2: ')+hint;
+      }
+      const button=root.querySelector('[data-odd-hint]');
+      if(button){button.textContent=oddHintStep>=2?'Hints revealed':'Reveal another hint';button.disabled=oddHintStep>=2;}
+      return;
+    }
     const answer=e.target.closest('[data-think-answer]'); if(!answer||locked||!mode)return;
     const pool=activePool || getRoundPool(mode),item=pool[index%pool.length];
     if(mode==='wordladder')return;
     locked=true;const chosen=Number(answer.dataset.thinkAnswer),correct=mode==='maze'?item.options[chosen]===item.target:chosen===item.answer;if(correct)score++;else roundMistakes++;
     if(window.EpiphanyThinkLab){const skill=mode==='maze'?'listening':mode==='translator'?'conversation':mode==='detective'?'reading':mode==='wordladder'||mode==='forge'?'spelling':mode==='scramble'?'grammar':'vocabulary';window.EpiphanyThinkLab.recordResult(skill,mode,correct,index===(activePool || getRoundPool(mode)).length-1);}
     root.querySelectorAll('[data-think-answer]').forEach(b=>{b.disabled=true;const n=Number(b.dataset.thinkAnswer);const isRight=mode==='maze'?item.options[n]===item.target:n===item.answer;if(isRight)b.classList.add('is-correct');if(n===chosen&&!correct)b.classList.add('is-wrong');});
-    const fb=root.querySelector('#tl-feedback');fb.hidden=false;fb.className='tl-feedback '+(correct?'is-correct':'is-wrong');fb.innerHTML='<strong>'+(correct?(mode==='maze'?'✓ Path cleared!':'✓ Well reasoned.'):'↗ Look at the clues again.')+'</strong><p>'+esc(item.explain)+'</p>'+(!correct&&adaptiveHint(mode)?'<p>'+esc(adaptiveHint(mode))+'</p>':'')+(mode==='maze'?'<p class="tl-heard-word">Target word: <b>'+esc(item.target)+'</b></p>':'');
+    const fb=root.querySelector('#tl-feedback');fb.hidden=false;fb.className='tl-feedback '+(correct?'is-correct':'is-wrong');fb.innerHTML='<strong>'+(correct?(mode==='maze'?'✓ Path cleared!':'✓ Well reasoned.'):'↗ Look at the clues again.')+'</strong><p>'+esc(item.explain)+'</p>'+(mode==='odd'&&item.relationshipLabel?'<p><strong>Relationship:</strong> '+esc(item.relationshipLabel)+'</p>':'')+(!correct&&mode==='odd'&&difficulty.level==='guided'&&!oddHintStep?'<p>'+esc(item.hint)+'</p>':!correct&&adaptiveHint(mode)?'<p>'+esc(adaptiveHint(mode))+'</p>':'')+(mode==='maze'?'<p class="tl-heard-word">Target word: <b>'+esc(item.target)+'</b></p>':'');
     const next=root.querySelector('[data-think-next]');if(next)next.hidden=false;
   });
   landing();
