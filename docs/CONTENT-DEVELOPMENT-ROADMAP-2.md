@@ -985,3 +985,108 @@ Each reference case must include positive and negative pairs that differ in one 
 The test fixtures must record expected claim interpretation, evidence relation, primary outcome, affected assessment criteria, and rationale. These are planned automated-test fixtures; no such tests are claimed to have run.
 
 **Checkpoint:** Semantic evaluation principles are approved as a design baseline. Exact lexical resources, grammar patterns, serialized data types, scoring integration, and executable test fixtures remain to be specified. No code implementation or automated verification has occurred.
+
+
+---
+
+## 23. Phase 6 — Evaluator module contracts
+
+**Status:** Approved conceptual contracts; exact code interfaces remain implementation work.
+
+The six approved modules form one deterministic pipeline. Each module receives explicit input and returns structured output; modules must not silently change the case facts or invent missing meaning.
+
+1. **TextNormalizer**
+   - Input: raw learner response and language/locale context.
+   - Output: normalized text representation, clause boundaries, and preserved semantic markers.
+   - It may normalize harmless casing, whitespace, punctuation, and explicitly supported spelling variants.
+   - It must preserve negation, modality, uncertainty, attribution, tense/time, pronouns, comparisons, and clause relationships.
+   - It must not perform aggressive stemming or delete words merely because they appear grammatically small.
+
+2. **SemanticMatcher**
+   - Input: normalized clauses and the versioned case concept catalogue.
+   - Output: candidate concepts/propositions, Direct or Compositional match path, recognized operators, and an interpretation status.
+   - It must distinguish a recognized interpretation from an ambiguous or unrecognized one.
+   - It must not use keyword co-occurrence as a sufficient match or select a favorable interpretation when materially different parses remain possible.
+
+3. **EvidenceReasoner**
+   - Input: interpreted propositions and authored evidence relationship graph.
+   - Output: evidence support, contradiction, consistency, limitation, and unresolved-relation assessments for each material claim.
+   - It must check the scope and strength of each relation and prohibit unsupported transitive inference.
+
+4. **ClaimValidator**
+   - Input: interpreted propositions, evidence assessments, and case constraints.
+   - Output: claim-level diagnostics, including supported, incomplete, overclaimed, unsupported, or contradicted claims, with a rationale and affected criteria.
+   - It must distinguish a hypothesis expressed as possible from the same hypothesis asserted as fact.
+
+5. **EvaluationResolver**
+   - Input: module outputs, required concepts, rubric criteria, and response context.
+   - Output: primary outcome, criterion-level performance, dimension scores, clarification requirement, and diagnostic flags.
+   - It must not issue a final grade while a material clarification is pending.
+   - It must not let one correct phrase erase a material contradiction elsewhere in the answer.
+
+6. **FeedbackBuilder**
+   - Input: resolved outcome, criterion results, and authored feedback resources.
+   - Output: concise educational feedback explaining what was understood, what needs attention, and which evidence boundary matters.
+   - It must use authored, traceable feedback patterns and must not fabricate evidence, case facts, or explanations.
+   - Feedback should be constructive and English-first, with optional Arabic support following the existing replacement-in-place rule.
+
+### 23.1 Pipeline invariants
+
+- Each module is independently testable.
+- Inputs include explicit case and evaluator versions.
+- No module mutates Case Data or historical Session Data.
+- The same versioned inputs produce the same outputs.
+- A failure or unsupported parse is surfaced as such; it is not converted into a guessed answer.
+- Diagnostic detail may be richer internally than the learner-facing feedback.
+- Module outputs retain enough traceability to explain why a criterion was or was not awarded.
+
+---
+
+## 24. Phase 6 — Scoring, clarification, and independence rules
+
+**Status:** Approved conceptual policy; numeric calibration remains provisional.
+
+### 24.1 Criterion-to-dimension aggregation
+
+- Each case defines weighted criteria within the three approved dimensions.
+- Each criterion uses the provisional performance levels: Excellent (100%), Strong (75%), Developing (50%), Limited (25%), and No Credit (0%).
+- Criterion results are aggregated within their dimension using the authored criterion weights.
+- Dimension results are then combined using the provisional top-level weights: Conclusion Accuracy 35%, Evidence Reasoning 40%, and Critical Thinking 25%.
+- The weighted result is a numeric score from 0 to 100; letter-grade bands remain S 96–100, A+ 90–95, A 80–89, B 70–79, C 60–69, D 40–59, and F 0–39, subject to the grade gates below.
+
+### 24.2 Scoring safeguards and grade gates
+
+- A pending material clarification has no final score or letter grade.
+- A clear but incomplete answer may receive partial credit; do not round it up to full understanding.
+- A materially unsupported or contradicted claim affects the criterion(s) it actually damages. Do not impose an arbitrary whole-answer penalty when the unsupported detail is peripheral.
+- A materially false central conclusion or explanation must prevent full credit for the affected criterion, even if other parts are correct.
+- The S grade requires a weighted score of at least 96, at least 90 in each of the three dimensions, and no unresolved material contradiction or material unsupported assertion in the final answer.
+- If the numeric score reaches 96 but the S gate is not met, award no higher than A+.
+- Guided mode caps the awarded letter grade at A+; it does not change the numeric score or dimension scores.
+- Steady and Challenge may award S when all S requirements are met.
+- Hell Mode never adds points or changes thresholds.
+- The grade scale evaluates demonstrated investigation reasoning, not whether the case's real-world mystery has a fully known answer. F means insufficient demonstrated performance, not that the case itself is unresolved.
+
+The exact criterion weights inside each case and any further calibration adjustments remain case-authoring and calibration work. These rules do not claim that the provisional weights or bands have been validated against production learner data.
+
+### 24.3 Clarification policy
+
+- Clarification is required when an ambiguous reference, scope, polarity, attribution, or certainty level materially changes the interpretation.
+- The evaluator should identify the smallest ambiguity that needs resolving and ask one focused clarification question.
+- Clarification may be repeated when the response remains materially ambiguous; there is no academic penalty or fixed attempt limit.
+- Clarification turns are retained in the attempt history but are not treated as wrong answers.
+- A learner may leave the case and resume later; unresolved clarification must not be silently converted to a final grade.
+- If the learner chooses to submit without resolving the ambiguity, the system records the response as incomplete / not assessable for the affected criterion rather than guessing.
+
+### 24.4 Independence policy
+
+Independence remains separate from academic scores:
+- **High:** no optional hints were used.
+- **Moderate:** Direction and/or Connection hints were used, but no Reasoning hint.
+- **Assisted:** a Reasoning hint was used.
+
+The normal scaffolding built into Guided mode is not itself an optional hint and does not reduce Independence. Clarification requests, retries, and ordinary explanatory feedback do not change Independence. Hint use never subtracts academic points, and no-hint use does not add bonus points.
+
+### 24.5 Calibration and test status
+
+The 35/40/25 weights, criterion performance levels, grade bands, and S gate are a coherent proposed baseline for the next calibration review. They remain provisional until the 57-entry scenario inventory is converted into executable fixtures and reviewed against actual evaluator outputs. Manual design review must not be described as automated testing.
