@@ -1,3 +1,4 @@
+(() => {
 'use strict';
 
 const cases = {
@@ -131,3 +132,5 @@ if(fixtures.length!==57)throw new Error('Expected 57 fixtures, got '+fixtures.le
 const LanguageDetectiveFixtures = {cases,fixtures,makeContext};
 if (typeof module !== 'undefined' && module.exports) module.exports = LanguageDetectiveFixtures;
 else if (typeof window !== 'undefined') window.EPIPHANY_LANGUAGE_DETECTIVE_FIXTURES = LanguageDetectiveFixtures;
+
+})();
