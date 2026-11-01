@@ -77,7 +77,7 @@ Status legend: `[x]` completed · `[~]` in progress · `[ ]` not started
 
 ### Approved activity specification — Odd One Out
 
-**Status:** Design approved; implementation not started.
+**Status:** Design approved; implementation in progress. The first six-level CEFR bank has been added and connected to Think Lab; full UI and gameplay validation remain pending.
 
 - **Learning objective:** develop the ability to recognize and reason about relationships between words, rather than relying only on simple category labels.
 - **Question format:** present four words; the learner selects the one that does not belong. No written justification or reason-selection step is required.
@@ -165,4 +165,4 @@ A target such as **30–50 questions per level** may be considered during design
 
 ---
 
-**Current checkpoint:** Phase 0 initial inventory is complete. Phase 1 (Think Lab) is active. The current difficulty-selection and adaptive-performance logic has been inspected. The Odd One Out design is approved and recorded above; implementation has not started. Next: define the content specification for The Language Detective, then continue through the remaining Think Lab activities. No content implementation is authorized by this roadmap alone; each phase's design must first be reviewed and agreed.
+**Current checkpoint:** Phase 0 initial inventory is complete. Phase 1 (Think Lab) remains active. The current difficulty-selection and adaptive-performance logic has been inspected. The Language Detective assessment engine and first Think Lab integration are implemented and have passed the repository checks; visual review and cloud save/recovery remain separate follow-up work. Odd One Out is the current activity: its approved design is being implemented, with six independent CEFR banks (eight starter questions each), all ten relationship types represented, adaptive 8/10/12 round targets, randomized answer positions, and a CEFR bridge into the shared learner profile. Automated validation is in progress; next: complete UI integration checks and review representative sessions across CEFR levels and training approaches. Each new activity's content design must be reviewed and agreed before implementation.
