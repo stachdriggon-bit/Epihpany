@@ -555,8 +555,19 @@ bark dark core hand land lane data duty melt`
       const bank = translatorBanks[chosenLevel];
       const selectedMode = ['guided','steady','challenge'].includes(level) ? level : 'steady';
       const roundSize = {guided:8,steady:10,challenge:12}[selectedMode] || 10;
-      const questions = bank[selectedMode].slice().sort(() => Math.random() - 0.5);
-      return questions.slice(0,roundSize).map(item => ({...item, cefrLevel:chosenLevel, trainingMode:selectedMode}));
+      const questions = bank[selectedMode].slice();
+      for (let i = questions.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [questions[i], questions[j]] = [questions[j], questions[i]];
+      }
+      const adaptiveFallback = selectedTranslatorCEFR === 'adaptive' && requestedLevel !== chosenLevel;
+      return questions.slice(0,roundSize).map(item => ({
+        ...item,
+        cefrLevel:chosenLevel,
+        trainingMode:selectedMode,
+        adaptiveFallback,
+        requestedCEFRLevel:requestedLevel
+      }));
     }
     if (level === 'guided' && guidedRounds[id]) return guidedRounds[id];
     if (level === 'challenge' && challengeRounds[id]) return challengeRounds[id];
@@ -845,7 +856,9 @@ bark dark core hand land lane data duty melt`
     const roundTarget = {guided:8,steady:10,challenge:12}[difficulty.level] || 10;
     const roundNote = mode === 'odd' && pool.length < roundTarget
       ? '<p class="tl-game-instruction">This round is shorter than the '+roundTarget+'-question target because only '+pool.length+' distinct questions are currently available at this level.</p>'
-      : '';
+      : mode === 'translator' && item.adaptiveFallback
+        ? '<p class="tl-game-instruction tl-translator-fallback" role="status">Your current level is '+esc(item.requestedCEFRLevel)+'. A '+esc(item.requestedCEFRLevel)+' question bank is not available yet, so this round uses '+esc(item.cefrLevel)+' practice for now.</p>'
+        : '';
     locked = false;
     if(mode==='wordladder'&&!ladderPath.length)ladderPath=[item.start];
     let intro = '';
