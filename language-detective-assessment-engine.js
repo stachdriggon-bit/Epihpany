@@ -50,11 +50,14 @@ function SemanticMatcher(normalized,snapshot,ctx){
  }
  const unmatchedClauseIds=clauses.filter(c=>!used.has(c.clauseId)).map(c=>c.clauseId);
  const ambiguityGroups=[];
- const hasPronoun=/\b(it|they|them|he|she|her|him)\b/i.test(text);
- const hasNamedAntecedent=/\b(resident|person|package|Nora|Adam|Sara|Lena|Omar|Nadia|Lena|envelope|R-4|R-7|signal|receiver|analyst)\b/i.test(text);
+ const pronounMatch=text.match(/\b(it|they|them|he|she|her|him|its|their|theirs)\b/i);
+ const impersonalIt=/^it\s+(?:is|was)\s+(?:possible|plausible|likely|unlikely|clear|unclear)\b/i.test(text);
+ const hasPronoun=!!pronounMatch&&!impersonalIt;
+ const priorContext=pronounMatch?text.slice(0,pronounMatch.index):'';
+ const hasNamedAntecedent=/\b(resident|person|package|Nora|Adam|Sara|Lena|Omar|Nadia|envelope|R-4|R-7|signal|receiver|analyst|card|report|record|reading)\b/i.test(priorContext);
  const unresolvedPronoun=hasPronoun&&!hasNamedAntecedent;
  const competingAntecedents=hasPronoun&&/\b(two|both|either|another|the other)\b/i.test(text);
- if(unresolvedPronoun||competingAntecedents)ambiguityGroups.push({clauseIds:clauses.filter(c=>/\b(it|they|them|he|she|her|him)\b/i.test(c.text)).map(c=>c.clauseId),alternativeInterpretations:unresolvedPronoun?['pronoun has no clear antecedent in the submitted response']:['multiple possible antecedents'],materialDifference:'Pronoun reference may change the actor or object.'});
+ if(unresolvedPronoun||competingAntecedents)ambiguityGroups.push({clauseIds:clauses.filter(c=>/\b(it|they|them|he|she|her|him|its|their|theirs)\b/i.test(c.text)).map(c=>c.clauseId),alternativeInterpretations:unresolvedPronoun?['pronoun has no clear antecedent before its use in the submitted response']:['multiple possible antecedents'],materialDifference:'Pronoun reference may change the actor or object.'});
  const data={propositions,conceptMatches,unmatchedClauseIds,ambiguityGroups};
  return envelope(ctx,'SemanticMatcher',ambiguityGroups.length?'NEEDS_CLARIFICATION':propositions.length?(unmatchedClauseIds.length?'PARTIAL':'OK'):'UNSUPPORTED_INPUT',data);
 }
@@ -92,7 +95,7 @@ function EvaluationResolver(interpreted,claims,snapshot,ctx,hintsUsed=[]){
  const clarification=interpreted.status==='NEEDS_CLARIFICATION';
  const contradiction=claims.data.materialContradictions.length>0,unsupported=claims.data.unsupportedMaterialClaims.length>0;
  const hasClaims=interpreted.data.propositions.length>0,allCore=criterionResults.length>0&&criterionResults.every(c=>c.percentage>=75);
- const primaryOutcome=clarification?'NEEDS_CLARIFICATION':contradiction?'CONTRADICTION':unsupported?(hasClaims?'PARTIAL':'UNSUPPORTED'):allCore?'ACCEPTED':hasClaims?'PARTIAL':'UNSUPPORTED';
+ const primaryOutcome=clarification?'NEEDS_CLARIFICATION':contradiction?'CONTRADICTION':unsupported?'UNSUPPORTED':allCore?'ACCEPTED':hasClaims?'PARTIAL':'UNSUPPORTED';
  const assessable=!clarification&&primaryOutcome!=='UNSUPPORTED'&&primaryOutcome!=='CONTRADICTION';
  const sGate=weightedScore>=96&&dimensionResults.every(d=>d.score>=90)&&!contradiction&&!unsupported;
  const bands=[[96,'S'],[90,'A+'],[80,'A'],[70,'B'],[60,'C'],[40,'D'],[0,'F']];
