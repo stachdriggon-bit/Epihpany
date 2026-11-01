@@ -155,3 +155,38 @@ test('Evren relationship now links reciprocally to Elaris in Character Details',
   assert.ok(relationship.text[1].text.en.includes('Aelora Energy'));
   assert.match(read('cards.js'), /data-profile-character/);
 });
+
+test('Riven canonical profile records Ri Vision, Continuity, Veyrun and bilingual details', () => {
+  const context = {window:{}};
+  vm.runInNewContext(read('data-cards.js'), context);
+  vm.runInNewContext(read('data-character-profiles.js'), context);
+  const profile = context.window.EPIPHANY_CARD_PROFILES['CHR-072'];
+  assert.ok(profile, 'Riven profile should exist');
+  assert.equal(profile.name.en, 'Riven');
+  assert.equal(profile.name.ar, 'ريفن');
+  assert.equal(profile.title.en, 'Passage Scout');
+  assert.equal(profile.facts.find(f => f.label.en === 'Species').value.en, 'Human');
+  assert.equal(profile.facts.find(f => f.label.en === 'Age').value.en, '19 years');
+  assert.equal(profile.facts.find(f => f.label.en === 'Homeland').value.en, 'Veyrun · Orath');
+  const expected = ['overview','personality','motivation','abilities','limits','backstory','story-role','relationships','places','quote'];
+  assert.equal(profile.sections.map(section => section.id).join(','), expected.join(','));
+  for (const section of profile.sections) {
+    assert.ok(section.title.en && section.title.ar, section.id + ' needs bilingual titles');
+    const entries = Array.isArray(section.text) ? section.text : [section.text];
+    for (const entry of entries) {
+      const value = entry.text || entry;
+      assert.ok(value.en, section.id + ' needs English content');
+      assert.ok(value.ar, section.id + ' needs Arabic content');
+    }
+  }
+  const abilities = profile.sections.find(section => section.id === 'abilities');
+  assert.ok(abilities.title.en.includes('Ri Vision'));
+  assert.ok(abilities.text.some(entry => (entry.text || entry).en.includes('Structural Perception')));
+  const limits = profile.sections.find(section => section.id === 'limits');
+  assert.ok(limits.text.some(entry => (entry.text || entry).en.includes('Continuity')));
+  assert.ok(limits.text.some(entry => (entry.text || entry).en.includes('ordinary memory')));
+  const card = context.window.EPIPHANY_CARD_DATA.find(item => item.id === 'CHR-072');
+  assert.equal(card.rarity, 'Uncommon');
+  assert.equal(card.title, 'Passage Scout');
+  assert.equal(card.image, 'riven55.PNG');
+});
