@@ -178,7 +178,7 @@
         translatorQuestion('هذا هو السبب الذي جعلني أغيّر رأيي.', ['This is the reason which made me change my mind.','This is the reason why made me change my mind.','This is the reason where I changed my mind.'], 0, 'Choose a relative structure that can refer to a reason and has a complete clause.', ['Correct: which refers to “the reason” and is the subject of “made”.','Why cannot be followed by this incomplete clause structure.','Where refers to a place, not a reason.']),
         translatorQuestion('لم يعتدوا على العمل معاً، لذلك احتاجوا إلى بعض الوقت.', ['They weren’t used to work together, so they needed some time.','They weren’t used to working together, so they needed some time.','They didn’t used to working together, so they needed some time.'], 1, 'The meaning is lack of familiarity with an activity.', ['After “be used to”, use an -ing form.','Correct: “weren’t used to working” describes something unfamiliar to them.','After didn’t, use “use”; this form also confuses the two meanings of used to.'])
       ]
-    }
+    },
     B2: {
     guided: [
       translatorQuestion("لم أكن لأصل في الوقت المحدد لولا مساعدتك.", ["I wouldn't have arrived on time if you hadn't helped me.","I wouldn't arrive on time unless you didn't help me.","I hadn't arrived on time if you wouldn't help me."], 0, "The sentence describes a past result that depended on a different past situation.", ["Correct: this mixed conditional links a past condition to a past result using the third conditional pattern.","The negative forms make the condition contradictory and change the intended meaning.","The auxiliaries are in the wrong clauses; “would” does not normally go in this if-clause."]),
