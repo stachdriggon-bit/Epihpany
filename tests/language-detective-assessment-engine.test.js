@@ -83,6 +83,20 @@ test('unresolved pronouns trigger a focused clarification state',()=>{
  assert.equal(result.evaluation.primaryOutcome,'NEEDS_CLARIFICATION');
  assert.equal(result.evaluation.awardedGrade,undefined);
 });
+test('a pronoun without a preceding antecedent requests clarification but impersonal it does not',()=>{
+ const ambiguous=engine.evaluate(request('CASE-003','It caused the reading.'));
+ assert.equal(ambiguous.evaluation.primaryOutcome,'NEEDS_CLARIFICATION');
+ const impersonal=engine.evaluate(request('CASE-002','It is plausible that Lena moved the envelope.'));
+ assert.notEqual(impersonal.evaluation.primaryOutcome,'NEEDS_CLARIFICATION');
+});
+
+test('a material unsupported claim alone is UNSUPPORTED, not partial',()=>{
+ const theft=engine.evaluate(request('CASE-001','The resident stole it to keep it.'));
+ assert.equal(theft.evaluation.primaryOutcome,'UNSUPPORTED');
+ const overclaim=engine.evaluate(request('CASE-003','An external event definitely caused the increase.'));
+ assert.equal(overclaim.evaluation.primaryOutcome,'UNSUPPORTED');
+});
+
 test('Standard and Hell Mode converge on the same academic result for equivalent meaning',()=>{
  const response='An unidentified resident in a green jacket picked up the package. We do not know who they were or why.';
  const standard=engine.evaluate(request('CASE-001',response,{answerFormat:'STANDARD'}));
