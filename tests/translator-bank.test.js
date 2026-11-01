@@ -132,3 +132,13 @@ test('Manual C2 practice is available and does not trigger the adaptive fallback
   assert.ok(pool.every(question => question.adaptiveFallback === false));
   assert.ok(pool.every(question => question.requestedCEFRLevel === 'C2'));
 });
+
+
+test('Adaptive C2 practice uses the C2 bank without falling back to A1', () => {
+  const harness = loadHarness({ cefrLevel: 'C2', math: { random: () => 0 } });
+  const pool = harness.__translatorPool('adaptive', 'challenge');
+  assert.equal(pool.length, 12);
+  assert.ok(pool.every(question => question.cefrLevel === 'C2'));
+  assert.ok(pool.every(question => question.adaptiveFallback === false));
+  assert.ok(pool.every(question => question.requestedCEFRLevel === 'C2'));
+});
