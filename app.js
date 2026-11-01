@@ -3101,6 +3101,8 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
         toast('Arabic help is available with built-in translations; the expanded catalogue could not load.');
       });
     } else {
+      // Re-render language-dependent home/help content as well as any active question.
+      renderAll();
       syncCurrentQuestion();
     }
     if (G && G.answered) setSheetSpace();
@@ -5815,7 +5817,13 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
   try { helpLanguageChoice = localStorage.getItem('epiphany-help-language-choice') || ''; } catch {}
   let hasExistingProgress = false;
   hasExistingProgress = HAD_SAVED_PROGRESS_AT_LOAD;
-  if (state.helpArabic) ensureArabicTranslationCatalog().then(() => renderAll()).catch(() => {});
+  if (state.helpArabic) {
+    const startupHelpLanguageVersion = ++helpLanguageToggleVersion;
+    ensureArabicTranslationCatalog().then(() => {
+      // Do not let the initial catalogue load restore Arabic after the user chose English.
+      if (startupHelpLanguageVersion === helpLanguageToggleVersion && state.helpArabic) renderAll();
+    }).catch(() => {});
+  }
   if (helpLanguageModal && !helpLanguageChoice && !hasExistingProgress) {
     helpLanguageModal.hidden = false;
     const firstChoice = helpLanguageModal.querySelector('[data-help-language="en"]');
@@ -5826,11 +5834,16 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
       const choice = button.dataset.helpLanguage;
       if (!['en','ar'].includes(choice)) return;
       helpLanguageChoice = choice;
+      const choiceVersion = ++helpLanguageToggleVersion;
       state.helpArabic = choice === 'ar';
       try { localStorage.setItem('epiphany-help-language-choice', choice); } catch {}
       save(); syncSettings();
       helpLanguageModal.hidden = true;
-      if (state.helpArabic) ensureArabicTranslationCatalog().then(() => { renderAll(); if (G && G.answered) setSheetSpace(); }).catch(() => {});
+      if (state.helpArabic) ensureArabicTranslationCatalog().then(() => {
+        if (choiceVersion !== helpLanguageToggleVersion || !state.helpArabic) return;
+        renderAll();
+        if (G && G.answered) setSheetSpace();
+      }).catch(() => {});
       if (G && G.answered) setSheetSpace();
       if (!hasExistingProgress) window.__epiphanyStartOnboarding?.();
     });
