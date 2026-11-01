@@ -27,7 +27,7 @@ function loadHarness() {
   return window;
 }
 
-test('The Bold Translator A1, A2, B1 and B2 banks each have 42 complete questions with three explained options', () => {
+test('The Bold Translator A1, A2, B1, B2 and C1 banks each have 42 complete questions with three explained options', () => {
   const harness = loadHarness();
   for (const level of ['A1', 'A2', 'B1', 'B2', 'C1']) {
     const bank = harness.__translatorBanks[level];
@@ -57,7 +57,7 @@ test('The Bold Translator round sizes are 8, 10 and 12 questions', () => {
     const pool = harness.__translatorPool('A1', mode);
     assert.equal(pool.length, expected);
     assert.ok(pool.every(question => question.cefrLevel === 'A1' && question.trainingMode === mode));
-  for (const level of ['A2', 'B1', 'B2']) {
+  for (const level of ['A2', 'B1', 'B2', 'C1']) {
     const pool = harness.__translatorPool(level, mode);
     assert.equal(pool.length, expected);
     assert.ok(pool.every(question => question.cefrLevel === level && question.trainingMode === mode));
@@ -77,4 +77,5 @@ test('The Bold Translator defaults to adaptive CEFR and keeps manual practice se
   assert.ok(loadHarness().__translatorBanks.A2, 'A2 should become selectable only after its bank exists');
   assert.ok(loadHarness().__translatorBanks.B1, 'B1 should become selectable only after its bank exists');
   assert.ok(loadHarness().__translatorBanks.B2, 'B2 should become selectable only after its bank exists');
+  assert.ok(loadHarness().__translatorBanks.C1, 'C1 should become selectable only after its bank exists');
 });
