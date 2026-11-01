@@ -595,4 +595,5 @@ test('Think Lab CEFR bridge reads the active assessed or developer test level', 
   const think = fs.readFileSync(path.join(root, 'think-lab.js'), 'utf8');
   assert.match(think, /bridge\.getCEFRLevel\(\)/);
   assert.match(think, /EPIPHANY_ODD_ONE_OUT_BANK\.selectRound\(cefr, trainingMode\)/);
+  assert.match(think, /This round is shorter than the '\+roundTarget\+'-question target/);
 });
