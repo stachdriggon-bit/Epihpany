@@ -5,9 +5,11 @@ import vm from 'node:vm';
 
 const account = readFileSync(new URL('../account.js', import.meta.url), 'utf8');
 const app = readFileSync(new URL('../app.js', import.meta.url), 'utf8');
-const mergeSource = account.match(/  function mergeProgress\(local, cloud, root = true\) \{[\s\S]*?\n  \}\n  async function writeCloud/);
-assert.ok(mergeSource, 'account sync must expose the progress merge implementation');
-const mergeProgress = vm.runInNewContext('(' + mergeSource[0].replace(/\n  async function writeCloud$/, '') .trim() + ')');
+const mergeSource = account.match(/const PREFERENCE_KEYS = (\[[^\]]+\]);\s*(function mergeProgress\(local, cloud, root = true\) \{[\s\S]*?\n  \})\n  async function writeCloud/);
+assert.ok(mergeSource, 'account sync must expose the preference keys and progress merge implementation');
+const mergeProgress = vm.runInNewContext(
+  '(() => { const PREFERENCE_KEYS = ' + mergeSource[1] + '; return (' + mergeSource[2] + '); })()'
+);
 
 test('newer local false preference overrides stale cloud true', () => {
   const merged = mergeProgress(
