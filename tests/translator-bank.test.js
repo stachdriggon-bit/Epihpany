@@ -99,9 +99,9 @@ test('The Bold Translator selects distinct questions and clearly marks an adapti
   const harness = loadHarness({ cefrLevel: 'C3', math: { random: () => 0, floor: Math.floor } });
   const pool = harness.__translatorPool('adaptive', 'steady');
   assert.equal(pool.length, 10, 'steady rounds contain ten questions');
-  assert.ok(pool.every(question => question.cefrLevel === 'A1'), 'a missing C2 bank temporarily falls back to A1');
+  assert.ok(pool.every(question => question.cefrLevel === 'A1'), 'an unavailable future level temporarily falls back to A1');
   assert.ok(pool.every(question => question.adaptiveFallback === true), 'fallback state is attached to every selected question');
-  assert.ok(pool.every(question => question.requestedCEFRLevel === 'C2'), 'the requested adaptive level is preserved');
+  assert.ok(pool.every(question => question.requestedCEFRLevel === 'C3'), 'the requested adaptive level is preserved');
   assert.equal(new Set(pool.map(question => question.ar)).size, 10, 'a round must not repeat questions');
   assert.match(source, /Your current level is '\+esc\(item\.requestedCEFRLevel\)/, 'the fallback must be disclosed in the round UI');
 });
