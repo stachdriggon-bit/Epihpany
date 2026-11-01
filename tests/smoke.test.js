@@ -368,9 +368,9 @@ test('main navigation tabs open without uncaught page errors', async t => {
     await clickView(cardsPage, 'collection');
     assert.equal(await mobileMenu.evaluate(el => el.open), false, 'choosing a destination should close the mobile drawer');
     await cardsPage.locator('#cards-gallery').scrollIntoViewIfNeeded();
-    // The browser may defer every lazy image in a long gallery even when its container is in view.
-    // Promote one visible representative image to eager loading so this smoke test checks decoding,
-    // while the separate card tests continue to protect the app's lazy-loading behavior.
+    // The auth-driven published-art refresh can rebuild gallery nodes and restore lazy loading.
+    // Wait for the final nodes before promoting a visible representative image to eager loading.
+    await cardsPage.waitForFunction(() => window.EPIPHANY_CARD_ASSETS_REFRESHED === true, null, {timeout:10000});
     await cardsPage.locator('#cards-gallery .fcard-portrait-image').first().evaluate(img => {
       img.loading = 'eager';
       img.scrollIntoView({block:'center',inline:'nearest'});
@@ -400,9 +400,7 @@ test('main navigation tabs open without uncaught page errors', async t => {
       return {viewport:innerWidth+'x'+innerHeight,imageRequests:resources.length,transferBytes:resources.reduce((sum,item)=>sum+(item.transferSize||0),0),decodedBytes:resources.reduce((sum,item)=>sum+(item.decodedBodySize||0),0),firstImageVisibleMs:Math.round(performance.now()-started),firstImageDecodeMs:decodeMs,longTaskCount:window.__cardLongTasks.length,longTaskMs:Math.round(window.__cardLongTasks.reduce((a,b)=>a+b,0))};
     }, galleryOpenedAt);
     console.log('CARD_GALLERY_METRICS '+JSON.stringify(galleryMetrics));
-    // The auth-driven published-art refresh can legitimately rebuild card nodes.
-    // Wait for it to finish before measuring the filter cache's node preservation.
-    await cardsPage.waitForFunction(() => window.EPIPHANY_CARD_ASSETS_REFRESHED === true, null, {timeout:10000});
+    // The final published-art nodes are now stable for filter-cache measurements.
     await cardsPage.waitForSelector('#cards-rarity-filters [data-gallery-rarity="Epic"]');
     await cardsPage.locator('#cards-rarity-filters [data-gallery-rarity="Epic"]').click();
     await cardsPage.locator('#cards-type-filters [data-gallery-type="characters"]').click();
