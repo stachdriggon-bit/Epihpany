@@ -530,3 +530,60 @@ Claim-level diagnostic flags may coexist with a primary outcome. A response awai
 The same case version, evaluator version, configuration, and response must produce the same result. Unknown wording must not be automatically rejected, but neither may it be silently accepted. Every reference case needs paired tests for negation, certainty, attribution, actor identity, causality, keyword-only matches, concise paraphrases, mixed claims, and contradictions.
 
 This is a conceptual design record. Lexical resources, grammar patterns, exact serialized types, scoring integration, executable fixtures, and runtime verification remain open. No implementation or automated test execution is claimed.
+
+
+---
+
+## 15. Case study — Assessment pipeline contracts and score resolution
+
+### 15.1 Module contracts
+
+The six approved modules have explicit responsibilities:
+
+| Module | Responsibility | Must not |
+|---|---|---|
+| TextNormalizer | Harmless text normalization while preserving semantic operators | Remove negation, modality, attribution, tense, or clause relations |
+| SemanticMatcher | Direct and compositional interpretation against case concepts | Treat keywords as proof or guess between materially different parses |
+| EvidenceReasoner | Evaluate authored evidence relations and their scope | Transfer support to a stronger claim or infer invalid transitive links |
+| ClaimValidator | Identify unsupported, incomplete, overclaimed, and contradicted claims | Infer motive or dishonesty |
+| EvaluationResolver | Resolve outcomes and criterion/dimension assessment | Issue a final grade while material clarification is pending |
+| FeedbackBuilder | Produce traceable, educational feedback from authored resources | Invent facts, evidence, or rationale |
+
+Every module is independently testable and receives explicit versioned inputs. Module outputs should preserve traceability from the learner's claim to the concept, evidence relation, rubric criterion, and feedback. Case Data and historical Session Data remain immutable during evaluation.
+
+### 15.2 Deterministic pipeline invariants
+
+The same case version, evaluator version, configuration, and response must yield the same result. Unknown or ambiguous wording is surfaced rather than silently accepted or automatically rejected. A materially ambiguous interpretation is not resolved by choosing whichever parse produces the highest score.
+
+### 15.3 Scoring aggregation
+
+Criterion-level performance is provisionally represented as Excellent 100%, Strong 75%, Developing 50%, Limited 25%, or No Credit 0%. Case-authored criterion weights aggregate within each dimension. The dimensions then combine using the provisional 35% Conclusion Accuracy, 40% Evidence Reasoning, and 25% Critical Thinking weights.
+
+The provisional grade bands remain S 96–100, A+ 90–95, A 80–89, B 70–79, C 60–69, D 40–59, and F 0–39.
+
+### 15.4 Grade gates
+
+S requires all of:
+- weighted score of at least 96;
+- at least 90 in each assessment dimension;
+- no unresolved material contradiction;
+- no material unsupported assertion in the final answer.
+
+A numeric score of 96 or above that fails the S gate is capped at A+. Guided mode also caps the awarded grade at A+, without changing numeric or dimension scores. Steady and Challenge may award S. Hell Mode changes response format only and gives no bonus.
+
+A material defect affects the criterion(s) it actually undermines; the evaluator should not apply arbitrary whole-answer penalties for peripheral errors. A pending material clarification has no final grade.
+
+### 15.5 Clarification and Independence
+
+Clarification asks one focused question about the smallest material ambiguity. It may repeat without a fixed limit or academic penalty. Clarification turns are retained in history, and unresolved answers cannot silently become graded answers. If the learner proceeds without resolving the ambiguity, the affected criterion is recorded as incomplete / not assessable rather than guessed.
+
+Independence is separate:
+- High: no optional hints;
+- Moderate: Direction and/or Connection hints, but no Reasoning hint;
+- Assisted: Reasoning hint used.
+
+Built-in Guided scaffolding, clarification, retries, and ordinary feedback do not lower Independence. Hint use never reduces academic points, and using no hints gives no academic bonus.
+
+### 15.6 Calibration status
+
+These rules create a coherent baseline for calibration, not a claim of empirical validation. The 35/40/25 weights, criterion levels, grade bands, and S gate remain provisional until the scenario inventory is converted into executable fixtures and actual evaluator outputs are reviewed.
