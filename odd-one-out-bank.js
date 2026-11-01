@@ -114,7 +114,13 @@
         if (score > bestScore) { bestScore = score; bestIndex = index; }
       });
       const [item] = pool.splice(bestIndex, 1);
-      chosen.push(item);
+      const words = item.words.slice();
+      const correctWord = words[item.answer];
+      for (let i = words.length - 1; i > 0; i--) {
+        const j = Math.max(0, Math.min(i, Math.floor((Number(random()) || 0) * (i + 1))));
+        [words[i], words[j]] = [words[j], words[i]];
+      }
+      chosen.push({...item, words, answer:words.indexOf(correctWord)});
       relationships.add(item.relationship);
     }
     return {level:safeLevel,trainingMode:targets[trainingMode] ? trainingMode : 'steady',target,questions:chosen,shortened:chosen.length < target,available:candidates.length};
