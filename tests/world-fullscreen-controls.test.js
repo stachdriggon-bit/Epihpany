@@ -17,3 +17,11 @@ test('World fullscreen control uses a fullscreen icon on desktop and rotate icon
   assert.ok(css.includes('@media(max-width:820px){.world-rotate-desktop-icon{display:none}.world-rotate-mobile-icon{display:inline}}'));
   assert.ok(css.includes('body.world-fullscreen #world-game .world-top-actions button.world-rotate{display:inline-flex}'));
 });
+
+test('World fullscreen control toggles off and stays synchronized with browser Escape', () => {
+  assert.ok(app.includes("if(document.fullscreenElement){"));
+  assert.ok(app.includes("await document.exitFullscreen()"));
+  assert.ok(app.includes("document.addEventListener('fullscreenchange'"));
+  assert.ok(app.includes("root?.requestFullscreen"));
+  assert.ok(app.includes("button.setAttribute('aria-pressed',String(active))"));
+});
