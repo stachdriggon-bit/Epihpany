@@ -90,7 +90,7 @@
       '<div class="ld-toolbar"><button type="button" class="ld-back" data-ld-back>← All cases</button><span>CASE · ' + info.level + '</span><span>' + esc(state.trainingMode) + ' · ' + esc(state.answerFormat) + '</span></div>' +
       '<div class="ld-heading"><span class="ld-kicker">INVESTIGATION IN PROGRESS</span><h2>' + info.title + '</h2><p>' + info.subtitle + '</p><p class="ld-focus">' + info.focus + '</p></div>' +
       '<section class="ld-timeline"><h3>Case record</h3><ol>' + info.details.map(line => '<li>' + esc(line) + '</li>').join('') + '</ol></section>' +
-      '<div class="ld-evidence-grid">' + evidence + '</div>' +
+      '<div class="ld-evidence-grid">' + evidence + '</div>' + questionMarkup +
       '<section class="ld-hints"><div><strong>Optional hints</strong><p>Use them in order. Hints do not reduce your academic score.</p></div><div class="ld-hint-actions">' + visibleHints + '</div></section>' +
       '<form class="ld-answer-form" data-ld-answer-form><div class="ld-answer-heading"><h3>Build your conclusion</h3><span>' + (state.answerFormat === 'HELL' ? 'Two-part response' : 'One written response') + '</span></div>' +
       answerFields + '<button class="ld-submit" type="submit">Assess my conclusion →</button><p class="ld-form-note">You can review the feedback and try again. Earlier attempts are kept in this open investigation.</p></form>' +
