@@ -200,3 +200,23 @@ test('Riven canonical profile records Ri Vision, Continuity, Veyrun and bilingua
   assert.equal(card.title, 'Passage Scout');
   assert.equal(card.image, 'riven55.PNG');
 });
+
+test('Riven and Lucian record the rescue as a reciprocal linked relationship', () => {
+  const context = {window:{}};
+  vm.runInNewContext(read('data-cards.js'), context);
+  vm.runInNewContext(read('data-character-profiles.js'), context);
+  const lucian = context.window.EPIPHANY_CARD_PROFILES['CHR-005'];
+  const riven = context.window.EPIPHANY_CARD_PROFILES['CHR-072'];
+  const lucianRelationships = lucian.sections.find(section => section.id === 'relationships');
+  const rivenRelationships = riven.sections.find(section => section.id === 'relationships');
+  const rivenLink = lucianRelationships.text.find(entry => entry.characterId === 'CHR-072');
+  const lucianLink = rivenRelationships.text.find(entry => entry.characterId === 'CHR-005');
+  assert.ok(rivenLink, 'Lucian should link to Riven in Character Details');
+  assert.equal(rivenLink.label.en, 'Riven');
+  assert.equal(rivenLink.label.ar, 'ريفن');
+  assert.ok(lucianRelationships.text.some(entry => (entry.text || entry).en.includes('helped Lucian escape the domain')));
+  assert.ok(rivenRelationships.text.some(entry => (entry.text || entry).en.includes('he helped Lucian escape')));
+  assert.ok(rivenRelationships.text.some(entry => (entry.text || entry).en.includes('living evidence')));
+  assert.ok(lucianRelationships.text.some(entry => (entry.text || entry).en.includes('permanent obligation')));
+  assert.ok(lucianLink, 'Riven should link back to Lucian in Character Details');
+});
