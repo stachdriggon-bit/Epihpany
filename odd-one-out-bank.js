@@ -331,10 +331,10 @@
         "fervently"
     ],
     "C2-CTX-01": [
-        "prohibit",
-        "forbid",
-        "ban",
-        "permit"
+        "outlaw",
+        "bar",
+        "proscribe",
+        "allow"
     ],
     "C2-SYN-01": [
         "obstinate",
@@ -343,10 +343,10 @@
         "compliant"
     ],
     "C2-CAUSE-01": [
-        "exacerbate",
-        "compound",
-        "aggravate",
-        "ameliorate"
+        "worsen",
+        "intensify",
+        "magnify",
+        "alleviate"
     ],
     "C2-WC-01": [
         "albeit",
