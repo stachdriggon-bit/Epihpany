@@ -45,6 +45,38 @@ test('round targets are adaptive and never pad a short bank with repeats', () =>
   }
 });
 
+test('all 18 CEFR and training-mode combinations select the intended distinct questions', () => {
+  const levels = ['A1','A2','B1','B2','C1','C2'];
+  const modes = [['guided',8],['steady',10],['challenge',12]];
+  for (const level of levels) {
+    for (const [mode,target] of modes) {
+      const round = bank.selectRound(level,mode,[],()=>0.37);
+      assert.equal(round.level,level,level + ' ' + mode + ' should retain its CEFR bank');
+      assert.equal(round.trainingMode,mode);
+      assert.equal(round.target,target);
+      assert.equal(round.available,8);
+      assert.equal(round.questions.length,8,level + ' ' + mode + ' should use all eight quality-approved items');
+      assert.equal(round.shortened,target>8,level + ' ' + mode + ' should disclose only the rounds shorter than target');
+      assert.equal(new Set(round.questions.map(question=>question.id)).size,8);
+      for (const question of round.questions) {
+        const source = bank.banks[level].find(item=>item.id===question.id);
+        const sourceWords = mode==='challenge'
+          ? bank.selectRound(level,'challenge',[],()=>0.37).questions.find(item=>item.id===question.id).words
+          : source.words;
+        assert.ok(source);
+        assert.equal(question.words[question.answer] !== undefined,true);
+        assert.equal(question.words.length,4);
+        if (mode==='challenge') {
+          assert.ok(source.challengeExplain);
+          assert.equal(question.explain,source.challengeExplain);
+        } else {
+          assert.equal(question.explain,source.explain);
+        }
+      }
+    }
+  }
+});
+
 test('recently seen questions are excluded when enough unseen material remains', () => {
   const recent = bank.banks.B1.slice(0,3).map(item=>item.id);
   const round = bank.selectRound('B1','guided',recent,()=>0.5);
