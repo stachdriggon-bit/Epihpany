@@ -70,6 +70,26 @@ test('C1 causal uncertainty is not upgraded to a confirmed external event',()=>{
  assert.equal(external.modality,'POSSIBLE');
 });
 
+
+test('different English constructions can express the same supported event',()=>{
+ const active=engine.evaluate(request('CASE-001','An unidentified resident picked up the package.'));
+ const passive=engine.evaluate(request('CASE-001','The package was picked up by an unidentified resident.'));
+ assert.ok(active.interpreted.conceptMatches.some(x=>x.conceptId==='PICKUP'));
+ assert.ok(passive.interpreted.conceptMatches.some(x=>x.conceptId==='PICKUP'));
+});
+test('unresolved pronouns trigger a focused clarification state',()=>{
+ const result=engine.evaluate(request('CASE-002','She moved it after the room was opened.'));
+ assert.equal(result.evaluation.primaryOutcome,'NEEDS_CLARIFICATION');
+ assert.equal(result.evaluation.awardedGrade,undefined);
+});
+test('Standard and Hell Mode converge on the same academic result for equivalent meaning',()=>{
+ const response='An unidentified resident in a green jacket picked up the package. We do not know who they were or why.';
+ const standard=engine.evaluate(request('CASE-001',response,{answerFormat:'STANDARD'}));
+ const hell=engine.evaluate(request('CASE-001',response,{answerFormat:'HELL'}));
+ assert.deepEqual(standard.evaluation.criterionResults,hell.evaluation.criterionResults);
+ assert.deepEqual(standard.evaluation.dimensionResults,hell.evaluation.dimensionResults);
+});
+
 test('hint use changes Independence only, not academic criterion or dimension scores',()=>{
  const plain=engine.evaluate(request('CASE-001','An unidentified resident in a green jacket picked up the package. We do not know who they were or why.'));
  const assisted=engine.evaluate(request('CASE-001','An unidentified resident in a green jacket picked up the package. We do not know who they were or why.',{hintsUsed:['REASONING']}));
