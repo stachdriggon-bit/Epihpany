@@ -49,11 +49,11 @@ function SemanticMatcher(normalized,snapshot,ctx){
  }
  const unmatchedClauseIds=clauses.filter(c=>!used.has(c.clauseId)).map(c=>c.clauseId);
  const ambiguityGroups=[];
- const hasPronoun=/\\b(it|they|them|he|she|her|him)\\b/i.test(text);
- const hasNamedAntecedent=/\\b(resident|person|package|Nora|Adam|Sara|Lena|Omar|Nadia|Lena|envelope|R-4|R-7|signal|receiver|analyst)\\b/i.test(text);
+ const hasPronoun=/\b(it|they|them|he|she|her|him)\b/i.test(text);
+ const hasNamedAntecedent=/\b(resident|person|package|Nora|Adam|Sara|Lena|Omar|Nadia|Lena|envelope|R-4|R-7|signal|receiver|analyst)\b/i.test(text);
  const unresolvedPronoun=hasPronoun&&!hasNamedAntecedent;
- const competingAntecedents=hasPronoun&&/\\b(two|both|either|another|the other)\\b/i.test(text);
- if(unresolvedPronoun||competingAntecedents)ambiguityGroups.push({clauseIds:clauses.filter(c=>/\\b(it|they|them|he|she|her|him)\\b/i.test(c.text)).map(c=>c.clauseId),alternativeInterpretations:unresolvedPronoun?['pronoun has no clear antecedent in the submitted response']:['multiple possible antecedents'],materialDifference:'Pronoun reference may change the actor or object.'});
+ const competingAntecedents=hasPronoun&&/\b(two|both|either|another|the other)\b/i.test(text);
+ if(unresolvedPronoun||competingAntecedents)ambiguityGroups.push({clauseIds:clauses.filter(c=>/\b(it|they|them|he|she|her|him)\b/i.test(c.text)).map(c=>c.clauseId),alternativeInterpretations:unresolvedPronoun?['pronoun has no clear antecedent in the submitted response']:['multiple possible antecedents'],materialDifference:'Pronoun reference may change the actor or object.'});
  const data={propositions,conceptMatches,unmatchedClauseIds,ambiguityGroups};
  return envelope(ctx,'SemanticMatcher',ambiguityGroups.length?'NEEDS_CLARIFICATION':propositions.length?(unmatchedClauseIds.length?'PARTIAL':'OK'):'UNSUPPORTED_INPUT',data);
 }
