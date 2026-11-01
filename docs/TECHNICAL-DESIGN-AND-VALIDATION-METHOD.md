@@ -1,0 +1,345 @@
+# EPIPHANY — Technical Design, Reasoning & Validation Method
+
+**Document ID:** TDRV-1  
+**Status:** Initial methodology baseline — reusable and evolving  
+**Purpose:** Preserve a repeatable engineering method for designing, evaluating, testing, and improving EPIPHANY activities and future games.
+
+---
+
+## 1. Why this record exists
+
+This document records not only what is being built, but how design decisions are reached and verified. It is intended to become a reusable reference for future game and activity development.
+
+The method prioritizes correctness, learning value, logical fairness, traceability, and evidence-based decisions over speed or premature implementation.
+
+This is a living methodology. It may evolve as later projects reveal better practices.
+
+## 2. Core working principles
+
+1. **Understand before changing:** inspect the existing system and clarify the actual problem before proposing a solution.
+2. **Separate product intent from implementation:** establish what the user and learner should experience before choosing code structures.
+3. **Make constraints explicit:** identify invariants, dependencies, exclusions, and failure conditions.
+4. **Distinguish facts from assumptions:** label confirmed information, hypotheses, proposals, and approved decisions separately.
+5. **Prefer testable statements:** convert vague goals into observable acceptance criteria.
+6. **Design for edge cases:** test ambiguity, invalid input, partial completion, failure, retries, and alternative valid behavior.
+7. **Simulate before coding:** use representative scenarios to expose weaknesses in rules and scoring before implementation.
+8. **Calibrate from evidence:** revise weights, thresholds, and rules after observing scenario outcomes rather than defending initial guesses.
+9. **Preserve traceability:** connect each requirement to design rules, test cases, expected outcomes, and implementation checks.
+10. **Do not overclaim:** distinguish a conceptual review, manual simulation, automated test, and verified production behavior.
+11. **Keep user-owned decisions explicit:** especially story canon, learning intent, reward policy, and significant product behavior.
+12. **Use approval gates:** do not treat a draft or successful local test as authorization for unrelated implementation.
+
+## 3. The reusable engineering workflow
+
+### Step 1 — Problem framing and scope
+
+Record:
+- the user problem or learning need;
+- intended audience and context;
+- desired outcome;
+- current behavior or baseline;
+- in-scope and out-of-scope areas;
+- known constraints and dependencies;
+- risks if the design is wrong.
+
+Output: a concise problem statement and scope boundary.
+
+### Step 2 — Requirements and invariants
+
+Convert the problem into:
+- functional requirements: what the system must do;
+- quality requirements: accuracy, accessibility, performance, clarity, reliability;
+- invariants: what must remain true across all configurations;
+- exclusions: what the system must not do;
+- observable acceptance criteria.
+
+Avoid requirements such as "make it better" unless accompanied by measurable or reviewable behavior.
+
+Output: a requirement list with stable IDs.
+
+### Step 3 — Conceptual model and architecture
+
+Define the important entities, states, relationships, and boundaries before choosing implementation details.
+
+Examples:
+- reusable authored content versus an individual user session;
+- evidence versus interpretation;
+- academic grade versus learner independence;
+- configuration dimensions that must remain independent;
+- immutable historical attempts versus the current attempt.
+
+Output: conceptual data model, state model, and dependency map.
+
+### Step 4 — Representative reference scenarios
+
+Create a small but deliberately varied set of examples:
+- normal successful path;
+- alternative valid path;
+- partial success;
+- invalid or unsupported result;
+- ambiguous input;
+- contradictory input;
+- boundary condition;
+- failure and recovery case.
+
+Give each scenario a stable ID and record:
+- input and context;
+- expected behavior;
+- rationale;
+- relevant requirements;
+- severity if the behavior fails.
+
+Output: a reference scenario suite that can later become automated tests.
+
+### Step 5 — Rubrics and decision rules
+
+Where quality or correctness is evaluated, define:
+- dimensions being assessed;
+- criterion-level definitions;
+- weights and point allocation, if applicable;
+- accepted alternatives;
+- partial-credit rules;
+- disqualifying or unsupported claims;
+- ambiguity handling;
+- grade gates and exceptions.
+
+Do not use one model answer as the sole definition of correctness. Represent the concepts, evidence relationships, constraints, and valid alternatives that make an answer acceptable.
+
+Output: a versioned rubric and explicit decision rules.
+
+### Step 6 — Manual simulation
+
+Run the reference scenarios against the proposed rules before coding.
+
+For each scenario record:
+- expected classification or score;
+- score by dimension;
+- rationale for each awarded or withheld point;
+- whether the result matches the intended product behavior;
+- newly discovered ambiguity or defect.
+
+Look for:
+- correct answer by guessing;
+- sound reasoning with an alternative conclusion;
+- correct conclusion with weak reasoning;
+- partial understanding;
+- unsupported certainty;
+- excessive skepticism;
+- ambiguity;
+- contradictions;
+- unintended incentives.
+
+Output: a simulation report and a list of design defects.
+
+### Step 7 — Calibration
+
+Adjust rules only after examining simulation outcomes.
+
+Check:
+- whether weights reflect the actual learning objective;
+- whether thresholds create unfair cliffs;
+- whether partial credit is meaningful;
+- whether a strong alternative is unfairly capped;
+- whether superficial strategies can game the score;
+- whether different difficulty levels are judged at appropriate depth;
+- whether the same quality means the same thing across configurations.
+
+Output: revised, versioned criteria and documented reasons for each change.
+
+### Step 8 — Configuration and interaction matrix
+
+When a system has independent modes or settings, test their combinations explicitly.
+
+For each setting define:
+- what it changes;
+- what it must not change;
+- whether it affects content, assistance, presentation, scoring, or persistence;
+- how it combines with other settings;
+- edge cases and unsupported combinations.
+
+Use a matrix to avoid testing only the default configuration.
+
+Output: configuration matrix, invariants, and combination tests.
+
+### Step 9 — Approval gate
+
+Before implementation, verify:
+- requirements are unambiguous enough to build;
+- representative cases pass the design review;
+- known edge cases have defined behavior;
+- trade-offs and limitations are documented;
+- data and state boundaries are understood;
+- unresolved decisions are explicitly listed;
+- the implementation scope has user approval where required.
+
+Output: a clear approved scope, or a list of blockers.
+
+### Step 10 — Implementation and automated verification
+
+Only after the design gate:
+- implement the smallest coherent slice;
+- add automated tests from the reference scenarios;
+- test regression-sensitive behavior;
+- test failure paths and data integrity;
+- run the relevant test suite;
+- inspect actual results rather than assuming success.
+
+For EPIPHANY repository changes, follow the project workflow and run `npm run stamp` followed by `npm test` when relevant.
+
+Output: code changes, test evidence, and a truthful implementation report.
+
+### Step 11 — Integration, persistence, and recovery
+
+For stateful features, separately verify:
+- save and restore;
+- multiple concurrent unfinished sessions;
+- account/device synchronization;
+- conflict handling;
+- offline behavior;
+- recovery after partial failure;
+- immutable history and version compatibility;
+- no accidental overwrite or silent data loss.
+
+Output: persistence and recovery verification.
+
+### Step 12 — Release readiness and learning loop
+
+Review:
+- functional correctness;
+- user experience and accessibility;
+- performance and reliability;
+- content quality;
+- analytics or feedback needs, with privacy constraints;
+- known limitations;
+- rollback or recovery strategy.
+
+After release, use observed behavior to refine the design without silently rewriting historical records or approved content.
+
+Output: release decision and follow-up backlog.
+
+## 4. Test design standard
+
+A useful test case should include:
+
+| Field | Purpose |
+|---|---|
+| test_id | Stable identifier |
+| requirement_ids | Requirements covered |
+| scenario | Input and relevant context |
+| expected_behavior | Exact expected system response |
+| rationale | Why that response is correct |
+| severity | Impact if it fails |
+| test_level | Manual, unit, integration, or end-to-end |
+| actual_result | Filled only after execution |
+| status | Not run, pass, fail, blocked |
+| notes | Evidence, limitations, or follow-up |
+
+Never label a manual thought experiment as an automated test. Never mark a test passed without an observed execution result.
+
+## 5. Scoring and evaluation design safeguards
+
+For any activity that evaluates learner or user responses:
+
+- separate outcome correctness from process/reasoning quality;
+- define accepted semantic alternatives;
+- distinguish fact, inference, hypothesis, and unknown;
+- define partial credit;
+- handle ambiguity before forcing a binary result;
+- avoid keyword-only evaluation;
+- prevent answer length or vocabulary complexity from becoming hidden proxies;
+- keep assistance/independence separate from academic correctness unless the learning objective explicitly says otherwise;
+- test adversarial and gaming strategies;
+- explain results in a way that teaches rather than merely labels.
+
+## 6. Configuration matrix standard
+
+For every independent configuration dimension, document:
+- allowed values;
+- user-facing purpose;
+- behavior changed;
+- behavior invariant;
+- interactions with other dimensions;
+- persistence requirements;
+- test coverage.
+
+A configuration should not silently alter a different dimension. For example, a training mode must not silently change a learner's selected language level.
+
+## 7. Decision and evidence labels
+
+Use consistent labels in design records:
+
+- **Approved:** explicitly agreed and may be treated as the current baseline.
+- **Proposed:** a recommendation awaiting review.
+- **Open:** unresolved; do not invent a decision.
+- **Experimental:** used for exploration or simulation, not production-approved.
+- **Implemented:** code exists, but this alone does not prove correctness.
+- **Verified:** behavior was actually checked with recorded evidence.
+- **Deprecated:** replaced by a newer decision; preserve the history and reason.
+
+For results, distinguish:
+- conceptual reasoning;
+- manual simulation;
+- automated unit test;
+- integration test;
+- end-to-end test;
+- production observation.
+
+## 8. Traceability and change control
+
+Maintain links between:
+- product goals;
+- requirements;
+- design decisions;
+- data fields and state transitions;
+- reference scenarios;
+- automated tests;
+- implementation changes;
+- verification evidence.
+
+When a rule changes:
+1. record the previous rule;
+2. state why it changed;
+3. identify affected cases and tests;
+4. update expected results;
+5. rerun affected tests after implementation;
+6. preserve historical assessment records and version context.
+
+Do not rewrite historical results as though the new rubric had always applied.
+
+## 9. Applying the method to The Language Detective
+
+The current application of this method has followed this sequence:
+
+1. Define product identity, learning objectives, CEFR, Training Modes, and answer formats.
+2. Separate reusable Case Data from per-attempt Session Data.
+3. Define evidence, question, hint, final-conclusion, review, reward, and lifecycle concepts.
+4. Draft three reference cases spanning A2, B1–B2, and C1–C2.
+5. Draft criterion-level scoring rubrics using Conclusion Accuracy, Evidence Reasoning, and Critical Thinking.
+6. Conduct a manual 24-answer simulation exercise.
+7. Identify issues involving guessing, ambiguity, core findings, overconfidence, and alternative conclusions.
+8. Propose consistent 35/40/25 top-level weights while adapting criterion depth to CEFR.
+9. Begin the Training Mode and Answer Format matrix for Guided, Steady, Challenge, Standard, and Hell Mode.
+
+Current limitations:
+- no assessment engine has been implemented;
+- no automated scoring tests have been run;
+- weights, grade bands, grade gates, and some edge-case rules remain provisional;
+- the three cases are experimental design fixtures, not approved published content;
+- Persistence & Recovery remains a later design and verification phase.
+
+## 10. Reuse in future EPIPHANY games
+
+For each future game or activity, reuse the workflow but adapt the evaluation model to its real purpose.
+
+Examples:
+- word and vocabulary games: semantic accuracy, usage context, accepted variants, distractor quality;
+- logic and investigation games: evidence sufficiency, inference validity, uncertainty, alternative explanations;
+- story choices: narrative consistency, consequence clarity, continuity, player agency;
+- puzzle games: solution validity, fairness, hint quality, exploit resistance;
+- progression systems: meaningful mastery, replay fairness, reward integrity, no unintended farming.
+
+Do not force every game into the same scoring dimensions. Reuse the design and validation process, not an unsuitable universal rubric.
+
+---
+
+**Initial checkpoint:** This methodology is recorded as a reusable proposed standard. Its application to The Language Detective is in progress. It is not a claim that implementation or automated verification has occurred.
