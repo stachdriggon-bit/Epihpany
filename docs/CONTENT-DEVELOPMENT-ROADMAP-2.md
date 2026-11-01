@@ -1090,3 +1090,82 @@ The normal scaffolding built into Guided mode is not itself an optional hint and
 ### 24.5 Calibration and test status
 
 The 35/40/25 weights, criterion performance levels, grade bands, and S gate are a coherent proposed baseline for the next calibration review. They remain provisional until the 57-entry scenario inventory is converted into executable fixtures and reviewed against actual evaluator outputs. Manual design review must not be described as automated testing.
+
+
+---
+
+## 25. Phase 6 — Reference fixture contract and approval gate
+
+**Status:** Test design contract approved; fixtures are planned, not yet implemented or executed.
+
+### 25.1 Fixture structure
+
+Each future semantic or scoring fixture must carry:
+- stable `scenarioId`;
+- case ID, exact case version, and evaluator version;
+- CEFR, Training Mode, and Answer Format where relevant;
+- learner response and any preceding answer / clarification context;
+- expected interpreted claims and semantic operators;
+- expected concept matches and match path (Direct / Compositional);
+- expected evidence relationships and claim-level diagnostics;
+- expected primary outcome;
+- expected criterion and dimension assessment, where assessable;
+- expected letter grade and Independence, where applicable;
+- whether clarification is required;
+- a rationale and the invariant being protected.
+
+A fixture must distinguish expected behavior from actual execution results. The status remains Not Run until an automated test has genuinely executed.
+
+### 25.2 The 57-scenario regression inventory
+
+The existing manual review inventory becomes the minimum initial regression suite:
+- 18 core case × Training Mode × Answer Format combinations;
+- 9 hint behavior scenarios;
+- 8 retry and latest-clear-response scenarios;
+- 10 ambiguity and semantic-outcome scenarios;
+- 6 mode differentiation and experience scenarios;
+- 6 fairness and scoring-invariant scenarios.
+
+The count is 57 planned scenario entries, not 57 implemented tests. Semantic positive/negative pairs from Section 22.10 must be added to the relevant cases; if they expand the suite beyond 57, retain the additional coverage rather than forcing the count to remain fixed.
+
+### 25.3 Case-specific semantic anchors
+
+The first fixtures must protect these distinctions:
+
+**CASE-001 — The Missing Package**
+- Supported: an unidentified resident wearing a green jacket picked up the package.
+- Must remain unknown: the resident's identity and motive.
+- Reject or flag: attributing the pickup to Sara or Adam; treating witness presence as proof of pickup; asserting a motive.
+
+**CASE-002 — Conflicting Accounts**
+- Supported: the envelope was later found in Room B; Lena reported moving papers; Lena's card was used to access the room.
+- Plausible but unproven: Lena moved the envelope.
+- Must remain unknown: who physically used the card and exactly what was moved.
+- Reject or flag: treating card use as proof Lena personally entered; treating Omar's unidentified papers as confirmed sighting of the envelope; asserting theft as established.
+
+**CASE-003 — The Uncertain Evidence**
+- Supported: R-4 recorded an unusual increase in signal strength during the stated interval; the record is incomplete.
+- Plausible hypotheses: an external source or a temporary receiver fault.
+- Must remain unresolved: the actual cause and source.
+- Reject or flag: claiming the external event is confirmed; using R-7 as a direct control; treating a personal impression or preliminary report as independent confirmation.
+
+### 25.4 Phase 6 design acceptance checklist
+
+The conceptual design is ready to move to implementation planning only when the following are all represented in the reviewed specification:
+1. Versioned Case Data is separate from Session Data.
+2. Evidence IDs, roles, relationships, limitations, and references are defined.
+3. Required concepts, accepted alternatives, and constraints are case-authored.
+4. Direct and Compositional matching preserve semantic operators and relationships.
+5. Facts, attributed observations, inferences, hypotheses, unknowns, and opinions remain distinct.
+6. Evidence scope and invalid transitive inference are handled.
+7. Mixed claims, overclaiming, and contradictions have explicit outcomes.
+8. All five primary outcomes have defined behavior.
+9. The six module responsibilities and invariants are defined.
+10. Criterion/dimension aggregation, provisional grade bands, and S / Guided gates are documented.
+11. Clarification and Independence behavior are documented.
+12. The 57-scenario inventory and case-specific semantic anchors are traceable to planned fixtures.
+13. Limitations of deterministic local evaluation are explicit.
+14. Persistence & Recovery remains a separate later phase.
+15. No code or automated test is represented as completed before it exists and is verified.
+
+**Phase 6 checkpoint:** The conceptual assessment-engine design is documented across Sections 20–25. This is not an implementation approval. The next work is to translate the design into exact machine-readable contracts and executable fixtures, review those artifacts, and then request explicit approval for the implementation scope. No code changes or automated test runs are claimed by this checkpoint.
