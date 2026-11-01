@@ -137,6 +137,9 @@
     if (hadWeeklyChallenge) window.EpiphanyNotifications?.weeklyReset(state.weeklyKey);
   }
   let saveWarned = false;
+  function markPreferencesUpdated() {
+    state._preferencesUpdatedAt = Date.now();
+  }
   function save() {
     if (DEV_MODE.active && hasDeveloperAccess()) return;
     const currentXp = Math.max(0, Number(state.xp) || 0);
@@ -3081,6 +3084,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     if (state.immersionWeek?.active && state.immersionWeek.endsAt && Date.now() < Number(state.immersionWeek.endsAt)) { toast('Arabic help is paused during your optional immersion week. You can end it in My Tools.'); return; }
     const toggleVersion = ++helpLanguageToggleVersion;
     state.helpArabic = !state.helpArabic;
+    markPreferencesUpdated();
     // Keep Arabic help separate from the explicit translation toggle.
     try { localStorage.setItem('epiphany-help-language-choice', state.helpArabic ? 'ar' : 'en'); } catch {}
     save(); syncSettings();
@@ -3207,7 +3211,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     const sd=e.target.closest('[data-story-decision]');if(sd){answerStoryDecision(Number(sd.dataset.storyDecision));return;}
     if(e.target.closest('#story-decision-next')&&ST&&ST.mode==='decision-feedback'){hideSheet();$('#sheet').classList.remove('story-choice-sheet');ST.mode='read';ST.page=ST.decisionResumePage;renderStoryPage();return;}
     const sw=e.target.closest('[data-story-word]');if(sw&&ST&&ST.mode==='read'){openStoryWord(sw.dataset.storyWord,sw.dataset.storyDisplay);return;}
-    const setting=e.target.closest('[data-story-setting]');if(setting&&ST){const prefs=state.storyReaderSettings||(state.storyReaderSettings={fontScale:1,lineSpacing:1.75,nightMode:false});const key=setting.dataset.storySetting;if(key==='font-up')prefs.fontScale=Math.min(1.35,Math.round((prefs.fontScale+0.1)*100)/100);if(key==='font-down')prefs.fontScale=Math.max(0.85,Math.round((prefs.fontScale-0.1)*100)/100);if(key==='line-up')prefs.lineSpacing=Math.min(2.25,Math.round((prefs.lineSpacing+0.1)*100)/100);if(key==='line-down')prefs.lineSpacing=Math.max(1.45,Math.round((prefs.lineSpacing-0.1)*100)/100);if(key==='night')prefs.nightMode=!prefs.nightMode;save();renderStoryPage();return;}
+    const setting=e.target.closest('[data-story-setting]');if(setting&&ST){const prefs=state.storyReaderSettings||(state.storyReaderSettings={fontScale:1,lineSpacing:1.75,nightMode:false});const key=setting.dataset.storySetting;if(key==='font-up')prefs.fontScale=Math.min(1.35,Math.round((prefs.fontScale+0.1)*100)/100);if(key==='font-down')prefs.fontScale=Math.max(0.85,Math.round((prefs.fontScale-0.1)*100)/100);if(key==='line-up')prefs.lineSpacing=Math.min(2.25,Math.round((prefs.lineSpacing+0.1)*100)/100);if(key==='line-down')prefs.lineSpacing=Math.max(1.45,Math.round((prefs.lineSpacing-0.1)*100)/100);if(key==='night')prefs.nightMode=!prefs.nightMode;markPreferencesUpdated();save();renderStoryPage();return;}
     const act=e.target.closest('[data-story-action]');
     const speed=e.target.closest('[data-story-rate]');if(speed&&ST){const draft=$('#story-dictation-answer');if(draft&&ST.dictationActive)ST.dictationAnswer=draft.value;ST.audioRate=Number(speed.dataset.storyRate);renderStoryPage();return;}if(act&&ST){const action=act.dataset.storyAction;if(action==='next'){persistStoryReaderProgress();storyNext();return;}if(action==='prev'&&ST.page>0){ST.page--;ST.textHidden=false;ST.dictationActive=false;ST.dictationChecked=false;persistStoryReaderProgress();renderStoryPage();return;}if(action==='listen-page'){speakStoryPage();return;}if(action==='start-recording'){startStoryPronunciationRecording();return;}if(action==='stop-recording'){stopStoryPronunciationRecording();return;}if(action==='play-recording'){playStoryPronunciationRecording();return;}if(action==='toggle-text'){ST.textHidden=!ST.textHidden;ST.dictationActive=false;renderStoryPage();return;}if(action==='dictation'){ST.dictationActive=!ST.dictationActive;ST.textHidden=ST.dictationActive;ST.dictationChecked=false;ST.dictationAnswer='';renderStoryPage();if(ST.dictationActive)speakStoryPage();return;}if(action==='comprehension'){ST.comprehensionOnly=true;ST.textHidden=true;ST.dictationActive=false;ST.mode='quiz';ST.qi=0;ST.score=0;ST.results=[];ST.answered=false;try{window.speechSynthesis?.cancel();}catch{}renderStoryQuestion();return;}if(action==='listen-word'){speak(act.dataset.value);return;}if(action==='save-word'){saveStoryWord(act.dataset.value,act.dataset.meaning);openStoryWord(act.dataset.value,act.dataset.value);return;}if(action==='close-word'){const card=$('#story-word-card');if(card)card.hidden=true;return;}if(action==='back-reading'){ST.mode='read';ST.comprehensionOnly=false;ST.page=ST.story.pages.length-1;hideSheet();renderStoryPage();return;}if(action==='replay-other'){const replayId=ST.story.id;ST=null;startStory(replayId);return;}if(action==='another'){const old=ST.story.id;ST=null;const next=STORIES.find(s=>s.id!==old&&storyLevelIndex(s.level)<=storyLevelIndex(currentLevel().id));startStory((next||STORIES[0]).id);return;}if(action==='words'){ST=null;closeGame();openView('words');return;}if(action==='close'){ST=null;closeGame();openView('stories');return;}}
     if(ST&&ST.mode==='quiz'&&e.target.closest('#go-next')){hideSheet();if(ST.qi<2){ST.qi++;ST.answered=false;renderStoryQuestion();}else finishStory();return;}
@@ -3216,6 +3220,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     if (!themeButton) return;
     e.preventDefault();
     state.theme = state.theme === 'dark' ? 'light' : 'dark';
+    markPreferencesUpdated();
     document.body.dataset.theme = state.theme;
     save();
     syncSettings();
@@ -3287,9 +3292,9 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
   $('#ar-toggle').addEventListener('click', toggleArabic);
   $('#game-ar').addEventListener('click', txToggleScreen);
   const translationToggle = $('#translation-toggle');
-  if (translationToggle) translationToggle.addEventListener('click', () => { if (state.immersionWeek?.active && state.immersionWeek.endsAt && Date.now() < Number(state.immersionWeek.endsAt)) { toast('Arabic translation is paused during immersion week. You can end it in My Tools.'); return; } state.translationEnabled = !state.translationEnabled; save(); syncSettings(); enhanceTranslationControls($('#game-body')); document.querySelectorAll('.translate-btn').forEach(b => { b.hidden = !state.translationEnabled; }); document.querySelectorAll('.translation-result').forEach(el => { if (!state.translationEnabled) el.hidden = true; }); if (state.translationEnabled) ensureArabicTranslationCatalog().then(() => { renderAll(); enhanceTranslationControls($('#game-body')); }).catch(() => toast('The expanded Arabic catalogue could not load; built-in translations remain available.')); toast(state.translationEnabled ? 'Arabic translation is on' : 'Arabic translation is off'); });
+  if (translationToggle) translationToggle.addEventListener('click', () => { if (state.immersionWeek?.active && state.immersionWeek.endsAt && Date.now() < Number(state.immersionWeek.endsAt)) { toast('Arabic translation is paused during immersion week. You can end it in My Tools.'); return; } state.translationEnabled = !state.translationEnabled; markPreferencesUpdated(); save(); syncSettings(); enhanceTranslationControls($('#game-body')); document.querySelectorAll('.translate-btn').forEach(b => { b.hidden = !state.translationEnabled; }); document.querySelectorAll('.translation-result').forEach(el => { if (!state.translationEnabled) el.hidden = true; }); if (state.translationEnabled) ensureArabicTranslationCatalog().then(() => { renderAll(); enhanceTranslationControls($('#game-body')); }).catch(() => toast('The expanded Arabic catalogue could not load; built-in translations remain available.')); toast(state.translationEnabled ? 'Arabic translation is on' : 'Arabic translation is off'); });
   $$('#sound-toggle, #sound-toggle-mobile').forEach(button => button.addEventListener('click', () => {
-    state.sound = !state.sound; save(); syncSettings();
+    state.sound = !state.sound; markPreferencesUpdated(); save(); syncSettings();
     toast(state.sound ? 'Sound is on' : 'Sound is off');
     if (state.sound) sfx('ok');
   }));
@@ -5185,7 +5190,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
       }
       if(name==='start-immersion'){
         const now=Date.now();state.immersionWeek={startedAt:now,endsAt:now+7*86400000,days:{},active:true};
-        state.translationEnabled=false;state.helpArabic=false;save();syncSettings();renderMyTools();toast('Your optional English immersion week has started. You can stop it at any time.');return;
+        state.translationEnabled=false;state.helpArabic=false;markPreferencesUpdated();save();syncSettings();renderMyTools();toast('Your optional English immersion week has started. You can stop it at any time.');return;
       }
       if(name==='end-immersion'){
         state.immersionWeek.active=false;state.immersionWeek.endedAt=Date.now();save();syncSettings();renderMyTools();toast('Challenge ended. Your progress is safe; Arabic help is available again.');return;
@@ -5752,6 +5757,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     }
     if (state.weeklyKey !== weekKey()) { state.weeklyKey = weekKey(); state.weeklyProgress = 0; state.weeklyClaimed = false; }
     try { localStorage.setItem('epiphany-progress', JSON.stringify(state)); } catch {}
+    try { localStorage.setItem('epiphany-help-language-choice', state.helpArabic ? 'ar' : 'en'); } catch {}
     renderAll();
   };
   window.__epiphanyResetProgress = () => {
@@ -5836,6 +5842,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
       helpLanguageChoice = choice;
       const choiceVersion = ++helpLanguageToggleVersion;
       state.helpArabic = choice === 'ar';
+      markPreferencesUpdated();
       try { localStorage.setItem('epiphany-help-language-choice', choice); } catch {}
       save(); syncSettings();
       helpLanguageModal.hidden = true;
