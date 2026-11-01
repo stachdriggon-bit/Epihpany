@@ -71,5 +71,6 @@ test('The Bold Translator defaults to adaptive CEFR and keeps manual practice se
   assert.match(source, /data-translator-level="adaptive"/);
   assert.match(source, /data-translator-level="'\+level\+'"/);
   assert.match(source, /translatorBanks\[level\] \? '' : 'disabled'/);
+  assert.match(source, /A1 and A2 are available for practice/);
   assert.ok(loadHarness().__translatorBanks.A2, 'A2 should become selectable only after its bank exists');
 });
