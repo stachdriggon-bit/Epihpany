@@ -104,6 +104,21 @@ test('Guided and Steady retain the original option sets', () => {
   }
 });
 
+test('Challenge uses option-matched explanations when a question defines one', () => {
+  for (const level of ['A1','A2','B1','B2','C1','C2']) {
+    for (const source of bank.banks[level]) {
+      const selected = bank.selectRound(level,'challenge',[],()=>0.31)
+        .questions.find(question => question.id === source.id);
+      assert.ok(selected);
+      assert.equal(
+        selected.explain,
+        source.challengeExplain || source.explain,
+        source.id + ' should show an explanation appropriate to its selected options'
+      );
+    }
+  }
+});
+
 test('Challenge shuffling keeps the selected answer index valid', () => {
   for (const level of ['A1','A2','B1','B2','C1','C2']) {
     const round = bank.selectRound(level,'challenge',[],()=>0.43);
