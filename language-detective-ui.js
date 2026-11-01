@@ -9,9 +9,9 @@
   }
 
   const caseInfo = {
-    'CASE-001': { title: 'The Missing Package', level: 'A2', subtitle: 'A delivery disappears before its recipient arrives.', focus: 'Separate what the witness saw from what nobody could identify.' },
-    'CASE-002': { title: 'Conflicting Accounts', level: 'B1–B2', subtitle: 'An envelope vanishes, then appears in another room.', focus: 'Compare the timeline, reported actions and access records.' },
-    'CASE-003': { title: 'The Uncertain Evidence', level: 'C1–C2', subtitle: 'An observatory receiver records an unusual signal.', focus: 'Distinguish an observed anomaly from competing explanations.' }
+    'CASE-001': { title: 'The Missing Package', level: 'A2', subtitle: 'A delivery disappears before its recipient arrives.', focus: 'Separate what the witness saw from what nobody could identify.', details: ['10:05 — The delivery record says the package was placed at reception; no recipient was recorded.', '10:00–10:15 — Adam was away and did not see the delivery.', '10:12 — Sara saw a resident wearing a green jacket take the package after the driver left it on the table. She did not see the resident’s face.', '10:20 — Nora arrived and the package was no longer there.', 'The optional label names Nora and Apartment 2B; it does not identify who picked up the package.'] },
+    'CASE-002': { title: 'Conflicting Accounts', level: 'B1–B2', subtitle: 'An envelope vanishes, then appears in another room.', focus: 'Compare the timeline, reported actions and access records.', details: ['3:05 — Nadia placed the envelope of workshop recordings at library reception.', '3:20 — Omar saw a large envelope on the desk. Later, he saw Nadia carrying papers near the exit and assumed they were the envelope, but he did not identify them.', 'About 3:25 — Lena said she moved a group of papers to Room B; she was unsure whether she checked every sheet.', '3:22–3:41 — A card opened Room B and the room was later closed. The log does not establish who physically used the card or what was carried inside.', '3:45 — Nadia returned and found the envelope missing.', '4:10 — The envelope was found closed in Room B, with papers inside.'] },
+    'CASE-003': { title: 'The Uncertain Evidence', level: 'C1–C2', subtitle: 'An observatory receiver records an unusual signal.', focus: 'Distinguish an observed anomaly from competing explanations.', details: ['14 October, 21:43–21:47 — Receiver R-4 recorded an unusual signal-strength increase. The recovered recording is incomplete.', 'Analyst One: an external source is possible, but its identity cannot be established and equipment fault cannot be ruled out.', 'Analyst Two: a temporary R-4 fault is possible, but there is no diagnostic result proving it.', 'Maintenance records show unstable readings in September and a connection check before R-4 returned to service. There was no maintenance or diagnostic test on the night of 14 October.', 'R-7 did not record the increase, but its direction and sensitivity differed, so it is not a direct control.', 'A preliminary report suggested an external event before the original recording was recovered; it is not independent confirmation.', 'A technician’s note from two days earlier expresses concern that the problem may have returned; it is an impression, not a diagnosis.'] }
   };
   const hints = [
     { id: 'DIRECTION', title: 'Direction', text: 'Start with what the records directly establish. Separate observations from assumptions.' },
@@ -88,6 +88,7 @@
     root.innerHTML = '<section class="ld-shell">' +
       '<div class="ld-toolbar"><button type="button" class="ld-back" data-ld-back>← All cases</button><span>CASE · ' + info.level + '</span><span>' + esc(state.trainingMode) + ' · ' + esc(state.answerFormat) + '</span></div>' +
       '<div class="ld-heading"><span class="ld-kicker">INVESTIGATION IN PROGRESS</span><h2>' + info.title + '</h2><p>' + info.subtitle + '</p><p class="ld-focus">' + info.focus + '</p></div>' +
+      '<section class="ld-timeline"><h3>Case record</h3><ol>' + info.details.map(line => '<li>' + esc(line) + '</li>').join('') + '</ol></section>' +
       '<div class="ld-evidence-grid">' + evidence + '</div>' +
       '<section class="ld-hints"><div><strong>Optional hints</strong><p>Use them in order. Hints do not reduce your academic score.</p></div><div class="ld-hint-actions">' + visibleHints + '</div></section>' +
       '<form class="ld-answer-form" data-ld-answer-form><div class="ld-answer-heading"><h3>Build your conclusion</h3><span>' + (state.answerFormat === 'HELL' ? 'Two-part response' : 'One written response') + '</span></div>' +
@@ -104,11 +105,13 @@
     const grade = evaluation.awardedGrade ? '<span class="ld-grade">Grade ' + esc(evaluation.awardedGrade) + '</span>' : '';
     const dimensionRows = dims.map(d => '<div class="ld-dimension"><span>' + esc(d.dimension.replaceAll('_', ' ').toLowerCase()) + '</span><b>' + d.score + '%</b><div><i style="width:' + Math.max(0, Math.min(100, d.score)) + '%"></i></div></div>').join('');
     const findings = (evaluation.claimDiagnostics || []).map(f => '<li><b>' + esc(f.conceptId.replaceAll('_', ' ').toLowerCase()) + ':</b> ' + esc(f.state) + '</li>').join('');
+    const attemptHistory = state.attempts.map((entry, i) => '<li><b>Attempt ' + (i + 1) + ':</b> ' + esc(outcomeLabel[entry.result.evaluation?.primaryOutcome] || 'Assessment result') + '</li>').join('');
     root.innerHTML = '<section class="ld-shell">' +
       '<div class="ld-toolbar"><button type="button" class="ld-back" data-ld-back>← Case overview</button><span>ATTEMPT ' + attempt + '</span></div>' +
       '<div class="ld-result-head"><span class="ld-kicker">ASSESSMENT FEEDBACK</span><h2>' + esc(outcomeLabel[outcome] || 'Assessment result') + '</h2><p>' + esc(outcomeText[outcome] || 'Review the evidence and try again.') + '</p><div class="ld-result-score">' + score + grade + '</div></div>' +
       (dimensionRows ? '<section class="ld-dimensions"><h3>What the assessment considered</h3>' + dimensionRows + '</section>' : '') +
       (findings ? '<details class="ld-diagnostics"><summary>Claim-by-claim review</summary><ul>' + findings + '</ul></details>' : '') +
+      (state.attempts.length > 1 ? '<details class="ld-diagnostics"><summary>Previous attempts (' + (state.attempts.length - 1) + ')</summary><ul>' + attemptHistory.slice(0, attemptHistory.lastIndexOf('<li>')) + '</ul></details>' : '') +
       '<div class="ld-feedback-note"><strong>Remember</strong><p>A missing detail is not automatically a contradiction. The assessment distinguishes an incomplete answer from a claim that the evidence does not support.</p></div>' +
       '<div class="ld-result-actions"><button type="button" class="ld-submit" data-ld-retry>Revise and try again</button><button type="button" class="ld-back" data-ld-back>Choose another case</button></div>' +
       '</section>';
