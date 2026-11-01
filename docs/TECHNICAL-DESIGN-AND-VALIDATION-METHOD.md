@@ -620,3 +620,17 @@ This is a planned suite, not an automated test result. Semantic positive/negativ
 ### 16.4 Design approval boundary
 
 The conceptual assessment-engine design is documented across Sections 12–16. This does not authorize code implementation. Exact machine-readable module contracts and executable fixtures must be produced and reviewed before a separate explicit implementation approval. Persistence & Recovery remains a later phase. No implementation or automated test execution is claimed.
+
+
+---
+
+## 17. Assessment Engine Contract
+
+The detailed V1 assessment contract is recorded in [ASSESSMENT-ENGINE-CONTRACT.md](./ASSESSMENT-ENGINE-CONTRACT.md). It defines the version envelope, semantic data types, all six module contracts, orchestrator, failure propagation, Standard/Hell adapters, scoring resolution, and feedback boundaries.
+
+The contract was conceptually traced against all three experimental cases:
+- CASE-001: observer versus actor, unknown identity/motive, and unsupported theft claims.
+- CASE-002: card credential versus physical actor, generic papers versus the identified envelope, and plausible versus proven movement.
+- CASE-003: recorded anomaly versus causal explanation, competing hypotheses, and limitations of R-7 / preliminary reporting.
+
+These are design walkthroughs, not automated tests. The contract remains pending review and explicit implementation approval. Runtime schemas, executable fixtures, module tests, full-pipeline tests, score calibration, and project regression execution remain future work. No source code change or test run is claimed.
