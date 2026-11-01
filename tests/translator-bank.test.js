@@ -27,9 +27,9 @@ function loadHarness() {
   return window;
 }
 
-test('The Bold Translator A1 and A2 banks each have 42 complete questions with three explained options', () => {
+test('The Bold Translator A1, A2 and B1 banks each have 42 complete questions with three explained options', () => {
   const harness = loadHarness();
-  for (const level of ['A1', 'A2']) {
+  for (const level of ['A1', 'A2', 'B1']) {
     const bank = harness.__translatorBanks[level];
     assert.ok(bank, `${level} bank is missing`);
     assert.equal(bank.guided.length, 12, `${level} guided count`);
@@ -71,6 +71,7 @@ test('The Bold Translator defaults to adaptive CEFR and keeps manual practice se
   assert.match(source, /data-translator-level="adaptive"/);
   assert.match(source, /data-translator-level="'\+level\+'"/);
   assert.match(source, /translatorBanks\[level\] \? '' : 'disabled'/);
-  assert.match(source, /A1 and A2 are available for practice/);
+  assert.match(source, /A1, A2 and B1 are available for practice/);
   assert.ok(loadHarness().__translatorBanks.A2, 'A2 should become selectable only after its bank exists');
+  assert.ok(loadHarness().__translatorBanks.B1, 'B1 should become selectable only after its bank exists');
 });
