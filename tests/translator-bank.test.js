@@ -24,7 +24,8 @@ function loadHarness(options = {}) {
   );
   assert.notEqual(instrumented, source, 'test hook must be inserted before the Think Lab IIFE closes');
   new vm.Script(instrumented, { filename: 'think-lab.js' });
-  vm.runInNewContext(instrumented, { window, document, console, Math: options.math || Math }, { filename: 'think-lab.js', timeout: 5000 });
+  const math = Object.assign(Object.create(Math), options.math || {});
+  vm.runInNewContext(instrumented, { window, document, console, Math: math }, { filename: 'think-lab.js', timeout: 5000 });
   return window;
 }
 
@@ -50,7 +51,7 @@ test('The Bold Translator A1, A2, B1, B2 and C1 banks each have 42 complete ques
         const correctExplanationIndexes = question.optionExplanations
           .map((explanation, optionIndex) => /^Correct:/i.test(explanation.trim()) ? optionIndex : -1)
           .filter(optionIndex => optionIndex >= 0);
-        assert.deepEqual(correctExplanationIndexes, [question.answer], `${where}: the answer key must match the explanation marked Correct`);
+        assert.equal(correctExplanationIndexes.join(','), String(question.answer), `${where}: the answer key must match the explanation marked Correct`);
       }
         assert.equal(new Set(question.options.map(option => option.trim().toLowerCase())).size, 3, `${where}: duplicate options`);
       }
