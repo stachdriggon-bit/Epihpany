@@ -1169,3 +1169,26 @@ The conceptual design is ready to move to implementation planning only when the 
 15. No code or automated test is represented as completed before it exists and is verified.
 
 **Phase 6 checkpoint:** The conceptual assessment-engine design is documented across Sections 20–25. This is not an implementation approval. The next work is to translate the design into exact machine-readable contracts and executable fixtures, review those artifacts, and then request explicit approval for the implementation scope. No code changes or automated test runs are claimed by this checkpoint.
+
+
+---
+
+## 26. Assessment Engine Contract
+
+**Status:** Contract drafted and conceptually exercised against all three reference cases; pending user review and implementation approval.
+
+The detailed module and data-flow contract is maintained in [ASSESSMENT-ENGINE-CONTRACT.md](./ASSESSMENT-ENGINE-CONTRACT.md).
+
+The contract specifies:
+- versioned evaluation context and canonical semantic data types;
+- explicit input/output responsibilities for all six modules;
+- shared module envelopes, statuses, diagnostics, and failure propagation;
+- orchestrator sequencing and data ownership;
+- Standard / Hell Mode convergence;
+- criterion and dimension resolution, grade gates, clarification, and Independence;
+- representative end-to-end traces for CASE-001, CASE-002, and CASE-003;
+- cross-case semantic regression requirements and implementation-readiness checklist.
+
+The design walkthroughs are manual reasoning exercises, not executed tests. They show how the proposed contracts should handle supported conclusions, keyword traps, actor attribution, overclaiming, uncertainty, and mixed claims.
+
+**Boundary:** The contract is ready for review, not implementation-approved. Runtime schemas, executable fixtures, module tests, full-pipeline tests, scoring calibration, and project test-suite execution remain outstanding. No application source code was changed and no automated test was run.
