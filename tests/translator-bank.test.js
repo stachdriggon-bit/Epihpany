@@ -78,4 +78,7 @@ test('The Bold Translator defaults to adaptive CEFR and keeps manual practice se
   assert.ok(loadHarness().__translatorBanks.B1, 'B1 should become selectable only after its bank exists');
   assert.ok(loadHarness().__translatorBanks.B2, 'B2 should become selectable only after its bank exists');
   assert.ok(loadHarness().__translatorBanks.C1, 'C1 should become selectable only after its bank exists');
+  const c1Bank = loadHarness().__translatorBanks.C1;
+  const c1Answers = ['guided', 'steady', 'challenge'].flatMap(mode => c1Bank[mode].map(question => question.answer));
+  assert.deepEqual([0, 1, 2].map(index => c1Answers.filter(answer => answer === index).length), [14, 14, 14], 'C1 correct answers should be evenly distributed across the three option positions');
 });
