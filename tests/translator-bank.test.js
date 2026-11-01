@@ -85,7 +85,7 @@ test('The Bold Translator defaults to adaptive CEFR and keeps manual practice se
 
 
 test('The Bold Translator selects distinct questions and clearly marks an adaptive fallback', () => {
-  const harness = loadHarness({ cefrLevel: 'C2', math: { random: () => 0 } });
+  const harness = loadHarness({ cefrLevel: 'C2', math: { random: () => 0, floor: Math.floor } });
   const pool = harness.__translatorPool('adaptive', 'steady');
   assert.equal(pool.length, 10, 'steady rounds contain ten questions');
   assert.ok(pool.every(question => question.cefrLevel === 'A1'), 'a missing C2 bank temporarily falls back to A1');
