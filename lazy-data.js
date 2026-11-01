@@ -8,12 +8,12 @@
     world: ['data-world.js?v=e99f5bf6', 'data-world-sprites.js?v=6fff0f70'],
     arcade: ['practice-lab.js?v=0f7e5c76'],
     thinklab: ['think-lab.js?v=language-detective-integration-1'],
-    languageDetective: ['language-detective-assessment-schemas.js?v=browser-bridge-1', 'language-detective-cefr-patterns.js?v=browser-bridge-1', 'language-detective-assessment-engine.js?v=browser-bridge-1', 'language-detective-assessment-fixtures.js?v=browser-bridge-1', 'language-detective-ui.js?v=investigation-ui-1'],
+    languageDetective: ['language-detective-assessment-schemas.js?v=browser-bridge-1', 'language-detective-cefr-patterns.js?v=browser-bridge-1', 'language-detective-assessment-engine.js?v=browser-bridge-1', 'language-detective-assessment-fixtures.js?v=browser-bridge-1', 'language-detective-ui.js?v=investigation-ui-2'],
     lifeskills: ['think-lab.js?v=72d8145c', 'life-skills.js?v=c0ba2ab9'],
     arabic: ['data-translation-ar.js?v=question-context-20261026-20', 'data-translation-ar-fill.js?v=fill-4']
   };
   const styleGroups = {
-    thinklab: ['language-detective.css?v=investigation-ui-1'],
+    thinklab: ['language-detective.css?v=investigation-ui-2'],
     resonance: ['resonance.css?v=mobile-hotspots-20261031-2'],
     lifeskills: ['life-skills.css?v=calm-studio-20261025']
   };
