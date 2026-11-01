@@ -802,3 +802,45 @@ A hybrid server-side evaluator may be reconsidered later if answer confidentiali
 ### 20.6 Status boundary
 
 This approval establishes the conceptual schema direction and validation requirements only. The exact machine-readable schema, field-level types, constraints, sample-case validation, evaluator rules, and automated tests remain to be specified in Phase 6. No code implementation or runtime verification is claimed.
+ 
+
+---
+
+## 21. Phase 6 — Local assessment engine architecture
+
+**Status:** Approved conceptual architecture; implementation not started.
+
+The user approved a deterministic, local, structured rule-based assessment engine composed of independently testable modules.
+
+### 21.1 Evaluation pipeline
+
+The conceptual pipeline is:
+
+1. **TextNormalizer** — normalize safe surface-level variation without removing meaning-bearing tokens such as negation, uncertainty, or modality.
+2. **SemanticMatcher** — match authored concepts and meaning-equivalent variants rather than requiring one exact model-answer sentence.
+3. **EvidenceReasoner** — evaluate whether the response connects conclusions to relevant evidence and respects evidence limitations.
+4. **ClaimValidator** — detect unsupported claims, overstatement, and contradictions against case facts or the learner's own response.
+5. **EvaluationResolver** — combine module findings into a defined evaluation outcome and criterion-level assessment.
+6. **FeedbackBuilder** — produce clear, educational feedback grounded in the case's authored criteria.
+
+### 21.2 Deterministic behavior and case-driven configuration
+
+The same normalized response, case version, and evaluation configuration should produce the same result. Case-specific concepts, accepted variants, evidence relationships, and unsupported claims belong in Case Data, not in one-off hard-coded branches for individual cases.
+
+Each module must have a narrow responsibility and independently testable inputs and outputs.
+
+### 21.3 Unknown wording and safe fallback
+
+Unrecognized wording must not automatically be classified as incorrect. When the evaluator cannot confidently map a response to authored concepts, it should use a safe clarification or rephrasing path. It must not silently accept an unknown response, invent an interpretation, or penalize the learner merely because the local evaluator lacks a matching pattern.
+
+### 21.4 Response-format invariants
+
+Standard multiple-choice and Hell Mode free-text responses are different input paths but share the same underlying case truth, accepted conclusions, evidence standards, and academic rubric. Hell Mode receives no automatic score bonus for free-text entry.
+
+### 21.5 Normalization safeguards
+
+Normalization may handle safe formatting and known surface variants, but must preserve negation, uncertainty, modality, attribution, and other meaning-bearing distinctions. For example, changing "did" to "didn't" must never be treated as harmless normalization.
+
+### 21.6 Status boundary
+
+This approval defines the conceptual module architecture and fallback principle. Exact module contracts, semantic rule representation, conflict resolution, scoring integration, test fixtures, and executable behavior remain open for subsequent Phase 6 design. No implementation or automated verification is claimed.
