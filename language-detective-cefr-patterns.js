@@ -86,4 +86,37 @@ function validatePatternLevel(pattern) {
   return { valid: true, level: pattern.cefr };
 }
 
-module.exports = { CEFR_GRAMMAR_CATALOG, CEFR_ORDER, SEMANTIC_OPERATORS, getCefrProfile, validatePatternLevel };
+const CEFR_CONSTRUCTION_PATTERNS = Object.freeze({
+  A1: [
+    { id:'simple-active', pattern:'\\b([a-z]+) (saw|took|moved|put|found) ([a-z]+)\\b', meaning:'simple active event' },
+    { id:'simple-negative', pattern:'\\b(did not|does not|is not|was not) [a-z]+\\b', meaning:'basic negation' },
+    { id:'simple-be-unknown', pattern:'\\b(is|are|was|were) (unknown|unclear|missing|unidentified)\\b', meaning:'simple state description' }
+  ],
+  A2: [
+    { id:'past-event-time', pattern:'\\b(yesterday|later|earlier|at \\d{1,2}:\\d{2})\\b', meaning:'past event and time anchor' },
+    { id:'because-clause', pattern:'\\bbecause\\s+[^.!?]+', meaning:'basic causal clause; causality still needs evidence' },
+    { id:'possibility-may', pattern:'\\b(may|might|could)\\s+(have\\s+)?[a-z]+\\b', meaning:'possibility or tentative claim' }
+  ],
+  B1: [
+    { id:'reported-speech', pattern:'\\b(said|reported|claimed|stated)\\s+(that\\s+)?', meaning:'attributed proposition' },
+    { id:'passive-event', pattern:'\\b(was|were|is|are)\\s+[a-z]+ed\\b', meaning:'passive event; actor may be omitted' },
+    { id:'concessive-clause', pattern:'\\b(although|even though|while)\\s+[^.!?]+', meaning:'concession or contrast' }
+  ],
+  B2: [
+    { id:'modal-perfect', pattern:'\\b(may|might|could|must|cannot)\\s+have\\s+[a-z]+ed?\\b', meaning:'modal perfect and epistemic strength' },
+    { id:'qualified-inference', pattern:'\\b(seems|appears|is likely|is unlikely)\\s+to\\b', meaning:'qualified inference' },
+    { id:'contrastive-link', pattern:'\\b(nevertheless|whereas|despite|consequently)\\b', meaning:'argument relation' }
+  ],
+  C1: [
+    { id:'impersonal-reporting', pattern:'\\b(it is (possible|plausible|unlikely|unclear) that)\\b', meaning:'impersonal epistemic stance' },
+    { id:'hedged-evidence', pattern:'\\b(cannot be ruled out|does not establish|is not demonstrable)\\b', meaning:'evidence limitation' },
+    { id:'attribution-boundary', pattern:'\\b(the (report|record|analyst|witness) (indicates|suggests|states|qualified))\\b', meaning:'source attribution' }
+  ],
+  C2: [
+    { id:'epistemic-underdetermination', pattern:'\\b(remains epistemically (underdetermined|indeterminate))\\b', meaning:'high-precision uncertainty' },
+    { id:'non-entailment', pattern:'\\b(is not tantamount to|does not ipso facto entail)\\b', meaning:'logical non-entailment' },
+    { id:'concessive-inversion', pattern:'\\b(be that as it may|notwithstanding that|albeit)\\b', meaning:'advanced concession' }
+  ]
+});
+
+module.exports = { CEFR_GRAMMAR_CATALOG, CEFR_CONSTRUCTION_PATTERNS, CEFR_ORDER, SEMANTIC_OPERATORS, getCefrProfile, validatePatternLevel };
