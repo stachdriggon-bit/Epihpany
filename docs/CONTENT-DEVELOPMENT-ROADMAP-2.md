@@ -844,3 +844,144 @@ Normalization may handle safe formatting and known surface variants, but must pr
 ### 21.6 Status boundary
 
 This approval defines the conceptual module architecture and fallback principle. Exact module contracts, semantic rule representation, conflict resolution, scoring integration, test fixtures, and executable behavior remain open for subsequent Phase 6 design. No implementation or automated verification is claimed.
+
+ 
+---
+
+## 22. Phase 6 — Semantic Evaluation and claim interpretation
+
+**Status:** Approved conceptual design baseline; implementation and automated verification not started.
+
+The semantic evaluator must recognize what a learner means, how claims relate to one another, and how strongly the available evidence supports them. It must not treat word presence as proof of understanding or assume that an unfamiliar sentence is wrong.
+
+### 22.1 Concept model
+
+Each case-authored concept is a small, reusable meaning unit with:
+- a stable `conceptId`;
+- a concise semantic definition;
+- accepted direct wording variants and controlled paraphrase patterns;
+- the evidence references relevant to the concept;
+- required relationships to other concepts, where applicable;
+- constraints describing what the concept does and does not mean;
+- relevant polarity, modality, attribution, and time conditions.
+
+Concepts should be composable. A conclusion is represented as a set of propositions and relationships, not as one memorized model sentence.
+
+### 22.2 Two complementary matching paths
+
+**Direct Match** recognizes an authored wording variant or a well-defined paraphrase pattern.
+
+**Compositional Match** recognizes known concepts and combines them through supported relationships, even when the complete sentence has never been authored verbatim.
+
+Both paths must satisfy the same case constraints. Direct Match is not permission to ignore negation, attribution, uncertainty, evidence limits, or relationships. Compositional Match must not invent a relationship merely because the relevant keywords are present.
+
+If the evaluator cannot establish a sufficiently clear interpretation through either path, it must use the safe clarification path rather than guess.
+
+### 22.3 Proposition and relationship representation
+
+For interpretation, a meaningful claim is conceptually represented by:
+- subject / entity;
+- predicate or relation;
+- object / target, when applicable;
+- polarity (affirmed or negated);
+- modality / certainty (asserted, possible, probable, uncertain, unknown);
+- attribution / source (who observed, reported, inferred, or believes it);
+- time or sequence, when relevant;
+- evidence references and scope;
+- epistemic status.
+
+The exact machine-readable field names and grammar remain implementation details to be specified during technical design. The semantic distinctions themselves are approved.
+
+### 22.4 Preserve epistemic distinctions
+
+The evaluator must distinguish:
+- **Established fact:** explicitly established by the authored case record.
+- **Reported observation:** what a named source says they observed; attribution must remain attached.
+- **Inference:** a conclusion supported by one or more facts but not directly stated as an observation.
+- **Hypothesis:** a possible explanation that remains unconfirmed.
+- **Unknown / Not established:** a matter the available evidence does not resolve.
+- **Opinion / impression:** a source's personal belief or feeling, not a verified finding.
+
+These labels describe the status of a claim, not the learner's intelligence or the truthfulness of a witness. A reported statement may be relevant evidence without proving every interpretation attached to it.
+
+### 22.5 Negation, uncertainty, modality, and attribution
+
+These are meaning-bearing features and must never be discarded during normalization.
+
+Examples of distinctions the evaluator must preserve:
+- "Sara saw the resident take it" versus "Sara did not see the resident take it".
+- "Lena may have moved the envelope" versus "Lena moved the envelope".
+- "The card was used" versus "Lena used the card".
+- "The reading was unusual" versus "an external event caused the reading".
+- "The report suggests an external event" versus "an external event was confirmed".
+
+A sentence containing a negated or uncertain phrase must not match an affirmative or certain concept simply because it contains the same nouns and verbs. Attribution must not be transferred from a source to the learner's own assertion or from an access credential to the person associated with it.
+
+### 22.6 Evidence relations and limits
+
+The evaluator may recognize authored relations such as:
+- supports;
+- contradicts;
+- is consistent with;
+- weakens;
+- contextualizes;
+- does not establish;
+- leaves unresolved.
+
+Evidence relations are case-authored and scoped. Support for one proposition must not automatically transfer to a stronger proposition. For example, evidence that a room access card was used does not, by itself, establish who physically used it or what was carried into the room. A recorded anomaly does not, by itself, establish its cause.
+
+The evaluator must not use invalid transitivity: if evidence supports A and A is associated with B, it does not follow that the evidence proves B unless the case explicitly defines that relationship.
+
+### 22.7 Mixed, unsupported, and contradictory claims
+
+An answer may contain more than one claim. The evaluator must assess each material claim and its relationship to the requested conclusion.
+
+- A supported central conclusion with a minor unsupported extra detail may receive partial credit for the affected criterion; it must not be silently treated as wholly correct.
+- A plausible hypothesis stated explicitly as a possibility may be acceptable when the case permits it.
+- The same hypothesis stated as a confirmed fact is overclaiming and must be flagged.
+- A material contradiction within the learner's final answer must not be resolved by arbitrarily selecting the more favorable sentence.
+- If the contradiction makes the intended conclusion unclear, request clarification.
+- If the learner's position is clear but conflicts with established case facts, classify the relevant claim as contradicted / unsupported and explain why.
+- A correct conclusion does not erase a materially false explanation; conclusion and reasoning remain separately assessed.
+
+The evaluator must not infer dishonesty, motive, or intent from a contradiction.
+
+### 22.8 Outcome resolution
+
+The five conceptual outcomes are retained:
+- `ACCEPTED`: the response is interpretable and meets the relevant case criteria.
+- `PARTIAL`: meaningful understanding is present, but one or more required elements are missing or materially weakened.
+- `NEEDS_CLARIFICATION`: the intended meaning or reference is materially ambiguous, so a fair assessment cannot yet be made.
+- `UNSUPPORTED`: the response makes a material claim that the available case evidence does not support.
+- `CONTRADICTION`: a material claim conflicts with established case facts or the response contains an unresolved material conflict.
+
+These are assessment outcomes, not necessarily mutually exclusive internal diagnostic flags. A response can carry claim-level flags while the resolver selects one primary outcome. When clarification is needed, do not assign a final grade for the unresolved response. Clarification attempts remain penalty-free and are retained in session history.
+
+### 22.9 Fairness and deterministic behavior
+
+- The same case version, evaluator version, configuration, and normalized response must produce the same interpretation and assessment result.
+- Grammar and spelling tolerance must not remove meaning-bearing distinctions.
+- Concision is not a defect; verbosity is not evidence.
+- Unknown but potentially valid wording is not automatically wrong.
+- Keyword-only matches are insufficient.
+- Accepted alternatives must be authored or composed from recognized concepts and valid relations.
+- A rule must not award a claim that violates an explicit case constraint.
+- The evaluator must expose a safe fallback when its supported language coverage is insufficient; it must not pretend to understand unrestricted natural language.
+
+### 22.10 Required semantic regression scenarios
+
+Each reference case must include positive and negative pairs that differ in one critical semantic feature, including:
+- affirmative versus negated claim;
+- possible versus certain claim;
+- reported statement versus established fact;
+- credential / access event versus identified human actor;
+- observation versus causal explanation;
+- supported relation versus keyword-only co-occurrence;
+- valid concise paraphrase versus incomplete claim;
+- supported central conclusion plus unsupported add-on;
+- self-contradictory response;
+- plausible alternative versus unsupported certainty.
+
+The test fixtures must record expected claim interpretation, evidence relation, primary outcome, affected assessment criteria, and rationale. These are planned automated-test fixtures; no such tests are claimed to have run.
+
+**Checkpoint:** Semantic evaluation principles are approved as a design baseline. Exact lexical resources, grammar patterns, serialized data types, scoring integration, and executable test fixtures remain to be specified. No code implementation or automated verification has occurred.
