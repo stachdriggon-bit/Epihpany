@@ -587,3 +587,36 @@ Built-in Guided scaffolding, clarification, retries, and ordinary feedback do no
 ### 15.6 Calibration status
 
 These rules create a coherent baseline for calibration, not a claim of empirical validation. The 35/40/25 weights, criterion levels, grade bands, and S gate remain provisional until the scenario inventory is converted into executable fixtures and actual evaluator outputs are reviewed.
+
+
+---
+
+## 16. Case study — Reference fixtures and approval gate
+
+### 16.1 Fixture contract
+
+Each future test fixture records a stable scenario ID; case, case-version, and evaluator-version identifiers; relevant CEFR / Training Mode / Answer Format; response context; expected claims and semantic operators; expected concept matches and matching path; evidence relations; claim diagnostics; primary outcome; criterion and dimension results; grade and Independence where applicable; clarification requirement; and rationale.
+
+Expected results and actual execution results are separate fields. A fixture remains Not Run until an automated test actually executes.
+
+### 16.2 Initial regression inventory
+
+The manual design inventory contains 57 planned entries:
+- 18 case / mode / format combinations;
+- 9 hint scenarios;
+- 8 retry scenarios;
+- 10 ambiguity scenarios;
+- 6 mode differentiation scenarios;
+- 6 fairness and scoring-invariant scenarios.
+
+This is a planned suite, not an automated test result. Semantic positive/negative pairs must be added where needed even if the final suite exceeds 57.
+
+### 16.3 Reference-case semantic anchors
+
+- **CASE-001:** an unidentified resident wearing a green jacket picked up the package; identity and motive remain unknown. Do not infer Sara or Adam as the picker.
+- **CASE-002:** the envelope was found in Room B; Lena reported moving papers and her card was used, but neither the physical card user nor the contents moved are established. Lena moving the envelope remains plausible, not proven.
+- **CASE-003:** R-4 recorded an unusual incomplete reading; an external source and a receiver fault remain hypotheses. R-7 is not a direct control, and the personal note / preliminary report is not independent confirmation.
+
+### 16.4 Design approval boundary
+
+The conceptual assessment-engine design is documented across Sections 12–16. This does not authorize code implementation. Exact machine-readable module contracts and executable fixtures must be produced and reviewed before a separate explicit implementation approval. Persistence & Recovery remains a later phase. No implementation or automated test execution is claimed.
