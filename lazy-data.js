@@ -307,8 +307,43 @@
     }
     job = { priority, promise: null };
     job.promise = groups[group].reduce((chain, src) => chain.then(() => loadScript(src, job.priority)), Promise.resolve())
-      .then(() => clearFailedOptionalLoad('data-group:' + group), error => {
+      .then(() => {
+        if (group === 'languageDetective') {
+          const schemas = window.EPIPHANY_LANGUAGE_DETECTIVE_SCHEMAS;
+          const cefr = window.EPIPHANY_LANGUAGE_DETECTIVE_CEFR;
+          const engine = window.EPIPHANY_LANGUAGE_DETECTIVE_ENGINE;
+          const fixtures = window.EPIPHANY_LANGUAGE_DETECTIVE_FIXTURES;
+          const ui = window.EPIPHANY_LANGUAGE_DETECTIVE;
+          const ready = schemas && typeof schemas.validateEvaluationRequest === 'function' &&
+            cefr && typeof cefr.getCefrProfile === 'function' &&
+            engine && typeof engine.evaluate === 'function' &&
+            fixtures && fixtures.cases && Object.keys(fixtures.cases).length > 0 &&
+            ui && ui.available === true && typeof ui.mount === 'function';
+          if (!ready) {
+            // A script's load event can fire even when its execution throws.
+            // Clear the group cache so an explicit retry can fetch and execute it again.
+            groups[group].forEach(src => {
+              loaded.delete(src);
+              const file = src.split('?')[0];
+              document.querySelectorAll('script').forEach(node => {
+                if ((node.getAttribute('src') || '').split('?')[0].endsWith(file)) node.remove();
+              });
+            });
+            throw new Error('The Language Detective files loaded, but one or more required modules did not initialize.');
+          }
+        }
+        clearFailedOptionalLoad('data-group:' + group);
+      }, error => {
         pending.delete(group);
+        if (group === 'languageDetective') {
+          groups[group].forEach(src => {
+            loaded.delete(src);
+            const file = src.split('?')[0];
+            document.querySelectorAll('script').forEach(node => {
+              if ((node.getAttribute('src') || '').split('?')[0].endsWith(file)) node.remove();
+            });
+          });
+        }
         rememberFailedOptionalLoad('data-group:' + group, () => loadGroup(group, 'optional'));
         throw error;
       });
