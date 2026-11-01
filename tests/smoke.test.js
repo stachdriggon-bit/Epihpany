@@ -110,7 +110,7 @@ test('main navigation tabs open without uncaught page errors', async t => {
     assert.equal(await firstVisitPage.evaluate(() => sessionStorage.getItem('epiphany-account-prompt-shown-v1')), '1', 'the invitation dismissal must be remembered for this session');
     await firstVisitPage.close();
 
-    const views = ['home','stories','chronicle','resonance','world','arcade','summon','words','trophies','progress','profile'];
+    const views = ['home','stories','chronicle','resonance','world','arcade','thinklab','summon','words','trophies','progress','profile'];
     for (const view of views) {
       const page = await browser.newPage();
       await page.setViewportSize({ width: 1280, height: 900 });
@@ -219,6 +219,33 @@ test('main navigation tabs open without uncaught page errors', async t => {
         await page.locator('#game').waitFor({ state: 'visible', timeout: 5000 });
         await page.locator('#game-body').waitFor({ state: 'visible', timeout: 5000 });
         if (await page.locator('#game-body .answer').count()) await page.locator('#game-body .answer').first().click();
+      }
+      if (view === 'thinklab') {
+        assert.ok(requested.some(path => path.endsWith('/odd-one-out-bank.js')), 'Odd One Out bank should load with Think Lab');
+        assert.ok(requested.some(path => path.endsWith('/think-lab.js')), 'Think Lab should load on first open');
+        await page.locator('#thinklab-view [data-think-game="odd"]').click();
+        const gameCard = page.locator('#thinklab-view .tl-game-card');
+        await gameCard.waitFor({state:'visible',timeout:5000});
+        assert.equal(await gameCard.locator('h2').innerText(), 'Which word does not belong?', 'Odd One Out must render its question prompt');
+        assert.equal(await gameCard.locator('[data-think-answer]').count(), 4, 'Odd One Out must render four answer choices');
+        assert.match(await gameCard.locator('.tl-game-kicker').innerText(), /PATTERN ANALYSIS · A1/);
+        assert.match(await gameCard.locator('.tl-game-instruction').innerText(), /relationship/i);
+        const screenshotDir = path.join(root, 'test-results', 'odd-one-out');
+        fs.mkdirSync(screenshotDir, {recursive:true});
+        await gameCard.screenshot({path:path.join(screenshotDir,'desktop-guided-question.png')});
+        await gameCard.locator('[data-odd-hint]').click();
+        assert.equal(await gameCard.locator('[data-odd-hint-text]').isVisible(), true, 'Guided mode should reveal its item-specific hint');
+        assert.ok((await gameCard.locator('[data-odd-hint-text]').innerText()).trim().length > 10);
+        await gameCard.locator('[data-think-answer]').first().click();
+        assert.equal(await gameCard.locator('#tl-feedback').isVisible(), true, 'an answer should reveal feedback');
+        assert.match(await gameCard.locator('#tl-feedback').innerText(), /Relationship:/, 'feedback should identify the shared relationship');
+        assert.equal(await gameCard.locator('[data-think-next]').isVisible(), true, 'feedback should unlock the next question');
+        await gameCard.locator('[data-think-next]').click();
+        assert.equal(await gameCard.locator('h2').innerText(), 'Which word does not belong?');
+        await page.setViewportSize({width:390,height:844});
+        await gameCard.screenshot({path:path.join(screenshotDir,'mobile-guided-question.png')});
+        assert.equal(await gameCard.locator('[data-think-answer]').count(), 4, 'all four choices must remain available on mobile');
+        assert.equal(await gameCard.locator('[data-think-answer]').first().isVisible(), true, 'the first answer must remain visible on mobile');
       }
       if (view === 'summon') {
         await page.locator('#cards-summon-token-count').waitFor({ state: 'visible', timeout: 5000 });
