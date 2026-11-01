@@ -86,7 +86,7 @@ test('initial HTML defers stories and World data and keeps loader in offline she
     assert.ok(!coreAssets.includes("'./" + asset + "'"), asset + ' must not be part of the core cache');
     assert.ok(lazyAssets.includes("'./" + asset + "'"), asset + ' should be cached as a lazy offline asset');
   }
-  for (const asset of ['data-stories.js', 'data-world.js', 'data-world-registry.js', 'data-world-events.js', 'data-world-sprites.js', 'think-lab.js', 'practice-lab.js', 'life-skills.js']) {
+  for (const asset of ['data-stories.js', 'data-world.js', 'data-world-registry.js', 'data-world-events.js', 'data-world-sprites.js', 'odd-one-out-bank.js', 'think-lab.js', 'practice-lab.js', 'life-skills.js']) {
     assert.ok(lazyAssets.includes("'./" + asset + "'"), asset + ' should be cached as a lazy offline asset');
   }
   assert.match(sw, /const cached = await cache\.match\(request\);\s*if \(cached\) return cached;/);
