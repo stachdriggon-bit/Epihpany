@@ -325,7 +325,7 @@
             groups[group].forEach(src => {
               loaded.delete(src);
               const file = src.split('?')[0];
-              document.querySelectorAll('script').forEach(node => {
+              if (typeof document.querySelectorAll === 'function') document.querySelectorAll('script').forEach(node => {
                 if ((node.getAttribute('src') || '').split('?')[0].endsWith(file)) node.remove();
               });
             });
