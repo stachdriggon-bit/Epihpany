@@ -457,3 +457,26 @@ Schema validation must detect duplicate IDs, dangling references, missing criter
 The approved V1 direction is a local structured rule-based evaluator. Separating evaluation metadata from learner-facing content improves maintainability but does not make the rules confidential when delivered to the browser. A hybrid server-side evaluator remains a possible future alternative, not part of the approved V1 scope.
 
 This is a design approval record only. Exact field types, constraints, executable validation, evaluator implementation, and runtime verification remain future work.
+
+ 
+
+---
+
+## 13. Case study — Modular deterministic assessment engine
+
+The Language Detective assessment engine is approved conceptually as a deterministic, local, structured rule-based pipeline with independently testable modules:
+
+1. `TextNormalizer`
+2. `SemanticMatcher`
+3. `EvidenceReasoner`
+4. `ClaimValidator`
+5. `EvaluationResolver`
+6. `FeedbackBuilder`
+
+The pipeline evaluates meaning and evidence relationships rather than exact sentence similarity. Case-specific rules are authored as data so that new cases do not require a new evaluator implementation.
+
+Unknown wording must not be marked incorrect automatically. If the evaluator cannot confidently interpret an answer, it should request clarification or rephrasing rather than guess, silently accept, or penalize the learner for the evaluator's own limitation.
+
+Normalization must preserve meaning-bearing distinctions, including negation, uncertainty, modality, and attribution. Standard and Hell Mode use different response-input paths but retain identical academic correctness standards; free-text entry does not earn a bonus by itself.
+
+This is a conceptual design approval only. Module contracts, rule formats, conflict resolution, scoring integration, automated tests, and implementation remain open.
