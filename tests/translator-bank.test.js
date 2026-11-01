@@ -7,6 +7,11 @@ const vm = require('node:vm');
 const source = fs.readFileSync(path.join(__dirname, '..', 'think-lab.js'), 'utf8');
 const appSource = fs.readFileSync(path.join(__dirname, '..', 'app.js'), 'utf8');
 
+function harnessBankQuestion(level, mode, arabicPrompt) {
+  const harness = loadHarness();
+  return harness.__translatorBanks[level][mode].find(question => question.ar === arabicPrompt);
+}
+
 function loadHarness(options = {}) {
   const root = { innerHTML: '', addEventListener() {} };
   const window = {
@@ -82,7 +87,9 @@ test('The Bold Translator balances correct answer positions in every round and k
       assert.ok(Math.max(...counts) - Math.min(...counts) <= 1, `${level}.${mode}: correct answers should be balanced across A, B and C`);
       assert.ok(positions.every((position, index) => index === 0 || position !== positions[index - 1]), `${level}.${mode}: correct positions should not repeat consecutively`);
       for (const question of pool) {
-        assert.match(question.optionExplanations[question.answer], /^Correct:/i, `${level}.${mode}: correct explanation must follow the correct option`);
+        const original = harnessBankQuestion(level, mode, question.ar);
+        assert.equal(question.options[question.answer], original.options[original.answer], `${level}.${mode}: correct option text must be preserved`);
+        assert.equal(question.optionExplanations[question.answer], original.optionExplanations[original.answer], `${level}.${mode}: correct explanation must follow the correct option`);
         assert.equal(question.options.length, 3);
         assert.equal(question.optionExplanations.length, 3);
       }
