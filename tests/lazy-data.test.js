@@ -44,19 +44,20 @@ test('feature data loader does not request large datasets until requested', asyn
   await context.window.EPIPHANY_LAZY_LOAD('lifeskills');
   assert.deepEqual(requested.slice(4).map(src => src.split('?')[0]), [
     'practice-lab.js',
+    'odd-one-out-bank.js',
     'think-lab.js',
     'life-skills.js'
   ]);
   assert.ok(requested.slice(4).every(src => /\?v=.+/.test(src)));
   await context.window.EPIPHANY_LAZY_LOAD('arabic');
-  assert.deepEqual(requested.slice(7).map(src => src.split('?')[0]), [
+  assert.deepEqual(requested.slice(8).map(src => src.split('?')[0]), [
     'data-translation-ar.js',
     'data-translation-ar-fill.js'
   ]);
   assert.ok(requested.slice(7).every(src => /\?v=.+/.test(src)));
   assert.deepEqual(merged, [true]);
   await context.window.EPIPHANY_LAZY_LOAD('chronicle');
-  assert.deepEqual(requested.slice(9).map(src => src.split('?')[0]), ['data-world-registry.js', 'data-world-events.js']);
+  assert.deepEqual(requested.slice(10).map(src => src.split('?')[0]), ['data-world-registry.js', 'data-world-events.js']);
   assert.ok(requested.slice(9).every(src => /\?v=.+/.test(src)));
 });
 
@@ -78,7 +79,7 @@ test('initial HTML defers stories and World data and keeps loader in offline she
   const lazyAssets = sw.match(/const LAZY_ASSETS = \[([^\]]*)\];/)?.[1] || '';
   assert.ok(coreAssets, 'service worker should define core offline assets');
   assert.ok(lazyAssets, 'service worker should define lazy offline assets');
-  for (const asset of ['data-stories.js', 'data-world.js', 'data-world-sprites.js', 'think-lab.js', 'practice-lab.js', 'life-skills.js', 'data-translation-ar.js']) {
+  for (const asset of ['data-stories.js', 'data-world.js', 'data-world-sprites.js', 'odd-one-out-bank.js', 'think-lab.js', 'practice-lab.js', 'life-skills.js', 'data-translation-ar.js']) {
     assert.ok(!coreAssets.includes("'./" + asset + "'"), asset + ' should not be a core startup asset');
   }
   for (const asset of ['resonance.css', 'life-skills.css']) {
@@ -283,8 +284,11 @@ test('optional lazy loads respect the adaptive concurrency limit', async () => {
   scripts[0].onload();
   await new Promise(resolve => setImmediate(resolve));
   await new Promise(resolve => setImmediate(resolve));
-  assert.deepEqual(requested.map(src => src.split('?')[0]), ['practice-lab.js', 'think-lab.js']);
+  assert.deepEqual(requested.map(src => src.split('?')[0]), ['practice-lab.js', 'odd-one-out-bank.js']);
   scripts[1].onload();
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(requested[2].split('?')[0], 'think-lab.js');
+  scripts[2].onload();
 });
 
 test('explicit navigation bypasses and promotes queued optional loads', async () => {
@@ -328,10 +332,12 @@ test('explicit navigation bypasses and promotes queued optional loads', async ()
 
   const explicit = context.window.EPIPHANY_LAZY_LOAD('thinklab');
   await new Promise(resolve => setImmediate(resolve));
-  assert.deepEqual(requested.map(src => src.split('?')[0]), ['practice-lab.js', 'think-lab.js'],
+  assert.deepEqual(requested.map(src => src.split('?')[0]), ['practice-lab.js', 'odd-one-out-bank.js'],
     'an explicit request must promote its matching queued prefetch immediately');
 
   scripts[1].onload();
+  await new Promise(resolve => setImmediate(resolve));
+  scripts[2].onload();
   await explicit;
   scripts[0].onload();
 });
@@ -391,19 +397,22 @@ test('background optional loads pause while constrained, resume once, and never 
   policy = { ...policy, allowSpeculativePreload: true, deferNonEssentialWork: false };
   subscribers.forEach(fn => fn());
   await new Promise(resolve => setImmediate(resolve));
-  assert.deepEqual(requested.map(src => src.split('?')[0]), ['practice-lab.js', 'think-lab.js'],
+  assert.deepEqual(requested.map(src => src.split('?')[0]), ['practice-lab.js', 'odd-one-out-bank.js'],
     'queued optional work should resume when conditions improve');
   scripts[1].onload();
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(requested[2].split('?')[0], 'think-lab.js');
+  scripts[2].onload();
   await new Promise(resolve => setImmediate(resolve));
 
   policy = { ...policy, allowSpeculativePreload: false, deferNonEssentialWork: true };
   const explicit = context.window.EPIPHANY_LAZY_LOAD('world');
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[2].split('?')[0], 'data-world.js',
+  assert.equal(requested[3].split('?')[0], 'data-world.js',
     'explicit navigation must bypass background deferral');
-  scripts[2].onload();
-  await new Promise(resolve => setImmediate(resolve));
   scripts[3].onload();
+  await new Promise(resolve => setImmediate(resolve));
+  scripts[4].onload();
   await explicit;
 });
 
