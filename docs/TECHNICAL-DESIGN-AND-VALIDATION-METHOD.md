@@ -480,3 +480,53 @@ Unknown wording must not be marked incorrect automatically. If the evaluator can
 Normalization must preserve meaning-bearing distinctions, including negation, uncertainty, modality, and attribution. Standard and Hell Mode use different response-input paths but retain identical academic correctness standards; free-text entry does not earn a bonus by itself.
 
 This is a conceptual design approval only. Module contracts, rule formats, conflict resolution, scoring integration, automated tests, and implementation remain open.
+
+ 
+---
+
+## 14. Case study — Semantic evaluation and evidence-aware interpretation
+
+The Language Detective semantic model uses small composable concepts rather than one canonical answer sentence. Each case-authored concept has a stable identity, accepted direct variants, relevant evidence references, required relationships, and constraints.
+
+### 14.1 Matching strategy
+
+The evaluator uses two complementary conceptual paths:
+- **Direct Match:** recognizes a known wording variant or controlled paraphrase.
+- **Compositional Match:** combines recognized concepts through explicitly supported semantic relationships.
+
+Both paths are constrained by the same case-authored rules. Neither may accept a response solely because it contains the expected keywords. Compositional interpretation must not invent relationships; direct wording must not bypass semantic constraints.
+
+### 14.2 Claim representation
+
+A claim is interpreted with its subject, predicate / relation, object, polarity, modality, attribution, relevant time, evidence scope, and epistemic status. These are semantic requirements; exact serialized fields and parser grammar remain open technical details.
+
+The evaluator distinguishes established facts, attributed observations or reports, inferences, hypotheses, unknowns, and opinions / impressions. These distinctions prevent a witness's belief from becoming a verified fact and prevent a plausible explanation from being reported as a proven cause.
+
+### 14.3 Meaning-bearing operators
+
+Negation, uncertainty, modality, attribution, and time are preserved throughout normalization and matching. For example, "may have moved" must not match "moved"; "the card was used" must not match "Lena used the card"; and "an unusual reading occurred" must not match "an external event caused it".
+
+### 14.4 Evidence-aware reasoning
+
+Evidence relationships are explicitly authored and scoped: supports, contradicts, is consistent with, weakens, contextualizes, does not establish, and leaves unresolved. Support for a weaker proposition does not automatically prove a stronger proposition. Invalid transitive inference is prohibited unless the case explicitly defines the relationship.
+
+### 14.5 Mixed claims and conflict handling
+
+Responses are assessed claim by claim. A supported central conclusion with a material unsupported addition may receive partial credit in the affected criterion. A plausible hypothesis expressed as uncertain is distinguished from the same hypothesis asserted as fact. Material unresolved contradictions trigger clarification or a contradiction outcome; the evaluator must not choose whichever sentence gives the higher score. Conclusion accuracy and reasoning quality remain separately assessed.
+
+### 14.6 Primary outcomes
+
+The conceptual primary outcomes are:
+- `ACCEPTED`
+- `PARTIAL`
+- `NEEDS_CLARIFICATION`
+- `UNSUPPORTED`
+- `CONTRADICTION`
+
+Claim-level diagnostic flags may coexist with a primary outcome. A response awaiting clarification must not receive a final grade. Clarification is penalty-free and retained in the attempt history.
+
+### 14.7 Determinism and regression coverage
+
+The same case version, evaluator version, configuration, and response must produce the same result. Unknown wording must not be automatically rejected, but neither may it be silently accepted. Every reference case needs paired tests for negation, certainty, attribution, actor identity, causality, keyword-only matches, concise paraphrases, mixed claims, and contradictions.
+
+This is a conceptual design record. Lexical resources, grammar patterns, exact serialized types, scoring integration, executable fixtures, and runtime verification remain open. No implementation or automated test execution is claimed.
