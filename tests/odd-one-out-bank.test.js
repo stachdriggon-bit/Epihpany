@@ -58,3 +58,12 @@ test('selection falls back safely for invalid level or training mode', () => {
   assert.equal(round.level,'A1');
   assert.equal(round.trainingMode,'steady');
 });
+
+test('shuffled options preserve the correct word while varying its position', () => {
+  const source = bank.banks.A1[0];
+  const round = bank.selectRound('A1','guided',[],()=>0.37);
+  const selected = round.questions.find(item=>item.id===source.id);
+  assert.ok(selected);
+  assert.equal(selected.words[selected.answer],source.words[source.answer]);
+  assert.equal(new Set(selected.words).size,4);
+});
