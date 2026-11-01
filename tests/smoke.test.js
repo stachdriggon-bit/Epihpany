@@ -248,7 +248,7 @@ test('main navigation tabs open without uncaught page errors', async t => {
         assert.equal(await gameCard.locator('[data-think-answer]').count(), 4, 'all four choices must remain available on mobile');
         assert.equal(await gameCard.locator('[data-think-answer]').first().isVisible(), true, 'the first answer must remain visible on mobile');
 
-        await gameCard.locator('[data-think-back]').click();
+        await page.locator('#thinklab-view [data-think-back]').click();
         await page.locator('#thinklab-view [data-think-game="detective"]').click();
         const detectiveRoot = page.locator('#think-lab-content');
         await detectiveRoot.locator('.ld-shell').waitFor({state:'visible',timeout:10000});
