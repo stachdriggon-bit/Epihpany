@@ -73,6 +73,23 @@ test('The Bold Translator round sizes are 8, 10 and 12 questions', () => {
   }
 });
 
+test('The Bold Translator balances correct answer positions in every round and keeps explanations attached', () => {
+  for (const level of ['A1', 'A2', 'B1', 'B2', 'C1', 'C2']) {
+    for (const mode of ['guided', 'steady', 'challenge']) {
+      const pool = loadHarness({ math: { random: Math.random } }).__translatorPool(level, mode);
+      const positions = pool.map(question => question.answer);
+      const counts = [0, 1, 2].map(position => positions.filter(answer => answer === position).length);
+      assert.ok(Math.max(...counts) - Math.min(...counts) <= 1, `${level}.${mode}: correct answers should be balanced across A, B and C`);
+      assert.ok(positions.every((position, index) => index === 0 || position !== positions[index - 1]), `${level}.${mode}: correct positions should not repeat consecutively`);
+      for (const question of pool) {
+        assert.match(question.optionExplanations[question.answer], /^Correct:/i, `${level}.${mode}: correct explanation must follow the correct option`);
+        assert.equal(question.options.length, 3);
+        assert.equal(question.optionExplanations.length, 3);
+      }
+    }
+  }
+});
+
 test('The Bold Translator defaults to adaptive CEFR and keeps manual practice separate', () => {
   assert.match(source, /let selectedTranslatorCEFR = 'adaptive'/);
   assert.match(source, /selectedTranslatorCEFR === 'adaptive' \? adaptiveLevel : selectedTranslatorCEFR/);
