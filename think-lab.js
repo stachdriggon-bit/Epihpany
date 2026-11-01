@@ -334,8 +334,14 @@
 
   // Keep C2 answer positions evenly distributed without changing the intended answers.
   const c2Questions = ['guided','steady','challenge'].flatMap(mode => translatorBanks.C2[mode]);
+  // Keep the bank balanced without exposing a repeating answer-position pattern.
+  const c2AnswerPositions = [
+    2,2,1,1,2,0,2,0,1,2,2,0,0,1,
+    1,1,2,0,2,2,0,0,1,0,2,1,1,2,
+    1,2,2,0,0,1,1,1,2,0,0,1,0,0
+  ];
   c2Questions.forEach((question, index) => {
-    const target = index % 3;
+    const target = c2AnswerPositions[index];
     if (question.answer === target) return;
     const current = question.answer;
     [question.options[current], question.options[target]] = [question.options[target], question.options[current]];
