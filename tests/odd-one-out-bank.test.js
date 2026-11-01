@@ -61,8 +61,8 @@ function loadThinkLabHarness(cefrLevel = 'A1') {
   };
   const document = {getElementById: id => id === 'think-lab-content' ? root : null};
   const instrumented = thinkLabSource.replace(
-    /  landing\\(\\);\\s*\\}\\)\\(\\);\\s*$/,
-    '  window.__oddPool = trainingMode => getRoundPool("odd", trainingMode);\\n  landing();\\n})();'
+    '  landing();\n})();',
+    '  window.__oddPool = trainingMode => getRoundPool("odd", trainingMode);\n  landing();\n})();'
   );
   assert.notEqual(instrumented, thinkLabSource, 'test hook must be inserted before the Think Lab IIFE closes');
   new vm.Script(instrumented, {filename:'think-lab.js'});
