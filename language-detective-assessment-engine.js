@@ -28,7 +28,7 @@ function polarity(text){return /\b(not|never|no|neither|cannot|can't|doesn't|did
 function modality(text){
  if(/\b(definitely|certainly|undoubtedly|proved|must have)\b/i.test(text))return 'CERTAIN';
  if(/\b(probably|likely|presumably)\b/i.test(text))return 'PROBABLE';
- if(/\b(may|might|could|possibly|perhaps|plausibly|conceivably)\b/i.test(text))return 'POSSIBLE';
+ if(/\b(may|might|could|possible|possibly|perhaps|plausible|plausibly|conceivably)\b/i.test(text))return 'POSSIBLE';
  if(/\b(unclear|unknown|unresolved|cannot determine|cannot establish|not established)\b/i.test(text))return 'UNCERTAIN';
  return 'UNKNOWN';
 }
