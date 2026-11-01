@@ -5,6 +5,7 @@ const path = require('node:path');
 const vm = require('node:vm');
 
 const source = fs.readFileSync(path.join(__dirname, '..', 'think-lab.js'), 'utf8');
+const appSource = fs.readFileSync(path.join(__dirname, '..', 'app.js'), 'utf8');
 
 function loadHarness(options = {}) {
   const root = { innerHTML: '', addEventListener() {} };
@@ -108,4 +109,12 @@ test('Manual C1 practice does not trigger the adaptive fallback notice', () => {
   assert.ok(pool.every(question => question.cefrLevel === 'C1'));
   assert.ok(pool.every(question => question.adaptiveFallback === false));
   assert.ok(pool.every(question => question.requestedCEFRLevel === 'C1'));
+});
+
+
+test('Manual Bold Translator practice keeps rewards but does not update adaptive signals', () => {
+  assert.match(source, /trackAdaptive:mode !== 'translator' \|\| selectedTranslatorCEFR === 'adaptive'/);
+  assert.match(appSource, /recordResult\(skill, topic, correct, completed = false, options = \{\}\)/);
+  assert.match(appSource, /if \(options\.trackAdaptive !== false\)\s*\{\s*recordAdaptiveResult\(/);
+  assert.match(appSource, /const gain = correct \? 3 : 1/);
 });
