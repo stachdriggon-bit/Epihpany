@@ -589,6 +589,60 @@ bark dark core hand land lane data duty melt`
     }
     return chosen.length >= Math.min(6, count) ? chosen : [...rounds.wordladder];
   }
+  function assignTranslatorAnswerPositions(questions) {
+    const count = questions.length;
+    const base = Math.floor(count / 3);
+    const remaining = [base, base, base];
+    const remainder = count % 3;
+    const positionOrder = [0, 1, 2];
+    for (let i = positionOrder.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [positionOrder[i], positionOrder[j]] = [positionOrder[j], positionOrder[i]];
+    }
+    for (let i = 0; i < remainder; i++) remaining[positionOrder[i]]++;
+
+    const answerPositions = [];
+    let previous = -1;
+    while (answerPositions.length < count) {
+      const available = [0, 1, 2].filter(position => remaining[position] > 0 && position !== previous);
+      const highestRemaining = Math.max(...available.map(position => remaining[position]));
+      const best = available.filter(position => remaining[position] === highestRemaining);
+      const chosen = best[Math.floor(Math.random() * best.length)];
+      answerPositions.push(chosen);
+      remaining[chosen]--;
+      previous = chosen;
+    }
+
+    return questions.map((item, index) => {
+      const correctIndex = item.answer;
+      const correctOption = item.options[correctIndex];
+      const correctExplanation = item.optionExplanations[correctIndex];
+      const distractors = item.options
+        .map((option, optionIndex) => ({ option, explanation: item.optionExplanations[optionIndex] }))
+        .filter((_, optionIndex) => optionIndex !== correctIndex);
+      for (let i = distractors.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [distractors[i], distractors[j]] = [distractors[j], distractors[i]];
+      }
+
+      const answer = answerPositions[index];
+      const options = [];
+      const optionExplanations = [];
+      let distractorIndex = 0;
+      for (let position = 0; position < 3; position++) {
+        if (position === answer) {
+          options.push(correctOption);
+          optionExplanations.push(correctExplanation);
+        } else {
+          options.push(distractors[distractorIndex].option);
+          optionExplanations.push(distractors[distractorIndex].explanation);
+          distractorIndex++;
+        }
+      }
+      return { ...item, options, optionExplanations, answer };
+    });
+  }
+
   function getRoundPool(id, selectedLevel) {
     const level = selectedLevel || difficultyForMode(id).level;
     if (id === 'odd' && window.EPIPHANY_ODD_ONE_OUT_BANK) {
@@ -629,13 +683,14 @@ bark dark core hand land lane data duty melt`
         [questions[i], questions[j]] = [questions[j], questions[i]];
       }
       const adaptiveFallback = selectedTranslatorCEFR === 'adaptive' && requestedLevel !== chosenLevel;
-      return questions.slice(0,roundSize).map(item => ({
+      const round = questions.slice(0,roundSize).map(item => ({
         ...item,
         cefrLevel:chosenLevel,
         trainingMode:selectedMode,
         adaptiveFallback,
         requestedCEFRLevel:requestedLevel
       }));
+      return assignTranslatorAnswerPositions(round);
     }
     if (level === 'guided' && guidedRounds[id]) return guidedRounds[id];
     if (level === 'challenge' && challengeRounds[id]) return challengeRounds[id];
