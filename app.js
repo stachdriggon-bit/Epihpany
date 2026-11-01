@@ -455,6 +455,10 @@
   }
   // Public bridge for Think Lab: keep its results inside the shared learner profile.
   window.EpiphanyThinkLab = {
+    getCEFRLevel() {
+      const level = currentLevel();
+      return level && LEVELS.some(item => item.id === level.id) ? level.id : 'A1';
+    },
     recordResult(skill, topic, correct, completed = false) {
       if (DEV_MODE.active && hasDeveloperAccess()) return {xp:0};
       const allowed = ['vocabulary','grammar','listening','conversation','reading','spelling'];
