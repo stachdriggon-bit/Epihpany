@@ -40,7 +40,7 @@ const cases = {
     criteria:[
       {criterionId:'C1',dimension:'CONCLUSION_ACCURACY',weight:1,conceptIds:['ENVELOPE_ROOM_B']},
       {criterionId:'C2',dimension:'EVIDENCE_REASONING',weight:1,conceptIds:['LENA_REPORTED_PAPERS','CARD_USED']},
-      {criterionId:'C3',dimension:'CRITICAL_THINKING',weight:1,conceptIds:['ACTOR_UNPROVEN','LENA_POSSIBLE_MOVE']}
+      {criterionId:'C3',dimension:'CRITICAL_THINKING',weight:1,conceptIds:['ACTOR_UNPROVEN']}
     ],feedbackResources:[]
   },
   'CASE-003': {
