@@ -39,6 +39,7 @@ function TextNormalizer(request){
 function SemanticMatcher(normalized,snapshot,ctx){
  const text=normalized.data.normalizedText, clauses=normalized.data.clauses, propositions=[],conceptMatches=[],used=new Set();
  for(const concept of snapshot.concepts){
+  if((concept.excludePatterns||[]).some(source=>{try{return new RegExp(source,'i').test(text);}catch{return false;}}))continue;
   let matched=null,matchedId=null;
   for(const p of concept.patterns||[]){try{const re=new RegExp(p.source,'i');const m=text.match(re);if(m){matched=m[0];matchedId=p.patternId;break;}}catch{}}
   if(!matched) for(const v of concept.acceptedVariants||[]) if(text.toLowerCase().includes(v.toLowerCase())){matched=v;matchedId='variant:'+v;break;}
