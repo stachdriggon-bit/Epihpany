@@ -3076,8 +3076,10 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     const meta = $('#theme-color-meta');
     if (meta) meta.content = dark ? '#111522' : '#F5F6FC';
   }
+  let helpLanguageToggleVersion = 0;
   function toggleArabic() {
     if (state.immersionWeek?.active && state.immersionWeek.endsAt && Date.now() < Number(state.immersionWeek.endsAt)) { toast('Arabic help is paused during your optional immersion week. You can end it in My Tools.'); return; }
+    const toggleVersion = ++helpLanguageToggleVersion;
     state.helpArabic = !state.helpArabic;
     // Keep Arabic help separate from the explicit translation toggle.
     try { localStorage.setItem('epiphany-help-language-choice', state.helpArabic ? 'ar' : 'en'); } catch {}
@@ -3088,10 +3090,16 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     };
     if (state.helpArabic) {
       ensureArabicTranslationCatalog().then(() => {
+        // A later click may have switched back to English while the catalogue was loading.
+        if (toggleVersion !== helpLanguageToggleVersion || !state.helpArabic) return;
         renderAll();
         syncCurrentQuestion();
         if (G && G.answered) setSheetSpace();
-      }).catch(() => { syncCurrentQuestion(); toast('Arabic help is available with built-in translations; the expanded catalogue could not load.'); });
+      }).catch(() => {
+        if (toggleVersion !== helpLanguageToggleVersion || !state.helpArabic) return;
+        syncCurrentQuestion();
+        toast('Arabic help is available with built-in translations; the expanded catalogue could not load.');
+      });
     } else {
       syncCurrentQuestion();
     }
@@ -4896,7 +4904,31 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     };
     return art[id]||art.village;
   }
-  async function worldRotateScreen(){try{if(!document.fullscreenElement&&document.documentElement.requestFullscreen){await document.documentElement.requestFullscreen();if(WORLD)WORLD.ownedFullscreen=true;}if(screen.orientation&&screen.orientation.lock){await screen.orientation.lock('landscape');if(WORLD)WORLD.orientationLocked=true;toast('Landscape mode enabled.');return;}}catch{}toast('For a wider view, rotate your phone sideways. Your browser may not support screen locking.');}
+  async function worldRotateScreen(){
+    const root=$('#world-game'),button=root?.querySelector('[data-world-rotate]');
+    const updateButton=()=>{const active=!!document.fullscreenElement;if(button){button.setAttribute('aria-label',active?'Exit fullscreen':'Enter fullscreen or rotate screen');button.title=active?'Exit fullscreen':'Enter fullscreen or rotate screen';button.setAttribute('aria-pressed',String(active));}};
+    if(document.fullscreenElement){
+      try{if(document.exitFullscreen)await document.exitFullscreen();}catch{}
+      if(WORLD){WORLD.ownedFullscreen=false;WORLD.orientationLocked=false;}
+      try{if(screen.orientation?.unlock)screen.orientation.unlock();}catch{}
+      updateButton();return;
+    }
+    let entered=false;
+    try{
+      if(root?.requestFullscreen){await root.requestFullscreen();entered=!!document.fullscreenElement;if(WORLD)WORLD.ownedFullscreen=entered;}
+      if(entered&&screen.orientation?.lock){try{await screen.orientation.lock('landscape');if(WORLD)WORLD.orientationLocked=true;}catch{}}
+    }catch{}
+    updateButton();
+    if(entered)toast('Fullscreen enabled. Press the same button or Escape to exit.');
+    else toast('Fullscreen is unavailable here. Rotate your device for a wider view.');
+  }
+  document.addEventListener('fullscreenchange',()=>{
+    const active=!!document.fullscreenElement;
+    if(WORLD){WORLD.ownedFullscreen=active; if(!active)WORLD.orientationLocked=false;}
+    const button=$('#world-game [data-world-rotate]');
+    if(button){button.setAttribute('aria-label',active?'Exit fullscreen':'Enter fullscreen or rotate screen');button.title=active?'Exit fullscreen':'Enter fullscreen or rotate screen';button.setAttribute('aria-pressed',String(active));}
+    if(!active){try{if(screen.orientation?.unlock)screen.orientation.unlock();}catch{}}
+  });
   function worldShowRegions(){
     if(!WORLD)return;
     stopWorldHold();try{worldCancelAuto();}catch{}worldSwipeStart=null;if(WORLD.idle){clearTimeout(WORLD.idle);WORLD.idle=0;}if(WORLD.raf){cancelAnimationFrame(WORLD.raf);WORLD.raf=0;}WORLD.mode='regions';
