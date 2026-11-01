@@ -45,6 +45,12 @@ test('The Bold Translator A1, A2, B1, B2 and C1 banks each have 42 complete ques
       assert.ok(question.hint.trim(), `${where}: missing hint`);
       assert.equal(question.optionExplanations.length, 3, `${where}: every option needs an explanation`);
       assert.ok(question.optionExplanations.every(explanation => explanation.trim()), `${where}: an option explanation is empty`);
+      if (level === 'C1') {
+        const correctExplanationIndexes = question.optionExplanations
+          .map((explanation, optionIndex) => /^Correct:/i.test(explanation.trim()) ? optionIndex : -1)
+          .filter(optionIndex => optionIndex >= 0);
+        assert.deepEqual(correctExplanationIndexes, [question.answer], `${where}: the answer key must match the explanation marked Correct`);
+      }
         assert.equal(new Set(question.options.map(option => option.trim().toLowerCase())).size, 3, `${where}: duplicate options`);
       }
     }
