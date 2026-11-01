@@ -60,15 +60,26 @@ function validateCaseSnapshot(value) {
   for (const [i, concept] of (value.concepts || []).entries()) {
     if (!Array.isArray(concept.acceptedVariants) || !Array.isArray(concept.patterns) || !Array.isArray(concept.evidenceRefs)) errors.push(issue(`concepts[${i}]`,'CONCEPT_SHAPE','Concept needs acceptedVariants, patterns, and evidenceRefs arrays.'));
     for (const ref of concept.evidenceRefs || []) if (!evidenceIds.has(ref)) errors.push(issue(`concepts[${i}].evidenceRefs`,'UNKNOWN_EVIDENCE',`Unknown evidence reference: ${ref}`));
-    for (const pattern of concept.patterns || []) if (!nonEmpty(pattern.source) || !nonEmpty(pattern.patternId)) errors.push(issue(`concepts[${i}].patterns`,'PATTERN_SHAPE','Patterns need patternId and source.'));
+    for (const pattern of concept.patterns || []) {
+      if (!nonEmpty(pattern.source) || !nonEmpty(pattern.patternId)) errors.push(issue(`concepts[${i}].patterns`,'PATTERN_SHAPE','Patterns need patternId and source.'));
+      else { try { new RegExp(pattern.source,'i'); } catch { errors.push(issue(`concepts[${i}].patterns`,'INVALID_PATTERN',`Invalid regular expression: ${pattern.patternId}`)); } }
+      if (pattern.semanticPolarity && !ENUMS.polarity.includes(pattern.semanticPolarity)) errors.push(issue(`concepts[${i}].patterns`,'POLARITY','Invalid semanticPolarity.'));
+      if (pattern.attribution && (!isObject(pattern.attribution) || !['ATTRIBUTED_SOURCE','CASE_RECORD','LEARNER_ASSERTION','UNRESOLVED_ATTRIBUTION'].includes(pattern.attribution.kind))) errors.push(issue(`concepts[${i}].patterns`,'ATTRIBUTION','Invalid pattern attribution.'));
+    }
+    for (const pattern of concept.excludePatterns || []) { try { new RegExp(pattern,'i'); } catch { errors.push(issue(`concepts[${i}].excludePatterns`,'INVALID_PATTERN','Invalid exclusion regular expression.')); } }
+    if (concept.expectedModality && !ENUMS.modality.includes(concept.expectedModality)) errors.push(issue(`concepts[${i}].expectedModality`,'MODALITY','Invalid expected modality.'));
+    if (concept.expectedPolarity && !ENUMS.polarity.includes(concept.expectedPolarity)) errors.push(issue(`concepts[${i}].expectedPolarity`,'POLARITY','Invalid expected polarity.'));
   }
   for (const [i, evidence] of (value.evidence || []).entries()) {
     if (!['ESSENTIAL','OPTIONAL','CONTEXTUAL','DISCONFIRMING'].includes(evidence.role)) errors.push(issue(`evidence[${i}].role`,'ENUM','Invalid evidence role.'));
     if (!nonEmpty(evidence.summary) || !Array.isArray(evidence.limitations)) errors.push(issue(`evidence[${i}]`,'EVIDENCE_SHAPE','Evidence needs summary and limitations.'));
+    if (!['SUPPORTS','CONTRADICTS','CONSISTENT_WITH','WEAKENS','CONTEXTUALIZES','DOES_NOT_ESTABLISH','LEAVES_UNRESOLVED'].includes(evidence.relation)) errors.push(issue(`evidence[${i}].relation`,'ENUM','Invalid evidence relation.'));
   }
+  const conceptIds = new Set((value.concepts || []).map(x => x.conceptId));
   for (const [i, criterion] of (value.criteria || []).entries()) {
     if (!['CONCLUSION_ACCURACY','EVIDENCE_REASONING','CRITICAL_THINKING'].includes(criterion.dimension)) errors.push(issue(`criteria[${i}].dimension`,'ENUM','Invalid criterion dimension.'));
     if (!Number.isFinite(criterion.weight) || criterion.weight <= 0) errors.push(issue(`criteria[${i}].weight`,'WEIGHT','Criterion weight must be positive.'));
+    if (!Array.isArray(criterion.conceptIds) || criterion.conceptIds.some(id => !conceptIds.has(id))) errors.push(issue(`criteria[${i}].conceptIds`,'UNKNOWN_CONCEPT','Criterion concept references must resolve.'));
   }
   return errors;
 }
