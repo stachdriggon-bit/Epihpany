@@ -66,7 +66,7 @@ Status legend: `[x]` completed · `[~]` in progress · `[ ]` not started
 - [x] Record the initial question-pool sizes and difficulty-variation gaps.
 - [x] Identify that some activities reuse the same pool across training approaches or CEFR levels.
 - [x] Agree on the two-axis model: CEFR A1–C2 × Guided / Steady / Challenge.
-- [ ] Inspect the current difficulty-selection and adaptive-performance logic in full.
+- [x] Inspect the current difficulty-selection and adaptive-performance logic in full.
 - [ ] Define the learning objective and task types for each of the nine activities.
 - [ ] Define what changes across all six CEFR levels for each activity.
 - [ ] Define what changes across Guided, Steady, and Challenge for each activity.
@@ -74,6 +74,19 @@ Status legend: `[x]` completed · `[~]` in progress · `[ ]` not started
 - [ ] Review and approve the complete Think Lab content specification before implementation.
 - [ ] Implement the approved changes.
 - [ ] Run relevant automated tests and manually review representative sessions across levels and approaches.
+
+### Approved activity specification — Odd One Out
+
+**Status:** Design approved; implementation not started.
+
+- **Learning objective:** develop the ability to recognize and reason about relationships between words, rather than relying only on simple category labels.
+- **Question format:** present four words; the learner selects the one that does not belong. No written justification or reason-selection step is required.
+- **Feedback:** after the selection, explain why the other three words form a coherent group and why the selected word does not belong. Questions must avoid multiple defensible answers unless context establishes one clear criterion.
+- **Relationship coverage:** include all ten planned relationship types, introduced and revisited with increasing depth: Category; Function; Synonyms & Antonyms; Part & Whole; Word Class; Cause & Effect; Contextual Meaning; Collocations; Register & Tone; Connotation. These are progressive starting points, not exclusive CEFR boundaries.
+- **CEFR progression:** A1 begins with concrete, familiar categories and functions; A2 adds everyday places, occupations, activities, common synonyms/antonyms, parts/whole, and word classes; B1 develops semantic, functional, contextual, cause/effect, and common collocation relationships; B2 introduces finer meaning, collocations, register, tone, and figurative/context-sensitive distinctions; C1 develops implication, nuance, advanced collocations, and abstract relationships; C2 uses closely related meanings, subtle connotations, register, context, and precise usage distinctions. Relationship types may recur at higher levels with greater depth.
+- **Training approach:** Guided provides progressive hints and fuller explanations; Steady expects independent selection with clear feedback and varied relationships; Challenge uses more convincing distractors, less obvious relationships, and context where needed. The selected CEFR level remains independent of the training approach.
+- **Target round length:** Guided 8 questions; Steady 10; Challenge 12. These are adaptive targets, not hard caps. A round may be shorter when too few high-quality unseen questions are available; it must not be padded with weak or repeated items. More content may be added to any CEFR level later as quality material becomes available.
+- **Content-volume rule:** these round targets do not establish a fixed question-bank size. Bank expansion should follow quality, variety, and level coverage rather than a quota.
 
 Activities in scope:
 1. Odd One Out
@@ -152,4 +165,4 @@ A target such as **30–50 questions per level** may be considered during design
 
 ---
 
-**Current checkpoint:** Phase 0 initial inventory is complete. Phase 1 (Think Lab) is active. The next task is to finish inspecting the existing difficulty-selection and adaptive-performance logic, then write the per-activity content specifications. No content implementation is authorized by this roadmap alone; each phase's design must first be reviewed and agreed.
+**Current checkpoint:** Phase 0 initial inventory is complete. Phase 1 (Think Lab) is active. The current difficulty-selection and adaptive-performance logic has been inspected. The Odd One Out design is approved and recorded above; implementation has not started. Next: define the content specification for The Language Detective, then continue through the remaining Think Lab activities. No content implementation is authorized by this roadmap alone; each phase's design must first be reviewed and agreed.
