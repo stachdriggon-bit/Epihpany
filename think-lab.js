@@ -75,8 +75,9 @@
         {ar:'كان الجو ممطراً عندما غادرنا.',options:['It was raining when we left.','It is raining when we left.','It was rain when we leave.'],answer:0,hint:'One action was in progress when another past action happened.',optionExplanations:['Correct: past continuous for the ongoing weather and past simple for “left”.','“Is raining” is present, but “left” is past.','Use “raining” after “was”, and “left” for the past action.']},
         {ar:'لا أستطيع العثور على مفاتيحي.',options:["I can't find my keys.","I don't can find my keys.","I can't finding my keys."],answer:0,hint:'Use the modal verb for inability and check the form of the next verb.',optionExplanations:['Correct: “can’t” is followed by the base verb “find”.','Do not use “do” with “can”.','After “can’t”, use “find”, not “finding”.']},
         {ar:'هذا هو اليوم الأكثر حرارة في السنة.',options:['This is the hottest day of the year.','This is the hotter day in the year.','This is most hot day of year.'],answer:0,hint:'The sentence identifies one day as number one in a whole group.',optionExplanations:['Correct: “the hottest” is the superlative form.','“Hotter” compares two things, not one with the whole year.','The superlative needs “the” and the form “hottest”.']},
-        {ar:'يجب أن ننظف غرفتنا قبل وصول الضيوف.',options:['We must clean our room before the guests arrive.','We must to clean our room before the guests arrives.','We should cleaning our room before guests arrived.'],answer:0,hint:'A modal verb is followed by a base verb; check the time of the arrival.',optionExplanations:['Correct: “must clean” and present simple after “before” for a future event.','D
-    ,
+        {ar:'يجب أن ننظف غرفتنا قبل وصول الضيوف.',options:['We must clean our room before the guests arrive.','We must to clean our room before the guests arrives.','We should cleaning our room before guests arrived.'],answer:0,hint:'A modal verb is followed by a base verb; check the time of the arrival.',optionExplanations:['Correct: “must clean” and present simple after “before” for a future event.','Do not use “to” after “must”; “guests” takes “arrive”.','“Should” needs a base verb, and the time reference is inconsistent.']}
+      ]
+    },
     A2: {
       guided: [
         translatorQuestion('ذهبت إلى السوق أمس.', ['I go to the market yesterday.','I went to the market yesterday.','I was go to the market yesterday.'], 1, 'The time expression points to a completed past event.', ['The present form does not match “yesterday”.','Correct: “went” is the past form of “go”.','“Was go” is not a correct past verb form.']),
@@ -125,8 +126,6 @@
         translatorQuestion('كلما تدربت أكثر، تحسنت أكثر.', ['The more you practise, the better you get.','More you practise, better you get.','The most you practise, the best you get.'], 0, 'This paired structure links two changing situations.', ['Correct: “the more..., the better...” expresses linked changes.','Both parts need “the” in this comparative structure.','Superlatives are not used in this paired comparison.']),
         translatorQuestion('لم أكن معتاداً على الاستيقاظ مبكراً.', ['I didn’t use to wake up early.','I wasn’t used to wake up early.','I wasn’t used to waking up early.'], 2, 'After “be used to”, use a noun or an -ing form.', ['This means the habit did not exist in the past; it is not the same as lacking familiarity.','“Wasn’t used to” needs a noun or gerund after “to”.','Correct: “used to” here means accustomed to, followed by “waking”.']),
         translatorQuestion('كان بإمكانها أن تأتي، لكنها لم تفعل.', ['She could have come, but she didn’t.','She could came, but she didn’t.','She can have come, but she didn’t.'], 0, 'Use the modal perfect to describe an unrealised past possibility.', ['Correct: “could have + past participle” describes a past possibility that did not happen.','The past participle is needed after “could have”.','The present modal does not match the unrealised past situation.'])
-      ]
-    }o not use “to” after “must”; “guests” takes “arrive”.','“Should” needs a base verb, and the time reference is inconsistent.']}
       ]
     }
   };
