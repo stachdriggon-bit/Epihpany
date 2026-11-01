@@ -24,7 +24,7 @@ test('case schema validates stable unique IDs and evidence references',()=>{
 });
 
 test('all six CEFR profiles define operators and feedback register without changing scoring',()=>{
- for(const level of cefr.CEFR_ORDER){const p=cefr.getCefrProfile(level);assert.ok(p);assert.ok(p.negation.length);assert.ok(p.modality.length);assert.ok(p.feedbackRegister);}
+ for(const level of cefr.CEFR_ORDER){const p=cefr.getCefrProfile(level);assert.ok(p);assert.ok(p.negation.length);assert.ok(p.modality.length);assert.ok(p.feedbackRegister);assert.ok(cefr.CEFR_CONSTRUCTION_PATTERNS[level].length);for(const item of cefr.CEFR_CONSTRUCTION_PATTERNS[level])assert.doesNotThrow(()=>new RegExp(item.pattern));}
  assert.equal(engine.DIMENSION_WEIGHTS.CONCLUSION_ACCURACY,35);
 });
 
