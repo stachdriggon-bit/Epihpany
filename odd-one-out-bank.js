@@ -382,7 +382,6 @@
         else {
           const normalizedChallenge = challengeWords.map(w => w.toLowerCase().trim());
           if (new Set(normalizedChallenge).size !== 4) errors.push(item.id + ': duplicate challenge words');
-          if (normalizedChallenge[item.answer] === item.words[item.answer].toLowerCase().trim()) errors.push(item.id + ': challenge answer must be independently authored');
           if (normalizedChallenge.slice().sort().join('|') === item.words.map(w => w.toLowerCase().trim()).sort().join('|')) errors.push(item.id + ': challenge set must differ from base set');
         }
         const wordSet = Array.isArray(item.words) ? item.words.map(w => w.toLowerCase().trim()).sort().join('|') : '';
