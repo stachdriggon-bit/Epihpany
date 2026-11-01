@@ -238,7 +238,8 @@ test('main navigation tabs open without uncaught page errors', async t => {
         assert.ok((await gameCard.locator('[data-odd-hint-text]').innerText()).trim().length > 10);
         await gameCard.locator('[data-think-answer]').first().click();
         assert.equal(await gameCard.locator('#tl-feedback').isVisible(), true, 'an answer should reveal feedback');
-        assert.match(await gameCard.locator('#tl-feedback').innerText(), /Relationship:/, 'feedback should identify the shared relationship');
+        const feedbackState = await gameCard.locator('#tl-feedback').evaluate(el => ({text:el.textContent,html:el.innerHTML,hidden:el.hidden,className:el.className}));
+        assert.match(feedbackState.text, /Relationship:/, 'feedback should identify the shared relationship: ' + JSON.stringify(feedbackState));
         assert.equal(await gameCard.locator('[data-think-next]').isVisible(), true, 'feedback should unlock the next question');
         await gameCard.locator('[data-think-next]').click();
         assert.equal(await gameCard.locator('h2').innerText(), 'Which word does not belong?');
