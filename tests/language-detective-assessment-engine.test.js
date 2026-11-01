@@ -52,6 +52,14 @@ test('evidence reasoning keeps credential use separate from the physical actor',
  assert.equal(card,undefined,'The engine must not infer card use from a denial that the log proves Lena used it.');
 });
 
+
+test('negation changes the proposition outcome instead of being discarded as wording',()=>{
+ const result=engine.evaluate(request('CASE-003','R-4 recorded no unusual increase.'));
+ const anomaly=result.evidence.propositionAssessments.find(x=>x.conceptId==='ANOMALY_RECORDED');
+ assert.equal(anomaly.supportState,'CONTRADICTED');
+ assert.ok(result.claims.materialContradictions.some(x=>x.conceptId==='ANOMALY_RECORDED'));
+});
+
 test('C1 causal uncertainty is not upgraded to a confirmed external event',()=>{
  const result=engine.evaluate(request('CASE-003','R-4 recorded an unusual increase, but the cause remains unresolved. An external source is possible.'));
  assert.ok(result.modules);
