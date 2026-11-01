@@ -604,14 +604,15 @@ bark dark core hand land lane data duty melt`
       };
       return selected.questions.map(item => ({
         ...item,
+        prompt:'Which word does not belong?',
         cefrLevel:selected.level,
         trainingMode,
         relationshipLabel:relationshipLabels[item.relationship] || item.relationship,
         why:trainingMode === 'guided'
-          ? 'Choose the word that does not fit the shared relationship.'
+          ? 'Find the one word that does not share the relationship held by the other three.'
           : trainingMode === 'challenge'
-            ? 'Look for the most precise relationship, not a superficial similarity. ' + item.context
-            : item.context
+            ? 'Identify the precise link shared by three words; avoid broad or superficial similarities. Context: ' + item.context
+            : 'Compare the four words in this context: ' + item.context
       }));
     }
     if (id === 'translator') {
