@@ -428,3 +428,32 @@ When validating modes, difficulty settings, and response formats:
 - label all simulations as manual until code is actually executed.
 
 This case study is a manual design record, not evidence of implementation or automated verification.
+
+
+---
+
+## 12. Case study — Phase 6 Case Data Schema
+
+The Language Detective design approved a versioned, structured Case Data model while keeping reusable authored case content separate from individual Session Data.
+
+### 12.1 Conceptual case sections
+
+A case is conceptually composed of metadata, introduction, evidence, investigation questions, final conclusion, and evaluation rules. A `schemaVersion` supports controlled future evolution.
+
+### 12.2 Evidence is more than display text
+
+Evidence records use stable identifiers and distinguish learner-facing content from internal interpretation guidance. Internal guidance records what an item supports, what it does not prove, and its limitations. This is especially important when a source appears authoritative but does not establish identity, causality, or certainty.
+
+### 12.3 Evaluate meaning, not sentence matching
+
+The reference answer is represented through required concepts, accepted semantic variants, evidence relationships, and unsupported claims. A single canonical sentence is not a sufficient definition of correctness.
+
+### 12.4 Validate references and fairness
+
+Schema validation must detect duplicate IDs, dangling references, missing criteria, contradictions between evidence and the reference conclusion, and accidental dependencies on optional evidence. Publication readiness requires complete evaluation data, not merely a valid display payload.
+
+### 12.5 Local evaluation trade-off
+
+The approved V1 direction is a local structured rule-based evaluator. Separating evaluation metadata from learner-facing content improves maintainability but does not make the rules confidential when delivered to the browser. A hybrid server-side evaluator remains a possible future alternative, not part of the approved V1 scope.
+
+This is a design approval record only. Exact field types, constraints, executable validation, evaluator implementation, and runtime verification remain future work.
