@@ -597,3 +597,75 @@ test('Think Lab CEFR bridge reads the active assessed or developer test level', 
   assert.match(think, /EPIPHANY_ODD_ONE_OUT_BANK\.selectRound\(cefr, trainingMode\)/);
   assert.match(think, /This round is shorter than the '\+roundTarget\+'-question target/);
 });
+
+
+test('Language Detective lazy load rejects scripts that load without initializing required globals and can retry', async () => {
+  const requested = [];
+  const scripts = [];
+  const document = {
+    createElement() {
+      const script = {
+        async: true, src: '', removed: false,
+        getAttribute(name) { return name === 'src' ? this.src : null; },
+        remove() { this.removed = true; }
+      };
+      scripts.push(script);
+      return script;
+    },
+    querySelectorAll() { return scripts; },
+    head: { appendChild(script) { requested.push(script.src); } }
+  };
+  const context = vm.createContext({ window: {}, document, Promise, Map, Set, Object, Error });
+  vm.runInContext(fs.readFileSync(path.join(root, 'lazy-data.js'), 'utf8'), context);
+
+  const failed = context.window.EPIPHANY_LAZY_LOAD('languageDetective');
+  for (let i = 0; i < 5; i++) {
+    await new Promise(resolve => setImmediate(resolve));
+    assert.ok(scripts[i], 'expected language module ' + (i + 1) + ' to be requested');
+    scripts[i].onload();
+  }
+  await assert.rejects(failed, /did not initialize/);
+  assert.equal(requested.length, 5);
+  assert.ok(scripts.every(script => script.removed), 'failed group scripts should be invalidated for a clean retry');
+
+  const retry = context.window.EPIPHANY_LAZY_LOAD('languageDetective');
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(requested.length, 6);
+  assert.match(requested[5], /^language-detective-assessment-schemas\.js\?/);
+  scripts[5].onerror();
+  await assert.rejects(retry, /Unable to load feature data/);
+});
+
+test('Language Detective lazy load resolves only after every required module is ready', async () => {
+  const requested = [];
+  const scripts = [];
+  const document = {
+    createElement() {
+      const script = { async: true, src: '', getAttribute(name) { return name === 'src' ? this.src : null; }, remove() {} };
+      scripts.push(script);
+      return script;
+    },
+    querySelectorAll() { return scripts; },
+    head: { appendChild(script) { requested.push(script.src); } }
+  };
+  const window = {};
+  const context = vm.createContext({ window, document, Promise, Map, Set, Object, Error });
+  vm.runInContext(fs.readFileSync(path.join(root, 'lazy-data.js'), 'utf8'), context);
+
+  const loading = window.EPIPHANY_LAZY_LOAD('languageDetective');
+  for (let i = 0; i < 5; i++) {
+    await new Promise(resolve => setImmediate(resolve));
+    assert.ok(scripts[i]);
+    if (i === 4) {
+      window.EPIPHANY_LANGUAGE_DETECTIVE_SCHEMAS = { validateEvaluationRequest() {} };
+      window.EPIPHANY_LANGUAGE_DETECTIVE_CEFR = { getCefrProfile() {} };
+      window.EPIPHANY_LANGUAGE_DETECTIVE_ENGINE = { evaluate() {} };
+      window.EPIPHANY_LANGUAGE_DETECTIVE_FIXTURES = { cases: { 'CASE-001': {} } };
+      window.EPIPHANY_LANGUAGE_DETECTIVE = { available: true, mount() {} };
+    }
+    scripts[i].onload();
+  }
+  await loading;
+  assert.equal(requested.length, 5);
+  assert.equal(window.EPIPHANY_LANGUAGE_DETECTIVE.available, true);
+});
