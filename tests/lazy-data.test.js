@@ -117,17 +117,21 @@ test('overlapping feature groups share one in-flight script request', async () =
   const thinkLab = context.window.EPIPHANY_LAZY_LOAD('thinklab');
   const lifeSkills = context.window.EPIPHANY_LAZY_LOAD('lifeskills');
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested.length, 1, 'the shared Think Lab script should only be inserted once');
-  assert.match(requested[0], /^think-lab\.js\?/);
+  assert.equal(requested.length, 1, 'the shared CEFR bank should load first');
+  assert.match(requested[0], /^odd-one-out-bank\.js\?/);
 
   scripts[0].onload();
   await new Promise(resolve => setImmediate(resolve));
   assert.equal(requested.length, 2);
-  assert.match(requested[1], /^life-skills\.js\?/);
+  assert.match(requested[1], /^think-lab\.js\?/);
   scripts[1].onload();
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(requested.length, 3);
+  assert.match(requested[2], /^life-skills\.js\?/);
+  scripts[2].onload();
 
   await Promise.all([thinkLab, lifeSkills]);
-  assert.equal(requested.length, 2);
+  assert.equal(requested.length, 3);
 });
 
 test('failed lazy scripts are removed and can be retried', async () => {
@@ -585,4 +589,12 @@ test('feature-group recovery is deduplicated and stops after two recovery attemp
   listeners['document:visibilitychange']();
   await new Promise(resolve => setImmediate(resolve));
   assert.equal(requested.length, 3, 'group recovery must stop after the bounded retry budget');
+});
+
+test('Think Lab CEFR bridge reads the active assessed or developer test level', () => {
+  const app = fs.readFileSync(path.join(root, 'app.js'), 'utf8');
+  assert.match(app, /getCEFRLevel\(\)\s*\{\s*const level = currentLevel\(\);\s*return level && LEVELS\.some\(item => item\.id === level\.id\) \? level\.id : 'A1';/);
+  const think = fs.readFileSync(path.join(root, 'think-lab.js'), 'utf8');
+  assert.match(think, /bridge\.getCEFRLevel\(\)/);
+  assert.match(think, /EPIPHANY_ODD_ONE_OUT_BANK\.selectRound\(cefr, trainingMode\)/);
 });
