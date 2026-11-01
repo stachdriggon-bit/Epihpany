@@ -643,7 +643,40 @@ bark dark core hand land lane data duty melt`
     return tiles;
   }
   function speakTarget() { const pool=activePool || getRoundPool('maze');const item=pool[index%pool.length]; if(!('speechSynthesis' in window)||!window.SpeechSynthesisUtterance){const fb=root.querySelector('#tl-feedback');if(fb){fb.hidden=false;fb.className='tl-feedback is-wrong';fb.textContent='Speech playback is not available in this browser.';}return;} window.speechSynthesis.cancel(); const utterance=new SpeechSynthesisUtterance(item.target); utterance.lang='en-US'; utterance.rate=.82; window.speechSynthesis.speak(utterance); }
-  function start(id) { mode=id; index=0; score=0; chainStepIndex=0; chainPath=[]; clueCount=0; roundMistakes=0; ladderPath=[]; ladderWordNote=null; ladderMistakeRecorded=false; activeDifficulty=difficultyForMode(id); oddHintStep=0; if(id==='detective'){activePool=null;const open=()=>{if(mode==='detective'&&window.EPIPHANY_LANGUAGE_DETECTIVE&&window.EPIPHANY_LANGUAGE_DETECTIVE.available)window.EPIPHANY_LANGUAGE_DETECTIVE.mount(root,{onExit:()=>{mode=null;activePool=null;activeDifficulty=null;landing();}});};if(window.EPIPHANY_LANGUAGE_DETECTIVE&&window.EPIPHANY_LANGUAGE_DETECTIVE.available){open();}else{root.innerHTML='<div class="tl-game-card"><p>Preparing the investigation…</p></div>';Promise.all([window.EPIPHANY_LAZY_LOAD('languageDetective'),window.EPIPHANY_LAZY_STYLE('languageDetective')]).then(open).catch(()=>{root.innerHTML='<div class="tl-game-card"><p>The investigation could not load. Check your connection and try again.</p><button type="button" class="tl-back" data-think-back>Back to Think Lab</button></div>';});}return;} activePool=getRoundPool(id,activeDifficulty.level); renderGame(); if(id==='maze') speakTarget(); }
+  function showDetectiveLoadError(error) {
+    if (window.console && typeof window.console.error === 'function') {
+      window.console.error('[EPIPHANY] Language Detective initialization failed:', error);
+    }
+    root.innerHTML = '<div class="tl-game-card"><p>The investigation could not start. One of its modules may have failed to load.</p><button type="button" class="tl-next" data-think-detective-retry>Try again</button><button type="button" class="tl-back" data-think-back>Back to Think Lab</button></div>';
+  }
+  function start(id) {
+    mode=id; index=0; score=0; chainStepIndex=0; chainPath=[]; clueCount=0; roundMistakes=0; ladderPath=[]; ladderWordNote=null; ladderMistakeRecorded=false; activeDifficulty=difficultyForMode(id); oddHintStep=0;
+    if(id==='detective'){
+      activePool=null;
+      const open=()=>{
+        if(mode!=='detective')return;
+        const detective=window.EPIPHANY_LANGUAGE_DETECTIVE;
+        if(!detective||detective.available!==true||typeof detective.mount!=='function') {
+          throw new Error('Language Detective UI bridge is unavailable after loading its dependencies.');
+        }
+        detective.mount(root,{onExit:()=>{mode=null;activePool=null;activeDifficulty=null;landing();}});
+      };
+      if(window.EPIPHANY_LANGUAGE_DETECTIVE&&window.EPIPHANY_LANGUAGE_DETECTIVE.available===true){
+        try { open(); } catch(error) { showDetectiveLoadError(error); }
+      } else {
+        root.innerHTML='<div class="tl-game-card"><p>Preparing the investigation…</p></div>';
+        if(typeof window.EPIPHANY_LAZY_LOAD!=='function'||typeof window.EPIPHANY_LAZY_STYLE!=='function'){
+          showDetectiveLoadError(new Error('Lazy feature loading is unavailable.'));
+          return;
+        }
+        Promise.all([window.EPIPHANY_LAZY_LOAD('languageDetective'),window.EPIPHANY_LAZY_STYLE('languageDetective')])
+          .then(open)
+          .catch(showDetectiveLoadError);
+      }
+      return;
+    }
+    activePool=getRoundPool(id,activeDifficulty.level); renderGame(); if(id==='maze') speakTarget();
+  }
   root.addEventListener('submit', e => {
     const form=e.target.closest('[data-think-ladder-form]');
     if(!form||mode!=='wordladder')return;
@@ -747,6 +780,7 @@ bark dark core hand land lane data duty melt`
     }
 
     const recommended=e.target.closest('[data-think-recommended]'); if(recommended){start(recommended.dataset.thinkRecommended);return;}
+    if(e.target.closest('[data-think-detective-retry]')){start('detective');return;}
     const launch=e.target.closest('[data-think-game]'); if(launch){start(launch.dataset.thinkGame);return;}
     if(e.target.closest('[data-think-back]')){if(window.speechSynthesis)window.speechSynthesis.cancel();landing();return;}
     if(e.target.closest('[data-think-clue]')){clueCount=Math.min((activePool || getRoundPool('detective'))[index%(activePool || getRoundPool('detective')).length].clues.length-1,clueCount+1);renderGame();return;}
