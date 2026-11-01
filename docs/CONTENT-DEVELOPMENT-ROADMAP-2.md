@@ -609,3 +609,129 @@ Next sequence:
 5. Only then proceed to the separate Persistence & Recovery design and implementation planning.
 
 **Checkpoint:** The original functional specification remains the approved baseline. The assessment rubrics, manual simulation, CEFR calibration, and Phase 5 details are recorded as provisional design work. No code implementation or automated test run has occurred.
+
+
+---
+
+## 19. Phase 5 — Expanded manual simulation record
+
+**Status:** Manual design simulation completed for review; not an automated test run and not proof of implemented behavior.
+
+### 19.1 The 18 core combinations
+
+The six combinations below were reviewed for each of the three experimental cases, producing 18 case/mode/format scenarios:
+
+| ID | Training Mode | Answer Format |
+|---|---|---|
+| MODE-01 | Guided | Standard |
+| MODE-02 | Guided | Hell Mode |
+| MODE-03 | Steady | Standard |
+| MODE-04 | Steady | Hell Mode |
+| MODE-05 | Challenge | Standard |
+| MODE-06 | Challenge | Hell Mode |
+
+Case-specific expected semantic outcomes:
+- **CASE-001 / The Missing Package:** an unidentified resident picked up the package; identity and motive are unknown.
+- **CASE-002 / Conflicting Accounts:** the envelope was found in Room B; Lena moving it with papers is plausible but unproven; the card log does not identify the physical user.
+- **CASE-003 / The Uncertain Evidence:** an unusual R-4 reading was recorded; the available evidence does not establish an external source or a technical fault.
+
+For each case, equivalent Standard selections and Hell Mode written responses should receive equivalent academic assessment when they express the same conclusion and reasoning. Guided, Steady, and Challenge must not alter accepted conclusions or evidence facts. Guided's A+ cap applies to the awarded grade only, not to the underlying dimension scores.
+
+### 19.2 Hint ladder simulation
+
+The three hint levels were reviewed against all three cases:
+
+1. **Direction Hint:** directs attention to relevant evidence without identifying the answer.
+2. **Connection Hint:** helps the learner connect relevant evidence or compare sources.
+3. **Reasoning Hint:** clarifies the reasoning task and evidence limitations without supplying the final conclusion.
+
+Case-specific examples:
+- CASE-001: review reception statements → compare delivery and observation times → distinguish observed pickup from unknown identity/motive.
+- CASE-002: review Omar's observation and the access log → compare reported paper movement with room access → distinguish card use from the identity of the user and contents moved.
+- CASE-003: separate observation from interpretation → compare R-4, R-7, and maintenance limitations → identify competing hypotheses and evidence that could distinguish them.
+
+Proposed hint behavior by mode:
+- Guided may offer or suggest the first hint more readily and present fuller scaffolding.
+- Steady provides hints on request with balanced explanation.
+- Challenge provides concise, less revealing hints on request.
+- All Essential evidence remains available in every mode.
+- Hints do not reduce academic points.
+- A learner may request a higher hint level without first submitting a wrong answer.
+- Repeated requests do not create repeated rewards or academic penalties.
+- A defective or answer-revealing hint is a content/design defect, not a learner failure.
+
+**Proposed sequencing rule:** reveal hints in Direction → Connection → Reasoning order. The learner may progress to the next hint after viewing the previous one; no wrong answer is required to unlock it.
+
+### 19.3 Retry simulation
+
+An illustrative CASE-001 sequence was reviewed:
+- Attempt 1: unsupported accusation against Adam.
+- Attempt 2: incorrect inference that Sara picked up the package because she witnessed the event.
+- Attempt 3: correct conclusion that an unidentified resident picked it up.
+
+Expected behavior:
+- Wrong attempts do not block investigation progress or create automatic grade deductions.
+- Earlier answers remain in the attempt history.
+- The latest clear response after feedback represents the learner's current demonstrated understanding for that question.
+- The final case assessment uses the learner's final submitted conclusion and reasoning, with the full interaction history retained for review.
+- A replay of the entire completed case creates a new attempt; it does not overwrite the previous attempt.
+- A changed Training Mode or Answer Format applies to the new attempt only.
+
+### 19.4 Ambiguity simulation
+
+Reviewed response classes:
+- unclear pronoun/reference: request clarification;
+- materially ambiguous claim: request clarification where the ambiguity changes the assessment;
+- true but incomplete fact: award partial credit;
+- internal contradiction: identify the conflicting claims and explain the evidence boundary;
+- clear paraphrase: accept;
+- minor grammar errors with clear meaning: accept the meaning;
+- concise but complete response: accept;
+- keyword-only response without a valid relationship: do not award understanding;
+- plausible hypothesis stated as certainty: assess overclaiming;
+- unsupported or unclassifiable free response: use a clarification/unsupported classification rather than pretending to understand it.
+
+Suggested evaluator outcomes include `NEEDS_CLARIFICATION`, `PARTIAL`, `ACCEPTED`, `UNSUPPORTED`, and `CONTRADICTION`. These are conceptual labels pending schema design, not implemented enums.
+
+### 19.5 Mode differentiation and invariants
+
+Modes must create genuinely different support experiences:
+- Guided: clearer orientation, more explicit scaffolding, fuller feedback.
+- Steady: balanced independent investigation and moderate support.
+- Challenge: minimal proactive guidance and more independent reasoning.
+
+The following must remain invariant:
+- Essential evidence availability;
+- case facts and event chronology;
+- accepted conclusions and defensible alternatives;
+- academic dimensions and provisional 35/40/25 weights;
+- semantic standards and partial-credit principles;
+- no academic penalty for hint use;
+- no hidden grammar/verbosity bonus;
+- no silent CEFR change.
+
+Independence is a separate descriptor (High / Moderate / Assisted) and does not add or subtract academic points. A learner who uses no hints is not automatically entitled to bonus points.
+
+### 19.6 Manual test inventory
+
+The design review covered 57 scenario entries across:
+- 18 core case/mode/format combinations;
+- 9 hint scenarios;
+- 8 retry scenarios;
+- 10 ambiguity scenarios;
+- 6 user-experience differentiation scenarios;
+- 6 scoring fairness and invariant scenarios.
+
+This inventory is a design-review count. It does not mean 57 automated tests were implemented or executed.
+
+### 19.7 Open decisions before Assessment Engine approval
+
+1. Define exact reproducible rules for Independence High / Moderate / Assisted.
+2. Confirm whether question-level assessment uses the latest clear response after feedback, while retaining all earlier attempts (current proposal), or another policy.
+3. Define clarification interaction limits and how many clarifications may be requested without penalty (current proposal: allow repeated clarification where needed, without grade penalty).
+4. Define the exact local rule-based semantic evaluator's supported variants, contradiction handling, and safe fallback for unrecognized wording.
+5. Define the final grade gates and scoring formula after calibration, rather than relying only on provisional bands.
+
+### 19.8 Phase 5 status
+
+The 18 combinations and the hint/retry/ambiguity/fairness scenarios have received a manual design review. Phase 5 is **not yet formally approved**: the open decisions above must be resolved, and the behavior must later be implemented and verified with automated tests. No code change or automated test execution is claimed by this record.
