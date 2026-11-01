@@ -271,7 +271,7 @@ bark dark core hand land lane data duty melt`
   const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
   const games = [
     {id:'odd',num:'01',icon:'◈',name:'Odd One Out',tag:'PATTERN RECOGNITION',desc:'Spot the outsider, then explain the relationship that connects the others.',time:'2–3 min'},
-    {id:'detective',num:'02',icon:'⌕',name:'The Language Detective',tag:'CLUES & INFERENCE',desc:'Read the evidence, connect the clues and choose the best-supported conclusion.',time:'3–4 min'},
+    {id:'detective',num:'02',icon:'⌕',name:'The Language Detective',tag:'INVESTIGATION & REASONING',desc:'Study case evidence, compare accounts and write a conclusion that stays within what the facts support.',time:'5–10 min'},
     {id:'translator',num:'03',icon:'⇄',name:'The Bold Translator',tag:'NATURAL ENGLISH',desc:'Choose the sentence a real speaker would use—not a word-for-word translation.',time:'2–3 min'},
     {id:'wordladder',num:'04',icon:'↗',name:'Word Ladder',tag:'SPELLING & LOGIC',desc:'Transform one word into another, changing just one letter per step.',time:'3–5 min'},
     {id:'maze',num:'05',icon:'⌁',name:'The Sound Maze',tag:'LISTENING & PRONUNCIATION',desc:'Listen to the target word and find the matching word to move through the maze.',time:'2–3 min'},
@@ -600,7 +600,7 @@ bark dark core hand land lane data duty melt`
     return tiles;
   }
   function speakTarget() { const pool=activePool || getRoundPool('maze');const item=pool[index%pool.length]; if(!('speechSynthesis' in window)||!window.SpeechSynthesisUtterance){const fb=root.querySelector('#tl-feedback');if(fb){fb.hidden=false;fb.className='tl-feedback is-wrong';fb.textContent='Speech playback is not available in this browser.';}return;} window.speechSynthesis.cancel(); const utterance=new SpeechSynthesisUtterance(item.target); utterance.lang='en-US'; utterance.rate=.82; window.speechSynthesis.speak(utterance); }
-  function start(id) { mode=id; index=0; score=0; chainStepIndex=0; chainPath=[]; clueCount=0; roundMistakes=0; ladderPath=[]; ladderWordNote=null; ladderMistakeRecorded=false; activeDifficulty=difficultyForMode(id); activePool=getRoundPool(id,activeDifficulty.level); renderGame(); if(id==='maze') speakTarget(); }
+  function start(id) { mode=id; index=0; score=0; chainStepIndex=0; chainPath=[]; clueCount=0; roundMistakes=0; ladderPath=[]; ladderWordNote=null; ladderMistakeRecorded=false; activeDifficulty=difficultyForMode(id); if(id==='detective'&&window.EPIPHANY_LANGUAGE_DETECTIVE&&window.EPIPHANY_LANGUAGE_DETECTIVE.available){activePool=null;window.EPIPHANY_LANGUAGE_DETECTIVE.mount(root,{onExit:()=>{mode=null;activePool=null;activeDifficulty=null;landing();}});return;} activePool=getRoundPool(id,activeDifficulty.level); renderGame(); if(id==='maze') speakTarget(); }
   root.addEventListener('submit', e => {
     const form=e.target.closest('[data-think-ladder-form]');
     if(!form||mode!=='wordladder')return;
