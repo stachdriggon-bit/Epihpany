@@ -7,8 +7,7 @@ const vm = require('node:vm');
 const source = fs.readFileSync(path.join(__dirname, '..', 'think-lab.js'), 'utf8');
 const appSource = fs.readFileSync(path.join(__dirname, '..', 'app.js'), 'utf8');
 
-function harnessBankQuestion(level, mode, arabicPrompt) {
-  const harness = loadHarness();
+function harnessBankQuestion(harness, level, mode, arabicPrompt) {
   return harness.__translatorBanks[level][mode].find(question => question.ar === arabicPrompt);
 }
 
@@ -81,13 +80,14 @@ test('The Bold Translator round sizes are 8, 10 and 12 questions', () => {
 test('The Bold Translator balances correct answer positions in every round and keeps explanations attached', () => {
   for (const level of ['A1', 'A2', 'B1', 'B2', 'C1', 'C2']) {
     for (const mode of ['guided', 'steady', 'challenge']) {
-      const pool = loadHarness({ math: { random: Math.random } }).__translatorPool(level, mode);
+      const harness = loadHarness({ math: { random: Math.random } });
+      const pool = harness.__translatorPool(level, mode);
       const positions = pool.map(question => question.answer);
       const counts = [0, 1, 2].map(position => positions.filter(answer => answer === position).length);
       assert.ok(Math.max(...counts) - Math.min(...counts) <= 1, `${level}.${mode}: correct answers should be balanced across A, B and C`);
       assert.ok(positions.every((position, index) => index === 0 || position !== positions[index - 1]), `${level}.${mode}: correct positions should not repeat consecutively`);
       for (const question of pool) {
-        const original = harnessBankQuestion(level, mode, question.ar);
+        const original = harnessBankQuestion(harness, level, mode, question.ar);
         assert.equal(question.options[question.answer], original.options[original.answer], `${level}.${mode}: correct option text must be preserved`);
         assert.equal(question.optionExplanations[question.answer], original.optionExplanations[original.answer], `${level}.${mode}: correct explanation must follow the correct option`);
         assert.equal(question.options.length, 3);
