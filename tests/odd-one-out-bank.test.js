@@ -60,9 +60,6 @@ test('all 18 CEFR and training-mode combinations select the intended distinct qu
       assert.equal(new Set(round.questions.map(question=>question.id)).size,8);
       for (const question of round.questions) {
         const source = bank.banks[level].find(item=>item.id===question.id);
-        const sourceWords = mode==='challenge'
-          ? bank.selectRound(level,'challenge',[],()=>0.37).questions.find(item=>item.id===question.id).words
-          : source.words;
         assert.ok(source);
         assert.equal(question.words[question.answer] !== undefined,true);
         assert.equal(question.words.length,4);
