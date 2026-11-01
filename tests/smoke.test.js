@@ -247,6 +247,33 @@ test('main navigation tabs open without uncaught page errors', async t => {
         await gameCard.screenshot({path:path.join(screenshotDir,'mobile-guided-question.png')});
         assert.equal(await gameCard.locator('[data-think-answer]').count(), 4, 'all four choices must remain available on mobile');
         assert.equal(await gameCard.locator('[data-think-answer]').first().isVisible(), true, 'the first answer must remain visible on mobile');
+
+        await gameCard.locator('[data-think-back]').click();
+        await page.locator('#thinklab-view [data-think-game="detective"]').click();
+        const detectiveRoot = page.locator('#think-lab-content');
+        await detectiveRoot.locator('.ld-shell').waitFor({state:'visible',timeout:10000});
+        assert.equal(await detectiveRoot.locator('.ld-heading h2').innerText(), 'The Language Detective',
+          'the real investigation UI must initialize after its browser modules load');
+        assert.equal(await detectiveRoot.locator('[data-ld-case]').count(), 3,
+          'all three case files should be available');
+        for (const file of [
+          'language-detective-assessment-schemas.js',
+          'language-detective-cefr-patterns.js',
+          'language-detective-assessment-engine.js',
+          'language-detective-assessment-fixtures.js',
+          'language-detective-ui.js'
+        ]) assert.ok(requested.some(path => path.endsWith('/' + file)), file + ' should load for the investigation');
+
+        await detectiveRoot.locator('[data-ld-case="CASE-001"]').click();
+        assert.equal(await detectiveRoot.locator('.ld-evidence').count(), 4,
+          'the selected case should render its evidence');
+        await detectiveRoot.locator('[name="ld-standard"]').fill(
+          'An unidentified resident in a green jacket picked up the package. Their identity is unknown.'
+        );
+        await detectiveRoot.locator('[data-ld-answer-form] [type="submit"]').click();
+        await detectiveRoot.locator('.ld-result-head').waitFor({state:'visible',timeout:5000});
+        assert.match(await detectiveRoot.locator('.ld-result-head h2').innerText(), /Conclusion supported|Partly supported/,
+          'the real browser assessment engine should return a usable result');
       }
       if (view === 'summon') {
         await page.locator('#cards-summon-token-count').waitFor({ state: 'visible', timeout: 5000 });
