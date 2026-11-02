@@ -632,6 +632,9 @@ test('main navigation tabs open without uncaught page errors', async t => {
     assert.deepEqual(errors, [], 'uncaught page errors occurred: ' + errors.join(' | '));
   } finally {
     if (browser) await browser.close();
-    await new Promise(resolve => server.close(resolve));
+    if (server) {
+      server.closeAllConnections();
+      await new Promise(resolve => server.close(resolve));
+    }
   }
 });
