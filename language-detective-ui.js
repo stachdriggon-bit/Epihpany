@@ -3,7 +3,8 @@
   'use strict';
   const fixtures = window.EPIPHANY_LANGUAGE_DETECTIVE_FIXTURES;
   const engine = window.EPIPHANY_LANGUAGE_DETECTIVE_ENGINE;
-  if (!fixtures || !engine || typeof engine.evaluate !== 'function') {
+  const investigationModel = window.EPIPHANY_CASEBOUND_INVESTIGATION;
+  if (!fixtures || !engine || !investigationModel || typeof engine.evaluate !== 'function') {
     window.EPIPHANY_LANGUAGE_DETECTIVE = { available: false };
     return;
   }
@@ -119,24 +120,47 @@
     document.querySelector('.ld-notebook-backdrop')?.remove();
     const info = caseInfo[state.caseId];
     const snapshot = fixtures.cases[state.caseId];
+    const session = state.session;
+    if (!session || session.status !== 'ACTIVE') return caseIntroduction();
     const evidenceItems = Array.isArray(snapshot.evidence) ? snapshot.evidence : [];
-    const discovered = new Set(state.discoveredEvidence || []);
-    const nextEvidence = evidenceItems.find(item => !discovered.has(item.evidenceId));
+    const discovered = new Set(session.discoveredEvidenceIds || []);
+    const nextEvidence = investigationModel.getAvailableEvidence(snapshot, session)[0] || null;
     const openedEvidence = evidenceItems.filter(item => discovered.has(item.evidenceId));
     const progress = evidenceItems.length ? Math.round(openedEvidence.length / evidenceItems.length * 100) : 100;
+    const readiness = investigationModel.isConclusionReady(snapshot, session);
     const answers = readResponse();
     const evidenceCard = (item, i) => '<article class="ld-evidence" data-evidence-id="' + esc(item.evidenceId) + '"><span>' + esc(item.role) + ' · ' + esc(item.evidenceId || ('E' + String(i + 1).padStart(2, '0'))) + '</span><p>' + esc(item.summary) + '</p>' + (item.limitations?.length ? '<small>Limit: ' + esc(item.limitations.join(' ')) + '</small>' : '') + '</article>';
-    const notebook = openedEvidence.length
-      ? openedEvidence.map((item, i) => evidenceCard(item, i)).join('')
-      : '<p class="ld-notebook-empty">Your notebook is empty. Open evidence as you investigate; discovered items will appear here.</p>';
+    const notebookEntries = investigationModel.getNotebookEntries(snapshot, session);
+    const notebook = notebookEntries.length
+      ? notebookEntries.map(entry => '<article class="ld-notebook-entry ld-notebook-entry-' + esc(entry.type.toLowerCase()) + '"><span>' + esc(entry.type) + '</span><strong>' + esc(entry.title) + '</strong><p>' + esc(entry.content) + '</p></article>').join('')
+      : '<p class="ld-notebook-empty">Your notebook is empty. Open evidence or ask a question; discovered information will appear here.</p>';
     const characters = Array.isArray(snapshot.characters) && snapshot.characters.length
-      ? '<section class="ld-workspace-section"><div class="ld-section-heading"><div><span class="ld-kicker">PEOPLE</span><h3>People in this case</h3></div></div><div class="ld-character-grid">' + snapshot.characters.map(person => '<article class="ld-character-card"><strong>' + esc(person.name || person.label || 'Person') + '</strong>' + (person.role ? '<span>' + esc(person.role) + '</span>' : '') + (person.statement ? '<p>' + esc(person.statement) + '</p>' : '') + '</article>').join('') + '</div></section>' : '';
-    const statements = Array.isArray(snapshot.statements) && snapshot.statements.length
-      ? '<section class="ld-workspace-section"><div class="ld-section-heading"><div><span class="ld-kicker">INITIAL ACCOUNTS</span><h3>What people say</h3></div></div><div class="ld-statement-list">' + snapshot.statements.map(statement => '<article class="ld-statement-card"><strong>' + esc(statement.name || statement.speaker || 'Statement') + '</strong><p>' + esc(statement.text || statement.statement || '') + '</p></article>').join('') + '</div></section>' : '';
+      ? '<section class="ld-workspace-section"><div class="ld-section-heading"><div><span class="ld-kicker">PEOPLE</span><h3>People in this case</h3></div></div><div class="ld-character-grid">' + snapshot.characters.map(person => '<article class="ld-character-card"><strong>' + esc(person.name || person.label || 'Person') + '</strong>' + (person.role ? '<span>' + esc(person.role) + '</span>' : '') + '</article>').join('') + '</div></section>' : '';
+    const visibleStatements = Array.isArray(snapshot.statements)
+      ? snapshot.statements.filter(statement => session.revealedStatementIds.includes(statement.statementId || statement.id))
+      : [];
+    const statements = visibleStatements.length
+      ? '<section class="ld-workspace-section"><div class="ld-section-heading"><div><span class="ld-kicker">INITIAL ACCOUNTS</span><h3>What people say</h3></div></div><div class="ld-statement-list">' + visibleStatements.map(statement => '<article class="ld-statement-card"><strong>' + esc(statement.name || statement.speaker || 'Statement') + '</strong><p>' + esc(statement.text || statement.statement || '') + '</p></article>').join('') + '</div></section>' : '';
+    const availableInterviews = investigationModel.getAvailableInterviews(snapshot, session);
     const interviews = Array.isArray(snapshot.interviews) && snapshot.interviews.length
-      ? '<section class="ld-workspace-section"><div class="ld-section-heading"><div><span class="ld-kicker">FOLLOW-UP</span><h3>Interviews</h3></div></div><div class="ld-interview-list">' + snapshot.interviews.map(interview => '<article class="ld-interview-card"><strong>' + esc(interview.name || interview.character || 'Interview') + '</strong>' + (Array.isArray(interview.questions) ? interview.questions.map(question => '<p>' + esc(question.prompt || question.question || '') + '</p>').join('') : '') + '</article>').join('') + '</div></section>' : '';
+      ? '<section class="ld-workspace-section"><div class="ld-section-heading"><div><span class="ld-kicker">FOLLOW-UP</span><h3>Ask a question</h3><p>Choose one question for each person. Their answer will be added to your notebook.</p></div></div><div class="ld-interview-list">' + snapshot.interviews.map(interview => {
+          const characterId = interview.characterId || interview.character;
+          const available = availableInterviews.find(item => item.characterId === characterId);
+          const response = session.interviewResponses.find(item => item.characterId === characterId);
+          const answersMarkup = response ? response.answers.map(answer => {
+            const question = interview.questions.find(item => (item.questionId || item.id) === answer.questionId);
+            return '<div class="ld-interview-answer"><span>ANSWER REVEALED</span><p>' + esc(answer.answer) + '</p></div>';
+          }).join('') : '';
+          const questionMarkup = available ? available.questions.map(question => '<button type="button" class="ld-interview-question" data-ld-ask-interview data-character-id="' + esc(characterId) + '" data-question-id="' + esc(question.questionId || question.id) + '">' + esc(question.prompt) + '</button>').join('') : '<span class="ld-interview-used">' + (response ? 'Question used' : 'No questions available yet') + '</span>';
+          return '<article class="ld-interview-card"><strong>' + esc(interview.name || snapshot.characters?.find(person => person.characterId === characterId)?.name || characterId) + '</strong><div class="ld-interview-questions">' + questionMarkup + '</div>' + answersMarkup + '</article>';
+        }).join('') + '</div></section>' : '';
     const witnesses = Array.isArray(snapshot.witnesses) && snapshot.witnesses.length
-      ? '<section class="ld-workspace-section"><div class="ld-section-heading"><div><span class="ld-kicker">WITNESS LEAD</span><h3>Choose a witness</h3></div></div><div class="ld-witness-grid">' + snapshot.witnesses.map(witness => '<article class="ld-witness-card"><strong>' + esc(witness.name || witness.label || 'Witness') + '</strong>' + (witness.description ? '<p>' + esc(witness.description) + '</p>' : '') + '</article>').join('') + '</div></section>' : '';
+      ? '<section class="ld-workspace-section"><div class="ld-section-heading"><div><span class="ld-kicker">WITNESS LEAD</span><h3>Choose one witness</h3><p>Your choice adds that witness’s account to the notebook. Other evidence paths remain available.</p></div></div><div class="ld-witness-grid">' + snapshot.witnesses.map(witness => {
+          const witnessId = witness.witnessId || witness.id;
+          const selected = session.selectedWitnessId === witnessId;
+          const locked = Boolean(session.selectedWitnessId) && !selected;
+          return '<article class="ld-witness-card' + (selected ? ' is-selected' : '') + '"><strong>' + esc(witness.name || witness.label || 'Witness') + '</strong>' + (witness.description ? '<p>' + esc(witness.description) + '</p>' : '') + '<button type="button" class="ld-witness-select" data-ld-select-witness="' + esc(witnessId) + '"' + (locked ? ' disabled' : '') + '>' + (selected ? 'Selected' : locked ? 'Another witness selected' : 'Hear this witness') + '</button>' + (selected && (witness.statement || witness.account) ? '<p class="ld-witness-account">' + esc(witness.statement || witness.account) + '</p>' : '') + '</article>';
+        }).join('') + '</div></section>' : '';
     const checksAvailable = state.trainingMode === 'GUIDED' && Array.isArray(info.questions) && info.questions.length;
     const questionMarkup = checksAvailable && state.showEvidenceChecks
       ? '<section class="ld-checkpoints"><div><h3>Evidence checks</h3><p>Optional practice to help you inspect the record. These checks do not block progress or affect the written assessment.</p></div>' + info.questions.map(q => '<article class="ld-question" data-ld-question="' + q.id + '"><strong>' + esc(q.prompt) + '</strong><div class="ld-question-options">' + q.options.map((option, i) => '<button type="button" data-ld-option="' + i + '">' + esc(option) + '</button>').join('') + '</div><p class="ld-question-feedback" aria-live="polite"></p></article>').join('') + '</section>' : '';
@@ -146,27 +170,27 @@
       return '<button type="button" class="ld-hint-button" data-ld-hint="' + hint.id + '"' + (used || !available ? ' disabled' : '') + '>' + (used ? '✓ ' : '') + hint.title + '</button>' +
         (used ? '<p class="ld-hint-copy">' + hint.text + '</p>' : '');
     }).join('');
-    const canConclude = !nextEvidence;
+    const canConclude = readiness.ready;
     const answerFields = state.answerFormat === 'HELL'
       ? '<label class="ld-answer-field">Your Conclusion<textarea name="ld-conclusion" rows="3" maxlength="1200" placeholder="What do you think happened?">' + esc(answers.conclusion) + '</textarea></label><label class="ld-answer-field">Your Reasoning<textarea name="ld-reasoning" rows="4" maxlength="1800" placeholder="Which evidence supports your conclusion? What remains uncertain?">' + esc(answers.reasoning) + '</textarea></label>'
       : '<label class="ld-answer-field">Your Reasoning<textarea name="ld-standard-reasoning" rows="5" maxlength="1800" ' + (state.standardReasoningSubmitted ? 'readonly aria-readonly="true"' : '') + ' placeholder="Explain what the evidence establishes, and what remains uncertain.">' + esc(answers.reasoning) + '</textarea></label><section class="ld-conclusion-picker" data-ld-conclusion-choices><h4>Conclusion choices · ' + info.conclusionOptions.length + ' options</h4><p>' + (state.standardReasoningSubmitted ? 'Now choose the conclusion that best matches your reasoning.' : 'Write your reasoning first. The choices are locked until you submit it.') + '</p><div class="ld-conclusion-options">' + (state.standardReasoningSubmitted ? info.conclusionOptions.map((option, i) => '<button type="button" data-ld-conclusion-option="' + i + '" aria-pressed="' + (answers.selectedConclusion === i) + '"' + (answers.selectedConclusion === i ? ' class="is-selected"' : '') + '>' + esc(option) + '</button>').join('') : info.conclusionOptions.map((option, i) => '<div class="ld-conclusion-locked" aria-label="Option ' + String.fromCharCode(65 + i) + ', locked"><span>' + String.fromCharCode(65 + i) + '</span><span>Locked until reasoning is submitted</span></div>').join('')) + '</div></section>';
     const answerPanel = canConclude
       ? '<form class="ld-answer-form" data-ld-answer-form><div class="ld-answer-heading"><h3>Build your conclusion</h3><span>' + (state.answerFormat === 'HELL' ? 'Two-part response' : 'Reasoning first · then choose a conclusion') + '</span></div>' + answerFields + (state.answerFormat === 'STANDARD' && !state.standardReasoningSubmitted ? '<button class="ld-submit" type="button" data-ld-submit-reasoning>Submit reasoning →</button>' : '<button class="ld-submit" type="submit">' + (state.answerFormat === 'STANDARD' ? 'Assess my answer →' : 'Assess my conclusion →') + '</button>') + '<p class="ld-form-note">You can review the feedback and try again. Earlier attempts are kept in this open investigation.</p></form>'
-      : '<section class="ld-unlock-gate"><strong>Keep investigating before you conclude.</strong><p>There is more case material to discover. Open the next item when you are ready; your conclusion will unlock when all available evidence has been reviewed.</p></section>';
+      : '<section class="ld-unlock-gate"><strong>Keep investigating before you conclude.</strong><p>' + (nextEvidence ? 'There is more case material to discover. Open the next item when you are ready; your conclusion will unlock when a fair investigation path is complete.' : 'A required information source is still available through the people or witness sections. Continue there to complete a fair investigation path.') + '</p></section>';
     root.innerHTML = '<section class="ld-shell ld-investigation-workspace">' +
       '<div class="ld-toolbar"><button type="button" class="ld-back" data-ld-back>← All cases</button><span>CASE · ' + esc(info.cefr) + '</span><span>' + esc(state.trainingMode) + ' · ' + esc(state.answerFormat) + '</span></div>' +
-      '<header class="ld-workspace-header"><div><span class="ld-kicker">INVESTIGATION WORKSPACE</span><h2>' + esc(info.title) + '</h2><p>' + esc(info.subtitle) + '</p></div><button type="button" class="ld-notebook-trigger" data-ld-notebook-open aria-controls="ld-case-notebook" aria-expanded="false">Case notebook <span>' + openedEvidence.length + '</span></button></header>' +
-      '<section class="ld-progress-panel" aria-label="Investigation progress"><div class="ld-progress-copy"><strong>Evidence reviewed</strong><span>' + openedEvidence.length + ' of ' + evidenceItems.length + '</span></div><div class="ld-progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="' + evidenceItems.length + '" aria-valuenow="' + openedEvidence.length + '" aria-label="Evidence reviewed"><i style="width:' + progress + '%"></i></div></section>' +
+      '<header class="ld-workspace-header"><div><span class="ld-kicker">INVESTIGATION WORKSPACE</span><h2>' + esc(info.title) + '</h2><p>' + esc(info.subtitle) + '</p></div><button type="button" class="ld-notebook-trigger" data-ld-notebook-open aria-controls="ld-case-notebook" aria-expanded="false">Case notebook <span>' + notebookEntries.length + '</span></button></header>' +
+      '<section class="ld-progress-panel" aria-label="Investigation progress"><div class="ld-progress-copy"><strong>Investigation activity</strong><span>' + progress + '% evidence reviewed · ' + session.interviewResponses.length + ' interviews · ' + (session.selectedWitnessId ? '1 witness' : 'no witness') + '</span></div><div class="ld-progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="' + evidenceItems.length + '" aria-valuenow="' + openedEvidence.length + '" aria-label="Evidence reviewed"><i style="width:' + progress + '%"></i></div></section>' +
       statements + characters + interviews + witnesses +
-      '<section class="ld-workspace-section ld-discovery-section"><div class="ld-section-heading"><div><span class="ld-kicker">DISCOVERY</span><h3>Evidence</h3><p>Open each item to add it to your case notebook.</p></div></div>' +
-      (nextEvidence ? '<article class="ld-next-evidence"><span class="ld-evidence-index">NEXT · ' + esc(nextEvidence.role) + '</span><h4>New evidence is available</h4><p>Its contents will be revealed when you choose to examine it.</p><button type="button" class="ld-submit" data-ld-open-next>Examine evidence →</button></article>' : '<p class="ld-discovery-complete">All available evidence has been reviewed. You can now prepare your conclusion.</p>') +
+      '<section class="ld-workspace-section ld-discovery-section"><div class="ld-section-heading"><div><span class="ld-kicker">DISCOVERY</span><h3>Evidence</h3><p>Examine available items. Some information may become available after a question or witness choice.</p></div></div>' +
+      (nextEvidence ? '<article class="ld-next-evidence"><span class="ld-evidence-index">NEXT · ' + esc(nextEvidence.role) + '</span><h4>New evidence is available</h4><p>Its contents will be revealed when you choose to examine it.</p><button type="button" class="ld-submit" data-ld-open-next data-evidence-id="' + esc(nextEvidence.evidenceId) + '">Examine evidence →</button></article>' : (canConclude ? '<p class="ld-discovery-complete">All currently available evidence has been reviewed. You can prepare your conclusion.</p>' : '<p class="ld-unlock-gate">Continue with an available interview or witness to reveal the next part of the case.</p>')) +
       '<div class="ld-evidence-grid">' + openedEvidence.map((item, i) => evidenceCard(item, i)).join('') + '</div></section>' +
       (checksAvailable ? '<section class="ld-check-toggle"><div><strong>Guided evidence checks</strong><p>Optional practice. You can skip this and continue the investigation.</p></div><button type="button" class="ld-back" data-ld-toggle-checks aria-expanded="' + String(Boolean(state.showEvidenceChecks)) + '">' + (state.showEvidenceChecks ? 'Hide checks' : 'Open checks') + '</button></section>' : '') +
       questionMarkup +
       (canConclude ? '<section class="ld-hints"><div><strong>Optional hints</strong><p>Use them in order. Hints do not reduce your academic score.</p></div><div class="ld-hint-actions">' + visibleHints + '</div></section>' + answerPanel : '') +
       '</section>' +
       '<button type="button" class="ld-notebook-backdrop" data-ld-notebook-close aria-label="Close case notebook" hidden></button>' +
-      '<aside class="ld-notebook-drawer" id="ld-case-notebook" role="dialog" aria-modal="true" aria-labelledby="ld-notebook-title" aria-hidden="true" hidden><div class="ld-notebook-header"><div><span class="ld-kicker">YOUR DISCOVERIES</span><h2 id="ld-notebook-title">Case notebook</h2><p>' + openedEvidence.length + ' discovered item' + (openedEvidence.length === 1 ? '' : 's') + '</p></div><button type="button" class="ld-notebook-close" data-ld-notebook-close aria-label="Close case notebook">×</button></div><div class="ld-notebook-content">' + notebook + '</div></aside>';
+      '<aside class="ld-notebook-drawer" id="ld-case-notebook" role="dialog" aria-modal="true" aria-labelledby="ld-notebook-title" aria-hidden="true" hidden><div class="ld-notebook-header"><div><span class="ld-kicker">YOUR DISCOVERIES</span><h2 id="ld-notebook-title">Case notebook</h2><p>' + notebookEntries.length + ' discovered item' + (notebookEntries.length === 1 ? '' : 's') + '</p></div><button type="button" class="ld-notebook-close" data-ld-notebook-close aria-label="Close case notebook">×</button></div><div class="ld-notebook-content">' + notebook + '</div></aside>';
     const notebookBackdrop = root.querySelector('.ld-notebook-backdrop');
     const notebookDrawer = root.querySelector('#ld-case-notebook');
     if (notebookBackdrop && notebookDrawer) document.body.append(notebookBackdrop, notebookDrawer);
@@ -216,7 +240,7 @@
     context.responseId = context.attemptId + '-' + Date.now();
     const result = engine.evaluate({
       context,
-      caseSnapshot: fixtures.cases[state.caseId],
+      caseSnapshot: investigationModel.buildEvaluationSnapshot(fixtures.cases[state.caseId], state.session),
       response: combined,
       hintsUsed: [...state.hintsUsed]
     });
@@ -242,6 +266,7 @@
       answerFormat: 'STANDARD',
       hintsUsed: [],
       discoveredEvidence: [],
+      session: null,
       showEvidenceChecks: false,
       attempts: [],
       selectedConclusion: null,
@@ -295,6 +320,8 @@
         state.stage = 'case-intro';
         state.hintsUsed = [];
         state.discoveredEvidence = [];
+        const createdSession = investigationModel.createSession(fixtures.cases[state.caseId]);
+        state.session = createdSession.ok ? createdSession.session : null;
         state.showEvidenceChecks = false;
         state.attempts = [];
         state.selectedConclusion = null;
@@ -306,8 +333,28 @@
       }
       if (event.target.closest('[data-ld-open-next]')) {
         const snapshot = fixtures.cases[state.caseId];
-        const next = (snapshot.evidence || []).find(item => !(state.discoveredEvidence || []).includes(item.evidenceId));
-        if (next) state.discoveredEvidence.push(next.evidenceId);
+        const next = investigationModel.getAvailableEvidence(snapshot, state.session)[0];
+        if (next) {
+          const discovered = investigationModel.discoverEvidence(snapshot, state.session, next.evidenceId);
+          if (discovered.ok) {
+            state.session = discovered.session;
+            state.discoveredEvidence = [...state.session.discoveredEvidenceIds];
+          }
+        }
+        investigation();
+        return;
+      }
+      const interviewButton = event.target.closest('[data-ld-ask-interview]');
+      if (interviewButton) {
+        const answer = investigationModel.askInterview(fixtures.cases[state.caseId], state.session, interviewButton.dataset.characterId, interviewButton.dataset.questionId);
+        if (answer.ok) state.session = answer.session;
+        investigation();
+        return;
+      }
+      const witnessButton = event.target.closest('[data-ld-select-witness]');
+      if (witnessButton) {
+        const selected = investigationModel.selectWitness(fixtures.cases[state.caseId], state.session, witnessButton.dataset.ldSelectWitness);
+        if (selected.ok) state.session = selected.session;
         investigation();
         return;
       }
@@ -339,7 +386,11 @@
         return;
       }
       if (event.target.closest('[data-ld-start-investigation]')) {
-        state.stage = 'investigation';
+        const started = investigationModel.startSession(state.session);
+        if (started.ok) {
+          state.session = started.session;
+          state.stage = 'investigation';
+        }
         investigation();
         return;
       }
