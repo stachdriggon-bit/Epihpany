@@ -85,8 +85,7 @@ const cases = {
     ],
     criteria:[
       {criterionId:'C1',dimension:'CONCLUSION_ACCURACY',weight:1,conceptIds:['SCARF_AT_DESK']},
-      {criterionId:'C2',dimension:'EVIDENCE_REASONING',weight:1,conceptIds:['SCARF_FOUND','SCARF_TRANSFERRED']},
-      {criterionId:'C3',dimension:'CRITICAL_THINKING',weight:1,conceptIds:['SCARF_MATCH']}
+      {criterionId:'C2',dimension:'EVIDENCE_REASONING',weight:1,conceptIds:['SCARF_FOUND','SCARF_TRANSFERRED']}
     ],feedbackResources:[],
     presentation:null
   }
