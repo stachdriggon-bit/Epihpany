@@ -76,9 +76,9 @@
         (caseCards ? '<div class="ld-case-grid">' + caseCards + '</div>' : '<p class="ld-level-empty">There are no investigations at this level yet. New cases will appear here.</p>') +
         '</div>'
       : '<div class="ld-level-selection"><div class="ld-level-selection-heading"><h3>Choose your English level</h3><p>Each level has its own investigations, characters and challenges.</p></div><div class="ld-level-grid">' + levelCards + '</div></div>';
-    root.innerHTML = '<section class="ld-shell">' +
-      '<div class="ld-toolbar"><button type="button" class="ld-back" data-ld-exit>← Think Lab</button><span>CASE FILES</span></div>' +
-      '<div class="ld-heading"><span class="ld-kicker">THINK LAB · INVESTIGATION</span><h2>The Language Detective</h2><p>Choose your English level first, then explore the investigations made for that level.</p></div>' +
+    root.innerHTML = '<section class="ld-shell ld-casebound-shell">' +
+      '<div class="ld-toolbar"><button type="button" class="ld-back" data-ld-exit>← Home</button><span>CASE FILES</span></div>' +
+      '<div class="ld-heading"><span class="ld-kicker">CASEBOUND · EVERY CLUE HAS A STORY</span><h2>CASEBOUND</h2><p>Investigate cases, examine evidence and discover what really happened.</p></div>' +
       settingsMarkup() + content +
       '<p class="ld-note">Guided, Steady and Challenge change the level of support. Standard and Hell Mode change how you submit your conclusion; neither mode changes the evidence or rewards unsupported certainty.</p>' +
       '</section>';
@@ -100,6 +100,18 @@
       reasoning: reasoningField ? reasoningField.value : (state.standardReasoning ?? state.lastResponse?.reasoning ?? ''),
       selectedConclusion: state.selectedConclusion ?? state.lastResponse?.selectedConclusion ?? null
     };
+  }
+
+  function caseIntroduction() {
+    const info = caseInfo[state.caseId];
+    if (!info) return picker();
+    root.innerHTML = '<section class="ld-shell ld-case-intro">' +
+      '<div class="ld-toolbar"><button type="button" class="ld-back" data-ld-back>← All cases</button><span>CASE BRIEF · ' + esc(info.cefr) + '</span></div>' +
+      '<div class="ld-case-intro-art" aria-hidden="true"><span>CB</span><i>CASE FILE</i></div>' +
+      '<div class="ld-heading"><span class="ld-kicker">' + esc(info.category) + ' · ' + esc(info.cefr) + '</span><h2>' + esc(info.title) + '</h2><p>' + esc(info.subtitle) + '</p></div>' +
+      '<div class="ld-case-brief"><span class="ld-kicker">YOUR INVESTIGATION</span><p>' + esc(info.focus) + '</p></div>' +
+      '<div class="ld-case-intro-actions"><button type="button" class="ld-submit" data-ld-start-investigation>Start Investigation <span aria-hidden="true">→</span></button><p>Take your time. You can review everything you discover as the investigation unfolds.</p></div>' +
+      '</section>';
   }
 
   function investigation() {
@@ -246,11 +258,18 @@
       const caseButton = event.target.closest('[data-ld-case]');
       if (caseButton) {
         state.caseId = caseButton.dataset.ldCase;
-        state.stage = 'investigation';
+        state.stage = 'case-intro';
         state.hintsUsed = [];
         state.attempts = [];
         state.selectedConclusion = null;
         state.lastResponse = null;
+        state.standardReasoning = '';
+        state.standardReasoningSubmitted = false;
+        caseIntroduction();
+        return;
+      }
+      if (event.target.closest('[data-ld-start-investigation]')) {
+        state.stage = 'investigation';
         investigation();
         return;
       }
