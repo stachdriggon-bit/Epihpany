@@ -181,11 +181,11 @@ test('CASEBOUND notebook contains discovered evidence only and supports drawer a
 });
 
 test('CASEBOUND character, interview and witness sections follow the selected dossier and available case data', () => {
-  assert.match(ui, /Array\\.isArray\\(snapshot\\.characters\\) && snapshot\\.characters\\.length/);
-  assert.match(ui, /selectedDossier \\? '/);
-  assert.match(ui, /selectedDossier && selectedDossier\\.interview/);
-  assert.match(ui, /selectedDossier\\.statements\\.length/);
-  assert.match(ui, /Array\\.isArray\\(snapshot\\.witnesses\\) && snapshot\\.witnesses\\.length/);
+  assert.match(ui, /Array\.isArray\(snapshot\.characters\) && snapshot\.characters\.length/);
+  assert.match(ui, /selectedDossier\s*\? '/);
+  assert.match(ui, /selectedDossier && selectedDossier\.interview/);
+  assert.match(ui, /selectedDossier\.statements\.length/);
+  assert.match(ui, /Array\.isArray\(snapshot\.witnesses\) && snapshot\.witnesses\.length/);
   assert.doesNotMatch(ui, /No witnesses available/);
 });
 test('Guided evidence checks are optional and absent from other training modes', () => {
