@@ -149,6 +149,25 @@ test('interview and witness knowledge can independently unlock assessment concep
   assert.ok(evaluation.concepts.some(item=>item.conceptId==='WITNESS_ONLY'));
 });
 
+test('The Empty Seat has a reachable evidence path and keeps its interview information reviewable',()=>{
+ const snapshot=require('../language-detective-assessment-fixtures').cases['CASE-005'];
+ assert.deepEqual(model.validateInvestigation(snapshot),[]);
+ let session=model.startSession(model.createSession(snapshot).session).session;
+ for(const evidenceId of ['E01','E02','E03','E04']) {
+  const found=model.discoverEvidence(snapshot,session,evidenceId);
+  assert.equal(found.ok,true,evidenceId);
+  session=found.session;
+ }
+ assert.equal(model.isConclusionReady(snapshot,session).ready,false,'the authored interview detail is part of this path');
+ const answer=model.askInterview(snapshot,session,'LINA','Q-BAG-CONTENTS');
+ assert.equal(answer.ok,true);
+ session=answer.session;
+ assert.equal(model.isConclusionReady(snapshot,session).ready,true);
+ assert.ok(model.getNotebookEntries(snapshot,session).some(entry=>entry.type==='INTERVIEW'&&/blue notebook/.test(entry.content)));
+ const evaluation=model.buildEvaluationSnapshot(snapshot,session);
+ assert.ok(evaluation.concepts.some(item=>item.conceptId==='BAG_BELONGS_LINA'));
+});
+
 test('progress reports independent discoveries without imposing a fixed stage count',()=>{
   const snapshot=sampleCase();
   let session=model.startSession(model.createSession(snapshot).session).session;
