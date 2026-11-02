@@ -33,7 +33,7 @@ test('Standard mode shows locked conclusion slots and unlocks them only after re
 });
 
 test('every registered investigation case has presentation metadata and three conclusion choices', () => {
-  assert.equal(Object.keys(cases).length, 4);
+  assert.equal(Object.keys(cases).length, 5);
   for (const [caseId, snapshot] of Object.entries(cases)) {
     assert.ok(snapshot.presentation, caseId + ' presentation metadata');
     assert.ok(['A1','A2','B1','B2','C1','C2'].includes(snapshot.presentation.cefr), caseId + ' CEFR');
@@ -44,6 +44,9 @@ test('every registered investigation case has presentation metadata and three co
   assert.equal(cases['CASE-004'].presentation.category, 'Everyday mystery');
   assert.equal(cases['CASE-004'].presentation.editorialId, 'LD-A1-002');
   assert.equal(cases['CASE-004'].presentation.status, 'IMPLEMENTED');
+  assert.equal(cases['CASE-005'].presentation.cefr, 'A1');
+  assert.equal(cases['CASE-005'].presentation.editorialId, 'LD-A1-003');
+  assert.equal(cases['CASE-005'].presentation.status, 'IMPLEMENTED');
   assert.ok(ui.includes('Object.entries(fixtures.cases).map'));
 });
 
@@ -66,6 +69,14 @@ test('case picker groups cases by authored CEFR and keeps evaluation level fixed
  assert.equal(makeContext('CASE-004').cefr,'A1');
  assert.equal(makeContext('CASE-001').cefr,'A2');
 });
+test('The Empty Seat is presented as a separate A1 everyday mystery',()=>{
+ const item=cases['CASE-005'].presentation;
+ assert.equal(item.title,'The Empty Seat');
+ assert.equal(item.conclusionOptions.length,3);
+ assert.match(item.focus,/independent library record/i);
+ assert.ok(cases['CASE-005'].interviews.length);
+});
+
 test('The Blue Scarf preserves Standard and Hell answer contracts',()=>{
  const conclusion='The scarf is at the lost-property desk.';
  const reasoning='The cleaner found the scarf under the bench on Platform 2 and took the scarf to lost property. The silver star matches Mina’s scarf.';
