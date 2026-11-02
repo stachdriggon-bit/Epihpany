@@ -3,11 +3,13 @@
   "private": true,
   "version": "1.0.0",
   "scripts": {
-    "test": "node --test --test-force-exit tests/*.test.js",
+    "test": "npm run test:unit && npm run test:browser",
     "test:fast": "node --test tests/static.test.js tests/content-quality.test.js tests/lazy-data.test.js tests/data-readiness.test.js tests/telemetry.test.js",
     "stamp": "node scripts/stamp-version.js",
     "check": "npm run stamp && npm test",
-    "test:install": "playwright install chromium"
+    "test:install": "playwright install chromium",
+    "test:unit": "node --test tests/*.test.js",
+    "test:browser": "node --test tests/browser-smoke.js"
   },
   "devDependencies": {
     "playwright": "^1.56.1"
