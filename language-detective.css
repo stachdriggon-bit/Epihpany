@@ -204,3 +204,17 @@
 .ld-notebook-section .ld-notebook-entry{padding:11px;border:1px solid var(--line,#e4e7ef);border-radius:11px;background:var(--soft,#f8f8fc)}
 .ld-notebook-entry strong{font-size:.84rem}
 .ld-notebook-entry p{margin:5px 0 0;color:var(--text,#25283b);font-size:.84rem;line-height:1.55}
+
+
+/* CASEBOUND — persistent briefing and central initial statements */
+.ld-mission-panel{display:grid;gap:7px;padding:15px 18px;border:1px solid #d8c49e;border-left:4px solid #a8793c;border-radius:13px;background:linear-gradient(110deg,#fbf5e8,#fffdf8);color:#393329}
+.ld-mission-panel p{margin:0;font-size:.96rem;font-weight:650;line-height:1.65}
+.ld-briefing-section{padding:17px;border:1px solid #e4d9c4;border-radius:16px;background:#fbf8f0}
+.ld-briefing-section .ld-statement-list{grid-template-columns:repeat(3,minmax(0,1fr))}
+.ld-briefing-section .ld-statement-card{background:#fffdf8;border-color:#e8dfcf;box-shadow:0 3px 10px rgba(65,49,25,.04)}
+.ld-statement-speaker{display:block;color:#8a6335;font-size:.73rem;font-weight:850;letter-spacing:.06em;text-transform:uppercase}
+.ld-briefing-section .ld-statement-card p{margin-top:9px;line-height:1.7}
+.ld-character-card small{display:block;margin-top:9px;color:var(--muted,#687087);font-size:.75rem;font-weight:750}
+.ld-character-card.is-selected{border-color:#a8793c;background:#fffaf0;box-shadow:inset 0 0 0 1px #a8793c}
+@media(max-width:900px){.ld-briefing-section .ld-statement-list{grid-template-columns:1fr}}
+@media(max-width:720px){.ld-mission-panel{padding:13px 14px}.ld-briefing-section{padding:13px}}
