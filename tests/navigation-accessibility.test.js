@@ -111,16 +111,19 @@ test('desktop and mobile navigation share the approved six-group destination map
   assert.ok(desktop && mobile, 'both navigation surfaces must exist');
   const destinations = source => [...source.matchAll(/data-view="([^"]+)"/g)].map(match => match[1]).sort();
   assert.deepEqual(destinations(desktop[1]), destinations(mobile[1]));
-  assert.deepEqual(destinations(desktop[1]), ['home','arcade','chronicle','collection','lifeskills','mytools','profile','progress','resonance','stories','summon','thinklab','trophies','words','world'].sort());
+  assert.deepEqual(destinations(desktop[1]), ['home','arcade','casebound','chronicle','collection','lifeskills','mytools','profile','progress','resonance','stories','summon','thinklab','trophies','words','world'].sort());
   for (const label of ['Home','Learn','Play','Collect','Discover','Me']) {
     assert.ok(desktop[1].includes('>' + label + '<'), 'desktop navigation is missing ' + label);
     assert.ok(mobile[1].includes('>' + label.toUpperCase() + '<') || mobile[1].includes('>' + label + '<'), 'mobile navigation is missing ' + label);
   }
+  assert.match(desktop[1], /data-view="casebound">⌕ Casebound/);
+  assert.match(mobile[1], /data-view="casebound">⌕ <span>Casebound<\/span>/);
   assert.match(desktop[1], /data-view="chronicle">📚 Codex/);
   assert.match(mobile[1], /data-view="chronicle">📚 <span>Codex<\/span>/);
   assert.match(desktop[1], /data-view="world"/);
   assert.match(mobile[1], /data-view="world"/);
   assert.match(nav, /chronicle: 'Codex'/);
+  assert.match(nav, /casebound: 'Casebound'/);
   assert.ok(app.includes("mobile-nav-group[open]"));
   assert.ok(app.includes("document.querySelectorAll('.nav-group[open], .mobile-nav-group[open]')"));
   assert.ok(app.includes("mobileMenu.removeAttribute('open')"));
