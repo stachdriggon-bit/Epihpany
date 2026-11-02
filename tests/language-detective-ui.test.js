@@ -64,19 +64,21 @@ test('The Blue Scarf preserves Standard and Hell answer contracts',()=>{
 });
 
 test('Evidence checks test evidence boundaries rather than literal phrase matching', () => {
-  const prompts = [
+  const prompts = Object.values(cases).flatMap(snapshot => snapshot.presentation.questions.map(question => question.prompt));
+  for (const prompt of [
     'Which account stays within what Sara witnessed?',
     'Which statement about the person can the report support?',
     'Which claim is justified by the access record alone?',
     'How should Omar’s later observation be described?',
     'Which statement reports the instrument record without adding a cause?',
-    'What limits the comparison with R-7?'
-  ];
-  for (const prompt of prompts) assert.ok(ui.includes(prompt), prompt);
+    'What limits the comparison with R-7?',
+    'Where did the cleaner find the scarf?',
+    'What happened after the cleaner found the scarf?'
+  ]) assert.ok(prompts.includes(prompt), prompt);
+  assert.match(ui, /info\.questions\.map/);
   assert.doesNotMatch(ui, /What did Sara directly observe\\?/);
   assert.doesNotMatch(ui, /She recognized the resident’s face\\./);
 });
-
 test('Hell Mode keeps separate free-text Conclusion and Reasoning fields without conclusion choices', () => {
   assert.match(ui, /name="ld-conclusion"/);
   assert.match(ui, /name="ld-reasoning"/);
