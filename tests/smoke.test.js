@@ -284,9 +284,9 @@ test('main navigation tabs open without uncaught page errors', async t => {
         assert.equal(await caseboundRoot.locator('[data-ld-conclusion-choices]').count(), 0,
           'conclusion should remain unavailable while evidence is undiscovered');
         await caseboundRoot.locator('[data-ld-notebook-open]').click();
-        assert.match(await caseboundRoot.locator('#ld-case-notebook').innerText(), /notebook is empty/i,
+        assert.match(await page.locator('#ld-case-notebook').innerText(), /notebook is empty/i,
           'the notebook should start empty');
-        await caseboundRoot.locator('#ld-case-notebook [data-ld-notebook-close]').click();
+        await page.locator('#ld-case-notebook [data-ld-notebook-close]').click();
         for (let i = 1; i <= 4; i++) {
           await caseboundRoot.locator('[data-ld-open-next]').click();
           assert.equal(await caseboundRoot.locator('.ld-evidence').count(), i,
