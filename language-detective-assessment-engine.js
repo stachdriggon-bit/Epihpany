@@ -57,7 +57,7 @@ function SemanticMatcher(normalized,snapshot,ctx){
  const impersonalIt=/^it\s+(?:is|was)\s+(?:possible|plausible|likely|unlikely|clear|unclear)\b/i.test(text);
  const hasPronoun=!!pronounMatch&&!impersonalIt;
  const priorContext=pronounMatch?text.slice(0,pronounMatch.index):'';
- const hasNamedAntecedent=/\b(resident|person|package|Nora|Adam|Sara|Lena|Omar|Nadia|envelope|R-4|R-7|signal|receiver|analyst|card|report|record|reading)\b/i.test(priorContext);
+ const hasNamedAntecedent=/\b(resident|person|package|Nora|Adam|Sara|Lena|Omar|Nadia|envelope|R-4|R-7|signal|receiver|analyst|scarf|bench|desk|platform|station|cleaner|train|Mina|card|report|record|reading)\b/i.test(priorContext);
  const unresolvedPronoun=hasPronoun&&!hasNamedAntecedent;
  const competingAntecedents=hasPronoun&&/\b(two|both|either|another|the other)\b/i.test(text);
  if(unresolvedPronoun||competingAntecedents)ambiguityGroups.push({clauseIds:clauses.filter(c=>/\b(it|they|them|he|she|her|him|its|their|theirs)\b/i.test(c.text)).map(c=>c.clauseId),alternativeInterpretations:unresolvedPronoun?['pronoun has no clear antecedent before its use in the submitted response']:['multiple possible antecedents'],materialDifference:'Pronoun reference may change the actor or object.'});
