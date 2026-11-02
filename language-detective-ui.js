@@ -136,7 +136,7 @@
       : '<p class="ld-notebook-empty">Your notebook is empty. Open evidence or ask a question; discovered information will appear here.</p>';
     const characters = Array.isArray(snapshot.characters) && snapshot.characters.length
       ? '<section class="ld-workspace-section"><div class="ld-section-heading"><div><span class="ld-kicker">PEOPLE</span><h3>People in this case</h3></div></div><div class="ld-character-grid">' + snapshot.characters.map(person => '<article class="ld-character-card"><strong>' + esc(person.name || person.label || 'Person') + '</strong>' + (person.role ? '<span>' + esc(person.role) + '</span>' : '') + '</article>').join('') + '</div></section>' : '';
-    const visibleStatements = Array.isArray(snapshot.statements)
+    const visibleStatements = Array.isArray(snapshot.statements) && snapshot.statements.length
       ? snapshot.statements.filter(statement => session.revealedStatementIds.includes(statement.statementId || statement.id))
       : [];
     const statements = visibleStatements.length
