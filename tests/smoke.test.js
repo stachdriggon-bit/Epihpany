@@ -267,9 +267,13 @@ test('main navigation tabs open without uncaught page errors', async t => {
         await detectiveRoot.locator('[data-ld-case="CASE-001"]').click();
         assert.equal(await detectiveRoot.locator('.ld-evidence').count(), 4,
           'the selected case should render its evidence');
-        await detectiveRoot.locator('[name="ld-standard"]').fill(
-          'An unidentified resident in a green jacket picked up the package. Their identity is unknown.'
+        await detectiveRoot.locator('[name="ld-standard-reasoning"]').fill(
+          'Sara saw a resident in a green jacket pick up the package, but she did not see the resident’s face. The evidence does not identify the person.'
         );
+        await detectiveRoot.locator('[data-ld-conclusion-choices]').waitFor({state:'visible',timeout:5000});
+        assert.equal(await detectiveRoot.locator('[data-ld-conclusion-option]').count(), 3,
+          'Standard mode should show three conclusion choices beneath the reasoning field');
+        await detectiveRoot.locator('[data-ld-conclusion-option="1"]').click();
         await detectiveRoot.locator('[data-ld-answer-form] [type="submit"]').click();
         await detectiveRoot.locator('.ld-result-head').waitFor({state:'visible',timeout:5000});
         assert.match(await detectiveRoot.locator('.ld-result-head h2').innerText(), /Conclusion supported|Partly supported/,
