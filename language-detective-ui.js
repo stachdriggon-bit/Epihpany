@@ -419,6 +419,17 @@
       event.preventDefault();
       if (state && state.stage === 'investigation') submit();
     });
+    document.addEventListener('keydown', event => {
+      if (event.key !== 'Escape' || !root || !state) return;
+      const drawer = root.querySelector('#ld-case-notebook');
+      if (!drawer || drawer.hidden) return;
+      const backdrop = root.querySelector('.ld-notebook-backdrop');
+      drawer.hidden = true;
+      if (backdrop) backdrop.hidden = true;
+      drawer.setAttribute('aria-hidden', 'true');
+      root.querySelector('[data-ld-notebook-open]')?.setAttribute('aria-expanded', 'false');
+      root.querySelector('[data-ld-notebook-open]')?.focus();
+    });
   }
 
   window.EPIPHANY_LANGUAGE_DETECTIVE = { available: true, mount };
