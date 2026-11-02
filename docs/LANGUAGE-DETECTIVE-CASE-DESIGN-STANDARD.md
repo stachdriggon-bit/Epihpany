@@ -211,3 +211,139 @@ If a reviewer cannot tell what the task asks, revise the task. If the reviewer c
 ---
 
 **Important:** This document defines case-design standards. It does not claim that the current game already contains six independent CEFR case sets, nor that the existing evaluator fully supports every answer model described here.
+
+
+## 14. Flexible investigation structure
+
+A case is composed from the investigation components it actually needs. The runtime must not assume a fixed number of claimants, suspects, witnesses, interviewable characters, evidence items, or investigation stages.
+
+Possible components include:
+
+- Incident and task.
+- Characters and their roles.
+- Initial statements.
+- Evidence and independent records.
+- Character interviews.
+- Witness selection and witness statements.
+- Investigation review.
+- Conclusion and reasoning.
+
+The incident/task, evidence model, and conclusion/reasoning stage are fundamental. Other components are conditional:
+
+- A case may have no claimants, no witnesses, or no interviews.
+- A character may provide information without being a claimant or a witness.
+- One character may serve more than one narrative role when the case supports it.
+- A case may contain one witness, several witnesses, or none.
+- A case may contain any suitable number of interviewable characters and questions.
+
+The interface must render only the components configured for that case. If a case has no witness-selection or interview stage, skip that stage automatically. Do not show empty panels, placeholder sections, or messages announcing that a feature is absent.
+
+Roles describe a character's relationship to the case; they must not be treated as mutually exclusive technical types. Information sources may include people, documents, objects, logs, recordings, measurements, or other records.
+
+## 15. Interviews and witness selection
+
+### Interviews
+
+An interview is an optional case component. It allows the learner to select a question for an interviewable character after the relevant initial statements and evidence have been introduced.
+
+- The case author defines which characters can be interviewed and the questions available for each.
+- The default design for a character interview is one selected question per character per attempt, unless a case explicitly defines another interaction.
+- Question counts are case-defined; there is no global fixed number.
+- Questions should serve distinct investigative purposes, such as clarifying a time, location, sequence, observation, source of knowledge, or apparent inconsistency.
+- Answers must be authored from the character's knowledge and the author-only truth. A character must not explain the intended inference or announce the solution.
+- Every available question should provide a meaningful and fair information outcome. Do not include obviously useless questions merely to disguise one correct choice.
+- The solution must not depend on choosing one exact interview question. Different choices may create different information paths, but each supported path must remain fair and sufficient for the task.
+
+### Witness selection
+
+Witness selection is distinct from interviewing a claimant or another case character. When a case includes a witness-selection stage, the learner may choose one available witness and receive that witness's statement. The case author determines the number and identity of available witnesses; there is no fixed count.
+
+- A case may offer one witness, multiple witnesses, or no witnesses.
+- The selected witness provides information grounded in what that person could observe, hear, know, or reasonably remember.
+- The witness's statement must distinguish direct observation from hearsay, inference, uncertainty, and memory limitations where relevant.
+- Selecting a witness may change the route or supporting context, but must not be a lottery that blocks the only way to discover an essential fact.
+- Do not make one witness the sole carrier of a fact required for a fair conclusion when another valid investigation path is intended.
+- Other witnesses' unselected statements remain unavailable during that attempt if the case defines a one-witness choice. Do not imply the learner has read information they did not select.
+
+### General source principles
+
+Any character may be an information source, regardless of whether they are a claimant, witness, employee, bystander, friend, or another role. A character may hold multiple roles. The case schema must represent a character's role(s), available interactions, and knowledge boundaries separately.
+
+## 16. Information review, branching paths, and investigation state
+
+All information the learner has discovered must remain reviewable throughout the active investigation. This includes initial statements, unlocked evidence, selected interview questions and their answers, and the chosen witness's statement. The learner may revisit discovered information at any time before submitting the final conclusion. Reviewing information must not consume another choice or alter the case state.
+
+Cases may support multiple investigation paths that lead to the same supported conclusion. Branches may change which optional details, corroboration, or context the learner sees; they must not make the final answer depend on an arbitrary choice.
+
+The runtime and assessment must track the information actually made available to the learner in that attempt. Assessment and feedback must not require the learner to cite or know an unseen optional item, an unselected witness statement, or an answer to a question they did not choose.
+
+Case authors must map each valid path to the facts and evidence available along that path. If a path omits a source, another available combination must still support the intended conclusion. Essential facts must be reachable across the designed paths, either through shared essential evidence or through alternative evidence routes that establish the same fact.
+
+Optional or hidden information may strengthen, qualify, or add nuance to a conclusion. It must not be a concealed prerequisite for the basic solution.
+
+## 17. Decisive evidence and cross-source reasoning
+
+A case must include a defensible evidential basis for its intended conclusion. A decisive fact may be distributed across independent sources; the learner should have to connect, compare, or evaluate information rather than copy the answer from one sentence.
+
+- The final answer must not be stated verbatim in a single evidence item, statement, or interview answer.
+- At least two information elements or sources must need to be connected or evaluated for a genuine inference, including in A1 cases. A1 language may remain very simple; the reasoning can still require combining two clear facts.
+- Sources must not explain the intended relationship to the learner. Present natural observations, statements, and records; let the learner make the connection.
+- The author-only truth must show why the decisive combination supports the conclusion and why plausible alternatives fail.
+- A decisive source may corroborate or rule out a claim, but its limits must remain respected. Do not treat a witness's confidence, access, opportunity, or mere presence as proof beyond what the source establishes.
+- If the case promises one supported conclusion, the combined evidence must distinguish it strongly from plausible alternatives.
+- A case may have several valid paths to the same conclusion. The author must document each path and verify that each is sufficient without relying on information the learner could not access.
+
+Mandatory design test: if a learner can answer the central task by copying one sentence from one source, the case fails. If the evidence only makes one claimant seem more likely without ruling out reasonable alternatives, it does not yet support a single decisive answer.
+
+## 18. Flexible case schema and runtime expectations
+
+The case data model must be declarative and case-driven rather than built around fixed slots or counts. It should support variable-length collections of characters, roles, statements, evidence, interview questions and answers, witness options, and valid information paths.
+
+The exact implementation may extend existing files and engines; this standard does not require creating a separate source file for every component. Keep responsibilities clear and avoid unnecessary fragmentation.
+
+At minimum, the runtime must:
+
+- Render only the stages and sections present in the case definition.
+- Skip absent optional stages automatically.
+- Preserve all discovered information for review during the attempt.
+- Enforce each case's interaction rules, including one question per interviewable character and one selected witness where configured.
+- Track which statements, evidence, answers, and witness information were actually revealed.
+- Support multiple valid investigation paths leading to the same conclusion.
+- Keep Training, Standard, and Hell answer-format invariants intact.
+- Evaluate only against the case truth, rubric, and information available on the learner's path.
+- Avoid penalizing the learner for not selecting optional content or for not knowing information that was never revealed.
+
+These are runtime requirements to implement and test; this document does not claim that the current game already supports all of them.
+
+## 19. Extended case authoring template
+
+In addition to the template in Section 11, every case that uses the relevant components must document:
+
+14. **Investigation structure:** which stages are present and which optional stages are omitted.
+15. **Character-role map:** each character's roles, knowledge boundaries, and available interactions.
+16. **Interview plan:** available questions per character, the purpose and authored answer for each, and why no single choice is mandatory to reach the solution.
+17. **Witness plan:** available witness choices, the selected statement for each choice, its limits, and the information route it supports.
+18. **Information-path map:** valid combinations of statements, evidence, interview answers, and witness information that lead to the intended conclusion.
+19. **Reviewable information:** which discovered content remains available in the investigation review.
+20. **Path-aware assessment:** what evidence and reasoning can fairly be expected on each supported path.
+
+If a component is not used, mark it as not applicable in the authoring record; do not create an empty learner-facing section.
+
+## 20. Additional mandatory quality gate
+
+For cases using flexible investigation components, also verify:
+
+- [ ] The case does not assume a fixed number of characters, claimants, witnesses, or interviews.
+- [ ] Character roles are not incorrectly treated as mutually exclusive.
+- [ ] Any character may be an information source when the case defines a valid knowledge basis.
+- [ ] Absent optional stages are skipped without empty UI or unnecessary notices.
+- [ ] All information discovered by the learner remains reviewable during the attempt.
+- [ ] Each interview question has a meaningful purpose and a truth-consistent answer.
+- [ ] No single interview choice is an unfair gate to the only decisive fact.
+- [ ] Witness selection, when present, is meaningful but does not make the solution a guessing game.
+- [ ] Different supported paths can lead to the same conclusion.
+- [ ] Each supported path provides sufficient information for a fair assessment.
+- [ ] The evaluator does not expect evidence, answers, or statements the learner did not see.
+- [ ] The central conclusion cannot be copied from one sentence in one source.
+- [ ] The intended conclusion requires connecting or evaluating at least two information elements or sources.
+- [ ] The sources present information naturally and do not explain the inference for the learner.
