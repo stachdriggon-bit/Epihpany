@@ -52,7 +52,7 @@ test('session begins with only initial statements and does not reveal evidence b
   assert.deepEqual(model.getAvailableEvidence(snapshot,created.session),[]);
   const started=model.startSession(created.session);
   assert.equal(started.ok,true);
-  assert.deepEqual(model.getAvailableEvidence(snapshot,started.session).map(item=>item.evidenceId),['E1']);
+  assert.deepEqual(model.getAvailableEvidence(snapshot,started.session).map(item=>item.evidenceId),['E1','E3']);
 });
 
 test('evidence is discovered only when available and can unlock through different investigation actions',()=>{
@@ -62,12 +62,12 @@ test('evidence is discovered only when available and can unlock through differen
   assert.equal(premature.ok,false);
   assert.equal(premature.error,'EVIDENCE_NOT_AVAILABLE');
   session=model.discoverEvidence(snapshot,session,'E1').session;
-  assert.deepEqual(model.getAvailableEvidence(snapshot,session).map(item=>item.evidenceId),[]);
+  assert.deepEqual(model.getAvailableEvidence(snapshot,session).map(item=>item.evidenceId),['E3']);
   const answer=model.askInterview(snapshot,session,'LINA','Q-TIME');
   assert.equal(answer.ok,true);
   session=answer.session;
   assert.equal(answer.answer,'I left after the train announcement.');
-  assert.deepEqual(model.getAvailableEvidence(snapshot,session).map(item=>item.evidenceId),['E2']);
+  assert.deepEqual(model.getAvailableEvidence(snapshot,session).map(item=>item.evidenceId),['E2','E3']);
   session=model.discoverEvidence(snapshot,session,'E2').session;
   assert.deepEqual(session.discoveredEvidenceIds,['E1','E2']);
 });
@@ -115,7 +115,7 @@ test('evaluation snapshot excludes concepts that depend on undiscovered evidence
   let session=model.startSession(model.createSession(snapshot).session).session;
   session=model.discoverEvidence(snapshot,session,'E1').session;
   const partial=model.buildEvaluationSnapshot(snapshot,session);
-  assert.deepEqual(partial.evidence.map(item=>item.evidenceId),['E1']);
+  assert.deepEqual(partial.evidence.map(item=>item.evidenceId),['E1','E3']);
   assert.deepEqual(partial.concepts.map(item=>item.conceptId),['GENERAL']);
   assert.deepEqual(partial.criteria.map(item=>item.criterionId),['C2']);
   session=model.askInterview(snapshot,session,'LINA','Q-TIME').session;
