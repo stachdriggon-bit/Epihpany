@@ -115,6 +115,8 @@
   }
 
   function investigation() {
+    document.getElementById('ld-case-notebook')?.remove();
+    document.querySelector('.ld-notebook-backdrop')?.remove();
     const info = caseInfo[state.caseId];
     const snapshot = fixtures.cases[state.caseId];
     const evidenceItems = Array.isArray(snapshot.evidence) ? snapshot.evidence : [];
@@ -165,6 +167,9 @@
       '</section>' +
       '<button type="button" class="ld-notebook-backdrop" data-ld-notebook-close aria-label="Close case notebook" hidden></button>' +
       '<aside class="ld-notebook-drawer" id="ld-case-notebook" role="dialog" aria-modal="true" aria-labelledby="ld-notebook-title" aria-hidden="true" hidden><div class="ld-notebook-header"><div><span class="ld-kicker">YOUR DISCOVERIES</span><h2 id="ld-notebook-title">Case notebook</h2><p>' + openedEvidence.length + ' discovered item' + (openedEvidence.length === 1 ? '' : 's') + '</p></div><button type="button" class="ld-notebook-close" data-ld-notebook-close aria-label="Close case notebook">×</button></div><div class="ld-notebook-content">' + notebook + '</div></aside>';
+    const notebookBackdrop = root.querySelector('.ld-notebook-backdrop');
+    const notebookDrawer = root.querySelector('#ld-case-notebook');
+    if (notebookBackdrop && notebookDrawer) document.body.append(notebookBackdrop, notebookDrawer);
   }
 
   function resultView(result) {
@@ -272,7 +277,7 @@
       }
     });
     document.addEventListener('click', event => {
-      if (!root || !root.contains(event.target)) return;
+      if (!root || (!root.contains(event.target) && !event.target.closest('#ld-case-notebook, .ld-notebook-backdrop'))) return;
       const levelButton = event.target.closest('[data-ld-level-select]');
       if (levelButton) {
         state.selectedLevel = levelButton.dataset.ldLevelSelect;
@@ -312,8 +317,8 @@
         return;
       }
       if (event.target.closest('[data-ld-notebook-open]')) {
-        const drawer = root.querySelector('#ld-case-notebook');
-        const backdrop = root.querySelector('[data-ld-notebook-close].ld-notebook-backdrop, .ld-notebook-backdrop');
+        const drawer = document.getElementById('ld-case-notebook');
+        const backdrop = document.querySelector('.ld-notebook-backdrop');
         if (drawer && backdrop) {
           drawer.hidden = false; backdrop.hidden = false;
           drawer.setAttribute('aria-hidden', 'false');
@@ -323,8 +328,8 @@
         return;
       }
       if (event.target.closest('[data-ld-notebook-close]')) {
-        const drawer = root.querySelector('#ld-case-notebook');
-        const backdrop = root.querySelector('.ld-notebook-backdrop');
+        const drawer = document.getElementById('ld-case-notebook');
+        const backdrop = document.querySelector('.ld-notebook-backdrop');
         if (drawer && backdrop) {
           drawer.hidden = true; backdrop.hidden = true;
           drawer.setAttribute('aria-hidden', 'true');
@@ -421,9 +426,9 @@
     });
     document.addEventListener('keydown', event => {
       if (event.key !== 'Escape' || !root || !state) return;
-      const drawer = root.querySelector('#ld-case-notebook');
+      const drawer = document.getElementById('ld-case-notebook');
       if (!drawer || drawer.hidden) return;
-      const backdrop = root.querySelector('.ld-notebook-backdrop');
+      const backdrop = document.querySelector('.ld-notebook-backdrop');
       drawer.hidden = true;
       if (backdrop) backdrop.hidden = true;
       drawer.setAttribute('aria-hidden', 'true');
