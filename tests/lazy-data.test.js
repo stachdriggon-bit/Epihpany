@@ -86,7 +86,7 @@ test('initial HTML defers stories and World data and keeps loader in offline she
     assert.ok(!coreAssets.includes("'./" + asset + "'"), asset + ' must not be part of the core cache');
     assert.ok(lazyAssets.includes("'./" + asset + "'"), asset + ' should be cached as a lazy offline asset');
   }
-  for (const asset of ['data-stories.js', 'data-world.js', 'data-world-registry.js', 'data-world-events.js', 'data-world-sprites.js', 'odd-one-out-bank.js', 'think-lab.js', 'practice-lab.js', 'life-skills.js']) {
+  for (const asset of ['data-stories.js', 'data-world.js', 'data-world-registry.js', 'data-world-events.js', 'data-world-sprites.js', 'odd-one-out-bank.js', 'think-lab.js', 'practice-lab.js', 'life-skills.js', 'language-detective-investigation.js']) {
     assert.ok(lazyAssets.includes("'./" + asset + "'"), asset + ' should be cached as a lazy offline asset');
   }
   assert.match(sw, /const cached = await cache\.match\(request\);\s*if \(cached\) return cached;/);
@@ -619,20 +619,20 @@ test('Language Detective lazy load rejects scripts that load without initializin
   vm.runInContext(fs.readFileSync(path.join(root, 'lazy-data.js'), 'utf8'), context);
 
   const failed = context.window.EPIPHANY_LAZY_LOAD('languageDetective');
-  for (let i = 0; i < 5; i++) {
+  for (let i = 0; i < 6; i++) {
     await new Promise(resolve => setImmediate(resolve));
     assert.ok(scripts[i], 'expected language module ' + (i + 1) + ' to be requested');
     scripts[i].onload();
   }
   await assert.rejects(failed, /did not initialize/);
-  assert.equal(requested.length, 5);
+  assert.equal(requested.length, 6);
   assert.ok(scripts.every(script => script.removed), 'failed group scripts should be invalidated for a clean retry');
 
   const retry = context.window.EPIPHANY_LAZY_LOAD('languageDetective');
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested.length, 6);
-  assert.match(requested[5], /^language-detective-assessment-schemas\.js\?/);
-  scripts[5].onerror();
+  assert.equal(requested.length, 7);
+  assert.match(requested[6], /^language-detective-assessment-schemas\.js\?/);
+  scripts[6].onerror();
   await assert.rejects(retry, /Unable to load feature data/);
 });
 
@@ -653,7 +653,7 @@ test('Language Detective lazy load resolves only after every required module is 
   vm.runInContext(fs.readFileSync(path.join(root, 'lazy-data.js'), 'utf8'), context);
 
   const loading = window.EPIPHANY_LAZY_LOAD('languageDetective');
-  for (let i = 0; i < 5; i++) {
+  for (let i = 0; i < 6; i++) {
     await new Promise(resolve => setImmediate(resolve));
     assert.ok(scripts[i]);
     if (i === 4) {
@@ -666,6 +666,6 @@ test('Language Detective lazy load resolves only after every required module is 
     scripts[i].onload();
   }
   await loading;
-  assert.equal(requested.length, 5);
+  assert.equal(requested.length, 6);
   assert.equal(window.EPIPHANY_LANGUAGE_DETECTIVE.available, true);
 });
