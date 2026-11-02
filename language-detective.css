@@ -174,3 +174,20 @@
  .ld-notebook-backdrop{inset:58px 0 0}
  .ld-notebook-drawer{top:58px;right:0;bottom:0;left:auto;width:min(420px,92vw);height:calc(100dvh - 58px);border-radius:18px 0 0 18px}
 }
+
+
+/* CASEBOUND interactive interview and witness actions */
+.ld-interview-questions{display:grid;gap:8px;margin-top:11px}
+.ld-interview-question,.ld-witness-select{min-height:44px;padding:10px 12px;border:1px solid var(--line,#e4e7ef);border-radius:10px;background:var(--soft,#f8f8fc);color:var(--text,#25283b);font:inherit;text-align:left;cursor:pointer}
+.ld-interview-question:hover,.ld-witness-select:hover:not(:disabled){border-color:var(--accent,#7059d9);background:#f7f4ff}
+.ld-interview-answer{margin-top:11px;padding:12px;border-radius:11px;background:#f4f7f5}
+.ld-interview-answer span,.ld-notebook-entry>span{display:block;margin-bottom:5px;color:var(--muted,#687087);font-size:.68rem;font-weight:800;letter-spacing:.1em}
+.ld-interview-answer p,.ld-witness-account{margin:0;color:var(--text,#25283b);line-height:1.55}
+.ld-interview-used{display:inline-flex;margin-top:10px;color:var(--muted,#687087);font-size:.8rem}
+.ld-witness-select{margin-top:11px;text-align:center}
+.ld-witness-select:disabled{opacity:.55;cursor:not-allowed}
+.ld-witness-card.is-selected{border-color:var(--accent,#7059d9);box-shadow:0 0 0 2px color-mix(in srgb,var(--accent,#7059d9) 14%,transparent)}
+.ld-witness-account{margin-top:12px;padding-top:11px;border-top:1px solid var(--line,#e4e7ef)}
+.ld-notebook-entry{padding:13px;border:1px solid var(--line,#e4e7ef);border-radius:12px;background:var(--surface,#fff)}
+.ld-notebook-entry strong{display:block;color:var(--text,#25283b)}
+.ld-notebook-entry p{margin:7px 0 0;color:var(--text,#25283b);font-size:.88rem;line-height:1.55;white-space:normal}
