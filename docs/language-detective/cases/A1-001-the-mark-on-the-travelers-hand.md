@@ -45,7 +45,7 @@ The case event, waystation, attendant, and other traveler are invented placehold
 | ID | Role | Evidence | Directly establishes | Does not establish |
 |---|---|---|---|---|
 | E01 | ESSENTIAL | The attendant's observation note describes a visible restraint symbol on the traveler's hand. | A mark was visibly present. | The traveler's exact ability, strength, or registration status. |
-| E02 | ESSENTIAL | The reference guide states that the mark appears when a person becomes able to control Aelora Energy. It identifies the restriction category, not every detail of the individual restriction. | What the mark signifies and the boundary of what it reveals. | The traveler's specific techniques, full limits, or level of mastery. |
+| E02 | ESSENTIAL | The reference guide defines a sorcerer as a person who can control Aelora Energy. It states that the mark appears when a person becomes able to control that energy and identifies the restriction category, not every detail of the individual restriction. | What the mark signifies and the boundary of what it reveals. | The traveler's specific techniques, full limits, or level of mastery. |
 | E03 | CONTEXTUAL | Another traveler says the mark reveals every technique the person can use. | A claim was made by a second traveler. | That the claim is accurate. |
 
 The core conclusion is reachable from E01 and E02 alone. E03 adds a claim to evaluate but is not required to solve the case.
@@ -66,13 +66,13 @@ Why it is supported:
 **Conclusion choices:**
 
 A. The traveler is a sorcerer, but the mark does not reveal every detail of their individual ability or restriction.  
-B. The traveler has registered with the local authorities, because the mark confirms completed registration.  
+B. The traveler became a sorcerer today, when the attendant first noticed the mark.  
 C. The traveler's exact techniques and level of mastery can all be identified from the mark.
 
 **Answer key:** A
 
 **Distractor rationale:**
-- B confuses the appearance of a mark with registration. The current world foundation explicitly distinguishes the two; the mark does not mean registration happened automatically.
+- B confuses the time the mark was first noticed with the time it appeared. The evidence gives no date for when the mark first appeared.
 - C overstates what the mark reveals. It identifies a restriction category, not all individual details or mastery.
 
 Options are intentionally similar in length and grammatical form. The correct option must not be made visually distinctive in the UI.
@@ -120,7 +120,7 @@ The final hint is intentionally more explicit than the task, but it still does n
 - Task is explicit: one best-supported statement plus an explanation.
 - The prompt does not name the answer or tell the learner which evidence item is decisive.
 - The core conclusion relies on essential evidence only.
-- The distinction between a visible mark and completed registration is preserved.
+- The case makes no claim about registration procedures or the traveler's registration status.
 - The case does not assume that the mark reveals exact ability details.
 - No new institution, character biography, magical technique, or canon event is introduced.
 - The case has a simple, defensible answer suitable for an A1 pilot.
