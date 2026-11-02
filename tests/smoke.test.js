@@ -251,6 +251,7 @@ test('main navigation tabs open without uncaught page errors', async t => {
       }
       if (view === 'casebound') {
         assert.ok(requested.some(path => path.endsWith('/language-detective-assessment-schemas.js')), 'CASEBOUND schemas should load on first open');
+        assert.ok(requested.some(path => path.endsWith('/language-detective-investigation.js')), 'CASEBOUND investigation session model should load on first open');
         assert.ok(requested.some(path => path.endsWith('/language-detective-cefr-patterns.js')), 'CASEBOUND CEFR profiles should load on first open');
         assert.ok(requested.some(path => path.endsWith('/language-detective-assessment-engine.js')), 'CASEBOUND assessment engine should load on first open');
         assert.ok(requested.some(path => path.endsWith('/language-detective-assessment-fixtures.js')), 'CASEBOUND case files should load on first open');
