@@ -195,13 +195,17 @@ test('Guided evidence checks are optional and absent from other training modes',
 });
 
 
-test('CASEBOUND lets the learner select a character before reviewing that person’s file',()=>{
+test('CASEBOUND shows the task and all available initial statements before character interviews',()=>{
+  assert.match(ui,/ld-mission-panel/);
+  assert.match(ui,/info\.focus/);
+  assert.match(ui,/visibleStatements = \(snapshot\.statements \|\| \[\]\)\.filter/);
+  assert.match(ui,/INITIAL ACCOUNTS/);
+  assert.match(ui,/What everyone said/);
+  assert.match(ui,/Who would you like to question/);
   assert.match(ui,/data-ld-select-character=/);
-  assert.match(ui,/state\.selectedCharacterId/);
   assert.match(ui,/investigationModel\.getCharacterDossier/);
-  assert.match(ui,/Choose someone to review/);
-  assert.match(ui,/CHARACTER FILE/);
-  assert.match(ui,/No initial statement from this person is available yet/);
+  assert.match(ui,/Questions shown below/);
+  assert.doesNotMatch(ui,/Choose someone to review/);
 });
 
 test('CASEBOUND notebook renders distinct sections instead of one undifferentiated entry list',()=>{
