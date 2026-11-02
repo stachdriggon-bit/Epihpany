@@ -88,6 +88,47 @@ const cases = {
       {criterionId:'C2',dimension:'EVIDENCE_REASONING',weight:1,conceptIds:['SCARF_FOUND','SCARF_TRANSFERRED']}
     ],feedbackResources:[],
     presentation:null
+  },
+  'CASE-005': {
+    caseId:'CASE-005',caseVersion:'draft-1',schemaVersion:'1.0',
+    characters:[
+      {characterId:'LINA',name:'Lina',role:'Passenger and claimant'},
+      {characterId:'OMAR',name:'Omar',role:'Passenger and claimant'},
+      {characterId:'NORA',name:'Nora',role:'Passenger and claimant'}
+    ],
+    statements:[
+      {statementId:'S-LINA',characterId:'LINA',name:'Lina',text:'I waited near the timetable board. I had a green canvas bag, but I cannot remember where I put it.'},
+      {statementId:'S-OMAR',characterId:'OMAR',name:'Omar',text:'I sat by the window. My bag is a black backpack with a laptop inside.'},
+      {statementId:'S-NORA',characterId:'NORA',name:'Nora',text:'I waited near the door. I had a blue shopping bag with a scarf inside.'}
+    ],
+    evidence:[
+      {evidenceId:'E01',role:'ESSENTIAL',title:'Waiting-room seating log',summary:'The station seating log places Lina at the bench beside the timetable board before 8:15. Omar was by the window and Nora was near the door.',relation:'SUPPORTS',scope:'where each passenger waited',limitations:['The log records seats, not ownership of any bag.']},
+      {evidenceId:'E02',role:'ESSENTIAL',title:'Found-property report',summary:'At 8:32 a green canvas bag was found beside the bench near the timetable board. The report does not name its owner.',relation:'SUPPORTS',scope:'bag description and last recorded location',limitations:['The finder did not see who left the bag.']},
+      {evidenceId:'E03',role:'ESSENTIAL',title:'Bag inventory',summary:'The green canvas bag contained a paperback book, a blue notebook and a red pencil case.',relation:'SUPPORTS',scope:'three items inside the bag',limitations:['The inventory does not identify the owner.']},
+      {evidenceId:'E04',role:'ESSENTIAL',title:'Library borrowing record',summary:'The library record shows that Lina borrowed the same paperback book that morning.',relation:'SUPPORTS',scope:'independent link between Lina and one item in the bag',limitations:['The record does not prove that Lina owned the bag or the other items.']},
+      {evidenceId:'E05',role:'OPTIONAL',title:'Kiosk receipt',summary:'A receipt records Lina buying tea at the station kiosk at 8:17.',relation:'CONTEXTUALIZES',scope:'Lina was away from the waiting room briefly',limitations:['The receipt does not show where her bag was or who owned it.'],requiredForConclusion:false}
+    ],
+    interviews:[{
+      interviewId:'INT-LINA',characterId:'LINA',name:'Lina',
+      questions:[{
+        questionId:'Q-BAG-CONTENTS',prompt:'What was inside your green bag?',
+        answer:'I had a paperback book, a blue notebook and a red pencil case inside it.',
+        informationId:'INFO-LINA-CONTENTS',evidenceIds:['E03']
+      }]
+    }],
+    concepts:[
+      {conceptId:'BAG_BELONGS_LINA',predicate:'Lina is the best-supported owner of the green bag',acceptedVariants:['the bag most likely belongs to Lina','Lina is the best-supported owner','the green bag is probably Lina’s'],patterns:[{patternId:'owner1',source:'bag.{0,30}(belongs to Lina|is Lina.s)'},{patternId:'owner2',source:'Lina.{0,35}(owner|bag belongs|most likely owns|most likely owner)'},{patternId:'owner3',source:'(probably|most likely).{0,20}Lina.{0,20}(bag|owner)'}],evidenceRefs:['E01','E02','E03','E04'],informationRefs:['INFO-LINA-CONTENTS'],criterionIds:['C1'],epistemicStatus:'INFERENCE',materiality:'CENTRAL'},
+      {conceptId:'BAG_CONTENTS_MATCH',predicate:'the inventory matches Lina’s account of the contents',acceptedVariants:['the contents match Lina’s description','the bag had the same three items Lina described'],patterns:[{patternId:'contents1',source:'(paperback|book).{0,55}blue notebook.{0,40}red pencil case'},{patternId:'contents2',source:'three items.{0,35}(match|same as).{0,25}Lina'},{patternId:'contents3',source:'blue notebook.{0,40}red pencil case'}],evidenceRefs:['E03'],informationRefs:['INFO-LINA-CONTENTS'],criterionIds:['C2'],epistemicStatus:'INFERENCE',materiality:'CENTRAL'},
+      {conceptId:'LIBRARY_LINK',predicate:'Lina borrowed the paperback found in the bag',acceptedVariants:['Lina borrowed the same book that morning','the library record links Lina to the paperback'],patterns:[{patternId:'library1',source:'Lina.{0,35}(borrowed|checked out).{0,30}(same )?(paperback|book)'},{patternId:'library2',source:'library record.{0,35}Lina.{0,35}(book|paperback)'},{patternId:'library3',source:'(paperback|book).{0,35}(borrowed|checked out).{0,25}Lina'}],evidenceRefs:['E04'],criterionIds:['C2'],epistemicStatus:'ESTABLISHED_FACT',materiality:'CENTRAL'},
+      {conceptId:'OWNERSHIP_NOT_CERTAIN',predicate:'the records support but do not absolutely prove ownership',acceptedVariants:['ownership is not proved with absolute certainty','the evidence does not prove ownership for certain','it is a strong match, but not absolute proof'],patterns:[{patternId:'limit1',source:'(does not|cannot|can.t).{0,35}(prove|confirm).{0,25}(ownership|owner|belongs)'},{patternId:'limit2',source:'(not|no).{0,15}(absolute|certain|complete) proof.{0,25}(ownership|owner|it)'},{patternId:'limit3',source:'strong evidence.{0,35}(not|but).{0,25}(prove|certain)'}],evidenceRefs:['E02','E03','E04'],criterionIds:['C3'],materiality:'MATERIAL'}
+    ],
+    criteria:[
+      {criterionId:'C1',dimension:'CONCLUSION_ACCURACY',weight:1,conceptIds:['BAG_BELONGS_LINA']},
+      {criterionId:'C2',dimension:'EVIDENCE_REASONING',weight:1,conceptIds:['BAG_CONTENTS_MATCH','LIBRARY_LINK']},
+      {criterionId:'C3',dimension:'CRITICAL_THINKING',weight:1,conceptIds:['OWNERSHIP_NOT_CERTAIN']}
+    ],
+    feedbackResources:[],
+    investigation:{conclusionPaths:[{evidenceIds:['E01','E02','E03','E04'],interviews:[{characterId:'LINA',questionId:'Q-BAG-CONTENTS'}]}]}
   }
 };
 
@@ -96,6 +137,28 @@ const casePresentation = {
     'CASE-002': { title: 'Conflicting Accounts', level: 'B1', cefr: 'B1', category: 'Case investigation', subtitle: 'An envelope vanishes, then appears in another room.', focus: 'Your task: explain where the envelope was found and decide what the timeline and access record can—and cannot—prove about who moved it.', conclusionOptions: ['The envelope was found in Room B, but the card log does not identify who used the card.', 'Lena definitely moved the envelope into Room B because her card opened the room.', 'Omar took the envelope after seeing Nadia near the exit.'], details: ['3:05 — Nadia placed the envelope of workshop recordings at library reception.', '3:20 — Omar saw a large envelope on the desk. Later, he saw Nadia carrying papers near the exit and assumed they were the envelope, but he did not identify them.', 'About 3:25 — Lena said she moved a group of papers to Room B; she was unsure whether she checked every sheet.', '3:22–3:41 — A card opened Room B and the room was later closed. The log does not establish who physically used the card or what was carried inside.', '3:45 — Nadia returned and found the envelope missing.', '4:10 — The envelope was found closed in Room B, with papers inside.'], questions: [{id:'q1',prompt:'Which claim is justified by the access record alone?',options:['Lena entered Room B during the recorded interval.','Someone used a card to open Room B; the user is not established.','The envelope was taken into Room B during that interval.'],answer:1,explain:'The record confirms a card event, but it does not identify the physical user or what entered the room.'},{id:'q2',prompt:'How should Omar’s later observation be described?',options:['Nadia carried the missing envelope towards the exit.','Nadia carried papers, but Omar could not confirm what they were.','Lena passed the envelope to Nadia near the exit.'],answer:1,explain:'Omar saw Nadia carrying papers, but he did not identify them as the envelope.'}] },
     'CASE-003': { title: 'The Uncertain Evidence', level: 'C1', cefr: 'C1', category: 'Evidence analysis', subtitle: 'An observatory receiver records an unusual signal.', focus: 'Your task: separate the recorded anomaly from its possible explanations. Decide whether the evidence identifies a cause or leaves competing hypotheses open.', conclusionOptions: ['An external event definitely caused the signal increase.', 'A temporary fault in R-4 is confirmed by the maintenance record.', 'R-4 recorded an unusual increase, but its cause remains unresolved; an external source or receiver fault is still possible.'], details: ['14 October, 21:43–21:47 — Receiver R-4 recorded an unusual signal-strength increase. The recovered recording is incomplete.', 'Analyst One: an external source is possible, but its identity cannot be established and equipment fault cannot be ruled out.', 'Analyst Two: a temporary R-4 fault is possible, but there is no diagnostic result proving it.', 'Maintenance records show unstable readings in September and a connection check before R-4 returned to service. There was no maintenance or diagnostic test on the night of 14 October.', 'R-7 did not record the increase, but its direction and sensitivity differed, so it is not a direct control.', 'A preliminary report suggested an external event before the original recording was recovered; it is not independent confirmation.', 'A technician’s note from two days earlier expresses concern that the problem may have returned; it is an impression, not a diagnosis.'], questions: [{id:'q1',prompt:'Which statement reports the instrument record without adding a cause?',options:['R-4 registered an unusual rise, although the recovered record is incomplete.','An outside source produced the rise recorded by R-4.','A fault in R-4 explains the rise in the recovered recording.'],answer:0,explain:'The recording establishes an unusual increase on R-4, not what produced it.'},{id:'q2',prompt:'What limits the comparison with R-7?',options:['R-7 had a different direction and sensitivity from R-4.','R-7 recorded the same increase as R-4.','R-7 was tested alongside R-4 during the event.'],answer:0,explain:'Because the instruments differed in direction and sensitivity, R-7 is not a direct control.'}] }
   ,
+    'CASE-005': {
+      title:'The Empty Seat', editorialId:'LD-A1-003', status:'IMPLEMENTED', level:'A1', cefr:'A1', category:'Everyday mystery',
+      subtitle:'Three passengers claim a bag found in a quiet station waiting room.',
+      focus:'Your task: decide whose bag is the best-supported match. Compare where each person waited, what was found inside the bag, and the independent library record. A strong match is not the same as absolute proof.',
+      conclusionOptions:[
+        'The green canvas bag most likely belongs to Lina.',
+        'The green canvas bag belongs to Omar.',
+        'The green canvas bag belongs to Nora.'
+      ],
+      details:[
+        '8:00 — Lina waits at the bench beside the timetable board.',
+        '8:05 — Omar waits by the window. Nora waits near the door a little later.',
+        '8:32 — A green canvas bag is found beside the timetable bench. Its owner is not recorded.',
+        'The bag inventory lists a paperback book, a blue notebook and a red pencil case.',
+        'The library record shows that Lina borrowed the same paperback that morning.',
+        'The seating log records where the three passengers waited, but it does not record who owned the bag.'
+      ],
+      questions:[
+        {id:'q1',prompt:'What does the found-property report tell us?',options:['A green canvas bag was found by the timetable bench.','Lina collected the bag.','The bag belongs to the person by the window.'],answer:0,explain:'The report gives the bag’s description and location, but it does not name the owner.'},
+        {id:'q2',prompt:'What does the library record add?',options:['It proves Lina owns every item in the bag.','It links Lina to the paperback found in the bag.','It shows Omar borrowed the book.'],answer:1,explain:'The library record links Lina to one item, but it does not prove ownership by itself.'}
+      ]
+    },
     'CASE-004': {
       title: 'The Blue Scarf', editorialId: 'LD-A1-002', status: 'IMPLEMENTED', level: 'A1', cefr: 'A1', category: 'Everyday mystery',
       subtitle: 'Mina loses her blue scarf at a small train station.',
