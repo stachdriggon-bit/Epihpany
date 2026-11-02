@@ -61,7 +61,7 @@
   }
 
   function readResponse() {
-    if (!root) return state?.lastResponse || { conclusion: '', reasoning: '', selectedConclusion: null };
+    if (!root || state?.stage === 'result') return state?.lastResponse || { conclusion: '', reasoning: '', selectedConclusion: null };
     if (state.answerFormat === 'HELL') {
       return {
         conclusion: root.querySelector('[name="ld-conclusion"]')?.value || '',
