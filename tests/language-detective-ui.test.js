@@ -19,14 +19,17 @@ function assess(caseId, conclusion, reasoning, answerFormat = 'STANDARD') {
   });
 }
 
-test('Standard mode asks for reasoning first and reveals conclusion choices only after typing', () => {
+test('Standard mode shows locked conclusion slots and unlocks them only after reasoning submission', () => {
   assert.match(ui, /name="ld-standard-reasoning"/);
   assert.match(ui, /data-ld-conclusion-choices/);
-  assert.match(ui, /answers\.reasoning\.trim\(\) \? '' : ' hidden'/);
-  assert.match(ui, /event\.target\.name !== 'ld-standard-reasoning'/);
-  assert.match(ui, /choices\.hidden = !hasReasoning/);
-  assert.match(ui, /data-ld-conclusion-option/);
-  assert.match(ui, /Choose the conclusion best supported by your reasoning/);
+  assert.match(ui, /Conclusion choices · /);
+  assert.match(ui, /ld-conclusion-locked/);
+  assert.match(ui, /data-ld-submit-reasoning/);
+  assert.match(ui, /state\.standardReasoningSubmitted = true/);
+  assert.match(ui, /state\.standardReasoningSubmitted \? info\.conclusionOptions\.map/);
+  assert.doesNotMatch(ui, /choices\.hidden = !hasReasoning/);
+  assert.match(ui, /readonly aria-readonly="true"/);
+  assert.match(ui, /Assess my answer/);
 });
 
 test('each investigation case supplies three final conclusion choices', () => {
