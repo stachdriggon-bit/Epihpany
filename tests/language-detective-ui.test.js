@@ -49,9 +49,10 @@ test('every registered investigation case has presentation metadata and three co
 
 test('case picker groups cases by authored CEFR and keeps evaluation level fixed',()=>{
  assert.ok(ui.includes("const CEFR_ORDER = ['A1','A2','B1','B2','C1','C2']"));
- assert.ok(ui.includes('const groupedCases = Object.fromEntries'));
- assert.ok(ui.includes('class="ld-level-section"'));
- assert.ok(ui.includes('ld-level-count'));
+ assert.ok(ui.includes('data-ld-level-select'));
+ assert.ok(ui.includes('state.selectedLevel'));
+ assert.ok(ui.includes('ld-level-grid'));
+ assert.ok(ui.includes('data-ld-level-back'));
  assert.ok(!ui.includes('data-ld-setting="cefr"'));
  assert.ok(!ui.includes('context.cefr = state.cefr'));
  assert.equal(makeContext('CASE-004').cefr,'A1');
@@ -118,8 +119,10 @@ test('a correct evidence explanation cannot rescue a conclusion that contradicts
   assert.notEqual(result.evaluation.primaryOutcome, 'ACCEPTED');
 });
 
-test('case picker renders six distinct CEFR sections instead of one flat case grid',()=>{
+test('case picker requires a CEFR level selection before showing its cases',()=>{
  for(const level of ['A1','A2','B1','B2','C1','C2']) assert.ok(ui.includes(level + ' · '),level+' level label');
- assert.ok(ui.includes('data-ld-level="'));
- assert.ok(ui.includes('New '));
+ assert.ok(ui.includes('data-ld-level-select'));
+ assert.ok(ui.includes("filter(id => caseInfo[id].cefr === selectedLevel)"));
+ assert.ok(ui.includes('data-ld-level-back'));
+ assert.ok(ui.includes('There are no investigations at this level yet.'));
 });
