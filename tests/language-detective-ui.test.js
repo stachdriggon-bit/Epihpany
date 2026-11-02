@@ -45,13 +45,14 @@ test('every registered investigation case has presentation metadata and three co
   assert.ok(ui.includes('Object.entries(fixtures.cases).map'));
 });
 
-test('case selection is filtered by authored CEFR and never overrides evaluation level',()=>{
- assert.match(ui,/caseInfo\[id\]\.cefr === state\.cefr/);
- assert.match(ui,/cefr: 'A1'/);
- assert.doesNotMatch(ui,/context\.cefr = state\.cefr/);
+test('case picker groups cases by authored CEFR and keeps evaluation level fixed',()=>{
+ assert.ok(ui.includes("const CEFR_ORDER = ['A1','A2','B1','B2','C1','C2']"));
+ assert.ok(ui.includes('Object.keys(caseInfo).sort'));
+ assert.ok(!ui.includes('data-ld-setting="cefr"'));
+ assert.ok(!ui.includes('context.cefr = state.cefr'));
  assert.equal(makeContext('CASE-004').cefr,'A1');
+ assert.equal(makeContext('CASE-001').cefr,'A2');
 });
-
 test('The Blue Scarf preserves Standard and Hell answer contracts',()=>{
  const conclusion='The scarf is at the lost-property desk.';
  const reasoning='The cleaner found it under the bench on Platform 2 and took it to lost property. The silver star matches Mina’s scarf.';
