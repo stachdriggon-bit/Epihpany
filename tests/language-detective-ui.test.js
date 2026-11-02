@@ -21,7 +21,8 @@ function assess(caseId, conclusion, reasoning, answerFormat = 'STANDARD') {
 
 test('Standard mode asks for reasoning first and reveals conclusion choices only after typing', () => {
   assert.match(ui, /name="ld-standard-reasoning"/);
-  assert.match(ui, /data-ld-conclusion-choices[^>]*hidden/);
+  assert.match(ui, /data-ld-conclusion-choices/);
+  assert.match(ui, /answers\.reasoning\.trim\(\) \? '' : ' hidden'/);
   assert.match(ui, /event\.target\.name !== 'ld-standard-reasoning'/);
   assert.match(ui, /choices\.hidden = !hasReasoning/);
   assert.match(ui, /data-ld-conclusion-option/);
