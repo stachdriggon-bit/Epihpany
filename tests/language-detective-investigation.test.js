@@ -115,7 +115,7 @@ test('evaluation snapshot excludes concepts that depend on undiscovered evidence
   let session=model.startSession(model.createSession(snapshot).session).session;
   session=model.discoverEvidence(snapshot,session,'E1').session;
   const partial=model.buildEvaluationSnapshot(snapshot,session);
-  assert.deepEqual(partial.evidence.map(item=>item.evidenceId),['E1','E3']);
+  assert.deepEqual(partial.evidence.map(item=>item.evidenceId),['E1']);
   assert.deepEqual(partial.concepts.map(item=>item.conceptId),['GENERAL']);
   assert.deepEqual(partial.criteria.map(item=>item.criterionId),['C2']);
   session=model.askInterview(snapshot,session,'LINA','Q-TIME').session;
