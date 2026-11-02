@@ -63,15 +63,18 @@
   function readResponse() {
     if (!root || state?.stage === 'result') return state?.lastResponse || { conclusion: '', reasoning: '', selectedConclusion: null };
     if (state.answerFormat === 'HELL') {
+      const conclusionField = root.querySelector('[name="ld-conclusion"]');
+      const reasoningField = root.querySelector('[name="ld-reasoning"]');
       return {
-        conclusion: root.querySelector('[name="ld-conclusion"]')?.value || '',
-        reasoning: root.querySelector('[name="ld-reasoning"]')?.value || ''
+        conclusion: conclusionField ? conclusionField.value : (state.lastResponse?.conclusion || ''),
+        reasoning: reasoningField ? reasoningField.value : (state.lastResponse?.reasoning || '')
       };
     }
+    const reasoningField = root.querySelector('[name="ld-standard-reasoning"]');
     return {
-      conclusion: Number.isInteger(state.selectedConclusion) ? (caseInfo[state.caseId]?.conclusionOptions[state.selectedConclusion] || '') : '',
-      reasoning: root.querySelector('[name="ld-standard-reasoning"]')?.value || '',
-      selectedConclusion: state.selectedConclusion
+      conclusion: Number.isInteger(state.selectedConclusion) ? (caseInfo[state.caseId]?.conclusionOptions[state.selectedConclusion] || '') : (state.lastResponse?.conclusion || ''),
+      reasoning: reasoningField ? reasoningField.value : (state.lastResponse?.reasoning || ''),
+      selectedConclusion: state.selectedConclusion ?? state.lastResponse?.selectedConclusion ?? null
     };
   }
 
