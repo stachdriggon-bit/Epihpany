@@ -85,6 +85,36 @@ test('interviews reveal one selected answer per character by default and preserv
   assert.deepEqual(model.getNotebookEntries(snapshot,answer.session).filter(item=>item.type==='INTERVIEW').map(item=>item.content),['I waited near the timetable.']);
 });
 
+test('one question per character is a hard rule, while other characters and the witness remain independent choices',()=>{
+  const snapshot=sampleCase();
+  snapshot.interviews.push(
+    {interviewId:'INT-NORA',characterId:'NORA',questions:[{questionId:'Q-NORA',prompt:'What did you notice?',answer:'I noticed the station clock.'}]}
+  );
+  let session=model.startSession(model.createSession(snapshot).session).session;
+  const lina=model.askInterview(snapshot,session,'LINA','Q-PLACE');
+  assert.equal(lina.ok,true);
+  session=lina.session;
+  assert.equal(model.getAvailableInterviews(snapshot,session).some(item=>item.characterId==='LINA'),false);
+  assert.equal(model.getAvailableInterviews(snapshot,session).some(item=>item.characterId==='NORA'),true);
+  const nora=model.askInterview(snapshot,session,'NORA','Q-NORA');
+  assert.equal(nora.ok,true);
+  session=nora.session;
+  assert.equal(model.getAvailableInterviews(snapshot,session).length,0);
+  const witness=model.selectWitness(snapshot,session,'W2');
+  assert.equal(witness.ok,true);
+  session=witness.session;
+  assert.equal(session.interviewResponses.length,2);
+  assert.equal(session.selectedWitnessId,'W2');
+  assert.equal(model.askInterview(snapshot,session,'LINA','Q-TIME').error,'INTERVIEW_LIMIT_REACHED');
+  assert.equal(model.selectWitness(snapshot,session,'W1').error,'WITNESS_ALREADY_SELECTED');
+});
+
+test('interview configuration cannot raise the one-question-per-character limit',()=>{
+  const snapshot=sampleCase();
+  snapshot.interviews[0].maxQuestionsPerAttempt=2;
+  assert.ok(model.validateInvestigation(snapshot).some(error=>error.code==='ONE_QUESTION_PER_CHARACTER'));
+});
+
 test('one witness can be selected and the notebook records only that selected witness',()=>{
   const snapshot=sampleCase();
   let session=model.startSession(model.createSession(snapshot).session).session;
