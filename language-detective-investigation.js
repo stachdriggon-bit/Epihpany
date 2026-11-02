@@ -28,6 +28,7 @@
     const statementIds = uniqueIds(snapshot.statements,'statementId','id','statements');
     const witnessIds = uniqueIds(snapshot.witnesses,'witnessId','id','witnesses');
     const interviewIds = new Set();
+    const informationIds = new Set();
     for (const [i, interview] of list(snapshot.interviews).entries()) {
       const characterId = interview.characterId || interview.character || '';
       if (!characterIds.has(characterId)) errors.push({path:'interviews['+i+'].characterId',code:'UNKNOWN_CHARACTER',message:'Interview must reference a registered character.'});
@@ -40,6 +41,7 @@
       for (const [j, question] of questions.entries()) {
         if (typeof question.prompt !== 'string' || !question.prompt.trim()) errors.push({path:'interviews['+i+'].questions['+j+'].prompt',code:'REQUIRED',message:'Question prompt is required.'});
         if (typeof question.answer !== 'string' || !question.answer.trim()) errors.push({path:'interviews['+i+'].questions['+j+'].answer',code:'REQUIRED',message:'Interview answer is required.'});
+        if (question.informationId) informationIds.add(question.informationId);
         for (const evidenceId of list(question.evidenceIds)) if (!evidenceIds.has(evidenceId)) errors.push({path:'interviews['+i+'].questions['+j+'].evidenceIds',code:'UNKNOWN_EVIDENCE',message:'Interview references unknown evidence: '+evidenceId});
       }
       const interviewId = interview.interviewId || characterId;
@@ -53,6 +55,11 @@
     for (const [i, witness] of list(snapshot.witnesses).entries()) {
       const characterId = witness.characterId;
       if (characterId && !characterIds.has(characterId)) errors.push({path:'witnesses['+i+'].characterId',code:'UNKNOWN_CHARACTER',message:'Witness references an unknown character.'});
+    }
+    for (const [i, concept] of list(snapshot.concepts).entries()) {
+      for (const evidenceId of list(concept.evidenceRefs)) if (!evidenceIds.has(evidenceId)) errors.push({path:'concepts['+i+'].evidenceRefs',code:'UNKNOWN_EVIDENCE',message:'Concept references unknown evidence: '+evidenceId});
+      for (const informationId of list(concept.informationRefs)) if (!informationIds.has(informationId)) errors.push({path:'concepts['+i+'].informationRefs',code:'UNKNOWN_INFORMATION',message:'Concept references information that no interview can reveal: '+informationId});
+      for (const witnessId of list(concept.witnessRefs)) if (!witnessIds.has(witnessId)) errors.push({path:'concepts['+i+'].witnessRefs',code:'UNKNOWN_WITNESS',message:'Concept references unknown witness: '+witnessId});
     }
     for (const [i, item] of list(snapshot.evidence).entries()) {
       const unlock = item.unlock || {};
