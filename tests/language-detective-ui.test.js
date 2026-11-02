@@ -45,6 +45,23 @@ test('every registered investigation case has presentation metadata and three co
   assert.match(ui, /Object\\.entries\\(fixtures\\.cases\\)\\.map/);
 });
 
+test('case selection is filtered by authored CEFR and never overrides evaluation level',()=>{
+ assert.match(ui,/caseInfo\\[id\\]\\.cefr === state\\.cefr/);
+ assert.match(ui,/cefr: 'A1'/);
+ assert.doesNotMatch(ui,/context\\.cefr = state\\.cefr/);
+ assert.equal(makeContext('CASE-004').cefr,'A1');
+});
+
+test('The Blue Scarf preserves Standard and Hell answer contracts',()=>{
+ const conclusion='The scarf is at the lost-property desk.';
+ const reasoning='The cleaner found it under the bench on Platform 2 and took it to lost property. The silver star matches Mina’s scarf.';
+ for(const format of ['STANDARD','HELL']){
+  const result=assess('CASE-004',conclusion,reasoning,format);
+  assert.equal(result.evaluation.primaryOutcome,'ACCEPTED');
+  assert.equal(result.evaluation.weightedScore,100);
+ }
+});
+
 test('Evidence checks test evidence boundaries rather than literal phrase matching', () => {
   const prompts = [
     'Which account stays within what Sara witnessed?',
