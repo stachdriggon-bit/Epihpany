@@ -46,7 +46,7 @@ test('every registered investigation case has presentation metadata and three co
   assert.equal(cases['CASE-004'].presentation.status, 'IMPLEMENTED');
   assert.equal(cases['CASE-005'].presentation.cefr, 'A1');
   assert.equal(cases['CASE-005'].presentation.editorialId, 'LD-A1-003');
-  assert.equal(cases['CASE-005'].presentation.status, 'IMPLEMENTED');
+  assert.equal(cases['CASE-005'].presentation.status, 'IN_PROGRESS');
   assert.ok(ui.includes('Object.entries(fixtures.cases).map'));
 });
 
