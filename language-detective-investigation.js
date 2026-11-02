@@ -34,6 +34,9 @@
       if (!characterIds.has(characterId)) errors.push({path:'interviews['+i+'].characterId',code:'UNKNOWN_CHARACTER',message:'Interview must reference a registered character.'});
       const questions = list(interview.questions);
       if (!questions.length) errors.push({path:'interviews['+i+'].questions',code:'EMPTY_QUESTIONS',message:'An interview must contain at least one question.'});
+      if (interview.maxQuestionsPerAttempt !== undefined && interview.maxQuestionsPerAttempt !== 1) {
+        errors.push({path:'interviews['+i+'].maxQuestionsPerAttempt',code:'ONE_QUESTION_PER_CHARACTER',message:'Each character allows exactly one interview question per investigation.'});
+      }
       const questionIds = questions.map(q => q.questionId || q.id || '');
       if (questionIds.some(id => !id) || new Set(questionIds).size !== questionIds.length) {
         errors.push({path:'interviews['+i+'].questions',code:'UNIQUE_QUESTION_IDS',message:'Interview question IDs must be unique and non-empty.'});
@@ -141,8 +144,7 @@
     return list(snapshot.interviews).filter(interview => {
       const characterId = interview.characterId || interview.character;
       const prior = interviewResponse(session,characterId);
-      const maxQuestions = Number.isInteger(interview.maxQuestionsPerAttempt) ? interview.maxQuestionsPerAttempt : 1;
-      return !prior || prior.questionIds.length < maxQuestions;
+      return !prior || prior.questionIds.length === 0;
     }).map(interview => {
       const characterId = interview.characterId || interview.character;
       const prior = interviewResponse(session,characterId);
@@ -202,7 +204,7 @@
           prompt:question.prompt
         })),
         answers:list(response?.answers).map(clone),
-        maxQuestionsPerAttempt:Number.isInteger(interview.maxQuestionsPerAttempt) ? interview.maxQuestionsPerAttempt : 1
+        maxQuestionsPerAttempt:1
       } : null
     };
   }
