@@ -1,7 +1,7 @@
 # Language Detective — Case Integration Plan
 
 **Document ID:** LD-CIP-1  
-**Status:** Technical audit complete; implementation not started  
+**Status:** Runtime integration complete; full repository test workflow passed  
 **Target case:** LD-A1-002 — The Blue Scarf  
 **Repository branch:** main
 
@@ -20,22 +20,22 @@ The feature is loaded on demand from Think Lab:
 3. `language-detective-assessment-schemas.js` validates case snapshots and evaluation requests.
 4. `language-detective-cefr-patterns.js` provides language-level profiles and construction patterns.
 5. `language-detective-assessment-engine.js` runs normalization, semantic matching, evidence reasoning, claim validation, evaluation resolution, and feedback.
-6. `language-detective-assessment-fixtures.js` currently owns the three case snapshots and the 57 executable assessment fixtures.
-7. `language-detective-ui.js` separately owns the three learner-facing case descriptions, timelines, evidence-check questions, and Standard conclusion options.
+6. `language-detective-assessment-fixtures.js` now owns four case snapshots, their learner-facing presentation metadata, and the 57 executable assessment fixtures.
+7. `language-detective-ui.js` derives each case's presentation from the assessment registry; it no longer maintains a second caseInfo copy.
 8. `language-detective.css` styles the investigation UI.
 
 The UI submits a combined Conclusion/Reasoning string to the same evaluation engine in both answer formats. Standard mode still requires reasoning submission before conclusion choices unlock. Hell Mode still presents two separate free-text fields.
 
 ## 3. Current case registry and duplication
 
-Case content is currently split across two sources:
+The case registry is now authoritative:
 
-- Assessment facts and semantic answer concepts live in `language-detective-assessment-fixtures.js`.
-- Learner-facing presentation content lives in the `caseInfo` object inside `language-detective-ui.js`.
+- `language-detective-assessment-fixtures.js` stores the assessment snapshot and the presentation metadata for each case.
+- `language-detective-ui.js` derives its case picker, timeline, questions, and conclusion choices from that same registry.
+- Each case declares its authored CEFR level; `makeContext` reads that value directly.
+- The picker groups cases by authored CEFR order and does not let a learner relabel a case to a different level.
 
-The same case ID is therefore represented twice. A case can become inconsistent if only one side is updated.
-
-The fixture helper `makeContext` also hardcodes the CEFR mapping for the three current case IDs. The UI's initial CEFR selector defaults to B1 and can override the case's mapped level. This must be replaced with explicit case metadata so an A1 case is assessed as A1 by design, rather than relying on a global default or a manual override.
+This removes the duplicate caseInfo registry and prevents the UI and evaluator from silently assigning different CEFR levels.
 
 ## 4. Integration requirements for The Blue Scarf
 
@@ -59,11 +59,11 @@ The same metadata should drive the picker and evaluation context. Do not let the
 
 ## 5. Important content validation before implementation
 
-The current Blue Scarf draft needs one small evidence-strengthening revision before runtime implementation.
+The evidence-strengthening revision is implemented: Mina's scarf, the cleaner's note, and the lost-property list all identify a small silver star.
 
 Mina's statement currently identifies a blue scarf, while the station records identify a blue scarf from Platform 2. This is a strong match, but it does not uniquely establish that the recorded scarf is Mina's if another blue scarf could have been found there.
 
-Add one simple, observable identifying detail to Mina's description and repeat that detail in the cleaner's note and lost-property entry (for example, a small silver star on the scarf). Keep the vocabulary A1-friendly. The learner should be able to match the records without relying on an unstated uniqueness assumption.
+The small silver star is repeated in all three records, so the learner can match the found scarf to Mina's description without relying on an unstated uniqueness assumption.
 
 This is a content correction, not a new game mechanic.
 
@@ -71,11 +71,13 @@ This is a content correction, not a new game mechanic.
 
 The learner's central conclusion is the scarf's current location: the station's lost-property/ticket desk.
 
-The evaluator should recognize simple semantic variants such as:
+The evaluator recognizes simple semantic variants such as:
 
 - The scarf is at the lost-property desk.
-- It is at the ticket desk with the lost things.
+- The blue scarf is at the ticket desk with lost property.
 - The station has the scarf at lost property.
+
+It also recognizes a clear pronoun antecedent after the scarf has been named, while leaving unsupported theft claims unaccepted.
 
 The reasoning criteria should reward the supported sequence:
 
@@ -85,43 +87,32 @@ The reasoning criteria should reward the supported sequence:
 
 Do not require the learner to identify the cleaner or infer a motive. Do not reward unsupported accusations of theft. The evaluator must accept simple A1 paraphrases and avoid requiring advanced uncertainty vocabulary.
 
-## 7. Recommended implementation sequence
+## 7. Completed implementation
 
 ### Phase A — Content and registry foundation
 
-1. Revise the scarf evidence to include a matching identifying detail.
-2. Introduce a single case registry module for learner-facing metadata and assessment snapshots, or otherwise establish one authoritative source from which both the UI and evaluator data are derived.
-3. Move the three existing cases into the same registry without changing their evidence, answer keys, or learner-facing wording.
-4. Assign explicit CEFR metadata to every case.
-5. Make the picker filter by CEFR level, or otherwise clearly group cases by their authored level. Do not allow a case authored for A1 to be silently relabelled as B1/C1.
+- [x] Added the silver-star identifying detail to the learner description, cleaner note, and lost-property record.
+- [x] Moved all four cases into one authoritative registry containing both assessment and presentation data.
+- [x] Added explicit CEFR metadata and made the picker group cases by authored level.
+- [x] Kept the three pre-existing case snapshots and their 57 assessment fixtures intact.
 
 ### Phase B — The Blue Scarf integration
 
-1. Add the Blue Scarf as a new runtime case with a stable runtime ID.
-2. Add its three Standard conclusion options and two evidence-check questions.
-3. Add assessment concepts for the scarf's current location and the evidence sequence.
-4. Add accepted paraphrases for common A1 wording.
-5. Keep Standard, Hell, and all three Training modes on the existing shared pipeline.
-6. Keep the case category visible in the picker so everyday cases and story-world cases can coexist without confusion.
+- [x] Added runtime case `CASE-004`, linked to editorial ID `LD-A1-002`.
+- [x] Added three Standard conclusion choices and two evidence-check questions.
+- [x] Added assessment concepts for the current location, discovery, transfer, matching scarf detail, and unsupported theft claims.
+- [x] Added accepted A1 paraphrases and clear pronoun antecedent recognition.
+- [x] Preserved Standard, Hell, Guided, Steady, and Challenge behavior.
 
 ### Phase C — Regression and content tests
 
-Add tests that verify:
+- [x] Validated the new case snapshot and its evidence references.
+- [x] Tested multiple simple paraphrases, the discovery/current-location distinction, and unsupported theft claims.
+- [x] Tested Standard and Hell answer contracts and authored CEFR grouping.
+- [x] Updated the browser smoke test for four registered case files.
+- [x] Full repository workflow passed on the implementation commit.
 
-- Every registry case has a valid assessment snapshot.
-- Every case has a unique runtime ID and an explicit CEFR level.
-- The picker exposes only cases appropriate to the selected level.
-- The Blue Scarf appears under A1 and is labelled as an everyday mystery.
-- Its correct location is accepted through multiple simple paraphrases.
-- A response that only says the scarf was found under the bench is incomplete because it ignores the later transfer.
-- Unsupported theft accusations are not accepted.
-- All evidence references resolve.
-- Every case retains three balanced Standard conclusion options.
-- Hell Mode continues to have separate Conclusion and Reasoning fields and no conclusion choices.
-- Guided, Steady, and Challenge preserve the same case truth and academic scoring contract.
-- The existing three cases retain their current expected behavior.
-
-Update fixture counts and test assertions from the current 57-scenario baseline only when new executable fixtures are actually added.
+**Verification:** Commit `2441bb67e434e95ff645377bd471c6049e8c5a38` completed the full test workflow successfully. The subsequent metadata-only update adds the editorial ID and implementation status to the case registry and has its own CI run.
 
 ## 8. Non-goals
 
@@ -134,6 +125,6 @@ This integration does not:
 - Replace or delete the three existing cases.
 - Claim that all six CEFR case sets are complete.
 
-## 9. Implementation gate
+## 9. Next step
 
-Implementation may begin after the Blue Scarf identity detail is made unambiguous and the registry approach is agreed. Runtime changes must be accompanied by focused unit tests and the full `npm test` suite. Do not treat a successful script load as proof that a case is correctly assessable.
+The next content task is to author additional independent A1 cases and then begin the A2 case set. Do not reuse The Blue Scarf as a harder-level investigation. Runtime additions must continue to include focused assessment tests and the full repository test suite.

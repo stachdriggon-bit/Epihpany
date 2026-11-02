@@ -1,18 +1,18 @@
-# Language Detective — Content Design
+# Language Detective — Case Library
 
-This folder contains the authoring standards and provisional case proposals for Language Detective.
+This folder contains the authoring standard, implemented cases, and provisional case drafts for Language Detective.
 
 ## Design standard
 
 - [Language Detective Case Design Standard](../LANGUAGE-DETECTIVE-CASE-DESIGN-STANDARD.md) — approved rules for task clarity, evidence, answer models, CEFR progression, modes, and case validation.
 
-## Case proposals
+## Case library
 
-Cases may be **everyday mysteries** or stories set in the site's wider fictional world. They do not all need to connect to the story-world lore. All proposals remain provisional until reviewed; saving a case here does not make its events or new details canon.
+Cases may be **everyday mysteries** or stories set in the site's wider fictional world. They do not all need to connect to the story-world lore. Implementation status is tracked per case. Story-world proposals remain non-canon until explicitly reviewed; everyday mysteries are independent of the story world.
 
 ### Everyday mysteries
 
-- [A1-002 — The Blue Scarf](./cases/A1-002-the-blue-scarf.md) — a self-contained station mystery about tracing a lost item through three short records. First proposed everyday A1 investigation.
+- [A1-002 — The Blue Scarf](./cases/A1-002-the-blue-scarf.md) — a self-contained station mystery about tracing a lost item through three short records. Implemented everyday A1 investigation (runtime `CASE-004`).
 
 ### Story-world cases
 
@@ -20,8 +20,8 @@ Cases may be **everyday mysteries** or stories set in the site's wider fictional
 
 ## Workflow
 
-1. Review each proposal's truth, evidence, task wording, answer model, and CEFR fit.
-2. Confirm whether the case is an everyday mystery or a story-world case, and review any proposed lore details separately.
-3. Only after approval, translate the authored case into runtime data and assessment fixtures.
-4. Add automated checks for evidence boundaries, accepted answers, distractors, and mode invariants.
-5. Build separate cases for each CEFR level; do not reuse a solved case as a harder-level case.
+1. Review the case truth, evidence, task wording, answer model, and CEFR fit.
+2. Review story-world additions separately; an implemented case does not automatically make proposed lore canon.
+3. Keep learner-facing presentation and assessment data in the same case registry.
+4. Add regression checks for evidence boundaries, accepted answers, distractors, and mode invariants.
+5. Build independent cases for each CEFR level; do not reuse a solved case as a harder-level case.

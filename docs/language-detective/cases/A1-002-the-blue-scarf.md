@@ -1,9 +1,9 @@
-# A1 Case Proposal — The Blue Scarf
+# A1 Case — The Blue Scarf
 
 **Case ID:** LD-A1-002  
 **CEFR:** A1  
 **Version:** draft-1  
-**Content status:** Provisional proposal — not implemented in the game  
+**Content status:** Implemented in runtime as `CASE-004`  
 **Case type:** Everyday mystery; independent of the story world  
 **Lore status:** No worldbuilding or canon implications  
 **Spoiler level:** Low
@@ -23,7 +23,7 @@ Expected output: one location, with a short explanation. The task does not ask t
 ## 3. Author-only truth
 
 - Mina took off her blue scarf while sitting on a bench beside Platform 2.
-- The scarf fell under the bench.
+- The scarf, which has a small silver star, fell under the bench.
 - A station cleaner found it while cleaning Platform 2.
 - The cleaner took it to the station's lost-property desk.
 - The scarf is at the lost-property desk when Mina asks for help.
@@ -43,9 +43,9 @@ This is a self-contained everyday case. The station, people, and event are ficti
 
 | ID | Class | Evidence | Directly establishes | Does not establish |
 |---|---|---|---|---|
-| E01 | ESSENTIAL | Mina's statement: “I had my blue scarf when I sat on the bench at Platform 2. I did not have it when I got on the train.” | The scarf was with Mina at the bench and was missing later. | The exact place where it was left. |
-| E02 | ESSENTIAL | Cleaning note: “Platform 2, 8:20. I found a blue scarf under the bench. I took it to the lost-property desk.” | A blue scarf was found under that bench and taken to the desk. | Whether this is Mina's scarf by itself. |
-| E03 | ESSENTIAL | Lost-property list: “8:25 — one blue scarf received from Platform 2.” | A blue scarf from Platform 2 is now recorded at the desk. | Who originally owned it. |
+| E01 | ESSENTIAL | Mina says she had a blue scarf with a small silver star when she sat at Platform 2; it was missing when she boarded her train. | The scarf's description and Mina's last known possession. | The exact place where it was left. |
+| E02 | ESSENTIAL | Cleaning note: “Platform 2, 8:20. I found a blue scarf with a small silver star under the bench. I took it to the lost-property desk.” | A matching scarf was found under the bench and transferred to the desk. | The note does not name the owner. |
+| E03 | ESSENTIAL | Lost-property list: “8:25 — one blue scarf with a small silver star received from Platform 2.” | The matching item was received by lost property. | The list does not name the owner. |
 | E04 | CONTEXTUAL | A station notice says: “Lost property is kept at the ticket desk.” | The desk is the station's lost-property point. | Anything about who lost or found the scarf. |
 
 The intended answer follows from the match between Mina's description and the two station records. The case does not rely on guessing a person's motive or treating an opportunity as proof.
@@ -60,7 +60,7 @@ The records support this location:
 - E03 confirms that a blue scarf from Platform 2 was received at the desk.
 - E04 explains where lost property is kept.
 
-The evidence strongly supports that the scarf at the desk is Mina's. It does not prove who caused it to fall, and that question is outside the task.
+The repeated silver-star detail links Mina's scarf to the item found and received at the desk. It does not prove who caused it to fall, and that question is outside the task.
 
 ## 7. Standard Mode
 
@@ -68,18 +68,18 @@ The evidence strongly supports that the scarf at the desk is Mina's. It does not
 
 **Conclusion choices:**
 
-A. The scarf is still under the bench on Platform 2.  
-B. The scarf is at the lost-property desk.  
+A. The scarf is at the lost-property desk.  
+B. The scarf is still under the bench on Platform 2.  
 C. The scarf is on Mina's train.
 
-**Answer key:** B
+**Answer key:** A
 
 **Distractor rationale:**
 - A uses the place where the scarf was found but ignores the record that it was moved.
 - C confuses the train Mina boarded with the place where the scarf was last recorded.
 - B combines the cleaning note with the lost-property list and the station notice.
 
-The options are short and concrete for A1. In implementation, their order should be randomized; the correct option must not be tied to a fixed position.
+The options are short and concrete for A1. The current runtime places the supported conclusion first; randomized option ordering remains a separate UI improvement.
 
 ## 8. Hell Mode
 
@@ -89,9 +89,9 @@ Expected conclusion:
 - The blue scarf is at the lost-property desk / ticket desk.
 
 Expected reasoning:
-- Mina had it at Platform 2.
-- The cleaner found a blue scarf under the bench there.
-- The cleaner took it to lost property, and the list says a blue scarf was received.
+- Mina had the blue scarf with the small silver star at Platform 2.
+- The cleaner found a scarf with the same description under the bench.
+- The cleaner took the scarf to lost property, and the station list confirms receipt.
 
 Accept simple paraphrases such as “It is with the lost things at the ticket desk.” Do not require the exact phrase “lost-property desk.”
 
@@ -128,13 +128,18 @@ The hints do not name the final location.
 - The conclusion is supported by the essential evidence.
 - Alternative wording for “lost-property desk” must be accepted.
 - No hidden clue is required.
-- This is a proposal only; it has not been added to runtime case data or assessment fixtures.
+- The runtime assessment uses `CASE-004` with a fixed A1 level, four evidence records, two evidence checks, three conclusion choices, semantic answer concepts, and regression tests.
 
-## 12. Open review points
+## 12. Runtime implementation notes
 
-1. Does the station setting and the small-scale mystery feel engaging enough for the first everyday A1 case?
-2. Should the learner-facing records appear as separate evidence cards (Mina's statement, cleaning note, and desk list) in the final game presentation?
+- The learner-facing case and assessment snapshot share one registry entry in `language-detective-assessment-fixtures.js`.
+- The case appears in the picker under A1 and is labelled as an everyday mystery.
+- Standard Mode uses the three conclusion choices; Hell Mode keeps separate Conclusion and Reasoning fields.
+- The evaluator accepts clear A1 paraphrases, recognizes a clear pronoun antecedent such as “it” when the scarf has already been named, and rejects unsupported theft claims.
+- Regression coverage distinguishes the scarf's discovery place (under the bench) from its later location (lost property).
 
 ---
 
-**Implementation gate:** Await review and approval before translating this proposal into runtime data or evaluator fixtures.
+**Runtime ID:** `CASE-004`  
+**Editorial ID:** `LD-A1-002`  
+**Implementation status:** Integrated on `main`; full repository test workflow passed.
