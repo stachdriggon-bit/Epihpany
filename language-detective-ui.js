@@ -43,16 +43,36 @@
       '</div>';
   }
 
+  const CEFR_LEVELS = {
+    A1: { title: 'A1 · Beginner', note: 'Short, direct clues and everyday situations.' },
+    A2: { title: 'A2 · Elementary', note: 'Simple timelines and clear links between events.' },
+    B1: { title: 'B1 · Intermediate', note: 'More detail, reported accounts and careful comparisons.' },
+    B2: { title: 'B2 · Upper intermediate', note: 'More layered evidence and competing interpretations.' },
+    C1: { title: 'C1 · Advanced', note: 'Subtle evidence boundaries and competing explanations.' },
+    C2: { title: 'C2 · Proficient', note: 'Highly nuanced reasoning across complex sources.' }
+  };
+
   function picker() {
-    root.innerHTML = '<section class="ld-shell">' +
-      '<div class="ld-toolbar"><button type="button" class="ld-back" data-ld-exit>← Think Lab</button><span>CASE FILES</span></div>' +
-      '<div class="ld-heading"><span class="ld-kicker">THINK LAB · INVESTIGATION</span><h2>The Language Detective</h2><p>Read the evidence, test possible explanations and write a conclusion. The goal is careful reasoning—not guessing the hidden answer.</p></div>' +
-      settingsMarkup() +
-      '<div class="ld-case-grid">' + Object.keys(caseInfo).sort((a, b) => CEFR_ORDER.indexOf(caseInfo[a].cefr) - CEFR_ORDER.indexOf(caseInfo[b].cefr)).map(id => {
+    const groupedCases = Object.fromEntries(CEFR_ORDER.map(level => [
+      level, Object.keys(caseInfo).filter(id => caseInfo[id].cefr === level)
+    ]));
+    const levelSections = CEFR_ORDER.map(level => {
+      const ids = groupedCases[level], meta = CEFR_LEVELS[level];
+      const cards = ids.length ? ids.map(id => {
         const item = caseInfo[id];
         return '<button type="button" class="ld-case-card" data-ld-case="' + id + '">' +
-          '<span class="ld-case-meta">' + item.category + ' · ' + item.level + '</span><strong>' + item.title + '</strong><span>' + item.subtitle + '</span><em>Open investigation →</em></button>';
-      }).join('') + '</div>' +
+          '<span class="ld-case-meta">' + esc(item.category) + '</span><strong>' + esc(item.title) + '</strong><span>' + esc(item.subtitle) + '</span>' +
+          '<em>Open investigation →</em></button>';
+      }).join('') : '<p class="ld-level-empty">New ' + level + ' investigations will appear here.</p>';
+      return '<section class="ld-level-section" data-ld-level="' + level + '">' +
+        '<div class="ld-level-heading"><div><h3>' + meta.title + '</h3><p>' + meta.note + '</p></div><span class="ld-level-count">' + ids.length + (ids.length === 1 ? ' case' : ' cases') + '</span></div>' +
+        (ids.length ? '<div class="ld-case-grid">' + cards + '</div>' : '<div class="ld-level-empty-wrap">' + cards + '</div>') +
+        '</section>';
+    }).join('');
+    root.innerHTML = '<section class="ld-shell">' +
+      '<div class="ld-toolbar"><button type="button" class="ld-back" data-ld-exit>← Think Lab</button><span>CASE FILES</span></div>' +
+      '<div class="ld-heading"><span class="ld-kicker">THINK LAB · INVESTIGATION</span><h2>The Language Detective</h2><p>Choose an investigation at your English level. Each level has its own cases, language and reasoning challenge.</p></div>' +
+      settingsMarkup() + '<div class="ld-level-list">' + levelSections + '</div>' +
       '<p class="ld-note">Guided, Steady and Challenge change the level of support. Standard and Hell Mode change how you submit your conclusion; neither mode changes the evidence or rewards unsupported certainty.</p>' +
       '</section>';
   }
