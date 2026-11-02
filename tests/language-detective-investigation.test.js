@@ -125,6 +125,30 @@ test('evaluation snapshot excludes concepts that depend on undiscovered evidence
   assert.deepEqual(complete.criteria.map(item=>item.criterionId),['C1','C2']);
 });
 
+test('interview and witness knowledge can independently unlock assessment concepts',()=>{
+  const snapshot=sampleCase();
+  snapshot.concepts.push(
+    {conceptId:'INTERVIEW_ONLY',predicate:'interview detail',evidenceRefs:[],informationRefs:['INFO-LINA-TIME'],patterns:[],acceptedVariants:[]},
+    {conceptId:'WITNESS_ONLY',predicate:'witness detail',evidenceRefs:[],witnessRefs:['W2'],patterns:[],acceptedVariants:[]}
+  );
+  snapshot.criteria.push(
+    {criterionId:'C3',dimension:'EVIDENCE_REASONING',weight:1,conceptIds:['INTERVIEW_ONLY']},
+    {criterionId:'C4',dimension:'CRITICAL_THINKING',weight:1,conceptIds:['WITNESS_ONLY']}
+  );
+  assert.deepEqual(model.validateInvestigation(snapshot),[]);
+  let session=model.startSession(model.createSession(snapshot).session).session;
+  let evaluation=model.buildEvaluationSnapshot(snapshot,session);
+  assert.ok(!evaluation.concepts.some(item=>item.conceptId==='INTERVIEW_ONLY'));
+  assert.ok(!evaluation.concepts.some(item=>item.conceptId==='WITNESS_ONLY'));
+  session=model.askInterview(snapshot,session,'LINA','Q-TIME').session;
+  evaluation=model.buildEvaluationSnapshot(snapshot,session);
+  assert.ok(evaluation.concepts.some(item=>item.conceptId==='INTERVIEW_ONLY'));
+  assert.ok(!evaluation.concepts.some(item=>item.conceptId==='WITNESS_ONLY'));
+  session=model.selectWitness(snapshot,session,'W2').session;
+  evaluation=model.buildEvaluationSnapshot(snapshot,session);
+  assert.ok(evaluation.concepts.some(item=>item.conceptId==='WITNESS_ONLY'));
+});
+
 test('progress reports independent discoveries without imposing a fixed stage count',()=>{
   const snapshot=sampleCase();
   let session=model.startSession(model.createSession(snapshot).session).session;
