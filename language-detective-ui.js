@@ -73,7 +73,7 @@
     const reasoningField = root.querySelector('[name="ld-standard-reasoning"]');
     return {
       conclusion: Number.isInteger(state.selectedConclusion) ? (caseInfo[state.caseId]?.conclusionOptions[state.selectedConclusion] || '') : (state.lastResponse?.conclusion || ''),
-      reasoning: reasoningField ? reasoningField.value : (state.lastResponse?.reasoning || ''),
+      reasoning: reasoningField ? reasoningField.value : (state.standardReasoning ?? state.lastResponse?.reasoning ?? ''),
       selectedConclusion: state.selectedConclusion ?? state.lastResponse?.selectedConclusion ?? null
     };
   }
@@ -92,7 +92,7 @@
     const questionMarkup = '<section class="ld-checkpoints"><div><h3>Evidence checks</h3><p>These short questions help you inspect the record. Mistakes do not block progress or affect the written assessment; you can retry them.</p></div>' + info.questions.map(q => '<article class="ld-question" data-ld-question="' + q.id + '"><strong>' + esc(q.prompt) + '</strong><div class="ld-question-options">' + q.options.map((option, i) => '<button type="button" data-ld-option="' + i + '">' + esc(option) + '</button>').join('') + '</div><p class="ld-question-feedback" aria-live="polite"></p></article>').join('') + '</section>';
     const answerFields = state.answerFormat === 'HELL'
       ? '<label class="ld-answer-field">Your Conclusion<textarea name="ld-conclusion" rows="3" maxlength="1200" placeholder="What do you think happened?">' + esc(answers.conclusion) + '</textarea></label><label class="ld-answer-field">Your Reasoning<textarea name="ld-reasoning" rows="4" maxlength="1800" placeholder="Which evidence supports your conclusion? What remains uncertain?">' + esc(answers.reasoning) + '</textarea></label>'
-      : '<label class="ld-answer-field">Your Reasoning<textarea name="ld-standard-reasoning" rows="5" maxlength="1800" placeholder="Explain what the strongest evidence establishes, and what remains uncertain.">' + esc(answers.reasoning) + '</textarea></label><section class="ld-conclusion-picker" data-ld-conclusion-choices' + (answers.reasoning.trim() ? '' : ' hidden') + '><h4>Choose the conclusion best supported by your reasoning</h4><p>Your choice and reasoning will be assessed together.</p><div class="ld-conclusion-options">' + info.conclusionOptions.map((option, i) => '<button type="button" data-ld-conclusion-option="' + i + '" aria-pressed="' + (answers.selectedConclusion === i) + '"' + (answers.selectedConclusion === i ? ' class="is-selected"' : '') + '>' + esc(option) + '</button>').join('') + '</div></section>';
+      : '<label class="ld-answer-field">Your Reasoning<textarea name="ld-standard-reasoning" rows="5" maxlength="1800" ' + (state.standardReasoningSubmitted ? 'readonly aria-readonly="true"' : '') + ' placeholder="Explain what the strongest evidence establishes, and what remains uncertain.">' + esc(answers.reasoning) + '</textarea></label><section class="ld-conclusion-picker" data-ld-conclusion-choices><h4>Conclusion choices · ' + info.conclusionOptions.length + ' options</h4><p>' + (state.standardReasoningSubmitted ? 'Now choose the conclusion that best matches your reasoning.' : 'Write your reasoning first. The choices are locked until you submit it.') + '</p><div class="ld-conclusion-options">' + (state.standardReasoningSubmitted ? info.conclusionOptions.map((option, i) => '<button type="button" data-ld-conclusion-option="' + i + '" aria-pressed="' + (answers.selectedConclusion === i) + '"' + (answers.selectedConclusion === i ? ' class="is-selected"' : '') + '>' + esc(option) + '</button>').join('') : info.conclusionOptions.map((option, i) => '<div class="ld-conclusion-locked" aria-label="Option ' + String.fromCharCode(65 + i) + ', locked"><span>' + String.fromCharCode(65 + i) + '</span><span>🔒 Locked until reasoning is submitted</span></div>').join('')) + '</div></section>';
     root.innerHTML = '<section class="ld-shell">' +
       '<div class="ld-toolbar"><button type="button" class="ld-back" data-ld-back>← All cases</button><span>CASE · ' + info.level + '</span><span>' + esc(state.trainingMode) + ' · ' + esc(state.answerFormat) + '</span></div>' +
       '<div class="ld-heading"><span class="ld-kicker">INVESTIGATION IN PROGRESS</span><h2>' + info.title + '</h2><p>' + info.subtitle + '</p><p class="ld-focus">' + info.focus + '</p></div>' +
@@ -100,7 +100,7 @@
       '<div class="ld-evidence-grid">' + evidence + '</div>' + questionMarkup +
       '<section class="ld-hints"><div><strong>Optional hints</strong><p>Use them in order. Hints do not reduce your academic score.</p></div><div class="ld-hint-actions">' + visibleHints + '</div></section>' +
       '<form class="ld-answer-form" data-ld-answer-form><div class="ld-answer-heading"><h3>Build your conclusion</h3><span>' + (state.answerFormat === 'HELL' ? 'Two-part response' : 'Reasoning first · then choose a conclusion') + '</span></div>' +
-      answerFields + '<button class="ld-submit" type="submit">Assess my conclusion →</button><p class="ld-form-note">You can review the feedback and try again. Earlier attempts are kept in this open investigation.</p></form>' +
+      answerFields + (state.answerFormat === 'STANDARD' && !state.standardReasoningSubmitted ? '<button class="ld-submit" type="button" data-ld-submit-reasoning>Submit reasoning →</button>' : '<button class="ld-submit" type="submit">' + (state.answerFormat === 'STANDARD' ? 'Assess my answer →' : 'Assess my conclusion →') + '</button>') + '<p class="ld-form-note">You can review the feedback and try again. Earlier attempts are kept in this open investigation.</p></form>' +
       '</section>';
   }
 
@@ -128,6 +128,11 @@
   function submit() {
     const response = readResponse();
     const combined = 'Conclusion: ' + response.conclusion + '\nReasoning: ' + response.reasoning;
+    if (state.answerFormat === 'STANDARD' && !state.standardReasoningSubmitted) {
+      const note = root.querySelector('.ld-form-note');
+      if (note) note.textContent = 'Submit your reasoning before choosing a conclusion.';
+      return;
+    }
     if (!response.conclusion.trim() || !response.reasoning.trim()) {
       const note = root.querySelector('.ld-form-note');
       if (note) note.textContent = state.answerFormat === 'HELL' ? 'Please complete both fields before submitting.' : 'Write your reasoning, then choose the conclusion that best matches it.';
@@ -171,6 +176,8 @@
       hintsUsed: [],
       attempts: [],
       selectedConclusion: null,
+      standardReasoning: '',
+      standardReasoningSubmitted: false,
       lastResponse: null
     };
     picker();
@@ -181,8 +188,8 @@
       if (!root || !root.contains(event.target) || event.target.name !== 'ld-standard-reasoning' || !state) return;
       const choices = root.querySelector('[data-ld-conclusion-choices]');
       if (!choices) return;
+      if (state.standardReasoningSubmitted) return;
       const hasReasoning = Boolean(event.target.value.trim());
-      choices.hidden = !hasReasoning;
       if (!hasReasoning) {
         state.selectedConclusion = null;
         choices.querySelectorAll('[data-ld-conclusion-option]').forEach(button => {
@@ -239,6 +246,23 @@
         }
         return;
       }
+      const submitReasoningButton = event.target.closest('[data-ld-submit-reasoning]');
+      if (submitReasoningButton && state.answerFormat === 'STANDARD' && !state.standardReasoningSubmitted) {
+        const field = root.querySelector('[name="ld-standard-reasoning"]');
+        const reasoning = field?.value.trim() || '';
+        const note = root.querySelector('.ld-form-note');
+        if (!reasoning) {
+          if (note) note.textContent = 'Write your reasoning before unlocking the conclusion choices.';
+          field?.focus();
+          return;
+        }
+        state.standardReasoning = field.value;
+        state.standardReasoningSubmitted = true;
+        state.selectedConclusion = null;
+        investigation();
+        root.querySelector('[data-ld-conclusion-choices]')?.scrollIntoView?.({block:'nearest',behavior:'smooth'});
+        return;
+      }
       const conclusionButton = event.target.closest('[data-ld-conclusion-option]');
       if (conclusionButton && state.answerFormat === 'STANDARD') {
         state.selectedConclusion = Number(conclusionButton.dataset.ldConclusionOption);
@@ -266,6 +290,9 @@
       }
       if (event.target.closest('[data-ld-retry]')) {
         state.stage = 'investigation';
+        state.standardReasoningSubmitted = false;
+        state.selectedConclusion = null;
+        state.standardReasoning = state.lastResponse?.reasoning || '';
         investigation();
       }
     });
