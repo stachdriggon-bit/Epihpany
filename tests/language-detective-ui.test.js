@@ -46,9 +46,9 @@ test('every registered investigation case has presentation metadata and three co
 });
 
 test('case selection is filtered by authored CEFR and never overrides evaluation level',()=>{
- assert.match(ui,/caseInfo\\[id\\]\\.cefr === state\\.cefr/);
+ assert.match(ui,/caseInfo\[id\]\.cefr === state\.cefr/);
  assert.match(ui,/cefr: 'A1'/);
- assert.doesNotMatch(ui,/context\\.cefr = state\\.cefr/);
+ assert.doesNotMatch(ui,/context\.cefr = state\.cefr/);
  assert.equal(makeContext('CASE-004').cefr,'A1');
 });
 
