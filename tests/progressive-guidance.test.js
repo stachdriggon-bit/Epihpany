@@ -59,7 +59,7 @@ test('the tour can be skipped, resumed, or completed and supports keyboard dismi
 
 test('guidance assets are included in the offline shell and cache version is refreshed', () => {
   const sw = read('service-worker.js');
-  assert.match(sw, /epiphany-shell-bold-translator-answer-balance-20261102-1/);
+  assert.match(sw, /epiphany-shell-language-detective-standard-options-20261102-1/);
   assert.match(sw, /'\.\/guidance\.js'/);
   assert.match(sw, /'\.\/guidance\.css'/);
 });
