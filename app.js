@@ -2031,7 +2031,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
           })
           .catch(error => {
             console.error('[EPIPHANY] CASEBOUND failed to load:', error);
-            host.innerHTML = '<div class="casebound-load-error" role="alert"><h2>CASEBOUND could not load</h2><p>Check your connection and try again.</p></div>';
+            host.innerHTML = '<div class="casebound-load-error" role="alert"><h2>CASEBOUND could not load</h2><p>Check your connection, then retry.</p><button type="button" class="btn btn-go" data-casebound-retry>Try again</button></div>';
           });
       }
     }
@@ -2041,6 +2041,15 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     const h = $('#' + name + '-title'); if (h) { h.classList.add('programmatic-view-focus'); h.addEventListener('keydown', () => h.classList.remove('programmatic-view-focus'), { once: true }); h.focus({preventScroll: true}); }
     document.dispatchEvent(new CustomEvent('epiphany:view-changed', { detail: { view: name } }));
   }
+
+  document.addEventListener('click', event => {
+    if (!event.target.closest('[data-casebound-retry]')) return;
+    const host = $('#casebound-content');
+    if (!host) return;
+    delete host.dataset.mounted;
+    host.innerHTML = '';
+    openView('casebound');
+  });
 
   /* ---------- unified, offline Arabic translation ---------- */
   const AR_TRANSLATION_WORDS = {
