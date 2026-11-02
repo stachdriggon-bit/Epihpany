@@ -277,8 +277,25 @@ test('main navigation tabs open without uncaught page errors', async t => {
         assert.equal(await caseboundRoot.locator('.ld-evidence').count(), 0,
           'evidence should not be exposed before the player starts the investigation');
         await caseboundRoot.locator('[data-ld-start-investigation]').click();
-        assert.equal(await caseboundRoot.locator('.ld-evidence').count(), 4,
-          'the selected case should render its evidence after Start Investigation');
+        assert.equal(await caseboundRoot.locator('.ld-evidence').count(), 0,
+          'evidence should remain undisclosed until each item is examined');
+        assert.equal(await caseboundRoot.locator('[data-ld-open-next]').count(), 1,
+          'the workspace should offer the next available evidence item');
+        assert.equal(await caseboundRoot.locator('[data-ld-conclusion-choices]').count(), 0,
+          'conclusion should remain unavailable while evidence is undiscovered');
+        await caseboundRoot.locator('[data-ld-notebook-open]').click();
+        assert.match(await caseboundRoot.locator('#ld-case-notebook').innerText(), /notebook is empty/i,
+          'the notebook should start empty');
+        await caseboundRoot.locator('[data-ld-notebook-close]').click();
+        for (let i = 1; i <= 4; i++) {
+          await caseboundRoot.locator('[data-ld-open-next]').click();
+          assert.equal(await caseboundRoot.locator('.ld-evidence').count(), i,
+            'only examined evidence should be visible in the workspace');
+          assert.equal(await caseboundRoot.locator('.ld-notebook-trigger span').innerText(), String(i),
+            'the notebook count should match discovered evidence');
+        }
+        assert.equal(await caseboundRoot.locator('[data-ld-open-next]').count(), 0,
+          'all evidence should be exhausted after the final discovery');
         await caseboundRoot.locator('[data-ld-conclusion-choices]').waitFor({state:'visible',timeout:5000});
         assert.equal(await caseboundRoot.locator('.ld-conclusion-locked').count(), 3,
           'Standard mode should show three locked option placeholders before reasoning is submitted');
