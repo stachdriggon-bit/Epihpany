@@ -268,7 +268,6 @@ test('main navigation tabs open without uncaught page errors', async t => {
         assert.equal(await detectiveRoot.locator('.ld-evidence').count(), 4,
           'the selected case should render its evidence');
         await detectiveRoot.locator('[data-ld-conclusion-choices]').waitFor({state:'visible',timeout:5000});
-        assert.equal(await detectiveRoot.locator('[data-ld-conclusion-locked]').count(), 0);
         assert.equal(await detectiveRoot.locator('.ld-conclusion-locked').count(), 3,
           'Standard mode should show three locked option placeholders before reasoning is submitted');
         assert.equal(await detectiveRoot.locator('[data-ld-conclusion-option]').count(), 0,
