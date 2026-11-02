@@ -9,6 +9,7 @@
   }
 
   const caseInfo = Object.fromEntries(Object.entries(fixtures.cases).map(([id, item]) => [id, item.presentation]));
+  const CEFR_ORDER = ['A1','A2','B1','B2','C1','C2'];
   const hints = [
     { id: 'DIRECTION', title: 'Direction', text: 'Start with what the records directly establish. Separate observations from assumptions.' },
     { id: 'CONNECTION', title: 'Connection', text: 'Compare the timeline and sources. Access, opportunity and a reported action are not automatically proof that one person acted.' },
@@ -36,7 +37,7 @@
 
   function settingsMarkup() {
     return '<div class="ld-settings">' +
-      '<label>English level<select data-ld-setting="cefr">' + ['A1','A2','B1','B2','C1','C2'].map(x => '<option value="' + x + '"' + (state.cefr === x ? ' selected' : '') + '>' + x + '</option>').join('') + '</select></label>' +
+
       '<label>Training mode<select data-ld-setting="trainingMode">' + [['GUIDED','Guided'],['STEADY','Steady'],['CHALLENGE','Challenge']].map(x => '<option value="' + x[0] + '"' + (state.trainingMode === x[0] ? ' selected' : '') + '>' + x[1] + '</option>').join('') + '</select></label>' +
       '<label>Answer format<select data-ld-setting="answerFormat">' + [['STANDARD','Standard'],['HELL','Hell Mode']].map(x => '<option value="' + x[0] + '"' + (state.answerFormat === x[0] ? ' selected' : '') + '>' + x[1] + '</option>').join('') + '</select></label>' +
       '</div>';
@@ -47,11 +48,11 @@
       '<div class="ld-toolbar"><button type="button" class="ld-back" data-ld-exit>← Think Lab</button><span>CASE FILES</span></div>' +
       '<div class="ld-heading"><span class="ld-kicker">THINK LAB · INVESTIGATION</span><h2>The Language Detective</h2><p>Read the evidence, test possible explanations and write a conclusion. The goal is careful reasoning—not guessing the hidden answer.</p></div>' +
       settingsMarkup() +
-      '<div class="ld-case-grid">' + (Object.keys(caseInfo).filter(id => caseInfo[id].cefr === state.cefr).length ? Object.keys(caseInfo).filter(id => caseInfo[id].cefr === state.cefr).map(id => {
+      '<div class="ld-case-grid">' + Object.keys(caseInfo).sort((a, b) => CEFR_ORDER.indexOf(caseInfo[a].cefr) - CEFR_ORDER.indexOf(caseInfo[b].cefr)).map(id => {
         const item = caseInfo[id];
         return '<button type="button" class="ld-case-card" data-ld-case="' + id + '">' +
           '<span class="ld-case-meta">' + item.category + ' · ' + item.level + '</span><strong>' + item.title + '</strong><span>' + item.subtitle + '</span><em>Open investigation →</em></button>';
-      }).join('') : '<p class="ld-empty">No case files are available at this level yet.</p>') + '</div>' +
+      }).join('') + '</div>' +
       '<p class="ld-note">Guided, Steady and Challenge change the level of support. Standard and Hell Mode change how you submit your conclusion; neither mode changes the evidence or rewards unsupported certainty.</p>' +
       '</section>';
   }
@@ -165,7 +166,6 @@
     state = {
       stage: 'picker',
       caseId: null,
-      cefr: 'A1',
       trainingMode: 'GUIDED',
       answerFormat: 'STANDARD',
       hintsUsed: [],
