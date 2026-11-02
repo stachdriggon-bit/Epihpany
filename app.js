@@ -2017,6 +2017,24 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     if (name === 'chronicle') renderChronicle();
     if (name === 'resonance') Promise.all([window.EPIPHANY_LAZY_LOAD('resonance'), window.EPIPHANY_LAZY_STYLE('resonance')]).then(() => window.EPIPHANY_RESONANCE?.open()).catch(() => toast('The Resonance could not load. Check your connection and try again.'));
     if (name === 'thinklab') window.EPIPHANY_LAZY_LOAD('thinklab').catch(() => toast('Think Lab could not load. Connect to the internet and try again.'));
+    if (name === 'casebound') {
+      const host = $('#casebound-content');
+      if (host && host.dataset.mounted !== 'true') {
+        host.innerHTML = '<div class="casebound-loading" role="status">Preparing CASEBOUND…</div>';
+        Promise.all([window.EPIPHANY_LAZY_LOAD('languageDetective'), window.EPIPHANY_LAZY_STYLE('languageDetective')])
+          .then(() => {
+            if (!host.isConnected || !$('#casebound-view')?.classList.contains('is-active') || host.dataset.mounted === 'true') return;
+            const bridge = window.EPIPHANY_LANGUAGE_DETECTIVE;
+            if (!bridge || bridge.available !== true || typeof bridge.mount !== 'function') throw new Error('CASEBOUND interface is unavailable.');
+            bridge.mount(host, { onExit: () => openView('home') });
+            host.dataset.mounted = 'true';
+          })
+          .catch(error => {
+            console.error('[EPIPHANY] CASEBOUND failed to load:', error);
+            host.innerHTML = '<div class="casebound-load-error" role="alert"><h2>CASEBOUND could not load</h2><p>Check your connection and try again.</p></div>';
+          });
+      }
+    }
     if (name === 'lifeskills') window.EPIPHANY_LAZY_STYLE('lifeskills').then(() => window.EPIPHANY_LAZY_LOAD('lifeskills')).catch(() => toast('Life Skills could not load. Connect to the internet and try again.'));
     if (name === 'progress' || name === 'profile') { renderWeaknessPanel(); renderLearningInsights(); }
     window.scrollTo(0, 0);
