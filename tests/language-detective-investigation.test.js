@@ -273,3 +273,34 @@ test('notebook sections group discoveries without losing the flat-entry compatib
   assert.ok(sections.find(section=>section.id==='EVIDENCE').entries.some(entry=>entry.id==='E1'));
   assert.ok(model.getNotebookEntries(snapshot,session).some(entry=>entry.type==='INTERVIEW'));
 });
+
+test('CASE-005 reaches an accepted assessment in Standard and Hell without optional interviews',()=>{
+  const {cases,makeContext}=require('../language-detective-assessment-fixtures');
+  const engine=require('../language-detective-assessment-engine');
+  const snapshot=cases['CASE-005'];
+  let session=model.startSession(model.createSession(snapshot).session).session;
+  for(const evidenceId of ['E01','E02','E03','E04']){
+    const discovered=model.discoverEvidence(snapshot,session,evidenceId);
+    assert.equal(discovered.ok,true,evidenceId);
+    session=discovered.session;
+  }
+  assert.equal(model.isConclusionReady(snapshot,session).ready,true);
+  assert.equal(session.interviewResponses.length,0);
+  const evaluationSnapshot=model.buildEvaluationSnapshot(snapshot,session);
+  assert.deepEqual(evaluationSnapshot.evidence.map(item=>item.evidenceId),['E01','E02','E03','E04']);
+  assert.ok(evaluationSnapshot.concepts.some(item=>item.conceptId==='BAG_BELONGS_LINA'));
+  assert.ok(evaluationSnapshot.concepts.some(item=>item.conceptId==='LIBRARY_LINK'));
+  assert.ok(evaluationSnapshot.concepts.some(item=>item.conceptId==='OWNERSHIP_NOT_CERTAIN'));
+  assert.ok(!evaluationSnapshot.concepts.some(item=>item.conceptId.startsWith('INFO-')));
+  const response='Conclusion: The green canvas bag most likely belongs to Lina.\\nReasoning: The inventory lists a paperback book, a blue notebook and a red pencil case. Lina’s library record shows she borrowed the same paperback that morning. This is strong evidence, but it does not prove ownership with absolute certainty.';
+  for(const format of ['STANDARD','HELL']){
+    const result=engine.evaluate({
+      context:{...makeContext('CASE-005','GUIDED',format),responseId:'casebound-full-path-'+format},
+      caseSnapshot:evaluationSnapshot,
+      response,
+      hintsUsed:[]
+    });
+    assert.notEqual(result.status,'CONFIGURATION_ERROR',format);
+    assert.equal(result.evaluation.primaryOutcome,'ACCEPTED',format);
+  }
+});
