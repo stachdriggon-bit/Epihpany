@@ -40,7 +40,7 @@ The initial statements for Lina, Omar, and Nora are visible from the beginning. 
 ## Assessment contract
 
 - Accept a clear conclusion that Lina is the most likely or best-supported owner.
-- Reward the inventory-to-interview match and the independent library link.
+- Reward the link between the bag inventory and the independent library borrowing record.
 - Reward calibrated language: the evidence supports the conclusion but does not prove ownership with absolute certainty.
 - Do not accept certainty claims that exceed the evidence.
 - Do not require the optional kiosk receipt.
