@@ -117,27 +117,54 @@
   function investigation() {
     const info = caseInfo[state.caseId];
     const snapshot = fixtures.cases[state.caseId];
+    const evidenceItems = Array.isArray(snapshot.evidence) ? snapshot.evidence : [];
+    const discovered = new Set(state.discoveredEvidence || []);
+    const nextEvidence = evidenceItems.find(item => !discovered.has(item.evidenceId));
+    const openedEvidence = evidenceItems.filter(item => discovered.has(item.evidenceId));
+    const progress = evidenceItems.length ? Math.round(openedEvidence.length / evidenceItems.length * 100) : 100;
     const answers = readResponse();
-    const evidence = snapshot.evidence.map((item, i) => '<article class="ld-evidence"><span>' + esc(item.role) + ' · E' + String(i + 1).padStart(2, '0') + '</span><p>' + esc(item.summary) + '</p>' + (item.limitations.length ? '<small>Limit: ' + esc(item.limitations.join(' ')) + '</small>' : '') + '</article>').join('');
+    const evidenceCard = (item, i) => '<article class="ld-evidence" data-evidence-id="' + esc(item.evidenceId) + '"><span>' + esc(item.role) + ' · ' + esc(item.evidenceId || ('E' + String(i + 1).padStart(2, '0'))) + '</span><p>' + esc(item.summary) + '</p>' + (item.limitations?.length ? '<small>Limit: ' + esc(item.limitations.join(' ')) + '</small>' : '') + '</article>';
+    const notebook = openedEvidence.length
+      ? openedEvidence.map((item, i) => evidenceCard(item, i)).join('')
+      : '<p class="ld-notebook-empty">Your notebook is empty. Open evidence as you investigate; discovered items will appear here.</p>';
+    const characters = Array.isArray(snapshot.characters) && snapshot.characters.length
+      ? '<section class="ld-workspace-section"><div class="ld-section-heading"><div><span class="ld-kicker">PEOPLE</span><h3>People in this case</h3></div></div><div class="ld-character-grid">' + snapshot.characters.map(person => '<article class="ld-character-card"><strong>' + esc(person.name || person.label || 'Person') + '</strong>' + (person.role ? '<span>' + esc(person.role) + '</span>' : '') + (person.statement ? '<p>' + esc(person.statement) + '</p>' : '') + '</article>').join('') + '</div></section>' : '';
+    const statements = Array.isArray(snapshot.statements) && snapshot.statements.length
+      ? '<section class="ld-workspace-section"><div class="ld-section-heading"><div><span class="ld-kicker">INITIAL ACCOUNTS</span><h3>What people say</h3></div></div><div class="ld-statement-list">' + snapshot.statements.map(statement => '<article class="ld-statement-card"><strong>' + esc(statement.name || statement.speaker || 'Statement') + '</strong><p>' + esc(statement.text || statement.statement || '') + '</p></article>').join('') + '</div></section>' : '';
+    const interviews = Array.isArray(snapshot.interviews) && snapshot.interviews.length
+      ? '<section class="ld-workspace-section"><div class="ld-section-heading"><div><span class="ld-kicker">FOLLOW-UP</span><h3>Interviews</h3></div></div><div class="ld-interview-list">' + snapshot.interviews.map(interview => '<article class="ld-interview-card"><strong>' + esc(interview.name || interview.character || 'Interview') + '</strong>' + (Array.isArray(interview.questions) ? interview.questions.map(question => '<p>' + esc(question.prompt || question.question || '') + '</p>').join('') : '') + '</article>').join('') + '</div></section>' : '';
+    const witnesses = Array.isArray(snapshot.witnesses) && snapshot.witnesses.length
+      ? '<section class="ld-workspace-section"><div class="ld-section-heading"><div><span class="ld-kicker">WITNESS LEAD</span><h3>Choose a witness</h3></div></div><div class="ld-witness-grid">' + snapshot.witnesses.map(witness => '<article class="ld-witness-card"><strong>' + esc(witness.name || witness.label || 'Witness') + '</strong>' + (witness.description ? '<p>' + esc(witness.description) + '</p>' : '') + '</article>').join('') + '</div></section>' : '';
+    const checksAvailable = state.trainingMode === 'GUIDED' && Array.isArray(info.questions) && info.questions.length;
+    const questionMarkup = checksAvailable && state.showEvidenceChecks
+      ? '<section class="ld-checkpoints"><div><h3>Evidence checks</h3><p>Optional practice to help you inspect the record. These checks do not block progress or affect the written assessment.</p></div>' + info.questions.map(q => '<article class="ld-question" data-ld-question="' + q.id + '"><strong>' + esc(q.prompt) + '</strong><div class="ld-question-options">' + q.options.map((option, i) => '<button type="button" data-ld-option="' + i + '">' + esc(option) + '</button>').join('') + '</div><p class="ld-question-feedback" aria-live="polite"></p></article>').join('') + '</section>' : '';
     const visibleHints = hints.map((hint, i) => {
       const used = state.hintsUsed.includes(hint.id);
       const available = i === 0 || state.hintsUsed.includes(hints[i - 1].id);
       return '<button type="button" class="ld-hint-button" data-ld-hint="' + hint.id + '"' + (used || !available ? ' disabled' : '') + '>' + (used ? '✓ ' : '') + hint.title + '</button>' +
         (used ? '<p class="ld-hint-copy">' + hint.text + '</p>' : '');
     }).join('');
-    const questionMarkup = '<section class="ld-checkpoints"><div><h3>Evidence checks</h3><p>These short questions help you inspect the record. Mistakes do not block progress or affect the written assessment; you can retry them.</p></div>' + info.questions.map(q => '<article class="ld-question" data-ld-question="' + q.id + '"><strong>' + esc(q.prompt) + '</strong><div class="ld-question-options">' + q.options.map((option, i) => '<button type="button" data-ld-option="' + i + '">' + esc(option) + '</button>').join('') + '</div><p class="ld-question-feedback" aria-live="polite"></p></article>').join('') + '</section>';
+    const canConclude = !nextEvidence;
     const answerFields = state.answerFormat === 'HELL'
       ? '<label class="ld-answer-field">Your Conclusion<textarea name="ld-conclusion" rows="3" maxlength="1200" placeholder="What do you think happened?">' + esc(answers.conclusion) + '</textarea></label><label class="ld-answer-field">Your Reasoning<textarea name="ld-reasoning" rows="4" maxlength="1800" placeholder="Which evidence supports your conclusion? What remains uncertain?">' + esc(answers.reasoning) + '</textarea></label>'
-      : '<label class="ld-answer-field">Your Reasoning<textarea name="ld-standard-reasoning" rows="5" maxlength="1800" ' + (state.standardReasoningSubmitted ? 'readonly aria-readonly="true"' : '') + ' placeholder="Explain what the strongest evidence establishes, and what remains uncertain.">' + esc(answers.reasoning) + '</textarea></label><section class="ld-conclusion-picker" data-ld-conclusion-choices><h4>Conclusion choices · ' + info.conclusionOptions.length + ' options</h4><p>' + (state.standardReasoningSubmitted ? 'Now choose the conclusion that best matches your reasoning.' : 'Write your reasoning first. The choices are locked until you submit it.') + '</p><div class="ld-conclusion-options">' + (state.standardReasoningSubmitted ? info.conclusionOptions.map((option, i) => '<button type="button" data-ld-conclusion-option="' + i + '" aria-pressed="' + (answers.selectedConclusion === i) + '"' + (answers.selectedConclusion === i ? ' class="is-selected"' : '') + '>' + esc(option) + '</button>').join('') : info.conclusionOptions.map((option, i) => '<div class="ld-conclusion-locked" aria-label="Option ' + String.fromCharCode(65 + i) + ', locked"><span>' + String.fromCharCode(65 + i) + '</span><span>🔒 Locked until reasoning is submitted</span></div>').join('')) + '</div></section>';
-    root.innerHTML = '<section class="ld-shell">' +
-      '<div class="ld-toolbar"><button type="button" class="ld-back" data-ld-back>← All cases</button><span>CASE · ' + info.level + '</span><span>' + esc(state.trainingMode) + ' · ' + esc(state.answerFormat) + '</span></div>' +
-      '<div class="ld-heading"><span class="ld-kicker">INVESTIGATION IN PROGRESS</span><h2>' + info.title + '</h2><p>' + info.subtitle + '</p><p class="ld-focus">' + info.focus + '</p></div>' +
-      '<section class="ld-timeline"><h3>Case record</h3><ol>' + info.details.map(line => '<li>' + esc(line) + '</li>').join('') + '</ol></section>' +
-      '<div class="ld-evidence-grid">' + evidence + '</div>' + questionMarkup +
-      '<section class="ld-hints"><div><strong>Optional hints</strong><p>Use them in order. Hints do not reduce your academic score.</p></div><div class="ld-hint-actions">' + visibleHints + '</div></section>' +
-      '<form class="ld-answer-form" data-ld-answer-form><div class="ld-answer-heading"><h3>Build your conclusion</h3><span>' + (state.answerFormat === 'HELL' ? 'Two-part response' : 'Reasoning first · then choose a conclusion') + '</span></div>' +
-      answerFields + (state.answerFormat === 'STANDARD' && !state.standardReasoningSubmitted ? '<button class="ld-submit" type="button" data-ld-submit-reasoning>Submit reasoning →</button>' : '<button class="ld-submit" type="submit">' + (state.answerFormat === 'STANDARD' ? 'Assess my answer →' : 'Assess my conclusion →') + '</button>') + '<p class="ld-form-note">You can review the feedback and try again. Earlier attempts are kept in this open investigation.</p></form>' +
-      '</section>';
+      : '<label class="ld-answer-field">Your Reasoning<textarea name="ld-standard-reasoning" rows="5" maxlength="1800" ' + (state.standardReasoningSubmitted ? 'readonly aria-readonly="true"' : '') + ' placeholder="Explain what the evidence establishes, and what remains uncertain.">' + esc(answers.reasoning) + '</textarea></label><section class="ld-conclusion-picker" data-ld-conclusion-choices><h4>Conclusion choices · ' + info.conclusionOptions.length + ' options</h4><p>' + (state.standardReasoningSubmitted ? 'Now choose the conclusion that best matches your reasoning.' : 'Write your reasoning first. The choices are locked until you submit it.') + '</p><div class="ld-conclusion-options">' + (state.standardReasoningSubmitted ? info.conclusionOptions.map((option, i) => '<button type="button" data-ld-conclusion-option="' + i + '" aria-pressed="' + (answers.selectedConclusion === i) + '"' + (answers.selectedConclusion === i ? ' class="is-selected"' : '') + '>' + esc(option) + '</button>').join('') : info.conclusionOptions.map((option, i) => '<div class="ld-conclusion-locked" aria-label="Option ' + String.fromCharCode(65 + i) + ', locked"><span>' + String.fromCharCode(65 + i) + '</span><span>Locked until reasoning is submitted</span></div>').join('')) + '</div></section>';
+    const answerPanel = canConclude
+      ? '<form class="ld-answer-form" data-ld-answer-form><div class="ld-answer-heading"><h3>Build your conclusion</h3><span>' + (state.answerFormat === 'HELL' ? 'Two-part response' : 'Reasoning first · then choose a conclusion') + '</span></div>' + answerFields + (state.answerFormat === 'STANDARD' && !state.standardReasoningSubmitted ? '<button class="ld-submit" type="button" data-ld-submit-reasoning>Submit reasoning →</button>' : '<button class="ld-submit" type="submit">' + (state.answerFormat === 'STANDARD' ? 'Assess my answer →' : 'Assess my conclusion →') + '</button>') + '<p class="ld-form-note">You can review the feedback and try again. Earlier attempts are kept in this open investigation.</p></form>'
+      : '<section class="ld-unlock-gate"><strong>Keep investigating before you conclude.</strong><p>There is more case material to discover. Open the next item when you are ready; your conclusion will unlock when all available evidence has been reviewed.</p></section>';
+    root.innerHTML = '<section class="ld-shell ld-investigation-workspace">' +
+      '<div class="ld-toolbar"><button type="button" class="ld-back" data-ld-back>← All cases</button><span>CASE · ' + esc(info.cefr) + '</span><span>' + esc(state.trainingMode) + ' · ' + esc(state.answerFormat) + '</span></div>' +
+      '<header class="ld-workspace-header"><div><span class="ld-kicker">INVESTIGATION WORKSPACE</span><h2>' + esc(info.title) + '</h2><p>' + esc(info.subtitle) + '</p></div><button type="button" class="ld-notebook-trigger" data-ld-notebook-open aria-controls="ld-case-notebook" aria-expanded="false">Case notebook <span>' + openedEvidence.length + '</span></button></header>' +
+      '<section class="ld-progress-panel" aria-label="Investigation progress"><div class="ld-progress-copy"><strong>Evidence reviewed</strong><span>' + openedEvidence.length + ' of ' + evidenceItems.length + '</span></div><div class="ld-progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="' + evidenceItems.length + '" aria-valuenow="' + openedEvidence.length + '" aria-label="Evidence reviewed"><i style="width:' + progress + '%"></i></div></section>' +
+      statements + characters + interviews + witnesses +
+      '<section class="ld-workspace-section ld-discovery-section"><div class="ld-section-heading"><div><span class="ld-kicker">DISCOVERY</span><h3>Evidence</h3><p>Open each item to add it to your case notebook.</p></div></div>' +
+      (nextEvidence ? '<article class="ld-next-evidence"><span class="ld-evidence-index">NEXT · ' + esc(nextEvidence.role) + '</span><h4>New evidence is available</h4><p>Its contents will be revealed when you choose to examine it.</p><button type="button" class="ld-submit" data-ld-open-next>Examine evidence →</button></article>' : '<p class="ld-discovery-complete">All available evidence has been reviewed. You can now prepare your conclusion.</p>') +
+      '<div class="ld-evidence-grid">' + openedEvidence.map((item, i) => evidenceCard(item, i)).join('') + '</div></section>' +
+      (checksAvailable ? '<section class="ld-check-toggle"><div><strong>Guided evidence checks</strong><p>Optional practice. You can skip this and continue the investigation.</p></div><button type="button" class="ld-back" data-ld-toggle-checks aria-expanded="' + String(Boolean(state.showEvidenceChecks)) + '">' + (state.showEvidenceChecks ? 'Hide checks' : 'Open checks') + '</button></section>' : '') +
+      questionMarkup +
+      (canConclude ? '<section class="ld-hints"><div><strong>Optional hints</strong><p>Use them in order. Hints do not reduce your academic score.</p></div><div class="ld-hint-actions">' + visibleHints + '</div></section>' + answerPanel : '') +
+      '</section>' +
+      '<button type="button" class="ld-notebook-backdrop" data-ld-notebook-close aria-label="Close case notebook" hidden></button>' +
+      '<aside class="ld-notebook-drawer" id="ld-case-notebook" role="dialog" aria-modal="true" aria-labelledby="ld-notebook-title" aria-hidden="true" hidden><div class="ld-notebook-header"><div><span class="ld-kicker">YOUR DISCOVERIES</span><h2 id="ld-notebook-title">Case notebook</h2><p>' + openedEvidence.length + ' discovered item' + (openedEvidence.length === 1 ? '' : 's') + '</p></div><button type="button" class="ld-notebook-close" data-ld-notebook-close aria-label="Close case notebook">×</button></div><div class="ld-notebook-content">' + notebook + '</div></aside>';
   }
 
   function resultView(result) {
@@ -209,6 +236,8 @@
       trainingMode: 'GUIDED',
       answerFormat: 'STANDARD',
       hintsUsed: [],
+      discoveredEvidence: [],
+      showEvidenceChecks: false,
       attempts: [],
       selectedConclusion: null,
       standardReasoning: '',
@@ -260,12 +289,48 @@
         state.caseId = caseButton.dataset.ldCase;
         state.stage = 'case-intro';
         state.hintsUsed = [];
+        state.discoveredEvidence = [];
+        state.showEvidenceChecks = false;
         state.attempts = [];
         state.selectedConclusion = null;
         state.lastResponse = null;
         state.standardReasoning = '';
         state.standardReasoningSubmitted = false;
         caseIntroduction();
+        return;
+      }
+      if (event.target.closest('[data-ld-open-next]')) {
+        const snapshot = fixtures.cases[state.caseId];
+        const next = (snapshot.evidence || []).find(item => !(state.discoveredEvidence || []).includes(item.evidenceId));
+        if (next) state.discoveredEvidence.push(next.evidenceId);
+        investigation();
+        return;
+      }
+      if (event.target.closest('[data-ld-toggle-checks]')) {
+        state.showEvidenceChecks = !state.showEvidenceChecks;
+        investigation();
+        return;
+      }
+      if (event.target.closest('[data-ld-notebook-open]')) {
+        const drawer = root.querySelector('#ld-case-notebook');
+        const backdrop = root.querySelector('[data-ld-notebook-close].ld-notebook-backdrop, .ld-notebook-backdrop');
+        if (drawer && backdrop) {
+          drawer.hidden = false; backdrop.hidden = false;
+          drawer.setAttribute('aria-hidden', 'false');
+          root.querySelector('[data-ld-notebook-open]')?.setAttribute('aria-expanded', 'true');
+          drawer.querySelector('[data-ld-notebook-close]')?.focus();
+        }
+        return;
+      }
+      if (event.target.closest('[data-ld-notebook-close]')) {
+        const drawer = root.querySelector('#ld-case-notebook');
+        const backdrop = root.querySelector('.ld-notebook-backdrop');
+        if (drawer && backdrop) {
+          drawer.hidden = true; backdrop.hidden = true;
+          drawer.setAttribute('aria-hidden', 'true');
+          root.querySelector('[data-ld-notebook-open]')?.setAttribute('aria-expanded', 'false');
+          root.querySelector('[data-ld-notebook-open]')?.focus();
+        }
         return;
       }
       if (event.target.closest('[data-ld-start-investigation]')) {
