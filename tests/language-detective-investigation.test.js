@@ -180,3 +180,32 @@ test('progress reports independent discoveries without imposing a fixed stage co
   assert.equal(progress.witnessSelected,false);
   assert.equal(progress.activityCount,2);
 });
+
+
+test('character dossier exposes only that character’s revealed statements and interview state',()=>{
+  const snapshot=sampleCase();
+  let session=model.startSession(model.createSession(snapshot).session).session;
+  const lina=model.getCharacterDossier(snapshot,session,'LINA');
+  assert.ok(lina);
+  assert.equal(lina.character.characterId,'LINA');
+  assert.ok(lina.statements.every(item=>(item.characterId||item.speakerId)==='LINA'));
+  assert.ok(lina.interview);
+  assert.equal(lina.interview.availableQuestions.length,1);
+  assert.equal(lina.interview.availableQuestions[0].questionId,'Q-TIME');
+  const answer=model.askInterview(snapshot,session,'LINA','Q-TIME');
+  const updated=model.getCharacterDossier(snapshot,answer.session,'LINA');
+  assert.equal(updated.interview.answers.length,1);
+  assert.equal(updated.interview.availableQuestions.some(item=>item.questionId==='Q-TIME'),false);
+  assert.equal(model.getCharacterDossier(snapshot,session,'UNKNOWN'),null);
+});
+
+test('notebook sections group discoveries without losing the flat-entry compatibility API',()=>{
+  const snapshot=sampleCase();
+  let session=model.startSession(model.createSession(snapshot).session).session;
+  session=model.discoverEvidence(snapshot,session,'E1').session;
+  session=model.askInterview(snapshot,session,'LINA','Q-TIME').session;
+  const sections=model.getNotebookSections(snapshot,session);
+  assert.deepEqual(sections.map(section=>section.id),['EVIDENCE','STATEMENTS','INTERVIEWS']);
+  assert.ok(sections.find(section=>section.id==='EVIDENCE').entries.some(entry=>entry.id==='E1'));
+  assert.ok(model.getNotebookEntries(snapshot,session).some(entry=>entry.type==='INTERVIEW'));
+});

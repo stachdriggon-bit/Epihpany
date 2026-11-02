@@ -191,3 +191,16 @@
 .ld-notebook-entry{padding:13px;border:1px solid var(--line,#e4e7ef);border-radius:12px;background:var(--surface,#fff)}
 .ld-notebook-entry strong{display:block;color:var(--text,#25283b)}
 .ld-notebook-entry p{margin:7px 0 0;color:var(--text,#25283b);font-size:.88rem;line-height:1.55;white-space:normal}
+
+
+/* CASEBOUND — selectable character files and structured notebook */
+.ld-character-card{display:grid;gap:5px;width:100%;text-align:left;font:inherit;cursor:pointer}
+.ld-character-card small{margin-top:7px;color:var(--accent,#7059d9);font-size:.78rem;font-weight:800}
+.ld-character-card.is-selected{border-color:var(--accent,#7059d9);background:color-mix(in srgb,var(--accent,#7059d9) 7%,var(--surface,#fff));box-shadow:inset 0 0 0 1px var(--accent,#7059d9)}
+.ld-notebook-section{display:grid;gap:8px;padding-bottom:12px;border-bottom:1px solid var(--line,#e4e7ef)}
+.ld-notebook-section:last-child{border-bottom:0}
+.ld-notebook-section h3{margin:0;font-size:.96rem}
+.ld-notebook-section>p{margin:0;color:var(--muted,#687087);font-size:.78rem;line-height:1.45}
+.ld-notebook-section .ld-notebook-entry{padding:11px;border:1px solid var(--line,#e4e7ef);border-radius:11px;background:var(--soft,#f8f8fc)}
+.ld-notebook-entry strong{font-size:.84rem}
+.ld-notebook-entry p{margin:5px 0 0;color:var(--text,#25283b);font-size:.84rem;line-height:1.55}

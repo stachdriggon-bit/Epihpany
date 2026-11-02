@@ -3,7 +3,7 @@
 **Runtime ID:** `CASE-005`  
 **CEFR:** A1  
 **Category:** Everyday mystery  
-**Status:** Implemented; verification pending
+**Status:** In progress — character selection and notebook UX are being rebuilt; case content and full-path verification remain pending
 
 ## Learner-facing task
 
@@ -54,7 +54,10 @@ The initial statements for Lina, Omar, and Nora are visible from the beginning. 
 - [x] Multiple independent sources support the central inference.
 - [x] No single unique personal mark determines ownership.
 - [x] Optional evidence is not required for conclusion readiness.
-- [x] One interview question is available for Lina.
+- [x] One interview question is currently available for Lina.
+- [ ] Character-by-character statement review and interview navigation are verified in the live UI.
+- [ ] Interview content for Omar and Nora is designed and approved; do not infer new testimony from their existing statements.
 - [x] Discovered interview information is retained in the notebook.
 - [x] Path-aware assessment excludes interview-dependent concepts until the answer is revealed.
 - [ ] Full repository test workflow passes.
+- [ ] Standard and Hell conclusion flows are verified end-to-end after the investigation path unlocks.
