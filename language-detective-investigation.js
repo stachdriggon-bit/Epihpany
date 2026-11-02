@@ -182,6 +182,41 @@
     return {ok:true,session:next,witness:clone(witness)};
   }
 
+  function getCharacterDossier(snapshot, session, characterId) {
+    const character = list(snapshot.characters).find(item => idOf(item,'characterId','id') === characterId);
+    if (!character) return null;
+    const statements = list(snapshot.statements).filter(statement =>
+      (statement.characterId || statement.speakerId) === characterId &&
+      list(session.revealedStatementIds).includes(idOf(statement,'statementId','id'))
+    ).map(clone);
+    const interview = list(snapshot.interviews).find(item => (item.characterId || item.character) === characterId);
+    const available = getAvailableInterviews(snapshot,session).find(item => item.characterId === characterId);
+    const response = interviewResponse(session,characterId);
+    return {
+      character:clone(character),
+      statements,
+      interview: interview ? {
+        interviewId:interview.interviewId || characterId,
+        availableQuestions:list(available?.questions).map(question => ({
+          questionId:question.questionId || question.id,
+          prompt:question.prompt
+        })),
+        answers:list(response?.answers).map(clone),
+        maxQuestionsPerAttempt:Number.isInteger(interview.maxQuestionsPerAttempt) ? interview.maxQuestionsPerAttempt : 1
+      } : null
+    };
+  }
+
+  function getNotebookSections(snapshot, session) {
+    const entries = getNotebookEntries(snapshot,session);
+    return [
+      {id:'EVIDENCE',title:'Evidence',description:'Records and objects you examined.',entries:entries.filter(item=>item.type==='EVIDENCE')},
+      {id:'STATEMENTS',title:'Statements',description:'Initial accounts from people in the case.',entries:entries.filter(item=>item.type==='STATEMENT')},
+      {id:'INTERVIEWS',title:'Interviews',description:'Answers revealed when you asked a question.',entries:entries.filter(item=>item.type==='INTERVIEW')},
+      {id:'WITNESSES',title:'Witnesses',description:'Witness accounts you chose to hear.',entries:entries.filter(item=>item.type==='WITNESS')}
+    ].filter(section=>section.entries.length);
+  }
+
   function getNotebookEntries(snapshot, session) {
     const entries = [];
     for (const statement of list(snapshot.statements)) {
@@ -250,7 +285,7 @@
     return {...clone(snapshot),evidence:clone(evidence),concepts,criteria};
   }
 
-  const api = {validateInvestigation,createSession,startSession,getAvailableEvidence,discoverEvidence,getAvailableInterviews,askInterview,selectWitness,getNotebookEntries,getProgress,isConclusionReady,buildEvaluationSnapshot};
+  const api = {validateInvestigation,createSession,startSession,getAvailableEvidence,discoverEvidence,getAvailableInterviews,askInterview,selectWitness,getCharacterDossier,getNotebookEntries,getNotebookSections,getProgress,isConclusionReady,buildEvaluationSnapshot};
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   else if (typeof window !== 'undefined') window.EPIPHANY_CASEBOUND_INVESTIGATION = api;
 })();
