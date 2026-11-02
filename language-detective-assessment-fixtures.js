@@ -117,8 +117,7 @@ const cases = {
       {interviewId:'INT-OMAR',characterId:'OMAR',name:'Omar',questions:[
         {questionId:'Q-OMAR-VIEW',prompt:'Could you see the timetable bench from your seat?',answer:'Not clearly. The people and bags near the bench were difficult to see.',informationId:'INFO-OMAR-VIEW',evidenceIds:[]},
         {questionId:'Q-OMAR-LEFT',prompt:'Did you leave your seat before 8:32?',answer:'Yes. I went to the station noticeboard, but I did not go to the timetable bench.',informationId:'INFO-OMAR-LEFT',evidenceIds:[]},
-        {questionId:'Q-OMAR-BENCH',prompt:'Did you see anyone near the timetable bench?',answer:'I saw someone standing there, but I could not see who it was.',informationId:'INFO-OMAR-BENCH',evidenceIds:[]}
-      ]},
+        {questionId:'Q-OMAR-BENCH',prompt:'Did you see anyone near the timetable bench?',answer:'I saw someone standing there, but I could not see who it was.',informationId:'INFO-OMAR-BENCH',evidenceIds:[]}      ]},
       {interviewId:'INT-NORA',characterId:'NORA',name:'Nora',questions:[
         {questionId:'Q-NORA-AFTER',prompt:'What did you do after waiting near the door?',answer:'I went to the ticket counter to ask about my train.',informationId:'INFO-NORA-AFTER',evidenceIds:[]},
         {questionId:'Q-NORA-VIEW',prompt:'Could you see the timetable bench from the door?',answer:'I could see part of the bench, but I could not see everything near it.',informationId:'INFO-NORA-VIEW',evidenceIds:[]},
@@ -128,8 +127,8 @@ const cases = {
     concepts:[
       {conceptId:'BAG_BELONGS_LINA',predicate:'Lina is the best-supported owner of the green bag',acceptedVariants:['the bag most likely belongs to Lina','Lina is the best-supported owner','the green bag is probably Lina’s'],patterns:[{patternId:'owner1',source:'bag.{0,30}(belongs to Lina|is Lina.s)'},{patternId:'owner2',source:'Lina.{0,35}(owner|bag belongs|most likely owns|most likely owner)'},{patternId:'owner3',source:'(probably|most likely).{0,20}Lina.{0,20}(bag|owner)'}],evidenceRefs:['E01','E02','E03','E04'],criterionIds:['C1'],epistemicStatus:'INFERENCE',materiality:'CENTRAL'},
       {conceptId:'LIBRARY_LINK',predicate:'Lina borrowed the paperback found in the bag',acceptedVariants:['Lina borrowed the same book that morning','the library record links Lina to the paperback'],patterns:[{patternId:'library1',source:'Lina.{0,75}(borrowed|checked out).{0,30}(same )?(paperback|book)'},{patternId:'library2',source:'library record.{0,35}Lina.{0,35}(book|paperback)'},{patternId:'library3',source:'(paperback|book).{0,35}(borrowed|checked out).{0,25}Lina'}],evidenceRefs:['E04'],criterionIds:['C2'],epistemicStatus:'ESTABLISHED_FACT',materiality:'CENTRAL'},
-      {conceptId:'OWNERSHIP_NOT_CERTAIN',predicate:'the records support but do not absolutely prove ownership',acceptedVariants:['ownership is not proved with absolute certainty','the evidence does not prove ownership for certain','it is a strong match, but not absolute proof'],patterns:[{patternId:'limit1',source:'(does not|cannot|can.t).{0,35}(prove|confirm).{0,25}(ownership|owner|belongs)'},{patternId:'limit2',source:'(not|no).{0,15}(absolute|certain|complete) proof.{0,25}(ownership|owner|it)'},{patternId:'limit3',source:'strong evidence.{0,35}(not|but).{0,25}(prove|certain)'}],evidenceRefs:['E02','E03','E04'],criterionIds:['C3'],materiality:'MATERIAL'}
-          {conceptId:'INFO-LINA-TIME',predicate:"Lina left briefly at about 8:17 and bought tea at the station kiosk.",acceptedVariants:[],patterns:[],informationRefs:['INFO-LINA-TIME'],materiality:'CONTEXTUAL'},
+      {conceptId:'OWNERSHIP_NOT_CERTAIN',predicate:'the records support but do not absolutely prove ownership',acceptedVariants:['ownership is not proved with absolute certainty','the evidence does not prove ownership for certain','it is a strong match, but not absolute proof'],patterns:[{patternId:'limit1',source:'(does not|cannot|can.t).{0,35}(prove|confirm).{0,25}(ownership|owner|belongs)'},{patternId:'limit2',source:'(not|no).{0,15}(absolute|certain|complete) proof.{0,25}(ownership|owner|it)'},{patternId:'limit3',source:'strong evidence.{0,35}(not|but).{0,25}(prove|certain)'}],evidenceRefs:['E02','E03','E04'],criterionIds:['C3'],materiality:'MATERIAL'},
+      {conceptId:'INFO-LINA-TIME',predicate:"Lina left briefly at about 8:17 and bought tea at the station kiosk.",acceptedVariants:[],patterns:[],informationRefs:['INFO-LINA-TIME'],materiality:'CONTEXTUAL'},
       {conceptId:'INFO-LINA-BOOK',predicate:"Lina borrowed the paperback because she wanted to read it on her journey.",acceptedVariants:[],patterns:[],informationRefs:['INFO-LINA-BOOK'],materiality:'CONTEXTUAL'},
       {conceptId:'INFO-LINA-BAG-LAST',predicate:"Lina remembers having the green bag near the timetable board but does not remember seeing it afterward.",acceptedVariants:[],patterns:[],informationRefs:['INFO-LINA-BAG-LAST'],materiality:'CONTEXTUAL'},
       {conceptId:'INFO-OMAR-VIEW',predicate:"Omar could not clearly see the timetable bench from his seat.",acceptedVariants:[],patterns:[],informationRefs:['INFO-OMAR-VIEW'],materiality:'CONTEXTUAL'},
@@ -237,8 +236,7 @@ const ambiguity=[
  ['CASE-002','She moved it after the room was opened.','NEEDS_CLARIFICATION'],
  ['CASE-002','Lena may have moved the envelope.','PARTIAL'],
  ['CASE-002','The card was used, so Lena was there.','PARTIAL'],
- ['CASE-003','It caused the reading.','NEEDS_CLARIFICATION'],
- ['CASE-003','The cause cannot be established.','PARTIAL'],
+ ['CASE-003','It caused the reading.','NEEDS_CLARIFICATION'], ['CASE-003','The cause cannot be established.','PARTIAL'],
  ['CASE-003','The signal increased, but its source is unknown.','PARTIAL'],
  ['CASE-003','The external event certainly caused the anomaly.','UNSUPPORTED']
 ];
