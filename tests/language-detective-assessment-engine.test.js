@@ -157,7 +157,7 @@ test('The Blue Scarf is a valid A1 case and accepts clear simple paraphrases',()
  assert.deepEqual(schemas.validateCaseSnapshot(snapshot),[]);
  const responses=[
   'Conclusion: The scarf is at the lost-property desk.\nReasoning: The cleaner found it under the bench on Platform 2 and took it to lost property. The silver star matches Mina’s scarf.',
-  'Conclusion: The blue scarf is at the ticket desk with lost property.\nReasoning: A cleaner found the scarf under the bench and took it to lost property. Mina and the found scarf both have a small silver star.'
+  'Conclusion: The blue scarf is at the ticket desk with lost property.\nReasoning: A cleaner found a scarf under the bench and took the scarf to lost property. Mina’s scarf and the found scarf both have a small silver star.'
  ];
  for(const response of responses){
   const result=engine.evaluate({context:{...makeContext('CASE-004','STEADY','HELL'),responseId:'blue-scarf-'+responses.indexOf(response)},caseSnapshot:snapshot,response,hintsUsed:[]});
