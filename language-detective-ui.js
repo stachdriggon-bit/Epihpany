@@ -130,30 +130,25 @@
     const readiness = investigationModel.isConclusionReady(snapshot, session);
     const answers = readResponse();
     const evidenceCard = (item, i) => '<article class="ld-evidence" data-evidence-id="' + esc(item.evidenceId) + '"><span>' + esc(item.role) + ' · ' + esc(item.evidenceId || ('E' + String(i + 1).padStart(2, '0'))) + '</span><p>' + esc(item.summary) + '</p>' + (item.limitations?.length ? '<small>Limit: ' + esc(item.limitations.join(' ')) + '</small>' : '') + '</article>';
+    const notebookSections = investigationModel.getNotebookSections(snapshot, session);
     const notebookEntries = investigationModel.getNotebookEntries(snapshot, session);
-    const notebook = notebookEntries.length
-      ? notebookEntries.map(entry => '<article class="ld-notebook-entry ld-notebook-entry-' + esc(entry.type.toLowerCase()) + '"><span>' + esc(entry.type) + '</span><strong>' + esc(entry.title) + '</strong><p>' + esc(entry.content) + '</p></article>').join('')
-      : '<p class="ld-notebook-empty">Your notebook is empty. Open evidence or ask a question; discovered information will appear here.</p>';
+    const notebook = notebookSections.length
+      ? notebookSections.map(section => '<section class="ld-notebook-section"><h3>' + esc(section.title) + '</h3><p>' + esc(section.description) + '</p>' + section.entries.map(entry => '<article class="ld-notebook-entry ld-notebook-entry-' + esc(entry.type.toLowerCase()) + '"><strong>' + esc(entry.title) + '</strong><p>' + esc(entry.content) + '</p></article>').join('') + '</section>').join('')
+      : '<p class="ld-notebook-empty">Your notebook is empty. Examine a record or speak with someone; discoveries will be organised here.</p>';
+    const selectedDossier = state.selectedCharacterId ? investigationModel.getCharacterDossier(snapshot,session,state.selectedCharacterId) : null;
     const characters = Array.isArray(snapshot.characters) && snapshot.characters.length
-      ? '<section class="ld-workspace-section"><div class="ld-section-heading"><div><span class="ld-kicker">PEOPLE</span><h3>People in this case</h3></div></div><div class="ld-character-grid">' + snapshot.characters.map(person => '<article class="ld-character-card"><strong>' + esc(person.name || person.label || 'Person') + '</strong>' + (person.role ? '<span>' + esc(person.role) + '</span>' : '') + '</article>').join('') + '</div></section>' : '';
-    const visibleStatements = Array.isArray(snapshot.statements) && snapshot.statements.length
-      ? snapshot.statements.filter(statement => session.revealedStatementIds.includes(statement.statementId || statement.id))
-      : [];
-    const statements = visibleStatements.length
-      ? '<section class="ld-workspace-section"><div class="ld-section-heading"><div><span class="ld-kicker">INITIAL ACCOUNTS</span><h3>What people say</h3></div></div><div class="ld-statement-list">' + visibleStatements.map(statement => '<article class="ld-statement-card"><strong>' + esc(statement.name || statement.speaker || 'Statement') + '</strong><p>' + esc(statement.text || statement.statement || '') + '</p></article>').join('') + '</div></section>' : '';
-    const availableInterviews = investigationModel.getAvailableInterviews(snapshot, session);
-    const interviews = Array.isArray(snapshot.interviews) && snapshot.interviews.length
-      ? '<section class="ld-workspace-section"><div class="ld-section-heading"><div><span class="ld-kicker">FOLLOW-UP</span><h3>Ask a question</h3><p>Choose one question for each person. Their answer will be added to your notebook.</p></div></div><div class="ld-interview-list">' + snapshot.interviews.map(interview => {
-          const characterId = interview.characterId || interview.character;
-          const available = availableInterviews.find(item => item.characterId === characterId);
-          const response = session.interviewResponses.find(item => item.characterId === characterId);
-          const answersMarkup = response ? response.answers.map(answer => {
-            const question = interview.questions.find(item => (item.questionId || item.id) === answer.questionId);
-            return '<div class="ld-interview-answer"><span>ANSWER REVEALED</span><p>' + esc(answer.answer) + '</p></div>';
-          }).join('') : '';
-          const questionMarkup = available ? available.questions.map(question => '<button type="button" class="ld-interview-question" data-ld-ask-interview data-character-id="' + esc(characterId) + '" data-question-id="' + esc(question.questionId || question.id) + '">' + esc(question.prompt) + '</button>').join('') : '<span class="ld-interview-used">' + (response ? 'Question used' : 'No questions available yet') + '</span>';
-          return '<article class="ld-interview-card"><strong>' + esc(interview.name || snapshot.characters?.find(person => person.characterId === characterId)?.name || characterId) + '</strong><div class="ld-interview-questions">' + questionMarkup + '</div>' + answersMarkup + '</article>';
+      ? '<section class="ld-workspace-section"><div class="ld-section-heading"><div><span class="ld-kicker">PEOPLE</span><h3>Choose someone to review</h3><p>Select a person to read their available statement and interview them.</p></div></div><div class="ld-character-grid">' + snapshot.characters.map(person => {
+          const id = person.characterId || person.id;
+          const selected = state.selectedCharacterId === id;
+          return '<button type="button" class="ld-character-card' + (selected ? ' is-selected' : '') + '" data-ld-select-character="' + esc(id) + '" aria-pressed="' + String(selected) + '"><strong>' + esc(person.name || person.label || 'Person') + '</strong>' + (person.role ? '<span>' + esc(person.role) + '</span>' : '') + '<small>' + (selected ? 'Currently viewing' : 'View account →') + '</small></button>';
         }).join('') + '</div></section>' : '';
+    const statements = selectedDossier
+      ? '<section class="ld-workspace-section"><div class="ld-section-heading"><div><span class="ld-kicker">CHARACTER FILE</span><h3>' + esc(selectedDossier.character.name || selectedDossier.character.label || 'Person') + ' · Statement</h3></div></div>' + (selectedDossier.statements.length ? '<div class="ld-statement-list">' + selectedDossier.statements.map(statement => '<article class="ld-statement-card"><strong>' + esc(statement.name || statement.speaker || selectedDossier.character.name || 'Statement') + '</strong><p>' + esc(statement.text || statement.statement || '') + '</p></article>').join('') + '</div>' : '<p class="ld-unlock-gate">No initial statement from this person is available yet.</p>') + '</section>' : '<p class="ld-unlock-gate">Choose a person above to review their statement and available questions.</p>';
+    const availableInterviews = investigationModel.getAvailableInterviews(snapshot, session);
+    const interviews = selectedDossier && selectedDossier.interview
+      ? '<section class="ld-workspace-section"><div class="ld-section-heading"><div><span class="ld-kicker">FOLLOW-UP</span><h3>Ask ' + esc(selectedDossier.character.name || 'this person') + '</h3><p>Choose a question. The answer will be recorded in your notebook.</p></div></div><div class="ld-interview-list">' +
+        (selectedDossier.interview.availableQuestions.length ? selectedDossier.interview.availableQuestions.map(question => '<button type="button" class="ld-interview-question" data-ld-ask-interview data-character-id="' + esc(state.selectedCharacterId) + '" data-question-id="' + esc(question.questionId) + '">' + esc(question.prompt) + '</button>').join('') : '<span class="ld-interview-used">No questions remain for this person in this interview.</span>') +
+        selectedDossier.interview.answers.map(answer => '<div class="ld-interview-answer"><span>ANSWER REVEALED</span><p>' + esc(answer.answer) + '</p></div>').join('') + '</div></section>' : '';
     const witnesses = Array.isArray(snapshot.witnesses) && snapshot.witnesses.length
       ? '<section class="ld-workspace-section"><div class="ld-section-heading"><div><span class="ld-kicker">WITNESS LEAD</span><h3>Choose one witness</h3><p>Your choice adds that witness’s account to the notebook. Other evidence paths remain available.</p></div></div><div class="ld-witness-grid">' + snapshot.witnesses.map(witness => {
           const witnessId = witness.witnessId || witness.id;
@@ -262,6 +257,7 @@
       stage: 'picker',
       caseId: null,
       selectedLevel: null,
+      selectedCharacterId: null,
       trainingMode: 'GUIDED',
       answerFormat: 'STANDARD',
       hintsUsed: [],
@@ -317,6 +313,7 @@
       const caseButton = event.target.closest('[data-ld-case]');
       if (caseButton) {
         state.caseId = caseButton.dataset.ldCase;
+        state.selectedCharacterId = null;
         state.stage = 'case-intro';
         state.hintsUsed = [];
         state.discoveredEvidence = [];
@@ -341,6 +338,12 @@
             state.discoveredEvidence = [...state.session.discoveredEvidenceIds];
           }
         }
+        investigation();
+        return;
+      }
+      const characterButton = event.target.closest('[data-ld-select-character]');
+      if (characterButton) {
+        state.selectedCharacterId = characterButton.dataset.ldSelectCharacter;
         investigation();
         return;
       }
