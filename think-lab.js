@@ -1062,7 +1062,7 @@ bark dark core hand land lane data duty melt`
   function start(id) {
     if(id==='translator'){selectedTranslatorCEFR='adaptive';showTranslatorLevelPicker();return;}
     mode=id; index=0; score=0; chainStepIndex=0; chainPath=[]; clueCount=0; roundMistakes=0; ladderPath=[]; ladderWordNote=null; ladderMistakeRecorded=false; activeDifficulty=difficultyForMode(id); oddHintStep=0;
-launcher    activePool=getRoundPool(id,activeDifficulty.level); renderGame(); if(id==='maze') speakTarget();
+    activePool=getRoundPool(id,activeDifficulty.level); renderGame(); if(id==='maze') speakTarget();
   }
   root.addEventListener('submit', e => {
     const form=e.target.closest('[data-think-ladder-form]');
