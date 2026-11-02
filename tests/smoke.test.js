@@ -263,10 +263,12 @@ test('main navigation tabs open without uncaught page errors', async t => {
         assert.equal(await caseboundRoot.locator('[data-ld-level-select]').count(), 6,
           'the six CEFR levels should be available before opening case files');
         await caseboundRoot.locator('[data-ld-level-select="A1"]').click();
-        assert.equal(await caseboundRoot.locator('[data-ld-case]').count(), 1,
-          'A1 should show only its own investigation');
+        assert.equal(await caseboundRoot.locator('[data-ld-case]').count(), 2,
+          'A1 should show only its own investigations');
         assert.equal(await caseboundRoot.locator('[data-ld-case="CASE-004"]').count(), 1,
-          'the A1 case should be listed under A1');
+          'The Blue Scarf should be listed under A1');
+        assert.equal(await caseboundRoot.locator('[data-ld-case="CASE-005"]').count(), 1,
+          'The Empty Seat should be listed under A1');
         await caseboundRoot.locator('[data-ld-level-back]').click();
         await caseboundRoot.locator('[data-ld-level-select="A2"]').click();
         assert.equal(await caseboundRoot.locator('[data-ld-case]').count(), 1,
