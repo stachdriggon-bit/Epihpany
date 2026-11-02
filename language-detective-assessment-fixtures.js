@@ -68,11 +68,66 @@ const cases = {
       {criterionId:'C3',dimension:'CRITICAL_THINKING',weight:1,conceptIds:['CAUSE_UNRESOLVED','EXTERNAL_HYPOTHESIS','FAULT_HYPOTHESIS']}
     ],feedbackResources:[]
   }
+
+  },
+  'CASE-004': {
+    caseId:'CASE-004',caseVersion:'draft-1',schemaVersion:'1.0',
+    evidence:[
+      {evidenceId:'E01',role:'ESSENTIAL',summary:'Mina says she had a blue scarf with a small silver star when she sat on the bench at Platform 2. It was missing when she boarded her train.',relation:'SUPPORTS',scope:'scarf description and last known possession',limitations:['Mina did not see where the scarf fell.']},
+      {evidenceId:'E02',role:'ESSENTIAL',summary:'A cleaner found a blue scarf with a small silver star under the Platform 2 bench at 8:20 and took it to the lost-property desk.',relation:'SUPPORTS',scope:'matching scarf found and transferred',limitations:['The note does not name the owner.']},
+      {evidenceId:'E03',role:'ESSENTIAL',summary:'At 8:25 the station list recorded one blue scarf with a small silver star received from Platform 2.',relation:'SUPPORTS',scope:'matching item received by lost property',limitations:['The list records the item, not the owner.']},
+      {evidenceId:'E04',role:'CONTEXTUAL',summary:'A station notice says lost property is kept at the ticket desk.',relation:'SUPPORTS',scope:'where lost property is kept',limitations:['The notice does not identify any particular lost item.']}
+    ],
+    concepts:[
+      {conceptId:'SCARF_AT_DESK',predicate:'Mina scarf is at the lost-property or ticket desk',acceptedVariants:['the scarf is at the lost-property desk','the scarf is at the ticket desk','the scarf is with lost property','the station has the scarf at lost property'],patterns:[{patternId:'sd1',source:'scarf.{0,45}(at|in|with).{0,25}(lost.property|ticket desk)'},{patternId:'sd2',source:'(lost.property|ticket desk).{0,25}scarf'},{patternId:'sd3',source:'scarf.{0,20}(is|stays|remains).{0,15}(at|in).{0,15}(desk|lost property)'}],evidenceRefs:['E02','E03','E04'],criterionIds:['C1'],epistemicStatus:'ESTABLISHED_FACT',materiality:'CENTRAL'},
+      {conceptId:'SCARF_FOUND',predicate:'matching scarf was found under the Platform 2 bench',acceptedVariants:['the cleaner found it under the bench','the scarf was found under the Platform 2 bench'],patterns:[{patternId:'sf1',source:'found.{0,25}(under|beneath).{0,18}bench'},{patternId:'sf2',source:'scarf.{0,35}(under|beneath).{0,18}bench'},{patternId:'sf3',source:'cleaner.{0,35}found'}],evidenceRefs:['E02'],criterionIds:['C2'],epistemicStatus:'REPORTED_OBSERVATION',materiality:'CENTRAL'},
+      {conceptId:'SCARF_TRANSFERRED',predicate:'cleaner took the scarf to lost property',acceptedVariants:['the cleaner took it to lost property','the scarf was moved to the ticket desk','it was taken to the lost-property desk'],patterns:[{patternId:'st1',source:'(took|moved|brought).{0,35}(to )?(lost.property|ticket desk)'},{patternId:'st2',source:'(lost.property|ticket desk).{0,25}(received|has) the scarf'}],evidenceRefs:['E02','E03'],criterionIds:['C2'],epistemicStatus:'REPORTED_OBSERVATION',materiality:'CENTRAL'},
+      {conceptId:'SCARF_MATCH',predicate:'the records describe the same scarf by its silver star',acceptedVariants:['the silver star matches Mina scarf','all records describe a scarf with a small silver star'],patterns:[{patternId:'sm1',source:'silver star'},{patternId:'sm2',source:'same scarf'}],evidenceRefs:['E01','E02','E03'],criterionIds:['C3'],epistemicStatus:'INFERENCE',materiality:'CENTRAL'}
+    ],
+    criteria:[
+      {criterionId:'C1',dimension:'CONCLUSION_ACCURACY',weight:1,conceptIds:['SCARF_AT_DESK']},
+      {criterionId:'C2',dimension:'EVIDENCE_REASONING',weight:1,conceptIds:['SCARF_FOUND','SCARF_TRANSFERRED']},
+      {criterionId:'C3',dimension:'CRITICAL_THINKING',weight:1,conceptIds:['SCARF_MATCH']}
+    ],feedbackResources:[],
+    presentation:null
+  }
 };
+
+const casePresentation = {
+    'CASE-001': { title: 'The Missing Package', level: 'A2', cefr: 'A2', category: 'Everyday mystery', subtitle: 'A delivery disappears before its recipient arrives.', focus: 'Your task: identify what the witness actually saw, then separate that from what remains unknown about the person.', conclusionOptions: ['Nora took the package after she arrived.', 'An unidentified resident in a green jacket picked up the package; the resident’s identity remains unknown.', 'Adam collected the package while the driver was there.'], details: ['10:05 — The delivery record says the package was placed at reception; no recipient was recorded.', '10:00–10:15 — Adam was away and did not see the delivery.', '10:12 — Sara saw a resident wearing a green jacket take the package after the driver left it on the table. She did not see the resident’s face.', '10:20 — Nora arrived and the package was no longer there.', 'The optional label names Nora and Apartment 2B; it does not identify who picked up the package.'], questions: [{id:'q1',prompt:'Which account stays within what Sara witnessed?',options:['A resident left with the package after the driver stepped away.','Nora collected the package when she reached reception.','Adam handed the package to someone before leaving.'],answer:0,explain:'Sara witnessed a resident collect the package after the driver left; she did not identify the resident.'},{id:'q2',prompt:'Which statement about the person can the report support?',options:['The person was the resident listed on the optional label.','The person’s identity cannot be established from Sara’s account.','The person was someone who arrived after Nora.'],answer:1,explain:'The label does not identify the picker, and Sara did not see the person’s face.'}] },
+    'CASE-002': { title: 'Conflicting Accounts', level: 'B1–B2', cefr: 'B1', category: 'Case investigation', subtitle: 'An envelope vanishes, then appears in another room.', focus: 'Your task: explain where the envelope was found and decide what the timeline and access record can—and cannot—prove about who moved it.', conclusionOptions: ['The envelope was found in Room B, but the card log does not identify who used the card.', 'Lena definitely moved the envelope into Room B because her card opened the room.', 'Omar took the envelope after seeing Nadia near the exit.'], details: ['3:05 — Nadia placed the envelope of workshop recordings at library reception.', '3:20 — Omar saw a large envelope on the desk. Later, he saw Nadia carrying papers near the exit and assumed they were the envelope, but he did not identify them.', 'About 3:25 — Lena said she moved a group of papers to Room B; she was unsure whether she checked every sheet.', '3:22–3:41 — A card opened Room B and the room was later closed. The log does not establish who physically used the card or what was carried inside.', '3:45 — Nadia returned and found the envelope missing.', '4:10 — The envelope was found closed in Room B, with papers inside.'], questions: [{id:'q1',prompt:'Which claim is justified by the access record alone?',options:['Lena entered Room B during the recorded interval.','Someone used a card to open Room B; the user is not established.','The envelope was taken into Room B during that interval.'],answer:1,explain:'The record confirms a card event, but it does not identify the physical user or what entered the room.'},{id:'q2',prompt:'How should Omar’s later observation be described?',options:['Nadia carried the missing envelope towards the exit.','Nadia carried papers, but Omar could not confirm what they were.','Lena passed the envelope to Nadia near the exit.'],answer:1,explain:'Omar saw Nadia carrying papers, but he did not identify them as the envelope.'}] },
+    'CASE-003': { title: 'The Uncertain Evidence', level: 'C1–C2', cefr: 'C1', category: 'Evidence analysis', subtitle: 'An observatory receiver records an unusual signal.', focus: 'Your task: separate the recorded anomaly from its possible explanations. Decide whether the evidence identifies a cause or leaves competing hypotheses open.', conclusionOptions: ['An external event definitely caused the signal increase.', 'A temporary fault in R-4 is confirmed by the maintenance record.', 'R-4 recorded an unusual increase, but its cause remains unresolved; an external source or receiver fault is still possible.'], details: ['14 October, 21:43–21:47 — Receiver R-4 recorded an unusual signal-strength increase. The recovered recording is incomplete.', 'Analyst One: an external source is possible, but its identity cannot be established and equipment fault cannot be ruled out.', 'Analyst Two: a temporary R-4 fault is possible, but there is no diagnostic result proving it.', 'Maintenance records show unstable readings in September and a connection check before R-4 returned to service. There was no maintenance or diagnostic test on the night of 14 October.', 'R-7 did not record the increase, but its direction and sensitivity differed, so it is not a direct control.', 'A preliminary report suggested an external event before the original recording was recovered; it is not independent confirmation.', 'A technician’s note from two days earlier expresses concern that the problem may have returned; it is an impression, not a diagnosis.'], questions: [{id:'q1',prompt:'Which statement reports the instrument record without adding a cause?',options:['R-4 registered an unusual rise, although the recovered record is incomplete.','An outside source produced the rise recorded by R-4.','A fault in R-4 explains the rise in the recovered recording.'],answer:0,explain:'The recording establishes an unusual increase on R-4, not what produced it.'},{id:'q2',prompt:'What limits the comparison with R-7?',options:['R-7 had a different direction and sensitivity from R-4.','R-7 recorded the same increase as R-4.','R-7 was tested alongside R-4 during the event.'],answer:0,explain:'Because the instruments differed in direction and sensitivity, R-7 is not a direct control.'}] }
+  ,
+    'CASE-004': {
+      title: 'The Blue Scarf', level: 'A1', cefr: 'A1', category: 'Everyday mystery',
+      subtitle: 'Mina loses her blue scarf at a small train station.',
+      focus: 'Your task: find where Mina’s scarf is now. Use the short records to follow what happened.',
+      conclusionOptions: [
+        'The scarf is at the lost-property desk.',
+        'The scarf is still under the bench on Platform 2.',
+        'The scarf is on Mina’s train.'
+      ],
+      details: [
+        '8:05 — Mina sits on a bench at Platform 2. She has a blue scarf with a small silver star.',
+        '8:20 — A cleaner finds a blue scarf with a small silver star under the bench and takes it to the lost-property desk.',
+        '8:25 — The station list records one blue scarf with a small silver star from Platform 2.',
+        'A station notice says lost property is kept at the ticket desk.',
+        'When Mina gets on her train, the scarf is no longer with her.'
+      ],
+      questions: [
+        {id:'q1',prompt:'Where did the cleaner find the scarf?',options:['Under the bench on Platform 2.','On Mina’s train.','At the ticket desk.'],answer:0,explain:'The cleaning note says the scarf was under the bench on Platform 2.'},
+        {id:'q2',prompt:'What happened after the cleaner found the scarf?',options:['The cleaner left it on the bench.','The cleaner took it to the lost-property desk.','Mina took it onto the train.'],answer:1,explain:'The cleaning note says the scarf was taken to lost property, and the station list confirms it was received.'}
+      ]
+    }
+  };
+for (const [id, info] of Object.entries(casePresentation)) {
+  if (!cases[id]) throw new Error('Presentation references unknown case: ' + id);
+  cases[id].presentation = Object.freeze(info);
+}
 
 function makeContext(caseId,trainingMode='STEADY',answerFormat='HELL'){
  const c=cases[caseId];
- return {caseId,caseVersion:c.caseVersion,evaluatorVersion:'0.1.0',schemaVersion:c.schemaVersion,cefr:caseId==='CASE-001'?'A2':caseId==='CASE-002'?'B1':'C1',trainingMode,answerFormat,locale:'en',attemptId:'attempt-fixture',responseId:'response-fixture'};
+ return {caseId,caseVersion:c.caseVersion,evaluatorVersion:'0.1.0',schemaVersion:c.schemaVersion,cefr:c.presentation.cefr,trainingMode,answerFormat,locale:'en',attemptId:'attempt-fixture',responseId:'response-fixture'};
 }
 function scenario(id,group,caseId,response,expectedOutcome,extra={}){
  return {scenarioId:id,group,caseId,context:makeContext(caseId,extra.trainingMode,extra.answerFormat),response,expectedOutcome,hintsUsed:extra.hintsUsed||[],rationale:extra.rationale||'Protects a documented assessment invariant.',expected:extra.expected||{}};
