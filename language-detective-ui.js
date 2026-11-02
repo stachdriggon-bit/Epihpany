@@ -58,7 +58,7 @@
       const count = Object.keys(caseInfo).filter(id => caseInfo[id].cefr === level).length;
       return '<button type="button" class="ld-level-card" data-ld-level-select="' + level + '">' +
         '<span class="ld-level-card-top"><strong>' + level + '</strong><span>' + count + (count === 1 ? ' case' : ' cases') + '</span></span>' +
-        '<b>' + meta.title.slice(6) + '</b><span>' + meta.note + '</span>' +
+        '<b>' + meta.title.slice(5) + '</b><span>' + meta.note + '</span>' +
         '<em>' + (count ? 'View investigations →' : 'Coming soon') + '</em></button>';
     }).join('');
     const selectedLevel = state.selectedLevel;
