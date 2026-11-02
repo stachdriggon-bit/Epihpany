@@ -166,6 +166,20 @@ test('The Blue Scarf is a valid A1 case and accepts clear simple paraphrases',()
  }
 });
 
+test('The Blue Scarf gives a fair partial grade when the correct location is stated without full evidence reasoning',()=>{
+ const result=engine.evaluate({context:{...makeContext('CASE-004'),responseId:'blue-scarf-location-only'},caseSnapshot:cases['CASE-004'],response:'The scarf is at the lost-property desk.',hintsUsed:[]});
+ assert.equal(result.evaluation.primaryOutcome,'PARTIAL');
+ assert.ok(result.evaluation.weightedScore>=40,'a correct central conclusion must not receive an F solely because higher-level reasoning is absent');
+ assert.equal(result.evaluation.awardedGrade,'D');
+ assert.deepEqual(result.evaluation.dimensionResults.map(x=>x.dimension),['CONCLUSION_ACCURACY','EVIDENCE_REASONING']);
+});
+
+test('The Blue Scarf awards full credit for a simple A1 explanation of the transfer',()=>{
+ const result=engine.evaluate({context:{...makeContext('CASE-004'),responseId:'blue-scarf-simple-explanation'},caseSnapshot:cases['CASE-004'],response:'The scarf is at the lost-property desk. The cleaner found it under the bench and took it to lost property.',hintsUsed:[]});
+ assert.equal(result.evaluation.primaryOutcome,'ACCEPTED');
+ assert.equal(result.evaluation.weightedScore,100);
+});
+
 test('The Blue Scarf distinguishes the discovery place from its current location',()=>{
  const result=engine.evaluate({context:{...makeContext('CASE-004'),responseId:'blue-scarf-bench-only'},caseSnapshot:cases['CASE-004'],response:'The scarf is under the bench.',hintsUsed:[]});
  assert.equal(result.evaluation.primaryOutcome,'PARTIAL');
