@@ -255,7 +255,7 @@ test('main navigation tabs open without uncaught page errors', async t => {
         assert.equal(await detectiveRoot.locator('.ld-heading h2').innerText(), 'The Language Detective',
           'the real investigation UI must initialize after its browser modules load');
         assert.equal(await detectiveRoot.locator('[data-ld-case]').count(), 3,
-          'all three case files should be available');
+          'all four case files should be available');
         for (const file of [
           'language-detective-assessment-schemas.js',
           'language-detective-cefr-patterns.js',
