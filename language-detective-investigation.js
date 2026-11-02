@@ -88,7 +88,7 @@
       caseId:snapshot.caseId,caseVersion:snapshot.caseVersion,status:'BRIEF',
       discoveredEvidenceIds:[],
       revealedStatementIds:statements.filter(item => item.availableAtStart !== false).map(item => idOf(item,'statementId','id')),
-      interviewResponses:[],selectedWitnessId:null,activityLog:[]
+      interviewResponses:[],discoveredInformationIds:[],selectedWitnessId:null,activityLog:[]
     }};
   }
 
@@ -108,7 +108,7 @@
     if (!list(unlock.requiresEvidenceIds).every(id => session.discoveredEvidenceIds.includes(id))) return false;
     if (unlock.requiresInterview) {
       const response = interviewResponse(session, unlock.requiresInterview.characterId);
-      if (!response || response.questionId !== unlock.requiresInterview.questionId) return false;
+      if (!response || !response.questionIds.includes(unlock.requiresInterview.questionId)) return false;
     }
     if (unlock.requiresWitness && !session.selectedWitnessId) return false;
     if (unlock.requiresWitnessId && session.selectedWitnessId !== unlock.requiresWitnessId) return false;
@@ -159,6 +159,7 @@
     }
     response.questionIds.push(questionId);
     response.answers.push({questionId,answer:question.answer,informationId:question.informationId || null,evidenceIds:list(question.evidenceIds)});
+    if (question.informationId && !next.discoveredInformationIds.includes(question.informationId)) next.discoveredInformationIds.push(question.informationId);
     next.activityLog.push({type:'INTERVIEW_ANSWER_REVEALED',characterId,questionId});
     return {ok:true,session:next,answer:question.answer,question:clone(question)};
   }
@@ -197,7 +198,7 @@
     const evidence = list(snapshot.evidence);
     const discovered = session.discoveredEvidenceIds.length;
     const interviews = list(snapshot.interviews);
-    const answered = session.interviewResponses.length;
+    const answered = session.interviewResponses.reduce((count,item) => count + item.questionIds.length,0);
     return {
       discoveredEvidence:discovered,totalEvidence:evidence.length,
       remainingAvailableEvidence:getAvailableEvidence(snapshot,session).length,
@@ -221,7 +222,7 @@
       );
       return {ready:satisfied,reason:satisfied?null:'INVESTIGATION_PATH_INCOMPLETE'};
     }
-    const required = list(snapshot.evidence).filter(item => item.requiredForConclusion === true || (item.requiredForConclusion !== false && item.role === 'ESSENTIAL'));
+    const required = list(snapshot.evidence).filter(item => item.requiredForConclusion === true || (item.requiredForConclusion !== false && item.role !== 'OPTIONAL'));
     const missing = required.filter(item => !session.discoveredEvidenceIds.includes(item.evidenceId)).map(item => item.evidenceId);
     return {ready:missing.length===0,reason:missing.length?'REQUIRED_EVIDENCE_REMAINS':'',missingEvidenceIds:missing};
   }
@@ -229,8 +230,11 @@
   function buildEvaluationSnapshot(snapshot, session) {
     const discovered = new Set(session.discoveredEvidenceIds);
     const evidence = list(snapshot.evidence).filter(item => discovered.has(item.evidenceId));
+    const information = new Set(session.discoveredInformationIds || []);
     const concepts = list(snapshot.concepts).filter(concept =>
-      !list(concept.evidenceRefs).length || list(concept.evidenceRefs).every(id => discovered.has(id))
+      list(concept.evidenceRefs).every(id => discovered.has(id)) &&
+      list(concept.informationRefs).every(id => information.has(id)) &&
+      list(concept.witnessRefs).every(id => session.selectedWitnessId === id)
     ).map(concept => ({...clone(concept),evidenceRefs:list(concept.evidenceRefs).filter(id => discovered.has(id))}));
     const conceptIds = new Set(concepts.map(item => item.conceptId));
     const criteria = list(snapshot.criteria).map(criterion => ({
