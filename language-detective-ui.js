@@ -53,26 +53,33 @@
   };
 
   function picker() {
-    const groupedCases = Object.fromEntries(CEFR_ORDER.map(level => [
-      level, Object.keys(caseInfo).filter(id => caseInfo[id].cefr === level)
-    ]));
-    const levelSections = CEFR_ORDER.map(level => {
-      const ids = groupedCases[level], meta = CEFR_LEVELS[level];
-      const cards = ids.length ? ids.map(id => {
+    const levelCards = CEFR_ORDER.map(level => {
+      const meta = CEFR_LEVELS[level];
+      const count = Object.keys(caseInfo).filter(id => caseInfo[id].cefr === level).length;
+      return '<button type="button" class="ld-level-card" data-ld-level-select="' + level + '">' +
+        '<span class="ld-level-card-top"><strong>' + level + '</strong><span>' + count + (count === 1 ? ' case' : ' cases') + '</span></span>' +
+        '<b>' + meta.title.slice(6) + '</b><span>' + meta.note + '</span>' +
+        '<em>' + (count ? 'View investigations →' : 'Coming soon') + '</em></button>';
+    }).join('');
+    const selectedLevel = state.selectedLevel;
+    const selectedMeta = selectedLevel ? CEFR_LEVELS[selectedLevel] : null;
+    const caseCards = selectedLevel ? Object.keys(caseInfo)
+      .filter(id => caseInfo[id].cefr === selectedLevel)
+      .map(id => {
         const item = caseInfo[id];
         return '<button type="button" class="ld-case-card" data-ld-case="' + id + '">' +
           '<span class="ld-case-meta">' + esc(item.category) + '</span><strong>' + esc(item.title) + '</strong><span>' + esc(item.subtitle) + '</span>' +
           '<em>Open investigation →</em></button>';
-      }).join('') : '<p class="ld-level-empty">New ' + level + ' investigations will appear here.</p>';
-      return '<section class="ld-level-section" data-ld-level="' + level + '">' +
-        '<div class="ld-level-heading"><div><h3>' + meta.title + '</h3><p>' + meta.note + '</p></div><span class="ld-level-count">' + ids.length + (ids.length === 1 ? ' case' : ' cases') + '</span></div>' +
-        (ids.length ? '<div class="ld-case-grid">' + cards + '</div>' : '<div class="ld-level-empty-wrap">' + cards + '</div>') +
-        '</section>';
-    }).join('');
+      }).join('') : '';
+    const content = selectedLevel
+      ? '<div class="ld-level-case-view"><div class="ld-level-view-heading"><button type="button" class="ld-back" data-ld-level-back>← All levels</button><div><span class="ld-kicker">' + selectedLevel + '</span><h3>' + selectedMeta.title + '</h3><p>' + selectedMeta.note + '</p></div></div>' +
+        (caseCards ? '<div class="ld-case-grid">' + caseCards + '</div>' : '<p class="ld-level-empty">There are no investigations at this level yet. New cases will appear here.</p>') +
+        '</div>'
+      : '<div class="ld-level-selection"><div class="ld-level-selection-heading"><h3>Choose your English level</h3><p>Each level has its own investigations, characters and challenges.</p></div><div class="ld-level-grid">' + levelCards + '</div></div>';
     root.innerHTML = '<section class="ld-shell">' +
       '<div class="ld-toolbar"><button type="button" class="ld-back" data-ld-exit>← Think Lab</button><span>CASE FILES</span></div>' +
-      '<div class="ld-heading"><span class="ld-kicker">THINK LAB · INVESTIGATION</span><h2>The Language Detective</h2><p>Choose an investigation at your English level. Each level has its own cases, language and reasoning challenge.</p></div>' +
-      settingsMarkup() + '<div class="ld-level-list">' + levelSections + '</div>' +
+      '<div class="ld-heading"><span class="ld-kicker">THINK LAB · INVESTIGATION</span><h2>The Language Detective</h2><p>Choose your English level first, then explore the investigations made for that level.</p></div>' +
+      settingsMarkup() + content +
       '<p class="ld-note">Guided, Steady and Challenge change the level of support. Standard and Hell Mode change how you submit your conclusion; neither mode changes the evidence or rewards unsupported certainty.</p>' +
       '</section>';
   }
@@ -186,6 +193,7 @@
     state = {
       stage: 'picker',
       caseId: null,
+      selectedLevel: null,
       trainingMode: 'GUIDED',
       answerFormat: 'STANDARD',
       hintsUsed: [],
@@ -224,6 +232,17 @@
     });
     document.addEventListener('click', event => {
       if (!root || !root.contains(event.target)) return;
+      const levelButton = event.target.closest('[data-ld-level-select]');
+      if (levelButton) {
+        state.selectedLevel = levelButton.dataset.ldLevelSelect;
+        picker();
+        return;
+      }
+      if (event.target.closest('[data-ld-level-back]')) {
+        state.selectedLevel = null;
+        picker();
+        return;
+      }
       const caseButton = event.target.closest('[data-ld-case]');
       if (caseButton) {
         state.caseId = caseButton.dataset.ldCase;
