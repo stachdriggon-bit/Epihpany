@@ -190,7 +190,8 @@ test('character dossier exposes only that character’s revealed statements and 
   assert.equal(lina.character.characterId,'LINA');
   assert.ok(lina.statements.every(item=>(item.characterId||item.speakerId)==='LINA'));
   assert.ok(lina.interview);
-  assert.equal(lina.interview.availableQuestions.length,2);
+  assert.equal(lina.interview.availableQuestions.length,1);
+  assert.equal(lina.interview.availableQuestions[0].questionId,'Q-TIME');
   const answer=model.askInterview(snapshot,session,'LINA','Q-TIME');
   const updated=model.getCharacterDossier(snapshot,answer.session,'LINA');
   assert.equal(updated.interview.answers.length,1);
