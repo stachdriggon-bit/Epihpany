@@ -110,7 +110,7 @@ test('main navigation tabs open without uncaught page errors', async t => {
     assert.equal(await firstVisitPage.evaluate(() => sessionStorage.getItem('epiphany-account-prompt-shown-v1')), '1', 'the invitation dismissal must be remembered for this session');
     await firstVisitPage.close();
 
-    const views = ['home','stories','chronicle','resonance','world','arcade','thinklab','summon','words','trophies','progress','profile'];
+    const views = ['home','stories','chronicle','resonance','world','arcade','thinklab','casebound','summon','words','trophies','progress','profile'];
     for (const view of views) {
       const page = await browser.newPage();
       await page.setViewportSize({ width: 1280, height: 900 });
@@ -248,56 +248,57 @@ test('main navigation tabs open without uncaught page errors', async t => {
         assert.equal(await gameCard.locator('[data-think-answer]').count(), 4, 'all four choices must remain available on mobile');
         assert.equal(await gameCard.locator('[data-think-answer]').first().isVisible(), true, 'the first answer must remain visible on mobile');
 
-        await page.locator('#thinklab-view [data-think-back]').click();
-        await page.locator('#thinklab-view [data-think-game="detective"]').click();
-        const detectiveRoot = page.locator('#think-lab-content');
-        await detectiveRoot.locator('.ld-shell').waitFor({state:'visible',timeout:10000});
-        assert.equal(await detectiveRoot.locator('.ld-heading h2').innerText(), 'The Language Detective',
-          'the real investigation UI must initialize after its browser modules load');
-        assert.equal(await detectiveRoot.locator('[data-ld-level-select]').count(), 6,
+      }
+      if (view === 'casebound') {
+        assert.ok(requested.some(path => path.endsWith('/language-detective-assessment-schemas.js')), 'CASEBOUND schemas should load on first open');
+        assert.ok(requested.some(path => path.endsWith('/language-detective-cefr-patterns.js')), 'CASEBOUND CEFR profiles should load on first open');
+        assert.ok(requested.some(path => path.endsWith('/language-detective-assessment-engine.js')), 'CASEBOUND assessment engine should load on first open');
+        assert.ok(requested.some(path => path.endsWith('/language-detective-assessment-fixtures.js')), 'CASEBOUND case files should load on first open');
+        assert.ok(requested.some(path => path.endsWith('/language-detective-ui.js')), 'CASEBOUND interface should load on first open');
+        const caseboundRoot = page.locator('#casebound-content');
+        await caseboundRoot.locator('.ld-shell').waitFor({state:'visible',timeout:10000});
+        assert.equal(await caseboundRoot.locator('.ld-heading h2').innerText(), 'CASEBOUND',
+          'the standalone game should display its approved name');
+        assert.equal(await caseboundRoot.locator('[data-ld-level-select]').count(), 6,
           'the six CEFR levels should be available before opening case files');
-        await detectiveRoot.locator('[data-ld-level-select="A1"]').click();
-        assert.equal(await detectiveRoot.locator('[data-ld-case]').count(), 1,
+        await caseboundRoot.locator('[data-ld-level-select="A1"]').click();
+        assert.equal(await caseboundRoot.locator('[data-ld-case]').count(), 1,
           'A1 should show only its own investigation');
-        assert.equal(await detectiveRoot.locator('[data-ld-case="CASE-004"]').count(), 1,
-          'The Blue Scarf should be listed under A1');
-        await detectiveRoot.locator('[data-ld-level-back]').click();
-        await detectiveRoot.locator('[data-ld-level-select="A2"]').click();
-        assert.equal(await detectiveRoot.locator('[data-ld-case]').count(), 1,
+        assert.equal(await caseboundRoot.locator('[data-ld-case="CASE-004"]').count(), 1,
+          'the A1 case should be listed under A1');
+        await caseboundRoot.locator('[data-ld-level-back]').click();
+        await caseboundRoot.locator('[data-ld-level-select="A2"]').click();
+        assert.equal(await caseboundRoot.locator('[data-ld-case]').count(), 1,
           'A2 should show only its own investigation');
-        assert.equal(await detectiveRoot.locator('[data-ld-case="CASE-001"]').count(), 1,
-          'The Missing Package should be listed under A2');
-        for (const file of [
-          'language-detective-assessment-schemas.js',
-          'language-detective-cefr-patterns.js',
-          'language-detective-assessment-engine.js',
-          'language-detective-assessment-fixtures.js',
-          'language-detective-ui.js'
-        ]) assert.ok(requested.some(path => path.endsWith('/' + file)), file + ' should load for the investigation');
-
-        await detectiveRoot.locator('[data-ld-case="CASE-001"]').click();
-        assert.equal(await detectiveRoot.locator('.ld-evidence').count(), 4,
-          'the selected case should render its evidence');
-        await detectiveRoot.locator('[data-ld-conclusion-choices]').waitFor({state:'visible',timeout:5000});
-        assert.equal(await detectiveRoot.locator('.ld-conclusion-locked').count(), 3,
+        assert.equal(await caseboundRoot.locator('[data-ld-case="CASE-001"]').count(), 1,
+          'the A2 case should be listed under A2');
+        await caseboundRoot.locator('[data-ld-case="CASE-001"]').click();
+        await caseboundRoot.locator('[data-ld-start-investigation]').waitFor({state:'visible'});
+        assert.equal(await caseboundRoot.locator('.ld-evidence').count(), 0,
+          'evidence should not be exposed before the player starts the investigation');
+        await caseboundRoot.locator('[data-ld-start-investigation]').click();
+        assert.equal(await caseboundRoot.locator('.ld-evidence').count(), 4,
+          'the selected case should render its evidence after Start Investigation');
+        await caseboundRoot.locator('[data-ld-conclusion-choices]').waitFor({state:'visible',timeout:5000});
+        assert.equal(await caseboundRoot.locator('.ld-conclusion-locked').count(), 3,
           'Standard mode should show three locked option placeholders before reasoning is submitted');
-        assert.equal(await detectiveRoot.locator('[data-ld-conclusion-option]').count(), 0,
+        assert.equal(await caseboundRoot.locator('[data-ld-conclusion-option]').count(), 0,
           'option text must remain hidden before reasoning submission');
-        await detectiveRoot.locator('[name="ld-standard-reasoning"]').fill(
+        await caseboundRoot.locator('[name="ld-standard-reasoning"]').fill(
           'Sara saw a resident in a green jacket pick up the package, but she did not see the resident’s face. The evidence does not identify the person.'
         );
-        await detectiveRoot.locator('[data-ld-submit-reasoning]').click();
-        assert.equal(await detectiveRoot.locator('.ld-conclusion-locked').count(), 0,
+        await caseboundRoot.locator('[data-ld-submit-reasoning]').click();
+        assert.equal(await caseboundRoot.locator('.ld-conclusion-locked').count(), 0,
           'submitting reasoning should unlock the conclusion choices');
-        assert.equal(await detectiveRoot.locator('[data-ld-conclusion-option]').count(), 3,
+        assert.equal(await caseboundRoot.locator('[data-ld-conclusion-option]').count(), 3,
           'Standard mode should reveal three conclusion choices after reasoning submission');
-        assert.equal(await detectiveRoot.locator('[name="ld-standard-reasoning"]').isEditable(), false,
+        assert.equal(await caseboundRoot.locator('[name="ld-standard-reasoning"]').isEditable(), false,
           'reasoning should be locked after the choices are revealed');
-        await detectiveRoot.locator('[data-ld-conclusion-option="1"]').click();
-        await detectiveRoot.locator('[data-ld-answer-form] [type="submit"]').click();
-        await detectiveRoot.locator('.ld-result-head').waitFor({state:'visible',timeout:5000});
-        assert.match(await detectiveRoot.locator('.ld-result-head h2').innerText(), /Conclusion supported|Partly supported/,
-          'the real browser assessment engine should return a usable result');
+        await caseboundRoot.locator('[data-ld-conclusion-option="1"]').click();
+        await caseboundRoot.locator('[data-ld-answer-form] [type="submit"]').click();
+        await caseboundRoot.locator('.ld-result-head').waitFor({state:'visible',timeout:5000});
+        assert.match(await caseboundRoot.locator('.ld-result-head h2').innerText(), /Conclusion supported|Partly supported/,
+          'the CASEBOUND assessment engine should return a usable result');
       }
       if (view === 'summon') {
         await page.locator('#cards-summon-token-count').waitFor({ state: 'visible', timeout: 5000 });
