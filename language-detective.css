@@ -70,3 +70,6 @@
 .ld-conclusion-options button{min-height:48px;padding:11px 13px;border:1px solid var(--line,#dfe2ec);border-radius:11px;background:var(--soft,#f8f8fc);color:inherit;text-align:left;font:inherit;font-size:.9rem;line-height:1.5;cursor:pointer}
 .ld-conclusion-options button:hover{border-color:var(--accent,#7059d9)}
 .ld-conclusion-options button.is-selected{border-color:var(--accent,#7059d9);background:color-mix(in srgb,var(--accent,#7059d9) 10%,var(--surface,#fff));box-shadow:inset 0 0 0 1px var(--accent,#7059d9)}
+
+.ld-conclusion-locked{display:flex;align-items:center;gap:11px;min-height:48px;padding:11px 13px;border:1px dashed var(--line,#dfe2ec);border-radius:11px;background:var(--soft,#f8f8fc);color:var(--muted,#687087);font-size:.88rem}
+.ld-conclusion-locked>span:first-child{display:grid;place-items:center;flex:0 0 27px;width:27px;height:27px;border-radius:8px;background:var(--line,#e6e8ef);color:var(--text,#25283b);font-weight:850}
