@@ -20,7 +20,7 @@ The feature is loaded on demand from Think Lab:
 3. `language-detective-assessment-schemas.js` validates case snapshots and evaluation requests.
 4. `language-detective-cefr-patterns.js` provides language-level profiles and construction patterns.
 5. `language-detective-assessment-engine.js` runs normalization, semantic matching, evidence reasoning, claim validation, evaluation resolution, and feedback.
-6. `language-detective-assessment-fixtures.js` now owns four case snapshots, their learner-facing presentation metadata, and the 57 executable assessment fixtures.
+6. `language-detective-assessment-fixtures.js` owns five case snapshots, their learner-facing presentation metadata, and the 57 executable regression fixtures.
 7. `language-detective-ui.js` derives each case's presentation from the assessment registry; it no longer maintains a second caseInfo copy.
 8. `language-detective.css` styles the investigation UI.
 
@@ -127,4 +127,28 @@ This integration does not:
 
 ## 9. Next step
 
-The next content task is to author additional independent A1 cases and then begin the A2 case set. Do not reuse The Blue Scarf as a harder-level investigation. Runtime additions must continue to include focused assessment tests and the full repository test suite.
+The next content task is to author additional independent A1 cases and then begin the A2 case set. Do not reuse The Blue Scarf or The Empty Seat as harder-level investigations. Runtime additions must continue to include focused assessment tests and the full repository test suite.
+
+
+## 10. CASE-005 — The Empty Seat
+
+**Editorial ID:** LD-A1-003  
+**Runtime ID:** CASE-005  
+**Level:** A1  
+**Status:** Implemented; CI verification pending
+
+The Empty Seat is a separate everyday station mystery. Three passengers claim a green canvas bag found beside the timetable bench. The intended conclusion is that Lina is the **best-supported** owner, not that ownership is proved with absolute certainty.
+
+The case combines:
+- A seating log that establishes where each passenger waited, but not bag ownership.
+- A found-property report that records the bag's location without naming its owner.
+- An inventory listing a paperback, blue notebook, and red pencil case.
+- Lina's one-question interview confirming those contents.
+- An independent library record linking Lina to the same paperback that morning.
+- An optional kiosk receipt that adds context but is not required for conclusion readiness or assessment.
+
+The intended inference depends on connecting the bag's location, the three-item inventory/interview match, and the independent library record. No unique personal mark is used. Omar's and Nora's statements provide plausible competing claims, but their descriptions do not match the found green canvas bag.
+
+The required path is E01–E04 plus Lina's Q-BAG-CONTENTS interview answer. The optional E05 receipt must not become a hidden prerequisite. The full authoring record is in `docs/language-detective/cases/a1-003-the-empty-seat.md`.
+
+Focused regression tests now cover the assessment concepts, investigation readiness, notebook retention, CEFR registration, and browser picker expectations. The full workflow result must be confirmed before this case is treated as fully verified.
