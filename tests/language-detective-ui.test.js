@@ -180,11 +180,12 @@ test('CASEBOUND notebook contains discovered evidence only and supports drawer a
   assert.match(ui, /aria-expanded/);
 });
 
-test('CASEBOUND character, interview and witness sections follow the selected dossier and available case data', () => {
+test('CASEBOUND centralises initial statements while interviews and witnesses follow available case data', () => {
   assert.match(ui, /Array\.isArray\(snapshot\.characters\) && snapshot\.characters\.length/);
-  assert.match(ui, /selectedDossier\s*\? '/);
+  assert.match(ui, /selectedDossier = state\.selectedCharacterId \? investigationModel\.getCharacterDossier/);
   assert.match(ui, /selectedDossier && selectedDossier\.interview/);
-  assert.match(ui, /selectedDossier\.statements\.length/);
+  assert.match(ui, /visibleStatements = \(snapshot\.statements \|\| \[\]\)\.filter/);
+  assert.match(ui, /visibleStatements\.map\(statement/);
   assert.match(ui, /Array\.isArray\(snapshot\.witnesses\) && snapshot\.witnesses\.length/);
   assert.doesNotMatch(ui, /No witnesses available/);
 });
