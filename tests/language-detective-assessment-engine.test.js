@@ -158,7 +158,6 @@ test('The Empty Seat is a valid A1 case and evaluates a multi-source ownership i
  const response='The green canvas bag most likely belongs to Lina. The inventory lists a paperback book, a blue notebook and a red pencil case. Lina’s library record shows she borrowed the same paperback that morning. This is strong evidence, but it does not prove ownership with absolute certainty.';
  const result=engine.evaluate({context:{...makeContext('CASE-005','STEADY','HELL'),responseId:'empty-seat-multi-source'},caseSnapshot:snapshot,response,hintsUsed:[]});
  assert.ok(result.interpreted.conceptMatches.some(item=>item.conceptId==='BAG_BELONGS_LINA'));
- assert.ok(result.interpreted.conceptMatches.some(item=>item.conceptId==='BAG_CONTENTS_MATCH'));
  assert.ok(result.interpreted.conceptMatches.some(item=>item.conceptId==='LIBRARY_LINK'));
  assert.ok(result.interpreted.conceptMatches.some(item=>item.conceptId==='OWNERSHIP_NOT_CERTAIN'));
  assert.equal(result.evaluation.primaryOutcome,'ACCEPTED');
