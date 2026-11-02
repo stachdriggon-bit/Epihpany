@@ -718,14 +718,13 @@ bark dark core hand land lane data duty melt`
   const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
   const games = [
     {id:'odd',num:'01',icon:'◈',name:'Odd One Out',tag:'PATTERN RECOGNITION',desc:'Spot the outsider, then explain the relationship that connects the others.',time:'2–3 min'},
-    {id:'detective',num:'02',icon:'⌕',name:'The Language Detective',tag:'INVESTIGATION & REASONING',desc:'Study case evidence, compare accounts and write a conclusion that stays within what the facts support.',time:'5–10 min'},
-    {id:'translator',num:'03',icon:'⇄',name:'The Bold Translator',tag:'NATURAL ENGLISH',desc:'Choose the sentence a real speaker would use—not a word-for-word translation.',time:'2–3 min'},
-    {id:'wordladder',num:'04',icon:'↗',name:'Word Ladder',tag:'SPELLING & LOGIC',desc:'Transform one word into another, changing just one letter per step.',time:'3–5 min'},
-    {id:'maze',num:'05',icon:'⌁',name:'The Sound Maze',tag:'LISTENING & PRONUNCIATION',desc:'Listen to the target word and find the matching word to move through the maze.',time:'2–3 min'},
-    {id:'connections',num:'06',icon:'▦',name:'Word Connections',tag:'CATEGORIES & PATTERNS',desc:'Find the category that connects a group of four words.',time:'2–3 min'},
-    {id:'scramble',num:'07',icon:'↔',name:'Sentence Scramble',tag:'SENTENCE BUILDING',desc:'Study mixed-up words and identify the natural English sentence.',time:'2–4 min'},
-    {id:'forge',num:'08',icon:'✳',name:'Word Forge',tag:'SPELLING & VOCABULARY',desc:'Use a letter set and a clue to identify the word.',time:'2–3 min'},
-    {id:'chain',num:'09',icon:'⤳',name:'Chain Reaction',tag:'WORD ASSOCIATION',desc:'Continue a chain by choosing the strongest word association.',time:'2–3 min'}
+    {id:'translator',num:'02',icon:'⇄',name:'The Bold Translator',tag:'NATURAL ENGLISH',desc:'Choose the sentence a real speaker would use—not a word-for-word translation.',time:'2–3 min'},
+    {id:'wordladder',num:'03',icon:'↗',name:'Word Ladder',tag:'SPELLING & LOGIC',desc:'Transform one word into another, changing just one letter per step.',time:'3–5 min'},
+    {id:'maze',num:'04',icon:'⌁',name:'The Sound Maze',tag:'LISTENING & PRONUNCIATION',desc:'Listen to the target word and find the matching word to move through the maze.',time:'2–3 min'},
+    {id:'connections',num:'05',icon:'▦',name:'Word Connections',tag:'CATEGORIES & PATTERNS',desc:'Find the category that connects a group of four words.',time:'2–3 min'},
+    {id:'scramble',num:'06',icon:'↔',name:'Sentence Scramble',tag:'SENTENCE BUILDING',desc:'Study mixed-up words and identify the natural English sentence.',time:'2–4 min'},
+    {id:'forge',num:'07',icon:'✳',name:'Word Forge',tag:'SPELLING & VOCABULARY',desc:'Use a letter set and a clue to identify the word.',time:'2–3 min'},
+    {id:'chain',num:'08',icon:'⤳',name:'Chain Reaction',tag:'WORD ASSOCIATION',desc:'Continue a chain by choosing the strongest word association.',time:'2–3 min'}
   ];
   function insightsMarkup() {
     const data = window.EpiphanyThinkLab && typeof window.EpiphanyThinkLab.getInsights === 'function'
@@ -755,7 +754,7 @@ bark dark core hand land lane data duty melt`
   }
   // Register each game against the shared adaptive policy. New games should add
   // one entry here; difficulty thresholds, confidence and hint calibration remain central.
-  const gameSkills = {odd:'vocabulary', detective:'reading', translator:'conversation', maze:'listening', wordladder:'spelling', forge:'spelling', connections:'vocabulary', scramble:'grammar', chain:'vocabulary'};
+  const gameSkills = {odd:'vocabulary', translator:'conversation', maze:'listening', wordladder:'spelling', forge:'spelling', connections:'vocabulary', scramble:'grammar', chain:'vocabulary'};
   Object.keys(gameSkills).forEach(id => {
     if (window.EpiphanyThinkLab && typeof window.EpiphanyThinkLab.registerGame === 'function') {
       window.EpiphanyThinkLab.registerGame(id, gameSkills[id]);
@@ -1053,12 +1052,6 @@ bark dark core hand land lane data duty melt`
     return tiles;
   }
   function speakTarget() { const pool=activePool || getRoundPool('maze');const item=pool[index%pool.length]; if(!('speechSynthesis' in window)||!window.SpeechSynthesisUtterance){const fb=root.querySelector('#tl-feedback');if(fb){fb.hidden=false;fb.className='tl-feedback is-wrong';fb.textContent='Speech playback is not available in this browser.';}return;} window.speechSynthesis.cancel(); const utterance=new SpeechSynthesisUtterance(item.target); utterance.lang='en-US'; utterance.rate=.82; window.speechSynthesis.speak(utterance); }
-  function showDetectiveLoadError(error) {
-    if (window.console && typeof window.console.error === 'function') {
-      window.console.error('[EPIPHANY] Language Detective initialization failed:', error);
-    }
-    root.innerHTML = '<div class="tl-game-card"><p>The investigation could not start. One of its modules may have failed to load.</p><button type="button" class="tl-next" data-think-detective-retry>Try again</button><button type="button" class="tl-back" data-think-back>Back to Think Lab</button></div>';
-  }
   function showTranslatorLevelPicker() {
     mode = 'translator';
     activePool = null;
@@ -1069,31 +1062,7 @@ bark dark core hand land lane data duty melt`
   function start(id) {
     if(id==='translator'){selectedTranslatorCEFR='adaptive';showTranslatorLevelPicker();return;}
     mode=id; index=0; score=0; chainStepIndex=0; chainPath=[]; clueCount=0; roundMistakes=0; ladderPath=[]; ladderWordNote=null; ladderMistakeRecorded=false; activeDifficulty=difficultyForMode(id); oddHintStep=0;
-    if(id==='detective'){
-      activePool=null;
-      const open=()=>{
-        if(mode!=='detective')return;
-        const detective=window.EPIPHANY_LANGUAGE_DETECTIVE;
-        if(!detective||detective.available!==true||typeof detective.mount!=='function') {
-          throw new Error('Language Detective UI bridge is unavailable after loading its dependencies.');
-        }
-        detective.mount(root,{onExit:()=>{mode=null;activePool=null;activeDifficulty=null;landing();}});
-      };
-      if(window.EPIPHANY_LANGUAGE_DETECTIVE&&window.EPIPHANY_LANGUAGE_DETECTIVE.available===true){
-        try { open(); } catch(error) { showDetectiveLoadError(error); }
-      } else {
-        root.innerHTML='<div class="tl-game-card"><p>Preparing the investigation…</p></div>';
-        if(typeof window.EPIPHANY_LAZY_LOAD!=='function'||typeof window.EPIPHANY_LAZY_STYLE!=='function'){
-          showDetectiveLoadError(new Error('Lazy feature loading is unavailable.'));
-          return;
-        }
-        Promise.all([window.EPIPHANY_LAZY_LOAD('languageDetective'),window.EPIPHANY_LAZY_STYLE('languageDetective')])
-          .then(open)
-          .catch(showDetectiveLoadError);
-      }
-      return;
-    }
-    activePool=getRoundPool(id,activeDifficulty.level); renderGame(); if(id==='maze') speakTarget();
+launcher    activePool=getRoundPool(id,activeDifficulty.level); renderGame(); if(id==='maze') speakTarget();
   }
   root.addEventListener('submit', e => {
     const form=e.target.closest('[data-think-ladder-form]');
@@ -1198,7 +1167,6 @@ bark dark core hand land lane data duty melt`
     }
 
     const recommended=e.target.closest('[data-think-recommended]'); if(recommended){start(recommended.dataset.thinkRecommended);return;}
-    if(e.target.closest('[data-think-detective-retry]')){start('detective');return;}
     const translatorLevel=e.target.closest('[data-translator-level]');
     if(translatorLevel){selectedTranslatorCEFR=translatorLevel.dataset.translatorLevel;mode='translator';index=0;score=0;roundMistakes=0;activeDifficulty=difficultyForMode('translator');activePool=getRoundPool('translator',activeDifficulty.level);renderGame();return;}
     const launch=e.target.closest('[data-think-game]'); if(launch){start(launch.dataset.thinkGame);return;}
