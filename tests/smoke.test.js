@@ -267,12 +267,22 @@ test('main navigation tabs open without uncaught page errors', async t => {
         await detectiveRoot.locator('[data-ld-case="CASE-001"]').click();
         assert.equal(await detectiveRoot.locator('.ld-evidence').count(), 4,
           'the selected case should render its evidence');
+        await detectiveRoot.locator('[data-ld-conclusion-choices]').waitFor({state:'visible',timeout:5000});
+        assert.equal(await detectiveRoot.locator('[data-ld-conclusion-locked]').count(), 0);
+        assert.equal(await detectiveRoot.locator('.ld-conclusion-locked').count(), 3,
+          'Standard mode should show three locked option placeholders before reasoning is submitted');
+        assert.equal(await detectiveRoot.locator('[data-ld-conclusion-option]').count(), 0,
+          'option text must remain hidden before reasoning submission');
         await detectiveRoot.locator('[name="ld-standard-reasoning"]').fill(
           'Sara saw a resident in a green jacket pick up the package, but she did not see the resident’s face. The evidence does not identify the person.'
         );
-        await detectiveRoot.locator('[data-ld-conclusion-choices]').waitFor({state:'visible',timeout:5000});
+        await detectiveRoot.locator('[data-ld-submit-reasoning]').click();
+        assert.equal(await detectiveRoot.locator('.ld-conclusion-locked').count(), 0,
+          'submitting reasoning should unlock the conclusion choices');
         assert.equal(await detectiveRoot.locator('[data-ld-conclusion-option]').count(), 3,
-          'Standard mode should show three conclusion choices beneath the reasoning field');
+          'Standard mode should reveal three conclusion choices after reasoning submission');
+        assert.equal(await detectiveRoot.locator('[name="ld-standard-reasoning"]').isEditable(), false,
+          'reasoning should be locked after the choices are revealed');
         await detectiveRoot.locator('[data-ld-conclusion-option="1"]').click();
         await detectiveRoot.locator('[data-ld-answer-form] [type="submit"]').click();
         await detectiveRoot.locator('.ld-result-head').waitFor({state:'visible',timeout:5000});
