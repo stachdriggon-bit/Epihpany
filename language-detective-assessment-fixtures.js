@@ -67,8 +67,6 @@ const cases = {
       {criterionId:'C2',dimension:'EVIDENCE_REASONING',weight:1,conceptIds:['ANOMALY_RECORDED']},
       {criterionId:'C3',dimension:'CRITICAL_THINKING',weight:1,conceptIds:['CAUSE_UNRESOLVED','EXTERNAL_HYPOTHESIS','FAULT_HYPOTHESIS']}
     ],feedbackResources:[]
-  }
-
   },
   'CASE-004': {
     caseId:'CASE-004',caseVersion:'draft-1',schemaVersion:'1.0',
