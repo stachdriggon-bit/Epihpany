@@ -55,7 +55,7 @@ test('case picker groups cases by authored CEFR and keeps evaluation level fixed
 });
 test('The Blue Scarf preserves Standard and Hell answer contracts',()=>{
  const conclusion='The scarf is at the lost-property desk.';
- const reasoning='The cleaner found it under the bench on Platform 2 and took it to lost property. The silver star matches Mina’s scarf.';
+ const reasoning='The cleaner found the scarf under the bench on Platform 2 and took the scarf to lost property. The silver star matches Mina’s scarf.';
  for(const format of ['STANDARD','HELL']){
   const result=assess('CASE-004',conclusion,reasoning,format);
   assert.equal(result.evaluation.primaryOutcome,'ACCEPTED');
