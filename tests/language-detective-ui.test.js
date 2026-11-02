@@ -42,7 +42,7 @@ test('every registered investigation case has presentation metadata and three co
   }
   assert.equal(cases['CASE-004'].presentation.cefr, 'A1');
   assert.equal(cases['CASE-004'].presentation.category, 'Everyday mystery');
-  assert.match(ui, /fixtures\.cases\)\.map/);
+  assert.match(ui, /Object\\.entries\\(fixtures\\.cases\\)\\.map/);
 });
 
 test('Evidence checks test evidence boundaries rather than literal phrase matching', () => {
