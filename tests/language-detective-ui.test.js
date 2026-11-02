@@ -4,7 +4,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const engine = require('../language-detective-assessment-engine');
-const { cases, makeContext } = require('../language-detective-assessment-fixtures');
+const { cases, fixtures, makeContext } = require('../language-detective-assessment-fixtures');
 
 const ui = fs.readFileSync(path.join(__dirname, '..', 'language-detective-ui.js'), 'utf8');
 
@@ -32,13 +32,17 @@ test('Standard mode shows locked conclusion slots and unlocks them only after re
   assert.match(ui, /Assess my answer/);
 });
 
-test('each investigation case supplies three final conclusion choices', () => {
-  const optionBlocks = [...ui.matchAll(/conclusionOptions:\s*\[([^\]]+)\]/g)];
-  assert.equal(optionBlocks.length, 3, 'all three cases need their own conclusion options');
-  for (const block of optionBlocks) {
-    const choices = [...block[1].matchAll(/'((?:\\.|[^'])*)'/g)];
-    assert.equal(choices.length, 3, 'each case must offer exactly three conclusions');
+test('every registered investigation case has presentation metadata and three conclusion choices', () => {
+  assert.equal(Object.keys(cases).length, 4);
+  for (const [caseId, snapshot] of Object.entries(cases)) {
+    assert.ok(snapshot.presentation, caseId + ' presentation metadata');
+    assert.ok(['A1','A2','B1','B2','C1','C2'].includes(snapshot.presentation.cefr), caseId + ' CEFR');
+    assert.equal(snapshot.presentation.conclusionOptions.length, 3, caseId + ' conclusion options');
+    assert.ok(snapshot.presentation.questions.length >= 2, caseId + ' evidence checks');
   }
+  assert.equal(cases['CASE-004'].presentation.cefr, 'A1');
+  assert.equal(cases['CASE-004'].presentation.category, 'Everyday mystery');
+  assert.match(ui, /fixtures\.cases\)\.map/);
 });
 
 test('Evidence checks test evidence boundaries rather than literal phrase matching', () => {
