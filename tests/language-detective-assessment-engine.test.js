@@ -150,6 +150,32 @@ test('all 57 fixtures pass request validation and traverse the pipeline without 
  assert.equal(outcomes.length,57);
 });
 
+test('The Blue Scarf is a valid A1 case and accepts clear simple paraphrases',()=>{
+ const snapshot=cases['CASE-004'];
+ assert.ok(snapshot);
+ assert.equal(makeContext('CASE-004').cefr,'A1');
+ assert.deepEqual(schemas.validateCaseSnapshot(snapshot),[]);
+ const responses=[
+  'Conclusion: The scarf is at the lost-property desk.\nReasoning: The cleaner found it under the bench on Platform 2 and took it to lost property. The silver star matches Mina’s scarf.',
+  'Conclusion: It is at the ticket desk with the lost things.\nReasoning: A cleaner found the scarf under the bench and moved it to the desk. Mina and the found scarf both have a small silver star.'
+ ];
+ for(const response of responses){
+  const result=engine.evaluate({context:{...makeContext('CASE-004','STEADY','HELL'),responseId:'blue-scarf-'+responses.indexOf(response)},caseSnapshot:snapshot,response,hintsUsed:[]});
+  assert.equal(result.evaluation.primaryOutcome,'ACCEPTED',JSON.stringify(result.claims?.findings||[]));
+  assert.equal(result.evaluation.weightedScore,100);
+ }
+});
+
+test('The Blue Scarf distinguishes the discovery place from its current location',()=>{
+ const result=engine.evaluate({context:{...makeContext('CASE-004'),responseId:'blue-scarf-bench-only'},caseSnapshot:cases['CASE-004'],response:'The scarf is under the bench.',hintsUsed:[]});
+ assert.equal(result.evaluation.primaryOutcome,'PARTIAL');
+});
+
+test('The Blue Scarf does not accept an unsupported theft accusation',()=>{
+ const result=engine.evaluate({context:{...makeContext('CASE-004'),responseId:'blue-scarf-theft'},caseSnapshot:cases['CASE-004'],response:'The cleaner stole the scarf.',hintsUsed:[]});
+ assert.equal(result.evaluation.primaryOutcome,'UNSUPPORTED');
+});
+
 test('module-level pipeline exposes all six independently testable stages',()=>{
  const result=engine.evaluate(request('CASE-001','An unidentified resident picked up the package. Their identity is unknown.'));
  assert.deepEqual(result.modules.map(x=>x.moduleName),['TextNormalizer','SemanticMatcher','EvidenceReasoner','ClaimValidator','EvaluationResolver','FeedbackBuilder']);
