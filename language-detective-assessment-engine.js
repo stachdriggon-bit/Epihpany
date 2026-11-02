@@ -93,8 +93,10 @@ function EvaluationResolver(interpreted,claims,snapshot,ctx,hintsUsed=[]){
   const pct=ids.length?Math.round(found.length/ids.length*4)*25:0;
   return {criterionId:c.criterionId,dimension:c.dimension,weight:c.weight,level:LEVELS[pct],percentage:pct,rationaleKeys:[]};
  });
- const dimensionResults=dims.map(d=>{const rows=criterionResults.filter(c=>c.dimension===d),total=rows.reduce((s,c)=>s+c.weight,0);return {dimension:d,score:total?Math.round(rows.reduce((s,c)=>s+c.percentage*c.weight,0)/total):0};});
- const weightedScore=Math.round(dimensionResults.reduce((s,d)=>s+d.score*DIMENSION_WEIGHTS[d.dimension],0)/100);
+ const activeDimensions=dims.filter(d=>snapshot.criteria.some(c=>c.dimension===d));
+ const dimensionResults=activeDimensions.map(d=>{const rows=criterionResults.filter(c=>c.dimension===d),total=rows.reduce((s,c)=>s+c.weight,0);return {dimension:d,score:total?Math.round(rows.reduce((s,c)=>s+c.percentage*c.weight,0)/total):0};});
+ const activeWeight=activeDimensions.reduce((sum,d)=>sum+DIMENSION_WEIGHTS[d],0);
+ const weightedScore=activeWeight?Math.round(dimensionResults.reduce((s,d)=>s+d.score*DIMENSION_WEIGHTS[d.dimension],0)/activeWeight):0;
  const clarification=interpreted.status==='NEEDS_CLARIFICATION';
  const contradiction=claims.data.materialContradictions.length>0,unsupported=claims.data.unsupportedMaterialClaims.length>0;
  const hasClaims=interpreted.data.propositions.length>0,allCore=criterionResults.length>0&&criterionResults.every(c=>c.percentage>=75);
