@@ -76,8 +76,8 @@ test('Evidence checks test evidence boundaries rather than literal phrase matchi
     'What happened after the cleaner found the scarf?'
   ]) assert.ok(prompts.includes(prompt), prompt);
   assert.match(ui, /info\.questions\.map/);
-  assert.doesNotMatch(ui, /What did Sara directly observe\\?/);
-  assert.doesNotMatch(ui, /She recognized the resident’s face\\./);
+  assert.ok(!ui.includes('What did Sara directly observe?'));
+  assert.ok(!ui.includes('She recognized the resident’s face.'));
 });
 test('Hell Mode keeps separate free-text Conclusion and Reasoning fields without conclusion choices', () => {
   assert.match(ui, /name="ld-conclusion"/);
