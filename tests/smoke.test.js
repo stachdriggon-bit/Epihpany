@@ -254,8 +254,19 @@ test('main navigation tabs open without uncaught page errors', async t => {
         await detectiveRoot.locator('.ld-shell').waitFor({state:'visible',timeout:10000});
         assert.equal(await detectiveRoot.locator('.ld-heading h2').innerText(), 'The Language Detective',
           'the real investigation UI must initialize after its browser modules load');
-        assert.equal(await detectiveRoot.locator('[data-ld-case]').count(), 4,
-          'all four case files should be available');
+        assert.equal(await detectiveRoot.locator('[data-ld-level-select]').count(), 6,
+          'the six CEFR levels should be available before opening case files');
+        await detectiveRoot.locator('[data-ld-level-select="A1"]').click();
+        assert.equal(await detectiveRoot.locator('[data-ld-case]').count(), 1,
+          'A1 should show only its own investigation');
+        assert.equal(await detectiveRoot.locator('[data-ld-case="CASE-004"]').count(), 1,
+          'The Blue Scarf should be listed under A1');
+        await detectiveRoot.locator('[data-ld-level-back]').click();
+        await detectiveRoot.locator('[data-ld-level-select="A2"]').click();
+        assert.equal(await detectiveRoot.locator('[data-ld-case]').count(), 1,
+          'A2 should show only its own investigation');
+        assert.equal(await detectiveRoot.locator('[data-ld-case="CASE-001"]').count(), 1,
+          'The Missing Package should be listed under A2');
         for (const file of [
           'language-detective-assessment-schemas.js',
           'language-detective-cefr-patterns.js',
