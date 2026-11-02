@@ -135,6 +135,18 @@ test('case picker requires a CEFR level selection before showing its cases',()=>
  assert.ok(ui.includes('There are no investigations at this level yet.'));
 });
 
+test('CASEBOUND workspace delegates evidence, interview, witness and notebook state to the session model',()=>{
+  assert.match(ui,/EPIPHANY_CASEBOUND_INVESTIGATION/);
+  assert.match(ui,/investigationModel\.createSession/);
+  assert.match(ui,/investigationModel\.discoverEvidence/);
+  assert.match(ui,/investigationModel\.askInterview/);
+  assert.match(ui,/investigationModel\.selectWitness/);
+  assert.match(ui,/investigationModel\.buildEvaluationSnapshot/);
+  assert.match(ui,/investigationModel\.getNotebookEntries/);
+  assert.match(ui,/data-ld-ask-interview/);
+  assert.match(ui,/data-ld-select-witness/);
+});
+
 test('CASEBOUND workspace progressively reveals evidence and derives progress from discovered items', () => {
   assert.match(ui, /function investigation\(\)/);
   assert.match(ui, /state\.discoveredEvidence/);
