@@ -47,6 +47,14 @@ test('every registered investigation case has presentation metadata and three co
   assert.ok(ui.includes('Object.entries(fixtures.cases).map'));
 });
 
+test('CASEBOUND presents a case brief and requires an explicit Start Investigation action', () => {
+  assert.match(ui, /CASEBOUND · EVERY CLUE HAS A STORY/);
+  assert.match(ui, /function caseIntroduction\(\)/);
+  assert.match(ui, /data-ld-start-investigation/);
+  assert.match(ui, /state\.stage = 'case-intro'/);
+  assert.match(ui, /caseIntroduction\(\)/);
+});
+
 test('case picker groups cases by authored CEFR and keeps evaluation level fixed',()=>{
  assert.ok(ui.includes("const CEFR_ORDER = ['A1','A2','B1','B2','C1','C2']"));
  assert.ok(ui.includes('data-ld-level-select'));
