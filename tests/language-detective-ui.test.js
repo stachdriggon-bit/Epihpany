@@ -42,6 +42,8 @@ test('every registered investigation case has presentation metadata and three co
   }
   assert.equal(cases['CASE-004'].presentation.cefr, 'A1');
   assert.equal(cases['CASE-004'].presentation.category, 'Everyday mystery');
+  assert.equal(cases['CASE-004'].presentation.editorialId, 'LD-A1-002');
+  assert.equal(cases['CASE-004'].presentation.status, 'IMPLEMENTED');
   assert.ok(ui.includes('Object.entries(fixtures.cases).map'));
 });
 
