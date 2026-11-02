@@ -134,3 +134,39 @@ test('case picker requires a CEFR level selection before showing its cases',()=>
  assert.ok(ui.includes('data-ld-level-back'));
  assert.ok(ui.includes('There are no investigations at this level yet.'));
 });
+
+test('CASEBOUND workspace progressively reveals evidence and derives progress from discovered items', () => {
+  assert.match(ui, /function investigation\(\)/);
+  assert.match(ui, /state\.discoveredEvidence/);
+  assert.match(ui, /data-ld-open-next/);
+  assert.match(ui, /data-evidence-id=/);
+  assert.match(ui, /aria-valuenow=/);
+  assert.match(ui, /evidenceItems\.length \? Math\.round\(openedEvidence\.length \/ evidenceItems\.length \* 100\) : 100/);
+  assert.match(ui, /Keep investigating before you conclude/);
+  assert.match(ui, /state\.discoveredEvidence = \[\]/);
+});
+
+test('CASEBOUND notebook contains discovered evidence only and supports drawer accessibility', () => {
+  assert.match(ui, /id="ld-case-notebook"/);
+  assert.match(ui, /role="dialog" aria-modal="true"/);
+  assert.match(ui, /openedEvidence\.map/);
+  assert.match(ui, /Your notebook is empty/);
+  assert.match(ui, /data-ld-notebook-open/);
+  assert.match(ui, /data-ld-notebook-close/);
+  assert.match(ui, /event\.key !== 'Escape'/);
+  assert.match(ui, /aria-expanded/);
+});
+
+test('CASEBOUND optional character, interview and witness sections are data-driven and omitted when absent', () => {
+  assert.match(ui, /Array\.isArray\(snapshot\.characters\) && snapshot\.characters\.length/);
+  assert.match(ui, /Array\.isArray\(snapshot\.interviews\) && snapshot\.interviews\.length/);
+  assert.match(ui, /Array\.isArray\(snapshot\.witnesses\) && snapshot\.witnesses\.length/);
+  assert.match(ui, /Array\.isArray\(snapshot\.statements\) && snapshot\.statements\.length/);
+  assert.doesNotMatch(ui, /No witnesses available/);
+});
+
+test('Guided evidence checks are optional and absent from other training modes', () => {
+  assert.match(ui, /state\.trainingMode === 'GUIDED'/);
+  assert.match(ui, /data-ld-toggle-checks/);
+  assert.match(ui, /Optional practice/);
+});
