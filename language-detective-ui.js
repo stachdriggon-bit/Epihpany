@@ -9,9 +9,9 @@
   }
 
   const caseInfo = {
-    'CASE-001': { title: 'The Missing Package', level: 'A2', subtitle: 'A delivery disappears before its recipient arrives.', focus: 'Separate what the witness saw from what nobody could identify.', details: ['10:05 — The delivery record says the package was placed at reception; no recipient was recorded.', '10:00–10:15 — Adam was away and did not see the delivery.', '10:12 — Sara saw a resident wearing a green jacket take the package after the driver left it on the table. She did not see the resident’s face.', '10:20 — Nora arrived and the package was no longer there.', 'The optional label names Nora and Apartment 2B; it does not identify who picked up the package.'], questions: [{id:'q1',prompt:'What did Sara directly observe?',options:['She recognized the resident’s face.','A resident in a green jacket picked up the package.','Adam collected the package.'],answer:1,explain:'Sara saw the pickup and the green jacket, but not the resident’s face.'},{id:'q2',prompt:'What can the evidence establish about the picker’s identity?',options:['The picker was Nora.','The picker was Adam.','The picker was not identified.'],answer:2,explain:'The witness did not see the resident’s face, so identity remains unknown.'}] },
-    'CASE-002': { title: 'Conflicting Accounts', level: 'B1–B2', subtitle: 'An envelope vanishes, then appears in another room.', focus: 'Compare the timeline, reported actions and access records.', details: ['3:05 — Nadia placed the envelope of workshop recordings at library reception.', '3:20 — Omar saw a large envelope on the desk. Later, he saw Nadia carrying papers near the exit and assumed they were the envelope, but he did not identify them.', 'About 3:25 — Lena said she moved a group of papers to Room B; she was unsure whether she checked every sheet.', '3:22–3:41 — A card opened Room B and the room was later closed. The log does not establish who physically used the card or what was carried inside.', '3:45 — Nadia returned and found the envelope missing.', '4:10 — The envelope was found closed in Room B, with papers inside.'], questions: [{id:'q1',prompt:'What does the Room B card record establish?',options:['A card opened Room B; the physical user is not identified.','Lena personally entered Room B.','The envelope was carried into Room B.'],answer:0,explain:'The log records card use, not the identity of the person holding it or what they carried.'},{id:'q2',prompt:'What did Omar actually identify?',options:['He identified the papers Nadia carried as the envelope.','He saw a large envelope earlier, then later saw Nadia with papers he did not identify.','He saw Lena take the envelope.'],answer:1,explain:'Omar made an assumption about the papers; he did not identify them as the envelope.'}] },
-    'CASE-003': { title: 'The Uncertain Evidence', level: 'C1–C2', subtitle: 'An observatory receiver records an unusual signal.', focus: 'Distinguish an observed anomaly from competing explanations.', details: ['14 October, 21:43–21:47 — Receiver R-4 recorded an unusual signal-strength increase. The recovered recording is incomplete.', 'Analyst One: an external source is possible, but its identity cannot be established and equipment fault cannot be ruled out.', 'Analyst Two: a temporary R-4 fault is possible, but there is no diagnostic result proving it.', 'Maintenance records show unstable readings in September and a connection check before R-4 returned to service. There was no maintenance or diagnostic test on the night of 14 October.', 'R-7 did not record the increase, but its direction and sensitivity differed, so it is not a direct control.', 'A preliminary report suggested an external event before the original recording was recovered; it is not independent confirmation.', 'A technician’s note from two days earlier expresses concern that the problem may have returned; it is an impression, not a diagnosis.'], questions: [{id:'q1',prompt:'What is directly established by the recovered record?',options:['An external event caused the signal.','R-4 recorded an unusual increase, but the recording is incomplete.','R-7 confirmed the same increase.'],answer:1,explain:'The unusual R-4 reading is observed; the source and cause remain unresolved.'},{id:'q2',prompt:'Why is R-7 not a direct control?',options:['Its direction and sensitivity differed from R-4.','It was maintained on the same settings.','It recorded the increase clearly.'],answer:0,explain:'Different direction and sensitivity prevent a direct comparison.'}] }
+    'CASE-001': { title: 'The Missing Package', level: 'A2', subtitle: 'A delivery disappears before its recipient arrives.', focus: 'Your task: identify what the witness actually saw, then separate that from what remains unknown about the person.', conclusionOptions: ['Nora took the package after she arrived.', 'An unidentified resident in a green jacket picked up the package; the resident’s identity remains unknown.', 'Adam collected the package while the driver was there.'], details: ['10:05 — The delivery record says the package was placed at reception; no recipient was recorded.', '10:00–10:15 — Adam was away and did not see the delivery.', '10:12 — Sara saw a resident wearing a green jacket take the package after the driver left it on the table. She did not see the resident’s face.', '10:20 — Nora arrived and the package was no longer there.', 'The optional label names Nora and Apartment 2B; it does not identify who picked up the package.'], questions: [{id:'q1',prompt:'What did Sara directly observe?',options:['She recognized the resident’s face.','A resident in a green jacket picked up the package.','Adam collected the package.'],answer:1,explain:'Sara saw the pickup and the green jacket, but not the resident’s face.'},{id:'q2',prompt:'What can the evidence establish about the picker’s identity?',options:['The picker was Nora.','The picker was Adam.','The picker was not identified.'],answer:2,explain:'The witness did not see the resident’s face, so identity remains unknown.'}] },
+    'CASE-002': { title: 'Conflicting Accounts', level: 'B1–B2', subtitle: 'An envelope vanishes, then appears in another room.', focus: 'Your task: explain where the envelope was found and decide what the timeline and access record can—and cannot—prove about who moved it.', conclusionOptions: ['The envelope was found in Room B, but the card log does not identify who used the card.', 'Lena definitely moved the envelope into Room B because her card opened the room.', 'Omar took the envelope after seeing Nadia near the exit.'], details: ['3:05 — Nadia placed the envelope of workshop recordings at library reception.', '3:20 — Omar saw a large envelope on the desk. Later, he saw Nadia carrying papers near the exit and assumed they were the envelope, but he did not identify them.', 'About 3:25 — Lena said she moved a group of papers to Room B; she was unsure whether she checked every sheet.', '3:22–3:41 — A card opened Room B and the room was later closed. The log does not establish who physically used the card or what was carried inside.', '3:45 — Nadia returned and found the envelope missing.', '4:10 — The envelope was found closed in Room B, with papers inside.'], questions: [{id:'q1',prompt:'What does the Room B card record establish?',options:['A card opened Room B; the physical user is not identified.','Lena personally entered Room B.','The envelope was carried into Room B.'],answer:0,explain:'The log records card use, not the identity of the person holding it or what they carried.'},{id:'q2',prompt:'What did Omar actually identify?',options:['He identified the papers Nadia carried as the envelope.','He saw a large envelope earlier, then later saw Nadia with papers he did not identify.','He saw Lena take the envelope.'],answer:1,explain:'Omar made an assumption about the papers; he did not identify them as the envelope.'}] },
+    'CASE-003': { title: 'The Uncertain Evidence', level: 'C1–C2', subtitle: 'An observatory receiver records an unusual signal.', focus: 'Your task: separate the recorded anomaly from its possible explanations. Decide whether the evidence identifies a cause or leaves competing hypotheses open.', conclusionOptions: ['An external event definitely caused the signal increase.', 'A temporary fault in R-4 is confirmed by the maintenance record.', 'R-4 recorded an unusual increase, but its cause remains unresolved; an external source or receiver fault is still possible.'], details: ['14 October, 21:43–21:47 — Receiver R-4 recorded an unusual signal-strength increase. The recovered recording is incomplete.', 'Analyst One: an external source is possible, but its identity cannot be established and equipment fault cannot be ruled out.', 'Analyst Two: a temporary R-4 fault is possible, but there is no diagnostic result proving it.', 'Maintenance records show unstable readings in September and a connection check before R-4 returned to service. There was no maintenance or diagnostic test on the night of 14 October.', 'R-7 did not record the increase, but its direction and sensitivity differed, so it is not a direct control.', 'A preliminary report suggested an external event before the original recording was recovered; it is not independent confirmation.', 'A technician’s note from two days earlier expresses concern that the problem may have returned; it is an impression, not a diagnosis.'], questions: [{id:'q1',prompt:'What is directly established by the recovered record?',options:['An external event caused the signal.','R-4 recorded an unusual increase, but the recording is incomplete.','R-7 confirmed the same increase.'],answer:1,explain:'The unusual R-4 reading is observed; the source and cause remain unresolved.'},{id:'q2',prompt:'Why is R-7 not a direct control?',options:['Its direction and sensitivity differed from R-4.','It was maintained on the same settings.','It recorded the increase clearly.'],answer:0,explain:'Different direction and sensitivity prevent a direct comparison.'}] }
   };
   const hints = [
     { id: 'DIRECTION', title: 'Direction', text: 'Start with what the records directly establish. Separate observations from assumptions.' },
@@ -61,14 +61,18 @@
   }
 
   function readResponse() {
-    if (!root) return { conclusion: '', reasoning: '' };
+    if (!root) return state?.lastResponse || { conclusion: '', reasoning: '', selectedConclusion: null };
     if (state.answerFormat === 'HELL') {
       return {
         conclusion: root.querySelector('[name="ld-conclusion"]')?.value || '',
         reasoning: root.querySelector('[name="ld-reasoning"]')?.value || ''
       };
     }
-    return { conclusion: root.querySelector('[name="ld-standard"]')?.value || '', reasoning: '' };
+    return {
+      conclusion: Number.isInteger(state.selectedConclusion) ? (caseInfo[state.caseId]?.conclusionOptions[state.selectedConclusion] || '') : '',
+      reasoning: root.querySelector('[name="ld-standard-reasoning"]')?.value || '',
+      selectedConclusion: state.selectedConclusion
+    };
   }
 
   function investigation() {
@@ -85,14 +89,14 @@
     const questionMarkup = '<section class="ld-checkpoints"><div><h3>Evidence checks</h3><p>These short questions help you inspect the record. Mistakes do not block progress or affect the written assessment; you can retry them.</p></div>' + info.questions.map(q => '<article class="ld-question" data-ld-question="' + q.id + '"><strong>' + esc(q.prompt) + '</strong><div class="ld-question-options">' + q.options.map((option, i) => '<button type="button" data-ld-option="' + i + '">' + esc(option) + '</button>').join('') + '</div><p class="ld-question-feedback" aria-live="polite"></p></article>').join('') + '</section>';
     const answerFields = state.answerFormat === 'HELL'
       ? '<label class="ld-answer-field">Your Conclusion<textarea name="ld-conclusion" rows="3" maxlength="1200" placeholder="What do you think happened?">' + esc(answers.conclusion) + '</textarea></label><label class="ld-answer-field">Your Reasoning<textarea name="ld-reasoning" rows="4" maxlength="1800" placeholder="Which evidence supports your conclusion? What remains uncertain?">' + esc(answers.reasoning) + '</textarea></label>'
-      : '<label class="ld-answer-field">Your Conclusion & Reasoning<textarea name="ld-standard" rows="6" maxlength="2400" placeholder="Explain what you think happened and support it with details from the evidence.">' + esc(answers.conclusion) + '</textarea></label>';
+      : '<label class="ld-answer-field">Your Reasoning<textarea name="ld-standard-reasoning" rows="5" maxlength="1800" placeholder="Explain what the strongest evidence establishes, and what remains uncertain.">' + esc(answers.reasoning) + '</textarea></label><section class="ld-conclusion-picker" data-ld-conclusion-choices' + (answers.reasoning.trim() ? '' : ' hidden') + '><h4>Choose the conclusion best supported by your reasoning</h4><p>Your choice and reasoning will be assessed together.</p><div class="ld-conclusion-options">' + info.conclusionOptions.map((option, i) => '<button type="button" data-ld-conclusion-option="' + i + '" aria-pressed="' + (answers.selectedConclusion === i) + '"' + (answers.selectedConclusion === i ? ' class="is-selected"' : '') + '>' + esc(option) + '</button>').join('') + '</div></section>';
     root.innerHTML = '<section class="ld-shell">' +
       '<div class="ld-toolbar"><button type="button" class="ld-back" data-ld-back>← All cases</button><span>CASE · ' + info.level + '</span><span>' + esc(state.trainingMode) + ' · ' + esc(state.answerFormat) + '</span></div>' +
       '<div class="ld-heading"><span class="ld-kicker">INVESTIGATION IN PROGRESS</span><h2>' + info.title + '</h2><p>' + info.subtitle + '</p><p class="ld-focus">' + info.focus + '</p></div>' +
       '<section class="ld-timeline"><h3>Case record</h3><ol>' + info.details.map(line => '<li>' + esc(line) + '</li>').join('') + '</ol></section>' +
       '<div class="ld-evidence-grid">' + evidence + '</div>' + questionMarkup +
       '<section class="ld-hints"><div><strong>Optional hints</strong><p>Use them in order. Hints do not reduce your academic score.</p></div><div class="ld-hint-actions">' + visibleHints + '</div></section>' +
-      '<form class="ld-answer-form" data-ld-answer-form><div class="ld-answer-heading"><h3>Build your conclusion</h3><span>' + (state.answerFormat === 'HELL' ? 'Two-part response' : 'One written response') + '</span></div>' +
+      '<form class="ld-answer-form" data-ld-answer-form><div class="ld-answer-heading"><h3>Build your conclusion</h3><span>' + (state.answerFormat === 'HELL' ? 'Two-part response' : 'Reasoning first · then choose a conclusion') + '</span></div>' +
       answerFields + '<button class="ld-submit" type="submit">Assess my conclusion →</button><p class="ld-form-note">You can review the feedback and try again. Earlier attempts are kept in this open investigation.</p></form>' +
       '</section>';
   }
@@ -120,12 +124,15 @@
 
   function submit() {
     const response = readResponse();
-    const combined = state.answerFormat === 'HELL'
-      ? 'Conclusion: ' + response.conclusion + '\nReasoning: ' + response.reasoning
-      : response.conclusion;
-    if (!response.conclusion.trim() || (state.answerFormat === 'HELL' && !response.reasoning.trim())) {
+    const combined = 'Conclusion: ' + response.conclusion + '\nReasoning: ' + response.reasoning;
+    if (!response.conclusion.trim() || !response.reasoning.trim()) {
       const note = root.querySelector('.ld-form-note');
-      if (note) note.textContent = 'Please complete ' + (state.answerFormat === 'HELL' ? 'both fields' : 'your response') + ' before submitting.';
+      if (note) note.textContent = state.answerFormat === 'HELL' ? 'Please complete both fields before submitting.' : 'Write your reasoning, then choose the conclusion that best matches it.';
+      return;
+    }
+    if (state.answerFormat === 'STANDARD' && !Number.isInteger(response.selectedConclusion)) {
+      const note = root.querySelector('.ld-form-note');
+      if (note) note.textContent = 'Choose one conclusion after writing your reasoning.';
       return;
     }
     const context = fixtures.makeContext(state.caseId, state.trainingMode, state.answerFormat);
@@ -143,6 +150,7 @@
       if (note) note.textContent = 'This case could not be assessed because its configuration is invalid. Your response has not been scored.';
       return;
     }
+    state.lastResponse = response;
     state.attempts.push({ response, result });
     state.stage = 'result';
     resultView(result);
@@ -158,12 +166,28 @@
       trainingMode: 'GUIDED',
       answerFormat: 'STANDARD',
       hintsUsed: [],
-      attempts: []
+      attempts: [],
+      selectedConclusion: null,
+      lastResponse: null
     };
     picker();
   }
 
   if (!window.__EPIPHANY_LANGUAGE_DETECTIVE_BOUND__) {
+    document.addEventListener('input', event => {
+      if (!root || !root.contains(event.target) || event.target.name !== 'ld-standard-reasoning' || !state) return;
+      const choices = root.querySelector('[data-ld-conclusion-choices]');
+      if (!choices) return;
+      const hasReasoning = Boolean(event.target.value.trim());
+      choices.hidden = !hasReasoning;
+      if (!hasReasoning) {
+        state.selectedConclusion = null;
+        choices.querySelectorAll('[data-ld-conclusion-option]').forEach(button => {
+          button.classList.remove('is-selected');
+          button.setAttribute('aria-pressed', 'false');
+        });
+      }
+    });
     window.__EPIPHANY_LANGUAGE_DETECTIVE_BOUND__ = true;
     document.addEventListener('change', event => {
       const setting = event.target.closest('[data-ld-setting]');
@@ -181,6 +205,8 @@
         state.stage = 'investigation';
         state.hintsUsed = [];
         state.attempts = [];
+        state.selectedConclusion = null;
+        state.lastResponse = null;
         investigation();
         return;
       }
@@ -210,6 +236,16 @@
         }
         return;
       }
+      const conclusionButton = event.target.closest('[data-ld-conclusion-option]');
+      if (conclusionButton && state.answerFormat === 'STANDARD') {
+        state.selectedConclusion = Number(conclusionButton.dataset.ldConclusionOption);
+        root.querySelectorAll('[data-ld-conclusion-option]').forEach(button => {
+          const selected = button === conclusionButton;
+          button.classList.toggle('is-selected', selected);
+          button.setAttribute('aria-pressed', String(selected));
+        });
+        return;
+      }
       const hintButton = event.target.closest('[data-ld-hint]');
       if (hintButton && !hintButton.disabled) {
         const answers = readResponse();
@@ -217,8 +253,13 @@
         investigation();
         const fields = state.answerFormat === 'HELL'
           ? [['ld-conclusion', answers.conclusion], ['ld-reasoning', answers.reasoning]]
-          : [['ld-standard', answers.conclusion]];
+          : [['ld-standard-reasoning', answers.reasoning]];
         fields.forEach(([name, value]) => { const field = root.querySelector('[name="' + name + '"]'); if (field) field.value = value; });
+        if (state.answerFormat === 'STANDARD' && answers.selectedConclusion !== null) {
+          state.selectedConclusion = answers.selectedConclusion;
+          const selected = root.querySelector('[data-ld-conclusion-option="' + answers.selectedConclusion + '"]');
+          if (selected) { selected.classList.add('is-selected'); selected.setAttribute('aria-pressed', 'true'); }
+        }
       }
       if (event.target.closest('[data-ld-retry]')) {
         state.stage = 'investigation';
