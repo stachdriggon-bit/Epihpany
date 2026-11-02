@@ -44,14 +44,14 @@
 
   function picker() {
     root.innerHTML = '<section class="ld-shell">' +
-      '<div class="ld-toolbar"><button type="button" class="ld-back" data-ld-exit>← Think Lab</button><span>THREE CASE FILES</span></div>' +
+      '<div class="ld-toolbar"><button type="button" class="ld-back" data-ld-exit>← Think Lab</button><span>CASE FILES</span></div>' +
       '<div class="ld-heading"><span class="ld-kicker">THINK LAB · INVESTIGATION</span><h2>The Language Detective</h2><p>Read the evidence, test possible explanations and write a conclusion. The goal is careful reasoning—not guessing the hidden answer.</p></div>' +
       settingsMarkup() +
-      '<div class="ld-case-grid">' + Object.keys(caseInfo).filter(id => caseInfo[id].cefr === state.cefr).map(id => {
+      '<div class="ld-case-grid">' + (Object.keys(caseInfo).filter(id => caseInfo[id].cefr === state.cefr).length ? Object.keys(caseInfo).filter(id => caseInfo[id].cefr === state.cefr).map(id => {
         const item = caseInfo[id];
         return '<button type="button" class="ld-case-card" data-ld-case="' + id + '">' +
           '<span class="ld-case-meta">' + item.category + ' · ' + item.level + '</span><strong>' + item.title + '</strong><span>' + item.subtitle + '</span><em>Open investigation →</em></button>';
-      }).join('') + '</div>' +
+      }).join('') : '<p class="ld-empty">No case files are available at this level yet.</p>') + '</div>' +
       '<p class="ld-note">Guided, Steady and Challenge change the level of support. Standard and Hell Mode change how you submit your conclusion; neither mode changes the evidence or rewards unsupported certainty.</p>' +
       '</section>';
   }
