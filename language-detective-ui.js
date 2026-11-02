@@ -343,8 +343,10 @@
         investigation();
         return;
       }
-      if (event.target.closest('[data-ld-exit]')) { onExit(); return; }
+      if (event.target.closest('[data-ld-exit]')) { document.getElementById('ld-case-notebook')?.remove(); document.querySelector('.ld-notebook-backdrop')?.remove(); onExit(); return; }
       if (event.target.closest('[data-ld-back]')) {
+        document.getElementById('ld-case-notebook')?.remove();
+        document.querySelector('.ld-notebook-backdrop')?.remove();
         state.stage = 'picker';
         state.caseId = null;
         picker();
