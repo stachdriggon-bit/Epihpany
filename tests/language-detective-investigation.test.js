@@ -179,7 +179,7 @@ test('interview and witness knowledge can independently unlock assessment concep
   assert.ok(evaluation.concepts.some(item=>item.conceptId==='WITNESS_ONLY'));
 });
 
-test('The Empty Seat has a reachable evidence path and keeps its interview information reviewable',()=>{
+test('The Empty Seat has a reachable evidence path and keeps optional interview information reviewable',()=>{
  const snapshot=require('../language-detective-assessment-fixtures').cases['CASE-005'];
  assert.deepEqual(model.validateInvestigation(snapshot),[]);
  let session=model.startSession(model.createSession(snapshot).session).session;
@@ -188,14 +188,48 @@ test('The Empty Seat has a reachable evidence path and keeps its interview infor
   assert.equal(found.ok,true,evidenceId);
   session=found.session;
  }
- assert.equal(model.isConclusionReady(snapshot,session).ready,false,'the authored interview detail is part of this path');
- const answer=model.askInterview(snapshot,session,'LINA','Q-BAG-CONTENTS');
+ assert.equal(model.isConclusionReady(snapshot,session).ready,true);
+ const answer=model.askInterview(snapshot,session,'LINA','Q-LINA-BAG-LAST');
  assert.equal(answer.ok,true);
  session=answer.session;
- assert.equal(model.isConclusionReady(snapshot,session).ready,true);
- assert.ok(model.getNotebookEntries(snapshot,session).some(entry=>entry.type==='INTERVIEW'&&/blue notebook/.test(entry.content)));
+ assert.ok(model.getNotebookEntries(snapshot,session).some(entry=>entry.type==='INTERVIEW'&&/timetable board/.test(entry.content)));
  const evaluation=model.buildEvaluationSnapshot(snapshot,session);
  assert.ok(evaluation.concepts.some(item=>item.conceptId==='BAG_BELONGS_LINA'));
+ assert.ok(evaluation.concepts.some(item=>item.conceptId==='INFO-LINA-BAG-LAST'));
+});
+
+test('The Empty Seat offers exactly three approved questions per character and records only the selected answers',()=>{
+ const snapshot=require('../language-detective-assessment-fixtures').cases['CASE-005'];
+ assert.deepEqual(model.validateInvestigation(snapshot),[]);
+ let session=model.startSession(model.createSession(snapshot).session).session;
+ const available=model.getAvailableInterviews(snapshot,session);
+ assert.deepEqual(available.map(item=>item.characterId),['LINA','OMAR','NORA']);
+ assert.deepEqual(available.map(item=>item.questions.length),[3,3,3]);
+ const lina=model.askInterview(snapshot,session,'LINA','Q-LINA-TIME');
+ assert.equal(lina.ok,true);
+ session=lina.session;
+ assert.equal(model.getAvailableInterviews(snapshot,session).some(item=>item.characterId==='LINA'),false);
+ assert.equal(model.getAvailableInterviews(snapshot,session).some(item=>item.characterId==='OMAR'),true);
+ assert.equal(model.getAvailableInterviews(snapshot,session).some(item=>item.characterId==='NORA'),true);
+ const omar=model.askInterview(snapshot,session,'OMAR','Q-OMAR-VIEW');
+ assert.equal(omar.ok,true);
+ session=omar.session;
+ const nora=model.askInterview(snapshot,session,'NORA','Q-NORA-BAG');
+ assert.equal(nora.ok,true);
+ session=nora.session;
+ assert.equal(session.interviewResponses.length,3);
+ assert.equal(session.discoveredInformationIds.length,3);
+ assert.equal(model.askInterview(snapshot,session,'LINA','Q-LINA-BOOK').error,'INTERVIEW_LIMIT_REACHED');
+ assert.equal(model.askInterview(snapshot,session,'OMAR','Q-OMAR-LEFT').error,'INTERVIEW_LIMIT_REACHED');
+ assert.equal(model.askInterview(snapshot,session,'NORA','Q-NORA-VIEW').error,'INTERVIEW_LIMIT_REACHED');
+ const notebook=model.getNotebookEntries(snapshot,session).filter(item=>item.type==='INTERVIEW');
+ assert.equal(notebook.length,3);
+ assert.ok(notebook.some(item=>item.content.includes('8:17')));
+ assert.ok(notebook.some(item=>item.content.includes('Not clearly')));
+ assert.ok(notebook.some(item=>item.content.includes('did not see who left it')));
+ const evaluation=model.buildEvaluationSnapshot(snapshot,session);
+ for(const id of ['INFO-LINA-TIME','INFO-OMAR-VIEW','INFO-NORA-BAG']) assert.ok(evaluation.concepts.some(item=>item.conceptId===id));
+ for(const id of ['INFO-LINA-BOOK','INFO-LINA-BAG-LAST','INFO-OMAR-LEFT','INFO-NORA-VIEW']) assert.ok(!evaluation.concepts.some(item=>item.conceptId===id));
 });
 
 test('progress reports independent discoveries without imposing a fixed stage count',()=>{
