@@ -179,11 +179,14 @@
       }).join('') + '</div>' : '<p class="ld-unlock-gate">Initial statements will appear here when they become available.</p>') +
       '</section>';
     const characters = Array.isArray(snapshot.characters) && snapshot.characters.length
-      ? '<section class="ld-workspace-section ld-panel-people"><div class="ld-section-heading"><div><span class="ld-kicker">PEOPLE</span><h3>Who would you like to question?</h3><p>All initial statements are above. Choose a person here to see their interview questions.</p></div></div><div class="ld-character-grid">' + snapshot.characters.map(person => {
+      ? '<section class="ld-workspace-section ld-panel-people ld-contact-section"><div class="ld-section-heading"><div><span class="ld-kicker">PEOPLE</span><h3>Who would you like to speak with?</h3><p>Choose a person to open their conversation. Each person can answer one question in this interview.</p></div><span class="ld-contact-count">' + snapshot.characters.length + ' people</span></div><div class="ld-contact-list" aria-label="People available for interview">' + snapshot.characters.map(person => {
           const id = person.characterId || person.id;
           const selected = state.selectedCharacterId === id;
           const response = (session.interviewResponses || []).find(item => item.characterId === id);
-          return '<button type="button" class="ld-character-card' + (selected ? ' is-selected' : '') + '" data-ld-select-character="' + esc(id) + '" aria-pressed="' + String(selected) + '"><i class="ld-avatar" aria-hidden="true">' + esc(String(person.name || person.label || '?').trim().charAt(0).toUpperCase()) + '</i><strong>' + esc(person.name || person.label || 'Person') + '</strong>' + (person.role ? '<span>' + esc(person.role) + '</span>' : '') + '<small>' + (response ? 'Interview completed' : selected ? 'Questions shown below' : 'View interview questions →') + '</small></button>';
+          const completed = Boolean(response && response.questionIds && response.questionIds.length);
+          const name = person.name || person.label || 'Person';
+          const status = completed ? 'Interview complete' : selected ? 'Conversation open' : 'Available to question';
+          return '<button type="button" class="ld-contact-row' + (selected ? ' is-selected' : '') + (completed ? ' is-complete' : '') + '" data-ld-select-character="' + esc(id) + '" aria-pressed="' + String(selected) + '"><span class="ld-contact-avatar" aria-hidden="true">' + esc(String(name).trim().charAt(0).toUpperCase()) + '</span><span class="ld-contact-copy"><strong>' + esc(name) + '</strong><span>' + esc(person.role || 'Person in this case') + '</span><small>' + status + '</small></span><span class="ld-contact-action" aria-hidden="true">' + (selected ? 'Viewing' : completed ? 'Review' : 'Talk') + ' <b>→</b></span></button>';
         }).join('') + '</div></section>' : '';
     const selectedInterviewSource = selectedDossier && Array.isArray(snapshot.interviews)
       ? snapshot.interviews.find(item => item.characterId === state.selectedCharacterId) : null;
