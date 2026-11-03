@@ -250,3 +250,22 @@ test('fair A1 paraphrases are recognized across the first four cases without wea
   for(const conceptId of expected)assert.ok(result.interpreted.conceptMatches.some(x=>x.conceptId===conceptId),caseId+' should recognize '+conceptId+'; matched='+JSON.stringify(result.interpreted.conceptMatches.map(x=>x.conceptId)));
  }
 });
+
+
+test('The envelope case does not confuse a credential event with proof that Lena physically used the card',()=>{
+ const result=engine.evaluate(request('CASE-002','Lena used the card to open Room B.'));
+ assert.ok(!result.interpreted.conceptMatches.some(x=>x.conceptId==='CARD_USED'));
+ assert.equal(result.evaluation.primaryOutcome,'PARTIAL');
+});
+
+test('The envelope case rejects a definite personal-movement claim when the evidence only makes it plausible',()=>{
+ const result=engine.evaluate(request('CASE-002','Lena definitely moved the envelope.'));
+ assert.ok(result.claims.findings.some(x=>x.conceptId==='LENA_TAKEN_AS_FACT'&&x.state==='UNSUPPORTED'));
+ assert.equal(result.evaluation.primaryOutcome,'UNSUPPORTED');
+});
+
+test('The signal case does not turn a possible explanation into an established cause',()=>{
+ const result=engine.evaluate(request('CASE-003','An external source definitely caused the signal.'));
+ assert.ok(result.claims.findings.some(x=>x.conceptId==='EXTERNAL_HYPOTHESIS'&&x.state==='OVERCLAIMED'));
+ assert.equal(result.evaluation.primaryOutcome,'UNSUPPORTED');
+});
