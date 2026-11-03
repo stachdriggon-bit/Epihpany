@@ -43,10 +43,12 @@
   }
 
   function settingsMarkup() {
-    return '<div class="ld-settings">' +
+    const answerOptions = [['STANDARD','Standard','Reason, then choose']];
+    if (state.completedCaseIds.length) answerOptions.push(['HELL','Hell Mode','Write it all']);
+    return '<details class="ld-settings-disclosure"><summary><span aria-hidden="true">⚙</span> Settings</summary><div class="ld-settings">' +
       segmented('trainingMode', 'Support level', [['GUIDED','Guided','Hints + practice'],['STEADY','Steady','Balanced'],['CHALLENGE','Challenge','Least help']]) +
-      segmented('answerFormat', 'Answer style', [['STANDARD','Standard','Reason, then choose'],['HELL','Hell Mode','Write it all']]) +
-      '</div>';
+      segmented('answerFormat', 'Answer style', answerOptions) +
+      '</div></details>';
   }
 
   const CEFR_LEVELS = {
@@ -119,7 +121,7 @@
       '<div class="ld-case-intro-art ld-dossier" data-level="' + esc(info.cefr) + '" aria-hidden="true"><b>CASE FILE · ' + esc(info.cefr) + '</b><span>CB</span><i>' + esc(info.category) + '</i><em class="ld-dossier-stamp">OPEN</em></div>' +
       '<div class="ld-heading"><span class="ld-kicker">' + esc(info.category) + ' · ' + esc(info.cefr) + '</span><h2>' + esc(info.title) + '</h2><p>' + esc(info.subtitle) + '</p></div>' +
       '<div class="ld-case-brief"><span class="ld-kicker">YOUR INVESTIGATION</span><p>' + esc(info.focus) + '</p></div>' +
-      '<ol class="ld-howto ld-howto-light"><li><b>1</b>Read the statements</li><li><b>2</b>Question people</li><li><b>3</b>Examine evidence</li><li><b>4</b>Build your conclusion</li></ol><div class="ld-case-intro-actions"><div class="ld-mode-chips"><span>' + esc(state.trainingMode) + '</span><span>' + esc(state.answerFormat === 'HELL' ? 'HELL MODE' : 'STANDARD') + '</span></div><button type="button" class="ld-submit" data-ld-start-investigation>Start Investigation <span aria-hidden="true">→</span></button><p>Take your time. You can review everything you discover as the investigation unfolds.</p></div>' +
+      '<ol class="ld-howto ld-howto-light"><li><b>1</b>Meet the people</li><li><b>2</b>Review the evidence</li><li><b>3</b>Build your conclusion</li></ol><div class="ld-case-intro-actions"><button type="button" class="ld-submit" data-ld-start-investigation>Start Investigation <span aria-hidden="true">→</span></button><p>Take your time. You can review everything you discover as the investigation unfolds.</p></div>' +
       '</section>';
   }
 
@@ -244,6 +246,7 @@
     const outcome = evaluation.primaryOutcome || 'UNSUPPORTED';
     const dims = evaluation.dimensionResults || [];
     const attempt = state.attempts.length;
+    if (outcome === 'ACCEPTED' && !state.completedCaseIds.includes(state.caseId)) state.completedCaseIds.push(state.caseId);
     const score = Number.isFinite(evaluation.weightedScore) ? '<strong class="ld-score">' + evaluation.weightedScore + '/100</strong>' : '<strong class="ld-score">Not graded</strong>';
     const grade = evaluation.awardedGrade ? '<span class="ld-grade">Grade ' + esc(evaluation.awardedGrade) + '</span>' : '';
     const dimensionRows = dims.map(d => '<div class="ld-dimension"><span>' + esc(d.dimension.replaceAll('_', ' ').toLowerCase()) + '</span><b>' + d.score + '%</b><div><i style="width:' + Math.max(0, Math.min(100, d.score)) + '%"></i></div></div>').join('');
@@ -315,6 +318,7 @@
       session: null,
       showEvidenceChecks: false,
       attempts: [],
+      completedCaseIds: [],
       selectedConclusion: null,
       standardReasoning: '',
       standardReasoningSubmitted: false,
