@@ -590,6 +590,22 @@
 @media(prefers-reduced-motion:reduce) { .ld-evidence-lane,.ld-evidence-card,.ld-account-card { scroll-behavior:auto; transition:none!important; animation:none!important; } }
 
 
+/* Final case review: readable, evidence-grounded feedback */
+.ld-shell .ld-result-review{padding:16px;border:1px solid var(--line,#e2e5ee);border-radius:15px;background:var(--surface,#fff)}
+.ld-shell .ld-result-review h3{margin:0 0 8px;font-size:1rem}
+.ld-shell .ld-review-intro{margin:0 0 12px;color:var(--muted,#687087);font-size:.85rem;line-height:1.5}
+.ld-shell .ld-result-review ul{display:grid;gap:12px;margin:0;padding-left:20px}
+.ld-shell .ld-result-review li{padding-left:3px;line-height:1.5}
+.ld-shell .ld-result-review li>b,.ld-shell .ld-result-review li>span,.ld-shell .ld-result-review li>small{display:block}
+.ld-shell .ld-result-review li>span{margin-top:3px;color:var(--text,#25283b)}
+.ld-shell .ld-result-review li>small{margin-top:4px;color:var(--muted,#687087);font-size:.8rem;line-height:1.5}
+.ld-shell .ld-result-feedback{background:var(--soft,#f8f8fc)}
+.ld-shell .ld-result-review.ld-diagnostics{padding:0;overflow:hidden}
+.ld-shell .ld-result-review.ld-diagnostics summary{padding:15px;cursor:pointer;font-weight:800}
+.ld-shell .ld-result-review.ld-diagnostics>ul,.ld-shell .ld-result-review.ld-diagnostics>.ld-dimensions{padding:0 16px 16px}
+.ld-shell .ld-result-review .ld-dimensions{border:0;background:transparent}
+@media(max-width:600px){.ld-shell .ld-result-review{padding:13px}.ld-shell .ld-result-review.ld-diagnostics>ul{padding-inline:28px 13px}}
+
 /* Conclusion scene: a calm, explicit two-step reasoning flow */
 .ld-shell .ld-answer-form{display:grid;gap:16px}
 .ld-shell .ld-answer-step{display:grid;gap:11px;padding:16px;border:1px solid var(--cb-line);border-radius:15px;background:var(--cb-paper)}
