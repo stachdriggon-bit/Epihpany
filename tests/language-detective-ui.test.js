@@ -205,7 +205,8 @@ test('CASEBOUND shows the task and all available initial statements before chara
   assert.match(ui,/Who would you like to speak with\?/);
   assert.match(ui,/data-ld-select-character=/);
   assert.match(ui,/investigationModel\.getCharacterDossier/);
-  assert.match(ui,/Questions shown below/);
+  assert.match(ui,/ld-conversation-prompts/);
+  assert.match(ui,/selectedDossier\.interview\.availableQuestions\.map/);
   assert.doesNotMatch(ui,/Choose someone to review/);
 });
 
