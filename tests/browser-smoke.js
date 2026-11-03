@@ -328,7 +328,7 @@ test('main navigation tabs open without uncaught page errors', async t => {
           await caseboundRoot.locator('[data-ld-open-next]').click();
           assert.equal(await caseboundRoot.locator('.ld-evidence').count(), i,
             'only examined evidence should be visible in the workspace');
-          assert.equal(await caseboundRoot.locator('.ld-notebook-trigger span').innerText(), String(i),
+          assert.equal(await caseboundRoot.locator('.ld-notebook-trigger > span').innerText(), String(i),
             'the notebook count should match discovered evidence');
         }
         assert.equal(await caseboundRoot.locator('[data-ld-open-next]').count(), 0,
