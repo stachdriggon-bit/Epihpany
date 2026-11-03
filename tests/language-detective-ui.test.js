@@ -202,7 +202,7 @@ test('CASEBOUND shows the task and all available initial statements before chara
   assert.match(ui,/visibleStatements = \(snapshot\.statements \|\| \[\]\)\.filter/);
   assert.match(ui,/INITIAL ACCOUNTS/);
   assert.match(ui,/What everyone said/);
-  assert.match(ui,/Who would you like to question/);
+  assert.match(ui,/Who would you like to speak with\?/);
   assert.match(ui,/data-ld-select-character=/);
   assert.match(ui,/investigationModel\.getCharacterDossier/);
   assert.match(ui,/Questions shown below/);
