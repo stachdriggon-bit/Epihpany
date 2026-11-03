@@ -234,3 +234,10 @@ test('CASEBOUND preserves the current reading position after workspace rerenders
   assert.match(ui, /const previousScrollY = window\.scrollY \|\| 0/);
   assert.match(ui, /window\.scrollTo\(\{top:previousScrollY,behavior:'auto'\}\)/);
 });
+
+
+test('CASEBOUND mobile tabs support arrow and Home/End keyboard navigation', () => {
+  assert.match(ui, /\['ArrowLeft','ArrowRight','Home','End'\]/);
+  assert.match(ui, /tabs\[next\]\?\.click\(\)/);
+  assert.match(ui, /event\.preventDefault\(\)/);
+});
