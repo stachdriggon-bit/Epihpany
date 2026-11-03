@@ -410,3 +410,14 @@ test('opposite readings from different instruments are not treated as a contradi
  assert.equal(result.interpreted.intraResponseConflicts.length,0);
  assert.notEqual(result.evaluation.primaryOutcome,'NEEDS_CLARIFICATION');
 });
+
+test('a limitation about the cause does not negate the recorded anomaly',()=>{
+ const fixture=fixtures.find(x=>x.scenarioId==='FAIR-06');
+ assert.ok(fixture);
+ const result=engine.evaluate({context:{...fixture.context,responseId:fixture.scenarioId},caseSnapshot:cases[fixture.caseId],response:fixture.response,hintsUsed:fixture.hintsUsed});
+ const anomaly=result.interpreted.propositions.find(x=>x.conceptId==='ANOMALY_RECORDED');
+ assert.ok(anomaly);
+ assert.equal(anomaly.polarity,'AFFIRMED');
+ assert.equal(result.interpreted.intraResponseConflicts.length,0);
+ assert.equal(result.evaluation.primaryOutcome,'PARTIAL');
+});
