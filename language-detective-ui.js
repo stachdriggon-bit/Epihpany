@@ -172,7 +172,7 @@
       nodes.push({node,english,arabic:CASEBOUND_ARABIC[english],button});
     }
     nodes.forEach(({node,english,arabic,button}) => {
-      if (!node.parentNode || node.parentElement?.closest('[data-tx]')) return;
+      if (!node.parentNode || node.parentElement?.closest('[data-tx]') || (button && button.querySelector('[data-tx]'))) return;
       if (button && button.childElementCount === 0 && button.textContent.trim() === english) {
         button.dataset.tx = '';
         button.dataset.translationAr = arabic;
