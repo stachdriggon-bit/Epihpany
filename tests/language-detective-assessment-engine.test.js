@@ -363,6 +363,17 @@ test('The envelope case rejects a definite personal-movement claim when the evid
  assert.equal(result.evaluation.primaryOutcome,'UNSUPPORTED');
 });
 
+test('the signal case recognizes probable wording and rejects it when evidence supports possibility only',()=>{
+ for(const wording of ['probably caused','likely caused']){
+  const result=engine.evaluate(request('CASE-003','An external source '+wording+' the signal.'));
+  const proposition=result.interpreted.propositions.find(x=>x.conceptId==='EXTERNAL_HYPOTHESIS');
+  assert.ok(proposition,wording+' should be recognized as the external-source hypothesis');
+  assert.equal(proposition.modality,'PROBABLE');
+  assert.ok(result.claims.findings.some(x=>x.conceptId==='EXTERNAL_HYPOTHESIS'&&x.state==='OVERCLAIMED'));
+  assert.equal(result.evaluation.primaryOutcome,'UNSUPPORTED');
+ }
+});
+
 test('The signal case does not turn a possible explanation into an established cause',()=>{
  const result=engine.evaluate(request('CASE-003','An external source definitely caused the signal.'));
  assert.ok(result.claims.findings.some(x=>x.conceptId==='EXTERNAL_HYPOTHESIS'&&x.state==='OVERCLAIMED'));
