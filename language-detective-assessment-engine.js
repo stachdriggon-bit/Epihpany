@@ -139,7 +139,9 @@ function EvaluationResolver(interpreted,claims,snapshot,ctx,hintsUsed=[]){
   const ids=c.conceptIds||[],found=ids.filter(id=>{
    if(!conceptsWithClaims.has(id))return false;
    const conceptFindings=findingsByConcept.get(id)||[];
-   return !conceptFindings.some(f=>f.materiality!=='PERIPHERAL'&&['UNSUPPORTED','OVERCLAIMED','CONTRADICTED'].includes(f.state));
+   const hasSupportedFinding=conceptFindings.some(f=>f.state==='SUPPORTED');
+   const hasMaterialProblem=conceptFindings.some(f=>f.materiality!=='PERIPHERAL'&&['UNSUPPORTED','OVERCLAIMED','CONTRADICTED'].includes(f.state));
+   return hasSupportedFinding&&!hasMaterialProblem;
   });
   const pct=ids.length?Math.round(found.length/ids.length*4)*25:0;
   return {criterionId:c.criterionId,dimension:c.dimension,weight:c.weight,level:LEVELS[pct],percentage:pct,rationaleKeys:[]};
