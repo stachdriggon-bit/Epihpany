@@ -2821,7 +2821,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     if(button.dataset.txState===st)return;
     button.dataset.txState=st;
     button.setAttribute('aria-pressed',String(ar));
-    const casebound = !!button.closest('.casebound-page');
+    const casebound = !!button.closest('.casebound-page, .ld-notebook-drawer');
     button.innerHTML = casebound
       ? '<span aria-hidden="true">'+(ar?'EN':'文A')+'</span>'
       : (ar?TX_BTN_AR:txBtnEn(label));
@@ -2971,7 +2971,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
       const row=document.createElement('div');
       row.className='story-option-translation-row';
       target.parentNode.insertBefore(row,target);row.appendChild(target);row.appendChild(button);
-    }else if(target.closest('.casebound-page') && target.closest('button')){
+    }else if(target.closest('.casebound-page, .ld-notebook-drawer') && target.closest('button')){
       const owner=target.closest('button');
       let row=owner.parentElement?.classList.contains('casebound-translation-row')?owner.parentElement:null;
       if(!row){
