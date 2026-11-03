@@ -367,3 +367,15 @@ test('CASEBOUND retry preserves investigation progress and prior attempts while 
   assert.match(ui, /state\.attempts\.push\(\{ response, result \}\)/);
   assert.match(ui, /state\.attempts\.length > 1/);
 });
+
+test('CASEBOUND gives each assessment outcome a distinct, accurate result stamp and explanation', () => {
+  assert.match(ui, /ACCEPTED: 'SOLVED'/);
+  assert.match(ui, /PARTIAL: 'PARTIAL'/);
+  assert.match(ui, /NEEDS_CLARIFICATION: 'CLARIFY'/);
+  assert.match(ui, /UNSUPPORTED: 'NOT ESTABLISHED'/);
+  assert.match(ui, /CONTRADICTION: 'REVISIT EVIDENCE'/);
+  assert.match(ui, /outcomeStamp\[outcome\] \|\| 'REVIEW'/);
+  assert.match(ui, /meaning or reference is not clear enough to assess fairly/);
+  assert.match(ui, /does not mean every part of your answer is wrong/);
+  assert.match(ui, /A central claim conflicts with the case record/);
+});
