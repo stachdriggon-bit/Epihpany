@@ -219,17 +219,18 @@
     root.innerHTML = '<section class="ld-shell ld-investigation-workspace">' +
       '<div class="ld-toolbar"><button type="button" class="ld-back" data-ld-back>← All cases</button><span>CASE · ' + esc(info.cefr) + '</span><span>' + esc(state.trainingMode) + ' · ' + esc(state.answerFormat) + '</span></div>' +
       '<header class="ld-workspace-header"><div><span class="ld-kicker">CASE FILE · ' + esc(info.cefr) + '</span><h2>' + esc(info.title) + '</h2><p>' + esc(info.subtitle) + '</p></div><button type="button" class="ld-notebook-trigger" data-ld-notebook-open aria-controls="ld-case-notebook" aria-expanded="false"><i class="ld-nb-icon" aria-hidden="true">▤</i>Case notebook <span>' + notebookEntries.length + '</span></button></header>' +
-      '<nav class="ld-mobile-tabs" aria-label="Investigation sections" role="tablist">' + [['statements','Statements'],['people','People'],['evidence','Evidence'],['notebook','Notebook']].map(([panel,label]) => '<button type="button" role="tab" id="ld-tab-' + panel + '" aria-controls="ld-panel-' + panel + '" aria-selected="' + String(state.activePanel === panel) + '" tabindex="' + (state.activePanel === panel ? '0' : '-1') + '" data-ld-panel="' + panel + '">' + label + '</button>').join('') + '</nav>' +
-      '<div class="ld-layout" data-active-panel="' + esc(state.activePanel || 'statements') + '"><aside class="ld-side">' + '<section class="ld-mission-panel" aria-label="Your investigation task"><span class="ld-kicker">YOUR TASK · KEEP THIS BRIEF IN VIEW</span><p>' + esc(info.focus) + '</p></section>' +
+      '<nav class="ld-scene-progress" aria-label="Investigation stages">' + [['people','1','People'],['evidence','2','Evidence'],['conclusion','3','Conclusion']].map(([scene,number,label]) => '<button type="button" class="ld-scene-step' + (state.activeScene === scene ? ' is-active' : '') + (scene === 'conclusion' && !readiness.ready ? ' is-locked' : '') + '" data-ld-scene="' + scene + '"' + (scene === 'conclusion' && !readiness.ready ? ' aria-disabled="true"' : '') + (state.activeScene === scene ? ' aria-current="step"' : '') + '><b>' + number + '</b><span>' + label + '</span></button>').join('') + '</nav>' +
+      '<div class="ld-layout" data-active-scene="' + esc(state.activeScene || 'people') + '"><aside class="ld-side">' + '<section class="ld-mission-panel" aria-label="Your investigation task"><span class="ld-kicker">YOUR TASK · KEEP THIS BRIEF IN VIEW</span><p>' + esc(info.focus) + '</p></section>' +
       '<section class="ld-progress-panel" aria-label="Investigation progress">' + stepsMarkup + '<div class="ld-progress-copy"><strong>Investigation activity</strong><span>' + progress + '% evidence reviewed · ' + session.interviewResponses.length + ' interviews · ' + (session.selectedWitnessId ? '1 witness' : 'no witness') + '</span></div><div class="ld-progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="' + evidenceItems.length + '" aria-valuenow="' + openedEvidence.length + '" aria-label="Evidence reviewed"><i style="width:' + progress + '%"></i></div></section>' +
-      '</aside><div class="ld-main">' + statements.replace('ld-panel-statements','ld-panel-statements" id="ld-panel-statements" role="tabpanel" aria-labelledby="ld-tab-statements') + characters.replace('ld-panel-people','ld-panel-people" id="ld-panel-people" role="tabpanel" aria-labelledby="ld-tab-people') + interviews + witnesses +
-      '<section class="ld-workspace-section ld-discovery-section ld-panel-evidence" id="ld-panel-evidence" role="tabpanel" aria-labelledby="ld-tab-evidence"><div class="ld-section-heading"><div><span class="ld-kicker">DISCOVERY</span><h3>Evidence</h3><p>Examine available items. Some information may become available after a question or witness choice.</p></div></div>' +
+      '</aside><div class="ld-main"><section class="ld-scene-panel" data-scene-panel="people" aria-label="People and interviews">' + statements + characters + interviews + witnesses + '</section>' +
+      '<section class="ld-scene-panel" data-scene-panel="evidence" aria-label="Evidence board"><section class="ld-workspace-section ld-discovery-section ld-panel-evidence" id="ld-panel-evidence"><div class="ld-section-heading"><div><span class="ld-kicker">DISCOVERY</span><h3>Evidence</h3><p>Examine available items. Some information may become available after a question or witness choice.</p></div></div>' +
       (nextEvidence ? '<article class="ld-next-evidence"><span class="ld-evidence-index">NEXT · ' + esc(nextEvidence.role) + '</span><h4>New evidence is available</h4><p>Its contents will be revealed when you choose to examine it.</p><button type="button" class="ld-submit" data-ld-open-next data-evidence-id="' + esc(nextEvidence.evidenceId) + '">Examine evidence →</button></article>' : (canConclude ? '<p class="ld-discovery-complete">All currently available evidence has been reviewed. You can prepare your conclusion.</p>' : '<p class="ld-unlock-gate">Continue with an available interview or witness to reveal the next part of the case.</p>')) +
       '<div class="ld-evidence-grid">' + openedEvidence.map((item, i) => evidenceCard(item, i)).join('') + Array.from({ length: Math.max(0, evidenceItems.length - openedEvidence.length) }, () => '<article class="ld-evidence-ghost" aria-label="Undiscovered evidence"><b>LOCKED</b><p>Not found yet</p></article>').join('') + '</div></section>' +
-      (checksAvailable ? '<section class="ld-check-toggle"><div><strong>Guided evidence checks</strong><p>Optional practice. You can skip this and continue the investigation.</p></div><button type="button" class="ld-back" data-ld-toggle-checks aria-expanded="' + String(Boolean(state.showEvidenceChecks)) + '">' + (state.showEvidenceChecks ? 'Hide checks' : 'Open checks') + '</button></section>' : '') +
-      questionMarkup +
+      (checksAvailable ? '<section class="ld-check-toggle"><div><strong>Quick evidence practice</strong><p>Optional questions about the material you have opened.</p></div><button type="button" class="ld-back" data-ld-toggle-checks aria-expanded="' + String(Boolean(state.showEvidenceChecks)) + '">' + (state.showEvidenceChecks ? 'Hide questions' : 'Practice') + '</button></section>' : '') +
+      questionMarkup + '</section>' +
+      '<section class="ld-scene-panel" data-scene-panel="conclusion" aria-label="Build your conclusion">' +
       (canConclude ? '<section class="ld-hints"><div><strong>Optional hints</strong><p>Use them in order. Hints do not reduce your academic score.</p></div><div class="ld-hint-actions">' + visibleHints + '</div></section>' + answerPanel : '') +
-      '</div></div></section>' +
+      '</section></div><footer class="ld-scene-actionbar"><p>' + (state.activeScene === 'people' ? 'Review the people and their accounts.' : state.activeScene === 'evidence' ? (canConclude ? 'The required investigation path is complete.' : 'Complete the required evidence before concluding.') : 'Review your reasoning before submitting.') + '</p><button type="button" class="ld-submit" data-ld-scene-next' + (state.activeScene === 'evidence' && !canConclude ? ' disabled' : '') + '>' + (state.activeScene === 'people' ? 'Continue to evidence →' : state.activeScene === 'evidence' ? 'Build conclusion →' : '← Review evidence') + '</button></footer></section>' +
       '<button type="button" class="ld-notebook-backdrop" data-ld-notebook-close aria-label="Close case notebook" hidden></button>' +
       '<aside class="ld-notebook-drawer" id="ld-case-notebook" role="dialog" aria-modal="true" aria-labelledby="ld-notebook-title" aria-hidden="true" hidden><div class="ld-notebook-header"><div><span class="ld-kicker">YOUR DISCOVERIES</span><h2 id="ld-notebook-title">Case notebook</h2><p>' + notebookEntries.length + ' discovered item' + (notebookEntries.length === 1 ? '' : 's') + '</p></div><button type="button" class="ld-notebook-close" data-ld-notebook-close aria-label="Close case notebook">×</button></div><div class="ld-notebook-content">' + notebook + '</div></aside>';
     const notebookBackdrop = root.querySelector('.ld-notebook-backdrop');
@@ -306,6 +307,7 @@
       selectedLevel: null,
       selectedCharacterId: null,
       activePanel: 'statements',
+      activeScene: 'people',
       trainingMode: 'GUIDED',
       answerFormat: 'STANDARD',
       hintsUsed: [],
@@ -347,15 +349,22 @@
     });
     document.addEventListener('click', event => {
       if (!root || (!root.contains(event.target) && !event.target.closest('#ld-case-notebook, .ld-notebook-backdrop'))) return;
-      const panelButton = event.target.closest('[data-ld-panel]');
-      if (panelButton && state.stage === 'investigation') {
-        const panel = panelButton.dataset.ldPanel;
-        if (panel === 'notebook') { root.querySelector('[data-ld-notebook-open]')?.click(); return; }
-        if (['statements','people','evidence'].includes(panel)) {
-          state.activePanel = panel;
+      const sceneButton = event.target.closest('[data-ld-scene]');
+      if (sceneButton && state.stage === 'investigation') {
+        const scene = sceneButton.dataset.ldScene;
+        if (scene === 'conclusion' && !investigationModel.isConclusionReady(fixtures.cases[state.caseId], state.session).ready) return;
+        if (['people','evidence','conclusion'].includes(scene)) {
+          state.activeScene = scene;
           investigation();
-          root.querySelector('[data-ld-panel="' + panel + '"]')?.focus();
+          root.querySelector('[data-ld-scene="' + scene + '"]')?.focus();
         }
+        return;
+      }
+      if (event.target.closest('[data-ld-scene-next]') && state.stage === 'investigation') {
+        if (state.activeScene === 'people') state.activeScene = 'evidence';
+        else if (state.activeScene === 'evidence' && investigationModel.isConclusionReady(fixtures.cases[state.caseId], state.session).ready) state.activeScene = 'conclusion';
+        else if (state.activeScene === 'conclusion') state.activeScene = 'evidence';
+        investigation();
         return;
       }
       const sourceEvidence = event.target.closest('[data-ld-source-evidence]');
@@ -373,20 +382,20 @@
         if (sourceEvidence) {
           const id = sourceEvidence.dataset.ldSourceEvidence;
           if (!discoveredEvidenceForState(id)) return;
-          state.activePanel = 'evidence';
+          state.activeScene = 'evidence';
           closeNotebook();
           investigation();
           requestAnimationFrame(() => root.querySelector('[data-evidence-id="' + id + '"]')?.scrollIntoView({block:'center',behavior:'auto'}));
         } else if (sourceStatement) {
           const id = sourceStatement.dataset.ldSourceStatement;
-          state.activePanel = 'statements';
+          state.activeScene = 'people';
           closeNotebook();
           investigation();
           requestAnimationFrame(() => root.querySelector('#ld-statement-' + id)?.scrollIntoView({block:'center',behavior:'auto'}));
         } else if (sourceInterview) {
           const id = sourceInterview.dataset.ldSourceInterview;
           state.selectedCharacterId = id.includes(':') ? id.split(':')[0] : id;
-          state.activePanel = 'people';
+          state.activeScene = 'people';
           closeNotebook();
           investigation();
           const questionId = id.includes(':') ? id.split(':').slice(1).join(':') : '';
@@ -441,14 +450,14 @@
             state.discoveredEvidence = [...state.session.discoveredEvidenceIds];
           }
         }
-        state.activePanel = 'evidence';
+        state.activeScene = 'evidence';
         investigation();
         return;
       }
       const characterButton = event.target.closest('[data-ld-select-character]');
       if (characterButton) {
         state.selectedCharacterId = characterButton.dataset.ldSelectCharacter;
-        state.activePanel = 'people';
+        state.activeScene = 'people';
         investigation();
         return;
       }
@@ -575,6 +584,7 @@
       }
       if (event.target.closest('[data-ld-retry]')) {
         state.stage = 'investigation';
+        state.activeScene = 'conclusion';
         state.standardReasoningSubmitted = false;
         state.selectedConclusion = null;
         state.standardReasoning = state.lastResponse?.reasoning || '';
