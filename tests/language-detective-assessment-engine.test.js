@@ -236,3 +236,17 @@ test('version mismatch fails closed before evaluation',()=>{
  req.context.caseVersion='draft-2';
  assert.equal(engine.evaluate(req).status,'CONFIGURATION_ERROR');
 });
+
+
+test('fair A1 paraphrases are recognized across the first four cases without weakening evidence boundaries',()=>{
+ const casesToCheck=[
+  ['CASE-001','Someone in a green coat picked the package up. We do not know who it was or why.',['PICKUP','PACKAGE_PICKUP_EVENT','IDENTITY_UNKNOWN','MOTIVE_UNKNOWN']],
+  ['CASE-002','The envelope ended up in Room B. Lena said she moved some documents. We cannot tell who used the card.',['ENVELOPE_ROOM_B','LENA_REPORTED_PAPERS','ACTOR_UNPROVEN']],
+  ['CASE-003','The signal increased on R-4. Nobody knows what caused it.',['ANOMALY_RECORDED','CAUSE_UNRESOLVED']],
+  ['CASE-004','The cleaner found it below the bench and handed it in to the lost-property desk.',['SCARF_FOUND','SCARF_TRANSFERRED']]
+ ];
+ for(const [caseId,response,expected] of casesToCheck){
+  const result=engine.evaluate(request(caseId,response));
+  for(const conceptId of expected)assert.ok(result.interpreted.conceptMatches.some(x=>x.conceptId===conceptId),caseId+' should recognize '+conceptId+'; matched='+JSON.stringify(result.interpreted.conceptMatches.map(x=>x.conceptId)));
+ }
+});
