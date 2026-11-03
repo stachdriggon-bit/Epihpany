@@ -392,6 +392,29 @@ test('weakening evidence cannot be silently treated as direct support',()=>{
  assert.equal(claims.data.findings[0].state,'UNRESOLVED');
 });
 
+test('unresolved evidence relations cannot earn criterion credit',()=>{
+ for(const relation of ['WEAKENS','DOES_NOT_ESTABLISH','LEAVES_UNRESOLVED','CONTEXTUALIZES']){
+  const snapshot=structuredClone(cases['CASE-001']);
+  snapshot.evidence.find(item=>item.evidenceId==='E02').relation=relation;
+  const base=request('CASE-001','An unidentified resident picked up the package.');
+  const result=engine.evaluate({...base,caseSnapshot:snapshot});
+  const finding=result.claims.findings.find(item=>item.conceptId==='PACKAGE_PICKUP_EVENT');
+  assert.equal(finding.state,'UNRESOLVED',relation+' must not be treated as direct support');
+  assert.equal(result.evaluation.criterionResults.find(item=>item.criterionId==='C2').percentage,0,
+   relation+' must not award evidence-reasoning credit');
+ }
+});
+
+test('mixed supporting and contradictory evidence cannot earn criterion credit',()=>{
+ const snapshot=structuredClone(cases['CASE-001']);
+ snapshot.concepts.find(item=>item.conceptId==='PACKAGE_PICKUP_EVENT').evidenceRefs=['E01','E02'];
+ snapshot.evidence.find(item=>item.evidenceId==='E02').relation='CONTRADICTS';
+ const result=engine.evaluate({...request('CASE-001','An unidentified resident picked up the package.'),caseSnapshot:snapshot});
+ const finding=result.claims.findings.find(item=>item.conceptId==='PACKAGE_PICKUP_EVENT');
+ assert.equal(finding.state,'UNRESOLVED');
+ assert.equal(result.evaluation.criterionResults.find(item=>item.criterionId==='C2').percentage,0);
+});
+
 test('opposite claims about the same fact in separate clauses require clarification',()=>{
  const result=engine.evaluate(request('CASE-003','R-4 recorded an unusual increase. R-4 recorded no unusual increase.'));
  assert.equal(result.evaluation.primaryOutcome,'NEEDS_CLARIFICATION');
