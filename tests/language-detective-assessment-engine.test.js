@@ -255,7 +255,7 @@ test('fair A1 paraphrases are recognized across the first four cases without wea
 test('The envelope case does not confuse a credential event with proof that Lena physically used the card',()=>{
  const result=engine.evaluate(request('CASE-002','Lena used the card to open Room B.'));
  assert.ok(!result.interpreted.conceptMatches.some(x=>x.conceptId==='CARD_USED'));
- assert.equal(result.evaluation.primaryOutcome,'PARTIAL');
+ assert.equal(result.evaluation.primaryOutcome,'UNSUPPORTED');
 });
 
 test('The envelope case rejects a definite personal-movement claim when the evidence only makes it plausible',()=>{
