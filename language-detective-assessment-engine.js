@@ -127,9 +127,20 @@ function ClaimValidator(interpreted,evidence,snapshot,ctx){
  return envelope(ctx,'ClaimValidator',findings.some(x=>x.state==='UNRESOLVED')?'PARTIAL':'OK',{findings,materialContradictions,unsupportedMaterialClaims,clarificationRequired:false});
 }
 function EvaluationResolver(interpreted,claims,snapshot,ctx,hintsUsed=[]){
- const props=new Map(interpreted.data.propositions.map(p=>[p.conceptId,p]));
+ // Aggregate at concept level while retaining every proposition and finding
+ // in the upstream modules for diagnostics and feedback.
+ const conceptsWithClaims=new Set(interpreted.data.propositions.map(p=>p.conceptId));
+ const findingsByConcept=new Map();
+ for(const finding of claims.data.findings){
+  if(!findingsByConcept.has(finding.conceptId))findingsByConcept.set(finding.conceptId,[]);
+  findingsByConcept.get(finding.conceptId).push(finding);
+ }
  const criterionResults=snapshot.criteria.map(c=>{
-  const ids=c.conceptIds||[],found=ids.filter(id=>{const p=props.get(id);if(!p)return false;const f=claims.data.findings.find(x=>x.conceptId===id);return !f||!['UNSUPPORTED','OVERCLAIMED','CONTRADICTED'].includes(f.state);});
+  const ids=c.conceptIds||[],found=ids.filter(id=>{
+   if(!conceptsWithClaims.has(id))return false;
+   const conceptFindings=findingsByConcept.get(id)||[];
+   return !conceptFindings.some(f=>f.materiality!=='PERIPHERAL'&&['UNSUPPORTED','OVERCLAIMED','CONTRADICTED'].includes(f.state));
+  });
   const pct=ids.length?Math.round(found.length/ids.length*4)*25:0;
   return {criterionId:c.criterionId,dimension:c.dimension,weight:c.weight,level:LEVELS[pct],percentage:pct,rationaleKeys:[]};
  });
