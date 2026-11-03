@@ -72,7 +72,7 @@ test('case picker groups cases by authored CEFR and keeps evaluation level fixed
  assert.equal(makeContext('CASE-004').cefr,'A1');
  assert.equal(makeContext('CASE-001').cefr,'A2');
 });
-test('The Empty Seat is presented as a separate A1 everyday mystery',()=>{
+test('The Missing Bag is presented as a separate A1 everyday mystery',()=>{
  const item=cases['CASE-005'].presentation;
  assert.equal(item.title,'The Empty Seat');
  assert.equal(item.conclusionOptions.length,3);
