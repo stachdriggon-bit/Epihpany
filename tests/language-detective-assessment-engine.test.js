@@ -172,6 +172,25 @@ test('The Empty Seat accepts clear A1 wording and a minor tense error without ch
  assert.equal(result.evaluation.weightedScore,100);
 });
 
+
+test('negative contractions cannot turn a denied fact into a supported positive claim',()=>{
+ const ownership=engine.evaluate({context:{...makeContext('CASE-005','STEADY','HELL'),responseId:'empty-seat-negated-owner'},caseSnapshot:cases['CASE-005'],response:"The green bag isn't Lina's.",hintsUsed:[]});
+ const owner=ownership.claims.findings.find(x=>x.conceptId==='BAG_BELONGS_LINA');
+ assert.equal(owner.state,'UNSUPPORTED');
+ assert.equal(ownership.evaluation.primaryOutcome,'UNSUPPORTED');
+ const library=engine.evaluate({context:{...makeContext('CASE-005','STEADY','HELL'),responseId:'empty-seat-negated-library'},caseSnapshot:cases['CASE-005'],response:"Lina hasn't borrowed the paperback in the bag.",hintsUsed:[]});
+ const link=library.claims.findings.find(x=>x.conceptId==='LIBRARY_LINK');
+ assert.equal(link.state,'UNSUPPORTED');
+ assert.equal(library.evaluation.primaryOutcome,'UNSUPPORTED');
+});
+
+test('a negated sentence does not erase a separate supported positive sentence',()=>{
+ const response="The green bag probably belongs to Lina. Lina hasn't borrowed a different book.";
+ const result=engine.evaluate({context:{...makeContext('CASE-005','STEADY','HELL'),responseId:'empty-seat-negation-scope'},caseSnapshot:cases['CASE-005'],response,hintsUsed:[]});
+ assert.ok(result.interpreted.conceptMatches.some(x=>x.conceptId==='BAG_BELONGS_LINA'));
+ assert.equal(result.claims.findings.find(x=>x.conceptId==='BAG_BELONGS_LINA').state,'SUPPORTED');
+});
+
 test('The Empty Seat is a valid A1 case and evaluates a multi-source ownership inference',()=>{
  const snapshot=cases['CASE-005'];
  assert.ok(snapshot);
