@@ -306,3 +306,18 @@ test('CASEBOUND people selection is presented as a focused interview contact ros
   assert.match(ui, /data-ld-select-character/);
   assert.match(ui, /aria-pressed=/);
 });
+
+
+test('CASEBOUND Evidence scene separates examined records from statements and interview findings', () => {
+  assert.match(ui, /ld-evidence-board/);
+  assert.match(ui, /Records &amp; objects/);
+  assert.match(ui, /People’s accounts/);
+  assert.match(ui, /Initial statements/);
+  assert.match(ui, /Interview notes/);
+  assert.match(ui, /answer\.questionId/);
+  assert.match(ui, /question\?\.prompt/);
+  assert.match(ui, /item\.limitations/);
+  assert.match(ui, /item\.scope/);
+  assert.match(ui, /evidenceItems\.length - openedEvidence\.length/);
+  assert.doesNotMatch(ui, /ld-evidence-ghost/);
+});
