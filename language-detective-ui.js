@@ -124,6 +124,7 @@
   }
 
   function investigation() {
+    const previousScrollY = window.scrollY || 0;
     document.getElementById('ld-case-notebook')?.remove();
     document.querySelector('.ld-notebook-backdrop')?.remove();
     const info = caseInfo[state.caseId];
@@ -147,7 +148,7 @@
     const visibleStatements = (snapshot.statements || []).filter(statement =>
       (session.revealedStatementIds || []).includes(statement.statementId || statement.id)
     );
-    const statements = '<section class="ld-workspace-section ld-briefing-section"><div class="ld-section-heading"><div><span class="ld-kicker">INITIAL ACCOUNTS</span><h3>What everyone said</h3><p>Read the available statements together before choosing whom to question. You can return to them throughout the investigation.</p></div></div>' +
+    const statements = '<section class="ld-workspace-section ld-briefing-section ld-panel-statements"><div class="ld-section-heading"><div><span class="ld-kicker">INITIAL ACCOUNTS</span><h3>What everyone said</h3><p>Read the available statements together before choosing whom to question. You can return to them throughout the investigation.</p></div></div>' +
       (visibleStatements.length ? '<div class="ld-statement-list">' + visibleStatements.map(statement => {
         const person = (snapshot.characters || []).find(item => (item.characterId || item.id) === (statement.characterId || statement.speakerId));
         const speaker = statement.name || statement.speaker || person?.name || 'Statement';
@@ -155,7 +156,7 @@
       }).join('') + '</div>' : '<p class="ld-unlock-gate">Initial statements will appear here when they become available.</p>') +
       '</section>';
     const characters = Array.isArray(snapshot.characters) && snapshot.characters.length
-      ? '<section class="ld-workspace-section"><div class="ld-section-heading"><div><span class="ld-kicker">PEOPLE</span><h3>Who would you like to question?</h3><p>All initial statements are above. Choose a person here to see their interview questions.</p></div></div><div class="ld-character-grid">' + snapshot.characters.map(person => {
+      ? '<section class="ld-workspace-section ld-panel-people"><div class="ld-section-heading"><div><span class="ld-kicker">PEOPLE</span><h3>Who would you like to question?</h3><p>All initial statements are above. Choose a person here to see their interview questions.</p></div></div><div class="ld-character-grid">' + snapshot.characters.map(person => {
           const id = person.characterId || person.id;
           const selected = state.selectedCharacterId === id;
           const response = (session.interviewResponses || []).find(item => item.characterId === id);
@@ -163,11 +164,11 @@
         }).join('') + '</div></section>' : '';
     const availableInterviews = investigationModel.getAvailableInterviews(snapshot, session);
     const interviews = selectedDossier && selectedDossier.interview
-      ? '<section class="ld-workspace-section"><div class="ld-section-heading"><div><span class="ld-kicker">FOLLOW-UP</span><h3>Ask ' + esc(selectedDossier.character.name || 'this person') + '</h3><p>Choose a question. The answer will be recorded in your notebook.</p></div></div><div class="ld-interview-list">' +
+      ? '<section class="ld-workspace-section ld-panel-people"><div class="ld-section-heading"><div><span class="ld-kicker">FOLLOW-UP</span><h3>Ask ' + esc(selectedDossier.character.name || 'this person') + '</h3><p>Choose a question. The answer will be recorded in your notebook.</p></div></div><div class="ld-interview-list">' +
         (selectedDossier.interview.availableQuestions.length ? selectedDossier.interview.availableQuestions.map(question => '<button type="button" class="ld-interview-question" data-ld-ask-interview data-character-id="' + esc(state.selectedCharacterId) + '" data-question-id="' + esc(question.questionId) + '">' + esc(question.prompt) + '</button>').join('') : '<span class="ld-interview-used">No questions remain for this person in this interview.</span>') +
         selectedDossier.interview.answers.map(answer => '<div class="ld-interview-answer"><span>ANSWER REVEALED</span><p>' + esc(answer.answer) + '</p></div>').join('') + '</div></section>' : '';
     const witnesses = Array.isArray(snapshot.witnesses) && snapshot.witnesses.length
-      ? '<section class="ld-workspace-section"><div class="ld-section-heading"><div><span class="ld-kicker">WITNESS LEAD</span><h3>Choose one witness</h3><p>Your choice adds that witness’s account to the notebook. Other evidence paths remain available.</p></div></div><div class="ld-witness-grid">' + snapshot.witnesses.map(witness => {
+      ? '<section class="ld-workspace-section ld-panel-people"><div class="ld-section-heading"><div><span class="ld-kicker">WITNESS LEAD</span><h3>Choose one witness</h3><p>Your choice adds that witness’s account to the notebook. Other evidence paths remain available.</p></div></div><div class="ld-witness-grid">' + snapshot.witnesses.map(witness => {
           const witnessId = witness.witnessId || witness.id;
           const selected = session.selectedWitnessId === witnessId;
           const locked = Boolean(session.selectedWitnessId) && !selected;
@@ -197,10 +198,11 @@
     root.innerHTML = '<section class="ld-shell ld-investigation-workspace">' +
       '<div class="ld-toolbar"><button type="button" class="ld-back" data-ld-back>← All cases</button><span>CASE · ' + esc(info.cefr) + '</span><span>' + esc(state.trainingMode) + ' · ' + esc(state.answerFormat) + '</span></div>' +
       '<header class="ld-workspace-header"><div><span class="ld-kicker">CASE FILE · ' + esc(info.cefr) + '</span><h2>' + esc(info.title) + '</h2><p>' + esc(info.subtitle) + '</p></div><button type="button" class="ld-notebook-trigger" data-ld-notebook-open aria-controls="ld-case-notebook" aria-expanded="false"><i class="ld-nb-icon" aria-hidden="true">▤</i>Case notebook <span>' + notebookEntries.length + '</span></button></header>' +
-      '<div class="ld-layout"><aside class="ld-side">' + '<section class="ld-mission-panel" aria-label="Your investigation task"><span class="ld-kicker">YOUR TASK · KEEP THIS BRIEF IN VIEW</span><p>' + esc(info.focus) + '</p></section>' +
+      '<nav class="ld-mobile-tabs" aria-label="Investigation sections" role="tablist">' + [['statements','Statements'],['people','People'],['evidence','Evidence'],['notebook','Notebook']].map(([panel,label]) => '<button type="button" role="tab" id="ld-tab-' + panel + '" aria-controls="ld-panel-' + panel + '" aria-selected="' + String(state.activePanel === panel) + '" tabindex="' + (state.activePanel === panel ? '0' : '-1') + '" data-ld-panel="' + panel + '">' + label + '</button>').join('') + '</nav>' +
+      '<div class="ld-layout" data-active-panel="' + esc(state.activePanel || 'statements') + '"><aside class="ld-side">' + '<section class="ld-mission-panel" aria-label="Your investigation task"><span class="ld-kicker">YOUR TASK · KEEP THIS BRIEF IN VIEW</span><p>' + esc(info.focus) + '</p></section>' +
       '<section class="ld-progress-panel" aria-label="Investigation progress">' + stepsMarkup + '<div class="ld-progress-copy"><strong>Investigation activity</strong><span>' + progress + '% evidence reviewed · ' + session.interviewResponses.length + ' interviews · ' + (session.selectedWitnessId ? '1 witness' : 'no witness') + '</span></div><div class="ld-progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="' + evidenceItems.length + '" aria-valuenow="' + openedEvidence.length + '" aria-label="Evidence reviewed"><i style="width:' + progress + '%"></i></div></section>' +
-      '</aside><div class="ld-main">' + statements + characters + interviews + witnesses +
-      '<section class="ld-workspace-section ld-discovery-section"><div class="ld-section-heading"><div><span class="ld-kicker">DISCOVERY</span><h3>Evidence</h3><p>Examine available items. Some information may become available after a question or witness choice.</p></div></div>' +
+      '</aside><div class="ld-main">' + statements.replace('ld-panel-statements','ld-panel-statements" id="ld-panel-statements" role="tabpanel" aria-labelledby="ld-tab-statements') + characters.replace('ld-panel-people','ld-panel-people" id="ld-panel-people" role="tabpanel" aria-labelledby="ld-tab-people') + interviews + witnesses +
+      '<section class="ld-workspace-section ld-discovery-section ld-panel-evidence" id="ld-panel-evidence" role="tabpanel" aria-labelledby="ld-tab-evidence"><div class="ld-section-heading"><div><span class="ld-kicker">DISCOVERY</span><h3>Evidence</h3><p>Examine available items. Some information may become available after a question or witness choice.</p></div></div>' +
       (nextEvidence ? '<article class="ld-next-evidence"><span class="ld-evidence-index">NEXT · ' + esc(nextEvidence.role) + '</span><h4>New evidence is available</h4><p>Its contents will be revealed when you choose to examine it.</p><button type="button" class="ld-submit" data-ld-open-next data-evidence-id="' + esc(nextEvidence.evidenceId) + '">Examine evidence →</button></article>' : (canConclude ? '<p class="ld-discovery-complete">All currently available evidence has been reviewed. You can prepare your conclusion.</p>' : '<p class="ld-unlock-gate">Continue with an available interview or witness to reveal the next part of the case.</p>')) +
       '<div class="ld-evidence-grid">' + openedEvidence.map((item, i) => evidenceCard(item, i)).join('') + Array.from({ length: Math.max(0, evidenceItems.length - openedEvidence.length) }, () => '<article class="ld-evidence-ghost" aria-label="Undiscovered evidence"><b>LOCKED</b><p>Not found yet</p></article>').join('') + '</div></section>' +
       (checksAvailable ? '<section class="ld-check-toggle"><div><strong>Guided evidence checks</strong><p>Optional practice. You can skip this and continue the investigation.</p></div><button type="button" class="ld-back" data-ld-toggle-checks aria-expanded="' + String(Boolean(state.showEvidenceChecks)) + '">' + (state.showEvidenceChecks ? 'Hide checks' : 'Open checks') + '</button></section>' : '') +
@@ -210,6 +212,7 @@
       '<button type="button" class="ld-notebook-backdrop" data-ld-notebook-close aria-label="Close case notebook" hidden></button>' +
       '<aside class="ld-notebook-drawer" id="ld-case-notebook" role="dialog" aria-modal="true" aria-labelledby="ld-notebook-title" aria-hidden="true" hidden><div class="ld-notebook-header"><div><span class="ld-kicker">YOUR DISCOVERIES</span><h2 id="ld-notebook-title">Case notebook</h2><p>' + notebookEntries.length + ' discovered item' + (notebookEntries.length === 1 ? '' : 's') + '</p></div><button type="button" class="ld-notebook-close" data-ld-notebook-close aria-label="Close case notebook">×</button></div><div class="ld-notebook-content">' + notebook + '</div></aside>';
     const notebookBackdrop = root.querySelector('.ld-notebook-backdrop');
+    if (previousScrollY) requestAnimationFrame(() => window.scrollTo({top:previousScrollY,behavior:'auto'}));
     const notebookDrawer = root.querySelector('#ld-case-notebook');
     if (notebookBackdrop && notebookDrawer) document.body.append(notebookBackdrop, notebookDrawer);
   }
@@ -281,6 +284,7 @@
       caseId: null,
       selectedLevel: null,
       selectedCharacterId: null,
+      activePanel: 'statements',
       trainingMode: 'GUIDED',
       answerFormat: 'STANDARD',
       hintsUsed: [],
@@ -322,6 +326,17 @@
     });
     document.addEventListener('click', event => {
       if (!root || (!root.contains(event.target) && !event.target.closest('#ld-case-notebook, .ld-notebook-backdrop'))) return;
+      const panelButton = event.target.closest('[data-ld-panel]');
+      if (panelButton && state.stage === 'investigation') {
+        const panel = panelButton.dataset.ldPanel;
+        if (panel === 'notebook') { root.querySelector('[data-ld-notebook-open]')?.click(); return; }
+        if (['statements','people','evidence'].includes(panel)) {
+          state.activePanel = panel;
+          investigation();
+          root.querySelector('[data-ld-panel="' + panel + '"]')?.focus();
+        }
+        return;
+      }
       const levelButton = event.target.closest('[data-ld-level-select]');
       if (levelButton) {
         state.selectedLevel = levelButton.dataset.ldLevelSelect;
@@ -361,12 +376,14 @@
             state.discoveredEvidence = [...state.session.discoveredEvidenceIds];
           }
         }
+        state.activePanel = 'evidence';
         investigation();
         return;
       }
       const characterButton = event.target.closest('[data-ld-select-character]');
       if (characterButton) {
         state.selectedCharacterId = characterButton.dataset.ldSelectCharacter;
+        state.activePanel = 'people';
         investigation();
         return;
       }
@@ -374,6 +391,7 @@
       if (interviewButton) {
         const answer = investigationModel.askInterview(fixtures.cases[state.caseId], state.session, interviewButton.dataset.characterId, interviewButton.dataset.questionId);
         if (answer.ok) state.session = answer.session;
+        state.activePanel = 'people';
         investigation();
         return;
       }
