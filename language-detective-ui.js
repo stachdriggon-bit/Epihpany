@@ -36,6 +36,14 @@
     CONTRADICTION: 'A central claim conflicts with the case record. Revisit the relevant evidence before drawing that conclusion.'
   };
 
+  const outcomeStamp = {
+    ACCEPTED: 'SOLVED',
+    PARTIAL: 'PARTIAL',
+    NEEDS_CLARIFICATION: 'CLARIFY',
+    UNSUPPORTED: 'NOT ESTABLISHED',
+    CONTRADICTION: 'REVISIT EVIDENCE'
+  };
+
   function segmented(name, label, options) {
     return '<fieldset class="ld-segment"><legend>' + label + '</legend><div class="ld-segment-options">' + options.map(o =>
       '<label class="ld-segment-option' + (state[name] === o[0] ? ' is-on' : '') + '"><input type="radio" name="ld-' + name + '" value="' + o[0] + '" data-ld-setting="' + name + '"' + (state[name] === o[0] ? ' checked' : '') + '><strong>' + o[1] + '</strong><small>' + o[2] + '</small></label>'
@@ -297,7 +305,7 @@
     const attemptHistory = state.attempts.map((entry, i) => '<li><b>Attempt ' + (i + 1) + ':</b> ' + esc(outcomeLabel[entry.result.evaluation?.primaryOutcome] || 'Assessment result') + '</li>').join('');
     root.innerHTML = '<section class="ld-shell">' +
       '<div class="ld-toolbar"><button type="button" class="ld-back" data-ld-back>← Case overview</button><span>ATTEMPT ' + attempt + '</span></div>' +
-      '<div class="ld-result-head" data-outcome="' + esc(outcome) + '"><span class="ld-stamp">' + esc(outcome === 'ACCEPTED' ? 'SOLVED' : outcome === 'PARTIAL' ? 'CLOSE' : 'REOPENED') + '</span><span class="ld-kicker">ASSESSMENT FEEDBACK</span><h2>' + esc(outcomeLabel[outcome] || 'Assessment result') + '</h2><p>' + esc(outcomeText[outcome] || 'Review the evidence and try again.') + '</p><div class="ld-result-score"' + (Number.isFinite(evaluation.weightedScore) ? ' style="--p:' + Math.max(0, Math.min(100, evaluation.weightedScore)) + '"' : '') + '>' + score + grade + '</div></div>' +
+      '<div class="ld-result-head" data-outcome="' + esc(outcome) + '"><span class="ld-stamp">' + esc(outcomeStamp[outcome] || 'REVIEW') + '</span><span class="ld-kicker">ASSESSMENT FEEDBACK</span><h2>' + esc(outcomeLabel[outcome] || 'Assessment result') + '</h2><p>' + esc(outcomeText[outcome] || 'Review the evidence and try again.') + '</p><div class="ld-result-score"' + (Number.isFinite(evaluation.weightedScore) ? ' style="--p:' + Math.max(0, Math.min(100, evaluation.weightedScore)) + '"' : '') + '>' + score + grade + '</div></div>' +
       (feedbackItems ? '<section class="ld-result-review ld-result-feedback"><h3>What to take from this result</h3><ul>' + feedbackItems + '</ul></section>' : '') +
       (findings ? '<details class="ld-diagnostics ld-result-review"><summary>Review your reasoning</summary><ul>' + findings + '</ul></details>' : '') +
       evidenceReview +
