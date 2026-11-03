@@ -304,7 +304,7 @@ test('repeating the same supported claim does not increase criterion credit',()=
 });
 
 test('a named witness observation remains attributed while supporting only the witnessed event',()=>{
- const result=engine.evaluate(request('CASE-001','Sara saw an unidentified resident in a green jacket pick up the package. Sara could not identify the resident. The motive remains unknown.'));
+ const result=engine.evaluate(request('CASE-001','Sara saw that an unidentified resident picked up the package. Sara could not identify the resident. The motive remains unknown.'));
  const pickup=result.interpreted.propositions.find(x=>x.conceptId==='PICKUP');
  assert.ok(pickup);
  assert.equal(pickup.source.kind,'UNRESOLVED_ATTRIBUTION',
