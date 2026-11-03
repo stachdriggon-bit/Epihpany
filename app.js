@@ -2971,6 +2971,16 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
       const row=document.createElement('div');
       row.className='story-option-translation-row';
       target.parentNode.insertBefore(row,target);row.appendChild(target);row.appendChild(button);
+    }else if(target.closest('.casebound-page') && target.closest('button')){
+      const owner=target.closest('button');
+      let row=owner.parentElement?.classList.contains('casebound-translation-row')?owner.parentElement:null;
+      if(!row){
+        row=document.createElement('span');
+        row.className='casebound-translation-row';
+        owner.parentNode.insertBefore(row,owner);
+        row.appendChild(owner);
+      }
+      row.appendChild(button);
     }else{
       target.insertAdjacentElement('afterend',button);
     }
@@ -3088,7 +3098,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
   /* ---------- settings: Arabic help + sound ---------- */
   function syncSettings() {
     document.body.classList.toggle('translation-off', !state.translationEnabled);
-    if(state.translationEnabled){enhanceTranslationControls($('#game-body'));enhanceTranslationControls($('#world-game'));enhanceTranslationControls($('#sheet'));enhanceTranslationControls($('#casebound-content'));enhanceTranslationControls($('#ld-case-notebook'));}
+    if(state.translationEnabled){enhanceTranslationControls($('#game-body'));enhanceTranslationControls($('#world-game'));enhanceTranslationControls($('#sheet'));enhanceTranslationControls($('.casebound-page'));enhanceTranslationControls($('#ld-case-notebook'));}
     const immersionActive = !!(state.immersionWeek?.active && state.immersionWeek.endsAt && Date.now() < Number(state.immersionWeek.endsAt));
     document.body.classList.toggle('immersion-week-active', immersionActive);
     const translationToggle = $('#translation-toggle');
