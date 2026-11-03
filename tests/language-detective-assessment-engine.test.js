@@ -277,6 +277,32 @@ test('semantic modality is read from the complete matched clause',()=>{
  assert.equal(result.claims.findings.find(x=>x.conceptId==='EXTERNAL_HYPOTHESIS').state,'OVERCLAIMED');
 });
 
+
+test('repeated claims are aggregated by concept and a later overclaim cannot be hidden',()=>{
+ const responses=[
+  'An external source may have caused the increase. An external source definitely caused the increase.',
+  'An external source definitely caused the increase. An external source may have caused the increase.'
+ ];
+ const results=responses.map((response,index)=>engine.evaluate(request('CASE-003',response,{responseId:'repeated-claim-order-'+index})));
+ for(const result of results){
+  const findings=result.claims.findings.filter(x=>x.conceptId==='EXTERNAL_HYPOTHESIS');
+  assert.equal(findings.length,2);
+  assert.deepEqual(new Set(findings.map(x=>x.state)),new Set(['SUPPORTED','OVERCLAIMED']));
+  assert.equal(result.evaluation.criterionResults.find(x=>x.criterionId==='C3').percentage,0,
+   'C3 must not count EXTERNAL_HYPOTHESIS when any occurrence overclaims it');
+ }
+});
+
+test('repeating the same supported claim does not increase criterion credit',()=>{
+ const single=engine.evaluate(request('CASE-003','An external source may have caused the increase.'));
+ const repeated=engine.evaluate(request('CASE-003','An external source may have caused the increase. An external source may have caused the increase.'));
+ const singleCriterion=single.evaluation.criterionResults.find(x=>x.criterionId==='C3');
+ const repeatedCriterion=repeated.evaluation.criterionResults.find(x=>x.criterionId==='C3');
+ assert.equal(singleCriterion.percentage,25);
+ assert.equal(repeatedCriterion.percentage,singleCriterion.percentage);
+ assert.equal(repeated.claims.findings.filter(x=>x.conceptId==='EXTERNAL_HYPOTHESIS').length,2);
+});
+
 test('reported wording remains attributed instead of being rewritten as the learner own observation',()=>{
  const result=engine.evaluate(request('CASE-001','The report says an unidentified resident picked up the package.'));
  const proposition=result.interpreted.propositions.find(x=>x.conceptId==='PICKUP');
