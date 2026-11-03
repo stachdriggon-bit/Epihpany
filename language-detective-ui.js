@@ -522,6 +522,16 @@
       if (state && state.stage === 'investigation') submit();
     });
     document.addEventListener('keydown', event => {
+      const tab = event.target.closest?.('[data-ld-panel]');
+      if (tab && root?.contains(tab) && ['ArrowLeft','ArrowRight','Home','End'].includes(event.key)) {
+        const tabs = [...root.querySelectorAll('[data-ld-panel]')];
+        const current = tabs.indexOf(tab);
+        const next = event.key === 'Home' ? 0 : event.key === 'End' ? tabs.length - 1 : (current + (event.key === 'ArrowRight' ? 1 : -1) + tabs.length) % tabs.length;
+        event.preventDefault();
+        tabs[next]?.click();
+        root.querySelector('[data-ld-panel="' + tabs[next]?.dataset.ldPanel + '"]')?.focus();
+        return;
+      }
       if (event.key !== 'Escape' || !root || !state) return;
       const drawer = document.getElementById('ld-case-notebook');
       if (!drawer || drawer.hidden) return;
