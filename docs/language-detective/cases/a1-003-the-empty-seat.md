@@ -1,9 +1,9 @@
-# LD-A1-003 — The Empty Seat
+# LD-A1-003 — The Missing Bag
 
 **Runtime ID:** `CASE-005`  
 **CEFR:** A1  
 **Category:** Everyday mystery  
-**Status:** In progress — character selection and notebook UX are being rebuilt; case content and full-path verification remain pending
+**Status:** Final verification in progress — core case content, investigation path, and assessment tests are implemented; live UI verification remains
 
 ## Learner-facing task
 
