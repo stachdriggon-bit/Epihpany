@@ -339,3 +339,15 @@ test('CASEBOUND Conclusion presents a clear reasoning-first sequence without cha
   assert.match(ui,/name="ld-conclusion"/);
   assert.match(ui,/name="ld-reasoning"/);
 });
+
+test('CASEBOUND final review translates internal claim codes and grounds evidence references in examined records',()=>{
+  assert.match(ui,/dimensionLabels/);
+  assert.match(ui,/concept\?\.predicate/);
+  assert.match(ui,/state\.session\?\.discoveredEvidenceIds/);
+  assert.match(ui,/Related records you examined/);
+  assert.match(ui,/Records you examined/);
+  assert.match(ui,/result\.feedback\?\.items/);
+  assert.match(ui,/assessment\.feedback\.reviewEvidenceBoundary/);
+  assert.doesNotMatch(ui,/f\.conceptId\.replaceAll\('_', ' '\)/);
+  assert.match(ui,/strong inference can be reasonable without becoming proof/);
+});
