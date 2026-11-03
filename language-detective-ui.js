@@ -158,7 +158,7 @@
           if (case005Links && entry.type === 'EVIDENCE') sourceLink = sourceButton('Return to related statement', 'statement', case005Links.evidence[entry.id]?.[0] || 'S-LINA');
           if (entry.type === 'INTERVIEW') sourceLink = sourceButton('Return to interview', 'interview', entry.id);
           if (entry.type === 'STATEMENT') sourceLink += sourceButton('Open this account', 'statement', entry.id);
-          return '<article class="ld-notebook-entry ld-notebook-entry-' + esc(entry.type.toLowerCase()) + '"><strong>' + esc(entry.title) + '</strong><p>' + esc(entry.content) + '</p>' + sourceLink + '</article>';
+          return '<article class="ld-notebook-entry ld-notebook-entry-' + esc(entry.type.toLowerCase()) + '" id="ld-notebook-entry-' + esc(entry.id) + '"><strong>' + esc(entry.title) + '</strong><p>' + esc(entry.content) + '</p>' + sourceLink + '</article>';
         }).join('') + '</section>').join('')
       : '<p class="ld-notebook-empty">Your notebook is empty. Examine a record or speak with someone; discoveries will be organised here.</p>';
     const selectedDossier = state.selectedCharacterId ? investigationModel.getCharacterDossier(snapshot,session,state.selectedCharacterId) : null;
@@ -185,7 +185,7 @@
         }).join('') + '</div></section>' : '';
     const availableInterviews = investigationModel.getAvailableInterviews(snapshot, session);
     const interviews = selectedDossier && selectedDossier.interview
-      ? '<section class="ld-workspace-section ld-panel-people"><div class="ld-section-heading"><div><span class="ld-kicker">FOLLOW-UP</span><h3>Ask ' + esc(selectedDossier.character.name || 'this person') + '</h3><p>Choose a question. The answer will be recorded in your notebook.</p></div></div><div class="ld-interview-list">' +
+      ? '<section class="ld-workspace-section ld-panel-people" id="ld-interview-section"><div class="ld-section-heading"><div><span class="ld-kicker">FOLLOW-UP</span><h3>Ask ' + esc(selectedDossier.character.name || 'this person') + '</h3><p>Choose a question. The answer will be recorded in your notebook.</p></div></div><div class="ld-interview-list">' +
         (selectedDossier.interview.availableQuestions.length ? selectedDossier.interview.availableQuestions.map(question => '<button type="button" class="ld-interview-question" data-ld-ask-interview data-character-id="' + esc(state.selectedCharacterId) + '" data-question-id="' + esc(question.questionId) + '">' + esc(question.prompt) + '</button>').join('') : '<span class="ld-interview-used">No questions remain for this person in this interview.</span>') +
         selectedDossier.interview.answers.map(answer => '<div class="ld-interview-answer" id="ld-interview-' + esc(answer.questionId) + '"><span>ANSWER REVEALED</span><p>' + esc(answer.answer) + '</p>' + sourceButton('Review in notebook', 'notebook', state.selectedCharacterId + ':' + answer.questionId) + '</div>').join('') + '</div></section>' : '';
     const witnesses = Array.isArray(snapshot.witnesses) && snapshot.witnesses.length
@@ -391,14 +391,14 @@
           investigation();
           const questionId = id.includes(':') ? id.split(':').slice(1).join(':') : '';
           requestAnimationFrame(() => {
-            const target = questionId ? root.querySelector('#ld-interview-' + questionId) : root.querySelector('[data-ld-select-character="' + state.selectedCharacterId + '"]');
+            const target = questionId ? root.querySelector('#ld-interview-' + questionId) : root.querySelector('#ld-interview-section') || root.querySelector('[data-ld-select-character="' + state.selectedCharacterId + '"]');
             target?.scrollIntoView({block:'center',behavior:'auto'});
           });
         } else {
           const id = sourceNotebook.dataset.ldSourceNotebook;
           closeNotebook();
           root.querySelector('[data-ld-notebook-open]')?.click();
-          requestAnimationFrame(() => root.querySelector('.ld-notebook-entry')?.scrollIntoView({block:'center',behavior:'auto'}));
+          requestAnimationFrame(() => document.getElementById('ld-notebook-entry-' + id)?.scrollIntoView({block:'center',behavior:'auto'}));
         }
         return;
       }
