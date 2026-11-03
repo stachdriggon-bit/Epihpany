@@ -123,6 +123,10 @@
       '</section>';
   }
 
+  function discoveredEvidenceForState(evidenceId) {
+    return Boolean(state?.session?.discoveredEvidenceIds?.includes(evidenceId));
+  }
+
   function investigation() {
     const previousScrollY = window.scrollY || 0;
     document.getElementById('ld-case-notebook')?.remove();
@@ -138,11 +142,24 @@
     const progress = evidenceItems.length ? Math.round(openedEvidence.length / evidenceItems.length * 100) : 100;
     const readiness = investigationModel.isConclusionReady(snapshot, session);
     const answers = readResponse();
-    const evidenceCard = (item, i) => '<article class="ld-evidence" data-evidence-id="' + esc(item.evidenceId) + '"><span>' + esc(item.role) + ' · ' + esc(item.evidenceId || ('E' + String(i + 1).padStart(2, '0'))) + '</span><p>' + esc(item.summary) + '</p>' + (item.limitations?.length ? '<small>Limit: ' + esc(item.limitations.join(' ')) + '</small>' : '') + '</article>';
+    const case005Links = state.caseId === 'CASE-005' ? {
+      statements:{'S-LINA':['E01','E02'],'S-OMAR':['E01'],'S-NORA':['E01']},
+      evidence:{E01:['S-LINA','S-OMAR','S-NORA'],E02:['S-LINA'],E03:['S-LINA'],E04:['S-LINA']},
+      evidenceLabels:{E01:'Review the three initial accounts',E02:'Return to Lina’s account',E03:'Return to Lina’s account',E04:'Return to Lina’s account'}
+    } : null;
+    const sourceButton = (label, action, value) => '<button type="button" class="ld-source-link" data-ld-source-' + action + '="' + esc(value) + '">' + esc(label) + ' →</button>';
+    const evidenceCard = (item, i) => '<article class="ld-evidence" data-evidence-id="' + esc(item.evidenceId) + '"><span>' + esc(item.role) + ' · ' + esc(item.evidenceId || ('E' + String(i + 1).padStart(2, '0'))) + '</span><p>' + esc(item.summary) + '</p>' + (item.limitations?.length ? '<small>Limit: ' + esc(item.limitations.join(' ')) + '</small>' : '') + (case005Links?.evidence[item.evidenceId] ? sourceButton(case005Links.evidenceLabels[item.evidenceId], 'statement', case005Links.evidence[item.evidenceId][0]) : '') + '</article>';
     const notebookSections = investigationModel.getNotebookSections(snapshot, session);
     const notebookEntries = investigationModel.getNotebookEntries(snapshot, session);
     const notebook = notebookSections.length
-      ? notebookSections.map(section => '<section class="ld-notebook-section"><h3>' + esc(section.title) + '</h3><p>' + esc(section.description) + '</p>' + section.entries.map(entry => '<article class="ld-notebook-entry ld-notebook-entry-' + esc(entry.type.toLowerCase()) + '"><strong>' + esc(entry.title) + '</strong><p>' + esc(entry.content) + '</p></article>').join('') + '</section>').join('')
+      ? notebookSections.map(section => '<section class="ld-notebook-section"><h3>' + esc(section.title) + '</h3><p>' + esc(section.description) + '</p>' + section.entries.map(entry => {
+          let sourceLink = '';
+          if (case005Links && entry.type === 'STATEMENT') sourceLink = (case005Links.statements[entry.id] || []).filter(id => discovered.has(id)).map(id => sourceButton('Open related ' + id, 'evidence', id)).join('');
+          if (case005Links && entry.type === 'EVIDENCE') sourceLink = sourceButton('Return to related statement', 'statement', case005Links.evidence[entry.id]?.[0] || 'S-LINA');
+          if (entry.type === 'INTERVIEW') sourceLink = sourceButton('Return to interview', 'interview', entry.id);
+          if (entry.type === 'STATEMENT') sourceLink += sourceButton('Open this account', 'statement', entry.id);
+          return '<article class="ld-notebook-entry ld-notebook-entry-' + esc(entry.type.toLowerCase()) + '"><strong>' + esc(entry.title) + '</strong><p>' + esc(entry.content) + '</p>' + sourceLink + '</article>';
+        }).join('') + '</section>').join('')
       : '<p class="ld-notebook-empty">Your notebook is empty. Examine a record or speak with someone; discoveries will be organised here.</p>';
     const selectedDossier = state.selectedCharacterId ? investigationModel.getCharacterDossier(snapshot,session,state.selectedCharacterId) : null;
     const visibleStatements = (snapshot.statements || []).filter(statement =>
@@ -152,7 +169,11 @@
       (visibleStatements.length ? '<div class="ld-statement-list">' + visibleStatements.map(statement => {
         const person = (snapshot.characters || []).find(item => (item.characterId || item.id) === (statement.characterId || statement.speakerId));
         const speaker = statement.name || statement.speaker || person?.name || 'Statement';
-        return '<article class="ld-statement-card"><span class="ld-statement-speaker">' + esc(speaker) + (person?.role ? ' · ' + esc(person.role) : '') + '</span><p>' + esc(statement.text || statement.statement || '') + '</p></article>';
+        const statementId = statement.statementId || statement.id;
+        const relatedEvidence = case005Links?.statements[statementId] || [];
+        const relatedLinks = relatedEvidence.filter(id => discovered.has(id)).map(id => sourceButton('Examine ' + id, 'evidence', id)).join('');
+        const interviewLink = person ? sourceButton('Ask ' + speaker, 'interview', person.characterId || person.id) : '';
+        return '<article class="ld-statement-card" id="ld-statement-' + esc(statementId) + '"><span class="ld-statement-speaker">' + esc(speaker) + (person?.role ? ' · ' + esc(person.role) : '') + '</span><p>' + esc(statement.text || statement.statement || '') + '</p><div class="ld-source-links">' + relatedLinks + interviewLink + '</div></article>';
       }).join('') + '</div>' : '<p class="ld-unlock-gate">Initial statements will appear here when they become available.</p>') +
       '</section>';
     const characters = Array.isArray(snapshot.characters) && snapshot.characters.length
@@ -166,7 +187,7 @@
     const interviews = selectedDossier && selectedDossier.interview
       ? '<section class="ld-workspace-section ld-panel-people"><div class="ld-section-heading"><div><span class="ld-kicker">FOLLOW-UP</span><h3>Ask ' + esc(selectedDossier.character.name || 'this person') + '</h3><p>Choose a question. The answer will be recorded in your notebook.</p></div></div><div class="ld-interview-list">' +
         (selectedDossier.interview.availableQuestions.length ? selectedDossier.interview.availableQuestions.map(question => '<button type="button" class="ld-interview-question" data-ld-ask-interview data-character-id="' + esc(state.selectedCharacterId) + '" data-question-id="' + esc(question.questionId) + '">' + esc(question.prompt) + '</button>').join('') : '<span class="ld-interview-used">No questions remain for this person in this interview.</span>') +
-        selectedDossier.interview.answers.map(answer => '<div class="ld-interview-answer"><span>ANSWER REVEALED</span><p>' + esc(answer.answer) + '</p></div>').join('') + '</div></section>' : '';
+        selectedDossier.interview.answers.map(answer => '<div class="ld-interview-answer" id="ld-interview-' + esc(answer.questionId) + '"><span>ANSWER REVEALED</span><p>' + esc(answer.answer) + '</p>' + sourceButton('Review in notebook', 'notebook', state.selectedCharacterId + ':' + answer.questionId) + '</div>').join('') + '</div></section>' : '';
     const witnesses = Array.isArray(snapshot.witnesses) && snapshot.witnesses.length
       ? '<section class="ld-workspace-section ld-panel-people"><div class="ld-section-heading"><div><span class="ld-kicker">WITNESS LEAD</span><h3>Choose one witness</h3><p>Your choice adds that witness’s account to the notebook. Other evidence paths remain available.</p></div></div><div class="ld-witness-grid">' + snapshot.witnesses.map(witness => {
           const witnessId = witness.witnessId || witness.id;
@@ -334,6 +355,50 @@
           state.activePanel = panel;
           investigation();
           root.querySelector('[data-ld-panel="' + panel + '"]')?.focus();
+        }
+        return;
+      }
+      const sourceEvidence = event.target.closest('[data-ld-source-evidence]');
+      const sourceStatement = event.target.closest('[data-ld-source-statement]');
+      const sourceInterview = event.target.closest('[data-ld-source-interview]');
+      const sourceNotebook = event.target.closest('[data-ld-source-notebook]');
+      if (sourceEvidence || sourceStatement || sourceInterview || sourceNotebook) {
+        const closeNotebook = () => {
+          const drawer = document.getElementById('ld-case-notebook');
+          const backdrop = document.querySelector('.ld-notebook-backdrop');
+          if (drawer) { drawer.hidden = true; drawer.setAttribute('aria-hidden','true'); }
+          if (backdrop) backdrop.hidden = true;
+          root.querySelector('[data-ld-notebook-open]')?.setAttribute('aria-expanded','false');
+        };
+        if (sourceEvidence) {
+          const id = sourceEvidence.dataset.ldSourceEvidence;
+          if (!discoveredEvidenceForState(id)) return;
+          state.activePanel = 'evidence';
+          closeNotebook();
+          investigation();
+          requestAnimationFrame(() => root.querySelector('[data-evidence-id="' + id + '"]')?.scrollIntoView({block:'center',behavior:'auto'}));
+        } else if (sourceStatement) {
+          const id = sourceStatement.dataset.ldSourceStatement;
+          state.activePanel = 'statements';
+          closeNotebook();
+          investigation();
+          requestAnimationFrame(() => root.querySelector('#ld-statement-' + id)?.scrollIntoView({block:'center',behavior:'auto'}));
+        } else if (sourceInterview) {
+          const id = sourceInterview.dataset.ldSourceInterview;
+          state.selectedCharacterId = id.includes(':') ? id.split(':')[0] : id;
+          state.activePanel = 'people';
+          closeNotebook();
+          investigation();
+          const questionId = id.includes(':') ? id.split(':').slice(1).join(':') : '';
+          requestAnimationFrame(() => {
+            const target = questionId ? root.querySelector('#ld-interview-' + questionId) : root.querySelector('[data-ld-select-character="' + state.selectedCharacterId + '"]');
+            target?.scrollIntoView({block:'center',behavior:'auto'});
+          });
+        } else {
+          const id = sourceNotebook.dataset.ldSourceNotebook;
+          closeNotebook();
+          root.querySelector('[data-ld-notebook-open]')?.click();
+          requestAnimationFrame(() => root.querySelector('.ld-notebook-entry')?.scrollIntoView({block:'center',behavior:'auto'}));
         }
         return;
       }
