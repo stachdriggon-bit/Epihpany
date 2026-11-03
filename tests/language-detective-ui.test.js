@@ -275,3 +275,22 @@ test('CASEBOUND contextual navigation preserves progressive evidence discovery',
   assert.match(ui, /entry\.type === 'INTERVIEW'/);
   assert.match(ui, /entry\.type === 'STATEMENT'/);
 });
+
+
+test('CASEBOUND interviews render as a conversation with the original question and answer text', () => {
+  assert.match(ui, /ld-conversation-thread/);
+  assert.match(ui, /ld-chat-person/);
+  assert.match(ui, /ld-chat-player/);
+  assert.match(ui, /selectedInterviewSource\?\.questions\?\.find/);
+  assert.match(ui, /selectedInitialStatement/);
+  assert.match(ui, /ONE PER PERSON/);
+  assert.match(ui, /data-ld-ask-interview/);
+  assert.match(ui, /You have asked this person a question/);
+});
+
+test('CASEBOUND interview answers remain session-driven and return to the People scene', () => {
+  assert.match(ui, /investigationModel\.askInterview/);
+  assert.match(ui, /state\.activeScene = 'people'/);
+  assert.match(ui, /Added to case notebook/);
+  assert.match(ui, /ld-interview-/);
+});
