@@ -378,3 +378,35 @@ test('repeating a supported claim without changing its polarity is not a contrad
  assert.notEqual(result.evaluation.primaryOutcome,'NEEDS_CLARIFICATION');
  assert.equal(result.interpreted.intraResponseConflicts.length,0);
 });
+
+test('same-event denial is detected even when the negation scopes over the matched proposition',()=>{
+ const response='R-4 recorded an unusual increase. It is not true that R-4 recorded an unusual increase.';
+ const result=engine.evaluate(request('CASE-003',response));
+ assert.equal(result.evaluation.primaryOutcome,'NEEDS_CLARIFICATION');
+ assert.equal(result.evaluation.awardedGrade,undefined);
+ assert.ok(result.interpreted.intraResponseConflicts.some(x=>x.conceptId==='ANOMALY_RECORDED'));
+});
+
+test('same-event conflict detection is invariant to the order of affirmation and denial',()=>{
+ const responses=[
+  'R-4 recorded an unusual increase. R-4 recorded no unusual increase.',
+  'R-4 recorded no unusual increase. R-4 recorded an unusual increase.'
+ ];
+ const results=responses.map((response,index)=>engine.evaluate(request('CASE-003',response,{responseId:'self-conflict-order-'+index})));
+ for(const result of results){
+  assert.equal(result.evaluation.primaryOutcome,'NEEDS_CLARIFICATION');
+  assert.equal(result.evaluation.awardedGrade,undefined);
+  assert.ok(result.interpreted.intraResponseConflicts.some(x=>x.conceptId==='ANOMALY_RECORDED'));
+ }
+ assert.deepEqual(
+  results.map(x=>x.evaluation.primaryOutcome),
+  ['NEEDS_CLARIFICATION','NEEDS_CLARIFICATION']
+ );
+});
+
+test('opposite readings from different instruments are not treated as a contradiction about one event',()=>{
+ const response='R-4 recorded an unusual increase. R-7 recorded no unusual increase.';
+ const result=engine.evaluate(request('CASE-003',response));
+ assert.equal(result.interpreted.intraResponseConflicts.length,0);
+ assert.notEqual(result.evaluation.primaryOutcome,'NEEDS_CLARIFICATION');
+});
