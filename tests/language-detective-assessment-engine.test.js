@@ -341,3 +341,27 @@ test('The Blue Scarf does not treat another object sent to lost property as the 
  const result=engine.evaluate({context:{...makeContext('CASE-004'),responseId:'blue-scarf-wrong-object-transfer'},caseSnapshot:cases['CASE-004'],response,hintsUsed:[]});
  assert.ok(!result.interpreted.conceptMatches.some(x=>x.conceptId==='SCARF_TRANSFERRED'));
 });
+
+
+test('mixed supporting and contradictory evidence remains unresolved instead of being auto-approved',()=>{
+ const ctx=makeContext('CASE-001');
+ const snapshot=structuredClone(cases['CASE-001']);
+ snapshot.evidence[0].relation='CONTRADICTS';
+ const interpreted={data:{propositions:[{propositionId:'p-test',conceptId:'PACKAGE_PICKUP_EVENT',evidenceRefs:['E01','E02'],polarity:'AFFIRMED',modality:'UNKNOWN'}]}};
+ const result=engine.EvidenceReasoner(interpreted,snapshot,ctx);
+ assert.equal(result.data.propositionAssessments[0].supportState,'CONFLICTED');
+ const claims=engine.ClaimValidator(interpreted,result,snapshot,ctx);
+ assert.equal(claims.data.findings[0].state,'UNRESOLVED');
+ assert.equal(claims.data.findings[0].diagnosticCodes[0],'CLAIM_UNRESOLVED');
+});
+
+test('weakening evidence cannot be silently treated as direct support',()=>{
+ const ctx=makeContext('CASE-001');
+ const snapshot=structuredClone(cases['CASE-001']);
+ snapshot.evidence[1].relation='WEAKENS';
+ const interpreted={data:{propositions:[{propositionId:'p-test',conceptId:'PACKAGE_PICKUP_EVENT',evidenceRefs:['E02'],polarity:'AFFIRMED',modality:'UNKNOWN'}]}};
+ const result=engine.EvidenceReasoner(interpreted,snapshot,ctx);
+ assert.equal(result.data.propositionAssessments[0].supportState,'WEAKENED');
+ const claims=engine.ClaimValidator(interpreted,result,snapshot,ctx);
+ assert.equal(claims.data.findings[0].state,'UNRESOLVED');
+});
