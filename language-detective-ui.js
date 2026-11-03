@@ -429,6 +429,7 @@
       const caseButton = event.target.closest('[data-ld-case]');
       if (caseButton) {
         state.caseId = caseButton.dataset.ldCase;
+        state.activeScene = 'people';
         state.selectedCharacterId = null;
         state.stage = 'case-intro';
         state.hintsUsed = [];
