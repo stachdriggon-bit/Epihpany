@@ -321,3 +321,18 @@ test('CASEBOUND Evidence scene separates examined records from statements and in
   assert.match(ui, /evidenceItems\.length - openedEvidence\.length/);
   assert.doesNotMatch(ui, /ld-evidence-ghost/);
 });
+
+
+test('CASEBOUND Conclusion presents a clear reasoning-first sequence without changing assessment contracts',()=>{
+  assert.match(ui,/STEP 1/);
+  assert.match(ui,/Explain your reasoning/);
+  assert.match(ui,/What do the records establish\?/);
+  assert.match(ui,/STEP 2/);
+  assert.match(ui,/Choose your conclusion/);
+  assert.match(ui,/The conclusion choices unlock after you submit your reasoning/);
+  assert.match(ui,/state\.standardReasoningSubmitted = true/);
+  assert.match(ui,/data-ld-conclusion-option=/);
+  assert.match(ui,/data-ld-submit-reasoning/);
+  assert.match(ui,/name="ld-conclusion"/);
+  assert.match(ui,/name="ld-reasoning"/);
+});
