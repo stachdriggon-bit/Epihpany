@@ -284,9 +284,9 @@
     const discoveredIds = new Set(state.session?.discoveredEvidenceIds || []);
     const findings = (evaluation.claimDiagnostics || []).map(f => {
       const concept = concepts.get(f.conceptId);
-      const evidenceIds = (concept?.evidenceRefs || []).filter(id => discoveredIds.has(id));
-      const stateLabels = {SUPPORTED:'Supported by the evidence',PARTIALLY_SUPPORTED:'Partly supported',UNSUPPORTED:'Not established by the evidence',OVERCLAIMED:'Goes beyond what the evidence establishes',CONTRADICTED:'Conflicts with the evidence'};
-      return '<li><b>' + esc(concept?.predicate || 'A point in your explanation') + '</b><span>' + esc(stateLabels[f.state] || f.state.replaceAll('_',' ').toLowerCase()) + '</span>' + (evidenceIds.length ? '<small>Related records you examined: ' + evidenceIds.map(esc).join(', ') + '</small>' : '<small>No directly linked record from your examined evidence is shown here.</small>') + '</li>';
+      const evidenceTitles = (concept?.evidenceRefs || []).filter(id => discoveredIds.has(id)).map(id => caseSnapshot.evidence?.find(item => item.evidenceId === id)?.title || id);
+      const stateLabels = {SUPPORTED:'Supported by the evidence',UNRESOLVED:'Not enough information to assess this point',UNSUPPORTED:'Not established by the evidence',OVERCLAIMED:'Goes beyond what the evidence establishes',CONTRADICTED:'Conflicts with the evidence'};
+      return '<li><b>' + esc(concept?.predicate || 'A point in your explanation') + '</b><span>' + esc(stateLabels[f.state] || 'Needs a closer look') + '</span>' + (evidenceTitles.length ? '<small>Related records you examined: ' + evidenceTitles.map(esc).join(', ') + '</small>' : '') + '</li>';
     }).join('');
     const examinedEvidence = (caseSnapshot.evidence || []).filter(item => discoveredIds.has(item.evidenceId));
     const evidenceReview = examinedEvidence.length ? '<section class="ld-result-review"><h3>Records you examined</h3><p class="ld-review-intro">These are the case records you opened during this investigation.</p><ul>' + examinedEvidence.map(item => '<li><b>' + esc(item.title || item.evidenceId) + '</b><span>' + esc(item.summary) + '</span>' + (item.limitations?.length ? '<small>Limit: ' + esc(item.limitations.join(' ')) + '</small>' : '') + '</li>').join('') + '</ul></section>' : '';
