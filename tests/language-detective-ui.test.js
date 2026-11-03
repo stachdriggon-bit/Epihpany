@@ -351,3 +351,19 @@ test('CASEBOUND final review translates internal claim codes and grounds evidenc
   assert.doesNotMatch(ui,/f\.conceptId\.replaceAll\('_', ' '\)/);
   assert.match(ui,/strong inference can be reasonable without becoming proof/);
 });
+
+test('CASEBOUND retry preserves investigation progress and prior attempts while reopening the conclusion step', () => {
+  const retryStart = ui.indexOf("if (event.target.closest('[data-ld-retry]'))");
+  assert.notEqual(retryStart, -1);
+  const retryEnd = ui.indexOf("investigation();", retryStart);
+  assert.notEqual(retryEnd, -1);
+  const retryHandler = ui.slice(retryStart, retryEnd);
+  assert.match(retryHandler, /state\.stage = 'investigation'/);
+  assert.match(retryHandler, /state\.activeScene = 'conclusion'/);
+  assert.match(retryHandler, /state\.standardReasoningSubmitted = false/);
+  assert.match(retryHandler, /state\.selectedConclusion = null/);
+  assert.match(retryHandler, /state\.standardReasoning = state\.lastResponse\?\.reasoning \|\| ''/);
+  assert.doesNotMatch(retryHandler, /state\.(session|attempts|discoveredEvidence|hintsUsed)\s*=/);
+  assert.match(ui, /state\.attempts\.push\(\{ response, result \}\)/);
+  assert.match(ui, /state\.attempts\.length > 1/);
+});
