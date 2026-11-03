@@ -300,7 +300,7 @@ test('main navigation tabs open without uncaught page errors', async t => {
         await caseboundRoot.locator('.ld-result-head').waitFor({state:'visible',timeout:5000});
         assert.match(await caseboundRoot.locator('.ld-result-head h2').innerText(), /Conclusion supported/,
           'The Missing Bag should accept a complete, evidence-based A1 conclusion');
-        await caseboundRoot.locator('[data-ld-back]').click();
+        await caseboundRoot.getByRole('button', {name:'Choose another case'}).click();
         await caseboundRoot.locator('[data-ld-level-back]').click();
         await caseboundRoot.locator('[data-ld-level-select="A2"]').click();
         assert.equal(await caseboundRoot.locator('[data-ld-case]').count(), 1,
