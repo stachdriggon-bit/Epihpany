@@ -229,6 +229,16 @@ test('CASEBOUND presents one investigation scene at a time with three clear stag
   assert.match(ui, /isConclusionReady\(fixtures\.cases\[state\.caseId\], state\.session\)/);
 });
 
+
+test('CASEBOUND keeps support and answer preferences inside compact settings and gates Hell Mode', () => {
+  assert.match(ui, /ld-settings-disclosure/);
+  assert.match(ui, /<summary><span aria-hidden="true">⚙<\/span> Settings<\/summary>/);
+  assert.match(ui, /answerOptions = \[\['STANDARD','Standard'/);
+  assert.match(ui, /if \(state\.completedCaseIds\.length\) answerOptions\.push\(\['HELL','Hell Mode'/);
+  assert.match(ui, /completedCaseIds: \[\]/);
+  assert.match(ui, /outcome === 'ACCEPTED'.*completedCaseIds\.push/);
+});
+
 test('CASEBOUND preserves the current reading position after workspace rerenders', () => {
   assert.match(ui, /const previousScrollY = window\.scrollY \|\| 0/);
   assert.match(ui, /window\.scrollTo\(\{top:previousScrollY,behavior:'auto'\}\)/);
