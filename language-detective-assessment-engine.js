@@ -27,7 +27,7 @@ function normalizeText(value){
  const detectedLanguage=/[\u0600-\u06ff]/.test(normalizedText)?(/[a-z]/i.test(normalizedText)?'MIXED':'ar'):(/[a-z]/i.test(normalizedText)?'en':'UNKNOWN');
  return {originalText,normalizedText,clauses,detectedLanguage};
 }
-function polarity(text){return /\b(not|never|no|neither|cannot|can't|doesn't|didn't|wasn't|weren't|without|failed to)\b/i.test(text)?'NEGATED':'AFFIRMED';}
+function polarity(text){return /\b(not|never|no|neither|cannot|can't|doesn't|don't|didn't|isn't|aren't|wasn't|weren't|haven't|hasn't|hadn't|won't|wouldn't|shouldn't|couldn't|mustn't|without|failed to)\b/i.test(text)?'NEGATED':'AFFIRMED';}
 function modality(text){
  if(/\b(definitely|certainly|undoubtedly|proved|must have)\b/i.test(text))return 'CERTAIN';
  if(/\b(probably|likely|presumably)\b/i.test(text))return 'PROBABLE';
@@ -79,6 +79,7 @@ function ClaimValidator(interpreted,evidence,snapshot,ctx){
  const findings=interpreted.data.propositions.map(p=>{
   const assessment=evidence.data.propositionAssessments.find(x=>x.propositionId===p.propositionId),concept=snapshot.concepts.find(x=>x.conceptId===p.conceptId);
   let state=assessment?.supportState==='SUPPORTED'?'SUPPORTED':assessment?.supportState==='CONSISTENT_NOT_PROVEN'?(p.modality==='POSSIBLE'||p.modality==='UNCERTAIN'?'SUPPORTED':'OVERCLAIMED'):assessment?.supportState==='CONTRADICTED'?'CONTRADICTED':assessment?.supportState==='NO_AUTHORED_RELATION'?'UNSUPPORTED':'UNRESOLVED';
+  if(p.polarity==='NEGATED'&&assessment?.supportState==='SUPPORTED'&&!concept?.expectedPolarity)state='UNSUPPORTED';
   if(concept?.expectedModality==='POSSIBLE'&&p.modality==='CERTAIN')state='OVERCLAIMED';
   return {propositionId:p.propositionId,conceptId:p.conceptId,state,materiality:concept?.materiality||'CENTRAL',affectedCriterionIds:concept?.criterionIds||[],diagnosticCodes:state==='SUPPORTED'?[]:['CLAIM_'+state],rationaleKey:concept?.rationaleKey||'assessment.claim.'+state.toLowerCase()};
  });
