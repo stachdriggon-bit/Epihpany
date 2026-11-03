@@ -2821,7 +2821,13 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     if(button.dataset.txState===st)return;
     button.dataset.txState=st;
     button.setAttribute('aria-pressed',String(ar));
-    button.innerHTML=ar?TX_BTN_AR:txBtnEn(label);
+    const casebound = !!button.closest('.casebound-page');
+    button.innerHTML = casebound
+      ? '<span aria-hidden="true">'+(ar?'EN':'文A')+'</span>'
+      : (ar?TX_BTN_AR:txBtnEn(label));
+    const actionLabel = ar ? 'Show '+label+' in English' : 'Translate '+label+' into Arabic';
+    button.setAttribute('aria-label',actionLabel);
+    button.title=actionLabel;
   }
   function txSyncButton(el){
     const button=txButtonFor(el);if(!button)return;
@@ -3022,6 +3028,12 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     txApplyRememberedMini(root);
     txSyncGroupButtons();
   }
+  // Public bridge for standalone learning views such as Casebound.
+  // It reuses the same preference, catalogue, exact-translation checks and in-place swap.
+  window.EPIPHANY_TRANSLATION_ENHANCE = root => {
+    if (!root) return;
+    enhanceTranslationControls(root);
+  };
   function withArabicCatalog(action,button){
     if(arTranslationCatalogLoaded){action();return;}
     if(button)button.setAttribute('aria-busy','true');
@@ -3056,6 +3068,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
   const translationObserver=new MutationObserver(()=>{enhanceTranslationControls($('#game-body'));enhanceTranslationControls($('#world-game'));});
   if($('#game-body'))translationObserver.observe($('#game-body'),{childList:true,subtree:true});
   if($('#world-game'))translationObserver.observe($('#world-game'),{childList:true,subtree:true});
+  if($('#casebound-content'))translationObserver.observe($('#casebound-content'),{childList:true,subtree:true});
   /* The in-game "ع" button translates everything on the current screen in place (question, instructions,
      options and feedback). It is per screen: the next question opens in English again. */
   function txToggleScreen(){
@@ -3075,7 +3088,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
   /* ---------- settings: Arabic help + sound ---------- */
   function syncSettings() {
     document.body.classList.toggle('translation-off', !state.translationEnabled);
-    if(state.translationEnabled){enhanceTranslationControls($('#game-body'));enhanceTranslationControls($('#world-game'));enhanceTranslationControls($('#sheet'));}
+    if(state.translationEnabled){enhanceTranslationControls($('#game-body'));enhanceTranslationControls($('#world-game'));enhanceTranslationControls($('#sheet'));enhanceTranslationControls($('#casebound-content'));enhanceTranslationControls($('#ld-case-notebook'));}
     const immersionActive = !!(state.immersionWeek?.active && state.immersionWeek.endsAt && Date.now() < Number(state.immersionWeek.endsAt));
     document.body.classList.toggle('immersion-week-active', immersionActive);
     const translationToggle = $('#translation-toggle');
