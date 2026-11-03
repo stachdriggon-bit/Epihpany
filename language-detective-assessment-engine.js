@@ -33,6 +33,17 @@ function polarity(text){
  if(/\bnot\s+(?:only|merely|just|necessarily)\b/.test(value)||/\b(?:cannot|can't|could not|couldn't)\s+be\s+ruled\s+out\b/.test(value))return 'AFFIRMED';
  return /\b(?:not|never|no|neither|cannot|can't|doesn't|don't|didn't|isn't|aren't|wasn't|weren't|haven't|hasn't|hadn't|won't|wouldn't|shouldn't|couldn't|mustn't|without|failed\s+to|no\s+longer)\b/i.test(value)?'NEGATED':'AFFIRMED';
 }
+function polarityForMatch(candidateText,matched){
+ const candidate=String(candidateText||''),match=String(matched||'');
+ const index=candidate.toLowerCase().indexOf(match.toLowerCase());
+ if(index<0)return polarity(match);
+ const prefix=candidate.slice(0,index);
+ // Only a denial that directly governs the matched proposition may flip it.
+ // A later qualification such as "not proof of its cause" is out of scope.
+ if(/\\b(?:it is|it was) not true that\\s*$/i.test(prefix)||/\\bnot the case that\\s*$/i.test(prefix)||/\\b(?:it is|it was) false that\\s*$/i.test(prefix))return 'NEGATED';
+ return polarity(match);
+}
+
 function modality(text){
  const value=String(text||'');
  if(/\b(definitely|certainly|undoubtedly|proved|must have|cannot have)\b/i.test(value))return 'CERTAIN';
@@ -67,7 +78,7 @@ function SemanticMatcher(normalized,snapshot,ctx){
    for(const p of concept.patterns||[]){try{const m=candidateText.match(new RegExp(p.source,'i'));if(m){matched=m[0];matchedId=p.patternId;sourcePattern=p;break;}}catch{}}
    if(!matched)for(const v of concept.acceptedVariants||[])if(candidateText.toLowerCase().includes(v.toLowerCase())){matched=v;matchedId='variant:'+v;break;}
    if(!matched)continue;
-   const p={propositionId:'p-'+concept.conceptId+'-'+candidateClause.clauseId,conceptId:concept.conceptId,predicate:concept.predicate||concept.conceptId,polarity:sourcePattern?.semanticPolarity||concept.semanticPolarity||polarity(candidateText),modality:modality(matched),source:sourcePattern?.attribution||concept.attribution||inferAttribution(candidateText),epistemicStatus:concept.epistemicStatus||'INFERENCE',clauseId:candidateClause.clauseId,evidenceRefs:[...(concept.evidenceRefs||[])],matchedText:matched};
+   const p={propositionId:'p-'+concept.conceptId+'-'+candidateClause.clauseId,conceptId:concept.conceptId,predicate:concept.predicate||concept.conceptId,polarity:sourcePattern?.semanticPolarity||concept.semanticPolarity||polarityForMatch(candidateText,matched),modality:modality(matched),source:sourcePattern?.attribution||concept.attribution||inferAttribution(candidateText),epistemicStatus:concept.epistemicStatus||'INFERENCE',clauseId:candidateClause.clauseId,evidenceRefs:[...(concept.evidenceRefs||[])],matchedText:matched};
    propositions.push(p);conceptPropositions.push(p);conceptMatches.push({conceptId:concept.conceptId,matchPath:concept.compositional?'COMPOSITIONAL':'DIRECT',clauseIds:[p.clauseId],propositionIds:[p.propositionId],matchedVariantId:matchedId,confidenceClass:'RULE_EXACT'});used.add(p.clauseId);
   }
   const polarities=new Set(conceptPropositions.map(p=>p.polarity));
