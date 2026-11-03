@@ -493,3 +493,11 @@
  .ld-scene-actionbar .ld-submit{width:100%;min-height:48px}
 }
 @media(prefers-reduced-motion:reduce){.ld-scene-step{transition:none}}
+
+
+.ld-settings-disclosure{border:1px solid var(--line,#e4e7ef);border-radius:13px;background:var(--soft,#f8f8fc)}
+.ld-settings-disclosure>summary{display:flex;align-items:center;gap:9px;min-height:44px;padding:10px 14px;color:var(--muted,#687087);font-size:.84rem;font-weight:800;cursor:pointer;list-style:none}
+.ld-settings-disclosure>summary::-webkit-details-marker{display:none}
+.ld-settings-disclosure[open]>summary{border-bottom:1px solid var(--line,#e4e7ef)}
+.ld-settings-disclosure .ld-settings{grid-template-columns:repeat(2,minmax(0,1fr));padding:12px;background:transparent}
+@media(max-width:720px){.ld-settings-disclosure .ld-settings{grid-template-columns:1fr}}
