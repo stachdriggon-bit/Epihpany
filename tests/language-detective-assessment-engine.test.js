@@ -269,3 +269,16 @@ test('The signal case does not turn a possible explanation into an established c
  assert.ok(result.claims.findings.some(x=>x.conceptId==='EXTERNAL_HYPOTHESIS'&&x.state==='OVERCLAIMED'));
  assert.equal(result.evaluation.primaryOutcome,'UNSUPPORTED');
 });
+
+
+test('The Blue Scarf does not treat another object under the bench as the scarf',()=>{
+ const response='The cleaner found a wallet under the bench. The scarf is at the ticket desk.';
+ const result=engine.evaluate({context:{...makeContext('CASE-004'),responseId:'blue-scarf-wrong-object-found'},caseSnapshot:cases['CASE-004'],response,hintsUsed:[]});
+ assert.ok(!result.interpreted.conceptMatches.some(x=>x.conceptId==='SCARF_FOUND'));
+});
+
+test('The Blue Scarf does not treat another object sent to lost property as the scarf',()=>{
+ const response='The cleaner took a wallet to lost property. The scarf is at the ticket desk.';
+ const result=engine.evaluate({context:{...makeContext('CASE-004'),responseId:'blue-scarf-wrong-object-transfer'},caseSnapshot:cases['CASE-004'],response,hintsUsed:[]});
+ assert.ok(!result.interpreted.conceptMatches.some(x=>x.conceptId==='SCARF_TRANSFERRED'));
+});
