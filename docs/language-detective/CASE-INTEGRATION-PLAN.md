@@ -127,17 +127,17 @@ This integration does not:
 
 ## 9. Next step
 
-The next content task is to author additional independent A1 cases and then begin the A2 case set. Do not reuse The Blue Scarf or The Empty Seat as harder-level investigations. Runtime additions must continue to include focused assessment tests and the full repository test suite.
+The next content task is to author additional independent A1 cases and then begin the A2 case set. Do not reuse The Blue Scarf or The Missing Bag as harder-level investigations. Runtime additions must continue to include focused assessment tests and the full repository test suite.
 
 
-## 10. CASE-005 — The Empty Seat
+## 10. CASE-005 — The Missing Bag
 
 **Editorial ID:** LD-A1-003  
 **Runtime ID:** CASE-005  
 **Level:** A1  
 **Status:** Implemented; CI verification pending
 
-The Empty Seat is a separate everyday station mystery. Three passengers claim a green canvas bag found beside the timetable bench. The intended conclusion is that Lina is the **best-supported** owner, not that ownership is proved with absolute certainty.
+The Missing Bag is a separate everyday station mystery. Three passengers claim a green canvas bag found beside the timetable bench. The intended conclusion is that Lina is the **best-supported** owner, not that ownership is proved with absolute certainty.
 
 The case combines:
 - A seating log that establishes where each passenger waited, but not bag ownership.
