@@ -2961,7 +2961,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     const button=document.createElement('button');
     button.type='button';button.className='translate-btn';button.dataset.translateTarget=target.id;
     button.dataset.translationLabel=label;button.setAttribute('aria-pressed','false');
-    button.innerHTML=txBtnEn(label);
+    txSetButtonState(button,false,label);
     button.hidden=!state.translationEnabled;
     if(txIsAnswer(target)&&!target.classList.contains('story-decision-option')){
       const row=document.createElement('div');
