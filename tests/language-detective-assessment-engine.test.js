@@ -59,6 +59,18 @@ test('negation changes the proposition outcome instead of being discarded as wor
  const anomaly=result.evidence.propositionAssessments.find(x=>x.conceptId==='ANOMALY_RECORDED');
  assert.equal(anomaly.supportState,'CONTRADICTED');
  assert.ok(result.claims.materialContradictions.some(x=>x.conceptId==='ANOMALY_RECORDED'));
+ assert.equal(result.evaluation.primaryOutcome,'CONTRADICTION');
+});
+
+test('UNSUPPORTED and CONTRADICTION remain distinct assessment outcomes',()=>{
+ const unsupported=engine.evaluate(request('CASE-004','The cleaner stole the scarf.'));
+ const contradiction=engine.evaluate(request('CASE-003','R-4 recorded no unusual increase.'));
+ assert.equal(unsupported.evaluation.primaryOutcome,'UNSUPPORTED');
+ assert.equal(contradiction.evaluation.primaryOutcome,'CONTRADICTION');
+ assert.equal(unsupported.evaluation.weightedScore,undefined);
+ assert.equal(contradiction.evaluation.weightedScore,undefined);
+ assert.ok(unsupported.claims.unsupportedMaterialClaims.length>0);
+ assert.ok(contradiction.claims.materialContradictions.length>0);
 });
 
 test('C1 causal uncertainty is not upgraded to a confirmed external event',()=>{
