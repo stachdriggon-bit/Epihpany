@@ -162,7 +162,7 @@ test('all 57 fixtures pass request validation and traverse the pipeline without 
  assert.equal(outcomes.length,57);
 });
 
-test('The Empty Seat accepts clear A1 wording and a minor tense error without changing meaning',()=>{
+test('The Missing Bag accepts clear A1 wording and a minor tense error without changing meaning',()=>{
  const response="I think the green bag is Lina's. Lina borrow the same book that morning. We are not sure the bag is hers.";
  const result=engine.evaluate({context:{...makeContext('CASE-005','STEADY','HELL'),responseId:'empty-seat-a1-fairness'},caseSnapshot:cases['CASE-005'],response,hintsUsed:[]});
  assert.ok(result.interpreted.conceptMatches.some(item=>item.conceptId==='BAG_BELONGS_LINA'));
