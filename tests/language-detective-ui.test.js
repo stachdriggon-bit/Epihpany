@@ -22,7 +22,10 @@ function assess(caseId, conclusion, reasoning, answerFormat = 'STANDARD') {
 test('Standard mode shows locked conclusion slots and unlocks them only after reasoning submission', () => {
   assert.match(ui, /name="ld-standard-reasoning"/);
   assert.match(ui, /data-ld-conclusion-choices/);
-  assert.match(ui, /Conclusion choices · /);
+  assert.match(ui, /STEP 1/);
+  assert.match(ui, /Explain your reasoning/);
+  assert.match(ui, /STEP 2/);
+  assert.match(ui, /Choose your conclusion/);
   assert.match(ui, /ld-conclusion-locked/);
   assert.match(ui, /data-ld-submit-reasoning/);
   assert.match(ui, /state\.standardReasoningSubmitted = true/);
