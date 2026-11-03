@@ -57,14 +57,20 @@ function TextNormalizer(request){
 function SemanticMatcher(normalized,snapshot,ctx){
  const text=normalized.data.normalizedText, clauses=normalized.data.clauses, propositions=[],conceptMatches=[],used=new Set();
  for(const concept of snapshot.concepts){
-  if((concept.excludePatterns||[]).some(source=>{try{return new RegExp(source,'i').test(text);}catch{return false;}}))continue;
-  let matched=null,matchedId=null,sourcePattern=null;
-  for(const p of concept.patterns||[]){try{const re=new RegExp(p.source,'i');const m=text.match(re);if(m){matched=m[0];matchedId=p.patternId;sourcePattern=p;break;}}catch{}}
-  if(!matched) for(const v of concept.acceptedVariants||[]) if(text.toLowerCase().includes(v.toLowerCase())){matched=v;matchedId='variant:'+v;sourcePattern=null;break;}
+  let matched=null,matchedId=null,sourcePattern=null,clause=null;
+  // Match within one clause only: a pattern must not borrow its subject from
+  // one sentence and its predicate from a later, independently qualified sentence.
+  for(const candidateClause of clauses){
+   const candidateText=candidateClause.text;
+   if((concept.excludePatterns||[]).some(source=>{try{return new RegExp(source,'i').test(candidateText);}catch{return false;}}))continue;
+   for(const p of concept.patterns||[]){try{const m=candidateText.match(new RegExp(p.source,'i'));if(m){matched=m[0];matchedId=p.patternId;sourcePattern=p;clause=candidateClause;break;}}catch{}}
+   if(matched)break;
+   for(const v of concept.acceptedVariants||[])if(candidateText.toLowerCase().includes(v.toLowerCase())){matched=v;matchedId='variant:'+v;sourcePattern=null;clause=candidateClause;break;}
+   if(matched)break;
+  }
   if(!matched)continue;
-  const clause=clauseForMatch(clauses,text,matched);
   const semanticContext=clause?.text||matched;
-  const p={propositionId:'p-'+concept.conceptId,conceptId:concept.conceptId,predicate:concept.predicate||concept.conceptId,polarity:sourcePattern?.semanticPolarity||concept.semanticPolarity||polarity(semanticContext),modality:modality(semanticContext),source:sourcePattern?.attribution||concept.attribution||inferAttribution(semanticContext),epistemicStatus:concept.epistemicStatus||'INFERENCE',clauseId:clause?.clauseId||'clause-1',evidenceRefs:[...(concept.evidenceRefs||[])],matchedText:matched};
+  const p={propositionId:'p-'+concept.conceptId,conceptId:concept.conceptId,predicate:concept.predicate||concept.conceptId,polarity:sourcePattern?.semanticPolarity||concept.semanticPolarity||polarity(matched),modality:modality(matched),source:sourcePattern?.attribution||concept.attribution||inferAttribution(semanticContext),epistemicStatus:concept.epistemicStatus||'INFERENCE',clauseId:clause?.clauseId||'clause-1',evidenceRefs:[...(concept.evidenceRefs||[])],matchedText:matched};
   propositions.push(p);conceptMatches.push({conceptId:concept.conceptId,matchPath:concept.compositional?'COMPOSITIONAL':'DIRECT',clauseIds:[p.clauseId],propositionIds:[p.propositionId],matchedVariantId:matchedId,confidenceClass:'RULE_EXACT'});used.add(p.clauseId);
  }
  const unmatchedClauseIds=clauses.filter(c=>!used.has(c.clauseId)).map(c=>c.clauseId);
