@@ -2917,6 +2917,8 @@ body[data-theme="dark"] .quick-nav-option:has(input:checked){background:#302c4c;
 .casebound-translation-row{display:inline-flex;align-items:center;gap:6px;max-width:100%;min-width:0}
 .casebound-translation-row>.translate-btn{flex:0 0 auto}
 .casebound-page .translate-btn[aria-pressed="true"]{background:var(--navy-soft,#eceefb);border-color:var(--ink)}
+.ld-notebook-drawer .translate-btn{width:32px;min-width:32px;min-height:30px;padding:4px;border-radius:9px;font-size:11px;line-height:1;gap:0}
+.ld-notebook-drawer .translate-btn>span{font:800 11px/1 var(--body)}
 
 #game-ar[aria-pressed="true"]{background:var(--ink);color:#fff}
 .translation-result,.mg-route-ar{display:none!important}
