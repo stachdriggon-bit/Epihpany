@@ -40,7 +40,7 @@ function polarityForMatch(candidateText,matched){
  const prefix=candidate.slice(0,index);
  // Only a denial that directly governs the matched proposition may flip it.
  // A later qualification such as "not proof of its cause" is out of scope.
- if(/\\b(?:it is|it was) not true that\\s*$/i.test(prefix)||/\\bnot the case that\\s*$/i.test(prefix)||/\\b(?:it is|it was) false that\\s*$/i.test(prefix))return 'NEGATED';
+ if(/\b(?:it is|it was) not true that\s*$/i.test(prefix)||/\bnot the case that\s*$/i.test(prefix)||/\b(?:it is|it was) false that\s*$/i.test(prefix))return 'NEGATED';
  return polarity(match);
 }
 
