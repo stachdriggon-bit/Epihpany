@@ -217,17 +217,16 @@ test('CASEBOUND notebook renders distinct sections instead of one undifferentiat
 });
 
 
-test('CASEBOUND provides persistent mobile section tabs backed by one active panel state', () => {
-  assert.match(ui, /activePanel: 'statements'/);
-  assert.match(ui, /data-ld-panel=/);
-  assert.match(ui, /aria-label="Investigation sections" role="tablist"/);
-  assert.match(ui, /aria-selected=/);
-  assert.match(ui, /data-active-panel=/);
-  assert.match(ui, /state\.activePanel = panel/);
-  assert.match(ui, /ld-panel-statements/);
-  assert.match(ui, /ld-panel-people/);
-  assert.match(ui, /ld-panel-evidence/);
-  assert.match(ui, /role="tabpanel"/);
+test('CASEBOUND presents one investigation scene at a time with three clear stages', () => {
+  assert.match(ui, /activeScene: 'people'/);
+  assert.match(ui, /data-ld-scene=/);
+  assert.match(ui, /aria-label="Investigation stages"/);
+  assert.match(ui, /data-active-scene=/);
+  assert.match(ui, /data-scene-panel="people"/);
+  assert.match(ui, /data-scene-panel="evidence"/);
+  assert.match(ui, /data-scene-panel="conclusion"/);
+  assert.match(ui, /data-ld-scene-next/);
+  assert.match(ui, /isConclusionReady\(fixtures\.cases\[state\.caseId\], state\.session\)/);
 });
 
 test('CASEBOUND preserves the current reading position after workspace rerenders', () => {
@@ -236,10 +235,12 @@ test('CASEBOUND preserves the current reading position after workspace rerenders
 });
 
 
-test('CASEBOUND mobile tabs support arrow and Home/End keyboard navigation', () => {
-  assert.match(ui, /\['ArrowLeft','ArrowRight','Home','End'\]/);
-  assert.match(ui, /tabs\[next\]\?\.click\(\)/);
-  assert.match(ui, /event\.preventDefault\(\)/);
+test('CASEBOUND scene navigation uses native buttons and keeps the active scene explicit', () => {
+  assert.match(ui, /class="ld-scene-step/);
+  assert.match(ui, /aria-current="step"/);
+  assert.match(ui, /state\.activeScene = scene/);
+  assert.match(ui, /state\.activeScene = 'evidence'/);
+  assert.match(ui, /state\.activeScene = 'conclusion'/);
 });
 
 
@@ -259,9 +260,8 @@ test('CASE-005 statements, evidence and interviews expose contextual return link
 test('CASEBOUND contextual navigation preserves progressive evidence discovery', () => {
   assert.match(ui, /discoveredEvidenceForState/);
   assert.match(ui, /if \(!discoveredEvidenceForState\(id\)\) return/);
-  assert.match(ui, /state\.activePanel = 'statements'/);
-  assert.match(ui, /state\.activePanel = 'evidence'/);
-  assert.match(ui, /state\.activePanel = 'people'/);
+  assert.match(ui, /state\.activeScene = 'people'/);
+  assert.match(ui, /state\.activeScene = 'evidence'/);
   assert.match(ui, /entry\.type === 'INTERVIEW'/);
   assert.match(ui, /entry\.type === 'STATEMENT'/);
 });
