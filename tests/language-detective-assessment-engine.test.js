@@ -246,6 +246,44 @@ test('The Blue Scarf does not accept an unsupported theft accusation',()=>{
  assert.equal(result.evaluation.primaryOutcome,'UNSUPPORTED');
 });
 
+test('semantic operators preserve qualification without misclassifying it as factual negation',()=>{
+ assert.equal(engine.polarity('This is not necessarily the cause.'),'AFFIRMED');
+ assert.equal(engine.modality('This is not necessarily the cause.'),'UNCERTAIN');
+ assert.equal(engine.polarity('The possibility cannot be ruled out.'),'AFFIRMED');
+ assert.equal(engine.modality('The possibility cannot be ruled out.'),'POSSIBLE');
+ assert.equal(engine.polarity('It is not only possible but likely.'),'AFFIRMED');
+});
+
+test('semantic scope is taken from the matched clause, not the first clause in the response',()=>{
+ const response="The green bag probably belongs to Lina. Lina hasn't borrowed a different book.";
+ const result=engine.evaluate({context:{...makeContext('CASE-005','STEADY','HELL'),responseId:'clause-scoped-negation'},caseSnapshot:cases['CASE-005'],response,hintsUsed:[]});
+ const owner=result.claims.findings.find(x=>x.conceptId==='BAG_BELONGS_LINA');
+ const library=result.claims.findings.find(x=>x.conceptId==='LIBRARY_LINK');
+ assert.equal(owner.state,'SUPPORTED');
+ assert.equal(library.state,'UNSUPPORTED');
+ const ownerProp=result.interpreted.propositions.find(x=>x.conceptId==='BAG_BELONGS_LINA');
+ const libraryProp=result.interpreted.propositions.find(x=>x.conceptId==='LIBRARY_LINK');
+ assert.equal(ownerProp.polarity,'AFFIRMED');
+ assert.equal(libraryProp.polarity,'NEGATED');
+ assert.notEqual(ownerProp.clauseId,libraryProp.clauseId);
+});
+
+test('semantic modality is read from the complete matched clause',()=>{
+ const response='An external source definitely caused the increase.';
+ const result=engine.evaluate(request('CASE-003',response));
+ const proposition=result.interpreted.propositions.find(x=>x.conceptId==='EXTERNAL_HYPOTHESIS');
+ assert.ok(proposition);
+ assert.equal(proposition.modality,'CERTAIN');
+ assert.equal(result.claims.findings.find(x=>x.conceptId==='EXTERNAL_HYPOTHESIS').state,'OVERCLAIMED');
+});
+
+test('reported wording remains attributed instead of being rewritten as the learner own observation',()=>{
+ const result=engine.evaluate(request('CASE-001','The report says an unidentified resident picked up the package.'));
+ const proposition=result.interpreted.propositions.find(x=>x.conceptId==='PICKUP');
+ assert.ok(proposition);
+ assert.equal(proposition.source.kind,'UNRESOLVED_ATTRIBUTION');
+});
+
 test('module-level pipeline exposes all six independently testable stages',()=>{
  const result=engine.evaluate(request('CASE-001','An unidentified resident picked up the package. Their identity is unknown.'));
  assert.deepEqual(result.modules.map(x=>x.moduleName),['TextNormalizer','SemanticMatcher','EvidenceReasoner','ClaimValidator','EvaluationResolver','FeedbackBuilder']);
