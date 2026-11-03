@@ -303,6 +303,20 @@ test('repeating the same supported claim does not increase criterion credit',()=
  assert.equal(repeated.claims.findings.filter(x=>x.conceptId==='EXTERNAL_HYPOTHESIS').length,2);
 });
 
+test('a named witness observation remains attributed while supporting only the witnessed event',()=>{
+ const result=engine.evaluate(request('CASE-001','Sara saw an unidentified resident in a green jacket pick up the package. Sara could not identify the resident. The motive remains unknown.'));
+ const pickup=result.interpreted.propositions.find(x=>x.conceptId==='PICKUP');
+ assert.ok(pickup);
+ assert.equal(pickup.source.kind,'UNRESOLVED_ATTRIBUTION',
+  'Sara’s reported observation must not be represented as the learner’s own observation');
+ assert.equal(pickup.epistemicStatus,'REPORTED_OBSERVATION');
+ assert.equal(result.claims.findings.find(x=>x.conceptId==='PICKUP').state,'SUPPORTED',
+  'the witness account supports the pickup within its stated scope');
+ assert.equal(result.claims.findings.find(x=>x.conceptId==='IDENTITY_UNKNOWN').state,'SUPPORTED');
+ assert.equal(result.claims.findings.find(x=>x.conceptId==='MOTIVE_UNKNOWN').state,'SUPPORTED');
+ assert.equal(result.evaluation.primaryOutcome,'ACCEPTED');
+});
+
 test('reported wording remains attributed instead of being rewritten as the learner own observation',()=>{
  const result=engine.evaluate(request('CASE-001','The report says an unidentified resident picked up the package.'));
  const proposition=result.interpreted.propositions.find(x=>x.conceptId==='PICKUP');
