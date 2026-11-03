@@ -179,7 +179,7 @@ test('interview and witness knowledge can independently unlock assessment concep
   assert.ok(evaluation.concepts.some(item=>item.conceptId==='WITNESS_ONLY'));
 });
 
-test('The Empty Seat has a reachable evidence path and keeps optional interview information reviewable',()=>{
+test('The Missing Bag has a reachable evidence path and keeps optional interview information reviewable',()=>{
  const snapshot=require('../language-detective-assessment-fixtures').cases['CASE-005'];
  assert.deepEqual(model.validateInvestigation(snapshot),[]);
  let session=model.startSession(model.createSession(snapshot).session).session;
