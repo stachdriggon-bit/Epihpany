@@ -501,3 +501,34 @@
 .ld-settings-disclosure[open]>summary{border-bottom:1px solid var(--line,#e4e7ef)}
 .ld-settings-disclosure .ld-settings{grid-template-columns:repeat(2,minmax(0,1fr));padding:12px;background:transparent}
 @media(max-width:720px){.ld-settings-disclosure .ld-settings{grid-template-columns:1fr}}
+
+
+/* CASEBOUND — character interviews as a focused conversation */
+.ld-conversation{gap:18px}
+.ld-conversation-heading{display:flex;align-items:center;gap:13px;padding:14px 16px;border:1px solid var(--cb-line);border-radius:15px;background:var(--cb-paper,#fffaf0)}
+.ld-conversation-heading h3{margin:2px 0 3px}
+.ld-conversation-heading p{margin:0;color:var(--cb-muted,#6f6a78);font-size:.88rem}
+.ld-conversation .ld-avatar,.ld-chat-player-avatar{display:grid;place-items:center;flex:0 0 42px;width:42px;height:42px;border:1px solid var(--cb-line);border-radius:50%;background:var(--cb-violet-soft,#eee9fb);color:var(--cb-ink);font-style:normal;font-weight:850}
+.ld-conversation-thread{display:grid;gap:15px;padding:16px;border:1px solid var(--cb-line);border-radius:16px;background:linear-gradient(180deg,#f8f5ee 0%,#f3efe7 100%)}
+.ld-chat-message{display:flex;align-items:flex-start;gap:10px;max-width:min(88%,680px)}
+.ld-chat-message .ld-chat-content{min-width:0}
+.ld-chat-content>span{display:block;margin:0 0 5px;color:var(--cb-muted,#6f6a78);font-size:.72rem;font-weight:800;letter-spacing:.04em}
+.ld-chat-bubble{margin:0;padding:12px 15px;border:1px solid var(--cb-line);border-radius:4px 15px 15px 15px;background:#fffdf8;color:var(--cb-ink);line-height:1.55;overflow-wrap:anywhere}
+.ld-chat-player{justify-self:end;align-items:flex-end}
+.ld-chat-player .ld-chat-content>span{text-align:right}
+.ld-chat-player .ld-chat-bubble{border-color:#d9d0f0;border-radius:15px 4px 15px 15px;background:#eee9fb}
+.ld-chat-player-avatar{flex-basis:34px;width:34px;height:34px;background:#e5e0f4}
+.ld-chat-person .ld-source-link{margin-top:7px}
+.ld-conversation-prompts{display:grid;gap:9px}
+.ld-conversation-prompts>.ld-kicker{color:var(--cb-muted,#6f6a78)}
+.ld-conversation .ld-interview-list{display:grid;gap:8px}
+.ld-conversation .ld-interview-question{width:100%;min-height:48px;padding:12px 15px;border:1px solid var(--cb-line);border-radius:12px;background:#fffdf8;color:var(--cb-ink);font:inherit;font-weight:700;line-height:1.4;text-align:left;cursor:pointer;transition:border-color .16s ease,background .16s ease}
+.ld-conversation .ld-interview-question:hover{border-color:var(--cb-brass);background:#f7edd8}
+.ld-conversation .ld-interview-question:focus-visible{outline:3px solid color-mix(in srgb,var(--cb-violet) 55%,transparent);outline-offset:2px}
+.ld-conversation .ld-interview-used{margin:0;padding:12px 14px;border:1px solid var(--cb-line);border-radius:12px;background:#f7f3ea;color:var(--cb-muted,#6f6a78)}
+@media(max-width:720px){
+ .ld-conversation-thread{padding:11px}
+ .ld-chat-message{max-width:96%}
+ .ld-conversation-heading{padding:12px}
+}
+@media(prefers-reduced-motion:reduce){.ld-conversation .ld-interview-question{transition:none}}
