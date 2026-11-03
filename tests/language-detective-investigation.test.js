@@ -198,7 +198,7 @@ test('The Missing Bag has a reachable evidence path and keeps optional interview
  assert.ok(evaluation.concepts.some(item=>item.conceptId==='INFO-LINA-BAG-LAST'));
 });
 
-test('The Empty Seat offers exactly three approved questions per character and records only the selected answers',()=>{
+test('The Missing Bag offers exactly three approved questions per character and records only the selected answers',()=>{
  const snapshot=require('../language-detective-assessment-fixtures').cases['CASE-005'];
  assert.deepEqual(model.validateInvestigation(snapshot),[]);
  let session=model.startSession(model.createSession(snapshot).session).session;
