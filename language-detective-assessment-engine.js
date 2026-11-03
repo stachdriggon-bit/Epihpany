@@ -55,35 +55,36 @@ function TextNormalizer(request){
  return envelope(request.context,'TextNormalizer',ok?'OK':'UNSUPPORTED_INPUT',data,ok?[]:[{code:'LANGUAGE_NOT_SUPPORTED',severity:'BLOCKING',messageKey:'assessment.englishResponseRequired',propositionIds:[],evidenceRefs:[],criterionIds:[]}]);
 }
 function SemanticMatcher(normalized,snapshot,ctx){
- const text=normalized.data.normalizedText, clauses=normalized.data.clauses, propositions=[],conceptMatches=[],used=new Set();
+ const text=normalized.data.normalizedText, clauses=normalized.data.clauses, propositions=[],conceptMatches=[],used=new Set(),intraResponseConflicts=[];
  for(const concept of snapshot.concepts){
-  let matched=null,matchedId=null,sourcePattern=null,clause=null;
-  // Match within one clause only: a pattern must not borrow its subject from
-  // one sentence and its predicate from a later, independently qualified sentence.
+  const conceptPropositions=[];
+  // Evaluate each clause independently. Repeated mentions are retained so the
+  // matcher can detect when the learner asserts and later denies one fact.
   for(const candidateClause of clauses){
    const candidateText=candidateClause.text;
    if((concept.excludePatterns||[]).some(source=>{try{return new RegExp(source,'i').test(candidateText);}catch{return false;}}))continue;
-   for(const p of concept.patterns||[]){try{const m=candidateText.match(new RegExp(p.source,'i'));if(m){matched=m[0];matchedId=p.patternId;sourcePattern=p;clause=candidateClause;break;}}catch{}}
-   if(matched)break;
-   for(const v of concept.acceptedVariants||[])if(candidateText.toLowerCase().includes(v.toLowerCase())){matched=v;matchedId='variant:'+v;sourcePattern=null;clause=candidateClause;break;}
-   if(matched)break;
+   let matched=null,matchedId=null,sourcePattern=null;
+   for(const p of concept.patterns||[]){try{const m=candidateText.match(new RegExp(p.source,'i'));if(m){matched=m[0];matchedId=p.patternId;sourcePattern=p;break;}}catch{}}
+   if(!matched)for(const v of concept.acceptedVariants||[])if(candidateText.toLowerCase().includes(v.toLowerCase())){matched=v;matchedId='variant:'+v;break;}
+   if(!matched)continue;
+   const p={propositionId:'p-'+concept.conceptId+'-'+candidateClause.clauseId,conceptId:concept.conceptId,predicate:concept.predicate||concept.conceptId,polarity:sourcePattern?.semanticPolarity||concept.semanticPolarity||polarity(matched),modality:modality(matched),source:sourcePattern?.attribution||concept.attribution||inferAttribution(candidateText),epistemicStatus:concept.epistemicStatus||'INFERENCE',clauseId:candidateClause.clauseId,evidenceRefs:[...(concept.evidenceRefs||[])],matchedText:matched};
+   propositions.push(p);conceptPropositions.push(p);conceptMatches.push({conceptId:concept.conceptId,matchPath:concept.compositional?'COMPOSITIONAL':'DIRECT',clauseIds:[p.clauseId],propositionIds:[p.propositionId],matchedVariantId:matchedId,confidenceClass:'RULE_EXACT'});used.add(p.clauseId);
   }
-  if(!matched)continue;
-  const semanticContext=clause?.text||matched;
-  const p={propositionId:'p-'+concept.conceptId,conceptId:concept.conceptId,predicate:concept.predicate||concept.conceptId,polarity:sourcePattern?.semanticPolarity||concept.semanticPolarity||polarity(matched),modality:modality(matched),source:sourcePattern?.attribution||concept.attribution||inferAttribution(semanticContext),epistemicStatus:concept.epistemicStatus||'INFERENCE',clauseId:clause?.clauseId||'clause-1',evidenceRefs:[...(concept.evidenceRefs||[])],matchedText:matched};
-  propositions.push(p);conceptMatches.push({conceptId:concept.conceptId,matchPath:concept.compositional?'COMPOSITIONAL':'DIRECT',clauseIds:[p.clauseId],propositionIds:[p.propositionId],matchedVariantId:matchedId,confidenceClass:'RULE_EXACT'});used.add(p.clauseId);
+  const polarities=new Set(conceptPropositions.map(p=>p.polarity));
+  if(polarities.has('AFFIRMED')&&polarities.has('NEGATED'))intraResponseConflicts.push({conceptId:concept.conceptId,propositionIds:conceptPropositions.map(p=>p.propositionId),clauseIds:conceptPropositions.map(p=>p.clauseId),conflictType:'POLARITY_CONFLICT',materiality:concept.materiality||'CENTRAL'});
  }
  const unmatchedClauseIds=clauses.filter(c=>!used.has(c.clauseId)).map(c=>c.clauseId);
  const ambiguityGroups=[];
- const pronounMatch=text.match(/\b(it|they|them|he|she|her|him|its|their|theirs)\b/i);
- const impersonalIt=/^it\s+(?:is|was)\s+(?:possible|plausible|likely|unlikely|clear|unclear)\b/i.test(text);
+ const pronounMatch=text.match(/\\b(it|they|them|he|she|her|him|its|their|theirs)\\b/i);
+ const impersonalIt=/^it\\s+(?:is|was)\\s+(?:possible|plausible|likely|unlikely|clear|unclear)\\b/i.test(text);
  const hasPronoun=!!pronounMatch&&!impersonalIt;
  const priorContext=pronounMatch?text.slice(0,pronounMatch.index):'';
- const hasNamedAntecedent=/\b(resident|person|package|Nora|Adam|Sara|Lena|Omar|Nadia|envelope|R-4|R-7|signal|receiver|analyst|scarf|bench|desk|platform|station|cleaner|train|Mina|card|report|record|reading)\b/i.test(priorContext);
+ const hasNamedAntecedent=/\\b(resident|person|package|Nora|Adam|Sara|Lena|Omar|Nadia|envelope|R-4|R-7|signal|receiver|analyst|scarf|bench|desk|platform|station|cleaner|train|Mina|card|report|record|reading)\\b/i.test(priorContext);
  const unresolvedPronoun=hasPronoun&&!hasNamedAntecedent;
- const competingAntecedents=hasPronoun&&/\b(two|both|either|another|the other)\b/i.test(text);
- if(unresolvedPronoun||competingAntecedents)ambiguityGroups.push({clauseIds:clauses.filter(c=>/\b(it|they|them|he|she|her|him|its|their|theirs)\b/i.test(c.text)).map(c=>c.clauseId),alternativeInterpretations:unresolvedPronoun?['pronoun has no clear antecedent before its use in the submitted response']:['multiple possible antecedents'],materialDifference:'Pronoun reference may change the actor or object.'});
- const data={propositions,conceptMatches,unmatchedClauseIds,ambiguityGroups};
+ const competingAntecedents=hasPronoun&&/\\b(two|both|either|another|the other)\\b/i.test(text);
+ if(unresolvedPronoun||competingAntecedents)ambiguityGroups.push({clauseIds:clauses.filter(c=>/\\b(it|they|them|he|she|her|him|its|their|theirs)\\b/i.test(c.text)).map(c=>c.clauseId),alternativeInterpretations:unresolvedPronoun?['pronoun has no clear antecedent before its use in the submitted response']:['multiple possible antecedents'],materialDifference:'Pronoun reference may change the actor or object.'});
+ for(const conflict of intraResponseConflicts)ambiguityGroups.push({clauseIds:conflict.clauseIds,alternativeInterpretations:['the response both affirms and denies the same case proposition'],materialDifference:'The conflicting statements change the truth status of a central claim.',conflictType:conflict.conflictType,conceptId:conflict.conceptId});
+ const data={propositions,conceptMatches,unmatchedClauseIds,ambiguityGroups,intraResponseConflicts};
  return envelope(ctx,'SemanticMatcher',ambiguityGroups.length?'NEEDS_CLARIFICATION':propositions.length?(unmatchedClauseIds.length?'PARTIAL':'OK'):'UNSUPPORTED_INPUT',data);
 }
 function EvidenceReasoner(interpreted,snapshot,ctx){
