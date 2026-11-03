@@ -588,3 +588,17 @@
 .ld-evidence-undiscovered { border:1px dashed var(--ld-border,#d8dce5); }
 @media(max-width:760px) { .ld-evidence-board-grid { grid-template-columns:minmax(0,1fr); } .ld-evidence-board-heading { flex-direction:column; } .ld-evidence-board-count { align-self:flex-start; } }
 @media(prefers-reduced-motion:reduce) { .ld-evidence-lane,.ld-evidence-card,.ld-account-card { scroll-behavior:auto; transition:none!important; animation:none!important; } }
+
+
+/* Conclusion scene: a calm, explicit two-step reasoning flow */
+.ld-shell .ld-answer-form{display:grid;gap:16px}
+.ld-shell .ld-answer-step{display:grid;gap:11px;padding:16px;border:1px solid var(--cb-line);border-radius:15px;background:var(--cb-paper)}
+.ld-shell .ld-answer-step-heading{display:flex;align-items:flex-start;gap:12px}
+.ld-shell .ld-answer-step-heading>span{display:grid;place-items:center;flex:0 0 34px;width:34px;height:34px;border-radius:10px;background:var(--cb-ink);color:#fff;font-size:.72rem;font-weight:900;letter-spacing:.04em}
+.ld-shell .ld-answer-step-heading h4{margin:0;color:var(--cb-ink);font-size:1rem}
+.ld-shell .ld-answer-step-heading p{margin:4px 0 0;color:var(--cb-muted);font-size:.86rem;line-height:1.55}
+.ld-shell .ld-answer-step-status{margin:0;color:var(--cb-muted);font-size:.82rem;line-height:1.5}
+.ld-shell .ld-conclusion-picker{background:var(--cb-paper)}
+.ld-shell .ld-conclusion-picker>p{margin:0;color:var(--cb-muted);font-size:.84rem;line-height:1.5}
+.ld-shell .ld-answer-step textarea:focus-visible,.ld-shell [data-ld-conclusion-option]:focus-visible{outline:3px solid rgba(217,164,65,.48);outline-offset:2px}
+@media(max-width:600px){.ld-shell .ld-answer-step{padding:13px}.ld-shell .ld-answer-step-heading{gap:9px}}
