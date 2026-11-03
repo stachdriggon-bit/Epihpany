@@ -55,7 +55,10 @@ test('Casebound translation controls are compact icons with accessible names and
   assert.match(app, /button\.closest\('\.casebound-page, \.ld-notebook-drawer'\)/);
   assert.match(app, /button\.setAttribute\('aria-label',actionLabel\)/);
   assert.match(app, /button\.title=actionLabel/);
+  assert.match(app, /txSetButtonState\(button,false,label\)/);
   assert.match(app, /\(ar\?'EN':'文A'\)/);
+  assert.match(ui, /span\.dataset\.txLabel = label/);
+  assert.match(css, /\.ld-notebook-drawer \.translate-btn\{width:32px/);
   assert.match(css, /\.casebound-page \.translate-btn\{width:32px;min-width:32px;min-height:30px/);
   assert.match(css, /\.casebound-translation-row\{display:inline-flex/);
 });
