@@ -185,11 +185,22 @@
           const response = (session.interviewResponses || []).find(item => item.characterId === id);
           return '<button type="button" class="ld-character-card' + (selected ? ' is-selected' : '') + '" data-ld-select-character="' + esc(id) + '" aria-pressed="' + String(selected) + '"><i class="ld-avatar" aria-hidden="true">' + esc(String(person.name || person.label || '?').trim().charAt(0).toUpperCase()) + '</i><strong>' + esc(person.name || person.label || 'Person') + '</strong>' + (person.role ? '<span>' + esc(person.role) + '</span>' : '') + '<small>' + (response ? 'Interview completed' : selected ? 'Questions shown below' : 'View interview questions →') + '</small></button>';
         }).join('') + '</div></section>' : '';
-    const availableInterviews = investigationModel.getAvailableInterviews(snapshot, session);
+    const selectedInterviewSource = selectedDossier && Array.isArray(snapshot.interviews)
+      ? snapshot.interviews.find(item => item.characterId === state.selectedCharacterId) : null;
+    const selectedInitialStatement = selectedDossier
+      ? visibleStatements.find(item => (item.characterId || item.speakerId) === state.selectedCharacterId) : null;
     const interviews = selectedDossier && selectedDossier.interview
-      ? '<section class="ld-workspace-section ld-panel-people" id="ld-interview-section"><div class="ld-section-heading"><div><span class="ld-kicker">FOLLOW-UP</span><h3>Ask ' + esc(selectedDossier.character.name || 'this person') + '</h3><p>Choose a question. The answer will be recorded in your notebook.</p></div></div><div class="ld-interview-list">' +
-        (selectedDossier.interview.availableQuestions.length ? selectedDossier.interview.availableQuestions.map(question => '<button type="button" class="ld-interview-question" data-ld-ask-interview data-character-id="' + esc(state.selectedCharacterId) + '" data-question-id="' + esc(question.questionId) + '">' + esc(question.prompt) + '</button>').join('') : '<span class="ld-interview-used">No questions remain for this person in this interview.</span>') +
-        selectedDossier.interview.answers.map(answer => '<div class="ld-interview-answer" id="ld-interview-' + esc(answer.questionId) + '"><span>ANSWER REVEALED</span><p>' + esc(answer.answer) + '</p>' + sourceButton('Review in notebook', 'notebook', state.selectedCharacterId + ':' + answer.questionId) + '</div>').join('') + '</div></section>' : '';
+      ? '<section class="ld-workspace-section ld-panel-people ld-conversation" id="ld-interview-section" aria-label="Conversation with ' + esc(selectedDossier.character.name || 'this person') + '">' +
+        '<div class="ld-conversation-heading"><i class="ld-avatar" aria-hidden="true">' + esc(String(selectedDossier.character.name || '?').trim().charAt(0).toUpperCase()) + '</i><div><span class="ld-kicker">PERSON OF INTEREST</span><h3>' + esc(selectedDossier.character.name || 'Interview') + '</h3><p>' + esc(selectedDossier.character.role || 'Available for questions') + '</p></div></div>' +
+        '<div class="ld-conversation-thread" aria-live="polite">' +
+        (selectedInitialStatement ? '<div class="ld-chat-message ld-chat-person"><i class="ld-avatar" aria-hidden="true">' + esc(String(selectedDossier.character.name || '?').trim().charAt(0).toUpperCase()) + '</i><div class="ld-chat-content"><span>' + esc(selectedDossier.character.name || 'Statement') + ' · Initial statement</span><p class="ld-chat-bubble">' + esc(selectedInitialStatement.text || selectedInitialStatement.statement || '') + '</p></div></div>' : '') +
+        selectedDossier.interview.answers.map(answer => {
+          const question = selectedInterviewSource?.questions?.find(item => item.questionId === answer.questionId);
+          return '<div class="ld-chat-message ld-chat-player"><div class="ld-chat-content"><span>You asked</span><p class="ld-chat-bubble">' + esc(question?.prompt || 'Follow-up question') + '</p></div><i class="ld-chat-player-avatar" aria-hidden="true">Y</i></div>' +
+            '<div class="ld-chat-message ld-chat-person" id="ld-interview-' + esc(answer.questionId) + '"><i class="ld-avatar" aria-hidden="true">' + esc(String(selectedDossier.character.name || '?').trim().charAt(0).toUpperCase()) + '</i><div class="ld-chat-content"><span>' + esc(selectedDossier.character.name || 'Answer') + '</span><p class="ld-chat-bubble">' + esc(answer.answer) + '</p>' + sourceButton('Added to case notebook', 'notebook', state.selectedCharacterId + ':' + answer.questionId) + '</div></div>';
+        }).join('') + '</div>' +
+        (selectedDossier.interview.availableQuestions.length ? '<div class="ld-conversation-prompts"><span class="ld-kicker">ASK A QUESTION · ONE PER PERSON</span><div class="ld-interview-list">' + selectedDossier.interview.availableQuestions.map(question => '<button type="button" class="ld-interview-question" data-ld-ask-interview data-character-id="' + esc(state.selectedCharacterId) + '" data-question-id="' + esc(question.questionId) + '">' + esc(question.prompt) + '</button>').join('') + '</div></div>' : '<p class="ld-interview-used" role="status">You have asked this person a question. Their answer is saved in your case notebook.</p>') +
+        '</section>' : '';
     const witnesses = Array.isArray(snapshot.witnesses) && snapshot.witnesses.length
       ? '<section class="ld-workspace-section ld-panel-people"><div class="ld-section-heading"><div><span class="ld-kicker">WITNESS LEAD</span><h3>Choose one witness</h3><p>Your choice adds that witness’s account to the notebook. Other evidence paths remain available.</p></div></div><div class="ld-witness-grid">' + snapshot.witnesses.map(witness => {
           const witnessId = witness.witnessId || witness.id;
@@ -470,8 +481,9 @@
       if (interviewButton) {
         const answer = investigationModel.askInterview(fixtures.cases[state.caseId], state.session, interviewButton.dataset.characterId, interviewButton.dataset.questionId);
         if (answer.ok) state.session = answer.session;
-        state.activePanel = 'people';
+        state.activeScene = 'people';
         investigation();
+        requestAnimationFrame(() => root.querySelector('#ld-interview-' + interviewButton.dataset.questionId)?.scrollIntoView({block:'nearest',behavior:'auto'}));
         return;
       }
       const witnessButton = event.target.closest('[data-ld-select-witness]');
