@@ -29,7 +29,7 @@ test('Casebound marks authored Arabic units after every screen render, including
   assert.match(ui, /'The Uncertain Evidence':'الأدلة غير الحاسمة'/);
   assert.match(ui, /'The Blue Scarf':'الوشاح الأزرق'/);
   assert.match(ui, /'The Missing Bag':'الحقيبة المفقودة'/);
-  assert.match(ui, /'The station seating log places Lina[\\s\\S]*?':'يضع سجل مقاعد المحطة/);
+  assert.match(ui, /'The station seating log places Lina[\s\S]*?':'يضع سجل مقاعد المحطة/);
   assert.match(ui, /'R-4 recorded an unusual signal increase.':'سجل R-4 ارتفاعًا غير مألوف في الإشارة.'/);
   assert.doesNotMatch(ui, /'The green canvas bag most likely belongs to Lina\.'/);
   assert.doesNotMatch(ui, /'The scarf is at the lost-property desk\.'/);
