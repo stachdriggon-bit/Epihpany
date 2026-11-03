@@ -294,3 +294,14 @@ test('CASEBOUND interview answers remain session-driven and return to the People
   assert.match(ui, /Added to case notebook/);
   assert.match(ui, /ld-interview-/);
 });
+
+
+test('CASEBOUND people selection is presented as a focused interview contact roster', () => {
+  assert.match(ui, /ld-contact-list/);
+  assert.match(ui, /ld-contact-row/);
+  assert.match(ui, /Available to question/);
+  assert.match(ui, /Interview complete/);
+  assert.match(ui, /Conversation open/);
+  assert.match(ui, /data-ld-select-character/);
+  assert.match(ui, /aria-pressed=/);
+});
