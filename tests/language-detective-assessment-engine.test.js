@@ -365,7 +365,7 @@ test('weakening evidence cannot be silently treated as direct support',()=>{
  const claims=engine.ClaimValidator(interpreted,result,snapshot,ctx);
  assert.equal(claims.data.findings[0].state,'UNRESOLVED');
 });
-\n
+
 test('opposite claims about the same fact in separate clauses require clarification',()=>{
  const result=engine.evaluate(request('CASE-003','R-4 recorded an unusual increase. R-4 recorded no unusual increase.'));
  assert.equal(result.evaluation.primaryOutcome,'NEEDS_CLARIFICATION');
