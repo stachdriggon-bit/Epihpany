@@ -2910,6 +2910,12 @@ body[data-theme="dark"] .quick-nav-option:has(input:checked){background:#302c4c;
 .translate-btn.tx-notice{border-color:var(--muted,#7a7f94);color:var(--muted,#5b6078);font-weight:600}
 .translate-btn[aria-busy="true"]{opacity:.6;cursor:progress}
 .translate-btn[aria-pressed="true"]{background:var(--navy-soft,#eceefb);border-color:var(--ink)}
+/* Casebound keeps translation controls compact: the visible mark is an icon, while the button
+   retains a descriptive aria-label and tooltip for assistive technology. */
+.casebound-page .translate-btn{width:32px;min-width:32px;min-height:30px;padding:4px;border-radius:9px;font-size:11px;line-height:1;gap:0}
+.casebound-page .translate-btn>span{font:800 11px/1 var(--body)}
+.casebound-page .translate-btn[aria-pressed="true"]{background:var(--navy-soft,#eceefb);border-color:var(--ink)}
+
 #game-ar[aria-pressed="true"]{background:var(--ink);color:#fff}
 .translation-result,.mg-route-ar{display:none!important}
 
