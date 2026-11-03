@@ -176,7 +176,9 @@ test('The Empty Seat accepts clear A1 wording and a minor tense error without ch
 test('negative contractions cannot turn a denied fact into a supported positive claim',()=>{
  const ownership=engine.evaluate({context:{...makeContext('CASE-005','STEADY','HELL'),responseId:'empty-seat-negated-owner'},caseSnapshot:cases['CASE-005'],response:"The green bag isn't Lina's.",hintsUsed:[]});
  const owner=ownership.claims.findings.find(x=>x.conceptId==='BAG_BELONGS_LINA');
- assert.equal(owner.state,'UNSUPPORTED');
+ // This wording is correctly rejected before a positive ownership finding is created.
+ assert.equal(owner,undefined);
+
  assert.equal(ownership.evaluation.primaryOutcome,'UNSUPPORTED');
  const library=engine.evaluate({context:{...makeContext('CASE-005','STEADY','HELL'),responseId:'empty-seat-negated-library'},caseSnapshot:cases['CASE-005'],response:"Lina hasn't borrowed the paperback in the bag.",hintsUsed:[]});
  const link=library.claims.findings.find(x=>x.conceptId==='LIBRARY_LINK');
