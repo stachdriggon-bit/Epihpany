@@ -11,6 +11,192 @@
 
   const caseInfo = Object.fromEntries(Object.entries(fixtures.cases).map(([id, item]) => [id, item.presentation]));
   const CEFR_ORDER = ['A1','A2','B1','B2','C1','C2'];
+  const CASEBOUND_ARABIC = Object.freeze({
+    'PLAY · INVESTIGATE · DEDUCE':'العب · حقّق · استنتج',
+    'Every clue has a story. Investigate cases, examine evidence and discover what really happened.':'لكل قرينة حكاية. حقّق في القضايا، وافحص الأدلة، واكتشف ما حدث بالفعل.',
+    'Read the clues. Prove what happened.':'اقرأ القرائن، وأثبت ما حدث.',
+    'CASE FILES':'ملفات القضايا',
+    'Preparing your case files…':'جارٍ تجهيز ملفات القضايا…',
+    'CASEBOUND · EVERY CLUE HAS A STORY':'كيسباوند · لكل قرينة حكاية',
+    'Investigate cases, examine evidence and discover what really happened.':'حقّق في القضايا، وافحص الأدلة، واكتشف ما حدث بالفعل.',
+    'Read the statements':'اقرأ الإفادات',
+    'Question people':'استجوب الأشخاص',
+    'Examine evidence':'افحص الأدلة',
+    'Build your conclusion':'كوّن استنتاجك',
+    'Choose your English level':'اختر مستواك في الإنجليزية',
+    'Each level has its own investigations, characters and challenges.':'لكل مستوى تحقيقاته وشخصياته وتحدياته الخاصة.',
+    'Beginner':'مبتدئ',
+    'Elementary':'ابتدائي',
+    'Intermediate':'متوسط',
+    'Upper intermediate':'فوق المتوسط',
+    'Advanced':'متقدم',
+    'Proficient':'متمكن',
+    'Short, direct clues and everyday situations.':'قرائن قصيرة ومباشرة ومواقف من الحياة اليومية.',
+    'Simple timelines and clear links between events.':'تسلسل زمني بسيط وروابط واضحة بين الأحداث.',
+    'More detail, reported accounts and careful comparisons.':'تفاصيل أكثر، وإفادات منقولة، ومقارنات دقيقة.',
+    'More layered evidence and competing interpretations.':'أدلة متعددة الطبقات وتفسيرات متنافسة.',
+    'Subtle evidence boundaries and competing explanations.':'حدود دقيقة للأدلة وتفسيرات متنافسة.',
+    'Highly nuanced reasoning across complex sources.':'استدلال دقيق للغاية عبر مصادر معقدة.',
+    'View investigations →':'استعرض التحقيقات ←',
+    'Coming soon':'قريبًا',
+    'Open investigation →':'ابدأ التحقيق ←',
+    'All levels':'كل المستويات',
+    'There are no investigations at this level yet. New cases will appear here.':'لا توجد تحقيقات في هذا المستوى حاليًا. ستظهر القضايا الجديدة هنا.',
+    'Settings':'الإعدادات',
+    'Support level':'مستوى المساعدة',
+    'Answer style':'أسلوب الإجابة',
+    'Guided':'موجّه',
+    'Hints + practice':'تلميحات وتدريب',
+    'Steady':'متوازن',
+    'Balanced':'معتدل',
+    'Challenge':'تحدٍّ',
+    'Least help':'أقل قدر من المساعدة',
+    'Standard':'قياسي',
+    'Reason, then choose':'استدل، ثم اختر',
+    'Hell Mode':'وضع الجحيم',
+    'Write it all':'اكتب الإجابة كاملة',
+    'CASE BRIEF':'ملخص القضية',
+    'YOUR INVESTIGATION':'تحقيقك',
+    'Meet the people':'تعرّف على الأشخاص',
+    'Review the evidence':'راجع الأدلة',
+    'Start Investigation':'ابدأ التحقيق',
+    'Take your time. You can review everything you discover as the investigation unfolds.':'خذ وقتك. يمكنك مراجعة كل ما تكتشفه مع تقدّم التحقيق.',
+    'The Missing Bag':'الحقيبة المفقودة',
+    'Three passengers claim a bag found in a quiet station waiting room.':'يدّعي ثلاثة ركاب ملكية حقيبة عُثر عليها في صالة انتظار هادئة بمحطة القطار.',
+    'Your task: decide whose bag is the best-supported match. Compare where each person waited, what was found inside the bag, and the independent library record. A strong match is not the same as absolute proof.':'مهمتك: حدّد الشخص الذي تدعمه الأدلة أكثر بوصفه صاحب الحقيبة. قارن أماكن انتظار الأشخاص، ومحتويات الحقيبة، وسجل المكتبة المستقل. فالتطابق القوي لا يعني إثبات الملكية بصورة قاطعة.',
+    '8:00 — Lina waits at the bench beside the timetable board.':'8:00 — تنتظر لينا عند المقعد بجوار لوحة مواعيد القطارات.',
+    '8:05 — Omar waits by the window. Nora waits near the door a little later.':'8:05 — ينتظر عمر بجوار النافذة، ثم تنتظر نورا قرب الباب بعد ذلك بقليل.',
+    '8:32 — A green canvas bag is found beside the timetable bench. Its owner is not recorded.':'8:32 — عُثر على حقيبة قماشية خضراء بجوار مقعد لوحة المواعيد، ولم يُسجَّل اسم مالكها.',
+    'The bag inventory lists a paperback book, a blue notebook and a red pencil case.':'تُظهر قائمة محتويات الحقيبة وجود كتاب ذي غلاف ورقي ودفتر أزرق ومقلمة حمراء.',
+    'The library record shows that Lina borrowed the same paperback that morning.':'يُظهر سجل المكتبة أن لينا استعارت الكتاب الورقي نفسه في ذلك الصباح.',
+    'The seating log records where the three passengers waited, but it does not record who owned the bag.':'يسجّل سجل المقاعد أماكن انتظار الركاب الثلاثة، لكنه لا يحدد صاحب الحقيبة.',
+    'What does the found-property report tell us?':'ماذا يخبرنا تقرير المفقودات؟',
+    'A green canvas bag was found by the timetable bench.':'عُثر على حقيبة قماشية خضراء بجوار مقعد لوحة المواعيد.',
+    'Lina collected the bag.':'استلمت لينا الحقيبة.',
+    'The bag belongs to the person by the window.':'الحقيبة تخص الشخص الذي كان بجوار النافذة.',
+    'The report gives the bag’s description and location, but it does not name the owner.':'يذكر التقرير وصف الحقيبة ومكان العثور عليها، لكنه لا يحدد مالكها.',
+    'What does the library record add?':'ماذا يضيف سجل المكتبة؟',
+    'It proves Lina owns every item in the bag.':'يثبت أن لينا تملك كل ما في الحقيبة.',
+    'It links Lina to the paperback found in the bag.':'يربط لينا بالكتاب الورقي الموجود في الحقيبة.',
+    'It shows Omar borrowed the book.':'يُظهر أن عمر هو من استعار الكتاب.',
+    'The library record links Lina to one item, but it does not prove ownership by itself.':'يربط سجل المكتبة لينا بأحد محتويات الحقيبة، لكنه لا يثبت الملكية بمفرده.',
+    'I waited near the timetable board. I had a green canvas bag, but I cannot remember where I put it.':'انتظرت بالقرب من لوحة مواعيد القطارات. كانت معي حقيبة قماشية خضراء، لكنني لا أتذكر أين وضعتها.',
+    'I sat by the window. My bag is a black backpack with a laptop inside.':'جلست بجوار النافذة. حقيبتي حقيبة ظهر سوداء بداخلها حاسوب محمول.',
+    'I waited near the door. I had a blue shopping bag with a scarf inside.':'انتظرت بالقرب من الباب. كانت معي حقيبة تسوق زرقاء بداخلها وشاح.',
+    'Waiting-room seating log':'سجل مقاعد صالة الانتظار',
+    'Found-property report':'تقرير المفقودات',
+    'Bag inventory':'قائمة محتويات الحقيبة',
+    'Library borrowing record':'سجل استعارة المكتبة',
+    'Kiosk receipt':'إيصال كشك المحطة',
+    'What time did you leave the waiting room?':'في أي وقت غادرت صالة الانتظار؟',
+    'I left for a short time at about 8:17. I bought tea at the station kiosk.':'غادرت لفترة قصيرة نحو الساعة 8:17. اشتريت الشاي من كشك المحطة.',
+    'Why did you borrow the paperback that morning?':'لماذا استعرت الكتاب الورقي ذلك الصباح؟',
+    'I wanted to read it on my journey. I borrowed it from the library before I came to the station.':'أردت قراءته في رحلتي. استعرت الكتاب من المكتبة قبل مجيئي إلى المحطة.',
+    'When did you last see your green bag?':'متى رأيت حقيبتك الخضراء آخر مرة؟',
+    'I remember having it near the timetable board. I do not remember seeing it after that.':'أتذكر أنها كانت معي بالقرب من لوحة المواعيد. ولا أتذكر أنني رأيتها بعد ذلك.',
+    'Could you see the timetable bench from your seat?':'هل كنت تستطيع رؤية مقعد لوحة المواعيد من مكان جلوسك؟',
+    'Not clearly. The people and bags near the bench were difficult to see.':'ليس بوضوح. كان من الصعب رؤية الأشخاص والحقائب بالقرب من المقعد.',
+    'Did you leave your seat before 8:32?':'هل غادرت مقعدك قبل الساعة 8:32؟',
+    'Yes. I went to the station noticeboard, but I did not go to the timetable bench.':'نعم. ذهبت إلى لوحة إعلانات المحطة، لكنني لم أذهب إلى مقعد لوحة المواعيد.',
+    'Did you see anyone near the timetable bench?':'هل رأيت أحدًا بالقرب من مقعد لوحة المواعيد؟',
+    'I saw someone standing there, but I could not see who it was.':'رأيت شخصًا يقف هناك، لكنني لم أتمكن من معرفة هويته.',
+    'What did you do after waiting near the door?':'ماذا فعلت بعد الانتظار بالقرب من الباب؟',
+    'I went to the ticket counter to ask about my train.':'ذهبت إلى شباك التذاكر للاستفسار عن قطاري.',
+    'Could you see the timetable bench from the door?':'هل كنت تستطيع رؤية مقعد لوحة المواعيد من عند الباب؟',
+    'I could see part of the bench, but I could not see everything near it.':'كنت أرى جزءًا من المقعد، لكنني لم أكن أرى كل ما حوله.',
+    'Did you notice the green bag before it was found?':'هل لاحظت الحقيبة الخضراء قبل العثور عليها؟',
+    'I saw a green bag near the bench, but I did not see who left it there.':'رأيت حقيبة خضراء بالقرب من المقعد، لكنني لم أرَ من تركها هناك.',
+    'Evidence':'الأدلة',
+    'People':'الأشخاص',
+    'Conclusion':'الاستنتاج',
+    'Initial statements':'الإفادات الأولية',
+    'What everyone said':'ما قاله الجميع',
+    'Who would you like to speak with?':'مع من تود التحدث؟',
+    'Available to question':'متاح للاستجواب',
+    'Conversation open':'المحادثة مفتوحة',
+    'Interview complete':'اكتملت المقابلة',
+    'Evidence board':'لوحة الأدلة',
+    'Records & objects':'السجلات والأشياء',
+    'People’s accounts':'إفادات الأشخاص',
+    'Interview notes':'ملاحظات المقابلات',
+    'Case notebook':'دفتر القضية',
+    'Your notebook is empty. Examine a record or speak with someone; discoveries will be organised here.':'دفترك فارغ. افحص سجلًا أو تحدث إلى أحد الأشخاص؛ وستُنظَّم اكتشافاتك هنا.',
+    'Optional hints':'تلميحات اختيارية',
+    'Use them in order. Hints do not reduce your academic score.':'استخدمها بالترتيب. لا تؤثر التلميحات في تقييمك الأكاديمي.',
+    'Direction':'التوجيه',
+    'Connection':'الربط',
+    'Reasoning':'الاستدلال',
+    'Start with what the records directly establish. Separate observations from assumptions.':'ابدأ بما تثبته السجلات مباشرة، وافصل بين الملاحظات والافتراضات.',
+    'Compare the timeline and sources. Access, opportunity and a reported action are not automatically proof that one person acted.':'قارن التسلسل الزمني والمصادر. فإمكانية الوصول وتوفر الفرصة وورود فعل في إفادة لا تثبت تلقائيًا أن شخصًا بعينه هو من قام به.',
+    'State what is established, what remains possible, and what the evidence cannot establish.':'وضّح ما ثبت، وما لا يزال ممكنًا، وما تعجز الأدلة عن إثباته.',
+    'Explain your reasoning':'اشرح استدلالك',
+    'What do the records establish? Which details are only possible, and what cannot be proved?':'ما الذي تثبته السجلات؟ وما التفاصيل التي تظل مجرد احتمالات؟ وما الذي لا يمكن إثباته؟',
+    'Your Reasoning':'استدلالك',
+    'What do you think happened?':'ما الذي تعتقد أنه حدث؟',
+    'Support your conclusion':'ادعم استنتاجك',
+    'Connect your explanation to the case material, and identify what remains uncertain.':'اربط تفسيرك بمواد القضية، وحدد ما لا يزال غير مؤكد.',
+    'Choose your conclusion':'اختر استنتاجك',
+    'Select the statement that is best supported by the evidence—not simply the most certain one.':'اختر العبارة التي تدعمها الأدلة بأفضل صورة، لا العبارة الأكثر جزمًا فحسب.',
+    'The conclusion choices unlock after you submit your reasoning.':'ستُفتح خيارات الاستنتاج بعد إرسال استدلالك.',
+    'The conclusion choices unlock after you submit your reasoning.':'ستُفتح خيارات الاستنتاج بعد إرسال استدلالك.',
+    'Conclusion supported':'الاستنتاج مدعوم بالأدلة',
+    'Partly supported':'مدعوم جزئيًا',
+    'Needs clarification':'يحتاج إلى توضيح',
+    'Unsupported conclusion':'استنتاج غير مدعوم',
+    'Conflicts with the evidence':'يتعارض مع الأدلة',
+    'Your main conclusion and reasoning fit the available evidence.':'يتوافق استنتاجك الأساسي واستدلالك مع الأدلة المتاحة.',
+    'You have identified part of the picture. Review the missing link or evidence boundary below.':'لقد حددت جزءًا من الصورة. راجع الحلقة المفقودة أو حدود الأدلة أدناه.',
+    'The meaning or reference is not clear enough to assess fairly. Clarify who or what you mean, then try again.':'المعنى أو المرجع غير واضح بما يكفي لتقييم الإجابة بإنصاف. وضّح من أو ما الذي تقصده، ثم حاول مجددًا.',
+    'A central claim goes beyond what the case evidence establishes. This does not mean every part of your answer is wrong.':'يتجاوز أحد الادعاءات الأساسية ما تثبته أدلة القضية. ولا يعني ذلك أن جميع أجزاء إجابتك خاطئة.',
+    'A central claim conflicts with the case record. Revisit the relevant evidence before drawing that conclusion.':'يتعارض ادعاء أساسي مع سجل القضية. راجع الأدلة ذات الصلة قبل الوصول إلى ذلك الاستنتاج.',
+    'Records you examined':'السجلات التي فحصتها',
+    'What to take from this result':'ما الذي يمكنك استخلاصه من هذه النتيجة؟',
+    'Keep in mind':'تذكّر',
+    'A missing detail is not automatically a contradiction. A strong inference can be reasonable without becoming proof; the limits of each record still matter.':'غياب أحد التفاصيل لا يعني بالضرورة وجود تناقض. قد يكون الاستنتاج القوي معقولًا دون أن يصبح دليلًا قاطعًا؛ وتظل حدود كل سجل مهمة.',
+    'Revise and try again':'راجع إجابتك وحاول مجددًا',
+    'Choose another case':'اختر قضية أخرى'
+  });
+
+  function markCaseboundTranslations(container) {
+    if (!container) return;
+    const walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT);
+    const nodes = [];
+    let node;
+    while ((node = walker.nextNode())) {
+      const parent = node.parentElement;
+      if (!parent || parent.closest('script,style,noscript,textarea,input,select,option,code,pre,.translate-btn,[aria-hidden="true"],[data-ld-conclusion-option],.ld-conclusion-locked,.ld-contact-row,.ld-scene-step')) continue;
+      const english = String(node.nodeValue || '').replace(/\\s+/g, ' ').trim();
+      if (!english || !CASEBOUND_ARABIC[english]) continue;
+      const button = parent.closest('button');
+      if (button && button.querySelector('[data-tx]')) continue;
+      nodes.push({node,english,arabic:CASEBOUND_ARABIC[english],button});
+    }
+    nodes.forEach(({node,english,arabic,button}) => {
+      if (!node.parentNode || node.parentElement?.closest('[data-tx]')) return;
+      if (button && button.childElementCount === 0 && button.textContent.trim() === english) {
+        button.dataset.tx = '';
+        button.dataset.translationAr = arabic;
+        return;
+      }
+      const span = document.createElement('span');
+      span.dataset.tx = '';
+      span.dataset.translationAr = arabic;
+      node.parentNode.replaceChild(span,node);
+      span.appendChild(node);
+    });
+  }
+
+  function enhanceCaseboundTranslations() {
+    const page = root?.closest('.casebound-page') || root;
+    markCaseboundTranslations(page);
+    window.EPIPHANY_TRANSLATION_ENHANCE?.(page);
+    const drawer = document.getElementById('ld-case-notebook');
+    if (drawer) {
+      markCaseboundTranslations(drawer);
+      window.EPIPHANY_TRANSLATION_ENHANCE?.(drawer);
+    }
+  }
+
   const hints = [
     { id: 'DIRECTION', title: 'Direction', text: 'Start with what the records directly establish. Separate observations from assumptions.' },
     { id: 'CONNECTION', title: 'Connection', text: 'Compare the timeline and sources. Access, opportunity and a reported action are not automatically proof that one person acted.' },
@@ -101,6 +287,7 @@
       settingsMarkup() + content +
       '<p class="ld-note">Guided, Steady and Challenge change the level of support. Standard and Hell Mode change how you submit your conclusion; neither mode changes the evidence or rewards unsupported certainty.</p>' +
       '</section>';
+    enhanceCaseboundTranslations();
   }
 
   function readResponse() {
@@ -131,6 +318,7 @@
       '<div class="ld-case-brief"><span class="ld-kicker">YOUR INVESTIGATION</span><p>' + esc(info.focus) + '</p></div>' +
       '<ol class="ld-howto ld-howto-light"><li><b>1</b>Meet the people</li><li><b>2</b>Review the evidence</li><li><b>3</b>Build your conclusion</li></ol><div class="ld-case-intro-actions"><button type="button" class="ld-submit" data-ld-start-investigation>Start Investigation <span aria-hidden="true">→</span></button><p>Take your time. You can review everything you discover as the investigation unfolds.</p></div>' +
       '</section>';
+    enhanceCaseboundTranslations();
   }
 
   function discoveredEvidenceForState(evidenceId) {
@@ -275,6 +463,7 @@
     if (previousScrollY) requestAnimationFrame(() => window.scrollTo({top:previousScrollY,behavior:'auto'}));
     const notebookDrawer = root.querySelector('#ld-case-notebook');
     if (notebookBackdrop && notebookDrawer) document.body.append(notebookBackdrop, notebookDrawer);
+    enhanceCaseboundTranslations();
   }
 
   function resultView(result) {
@@ -314,6 +503,7 @@
       '<div class="ld-feedback-note"><strong>Keep in mind</strong><p>A missing detail is not automatically a contradiction. A strong inference can be reasonable without becoming proof; the limits of each record still matter.</p></div>' +
       '<div class="ld-result-actions"><button type="button" class="ld-submit" data-ld-retry>Revise and try again</button><button type="button" class="ld-back" data-ld-back>Choose another case</button></div>' +
       '</section>';
+    enhanceCaseboundTranslations();
   }
 
   function submit() {
