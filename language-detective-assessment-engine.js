@@ -27,13 +27,28 @@ function normalizeText(value){
  const detectedLanguage=/[\u0600-\u06ff]/.test(normalizedText)?(/[a-z]/i.test(normalizedText)?'MIXED':'ar'):(/[a-z]/i.test(normalizedText)?'en':'UNKNOWN');
  return {originalText,normalizedText,clauses,detectedLanguage};
 }
-function polarity(text){return /\b(not|never|no|neither|cannot|can't|doesn't|don't|didn't|isn't|aren't|wasn't|weren't|haven't|hasn't|hadn't|won't|wouldn't|shouldn't|couldn't|mustn't|without|failed to)\b/i.test(text)?'NEGATED':'AFFIRMED';}
+function polarity(text){
+ const value=String(text||'').toLowerCase();
+ // Qualification and non-entailment do not negate the underlying event.
+ if(/\bnot\s+(?:only|merely|just|necessarily)\b/.test(value)||/\b(?:cannot|can't|could not|couldn't)\s+be\s+ruled\s+out\b/.test(value))return 'AFFIRMED';
+ return /\b(?:not|never|no|neither|cannot|can't|doesn't|don't|didn't|isn't|aren't|wasn't|weren't|haven't|hasn't|hadn't|won't|wouldn't|shouldn't|couldn't|mustn't|without|failed\s+to|no\s+longer)\b/i.test(value)?'NEGATED':'AFFIRMED';
+}
 function modality(text){
- if(/\b(definitely|certainly|undoubtedly|proved|must have)\b/i.test(text))return 'CERTAIN';
- if(/\b(probably|likely|presumably)\b/i.test(text))return 'PROBABLE';
- if(/\b(may|might|could|possible|possibly|perhaps|plausible|plausibly|conceivably)\b/i.test(text))return 'POSSIBLE';
- if(/\b(unclear|unknown|unresolved|cannot determine|cannot establish|not established)\b/i.test(text))return 'UNCERTAIN';
+ const value=String(text||'');
+ if(/\b(definitely|certainly|undoubtedly|proved|must have|cannot have)\b/i.test(value))return 'CERTAIN';
+ if(/\b(probably|likely|presumably|seems to|appears to)\b/i.test(value))return 'PROBABLE';
+ if(/\b(may|might|could|possible|possibly|perhaps|plausible|plausibly|conceivably|cannot be ruled out)\b/i.test(value))return 'POSSIBLE';
+ if(/\b(unclear|unknown|unresolved|cannot determine|cannot establish|not established|not necessarily|not demonstrable|indeterminate)\b/i.test(value))return 'UNCERTAIN';
  return 'UNKNOWN';
+}
+function clauseForMatch(clauses, normalizedText, matched){
+ const index=normalizedText.toLowerCase().indexOf(String(matched||'').toLowerCase());
+ if(index<0)return clauses[0]||null;
+ return clauses.find(clause=>index>=clause.sourceSpan[0]&&index<clause.sourceSpan[1])||clauses[0]||null;
+}
+function inferAttribution(text){
+ if(/\b(according to|said|reported|claimed|stated|observed|the record shows|the report indicates|the note says)\b/i.test(String(text||''))return {kind:'UNRESOLVED_ATTRIBUTION'};
+ return {kind:'LEARNER_ASSERTION'};
 }
 function TextNormalizer(request){
  const data=normalizeText(request.response),ok=data.detectedLanguage==='en';
@@ -47,8 +62,9 @@ function SemanticMatcher(normalized,snapshot,ctx){
   for(const p of concept.patterns||[]){try{const re=new RegExp(p.source,'i');const m=text.match(re);if(m){matched=m[0];matchedId=p.patternId;sourcePattern=p;break;}}catch{}}
   if(!matched) for(const v of concept.acceptedVariants||[]) if(text.toLowerCase().includes(v.toLowerCase())){matched=v;matchedId='variant:'+v;sourcePattern=null;break;}
   if(!matched)continue;
-  const clause=clauses.find(c=>c.text.toLowerCase().includes(matched.toLowerCase()))||clauses[0];
-  const p={propositionId:'p-'+concept.conceptId,conceptId:concept.conceptId,predicate:concept.predicate||concept.conceptId,polarity:sourcePattern?.semanticPolarity||concept.semanticPolarity||polarity(matched),modality:modality(matched),source:sourcePattern?.attribution||concept.attribution||{kind:'LEARNER_ASSERTION'},epistemicStatus:concept.epistemicStatus||'INFERENCE',clauseId:clause?.clauseId||'clause-1',evidenceRefs:[...(concept.evidenceRefs||[])],matchedText:matched};
+  const clause=clauseForMatch(clauses,text,matched);
+  const semanticContext=clause?.text||matched;
+  const p={propositionId:'p-'+concept.conceptId,conceptId:concept.conceptId,predicate:concept.predicate||concept.conceptId,polarity:sourcePattern?.semanticPolarity||concept.semanticPolarity||polarity(semanticContext),modality:modality(semanticContext),source:sourcePattern?.attribution||concept.attribution||inferAttribution(semanticContext),epistemicStatus:concept.epistemicStatus||'INFERENCE',clauseId:clause?.clauseId||'clause-1',evidenceRefs:[...(concept.evidenceRefs||[])],matchedText:matched};
   propositions.push(p);conceptMatches.push({conceptId:concept.conceptId,matchPath:concept.compositional?'COMPOSITIONAL':'DIRECT',clauseIds:[p.clauseId],propositionIds:[p.propositionId],matchedVariantId:matchedId,confidenceClass:'RULE_EXACT'});used.add(p.clauseId);
  }
  const unmatchedClauseIds=clauses.filter(c=>!used.has(c.clauseId)).map(c=>c.clauseId);
@@ -80,7 +96,7 @@ function ClaimValidator(interpreted,evidence,snapshot,ctx){
   const assessment=evidence.data.propositionAssessments.find(x=>x.propositionId===p.propositionId),concept=snapshot.concepts.find(x=>x.conceptId===p.conceptId);
   let state=assessment?.supportState==='SUPPORTED'?'SUPPORTED':assessment?.supportState==='CONSISTENT_NOT_PROVEN'?(p.modality==='POSSIBLE'||p.modality==='UNCERTAIN'?'SUPPORTED':'OVERCLAIMED'):assessment?.supportState==='CONTRADICTED'?'CONTRADICTED':assessment?.supportState==='NO_AUTHORED_RELATION'?'UNSUPPORTED':'UNRESOLVED';
   if(p.polarity==='NEGATED'&&assessment?.supportState==='SUPPORTED'&&!concept?.expectedPolarity)state='UNSUPPORTED';
-  if(concept?.expectedModality==='POSSIBLE'&&p.modality==='CERTAIN')state='OVERCLAIMED';
+  if(concept?.expectedModality==='POSSIBLE'&&['PROBABLE','CERTAIN'].includes(p.modality))state='OVERCLAIMED';
   return {propositionId:p.propositionId,conceptId:p.conceptId,state,materiality:concept?.materiality||'CENTRAL',affectedCriterionIds:concept?.criterionIds||[],diagnosticCodes:state==='SUPPORTED'?[]:['CLAIM_'+state],rationaleKey:concept?.rationaleKey||'assessment.claim.'+state.toLowerCase()};
  });
  const materialContradictions=findings.filter(x=>x.state==='CONTRADICTED'&&x.materiality!=='PERIPHERAL');
