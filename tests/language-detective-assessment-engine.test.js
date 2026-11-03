@@ -193,7 +193,7 @@ test('a negated sentence does not erase a separate supported positive sentence',
  assert.equal(result.claims.findings.find(x=>x.conceptId==='BAG_BELONGS_LINA').state,'SUPPORTED');
 });
 
-test('The Empty Seat is a valid A1 case and evaluates a multi-source ownership inference',()=>{
+test('The Missing Bag is a valid A1 case and evaluates a multi-source ownership inference',()=>{
  const snapshot=cases['CASE-005'];
  assert.ok(snapshot);
  assert.equal(makeContext('CASE-005').cefr,'A1');
