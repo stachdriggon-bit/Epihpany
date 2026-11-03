@@ -58,7 +58,10 @@ function clauseForMatch(clauses, normalizedText, matched){
  return clauses.find(clause=>index>=clause.sourceSpan[0]&&index<clause.sourceSpan[1])||clauses[0]||null;
 }
 function inferAttribution(text){
- if(/\b(according to|said|says|reported|claims|claimed|states|stated|observed|the record shows|the report indicates|the report says|the note says)\b/i.test(String(text||'')))return {kind:'UNRESOLVED_ATTRIBUTION'};
+ const value=String(text||'');
+ const reportedLanguage=/\b(according to|said|says|reported|claims|claimed|states|stated|observed|the record shows|the report indicates|the report says|the note says)\b/i.test(value);
+ const namedObservation=/\b(?:[A-Z][a-z]+|the witness|a witness|the cleaner|the guard|the camera|the record|the report|the log)\s+(?:saw|sees|noticed|observed|heard|watched|recorded)\b/.test(value);
+ if(reportedLanguage||namedObservation)return {kind:'UNRESOLVED_ATTRIBUTION'};
  return {kind:'LEARNER_ASSERTION'};
 }
 function TextNormalizer(request){
