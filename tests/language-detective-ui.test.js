@@ -241,3 +241,26 @@ test('CASEBOUND mobile tabs support arrow and Home/End keyboard navigation', () 
   assert.match(ui, /tabs\[next\]\?\.click\(\)/);
   assert.match(ui, /event\.preventDefault\(\)/);
 });
+
+
+test('CASE-005 statements, evidence and interviews expose contextual return links', () => {
+  assert.match(ui, /case005Links = state\.caseId === 'CASE-005'/);
+  assert.match(ui, /S-LINA.*E01.*E02/);
+  assert.match(ui, /E04:\['S-LINA'\]/);
+  assert.match(ui, /data-ld-source-evidence/);
+  assert.match(ui, /data-ld-source-statement/);
+  assert.match(ui, /data-ld-source-interview/);
+  assert.match(ui, /data-evidence-id=.*scrollIntoView/);
+  assert.match(ui, /ld-statement-/);
+  assert.match(ui, /ld-interview-/);
+});
+
+test('CASEBOUND contextual navigation preserves progressive evidence discovery', () => {
+  assert.match(ui, /discoveredEvidenceForState/);
+  assert.match(ui, /if \(!discoveredEvidenceForState\(id\)\) return/);
+  assert.match(ui, /state\.activePanel = 'statements'/);
+  assert.match(ui, /state\.activePanel = 'evidence'/);
+  assert.match(ui, /state\.activePanel = 'people'/);
+  assert.match(ui, /entry\.type === 'INTERVIEW'/);
+  assert.match(ui, /entry\.type === 'STATEMENT'/);
+});
