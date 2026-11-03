@@ -215,3 +215,22 @@ test('CASEBOUND notebook renders distinct sections instead of one undifferentiat
   assert.match(ui,/section\.title/);
   assert.match(ui,/section\.description/);
 });
+
+
+test('CASEBOUND provides persistent mobile section tabs backed by one active panel state', () => {
+  assert.match(ui, /activePanel: 'statements'/);
+  assert.match(ui, /data-ld-panel=/);
+  assert.match(ui, /aria-label="Investigation sections" role="tablist"/);
+  assert.match(ui, /aria-selected=/);
+  assert.match(ui, /data-active-panel=/);
+  assert.match(ui, /state\.activePanel = panel/);
+  assert.match(ui, /ld-panel-statements/);
+  assert.match(ui, /ld-panel-people/);
+  assert.match(ui, /ld-panel-evidence/);
+  assert.match(ui, /role="tabpanel"/);
+});
+
+test('CASEBOUND preserves the current reading position after workspace rerenders', () => {
+  assert.match(ui, /const previousScrollY = window\.scrollY \|\| 0/);
+  assert.match(ui, /window\.scrollTo\(\{top:previousScrollY,behavior:'auto'\}\)/);
+});
