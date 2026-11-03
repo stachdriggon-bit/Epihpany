@@ -277,16 +277,33 @@
     if (outcome === 'ACCEPTED' && !state.completedCaseIds.includes(state.caseId)) state.completedCaseIds.push(state.caseId);
     const score = Number.isFinite(evaluation.weightedScore) ? '<strong class="ld-score">' + evaluation.weightedScore + '/100</strong>' : '<strong class="ld-score">Not graded</strong>';
     const grade = evaluation.awardedGrade ? '<span class="ld-grade">Grade ' + esc(evaluation.awardedGrade) + '</span>' : '';
-    const dimensionRows = dims.map(d => '<div class="ld-dimension"><span>' + esc(d.dimension.replaceAll('_', ' ').toLowerCase()) + '</span><b>' + d.score + '%</b><div><i style="width:' + Math.max(0, Math.min(100, d.score)) + '%"></i></div></div>').join('');
-    const findings = (evaluation.claimDiagnostics || []).map(f => '<li><b>' + esc(f.conceptId.replaceAll('_', ' ').toLowerCase()) + ':</b> ' + esc(f.state) + '</li>').join('');
+    const dimensionLabels = {CONCLUSION_ACCURACY:'Conclusion accuracy',EVIDENCE_REASONING:'Evidence and reasoning',CRITICAL_THINKING:'Critical thinking',LANGUAGE_CLARITY:'Clarity of expression'};
+    const dimensionRows = dims.map(d => '<div class="ld-dimension"><span>' + esc(dimensionLabels[d.dimension] || d.dimension.replaceAll('_', ' ').toLowerCase()) + '</span><b>' + d.score + '%</b><div><i style="width:' + Math.max(0, Math.min(100, d.score)) + '%"></i></div></div>').join('');
+    const caseSnapshot = fixtures.cases[state.caseId] || {};
+    const concepts = new Map((caseSnapshot.concepts || []).map(item => [item.conceptId, item]));
+    const discoveredIds = new Set(state.session?.discoveredEvidenceIds || []);
+    const findings = (evaluation.claimDiagnostics || []).map(f => {
+      const concept = concepts.get(f.conceptId);
+      const evidenceIds = (concept?.evidenceRefs || []).filter(id => discoveredIds.has(id));
+      const stateLabels = {SUPPORTED:'Supported by the evidence',PARTIALLY_SUPPORTED:'Partly supported',UNSUPPORTED:'Not established by the evidence',OVERCLAIMED:'Goes beyond what the evidence establishes',CONTRADICTED:'Conflicts with the evidence'};
+      return '<li><b>' + esc(concept?.predicate || 'A point in your explanation') + '</b><span>' + esc(stateLabels[f.state] || f.state.replaceAll('_',' ').toLowerCase()) + '</span>' + (evidenceIds.length ? '<small>Related records you examined: ' + evidenceIds.map(esc).join(', ') + '</small>' : '<small>No directly linked record from your examined evidence is shown here.</small>') + '</li>';
+    }).join('');
+    const examinedEvidence = (caseSnapshot.evidence || []).filter(item => discoveredIds.has(item.evidenceId));
+    const evidenceReview = examinedEvidence.length ? '<section class="ld-result-review"><h3>Records you examined</h3><p class="ld-review-intro">These are the case records you opened during this investigation.</p><ul>' + examinedEvidence.map(item => '<li><b>' + esc(item.title || item.evidenceId) + '</b><span>' + esc(item.summary) + '</span>' + (item.limitations?.length ? '<small>Limit: ' + esc(item.limitations.join(' ')) + '</small>' : '') + '</li>').join('') + '</ul></section>' : '';
+    const feedbackItems = (result.feedback?.items || []).map(item => {
+      const labels = {'assessment.feedback.supported':'You connected the main conclusion to the evidence.','assessment.feedback.clarify':'Make the person, event or reference in your answer more specific.','assessment.feedback.reviewEvidenceBoundary':'Separate what the records establish from what they only suggest.'};
+      return '<li>' + esc(labels[item.resourceKey] || 'Review the evidence and the limits of each source.') + '</li>';
+    }).join('');
     const attemptHistory = state.attempts.map((entry, i) => '<li><b>Attempt ' + (i + 1) + ':</b> ' + esc(outcomeLabel[entry.result.evaluation?.primaryOutcome] || 'Assessment result') + '</li>').join('');
     root.innerHTML = '<section class="ld-shell">' +
       '<div class="ld-toolbar"><button type="button" class="ld-back" data-ld-back>← Case overview</button><span>ATTEMPT ' + attempt + '</span></div>' +
       '<div class="ld-result-head" data-outcome="' + esc(outcome) + '"><span class="ld-stamp">' + esc(outcome === 'ACCEPTED' ? 'SOLVED' : outcome === 'PARTIAL' ? 'CLOSE' : 'REOPENED') + '</span><span class="ld-kicker">ASSESSMENT FEEDBACK</span><h2>' + esc(outcomeLabel[outcome] || 'Assessment result') + '</h2><p>' + esc(outcomeText[outcome] || 'Review the evidence and try again.') + '</p><div class="ld-result-score"' + (Number.isFinite(evaluation.weightedScore) ? ' style="--p:' + Math.max(0, Math.min(100, evaluation.weightedScore)) + '"' : '') + '>' + score + grade + '</div></div>' +
-      (dimensionRows ? '<section class="ld-dimensions"><h3>What the assessment considered</h3>' + dimensionRows + '</section>' : '') +
-      (findings ? '<details class="ld-diagnostics"><summary>Claim-by-claim review</summary><ul>' + findings + '</ul></details>' : '') +
+      (feedbackItems ? '<section class="ld-result-review ld-result-feedback"><h3>What to take from this result</h3><ul>' + feedbackItems + '</ul></section>' : '') +
+      (findings ? '<details class="ld-diagnostics ld-result-review"><summary>Review your reasoning</summary><ul>' + findings + '</ul></details>' : '') +
+      evidenceReview +
+      (dimensionRows ? '<details class="ld-diagnostics ld-result-review"><summary>Assessment breakdown</summary><div class="ld-dimensions">' + dimensionRows + '</div></details>' : '') +
       (state.attempts.length > 1 ? '<details class="ld-diagnostics"><summary>Previous attempts (' + (state.attempts.length - 1) + ')</summary><ul>' + attemptHistory.slice(0, attemptHistory.lastIndexOf('<li>')) + '</ul></details>' : '') +
-      '<div class="ld-feedback-note"><strong>Remember</strong><p>A missing detail is not automatically a contradiction. The assessment distinguishes an incomplete answer from a claim that the evidence does not support.</p></div>' +
+      '<div class="ld-feedback-note"><strong>Keep in mind</strong><p>A missing detail is not automatically a contradiction. A strong inference can be reasonable without becoming proof; the limits of each record still matter.</p></div>' +
       '<div class="ld-result-actions"><button type="button" class="ld-submit" data-ld-retry>Revise and try again</button><button type="button" class="ld-back" data-ld-back>Choose another case</button></div>' +
       '</section>';
   }
