@@ -165,7 +165,7 @@
     while ((node = walker.nextNode())) {
       const parent = node.parentElement;
       if (!parent || parent.closest('script,style,noscript,textarea,input,select,option,code,pre,.translate-btn,[aria-hidden="true"],[data-ld-conclusion-option],.ld-conclusion-locked,.ld-contact-row,.ld-scene-step')) continue;
-      const english = String(node.nodeValue || '').replace(/\\s+/g, ' ').trim();
+      const english = String(node.nodeValue || '').replace(/\s+/g, ' ').trim();
       if (!english || !CASEBOUND_ARABIC[english]) continue;
       const button = parent.closest('button');
       if (button && button.querySelector('[data-tx]')) continue;
