@@ -387,6 +387,7 @@
     'Continue with an available interview or witness to reveal the next part of the case.':'تابع مقابلة متاحة أو استمع إلى شاهد لكشف الجزء التالي من القضية.',
     'One question per person':'سؤال واحد لكل شخص',
     'Your answer':'إجابتك',
+    'Not quite. Recheck the record and try another option; this does not affect your assessment.':'ليس تمامًا. راجع السجل واختر إجابة أخرى؛ لن يؤثر ذلك في تقييمك.
     'Everyday mystery':'لغز من الحياة اليومية',
     'Case investigation':'تحقيق في قضية',
     'Evidence analysis':'تحليل الأدلة',
@@ -525,10 +526,11 @@
       const parent = node.parentElement;
       if (!parent || parent.closest('script,style,noscript,textarea,input,select,option,code,pre,.translate-btn,[aria-hidden="true"],[data-ld-conclusion-option],.ld-conclusion-locked,.ld-contact-row,.ld-scene-step')) continue;
       const english = String(node.nodeValue || '').replace(/\s+/g, ' ').trim();
-      if (!english || !CASEBOUND_ARABIC[english]) continue;
+      const arabic = CASEBOUND_ARABIC[english] || (english.startsWith('✓ ') && CASEBOUND_ARABIC[english.slice(2)] ? '✓ ' + CASEBOUND_ARABIC[english.slice(2)] : '');
+      if (!english || !arabic) continue;
       const button = parent.closest('button');
       if (button && button.querySelector('[data-tx]')) continue;
-      nodes.push({node,english,arabic:CASEBOUND_ARABIC[english],button});
+      nodes.push({node,english,arabic,button});
     }
     nodes.forEach(({node,english,arabic,button}) => {
       if (!node.parentNode || node.parentElement?.closest('[data-tx]') || (button && button.querySelector('[data-tx]'))) return;
@@ -1145,6 +1147,7 @@
             feedback.textContent = 'Not quite. Recheck the record and try another option; this does not affect your assessment.';
             optionButton.classList.add('is-retry');
           }
+          enhanceCaseboundTranslations();
         }
         return;
       }
