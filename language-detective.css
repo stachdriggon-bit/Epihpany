@@ -459,3 +459,11 @@
   .ld-investigation-workspace .ld-mission-panel{padding:10px 13px}
   .ld-investigation-workspace .ld-mission-panel p{font-size:.92rem}
 }
+
+
+/* CASEBOUND — contextual source links */
+.ld-shell .ld-source-links{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
+.ld-shell .ld-source-link{min-height:40px;padding:7px 10px;border:1px solid var(--cb-line);border-radius:9px;background:#fffaf0;color:var(--cb-ink);font:700 .78rem/1.3 inherit;text-align:left;cursor:pointer}
+.ld-shell .ld-source-link:hover{border-color:var(--cb-brass);background:#f7edd8}
+.ld-shell .ld-source-link:focus-visible{outline:3px solid color-mix(in srgb,var(--cb-violet) 55%,transparent);outline-offset:2px}
+@media(prefers-reduced-motion:reduce){.ld-shell .ld-source-link{scroll-behavior:auto;transition:none}}
