@@ -290,6 +290,8 @@ test('main navigation tabs open without uncaught page errors', async t => {
         assert.match(await page.locator('#ld-case-notebook').innerText(), /notebook is empty/i,
           'the notebook should start empty');
         await page.locator('#ld-case-notebook [data-ld-notebook-close]').click();
+        await caseboundRoot.locator('[data-ld-scene="evidence"]').click();
+        await caseboundRoot.locator('[data-ld-open-next]').waitFor({state:'visible'});
         for (let i = 1; i <= 4; i++) {
           await caseboundRoot.locator('[data-ld-open-next]').click();
           assert.equal(await caseboundRoot.locator('.ld-evidence').count(), i,
@@ -299,6 +301,7 @@ test('main navigation tabs open without uncaught page errors', async t => {
         }
         assert.equal(await caseboundRoot.locator('[data-ld-open-next]').count(), 0,
           'all evidence should be exhausted after the final discovery');
+        await caseboundRoot.locator('[data-ld-scene="conclusion"]').click();
         await caseboundRoot.locator('[data-ld-conclusion-choices]').waitFor({state:'visible',timeout:5000});
         assert.equal(await caseboundRoot.locator('.ld-conclusion-locked').count(), 3,
           'Standard mode should show three locked option placeholders before reasoning is submitted');
