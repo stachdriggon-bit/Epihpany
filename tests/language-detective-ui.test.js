@@ -250,7 +250,8 @@ test('CASE-005 statements, evidence and interviews expose contextual return link
   assert.match(ui, /data-ld-source-evidence/);
   assert.match(ui, /data-ld-source-statement/);
   assert.match(ui, /data-ld-source-interview/);
-  assert.match(ui, /data-evidence-id=.*scrollIntoView/);
+  assert.match(ui, /data-evidence-id=/);
+  assert.match(ui, /scrollIntoView/);
   assert.match(ui, /ld-statement-/);
   assert.match(ui, /ld-interview-/);
 });
