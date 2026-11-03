@@ -36,11 +36,16 @@
     CONTRADICTION: 'A central claim conflicts with the case record. Revisit the relevant evidence before drawing that conclusion.'
   };
 
+  function segmented(name, label, options) {
+    return '<fieldset class="ld-segment"><legend>' + label + '</legend><div class="ld-segment-options">' + options.map(o =>
+      '<label class="ld-segment-option' + (state[name] === o[0] ? ' is-on' : '') + '"><input type="radio" name="ld-' + name + '" value="' + o[0] + '" data-ld-setting="' + name + '"' + (state[name] === o[0] ? ' checked' : '') + '><strong>' + o[1] + '</strong><small>' + o[2] + '</small></label>'
+    ).join('') + '</div></fieldset>';
+  }
+
   function settingsMarkup() {
     return '<div class="ld-settings">' +
-
-      '<label>Training mode<select data-ld-setting="trainingMode">' + [['GUIDED','Guided'],['STEADY','Steady'],['CHALLENGE','Challenge']].map(x => '<option value="' + x[0] + '"' + (state.trainingMode === x[0] ? ' selected' : '') + '>' + x[1] + '</option>').join('') + '</select></label>' +
-      '<label>Answer format<select data-ld-setting="answerFormat">' + [['STANDARD','Standard'],['HELL','Hell Mode']].map(x => '<option value="' + x[0] + '"' + (state.answerFormat === x[0] ? ' selected' : '') + '>' + x[1] + '</option>').join('') + '</select></label>' +
+      segmented('trainingMode', 'Support level', [['GUIDED','Guided','Hints + practice'],['STEADY','Steady','Balanced'],['CHALLENGE','Challenge','Least help']]) +
+      segmented('answerFormat', 'Answer style', [['STANDARD','Standard','Reason, then choose'],['HELL','Hell Mode','Write it all']]) +
       '</div>';
   }
 
@@ -57,8 +62,10 @@
     const levelCards = CEFR_ORDER.map(level => {
       const meta = CEFR_LEVELS[level];
       const count = Object.keys(caseInfo).filter(id => caseInfo[id].cefr === level).length;
-      return '<button type="button" class="ld-level-card" data-ld-level-select="' + level + '">' +
+      const rank = CEFR_ORDER.indexOf(level) + 1;
+      return '<button type="button" class="ld-level-card' + (count ? '' : ' is-empty') + '" data-level="' + level + '" data-ld-level-select="' + level + '">' +
         '<span class="ld-level-card-top"><strong>' + level + '</strong><span>' + count + (count === 1 ? ' case' : ' cases') + '</span></span>' +
+        '<span class="ld-level-dots" aria-hidden="true">' + CEFR_ORDER.map((_, k) => '<i' + (k < rank ? ' class="on"' : '') + '></i>').join('') + '</span>' +
         '<b>' + meta.title.slice(5) + '</b><span>' + meta.note + '</span>' +
         '<em>' + (count ? 'View investigations →' : 'Coming soon') + '</em></button>';
     }).join('');
@@ -66,9 +73,10 @@
     const selectedMeta = selectedLevel ? CEFR_LEVELS[selectedLevel] : null;
     const caseCards = selectedLevel ? Object.keys(caseInfo)
       .filter(id => caseInfo[id].cefr === selectedLevel)
-      .map(id => {
+      .map((id, n) => {
         const item = caseInfo[id];
-        return '<button type="button" class="ld-case-card" data-ld-case="' + id + '">' +
+        return '<button type="button" class="ld-case-card" data-level="' + esc(item.cefr) + '" data-ld-case="' + id + '">' +
+          '<span class="ld-case-tab">CASE ' + String(n + 1).padStart(2, '0') + ' · ' + esc(item.cefr) + '</span>' +
           '<span class="ld-case-meta">' + esc(item.category) + '</span><strong>' + esc(item.title) + '</strong><span>' + esc(item.subtitle) + '</span>' +
           '<em>Open investigation →</em></button>';
       }).join('') : '';
@@ -79,7 +87,7 @@
       : '<div class="ld-level-selection"><div class="ld-level-selection-heading"><h3>Choose your English level</h3><p>Each level has its own investigations, characters and challenges.</p></div><div class="ld-level-grid">' + levelCards + '</div></div>';
     root.innerHTML = '<section class="ld-shell ld-casebound-shell">' +
       '<div class="ld-toolbar"><button type="button" class="ld-back" data-ld-exit>← Home</button><span>CASE FILES</span></div>' +
-      '<div class="ld-heading"><span class="ld-kicker">CASEBOUND · EVERY CLUE HAS A STORY</span><h2>CASEBOUND</h2><p>Investigate cases, examine evidence and discover what really happened.</p></div>' +
+      '<div class="ld-heading ld-hero"><span class="ld-kicker">CASEBOUND · EVERY CLUE HAS A STORY</span><h2>CASEBOUND</h2><p class="ld-hero-line">Read the clues. Prove what happened.</p><p>Investigate cases, examine evidence and discover what really happened.</p><ol class="ld-howto"><li><b>1</b>Read the statements</li><li><b>2</b>Question people</li><li><b>3</b>Examine evidence</li><li><b>4</b>Build your conclusion</li></ol></div>' +
       settingsMarkup() + content +
       '<p class="ld-note">Guided, Steady and Challenge change the level of support. Standard and Hell Mode change how you submit your conclusion; neither mode changes the evidence or rewards unsupported certainty.</p>' +
       '</section>';
@@ -108,10 +116,10 @@
     if (!info) return picker();
     root.innerHTML = '<section class="ld-shell ld-case-intro">' +
       '<div class="ld-toolbar"><button type="button" class="ld-back" data-ld-back>← All cases</button><span>CASE BRIEF · ' + esc(info.cefr) + '</span></div>' +
-      '<div class="ld-case-intro-art" aria-hidden="true"><span>CB</span><i>CASE FILE</i></div>' +
+      '<div class="ld-case-intro-art ld-dossier" data-level="' + esc(info.cefr) + '" aria-hidden="true"><b>CASE FILE · ' + esc(info.cefr) + '</b><span>CB</span><i>' + esc(info.category) + '</i><em class="ld-dossier-stamp">OPEN</em></div>' +
       '<div class="ld-heading"><span class="ld-kicker">' + esc(info.category) + ' · ' + esc(info.cefr) + '</span><h2>' + esc(info.title) + '</h2><p>' + esc(info.subtitle) + '</p></div>' +
       '<div class="ld-case-brief"><span class="ld-kicker">YOUR INVESTIGATION</span><p>' + esc(info.focus) + '</p></div>' +
-      '<div class="ld-case-intro-actions"><button type="button" class="ld-submit" data-ld-start-investigation>Start Investigation <span aria-hidden="true">→</span></button><p>Take your time. You can review everything you discover as the investigation unfolds.</p></div>' +
+      '<ol class="ld-howto ld-howto-light"><li><b>1</b>Read the statements</li><li><b>2</b>Question people</li><li><b>3</b>Examine evidence</li><li><b>4</b>Build your conclusion</li></ol><div class="ld-case-intro-actions"><div class="ld-mode-chips"><span>' + esc(state.trainingMode) + '</span><span>' + esc(state.answerFormat === 'HELL' ? 'HELL MODE' : 'STANDARD') + '</span></div><button type="button" class="ld-submit" data-ld-start-investigation>Start Investigation <span aria-hidden="true">→</span></button><p>Take your time. You can review everything you discover as the investigation unfolds.</p></div>' +
       '</section>';
   }
 
@@ -151,7 +159,7 @@
           const id = person.characterId || person.id;
           const selected = state.selectedCharacterId === id;
           const response = (session.interviewResponses || []).find(item => item.characterId === id);
-          return '<button type="button" class="ld-character-card' + (selected ? ' is-selected' : '') + '" data-ld-select-character="' + esc(id) + '" aria-pressed="' + String(selected) + '"><strong>' + esc(person.name || person.label || 'Person') + '</strong>' + (person.role ? '<span>' + esc(person.role) + '</span>' : '') + '<small>' + (response ? 'Interview completed' : selected ? 'Questions shown below' : 'View interview questions →') + '</small></button>';
+          return '<button type="button" class="ld-character-card' + (selected ? ' is-selected' : '') + '" data-ld-select-character="' + esc(id) + '" aria-pressed="' + String(selected) + '"><i class="ld-avatar" aria-hidden="true">' + esc(String(person.name || person.label || '?').trim().charAt(0).toUpperCase()) + '</i><strong>' + esc(person.name || person.label || 'Person') + '</strong>' + (person.role ? '<span>' + esc(person.role) + '</span>' : '') + '<small>' + (response ? 'Interview completed' : selected ? 'Questions shown below' : 'View interview questions →') + '</small></button>';
         }).join('') + '</div></section>' : '';
     const availableInterviews = investigationModel.getAvailableInterviews(snapshot, session);
     const interviews = selectedDossier && selectedDossier.interview
@@ -175,6 +183,11 @@
         (used ? '<p class="ld-hint-copy">' + hint.text + '</p>' : '');
     }).join('');
     const canConclude = readiness.ready;
+    const stepDone = [visibleStatements.length > 0, session.interviewResponses.length > 0 || Boolean(session.selectedWitnessId), !nextEvidence && evidenceItems.length > 0 && openedEvidence.length === evidenceItems.length, false];
+    const stepNames = ['Read', 'Question', 'Examine', 'Conclude'];
+    const stepActive = canConclude ? 3 : Math.max(0, stepDone.findIndex(done => !done));
+    const stepsMarkup = '<ol class="ld-steps" aria-label="Investigation steps">' + stepNames.map((name, k) => '<li class="' + (stepDone[k] && k < stepActive ? 'is-done' : '') + (k === stepActive ? ' is-active' : '') + '"' + (k === stepActive ? ' aria-current="step"' : '') + '><b>' + (stepDone[k] && k < stepActive ? '✓' : k + 1) + '</b><span>' + name + '</span></li>').join('') + '</ol>' +
+      '<p class="ld-next-step">' + (canConclude ? 'You have what you need. Build your conclusion below.' : nextEvidence ? 'Next: examine the new evidence.' : session.interviewResponses.length || session.selectedWitnessId ? 'Keep questioning to unlock the remaining evidence.' : 'Next: question someone or hear a witness.') + '</p>';
     const answerFields = state.answerFormat === 'HELL'
       ? '<label class="ld-answer-field">Your Conclusion<textarea name="ld-conclusion" rows="3" maxlength="1200" placeholder="What do you think happened?">' + esc(answers.conclusion) + '</textarea></label><label class="ld-answer-field">Your Reasoning<textarea name="ld-reasoning" rows="4" maxlength="1800" placeholder="Which evidence supports your conclusion? What remains uncertain?">' + esc(answers.reasoning) + '</textarea></label>'
       : '<label class="ld-answer-field">Your Reasoning<textarea name="ld-standard-reasoning" rows="5" maxlength="1800" ' + (state.standardReasoningSubmitted ? 'readonly aria-readonly="true"' : '') + ' placeholder="Explain what the evidence establishes, and what remains uncertain.">' + esc(answers.reasoning) + '</textarea></label><section class="ld-conclusion-picker" data-ld-conclusion-choices><h4>Conclusion choices · ' + info.conclusionOptions.length + ' options</h4><p>' + (state.standardReasoningSubmitted ? 'Now choose the conclusion that best matches your reasoning.' : 'Write your reasoning first. The choices are locked until you submit it.') + '</p><div class="ld-conclusion-options">' + (state.standardReasoningSubmitted ? info.conclusionOptions.map((option, i) => '<button type="button" data-ld-conclusion-option="' + i + '" aria-pressed="' + (answers.selectedConclusion === i) + '"' + (answers.selectedConclusion === i ? ' class="is-selected"' : '') + '>' + esc(option) + '</button>').join('') : info.conclusionOptions.map((option, i) => '<div class="ld-conclusion-locked" aria-label="Option ' + String.fromCharCode(65 + i) + ', locked"><span>' + String.fromCharCode(65 + i) + '</span><span>Locked until reasoning is submitted</span></div>').join('')) + '</div></section>';
@@ -183,17 +196,17 @@
       : '<section class="ld-unlock-gate"><strong>Keep investigating before you conclude.</strong><p>' + (nextEvidence ? 'There is more case material to discover. Open the next item when you are ready; your conclusion will unlock when a fair investigation path is complete.' : 'A required information source is still available through the people or witness sections. Continue there to complete a fair investigation path.') + '</p></section>';
     root.innerHTML = '<section class="ld-shell ld-investigation-workspace">' +
       '<div class="ld-toolbar"><button type="button" class="ld-back" data-ld-back>← All cases</button><span>CASE · ' + esc(info.cefr) + '</span><span>' + esc(state.trainingMode) + ' · ' + esc(state.answerFormat) + '</span></div>' +
-      '<header class="ld-workspace-header"><div><span class="ld-kicker">CASE FILE · ' + esc(info.cefr) + '</span><h2>' + esc(info.title) + '</h2><p>' + esc(info.subtitle) + '</p></div><button type="button" class="ld-notebook-trigger" data-ld-notebook-open aria-controls="ld-case-notebook" aria-expanded="false">Case notebook <span>' + notebookEntries.length + '</span></button></header>' +
-      '<section class="ld-mission-panel" aria-label="Your investigation task"><span class="ld-kicker">YOUR TASK · KEEP THIS BRIEF IN VIEW</span><p>' + esc(info.focus) + '</p></section>' +
-      '<section class="ld-progress-panel" aria-label="Investigation progress"><div class="ld-progress-copy"><strong>Investigation activity</strong><span>' + progress + '% evidence reviewed · ' + session.interviewResponses.length + ' interviews · ' + (session.selectedWitnessId ? '1 witness' : 'no witness') + '</span></div><div class="ld-progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="' + evidenceItems.length + '" aria-valuenow="' + openedEvidence.length + '" aria-label="Evidence reviewed"><i style="width:' + progress + '%"></i></div></section>' +
-      statements + characters + interviews + witnesses +
+      '<header class="ld-workspace-header"><div><span class="ld-kicker">CASE FILE · ' + esc(info.cefr) + '</span><h2>' + esc(info.title) + '</h2><p>' + esc(info.subtitle) + '</p></div><button type="button" class="ld-notebook-trigger" data-ld-notebook-open aria-controls="ld-case-notebook" aria-expanded="false"><i class="ld-nb-icon" aria-hidden="true">▤</i>Case notebook <span>' + notebookEntries.length + '</span></button></header>' +
+      '<div class="ld-layout"><aside class="ld-side">' + '<section class="ld-mission-panel" aria-label="Your investigation task"><span class="ld-kicker">YOUR TASK · KEEP THIS BRIEF IN VIEW</span><p>' + esc(info.focus) + '</p></section>' +
+      '<section class="ld-progress-panel" aria-label="Investigation progress">' + stepsMarkup + '<div class="ld-progress-copy"><strong>Investigation activity</strong><span>' + progress + '% evidence reviewed · ' + session.interviewResponses.length + ' interviews · ' + (session.selectedWitnessId ? '1 witness' : 'no witness') + '</span></div><div class="ld-progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="' + evidenceItems.length + '" aria-valuenow="' + openedEvidence.length + '" aria-label="Evidence reviewed"><i style="width:' + progress + '%"></i></div></section>' +
+      '</aside><div class="ld-main">' + statements + characters + interviews + witnesses +
       '<section class="ld-workspace-section ld-discovery-section"><div class="ld-section-heading"><div><span class="ld-kicker">DISCOVERY</span><h3>Evidence</h3><p>Examine available items. Some information may become available after a question or witness choice.</p></div></div>' +
       (nextEvidence ? '<article class="ld-next-evidence"><span class="ld-evidence-index">NEXT · ' + esc(nextEvidence.role) + '</span><h4>New evidence is available</h4><p>Its contents will be revealed when you choose to examine it.</p><button type="button" class="ld-submit" data-ld-open-next data-evidence-id="' + esc(nextEvidence.evidenceId) + '">Examine evidence →</button></article>' : (canConclude ? '<p class="ld-discovery-complete">All currently available evidence has been reviewed. You can prepare your conclusion.</p>' : '<p class="ld-unlock-gate">Continue with an available interview or witness to reveal the next part of the case.</p>')) +
-      '<div class="ld-evidence-grid">' + openedEvidence.map((item, i) => evidenceCard(item, i)).join('') + '</div></section>' +
+      '<div class="ld-evidence-grid">' + openedEvidence.map((item, i) => evidenceCard(item, i)).join('') + Array.from({ length: Math.max(0, evidenceItems.length - openedEvidence.length) }, () => '<article class="ld-evidence-ghost" aria-label="Undiscovered evidence"><b>LOCKED</b><p>Not found yet</p></article>').join('') + '</div></section>' +
       (checksAvailable ? '<section class="ld-check-toggle"><div><strong>Guided evidence checks</strong><p>Optional practice. You can skip this and continue the investigation.</p></div><button type="button" class="ld-back" data-ld-toggle-checks aria-expanded="' + String(Boolean(state.showEvidenceChecks)) + '">' + (state.showEvidenceChecks ? 'Hide checks' : 'Open checks') + '</button></section>' : '') +
       questionMarkup +
       (canConclude ? '<section class="ld-hints"><div><strong>Optional hints</strong><p>Use them in order. Hints do not reduce your academic score.</p></div><div class="ld-hint-actions">' + visibleHints + '</div></section>' + answerPanel : '') +
-      '</section>' +
+      '</div></div></section>' +
       '<button type="button" class="ld-notebook-backdrop" data-ld-notebook-close aria-label="Close case notebook" hidden></button>' +
       '<aside class="ld-notebook-drawer" id="ld-case-notebook" role="dialog" aria-modal="true" aria-labelledby="ld-notebook-title" aria-hidden="true" hidden><div class="ld-notebook-header"><div><span class="ld-kicker">YOUR DISCOVERIES</span><h2 id="ld-notebook-title">Case notebook</h2><p>' + notebookEntries.length + ' discovered item' + (notebookEntries.length === 1 ? '' : 's') + '</p></div><button type="button" class="ld-notebook-close" data-ld-notebook-close aria-label="Close case notebook">×</button></div><div class="ld-notebook-content">' + notebook + '</div></aside>';
     const notebookBackdrop = root.querySelector('.ld-notebook-backdrop');
@@ -213,7 +226,7 @@
     const attemptHistory = state.attempts.map((entry, i) => '<li><b>Attempt ' + (i + 1) + ':</b> ' + esc(outcomeLabel[entry.result.evaluation?.primaryOutcome] || 'Assessment result') + '</li>').join('');
     root.innerHTML = '<section class="ld-shell">' +
       '<div class="ld-toolbar"><button type="button" class="ld-back" data-ld-back>← Case overview</button><span>ATTEMPT ' + attempt + '</span></div>' +
-      '<div class="ld-result-head"><span class="ld-kicker">ASSESSMENT FEEDBACK</span><h2>' + esc(outcomeLabel[outcome] || 'Assessment result') + '</h2><p>' + esc(outcomeText[outcome] || 'Review the evidence and try again.') + '</p><div class="ld-result-score">' + score + grade + '</div></div>' +
+      '<div class="ld-result-head" data-outcome="' + esc(outcome) + '"><span class="ld-stamp">' + esc(outcome === 'ACCEPTED' ? 'SOLVED' : outcome === 'PARTIAL' ? 'CLOSE' : 'REOPENED') + '</span><span class="ld-kicker">ASSESSMENT FEEDBACK</span><h2>' + esc(outcomeLabel[outcome] || 'Assessment result') + '</h2><p>' + esc(outcomeText[outcome] || 'Review the evidence and try again.') + '</p><div class="ld-result-score"' + (Number.isFinite(evaluation.weightedScore) ? ' style="--p:' + Math.max(0, Math.min(100, evaluation.weightedScore)) + '"' : '') + '>' + score + grade + '</div></div>' +
       (dimensionRows ? '<section class="ld-dimensions"><h3>What the assessment considered</h3>' + dimensionRows + '</section>' : '') +
       (findings ? '<details class="ld-diagnostics"><summary>Claim-by-claim review</summary><ul>' + findings + '</ul></details>' : '') +
       (state.attempts.length > 1 ? '<details class="ld-diagnostics"><summary>Previous attempts (' + (state.attempts.length - 1) + ')</summary><ul>' + attemptHistory.slice(0, attemptHistory.lastIndexOf('<li>')) + '</ul></details>' : '') +
