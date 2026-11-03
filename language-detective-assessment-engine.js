@@ -89,7 +89,12 @@ function SemanticMatcher(normalized,snapshot,ctx){
 function EvidenceReasoner(interpreted,snapshot,ctx){
  const propositionAssessments=interpreted.data.propositions.map(p=>{
   const findings=p.evidenceRefs.map(evidenceId=>{const e=snapshot.evidence.find(x=>x.evidenceId===evidenceId);return {evidenceId,relation:e?.relation||'LEAVES_UNRESOLVED',applicableScope:e?.scope||'case-authored scope',limitation:(e?.limitations||[]).join('; ')};});
-  let supportState=findings.some(x=>x.relation==='SUPPORTS')?'SUPPORTED':findings.some(x=>x.relation==='CONSISTENT_WITH')?'CONSISTENT_NOT_PROVEN':findings.some(x=>x.relation==='CONTRADICTS')?'CONTRADICTED':findings.length?'UNRESOLVED':'NO_AUTHORED_RELATION';
+  const hasSupport=findings.some(x=>x.relation==='SUPPORTS');
+  const hasContradiction=findings.some(x=>x.relation==='CONTRADICTS');
+  const hasWeakening=findings.some(x=>x.relation==='WEAKENS');
+  // Mixed evidence must remain unresolved; a supporting record cannot erase
+  // a contradictory record merely because it appears first in the relation list.
+  let supportState=hasSupport&&hasContradiction?'CONFLICTED':hasContradiction?'CONTRADICTED':hasSupport?(hasWeakening?'CONFLICTED':'SUPPORTED'):findings.some(x=>x.relation==='CONSISTENT_WITH')?'CONSISTENT_NOT_PROVEN':hasWeakening?'WEAKENED':findings.length?'UNRESOLVED':'NO_AUTHORED_RELATION';
   const concept=snapshot.concepts.find(x=>x.conceptId===p.conceptId);
   if(concept?.expectedPolarity && p.polarity!==concept.expectedPolarity && supportState==='SUPPORTED')supportState='CONTRADICTED';
   return {propositionId:p.propositionId,conceptId:p.conceptId,evidenceFindings:findings,supportState};
