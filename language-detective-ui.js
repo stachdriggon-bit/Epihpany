@@ -530,17 +530,24 @@
       if (!english || !arabic) continue;
       const button = parent.closest('button');
       if (button && button.querySelector('[data-tx]')) continue;
-      nodes.push({node,english,arabic,button});
+      const label = parent.closest('.ld-evidence,.ld-evidence-card,.ld-account-card,.ld-notebook-entry') ? 'case evidence'
+        : parent.closest('.ld-conversation,.ld-chat-content') ? 'conversation text'
+        : parent.closest('.ld-question') ? 'evidence question'
+        : parent.closest('.ld-case-brief,.ld-mission-panel') ? 'case brief'
+        : 'case text';
+      nodes.push({node,english,arabic,button,label});
     }
-    nodes.forEach(({node,english,arabic,button}) => {
+    nodes.forEach(({node,english,arabic,button,label}) => {
       if (!node.parentNode || node.parentElement?.closest('[data-tx]') || (button && button.querySelector('[data-tx]'))) return;
       if (button && button.childElementCount === 0 && button.textContent.trim() === english) {
         button.dataset.tx = '';
+        button.dataset.txLabel = label;
         button.dataset.translationAr = arabic;
         return;
       }
       const span = document.createElement('span');
       span.dataset.tx = '';
+      span.dataset.txLabel = label;
       span.dataset.translationAr = arabic;
       node.parentNode.replaceChild(span,node);
       span.appendChild(node);
