@@ -74,7 +74,7 @@ test('case picker groups cases by authored CEFR and keeps evaluation level fixed
 });
 test('The Missing Bag is presented as a separate A1 everyday mystery',()=>{
  const item=cases['CASE-005'].presentation;
- assert.equal(item.title,'The Empty Seat');
+ assert.equal(item.title,'The Missing Bag');
  assert.equal(item.conclusionOptions.length,3);
  assert.match(item.focus,/independent library record/i);
  assert.ok(cases['CASE-005'].interviews.length);
