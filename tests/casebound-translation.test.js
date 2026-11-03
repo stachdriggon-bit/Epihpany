@@ -13,6 +13,7 @@ test('Casebound reuses EPIPHANY shared translation preference and translator', (
   assert.match(app, /window\.EPIPHANY_TRANSLATION_ENHANCE\s*=\s*root\s*=>/);
   assert.match(app, /translationObserver\.observe\(\$\('#casebound-content'\)/);
   assert.match(app, /enhanceTranslationControls\(\$\('\.casebound-page'\)\)/);
+  assert.match(app, /enhanceTranslationControls\(\$\('\.casebound-page'\)\);\}\);/);
   assert.match(ui, /window\.EPIPHANY_TRANSLATION_ENHANCE\?\.\(page\)/);
   assert.match(ui, /window\.EPIPHANY_TRANSLATION_ENHANCE\?\.\(drawer\)/);
 });
