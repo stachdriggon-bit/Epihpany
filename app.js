@@ -3075,7 +3075,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
       }
     },button);
   });
-  const translationObserver=new MutationObserver(()=>{enhanceTranslationControls($('#game-body'));enhanceTranslationControls($('#world-game'));});
+  const translationObserver=new MutationObserver(()=>{enhanceTranslationControls($('#game-body'));enhanceTranslationControls($('#world-game'));enhanceTranslationControls($('.casebound-page'));});
   if($('#game-body'))translationObserver.observe($('#game-body'),{childList:true,subtree:true});
   if($('#world-game'))translationObserver.observe($('#world-game'),{childList:true,subtree:true});
   if($('#casebound-content'))translationObserver.observe($('#casebound-content'),{childList:true,subtree:true});
