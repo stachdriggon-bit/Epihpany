@@ -313,6 +313,9 @@ test('a named witness observation remains attributed while supporting only the w
  assert.equal(result.claims.findings.find(x=>x.conceptId==='PICKUP').state,'SUPPORTED',
   'the witness account supports the pickup within its stated scope');
  assert.equal(result.claims.findings.find(x=>x.conceptId==='IDENTITY_UNKNOWN').state,'SUPPORTED');
+ const identity=result.interpreted.propositions.find(x=>x.conceptId==='IDENTITY_UNKNOWN');
+ assert.equal(identity.source.kind,'UNRESOLVED_ATTRIBUTION',
+  'Sara’s inability to identify the resident must remain attributed to Sara');
  assert.equal(result.claims.findings.find(x=>x.conceptId==='MOTIVE_UNKNOWN').state,'SUPPORTED');
  assert.equal(result.evaluation.primaryOutcome,'ACCEPTED');
 });
