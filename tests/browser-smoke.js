@@ -268,7 +268,39 @@ test('main navigation tabs open without uncaught page errors', async t => {
         assert.equal(await caseboundRoot.locator('[data-ld-case="CASE-004"]').count(), 1,
           'The Blue Scarf should be listed under A1');
         assert.equal(await caseboundRoot.locator('[data-ld-case="CASE-005"]').count(), 1,
-          'The Empty Seat should be listed under A1');
+          'The Missing Bag should be listed under A1');
+        await caseboundRoot.locator('[data-ld-case="CASE-005"]').click();
+        await caseboundRoot.locator('.ld-case-intro h2').waitFor({state:'visible'});
+        assert.equal(await caseboundRoot.locator('.ld-case-intro h2').innerText(), 'The Missing Bag',
+          'the renamed case title should appear in its case brief');
+        await caseboundRoot.locator('[data-ld-start-investigation]').click();
+        for (const [characterId, questionId] of [
+          ['LINA','Q-LINA-BAG-LAST'],
+          ['OMAR','Q-OMAR-VIEW'],
+          ['NORA','Q-NORA-BAG']
+        ]) {
+          await caseboundRoot.locator('[data-ld-select-character="' + characterId + '"]').click();
+          await caseboundRoot.locator('[data-ld-ask-interview][data-question-id="' + questionId + '"]').click();
+        }
+        assert.equal(await caseboundRoot.locator('.ld-contact-row.is-complete').count(), 3,
+          'one selected interview answer should be recorded for each of the three characters');
+        await caseboundRoot.locator('[data-ld-scene="evidence"]').click();
+        for (let i = 1; i <= 4; i++) {
+          await caseboundRoot.locator('[data-ld-open-next]').click();
+          assert.equal(await caseboundRoot.locator('.ld-evidence').count(), i,
+            'the A1 case should reveal only the evidence examined so far');
+        }
+        await caseboundRoot.locator('[data-ld-scene="conclusion"]').click();
+        await caseboundRoot.locator('[name="ld-standard-reasoning"]').fill(
+          'The library record links Lina to the paperback in the bag. The seating log places her near the bench, but location alone does not prove ownership. The evidence makes her the best-supported owner, not a certain owner.'
+        );
+        await caseboundRoot.locator('[data-ld-submit-reasoning]').click();
+        await caseboundRoot.locator('[data-ld-conclusion-option="0"]').click();
+        await caseboundRoot.locator('[data-ld-answer-form] [type="submit"]').click();
+        await caseboundRoot.locator('.ld-result-head').waitFor({state:'visible',timeout:5000});
+        assert.match(await caseboundRoot.locator('.ld-result-head h2').innerText(), /Conclusion supported/,
+          'The Missing Bag should accept a complete, evidence-based A1 conclusion');
+        await caseboundRoot.locator('[data-ld-back]').click();
         await caseboundRoot.locator('[data-ld-level-back]').click();
         await caseboundRoot.locator('[data-ld-level-select="A2"]').click();
         assert.equal(await caseboundRoot.locator('[data-ld-case]').count(), 1,
