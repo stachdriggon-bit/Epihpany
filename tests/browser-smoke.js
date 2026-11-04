@@ -536,7 +536,9 @@ test('main navigation tabs open without uncaught page errors', async t => {
         // Exercise Hell Mode on a phone-sized viewport after the case has been solved.
         await caseboundRoot.locator('[data-ld-back]').first().click();
         await caseboundRoot.locator('.ld-advanced-settings > summary').click();
-        await caseboundRoot.locator('[data-ld-setting="answerFormat"][value="HELL"]').check();
+        await caseboundRoot.locator('.ld-segment-option:has([data-ld-setting="answerFormat"][value="HELL"])').click();
+        assert.equal(await caseboundRoot.locator('[data-ld-setting="answerFormat"][value="HELL"]').isChecked(), true,
+          'Hell Mode should be selected through its visible answer-style option');
         await caseboundRoot.locator('[data-ld-filter-level="A1"]').click();
         await caseboundRoot.locator('.ld-case-file-card[data-ld-case="CASE-005"]').click();
         await page.setViewportSize({width:390,height:844});
