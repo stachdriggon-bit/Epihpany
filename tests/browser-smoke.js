@@ -324,10 +324,11 @@ test('main navigation tabs open without uncaught page errors', async t => {
         await caseboundRoot.locator('[data-ld-back]').click();
         await caseboundRoot.locator('.ld-caseboard-header').waitFor({state:'visible'});
 
-        // Re-open A1 and verify that an initial statement returns to its original card.
+        // Verify that a reviewed initial statement returns to its original card.
         await caseboundRoot.locator('[data-ld-filter-level="A1"]').click();
         await caseboundRoot.locator('.ld-case-file-card[data-ld-case="CASE-005"]').click();
         await caseboundRoot.locator('[data-ld-start-investigation]').click();
+        for (let i = 1; i <= 4; i++) await caseboundRoot.locator('[data-ld-open-next]').click();
         await caseboundRoot.locator('[data-ld-scene="conclusion"]').click();
         await caseboundRoot.locator('[name="ld-standard-reasoning"]').fill(
           'The library record links Lina to the paperback in the bag. The seating log places her near the bench, but location alone does not prove ownership. The evidence makes her the best-supported owner, not a certain owner.'
