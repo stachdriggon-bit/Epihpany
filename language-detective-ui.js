@@ -1061,6 +1061,8 @@
         else if (state.activeScene === 'evidence' && investigationModel.isConclusionReady(fixtures.cases[state.caseId], state.session).ready) state.activeScene = 'conclusion';
         else if (state.activeScene === 'conclusion') state.activeScene = 'evidence';
         investigation();
+        const nextScene = state.activeScene;
+        root.querySelector('[data-ld-scene="' + nextScene + '"]')?.focus();
         return;
       }
       const sourceEvidence = event.target.closest('[data-ld-source-evidence]');
@@ -1081,13 +1083,25 @@
           state.activeScene = 'evidence';
           closeNotebook();
           investigation();
-          requestAnimationFrame(() => root.querySelector('[data-evidence-id="' + id + '"]')?.scrollIntoView({block:'center',behavior:'auto'}));
+          requestAnimationFrame(() => {
+            const target = root.querySelector('[data-evidence-id="' + id + '"]');
+            if (!target) return;
+            target.setAttribute('tabindex','-1');
+            target.focus({preventScroll:true});
+            target.scrollIntoView({block:'center',behavior:'auto'});
+          });
         } else if (sourceStatement) {
           const id = sourceStatement.dataset.ldSourceStatement;
           state.activeScene = 'people';
           closeNotebook();
           investigation();
-          requestAnimationFrame(() => root.querySelector('#ld-statement-' + id)?.scrollIntoView({block:'center',behavior:'auto'}));
+          requestAnimationFrame(() => {
+            const target = root.querySelector('#ld-statement-' + id);
+            if (!target) return;
+            target.setAttribute('tabindex','-1');
+            target.focus({preventScroll:true});
+            target.scrollIntoView({block:'center',behavior:'auto'});
+          });
         } else if (sourceInterview) {
           const id = sourceInterview.dataset.ldSourceInterview;
           state.selectedCharacterId = id.includes(':') ? id.split(':')[0] : id;
@@ -1097,7 +1111,10 @@
           const questionId = id.includes(':') ? id.split(':').slice(1).join(':') : '';
           requestAnimationFrame(() => {
             const target = questionId ? root.querySelector('#ld-interview-' + questionId) : root.querySelector('#ld-interview-section') || root.querySelector('[data-ld-select-character="' + state.selectedCharacterId + '"]');
-            target?.scrollIntoView({block:'center',behavior:'auto'});
+            if (!target) return;
+            target.setAttribute('tabindex','-1');
+            target.focus({preventScroll:true});
+            target.scrollIntoView({block:'center',behavior:'auto'});
           });
         } else {
           const id = sourceNotebook.dataset.ldSourceNotebook;
