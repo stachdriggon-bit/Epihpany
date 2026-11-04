@@ -324,6 +324,28 @@ test('main navigation tabs open without uncaught page errors', async t => {
         await caseboundRoot.locator('[data-ld-back]').click();
         await caseboundRoot.locator('.ld-caseboard-header').waitFor({state:'visible'});
 
+        // Re-open A1 and verify that an initial statement returns to its original card.
+        await caseboundRoot.locator('[data-ld-filter-level="A1"]').click();
+        await caseboundRoot.locator('.ld-case-file-card[data-ld-case="CASE-005"]').click();
+        await caseboundRoot.locator('[data-ld-start-investigation]').click();
+        await caseboundRoot.locator('[data-ld-scene="conclusion"]').click();
+        await caseboundRoot.locator('[name="ld-standard-reasoning"]').fill(
+          'The library record links Lina to the paperback in the bag. The seating log places her near the bench, but location alone does not prove ownership. The evidence makes her the best-supported owner, not a certain owner.'
+        );
+        await caseboundRoot.locator('[data-ld-submit-reasoning]').click();
+        await caseboundRoot.locator('[data-ld-conclusion-option="0"]').click();
+        await caseboundRoot.locator('[data-ld-answer-form] [type="submit"]').click();
+        await caseboundRoot.locator('.ld-result-head').waitFor({state:'visible',timeout:5000});
+        const statementSource = caseboundRoot.locator('.ld-result-review').filter({hasText:'Initial statements you reviewed'}).locator('[data-ld-source-statement]').first();
+        assert.ok(await statementSource.count() >= 1,
+          'result review should list initial statements that were revealed during the investigation');
+        const statementId = await statementSource.getAttribute('data-ld-source-statement');
+        await statementSource.click();
+        await caseboundRoot.locator('.ld-layout[data-active-scene="people"]').waitFor({state:'visible'});
+        await caseboundRoot.locator('#ld-statement-' + statementId).waitFor({state:'visible'});
+        await caseboundRoot.locator('[data-ld-back]').click();
+        await caseboundRoot.locator('.ld-caseboard-header').waitFor({state:'visible'});
+
         // Re-open A1 to verify that an interview source returns to the exact answer.
         await caseboundRoot.locator('[data-ld-filter-level="A1"]').click();
         await caseboundRoot.locator('.ld-case-file-card[data-ld-case="CASE-005"]').click();
