@@ -388,6 +388,18 @@
 .ld-shell .ld-hint-button:disabled{opacity:.55}
 .ld-shell .ld-unlock-gate{border:2px dashed var(--cb-line);border-radius:16px;background:rgba(255,253,246,.7)}
 
+/* Result screen containment: keep translated and long review content inside the mobile shell. */
+.ld-shell:has(.ld-result-head)>*{min-width:0;max-width:100%}
+.ld-shell .ld-result-head,
+.ld-shell .ld-result-review,
+.ld-shell .ld-feedback-note,
+.ld-shell .ld-result-actions,
+.ld-shell .ld-toolbar{min-width:0;max-width:100%;box-sizing:border-box}
+.ld-shell .ld-result-head :is(h2,p,span),
+.ld-shell .ld-result-review :is(h3,p,li,b,span,small),
+.ld-shell .ld-feedback-note :is(strong,p){min-width:0;overflow-wrap:anywhere;word-break:normal}
+.ld-shell .ld-result-score{min-width:0;max-width:100%;flex-wrap:wrap}
+
 /* Result */
 .ld-shell .ld-result-head{position:relative;display:grid;justify-items:start;gap:6px;padding:clamp(20px,3vw,32px);border-radius:20px;background:linear-gradient(135deg,var(--cb-ink),var(--cb-ink-2));color:#f4efe0;box-shadow:0 16px 36px rgba(36,31,63,.3)}
 .ld-shell .ld-result-head h2{margin:2px 0;color:#fff;font-size:clamp(1.6rem,3.4vw,2.3rem)}
