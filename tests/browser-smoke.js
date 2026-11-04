@@ -348,9 +348,9 @@ test('main navigation tabs open without uncaught page errors', async t => {
         await caseboundRoot.locator('[data-ld-answer-form] [type="submit"]').click();
         await caseboundRoot.locator('.ld-result-head').waitFor({state:'visible',timeout:5000});
         await caseboundRoot.locator('.ld-diagnostics summary').filter({hasText:'Review your reasoning'}).click();
-        const interviewSource = caseboundRoot.locator('.ld-finding [data-ld-source-interview]').first();
+        const interviewSource = caseboundRoot.locator('.ld-result-review').filter({has:caseboundRoot.getByRole('heading',{name:'Interview answers you collected'})}).locator('[data-ld-source-interview]').first();
         assert.ok(await interviewSource.count() >= 1,
-          'claim review should link an interview finding back to its discovered answer');
+          'result review should list collected interview answers separately from claim diagnostics');
         const interviewRef = await interviewSource.getAttribute('data-ld-source-interview');
         const [interviewCharacterId, ...interviewQuestionParts] = interviewRef.split(':');
         const interviewQuestionId = interviewQuestionParts.join(':');
