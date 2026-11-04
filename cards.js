@@ -765,7 +765,30 @@
     renderFeatured();renderGallery();updateCounts();renderOdds(selectedPack());
     refreshPublishedCharacterAssets();
     window.addEventListener('epiphany:published-assets-updated', refreshPublishedCharacterAssets);
-    window.addEventListener('epiphany:card-image-views-updated', () => { galleryNodeCache.clear(); renderFeatured(); renderGallery(); });
+    const syncGalleryImageViews = () => {
+    galleryNodeCache.forEach((item,id) => {
+      const image=item.querySelector('.fcard-portrait-image');
+      if(!image)return;
+      const view=window.EPIPHANY_CARD_IMAGE_VIEWS?.[id];
+      if(!view){
+        ['--card-image-x','--card-image-y','--card-image-zoom','--card-image-fit'].forEach(property=>image.style.removeProperty(property));
+        return;
+      }
+      const x=Math.max(0,Math.min(100,Number.isFinite(Number(view.position_x))?Number(view.position_x):50));
+      const y=Math.max(0,Math.min(100,Number.isFinite(Number(view.position_y))?Number(view.position_y):32));
+      const zoom=Math.max(.5,Math.min(2,Number(view.zoom)||1));
+      image.style.setProperty('--card-image-x',x+'%');
+      image.style.setProperty('--card-image-y',y+'%');
+      image.style.setProperty('--card-image-zoom',zoom);
+      image.style.setProperty('--card-image-fit',view.fit==='contain'?'contain':'cover');
+    });
+  };
+  window.addEventListener('epiphany:card-image-views-updated', () => {
+    syncGalleryImageViews();
+    renderFeatured();
+    // Image framing changes should update cached portraits, not replace gallery card nodes.
+    renderGallery(true);
+  });
     window.addEventListener('epiphany:supabase-ready', refreshPublishedCharacterAssets);
     document.addEventListener('epiphany-auth-changed', refreshPublishedCharacterAssets);
     $('cards-history-clear')?.addEventListener('click',()=>{state.history=[];save();renderHistory();});
