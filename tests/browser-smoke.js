@@ -578,8 +578,38 @@ test('main navigation tabs open without uncaught page errors', async t => {
         await caseboundRoot.locator('.ld-result-head').waitFor({state:'visible',timeout:5000});
         assert.equal(await caseboundRoot.locator('.ld-result-head').isVisible(),true,
           'Hell Mode should submit both written fields and reach the result review');
-        assert.equal(await caseboundRoot.locator('.ld-shell').evaluate(el => el.scrollWidth <= el.clientWidth + 1),true,
-          'the Hell Mode result screen should not overflow horizontally on mobile');
+        const resultOverflow = await caseboundRoot.locator('.ld-shell').evaluate(shell => {
+          const shellRect = shell.getBoundingClientRect();
+          const elements = [shell, ...shell.querySelectorAll('*')];
+          const offenders = elements.map(el => {
+            const rect = el.getBoundingClientRect();
+            const style = getComputedStyle(el);
+            return {
+              tag:el.tagName.toLowerCase(),
+              className:typeof el.className === 'string' ? el.className : '',
+              id:el.id || '',
+              text:(el.innerText || el.textContent || '').trim().replace(/\\s+/g,' ').slice(0,90),
+              left:Math.round(rect.left * 10) / 10,
+              right:Math.round(rect.right * 10) / 10,
+              width:Math.round(rect.width * 10) / 10,
+              scrollWidth:el.scrollWidth,
+              clientWidth:el.clientWidth,
+              position:style.position,
+              whiteSpace:style.whiteSpace,
+              gridColumns:style.gridTemplateColumns
+            };
+          }).filter(item =>
+            item.right > shellRect.right + 1 ||
+            item.left < shellRect.left - 1 ||
+            item.scrollWidth > item.clientWidth + 1
+          );
+          return {
+            shell:{left:shellRect.left,right:shellRect.right,width:shellRect.width,scrollWidth:shell.scrollWidth,clientWidth:shell.clientWidth},
+            offenders:offenders.slice(0,25)
+          };
+        });
+        assert.equal(resultOverflow.shell.scrollWidth <= resultOverflow.shell.clientWidth + 1,true,
+          'the Hell Mode result screen should not overflow horizontally on mobile; diagnostics: ' + JSON.stringify(resultOverflow));
       }
       if (view === 'summon') {
         await page.locator('#cards-summon-token-count').waitFor({ state: 'visible', timeout: 5000 });
