@@ -315,11 +315,11 @@ test('main navigation tabs open without uncaught page errors', async t => {
           'The Missing Bag should accept a complete, evidence-based A1 conclusion');
         await caseboundRoot.getByRole('button', {name:'Choose another case'}).click();
         await caseboundRoot.locator('[data-ld-filter-level="A2"]').click();
-        assert.equal(await caseboundRoot.locator('[data-ld-case]').count(), 1,
-          'A2 should show only its own investigation');
-        assert.equal(await caseboundRoot.locator('[data-ld-case="CASE-001"]').count(), 1,
+        assert.equal(await caseboundRoot.locator('.ld-case-file-card[data-ld-case]').count(), 1,
+          'A2 should show only its own archived investigation');
+        assert.equal(await caseboundRoot.locator('.ld-case-file-card[data-ld-case="CASE-001"]').count(), 1,
           'the A2 case should be listed under A2');
-        await caseboundRoot.locator('[data-ld-case="CASE-001"]').click();
+        await caseboundRoot.locator('.ld-case-file-card[data-ld-case="CASE-001"]').click();
         await caseboundRoot.locator('[data-ld-start-investigation]').waitFor({state:'visible'});
         assert.equal(await caseboundRoot.locator('.ld-evidence').count(), 0,
           'evidence should not be exposed before the player starts the investigation');
