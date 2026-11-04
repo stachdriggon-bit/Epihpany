@@ -513,8 +513,8 @@ test('main navigation tabs open without uncaught page errors', async t => {
           'Standard conclusion should retain its explicit answer format');
         assert.equal(await caseboundRoot.locator('.ld-answer-form-standard .ld-answer-step').count(), 2,
           'Standard mode should present reasoning before the conclusion-choice step');
-        assert.equal(await caseboundRoot.locator('.ld-answer-form-standard .ld-answer-step').nth(0).locator('h4').innerText(), 'Explain your reasoning');
-        assert.equal(await caseboundRoot.locator('.ld-answer-form-standard .ld-answer-step').nth(1).locator('h4').innerText(), 'Choose your conclusion');
+        assert.equal(await caseboundRoot.locator('.ld-answer-form-standard .ld-answer-step').nth(0).locator('h4 [data-tx-en="Explain your reasoning"]').innerText(), 'Explain your reasoning');
+        assert.equal(await caseboundRoot.locator('.ld-answer-form-standard .ld-answer-step').nth(1).locator('h4 [data-tx-en="Choose your conclusion"]').innerText(), 'Choose your conclusion');
         await caseboundRoot.locator('[name="ld-standard-reasoning"]').fill(
           'Sara saw a resident in a green jacket pick up the package, but she did not see the resident’s face. The evidence does not identify the person.'
         );
