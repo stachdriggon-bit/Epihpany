@@ -271,6 +271,11 @@ test('main navigation tabs open without uncaught page errors', async t => {
           'the standalone game should display its approved name');
         assert.equal(await caseboundRoot.locator('.ld-case-recommendation').count(), 1,
           'the caseboard should present one recommended next case');
+        const translationToggle = page.locator('#translation-toggle');
+        if (await translationToggle.getAttribute('aria-pressed') !== 'true') {
+          await translationToggle.click();
+          await caseboundRoot.locator('.ld-shell').waitFor({state:'visible',timeout:5000});
+        }
         assert.equal(await caseboundRoot.locator('[data-ld-filter-level]').count(), 7,
           'the archive should offer all-cases and six CEFR filters');
         await caseboundRoot.locator('[data-ld-filter-level="A1"]').click();
@@ -287,6 +292,18 @@ test('main navigation tabs open without uncaught page errors', async t => {
         assert.equal(await caseboundRoot.locator('.ld-case-intro h2').innerText(), 'The Missing Bag',
           'the renamed case title should appear in its case brief');
         await caseboundRoot.locator('[data-ld-start-investigation]').click();
+        const peopleStageTranslation = caseboundRoot.locator('.ld-scene-step [data-tx-unit]').first();
+        await peopleStageTranslation.waitFor({state:'attached',timeout:5000});
+        const peopleStageTranslate = caseboundRoot.locator('.ld-scene-step .translate-btn').first();
+        await peopleStageTranslate.waitFor({state:'visible',timeout:5000});
+        await peopleStageTranslate.click();
+        assert.equal(await peopleStageTranslation.getAttribute('data-tx-lang'),'ar',
+          'CASEBOUND stage navigation labels should translate in place');
+        assert.match(await peopleStageTranslation.innerText(),/الأشخاص/,
+          'the People stage should display its Arabic label after translation');
+        await peopleStageTranslate.click();
+        assert.equal(await peopleStageTranslation.getAttribute('data-tx-lang'),'en',
+          'CASEBOUND stage navigation should return to English using the same control');
         for (const [characterId, questionId] of [
           ['LINA','Q-LINA-BAG-LAST'],
           ['OMAR','Q-OMAR-VIEW'],
