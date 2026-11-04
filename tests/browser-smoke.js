@@ -267,7 +267,7 @@ test('main navigation tabs open without uncaught page errors', async t => {
           }));
           throw new Error('Casebound did not render. Page errors: ' + JSON.stringify(errors) + '; console errors: ' + JSON.stringify(consoleErrors) + '; state: ' + JSON.stringify(state) + '; ' + error.message);
         });
-        assert.equal(await caseboundRoot.locator('.ld-heading h2').innerText(), 'CASEBOUND',
+        assert.equal(await caseboundRoot.locator('.ld-caseboard-header h2').innerText(), 'CASEBOUND',
           'the standalone game should display its approved name');
         assert.equal(await caseboundRoot.locator('.ld-case-recommendation').count(), 1,
           'the caseboard should present one recommended next case');
