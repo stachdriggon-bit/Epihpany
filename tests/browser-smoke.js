@@ -260,11 +260,13 @@ test('main navigation tabs open without uncaught page errors', async t => {
         await caseboundRoot.locator('.ld-shell').waitFor({state:'visible',timeout:10000});
         assert.equal(await caseboundRoot.locator('.ld-heading h2').innerText(), 'CASEBOUND',
           'the standalone game should display its approved name');
-        assert.equal(await caseboundRoot.locator('[data-ld-level-select]').count(), 6,
-          'the six CEFR levels should be available before opening case files');
-        await caseboundRoot.locator('[data-ld-level-select="A1"]').click();
+        assert.equal(await caseboundRoot.locator('.ld-case-recommendation').count(), 1,
+          'the caseboard should present one recommended next case');
+        assert.equal(await caseboundRoot.locator('[data-ld-filter-level]').count(), 7,
+          'the archive should offer all-cases and six CEFR filters');
+        await caseboundRoot.locator('[data-ld-filter-level="A1"]').click();
         assert.equal(await caseboundRoot.locator('[data-ld-case]').count(), 2,
-          'A1 should show only its own investigations');
+          'A1 filter should show only its own investigations');
         assert.equal(await caseboundRoot.locator('[data-ld-case="CASE-004"]').count(), 1,
           'The Blue Scarf should be listed under A1');
         assert.equal(await caseboundRoot.locator('[data-ld-case="CASE-005"]').count(), 1,
