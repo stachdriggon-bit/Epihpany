@@ -217,7 +217,8 @@
     'Does not name a recipient or picker.':'لا يذكر اسم المستلم أو من أخذ الطرد.',
     'Sara saw an unidentified resident in a green jacket pick up the package at 10:12.':'شاهدت سارة أحد السكان مجهول الهوية يرتدي سترة خضراء ويأخذ الطرد الساعة 10:12.',
     'observed pickup':'واقعة أخذ الطرد التي شوهدت',
-    'Sara did not see the resident face.':'لم ترَ سارة وجه الساكن.',    'Sara did not identify the resident.':'لم تحدد سارة هوية الساكن.',
+    'Sara did not see the resident face.':'لم ترَ سارة وجه الساكن.',
+    'Sara did not identify the resident.':'لم تحدد سارة هوية الساكن.',
     'identity remains unknown':'لا تزال الهوية مجهولة',
     'Does not establish motive.':'لا يثبت الدافع.',
     'Nora arrived later and the package was absent.':'وصلت نورا لاحقًا وكان الطرد قد اختفى.',
@@ -436,7 +437,8 @@
     'Assessment result':'نتيجة التقييم',
     'Review your reasoning':'راجع استدلالك',
     'Assessment breakdown':'تفصيل التقييم',
-    'Previous attempts':'المحاولات السابقة',    'Attempt':'المحاولة',
+    'Previous attempts':'المحاولات السابقة',
+    'Attempt':'المحاولة',
     'Conclusion accuracy':'دقة الاستنتاج',
     'Evidence and reasoning':'الأدلة والاستدلال',
     'Critical thinking':'التفكير النقدي',
@@ -656,7 +658,8 @@
     const recommendedId = recommendedCaseId();
     const recommended = recommendedId ? caseInfo[recommendedId] : null;
     const selectedFilter = state.caseFilter || 'ALL';
-    const filters = ['ALL', ...CEFR_ORDER].map(value =>      '<button type="button" class="ld-filter-chip' + (selectedFilter === value ? ' is-active' : '') + '" data-ld-filter-level="' + value + '" aria-pressed="' + (selectedFilter === value) + '">' + (value === 'ALL' ? 'All cases' : value) + '</button>'
+    const filters = ['ALL', ...CEFR_ORDER].map(value =>
+      '<button type="button" class="ld-filter-chip' + (selectedFilter === value ? ' is-active' : '') + '" data-ld-filter-level="' + value + '" aria-pressed="' + (selectedFilter === value) + '">' + (value === 'ALL' ? 'All cases' : value) + '</button>'
     ).join('');
     const caseCards = CASEBOARD_ORDER.filter(id => caseInfo[id] && (selectedFilter === 'ALL' || caseInfo[id].cefr === selectedFilter)).map(id => {
       const item = caseInfo[id];
@@ -875,7 +878,8 @@
     const grade = evaluation.awardedGrade ? '<span class="ld-grade">Grade ' + esc(evaluation.awardedGrade) + '</span>' : '';
     const dimensionLabels = {CONCLUSION_ACCURACY:'Conclusion accuracy',EVIDENCE_REASONING:'Evidence and reasoning',CRITICAL_THINKING:'Critical thinking',LANGUAGE_CLARITY:'Clarity of expression'};
     const dimensionRows = dims.map(d => '<div class="ld-dimension"><span>' + esc(dimensionLabels[d.dimension] || d.dimension.replaceAll('_', ' ').toLowerCase()) + '</span><b>' + d.score + '%</b><div><i style="width:' + Math.max(0, Math.min(100, d.score)) + '%"></i></div></div>').join('');
-    const caseSnapshot = fixtures.cases[state.caseId] || {};    const concepts = new Map((caseSnapshot.concepts || []).map(item => [item.conceptId, item]));
+    const caseSnapshot = fixtures.cases[state.caseId] || {};
+    const concepts = new Map((caseSnapshot.concepts || []).map(item => [item.conceptId, item]));
     const discoveredIds = new Set(state.session?.discoveredEvidenceIds || []);
     const findings = (evaluation.claimDiagnostics || []).map(f => {
       const concept = concepts.get(f.conceptId);
@@ -1094,7 +1098,8 @@
         }
         state.activeScene = 'evidence';
         investigation();
-        return;      }
+        return;
+      }
       const characterButton = event.target.closest('[data-ld-select-character]');
       if (characterButton) {
         state.selectedCharacterId = characterButton.dataset.ldSelectCharacter;
