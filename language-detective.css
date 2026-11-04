@@ -406,6 +406,7 @@
 
 /* Focus + motion */
 .ld-shell :is(button,a,input,textarea,select):focus-visible{outline:3px solid color-mix(in srgb,var(--cb-violet) 60%,transparent);outline-offset:3px}
+.ld-shell [tabindex="-1"]:focus{outline:3px solid color-mix(in srgb,var(--cb-violet) 60%,transparent);outline-offset:3px;border-radius:8px}
 @media(prefers-reduced-motion:reduce){
   .ld-shell *{transition:none!important;animation:none!important}
   .ld-shell .ld-level-card:hover,.ld-shell .ld-case-card:hover,.ld-shell .ld-character-card:hover{transform:none}
