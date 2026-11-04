@@ -342,6 +342,13 @@ test('main navigation tabs open without uncaught page errors', async t => {
           await caseboundRoot.locator('[data-ld-open-next]').click();
           assert.equal(await caseboundRoot.locator('.ld-evidence').count(), i,
             'only examined evidence should be visible in the workspace');
+          if (i === 1) {
+            assert.equal(await caseboundRoot.locator('.ld-evidence-records').evaluate(el => {
+              const action = el.querySelector('[data-ld-open-next]');
+              const firstEvidence = el.querySelector('.ld-evidence-card');
+              return !!action && !!firstEvidence && Boolean(action.compareDocumentPosition(firstEvidence) & Node.DOCUMENT_POSITION_FOLLOWING);
+            }), true, 'the next evidence action should remain above previously examined records');
+          }
           assert.equal(await caseboundRoot.locator('.ld-notebook-trigger .ld-notebook-count').innerText(), String(i),
             'the notebook count should match discovered evidence');
         }
