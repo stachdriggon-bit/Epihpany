@@ -328,6 +328,8 @@ test('main navigation tabs open without uncaught page errors', async t => {
         await caseboundRoot.locator('[data-ld-filter-level="A1"]').click();
         await caseboundRoot.locator('.ld-case-file-card[data-ld-case="CASE-005"]').click();
         await caseboundRoot.locator('[data-ld-start-investigation]').click();
+        await caseboundRoot.locator('[data-ld-scene="evidence"]').click();
+        await caseboundRoot.locator('.ld-layout[data-active-scene="evidence"]').waitFor({state:'visible'});
         for (let i = 1; i <= 4; i++) await caseboundRoot.locator('[data-ld-open-next]').click();
         await caseboundRoot.locator('[data-ld-scene="conclusion"]').click();
         await caseboundRoot.locator('[name="ld-standard-reasoning"]').fill(
