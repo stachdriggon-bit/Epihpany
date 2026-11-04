@@ -317,6 +317,7 @@ test('main navigation tabs open without uncaught page errors', async t => {
           'claim review should link the library-record finding back to the discovered source');
         assert.ok(await caseboundRoot.locator('.ld-result-review .ld-source-link').count() >= 1,
           'examined records should offer a direct revisit action');
+        await caseboundRoot.locator('.ld-diagnostics summary').filter({hasText:'Review your reasoning'}).click();
         await caseboundRoot.locator('.ld-finding [data-ld-source-evidence="E04"]').first().click();
         await caseboundRoot.locator('.ld-layout[data-active-scene="evidence"]').waitFor({state:'visible'});
         await caseboundRoot.locator('[data-evidence-id="E04"]').waitFor({state:'visible'});
