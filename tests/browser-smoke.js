@@ -313,6 +313,10 @@ test('main navigation tabs open without uncaught page errors', async t => {
         await caseboundRoot.locator('.ld-result-head').waitFor({state:'visible',timeout:5000});
         assert.match(await caseboundRoot.locator('.ld-result-head h2').innerText(), /Conclusion supported/,
           'The Missing Bag should accept a complete, evidence-based A1 conclusion');
+        assert.ok(await caseboundRoot.locator('[data-ld-source-evidence="E04"]').count() >= 1,
+          'claim review should link the library-record finding back to the discovered source');
+        assert.ok(await caseboundRoot.locator('.ld-result-review .ld-source-link').count() >= 1,
+          'examined records should offer a direct revisit action');
         await caseboundRoot.getByRole('button', {name:'Choose another case'}).click();
         await caseboundRoot.locator('[data-ld-filter-level="A2"]').click();
         assert.equal(await caseboundRoot.locator('.ld-case-file-card[data-ld-case]').count(), 1,
