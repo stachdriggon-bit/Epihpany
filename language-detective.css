@@ -607,6 +607,14 @@
 @media(max-width:600px){.ld-shell .ld-result-review{padding:13px}.ld-shell .ld-result-review.ld-diagnostics>ul{padding-inline:28px 13px}}
 
 /* Conclusion scene: a calm, explicit two-step reasoning flow */
+.ld-shell .ld-answer-form-hell{grid-template-columns:repeat(2,minmax(0,1fr))}
+.ld-shell .ld-answer-form-hell>.ld-answer-heading,
+.ld-shell .ld-answer-form-hell>[type="submit"],
+.ld-shell .ld-answer-form-hell>.ld-form-note{grid-column:1/-1}
+.ld-shell .ld-answer-form-hell .ld-answer-step{align-content:start;min-width:0}
+.ld-shell .ld-answer-form-standard .ld-conclusion-picker{border-top:2px solid var(--cb-brass)}
+@media(max-width:700px){.ld-shell .ld-answer-form-hell{grid-template-columns:minmax(0,1fr)}}
+
 .ld-shell .ld-answer-form{display:grid;gap:16px}
 .ld-shell .ld-answer-step{display:grid;gap:11px;padding:16px;border:1px solid var(--cb-line);border-radius:15px;background:var(--cb-paper)}
 .ld-shell .ld-answer-step-heading{display:flex;align-items:flex-start;gap:12px}
