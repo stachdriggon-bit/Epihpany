@@ -2818,12 +2818,11 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
   function txButtonFor(el){return el.id?document.querySelector('[data-translate-target="'+CSS.escape(el.id)+'"]'):null;}
   function txSetButtonState(button,ar,label){
     const st=ar?'ar':'en';
-    if(button.dataset.txState===st)return;
+    const casebound = button.dataset.caseboundControl === 'true' || !!button.closest('.casebound-page, .ld-notebook-drawer');
     button.dataset.txState=st;
     button.setAttribute('aria-pressed',String(ar));
-    const casebound = !!button.closest('.casebound-page, .ld-notebook-drawer');
     button.innerHTML = casebound
-      ? '<span aria-hidden="true">'+(ar?'EN':'文A')+'</span>'
+      ? '<span aria-hidden="true">'+(ar?'EN':'ع')+'</span>'
       : (ar?TX_BTN_AR:txBtnEn(label));
     const actionLabel = ar ? 'Show '+label+' in English' : 'Translate '+label+' into Arabic';
     button.setAttribute('aria-label',actionLabel);
@@ -2960,7 +2959,9 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     const label=txLabel(target);
     const button=document.createElement('button');
     button.type='button';button.className='translate-btn';button.dataset.translateTarget=target.id;
-    button.dataset.translationLabel=label;button.setAttribute('aria-pressed','false');
+    button.dataset.translationLabel=label;
+    button.dataset.caseboundControl=String(!!target.closest('.casebound-page, .ld-notebook-drawer'));
+    button.setAttribute('aria-pressed','false');
     txSetButtonState(button,false,label);
     button.hidden=!state.translationEnabled;
     if(txIsAnswer(target)&&!target.classList.contains('story-decision-option')){
