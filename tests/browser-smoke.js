@@ -294,7 +294,7 @@ test('main navigation tabs open without uncaught page errors', async t => {
           'The Missing Bag should be listed under A1');
         await caseboundRoot.locator('.ld-case-file-card[data-ld-case="CASE-005"]').click();
         await caseboundRoot.locator('.ld-case-intro h2').waitFor({state:'visible'});
-        assert.equal(await caseboundRoot.locator('.ld-case-intro h2').innerText(), 'The Missing Bag',
+        assert.equal(await caseboundRoot.locator('.ld-case-intro h2 [data-tx]').innerText(), 'The Missing Bag',
           'the renamed case title should appear in its case brief');
         await caseboundRoot.locator('[data-ld-start-investigation]').click();
         const peopleStageTranslation = caseboundRoot.locator('.ld-scene-step [data-tx-unit]').first();
