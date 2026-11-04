@@ -392,3 +392,15 @@ test('Casebound level and case pickers use a cohesive palette and accessible res
  assert.match(ui, /data-ld-case/);
 });
 
+
+test('Casebound opens a story-first caseboard with recommendation and level filters', () => {
+  assert.match(ui, /function recommendedCaseId\(\)/);
+  assert.match(ui, /window\.__epiphanyReadProgress/);
+  assert.match(ui, /data-ld-filter-level/);
+  assert.match(ui, /ld-case-recommendation/);
+  assert.match(ui, /ld-case-file-grid/);
+  assert.doesNotMatch(ui, /data-ld-level-select/);
+  assert.doesNotMatch(ui, /Choose your English level/);
+  assert.match(ui, /inProgressCaseIds/);
+  assert.match(ui, /state\.completedCaseIds/);
+});
