@@ -891,14 +891,23 @@
     const caseSnapshot = fixtures.cases[state.caseId] || {};
     const concepts = new Map((caseSnapshot.concepts || []).map(item => [item.conceptId, item]));
     const discoveredIds = new Set(state.session?.discoveredEvidenceIds || []);
-    const informationIds = new Set(state.session?.discoveredInformationIds || []);
     const evidenceById = new Map((caseSnapshot.evidence || []).map(item => [item.evidenceId, item]));
     const interviewSources = new Map();
-    (caseSnapshot.interviews || []).forEach(interview => (interview.questions || []).forEach(question => {
-      if (question.informationId && informationIds.has(question.informationId)) {
-        interviewSources.set(question.informationId, {characterId:interview.characterId,questionId:question.questionId,prompt:question.prompt,name:interview.name || (caseSnapshot.characters || []).find(person => person.characterId === interview.characterId)?.name || interview.characterId});
-      }
-    }));
+    (state.session?.interviewResponses || []).forEach(response => {
+      const interview = (caseSnapshot.interviews || []).find(item => item.characterId === response.characterId);
+      if (!interview) return;
+      const person = (caseSnapshot.characters || []).find(item => (item.characterId || item.id) === response.characterId);
+      (response.answers || []).forEach(answer => {
+        const question = (interview.questions || []).find(item => item.questionId === answer.questionId);
+        if (!question) return;
+        interviewSources.set(response.characterId + ':' + answer.questionId, {
+          characterId:response.characterId,
+          questionId:answer.questionId,
+          prompt:question.prompt || answer.questionId,
+          name:interview.name || person?.name || response.characterId
+        });
+      });
+    });
     const findings = (evaluation.claimDiagnostics || []).map((f, index) => {
       const concept = concepts.get(f.conceptId);
       const relatedEvidence = (concept?.evidenceRefs || []).filter(id => discoveredIds.has(id)).map(id => evidenceById.get(id)).filter(Boolean);
