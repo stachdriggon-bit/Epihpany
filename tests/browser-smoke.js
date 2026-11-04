@@ -303,8 +303,7 @@ test('main navigation tabs open without uncaught page errors', async t => {
         assert.match(await caseboundRoot.locator('.ld-result-head h2').innerText(), /Conclusion supported/,
           'The Missing Bag should accept a complete, evidence-based A1 conclusion');
         await caseboundRoot.getByRole('button', {name:'Choose another case'}).click();
-        await caseboundRoot.locator('[data-ld-level-back]').click();
-        await caseboundRoot.locator('[data-ld-level-select="A2"]').click();
+        await caseboundRoot.locator('[data-ld-filter-level="A2"]').click();
         assert.equal(await caseboundRoot.locator('[data-ld-case]').count(), 1,
           'A2 should show only its own investigation');
         assert.equal(await caseboundRoot.locator('[data-ld-case="CASE-001"]').count(), 1,
