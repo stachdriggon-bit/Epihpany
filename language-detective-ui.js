@@ -882,14 +882,27 @@
     const caseSnapshot = fixtures.cases[state.caseId] || {};
     const concepts = new Map((caseSnapshot.concepts || []).map(item => [item.conceptId, item]));
     const discoveredIds = new Set(state.session?.discoveredEvidenceIds || []);
-    const findings = (evaluation.claimDiagnostics || []).map(f => {
+    const informationIds = new Set(state.session?.discoveredInformationIds || []);
+    const evidenceById = new Map((caseSnapshot.evidence || []).map(item => [item.evidenceId, item]));
+    const interviewSources = new Map();
+    (caseSnapshot.interviews || []).forEach(interview => (interview.questions || []).forEach(question => {
+      if (question.informationId && informationIds.has(question.informationId)) {
+        interviewSources.set(question.informationId, {characterId:interview.characterId,questionId:question.questionId,prompt:question.prompt,name:interview.name || (caseSnapshot.characters || []).find(person => person.characterId === interview.characterId)?.name || interview.characterId});
+      }
+    }));
+    const findings = (evaluation.claimDiagnostics || []).map((f, index) => {
       const concept = concepts.get(f.conceptId);
-      const evidenceTitles = (concept?.evidenceRefs || []).filter(id => discoveredIds.has(id)).map(id => caseSnapshot.evidence?.find(item => item.evidenceId === id)?.title || id);
+      const relatedEvidence = (concept?.evidenceRefs || []).filter(id => discoveredIds.has(id)).map(id => evidenceById.get(id)).filter(Boolean);
+      const relatedInterviews = (concept?.informationRefs || []).filter(id => informationIds.has(id)).map(id => interviewSources.get(id)).filter(Boolean);
       const stateLabels = {SUPPORTED:'Supported by the evidence',UNRESOLVED:'Not enough information to assess this point',UNSUPPORTED:'Not established by the evidence',OVERCLAIMED:'Goes beyond what the evidence establishes',CONTRADICTED:'Conflicts with the evidence'};
-      return '<li><b>' + esc(concept?.predicate || 'A point in your explanation') + '</b><span>' + esc(stateLabels[f.state] || 'Needs a closer look') + '</span>' + (evidenceTitles.length ? '<small>Related records you examined: ' + evidenceTitles.map(esc).join(', ') + '</small>' : '') + '</li>';
+      const sourceLinks = [
+        ...relatedEvidence.map(item => '<button type="button" class="ld-source-link" data-ld-source-evidence="' + esc(item.evidenceId) + '">Open record: ' + esc(item.title || item.evidenceId) + ' ↗</button>'),
+        ...relatedInterviews.map(item => '<button type="button" class="ld-source-link" data-ld-source-interview="' + esc(item.characterId + ':' + item.questionId) + '">Open interview: ' + esc(item.name) + ' · ' + esc(item.prompt) + ' ↗</button>')
+      ];
+      return '<li class="ld-finding" data-finding-index="' + index + '"><b>' + esc(concept?.predicate || 'A point in your explanation') + '</b><span>' + esc(stateLabels[f.state] || 'Needs a closer look') + '</span>' + (sourceLinks.length ? '<div class="ld-finding-sources" aria-label="Related investigation sources">' + sourceLinks.join('') + '</div>' : '<small>No directly linked source was recorded for this point.</small>') + '</li>';
     }).join('');
     const examinedEvidence = (caseSnapshot.evidence || []).filter(item => discoveredIds.has(item.evidenceId));
-    const evidenceReview = examinedEvidence.length ? '<section class="ld-result-review"><h3>Records you examined</h3><p class="ld-review-intro">These are the case records you opened during this investigation.</p><ul>' + examinedEvidence.map(item => '<li><b>' + esc(item.title || item.evidenceId) + '</b><span>' + esc(item.summary) + '</span>' + (item.limitations?.length ? '<small>Limit: ' + esc(item.limitations.join(' ')) + '</small>' : '') + '</li>').join('') + '</ul></section>' : '';
+    const evidenceReview = examinedEvidence.length ? '<section class="ld-result-review"><h3>Records you examined</h3><p class="ld-review-intro">Open a record to revisit it on the evidence board.</p><ul>' + examinedEvidence.map(item => '<li><b>' + esc(item.title || item.evidenceId) + '</b><span>' + esc(item.summary) + '</span>' + (item.limitations?.length ? '<small>Limit: ' + esc(item.limitations.join(' ')) + '</small>' : '') + '<div class="ld-finding-sources"><button type="button" class="ld-source-link" data-ld-source-evidence="' + esc(item.evidenceId) + '">Revisit this record ↗</button></div></li>').join('') + '</ul></section>' : '';
     const feedbackItems = (result.feedback?.items || []).map(item => {
       const labels = {'assessment.feedback.supported':'You connected the main conclusion to the evidence.','assessment.feedback.clarify':'Make the person, event or reference in your answer more specific.','assessment.feedback.reviewEvidenceBoundary':'Separate what the records establish from what they only suggest.'};
       return '<li>' + esc(labels[item.resourceKey] || 'Review the evidence and the limits of each source.') + '</li>';
