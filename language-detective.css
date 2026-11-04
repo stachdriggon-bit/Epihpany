@@ -618,3 +618,51 @@
 .ld-shell .ld-conclusion-picker>p{margin:0;color:var(--muted);font-size:.84rem;line-height:1.5}
 .ld-shell .ld-answer-step textarea:focus-visible,.ld-shell [data-ld-conclusion-option]:focus-visible{outline:3px solid rgba(217,164,65,.48);outline-offset:2px}
 @media(max-width:600px){.ld-shell .ld-answer-step{padding:13px}.ld-shell .ld-answer-step-heading{gap:9px}}
+
+/* Casebound picker refinement: one calm archive palette, clearer level hierarchy */
+.ld-shell .ld-level-selection{gap:18px}
+.ld-shell .ld-level-selection-heading{display:grid;gap:5px;padding:0 0 14px;border-bottom:1px solid var(--cb-line)}
+.ld-shell .ld-level-selection-heading h3{font:700 clamp(1.35rem,2.5vw,1.65rem)/1.2 var(--cb-serif);color:var(--cb-ink)}
+.ld-shell .ld-level-selection-heading p{max-width:620px;font-size:.9rem}
+.ld-shell .ld-level-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.ld-shell .ld-level-card,.ld-shell .ld-case-card{--lv:var(--cb-violet);border:1px solid var(--cb-line);border-top:4px solid var(--cb-brass);border-radius:15px;background:linear-gradient(155deg,#fffefa 0%,#f8f4e9 100%);box-shadow:0 3px 0 rgba(36,31,63,.035),0 9px 22px rgba(36,31,63,.055);transition:border-color .16s,box-shadow .16s,transform .16s}
+.ld-shell [data-level="A1"],.ld-shell [data-level="A2"],.ld-shell [data-level="B1"],.ld-shell [data-level="B2"],.ld-shell [data-level="C1"],.ld-shell [data-level="C2"]{--lv:var(--cb-violet)}
+.ld-shell .ld-level-card{min-height:178px;padding:17px;gap:11px}
+.ld-shell .ld-level-card-top{align-items:center}
+.ld-shell .ld-level-card-top strong{width:48px;height:44px;border-radius:11px;background:var(--cb-ink);color:var(--cb-brass-2);font-family:var(--cb-serif);font-size:1.22rem}
+.ld-shell .ld-level-card-top>span{padding:5px 9px;border:1px solid var(--cb-line);background:#f2eddf;color:var(--cb-ink);font-size:.72rem}
+.ld-shell .ld-level-dots{gap:5px;margin:1px 0}
+.ld-shell .ld-level-dots i{width:20px;height:4px;background:rgba(36,31,63,.12)}
+.ld-shell .ld-level-dots i.on{background:var(--cb-brass)}
+.ld-shell .ld-level-card>b{font:700 1.12rem/1.2 var(--cb-serif);color:var(--cb-ink)}
+.ld-shell .ld-level-card>span:not(.ld-level-card-top){max-width:34ch;color:#686579;font-size:.84rem;line-height:1.48}
+.ld-shell .ld-level-card em,.ld-shell .ld-case-card em{display:inline-flex;align-items:center;gap:7px;color:var(--cb-violet);font-size:.8rem}
+.ld-shell .ld-level-card em::after,.ld-shell .ld-case-card em::after{content:"";width:17px;height:1px;background:currentColor;transition:width .16s}
+.ld-shell .ld-level-card:hover em::after,.ld-shell .ld-case-card:hover em::after{width:25px}
+.ld-shell .ld-level-card.is-empty{border-top-style:dashed;background:linear-gradient(155deg,#faf9f5,#f2efe7);opacity:.72}
+.ld-shell .ld-level-card.is-empty .ld-level-card-top strong{background:#777487;color:#fff}
+.ld-shell .ld-case-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.ld-shell .ld-case-card{min-height:190px;padding:19px;gap:12px;border-top-color:var(--cb-brass)}
+.ld-shell .ld-case-card strong{font:700 clamp(1.15rem,2vw,1.38rem)/1.18 var(--cb-serif);color:var(--cb-ink)}
+.ld-shell .ld-case-card>span:not(.ld-case-tab):not(.ld-case-meta){color:#686579;font-size:.88rem;line-height:1.5}
+.ld-shell .ld-case-tab{background:var(--cb-ink);color:var(--cb-brass-2);letter-spacing:.1em}
+.ld-shell .ld-case-meta{color:var(--cb-violet);font-size:.68rem;letter-spacing:.08em}
+.ld-shell .ld-level-view-heading{grid-template-columns:auto minmax(0,1fr);gap:18px}
+.ld-shell .ld-level-view-heading .ld-back{white-space:nowrap}
+.ld-shell .ld-level-card:focus-visible,.ld-shell .ld-case-card:focus-visible{outline:3px solid color-mix(in srgb,var(--cb-violet) 58%,transparent);outline-offset:3px}
+@media(max-width:760px){
+ .ld-shell .ld-level-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
+ .ld-shell .ld-level-card{min-height:165px;padding:14px}
+ .ld-shell .ld-case-grid{grid-template-columns:1fr}
+ .ld-shell .ld-level-view-heading{grid-template-columns:1fr;gap:12px}
+ .ld-shell .ld-level-view-heading .ld-back{justify-self:start}
+}
+@media(max-width:420px){
+ .ld-shell .ld-level-grid{grid-template-columns:1fr}
+ .ld-shell .ld-level-card{min-height:0}
+}
+@media(prefers-reduced-motion:reduce){
+ .ld-shell .ld-level-card,.ld-shell .ld-case-card,.ld-shell .ld-level-card em::after,.ld-shell .ld-case-card em::after{transition:none}
+ .ld-shell .ld-level-card:hover,.ld-shell .ld-case-card:hover{transform:none}
+}
+
