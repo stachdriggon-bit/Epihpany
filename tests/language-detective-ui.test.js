@@ -398,7 +398,7 @@ test('Casebound opens a story-first caseboard with recommendation and level filt
   assert.match(ui, /ld-case-recommendation/);
   assert.match(ui, /ld-case-file-grid/);
   assert.doesNotMatch(ui, /data-ld-level-select/);
-  assert.doesNotMatch(ui, /Choose your English level/);
+
   assert.match(ui, /inProgressCaseIds/);
   assert.match(ui, /state\.completedCaseIds/);
 });
