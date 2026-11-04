@@ -323,7 +323,6 @@ test('main navigation tabs open without uncaught page errors', async t => {
         await caseboundRoot.locator('[data-ld-back]').click();
         await caseboundRoot.locator('.ld-caseboard-header').waitFor({state:'visible'});
         await caseboundRoot.locator('[data-ld-filter-level="A2"]').click();
-        await caseboundRoot.locator('[data-ld-filter-level="A2"]').click();
         assert.equal(await caseboundRoot.locator('.ld-case-file-card[data-ld-case]').count(), 1,
           'A2 should show only its own archived investigation');
         assert.equal(await caseboundRoot.locator('.ld-case-file-card[data-ld-case="CASE-001"]').count(), 1,
