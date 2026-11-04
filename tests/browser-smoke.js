@@ -317,7 +317,12 @@ test('main navigation tabs open without uncaught page errors', async t => {
           'claim review should link the library-record finding back to the discovered source');
         assert.ok(await caseboundRoot.locator('.ld-result-review .ld-source-link').count() >= 1,
           'examined records should offer a direct revisit action');
-        await caseboundRoot.getByRole('button', {name:'Choose another case'}).click();
+        await caseboundRoot.locator('.ld-finding [data-ld-source-evidence="E04"]').first().click();
+        await caseboundRoot.locator('.ld-layout[data-active-scene="evidence"]').waitFor({state:'visible'});
+        await caseboundRoot.locator('[data-evidence-id="E04"]').waitFor({state:'visible'});
+        await caseboundRoot.locator('[data-ld-back]').click();
+        await caseboundRoot.locator('.ld-caseboard-header').waitFor({state:'visible'});
+        await caseboundRoot.locator('[data-ld-filter-level="A2"]').click();
         await caseboundRoot.locator('[data-ld-filter-level="A2"]').click();
         assert.equal(await caseboundRoot.locator('.ld-case-file-card[data-ld-case]').count(), 1,
           'A2 should show only its own archived investigation');
