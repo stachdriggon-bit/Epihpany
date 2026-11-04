@@ -304,6 +304,10 @@ test('main navigation tabs open without uncaught page errors', async t => {
         await peopleStageTranslate.click();
         assert.equal(await peopleStageTranslation.getAttribute('data-tx-lang'),'en',
           'CASEBOUND stage navigation should return to English using the same control');
+        await caseboundRoot.locator('[data-ld-scene-next]').click();
+        assert.equal(await caseboundRoot.locator('[data-ld-scene="evidence"]').evaluate(el => document.activeElement === el),true,
+          'keyboard focus should move to the new stage after using Continue');
+        await caseboundRoot.locator('[data-ld-scene="people"]').click();
         for (const [characterId, questionId] of [
           ['LINA','Q-LINA-BAG-LAST'],
           ['OMAR','Q-OMAR-VIEW'],
@@ -363,6 +367,8 @@ test('main navigation tabs open without uncaught page errors', async t => {
         await caseboundRoot.locator('.ld-finding [data-ld-source-evidence="E04"]').first().click();
         await caseboundRoot.locator('.ld-layout[data-active-scene="evidence"]').waitFor({state:'visible'});
         await caseboundRoot.locator('[data-evidence-id="E04"]').waitFor({state:'visible'});
+        assert.equal(await caseboundRoot.locator('[data-evidence-id="E04"]').evaluate(el => document.activeElement === el),true,
+          'revisiting an evidence source should move keyboard focus to that record');
         await caseboundRoot.locator('[data-ld-back]').click();
         await caseboundRoot.locator('.ld-caseboard-header').waitFor({state:'visible'});
 
@@ -388,6 +394,8 @@ test('main navigation tabs open without uncaught page errors', async t => {
         await statementSource.click();
         await caseboundRoot.locator('.ld-layout[data-active-scene="people"]').waitFor({state:'visible'});
         await caseboundRoot.locator('#ld-statement-' + statementId).waitFor({state:'visible'});
+        assert.equal(await caseboundRoot.locator('#ld-statement-' + statementId).evaluate(el => document.activeElement === el),true,
+          'revisiting an initial statement should move keyboard focus to its card');
         await caseboundRoot.locator('[data-ld-back]').click();
         await caseboundRoot.locator('.ld-caseboard-header').waitFor({state:'visible'});
 
@@ -432,6 +440,8 @@ test('main navigation tabs open without uncaught page errors', async t => {
         await caseboundRoot.locator('.ld-layout[data-active-scene="people"]').waitFor({state:'visible'});
         await caseboundRoot.locator('[data-ld-select-character="' + interviewCharacterId + '"].is-selected').waitFor({state:'visible'});
         await caseboundRoot.locator('#ld-interview-' + interviewQuestionId).waitFor({state:'visible'});
+        assert.equal(await caseboundRoot.locator('#ld-interview-' + interviewQuestionId).evaluate(el => document.activeElement === el),true,
+          'revisiting an interview answer should move keyboard focus to that answer');
         await caseboundRoot.locator('[data-ld-back]').click();
         await caseboundRoot.locator('.ld-caseboard-header').waitFor({state:'visible'});
         await caseboundRoot.locator('[data-ld-filter-level="A2"]').click();
@@ -455,7 +465,11 @@ test('main navigation tabs open without uncaught page errors', async t => {
         await caseboundRoot.locator('[data-ld-notebook-open]').click();
         assert.match(await page.locator('#ld-case-notebook').innerText(), /notebook is empty/i,
           'the notebook should start empty');
-        await page.locator('#ld-case-notebook [data-ld-notebook-close]').click();
+        await page.keyboard.press('Escape');
+        assert.equal(await page.locator('#ld-case-notebook').evaluate(el => el.hidden),true,
+          'Escape should close the CASEBOUND notebook drawer');
+        assert.equal(await caseboundRoot.locator('[data-ld-notebook-open]').evaluate(el => document.activeElement === el),true,
+          'closing the CASEBOUND notebook with Escape should restore focus to its trigger');
         await caseboundRoot.locator('[data-ld-scene="evidence"]').click();
         await caseboundRoot.locator('[data-ld-open-next]').waitFor({state:'visible'});
         for (let i = 1; i <= 4; i++) {
@@ -494,6 +508,8 @@ test('main navigation tabs open without uncaught page errors', async t => {
           'submitting reasoning should unlock the conclusion choices');
         assert.equal(await caseboundRoot.locator('[data-ld-conclusion-option]').count(), 3,
           'Standard mode should reveal three conclusion choices after reasoning submission');
+        assert.equal(await caseboundRoot.locator('[data-ld-conclusion-option] .translate-btn').count(),0,
+          'final conclusion choices must not receive translation controls that could reveal the answer');
         assert.equal(await caseboundRoot.locator('[name="ld-standard-reasoning"]').isEditable(), false,
           'reasoning should be locked after the choices are revealed');
         await caseboundRoot.locator('[data-ld-conclusion-option="1"]').click();
