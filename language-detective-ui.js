@@ -620,7 +620,7 @@
     C2: { title: 'C2 · Proficient', note: 'Highly nuanced reasoning across complex sources.' }
   };
 
-  const CASEBOARD_META = Object.freeze({
+  const CASEBOARD_ORDER = ['CASE-004','CASE-005','CASE-001','CASE-002','CASE-003'];\n  const CASEBOARD_META = Object.freeze({
     'CASE-001': { duration: 7, skill: 'Observation & reported speech', symbol: '01' },
     'CASE-002': { duration: 9, skill: 'Timelines & conflicting accounts', symbol: '02' },
     'CASE-003': { duration: 12, skill: 'Evidence evaluation', symbol: '03' },
@@ -645,10 +645,10 @@
 
   function recommendedCaseId() {
     const level = getAssessedLevel();
-    const ids = Object.keys(caseInfo);
+    const ids = CASEBOARD_ORDER.filter(id => caseInfo[id]);
     const rank = id => Math.abs(CEFR_ORDER.indexOf(caseInfo[id].cefr) - CEFR_ORDER.indexOf(level));
     return ids.filter(id => caseStatus(id) === 'IN_PROGRESS').sort((a,b) => rank(a)-rank(b))[0]
-      || ids.filter(id => caseStatus(id) === 'NEW').sort((a,b) => rank(a)-rank(b) || CEFR_ORDER.indexOf(caseInfo[a].cefr)-CEFR_ORDER.indexOf(caseInfo[b].cefr))[0]
+      || ids.filter(id => caseStatus(id) === 'NEW').sort((a,b) => rank(a)-rank(b) || CASEBOARD_ORDER.indexOf(a)-CASEBOARD_ORDER.indexOf(b))[0]
       || ids.sort((a,b) => rank(a)-rank(b))[0]
       || null;
   }
@@ -660,7 +660,7 @@
     const filters = ['ALL', ...CEFR_ORDER].map(value =>
       '<button type="button" class="ld-filter-chip' + (selectedFilter === value ? ' is-active' : '') + '" data-ld-filter-level="' + value + '" aria-pressed="' + (selectedFilter === value) + '">' + (value === 'ALL' ? 'All cases' : value) + '</button>'
     ).join('');
-    const caseCards = Object.keys(caseInfo).filter(id => selectedFilter === 'ALL' || caseInfo[id].cefr === selectedFilter).map(id => {
+    const caseCards = CASEBOARD_ORDER.filter(id => caseInfo[id] && (selectedFilter === 'ALL' || caseInfo[id].cefr === selectedFilter)).map(id => {
       const item = caseInfo[id];
       const meta = CASEBOARD_META[id] || {duration:8,skill:'Reasoning & evidence',symbol:id.slice(-2)};
       const status = caseStatus(id);
