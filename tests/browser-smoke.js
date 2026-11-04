@@ -401,6 +401,13 @@ test('main navigation tabs open without uncaught page errors', async t => {
         const interviewSource = caseboundRoot.locator('.ld-result-review').filter({hasText:'Interview answers you collected'}).locator('[data-ld-source-interview]').first();
         assert.ok(await interviewSource.count() >= 1,
           'result review should list collected interview answers separately from claim diagnostics');
+        const firstInterviewReview = caseboundRoot.locator('.ld-result-review')
+          .filter({hasText:'Interview answers you collected'}).locator('li').first();
+        const firstInterviewText = await firstInterviewReview.innerText();
+        assert.match(firstInterviewText, /What time did you leave the waiting room\?/,
+          'interview review should preserve the exact question prompt');
+        assert.match(firstInterviewText, /I remember having it near the timetable board\. I do not remember seeing it after that\./,
+          'interview review should display the collected answer, not only link back to the question');
         const interviewRef = await interviewSource.getAttribute('data-ld-source-interview');
         const [interviewCharacterId, ...interviewQuestionParts] = interviewRef.split(':');
         const interviewQuestionId = interviewQuestionParts.join(':');
