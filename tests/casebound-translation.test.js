@@ -37,14 +37,16 @@ test('Casebound marks authored Arabic units after every screen render, including
   assert.match(ui, /'I waited near the timetable board[\s\S]*?':'انتظرت بالقرب من لوحة مواعيد القطارات/);
 });
 
-test('Final conclusion options remain excluded from Casebound translation controls', () => {
+test('Final conclusion options stay excluded while locked guidance remains translatable', () => {
   const markerStart = ui.indexOf('function markCaseboundTranslations');
   const markerEnd = ui.indexOf('function enhanceCaseboundTranslations', markerStart);
   assert.notEqual(markerStart, -1);
   assert.notEqual(markerEnd, -1);
   const marker = ui.slice(markerStart, markerEnd);
   assert.match(marker, /\[data-ld-conclusion-option\]/);
-  assert.match(marker, /\.ld-conclusion-locked/);
+  assert.doesNotMatch(marker, /\.ld-conclusion-locked/);
+  assert.match(ui, /'This step is locked until your reasoning is submitted\.':'هذه الخطوة مقفلة حتى ترسل استدلالك\.'/);
+  assert.match(ui, /'The conclusion choices unlock after you submit your reasoning\.':'ستُفتح خيارات الاستنتاج بعد إرسال استدلالك\.'/);
   const optionsStart = ui.indexOf('const answerFields');
   const optionsEnd = ui.indexOf('const answerPanel', optionsStart);
   const conclusionMarkup = ui.slice(optionsStart, optionsEnd);
