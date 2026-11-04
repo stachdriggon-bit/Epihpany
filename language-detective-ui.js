@@ -537,7 +537,7 @@
     let node;
     while ((node = walker.nextNode())) {
       const parent = node.parentElement;
-      if (!parent || parent.closest('script,style,noscript,textarea,input,select,option,code,pre,.translate-btn,[aria-hidden="true"],[data-ld-conclusion-option],.ld-conclusion-locked,.ld-contact-row,.ld-scene-step')) continue;
+      if (!parent || parent.closest('script,style,noscript,textarea,input,select,option,code,pre,.translate-btn,[aria-hidden="true"],[data-ld-conclusion-option]')) continue;
       const english = String(node.nodeValue || '').replace(/\s+/g, ' ').trim();
       const arabic = CASEBOUND_ARABIC[english] || (english.startsWith('✓ ') && CASEBOUND_ARABIC[english.slice(2)] ? '✓ ' + CASEBOUND_ARABIC[english.slice(2)] : '');
       if (!english || !arabic) continue;
