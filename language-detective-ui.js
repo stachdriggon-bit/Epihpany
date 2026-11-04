@@ -524,7 +524,8 @@
     'Keep in mind':'تذكّر',
     'A missing detail is not automatically a contradiction. A strong inference can be reasonable without becoming proof; the limits of each record still matter.':'غياب أحد التفاصيل لا يعني بالضرورة وجود تناقض. قد يكون الاستنتاج القوي معقولًا دون أن يصبح دليلًا قاطعًا؛ وتظل حدود كل سجل مهمة.',
     'Revise and try again':'راجع إجابتك وحاول مجددًا',
-    'Choose another case':'اختر قضية أخرى'
+    'Choose another case':'اختر قضية أخرى',
+    '← Case overview':'← نظرة عامة على القضية'
   });
 
   function markCaseboundTranslations(container) {
@@ -760,7 +761,7 @@
       evidenceLabels:{E01:'Review the three initial accounts',E02:'Return to Lina’s account',E03:'Return to Lina’s account',E04:'Return to Lina’s account'}
     } : null;
     const sourceButton = (label, action, value) => '<button type="button" class="ld-source-link" data-ld-source-' + action + '="' + esc(value) + '">' + esc(label) + ' →</button>';
-    const evidenceCard = (item, i) => '<article class="ld-evidence" data-evidence-id="' + esc(item.evidenceId) + '"><span>' + esc(item.role) + ' · ' + esc(item.evidenceId || ('E' + String(i + 1).padStart(2, '0'))) + '</span><p>' + esc(item.summary) + '</p>' + (item.limitations?.length ? '<small>Limit: ' + esc(item.limitations.join(' ')) + '</small>' : '') + (case005Links?.evidence[item.evidenceId] ? sourceButton(case005Links.evidenceLabels[item.evidenceId], 'statement', case005Links.evidence[item.evidenceId][0]) : '') + '</article>';
+    const evidenceCard = (item, i) => '<article class="ld-evidence" data-evidence-id="' + esc(item.evidenceId) + '"><span>' + esc(item.role) + ' · ' + esc(item.evidenceId || ('E' + String(i + 1).padStart(2, '0'))) + '</span><p>' + esc(item.summary) + '</p>' + (item.limitations?.length ? '<small><b>Limit</b>: ' + esc(item.limitations.join(' ')) + '</small>' : '') + (case005Links?.evidence[item.evidenceId] ? sourceButton(case005Links.evidenceLabels[item.evidenceId], 'statement', case005Links.evidence[item.evidenceId][0]) : '') + '</article>';
     const notebookSections = investigationModel.getNotebookSections(snapshot, session);
     const notebookEntries = investigationModel.getNotebookEntries(snapshot, session);
     const notebook = notebookSections.length
@@ -933,9 +934,9 @@
       const labels = {'assessment.feedback.supported':'You connected the main conclusion to the evidence.','assessment.feedback.clarify':'Make the person, event or reference in your answer more specific.','assessment.feedback.reviewEvidenceBoundary':'Separate what the records establish from what they only suggest.'};
       return '<li>' + esc(labels[item.resourceKey] || 'Review the evidence and the limits of each source.') + '</li>';
     }).join('');
-    const attemptHistory = state.attempts.map((entry, i) => '<li><b>Attempt ' + (i + 1) + ':</b> ' + esc(outcomeLabel[entry.result.evaluation?.primaryOutcome] || 'Assessment result') + '</li>').join('');
+    const attemptHistory = state.attempts.map((entry, i) => '<li><b><span>Attempt</span> ' + (i + 1) + ':</b> ' + esc(outcomeLabel[entry.result.evaluation?.primaryOutcome] || 'Assessment result') + '</li>').join('');
     root.innerHTML = '<section class="ld-shell">' +
-      '<div class="ld-toolbar"><button type="button" class="ld-back" data-ld-back>← Case overview</button><span>ATTEMPT ' + attempt + '</span></div>' +
+      '<div class="ld-toolbar"><button type="button" class="ld-back" data-ld-back>← Case overview</button><span><span>ATTEMPT</span> ' + attempt + '</span></div>' +
       '<div class="ld-result-head" data-outcome="' + esc(outcome) + '"><span class="ld-stamp">' + esc(outcomeStamp[outcome] || 'REVIEW') + '</span><span class="ld-kicker">ASSESSMENT FEEDBACK</span><h2>' + esc(outcomeLabel[outcome] || 'Assessment result') + '</h2><p>' + esc(outcomeText[outcome] || 'Review the evidence and try again.') + '</p><div class="ld-result-score"' + (Number.isFinite(evaluation.weightedScore) ? ' style="--p:' + Math.max(0, Math.min(100, evaluation.weightedScore)) + '"' : '') + '>' + score + grade + '</div></div>' +
       (feedbackItems ? '<section class="ld-result-review ld-result-feedback"><h3>What to take from this result</h3><ul>' + feedbackItems + '</ul></section>' : '') +
       (findings ? '<details class="ld-diagnostics ld-result-review"><summary>Review your reasoning</summary><ul>' + findings + '</ul></details>' : '') +
