@@ -226,6 +226,13 @@ test('character artwork uses thumbnails in the gallery and loads originals only 
   assert.match(js, /is-art-unavailable/);
 });
 
+test('image framing updates preserve cached gallery card nodes', () => {
+  const js = read('cards.js');
+  assert.match(js, /const syncGalleryImageViews = \(\) =>/);
+  assert.match(js, /syncGalleryImageViews\(\);[\s\S]*?renderFeatured\(\);[\s\S]*?renderGallery\(true\)/);
+  assert.doesNotMatch(js, /epiphany:card-image-views-updated'[^\n]*galleryNodeCache\.clear/);
+});
+
 test('card detail uses the real full card face and keeps gallery card nodes across filters', () => {
   const js = read('cards.js');
   const css = read('cards.css');
