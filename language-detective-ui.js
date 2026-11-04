@@ -899,16 +899,14 @@
     const findings = (evaluation.claimDiagnostics || []).map((f, index) => {
       const concept = concepts.get(f.conceptId);
       const relatedEvidence = (concept?.evidenceRefs || []).filter(id => discoveredIds.has(id)).map(id => evidenceById.get(id)).filter(Boolean);
-      const relatedInterviews = (concept?.informationRefs || []).filter(id => informationIds.has(id)).map(id => interviewSources.get(id)).filter(Boolean);
       const stateLabels = {SUPPORTED:'Supported by the evidence',UNRESOLVED:'Not enough information to assess this point',UNSUPPORTED:'Not established by the evidence',OVERCLAIMED:'Goes beyond what the evidence establishes',CONTRADICTED:'Conflicts with the evidence'};
-      const sourceLinks = [
-        ...relatedEvidence.map(item => '<button type="button" class="ld-source-link" aria-label="Open record: ' + esc(item.title || item.evidenceId) + '" title="' + esc(item.title || item.evidenceId) + '" data-ld-source-evidence="' + esc(item.evidenceId) + '">Open record ↗</button>'),
-        ...relatedInterviews.map(item => '<button type="button" class="ld-source-link" aria-label="Open interview: ' + esc(item.name + ': ' + item.prompt) + '" title="' + esc(item.name + ': ' + item.prompt) + '" data-ld-source-interview="' + esc(item.characterId + ':' + item.questionId) + '">Open interview ↗</button>')
-      ];
+      const sourceLinks = relatedEvidence.map(item => '<button type="button" class="ld-source-link" aria-label="Open record: ' + esc(item.title || item.evidenceId) + '" title="' + esc(item.title || item.evidenceId) + '" data-ld-source-evidence="' + esc(item.evidenceId) + '">Open record ↗</button>');
       return '<li class="ld-finding" data-finding-index="' + index + '"><b>' + esc(concept?.predicate || 'A point in your explanation') + '</b><span>' + esc(stateLabels[f.state] || 'Needs a closer look') + '</span>' + (sourceLinks.length ? '<div class="ld-finding-sources" aria-label="Related investigation sources">' + sourceLinks.join('') + '</div>' : '<small>No directly linked source was recorded for this point.</small>') + '</li>';
     }).join('');
     const examinedEvidence = (caseSnapshot.evidence || []).filter(item => discoveredIds.has(item.evidenceId));
     const evidenceReview = examinedEvidence.length ? '<section class="ld-result-review"><h3>Records you examined</h3><p class="ld-review-intro">Open a record to revisit it on the evidence board.</p><ul>' + examinedEvidence.map(item => '<li><b>' + esc(item.title || item.evidenceId) + '</b><span>' + esc(item.summary) + '</span>' + (item.limitations?.length ? '<small>Limit: ' + esc(item.limitations.join(' ')) + '</small>' : '') + '<div class="ld-finding-sources"><button type="button" class="ld-source-link" aria-label="Revisit record: ' + esc(item.title || item.evidenceId) + '" title="' + esc(item.title || item.evidenceId) + '" data-ld-source-evidence="' + esc(item.evidenceId) + '">Revisit this record ↗</button></div></li>').join('') + '</ul></section>' : '';
+    const collectedInterviews = [...interviewSources.values()];
+    const interviewReview = collectedInterviews.length ? '<section class="ld-result-review"><h3>Interview answers you collected</h3><p class="ld-review-intro">Return to a person to revisit the exact question and answer.</p><ul>' + collectedInterviews.map(item => '<li><b>' + esc(item.name) + '</b><span>' + esc(item.prompt) + '</span><div class="ld-finding-sources"><button type="button" class="ld-source-link" aria-label="Revisit interview answer: ' + esc(item.name + ': ' + item.prompt) + '" title="' + esc(item.name + ': ' + item.prompt) + '" data-ld-source-interview="' + esc(item.characterId + ':' + item.questionId) + '">Revisit this answer ↗</button></div></li>').join('') + '</ul></section>' : '';
     const feedbackItems = (result.feedback?.items || []).map(item => {
       const labels = {'assessment.feedback.supported':'You connected the main conclusion to the evidence.','assessment.feedback.clarify':'Make the person, event or reference in your answer more specific.','assessment.feedback.reviewEvidenceBoundary':'Separate what the records establish from what they only suggest.'};
       return '<li>' + esc(labels[item.resourceKey] || 'Review the evidence and the limits of each source.') + '</li>';
@@ -920,6 +918,7 @@
       (feedbackItems ? '<section class="ld-result-review ld-result-feedback"><h3>What to take from this result</h3><ul>' + feedbackItems + '</ul></section>' : '') +
       (findings ? '<details class="ld-diagnostics ld-result-review"><summary>Review your reasoning</summary><ul>' + findings + '</ul></details>' : '') +
       evidenceReview +
+      interviewReview +
       (dimensionRows ? '<details class="ld-diagnostics ld-result-review"><summary>Assessment breakdown</summary><div class="ld-dimensions">' + dimensionRows + '</div></details>' : '') +
       (state.attempts.length > 1 ? '<details class="ld-diagnostics"><summary>Previous attempts (' + (state.attempts.length - 1) + ')</summary><ul>' + attemptHistory.slice(0, attemptHistory.lastIndexOf('<li>')) + '</ul></details>' : '') +
       '<div class="ld-feedback-note"><strong>Keep in mind</strong><p>A missing detail is not automatically a contradiction. A strong inference can be reasonable without becoming proof; the limits of each record still matter.</p></div>' +
