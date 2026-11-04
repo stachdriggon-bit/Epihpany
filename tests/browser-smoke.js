@@ -313,8 +313,8 @@ test('main navigation tabs open without uncaught page errors', async t => {
         assert.equal(await caseboundRoot.locator('[data-ld-scene="evidence"]').evaluate(el => document.activeElement === el),true,
           'keyboard focus should move to the new stage after using Continue');
         await caseboundRoot.locator('[data-ld-scene="people"]').click();
-        assert.ok(await caseboundRoot.locator('.ld-contact-row .translate-btn').count() > 0,
-          'people cards should expose translation controls for translatable role and status text');
+        assert.ok(await caseboundRoot.locator('.ld-contact-list .casebound-translation-row .translate-btn').count() > 0,
+          'people cards should expose adjacent translation controls for translatable role and status text');
         for (const [characterId, questionId] of [
           ['LINA','Q-LINA-BAG-LAST'],
           ['OMAR','Q-OMAR-VIEW'],
