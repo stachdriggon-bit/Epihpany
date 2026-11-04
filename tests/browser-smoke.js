@@ -404,7 +404,7 @@ test('main navigation tabs open without uncaught page errors', async t => {
         const firstInterviewReview = caseboundRoot.locator('.ld-result-review')
           .filter({hasText:'Interview answers you collected'}).locator('li').first();
         const firstInterviewText = await firstInterviewReview.innerText();
-        assert.match(firstInterviewText, /What time did you leave the waiting room\?/,
+        assert.match(firstInterviewText, /When did you last see your green bag\?/,
           'interview review should preserve the exact question prompt');
         assert.match(firstInterviewText, /I remember having it near the timetable board\. I do not remember seeing it after that\./,
           'interview review should display the collected answer, not only link back to the question');
