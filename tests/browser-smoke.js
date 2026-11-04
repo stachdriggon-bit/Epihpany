@@ -325,7 +325,6 @@ test('main navigation tabs open without uncaught page errors', async t => {
         assert.ok(await caseboundRoot.locator('.ld-dimensions .ld-dimension').count() >= 1,
           'opening the assessment breakdown should reveal scored dimensions');
 
-        const originalReasoning = await caseboundRoot.locator('[name="ld-standard-reasoning"]').inputValue().catch(() => null);
         await caseboundRoot.locator('[data-ld-retry]').click();
         await caseboundRoot.locator('.ld-layout[data-active-scene="conclusion"]').waitFor({state:'visible'});
         const retainedReasoning = await caseboundRoot.locator('[name="ld-standard-reasoning"]').inputValue();
