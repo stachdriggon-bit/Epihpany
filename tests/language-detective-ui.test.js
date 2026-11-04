@@ -408,8 +408,8 @@ test('CASEBOUND UI guards against escaped newlines breaking JavaScript declarati
 });
 
 test('CASEBOUND translation enhancement covers its content but excludes final conclusion choices', () => {
-  assert.match(ui, /function markCaseboundTranslations\\(container\\)/);
-  assert.match(ui, /\\[data-ld-conclusion-option\\]/);
-  assert.match(ui, /window\\.EPIPHANY_TRANSLATION_ENHANCE\\?\\.\\(page\\)/);
-  assert.match(ui, /window\\.EPIPHANY_TRANSLATION_ENHANCE\\?\\.\\(drawer\\)/);
+  assert.ok(ui.includes('function markCaseboundTranslations(container)'));
+  assert.ok(ui.includes('[data-ld-conclusion-option]'));
+  assert.ok(ui.includes('window.EPIPHANY_TRANSLATION_ENHANCE?.(page)'));
+  assert.ok(ui.includes('window.EPIPHANY_TRANSLATION_ENHANCE?.(drawer)'));
 });
