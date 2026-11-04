@@ -273,6 +273,11 @@ test('main navigation tabs open without uncaught page errors', async t => {
           'the caseboard should present one recommended next case');
         const translationToggle = page.locator('#translation-toggle');
         if (await translationToggle.getAttribute('aria-pressed') !== 'true') {
+          const settingsMenu = page.locator('.tools-menu');
+          if (!(await settingsMenu.evaluate(menu => menu.open))) {
+            await settingsMenu.locator('> summary').click();
+          }
+          await translationToggle.waitFor({state:'visible',timeout:3000});
           await translationToggle.click();
           await caseboundRoot.locator('.ld-shell').waitFor({state:'visible',timeout:5000});
         }
