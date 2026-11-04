@@ -399,6 +399,10 @@
 .ld-shell .ld-result-review :is(h3,p,li,b,span,small),
 .ld-shell .ld-feedback-note :is(strong,p){min-width:0;overflow-wrap:anywhere;word-break:normal}
 .ld-shell .ld-result-score{min-width:0;max-width:100%;flex-wrap:wrap}
+/* Keep compact translation controls from contributing their hidden label width to mobile layout. */
+.casebound-page .casebound-translation-row{display:flex;box-sizing:border-box;min-width:0;max-width:100%}
+.casebound-page .casebound-translation-row>.translate-btn{flex:0 0 32px;width:32px;min-width:32px;max-width:32px;overflow:hidden;box-sizing:border-box}
+.casebound-page .ld-toolbar{min-width:0;max-width:100%;overflow-x:clip}
 
 /* Result */
 .ld-shell .ld-result-head{position:relative;display:grid;justify-items:start;gap:6px;padding:clamp(20px,3vw,32px);border-radius:20px;background:linear-gradient(135deg,var(--cb-ink),var(--cb-ink-2));color:#f4efe0;box-shadow:0 16px 36px rgba(36,31,63,.3)}
