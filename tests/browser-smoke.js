@@ -360,6 +360,12 @@ test('main navigation tabs open without uncaught page errors', async t => {
           'Standard mode should show three locked option placeholders before reasoning is submitted');
         assert.equal(await caseboundRoot.locator('[data-ld-conclusion-option]').count(), 0,
           'option text must remain hidden before reasoning submission');
+        assert.equal(await caseboundRoot.locator('[data-ld-answer-form]').getAttribute('data-answer-format'), 'STANDARD',
+          'Standard conclusion should retain its explicit answer format');
+        assert.equal(await caseboundRoot.locator('.ld-answer-form-standard .ld-answer-step').count(), 2,
+          'Standard mode should present reasoning before the conclusion-choice step');
+        assert.equal(await caseboundRoot.locator('.ld-answer-form-standard .ld-answer-step').nth(0).locator('h4').innerText(), 'Explain your reasoning');
+        assert.equal(await caseboundRoot.locator('.ld-answer-form-standard .ld-answer-step').nth(1).locator('h4').innerText(), 'Choose your conclusion');
         await caseboundRoot.locator('[name="ld-standard-reasoning"]').fill(
           'Sara saw a resident in a green jacket pick up the package, but she did not see the resident’s face. The evidence does not identify the person.'
         );
