@@ -23,7 +23,6 @@
     'Question people':'استجوب الأشخاص',
     'Examine evidence':'افحص الأدلة',
     'Build your conclusion':'كوّن استنتاجك',
-    'Choose your English level':'اختر مستواك في الإنجليزية',
     'Each level has its own investigations, characters and challenges.':'لكل مستوى تحقيقاته وشخصياته وتحدياته الخاصة.',
     'Beginner':'مبتدئ',
     'Elementary':'ابتدائي',
@@ -449,7 +448,6 @@
     'Review the evidence and the limits of each source.':'راجع الأدلة وحدود كل مصدر.',
     'Related records you examined':'السجلات ذات الصلة التي فحصتها',
     'Limit':'الحد',
-    'Choose your English level':'اختر مستواك في الإنجليزية',
     'Open this account':'افتح هذه الإفادة',
     'Return to interview':'عد إلى المقابلة',
     'Return to related statement':'عد إلى الإفادة ذات الصلة',
@@ -656,7 +654,6 @@
   }
 
   function picker() {
-    const level = getAssessedLevel();
     const recommendedId = recommendedCaseId();
     const recommended = recommendedId ? caseInfo[recommendedId] : null;
     const selectedFilter = state.caseFilter || 'ALL';
@@ -954,7 +951,8 @@
     state = {
       stage: 'picker',
       caseId: null,
-      selectedLevel: null,\n      caseFilter: 'ALL',\n      inProgressCaseIds: [],
+      caseFilter: 'ALL',
+      inProgressCaseIds: [],
       selectedCharacterId: null,
       activePanel: 'statements',
       activeScene: 'people',
