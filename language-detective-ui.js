@@ -515,6 +515,8 @@
     'A central claim conflicts with the case record. Revisit the relevant evidence before drawing that conclusion.':'يتعارض ادعاء أساسي مع سجل القضية. راجع الأدلة ذات الصلة قبل الوصول إلى ذلك الاستنتاج.',
     'Records you examined':'السجلات التي فحصتها',
     'Interview answers you collected':'إجابات المقابلات التي جمعتها',
+    'Question:':'السؤال:',
+    'Answer:':'الإجابة:',
     'Initial statements you reviewed':'الإفادات الأولية التي راجعتها',
     'Return to an original account to review what the person said at the start of the investigation.':'عُد إلى الإفادة الأصلية لمراجعة ما قاله الشخص في بداية التحقيق.',
     'Revisit this statement ↗':'راجع هذه الإفادة ↗',
@@ -908,6 +910,7 @@
           characterId:response.characterId,
           questionId:answer.questionId,
           prompt:question.prompt || answer.questionId,
+          answer:answer.answer || '',
           name:interview.name || person?.name || response.characterId
         });
       });
@@ -929,7 +932,7 @@
       return '<li><b>' + esc(speaker) + '</b><span>' + esc(item.text || item.statement || '') + '</span><div class="ld-finding-sources"><button type="button" class="ld-source-link" aria-label="Revisit initial statement: ' + esc(speaker) + '" title="' + esc(speaker) + '" data-ld-source-statement="' + esc(statementId) + '">Revisit this statement ↗</button></div></li>';
     }).join('') + '</ul></section>' : '';
     const collectedInterviews = [...interviewSources.values()];
-    const interviewReview = collectedInterviews.length ? '<section class="ld-result-review"><h3>Interview answers you collected</h3><p class="ld-review-intro">Return to a person to revisit the exact question and answer.</p><ul>' + collectedInterviews.map(item => '<li><b>' + esc(item.name) + '</b><span>' + esc(item.prompt) + '</span><div class="ld-finding-sources"><button type="button" class="ld-source-link" aria-label="Revisit interview answer: ' + esc(item.name + ': ' + item.prompt) + '" title="' + esc(item.name + ': ' + item.prompt) + '" data-ld-source-interview="' + esc(item.characterId + ':' + item.questionId) + '">Revisit this answer ↗</button></div></li>').join('') + '</ul></section>' : '';
+    const interviewReview = collectedInterviews.length ? '<section class="ld-result-review"><h3>Interview answers you collected</h3><p class="ld-review-intro">Return to a person to revisit the exact question and answer.</p><ul>' + collectedInterviews.map(item => '<li><b>' + esc(item.name) + '</b><span><b>Question:</b> ' + esc(item.prompt) + '</span><span><b>Answer:</b> ' + esc(item.answer) + '</span><div class="ld-finding-sources"><button type="button" class="ld-source-link" aria-label="Revisit interview answer: ' + esc(item.name + ': ' + item.prompt) + '" title="' + esc(item.name + ': ' + item.prompt) + '" data-ld-source-interview="' + esc(item.characterId + ':' + item.questionId) + '">Revisit this answer ↗</button></div></li>').join('') + '</ul></section>' : '';
     const feedbackItems = (result.feedback?.items || []).map(item => {
       const labels = {'assessment.feedback.supported':'You connected the main conclusion to the evidence.','assessment.feedback.clarify':'Make the person, event or reference in your answer more specific.','assessment.feedback.reviewEvidenceBoundary':'Separate what the records establish from what they only suggest.'};
       return '<li>' + esc(labels[item.resourceKey] || 'Review the evidence and the limits of each source.') + '</li>';
