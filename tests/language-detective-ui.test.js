@@ -406,3 +406,10 @@ test('Casebound opens a story-first caseboard with recommendation and level filt
 test('CASEBOUND UI guards against escaped newlines breaking JavaScript declarations', () => {
   assert.doesNotMatch(ui, /;\\n\\s*(?:const|if)\\b/);
 });
+
+test('CASEBOUND translation enhancement covers its content but excludes final conclusion choices', () => {
+  assert.match(ui, /function markCaseboundTranslations\\(container\\)/);
+  assert.match(ui, /\\[data-ld-conclusion-option\\]/);
+  assert.match(ui, /window\\.EPIPHANY_TRANSLATION_ENHANCE\\?\\.\\(page\\)/);
+  assert.match(ui, /window\\.EPIPHANY_TRANSLATION_ENHANCE\\?\\.\\(drawer\\)/);
+});
