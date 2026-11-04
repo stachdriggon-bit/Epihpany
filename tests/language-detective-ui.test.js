@@ -61,12 +61,11 @@ test('CASEBOUND presents a case brief and requires an explicit Start Investigati
   assert.match(ui, /caseIntroduction\(\)/);
 });
 
-test('case picker groups cases by authored CEFR and keeps evaluation level fixed',()=>{
+test('caseboard filters authored cases by CEFR without changing evaluation level',()=>{
  assert.ok(ui.includes("const CEFR_ORDER = ['A1','A2','B1','B2','C1','C2']"));
- assert.ok(ui.includes('data-ld-level-select'));
- assert.ok(ui.includes('state.selectedLevel'));
- assert.ok(ui.includes('ld-level-grid'));
- assert.ok(ui.includes('data-ld-level-back'));
+ assert.ok(ui.includes('data-ld-filter-level'));
+ assert.ok(ui.includes('state.caseFilter'));
+ assert.ok(ui.includes("caseInfo[id].cefr === selectedFilter"));
  assert.ok(!ui.includes('data-ld-setting="cefr"'));
  assert.ok(!ui.includes('context.cefr = state.cefr'));
  assert.equal(makeContext('CASE-004').cefr,'A1');
@@ -141,12 +140,12 @@ test('a correct evidence explanation cannot rescue a conclusion that contradicts
   assert.notEqual(result.evaluation.primaryOutcome, 'ACCEPTED');
 });
 
-test('case picker requires a CEFR level selection before showing its cases',()=>{
- for(const level of ['A1','A2','B1','B2','C1','C2']) assert.ok(ui.includes(level + ' · '),level+' level label');
- assert.ok(ui.includes('data-ld-level-select'));
- assert.ok(ui.includes("filter(id => caseInfo[id].cefr === selectedLevel)"));
- assert.ok(ui.includes('data-ld-level-back'));
- assert.ok(ui.includes('There are no investigations at this level yet.'));
+test('caseboard shows the complete archive and filters it without a mandatory level-selection step',()=>{
+ for(const level of ['A1','A2','B1','B2','C1','C2']) assert.ok(ui.includes(level),level+' filter label');
+ assert.ok(ui.includes('data-ld-filter-level'));
+ assert.ok(ui.includes("selectedFilter === 'ALL' || caseInfo[id].cefr === selectedFilter"));
+ assert.ok(ui.includes('No cases are available at this level yet.'));
+ assert.ok(!ui.includes('Choose your English level'));
 });
 
 test('CASEBOUND workspace delegates evidence, interview, witness and notebook state to the session model',()=>{
@@ -380,7 +379,7 @@ test('CASEBOUND gives each assessment outcome a distinct, accurate result stamp 
   assert.match(ui, /A central claim conflicts with the case record/);
 });
 
-test('Casebound level and case pickers use a cohesive palette and accessible responsive focus states', () => {
+test('Casebound caseboard uses a cohesive palette and accessible responsive focus states', () => {
  const css = fs.readFileSync(path.join(__dirname, '..', 'language-detective.css'), 'utf8');
  assert.match(css, /Casebound picker refinement/);
  assert.match(css, /\.ld-shell \.ld-level-grid\{grid-template-columns:repeat\(3,minmax\(0,1fr\)\)/);
