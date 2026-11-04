@@ -328,6 +328,8 @@ test('main navigation tabs open without uncaught page errors', async t => {
           'evidence should remain undisclosed until each item is examined');
         assert.equal(await caseboundRoot.locator('[data-ld-open-next]').count(), 1,
           'the workspace should offer the next available evidence item');
+        assert.equal(await caseboundRoot.locator('.ld-evidence-records [data-ld-open-next]').count(), 1,
+          'the next evidence action should live inside the records lane');
         assert.equal(await caseboundRoot.locator('[data-ld-conclusion-choices]').count(), 0,
           'conclusion should remain unavailable while evidence is undiscovered');
         await caseboundRoot.locator('[data-ld-notebook-open]').click();
