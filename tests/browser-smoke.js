@@ -323,6 +323,41 @@ test('main navigation tabs open without uncaught page errors', async t => {
         await caseboundRoot.locator('[data-evidence-id="E04"]').waitFor({state:'visible'});
         await caseboundRoot.locator('[data-ld-back]').click();
         await caseboundRoot.locator('.ld-caseboard-header').waitFor({state:'visible'});
+
+        // Re-open A1 to verify that an interview source returns to the exact answer.
+        await caseboundRoot.locator('[data-ld-filter-level="A1"]').click();
+        await caseboundRoot.locator('.ld-case-file-card[data-ld-case="CASE-005"]').click();
+        await caseboundRoot.locator('[data-ld-start-investigation]').click();
+        for (const [characterId, questionId] of [
+          ['LINA','Q-LINA-BAG-LAST'],
+          ['OMAR','Q-OMAR-VIEW'],
+          ['NORA','Q-NORA-BAG']
+        ]) {
+          await caseboundRoot.locator('[data-ld-select-character="' + characterId + '"]').click();
+          await caseboundRoot.locator('[data-ld-ask-interview][data-question-id="' + questionId + '"]').click();
+        }
+        for (let i = 1; i <= 4; i++) await caseboundRoot.locator('[data-ld-open-next]').click();
+        await caseboundRoot.locator('[data-ld-scene="conclusion"]').click();
+        await caseboundRoot.locator('[name="ld-standard-reasoning"]').fill(
+          'The library record links Lina to the paperback in the bag. The seating log places her near the bench, but location alone does not prove ownership. The evidence makes her the best-supported owner, not a certain owner.'
+        );
+        await caseboundRoot.locator('[data-ld-submit-reasoning]').click();
+        await caseboundRoot.locator('[data-ld-conclusion-option="0"]').click();
+        await caseboundRoot.locator('[data-ld-answer-form] [type="submit"]').click();
+        await caseboundRoot.locator('.ld-result-head').waitFor({state:'visible',timeout:5000});
+        await caseboundRoot.locator('.ld-diagnostics summary').filter({hasText:'Review your reasoning'}).click();
+        const interviewSource = caseboundRoot.locator('.ld-finding [data-ld-source-interview]').first();
+        assert.ok(await interviewSource.count() >= 1,
+          'claim review should link an interview finding back to its discovered answer');
+        const interviewRef = await interviewSource.getAttribute('data-ld-source-interview');
+        const [interviewCharacterId, ...interviewQuestionParts] = interviewRef.split(':');
+        const interviewQuestionId = interviewQuestionParts.join(':');
+        await interviewSource.click();
+        await caseboundRoot.locator('.ld-layout[data-active-scene="people"]').waitFor({state:'visible'});
+        await caseboundRoot.locator('[data-ld-select-character="' + interviewCharacterId + '"].is-selected').waitFor({state:'visible'});
+        await caseboundRoot.locator('#ld-interview-' + interviewQuestionId).waitFor({state:'visible'});
+        await caseboundRoot.locator('[data-ld-back]').click();
+        await caseboundRoot.locator('.ld-caseboard-header').waitFor({state:'visible'});
         await caseboundRoot.locator('[data-ld-filter-level="A2"]').click();
         assert.equal(await caseboundRoot.locator('.ld-case-file-card[data-ld-case]').count(), 1,
           'A2 should show only its own archived investigation');
