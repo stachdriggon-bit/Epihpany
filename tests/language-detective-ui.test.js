@@ -402,3 +402,7 @@ test('Casebound opens a story-first caseboard with recommendation and level filt
   assert.match(ui, /inProgressCaseIds/);
   assert.match(ui, /state\.completedCaseIds/);
 });
+
+test('CASEBOUND UI guards against escaped newlines breaking JavaScript declarations', () => {
+  assert.doesNotMatch(ui, /;\\n\\s*(?:const|if)\\b/);
+});
