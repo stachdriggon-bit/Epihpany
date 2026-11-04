@@ -308,6 +308,8 @@ test('main navigation tabs open without uncaught page errors', async t => {
         assert.equal(await caseboundRoot.locator('[data-ld-scene="evidence"]').evaluate(el => document.activeElement === el),true,
           'keyboard focus should move to the new stage after using Continue');
         await caseboundRoot.locator('[data-ld-scene="people"]').click();
+        assert.ok(await caseboundRoot.locator('.ld-contact-row .translate-btn').count() > 0,
+          'people cards should expose translation controls for translatable role and status text');
         for (const [characterId, questionId] of [
           ['LINA','Q-LINA-BAG-LAST'],
           ['OMAR','Q-OMAR-VIEW'],
@@ -492,6 +494,8 @@ test('main navigation tabs open without uncaught page errors', async t => {
         await caseboundRoot.locator('[data-ld-conclusion-choices]').waitFor({state:'visible',timeout:5000});
         assert.equal(await caseboundRoot.locator('.ld-conclusion-locked').count(), 3,
           'Standard mode should show three locked option placeholders before reasoning is submitted');
+        assert.ok(await caseboundRoot.locator('.ld-conclusion-locked .translate-btn').count() > 0,
+          'non-answer locked-state guidance should remain translatable before choices unlock');
         assert.equal(await caseboundRoot.locator('[data-ld-conclusion-option]').count(), 0,
           'option text must remain hidden before reasoning submission');
         assert.equal(await caseboundRoot.locator('[data-ld-answer-form]').getAttribute('data-answer-format'), 'STANDARD',
