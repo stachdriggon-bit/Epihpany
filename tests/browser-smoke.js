@@ -257,7 +257,16 @@ test('main navigation tabs open without uncaught page errors', async t => {
         assert.ok(requested.some(path => path.endsWith('/language-detective-assessment-fixtures.js')), 'CASEBOUND case files should load on first open');
         assert.ok(requested.some(path => path.endsWith('/language-detective-ui.js')), 'CASEBOUND interface should load on first open');
         const caseboundRoot = page.locator('#casebound-content');
-        await caseboundRoot.locator('.ld-shell').waitFor({state:'visible',timeout:10000});
+        await caseboundRoot.locator('.ld-shell').waitFor({state:'visible',timeout:10000}).catch(async error => {
+          const state = await page.evaluate(() => ({
+            rootHtml: document.querySelector('#casebound-content')?.innerHTML?.slice(0,1800) || '',
+            progressReader: typeof window.__epiphanyReadProgress,
+            fixtures: Boolean(window.EPIPHANY_LANGUAGE_DETECTIVE_FIXTURES),
+            engine: Boolean(window.EPIPHANY_LANGUAGE_DETECTIVE_ENGINE),
+            bridge: window.EPIPHANY_LANGUAGE_DETECTIVE
+          }));
+          throw new Error('Casebound did not render. Page errors: ' + JSON.stringify(errors) + '; console errors: ' + JSON.stringify(consoleErrors) + '; state: ' + JSON.stringify(state) + '; ' + error.message);
+        });
         assert.equal(await caseboundRoot.locator('.ld-heading h2').innerText(), 'CASEBOUND',
           'the standalone game should display its approved name');
         assert.equal(await caseboundRoot.locator('.ld-case-recommendation').count(), 1,
