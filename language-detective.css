@@ -722,3 +722,13 @@
 @media(max-width:760px){.ld-case-file-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.ld-case-recommendation{grid-template-columns:130px minmax(0,1fr)}.ld-recommendation-art{min-height:160px}}
 @media(max-width:560px){.ld-caseboard-header{align-items:flex-start;flex-direction:column}.ld-detective-rank{align-self:stretch}.ld-case-recommendation{grid-template-columns:1fr}.ld-recommendation-art{min-height:112px}.ld-recommendation-art span{font-size:3.4rem}.ld-case-file-grid{grid-template-columns:1fr}.ld-case-file-card{min-height:150px}}
 @media(prefers-reduced-motion:reduce){.ld-filter-chip,.ld-case-file-card{transition:none}.ld-case-file-card:hover{transform:none}}
+
+
+/* Result review: let learners reopen the exact sources behind each finding */
+.ld-shell .ld-finding{padding-block:4px}
+.ld-shell .ld-finding-sources{display:flex;flex-wrap:wrap;gap:7px;margin-top:9px}
+.ld-shell .ld-source-link{min-height:36px;padding:7px 10px;border:1px solid var(--cb-line);border-radius:9px;background:#fffaf0;color:var(--cb-violet);font-size:.78rem;font-weight:750;text-align:left;cursor:pointer}
+.ld-shell .ld-source-link:hover{border-color:var(--cb-brass);background:#f8f0df}
+.ld-shell .ld-source-link:focus-visible{outline:3px solid rgba(217,164,65,.5);outline-offset:2px}
+@media(max-width:600px){.ld-shell .ld-finding-sources{display:grid;grid-template-columns:minmax(0,1fr)}.ld-shell .ld-source-link{width:100%}}
+@media(prefers-reduced-motion:reduce){.ld-shell .ld-source-link{transition:none}}
