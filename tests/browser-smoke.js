@@ -299,7 +299,7 @@ test('main navigation tabs open without uncaught page errors', async t => {
         await caseboundRoot.locator('[data-ld-start-investigation]').click();
         const peopleStageTranslation = caseboundRoot.locator('.ld-scene-step [data-tx-unit]').first();
         await peopleStageTranslation.waitFor({state:'attached',timeout:5000});
-        const peopleStageTranslate = caseboundRoot.locator('.ld-scene-step .translate-btn').first();
+        const peopleStageTranslate = caseboundRoot.locator('.ld-scene-progress .casebound-translation-row .translate-btn').first();
         await peopleStageTranslate.waitFor({state:'visible',timeout:5000});
         await peopleStageTranslate.click();
         assert.equal(await peopleStageTranslation.getAttribute('data-tx-lang'),'ar',
