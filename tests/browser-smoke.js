@@ -317,6 +317,32 @@ test('main navigation tabs open without uncaught page errors', async t => {
           'claim review should link the library-record finding back to the discovered source');
         assert.ok(await caseboundRoot.locator('.ld-result-review .ld-source-link').count() >= 1,
           'examined records should offer a direct revisit action');
+
+        const assessmentBreakdown = caseboundRoot.locator('.ld-diagnostics summary').filter({hasText:'Assessment breakdown'});
+        assert.equal(await assessmentBreakdown.count(), 1,
+          'the result should provide an assessment breakdown when dimension scores are available');
+        await assessmentBreakdown.click();
+        assert.ok(await caseboundRoot.locator('.ld-dimensions .ld-dimension').count() >= 1,
+          'opening the assessment breakdown should reveal scored dimensions');
+
+        const originalReasoning = await caseboundRoot.locator('[name="ld-standard-reasoning"]').inputValue().catch(() => null);
+        await caseboundRoot.locator('[data-ld-retry]').click();
+        await caseboundRoot.locator('.ld-layout[data-active-scene="conclusion"]').waitFor({state:'visible'});
+        const retainedReasoning = await caseboundRoot.locator('[name="ld-standard-reasoning"]').inputValue();
+        assert.equal(retainedReasoning.trim(),
+          'The library record links Lina to the paperback in the bag. The seating log places her near the bench, but location alone does not prove ownership. The evidence makes her the best-supported owner, not a certain owner.',
+          'revising an answer should preserve the previous reasoning text');
+        await caseboundRoot.locator('[data-ld-submit-reasoning]').click();
+        await caseboundRoot.locator('[data-ld-conclusion-option="0"]').click();
+        await caseboundRoot.locator('[data-ld-answer-form] [type="submit"]').click();
+        await caseboundRoot.locator('.ld-result-head').waitFor({state:'visible',timeout:5000});
+        const previousAttempts = caseboundRoot.locator('.ld-diagnostics summary').filter({hasText:'Previous attempts'});
+        assert.equal(await previousAttempts.count(), 1,
+          'a second submission should expose the previous-attempt history');
+        await previousAttempts.click();
+        assert.match(await caseboundRoot.locator('.ld-diagnostics').filter({hasText:'Previous attempts'}).innerText(), /Attempt 1:/,
+          'previous-attempt history should identify the earlier submission');
+
         await caseboundRoot.locator('.ld-diagnostics summary').filter({hasText:'Review your reasoning'}).click();
         await caseboundRoot.locator('.ld-finding [data-ld-source-evidence="E04"]').first().click();
         await caseboundRoot.locator('.ld-layout[data-active-scene="evidence"]').waitFor({state:'visible'});
