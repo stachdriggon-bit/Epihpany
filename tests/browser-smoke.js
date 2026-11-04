@@ -484,6 +484,52 @@ test('main navigation tabs open without uncaught page errors', async t => {
         await caseboundRoot.locator('.ld-result-head').waitFor({state:'visible',timeout:5000});
         assert.match(await caseboundRoot.locator('.ld-result-head h2').innerText(), /Conclusion supported|Partly supported/,
           'the CASEBOUND assessment engine should return a usable result');
+
+        // Exercise Hell Mode on a phone-sized viewport after the case has been solved.
+        await caseboundRoot.locator('[data-ld-back]').first().click();
+        await caseboundRoot.locator('.ld-advanced-settings > summary').click();
+        await caseboundRoot.locator('[data-ld-setting="answerFormat"][value="HELL"]').check();
+        await caseboundRoot.locator('[data-ld-filter-level="A1"]').click();
+        await caseboundRoot.locator('.ld-case-file-card[data-ld-case="CASE-005"]').click();
+        await page.setViewportSize({width:390,height:844});
+        await caseboundRoot.locator('[data-ld-start-investigation]').click();
+        for (const [characterId, questionId] of [
+          ['LINA','Q-LINA-BAG-LAST'],
+          ['OMAR','Q-OMAR-VIEW'],
+          ['NORA','Q-NORA-BAG']
+        ]) {
+          await caseboundRoot.locator('[data-ld-select-character="' + characterId + '"]').click();
+          await caseboundRoot.locator('[data-ld-ask-interview][data-question-id="' + questionId + '"]').click();
+        }
+        await caseboundRoot.locator('[data-ld-scene="evidence"]').click();
+        await caseboundRoot.locator('.ld-layout[data-active-scene="evidence"]').waitFor({state:'visible'});
+        for (let i = 1; i <= 4; i++) await caseboundRoot.locator('[data-ld-open-next]').click();
+        await caseboundRoot.locator('[data-ld-scene="conclusion"]').click();
+        const hellForm = caseboundRoot.locator('[data-ld-answer-form]');
+        assert.equal(await hellForm.getAttribute('data-answer-format'),'HELL',
+          'the completed case should unlock Hell Mode for a subsequent investigation');
+        assert.equal(await hellForm.locator('[name="ld-conclusion"]').count(),1,
+          'Hell Mode should provide a dedicated conclusion field');
+        assert.equal(await hellForm.locator('[name="ld-reasoning"]').count(),1,
+          'Hell Mode should provide a dedicated reasoning field');
+        const hellLayout = await hellForm.evaluate(el => {
+          const rect = el.getBoundingClientRect();
+          const shell = el.closest('.ld-shell').getBoundingClientRect();
+          return {
+            columns:getComputedStyle(el).gridTemplateColumns.split(' ').length,
+            fits:rect.left >= shell.left - 1 && rect.right <= shell.right + 1
+          };
+        });
+        assert.equal(hellLayout.columns,1,'Hell Mode fields should stack in one column on a phone');
+        assert.equal(hellLayout.fits,true,'Hell Mode form should fit within the CASEBOUND shell on mobile');
+        await hellForm.locator('[name="ld-conclusion"]').fill('Lina most likely owned the bag, although the records do not prove it with certainty.');
+        await hellForm.locator('[name="ld-reasoning"]').fill('The library record connects Lina to the paperback found in the bag. The seating record places her near the bench, but neither record proves who moved the bag.');
+        await hellForm.locator('[type="submit"]').click();
+        await caseboundRoot.locator('.ld-result-head').waitFor({state:'visible',timeout:5000});
+        assert.equal(await caseboundRoot.locator('.ld-result-head').isVisible(),true,
+          'Hell Mode should submit both written fields and reach the result review');
+        assert.equal(await caseboundRoot.locator('.ld-shell').evaluate(el => el.scrollWidth <= el.clientWidth + 1),true,
+          'the Hell Mode result screen should not overflow horizontally on mobile');
       }
       if (view === 'summon') {
         await page.locator('#cards-summon-token-count').waitFor({ state: 'visible', timeout: 5000 });
