@@ -622,38 +622,74 @@
     C2: { title: 'C2 · Proficient', note: 'Highly nuanced reasoning across complex sources.' }
   };
 
+  const CASEBOARD_META = Object.freeze({
+    'CASE-001': { duration: 7, skill: 'Observation & reported speech', symbol: '01' },
+    'CASE-002': { duration: 9, skill: 'Timelines & conflicting accounts', symbol: '02' },
+    'CASE-003': { duration: 12, skill: 'Evidence evaluation', symbol: '03' },
+    'CASE-004': { duration: 6, skill: 'Past events & sequence', symbol: '04' },
+    'CASE-005': { duration: 8, skill: 'Descriptions & evidence links', symbol: '05' }
+  });
+
+  function getAssessedLevel() {
+    try {
+      const progress = typeof window.__epiphanyReadProgress === 'function'
+        ? window.__epiphanyReadProgress()
+        : JSON.parse(localStorage.getItem('epiphany-progress') || '{}');
+      return CEFR_ORDER.includes(progress?.assessedLevel) ? progress.assessedLevel : 'A1';
+    } catch { return 'A1'; }
+  }
+
+  function caseStatus(id) {
+    if (state.completedCaseIds.includes(id)) return 'SOLVED';
+    if (state.inProgressCaseIds.includes(id)) return 'IN_PROGRESS';
+    return 'NEW';
+  }
+
+  function recommendedCaseId() {
+    const level = getAssessedLevel();
+    const ids = Object.keys(caseInfo);
+    const rank = id => Math.abs(CEFR_ORDER.indexOf(caseInfo[id].cefr) - CEFR_ORDER.indexOf(level));
+    return ids.filter(id => caseStatus(id) === 'IN_PROGRESS').sort((a,b) => rank(a)-rank(b))[0]
+      || ids.filter(id => caseStatus(id) === 'NEW').sort((a,b) => rank(a)-rank(b) || CEFR_ORDER.indexOf(caseInfo[a].cefr)-CEFR_ORDER.indexOf(caseInfo[b].cefr))[0]
+      || ids.sort((a,b) => rank(a)-rank(b))[0]
+      || null;
+  }
+
   function picker() {
-    const levelCards = CEFR_ORDER.map(level => {
-      const meta = CEFR_LEVELS[level];
-      const count = Object.keys(caseInfo).filter(id => caseInfo[id].cefr === level).length;
-      const rank = CEFR_ORDER.indexOf(level) + 1;
-      return '<button type="button" class="ld-level-card' + (count ? '' : ' is-empty') + '" data-level="' + level + '" data-ld-level-select="' + level + '">' +
-        '<span class="ld-level-card-top"><strong>' + level + '</strong><span>' + count + (count === 1 ? ' case' : ' cases') + '</span></span>' +
-        '<span class="ld-level-dots" aria-hidden="true">' + CEFR_ORDER.map((_, k) => '<i' + (k < rank ? ' class="on"' : '') + '></i>').join('') + '</span>' +
-        '<b>' + meta.title.slice(5) + '</b><span>' + meta.note + '</span>' +
-        '<em>' + (count ? 'View investigations →' : 'Coming soon') + '</em></button>';
+    const level = getAssessedLevel();
+    const recommendedId = recommendedCaseId();
+    const recommended = recommendedId ? caseInfo[recommendedId] : null;
+    const selectedFilter = state.caseFilter || 'ALL';
+    const filters = ['ALL', ...CEFR_ORDER].map(value =>
+      '<button type="button" class="ld-filter-chip' + (selectedFilter === value ? ' is-active' : '') + '" data-ld-filter-level="' + value + '" aria-pressed="' + (selectedFilter === value) + '">' + (value === 'ALL' ? 'All cases' : value) + '</button>'
+    ).join('');
+    const caseCards = Object.keys(caseInfo).filter(id => selectedFilter === 'ALL' || caseInfo[id].cefr === selectedFilter).map(id => {
+      const item = caseInfo[id];
+      const meta = CASEBOARD_META[id] || {duration:8,skill:'Reasoning & evidence',symbol:id.slice(-2)};
+      const status = caseStatus(id);
+      const statusLabel = status === 'SOLVED' ? 'Solved' : status === 'IN_PROGRESS' ? 'In progress' : 'New';
+      const statusClass = status.toLowerCase().replace('_','-');
+      return '<button type="button" class="ld-case-file-card" data-level="' + esc(item.cefr) + '" data-ld-case="' + id + '">' +
+        '<span class="ld-case-file-top"><span class="ld-case-file-symbol" aria-hidden="true">' + esc(meta.symbol) + '</span><span class="ld-case-status is-' + statusClass + '">' + statusLabel + '</span></span>' +
+        '<span class="ld-case-file-meta">' + esc(item.cefr) + ' · ' + meta.duration + ' min</span>' +
+        '<strong>' + esc(item.title) + '</strong><span class="ld-case-file-subtitle">' + esc(item.subtitle) + '</span>' +
+        '<span class="ld-case-file-open">View case <span aria-hidden="true">→</span></span></button>';
     }).join('');
-    const selectedLevel = state.selectedLevel;
-    const selectedMeta = selectedLevel ? CEFR_LEVELS[selectedLevel] : null;
-    const caseCards = selectedLevel ? Object.keys(caseInfo)
-      .filter(id => caseInfo[id].cefr === selectedLevel)
-      .map((id, n) => {
-        const item = caseInfo[id];
-        return '<button type="button" class="ld-case-card" data-level="' + esc(item.cefr) + '" data-ld-case="' + id + '">' +
-          '<span class="ld-case-tab">CASE ' + String(n + 1).padStart(2, '0') + ' · ' + esc(item.cefr) + '</span>' +
-          '<span class="ld-case-meta">' + esc(item.category) + '</span><strong>' + esc(item.title) + '</strong><span>' + esc(item.subtitle) + '</span>' +
-          '<em>Open investigation →</em></button>';
-      }).join('') : '';
-    const content = selectedLevel
-      ? '<div class="ld-level-case-view"><div class="ld-level-view-heading"><button type="button" class="ld-back" data-ld-level-back>← All levels</button><div><span class="ld-kicker">' + selectedLevel + '</span><h3>' + selectedMeta.title + '</h3><p>' + selectedMeta.note + '</p></div></div>' +
-        (caseCards ? '<div class="ld-case-grid">' + caseCards + '</div>' : '<p class="ld-level-empty">There are no investigations at this level yet. New cases will appear here.</p>') +
-        '</div>'
-      : '<div class="ld-level-selection"><div class="ld-level-selection-heading"><h3>Choose your English level</h3><p>Each level has its own investigations, characters and challenges.</p></div><div class="ld-level-grid">' + levelCards + '</div></div>';
-    root.innerHTML = '<section class="ld-shell ld-casebound-shell">' +
-      '<div class="ld-toolbar"><button type="button" class="ld-back" data-ld-exit>← Home</button><span>CASE FILES</span></div>' +
-      '<div class="ld-heading ld-hero"><span class="ld-kicker">CASEBOUND · EVERY CLUE HAS A STORY</span><h2>CASEBOUND</h2><p class="ld-hero-line">Read the clues. Prove what happened.</p><p>Investigate cases, examine evidence and discover what really happened.</p><ol class="ld-howto"><li><b>1</b>Read the statements</li><li><b>2</b>Question people</li><li><b>3</b>Examine evidence</li><li><b>4</b>Build your conclusion</li></ol></div>' +
-      settingsMarkup() + content +
-      '<p class="ld-note">Guided, Steady and Challenge change the level of support. Standard and Hell Mode change how you submit your conclusion; neither mode changes the evidence or rewards unsupported certainty.</p>' +
+    const recommendedMeta = recommendedId ? (CASEBOARD_META[recommendedId] || {duration:8,skill:'Reasoning & evidence',symbol:'CASE'}) : null;
+    const content = recommended ? '<section class="ld-case-recommendation" aria-labelledby="ld-recommendation-title">' +
+      '<div class="ld-recommendation-art" aria-hidden="true"><span>' + esc(recommendedMeta.symbol) + '</span><i>CASE FILE</i></div>' +
+      '<div class="ld-recommendation-copy"><span class="ld-kicker">YOUR NEXT CASE · ' + esc(recommended.cefr) + '</span><h3 id="ld-recommendation-title">' + esc(recommended.title) + '</h3><p>' + esc(recommended.subtitle) + '</p>' +
+      '<div class="ld-recommendation-meta"><span>~' + recommendedMeta.duration + ' min</span><span>' + esc(recommendedMeta.skill) + '</span></div>' +
+      '<button type="button" class="ld-submit" data-ld-case="' + recommendedId + '">Open recommended case <span aria-hidden="true">→</span></button></div></section>' : '';
+    root.innerHTML = '<section class="ld-shell ld-casebound-shell ld-caseboard">' +
+      '<div class="ld-toolbar"><button type="button" class="ld-back" data-ld-exit>← Home</button><span>CASEBOUND · INVESTIGATION DESK</span></div>' +
+      '<header class="ld-caseboard-header"><div><span class="ld-kicker">YOUR INVESTIGATION DESK</span><h2>CASEBOUND</h2><p>Choose a story. Follow the evidence. Find what really happened.</p></div>' +
+      '<div class="ld-detective-rank"><span class="ld-rank-seal" aria-hidden="true">✦</span><span><b>' + (state.completedCaseIds.length >= 5 ? 'Lead Investigator' : state.completedCaseIds.length >= 2 ? 'Investigator' : 'Trainee') + '</b><small>' + state.completedCaseIds.length + ' cases solved</small></span></div></header>' +
+      content +
+      '<section class="ld-case-library"><div class="ld-case-library-heading"><div><span class="ld-kicker">THE ARCHIVE</span><h3>All cases</h3></div><span>' + Object.keys(caseInfo).length + ' files</span></div>' +
+      '<div class="ld-case-filters" role="group" aria-label="Filter cases by English level">' + filters + '</div>' +
+      '<div class="ld-case-file-grid">' + (caseCards || '<p class="ld-level-empty">No cases are available at this level yet.</p>') + '</div></section>' +
+      '<details class="ld-settings-disclosure ld-advanced-settings"><summary><span aria-hidden="true">⚙</span> Advanced settings</summary>' + settingsMarkup().replace('<details class="ld-settings-disclosure"><summary><span aria-hidden="true">⚙</span> Settings</summary>','').replace('</div></details>','</div>') + '</details>' +
       '</section>';
     enhanceCaseboundTranslations();
   }
@@ -918,7 +954,7 @@
     state = {
       stage: 'picker',
       caseId: null,
-      selectedLevel: null,
+      selectedLevel: null,\n      caseFilter: 'ALL',\n      inProgressCaseIds: [],
       selectedCharacterId: null,
       activePanel: 'statements',
       activeScene: 'people',
@@ -1026,14 +1062,9 @@
         }
         return;
       }
-      const levelButton = event.target.closest('[data-ld-level-select]');
-      if (levelButton) {
-        state.selectedLevel = levelButton.dataset.ldLevelSelect;
-        picker();
-        return;
-      }
-      if (event.target.closest('[data-ld-level-back]')) {
-        state.selectedLevel = null;
+      const filterButton = event.target.closest('[data-ld-filter-level]');
+      if (filterButton) {
+        state.caseFilter = filterButton.dataset.ldFilterLevel;
         picker();
         return;
       }
@@ -1124,7 +1155,7 @@
         const started = investigationModel.startSession(state.session);
         if (started.ok) {
           state.session = started.session;
-          state.stage = 'investigation';
+          state.stage = 'investigation';\n          if (!state.inProgressCaseIds.includes(state.caseId)) state.inProgressCaseIds.push(state.caseId);
         }
         investigation();
         return;
