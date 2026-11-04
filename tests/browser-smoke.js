@@ -301,12 +301,20 @@ test('main navigation tabs open without uncaught page errors', async t => {
         await peopleStageTranslation.waitFor({state:'attached',timeout:5000});
         const peopleStageTranslate = caseboundRoot.locator('.ld-scene-progress .casebound-translation-row .translate-btn').first();
         await peopleStageTranslate.waitFor({state:'visible',timeout:5000});
+        assert.equal((await peopleStageTranslate.innerText()).trim(),'ع',
+          'CASEBOUND translation controls must start as a compact Arabic-mark icon on first render');
+        assert.equal(await peopleStageTranslate.evaluate(el => el.scrollWidth <= el.clientWidth),
+          true,'the initial compact translation control must not overflow its fixed width');
         await peopleStageTranslate.click();
+        assert.equal((await peopleStageTranslate.innerText()).trim(),'EN',
+          'the compact control should show EN while Arabic is displayed');
         assert.equal(await peopleStageTranslation.getAttribute('data-tx-lang'),'ar',
           'CASEBOUND stage navigation labels should translate in place');
         assert.match(await peopleStageTranslation.innerText(),/الأشخاص/,
           'the People stage should display its Arabic label after translation');
         await peopleStageTranslate.click();
+        assert.equal((await peopleStageTranslate.innerText()).trim(),'ع',
+          'the control should return to its Arabic-mark icon when English is restored');
         assert.equal(await peopleStageTranslation.getAttribute('data-tx-lang'),'en',
           'CASEBOUND stage navigation should return to English using the same control');
         await caseboundRoot.locator('[data-ld-scene-next]').click();
