@@ -381,13 +381,12 @@ test('CASEBOUND gives each assessment outcome a distinct, accurate result stamp 
 
 test('Casebound caseboard uses a cohesive palette and accessible responsive focus states', () => {
  const css = fs.readFileSync(path.join(__dirname, '..', 'language-detective.css'), 'utf8');
- assert.match(css, /Casebound picker refinement/);
- assert.match(css, /\.ld-shell \.ld-level-grid\{grid-template-columns:repeat\(3,minmax\(0,1fr\)\)/);
- assert.match(css, /\.ld-shell \.ld-case-grid\{grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/);
- assert.match(css, /\.ld-shell \[data-level="A1"\].*--lv:var\(--cb-violet\)/);
- assert.match(css, /\.ld-shell \.ld-level-card:focus-visible/);
+ assert.match(css, /Casebound caseboard — story-first archive/);
+ assert.match(css, /\.ld-case-file-grid\{display:grid;grid-template-columns:repeat\(3,minmax\(0,1fr\)\)/);
+ assert.match(css, /\.ld-case-recommendation\{display:grid/);
+ assert.match(css, /\.ld-case-file-card:focus-visible/);
  assert.match(css, /@media\(prefers-reduced-motion:reduce\)/);
- assert.match(ui, /data-ld-level-select/);
+ assert.match(ui, /data-ld-filter-level/);
  assert.match(ui, /data-ld-case/);
 });
 
