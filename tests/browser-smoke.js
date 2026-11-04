@@ -370,7 +370,7 @@ test('main navigation tabs open without uncaught page errors', async t => {
         const earlierAttempt = caseboundRoot.locator('.ld-diagnostics').filter({hasText:'Previous attempts'}).locator('li').first();
         assert.equal(await earlierAttempt.locator('b span[data-tx-en="Attempt"]').innerText(), 'Attempt',
           'previous-attempt history should retain the attempt label');
-        assert.match(await earlierAttempt.innerText(), /1:[\\s\\S]*Conclusion supported/,
+        assert.match(await earlierAttempt.innerText(), /1:\s*Conclusion supported/,
           'previous-attempt history should identify the earlier submission');
 
         await caseboundRoot.locator('.ld-diagnostics summary').filter({hasText:'Review your reasoning'}).click();
