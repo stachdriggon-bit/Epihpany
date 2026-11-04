@@ -917,6 +917,13 @@
     }).join('');
     const examinedEvidence = (caseSnapshot.evidence || []).filter(item => discoveredIds.has(item.evidenceId));
     const evidenceReview = examinedEvidence.length ? '<section class="ld-result-review"><h3>Records you examined</h3><p class="ld-review-intro">Open a record to revisit it on the evidence board.</p><ul>' + examinedEvidence.map(item => '<li><b>' + esc(item.title || item.evidenceId) + '</b><span>' + esc(item.summary) + '</span>' + (item.limitations?.length ? '<small>Limit: ' + esc(item.limitations.join(' ')) + '</small>' : '') + '<div class="ld-finding-sources"><button type="button" class="ld-source-link" aria-label="Revisit record: ' + esc(item.title || item.evidenceId) + '" title="' + esc(item.title || item.evidenceId) + '" data-ld-source-evidence="' + esc(item.evidenceId) + '">Revisit this record ↗</button></div></li>').join('') + '</ul></section>' : '';
+    const revealedStatements = (caseSnapshot.statements || []).filter(item => (state.session?.revealedStatementIds || []).includes(item.statementId || item.id));
+    const statementReview = revealedStatements.length ? '<section class="ld-result-review"><h3>Initial statements you reviewed</h3><p class="ld-review-intro">Return to an original account to review what the person said at the start of the investigation.</p><ul>' + revealedStatements.map(item => {
+      const statementId = item.statementId || item.id;
+      const person = (caseSnapshot.characters || []).find(entry => (entry.characterId || entry.id) === (item.characterId || item.speakerId));
+      const speaker = item.name || item.speaker || person?.name || 'Statement';
+      return '<li><b>' + esc(speaker) + '</b><span>' + esc(item.text || item.statement || '') + '</span><div class="ld-finding-sources"><button type="button" class="ld-source-link" aria-label="Revisit initial statement: ' + esc(speaker) + '" title="' + esc(speaker) + '" data-ld-source-statement="' + esc(statementId) + '">Revisit this statement ↗</button></div></li>';
+    }).join('') + '</ul></section>' : '';
     const collectedInterviews = [...interviewSources.values()];
     const interviewReview = collectedInterviews.length ? '<section class="ld-result-review"><h3>Interview answers you collected</h3><p class="ld-review-intro">Return to a person to revisit the exact question and answer.</p><ul>' + collectedInterviews.map(item => '<li><b>' + esc(item.name) + '</b><span>' + esc(item.prompt) + '</span><div class="ld-finding-sources"><button type="button" class="ld-source-link" aria-label="Revisit interview answer: ' + esc(item.name + ': ' + item.prompt) + '" title="' + esc(item.name + ': ' + item.prompt) + '" data-ld-source-interview="' + esc(item.characterId + ':' + item.questionId) + '">Revisit this answer ↗</button></div></li>').join('') + '</ul></section>' : '';
     const feedbackItems = (result.feedback?.items || []).map(item => {
@@ -930,6 +937,7 @@
       (feedbackItems ? '<section class="ld-result-review ld-result-feedback"><h3>What to take from this result</h3><ul>' + feedbackItems + '</ul></section>' : '') +
       (findings ? '<details class="ld-diagnostics ld-result-review"><summary>Review your reasoning</summary><ul>' + findings + '</ul></details>' : '') +
       evidenceReview +
+      statementReview +
       interviewReview +
       (dimensionRows ? '<details class="ld-diagnostics ld-result-review"><summary>Assessment breakdown</summary><div class="ld-dimensions">' + dimensionRows + '</div></details>' : '') +
       (state.attempts.length > 1 ? '<details class="ld-diagnostics"><summary>Previous attempts (' + (state.attempts.length - 1) + ')</summary><ul>' + attemptHistory.slice(0, attemptHistory.lastIndexOf('<li>')) + '</ul></details>' : '') +
