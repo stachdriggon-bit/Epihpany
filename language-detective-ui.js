@@ -1319,8 +1319,24 @@
         root.querySelector('[data-ld-panel="' + tabs[next]?.dataset.ldPanel + '"]')?.focus();
         return;
       }
-      if (event.key !== 'Escape' || !root || !state) return;
       const drawer = document.getElementById('ld-case-notebook');
+      if (drawer && !drawer.hidden && event.key === 'Tab') {
+        const focusable = [...drawer.querySelectorAll('a[href],button:not([disabled]),input:not([disabled]),textarea:not([disabled]),select:not([disabled]),[tabindex]:not([tabindex="-1"])')]
+          .filter(element => element.getClientRects().length > 0);
+        if (focusable.length) {
+          const first = focusable[0];
+          const last = focusable[focusable.length - 1];
+          if (event.shiftKey && (document.activeElement === first || !drawer.contains(document.activeElement))) {
+            event.preventDefault();
+            last.focus();
+          } else if (!event.shiftKey && (document.activeElement === last || !drawer.contains(document.activeElement))) {
+            event.preventDefault();
+            first.focus();
+          }
+        }
+        return;
+      }
+      if (event.key !== 'Escape' || !root || !state) return;
       if (!drawer || drawer.hidden) return;
       const backdrop = document.querySelector('.ld-notebook-backdrop');
       drawer.hidden = true;
