@@ -278,11 +278,11 @@ test('main navigation tabs open without uncaught page errors', async t => {
           'A1 filter should show only its own archived investigations');
         assert.equal(await caseboundRoot.locator('.ld-case-recommendation [data-ld-case]').count(), 1,
           'the recommended next-case action should remain separate from the filtered archive');
-        assert.equal(await caseboundRoot.locator('[data-ld-case="CASE-004"]').count(), 1,
+        assert.equal(await caseboundRoot.locator('.ld-case-file-card[data-ld-case="CASE-004"]').count(), 1,
           'The Blue Scarf should be listed under A1');
-        assert.equal(await caseboundRoot.locator('[data-ld-case="CASE-005"]').count(), 1,
+        assert.equal(await caseboundRoot.locator('.ld-case-file-card[data-ld-case="CASE-005"]').count(), 1,
           'The Missing Bag should be listed under A1');
-        await caseboundRoot.locator('[data-ld-case="CASE-005"]').click();
+        await caseboundRoot.locator('.ld-case-file-card[data-ld-case="CASE-005"]').click();
         await caseboundRoot.locator('.ld-case-intro h2').waitFor({state:'visible'});
         assert.equal(await caseboundRoot.locator('.ld-case-intro h2').innerText(), 'The Missing Bag',
           'the renamed case title should appear in its case brief');
