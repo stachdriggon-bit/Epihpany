@@ -467,6 +467,9 @@ test('main navigation tabs open without uncaught page errors', async t => {
         await caseboundRoot.locator('[data-ld-notebook-open]').click();
         assert.match(await page.locator('#ld-case-notebook').innerText(), /notebook is empty/i,
           'the notebook should start empty');
+        await page.keyboard.press('Tab');
+        assert.equal(await page.locator('#ld-case-notebook').evaluate(el => el.contains(document.activeElement)),true,
+          'keyboard Tab navigation should remain inside the modal case notebook');
         await page.keyboard.press('Escape');
         assert.equal(await page.locator('#ld-case-notebook').evaluate(el => el.hidden),true,
           'Escape should close the CASEBOUND notebook drawer');
