@@ -68,7 +68,7 @@
     document.querySelectorAll('.nav-group > summary').forEach(summary => {
       if (summary.querySelector('.ep-nav-icon')) return;
       const label = summary.querySelector('span:nth-of-type(2)')?.textContent.trim() || '';
-      stripLeadingGlyph(summary);
+      summary.querySelector('span[aria-hidden="true"]')?.remove();
       if (!groupIcons[label]) return;
       const icon = document.createElement('span');
       icon.className = 'ep-nav-icon ep-nav-group-icon';
