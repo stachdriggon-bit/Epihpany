@@ -16,3 +16,12 @@ test('Think Lab icon rendering is idempotent under the document MutationObserver
 test('Think Lab icon observer writes the accessibility attribute only when it changes', () => {
   assert.match(source, /if \(slot\.getAttribute\('aria-hidden'\) !== 'true'\) slot\.setAttribute\('aria-hidden','true'\);/);
 });
+
+
+test('icon observer scopes DOM work to changed nodes instead of rescanning the document', () => {
+  assert.match(source, /function apply\(root = document\)/);
+  assert.match(source, /const all = selector =>/);
+  assert.match(source, /const relevantAncestors =/);
+  assert.match(source, /scopes\.forEach\(scope => apply\(scope\)\)/);
+  assert.doesNotMatch(source, /new MutationObserver\(\(\) => apply\(\)\)/);
+});
