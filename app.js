@@ -3088,8 +3088,11 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
   // A game update should not rescan World or Casebound (and vice versa).
   const observeTranslationRoot = root => {
     if (!root) return;
-    const scope = root.id === 'casebound-content' ? (root.querySelector('.casebound-page') || root) : root;
-    const observer = new MutationObserver(() => enhanceTranslationControls(scope));
+    const observer = new MutationObserver(() => {
+      // Resolve Casebound's page on every callback because its content can be replaced.
+      const scope = root.id === 'casebound-content' ? (root.querySelector('.casebound-page') || root) : root;
+      enhanceTranslationControls(scope);
+    });
     observer.observe(root, {childList:true,subtree:true});
   };
   observeTranslationRoot($('#game-body'));
