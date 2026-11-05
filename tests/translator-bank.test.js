@@ -100,12 +100,13 @@ test('The Bold Translator balances correct answer positions in every round and k
 test('The Bold Translator defaults to adaptive CEFR and keeps manual practice separate', () => {
   assert.match(source, /let selectedTranslatorCEFR = 'adaptive'/);
   assert.match(source, /selectedTranslatorCEFR === 'adaptive' \? adaptiveLevel : selectedTranslatorCEFR/);
-  assert.match(source, /selectedTranslatorCEFR='adaptive';showTranslatorLevelPicker\(\)/);
-  assert.match(source, /Manual practice does not change your adaptive level/);
+  assert.match(source, /selectedTranslatorCEFR='adaptive';/);
+  assert.match(source, /showTrainingModePicker\\(id\\)/);
+  assert.match(source, /This choice does not change your learning level/);
   assert.match(source, /data-translator-level="adaptive"/);
   assert.match(source, /data-translator-level="'\+level\+'"/);
   assert.match(source, /translatorBanks\[level\] \? '' : 'disabled'/);
-  assert.match(source, /A1, A2, B1, B2, C1 and C2 are available for practice/);
+  assert.match(source, /A1–C2 are available where reviewed question banks exist/);
   assert.ok(loadHarness().__translatorBanks.A2, 'A2 should become selectable only after its bank exists');
   assert.ok(loadHarness().__translatorBanks.B1, 'B1 should become selectable only after its bank exists');
   assert.ok(loadHarness().__translatorBanks.B2, 'B2 should become selectable only after its bank exists');
