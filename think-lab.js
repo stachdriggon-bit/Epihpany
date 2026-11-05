@@ -1064,7 +1064,12 @@ bark dark core hand land lane data duty melt`
     return tiles;
   }
   function speakTarget() { const pool=activePool || getRoundPool('maze');const item=pool[index%pool.length]; if(!('speechSynthesis' in window)||!window.SpeechSynthesisUtterance){const fb=root.querySelector('#tl-feedback');if(fb){fb.hidden=false;fb.className='tl-feedback is-wrong';fb.textContent='Speech playback is not available in this browser.';}return;} window.speechSynthesis.cancel(); const utterance=new SpeechSynthesisUtterance(item.target); utterance.lang='en-US'; utterance.rate=.82; window.speechSynthesis.speak(utterance); }
+  let pickerGameId = null;
+  let pickerStage = 'landing';
+
   function showTrainingModePicker(id) {
+    pickerGameId = id;
+    pickerStage = 'mode';
     mode = null;
     activePool = null;
     const game = games.find(item => item.id === id);
@@ -1077,12 +1082,16 @@ bark dark core hand land lane data duty melt`
     root.innerHTML = '<div class="tl-game-head"><button class="tl-back" type="button" data-think-back>← All cases</button><span class="tl-eyebrow">CHOOSE YOUR APPROACH</span></div><div class="tl-game-card tl-mode-picker"><div class="tl-game-kicker">'+esc(title.toUpperCase())+' · TRAINING MODE</div><h2>How would you like to play?</h2><p class="tl-game-instruction">Choose the amount of guidance you want. Some games also use different question sets for each mode; others adapt their hints and support. Your English level is kept separate from this choice.</p><div class="tl-mode-grid">'+modes.map(item => '<button type="button" class="tl-mode-choice" data-think-training-mode="'+item.id+'" data-think-training-game="'+id+'"><span class="tl-mode-tag">'+item.tag+'</span><strong>'+item.name+'</strong><span>'+item.description+'</span><b>Choose '+item.name+' →</b></button>').join('')+'</div></div>';
   }
   function showTranslatorLevelPicker() {
+    pickerGameId = 'translator';
+    pickerStage = 'level';
     mode = 'translator';
     activePool = null;
     const levels = ['A1','A2','B1','B2','C1','C2'];
     root.innerHTML = '<div class="tl-game-head"><button class="tl-back" type="button" data-think-back>← All cases</button><span class="tl-eyebrow">THE BOLD TRANSLATOR</span></div><div class="tl-game-card"><div class="tl-game-kicker">CHOOSE YOUR ENGLISH LEVEL</div><h2>Which level would you like to practise?</h2><p class="tl-game-instruction">Adaptive follows your current learning level. A1–C2 are available where reviewed question banks exist. If your adaptive level has no bank yet, the game temporarily uses A1 content. This choice does not change your learning level.</p><div class="tl-answer-options"><button type="button" class="tl-option" data-translator-level="adaptive"><strong>Adaptive · Recommended</strong><span>Use my current EPIPHANY level</span></button>'+levels.map(level => '<button type="button" class="tl-option" data-translator-level="'+level+'" '+(translatorBanks[level] ? '' : 'disabled')+'><strong>'+level+'</strong><span>'+(translatorBanks[level] ? 'Available' : 'Coming soon')+'</span></button>').join('')+'</div></div>';
   }
   function beginGame(id, trainingMode) {
+    pickerGameId = id;
+    pickerStage = 'game';
     selectedTrainingMode = ['guided','steady','challenge'].includes(trainingMode) ? trainingMode : 'steady';
     mode=id; index=0; score=0; chainStepIndex=0; chainPath=[]; clueCount=0; roundMistakes=0; ladderPath=[]; ladderWordNote=null; ladderMistakeRecorded=false; oddHintStep=0;
     const hintLevel = selectedTrainingMode === 'guided' ? 2 : selectedTrainingMode === 'steady' ? 1 : 0;
@@ -1219,7 +1228,22 @@ bark dark core hand land lane data duty melt`
     const translatorLevel=e.target.closest('[data-translator-level]');
     if(translatorLevel){selectedTranslatorCEFR=translatorLevel.dataset.translatorLevel;beginGame('translator',selectedTrainingMode);return;}
     const launch=e.target.closest('[data-think-game]'); if(launch){start(launch.dataset.thinkGame);return;}
-    if(e.target.closest('[data-think-back]')){if(window.speechSynthesis)window.speechSynthesis.cancel();if(mode==='odd'){showTrainingModePicker('odd');return;}landing();return;}
+    if(e.target.closest('[data-think-back]')){
+      if(window.speechSynthesis)window.speechSynthesis.cancel();
+      if(pickerStage==='game' && pickerGameId){
+        if(pickerGameId==='translator')showTranslatorLevelPicker();
+        else showTrainingModePicker(pickerGameId);
+        return;
+      }
+      if(pickerStage==='level' && pickerGameId==='translator'){
+        showTrainingModePicker('translator');
+        return;
+      }
+      pickerStage='landing';
+      pickerGameId=null;
+      landing();
+      return;
+    }
     if(e.target.closest('[data-translator-hint]')&&mode==='translator'&&!locked){const pool=activePool||getRoundPool('translator'),item=pool[index%pool.length],hint=root.querySelector('[data-translator-hint-text]'),button=root.querySelector('[data-translator-hint]');if(hint){hint.hidden=false;hint.textContent=item.hint;}if(button){button.disabled=true;button.textContent='Hint revealed';}return;}
     if(e.target.closest('[data-training-hint]')&&mode&&!locked){const hint=root.querySelector('[data-training-hint-text]'),button=root.querySelector('[data-training-hint]');if(hint){hint.hidden=false;hint.textContent=guidedHint(mode);}if(button){button.disabled=true;button.textContent='Hint revealed';}return;}
     if(e.target.closest('[data-think-clue]')){clueCount=Math.min((activePool || getRoundPool('detective'))[index%(activePool || getRoundPool('detective')).length].clues.length-1,clueCount+1);renderGame();return;}
