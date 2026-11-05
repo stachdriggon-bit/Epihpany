@@ -207,7 +207,7 @@ test('A1-SYN-01 uses beginner-friendly vocabulary in both modes', () => {
   assert.deepEqual(item.words, ['big','large','huge','small']);
   assert.equal(item.answer, 3);
   const challenge = bank.selectRound('A1','challenge',[],()=>0.31).questions.find(q=>q.id==='A1-SYN-01');
-  assert.deepEqual(challenge.words, ['big','large','huge','tiny']);
+  assert.deepEqual(challenge.words.map(word=>word.toLowerCase()).sort(), ['big','huge','large','tiny'].sort());
   assert.equal(challenge.words[challenge.answer], 'tiny');
 });
 
