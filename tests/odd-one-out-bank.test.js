@@ -5,6 +5,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const vm = require('node:vm');
 const thinkLabSource = fs.readFileSync(path.join(__dirname, '..', 'think-lab.js'), 'utf8');
+const appSource = fs.readFileSync(path.join(__dirname, '..', 'app.js'), 'utf8');
 
 test('Odd One Out has independent banks for all six CEFR levels', () => {
   for (const level of ['A1','A2','B1','B2','C1','C2']) {
@@ -222,4 +223,12 @@ test('C1-PW-01 Challenge uses the complete work as the outsider', () => {
   assert.ok(item);
   assert.equal(item.words[item.answer], 'book');
   assert.match(item.explain, /complete work/i);
+});
+
+
+test('Odd One Out replay rewards are idempotent while adaptive attempts remain trackable', () => {
+  assert.match(appSource, /ledger\['answer:' \+ rewardKey\]/);
+  assert.match(appSource, /ledger\['round:' \+ completionKey\]/);
+  assert.match(appSource, /if \(options\.trackAdaptive !== false\)/);
+  assert.match(appSource, /thinkLabRewardKeys/);
 });
