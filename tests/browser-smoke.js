@@ -119,6 +119,9 @@ test('main navigation tabs open without uncaught page errors', { timeout: 18 * 6
     for (const view of views) {
       checkpoint('starting view ' + view);
       const page = await browser.newPage();
+      page.setDefaultTimeout(15000);
+      page.setDefaultNavigationTimeout(20000);
+      checkpoint('view ' + view + ': page created; setting viewport');
       await page.setViewportSize({ width: 1280, height: 900 });
       const requested = [];
       const failedRequests = [];
@@ -139,12 +142,17 @@ test('main navigation tabs open without uncaught page errors', { timeout: 18 * 6
         localStorage.setItem('epiphany-progress', JSON.stringify({placementDone:true,assessedLevel:'A1',level:'A1'}));
         localStorage.setItem('epiphany-landing-seen', '1');
       });
-      await page.goto(baseUrl, { waitUntil: 'domcontentloaded' });
+      checkpoint('view ' + view + ': navigating to app');
+      await page.goto(baseUrl, { waitUntil: 'domcontentloaded', timeout: 20000 });
+      checkpoint('view ' + view + ': app document loaded; dismissing first-visit overlays');
       await dismissFirstVisitOverlays(page);
+      checkpoint('view ' + view + ': overlays dismissed; waiting for navigation control');
       await page.waitForSelector('button[data-view="' + view + '"]', { state: 'attached', timeout: 10000 });
       const eagerDeferred = requested.filter(path => /\/(data-translation-ar|data-stories|data-world(?:-sprites)?|think-lab|practice-lab|life-skills)\.js$/.test(path));
       assert.deepEqual(eagerDeferred, [], 'deferred files should not load at startup for ' + view);
+      checkpoint('view ' + view + ': navigation control ready; opening view');
       await clickView(page, view);
+      checkpoint('view ' + view + ': clickView completed; waiting for render');
       await page.waitForTimeout(350);
       if (view === 'home') {
         await page.waitForFunction(() => {
@@ -249,39 +257,53 @@ test('main navigation tabs open without uncaught page errors', { timeout: 18 * 6
         if (await page.locator('#game-body .answer').count()) await page.locator('#game-body .answer').first().click();
       }
       if (view === 'thinklab') {
-        assert.ok(requested.some(path => path.endsWith('/odd-one-out-bank.js')), 'Odd One Out bank should load with Think Lab');
+        checkpoint('thinklab: checking deferred module requests');
+        assert.ok(requested.some(path => path.endsWith('/odd-one-out-bank.js')),  'Odd One Out bank should load with Think Lab');
         assert.ok(requested.some(path => path.endsWith('/think-lab.js')), 'Think Lab should load on first open');
+        checkpoint('thinklab: modules requested; opening Odd One Out');
         await page.locator('#thinklab-view [data-think-game="odd"]').click();
+        checkpoint('thinklab: Odd One Out selected; waiting for mode picker');
         const modePicker = page.locator('#thinklab-view .tl-mode-picker');
         await modePicker.waitFor({state:'visible',timeout:5000});
+        checkpoint('thinklab: mode picker visible; checking three modes');
         assert.equal(await modePicker.locator('[data-think-training-mode]').count(), 3, 'Think Lab must offer Guided, Steady and Challenge before a round starts');
         for (const trainingMode of ['guided','steady','challenge']) {
           assert.equal(await modePicker.locator('[data-think-training-mode="'+trainingMode+'"]').isVisible(), true, trainingMode+' mode should be selectable');
         }
+        checkpoint('thinklab: selecting Guided mode');
         await modePicker.locator('[data-think-training-mode="guided"]').click();
+        checkpoint('thinklab: Guided selected; waiting for game card');
         const gameCard = page.locator('#thinklab-view .tl-game-card');
         await gameCard.waitFor({state:'visible',timeout:5000});
+        checkpoint('thinklab: game card visible; validating prompt and choices');
         assert.equal(await gameCard.locator('h2').innerText(), 'Which word does not belong?', 'Odd One Out must render its question prompt after Guided is selected');
         assert.equal(await gameCard.locator('[data-think-answer]').count(), 4, 'Odd One Out must render four answer choices');
         assert.match(await gameCard.locator('.tl-game-kicker').innerText(), /PATTERN ANALYSIS · A1/);
         assert.match(await gameCard.locator('.tl-game-instruction').first().innerText(), /relationship/i);
         const screenshotDir = path.join(root, 'test-results', 'odd-one-out');
         fs.mkdirSync(screenshotDir, {recursive:true});
+        checkpoint('thinklab: capturing desktop question screenshot');
         await gameCard.screenshot({path:path.join(screenshotDir,'desktop-guided-question.png')});
+        checkpoint('thinklab: screenshot captured; opening hint');
         await gameCard.locator('[data-odd-hint]').click();
         assert.equal(await gameCard.locator('[data-odd-hint-text]').isVisible(), true, 'Guided mode should reveal its item-specific hint');
         assert.ok((await gameCard.locator('[data-odd-hint-text]').innerText()).trim().length > 10);
+        checkpoint('thinklab: hint verified; submitting first answer');
         await gameCard.locator('[data-think-answer]').first().click();
+        checkpoint('thinklab: answer submitted; checking feedback');
         assert.equal(await gameCard.locator('#tl-feedback').isVisible(), true, 'an answer should reveal feedback');
         const feedbackState = await gameCard.locator('#tl-feedback').evaluate(el => ({text:el.textContent,html:el.innerHTML,hidden:el.hidden,className:el.className}));
         assert.match(feedbackState.text, /Relationship:/, 'feedback should identify the shared relationship: ' + JSON.stringify(feedbackState));
         assert.equal(await gameCard.locator('[data-think-next]').isVisible(), true, 'feedback should unlock the next question');
+        checkpoint('thinklab: feedback verified; advancing to next question');
         await gameCard.locator('[data-think-next]').click();
+        checkpoint('thinklab: next question rendered; switching to mobile viewport');
         assert.equal(await gameCard.locator('h2').innerText(), 'Which word does not belong?');
         await page.setViewportSize({width:390,height:844});
         await gameCard.screenshot({path:path.join(screenshotDir,'mobile-guided-question.png')});
         assert.equal(await gameCard.locator('[data-think-answer]').count(), 4, 'all four choices must remain available on mobile');
         assert.equal(await gameCard.locator('[data-think-answer]').first().isVisible(), true, 'the first answer must remain visible on mobile');
+        checkpoint('thinklab: mobile question checks passed');
 
       }
       if (view === 'casebound') {
