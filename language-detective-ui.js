@@ -527,6 +527,12 @@
     'A missing detail is not automatically a contradiction. A strong inference can be reasonable without becoming proof; the limits of each record still matter.':'غياب أحد التفاصيل لا يعني بالضرورة وجود تناقض. قد يكون الاستنتاج القوي معقولًا دون أن يصبح دليلًا قاطعًا؛ وتظل حدود كل سجل مهمة.',
     'Revise and try again':'راجع إجابتك وحاول مجددًا',
     'Choose another case':'اختر قضية أخرى',
+    'YOUR MISSION':'مهمتك',
+    'WHO IS INVOLVED':'من المعنيّون؟',
+    'YOU WILL PRACTISE':'ما ستتدرب عليه',
+    'HELP LEVEL':'مستوى المساعدة',
+    'No interviews in this case. You will work from the records alone.':'لا توجد مقابلات في هذه القضية. ستعتمد على السجلات وحدها.',
+    'Take your time. You can review everything you discover as the investigation unfolds.':'خذ وقتك. يمكنك مراجعة كل ما تكتشفه أثناء سير التحقيق.',
     '← Case overview':'← نظرة عامة على القضية'
   });
 
@@ -567,14 +573,61 @@
     });
   }
 
+  /* One translate button per block (card, message, panel) instead of one beside every line.
+     Short neighbouring texts inside the same block share that single button. */
+  const TX_BLOCK_SELECTOR = '.ld-evidence-lane,.ld-workspace-section,.ld-workspace-header,.ld-mission-panel,.ld-progress-panel,.ld-check-toggle,.ld-briefing-hero,.ld-case-brief,.ld-brief-card,.ld-briefing-side,.ld-scene-actionbar,.ld-conversation,.ld-chat-content,.ld-question,.ld-result-card,.ld-notebook-entry,.ld-notebook-drawer,.ld-case-file-card,.ld-level-card,.ld-case-card';
+  const TX_CHROME_SELECTOR = '.ld-toolbar,.ld-scene-progress,.ld-stage-tabs,.casebound-page-heading';
+  let txBlockSeq = 0;
+
+  function blockUnits(block) {
+    return [...block.querySelectorAll('[data-tx]')].filter(unit => unit.dataset.txBlock === block.dataset.txBlockId);
+  }
+
+  function syncBlockPressed(block) {
+    const button = block.querySelector(':scope > .ld-tx-block');
+    if (button) button.setAttribute('aria-pressed', String(blockUnits(block).some(unit => unit.dataset.txLang === 'ar')));
+  }
+
+  function flipTranslation(unit, want) {
+    const isArabic = unit.dataset.txLang === 'ar';
+    if (!unit.id || (want === 'ar') === isArabic) return;
+    document.querySelector('[data-translate-target="' + unit.id + '"]')?.click();
+  }
+
+  function addBlockButtons(container) {
+    if (!container) return;
+    container.querySelectorAll('[data-tx]').forEach(unit => {
+      if (unit.dataset.txBlock || unit.closest(TX_CHROME_SELECTOR)) return;
+      const block = unit.parentElement?.closest(TX_BLOCK_SELECTOR);
+      if (!block) return;
+      if (getComputedStyle(block).position === 'static') block.style.position = 'relative';
+      if (!block.dataset.txBlockId) block.dataset.txBlockId = 'ldtx' + (++txBlockSeq);
+      unit.dataset.txBlock = block.dataset.txBlockId;
+      if (!block.querySelector(':scope > .ld-tx-block')) {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'ld-tx-block';
+        button.dataset.ldTxBlock = '';
+        button.setAttribute('aria-pressed', 'false');
+        button.setAttribute('aria-label', 'Translate this part to Arabic');
+        button.title = 'Translate this part';
+        button.innerHTML = '<span aria-hidden="true">ع</span>';
+        block.insertBefore(button, block.firstChild);
+      }
+    });
+    container.querySelectorAll('[data-tx-block-id]').forEach(syncBlockPressed);
+  }
+
   function enhanceCaseboundTranslations() {
     const page = root?.closest('.casebound-page') || root;
     markCaseboundTranslations(page);
     window.EPIPHANY_TRANSLATION_ENHANCE?.(page);
+    addBlockButtons(page);
     const drawer = document.getElementById('ld-case-notebook');
     if (drawer) {
       markCaseboundTranslations(drawer);
       window.EPIPHANY_TRANSLATION_ENHANCE?.(drawer);
+      addBlockButtons(drawer);
     }
   }
 
@@ -728,12 +781,33 @@
   function caseIntroduction() {
     const info = caseInfo[state.caseId];
     if (!info) return picker();
-    root.innerHTML = '<section class="ld-shell ld-case-intro">' +
+    const snapshot = fixtures.cases[state.caseId] || {};
+    const meta = CASEBOARD_META[state.caseId] || {duration:8,skill:'Reasoning & evidence',symbol:'CB'};
+    const people = Array.isArray(snapshot.characters) ? snapshot.characters : [];
+    const witnessCount = Array.isArray(snapshot.witnesses) ? snapshot.witnesses.length : 0;
+    const evidenceCount = Array.isArray(snapshot.evidence) ? snapshot.evidence.length : 0;
+    const levelMeta = CEFR_LEVELS[info.cefr] || { title: info.cefr };
+    const skills = String(meta.skill).split(/\s*&\s*/).filter(Boolean);
+    const caseNumber = String(CASEBOARD_ORDER.indexOf(state.caseId) + 1).padStart(2, '0');
+    const peopleMarkup = people.length
+      ? '<ul class="ld-brief-people">' + people.map(person => '<li><i class="ld-avatar" aria-hidden="true">' + esc(String(person.name || '?').trim().charAt(0).toUpperCase()) + '</i><span><strong>' + esc(person.name || 'Person') + '</strong>' + (person.role ? '<small>' + esc(person.role) + '</small>' : '') + '</span></li>').join('') + '</ul>' +
+        (witnessCount ? '<p class="ld-brief-note">+ ' + witnessCount + ' possible witness' + (witnessCount === 1 ? '' : 'es') + '</p>' : '')
+      : '<p class="ld-brief-note">No interviews in this case. You will work from the records alone.</p>';
+    root.innerHTML = '<section class="ld-shell ld-case-intro ld-briefing" data-level="' + esc(info.cefr) + '">' +
       '<div class="ld-toolbar"><button type="button" class="ld-back" data-ld-back>← All cases</button><span>CASE BRIEF · ' + esc(info.cefr) + '</span></div>' +
-      '<div class="ld-case-intro-art ld-dossier" data-level="' + esc(info.cefr) + '" aria-hidden="true"><b>CASE FILE · ' + esc(info.cefr) + '</b><span>CB</span><i>' + esc(info.category) + '</i><em class="ld-dossier-stamp">OPEN</em></div>' +
-      '<div class="ld-heading"><span class="ld-kicker">' + esc(info.category) + ' · ' + esc(info.cefr) + '</span><h2>' + esc(info.title) + '</h2><p>' + esc(info.subtitle) + '</p></div>' +
-      '<div class="ld-case-brief"><span class="ld-kicker">YOUR INVESTIGATION</span><p>' + esc(info.focus) + '</p></div>' +
-      '<ol class="ld-howto ld-howto-light"><li><b>1</b>Meet the people</li><li><b>2</b>Review the evidence</li><li><b>3</b>Build your conclusion</li></ol><div class="ld-case-intro-actions"><button type="button" class="ld-submit" data-ld-start-investigation>Start Investigation <span aria-hidden="true">→</span></button><p>Take your time. You can review everything you discover as the investigation unfolds.</p></div>' +
+      '<header class="ld-briefing-hero" data-level="' + esc(info.cefr) + '"><span class="ld-briefing-no" aria-hidden="true">' + caseNumber + '</span><div class="ld-briefing-title"><span class="ld-kicker">CASE ' + caseNumber + ' · ' + esc(info.category) + '</span><h2>' + esc(info.title) + '</h2><p>' + esc(info.subtitle) + '</p></div><span class="ld-dossier-stamp" aria-hidden="true">OPEN</span></header>' +
+      '<div class="ld-briefing-grid"><div class="ld-briefing-main">' +
+      '<section class="ld-case-brief ld-brief-card"><span class="ld-kicker">YOUR MISSION</span><p>' + esc(info.focus) + '</p></section>' +
+      '<section class="ld-brief-card"><span class="ld-kicker">WHO IS INVOLVED</span>' + peopleMarkup + '</section>' +
+      '<section class="ld-brief-card"><span class="ld-kicker">YOU WILL PRACTISE</span><ul class="ld-brief-skills">' + skills.map(skill => '<li>' + esc(skill.charAt(0).toUpperCase() + skill.slice(1)) + '</li>').join('') + '</ul></section>' +
+      '</div><aside class="ld-briefing-side"><section class="ld-brief-card ld-brief-facts" aria-label="Case facts"><dl>' +
+      '<div><dt>Level</dt><dd><b class="ld-level-pill" data-level="' + esc(info.cefr) + '">' + esc(info.cefr) + '</b> ' + esc(String(levelMeta.title).replace(/^[A-C][12] · /, '')) + '</dd></div>' +
+      '<div><dt>Time</dt><dd>about ' + meta.duration + ' minutes</dd></div>' +
+      '<div><dt>Evidence</dt><dd>' + evidenceCount + ' items to find</dd></div>' +
+      '<div><dt>People</dt><dd>' + (people.length ? people.length + ' to question' : 'none') + '</dd></div></dl></section>' +
+      '<section class="ld-brief-card ld-brief-help"><span class="ld-kicker">HELP LEVEL</span>' + segmented('trainingMode', 'How much support do you want?', [['GUIDED','Guided','Hints + practice'],['STEADY','Steady','Balanced'],['CHALLENGE','Challenge','Least help']]) + '</section>' +
+      '<button type="button" class="ld-submit ld-brief-start" data-ld-start-investigation>Start Investigation <span aria-hidden="true">→</span></button>' +
+      '<p class="ld-brief-note">Take your time. You can review everything you discover as the investigation unfolds.</p></aside></div>' +
       '</section>';
     enhanceCaseboundTranslations();
   }
@@ -834,11 +908,14 @@
         (used ? '<p class="ld-hint-copy">' + hint.text + '</p>' : '');
     }).join('');
     const canConclude = readiness.ready;
-    const stepDone = [visibleStatements.length > 0, session.interviewResponses.length > 0 || Boolean(session.selectedWitnessId), !nextEvidence && evidenceItems.length > 0 && openedEvidence.length === evidenceItems.length, false];
-    const stepNames = ['Read', 'Question', 'Examine', 'Conclude'];
-    const stepActive = canConclude ? 3 : Math.max(0, stepDone.findIndex(done => !done));
-    const stepsMarkup = '<ol class="ld-steps" aria-label="Investigation steps">' + stepNames.map((name, k) => '<li class="' + (stepDone[k] && k < stepActive ? 'is-done' : '') + (k === stepActive ? ' is-active' : '') + '"' + (k === stepActive ? ' aria-current="step"' : '') + '><b>' + (stepDone[k] && k < stepActive ? '✓' : k + 1) + '</b><span>' + name + '</span></li>').join('') + '</ol>' +
-      '<p class="ld-next-step">' + (canConclude ? 'You have what you need. Build your conclusion below.' : nextEvidence ? 'Next: examine the new evidence.' : session.interviewResponses.length || session.selectedWitnessId ? 'Keep questioning to unlock the remaining evidence.' : 'Next: question someone or hear a witness.') + '</p>';
+    const hasPeopleScene = Boolean((snapshot.characters || []).length || (snapshot.witnesses || []).length || (snapshot.statements || []).length || (snapshot.interviews || []).length);
+    if (!hasPeopleScene && state.activeScene === 'people') state.activeScene = 'evidence';
+    const sceneHint = state.activeScene === 'conclusion'
+      ? 'Explain your reasoning first, then choose a conclusion.'
+      : state.activeScene === 'people'
+        ? (session.interviewResponses.length || session.selectedWitnessId ? 'Good. Ask more questions, or continue to the evidence.' : 'Read what everyone said, then talk to someone.')
+        : (canConclude ? 'You have what you need. Open the Conclusion stage.' : nextEvidence ? 'Examine the new evidence.' : hasPeopleScene ? 'Go back to People and ask another question to unlock more evidence.' : 'Keep examining the material to reach your conclusion.');
+    const stepsMarkup = '<p class="ld-next-step" role="status"><b>Now:</b> ' + sceneHint + '</p>';
     const answerFields = state.answerFormat === 'HELL'
       ? '<section class="ld-answer-step"><div class="ld-answer-step-heading"><span>STEP 1</span><div><h4>State your conclusion</h4><p>What do you think happened?</p></div></div><label class="ld-answer-field">Your Conclusion<textarea name="ld-conclusion" rows="3" maxlength="1200" placeholder="What do you think happened?">' + esc(answers.conclusion) + '</textarea></label></section><section class="ld-answer-step"><div class="ld-answer-step-heading"><span>STEP 2</span><div><h4>Support your conclusion</h4><p>Connect your explanation to the case material, and identify what remains uncertain.</p></div></div><label class="ld-answer-field">Your Reasoning<textarea name="ld-reasoning" rows="4" maxlength="1800" placeholder="Which evidence supports your conclusion? What remains uncertain?">' + esc(answers.reasoning) + '</textarea></label></section>'
       : '<section class="ld-answer-step"><div class="ld-answer-step-heading"><span>STEP 1</span><div><h4>Explain your reasoning</h4><p>What do the records establish? Which details are only possible, and what cannot be proved?</p></div></div><label class="ld-answer-field">Your Reasoning<textarea name="ld-standard-reasoning" rows="5" maxlength="1800" ' + (state.standardReasoningSubmitted ? 'readonly aria-readonly="true"' : '') + ' placeholder="Explain what the evidence establishes, and what remains uncertain.">' + esc(answers.reasoning) + '</textarea></label>' + (state.standardReasoningSubmitted ? '<p class="ld-answer-step-status" role="status">Reasoning saved · choose the conclusion that best matches it.</p>' : '<p class="ld-answer-step-status">The conclusion choices unlock after you submit your reasoning.</p>') + '</section><section class="ld-conclusion-picker ld-answer-step" data-ld-conclusion-choices><div class="ld-answer-step-heading"><span>STEP 2</span><div><h4>Choose your conclusion</h4><p>Select the statement that is best supported by the evidence—not simply the most certain one.</p></div></div><p>' + (state.standardReasoningSubmitted ? 'Choose one conclusion.' : 'This step is locked until your reasoning is submitted.') + '</p><div class="ld-conclusion-options">' + (state.standardReasoningSubmitted ? info.conclusionOptions.map((option, i) => '<button type="button" data-ld-conclusion-option="' + i + '" aria-pressed="' + (answers.selectedConclusion === i) + '"' + (answers.selectedConclusion === i ? ' class="is-selected"' : '') + '>' + esc(option) + '</button>').join('') : info.conclusionOptions.map((option, i) => '<div class="ld-conclusion-locked" aria-label="Option ' + String.fromCharCode(65 + i) + ', locked"><span>' + String.fromCharCode(65 + i) + '</span><span>Locked until reasoning is submitted</span></div>').join('')) + '</div></section>';
@@ -848,8 +925,8 @@
     root.innerHTML = '<section class="ld-shell ld-investigation-workspace">' +
       '<div class="ld-toolbar"><button type="button" class="ld-back" data-ld-back>← All cases</button><span>CASE · ' + esc(info.cefr) + '</span><span>' + esc(state.trainingMode) + ' · ' + esc(state.answerFormat) + '</span></div>' +
       '<header class="ld-workspace-header"><div><span class="ld-kicker">CASE FILE · ' + esc(info.cefr) + '</span><h2>' + esc(info.title) + '</h2><p>' + esc(info.subtitle) + '</p></div><button type="button" class="ld-notebook-trigger" data-ld-notebook-open aria-controls="ld-case-notebook" aria-expanded="false"><i class="ld-nb-icon" aria-hidden="true">▤</i>Case notebook <span class="ld-notebook-count">' + notebookEntries.length + '</span></button></header>' +
-      '<nav class="ld-scene-progress" aria-label="Investigation stages">' + [['people','1','People'],['evidence','2','Evidence'],['conclusion','3','Conclusion']].map(([scene,number,label]) => '<button type="button" class="ld-scene-step' + (state.activeScene === scene ? ' is-active' : '') + (scene === 'conclusion' && !readiness.ready ? ' is-locked' : '') + '" data-ld-scene="' + scene + '"' + (scene === 'conclusion' && !readiness.ready ? ' aria-disabled="true"' : '') + (state.activeScene === scene ? ' aria-current="step"' : '') + '><b>' + number + '</b><span>' + label + '</span></button>').join('') + '</nav>' +
-      '<div class="ld-layout" data-active-scene="' + esc(state.activeScene || 'people') + '"><aside class="ld-side">' + '<section class="ld-mission-panel" aria-label="Your investigation task"><span class="ld-kicker">YOUR TASK · KEEP THIS BRIEF IN VIEW</span><p>' + esc(info.focus) + '</p></section>' +
+      '<nav class="ld-scene-progress" aria-label="Investigation stages">' + [['people','People'],['evidence','Evidence'],['conclusion','Conclusion']].filter(([scene]) => scene !== 'people' || hasPeopleScene).map(([scene,label], index) => { const number = String(index + 1); return '<button type="button" class="ld-scene-step' + (state.activeScene === scene ? ' is-active' : '') + (scene === 'conclusion' && !readiness.ready ? ' is-locked' : '') + '" data-ld-scene="' + scene + '"' + (scene === 'conclusion' && !readiness.ready ? ' aria-disabled="true" title="Finish examining the evidence to unlock the conclusion"' : '') + (state.activeScene === scene ? ' aria-current="step"' : '') + '><b>' + number + '</b><span>' + label + '</span></button>'; }).join('') + '</nav>' +
+      '<div class="ld-layout" data-has-people="' + String(hasPeopleScene) + '" data-active-scene="' + esc(state.activeScene || 'people') + '"><aside class="ld-side">' + '<section class="ld-mission-panel" aria-label="Your investigation task"><span class="ld-kicker">YOUR TASK · KEEP THIS BRIEF IN VIEW</span><p>' + esc(info.focus) + '</p></section>' +
       '<section class="ld-progress-panel" aria-label="Investigation progress">' + stepsMarkup + '<div class="ld-progress-copy"><strong>Investigation activity</strong><span>' + progress + '% evidence reviewed · ' + session.interviewResponses.length + ' interviews · ' + (session.selectedWitnessId ? '1 witness' : 'no witness') + '</span></div><div class="ld-progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="' + evidenceItems.length + '" aria-valuenow="' + openedEvidence.length + '" aria-label="Evidence reviewed"><i style="width:' + progress + '%"></i></div></section>' +
       '</aside><div class="ld-main"><section class="ld-scene-panel" data-scene-panel="people" aria-label="People and interviews">' + statements + characters + interviews + witnesses + '</section>' +
       '<section class="ld-scene-panel" data-scene-panel="evidence" aria-label="Evidence board">' +
@@ -1040,11 +1117,22 @@
       if (setting && state) {
         state[setting.dataset.ldSetting] = setting.value;
         if (state.stage === 'picker') picker();
+        else if (state.stage === 'case-intro') caseIntroduction();
         else if (state.stage === 'investigation') investigation();
       }
     });
     document.addEventListener('click', event => {
       if (!root || (!root.contains(event.target) && !event.target.closest('#ld-case-notebook, .ld-notebook-backdrop'))) return;
+      const blockButton = event.target.closest('[data-ld-tx-block]');
+      if (blockButton) {
+        event.preventDefault();
+        const block = blockButton.parentElement;
+        const units = blockUnits(block);
+        const want = units.some(unit => unit.dataset.txLang === 'ar') ? 'en' : 'ar';
+        units.forEach(unit => flipTranslation(unit, want));
+        [60, 400].forEach(ms => setTimeout(() => syncBlockPressed(block), ms));
+        return;
+      }
       const sceneButton = event.target.closest('[data-ld-scene]');
       if (sceneButton && state.stage === 'investigation') {
         const scene = sceneButton.dataset.ldScene;

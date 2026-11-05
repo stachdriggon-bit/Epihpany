@@ -121,7 +121,7 @@
 .ld-workspace-header h2{margin:6px 0;font-size:clamp(1.55rem,3vw,2.2rem);letter-spacing:-.035em}
 .ld-workspace-header p{margin:0;color:var(--muted,#687087);line-height:1.55}
 .ld-notebook-trigger{display:inline-flex;align-items:center;gap:10px;min-height:44px;padding:9px 13px;border:1px solid var(--line,#dfe2ec);border-radius:12px;background:var(--soft,#f8f8fc);color:var(--text,#25283b);font:inherit;font-weight:800;cursor:pointer;white-space:nowrap}
-.ld-notebook-trigger span{display:grid;place-items:center;min-width:25px;height:25px;padding:0 6px;border-radius:8px;background:#eee9fb;color:#6752ad;font-size:.78rem}
+.ld-notebook-trigger .ld-notebook-count{display:grid;place-items:center;min-width:25px;height:25px;padding:0 6px;border-radius:8px;background:#eee9fb;color:#6752ad;font-size:.78rem}
 .ld-progress-panel{display:grid;gap:9px;padding:14px 16px;border:1px solid var(--line,#e4e7ef);border-radius:14px;background:var(--soft,#f8f8fc)}
 .ld-progress-copy{display:flex;justify-content:space-between;gap:10px;font-size:.85rem}
 .ld-progress-copy span{color:var(--muted,#687087);font-variant-numeric:tabular-nums}
@@ -321,7 +321,7 @@
 .ld-shell .ld-workspace-header p{margin:0;color:rgba(244,239,224,.8)}
 .ld-shell .ld-workspace-header .ld-kicker{color:var(--cb-brass-2)}
 .ld-shell .ld-notebook-trigger{display:inline-flex;align-items:center;gap:9px;min-height:46px;padding:10px 16px;border:0;border-radius:14px;background:var(--cb-brass);color:var(--cb-ink);font-weight:850;box-shadow:0 5px 0 #a87d24;cursor:pointer}
-.ld-shell .ld-notebook-trigger>span:last-child{display:grid;place-items:center;min-width:24px;height:24px;padding:0 6px;border-radius:99px;background:var(--cb-ink);color:var(--cb-brass-2);font-size:.78rem}
+.ld-shell .ld-notebook-trigger .ld-notebook-count{display:grid;place-items:center;min-width:24px;height:24px;padding:0 6px;border-radius:99px;background:var(--cb-ink);color:var(--cb-brass-2);font-size:.78rem}
 .ld-layout{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:22px;align-items:start}
 .ld-side{grid-column:2;grid-row:1;position:sticky;top:86px;display:grid;gap:14px}
 .ld-main{grid-column:1;grid-row:1;display:grid;gap:22px;min-width:0}
@@ -439,8 +439,7 @@
 @media(max-width:720px){
   .ld-shell{border-radius:20px}
   .ld-shell .ld-workspace-header{padding:16px}
-  .ld-shell .ld-notebook-trigger{position:fixed;right:14px;bottom:calc(14px + env(safe-area-inset-bottom,0px));z-index:9000;width:auto;box-shadow:0 5px 0 #a87d24,0 14px 28px rgba(36,31,63,.4)}
-  .ld-investigation-workspace{padding-bottom:84px}
+    .ld-shell .ld-notebook-trigger{justify-content:center;width:100%}
   .ld-segment-option{min-width:0;flex:1 1 calc(50% - 6px)}
   .ld-shell .ld-settings{gap:12px}
   .ld-shell .ld-evidence-grid{grid-template-columns:1fr}
@@ -749,3 +748,87 @@
 .ld-shell .ld-source-link:focus-visible{outline:3px solid rgba(217,164,65,.5);outline-offset:2px}
 @media(max-width:600px){.ld-shell .ld-finding-sources{display:grid;grid-template-columns:minmax(0,1fr)}.ld-shell .ld-source-link{width:100%}}
 @media(prefers-reduced-motion:reduce){.ld-shell .ld-source-link{transition:none}}
+
+/* One progress system: the three stage tabs. The side panel only says what to do now. */
+.ld-next-step{display:block}
+.ld-next-step b{color:var(--cb-violet)}
+.ld-shell .ld-notebook-trigger span:not(.ld-notebook-count){display:inline;min-width:0;height:auto;padding:0;border-radius:0;background:none;color:inherit;font-size:inherit}
+.ld-layout[data-has-people="false"] .ld-evidence-accounts{display:none}
+.ld-layout[data-has-people="false"] .ld-evidence-board-grid{grid-template-columns:minmax(0,1fr)}
+
+
+/* ==========================================================================
+   Level colours on the case board
+   ========================================================================== */
+.ld-shell,.ld-case-file-card,.ld-filter-chip{--lv-A1:#267a5a;--lv-A2:#2f74b5;--lv-B1:#6b4fc4;--lv-B2:#a85a16;--lv-C1:#b13e63;--lv-C2:#322a5c}
+.ld-shell [data-level="A1"]{--lv:var(--lv-A1)}.ld-shell [data-level="A2"]{--lv:var(--lv-A2)}.ld-shell [data-level="B1"]{--lv:var(--lv-B1)}
+.ld-shell [data-level="B2"]{--lv:var(--lv-B2)}.ld-shell [data-level="C1"]{--lv:var(--lv-C1)}.ld-shell [data-level="C2"]{--lv:var(--lv-C2)}
+.ld-shell .ld-case-file-card{border-top:5px solid var(--lv,var(--cb-brass));border-radius:6px 16px 16px 16px}
+.ld-shell .ld-case-file-card:hover{border-color:var(--lv,#d2b46e);border-top-color:var(--lv,#d2b46e)}
+.ld-shell .ld-case-file-symbol{background:var(--lv,var(--cb-ink));color:#fff}
+.ld-shell .ld-case-file-meta{color:var(--lv,#625f70);font-weight:800}
+.ld-shell .ld-case-file-open{color:var(--lv,var(--cb-ink))}
+.ld-shell .ld-filter-chip[data-ld-filter-level="A1"]{--lv:var(--lv-A1)}.ld-shell .ld-filter-chip[data-ld-filter-level="A2"]{--lv:var(--lv-A2)}
+.ld-shell .ld-filter-chip[data-ld-filter-level="B1"]{--lv:var(--lv-B1)}.ld-shell .ld-filter-chip[data-ld-filter-level="B2"]{--lv:var(--lv-B2)}
+.ld-shell .ld-filter-chip[data-ld-filter-level="C1"]{--lv:var(--lv-C1)}.ld-shell .ld-filter-chip[data-ld-filter-level="C2"]{--lv:var(--lv-C2)}
+.ld-shell .ld-filter-chip[data-ld-filter-level]::before{content:"";display:inline-block;width:8px;height:8px;margin-right:7px;border-radius:50%;background:var(--lv)}
+.ld-shell .ld-filter-chip[data-ld-filter-level].is-active{border-color:var(--lv);background:var(--lv);color:#fff}
+.ld-shell .ld-filter-chip[data-ld-filter-level].is-active::before{background:#fff}
+.ld-level-pill{display:inline-block;padding:2px 9px;border-radius:99px;background:var(--lv,var(--cb-ink));color:#fff;font-size:.78rem;font-weight:800}
+
+/* ==========================================================================
+   Case briefing
+   ========================================================================== */
+.ld-briefing{gap:20px}
+.ld-briefing-hero{--lv:var(--cb-violet);position:relative;display:grid;gap:6px;min-height:190px;align-content:end;padding:clamp(22px,4vw,38px);overflow:hidden;border-radius:20px 20px 20px 6px;border-left:12px solid var(--lv);background:linear-gradient(135deg,var(--cb-ink),var(--cb-ink-2));color:#f4efe0;box-shadow:0 18px 40px rgba(36,31,63,.3)}
+.ld-briefing-no{position:absolute;right:clamp(14px,4vw,40px);bottom:-18px;color:rgba(255,255,255,.07);font:800 clamp(7rem,18vw,12rem)/1 var(--cb-serif);letter-spacing:-.06em;pointer-events:none}
+.ld-briefing-title{position:relative;z-index:1;display:grid;gap:6px}
+.ld-briefing-title .ld-kicker{color:var(--cb-brass-2)}
+.ld-briefing-title h2{margin:0;color:#fff;font-size:clamp(1.9rem,4.4vw,3rem);line-height:1.05}
+.ld-briefing-title p{max-width:52ch;margin:0;color:rgba(244,239,224,.86);font-size:1.05rem;line-height:1.55}
+.ld-briefing-hero .ld-dossier-stamp{top:22px;right:clamp(16px,4vw,36px);transform:rotate(-8deg)}
+.ld-briefing-grid{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(260px,1fr);gap:20px;align-items:start}
+.ld-briefing-main,.ld-briefing-side{display:grid;gap:14px;min-width:0}
+.ld-brief-card{display:grid;gap:10px;padding:18px 20px;border:1px solid var(--cb-line);border-radius:16px;background:var(--cb-paper);box-shadow:0 8px 20px rgba(36,31,63,.06)}
+.ld-brief-card.ld-case-brief{border-left:5px solid var(--cb-brass)}
+.ld-brief-card p{margin:0}
+.ld-brief-card.ld-case-brief p{font:600 1.08rem/1.6 var(--cb-serif)}
+.ld-brief-people{display:flex;flex-wrap:wrap;gap:12px 22px;margin:0;padding:0;list-style:none}
+.ld-brief-people li{display:flex;align-items:center;gap:11px}
+.ld-brief-people .ld-avatar{grid-row:auto}
+.ld-brief-people span{display:grid;gap:1px}
+.ld-brief-people small{color:var(--muted);font-size:.78rem}
+.ld-brief-note{margin:0;color:var(--muted);font-size:.86rem;line-height:1.5}
+.ld-brief-skills{display:flex;flex-wrap:wrap;gap:8px;margin:0;padding:0;list-style:none}
+.ld-brief-skills li{padding:6px 12px;border-radius:99px;background:#f3ecdb;color:var(--cb-ink);font-size:.84rem;font-weight:700}
+.ld-brief-facts dl{display:grid;gap:0;margin:0}
+.ld-brief-facts dl>div{display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:1px solid var(--cb-line)}
+.ld-brief-facts dl>div:last-child{border-bottom:0}
+.ld-brief-facts dt{color:var(--muted);font-size:.74rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase}
+.ld-brief-facts dd{margin:0;text-align:right;font-weight:700}
+.ld-brief-help .ld-segment legend{text-transform:none;letter-spacing:0;font-size:.82rem;font-weight:650}
+.ld-brief-help .ld-segment-options{display:grid;grid-template-columns:1fr;gap:6px}
+.ld-brief-help .ld-segment-option{grid-template-columns:auto 1fr;align-items:baseline;gap:2px 10px;min-width:0}
+.ld-brief-start{width:100%;min-height:54px;justify-content:center;font-size:1.05rem}
+@media(max-width:860px){.ld-briefing-grid{grid-template-columns:1fr}}
+@media(max-width:560px){.ld-briefing-hero{min-height:160px;border-left-width:8px}.ld-briefing-hero .ld-dossier-stamp{position:static;justify-self:start;margin-bottom:6px}}
+
+/* ==========================================================================
+   Translation: one small button per block, not one beside every line
+   ========================================================================== */
+.casebound-page .translate-btn[data-translate-target],
+.ld-notebook-drawer .translate-btn[data-translate-target]{display:none!important}
+.casebound-page .casebound-translation-row,.ld-notebook-drawer .casebound-translation-row{display:contents}
+.ld-tx-block{position:absolute;top:8px;right:8px;z-index:2;display:inline-grid;place-items:center;width:28px;height:28px;margin:0;padding:0;border:1.5px solid rgba(36,31,63,.18);border-radius:9px;background:rgba(255,255,255,.85);color:var(--cb-ink);font:800 .8rem/1 var(--cb-serif);cursor:pointer;opacity:.7;transition:opacity .15s,background .15s,border-color .15s}
+.ld-tx-block:hover,.ld-tx-block:focus-visible{opacity:1;border-color:var(--cb-brass);background:#fff}
+.ld-tx-block[aria-pressed="true"]{opacity:1;background:var(--cb-ink);border-color:var(--cb-ink);color:var(--cb-brass-2)}
+body.translation-off .ld-tx-block{display:none}
+.ld-workspace-header>.ld-tx-block,.ld-briefing-hero>.ld-tx-block{top:auto;bottom:10px;right:12px}
+.ld-scene-actionbar>.ld-tx-block,.ld-progress-panel>.ld-tx-block{top:-14px;right:14px;background:#fff}
+.ld-mission-panel .ld-kicker,.ld-case-brief .ld-kicker,.ld-brief-card .ld-kicker{padding-right:38px}
+.ld-case-brief>.ld-tx-block,.ld-brief-card>.ld-tx-block,.ld-mission-panel>.ld-tx-block{top:10px;right:10px}
+.ld-shell .ld-filter-chip[data-ld-filter-level="ALL"]{--lv:var(--cb-ink)}
+.ld-shell .ld-filter-chip[data-ld-filter-level="ALL"]::before{display:none}
+@media(min-width:721px){.ld-shell .ld-workspace-header>.ld-notebook-trigger{flex:0 0 auto;width:auto;align-self:center}}
+/* The wrapper rows no longer hold a visible button, so their children keep the layout they had without them. */
+.casebound-page .casebound-translation-row>button:not(.translate-btn),.ld-notebook-drawer .casebound-translation-row>button:not(.translate-btn){flex:initial;min-width:revert}
