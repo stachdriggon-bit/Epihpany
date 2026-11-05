@@ -27,6 +27,14 @@
     'text-cursor-input':'<path d="M4 7V4h16v3M4 17v3h16v-3M12 4v16M8 12h8"/>',
     hammer:'<path d="m14 6 4 4M5 21l9-9M3 7l4-4 8 8-4 4zM14 11l7 7-4 4-7-7"/>',
     'git-branch':'<circle cx="6" cy="4" r="2"/><circle cx="18" cy="6" r="2"/><circle cx="6" cy="20" r="2"/><path d="M6 6v12M18 8a6 6 0 0 1-6 6H8"/>',
+    'odd-one-out':'<circle cx="6.5" cy="7" r="3.2"/><rect x="14.2" y="3.8" width="6.4" height="6.4" rx="1.2"/><path d="m6.5 14 3.4 6H3.1z"/><path d="M14.5 16.5h6M17.5 13.5v6"/>',
+    'bold-translator':'<path d="M3.5 5.5A2.5 2.5 0 0 1 6 3h8a2.5 2.5 0 0 1 2.5 2.5v5A2.5 2.5 0 0 1 14 13H9l-4 3v-3.4a2.5 2.5 0 0 1-1.5-2.1z"/><path d="M9 8h4M11 6v4M17 14h3.5M19 12l2 2-2 2M15 19h-3.5M13 17l-2 2 2 2"/>',
+    'word-ladder':'<rect x="3" y="3" width="7" height="7" rx="1.4"/><rect x="14" y="8.5" width="7" height="7" rx="1.4"/><rect x="3" y="17" width="7" height="4" rx="1"/><path d="M10 6.5h2a2 2 0 0 1 2 2v1M14 12h-2a2 2 0 0 0-2 2v3"/>',
+    'sound-maze':'<path d="M3 10v4M7 7v10M11 4v16M15 8v8M19 10v4"/><path d="M3 19h5l3-3 3 2 3-5 4 1"/>',
+    'word-connections':'<circle cx="5" cy="5" r="2.2"/><circle cx="19" cy="5" r="2.2"/><circle cx="5" cy="19" r="2.2"/><circle cx="19" cy="19" r="2.2"/><path d="M7.2 5h9.6M5 7.2v9.6M19 7.2v9.6M7.2 19h9.6M7 7l10 10M17 7 7 17"/>',
+    'sentence-scramble':'<path d="M4 5h7M4 10h5M4 15h7M4 20h4"/><path d="m15 5 2 2 3-3M14 14l3-3 3 3M14 20h6"/>',
+    'word-forge':'<path d="M4 18h16l-2 3H6zM7 18l2-5h6l2 5M8 5l3-2 5 5-3 3z"/><path d="m14 9 5 5M5 10l2 2M18 3l.8 1.8L21 5.5l-2.2.7L18 8l-.8-1.8L15 5.5l2.2-.7z"/>',
+    'chain-reaction':'<circle cx="5" cy="12" r="2.3"/><circle cx="12" cy="5" r="2.3"/><circle cx="19" cy="12" r="2.3"/><circle cx="12" cy="19" r="2.3"/><path d="m6.7 10.3 3.6-3.6M13.7 6.7l3.6 3.6M17.3 13.7l-3.6 3.6M10.3 17.3l-3.6-3.6"/><path d="M12 9v6M9 12h6"/>',
     'circle-check':'<circle cx="12" cy="12" r="9"/><path d="m8 12 2.5 2.5L16 9"/>',
     lock:'<rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/>',
     bell:'<path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/>',
@@ -106,7 +114,23 @@
       if (button.querySelector('.ep-icon-svg')) return;
       button.innerHTML = svg('settings');
     });
-    document.querySelectorAll('#arcade-mini-games [class*="game"], #arcade-library [class*="game"], #think-lab-content button, #casebound-content button').forEach(card => {
+    // Think Lab already owns a dedicated icon slot on every case card.
+    // Replace that single glyph in-place; never prepend a second icon to the button.
+    const thinkLabIcons = {
+      odd:'odd-one-out', translator:'bold-translator', wordladder:'word-ladder',
+      maze:'sound-maze', connections:'word-connections', scramble:'sentence-scramble',
+      forge:'word-forge', chain:'chain-reaction'
+    };
+    document.querySelectorAll('#think-lab-content .tl-case[data-think-game]').forEach(card => {
+      const iconName = thinkLabIcons[card.dataset.thinkGame];
+      const slot = card.querySelector('.tl-case-icon');
+      if (!iconName || !slot) return;
+      slot.innerHTML = svg(iconName);
+      slot.setAttribute('aria-hidden','true');
+      slot.classList.add('ep-thinklab-icon');
+    });
+    // Arcade cards have no existing dedicated icon slot, so add one only there.
+    document.querySelectorAll('#arcade-mini-games [class*="game"], #arcade-library [class*="game"]').forEach(card => {
       if (card.querySelector('.ep-activity-icon')) return;
       const label = (card.innerText || card.getAttribute('aria-label') || '').trim();
       const match = gameNames.find(([pattern]) => pattern.test(label));
