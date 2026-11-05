@@ -69,7 +69,7 @@
   ];
 
   /* ---------- state ---------- */
-  const defaults = () => ({xp:0, quests:0, words:[], review:[], encounteredWords:[], wordMonthProgress:{}, dailyTreasure:{date:'',index:0,opened:false}, teachMeAttempts:[], immersionWeek:{startedAt:null,endsAt:null,days:{},active:false}, focusTimer:{mode:'focus',duration:1500,remaining:1500,endsAt:null,running:false,sessions:0}, xpActivity:{days:{}}, _lastSavedXp:null, adaptiveOffset:0, adaptiveStreak:0, adaptiveErrorStreak:0, adaptiveSignals:{}, learningActivity:{days:{}}, dailyChallengeDate:null, dailyChallengeResult:null, dailySessionDate:null, dailySessionStep:'review', dailySessionDone:false, oneLifeBest:0, translationEnabled:false, storyReaderSettings:{fontScale:1,lineSpacing:1.75,nightMode:false}, placementDone:false, assessedLevel:'A1', placementResult:null, xpAtLevelStart:null, promotionHistory:[], promotionAttempts:{}, lastPromotionResult:null, completed:[], streak:0, lastDay:null, daily:0, level:'A1', sound:true, helpArabic:false, theme:'light', streakFreezes:1, dailyQuestDate:null, dailyQuestProgress:0, dailyQuestClaimed:false, dailyCorrect:0, dailyXp:0, weeklyKey:null, weeklyProgress:0, weeklyClaimed:false, mistakeTrapErrors:{}, mistakeQuestionErrors:{}, mistakeTrapCorrect:{}, mistakeQuestionCorrect:{}, mistakeTrapSrs:{}, modes:{}, weakTraps:{}, recentQuestions:{}, stories:{}, world:{done:[],stars:{}}});
+  const defaults = () => ({xp:0, quests:0, words:[], review:[], encounteredWords:[], wordMonthProgress:{}, dailyTreasure:{date:'',index:0,opened:false}, teachMeAttempts:[], immersionWeek:{startedAt:null,endsAt:null,days:{},active:false}, focusTimer:{mode:'focus',duration:1500,remaining:1500,endsAt:null,running:false,sessions:0}, xpActivity:{days:{}}, _lastSavedXp:null, adaptiveOffset:0, adaptiveStreak:0, adaptiveErrorStreak:0, adaptiveSignals:{}, thinkLabRewardKeys:{}, learningActivity:{days:{}}, dailyChallengeDate:null, dailyChallengeResult:null, dailySessionDate:null, dailySessionStep:'review', dailySessionDone:false, oneLifeBest:0, translationEnabled:false, storyReaderSettings:{fontScale:1,lineSpacing:1.75,nightMode:false}, placementDone:false, assessedLevel:'A1', placementResult:null, xpAtLevelStart:null, promotionHistory:[], promotionAttempts:{}, lastPromotionResult:null, completed:[], streak:0, lastDay:null, daily:0, level:'A1', sound:true, helpArabic:false, theme:'light', streakFreezes:1, dailyQuestDate:null, dailyQuestProgress:0, dailyQuestClaimed:false, dailyCorrect:0, dailyXp:0, weeklyKey:null, weeklyProgress:0, weeklyClaimed:false, mistakeTrapErrors:{}, mistakeQuestionErrors:{}, mistakeTrapCorrect:{}, mistakeQuestionCorrect:{}, mistakeTrapSrs:{}, modes:{}, weakTraps:{}, recentQuestions:{}, stories:{}, world:{done:[],stars:{}}});
   let state;
   try { state = {...defaults(), ...JSON.parse(localStorage.getItem('epiphany-progress') || '{}')}; } catch { state = defaults(); }
   // Inline question translation is opt-in: migrate existing saved profiles to English-first once.
@@ -101,6 +101,7 @@
   if (!state.xpActivity.days || typeof state.xpActivity.days !== 'object' || Array.isArray(state.xpActivity.days)) state.xpActivity.days = {};
   if (state._lastSavedXp === null || state._lastSavedXp === undefined || !Number.isFinite(Number(state._lastSavedXp))) state._lastSavedXp = Number(state.xp) || 0;
   if (!state.adaptiveSignals || typeof state.adaptiveSignals !== 'object' || Array.isArray(state.adaptiveSignals)) state.adaptiveSignals = {};
+  if (!state.thinkLabRewardKeys || typeof state.thinkLabRewardKeys !== 'object' || Array.isArray(state.thinkLabRewardKeys)) state.thinkLabRewardKeys = {};
   if (!state.learningActivity || typeof state.learningActivity !== 'object' || Array.isArray(state.learningActivity)) state.learningActivity = {days:{}};
   if (!state.learningActivity.days || typeof state.learningActivity.days !== 'object' || Array.isArray(state.learningActivity.days)) state.learningActivity.days = {};
   if (!state.mistakeTrapErrors || typeof state.mistakeTrapErrors !== 'object' || Array.isArray(state.mistakeTrapErrors)) state.mistakeTrapErrors = {};
@@ -466,17 +467,24 @@
       if (options.trackAdaptive !== false) {
         recordAdaptiveResult(safeSkill, 'think-lab:' + String(topic || 'challenge').slice(0,100), !!correct);
       }
-      const gain = correct ? 3 : 1;
+      const rewardKey = typeof options.rewardKey === 'string' ? options.rewardKey.slice(0,180) : '';
+      const completionKey = typeof options.completionKey === 'string' ? options.completionKey.slice(0,500) : '';
+      const ledger = state.thinkLabRewardKeys || (state.thinkLabRewardKeys = {});
+      const mayRewardAnswer = !rewardKey || !ledger['answer:' + rewardKey];
+      const gain = mayRewardAnswer ? (correct ? 3 : 1) : 0;
+      if (rewardKey && mayRewardAnswer) ledger['answer:' + rewardKey] = Date.now();
       state.xp = (Number(state.xp) || 0) + gain;
       state.dailyXp = (Number(state.dailyXp) || 0) + gain;
-      if (completed) {
+      const mayRewardCompletion = completed && (!completionKey || !ledger['round:' + completionKey]);
+      if (mayRewardCompletion) {
+        if (completionKey) ledger['round:' + completionKey] = Date.now();
         state.quests = (Number(state.quests) || 0) + 1;
         state.daily = Math.min(2, (Number(state.daily) || 0) + 1);
       }
       save();
       renderHeader();
       renderHome();
-      return {xp:gain};
+      return {xp:gain, rewarded:mayRewardAnswer, completionRewarded:mayRewardCompletion};
     },
     // Shared adaptive policy for every Think Lab game (including future additions).
     // Conservative thresholds prevent one lucky streak or one mistake from swinging difficulty.

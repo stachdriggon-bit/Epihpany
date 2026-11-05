@@ -147,7 +147,8 @@ test('Manual Bold Translator practice keeps rewards but does not update adaptive
   assert.match(source, /trackAdaptive:mode !== 'translator' \|\| selectedTranslatorCEFR === 'adaptive'/);
   assert.match(appSource, /recordResult\(skill, topic, correct, completed = false, options = \{\}\)/);
   assert.match(appSource, /if \(options\.trackAdaptive !== false\)\s*\{\s*recordAdaptiveResult\(/);
-  assert.match(appSource, /const gain = correct \? 3 : 1/);
+  assert.match(appSource, /const gain = mayRewardAnswer \? \(correct \? 3 : 1\) : 0/);
+  assert.match(appSource, /const mayRewardAnswer = !rewardKey \|\| !ledger\['answer:' \+ rewardKey\]/);
 });
 
 

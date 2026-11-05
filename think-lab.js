@@ -650,6 +650,7 @@ bark dark core hand land lane data duty melt`
       const cefr = bridge && typeof bridge.getCEFRLevel === 'function' ? bridge.getCEFRLevel() : 'A1';
       const trainingMode = ['guided','steady','challenge'].includes(level) ? level : 'steady';
       const selected = window.EPIPHANY_ODD_ONE_OUT_BANK.selectRound(cefr, trainingMode);
+      const completionKey = 'odd:' + selected.level + ':' + trainingMode + ':' + selected.questions.map(question => question.id).sort().join('|');
       const relationshipLabels = {
         'category':'Category','function':'Function','synonyms-antonyms':'Synonyms & antonyms',
         'part-whole':'Part & whole','word-class':'Word class','cause-effect':'Cause & effect',
@@ -661,6 +662,8 @@ bark dark core hand land lane data duty melt`
         prompt:'Which word does not belong?',
         cefrLevel:selected.level,
         trainingMode,
+        rewardKey:'odd:' + selected.level + ':' + item.id,
+        completionKey,
         relationshipLabel:relationshipLabels[item.relationship] || item.relationship,
         why:trainingMode === 'guided'
           ? 'Find the one word that does not share the relationship held by the other three.'
@@ -1203,7 +1206,7 @@ bark dark core hand land lane data duty melt`
     const pool=activePool || getRoundPool(mode),item=pool[index%pool.length];
     if(mode==='wordladder')return;
     locked=true;const chosen=Number(answer.dataset.thinkAnswer),correct=mode==='maze'?item.options[chosen]===item.target:chosen===item.answer;if(correct)score++;else roundMistakes++;
-    if(window.EpiphanyThinkLab){const skill=mode==='maze'?'listening':mode==='translator'?'conversation':mode==='detective'?'reading':mode==='wordladder'||mode==='forge'?'spelling':mode==='scramble'?'grammar':'vocabulary';window.EpiphanyThinkLab.recordResult(skill,mode,correct,index===(activePool || getRoundPool(mode)).length-1,{trackAdaptive:mode !== 'translator' || selectedTranslatorCEFR === 'adaptive'});}
+    if(window.EpiphanyThinkLab){const skill=mode==='maze'?'listening':mode==='translator'?'conversation':mode==='detective'?'reading':mode==='wordladder'||mode==='forge'?'spelling':mode==='scramble'?'grammar':'vocabulary';window.EpiphanyThinkLab.recordResult(skill,mode,correct,index===(activePool || getRoundPool(mode)).length-1,{trackAdaptive:mode !== 'translator' || selectedTranslatorCEFR === 'adaptive',rewardKey:mode==='odd'?item.rewardKey:undefined,completionKey:mode==='odd'&&index===(activePool || getRoundPool(mode)).length-1?item.completionKey:undefined});}
     root.querySelectorAll('[data-think-answer]').forEach(b=>{b.disabled=true;const n=Number(b.dataset.thinkAnswer);const isRight=mode==='maze'?item.options[n]===item.target:n===item.answer;if(isRight)b.classList.add('is-correct');if(n===chosen&&!correct)b.classList.add('is-wrong');});
     if(mode==='translator'){
       const details = item.optionExplanations.map((reason,i)=>'<li><strong>'+(i===item.answer?'Correct answer':'Option '+String.fromCharCode(65+i))+':</strong> '+esc(reason)+'</li>').join('');

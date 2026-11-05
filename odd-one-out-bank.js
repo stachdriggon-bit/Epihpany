@@ -14,7 +14,7 @@
       {id:'A1-FUN-01',relationship:'function',words:['knife','scissors','saw','pillow'],answer:3,explain:'A knife, scissors and a saw are used for cutting. A pillow is used for resting your head.',challengeExplain:"A blade, shears and a chisel are tools used for cutting or shaping materials. A blanket keeps someone warm or covers a bed.",hint:'Think about what each object is used to do.',context:'Common household objects.'},
       {id:'A1-PW-01',relationship:'part-whole',words:['handlebar','pedal','wheel','bicycle'],answer:3,explain:'A handlebar, pedal and wheel are parts of a bicycle. Bicycle names the complete vehicle.',challengeExplain:"A saddle, chain and brake are parts of a bicycle. A cyclist is the person who rides it, not a component.",hint:'Which three can be parts of the same thing?',context:'Parts of a familiar vehicle.'},
       {id:'A1-WC-01',relationship:'word-class',words:['quickly','slowly','carefully','careful'],answer:3,explain:'Quickly, slowly and carefully are adverbs describing how an action happens. Careful is an adjective.',challengeExplain:'Quietly, happily and easily are adverbs describing how an action happens. Quiet is an adjective.',hint:'Look at how each word is formed and used.',context:'Simple descriptions of actions.'},
-      {id:'A1-SYN-01',relationship:'synonyms-antonyms',words:['wide','broad','expansive','narrow'],answer:3,explain:'Wide, broad and expansive describe a large width or extent. Narrow describes a small width.',challengeExplain:'Enormous, massive and gigantic all describe something very large. Slim describes a narrow or slender shape, not great size.',hint:'Which three describe size in a similar way?',context:'Basic size vocabulary.'},
+      {id:'A1-SYN-01',relationship:'synonyms-antonyms',words:['big','large','huge','small'],answer:3,explain:'Big, large and huge describe something of great size. Small describes something of little size.',challengeExplain:'Big, large and huge describe something of great size. Tiny describes something of very small size.',hint:'Which three describe size in a similar way?',context:'Basic size vocabulary.'},
       {id:'A1-FUN-02',relationship:'function',words:['key','password','code','plate'],answer:3,explain:'A key, password and code can all give access or unlock something. A plate is used for serving food.',challengeExplain:"A passcode, PIN and keycard can grant access to something. A bowl is used to hold or serve food.",hint:'Which three can help you open or access something?',context:'Simple everyday purposes.'},
       {id:'A1-CAT-03',relationship:'category',words:['Monday','Tuesday','Friday','summer'],answer:3,explain:'Monday, Tuesday and Friday are days of the week. Summer is a season.',challengeExplain:"Wednesday, Saturday and Sunday are days of the week. Winter is a season.",hint:'Which three belong to the same calendar group?',context:'Days and seasons.'}
     ],
@@ -40,7 +40,7 @@
     ],
     B2: [
       {id:'B2-REG-01',relationship:'register-tone',words:['commence','begin','start','kick off'],answer:3,explain:'Commence, begin and start are neutral or formal ways to say that something begins. Kick off is more informal and often conversational.',challengeExplain:"Initiate, commence and begin are neutral or formal ways to say that something starts. Get going is more informal and conversational.",hint:'Which expression is noticeably more informal?',context:'A formal announcement about an event.'},
-      {id:'B2-COL-01',relationship:'collocations',words:['reach','draw','arrive','make'],answer:3,explain:'Reach a conclusion, draw a conclusion and arrive at a conclusion are established combinations. Make a conclusion is not the usual expression; speakers normally say make a decision.',challengeExplain:"Reach a conclusion, draw a conclusion and come to a conclusion are established combinations. Manufacture a conclusion is not a natural collocation.",hint:'Check which verbs naturally pair with “a question”, “a concern” and “an issue”.',context:'Precise verb–noun partnerships.'},
+      {id:'B2-COL-01',relationship:'collocations',words:['reach','draw','arrive','make'],answer:3,explain:'Reach a conclusion, draw a conclusion and arrive at a conclusion are established combinations. Make a conclusion is not the usual expression; speakers normally say make a decision.',challengeExplain:"Reach a conclusion, draw a conclusion and come to a conclusion are established combinations. Manufacture a conclusion is not a natural collocation.",hint:'Which three verbs naturally combine with “a conclusion”?',context:'Precise verb–noun partnerships.'},
       {id:'B2-CON-01',relationship:'connotation',words:['slim','slender','lean','skinny'],answer:3,explain:'Slim, slender and lean can describe a thin shape neutrally or positively depending on context. Skinny often carries a more negative or critical implication.',challengeExplain:'Slender, svelte and willowy can describe a slim shape, often positively. Gaunt usually suggests an excessively thin or unhealthy appearance.',hint:'Which adjective is more likely to sound critical?',context:'Describing a person’s build.'},
       {id:'B2-CTX-01',relationship:'contextual-meaning',words:['reservation','booking','appointment','objection'],answer:3,explain:'In a travel or service context, a reservation, booking and appointment refer to arrangements made in advance. An objection is an expression of disagreement.',challengeExplain:"A booking, reservation and scheduled consultation are arrangements made in advance. A disagreement is a difference of opinion, not an appointment.",hint:'Imagine arranging a service or meeting in advance.',context:'Arranging a hotel stay or meeting.'},
       {id:'B2-SYN-01',relationship:'synonyms-antonyms',words:['mitigate','ease','alleviate','intensify'],answer:3,explain:'Mitigate, ease and alleviate mean to make a problem or effect less severe. Intensify means to make it stronger.',challengeExplain:"Lessen, alleviate and mitigate mean to reduce the severity or impact of something. Aggravate means to make it worse.",hint:'Three reduce severity; one increases it.',context:'Discussing the effects of a problem.'},
@@ -56,7 +56,7 @@
       {id:'C1-SYN-01',relationship:'synonyms-antonyms',words:['scrutinise','examine','inspect','overlook'],answer:3,explain:'Scrutinise, examine and inspect involve looking at something carefully. Overlook can mean to fail to notice it.',challengeExplain:"Peruse, scrutinise and inspect all involve examining or reading something carefully. Neglect means failing to give it proper attention.",hint:'Which verb can mean failing to notice?',context:'Careful analysis and attention.'},
       {id:'C1-CAUSE-01',relationship:'cause-effect',words:['precipitate','trigger','prompt','prevent'],answer:3,explain:'Precipitate, trigger and prompt can describe something that brings an event or response about. Prevent means to stop it from happening.',challengeExplain:"Engender, precipitate and trigger can describe bringing about an event or response. Avert means to prevent it.",hint:'Three can initiate an outcome; one blocks it.',context:'Describing how events are brought about.'},
       {id:'C1-CTX-01B',relationship:'contextual-meaning',words:['nevertheless','nonetheless','however','therefore'],answer:3,explain:'Nevertheless, nonetheless and however signal contrast or concession. Therefore signals a consequence or conclusion.',challengeExplain:"Conversely, nevertheless and nonetheless signal contrast or a counterpoint. Accordingly signals a result or consequence.",hint:'Which connector points to a result rather than a contrast?',context:'Academic discourse markers.'},
-      {id:'C1-PW-01',relationship:'part-whole',words:['clause','subsection','chapter','monograph'],answer:3,explain:'A clause, subsection and chapter can be constituent parts of a longer written work. A monograph is the complete scholarly work.',challengeExplain:"A paragraph, subsection and chapter can be parts of a larger publication. A publisher is the person or organisation that produces it, not a section of the text.",hint:'Which one names the whole publication rather than a section?',context:'Academic writing structures.'}
+      {id:'C1-PW-01',relationship:'part-whole',words:['clause','subsection','chapter','monograph'],answer:3,explain:'A clause, subsection and chapter can be constituent parts of a longer written work. A monograph is the complete scholarly work.',challengeExplain:"A paragraph, subsection and chapter are parts of a larger written work. A book is the complete work, not one of its sections.",hint:'Which one names the whole publication rather than a section?',context:'Academic writing structures.'}
     ],
     C2: [
       {id:'C2-CON-01',relationship:'connotation',words:['discerning','meticulous','scrupulous','pedantic'],answer:3,explain:'Discerning, meticulous and scrupulous can praise good judgement, care or integrity. Pedantic is more often critical, suggesting excessive attention to minor rules or details.',challengeExplain:'Astute, scrupulous and meticulous can praise judgement, care or thoroughness. Finicky is more likely to criticize someone for being excessively particular about small details.',hint:'Which word most readily carries a mildly dismissive tone?',context:'Subtle evaluation of a person’s standards.'},
@@ -103,10 +103,10 @@
         "quiet"
     ],
     "A1-SYN-01": [
-        "enormous",
-        "massive",
-        "gigantic",
-        "slim"
+        "big",
+        "large",
+        "huge",
+        "tiny"
     ],
     "A1-FUN-02": [
         "passcode",
@@ -310,7 +310,7 @@
         "paragraph",
         "subsection",
         "chapter",
-        "publisher"
+        "book"
     ],
     "C2-CON-01": [
         "astute",
