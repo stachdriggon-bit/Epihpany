@@ -111,7 +111,10 @@
           const start = Number(entry.startTime);
           const now = Number.isFinite(start) ? start : Date.now();
           longTaskStarts.push(now);
-          longTaskStarts = longTaskStarts.filter(value => now - value <= LONG_TASK_WINDOW_MS);
+          // Only the latest threshold-sized sample is needed; keep pressure history bounded.
+          longTaskStarts = longTaskStarts
+            .filter(value => now - value <= LONG_TASK_WINDOW_MS)
+            .slice(-LONG_TASK_THRESHOLD);
           if (longTaskStarts.length >= LONG_TASK_THRESHOLD) changed = true;
         });
         if (!changed) return;
