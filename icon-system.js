@@ -49,10 +49,16 @@
     if (!path) return '';
     return '<svg class="ep-icon-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">'+path+'</g></svg>';
   }
+  function stripLeadingGlyph(node) {
+    const first = [...node.childNodes].find(child => child.nodeType === Node.TEXT_NODE && child.textContent.trim());
+    if (first) first.textContent = first.textContent.replace(/^\\s*[\\p{Extended_Pictographic}\\p{S}\\p{P}]+\\s*/u, '');
+  }
   function apply() {
     document.querySelectorAll('[data-view]').forEach(button => {
       const name = views[button.dataset.view];
-      if (!name || button.querySelector('.ep-nav-icon')) return;
+      if (!name) return;
+      stripLeadingGlyph(button);
+      if (button.querySelector('.ep-nav-icon')) return;
       const icon = document.createElement('span');
       icon.className = 'ep-nav-icon';
       icon.innerHTML = svg(name);
@@ -70,6 +76,7 @@
     });
     document.querySelectorAll('.mobile-nav-home').forEach(button => {
       if (button.querySelector('.ep-nav-icon')) return;
+      stripLeadingGlyph(button);
       const icon = document.createElement('span');
       icon.className = 'ep-nav-icon';
       icon.innerHTML = svg('house');
