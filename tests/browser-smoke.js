@@ -224,9 +224,16 @@ test('main navigation tabs open without uncaught page errors', async t => {
         assert.ok(requested.some(path => path.endsWith('/odd-one-out-bank.js')), 'Odd One Out bank should load with Think Lab');
         assert.ok(requested.some(path => path.endsWith('/think-lab.js')), 'Think Lab should load on first open');
         await page.locator('#thinklab-view [data-think-game="odd"]').click();
+        const modePicker = page.locator('#thinklab-view .tl-mode-picker');
+        await modePicker.waitFor({state:'visible',timeout:5000});
+        assert.equal(await modePicker.locator('[data-think-training-mode]').count(), 3, 'Think Lab must offer Guided, Steady and Challenge before a round starts');
+        for (const trainingMode of ['guided','steady','challenge']) {
+          assert.equal(await modePicker.locator('[data-think-training-mode="'+trainingMode+'"]').isVisible(), true, trainingMode+' mode should be selectable');
+        }
+        await modePicker.locator('[data-think-training-mode="guided"]').click();
         const gameCard = page.locator('#thinklab-view .tl-game-card');
         await gameCard.waitFor({state:'visible',timeout:5000});
-        assert.equal(await gameCard.locator('h2').innerText(), 'Which word does not belong?', 'Odd One Out must render its question prompt');
+        assert.equal(await gameCard.locator('h2').innerText(), 'Which word does not belong?', 'Odd One Out must render its question prompt after Guided is selected');
         assert.equal(await gameCard.locator('[data-think-answer]').count(), 4, 'Odd One Out must render four answer choices');
         assert.match(await gameCard.locator('.tl-game-kicker').innerText(), /PATTERN ANALYSIS · A1/);
         assert.match(await gameCard.locator('.tl-game-instruction').first().innerText(), /relationship/i);
