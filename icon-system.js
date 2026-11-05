@@ -125,8 +125,11 @@
       const iconName = thinkLabIcons[card.dataset.thinkGame];
       const slot = card.querySelector('.tl-case-icon');
       if (!iconName || !slot) return;
-      slot.innerHTML = svg(iconName);
-      slot.setAttribute('aria-hidden','true');
+      const iconMarkup = svg(iconName);
+      // MutationObserver watches the document subtree. Rewriting identical SVG markup
+      // would emit another childList mutation and create an endless observer loop.
+      if (slot.innerHTML !== iconMarkup) slot.innerHTML = iconMarkup;
+      if (slot.getAttribute('aria-hidden') !== 'true') slot.setAttribute('aria-hidden','true');
       slot.classList.add('ep-thinklab-icon');
     });
     // Arcade cards have no existing dedicated icon slot, so add one only there.
