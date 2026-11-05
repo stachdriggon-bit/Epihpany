@@ -842,12 +842,17 @@ test('main navigation tabs open without uncaught page errors', { timeout: 18 * 6
     checkpoint('card portal opened; waiting for published card assets');
     await cardsPage.waitForFunction(() => window.EPIPHANY_CARD_ASSETS_REFRESHED === true, null, {timeout:10000});
     checkpoint('published card assets refreshed');
-    await cardsPage.locator('#cards-gallery .fcard-portrait-image').first().evaluate(img => {
-      img.loading = 'eager';
-      img.scrollIntoView({block:'center',inline:'nearest'});
-    });
     const galleryOpenedAt = await cardsPage.evaluate(() => performance.now());
-    await cardsPage.waitForFunction(() => [...document.querySelectorAll('#cards-gallery .fcard-portrait-image')].some(img => img.complete && img.naturalWidth > 0), null, {timeout:10000}).catch(async error => {
+    // Auth state can trigger a second published-art refresh immediately after the first
+    // one completes. Re-apply eager loading to the current representative node while
+    // waiting, so a replaced lazy image cannot leave the smoke test waiting forever.
+    await cardsPage.waitForFunction(() => {
+      const image = document.querySelector('#cards-gallery .fcard-portrait-image');
+      if (!image) return false;
+      if (image.loading !== 'eager') image.loading = 'eager';
+      image.scrollIntoView({block:'center',inline:'nearest'});
+      return image.complete && image.naturalWidth > 0;
+    }, null, {timeout:10000, polling:100}).catch(async error => {
       const diagnostics = await cardsPage.evaluate(() => ({
         configUrl: window.EPIPHANY_SUPABASE_CONFIG?.url || null,
         galleryVisible: !!document.querySelector('#cards-gallery')?.getClientRects().length,
