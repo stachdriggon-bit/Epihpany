@@ -154,6 +154,7 @@ test('main navigation tabs open without uncaught page errors', { timeout: 18 * 6
       await clickView(page, view);
       checkpoint('view ' + view + ': clickView completed; waiting for render');
       await page.waitForTimeout(350);
+      checkpoint('view ' + view + ': render settle completed');
       if (view === 'home') {
         await page.waitForFunction(() => {
           const el = document.querySelector('#home-view');
@@ -177,6 +178,7 @@ test('main navigation tabs open without uncaught page errors', { timeout: 18 * 6
       }
       if (view !== 'world') {
         const target = page.locator('#' + view + '-view');
+        checkpoint('view ' + view + ': waiting for target section attachment');
         await target.waitFor({ state: 'attached', timeout: 5000 }).catch(async error => {
           const diagnostics = await page.evaluate(({requestedView}) => ({
             url: location.href,
@@ -194,7 +196,13 @@ test('main navigation tabs open without uncaught page errors', { timeout: 18 * 6
           }), {requestedView:view});
           throw new Error(view + ' view was not attached after navigation: ' + JSON.stringify({diagnostics,requested,failedRequests,badResponses,pageErrors,consoleErrors:viewConsoleErrors}) + '; ' + error.message);
         });
-        if (view !== 'home') assert.equal(await target.evaluate(el => el.classList.contains('is-active')), true, view + ' view should become active');
+        checkpoint('view ' + view + ': target section attached');
+        if (view !== 'home') {
+          checkpoint('view ' + view + ': checking active class');
+          const isActive = await target.evaluate(el => el.classList.contains('is-active'));
+          checkpoint('view ' + view + ': active class evaluated as ' + isActive);
+          assert.equal(isActive, true, view + ' view should become active');
+        }
       }
       if (view === 'stories') {
         await page.waitForFunction(() => typeof STORIES !== 'undefined' && Array.isArray(STORIES) && STORIES.length >= 34, null, { timeout: 5000 });
