@@ -67,11 +67,22 @@
     const groupIcons = {Learn:'book-open',Play:'gamepad-2',Collect:'sparkles',Discover:'map',Me:'user-round'};
     document.querySelectorAll('.nav-group > summary').forEach(summary => {
       if (summary.querySelector('.ep-nav-icon')) return;
-      const label = summary.textContent.trim().split(/\s+/)[0];
+      const label = summary.querySelector('span:nth-of-type(2)')?.textContent.trim() || '';
+      stripLeadingGlyph(summary);
       if (!groupIcons[label]) return;
       const icon = document.createElement('span');
       icon.className = 'ep-nav-icon ep-nav-group-icon';
       icon.innerHTML = svg(groupIcons[label]);
+      summary.insertBefore(icon, summary.firstChild);
+    });
+    const mobileGroupIcons = {LEARN:'book-open',PLAY:'gamepad-2',COLLECT:'sparkles',DISCOVER:'map',ME:'user-round'};
+    document.querySelectorAll('.mobile-nav-group > summary').forEach(summary => {
+      if (summary.querySelector('.ep-nav-icon')) return;
+      const label = summary.querySelector('.mobile-nav-label')?.textContent.trim() || '';
+      if (!mobileGroupIcons[label]) return;
+      const icon = document.createElement('span');
+      icon.className = 'ep-nav-icon ep-nav-group-icon';
+      icon.innerHTML = svg(mobileGroupIcons[label]);
       summary.insertBefore(icon, summary.firstChild);
     });
     document.querySelectorAll('.mobile-nav-home').forEach(button => {
