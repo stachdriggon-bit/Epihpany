@@ -669,3 +669,86 @@ test('Language Detective lazy load resolves only after every required module is 
   assert.equal(requested.length, 6);
   assert.equal(window.EPIPHANY_LANGUAGE_DETECTIVE.available, true);
 });
+
+
+test('concurrent requests for the same feature group share one complete loading promise', async () => {
+  const requested = [];
+  const scripts = [];
+  const document = {
+    createElement() {
+      const script = { src: '', async: true, remove() {} };
+      scripts.push(script);
+      return script;
+    },
+    head: { appendChild(script) { requested.push(script.src); } }
+  };
+  const context = vm.createContext({ window: {}, document, Promise, Map, Set, Object, Error });
+  vm.runInContext(fs.readFileSync(path.join(root, 'lazy-data.js'), 'utf8'), context);
+
+  const first = context.window.EPIPHANY_LAZY_LOAD('stories');
+  const second = context.window.EPIPHANY_LAZY_LOAD('stories');
+  assert.equal(first, second, 'concurrent callers should receive the same in-flight group promise');
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(requested.length, 1, 'the first file should be requested once');
+  scripts[0].onload();
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(requested.length, 2, 'the second file should follow the first exactly once');
+  scripts[1].onload();
+  await Promise.all([first, second]);
+  await context.window.EPIPHANY_LAZY_LOAD('stories');
+  assert.equal(requested.length, 2, 'a completed group should not be downloaded again');
+});
+
+test('scheduled speculative prefetch is cancelled while hidden and can resume when visible', async () => {
+  const requested = [];
+  const scripts = [];
+  const listeners = {};
+  const timers = [];
+  const document = {
+    visibilityState: 'visible',
+    addEventListener(name, fn) { listeners['document:' + name] = fn; },
+    createElement() {
+      const script = { src: '', async: true, remove() {} };
+      scripts.push(script);
+      return script;
+    },
+    head: { appendChild(script) { requested.push(script.src); } }
+  };
+  const window = {
+    EPIPHANY_ADAPTIVE_ENGINE: { getPolicy: () => ({
+      allowSpeculativePreload: true, deferNonEssentialWork: false
+    }) },
+    navigator: { onLine: true },
+    addEventListener(name, fn) { listeners['window:' + name] = fn; },
+    setTimeout(fn) {
+      const timer = { fn, cleared: false };
+      timers.push(timer);
+      return timer;
+    },
+    clearTimeout(timer) { if (timer) timer.cleared = true; }
+  };
+  const context = vm.createContext({ window, document, Promise, Map, Set, Object, Error });
+  vm.runInContext(fs.readFileSync(path.join(root, 'lazy-data.js'), 'utf8'), context);
+
+  const target = { getAttribute: () => 'stories' };
+  listeners['document:pointerover']({
+    type: 'pointerover', pointerType: 'mouse', target: { closest: () => target }
+  });
+  assert.equal(timers.length, 1);
+  document.visibilityState = 'hidden';
+  listeners['document:visibilitychange']();
+  assert.equal(timers[0].cleared, true, 'hiding the page should cancel the scheduled idle timer');
+  timers[0].fn();
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(requested.length, 0, 'a stale timer must not start background work while hidden');
+
+  document.visibilityState = 'visible';
+  listeners['document:visibilitychange']();
+  assert.equal(timers.length, 2, 'the last navigation intent should be rescheduled on return');
+  timers[1].fn();
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(requested.length, 1, 'speculative work should resume only after the page is visible');
+  scripts[0].onload();
+  await new Promise(resolve => setImmediate(resolve));
+  scripts[1].onload();
+});
