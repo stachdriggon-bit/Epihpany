@@ -61,8 +61,13 @@
     const first = [...node.childNodes].find(child => child.nodeType === Node.TEXT_NODE && child.textContent.trim());
     if (first) first.textContent = first.textContent.replace(/^\s*[\p{Extended_Pictographic}\p{S}\p{P}]+\s*/u, '');
   }
-  function apply() {
-    document.querySelectorAll('[data-view]').forEach(button => {
+  function apply(root = document) {
+    const all = selector => {
+      const nodes = [...root.querySelectorAll(selector)];
+      if (root.nodeType === 1 && root.matches(selector)) nodes.unshift(root);
+      return nodes;
+    };
+    all('[data-view]').forEach(button => {
       const name = views[button.dataset.view];
       if (!name) return;
       stripLeadingGlyph(button);
@@ -73,7 +78,7 @@
       button.insertBefore(icon, button.firstChild);
     });
     const groupIcons = {Learn:'book-open',Play:'gamepad-2',Collect:'sparkles',Discover:'map',Me:'user-round'};
-    document.querySelectorAll('.nav-group > summary').forEach(summary => {
+    all('.nav-group > summary').forEach(summary => {
       if (summary.querySelector('.ep-nav-icon')) return;
       const label = summary.querySelector('span:nth-of-type(2)')?.textContent.trim() || '';
       summary.querySelector('span[aria-hidden="true"]')?.remove();
@@ -84,7 +89,7 @@
       summary.insertBefore(icon, summary.firstChild);
     });
     const mobileGroupIcons = {LEARN:'book-open',PLAY:'gamepad-2',COLLECT:'sparkles',DISCOVER:'map',ME:'user-round'};
-    document.querySelectorAll('.mobile-nav-group > summary').forEach(summary => {
+    all('.mobile-nav-group > summary').forEach(summary => {
       if (summary.querySelector('.ep-nav-icon')) return;
       const label = summary.querySelector('.mobile-nav-label')?.textContent.trim() || '';
       if (!mobileGroupIcons[label]) return;
@@ -93,7 +98,7 @@
       icon.innerHTML = svg(mobileGroupIcons[label]);
       summary.insertBefore(icon, summary.firstChild);
     });
-    document.querySelectorAll('.mobile-nav-home').forEach(button => {
+    all('.mobile-nav-home').forEach(button => {
       if (button.querySelector('.ep-nav-icon')) return;
       stripLeadingGlyph(button);
       const icon = document.createElement('span');
@@ -101,16 +106,16 @@
       icon.innerHTML = svg('house');
       button.insertBefore(icon, button.firstChild);
     });
-    document.querySelectorAll('.nav-help').forEach(button => {
+    all('.nav-help').forEach(button => {
       const old = button.querySelector('.help-nav-icon');
       if (!old || button.querySelector('.ep-nav-icon')) return;
       old.replaceWith(document.createRange().createContextualFragment(svg('circle-help').replace('ep-icon-svg','ep-nav-icon ep-icon-svg')));
     });
-    document.querySelectorAll('.notification-bell').forEach(button => {
+    all('.notification-bell').forEach(button => {
       if (button.querySelector('.ep-icon-svg')) return;
       button.innerHTML = svg('bell') + (button.querySelector('#notification-count')?.outerHTML || '');
     });
-    document.querySelectorAll('.utility-btn').forEach(button => {
+    all('.utility-btn').forEach(button => {
       if (button.querySelector('.ep-icon-svg')) return;
       button.innerHTML = svg('settings');
     });
@@ -121,7 +126,7 @@
       maze:'sound-maze', connections:'word-connections', scramble:'sentence-scramble',
       forge:'word-forge', chain:'chain-reaction'
     };
-    document.querySelectorAll('#think-lab-content .tl-case[data-think-game]').forEach(card => {
+    all('#think-lab-content .tl-case[data-think-game]').forEach(card => {
       const iconName = thinkLabIcons[card.dataset.thinkGame];
       const slot = card.querySelector('.tl-case-icon');
       if (!iconName || !slot) return;
@@ -138,7 +143,7 @@
       slot.classList.add('ep-thinklab-icon');
     });
     // Arcade cards have no existing dedicated icon slot, so add one only there.
-    document.querySelectorAll('#arcade-mini-games [class*="game"], #arcade-library [class*="game"]').forEach(card => {
+    all('#arcade-mini-games [class*="game"], #arcade-library [class*="game"]').forEach(card => {
       if (card.querySelector('.ep-activity-icon')) return;
       const label = (card.innerText || card.getAttribute('aria-label') || '').trim();
       const match = gameNames.find(([pattern]) => pattern.test(label));
@@ -151,7 +156,17 @@
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', apply, {once:true});
   else apply();
-  const observer = new MutationObserver(() => apply());
+  const relevantAncestors = '.tl-case,[data-view],.nav-group,.mobile-nav-group,.mobile-nav-home,.nav-help,.notification-bell,.utility-btn,#arcade-mini-games,#arcade-library';
+  const observer = new MutationObserver(records => {
+    const scopes = new Set();
+    records.forEach(record => {
+      const target = record.target.nodeType === 1 ? record.target : record.target.parentElement;
+      const ancestor = target?.closest?.(relevantAncestors);
+      if (ancestor) scopes.add(ancestor);
+      record.addedNodes.forEach(node => { if (node.nodeType === 1) scopes.add(node); });
+    });
+    scopes.forEach(scope => apply(scope));
+  });
   observer.observe(document.documentElement, {childList:true,subtree:true});
   window.EpiphanyIcons = Object.freeze({render:svg, names:Object.freeze(Object.keys(paths)), views:Object.freeze({...views})});
 })();
