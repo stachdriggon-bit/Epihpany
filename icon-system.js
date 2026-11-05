@@ -126,7 +126,8 @@
       maze:'sound-maze', connections:'word-connections', scramble:'sentence-scramble',
       forge:'word-forge', chain:'chain-reaction'
     };
-    all('#think-lab-content .tl-case[data-think-game]').forEach(card => {
+    const thinkLabSelector = root === document ? '#think-lab-content .tl-case[data-think-game]' : '.tl-case[data-think-game]';
+    all(thinkLabSelector).forEach(card => {
       const iconName = thinkLabIcons[card.dataset.thinkGame];
       const slot = card.querySelector('.tl-case-icon');
       if (!iconName || !slot) return;
@@ -143,7 +144,8 @@
       slot.classList.add('ep-thinklab-icon');
     });
     // Arcade cards have no existing dedicated icon slot, so add one only there.
-    all('#arcade-mini-games [class*="game"], #arcade-library [class*="game"]').forEach(card => {
+    const arcadeSelector = root === document ? '#arcade-mini-games [class*="game"], #arcade-library [class*="game"]' : '[class*="game"]';
+    all(arcadeSelector).forEach(card => {
       if (card.querySelector('.ep-activity-icon')) return;
       const label = (card.innerText || card.getAttribute('aria-label') || '').trim();
       const match = gameNames.find(([pattern]) => pattern.test(label));
