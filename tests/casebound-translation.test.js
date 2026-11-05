@@ -11,9 +11,13 @@ const css = fs.readFileSync(path.join(root, 'style.css'), 'utf8');
 
 test('Casebound reuses EPIPHANY shared translation preference and translator', () => {
   assert.match(app, /window\.EPIPHANY_TRANSLATION_ENHANCE\s*=\s*root\s*=>/);
-  assert.match(app, /translationObserver\.observe\(\$\('#casebound-content'\)/);
-  assert.match(app, /enhanceTranslationControls\(\$\('\.casebound-page'\)\)/);
-  assert.match(app, /enhanceTranslationControls\(\$\('\.casebound-page'\)\);\}\);/);
+  assert.match(app, /const observeTranslationRoot = root =>/);
+  assert.match(app, /const scope = root\.id === 'casebound-content' \? \(root\.querySelector\('\.casebound-page'\) \|\| root\) : root/);
+  assert.match(app, /enhanceTranslationControls\(scope\)/);
+  assert.match(app, /observeTranslationRoot\(\$\('#casebound-content'\)\)/);
+  assert.match(app, /observeTranslationRoot\(\$\('#game-body'\)\)/);
+  assert.match(app, /observeTranslationRoot\(\$\('#world-game'\)\)/);
+  assert.doesNotMatch(app, /translationObserver\.observe\(\$\('#casebound-content'\)/);
   assert.match(ui, /window\.EPIPHANY_TRANSLATION_ENHANCE\?\.\(page\)/);
   assert.match(ui, /window\.EPIPHANY_TRANSLATION_ENHANCE\?\.\(drawer\)/);
 });
