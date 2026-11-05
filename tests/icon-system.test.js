@@ -25,3 +25,9 @@ test('icon observer scopes DOM work to changed nodes instead of rescanning the d
   assert.match(source, /scopes\.forEach\(scope => apply\(scope\)\)/);
   assert.doesNotMatch(source, /new MutationObserver\(\(\) => apply\(\)\)/);
 });
+
+
+test('scoped icon scans retain local Think Lab and Arcade selectors', () => {
+  assert.match(source, /root === document \? '#think-lab-content \.tl-case\[data-think-game\]' : '\.tl-case\[data-think-game\]'/);
+  assert.match(source, /root === document \? '#arcade-mini-games \[class\*="game"\], #arcade-library \[class\*="game"\]' : '\[class\*="game"\]'/);
+});
