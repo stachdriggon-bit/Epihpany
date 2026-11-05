@@ -196,6 +196,30 @@ test('runtime pressure cooldown is extended by continuing long tasks and cleaned
   assert.equal(secondTimer.cleared, true, 'destroy should cancel pending recovery timers');
 });
 
+test('runtime pressure history stays bounded and ignores long tasks outside its time window', () => {
+  const burst = createEngine();
+  burst.observers[0].callback({ getEntries: () => Array.from({ length: 5000 }, (_, index) => ({
+    duration: 60, startTime: index
+  })) });
+  assert.equal(burst.api.getSnapshot().runtimePressure, true,
+    'a sustained burst of long tasks should activate runtime pressure');
+  assert.equal(burst.timers.length, 1);
+  burst.api.destroy();
+
+  const spaced = createEngine();
+  spaced.observers[0].callback({ getEntries: () => [
+    { duration: 60, startTime: 100 },
+    { duration: 60, startTime: 12000 },
+    { duration: 60, startTime: 13000 }
+  ] });
+  assert.equal(spaced.api.getSnapshot().runtimePressure, false,
+    'expired long tasks must not contribute to the active pressure window');
+  spaced.observers[0].callback({ getEntries: () => [{ duration: 60, startTime: 14000 }] });
+  assert.equal(spaced.api.getSnapshot().runtimePressure, true,
+    'three recent long tasks should still activate pressure');
+  spaced.api.destroy();
+});
+
 test('runtime pressure monitoring is optional when PerformanceObserver is unavailable', () => {
   const context = {
     window: { navigator: {}, addEventListener() {}, removeEventListener() {}, matchMedia() { return { matches: false }; } },
