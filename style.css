@@ -3965,3 +3965,20 @@ body.ar-on .tools-panel{
     left:auto;
   }
 }
+
+
+/* Think Lab — shared training-mode picker */
+#thinklab-view .tl-mode-picker{max-width:820px}
+#thinklab-view .tl-mode-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:22px}
+#thinklab-view .tl-mode-choice{display:flex;min-width:0;min-height:190px;flex-direction:column;align-items:flex-start;gap:10px;padding:18px;border:1px solid var(--line,#e3e1ed);border-radius:16px;background:var(--surface,#fff);color:var(--ink,#24233a);text-align:left;cursor:pointer;transition:border-color .18s ease,background .18s ease,transform .18s ease}
+#thinklab-view .tl-mode-choice:hover{transform:translateY(-2px);border-color:#a9a0df;background:var(--surface-2,#f8f7ff)}
+#thinklab-view .tl-mode-choice:focus-visible{outline:3px solid rgba(112,96,207,.35);outline-offset:3px}
+#thinklab-view .tl-mode-tag{font-size:.62rem;font-weight:800;letter-spacing:.09em;color:var(--ink-3,#77758a)}
+#thinklab-view .tl-mode-choice strong{font-size:1.2rem;line-height:1.2;letter-spacing:-.025em}
+#thinklab-view .tl-mode-choice>span:not(.tl-mode-tag){font-size:.84rem;line-height:1.55;color:var(--ink-2,#666477)}
+#thinklab-view .tl-mode-choice b{margin-top:auto;padding-top:8px;font-size:.78rem;color:var(--accent,#6758c8)}
+#thinklab-view .tl-guided-support{margin-top:16px}
+body[data-theme="dark"] #thinklab-view .tl-mode-choice{border-color:var(--line,#393747);background:var(--surface,#211f2c);color:var(--ink,#f2f0fa)}
+body[data-theme="dark"] #thinklab-view .tl-mode-choice:hover{border-color:#7165b4;background:var(--surface-2,#292638)}
+@media(max-width:680px){#thinklab-view .tl-mode-grid{grid-template-columns:minmax(0,1fr);gap:9px}#thinklab-view .tl-mode-choice{min-height:0;padding:16px}#thinklab-view .tl-mode-choice b{padding-top:2px}}
+@media(prefers-reduced-motion:reduce){#thinklab-view .tl-mode-choice{transition:none}#thinklab-view .tl-mode-choice:hover{transform:none}}
