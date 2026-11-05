@@ -81,6 +81,8 @@ test('Think Lab integration supplies a visible prompt and mode-specific instruct
       assert.ok(pool.every(item => item.trainingMode === mode));
       assert.ok(pool.every(item => item.why && item.why.length > 15));
       assert.ok(pool.every(item => item.relationshipLabel));
+      assert.ok(pool.every(item => item.rewardKey === 'odd:' + level + ':' + item.id));
+      assert.ok(pool.every(item => item.completionKey.startsWith('odd:' + level + ':' + mode + ':')));
     }
   }
 });
@@ -197,4 +199,27 @@ test('Challenge shuffling keeps the selected answer index valid', () => {
       assert.equal(new Set(question.words).size,4);
     }
   }
+});
+
+
+test('A1-SYN-01 uses beginner-friendly vocabulary in both modes', () => {
+  const item = bank.banks.A1.find(question => question.id === 'A1-SYN-01');
+  assert.deepEqual(item.words, ['big','large','huge','small']);
+  assert.equal(item.answer, 3);
+  const challenge = bank.selectRound('A1','challenge',[],()=>0.31).questions.find(q=>q.id==='A1-SYN-01');
+  assert.deepEqual(challenge.words, ['big','large','huge','tiny']);
+  assert.equal(challenge.words[challenge.answer], 'tiny');
+});
+
+test('B2-COL-01 hint matches the tested collocation', () => {
+  const item = bank.banks.B2.find(question => question.id === 'B2-COL-01');
+  assert.match(item.hint, /a conclusion/i);
+  assert.doesNotMatch(item.hint, /a question|a concern|an issue/i);
+});
+
+test('C1-PW-01 Challenge uses the complete work as the outsider', () => {
+  const item = bank.selectRound('C1','challenge',[],()=>0.31).questions.find(q=>q.id==='C1-PW-01');
+  assert.ok(item);
+  assert.equal(item.words[item.answer], 'book');
+  assert.match(item.explain, /complete work/i);
 });
