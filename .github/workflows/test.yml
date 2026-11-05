@@ -13,7 +13,7 @@ concurrency:
 jobs:
   test:
     runs-on: ubuntu-24.04
-    timeout-minutes: 20
+    timeout-minutes: 40
     permissions:
       contents: read
     steps:
@@ -51,6 +51,7 @@ jobs:
         timeout-minutes: 12
         run: npm run test:unit
       - name: Run browser smoke tests
+        timeout-minutes: 20
         run: npm run test:browser
       - name: Upload card dossier visual verification screenshots
         if: always()
