@@ -312,12 +312,12 @@ test('main navigation tabs open without uncaught page errors', async t => {
           true,'the initial compact translation control must not overflow its fixed width');
         await peopleStageTranslate.click();
         await page.waitForFunction(el => el.dataset.txLang === 'ar', await peopleStageTranslation.elementHandle());
-        assert.equal(await peopleStageTranslate.getAttribute('aria-pressed'),'true',
-          'the content-block control should indicate that Arabic is displayed');
+        await page.waitForFunction(el => el.getAttribute('aria-pressed') === 'true',
+          await peopleStageTranslate.elementHandle());
         await peopleStageTranslate.click();
         await page.waitForFunction(el => el.dataset.txLang === 'en', await peopleStageTranslation.elementHandle());
-        assert.equal(await peopleStageTranslate.getAttribute('aria-pressed'),'false',
-          'the same content-block control should restore English');
+        await page.waitForFunction(el => el.getAttribute('aria-pressed') === 'false',
+          await peopleStageTranslate.elementHandle());
         await caseboundRoot.locator('[data-ld-scene-next]').click();
         assert.equal(await caseboundRoot.locator('[data-ld-scene="evidence"]').evaluate(el => document.activeElement === el),true,
           'keyboard focus should move to the new stage after using Continue');
