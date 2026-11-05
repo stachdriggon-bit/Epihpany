@@ -128,7 +128,12 @@
       const iconMarkup = svg(iconName);
       // MutationObserver watches the document subtree. Rewriting identical SVG markup
       // would emit another childList mutation and create an endless observer loop.
-      if (slot.innerHTML !== iconMarkup) slot.innerHTML = iconMarkup;
+      // Track the rendered icon by name. innerHTML is not a stable comparison for SVG:
+      // browsers normalize self-closing SVG elements when serializing the DOM.
+      if (slot.dataset.epIcon !== iconName) {
+        slot.innerHTML = iconMarkup;
+        slot.dataset.epIcon = iconName;
+      }
       if (slot.getAttribute('aria-hidden') !== 'true') slot.setAttribute('aria-hidden','true');
       slot.classList.add('ep-thinklab-icon');
     });
