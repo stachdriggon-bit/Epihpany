@@ -4004,3 +4004,48 @@ body[data-theme="dark"] #thinklab-view .tl-mode-choice:hover{border-color:#7165b
 [data-view="resonance"]{--ep-icon-accent:var(--pink)}
 [data-view="collection"],[data-view="summon"]{--ep-icon-accent:var(--violet)}
 @media(prefers-reduced-motion:reduce){.ep-icon-svg{transition:none}}
+
+
+/* Refined Think Lab case symbols: richer linework, one icon in the original slot. */
+#thinklab-view .tl-case-icon.ep-thinklab-icon{
+  position:relative;
+  display:grid;
+  place-items:center;
+  width:46px;
+  height:46px;
+  border:1px solid color-mix(in srgb,var(--focus,#7668d8) 20%,transparent);
+  border-radius:14px;
+  background:
+    radial-gradient(circle at 72% 22%,color-mix(in srgb,var(--focus,#7668d8) 17%,transparent),transparent 52%),
+    color-mix(in srgb,var(--focus,#7668d8) 8%,var(--surface));
+  color:var(--focus,#7668d8);
+  font-size:0;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 3px 10px rgba(30,35,70,.045);
+}
+#thinklab-view .tl-case-icon.ep-thinklab-icon::after{
+  content:"";
+  position:absolute;
+  inset:4px;
+  border:1px solid color-mix(in srgb,currentColor 10%,transparent);
+  border-radius:10px;
+  pointer-events:none;
+}
+#thinklab-view .tl-case-icon.ep-thinklab-icon .ep-icon-svg{
+  width:27px;
+  height:27px;
+  stroke-width:1.65;
+  filter:drop-shadow(0 1px 0 rgba(255,255,255,.25));
+}
+#thinklab-view .tl-case[data-think-game="odd"] .tl-case-icon{--focus:#b87945}
+#thinklab-view .tl-case[data-think-game="translator"] .tl-case-icon{--focus:#548b9c}
+#thinklab-view .tl-case[data-think-game="wordladder"] .tl-case-icon{--focus:#6c70c7}
+#thinklab-view .tl-case[data-think-game="maze"] .tl-case-icon{--focus:#438c9a}
+#thinklab-view .tl-case[data-think-game="connections"] .tl-case-icon{--focus:#8a70bb}
+#thinklab-view .tl-case[data-think-game="scramble"] .tl-case-icon{--focus:#b27b55}
+#thinklab-view .tl-case[data-think-game="forge"] .tl-case-icon{--focus:#b16c4e}
+#thinklab-view .tl-case[data-think-game="chain"] .tl-case-icon{--focus:#648c70}
+body[data-theme="dark"] #thinklab-view .tl-case-icon.ep-thinklab-icon{
+  background:radial-gradient(circle at 72% 22%,color-mix(in srgb,var(--focus) 22%,transparent),transparent 55%),#25283a;
+  border-color:color-mix(in srgb,var(--focus) 38%,#41445b);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.035);
+}
