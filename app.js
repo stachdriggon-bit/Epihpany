@@ -3084,10 +3084,17 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
       }
     },button);
   });
-  const translationObserver=new MutationObserver(()=>{enhanceTranslationControls($('#game-body'));enhanceTranslationControls($('#world-game'));enhanceTranslationControls($('.casebound-page'));});
-  if($('#game-body'))translationObserver.observe($('#game-body'),{childList:true,subtree:true});
-  if($('#world-game'))translationObserver.observe($('#world-game'),{childList:true,subtree:true});
-  if($('#casebound-content'))translationObserver.observe($('#casebound-content'),{childList:true,subtree:true});
+  // Keep each translation observer inside the region that actually changed.
+  // A game update should not rescan World or Casebound (and vice versa).
+  const observeTranslationRoot = root => {
+    if (!root) return;
+    const scope = root.id === 'casebound-content' ? (root.querySelector('.casebound-page') || root) : root;
+    const observer = new MutationObserver(() => enhanceTranslationControls(scope));
+    observer.observe(root, {childList:true,subtree:true});
+  };
+  observeTranslationRoot($('#game-body'));
+  observeTranslationRoot($('#world-game'));
+  observeTranslationRoot($('#casebound-content'));
   /* The in-game "ع" button translates everything on the current screen in place (question, instructions,
      options and feedback). It is per screen: the next question opens in English again. */
   function txToggleScreen(){
