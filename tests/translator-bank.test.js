@@ -101,7 +101,7 @@ test('The Bold Translator defaults to adaptive CEFR and keeps manual practice se
   assert.match(source, /let selectedTranslatorCEFR = 'adaptive'/);
   assert.match(source, /selectedTranslatorCEFR === 'adaptive' \? adaptiveLevel : selectedTranslatorCEFR/);
   assert.match(source, /selectedTranslatorCEFR='adaptive';/);
-  assert.match(source, /showTrainingModePicker\\(id\\)/);
+  assert.match(source, /showTrainingModePicker\(id\)/);
   assert.match(source, /This choice does not change your learning level/);
   assert.match(source, /data-translator-level="adaptive"/);
   assert.match(source, /data-translator-level="'\+level\+'"/);
