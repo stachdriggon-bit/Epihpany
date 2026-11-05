@@ -752,7 +752,20 @@
         if (Array.isArray(rows)) {
           window.EPIPHANY_CARD_ASSET_MAP = Object.fromEntries(rows.map(row => [row.owner_id, row]));
           renderFeatured();
-          renderGallery();
+          // Refresh cloud URLs on cached gallery items without replacing their DOM nodes.
+          const cardsById = new Map(data().map(card => [card.id, card]));
+          galleryNodeCache.forEach((item, id) => {
+            const image = item.querySelector('.fcard-portrait-image');
+            const card = cardsById.get(id);
+            if (!image || !card) return;
+            const nextUrl = cardArtSource(card);
+            if (!nextUrl || image.dataset.cloudSrc === nextUrl) return;
+            image.src = nextUrl;
+            image.dataset.cloudSrc = nextUrl;
+            image.classList.remove('is-loaded', 'is-art-unavailable');
+            delete image.dataset.cloudErrorRecorded;
+          });
+          renderGallery(true);
         }
       } catch (error) {
         console.warn('[EPIPHANY] Published character asset references could not be refreshed:', error);
