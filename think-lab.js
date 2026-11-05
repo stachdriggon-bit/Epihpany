@@ -997,11 +997,13 @@ bark dark core hand land lane data duty melt`
       const nextMeaning = nextWord ? ladderMeanings[nextWord] : null;
       const changedAt = nextWord ? [...currentWord].findIndex((letter, i) => letter !== nextWord[i]) : -1;
       const letterPosition = changedAt === 0 ? 'first' : changedAt === currentWord.length - 1 ? 'last' : changedAt === 1 ? 'second' : changedAt === 2 ? 'third' : changedAt >= 0 ? 'fourth' : '';
-      const activeHint = path[path.length - 1] !== item.goal && nextWord
+      const activeHint = difficulty.level === 'guided' && path[path.length - 1] !== item.goal && nextWord
         ? (nextMeaning
           ? 'Next-step hint: change the ' + letterPosition + ' letter to make a word meaning “' + nextMeaning + '”.'
           : 'Next-step hint: change the ' + letterPosition + ' letter. The new word must be real and keep a route to the goal.')
-        : item.hint;
+        : difficulty.level === 'challenge'
+          ? 'Challenge: plan your own route to the goal. Every move must change exactly one letter.'
+          : item.hint;
       intro = '<div class="tl-ladder-targets"><div><span>START</span><strong>'+esc(item.start)+'</strong></div><span class="tl-ladder-arrow">→</span><div><span>GOAL</span><strong>'+esc(item.goal)+'</strong></div></div><p class="tl-ladder-hint">'+esc(activeHint)+'</p><div class="tl-ladder-path">'+path.map((w,i)=>'<span class="tl-ladder-word '+(i===path.length-1?'is-current':'')+'">'+esc(w)+'</span>').join('<span class="tl-ladder-step">↓</span>')+'</div>'+(ladderWordNote?'<aside class="tl-ladder-meaning" aria-live="polite"><strong>'+esc(ladderWordNote.word)+'</strong><p>'+esc(ladderWordNote.meaning||'No definition is available for this word yet.')+'</p></aside>':'')+(path[path.length-1]===item.goal?'<p class="tl-ladder-success">Ladder complete! Every move is valid.</p>':'<form class="tl-ladder-form" data-think-ladder-form><label for="tl-ladder-input">Next word</label><div><input id="tl-ladder-input" name="ladder-word" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Type the next word" required><button class="tl-next" type="submit">Make move →</button></div><small>Use a word from the game’s word bank. Change one letter and keep a route open to the goal.</small></form>');
     }
     if (mode === 'forge') { forgePlaced=Array(item.answerWord.length).fill(null); intro='<div class="tl-word-clue"><span>WORD CLUE</span><p>'+esc(item.clue)+'</p></div>'+forgeBoard(item)+'<button class="tl-next" type="button" data-forge-check>Check word →</button><button class="tl-secondary" type="button" data-forge-reset>Reset tiles</button>'; }
@@ -1189,7 +1191,7 @@ bark dark core hand land lane data duty melt`
     if(e.target.closest('[data-forge-check]')){
       if(locked)return;
       const pool=activePool||getRoundPool('forge'),item=pool[index%pool.length],answer=forgePlaced.every(x=>x!==null)?forgePlaced.map(i=>[...item.letters][i]).join('').toLowerCase():'',fb=root.querySelector('#tl-feedback');
-      if(answer!==item.answerWord){roundMistakes++;fb.hidden=false;fb.className='tl-feedback is-wrong';fb.innerHTML='<strong>Not forged yet—try again.</strong><p>Use each letter tile once and check the clue. You can move letters between slots.</p>';return;}
+      if(answer!==item.answerWord){roundMistakes++;fb.hidden=false;fb.className='tl-feedback is-wrong';fb.innerHTML='<strong>Not forged yet—try again.</strong><p>Use each letter tile once and check the clue. You can move letters between slots.</p>'+(roundMistakes>=2?'<p>'+esc(adaptiveHint('forge'))+'</p>':'');return;}
       score++;locked=true;if(window.EpiphanyThinkLab)window.EpiphanyThinkLab.recordResult('spelling','word-forge',true,index===pool.length-1);
       root.querySelectorAll('[data-forge-tile],[data-forge-slot],[data-forge-check],[data-forge-reset]').forEach(el=>el.disabled=true);
       fb.hidden=false;fb.className='tl-feedback is-correct';fb.innerHTML='<strong>✓ Word forged!</strong><p><b>'+esc(item.answerWord.toUpperCase())+'</b> — '+esc(item.explain)+'</p>';const next=root.querySelector('[data-think-next]');if(next)next.hidden=false;return;
@@ -1199,7 +1201,7 @@ bark dark core hand land lane data duty melt`
       const pool=activePool||getRoundPool('scramble'),item=pool[index%pool.length],fb=root.querySelector('#tl-feedback');
       const attempt=scramblePlaced.every(x=>x!==null)?scramblePlaced.map(i=>item.words[i]).join(' ').toLowerCase().replace(/[.,!?;:]/g,'').trim():'';
       const target=item.options[item.answer].toLowerCase().replace(/[.,!?;:]/g,'').trim();
-      if(attempt!==target){roundMistakes++;fb.hidden=false;fb.className='tl-feedback is-wrong';fb.innerHTML='<strong>Not quite—rearrange the word tiles.</strong><p>Check the subject and verb first, then place adverbs and time phrases where they sound natural.</p>';return;}
+      if(attempt!==target){roundMistakes++;fb.hidden=false;fb.className='tl-feedback is-wrong';fb.innerHTML='<strong>Not quite—rearrange the word tiles.</strong><p>Check the subject and verb first, then place adverbs and time phrases where they sound natural.</p>'+(roundMistakes>=2?'<p>'+esc(adaptiveHint('scramble'))+'</p>':'');return;}
       score++;locked=true;if(window.EpiphanyThinkLab)window.EpiphanyThinkLab.recordResult('grammar','sentence-scramble',true,index===pool.length-1);
       root.querySelectorAll('[data-scramble-tile],[data-scramble-slot],[data-scramble-check],[data-scramble-reset]').forEach(el=>el.disabled=true);
       fb.hidden=false;fb.className='tl-feedback is-correct';fb.innerHTML='<strong>✓ Sentence built!</strong><p>'+esc(item.options[item.answer])+' — '+esc(item.explain)+'</p>';const next=root.querySelector('[data-think-next]');if(next)next.hidden=false;return;
