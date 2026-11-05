@@ -42,7 +42,8 @@ async function dismissFirstVisitOverlays(page) {
 const mime = { '.html':'text/html; charset=utf-8', '.js':'text/javascript; charset=utf-8', '.css':'text/css; charset=utf-8', '.json':'application/json; charset=utf-8', '.svg':'image/svg+xml', '.png':'image/png', '.jpg':'image/jpeg', '.webp':'image/webp' };
 let server, browser, baseUrl;
 
-test('main navigation tabs open without uncaught page errors', async t => {
+test('main navigation tabs open without uncaught page errors', { timeout: 18 * 60 * 1000 }, async t => {
+  const checkpoint = label => console.log('[browser-smoke] ' + new Date().toISOString() + ' ' + label);
   server = http.createServer((req, res) => {
     let pathname;
     try { pathname = decodeURIComponent(new URL(req.url, 'http://127.0.0.1').pathname); }
@@ -59,14 +60,17 @@ test('main navigation tabs open without uncaught page errors', async t => {
   await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
   baseUrl = 'http://127.0.0.1:' + server.address().port;
   try {
-    browser = await chromium.launch({ headless: true });
+    checkpoint('launching Chromium');
+    browser = await chromium.launch({ headless: true, timeout: 30000 });
+    checkpoint('Chromium launched');
     const errors = [];
     const consoleErrors = [];
 
     const firstVisitPage = await browser.newPage();
     await firstVisitPage.setViewportSize({ width: 1280, height: 900 });
     firstVisitPage.on('pageerror', error => errors.push('first-visit: ' + error.message));
-    await firstVisitPage.goto(baseUrl, { waitUntil: 'domcontentloaded' });
+    checkpoint('starting first-visit onboarding');
+    await firstVisitPage.goto(baseUrl, { waitUntil: 'domcontentloaded', timeout: 20000 });
     assert.equal(await firstVisitPage.locator('#landing-start').isVisible(), true, 'a new visitor should first see the landing screen');
     assert.equal(await firstVisitPage.locator('#account-welcome-modal').isVisible(), false, 'account creation must not interrupt the first visit');
     await firstVisitPage.locator('#landing-start').click();
@@ -109,9 +113,11 @@ test('main navigation tabs open without uncaught page errors', async t => {
     assert.equal(await firstVisitPage.locator('.result-actions').isVisible(), true, 'the result must remain available after dismissing the invitation');
     assert.equal(await firstVisitPage.evaluate(() => sessionStorage.getItem('epiphany-account-prompt-shown-v1')), '1', 'the invitation dismissal must be remembered for this session');
     await firstVisitPage.close();
+    checkpoint('first-visit onboarding passed');
 
     const views = ['home','stories','chronicle','resonance','world','arcade','thinklab','casebound','summon','words','trophies','progress','profile'];
     for (const view of views) {
+      checkpoint('starting view ' + view);
       const page = await browser.newPage();
       await page.setViewportSize({ width: 1280, height: 900 });
       const requested = [];
@@ -717,7 +723,9 @@ test('main navigation tabs open without uncaught page errors', async t => {
         assert.ok(requested.some(path => path.endsWith('/data-translation-ar.js')), 'Arabic catalogue should load only after Arabic help is enabled');
       }
       await page.close();
+      checkpoint('completed view ' + view);
     }
+    checkpoint('all navigation views passed; starting adaptive review checks');
     const adaptivePage = await browser.newPage();
     await adaptivePage.setViewportSize({ width: 800, height: 900 });
     adaptivePage.on('pageerror', error => errors.push('adaptive-home: ' + error.message));
@@ -753,6 +761,7 @@ test('main navigation tabs open without uncaught page errors', async t => {
     assert.match(await grammarReviewPage.locator('#next-desc').innerText(), /past simple/i, 'grammar review recommendation should name the due pattern');
     await grammarReviewPage.close();
 
+    checkpoint('adaptive and grammar review checks passed; starting card portal checks');
     const cardsPage = await browser.newPage();
     await cardsPage.setViewportSize({ width: 390, height: 844 });
     await cardsPage.addInitScript(() => {
@@ -800,7 +809,9 @@ test('main navigation tabs open without uncaught page errors', async t => {
     await cardsPage.locator('#cards-gallery').scrollIntoViewIfNeeded();
     // The auth-driven published-art refresh can rebuild gallery nodes and restore lazy loading.
     // Wait for the final nodes before promoting a visible representative image to eager loading.
+    checkpoint('card portal opened; waiting for published card assets');
     await cardsPage.waitForFunction(() => window.EPIPHANY_CARD_ASSETS_REFRESHED === true, null, {timeout:10000});
+    checkpoint('published card assets refreshed');
     await cardsPage.locator('#cards-gallery .fcard-portrait-image').first().evaluate(img => {
       img.loading = 'eager';
       img.scrollIntoView({block:'center',inline:'nearest'});
@@ -911,6 +922,7 @@ test('main navigation tabs open without uncaught page errors', async t => {
     const screenshotDir = path.join(root, 'test-results', 'card-dossier');
     fs.mkdirSync(screenshotDir, {recursive:true});
     const viewports = [{width:1920,height:1080,label:'1920x1080'},{width:1280,height:800,label:'1280x800'},{width:390,height:844,label:'390x844'}];
+    checkpoint('card gallery and dossier interaction checks passed; capturing visual matrix');
     for (const theme of ['light','dark']) {
       await cardsPage.evaluate(value => { document.body.dataset.theme=value; }, theme);
       for (const viewport of viewports) {
@@ -930,7 +942,9 @@ test('main navigation tabs open without uncaught page errors', async t => {
       }
     }
     await cardsPage.close();
+    checkpoint('card dossier visual matrix captured');
 
+    checkpoint('starting offline service-worker checks');
     const offlinePage = await browser.newPage();
     await offlinePage.setViewportSize({ width: 800, height: 900 });
     offlinePage.on('pageerror', error => errors.push('offline: ' + error.message));
@@ -940,7 +954,11 @@ test('main navigation tabs open without uncaught page errors', async t => {
     });
     await offlinePage.goto(baseUrl, { waitUntil: 'domcontentloaded' });
     await dismissFirstVisitOverlays(offlinePage);
-    await offlinePage.evaluate(() => navigator.serviceWorker.ready);
+    await Promise.race([
+      offlinePage.evaluate(() => navigator.serviceWorker.ready),
+      new Promise((_, reject) => setTimeout(() => reject(new Error('Service worker did not become ready within 15 seconds')), 15000))
+    ]);
+    checkpoint('service worker ready');
     await offlinePage.reload({ waitUntil: 'domcontentloaded' });
     await offlinePage.waitForFunction(() => !!navigator.serviceWorker.controller, null, { timeout: 5000 });
     await clickView(offlinePage, 'stories');
@@ -960,6 +978,7 @@ test('main navigation tabs open without uncaught page errors', async t => {
     await offlinePage.waitForFunction(() => typeof STORIES !== 'undefined' && Array.isArray(STORIES), null, { timeout: 5000 });
     await offlinePage.context().setOffline(false);
     await offlinePage.close();
+    checkpoint('offline service-worker checks passed');
     assert.deepEqual(errors, [], 'uncaught page errors occurred: ' + errors.join(' | '));
   } finally {
     if (browser) await browser.close();
