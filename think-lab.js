@@ -350,6 +350,7 @@
   });
 
   let selectedTranslatorCEFR = 'adaptive';
+  let selectedTrainingMode = null;
   let mode = null, index = 0, score = 0, locked = false, clueCount = 0, oddHintStep = 0, ladderPath = [], ladderWordNote = null, ladderMistakeRecorded = false, roundMistakes = 0, activePool = null, activeDifficulty = null, forgePlaced = [], scramblePlaced = [], connectionSelected = [], chainStepIndex = 0, chainPath = [];
 
   rounds.forge = [
@@ -988,7 +989,7 @@ bark dark core hand land lane data duty melt`
     if(mode==='wordladder'&&!ladderPath.length)ladderPath=[item.start];
     let intro = '';
     if (mode === 'odd') intro = '<div class="tl-word-options">'+item.words.map((w,i)=>'<button type="button" class="tl-option tl-word-option" data-think-answer="'+i+'"><span class="tl-option-index">0'+(i+1)+'</span><strong>'+esc(w)+'</strong></button>').join('')+'</div>'+(difficulty.level === 'guided' ? '<div class="tl-odd-hint"><button type="button" class="tl-secondary" data-odd-hint>Reveal a hint</button><p class="tl-game-instruction" data-odd-hint-text hidden></p></div>' : '');
-    if (mode === 'translator') intro = '<div class="tl-translation-prompt" lang="ar" dir="rtl">'+esc(item.ar)+'</div><div class="tl-answer-options">'+item.options.map((w,i)=>'<button type="button" class="tl-option" data-think-answer="'+i+'"><span class="tl-option-index">'+String.fromCharCode(65+i)+'</span><strong>'+esc(w)+'</strong></button>').join('')+'</div><div class="tl-odd-hint"><button type="button" class="tl-secondary" data-translator-hint>Reveal a hint</button><p class="tl-game-instruction" data-translator-hint-text hidden></p></div>';
+    if (mode === 'translator') intro = '<div class="tl-translation-prompt" lang="ar" dir="rtl">'+esc(item.ar)+'</div><div class="tl-answer-options">'+item.options.map((w,i)=>'<button type="button" class="tl-option" data-think-answer="'+i+'"><span class="tl-option-index">'+String.fromCharCode(65+i)+'</span><strong>'+esc(w)+'</strong></button>').join('')+'</div>'+(difficulty.level !== 'challenge' ? '<div class="tl-odd-hint"><button type="button" class="tl-secondary" data-translator-hint>Reveal a hint</button><p class="tl-game-instruction" data-translator-hint-text hidden></p></div>' : '');
     if (mode === 'wordladder') {
       const path = ladderPath.length ? ladderPath : [item.start];
       const currentWord = path[path.length - 1] || item.start;
@@ -1009,6 +1010,9 @@ bark dark core hand land lane data duty melt`
     if (mode === 'chain') { const steps=chainSteps(item),step=steps[chainStepIndex]; const path=[(item.prompt.match(/chain: ([A-Z]+) →/)||[])[1]||'WORD',...chainPath]; intro='<div class="tl-chain-path">'+path.map((w,i)=>'<span class="tl-chain-link">'+esc(w)+'</span>').join('<span class="tl-ladder-step"> → </span>')+'<span class="tl-ladder-step"> → ?</span></div><p class="tl-connection-count">LINK '+(chainStepIndex+1)+' OF '+steps.length+' · Connect “'+esc(step.from)+'” to the strongest next word.</p><div class="tl-answer-options">'+step.options.map((w,i)=>'<button type="button" class="tl-option" data-chain-answer="'+i+'"><span class="tl-option-index">'+String.fromCharCode(65+i)+'</span><strong>'+esc(w)+'</strong></button>').join('')+'</div>'; }
     if (mode === 'maze') intro = '<div class="tl-maze-target"><span class="tl-maze-sound">♫</span><div><span>LISTEN FOR THIS WORD</span><strong>Find the matching word</strong></div><button type="button" class="tl-secondary" data-think-speak>▶ Play word</button></div><div class="tl-maze-path"><span class="tl-maze-start">START</span><span>···</span><span class="tl-maze-finish">EXIT</span></div><div class="tl-answer-options">'+item.options.map((w,i)=>'<button type="button" class="tl-option" data-think-answer="'+i+'"><span class="tl-option-index">'+String.fromCharCode(65+i)+'</span><strong>'+esc(w)+'</strong></button>').join('')+'</div>';
     if (mode === 'detective') intro = '<div class="tl-clue-list">'+item.clues.slice(0,Math.min(item.clues.length,clueCount+1+(difficulty.hintLevel>=2?1:0))).map((c,i)=>'<div class="tl-clue"><span>CLUE 0'+(i+1)+'</span><p>'+esc(c)+'</p></div>').join('')+'</div><div class="tl-reveal-row">'+(clueCount<item.clues.length-1?'<button class="tl-secondary" type="button" data-think-clue>Reveal next clue +</button>':'<span class="tl-all-clues">All evidence revealed</span>')+'</div><h3 class="tl-question">'+item.question+'</h3><div class="tl-answer-options">'+item.options.map((w,i)=>'<button type="button" class="tl-option" data-think-answer="'+i+'"><span class="tl-option-index">'+String.fromCharCode(65+i)+'</span><strong>'+esc(w)+'</strong></button>').join('')+'</div>';
+    if (difficulty.level === 'guided' && ['maze','forge','connections','scramble','chain'].includes(mode)) {
+      intro += '<div class="tl-odd-hint tl-guided-support"><button type="button" class="tl-secondary" data-training-hint>Reveal a hint</button><p class="tl-game-instruction" data-training-hint-text hidden></p></div>';
+    }
     root.innerHTML = '<div class="tl-game-head"><button class="tl-back" type="button" data-think-back>← All cases</button><span class="tl-eyebrow">CASE '+String(index+1).padStart(2,'0')+' / '+pool.length+'</span><span class="tl-score">SOLVED <b>'+score+'</b></span></div><div class="tl-game-card"><div class="tl-game-kicker">'+(mode==='odd'?'PATTERN ANALYSIS · '+esc(item.cefrLevel || 'A1'):mode==='detective'?'EVIDENCE BOARD':mode==='translator'?'NATURAL EXPRESSION · '+esc(item.cefrLevel || 'A1'):mode==='wordladder'?'WORD TRANSFORMATION':mode==='forge'?'WORD FORGE':mode==='connections'?'WORD CONNECTIONS':mode==='scramble'?'SENTENCE BUILDING':mode==='chain'?'WORD ASSOCIATION':'LISTENING MAZE')+'</div><div class="tl-level-tag">'+(difficulty.level==='challenge'?'CHALLENGE':difficulty.level==='steady'?'STEADY':'GUIDED')+'</div><h2>'+esc(mode==='detective'?item.title:mode==='wordladder'?'Transform the word':mode==='maze'?'Find the sound path':item.prompt)+'</h2><p class="tl-game-instruction">'+esc(mode==='odd'?item.why:mode==='translator'?'Read the Arabic sentence, then choose the natural English equivalent.':mode==='wordladder'?'Build a chain of real words. Only one letter may change in each move.':mode==='maze'?'Listen carefully, replay the word if needed, then choose the matching spelling.':mode==='forge'?'Use the available letters and clue to build the word yourself.':mode==='connections'?'Select the four tiles that share the category; distractors are mixed into the board.':mode==='scramble'?'Build a natural English sentence from the mixed-up word bank.':mode==='chain'?'Build a three-link association chain. Each choice becomes the starting point for the next link.':'Reveal the clues and select the conclusion they support.')+'</p>'+intro+roundNote+'<div class="tl-feedback" id="tl-feedback" aria-live="polite" hidden></div><div class="tl-game-actions"><span>ROUND '+(index+1)+' OF '+pool.length+'</span><button class="tl-next" type="button" data-think-next hidden>Next round →</button></div></div>';
   }
   function chainSteps(item) {
@@ -1055,17 +1059,46 @@ bark dark core hand land lane data duty melt`
     return tiles;
   }
   function speakTarget() { const pool=activePool || getRoundPool('maze');const item=pool[index%pool.length]; if(!('speechSynthesis' in window)||!window.SpeechSynthesisUtterance){const fb=root.querySelector('#tl-feedback');if(fb){fb.hidden=false;fb.className='tl-feedback is-wrong';fb.textContent='Speech playback is not available in this browser.';}return;} window.speechSynthesis.cancel(); const utterance=new SpeechSynthesisUtterance(item.target); utterance.lang='en-US'; utterance.rate=.82; window.speechSynthesis.speak(utterance); }
+  function showTrainingModePicker(id) {
+    mode = null;
+    activePool = null;
+    const game = games.find(item => item.id === id);
+    const title = game ? game.name : 'Think Lab';
+    const modes = [
+      {id:'guided',name:'Guided',tag:'MORE SUPPORT',description:'Helpful hints and clearer stepping stones while you learn the pattern.'},
+      {id:'steady',name:'Steady',tag:'BALANCED PRACTICE',description:'A balanced round with room to think independently.'},
+      {id:'challenge',name:'Challenge',tag:'LESS SUPPORT',description:'Fewer hints and more demanding reasoning.'}
+    ];
+    root.innerHTML = '<div class="tl-game-head"><button class="tl-back" type="button" data-think-back>← All cases</button><span class="tl-eyebrow">CHOOSE YOUR APPROACH</span></div><div class="tl-game-card tl-mode-picker"><div class="tl-game-kicker">'+esc(title.toUpperCase())+' · TRAINING MODE</div><h2>How would you like to play?</h2><p class="tl-game-instruction">Choose the amount of guidance you want. Some games also use different question sets for each mode; others adapt their hints and support. Your English level is kept separate from this choice.</p><div class="tl-mode-grid">'+modes.map(item => '<button type="button" class="tl-mode-choice" data-think-training-mode="'+item.id+'" data-think-training-game="'+id+'"><span class="tl-mode-tag">'+item.tag+'</span><strong>'+item.name+'</strong><span>'+item.description+'</span><b>Choose '+item.name+' →</b></button>').join('')+'</div></div>';
+  }
   function showTranslatorLevelPicker() {
     mode = 'translator';
     activePool = null;
-    activeDifficulty = difficultyForMode('translator');
     const levels = ['A1','A2','B1','B2','C1','C2'];
-    root.innerHTML = '<div class="tl-game-head"><button class="tl-back" type="button" data-think-back>← All cases</button><span class="tl-eyebrow">THE BOLD TRANSLATOR</span></div><div class="tl-game-card"><div class="tl-game-kicker">CHOOSE YOUR PRACTICE LEVEL</div><h2>Where would you like to practise?</h2><p class="tl-game-instruction">Adaptive follows your current learning level. A1, A2, B1, B2, C1 and C2 are available for practice. If your adaptive level does not have a bank yet, the game temporarily uses A1 content. Manual practice does not change your adaptive level.</p><div class="tl-answer-options"><button type="button" class="tl-option" data-translator-level="adaptive"><strong>Adaptive · Recommended</strong><span>Use my current EPIPHANY level</span></button>'+levels.map(level => '<button type="button" class="tl-option" data-translator-level="'+level+'" '+(translatorBanks[level] ? '' : 'disabled')+'><strong>'+level+'</strong><span>'+(translatorBanks[level] ? 'Available' : 'Coming soon')+'</span></button>').join('')+'</div></div>';
+    root.innerHTML = '<div class="tl-game-head"><button class="tl-back" type="button" data-think-back>← All cases</button><span class="tl-eyebrow">THE BOLD TRANSLATOR</span></div><div class="tl-game-card"><div class="tl-game-kicker">CHOOSE YOUR ENGLISH LEVEL</div><h2>Which level would you like to practise?</h2><p class="tl-game-instruction">Adaptive follows your current learning level. A1–C2 are available where reviewed question banks exist. If your adaptive level has no bank yet, the game temporarily uses A1 content. This choice does not change your learning level.</p><div class="tl-answer-options"><button type="button" class="tl-option" data-translator-level="adaptive"><strong>Adaptive · Recommended</strong><span>Use my current EPIPHANY level</span></button>'+levels.map(level => '<button type="button" class="tl-option" data-translator-level="'+level+'" '+(translatorBanks[level] ? '' : 'disabled')+'><strong>'+level+'</strong><span>'+(translatorBanks[level] ? 'Available' : 'Coming soon')+'</span></button>').join('')+'</div></div>';
+  }
+  function beginGame(id, trainingMode) {
+    selectedTrainingMode = ['guided','steady','challenge'].includes(trainingMode) ? trainingMode : 'steady';
+    mode=id; index=0; score=0; chainStepIndex=0; chainPath=[]; clueCount=0; roundMistakes=0; ladderPath=[]; ladderWordNote=null; ladderMistakeRecorded=false; oddHintStep=0;
+    const hintLevel = selectedTrainingMode === 'guided' ? 2 : selectedTrainingMode === 'steady' ? 1 : 0;
+    activeDifficulty = Object.assign({}, difficultyForMode(id), {level:selectedTrainingMode,hintLevel});
+    activePool=getRoundPool(id,selectedTrainingMode);
+    renderGame();
+    if(id==='maze') speakTarget();
   }
   function start(id) {
-    if(id==='translator'){selectedTranslatorCEFR='adaptive';showTranslatorLevelPicker();return;}
-    mode=id; index=0; score=0; chainStepIndex=0; chainPath=[]; clueCount=0; roundMistakes=0; ladderPath=[]; ladderWordNote=null; ladderMistakeRecorded=false; activeDifficulty=difficultyForMode(id); oddHintStep=0;
-    activePool=getRoundPool(id,activeDifficulty.level); renderGame(); if(id==='maze') speakTarget();
+    if(id==='translator') selectedTranslatorCEFR='adaptive';
+    showTrainingModePicker(id);
+  }
+  function guidedHint(id) {
+    const hints = {
+      maze:'Listen for the opening and ending sounds. Replay the word, then compare the options carefully.',
+      forge:'Use the clue first, then test which available letters can build the word. Each tile is used once.',
+      connections:'Look for the most precise shared category. Avoid choosing words that are merely related to the same topic.',
+      scramble:'Find the subject and main verb first. Then arrange the remaining words into a natural English order.',
+      chain:'Choose the closest natural association, not simply a word connected to the same broad topic.'
+    };
+    return hints[id] || 'Look for the clearest relationship and test each option against the full instruction.';
   }
   root.addEventListener('submit', e => {
     const form=e.target.closest('[data-think-ladder-form]');
@@ -1170,11 +1203,20 @@ bark dark core hand land lane data duty melt`
     }
 
     const recommended=e.target.closest('[data-think-recommended]'); if(recommended){start(recommended.dataset.thinkRecommended);return;}
+    const trainingChoice=e.target.closest('[data-think-training-mode]');
+    if(trainingChoice){
+      selectedTrainingMode=trainingChoice.dataset.thinkTrainingMode;
+      const gameId=trainingChoice.dataset.thinkTrainingGame;
+      if(gameId==='translator') showTranslatorLevelPicker();
+      else beginGame(gameId,selectedTrainingMode);
+      return;
+    }
     const translatorLevel=e.target.closest('[data-translator-level]');
-    if(translatorLevel){selectedTranslatorCEFR=translatorLevel.dataset.translatorLevel;mode='translator';index=0;score=0;roundMistakes=0;activeDifficulty=difficultyForMode('translator');activePool=getRoundPool('translator',activeDifficulty.level);renderGame();return;}
+    if(translatorLevel){selectedTranslatorCEFR=translatorLevel.dataset.translatorLevel;beginGame('translator',selectedTrainingMode);return;}
     const launch=e.target.closest('[data-think-game]'); if(launch){start(launch.dataset.thinkGame);return;}
     if(e.target.closest('[data-think-back]')){if(window.speechSynthesis)window.speechSynthesis.cancel();landing();return;}
     if(e.target.closest('[data-translator-hint]')&&mode==='translator'&&!locked){const pool=activePool||getRoundPool('translator'),item=pool[index%pool.length],hint=root.querySelector('[data-translator-hint-text]'),button=root.querySelector('[data-translator-hint]');if(hint){hint.hidden=false;hint.textContent=item.hint;}if(button){button.disabled=true;button.textContent='Hint revealed';}return;}
+    if(e.target.closest('[data-training-hint]')&&mode&&!locked){const hint=root.querySelector('[data-training-hint-text]'),button=root.querySelector('[data-training-hint]');if(hint){hint.hidden=false;hint.textContent=guidedHint(mode);}if(button){button.disabled=true;button.textContent='Hint revealed';}return;}
     if(e.target.closest('[data-think-clue]')){clueCount=Math.min((activePool || getRoundPool('detective'))[index%(activePool || getRoundPool('detective')).length].clues.length-1,clueCount+1);renderGame();return;}
     if(e.target.closest('[data-think-next]')){if(window.speechSynthesis)window.speechSynthesis.cancel();index++;oddHintStep=0;chainStepIndex=0;chainPath=[];connectionSelected=[];clueCount=0;roundMistakes=0;ladderPath=[];ladderWordNote=null;ladderMistakeRecorded=false;if(index>=(activePool || getRoundPool(mode)).length){const finished=mode;const totalRounds=(activePool || getRoundPool(finished)).length;root.innerHTML='<div class="tl-finish"><span class="tl-finish-mark">∴</span><span class="tl-eyebrow">CASE FILE CLOSED</span><h2>Good thinking.</h2><p>You solved <b>'+score+' of '+totalRounds+'</b> challenges. The goal is not only to get it right—it’s to understand why.</p><button type="button" class="tl-next" data-think-restart>Try another case ↗</button><button type="button" class="tl-back" data-think-back>Back to Think Lab</button></div>';mode=null;activePool=null;activeDifficulty=null;}else renderGame();return;}
     if(e.target.closest('[data-think-restart]')){landing();return;}
