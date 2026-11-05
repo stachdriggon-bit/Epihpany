@@ -3982,3 +3982,25 @@ body[data-theme="dark"] #thinklab-view .tl-mode-choice{border-color:var(--line,#
 body[data-theme="dark"] #thinklab-view .tl-mode-choice:hover{border-color:#7165b4;background:var(--surface-2,#292638)}
 @media(max-width:680px){#thinklab-view .tl-mode-grid{grid-template-columns:minmax(0,1fr);gap:9px}#thinklab-view .tl-mode-choice{min-height:0;padding:16px}#thinklab-view .tl-mode-choice b{padding-top:2px}}
 @media(prefers-reduced-motion:reduce){#thinklab-view .tl-mode-choice{transition:none}#thinklab-view .tl-mode-choice:hover{transform:none}}
+
+
+/* ---------- unified outline icon system ---------- */
+.ep-icon-svg{display:block;width:20px;height:20px;flex:none;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.ep-nav-icon{display:inline-grid;place-items:center;width:20px;height:20px;flex:none;color:var(--ep-icon-accent,var(--focus));line-height:0}
+.ep-nav-icon .ep-icon-svg{width:20px;height:20px}
+.nav-group summary .ep-nav-group-icon{margin-inline-end:2px}
+.mobile-nav-links .ep-nav-icon{width:20px;height:20px}
+.tab .ep-nav-icon{color:var(--ep-icon-accent,var(--focus))}
+.tab[aria-current=page] .ep-nav-icon{color:inherit}
+.ep-activity-icon{display:inline-grid;place-items:center;width:28px;height:28px;flex:none;margin-inline-end:8px;border-radius:9px;background:color-mix(in srgb,var(--ep-icon-accent,var(--violet)) 10%,transparent);color:var(--ep-icon-accent,var(--violet))}
+.ep-activity-icon .ep-icon-svg{width:22px;height:22px}
+[data-view="arcade"]{--ep-icon-accent:var(--coral)}
+[data-view="thinklab"]{--ep-icon-accent:var(--violet)}
+[data-view="casebound"]{--ep-icon-accent:#B97845}
+[data-view="lifeskills"]{--ep-icon-accent:var(--mint)}
+[data-view="words"],[data-view="progress"]{--ep-icon-accent:var(--sky)}
+[data-view="world"]{--ep-icon-accent:var(--mint)}
+[data-view="trophies"]{--ep-icon-accent:var(--spark-lo)}
+[data-view="resonance"]{--ep-icon-accent:var(--pink)}
+[data-view="collection"],[data-view="summon"]{--ep-icon-accent:var(--violet)}
+@media(prefers-reduced-motion:reduce){.ep-icon-svg{transition:none}}
