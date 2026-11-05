@@ -51,7 +51,7 @@
   }
   function stripLeadingGlyph(node) {
     const first = [...node.childNodes].find(child => child.nodeType === Node.TEXT_NODE && child.textContent.trim());
-    if (first) first.textContent = first.textContent.replace(/^\\s*[\\p{Extended_Pictographic}\\p{S}\\p{P}]+\\s*/u, '');
+    if (first) first.textContent = first.textContent.replace(/^\s*[\p{Extended_Pictographic}\p{S}\p{P}]+\s*/u, '');
   }
   function apply() {
     document.querySelectorAll('[data-view]').forEach(button => {
