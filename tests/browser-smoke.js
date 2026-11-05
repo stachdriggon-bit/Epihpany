@@ -115,8 +115,14 @@ test('main navigation tabs open without uncaught page errors', async t => {
       const page = await browser.newPage();
       await page.setViewportSize({ width: 1280, height: 900 });
       const requested = [];
-      page.on('pageerror', error => errors.push(view + ': ' + error.message));
-      page.on('console', message => { if (message.type() === 'error') consoleErrors.push(view + ': ' + message.text()); });
+      const failedRequests = [];
+      const badResponses = [];
+      const pageErrors = [];
+      const viewConsoleErrors = [];
+      page.on('pageerror', error => { pageErrors.push(error.message); errors.push(view + ': ' + error.message); });
+      page.on('console', message => { if (message.type() === 'error') { viewConsoleErrors.push(message.text()); consoleErrors.push(view + ': ' + message.text()); } });
+      page.on('requestfailed', request => failedRequests.push({url:request.url(),failure:request.failure()?.errorText || 'unknown'}));
+      page.on('response', response => { if (response.status() >= 400) badResponses.push({status:response.status(),url:response.url()}); });
       page.on('request', request => {
         try {
           const url = new URL(request.url());
@@ -157,7 +163,23 @@ test('main navigation tabs open without uncaught page errors', async t => {
       }
       if (view !== 'world') {
         const target = page.locator('#' + view + '-view');
-        await target.waitFor({ state: 'attached', timeout: 5000 });
+        await target.waitFor({ state: 'attached', timeout: 5000 }).catch(async error => {
+          const diagnostics = await page.evaluate(({requestedView}) => ({
+            url: location.href,
+            readyState: document.readyState,
+            title: document.title,
+            bodyClass: document.body?.className || '',
+            targetId: requestedView + '-view',
+            targetExists: !!document.getElementById(requestedView + '-view'),
+            viewIds: [...document.querySelectorAll('.view')].map(el => ({id:el.id,active:el.classList.contains('is-active'),hidden:el.hidden})),
+            matchingButtons: [...document.querySelectorAll('button[data-view]')].filter(el => el.dataset.view === requestedView).map(el => ({text:el.textContent.trim(),visible:!!(el.getClientRects().length),ariaCurrent:el.getAttribute('aria-current'),parent:el.parentElement?.className || ''})),
+            mainInert: document.querySelector('#main')?.inert,
+            placementHidden: document.querySelector('#placement')?.hidden,
+            overlays: ['landing','help-language-modal','account-welcome-modal'].map(id => ({id,exists:!!document.getElementById(id),hidden:document.getElementById(id)?.hidden ?? null})),
+            lazyLoaderType: typeof window.EPIPHANY_LAZY_LOAD
+          }), {requestedView:view});
+          throw new Error(view + ' view was not attached after navigation: ' + JSON.stringify({diagnostics,requested,failedRequests,badResponses,pageErrors,consoleErrors:viewConsoleErrors}) + '; ' + error.message);
+        });
         if (view !== 'home') assert.equal(await target.evaluate(el => el.classList.contains('is-active')), true, view + ' view should become active');
       }
       if (view === 'stories') {
