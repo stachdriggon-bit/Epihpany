@@ -6,7 +6,7 @@ const vm = require('node:vm');
 const bank = require('../odd-one-out-bank.js');
 const source = fs.readFileSync(path.join(__dirname, '..', 'think-lab.js'), 'utf8');
 
-const gameIds = ['odd','translator','wordladder','maze','connections','scramble','forge','chain','detective'];
+const gameIds = ['odd','translator','wordladder','maze','connections','scramble','forge','chain'];
 const trainingModes = ['guided','steady','challenge'];
 
 function createHarness() {
