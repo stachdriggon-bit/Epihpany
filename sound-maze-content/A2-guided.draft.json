@@ -129,38 +129,38 @@
       "target": "train",
       "options": [
         "train",
-        "trane",
-        "trine",
-        "tran"
+        "trail",
+        "trait",
+        "tray"
       ],
       "answer": "train",
-      "explain": "Train uses ai to spell the long /eɪ/ vowel sound. The other spellings do not form the target word."
+      "explain": "Train uses ai to spell the /eɪ/ vowel followed by /n/. Trail ends in /l/, trait in /t/, and tray has no final consonant."
     },
     {
       "id": "SM-A2-G-011",
       "axis": "basic_spelling_patterns",
       "target": "cheese",
       "options": [
-        "chease",
         "cheese",
-        "chese",
-        "cheze"
+        "cheek",
+        "cheer",
+        "chess"
       ],
       "answer": "cheese",
-      "explain": "Cheese uses ee to spell the long /i/ sound. The double e is a common vowel-team spelling."
+      "explain": "Cheese uses ee to spell the long /i/ sound. Cheek and cheer share that vowel but have different endings; chess has /ɛ/."
     },
     {
       "id": "SM-A2-G-012",
       "axis": "basic_spelling_patterns",
       "target": "thumb",
       "options": [
-        "tumb",
-        "thum",
         "thumb",
-        "thomb"
+        "thump",
+        "thug",
+        "hum"
       ],
       "answer": "thumb",
-      "explain": "Thumb begins with th, pronounced /θ/, and has a silent b at the end."
+      "explain": "Thumb begins with th pronounced /θ/ and ends with a silent b. Thump has a pronounced /p/, thug has a different ending, and hum begins with /h/."
     }
   ]
 }
