@@ -180,6 +180,6 @@ test('Word Connections loads 24 distinct challenges for each independently selec
 });
 
 test('Word Connections records incorrect complete-group attempts instead of tracking only wins', () => {
-  assert.match(source, /recordResult\\('vocabulary','connections',false,false\\)/);
-  assert.match(source, /bank\\.matchGroup\\(chosen,selectedTrainingMode\\)/);
+  assert.match(source, /recordResult\('vocabulary','connections',false,false\)/);
+  assert.match(source, /bank\.matchGroup\(chosen,selectedTrainingMode\)/);
 });
