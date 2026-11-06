@@ -1,4 +1,4 @@
-const CACHE_NAME = 'epiphany-word-connections-72-20261106-1';
+const CACHE_NAME = 'epiphany-stability-gallery-identity-20261105-1-word-connections-72-20261106-1';
 const CARD_ART_CACHE = 'epiphany-card-art-cloud-only-20261030-1';
 const VENDOR_CACHE = 'epiphany-vendor-20261024m';
 const CORE_ASSETS = ['./', './index.html', './style.css', './icon-system.js', './guidance.css', './help-center.css', './help-center.js', './app.js', './guidance.js', './data.js', './data-expansion.js', './data-mistakes.js', './data-spot.js', './data-typing.js', './data-wotd.js', './data-aha.js', './data-minigames.js', './mini-games.css', './supabase-config.js', './account.js', './asset-manager.js', './asset-manager.css', './artwork-manager.js', './artwork-manager.css', './telemetry.js', './adaptive-engine.js', './lazy-data.js', './navigation-enhancements.js', './manifest.webmanifest', './icon.svg', './social-preview.svg', './wotd-card.html', './notifications.js', './data-cards.js', './data-character-profiles.js', './cards.js', './cards.css', './assets/cards/epiphany-portraits.svg', './assets/cards/card-ornaments.svg'];
@@ -50,7 +50,7 @@ self.addEventListener('message', event => {
 });
 
 self.addEventListener('activate', event => {
-  event.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(key => (key.startsWith('epiphany-shell-') && key !== CACHE_NAME) || (key.startsWith('epiphany-vendor-') && key !== VENDOR_CACHE) || (key.startsWith('epiphany-card-art-') && key !== CARD_ART_CACHE)).map(key => caches.delete(key)))).then(() => self.clients.claim()));
+  event.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(key => ((key.startsWith('epiphany-shell-') || key.startsWith('epiphany-stability-gallery-identity-')) && key !== CACHE_NAME) || (key.startsWith('epiphany-vendor-') && key !== VENDOR_CACHE) || (key.startsWith('epiphany-card-art-') && key !== CARD_ART_CACHE)).map(key => caches.delete(key)))).then(() => self.clients.claim()));
 });
 self.addEventListener('push', event => {
   let payload = {title:'EPIPHANY', body:'A new challenge is waiting for you.', url:'./#progress-view'};
