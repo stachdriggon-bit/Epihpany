@@ -35,22 +35,12 @@
     });
   };
   const wordMarkup = (expected, actual) => scoreWords(expected, actual).map(item => '<span class="pl-word '+(item.ok?'is-match':'is-missing')+'">'+esc(item.word)+'</span>').join(' ');
-  const voicesFor = () => {
-    if (!('speechSynthesis' in window)) return [];
-    return speechSynthesis.getVoices().filter(v => v.lang.toLowerCase().startsWith('en-'));
-  };
   const speak = (text, rate) => {
-    if (!('speechSynthesis' in window) || !('SpeechSynthesisUtterance' in window)) {
-      status('pl-speaking-status', 'Speech playback is not supported in this browser.', 'error'); return;
+    const speech = window.EpiphanySpeech;
+    if (!speech || typeof speech.speak !== 'function') {
+      status('pl-speaking-status', 'George voice is not ready. Please try again.', 'error'); return;
     }
-    speechSynthesis.cancel();
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = voiceLocale;
-    utterance.rate = rate;
-    const voices = voicesFor();
-    if (voices.length) utterance.voice = voices[0];
-    utterance.onerror = () => status('pl-speaking-status', 'Could not play audio. Try another voice or browser.', 'error');
-    speechSynthesis.speak(utterance);
+    speech.speak(text, {rate, onError: () => status('pl-speaking-status', 'George voice is temporarily unavailable. Please try again.', 'error')});
   };
   const status = (id, message, kind='') => {
     const el = document.getElementById(id); if (!el) return;
@@ -152,5 +142,4 @@
   };
   document.addEventListener('DOMContentLoaded',mount);
   if(document.readyState!=='loading')mount();
-  if('speechSynthesis' in window)window.speechSynthesis.addEventListener?.('voiceschanged',()=>{});
 })();
