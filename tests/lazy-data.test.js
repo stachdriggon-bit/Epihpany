@@ -60,7 +60,7 @@ test('feature data loader does not request large datasets until requested', asyn
   assert.ok(requested.slice(10).every(src => /\?v=.+/.test(src)));
   assert.deepEqual(merged, [true]);
   await context.window.EPIPHANY_LAZY_LOAD('chronicle');
-  assert.deepEqual(requested.slice(12).map(src => src.split('?')[0]), ['data-world-registry.js', 'data-world-events.js']);
+  assert.deepEqual(requested.slice(13).map(src => src.split('?')[0]), ['data-world-registry.js', 'data-world-events.js']);
   assert.ok(requested.slice(12).every(src => /\?v=.+/.test(src)));
 });
 
