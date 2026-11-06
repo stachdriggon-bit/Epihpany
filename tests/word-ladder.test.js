@@ -124,3 +124,25 @@ test('difficulty bands are distinct and each can generate enough solvable puzzle
     challenge: [5, 7]
   });
 });
+
+test('the expanded bank adds 40 unique, defined, connected words', () => {
+  const additions = ["beat","cake","cane","hall","live","well","bake","cave","cell","fame","fate","felt","hire","lend","life","name","nest","rate","rent","rest","wing","bill","cage","cape","file","fill","find","firm","full","gave","mail","meal","mile","paid","park","past","pile","save","seat","sell"];
+  assert.equal(additions.length, 40);
+  assert.equal(new Set(additions).size, 40);
+  const meaningsBlock = source.match(/const ladderMeanings = \{([\s\S]*?)\n  \};/);
+  assert.ok(meaningsBlock, 'Word Ladder meanings should exist');
+  const definedWords = new Set([...meaningsBlock[1].matchAll(/^\s*([a-z]+):/gm)].map(match => match[1]));
+  for (const word of additions) {
+    assert.ok(words.has(word), `Missing added word: ${word}`);
+    assert.ok(definedWords.has(word), `Missing definition for added word: ${word}`);
+    assert.ok([...words].some(candidate => differsByOne(word, candidate)), `${word} is isolated`);
+  }
+});
+
+test('generated ladders avoid recently used pairs across sessions', () => {
+  assert.match(source, /const LADDER_RECENT_HISTORY_KEY = 'epiphany-word-ladder-recent-v1';/);
+  assert.match(source, /window\.localStorage\.getItem\(LADDER_RECENT_HISTORY_KEY/);
+  assert.match(source, /const fresh = candidates\.filter\(item => !recent\.has\(\[item\.start, item\.goal\]\.sort\(\)\.join\(':')\)\);/);
+  assert.match(source, /\.slice\(-60\)/);
+  assert.match(source, /rememberLadderPairs\(chosen\);/);
+});
