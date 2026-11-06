@@ -376,28 +376,6 @@
     {prompt:'Forge the word from the letter tiles.',clue:'A person who designs or builds machines and systems.',letters:'NIGENEER',answerWord:'engineer',explain:'An ENGINEER designs, builds, or maintains systems and structures.'},
     {prompt:'Forge the word from the letter tiles.',clue:'To make something better.',letters:'RIPVOME',answerWord:'improve',explain:'To IMPROVE is to make something better.'}
   ];
-  rounds.connections = [
-    {prompt:'Which category connects these four words?',words:['rose','tulip','daisy','lily'],options:['Flowers','Tools','Weather'],answer:0,explain:'Rose, tulip, daisy and lily are all flowers.'},
-    {prompt:'Which category connects these four words?',words:['eagle','sparrow','robin','owl'],options:['Fish','Birds','Mammals'],answer:1,explain:'Eagle, sparrow, robin and owl are all birds.'},
-    {prompt:'Which category connects these four words?',words:['shirt','jacket','socks','scarf'],options:['Things you wear','Tableware','Furniture'],answer:0,explain:'All four are items of clothing.'},
-    {prompt:'Which category connects these four words?',words:['minute','hour','second','day'],options:['Seasons','Units or periods of time','Directions'],answer:1,explain:'Each word names a unit or period of time.'},
-    {prompt:'Which category connects these four words?',words:['whisper','shout','murmur','scream'],options:['Ways of speaking','Ways of moving','Ways of cooking'],answer:0,explain:'All four describe ways of speaking.'},
-    {prompt:'Which category connects these four words?',words:['tiny','small','little','minute'],options:['Very large','Very loud','Small in size'],answer:2,explain:'All four can describe something small; “minute” here is pronounced my-NOOT.'},
-    {prompt:'Which category connects these four words?',words:['hammer','screwdriver','wrench','pliers'],options:['Garden plants','Hand tools','Musical instruments'],answer:1,explain:'These are all common hand tools.'},
-    {prompt:'Which category connects these four words?',words:['copper','iron','silver','gold'],options:['Metals','Fabrics','Grains'],answer:0,explain:'Copper, iron, silver and gold are metals.'},
-    {prompt:'Which category connects these four words?',words:['January','March','July','October'],options:['Months','Continents','Languages'],answer:0,explain:'Each is a month of the year.'},
-    {prompt:'Which category connects these four words?',words:['triangle','square','circle','rectangle'],options:['Kitchen appliances','Geometric shapes','Body parts'],answer:1,explain:'These are all geometric shapes.'},
-    {prompt:'Which category connects these four words?',words:['whale','dolphin','seal','otter'],options:['Aquatic or semi-aquatic mammals','Birds of prey','Reptiles'],answer:0,explain:'These animals are mammals associated with water.'},
-    {prompt:'Which category connects these four words?',words:['boil','fry','bake','grill'],options:['Cooking methods','Weather conditions','Ways to travel'],answer:0,explain:'Boil, fry, bake and grill are ways to cook food.'},
-    {prompt:'Which category connects these four words?',words:['honest','truthful','sincere','candid'],options:['Ways to disagree','Similar meanings about truthfulness','Words for speed'],answer:1,explain:'These words all relate to being truthful or genuine.'},
-    {prompt:'Which category connects these four words?',words:['north','south','east','west'],options:['Compass directions','Musical notes','Months'],answer:0,explain:'North, south, east and west are the four cardinal directions.'},
-    {prompt:'Which category connects these four words?',words:['oak','maple','pine','birch'],options:['Trees','Flowers','Insects'],answer:0,explain:'Oak, maple, pine and birch are types of trees.'},
-    {prompt:'Which category connects these four words?',words:['thermometer','barometer','hygrometer','anemometer'],options:['Weather instruments','Kitchen utensils','Sports equipment'],answer:0,explain:'These instruments measure temperature, air pressure, humidity or wind.'},
-    {prompt:'Which category connects these four words?',words:['novel','poem','play','short story'],options:['Literary forms','Building materials','Computer parts'],answer:0,explain:'A novel, poem, play and short story are forms of literature.'},
-    {prompt:'Which category connects these four words?',words:['ankle','elbow','knee','wrist'],options:['Joints in the body','Types of fruit','Clothing fasteners'],answer:0,explain:'Each word names a joint in the human body.'},
-    {prompt:'Which category connects these four words?',words:['generous','kind','considerate','thoughtful'],options:['Positive qualities','Cooking verbs','Weather words'],answer:0,explain:'These words describe positive qualities in how people treat others.'},
-    {prompt:'Which category connects these four words?',words:['evaporate','condense','freeze','melt'],options:['Changes of state','Ways of listening','Ways to write'],answer:0,explain:'These words describe changes of state in matter.'}
-  ];
   rounds.scramble = [
     {prompt:'Build the sentence in the correct order.',words:['usually','coffee','I','morning','drink','the','in'],options:['Usually coffee I drink in the morning.','I usually drink coffee in the morning.','I drink usually in the coffee morning.'],answer:1,explain:'The natural order is subject + adverb of frequency + verb + object + time phrase.'},
     {prompt:'Build the sentence in the correct order.',words:['already','has','she','finished','work','her'],options:['She has already finished her work.','Already she finished has her work.','She already has finish her work.'],answer:0,explain:'In the present perfect, “already” commonly appears between has and the past participle.'},
@@ -724,6 +702,11 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
       }));
       return assignTranslatorAnswerPositions(round);
     }
+    if (id === 'connections') {
+      const bank = window.EPIPHANY_WORD_CONNECTIONS_BANK;
+      const trainingMode = ['guided','steady','challenge'].includes(level) ? level : 'steady';
+      return bank ? bank.selectRound(trainingMode) : [];
+    }
     if (level === 'guided' && guidedRounds[id]) return guidedRounds[id];
     if (level === 'challenge' && challengeRounds[id]) return challengeRounds[id];
     if (id === 'wordladder') return generateWordLadders(level, 12);
@@ -753,7 +736,7 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
     {id:'translator',num:'02',icon:'⇄',name:'The Bold Translator',tag:'NATURAL ENGLISH',desc:'Choose the sentence a real speaker would use—not a word-for-word translation.',time:'2–3 min'},
     {id:'wordladder',num:'03',icon:'↗',name:'Word Ladder',tag:'SPELLING & LOGIC',desc:'Transform one word into another, changing just one letter per step.',time:'3–5 min'},
     {id:'maze',num:'04',icon:'⌁',name:'The Sound Maze',tag:'LISTENING & PRONUNCIATION',desc:'Listen to the target word and find the matching word to move through the maze.',time:'2–3 min'},
-    {id:'connections',num:'05',icon:'▦',name:'Word Connections',tag:'CATEGORIES & PATTERNS',desc:'Find the category that connects a group of four words.',time:'2–3 min'},
+    {id:'connections',num:'05',icon:'▦',name:'Word Connections',tag:'CATEGORIES & PATTERNS',desc:'Find the category that connects a group of four words.',time:'5–7 min'},
     {id:'scramble',num:'06',icon:'↔',name:'Sentence Scramble',tag:'SENTENCE BUILDING',desc:'Study mixed-up words and identify the natural English sentence.',time:'2–4 min'},
     {id:'forge',num:'07',icon:'✳',name:'Word Forge',tag:'SPELLING & VOCABULARY',desc:'Use a letter set and a clue to identify the word.',time:'2–3 min'},
     {id:'chain',num:'08',icon:'⤳',name:'Chain Reaction',tag:'WORD ASSOCIATION',desc:'Continue a chain by choosing the strongest word association.',time:'2–3 min'}
@@ -1047,10 +1030,12 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
     const pool = activePool || getRoundPool(mode);
     const item = pool[index % pool.length];
     const difficulty = activeDifficulty || difficultyForMode(mode);
-    const roundTarget = mode === 'maze' ? 12 : ({guided:8,steady:10,challenge:12}[difficulty.level] || 10);
+    const roundTarget = mode === 'maze' ? 12 : mode === 'connections' ? 24 : ({guided:8,steady:10,challenge:12}[difficulty.level] || 10);
     const roundNote = mode === 'odd' && pool.length < roundTarget
       ? '<p class="tl-game-instruction">This round is shorter than the '+roundTarget+'-question target because only '+pool.length+' distinct questions are currently available at this level.</p>'
-      : mode === 'translator' && item.adaptiveFallback
+      : mode === 'connections' && pool.length < roundTarget
+        ? '<p class="tl-game-instruction">This round is shorter than the 24-challenge target because the selected bank has fewer reviewed questions available.</p>'
+        : mode === 'translator' && item.adaptiveFallback
         ? '<p class="tl-game-instruction tl-translator-fallback" role="status">Your current level is '+esc(item.requestedCEFRLevel)+'. A '+esc(item.requestedCEFRLevel)+' question bank is not available yet, so this round uses '+esc(item.cefrLevel)+' practice for now.</p>'
         : '';
     locked = false;
@@ -1086,7 +1071,7 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
     if (difficulty.level === 'guided' && ['maze','forge','connections','scramble','chain'].includes(mode)) {
       intro += '<div class="tl-odd-hint tl-guided-support"><button type="button" class="tl-secondary" data-training-hint>Reveal a hint</button><p class="tl-game-instruction" data-training-hint-text hidden></p></div>';
     }
-    root.innerHTML = '<div class="tl-game-head"><div class="tl-game-nav"><button class="tl-back" type="button" data-think-back>← Choose difficulty</button><button class="tl-back tl-home-back" type="button" data-think-home>Think Lab home</button></div><span class="tl-eyebrow">CASE '+String(index+1).padStart(2,'0')+' / '+pool.length+'</span><span class="tl-score">SOLVED <b>'+score+'</b></span></div><div class="tl-game-card"><div class="tl-game-kicker">'+(mode==='odd'?'PATTERN ANALYSIS · '+esc(item.cefrLevel || 'A1'):mode==='detective'?'EVIDENCE BOARD':mode==='translator'?'NATURAL EXPRESSION · '+esc(item.cefrLevel || 'A1'):mode==='wordladder'?'WORD TRANSFORMATION':mode==='forge'?'WORD FORGE':mode==='connections'?'WORD CONNECTIONS':mode==='scramble'?'SENTENCE BUILDING':mode==='chain'?'WORD ASSOCIATION':'LISTENING MAZE · '+esc(selectedMazeCEFR || 'A1'))+'</div><div class="tl-level-tag">'+(difficulty.level==='challenge'?'CHALLENGE':difficulty.level==='steady'?'STEADY':'GUIDED')+'</div><h2>'+esc(mode==='detective'?item.title:mode==='wordladder'?'Transform the word':mode==='maze'?'Find the sound path':item.prompt)+'</h2><p class="tl-game-instruction">'+esc(mode==='odd'?item.why:mode==='translator'?'Read the Arabic sentence, then choose the natural English equivalent.':mode==='wordladder'?'Build a chain of real words. Only one letter may change in each move.':mode==='maze'?'Listen carefully, replay the word if needed, then choose the matching spelling.':mode==='forge'?'Use the available letters and clue to build the word yourself.':mode==='connections'?'Select the four tiles that share the category; distractors are mixed into the board.':mode==='scramble'?'Build a natural English sentence from the mixed-up word bank.':mode==='chain'?'Build a three-link association chain. Each choice becomes the starting point for the next link.':'Reveal the clues and select the conclusion they support.')+'</p>'+intro+roundNote+'<div class="tl-feedback" id="tl-feedback" aria-live="polite" hidden></div><div class="tl-game-actions"><span>ROUND '+(index+1)+' OF '+pool.length+'</span><button class="tl-next" type="button" data-think-next hidden>Next round →</button></div></div>';
+    root.innerHTML = '<div class="tl-game-head"><div class="tl-game-nav"><button class="tl-back" type="button" data-think-back>← Choose difficulty</button><button class="tl-back tl-home-back" type="button" data-think-home>Think Lab home</button></div><span class="tl-eyebrow">CASE '+String(index+1).padStart(2,'0')+' / '+pool.length+'</span><span class="tl-score">SOLVED <b>'+score+'</b></span></div><div class="tl-game-card"><div class="tl-game-kicker">'+(mode==='odd'?'PATTERN ANALYSIS · '+esc(item.cefrLevel || 'A1'):mode==='detective'?'EVIDENCE BOARD':mode==='translator'?'NATURAL EXPRESSION · '+esc(item.cefrLevel || 'A1'):mode==='wordladder'?'WORD TRANSFORMATION':mode==='forge'?'WORD FORGE':mode==='connections'?'WORD CONNECTIONS':mode==='scramble'?'SENTENCE BUILDING':mode==='chain'?'WORD ASSOCIATION':'LISTENING MAZE · '+esc(selectedMazeCEFR || 'A1'))+'</div><div class="tl-level-tag">'+(difficulty.level==='challenge'?'CHALLENGE':difficulty.level==='steady'?'STEADY':'GUIDED')+'</div><h2>'+esc(mode==='detective'?item.title:mode==='wordladder'?'Transform the word':mode==='maze'?'Find the sound path':item.prompt)+'</h2><p class="tl-game-instruction">'+esc(mode==='odd'?item.why:mode==='translator'?'Read the Arabic sentence, then choose the natural English equivalent.':mode==='wordladder'?'Build a chain of real words. Only one letter may change in each move.':mode==='maze'?'Listen carefully, replay the word if needed, then choose the matching spelling.':mode==='forge'?'Use the available letters and clue to build the word yourself.':mode==='connections'?'Find the four words that form one precise shared group. The remaining tiles are carefully selected distractors.':mode==='scramble'?'Build a natural English sentence from the mixed-up word bank.':mode==='chain'?'Build a three-link association chain. Each choice becomes the starting point for the next link.':'Reveal the clues and select the conclusion they support.')+'</p>'+intro+roundNote+'<div class="tl-feedback" id="tl-feedback" aria-live="polite" hidden></div><div class="tl-game-actions"><span>ROUND '+(index+1)+' OF '+pool.length+'</span><button class="tl-next" type="button" data-think-next hidden>Next round →</button></div></div>';
   }
   function chainSteps(item) {
     const start=(item.prompt.match(/chain: ([A-Z]+) →/)||[])[1]||'WORD';
@@ -1117,19 +1102,8 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
     return [{from:start,options:item.options,answer:item.answer,explain:item.explain},...extra.map(([word,options,explain])=>({from:chainPath.length?chainPath[chainPath.length-1]:first,options,answer:options.indexOf(word),explain}))];
   }
   function connectionTiles(item) {
-    const target = new Set(item.words.map(w => w.toLowerCase()));
-    const distractors = [];
-    rounds.connections.forEach(round => {
-      if (round === item) return;
-      round.words.forEach(word => {
-        const key = word.toLowerCase();
-        if (!target.has(key) && !distractors.some(w => w.toLowerCase() === key)) distractors.push(word);
-      });
-    });
-    for (let i=distractors.length-1;i>0;i--) { const j=Math.floor(Math.random()*(i+1)); [distractors[i],distractors[j]]=[distractors[j],distractors[i]]; }
-    const tiles = item.words.concat(distractors.slice(0,12));
-    for (let i=tiles.length-1;i>0;i--) { const j=Math.floor(Math.random()*(i+1)); [tiles[i],tiles[j]]=[tiles[j],tiles[i]]; }
-    return tiles;
+    const bank = window.EPIPHANY_WORD_CONNECTIONS_BANK;
+    return bank ? bank.createBoard(item, selectedTrainingMode) : item.words.slice();
   }
   function speakTarget() { const pool=activePool || getRoundPool('maze');const item=pool[index%pool.length];const speech=window.EpiphanySpeech;if(!speech||typeof speech.speak!=='function'){const fb=root.querySelector('#tl-feedback');if(fb){fb.hidden=false;fb.className='tl-feedback is-wrong';fb.textContent='George voice is not ready. Please try again.';}return;}speech.speak(item.target,{rate:.82,onError:()=>{const fb=root.querySelector('#tl-feedback');if(fb){fb.hidden=false;fb.className='tl-feedback is-wrong';fb.textContent='George voice is temporarily unavailable. Please try again.';}}}); }
   let pickerGameId = null;
@@ -1183,6 +1157,10 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
     activePool=getRoundPool(id,selectedTrainingMode);
     if (id === 'maze' && !activePool.length) {
       showMazeBankUnavailable();
+      return;
+    }
+    if (id === 'connections' && (!activePool.length || !window.EPIPHANY_WORD_CONNECTIONS_BANK)) {
+      root.innerHTML = '<div class="tl-game-card"><div class="tl-game-kicker">WORD CONNECTIONS</div><h2>QUESTION BANK NOT READY</h2><p class="tl-game-instruction">The reviewed Word Connections bank could not be loaded. No sample questions will be shown.</p><button type="button" class="tl-back" data-think-back>← Choose difficulty</button><button type="button" class="tl-back" data-think-home>Think Lab home</button></div>';
       return;
     }
     renderGame();
@@ -1268,11 +1246,18 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
       const fb=root.querySelector('#tl-feedback'),pool=activePool||getRoundPool('connections'),item=pool[index%pool.length];
       if(connectionSelected.length!==4){fb.hidden=false;fb.className='tl-feedback is-wrong';fb.textContent='Select exactly four words before checking.';return;}
       const tiles=[...root.querySelectorAll('[data-connection-tile]')],chosen=connectionSelected.map(i=>tiles.find(btn=>Number(btn.dataset.connectionTile)===i)?.textContent.trim().toLowerCase());
-      const correct=item.words.every(w=>chosen.includes(w.toLowerCase()));
-      if(!correct){roundMistakes++;fb.hidden=false;fb.className='tl-feedback is-wrong';fb.innerHTML='<strong>Not this group yet.</strong><p>Look for four words that share one clear category or relationship. You can change your selection and try again.</p>'+(roundMistakes>=2?'<p>'+esc(adaptiveHint('connections'))+'</p>':'');return;}
+      const bank=window.EPIPHANY_WORD_CONNECTIONS_BANK;
+      const matched=bank?bank.matchGroup(chosen,selectedTrainingMode):null;
+      if(!matched){
+        roundMistakes++;
+        if(window.EpiphanyThinkLab)window.EpiphanyThinkLab.recordResult('vocabulary','connections',false,false);
+        fb.hidden=false;fb.className='tl-feedback is-wrong';
+        fb.innerHTML='<strong>Not this group yet.</strong><p>These four words do not form one of the reviewed groups. You can change your selection and try again.</p>'+(roundMistakes>=2?'<p>'+esc(adaptiveHint('connections'))+'</p>':'');
+        return;
+      }
       locked=true;score++;root.querySelectorAll('[data-connection-tile],[data-connection-check],[data-connection-reset]').forEach(el=>el.disabled=true);
       if(window.EpiphanyThinkLab)window.EpiphanyThinkLab.recordResult('vocabulary','connections',true,index===pool.length-1);
-      fb.hidden=false;fb.className='tl-feedback is-correct';fb.innerHTML='<strong>✓ Group found!</strong><p>'+esc(item.explain)+'</p>';
+      fb.hidden=false;fb.className='tl-feedback is-correct';fb.innerHTML='<strong>✓ Group found!</strong><p>'+esc(matched.explain)+'</p>';
       const next=root.querySelector('[data-think-next]');if(next)next.hidden=false;return;
     }
     const forgeTile=e.target.closest('[data-forge-tile]');

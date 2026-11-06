@@ -6,6 +6,7 @@ const vm = require('node:vm');
 const bank = require('../odd-one-out-bank.js');
 const soundMazeTools = require('../sound-maze-bank.js');
 const source = fs.readFileSync(path.join(__dirname, '..', 'think-lab.js'), 'utf8');
+const connectionBankSource = fs.readFileSync(path.join(__dirname, '..', 'word-connections-bank.js'), 'utf8');
 
 const gameIds = ['odd','translator','wordladder','maze','connections','scramble','forge','chain'];
 const trainingModes = ['guided','steady','challenge'];
@@ -35,6 +36,8 @@ function makeSoundMazeFixture() {
 }
 
 function createHarness(options = {}) {
+  const connectionContext = vm.createContext({window:{}});
+  vm.runInContext(connectionBankSource, connectionContext, {filename:'word-connections-bank.js',timeout:5000});
   const listeners = {};
   const root = {
     innerHTML: '',
@@ -46,6 +49,7 @@ function createHarness(options = {}) {
   const window = {
     EPIPHANY_ODD_ONE_OUT_BANK: bank,
     EPIPHANY_SOUND_MAZE_TOOLS: soundMazeTools,
+    EPIPHANY_WORD_CONNECTIONS_BANK: connectionContext.window.EPIPHANY_WORD_CONNECTIONS_BANK,
     ...(options.soundMazeBank ? {EPIPHANY_SOUND_MAZE_BANK:options.soundMazeBank} : {}),
     speechSynthesis: {cancel(){},speak(){}},
     EpiphanyThinkLab: {
@@ -161,4 +165,21 @@ test('active game screen offers a direct Think Lab home route without removing d
     assert.match(harness.root.innerHTML, /Don’t just play/);
     assert.match(harness.root.innerHTML, /data-think-game=/);
   }
+});
+
+
+test('Word Connections loads 24 distinct challenges for each independently selected mode', () => {
+  for (const trainingMode of trainingModes) {
+    const harness = createHarness();
+    harness.click('[data-think-game]', {thinkGame:'connections'});
+    harness.click('[data-think-training-mode]', {thinkTrainingMode:trainingMode,thinkTrainingGame:'connections'});
+    assert.ok(harness.root.innerHTML.includes('class="tl-level-tag">' + trainingMode.toUpperCase() + '</div>'));
+    assert.match(harness.root.innerHTML, /ROUND 1 OF 24/);
+    assert.equal((harness.root.innerHTML.match(/data-connection-tile=/g) || []).length, 16);
+  }
+});
+
+test('Word Connections records incorrect complete-group attempts instead of tracking only wins', () => {
+  assert.match(source, /recordResult\\('vocabulary','connections',false,false\\)/);
+  assert.match(source, /bank\\.matchGroup\\(chosen,selectedTrainingMode\\)/);
 });
