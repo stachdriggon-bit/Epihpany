@@ -313,6 +313,42 @@ test('main navigation tabs open without uncaught page errors', { timeout: 18 * 6
         assert.equal(await gameCard.locator('[data-think-answer]').first().isVisible(), true, 'the first answer must remain visible on mobile');
         checkpoint('thinklab: mobile question checks passed');
 
+        checkpoint('thinklab: returning to game list to open Sound Maze');
+        await page.locator('#thinklab-view [data-think-back]').click();
+        await page.locator('#thinklab-view [data-think-back]').click();
+        await page.setViewportSize({width:1280,height:900});
+        assert.equal(await page.locator('#thinklab-view [data-think-game="maze"]').isVisible(), true,
+          'The Sound Maze should be available from the Think Lab list');
+        await page.locator('#thinklab-view [data-think-game="maze"]').click();
+        const mazeModePicker = page.locator('#thinklab-view .tl-mode-picker');
+        await mazeModePicker.waitFor({state:'visible',timeout:5000});
+        await mazeModePicker.locator('[data-think-training-mode="guided"]').click();
+        const mazeLevelPicker = page.locator('#thinklab-view [data-sound-maze-level]');
+        await mazeLevelPicker.first().waitFor({state:'visible',timeout:5000});
+        assert.equal(await mazeLevelPicker.count(), 6, 'Sound Maze should offer all six CEFR levels');
+        await page.locator('#thinklab-view [data-sound-maze-level="A1"]').click();
+        const mazeCard = page.locator('#thinklab-view .tl-game-card');
+        await mazeCard.waitFor({state:'visible',timeout:5000});
+        checkpoint('thinklab: Sound Maze round opened; checking the real question bank');
+        assert.ok(requested.some(path => path.endsWith('/sound-maze-content.js')),
+          'the reviewed Sound Maze content bank should load with Think Lab');
+        assert.match(await mazeCard.locator('.tl-game-kicker').innerText(), /LISTENING MAZE · A1/);
+        assert.equal(await mazeCard.locator('.tl-maze-target').count(), 1,
+          'Sound Maze should show its listening prompt and replay control');
+        assert.equal(await mazeCard.locator('[data-think-answer]').count(), 4,
+          'Sound Maze should render four spelling choices');
+        const mazeChoices = await mazeCard.locator('[data-think-answer]').allInnerTexts();
+        assert.equal(new Set(mazeChoices.map(value => value.replace(/^\\s*[A-D]\\s*/, '').trim().toLowerCase())).size, 4,
+          'Sound Maze choices should be distinct');
+        await mazeCard.locator('[data-think-answer]').first().click();
+        assert.equal(await mazeCard.locator('#tl-feedback').isVisible(), true,
+          'answering a Sound Maze question should reveal educational feedback');
+        assert.match(await mazeCard.locator('#tl-feedback').innerText(), /Target word:/,
+          'Sound Maze feedback should identify the spoken target after the answer');
+        assert.equal(await mazeCard.locator('[data-think-next]').isVisible(), true,
+          'Sound Maze feedback should unlock the next question');
+        checkpoint('thinklab: Sound Maze content, choices and feedback verified');
+
       }
       if (view === 'casebound') {
         assert.ok(requested.some(path => path.endsWith('/language-detective-assessment-schemas.js')), 'CASEBOUND schemas should load on first open');
