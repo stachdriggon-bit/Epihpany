@@ -81,12 +81,16 @@
     C2: [
       {id:'C2-CON-01',relationship:'connotation',words:['discerning','meticulous','scrupulous','pedantic'],answer:3,explain:'Discerning, meticulous and scrupulous can praise good judgement, care or integrity. Pedantic is more often critical, suggesting excessive attention to minor rules or details.',challengeExplain:'Astute, scrupulous and meticulous can praise judgement, care or thoroughness. Finicky is more likely to criticize someone for being excessively particular about small details.',hint:'Which word most readily carries a mildly dismissive tone?',context:'Subtle evaluation of a person’s standards.'},
       {id:'C2-REG-01',relationship:'register-tone',words:['deceased','late','departed','dead'],answer:3,explain:'Deceased, late and departed are softened or euphemistic ways to refer to someone who has died. Dead is direct and can sound blunt in sensitive contexts.',challengeExplain:'Passed away, deceased and departed are softened or euphemistic expressions for death. Died is more direct and may sound blunt in especially sensitive contexts.',hint:'Which word is the most direct and least euphemistic?',context:'Sensitive formal communication.'},
-      {id:'C2-COL-01',relationship:'collocations',words:['bitterly','deeply','profoundly','vehemently'],answer:3,explain:'Bitterly regret, deeply regret and profoundly regret are established combinations. Vehemently is more naturally paired with verbs such as deny or oppose.',challengeExplain:'Bitterly regret, deeply regret and profoundly regret are established combinations. Vociferously is more naturally used with verbs such as protest, object or complain.',hint:'Look for the most established adverb–verb pairings, not merely grammatical ones.',context:'Nuanced adverb–verb collocation.'},
-      {id:'C2-CTX-01',relationship:'synonyms-antonyms',words:['prohibit','forbid','ban','permit'],answer:3,explain:'Prohibit, forbid and ban all mean to prevent something from being done. Permit means to allow it.',challengeExplain:"Outlaw, bar and proscribe all mean to prohibit or prevent something. Allow means to permit it.",hint:'Compare the direction of each verb: restriction or permission.',context:'Formal and everyday verbs for prohibition and permission.'},
+      {id:'C2-COL-01',relationship:'collocations',words:['bitterly regret','deeply regret','profoundly regret','vehemently regret'],answer:3,explain:'Bitterly regret, deeply regret and profoundly regret are established adverb–verb collocations. Vehemently regret is not a natural combination; vehemently more often modifies verbs such as deny or oppose.',challengeExplain:'Bitterly regret, deeply regret and profoundly regret are established combinations. Vociferously regret is not idiomatic; vociferously more naturally modifies verbs such as protest, object or complain.',hint:'Compare the complete phrases: each option contains the verb “regret”.',context:'Nuanced adverb–verb collocation.'},
+      {id:'C2-CTX-01',relationship:'synonyms-antonyms',words:['prohibit','forbid','ban','permit'],answer:3,explain:'Prohibit, forbid and ban all mean to prevent an action or activity. Permit means to allow it, so it expresses the opposite meaning.',challengeExplain:"Outlaw, bar and proscribe all mean to prohibit or prevent something. Allow means to permit it.",hint:'Compare the direction of each verb: restriction or permission.',context:'Formal and everyday verbs for prohibition and permission.'},
       {id:'C2-SYN-01',relationship:'synonyms-antonyms',words:['intransigent','unyielding','obdurate','amenable'],answer:3,explain:'Intransigent, unyielding and obdurate describe someone unwilling to change their position. Amenable suggests willingness to agree or be influenced.',challengeExplain:"Obstinate, inflexible and intransigent describe an unwillingness to change one’s position. Compliant suggests willingness to obey or adapt.",hint:'Which adjective suggests openness to persuasion?',context:'Describing a person’s response to negotiation.'},
       {id:'C2-CAUSE-01',relationship:'cause-effect',words:['exacerbate','aggravate','compound','ameliorate'],answer:3,explain:'Exacerbate, aggravate and compound mean to make a problem or situation worse. Ameliorate means to improve it.',challengeExplain:"Worsen, intensify and magnify can increase the severity or scale of a problem. Alleviate means to reduce its severity.",hint:'Three worsen a situation; one improves it.',context:'Precise verbs for changes in a situation.'},
-      {id:'C2-WC-01',relationship:'word-class',words:['albeit','though','although','despite'],answer:3,explain:'Albeit, though and although can introduce a concessive clause or idea. Despite is a preposition and is followed by a noun phrase or -ing form, not a finite clause.',challengeExplain:'Albeit, though and although can introduce a concessive clause. In spite of is a prepositional phrase followed by a noun phrase or an -ing form, not a finite clause.',hint:'Which word has a different grammatical pattern after it?',context:'Fine distinctions in clause structure.'},
-      {id:'C2-SYN-02',relationship:'synonyms-antonyms',words:['rancour','resentment','animosity','reluctance'],answer:3,explain:'Rancour, resentment and animosity are forms of ill will or hostility. Reluctance is unwillingness to act and does not itself imply hostility.',challengeExplain:"Hostility, resentment and rancour all involve ill will or antagonism. Apathy is a lack of interest or emotional involvement.",hint:'Which noun describes hesitation rather than hostility?',context:'Fine shades among abstract nouns.'}
+      {id:'C2-WC-01',relationship:'word-class',words:['although','though','even though','despite'],answer:3,explain:'Although, though and even though are subordinating conjunctions followed by a clause with a subject and verb. Despite is a preposition followed by a noun phrase or an -ing form.',challengeExplain:'Whereas, while and even if introduce clauses. In spite of is a prepositional phrase followed by a noun phrase or an -ing form.',hint:'Which option is followed by a noun phrase or an -ing form rather than a finite clause?',context:'Fine distinctions in clause structure.'},
+      {id:'C2-SYN-02',relationship:'synonyms-antonyms',words:['rancour','resentment','animosity','reluctance'],answer:3,explain:'Rancour, resentment and animosity are forms of ill will or hostility. Reluctance is unwillingness to act and does not itself imply hostility.',challengeExplain:"Hostility, resentment and rancour all involve ill will or antagonism. Apathy is a lack of interest or emotional involvement.",hint:'Which noun describes hesitation rather than hostility?',context:'Fine shades among abstract nouns.'},
+      {id:'C2-CAT-02',relationship:'category',words:['epigram','aphorism','maxim','anthology'],answer:3,explain:'An epigram, aphorism and maxim are concise statements expressing an idea or general truth. An anthology is a collection of selected works, not a concise saying.',challengeExplain:'A proverb, adage and dictum are concise statements that express a general truth or principle. A compendium is a collection of information, not a saying.',hint:'Which three are concise statements rather than collections of material?',context:'Literary forms and reference works.'},
+      {id:'C2-FUN-02',relationship:'function',words:['spectrometer','photometer','calorimeter','technician'],answer:3,explain:'A spectrometer, photometer and calorimeter are instruments used to measure or analyse physical properties. A technician is a person who may operate such equipment.',challengeExplain:'A dosimeter, manometer and tensiometer are measuring instruments. An operator is a person who may use equipment, not an instrument.',hint:'Which three are measuring devices rather than people?',context:'Scientific instruments and their purpose.'},
+      {id:'C2-PW-02',relationship:'part-whole',words:['clause','proviso','subsection','contract'],answer:3,explain:'A clause, proviso and subsection can each form a component of a legal contract. A contract is the complete agreement containing such components.',challengeExplain:'An article, schedule and annex can form parts of a legal agreement. The agreement itself is the complete document, not one of its components.',hint:'Which three can be sections or components within the complete legal document?',context:'The structure of formal legal agreements.'},
+      {id:'C2-CTX-02',relationship:'contextual-meaning',words:['material','pertinent','germane','tangible'],answer:3,explain:'In a court case, material evidence is evidence relevant to the matter being decided. Pertinent and germane also mean relevant; tangible means physically perceptible or touchable.',challengeExplain:'In legal or analytical discussion, salient, relevant and germane describe information that matters to the issue. Physical refers to something material or bodily, not its relevance.',hint:'Read “material” in the context of evidence presented in court.',context:'Interpreting a word whose meaning depends on a legal context.'}
     ]
   };
 
@@ -441,10 +445,10 @@
         "died"
     ],
     "C2-COL-01": [
-        "bitterly",
-        "deeply",
-        "profoundly",
-        "vociferously"
+        "bitterly regret",
+        "deeply regret",
+        "profoundly regret",
+        "vociferously regret"
     ],
     "C2-CTX-01": [
         "outlaw",
@@ -465,9 +469,9 @@
         "alleviate"
     ],
     "C2-WC-01": [
-        "albeit",
-        "though",
-        "although",
+        "whereas",
+        "while",
+        "even if",
         "in spite of"
     ],
     "C2-SYN-02": [
@@ -499,6 +503,30 @@
         "engender",
         "spark",
         "mitigate"
+    ],
+    "C2-CTX-02": [
+        "salient",
+        "relevant",
+        "germane",
+        "physical"
+    ],
+    "C2-CAT-02": [
+        "proverb",
+        "adage",
+        "dictum",
+        "compendium"
+    ],
+    "C2-FUN-02": [
+        "dosimeter",
+        "manometer",
+        "tensiometer",
+        "operator"
+    ],
+    "C2-PW-02": [
+        "article",
+        "schedule",
+        "annex",
+        "agreement"
     ]
 };
 
