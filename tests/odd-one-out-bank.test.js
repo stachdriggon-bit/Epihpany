@@ -10,7 +10,7 @@ const appSource = fs.readFileSync(path.join(__dirname, '..', 'app.js'), 'utf8');
 test('Odd One Out has independent banks for all six CEFR levels', () => {
   for (const level of ['A1','A2','B1','B2','C1','C2']) {
     assert.ok(Array.isArray(bank.banks[level]));
-    assert.equal(bank.banks[level].length, ['A1','A2','B1','B2'].includes(level) ? 12 : 8);
+    assert.equal(bank.banks[level].length, ['A1','A2','B1','B2','C1'].includes(level) ? 12 : 8);
     assert.ok(bank.banks[level].every(item => item.id.startsWith(level + '-')));
   }
 });
@@ -266,6 +266,43 @@ test('B2 expansion provides 12 distinct questions and full target-sized rounds',
     };
     assert.equal(challenge.words[challenge.answer],expectedOutsiders[id]);
   }
+});
+
+test('C1 expansion provides 12 distinct questions and full target-sized rounds', () => {
+  assert.equal(bank.banks.C1.length,12);
+  for (const [mode,target] of [['guided',8],['steady',10],['challenge',12]]) {
+    const round=bank.selectRound('C1',mode,[],()=>0.37);
+    assert.equal(round.questions.length,target);
+    assert.equal(round.shortened,false);
+    assert.equal(new Set(round.questions.map(question=>question.id)).size,target);
+  }
+  const expectedOutsiders = {
+    'C1-CAT-02':'collection',
+    'C1-FUN-02':'geologist',
+    'C1-WC-02':'implicitly',
+    'C1-CAUSE-02':'alleviate'
+  };
+  for (const [id,outsider] of Object.entries(expectedOutsiders)) {
+    const item=bank.banks.C1.find(question=>question.id===id);
+    assert.ok(item,id+' should be in the C1 bank');
+    assert.ok(item.challengeExplain);
+    const challenge=bank.selectRound('C1','challenge',[],()=>0.31).questions.find(question=>question.id===id);
+    assert.ok(challenge);
+    assert.notDeepEqual(challenge.words.slice().sort(),item.words.slice().sort());
+    assert.equal(challenge.words[challenge.answer],outsider);
+    assert.equal(challenge.explain,item.challengeExplain);
+  }
+});
+
+test('C1 collocation and part-whole questions avoid ambiguous groupings', () => {
+  const collocation=bank.banks.C1.find(question=>question.id==='C1-COL-01');
+  assert.deepEqual(collocation.words,['raise','lodge','voice','commit']);
+  assert.equal(collocation.words[collocation.answer],'commit');
+  const collocationChallenge=bank.selectRound('C1','challenge',[],()=>0.31).questions.find(q=>q.id==='C1-COL-01');
+  assert.equal(collocationChallenge.words[collocationChallenge.answer],'perform');
+  const partWhole=bank.banks.C1.find(question=>question.id==='C1-PW-01');
+  assert.deepEqual(partWhole.words,['preface','appendix','index','monograph']);
+  assert.equal(partWhole.words[partWhole.answer],'monograph');
 });
 
 test('A1-SYN-01 uses beginner-friendly vocabulary in both modes', () => {
