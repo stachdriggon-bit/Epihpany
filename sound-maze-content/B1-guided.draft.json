@@ -2,7 +2,7 @@
   "level": "B1",
   "mode": "guided",
   "status": "draft",
-  "version": 1,
+  "version": 2,
   "pronunciation_reference": "General American",
   "description": "Guided B1 content batch for The Sound Maze. Each target is spoken aloud; the learner selects its spelling. Draft content is not wired into the live game.",
   "questions": [
@@ -38,12 +38,12 @@
       "target": "damage",
       "options": [
         "message",
-        "manage",
+        "muddle",
         "damage",
         "village"
       ],
       "answer": "damage",
-      "explain": "Damage has the stressed /æ/ vowel. Message has /ɛ/, village has /ɪ/, while manage also has /æ/ but begins with a different consonant and has a different ending."
+      "explain": "Damage has /æ/ in its first syllable. Message has /ɛ/, muddle has /ʌ/, and village has /ɪ/."
     },
     {
       "id": "SM-B1-G-004",
