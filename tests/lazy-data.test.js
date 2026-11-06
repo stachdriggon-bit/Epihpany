@@ -469,11 +469,11 @@ test('background optional loads pause while constrained, resume once, and never 
   policy = { ...policy, allowSpeculativePreload: false, deferNonEssentialWork: true };
   const explicit = context.window.EPIPHANY_LAZY_LOAD('world');
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[6].split('?')[0], 'data-world.js',
+  assert.equal(requested[7].split('?')[0], 'data-world.js',
     'explicit navigation must bypass background deferral');
-  scripts[6].onload();
-  await new Promise(resolve => setImmediate(resolve));
   scripts[7].onload();
+  await new Promise(resolve => setImmediate(resolve));
+  scripts[8].onload();
   await explicit;
 });
 
