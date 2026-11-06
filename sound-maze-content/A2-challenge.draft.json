@@ -2,7 +2,7 @@
   "level": "A2",
   "mode": "challenge",
   "status": "draft",
-  "version": 2,
+  "version": 3,
   "pronunciation_reference": "General American",
   "description": "Challenge A2 content batch for The Sound Maze. Each target is spoken aloud; the learner selects its spelling. Draft content is not wired into the live game.",
   "questions": [
@@ -53,10 +53,10 @@
         "supper",
         "sugar",
         "river",
-        "singer"
+        "finger"
       ],
       "answer": "sugar",
-      "explain": "Sugar begins with /ʃ/, while supper begins with /s/, river with /r/, and singer with /s/; the first consonant sound distinguishes sugar from the other choices."
+      "explain": "Sugar begins with /ʃ/. Supper begins with /s/, river with /r/, and finger with /f/."
     },
     {
       "id": "SM-A2-C-005",
