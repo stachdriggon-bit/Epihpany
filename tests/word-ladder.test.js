@@ -69,9 +69,9 @@ test('the lake-to-belt example has a complete route in the word bank', () => {
 });
 
 test('every bank word is defined and can take part in at least one ladder', () => {
-  const meaningsBlock = source.match(/const ladderMeanings = \\{([\\s\\S]*?)\\n  \\};/);
+  const meaningsBlock = source.match(/const ladderMeanings = \{([\s\S]*?)\n  \};/);
   assert.ok(meaningsBlock, 'Word Ladder meanings should exist');
-  const definedWords = new Set([...meaningsBlock[1].matchAll(/^\\s*([a-z]+):/gm)].map(match => match[1]));
+  const definedWords = new Set([...meaningsBlock[1].matchAll(/^\s*([a-z]+):/gm)].map(match => match[1]));
 
   for (const word of words) {
     assert.ok(definedWords.has(word), `Missing definition for ${word}`);
@@ -86,9 +86,18 @@ test('difficulty bands are distinct and each can generate enough solvable puzzle
     steady: [3, 4],
     challenge: [5, 7]
   };
+  const generatorBlock = source.match(/function generateWordLadders\\(level, count = 12\\) \\{([\\s\\S]*?)\\n    const candidates/);
+  assert.ok(generatorBlock, 'Word Ladder generator should exist');
+  assert.match(generatorBlock[1], /const minSteps = level === 'challenge' \\? 5 : level === 'steady' \\? 3 : 1;/);
+  assert.match(generatorBlock[1], /const maxSteps = level === 'guided' \\? 2 : level === 'steady' \\? 4 : 7;/);
+
   const occupiedSteps = new Set();
 
   for (const [level, [minSteps, maxSteps]] of Object.entries(ranges)) {
+    for (let steps = minSteps; steps <= maxSteps; steps++) {
+      assert.ok(!occupiedSteps.has(steps), `Step count ${steps} overlaps difficulty bands`);
+      occupiedSteps.add(steps);
+    }
     let count = 0;
     for (const start of words) {
       const distances = new Map([[start, 0]]);
@@ -103,8 +112,6 @@ test('difficulty bands are distinct and each can generate enough solvable puzzle
       }
       for (const [goal, steps] of distances) {
         if (goal === start || steps < minSteps || steps > maxSteps) continue;
-        assert.ok(!occupiedSteps.has(level + ':' + steps));
-        occupiedSteps.add(level + ':' + steps);
         count++;
       }
     }
