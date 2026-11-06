@@ -404,7 +404,31 @@
         "chapter",
         "book"
     ],
-    "C1-CAT-02": [\n        "haiku",\n        "limerick",\n        "villanelle",\n        "collection"\n    ],\n    "C1-FUN-02": [\n        "seismograph",\n        "thermometer",\n        "altimeter",\n        "geologist"\n    ],\n    "C1-WC-02": [\n        "implicit",\n        "ambivalent",\n        "indeterminate",\n        "implicitly"\n    ],\n    "C1-CAUSE-02": [\n        "intensify",\n        "compound",\n        "heighten",\n        "alleviate"\n    ],\n    "C2-CON-01": [
+    "C1-CAT-02": [
+        "haiku",
+        "limerick",
+        "villanelle",
+        "collection"
+    ],
+    "C1-FUN-02": [
+        "seismograph",
+        "thermometer",
+        "altimeter",
+        "geologist"
+    ],
+    "C1-WC-02": [
+        "implicit",
+        "ambivalent",
+        "indeterminate",
+        "implicitly"
+    ],
+    "C1-CAUSE-02": [
+        "intensify",
+        "compound",
+        "heighten",
+        "alleviate"
+    ],
+    "C2-CON-01": [
         "astute",
         "scrupulous",
         "meticulous",
