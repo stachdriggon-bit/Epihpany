@@ -350,6 +350,7 @@
   });
 
   let selectedTranslatorCEFR = 'adaptive';
+  let selectedMazeCEFR = null;
   let selectedTrainingMode = null;
   let mode = null, index = 0, score = 0, locked = false, clueCount = 0, oddHintStep = 0, ladderPath = [], ladderWordNote = null, ladderMistakeRecorded = false, roundMistakes = 0, activePool = null, activeDifficulty = null, forgePlaced = [], scramblePlaced = [], connectionSelected = [], chainStepIndex = 0, chainPath = [];
 
@@ -666,6 +667,13 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
 
   function getRoundPool(id, selectedLevel) {
     const level = selectedLevel || difficultyForMode(id).level;
+    if (id === 'maze') {
+      const tools = window.EPIPHANY_SOUND_MAZE_TOOLS;
+      const bank = window.EPIPHANY_SOUND_MAZE_BANK;
+      const trainingMode = ['guided','steady','challenge'].includes(level) ? level : 'steady';
+      if (!tools || !bank) return [];
+      return tools.selectRound(bank, selectedMazeCEFR || 'A1', trainingMode).questions;
+    }
     if (id === 'odd' && window.EPIPHANY_ODD_ONE_OUT_BANK) {
       const bridge = window.EpiphanyThinkLab;
       const cefr = bridge && typeof bridge.getCEFRLevel === 'function' ? bridge.getCEFRLevel() : 'A1';
@@ -1039,7 +1047,7 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
     const pool = activePool || getRoundPool(mode);
     const item = pool[index % pool.length];
     const difficulty = activeDifficulty || difficultyForMode(mode);
-    const roundTarget = {guided:8,steady:10,challenge:12}[difficulty.level] || 10;
+    const roundTarget = mode === 'maze' ? 12 : ({guided:8,steady:10,challenge:12}[difficulty.level] || 10);
     const roundNote = mode === 'odd' && pool.length < roundTarget
       ? '<p class="tl-game-instruction">This round is shorter than the '+roundTarget+'-question target because only '+pool.length+' distinct questions are currently available at this level.</p>'
       : mode === 'translator' && item.adaptiveFallback
@@ -1078,7 +1086,7 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
     if (difficulty.level === 'guided' && ['maze','forge','connections','scramble','chain'].includes(mode)) {
       intro += '<div class="tl-odd-hint tl-guided-support"><button type="button" class="tl-secondary" data-training-hint>Reveal a hint</button><p class="tl-game-instruction" data-training-hint-text hidden></p></div>';
     }
-    root.innerHTML = '<div class="tl-game-head"><button class="tl-back" type="button" data-think-back>'+'← Choose difficulty'+'</button><span class="tl-eyebrow">CASE '+String(index+1).padStart(2,'0')+' / '+pool.length+'</span><span class="tl-score">SOLVED <b>'+score+'</b></span></div><div class="tl-game-card"><div class="tl-game-kicker">'+(mode==='odd'?'PATTERN ANALYSIS · '+esc(item.cefrLevel || 'A1'):mode==='detective'?'EVIDENCE BOARD':mode==='translator'?'NATURAL EXPRESSION · '+esc(item.cefrLevel || 'A1'):mode==='wordladder'?'WORD TRANSFORMATION':mode==='forge'?'WORD FORGE':mode==='connections'?'WORD CONNECTIONS':mode==='scramble'?'SENTENCE BUILDING':mode==='chain'?'WORD ASSOCIATION':'LISTENING MAZE')+'</div><div class="tl-level-tag">'+(difficulty.level==='challenge'?'CHALLENGE':difficulty.level==='steady'?'STEADY':'GUIDED')+'</div><h2>'+esc(mode==='detective'?item.title:mode==='wordladder'?'Transform the word':mode==='maze'?'Find the sound path':item.prompt)+'</h2><p class="tl-game-instruction">'+esc(mode==='odd'?item.why:mode==='translator'?'Read the Arabic sentence, then choose the natural English equivalent.':mode==='wordladder'?'Build a chain of real words. Only one letter may change in each move.':mode==='maze'?'Listen carefully, replay the word if needed, then choose the matching spelling.':mode==='forge'?'Use the available letters and clue to build the word yourself.':mode==='connections'?'Select the four tiles that share the category; distractors are mixed into the board.':mode==='scramble'?'Build a natural English sentence from the mixed-up word bank.':mode==='chain'?'Build a three-link association chain. Each choice becomes the starting point for the next link.':'Reveal the clues and select the conclusion they support.')+'</p>'+intro+roundNote+'<div class="tl-feedback" id="tl-feedback" aria-live="polite" hidden></div><div class="tl-game-actions"><span>ROUND '+(index+1)+' OF '+pool.length+'</span><button class="tl-next" type="button" data-think-next hidden>Next round →</button></div></div>';
+    root.innerHTML = '<div class="tl-game-head"><button class="tl-back" type="button" data-think-back>'+'← Choose difficulty'+'</button><span class="tl-eyebrow">CASE '+String(index+1).padStart(2,'0')+' / '+pool.length+'</span><span class="tl-score">SOLVED <b>'+score+'</b></span></div><div class="tl-game-card"><div class="tl-game-kicker">'+(mode==='odd'?'PATTERN ANALYSIS · '+esc(item.cefrLevel || 'A1'):mode==='detective'?'EVIDENCE BOARD':mode==='translator'?'NATURAL EXPRESSION · '+esc(item.cefrLevel || 'A1'):mode==='wordladder'?'WORD TRANSFORMATION':mode==='forge'?'WORD FORGE':mode==='connections'?'WORD CONNECTIONS':mode==='scramble'?'SENTENCE BUILDING':mode==='chain'?'WORD ASSOCIATION':'LISTENING MAZE · '+esc(selectedMazeCEFR || 'A1'))+'</div><div class="tl-level-tag">'+(difficulty.level==='challenge'?'CHALLENGE':difficulty.level==='steady'?'STEADY':'GUIDED')+'</div><h2>'+esc(mode==='detective'?item.title:mode==='wordladder'?'Transform the word':mode==='maze'?'Find the sound path':item.prompt)+'</h2><p class="tl-game-instruction">'+esc(mode==='odd'?item.why:mode==='translator'?'Read the Arabic sentence, then choose the natural English equivalent.':mode==='wordladder'?'Build a chain of real words. Only one letter may change in each move.':mode==='maze'?'Listen carefully, replay the word if needed, then choose the matching spelling.':mode==='forge'?'Use the available letters and clue to build the word yourself.':mode==='connections'?'Select the four tiles that share the category; distractors are mixed into the board.':mode==='scramble'?'Build a natural English sentence from the mixed-up word bank.':mode==='chain'?'Build a three-link association chain. Each choice becomes the starting point for the next link.':'Reveal the clues and select the conclusion they support.')+'</p>'+intro+roundNote+'<div class="tl-feedback" id="tl-feedback" aria-live="polite" hidden></div><div class="tl-game-actions"><span>ROUND '+(index+1)+' OF '+pool.length+'</span><button class="tl-next" type="button" data-think-next hidden>Next round →</button></div></div>';
   }
   function chainSteps(item) {
     const start=(item.prompt.match(/chain: ([A-Z]+) →/)||[])[1]||'WORD';
@@ -1141,6 +1149,22 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
     ];
     root.innerHTML = '<div class="tl-game-head"><button class="tl-back" type="button" data-think-back>← All cases</button><span class="tl-eyebrow">CHOOSE YOUR APPROACH</span></div><div class="tl-game-card tl-mode-picker"><div class="tl-game-kicker">'+esc(title.toUpperCase())+' · TRAINING MODE</div><h2>How would you like to play?</h2><p class="tl-game-instruction">Choose the amount of guidance you want. Some games also use different question sets for each mode; others adapt their hints and support. Your English level is kept separate from this choice.</p><div class="tl-mode-grid">'+modes.map(item => '<button type="button" class="tl-mode-choice" data-think-training-mode="'+item.id+'" data-think-training-game="'+id+'"><span class="tl-mode-tag">'+item.tag+'</span><strong>'+item.name+'</strong><span>'+item.description+'</span><b>Choose '+item.name+' →</b></button>').join('')+'</div></div>';
   }
+  function showMazeLevelPicker() {
+    pickerGameId = 'maze';
+    pickerStage = 'level';
+    mode = null;
+    activePool = null;
+    const bridge = window.EpiphanyThinkLab;
+    const savedLevel = bridge && typeof bridge.getSoundMazeCEFR === 'function' ? bridge.getSoundMazeCEFR() : null;
+    const currentLevel = bridge && typeof bridge.getCEFRLevel === 'function' ? bridge.getCEFRLevel() : 'A1';
+    selectedMazeCEFR = savedLevel || currentLevel || 'A1';
+    const levels = ['A1','A2','B1','B2','C1','C2'];
+    root.innerHTML = '<div class="tl-game-head"><button class="tl-back" type="button" data-think-back>← Choose training mode</button><span class="tl-eyebrow">THE SOUND MAZE</span></div><div class="tl-game-card"><div class="tl-game-kicker">CHOOSE YOUR ENGLISH LEVEL</div><h2>Which level would you like to practise?</h2><p class="tl-game-instruction">Choose the CEFR level independently of Guided, Steady or Challenge. Your selection is saved with your learner preferences.</p><div class="tl-answer-options">'+levels.map(level => '<button type="button" class="tl-option" data-sound-maze-level="'+level+'" aria-pressed="'+(selectedMazeCEFR===level?'true':'false')+'"><strong>'+level+'</strong><span>'+(selectedMazeCEFR===level?'Selected':'Choose this level')+'</span></button>').join('')+'</div></div>';
+  }
+  function showMazeBankUnavailable() {
+    pickerStage = 'level';
+    root.innerHTML = '<div class="tl-game-head"><button class="tl-back" type="button" data-think-back>← Back</button><span class="tl-eyebrow">THE SOUND MAZE · '+esc(selectedMazeCEFR)+'</span></div><div class="tl-game-card"><div class="tl-game-kicker">QUESTION BANK NOT READY</div><h2>Your level is saved.</h2><p class="tl-game-instruction">The approved '+esc(selectedMazeCEFR)+' question bank has not been connected to the game yet. The temporary sample questions are intentionally hidden so they are not mistaken for the approved content.</p></div>';
+  }
   function showTranslatorLevelPicker() {
     pickerGameId = 'translator';
     pickerStage = 'level';
@@ -1157,6 +1181,10 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
     const hintLevel = selectedTrainingMode === 'guided' ? 2 : selectedTrainingMode === 'steady' ? 1 : 0;
     activeDifficulty = Object.assign({}, difficultyForMode(id), {level:selectedTrainingMode,hintLevel});
     activePool=getRoundPool(id,selectedTrainingMode);
+    if (id === 'maze' && !activePool.length) {
+      showMazeBankUnavailable();
+      return;
+    }
     renderGame();
     if(id==='maze') speakTarget();
   }
@@ -1282,21 +1310,32 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
       selectedTrainingMode=trainingChoice.dataset.thinkTrainingMode;
       const gameId=trainingChoice.dataset.thinkTrainingGame;
       if(gameId==='translator') showTranslatorLevelPicker();
+      else if(gameId==='maze') showMazeLevelPicker();
       else beginGame(gameId,selectedTrainingMode);
       return;
     }
     const translatorLevel=e.target.closest('[data-translator-level]');
     if(translatorLevel){selectedTranslatorCEFR=translatorLevel.dataset.translatorLevel;beginGame('translator',selectedTrainingMode);return;}
+    const mazeLevel=e.target.closest('[data-sound-maze-level]');
+    if(mazeLevel){
+      selectedMazeCEFR=mazeLevel.dataset.soundMazeLevel;
+      const bridge=window.EpiphanyThinkLab;
+      if(bridge&&typeof bridge.setSoundMazeCEFR==='function')bridge.setSoundMazeCEFR(selectedMazeCEFR);
+      const tools=window.EPIPHANY_SOUND_MAZE_TOOLS,bank=window.EPIPHANY_SOUND_MAZE_BANK;
+      if(!tools||!bank||!tools.validateBank(bank).valid){showMazeBankUnavailable();return;}
+      beginGame('maze',selectedTrainingMode);return;
+    }
     const launch=e.target.closest('[data-think-game]'); if(launch){start(launch.dataset.thinkGame);return;}
     if(e.target.closest('[data-think-back]')){
       if(window.speechSynthesis)window.speechSynthesis.cancel();
       if(pickerStage==='game' && pickerGameId){
         if(pickerGameId==='translator')showTranslatorLevelPicker();
+        else if(pickerGameId==='maze')showMazeLevelPicker();
         else showTrainingModePicker(pickerGameId);
         return;
       }
-      if(pickerStage==='level' && pickerGameId==='translator'){
-        showTrainingModePicker('translator');
+      if(pickerStage==='level' && (pickerGameId==='translator'||pickerGameId==='maze')){
+        showTrainingModePicker(pickerGameId);
         return;
       }
       pickerStage='landing';
