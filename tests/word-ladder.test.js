@@ -86,10 +86,10 @@ test('difficulty bands are distinct and each can generate enough solvable puzzle
     steady: [3, 4],
     challenge: [5, 7]
   };
-  const generatorBlock = source.match(/function generateWordLadders\\(level, count = 12\\) \\{([\\s\\S]*?)\\n    const candidates/);
+  const generatorBlock = source.match(/function generateWordLadders\(level, count = 12\) \{([\s\S]*?)\n    const candidates/);
   assert.ok(generatorBlock, 'Word Ladder generator should exist');
-  assert.match(generatorBlock[1], /const minSteps = level === 'challenge' \\? 5 : level === 'steady' \\? 3 : 1;/);
-  assert.match(generatorBlock[1], /const maxSteps = level === 'guided' \\? 2 : level === 'steady' \\? 4 : 7;/);
+  assert.match(generatorBlock[1], /const minSteps = level === 'challenge' \? 5 : level === 'steady' \? 3 : 1;/);
+  assert.match(generatorBlock[1], /const maxSteps = level === 'guided' \? 2 : level === 'steady' \? 4 : 7;/);
 
   const occupiedSteps = new Set();
 
