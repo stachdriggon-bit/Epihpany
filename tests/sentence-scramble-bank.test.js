@@ -6,6 +6,10 @@ const vm = require('node:vm');
 
 const root = path.resolve(__dirname, '..');
 
+function normalizedText(sentence) {
+  return String(sentence).toLowerCase().replace(/[.,!?;:]/g, '').replace(/\\s+/g, ' ').trim();
+}
+
 function normalizedTokens(sentence) {
   return String(sentence).toLowerCase()
     .replace(/[.,!?;:]/g, '')
@@ -40,7 +44,7 @@ test('Sentence Scramble bank contains 72 unique reviewed challenges in three equ
       assert.ok(normalizedTokens(item.sentence).length > 0, item.id + ' must produce tiles');
       assert.ok(Array.isArray(item.acceptedAnswers), item.id + ' acceptedAnswers must be an array');
       for (const alternative of item.acceptedAnswers) {
-        assert.notDeepEqual(normalizedTokens(alternative), normalizedTokens(item.sentence), item.id + ' must not repeat its canonical answer');
+        assert.notEqual(normalizedText(alternative), normalizedText(item.sentence), item.id + ' must not repeat its canonical answer');
         assert.deepEqual(normalizedTokens(alternative), normalizedTokens(item.sentence), item.id + ' alternatives must use the same word multiset');
       }
       all.push(item);
