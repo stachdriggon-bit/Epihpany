@@ -13,11 +13,11 @@
       "options": [
         "frantic",
         "frontier",
-        "franticity",
-        "franticly"
+        "frenzy",
+        "frosty"
       ],
       "answer": "frantic",
-      "explain": "Frantic has /æ/ in its first stressed syllable. Frontier has /ʌ/ or /ɔ/ depending on pronunciation and a different syllable pattern; the other forms are not standard words."
+      "explain": "Frantic has /æ/ in its first stressed syllable. Frontier has /ʌ/ or /ɔ/ depending on pronunciation, frenzy has /ɛ/, and frosty has /ɑ/."
     },
     {
       "id": "SM-B2-S-002",
@@ -37,52 +37,52 @@
       "axis": "short_vowel_contrasts",
       "target": "reckless",
       "options": [
-        "rackless",
         "reckless",
-        "rockless",
-        "rickless"
+        "racket",
+        "rickety",
+        "rocket"
       ],
       "answer": "reckless",
-      "explain": "Reckless has /ɛ/ in its first syllable. The other options are not standard spellings of this word."
+      "explain": "Reckless has /ɛ/ in its first syllable. Racket has /æ/, rickety has /ɪ/, and rocket has /ɑ/."
     },
     {
       "id": "SM-B2-S-004",
       "axis": "initial_consonant_sounds",
       "target": "mnemonic",
       "options": [
-        "pneumatic",
         "mnemonic",
         "magnetic",
-        "phonetic"
+        "genetic",
+        "kinetic"
       ],
       "answer": "mnemonic",
-      "explain": "Mnemonic begins with /n/ because the initial m is silent. Pneumatic begins with /n/ too, while magnetic begins with /m/ and phonetic with /f/."
+      "explain": "Mnemonic begins with /n/ because the initial m is silent. Magnetic begins with /m/, genetic with /dʒ/, and kinetic with /k/."
     },
     {
       "id": "SM-B2-S-005",
       "axis": "initial_consonant_sounds",
-      "target": "xenon",
+      "target": "xylophone",
       "options": [
-        "zenith",
-        "xenon",
+        "xylophone",
+        "sylvan",
         "senate",
-        "cenotaph"
+        "cello"
       ],
-      "answer": "xenon",
-      "explain": "Xenon begins with /z/, the usual sound of initial x in this word. Senate and cenotaph begin with /s/, while zenith begins with /z/ but has a different vowel and ending."
+      "answer": "xylophone",
+      "explain": "Xylophone begins with /z/, the usual sound of initial x in this word. Sylvan and senate begin with /s/, while cello begins with /tʃ/."
     },
     {
       "id": "SM-B2-S-006",
       "axis": "initial_consonant_sounds",
       "target": "psalm",
       "options": [
-        "salmon",
         "psalm",
         "palm",
-        "qualm"
+        "qualm",
+        "calm"
       ],
       "answer": "psalm",
-      "explain": "Psalm begins with /s/ because the p is silent. Salmon begins with /s/ too but has a different ending; palm begins with /p/ in many General American pronunciations, and qualm begins with /kw/."
+      "explain": "Psalm begins with /s/ because the p is silent. Palm begins with /p/ in General American, qualm with /kw/, and calm with /k/."
     },
     {
       "id": "SM-B2-S-007",
@@ -128,39 +128,39 @@
       "axis": "basic_spelling_patterns",
       "target": "liaison",
       "options": [
-        "liason",
         "liaison",
-        "liaision",
-        "lison"
+        "lesson",
+        "lesion",
+        "leisure"
       ],
       "answer": "liaison",
-      "explain": "Liaison is spelled l-i-a-i-s-o-n. The other options omit or rearrange letters."
+      "explain": "Liaison is pronounced /liˈeɪzɑn/. Lesson has /ɛ/, lesion has /iːʒ/, and leisure has /ɛʒ/ in General American."
     },
     {
       "id": "SM-B2-S-011",
       "axis": "basic_spelling_patterns",
       "target": "supersede",
       "options": [
-        "supercede",
         "supersede",
-        "supersceed",
-        "supersede"
+        "supervise",
+        "superstition",
+        "superior"
       ],
       "answer": "supersede",
-      "explain": "Supersede ends with -sede, not -cede or -ceed. The spelling is unusual and often confused."
+      "explain": "Supersede is pronounced /ˌsuːpərˈsiːd/. Supervise ends with /aɪz/, superstition with /tʃən/, and superior with /ɪr/."
     },
     {
       "id": "SM-B2-S-012",
       "axis": "basic_spelling_patterns",
       "target": "occurrence",
       "options": [
-        "occurence",
         "occurrence",
-        "ocurrence",
-        "occurrance"
+        "occurred",
+        "current",
+        "currency"
       ],
       "answer": "occurrence",
-      "explain": "Occurrence has double c and double r, and it ends with -ence. The other choices omit or change letters."
+      "explain": "Occurrence is pronounced /əˈkɜrəns/. Occurred ends with /d/, current has a different stress and ending, and currency ends with /si/."
     }
   ]
 }
