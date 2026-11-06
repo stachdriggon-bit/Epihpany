@@ -3,16 +3,16 @@
   "mode": "steady",
   "status": "draft",
   "version": 1,
-  "pronunciation_reference": "General American (provisional; pending project-wide confirmation)",
+  "pronunciation_reference": "General American",
   "description": "Second A1 content batch for The Sound Maze. Each target is spoken aloud; the learner selects its spelling. Draft content is not wired into the live game.",
   "questions": [
     {
       "id": "SM-A1-S-001",
       "axis": "short_vowel_contrasts",
       "target": "ship",
-      "options": ["sheep", "ship", "shop", "sip"],
+      "options": ["sheep", "ship", "shut", "sip"],
       "answer": "ship",
-      "explain": "Ship has the short /ɪ/ sound. Sheep has /iː/, shop has /ɑ/, and sip has the same vowel but a different final consonant."
+      "explain": "Ship has the short /ɪ/ sound. Sheep has /iː/, shut has /ʌ/, and sip has the same vowel but a different final consonant."
     },
     {
       "id": "SM-A1-S-002",
