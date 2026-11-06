@@ -119,12 +119,13 @@ test('all 18 CEFR and training-mode combinations select the intended distinct qu
   }
 });
 
-test('recently seen questions are excluded when enough unseen material remains', () => {
+test('recently seen questions are excluded while an expanded bank can still fill the round', () => {
   const recent = bank.banks.B1.slice(0,3).map(item=>item.id);
   const round = bank.selectRound('B1','guided',recent,()=>0.5);
-  assert.equal(round.questions.length,5);
+  assert.equal(round.available,9);
+  assert.equal(round.questions.length,8);
   assert.ok(round.questions.every(item=>!recent.includes(item.id)));
-  assert.equal(round.shortened,true);
+  assert.equal(round.shortened,false);
 });
 
 test('selection falls back safely for invalid level or training mode', () => {
