@@ -50,7 +50,7 @@ test('changed scripts are versioned and the offline shell cache is refreshed', (
   const html = read('index.html');
   const sw = read('service-worker.js');
   assert.match(html, /app\.js\?v=[^"'&]+/);
-  assert.match(html, /cards\.js\?v=help-center-wallet-20261031-1/);
+  assert.match(html, /cards\.js\?v=gallery-identity-asset-refresh-20261105-1/);
   assert.match(html, /account\.js\?v=empty-states-20261031-1/);
   assert.match(html, /style\.css\?v=outline-icons-20261105-1/);
   assert.match(read('style.css'), /Helpful empty-state actions/);
