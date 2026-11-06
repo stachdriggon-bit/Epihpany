@@ -63,7 +63,9 @@ test('Sentence Scramble is lazy-loaded before Think Lab and its session uses the
   const worker = fs.readFileSync(path.join(root, 'service-worker.js'), 'utf8');
 
   assert.match(lazy, /sentence-scramble-bank\.js\?v=[^'"]+/);
-  assert.match(lazy, /sentence-scramble-bank\.js[^']*think-lab\.js/);
+  const bankIndex = lazy.indexOf('sentence-scramble-bank.js');
+  const thinkLabIndex = lazy.indexOf('think-lab.js');
+  assert.ok(bankIndex >= 0 && thinkLabIndex > bankIndex, 'bank must load before the Think Lab runtime');
   assert.match(worker, /'\.\/sentence-scramble-bank\.js'/);
   assert.match(think, /EPIPHANY_SENTENCE_SCRAMBLE_BANK/);
   assert.match(think, /mode === 'scramble'\) \? 24/);
