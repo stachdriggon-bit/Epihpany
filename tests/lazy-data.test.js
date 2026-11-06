@@ -51,14 +51,14 @@ test('feature data loader does not request large datasets until requested', asyn
   ]);
   assert.ok(requested.slice(4).every(src => /\?v=.+/.test(src)));
   await context.window.EPIPHANY_LAZY_LOAD('arabic');
-  assert.deepEqual(requested.slice(9).map(src => src.split('?')[0]), [
+  assert.deepEqual(requested.slice(10).map(src => src.split('?')[0]), [
     'data-translation-ar.js',
     'data-translation-ar-fill.js'
   ]);
   assert.ok(requested.slice(9).every(src => /\?v=.+/.test(src)));
   assert.deepEqual(merged, [true]);
   await context.window.EPIPHANY_LAZY_LOAD('chronicle');
-  assert.deepEqual(requested.slice(11).map(src => src.split('?')[0]), ['data-world-registry.js', 'data-world-events.js']);
+  assert.deepEqual(requested.slice(12).map(src => src.split('?')[0]), ['data-world-registry.js', 'data-world-events.js']);
   assert.ok(requested.slice(11).every(src => /\?v=.+/.test(src)));
 });
 
@@ -124,19 +124,23 @@ test('overlapping feature groups share one in-flight script request', async () =
   scripts[0].onload();
   await new Promise(resolve => setImmediate(resolve));
   assert.equal(requested.length, 2);
-  assert.match(requested[1], /^odd-one-out-bank\.js\?/);
+  assert.match(requested[1], /^sound-maze-content\.js\?/);
   scripts[1].onload();
   await new Promise(resolve => setImmediate(resolve));
   assert.equal(requested.length, 3);
-  assert.match(requested[2], /^think-lab\.js\?/);
+  assert.match(requested[2], /^odd-one-out-bank\.js\?/);
   scripts[2].onload();
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(requested.length, 4);
+  assert.match(requested[3], /^think-lab\.js\?/);
+  scripts[3].onload();
   await new Promise(resolve => setImmediate(resolve));
   assert.equal(requested.length, 4);
   assert.match(requested[3], /^life-skills\.js\?/);
   scripts[3].onload();
 
   await Promise.all([thinkLab, lifeSkills]);
-  assert.equal(requested.length, 4);
+  assert.equal(requested.length, 5);
 });
 
 test('failed lazy scripts are removed and can be retried', async () => {
