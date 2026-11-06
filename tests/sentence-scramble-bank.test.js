@@ -7,7 +7,7 @@ const vm = require('node:vm');
 const root = path.resolve(__dirname, '..');
 
 function normalizedText(sentence) {
-  return String(sentence).toLowerCase().replace(/[.,!?;:]/g, '').replace(/\\s+/g, ' ').trim();
+  return String(sentence).toLowerCase().replace(/[.,!?;:]/g, '').replace(/\s+/g, ' ').trim();
 }
 
 function normalizedTokens(sentence) {
