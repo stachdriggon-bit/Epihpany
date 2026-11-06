@@ -64,12 +64,12 @@
       "target": "chasm",
       "options": [
         "chasm",
-        "chaos",
         "sham",
-        "gasm"
+        "champ",
+        "ham"
       ],
       "answer": "chasm",
-      "explain": "Chasm begins with /k/ although it is spelled ch. Chaos also begins with /k/, while sham begins with /ʃ/; the full word's vowel and ending distinguish the choices."
+      "explain": "Chasm begins with /k/ although it is spelled ch. Sham begins with /ʃ/, champ with /tʃ/, and ham with /h/."
     },
     {
       "id": "SM-B2-G-006",
@@ -128,39 +128,39 @@
       "axis": "basic_spelling_patterns",
       "target": "maintenance",
       "options": [
-        "maintainance",
+        "maintain",
         "maintenance",
-        "maintenence",
-        "maintainence"
+        "maintained",
+        "mountain"
       ],
       "answer": "maintenance",
-      "explain": "Maintenance is spelled with -ten- and the ending -ance. The other options are common misspellings."
+      "explain": "Maintenance is pronounced /ˈmeɪntənəns/. Maintain ends with /eɪn/, maintained ends with /eɪnd/, and mountain begins with /maʊn/."
     },
     {
       "id": "SM-B2-G-011",
       "axis": "basic_spelling_patterns",
       "target": "privilege",
       "options": [
-        "priviledge",
         "privilege",
-        "privelege",
-        "privlege"
+        "village",
+        "pilgrimage",
+        "percentage"
       ],
       "answer": "privilege",
-      "explain": "Privilege has no d after the g and uses -lege at the end. The other choices add, move, or omit letters."
+      "explain": "Privilege is pronounced /ˈprɪvəlɪdʒ/. Village begins with /v/, pilgrimage has a different first syllable and stress pattern, and percentage begins with /pər/."
     },
     {
       "id": "SM-B2-G-012",
       "axis": "basic_spelling_patterns",
       "target": "rhythm",
       "options": [
-        "rythm",
         "rhythm",
-        "rithym",
-        "rhythym"
+        "ribbon",
+        "ridden",
+        "written"
       ],
       "answer": "rhythm",
-      "explain": "Rhythm is spelled r-h-y-t-h-m. It has no standard vowel letter; y represents the vowel sound."
+      "explain": "Rhythm is pronounced /ˈrɪðəm/; y represents the vowel sound. Ribbon, ridden, and written have different medial consonants and vowel patterns."
     }
   ]
 }
