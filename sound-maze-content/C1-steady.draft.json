@@ -1,0 +1,166 @@
+{
+  "level": "C1",
+  "mode": "steady",
+  "status": "draft",
+  "version": 1,
+  "pronunciation_reference": "General American",
+  "description": "Steady C1 content batch for The Sound Maze. Each target is spoken aloud; the learner selects its spelling. Draft content is not wired into the live game.",
+  "questions": [
+    {
+      "id": "SM-C1-S-001",
+      "axis": "short_vowel_contrasts",
+      "target": "stagnant",
+      "options": [
+        "stagnant",
+        "statement",
+        "stinging",
+        "stunning"
+      ],
+      "answer": "stagnant",
+      "explain": "Stagnant has /æ/ in its stressed first syllable. Statement has /eɪ/, stinging has /ɪ/, and stunning has /ʌ/."
+    },
+    {
+      "id": "SM-C1-S-002",
+      "axis": "short_vowel_contrasts",
+      "target": "cumbersome",
+      "options": [
+        "customary",
+        "cumbersome",
+        "cosmetic",
+        "cement"
+      ],
+      "answer": "cumbersome",
+      "explain": "Cumbersome begins with /ʌ/. Customary also begins with /ʌ/, while cosmetic begins with /ɑ/ and cement with /ɪ/."
+    },
+    {
+      "id": "SM-C1-S-003",
+      "axis": "short_vowel_contrasts",
+      "target": "diligence",
+      "options": [
+        "diligence",
+        "delegate",
+        "dalliance",
+        "dollop"
+      ],
+      "answer": "diligence",
+      "explain": "Diligence begins with /ɪ/ in its first syllable. Delegate begins with /ɛ/, dalliance with /æ/, and dollop with /ɑ/."
+    },
+    {
+      "id": "SM-C1-S-004",
+      "axis": "initial_consonant_sounds",
+      "target": "ptarmigan",
+      "options": [
+        "pivotal",
+        "ptarmigan",
+        "theoretical",
+        "gnawing"
+      ],
+      "answer": "ptarmigan",
+      "explain": "Ptarmigan begins with /t/ because the initial p is silent. Pivotal begins with /p/, theoretical with /θ/, and gnawing with /n/."
+    },
+    {
+      "id": "SM-C1-S-005",
+      "axis": "initial_consonant_sounds",
+      "target": "tsunami",
+      "options": [
+        "tsunami",
+        "safari",
+        "zoology",
+        "ceramic"
+      ],
+      "answer": "tsunami",
+      "explain": "Tsunami begins with /s/ in standard General American pronunciation; the initial t is silent. Zoology begins with /z/, while safari and ceramic begin with /s/ but have different following sounds."
+    },
+    {
+      "id": "SM-C1-S-006",
+      "axis": "initial_consonant_sounds",
+      "target": "hierarchy",
+      "options": [
+        "hierarchy",
+        "irony",
+        "rhetoric",
+        "eulogy"
+      ],
+      "answer": "hierarchy",
+      "explain": "Hierarchy begins with /h/ in careful General American pronunciation. Irony begins with a vowel, rhetoric with /r/, and eulogy with /j/."
+    },
+    {
+      "id": "SM-C1-S-007",
+      "axis": "final_consonant_sounds",
+      "target": "drought",
+      "options": [
+        "drown",
+        "drought",
+        "drowsy",
+        "drowned"
+      ],
+      "answer": "drought",
+      "explain": "Drought ends with /t/. Drown ends with /n/, drowsy with /zi/, and drowned with /nd/."
+    },
+    {
+      "id": "SM-C1-S-008",
+      "axis": "final_consonant_sounds",
+      "target": "scratched",
+      "options": [
+        "scratch",
+        "scratched",
+        "scratches",
+        "scratching"
+      ],
+      "answer": "scratched",
+      "explain": "Scratched ends with /tʃt/. Scratch ends with /tʃ/, scratches with /ɪz/, and scratching with /ɪŋ/."
+    },
+    {
+      "id": "SM-C1-S-009",
+      "axis": "final_consonant_sounds",
+      "target": "risks",
+      "options": [
+        "risk",
+        "risks",
+        "risky",
+        "risen"
+      ],
+      "answer": "risks",
+      "explain": "Risks ends with /sks/. Risk ends with /sk/, risky with /i/, and risen with /ən/."
+    },
+    {
+      "id": "SM-C1-S-010",
+      "axis": "basic_spelling_patterns",
+      "target": "supersession",
+      "options": [
+        "supervision",
+        "supersession",
+        "superstition",
+        "superficial"
+      ],
+      "answer": "supersession",
+      "explain": "Supersession is pronounced /ˌsuːpərˈsɛʃən/. The alternatives have different stressed vowels or consonant sequences."
+    },
+    {
+      "id": "SM-C1-S-011",
+      "axis": "basic_spelling_patterns",
+      "target": "belligerent",
+      "options": [
+        "belligerent",
+        "benevolent",
+        "bilingual",
+        "beneficial"
+      ],
+      "answer": "belligerent",
+      "explain": "Belligerent has a soft g pronounced /dʒ/ and a distinctive /ˈbɛlɪdʒərənt/ sequence. The other choices differ in their medial consonants and vowel patterns."
+    },
+    {
+      "id": "SM-C1-S-012",
+      "axis": "basic_spelling_patterns",
+      "target": "miscellaneous",
+      "options": [
+        "meticulous",
+        "miscellaneous",
+        "millennium",
+        "misleading"
+      ],
+      "answer": "miscellaneous",
+      "explain": "Miscellaneous is pronounced /ˌmɪsəˈleɪniəs/. The alternatives have different syllable counts, stress, and vowel sequences."
+    }
+  ]
+}
