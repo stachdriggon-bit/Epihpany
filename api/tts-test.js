@@ -1,5 +1,5 @@
 // Epihpany ElevenLabs voice audition endpoint.
-// Only fixed sample phrases and two preset voices are allowed; the API key stays server-side.
+// Only fixed sample phrases using the shared George voice are allowed; the API key stays server-side.
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST');
@@ -19,13 +19,9 @@ export default async function handler(req, res) {
     through: 'through',
     repeat: 'Could you repeat that, please?'
   };
-  const voices = {
-    female: '21m00Tcm4TlvDq8ikWAM',
-    male: 'JBFqnCBsd6RMkjVDRZzb'
-  };
+  const voiceId = 'JBFqnCBsd6RMkjVDRZzb';
   const sample = samples[req.body?.sample];
-  const voiceId = voices[req.body?.voice];
-  if (!sample || !voiceId) return res.status(400).json({ error: 'Choose a valid sample and voice.' });
+  if (!sample) return res.status(400).json({ error: 'Choose a valid sample.' });
   try {
     const response = await fetch('https://api.elevenlabs.io/v1/text-to-speech/' + voiceId + '?output_format=mp3_44100_128', {
       method: 'POST',
