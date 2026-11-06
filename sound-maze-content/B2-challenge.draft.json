@@ -2,7 +2,7 @@
   "level": "B2",
   "mode": "challenge",
   "status": "draft",
-  "version": 1,
+  "version": 2,
   "pronunciation_reference": "General American",
   "description": "Challenge B2 content batch for The Sound Maze. Each target is spoken aloud; the learner selects its spelling. Draft content is not wired into the live game.",
   "questions": [
@@ -25,25 +25,25 @@
       "target": "quandary",
       "options": [
         "quandary",
-        "quandery",
-        "quandory",
-        "quandury"
+        "quarry",
+        "canary",
+        "quiver"
       ],
       "answer": "quandary",
-      "explain": "Quandary has /ɑ/ in its first syllable in General American. The other forms are not standard spellings."
+      "explain": "Quandary begins with /kwɑn/. Quarry, canary, and quiver have different vowel and consonant sequences; the distractors are real words rather than invented spellings."
     },
     {
       "id": "SM-B2-C-003",
       "axis": "short_vowel_contrasts",
       "target": "laconic",
       "options": [
-        "laconick",
         "laconic",
-        "laconique",
-        "laconicity"
+        "iconic",
+        "sonic",
+        "chronic"
       ],
       "answer": "laconic",
-      "explain": "Laconic has /ə/ in the first unstressed syllable and /ɑ/ in the stressed second syllable. Laconicity has a different stress pattern; the other forms are not standard spellings."
+      "explain": "Laconic begins with /lə/. Iconic, sonic, and chronic have different initial sounds and syllable patterns."
     },
     {
       "id": "SM-B2-C-004",
@@ -51,12 +51,12 @@
       "target": "pterodactyl",
       "options": [
         "pterodactyl",
-        "tether",
+        "feather",
         "theory",
         "deter"
       ],
       "answer": "pterodactyl",
-      "explain": "Pterodactyl begins with /t/ because the initial p is silent. Tether also begins with /t/ but has a different vowel and ending; theory begins with /θ/ and deter with /d/."
+      "explain": "Pterodactyl begins with /t/ because the written p is silent. Feather begins with /f/, theory with /θ/, and deter with /d/."
     },
     {
       "id": "SM-B2-C-005",
@@ -64,12 +64,12 @@
       "target": "phlegm",
       "options": [
         "phlegm",
-        "flame",
+        "helm",
         "them",
         "realm"
       ],
       "answer": "phlegm",
-      "explain": "Phlegm begins with /f/, written ph. Flame has /eɪ/, them begins with /ð/, and realm begins with /r/."
+      "explain": "Phlegm begins with /f/ because ph represents /f/. Helm begins with /h/, them with /ð/, and realm with /r/."
     },
     {
       "id": "SM-B2-C-006",
