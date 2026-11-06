@@ -14,7 +14,7 @@
         "map",
         "mop",
         "men",
-        "mup"
+        "man"
       ],
       "answer": "map",
       "explain": "Map has the short /æ/ vowel. Mop has /ɑ/, men has /ɛ/, and mup is not a standard English word."
@@ -35,41 +35,41 @@
     {
       "id": "SM-A2-G-003",
       "axis": "short_vowel_contrasts",
-      "target": "luck",
+      "target": "dust",
       "options": [
-        "lack",
-        "lick",
-        "luck",
-        "lock"
+        "desk",
+        "dish",
+        "dust",
+        "dusk"
       ],
-      "answer": "luck",
-      "explain": "Luck has the /ʌ/ vowel. Lack has /æ/, lick has /ɪ/, and lock has /ɑ/ in General American."
+      "answer": "dust",
+      "explain": "Dust has the /ʌ/ vowel. Desk has /ɛ/, dish has /ɪ/, and dusk has the same vowel but a different final consonant."
     },
     {
       "id": "SM-A2-G-004",
       "axis": "initial_consonant_sounds",
-      "target": "ship",
+      "target": "shop",
       "options": [
-        "chip",
-        "ship",
-        "sip",
-        "tip"
+        "chop",
+        "shop",
+        "shot",
+        "stop"
       ],
-      "answer": "ship",
-      "explain": "Ship begins with /ʃ/. Chip begins with /tʃ/, sip with /s/, and tip with /t/."
+      "answer": "shop",
+      "explain": "Shop begins with /ʃ/. Chop begins with /tʃ/, shot has the same first sound but a different ending, and stop begins with /st/."
     },
     {
       "id": "SM-A2-G-005",
       "axis": "initial_consonant_sounds",
-      "target": "zero",
+      "target": "zip",
       "options": [
-        "hero",
-        "zero",
-        "sero",
-        "narrow"
+        "sip",
+        "zip",
+        "dip",
+        "lip"
       ],
-      "answer": "zero",
-      "explain": "Zero begins with /z/, a voiced sound. Hero begins with /h/; the other options do not begin with the same sound."
+      "answer": "zip",
+      "explain": "Zip begins with voiced /z/. Sip begins with /s/, dip with /d/, and lip with /l/."
     },
     {
       "id": "SM-A2-G-006",
@@ -87,15 +87,15 @@
     {
       "id": "SM-A2-G-007",
       "axis": "final_consonant_sounds",
-      "target": "rice",
+      "target": "peace",
       "options": [
-        "ride",
-        "rise",
-        "rice",
-        "ripe"
+        "peas",
+        "peak",
+        "peace",
+        "peat"
       ],
-      "answer": "rice",
-      "explain": "Rice ends with /s/. Ride ends with /d/, rise with /z/, and ripe with /p/."
+      "answer": "peace",
+      "explain": "Peace ends with /s/. Peas ends with /z/, peak with /k/, and peat with /t/."
     },
     {
       "id": "SM-A2-G-008",
