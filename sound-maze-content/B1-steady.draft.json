@@ -1,0 +1,166 @@
+{
+  "level": "B1",
+  "mode": "steady",
+  "status": "draft",
+  "version": 1,
+  "pronunciation_reference": "General American",
+  "description": "Steady B1 content batch for The Sound Maze. Each target is spoken aloud; the learner selects its spelling. Draft content is not wired into the live game.",
+  "questions": [
+    {
+      "id": "SM-B1-S-001",
+      "axis": "short_vowel_contrasts",
+      "target": "average",
+      "options": [
+        "average",
+        "avalanche",
+        "overage",
+        "coverage"
+      ],
+      "answer": "average",
+      "explain": "Average has /æ/ in its first stressed syllable. Avalanche begins with /æ/ too but has a different following sound sequence; overage and coverage begin with /oʊ/ and /ʌ/."
+    },
+    {
+      "id": "SM-B1-S-002",
+      "axis": "short_vowel_contrasts",
+      "target": "seldom",
+      "options": [
+        "salmon",
+        "seldom",
+        "sullen",
+        "solemn"
+      ],
+      "answer": "seldom",
+      "explain": "Seldom has /ɛ/ in its first syllable. Salmon and solemn begin with /æ/ and /ɑ/ respectively in General American, while sullen has /ʌ/."
+    },
+    {
+      "id": "SM-B1-S-003",
+      "axis": "short_vowel_contrasts",
+      "target": "flutter",
+      "options": [
+        "flatter",
+        "flitter",
+        "flutter",
+        "fluter"
+      ],
+      "answer": "flutter",
+      "explain": "Flutter has /ʌ/ in its first syllable. Flatter has /æ/, flitter has /ɪ/, and fluter is not the standard spelling of the common word."
+    },
+    {
+      "id": "SM-B1-S-004",
+      "axis": "initial_consonant_sounds",
+      "target": "genre",
+      "options": [
+        "gentry",
+        "genre",
+        "genuine",
+        "general"
+      ],
+      "answer": "genre",
+      "explain": "Genre begins with /ʒ/ in General American. Gentry and genuine begin with /dʒ/, while general begins with /dʒ/."
+    },
+    {
+      "id": "SM-B1-S-005",
+      "axis": "initial_consonant_sounds",
+      "target": "wreath",
+      "options": [
+        "reef",
+        "wreath",
+        "wreathe",
+        "wrath"
+      ],
+      "answer": "wreath",
+      "explain": "Wreath begins with /r/; its written w is silent. Reef begins with /r/ too but has a different vowel; wreathe also begins /r/ but has a voiced /ð/ ending, and wrath begins with /r/ but has a different vowel."
+    },
+    {
+      "id": "SM-B1-S-006",
+      "axis": "initial_consonant_sounds",
+      "target": "xylophone",
+      "options": [
+        "sylvan",
+        "xylophone",
+        "zoology",
+        "cyclone"
+      ],
+      "answer": "xylophone",
+      "explain": "Xylophone begins with /z/, the common sound of initial x in this word. Sylvan and cyclone begin with /s/, while zoology begins with /z/ but has a different first vowel and syllable pattern."
+    },
+    {
+      "id": "SM-B1-S-007",
+      "axis": "final_consonant_sounds",
+      "target": "missed",
+      "options": [
+        "mist",
+        "missed",
+        "mixed",
+        "mister"
+      ],
+      "answer": "missed",
+      "explain": "Missed ends with /t/ because -ed follows the voiceless /s/ sound. Mist also ends with /t/ but has no -ed spelling; mixed ends with /kst/."
+    },
+    {
+      "id": "SM-B1-S-008",
+      "axis": "final_consonant_sounds",
+      "target": "judged",
+      "options": [
+        "judge",
+        "judged",
+        "jugs",
+        "jungle"
+      ],
+      "answer": "judged",
+      "explain": "Judged ends with /dʒd/ in careful General American pronunciation. Judge ends with /dʒ/, jugs with /ɡz/, and jungle with /ɡəl/."
+    },
+    {
+      "id": "SM-B1-S-009",
+      "axis": "final_consonant_sounds",
+      "target": "strength",
+      "options": [
+        "string",
+        "strange",
+        "strength",
+        "strenth"
+      ],
+      "answer": "strength",
+      "explain": "Strength ends with /ŋθ/. String ends with /ŋ/, strange with /ndʒ/, and strenth is not a standard spelling."
+    },
+    {
+      "id": "SM-B1-S-010",
+      "axis": "basic_spelling_patterns",
+      "target": "doubtful",
+      "options": [
+        "doutful",
+        "doubtful",
+        "doubtle",
+        "doutfull"
+      ],
+      "answer": "doubtful",
+      "explain": "Doubtful keeps the silent b in doubt before adding -ful. The other options are misspellings."
+    },
+    {
+      "id": "SM-B1-S-011",
+      "axis": "basic_spelling_patterns",
+      "target": "mission",
+      "options": [
+        "mition",
+        "mission",
+        "mishion",
+        "mession"
+      ],
+      "answer": "mission",
+      "explain": "Mission uses ssion to spell the /ʃən/ ending. The other options are not standard spellings."
+    },
+    {
+      "id": "SM-B1-S-012",
+      "axis": "basic_spelling_patterns",
+      "target": "foreign",
+      "options": [
+        "foriegn",
+        "foreign",
+        "forein",
+        "forign"
+      ],
+      "answer": "foreign",
+      "explain": "Foreign is spelled f-o-r-e-i-g-n; the i comes before the g. The other options use incorrect letter order or omit a letter."
+    }
+  ]
+}
