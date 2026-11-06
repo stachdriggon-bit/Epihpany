@@ -10,7 +10,7 @@ const appSource = fs.readFileSync(path.join(__dirname, '..', 'app.js'), 'utf8');
 test('Odd One Out has independent banks for all six CEFR levels', () => {
   for (const level of ['A1','A2','B1','B2','C1','C2']) {
     assert.ok(Array.isArray(bank.banks[level]));
-    assert.equal(bank.banks[level].length, level === 'A1' ? 12 : 8);
+    assert.equal(bank.banks[level].length, ['A1','A2'].includes(level) ? 12 : 8);
     assert.ok(bank.banks[level].every(item => item.id.startsWith(level + '-')));
   }
 });
@@ -204,6 +204,24 @@ test('Challenge shuffling keeps the selected answer index valid', () => {
   }
 });
 
+
+test('A2 expansion provides 12 distinct questions and full target-sized rounds', () => {
+  assert.equal(bank.banks.A2.length,12);
+  for (const [mode,target] of [['guided',8],['steady',10],['challenge',12]]) {
+    const round=bank.selectRound('A2',mode,[],()=>0.37);
+    assert.equal(round.questions.length,target);
+    assert.equal(round.shortened,false);
+    assert.equal(new Set(round.questions.map(question=>question.id)).size,target);
+  }
+  for (const id of ['A2-CAT-02','A2-CAUSE-01','A2-CON-01','A2-FUN-02']) {
+    const item=bank.banks.A2.find(question=>question.id===id);
+    assert.ok(item, id + ' should be in the A2 bank');
+    assert.ok(item.challengeExplain);
+    const challenge=bank.selectRound('A2','challenge',[],()=>0.31).questions.find(question=>question.id===id);
+    assert.ok(challenge);
+    assert.notDeepEqual(challenge.words.slice().sort(),item.words.slice().sort());
+  }
+});
 
 test('A1-SYN-01 uses beginner-friendly vocabulary in both modes', () => {
   const item = bank.banks.A1.find(question => question.id === 'A1-SYN-01');
