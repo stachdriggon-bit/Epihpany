@@ -2,7 +2,7 @@
   "level": "A2",
   "mode": "guided",
   "status": "draft",
-  "version": 2,
+  "version": 3,
   "pronunciation_reference": "General American",
   "description": "Guided A2 content batch for The Sound Maze. Each target is spoken aloud; the learner selects its spelling. Draft content is not wired into the live game.",
   "questions": [
@@ -14,10 +14,10 @@
         "map",
         "mop",
         "men",
-        "man"
+        "mug"
       ],
       "answer": "map",
-      "explain": "Map has the short /æ/ vowel. Mop has /ɑ/, men has /ɛ/, and mup is not a standard English word."
+      "explain": "Map has /æ/. Mop has /ɑ/, men has /ɛ/, and mug has /ʌ/."
     },
     {
       "id": "SM-A2-G-002",
@@ -40,10 +40,10 @@
         "desk",
         "dish",
         "dust",
-        "dusk"
+        "dote"
       ],
       "answer": "dust",
-      "explain": "Dust has the /ʌ/ vowel. Desk has /ɛ/, dish has /ɪ/, and dusk has the same vowel but a different final consonant."
+      "explain": "Dust has /ʌ/. Desk has /ɛ/, dish has /ɪ/, and dote has /oʊ/."
     },
     {
       "id": "SM-A2-G-004",
