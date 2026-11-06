@@ -137,7 +137,7 @@ test('overlapping feature groups share one in-flight script request', async () =
   scripts[3].onload();
   await new Promise(resolve => setImmediate(resolve));
   assert.equal(requested.length, 5);
-  assert.match(requested[4], /^life-skills\\.js\\?/);
+  assert.match(requested[4], /^life-skills\.js\?/);
   scripts[4].onload();
 
   await Promise.all([thinkLab, lifeSkills]);
