@@ -2,7 +2,7 @@
   "level": "C2",
   "mode": "steady",
   "status": "draft",
-  "version": 2,
+  "version": 3,
   "pronunciation_reference": "General American",
   "description": "Steady C2 content batch for The Sound Maze. Each target is spoken aloud; the learner selects its spelling. Draft content is not wired into the live game.",
   "questions": [
@@ -40,10 +40,10 @@
         "placid",
         "pleasure",
         "plunder",
-        "plummet"
+        "plume"
       ],
       "answer": "placid",
-      "explain": "Placid begins with /æ/. Pleasure begins with /ɛ/, while plunder and plummet begin with /ʌ/."
+      "explain": "Placid has /æ/ in its first syllable. Pleasure has /ɛ/, plunder has /ʌ/, and plume has /uː/."
     },
     {
       "id": "SM-C2-S-004",
