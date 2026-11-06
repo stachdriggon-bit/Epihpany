@@ -2,7 +2,7 @@
   "level": "C1",
   "mode": "steady",
   "status": "draft",
-  "version": 1,
+  "version": 2,
   "pronunciation_reference": "General American",
   "description": "Steady C1 content batch for The Sound Maze. Each target is spoken aloud; the learner selects its spelling. Draft content is not wired into the live game.",
   "questions": [
@@ -61,15 +61,15 @@
     {
       "id": "SM-C1-S-005",
       "axis": "initial_consonant_sounds",
-      "target": "tsunami",
+      "target": "xylitol",
       "options": [
-        "tsunami",
+        "xylitol",
         "famine",
-        "zoology",
-        "theory"
+        "theory",
+        "harmony"
       ],
-      "answer": "tsunami",
-      "explain": "Tsunami begins with /s/ in standard General American pronunciation; the initial t is silent. Zoology begins with /z/, while safari and ceramic begin with /s/ but have different following sounds."
+      "answer": "xylitol",
+      "explain": "Xylitol begins with /z/, although it is written with x. Famine begins with /f/, theory with /θ/, and harmony with /h/."
     },
     {
       "id": "SM-C1-S-006",
