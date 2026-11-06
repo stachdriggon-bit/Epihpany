@@ -54,5 +54,5 @@ test('changed scripts are versioned and the offline shell cache is refreshed', (
   assert.match(html, /account\.js\?v=empty-states-20261031-1/);
   assert.match(html, /style\.css\?v=outline-icons-20261105-1/);
   assert.match(read('style.css'), /Helpful empty-state actions/);
-  assert.match(sw, /epiphany-stability-scoped-observers-20261105-2/);
+  assert.match(sw, /epiphany-stability-gallery-identity-20261105-1/);
 });
