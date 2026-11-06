@@ -61,15 +61,15 @@
     {
       "id": "SM-B2-S-005",
       "axis": "initial_consonant_sounds",
-      "target": "xylophone",
+      "target": "xenophobia",
       "options": [
-        "xylophone",
-        "sylvan",
-        "senate",
-        "cello"
+        "xenophobia",
+        "seniority",
+        "phenomenon",
+        "genocide"
       ],
-      "answer": "xylophone",
-      "explain": "Xylophone begins with /z/, the usual sound of initial x in this word. Sylvan and senate begin with /s/, while cello begins with /tʃ/."
+      "answer": "xenophobia",
+      "explain": "Xenophobia begins with /z/, the usual sound of initial x in this word. Seniority begins with /s/, phenomenon with /f/, and genocide with /dʒ/."
     },
     {
       "id": "SM-B2-S-006",
