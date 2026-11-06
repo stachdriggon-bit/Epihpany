@@ -759,41 +759,13 @@
 
   /* ---------- rendering: words + trophies ---------- */
   let speechRequest = 0;
-  let speechVoices = [];
-  let voicePref = {name:'', rate:0.92};
-  try { voicePref = {...voicePref, ...JSON.parse(localStorage.getItem('epiphany-voice') || '{}')}; } catch {}
+  let voicePref = {rate:0.92};
+  try {
+    const savedVoicePref = JSON.parse(localStorage.getItem('epiphany-voice') || '{}');
+    const savedRate = Number(savedVoicePref.rate);
+    if (Number.isFinite(savedRate)) voicePref.rate = Math.max(0.75, Math.min(1.05, savedRate));
+  } catch {}
   function saveVoicePref() { try { localStorage.setItem('epiphany-voice', JSON.stringify(voicePref)); } catch {} }
-  const isEnglishVoice = v => /^en([-_]|$)/i.test(v.lang || '') || /english/i.test(v.name || '');
-  function voiceScore(v) {
-    const n = (v.name || '') + ' ' + (v.voiceURI || ''), lang = String(v.lang || '').replace('_', '-');
-    let s = 0;
-    if (/^en-US$/i.test(lang)) s += 30; else if (/^en-GB$/i.test(lang)) s += 22; else if (/^en-(AU|CA|IE|IN|ZA)$/i.test(lang)) s += 12;
-    if (/premium|enhanced|neural|natural|online|wavenet/i.test(n)) s += 60;
-    if (/google/i.test(n)) s += 35;
-    if (/samantha|ava|allison|susan|zoe|serena|karen|daniel|aria|jenny|guy|libby|sonia|siri/i.test(n)) s += 25;
-    if (/network|-x-.*-network|-x-(iob|iol|iom|sfg|tpc|tpd|tpf)/i.test(n)) s += 20;
-    if (/compact|espeak|robot|novelty|bad news|bahh|bells|boing|bubbles|cellos|deranged|good news|hysterical|pipe organ|trinoids|whisper|zarvox|albert|fred|junior|kathy|ralph|organ/i.test(n)) s -= 80;
-    if (v.localService === false) s += 10;
-    return s;
-  }
-  function refreshSpeechVoices() {
-    const synth = window.speechSynthesis;
-    if (synth && typeof synth.getVoices === 'function') {
-      const available = synth.getVoices();
-      if (available && available.length) speechVoices = available.slice();
-    }
-    return speechVoices;
-  }
-  function englishVoices() { return refreshSpeechVoices().filter(isEnglishVoice).sort((a, b) => voiceScore(b) - voiceScore(a)); }
-  function pickVoice() {
-    const list = englishVoices();
-    if (voicePref.name) { const chosen = list.find(v => v.name === voicePref.name); if (chosen) return chosen; }
-    return list[0] || null;
-  }
-  if (window.speechSynthesis) {
-    refreshSpeechVoices();
-    window.speechSynthesis.addEventListener?.('voiceschanged', refreshSpeechVoices);
-  }
   function speechChunks(phrase) {
     const parts = phrase.match(/[^.!?;:]+[.!?;:]*/g) || [phrase], out = [];
     parts.forEach(p => { p = p.trim(); if (!p) return; const last = out[out.length - 1]; if (last && last.length < 28) out[out.length - 1] = last + ' ' + p; else out.push(p); });
@@ -858,8 +830,7 @@
     if (current) chunks.push(current);
     return chunks.length ? chunks : [String(phrase || '').slice(0, limit)];
   }
-  async function playNaturalSpeech(phrase, rate, request) {
-    if (!navigator.onLine) return false;
+  async function playNaturalSpeech(phrase, rate, request, allowNetwork = true) {
     const chunks = splitNaturalTtsChunks(phrase);
     let playedAny = false;
     for (let index = 0; index < chunks.length; index++) {
@@ -869,6 +840,7 @@
       let blob = await cachedNaturalAudio(key);
       if (request !== speechRequest) return true;
       if (!blob) {
+        if (!allowNetwork || !navigator.onLine) return false;
         let response;
         try {
           response = await fetch('/api/tts', {
@@ -910,65 +882,47 @@
   const networkConnection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
   const autoSaveData = !!(networkConnection && (networkConnection.saveData || /^(slow-2g|2g)$/.test(networkConnection.effectiveType || '')));
   let lowDataMode = (() => { try { const saved=localStorage.getItem('epiphany-low-data'); return saved===null ? autoSaveData : saved==='1'; } catch { return autoSaveData; } })();
-  function updateLowDataControl(){const c=$('#low-data-toggle');if(c){c.checked=lowDataMode;c.setAttribute('aria-label',lowDataMode?'Data saver on: use device voice':'Data saver off: natural online voice allowed');}}
+  function updateLowDataControl(){const c=$('#low-data-toggle');if(c){c.checked=lowDataMode;c.setAttribute('aria-label',lowDataMode?'Data saver on: only cached George audio':'Data saver off: George audio may be downloaded');}}
   updateLowDataControl();
-  document.addEventListener('change',e=>{if(e.target&&e.target.id==='low-data-toggle'){lowDataMode=!!e.target.checked;try{localStorage.setItem('epiphany-low-data',lowDataMode?'1':'0');}catch{}if(lowDataMode&&naturalAudioPlayer){try{naturalAudioPlayer.pause();naturalAudioPlayer.src='';}catch{}naturalAudioPlayer=null;}toast(lowDataMode?'Data saver on. Pronunciation uses your device voice.':'Data saver off. Natural online voice may be used.');}});
+  document.addEventListener('change',e=>{if(e.target&&e.target.id==='low-data-toggle'){lowDataMode=!!e.target.checked;try{localStorage.setItem('epiphany-low-data',lowDataMode?'1':'0');}catch{}if(lowDataMode&&naturalAudioPlayer){try{naturalAudioPlayer.pause();naturalAudioPlayer.src='';}catch{}naturalAudioPlayer=null;}toast(lowDataMode?'Data saver on. Only previously cached George audio will play.':'Data saver off. George voice can be downloaded when needed.');}});
   function stopSpeechPlayback() {
     speechRequest++;
-    try { if (window.speechSynthesis) window.speechSynthesis.cancel(); } catch {}
     if (naturalAudioPlayer) { try { naturalAudioPlayer.pause(); naturalAudioPlayer.src = ''; } catch {} naturalAudioPlayer = null; }
   }
   function speak(text, opts) {
-    const synth = window.speechSynthesis;
     const phrase = String(text == null ? '' : text).replace(/\s+/g, ' ').trim();
     if (!phrase) { toast('There is no word to pronounce.'); return; }
-    const request = ++speechRequest, rate = (opts && opts.rate) || voicePref.rate || 0.92;
+    const request = ++speechRequest;
+    const requestedRate = Number(opts && opts.rate);
+    const rate = Math.max(0.75, Math.min(1.05, Number.isFinite(requestedRate) && requestedRate > 0 ? requestedRate : voicePref.rate || 0.92));
     const onEnd = opts && typeof opts.onEnd === 'function' ? opts.onEnd : null;
-    try { if (synth) synth.cancel(); } catch {}
+    const onError = opts && typeof opts.onError === 'function' ? opts.onError : null;
     if (naturalAudioPlayer) { try { naturalAudioPlayer.pause(); naturalAudioPlayer.src = ''; } catch {} naturalAudioPlayer = null; }
-    const runNative = () => {
-      if (!synth || !('SpeechSynthesisUtterance' in window)) {
-        toast('Speech playback is not supported in this browser.');
+    playNaturalSpeech(phrase, rate, request, !lowDataMode).then(played => {
+      if (request !== speechRequest) return;
+      if (!played) {
+        const message = lowDataMode
+          ? 'George voice is in data-saver mode. Turn off Save data to download this pronunciation.'
+          : (!navigator.onLine ? 'George voice needs an internet connection or previously cached audio.' : 'George voice is temporarily unavailable. Please try again.');
+        toast(message);
+        if (onError) onError(new Error(message));
         return;
       }
-      const run = tries => {
-        if (request !== speechRequest) return;
-        const voice = pickVoice();
-        if (!voice && tries < 6 && !refreshSpeechVoices().length) { setTimeout(() => run(tries + 1), 120); return; }
-        const chunks = speechChunks(phrase);
-        chunks.forEach((chunk, i) => {
-          const u = new SpeechSynthesisUtterance(chunk);
-          u.lang = voice ? String(voice.lang || 'en-US').replace('_', '-') : 'en-US';
-          if (voice) u.voice = voice;
-          u.rate = chunk.split(' ').length <= 2 ? Math.min(rate, 0.85) : rate;
-          u.pitch = 1;
-          u.volume = 1;
-          u.onerror = event => {
-            if (request === speechRequest && event.error !== 'canceled' && event.error !== 'interrupted' && i === 0) toast('Could not play this pronunciation. Try another voice from ⚙ → Voice.');
-          };
-          if (i === chunks.length - 1 && onEnd) u.onend = () => { if (request === speechRequest) onEnd(); };
-          try { synth.speak(u); } catch { if (i === 0) toast('Could not play this pronunciation. Try again.'); }
-        });
-        try { if (synth.paused) synth.resume(); } catch {}
-      };
-      setTimeout(() => run(0), 60);
-    };
-    if (lowDataMode) { runNative(); return; }
-    playNaturalSpeech(phrase, rate, request).then(played => {
+      if (onEnd) onEnd();
+    }).catch(error => {
       if (request !== speechRequest) return;
-      if (!played) runNative();
-      else if (onEnd) onEnd();
-    }).catch(runNative);
+      toast('George voice is temporarily unavailable. Please try again.');
+      if (onError) onError(error);
+    });
   }
+  window.EpiphanySpeech = Object.freeze({speak, stop:stopSpeechPlayback});
   function openVoiceSheet() {
-    const list = englishVoices(), current = pickVoice();
-    const opts = list.length
-      ? list.map(v => '<option value="' + esc(v.name) + '"' + (current && v.name === current.name ? ' selected' : '') + '>' + esc(v.name) + ' (' + esc(String(v.lang).replace('_', '-')) + ')</option>').join('')
-      : '<option value="">No English voice found on this device</option>';
-    let m=$('#voice-modal');if(!m){m=document.createElement('div');m.id='voice-modal';m.className='voice-modal';m.setAttribute('role','dialog');m.setAttribute('aria-modal','true');document.body.appendChild(m);}m.hidden=false;m.innerHTML=('<div class="voice-sheet"><h2>🔊 Reader voice</h2><p class="voice-note">Natural voice is used online when available. The device voice below is the offline fallback. On Android install “Speech Services by Google” and download English (US); on iPhone add an Enhanced voice in Settings → Accessibility → Spoken Content → Voices.</p><label>Device fallback voice<select id="voice-select">' + opts + '</select></label><label>Speed <output id="voice-rate-out">' + Number(voicePref.rate).toFixed(2) + '×</output><input id="voice-rate" type="range" min="0.6" max="1.2" step="0.05" value="' + voicePref.rate + '"></label><div class="voice-actions"><button class="btn btn-ghost" id="voice-slow" type="button">🐢 Slow · 0.75×</button><button class="btn btn-ghost" id="voice-normal" type="button">▶ Normal · 0.92×</button></div><div class="voice-actions"><button class="btn" id="voice-test" type="button">▶ Test voice</button><button class="btn btn-ghost" id="voice-close" type="button">Done</button></div></div>');
+    let m=$('#voice-modal');
+    if(!m){m=document.createElement('div');m.id='voice-modal';m.className='voice-modal';m.setAttribute('role','dialog');m.setAttribute('aria-modal','true');document.body.appendChild(m);}
+    m.hidden=false;
+    m.innerHTML='<div class="voice-sheet"><h2>🔊 Reader voice</h2><p class="voice-note">EPIPHANY uses George (British English) from ElevenLabs for generated speech across the site. Device-generated voices are not used. Previously played George audio can be reused from cache; new audio needs an internet connection.</p><p><strong>Voice:</strong> George · British English · ElevenLabs</p><label>Speaking speed <output id="voice-rate-out">'+Number(voicePref.rate).toFixed(2)+'×</output><input id="voice-rate" type="range" min="0.75" max="1.05" step="0.05" value="'+voicePref.rate+'"></label><div class="voice-actions"><button class="btn btn-ghost" id="voice-slow" type="button">🐢 Slow · 0.75×</button><button class="btn btn-ghost" id="voice-normal" type="button">▶ Normal · 0.92×</button></div><div class="voice-actions"><button class="btn" id="voice-test" type="button">▶ Test George</button><button class="btn btn-ghost" id="voice-close" type="button">Done</button></div></div>';
   }
   document.addEventListener('change', e => {
-    if (e.target.id === 'voice-select') { voicePref.name = e.target.value; saveVoicePref(); speak('Hello! This is how I sound.'); }
     if (e.target.id === 'voice-rate') { voicePref.rate = Number(e.target.value); saveVoicePref(); const o = $('#voice-rate-out'); if (o) o.textContent = voicePref.rate.toFixed(2) + '×'; }
   });
   document.addEventListener('input', e => {
@@ -1147,7 +1101,7 @@
     if(!pool.length){const idx=levelOrder.indexOf(current);pool=WOTD_WORDS.filter(w=>levelOrder.indexOf(w.level)<=idx);if(!pool.length)pool=WOTD_WORDS.slice();}
     const now=new Date(), dayNumber=Math.floor(Date.UTC(now.getFullYear(),now.getMonth(),now.getDate())/86400000);
     const w=pool[dayNumber%pool.length];
-    const speech=!!(window.speechSynthesis&&('SpeechSynthesisUtterance' in window));
+    const speech=!!(window.EpiphanySpeech&&typeof window.EpiphanySpeech.speak==='function');
     const saved=state.words.some(x=>String(x[0]).toLowerCase()===w.word.toLowerCase());
     box.innerHTML='<div class="wotd-top"><span class="kicker">EPIPHANY OF THE DAY</span><span class="pill">'+esc(w.level)+'</span></div><h2 id="wotd-title" class="wotd-word">'+esc(w.word)+'</h2><p class="wotd-pronunciation">'+esc(w.pronunciation||'')+'</p><div class="wotd-meanings"><p><strong>Meaning:</strong> '+esc(w.meaning)+'</p><p class="arabic" lang="ar" dir="rtl"><strong>المعنى:</strong> '+esc(w.meaning_ar)+'</p></div><p class="wotd-example">“'+esc(w.example)+'”</p>'+(w.example_ar?'<p class="arabic" lang="ar" dir="rtl">'+esc(w.example_ar)+'</p>':'')+'<p class="wotd-origin">'+esc(w.origin)+'</p>'+(w.origin_ar?'<p class="arabic wotd-origin-ar" lang="ar" dir="rtl">'+esc(w.origin_ar)+'</p>':'')+'<div class="wotd-actions">'+(speech?'<button type="button" class="btn btn-ghost" data-speak="'+esc(w.word)+'">Listen</button>':'')+'<button type="button" class="btn" id="wotd-save" '+(saved?'disabled':'')+'>'+(saved?'Saved to Words':'Save word')+'</button></div>';
     box.dataset.word=w.word;
@@ -3301,7 +3255,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     const sw=e.target.closest('[data-story-word]');if(sw&&ST&&ST.mode==='read'){openStoryWord(sw.dataset.storyWord,sw.dataset.storyDisplay);return;}
     const setting=e.target.closest('[data-story-setting]');if(setting&&ST){const prefs=state.storyReaderSettings||(state.storyReaderSettings={fontScale:1,lineSpacing:1.75,nightMode:false});const key=setting.dataset.storySetting;if(key==='font-up')prefs.fontScale=Math.min(1.35,Math.round((prefs.fontScale+0.1)*100)/100);if(key==='font-down')prefs.fontScale=Math.max(0.85,Math.round((prefs.fontScale-0.1)*100)/100);if(key==='line-up')prefs.lineSpacing=Math.min(2.25,Math.round((prefs.lineSpacing+0.1)*100)/100);if(key==='line-down')prefs.lineSpacing=Math.max(1.45,Math.round((prefs.lineSpacing-0.1)*100)/100);if(key==='night')prefs.nightMode=!prefs.nightMode;markPreferencesUpdated();save();renderStoryPage();return;}
     const act=e.target.closest('[data-story-action]');
-    const speed=e.target.closest('[data-story-rate]');if(speed&&ST){const draft=$('#story-dictation-answer');if(draft&&ST.dictationActive)ST.dictationAnswer=draft.value;ST.audioRate=Number(speed.dataset.storyRate);renderStoryPage();return;}if(act&&ST){const action=act.dataset.storyAction;if(action==='next'){persistStoryReaderProgress();storyNext();return;}if(action==='prev'&&ST.page>0){ST.page--;ST.textHidden=false;ST.dictationActive=false;ST.dictationChecked=false;persistStoryReaderProgress();renderStoryPage();return;}if(action==='listen-page'){speakStoryPage();return;}if(action==='start-recording'){startStoryPronunciationRecording();return;}if(action==='stop-recording'){stopStoryPronunciationRecording();return;}if(action==='play-recording'){playStoryPronunciationRecording();return;}if(action==='toggle-text'){ST.textHidden=!ST.textHidden;ST.dictationActive=false;renderStoryPage();return;}if(action==='dictation'){ST.dictationActive=!ST.dictationActive;ST.textHidden=ST.dictationActive;ST.dictationChecked=false;ST.dictationAnswer='';renderStoryPage();if(ST.dictationActive)speakStoryPage();return;}if(action==='comprehension'){ST.comprehensionOnly=true;ST.textHidden=true;ST.dictationActive=false;ST.mode='quiz';ST.qi=0;ST.score=0;ST.results=[];ST.answered=false;try{window.speechSynthesis?.cancel();}catch{}renderStoryQuestion();return;}if(action==='listen-word'){speak(act.dataset.value);return;}if(action==='save-word'){saveStoryWord(act.dataset.value,act.dataset.meaning);openStoryWord(act.dataset.value,act.dataset.value);return;}if(action==='close-word'){const card=$('#story-word-card');if(card)card.hidden=true;return;}if(action==='back-reading'){ST.mode='read';ST.comprehensionOnly=false;ST.page=ST.story.pages.length-1;hideSheet();renderStoryPage();return;}if(action==='replay-other'){const replayId=ST.story.id;ST=null;startStory(replayId);return;}if(action==='another'){const old=ST.story.id;ST=null;const next=STORIES.find(s=>s.id!==old&&storyLevelIndex(s.level)<=storyLevelIndex(currentLevel().id));startStory((next||STORIES[0]).id);return;}if(action==='words'){ST=null;closeGame();openView('words');return;}if(action==='close'){ST=null;closeGame();openView('stories');return;}}
+    const speed=e.target.closest('[data-story-rate]');if(speed&&ST){const draft=$('#story-dictation-answer');if(draft&&ST.dictationActive)ST.dictationAnswer=draft.value;ST.audioRate=Number(speed.dataset.storyRate);renderStoryPage();return;}if(act&&ST){const action=act.dataset.storyAction;if(action==='next'){persistStoryReaderProgress();storyNext();return;}if(action==='prev'&&ST.page>0){ST.page--;ST.textHidden=false;ST.dictationActive=false;ST.dictationChecked=false;persistStoryReaderProgress();renderStoryPage();return;}if(action==='listen-page'){speakStoryPage();return;}if(action==='start-recording'){startStoryPronunciationRecording();return;}if(action==='stop-recording'){stopStoryPronunciationRecording();return;}if(action==='play-recording'){playStoryPronunciationRecording();return;}if(action==='toggle-text'){ST.textHidden=!ST.textHidden;ST.dictationActive=false;renderStoryPage();return;}if(action==='dictation'){ST.dictationActive=!ST.dictationActive;ST.textHidden=ST.dictationActive;ST.dictationChecked=false;ST.dictationAnswer='';renderStoryPage();if(ST.dictationActive)speakStoryPage();return;}if(action==='comprehension'){ST.comprehensionOnly=true;ST.textHidden=true;ST.dictationActive=false;ST.mode='quiz';ST.qi=0;ST.score=0;ST.results=[];ST.answered=false;stopSpeechPlayback();renderStoryQuestion();return;}if(action==='listen-word'){speak(act.dataset.value);return;}if(action==='save-word'){saveStoryWord(act.dataset.value,act.dataset.meaning);openStoryWord(act.dataset.value,act.dataset.value);return;}if(action==='close-word'){const card=$('#story-word-card');if(card)card.hidden=true;return;}if(action==='back-reading'){ST.mode='read';ST.comprehensionOnly=false;ST.page=ST.story.pages.length-1;hideSheet();renderStoryPage();return;}if(action==='replay-other'){const replayId=ST.story.id;ST=null;startStory(replayId);return;}if(action==='another'){const old=ST.story.id;ST=null;const next=STORIES.find(s=>s.id!==old&&storyLevelIndex(s.level)<=storyLevelIndex(currentLevel().id));startStory((next||STORIES[0]).id);return;}if(action==='words'){ST=null;closeGame();openView('words');return;}if(action==='close'){ST=null;closeGame();openView('stories');return;}}
     if(ST&&ST.mode==='quiz'&&e.target.closest('#go-next')){hideSheet();if(ST.qi<2){ST.qi++;ST.answered=false;renderStoryQuestion();}else finishStory();return;}
     if(e.target.closest('#wotd-save')){const box=$('#wotd-card'),w=WOTD_WORDS.find(x=>x.word===box.dataset.word);if(w&&!state.words.some(x=>String(x[0]).toLowerCase()===w.word.toLowerCase())){state.words.push([w.word,w.meaning,w.level]);recordLearningActivity({words:1});addReview([w.word,w.meaning,w.level],w.meaning);save();renderAll();toast('Word saved to your vault and daily review.');}return;}
     const themeButton = e.target.closest('#theme-toggle');
@@ -3776,8 +3730,8 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     function status(text){const node=document.getElementById('listen-only-status');if(node)node.textContent=text;}
     function say(text,onEnd){if(stopped)return;speak(text,{rate:0.84,onEnd:function(){if(!stopped&&onEnd)onEnd();}});}
     function play(){if(stopped)return;const thisRun=++runId;const item=items[index];if(!item){status('Listening session complete. You can close this window or start again.');return;}status('Word '+(index+1)+' of '+items.length+'. Listen, then repeat aloud when you hear “Your turn”.');say(item.word,function(){if(stopped||thisRun!==runId)return;say('Your turn. Repeat the word aloud.',function(){if(stopped||thisRun!==runId)return;setTimeout(function(){if(stopped||thisRun!==runId)return;say('Meaning: '+item.meaning+'. Example: '+item.example,function(){if(stopped||thisRun!==runId)return;index++;if(index<items.length)play();else status('You have finished this listening session. Well done.');});},3500);});});}
-    modal.querySelector('[data-listen-play]').addEventListener('click',function(){if(naturalAudioPlayer&&naturalAudioPlayer.paused){naturalAudioPlayer.play().catch(()=>status('Tap Start / Resume to continue audio.'));return;}if(window.speechSynthesis&&window.speechSynthesis.paused){window.speechSynthesis.resume();return;}stopped=false;play();});
-    modal.querySelector('[data-listen-pause]').addEventListener('click',function(){if(window.speechSynthesis)window.speechSynthesis.pause();if(naturalAudioPlayer)naturalAudioPlayer.pause();status('Paused. Resume whenever you are ready.');});
+    modal.querySelector('[data-listen-play]').addEventListener('click',function(){if(naturalAudioPlayer&&naturalAudioPlayer.paused){naturalAudioPlayer.play().catch(()=>status('Tap Start / Resume to continue audio.'));return;}stopped=false;play();});
+    modal.querySelector('[data-listen-pause]').addEventListener('click',function(){if(naturalAudioPlayer)naturalAudioPlayer.pause();status('Paused. Resume whenever you are ready.');});
     modal.querySelector('[data-listen-next]').addEventListener('click',function(){runId++;stopSpeechPlayback();index=Math.min(index+1,items.length);stopped=false;play();});
     modal.querySelector('[data-listen-stop]').addEventListener('click',function(){stopped=true;runId++;stopSpeechPlayback();status('Stopped. Your progress is unchanged.');});
     modal.querySelector('[data-listen-close]').addEventListener('click',function(){stopped=true;runId++;stopSpeechPlayback();modal.hidden=true;});
@@ -5883,7 +5837,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     const listenWord=event.target.closest('[data-shared-word-listen]'); if(listenWord){speak(listenWord.dataset.sharedWordListen);return;}
     const shareWord=event.target.closest('[data-shared-word-share]'); if(shareWord){const url=new URL(window.location.href);url.search='';url.hash='word='+encodeURIComponent(shareWord.dataset.sharedWordShare);copyShareLink(url.href);return;}
   });
-  document.addEventListener('keydown', function(event){if(event.key==='Escape'){closeSharedWord();const listenModal=document.getElementById('listen-only-modal');if(listenModal&&!listenModal.hidden){const synth=window.speechSynthesis;if(synth)synth.cancel();listenModal.hidden=true;}if(document.body.classList.contains('focus-mode')){document.body.classList.remove('focus-mode');const button=document.getElementById('focus-mode-toggle');if(button)button.setAttribute('aria-pressed','false');}}});
+  document.addEventListener('keydown', function(event){if(event.key==='Escape'){closeSharedWord();const listenModal=document.getElementById('listen-only-modal');if(listenModal&&!listenModal.hidden){stopSpeechPlayback();listenModal.hidden=true;}if(document.body.classList.contains('focus-mode')){document.body.classList.remove('focus-mode');const button=document.getElementById('focus-mode-toggle');if(button)button.setAttribute('aria-pressed','false');}}});
   window.addEventListener('hashchange',function(){const match=window.location.hash.match(/^#word=(.+)$/);if(match)showSharedWord(decodeURIComponent(match[1]));});
   const sharedMatch=window.location.hash.match(/^#word=(.+)$/);if(sharedMatch)setTimeout(function(){showSharedWord(decodeURIComponent(sharedMatch[1]));},0);
   setTimeout(function(){
