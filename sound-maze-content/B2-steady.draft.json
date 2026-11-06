@@ -1,0 +1,166 @@
+{
+  "level": "B2",
+  "mode": "steady",
+  "status": "draft",
+  "version": 1,
+  "pronunciation_reference": "General American",
+  "description": "Steady B2 content batch for The Sound Maze. Each target is spoken aloud; the learner selects its spelling. Draft content is not wired into the live game.",
+  "questions": [
+    {
+      "id": "SM-B2-S-001",
+      "axis": "short_vowel_contrasts",
+      "target": "frantic",
+      "options": [
+        "frantic",
+        "frontier",
+        "franticity",
+        "franticly"
+      ],
+      "answer": "frantic",
+      "explain": "Frantic has /æ/ in its first stressed syllable. Frontier has /ʌ/ or /ɔ/ depending on pronunciation and a different syllable pattern; the other forms are not standard words."
+    },
+    {
+      "id": "SM-B2-S-002",
+      "axis": "short_vowel_contrasts",
+      "target": "subtle",
+      "options": [
+        "settle",
+        "subtle",
+        "saddle",
+        "soothe"
+      ],
+      "answer": "subtle",
+      "explain": "Subtle has /ʌ/ in its first syllable. Settle has /ɛ/, saddle has /æ/, and soothe has /uː/."
+    },
+    {
+      "id": "SM-B2-S-003",
+      "axis": "short_vowel_contrasts",
+      "target": "reckless",
+      "options": [
+        "rackless",
+        "reckless",
+        "rockless",
+        "rickless"
+      ],
+      "answer": "reckless",
+      "explain": "Reckless has /ɛ/ in its first syllable. The other options are not standard spellings of this word."
+    },
+    {
+      "id": "SM-B2-S-004",
+      "axis": "initial_consonant_sounds",
+      "target": "mnemonic",
+      "options": [
+        "pneumatic",
+        "mnemonic",
+        "magnetic",
+        "phonetic"
+      ],
+      "answer": "mnemonic",
+      "explain": "Mnemonic begins with /n/ because the initial m is silent. Pneumatic begins with /n/ too, while magnetic begins with /m/ and phonetic with /f/."
+    },
+    {
+      "id": "SM-B2-S-005",
+      "axis": "initial_consonant_sounds",
+      "target": "xenon",
+      "options": [
+        "zenith",
+        "xenon",
+        "senate",
+        "cenotaph"
+      ],
+      "answer": "xenon",
+      "explain": "Xenon begins with /z/, the usual sound of initial x in this word. Senate and cenotaph begin with /s/, while zenith begins with /z/ but has a different vowel and ending."
+    },
+    {
+      "id": "SM-B2-S-006",
+      "axis": "initial_consonant_sounds",
+      "target": "psalm",
+      "options": [
+        "salmon",
+        "psalm",
+        "palm",
+        "qualm"
+      ],
+      "answer": "psalm",
+      "explain": "Psalm begins with /s/ because the p is silent. Salmon begins with /s/ too but has a different ending; palm begins with /p/ in many General American pronunciations, and qualm begins with /kw/."
+    },
+    {
+      "id": "SM-B2-S-007",
+      "axis": "final_consonant_sounds",
+      "target": "promptly",
+      "options": [
+        "prompt",
+        "prompts",
+        "promptly",
+        "prompter"
+      ],
+      "answer": "promptly",
+      "explain": "Promptly ends with /tli/. Prompt ends with /t/, prompts with /ts/, and prompter with /tər/."
+    },
+    {
+      "id": "SM-B2-S-008",
+      "axis": "final_consonant_sounds",
+      "target": "twelfth",
+      "options": [
+        "twelve",
+        "twelfth",
+        "twelfthly",
+        "twelfths"
+      ],
+      "answer": "twelfth",
+      "explain": "Twelfth ends with /lfθ/. Twelve ends with /lv/, and twelfths adds a final /s/; twelfthly is not a standard common word."
+    },
+    {
+      "id": "SM-B2-S-009",
+      "axis": "final_consonant_sounds",
+      "target": "risked",
+      "options": [
+        "risks",
+        "risky",
+        "risked",
+        "risen"
+      ],
+      "answer": "risked",
+      "explain": "Risked ends with /t/ because -ed follows the voiceless /k/ sound. Risks ends with /s/, risky with /i/, and risen with /ən/."
+    },
+    {
+      "id": "SM-B2-S-010",
+      "axis": "basic_spelling_patterns",
+      "target": "liaison",
+      "options": [
+        "liason",
+        "liaison",
+        "liaision",
+        "lison"
+      ],
+      "answer": "liaison",
+      "explain": "Liaison is spelled l-i-a-i-s-o-n. The other options omit or rearrange letters."
+    },
+    {
+      "id": "SM-B2-S-011",
+      "axis": "basic_spelling_patterns",
+      "target": "supersede",
+      "options": [
+        "supercede",
+        "supersede",
+        "supersceed",
+        "supersede"
+      ],
+      "answer": "supersede",
+      "explain": "Supersede ends with -sede, not -cede or -ceed. The spelling is unusual and often confused."
+    },
+    {
+      "id": "SM-B2-S-012",
+      "axis": "basic_spelling_patterns",
+      "target": "occurrence",
+      "options": [
+        "occurence",
+        "occurrence",
+        "ocurrence",
+        "occurrance"
+      ],
+      "answer": "occurrence",
+      "explain": "Occurrence has double c and double r, and it ends with -ence. The other choices omit or change letters."
+    }
+  ]
+}
