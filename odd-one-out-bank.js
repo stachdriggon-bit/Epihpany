@@ -12,14 +12,14 @@
       {id:'A1-CAT-01',relationship:'category',words:['apple','pear','banana','pencil'],answer:3,explain:'Apple, pear and banana are fruits. A pencil is used for writing, not eaten.',challengeExplain:"Orange, grape and peach are fruits. A notebook is used for writing or drawing, not eaten.",hint:'Which three are foods?',context:'Everyday objects and food.'},
       {id:'A1-CAT-02',relationship:'category',words:['bus','train','bicycle','kitchen'],answer:3,explain:'A bus, train and bicycle are ways to travel. A kitchen is a room in a home.',challengeExplain:"A tram, coach and ferry are ways to travel. A bedroom is a room in a home.",hint:'Which three can help you travel?',context:'Getting from one place to another.'},
       {id:'A1-FUN-01',relationship:'function',words:['knife','scissors','saw','pillow'],answer:3,explain:'A knife, scissors and a saw are used for cutting. A pillow is used for resting your head.',challengeExplain:"A blade, shears and a chisel are tools used for cutting or shaping materials. A blanket keeps someone warm or covers a bed.",hint:'Think about what each object is used to do.',context:'Common household objects.'},
-      {id:'A1-PW-01',relationship:'part-whole',words:['handlebar','pedal','wheel','bicycle'],answer:3,explain:'A handlebar, pedal and wheel are parts of a bicycle. Bicycle names the complete vehicle.',challengeExplain:"A saddle, chain and brake are parts of a bicycle. A cyclist is the person who rides it, not a component.",hint:'Which three can be parts of the same thing?',context:'Parts of a familiar vehicle.'},
-      {id:'A1-WC-01',relationship:'word-class',words:['quickly','slowly','carefully','careful'],answer:3,explain:'Quickly, slowly and carefully are adverbs describing how an action happens. Careful is an adjective.',challengeExplain:'Quietly, happily and easily are adverbs describing how an action happens. Quiet is an adjective.',hint:'Look at how each word is formed and used.',context:'Simple descriptions of actions.'},
+      {id:'A1-PW-01',relationship:'part-whole',words:['door','window','seat','car'],answer:3,explain:'A door, window and seat are parts of a car. Car names the complete vehicle.',challengeExplain:'A wheel, door and seat are parts of a car. A driver is the person who drives it, not a component.',hint:'Which three are parts of the same vehicle?',context:'Parts of a familiar car.'},
+      {id:'A1-WC-01',relationship:'word-class',words:['run','walk','jump','happy'],answer:3,explain:'Run, walk and jump are verbs naming actions. Happy is an adjective describing a feeling.',challengeExplain:'Eat, drink and sleep are verbs naming actions. Kind is an adjective describing a person.',hint:'Which three words name actions?',context:'Everyday actions and feelings.'},
       {id:'A1-SYN-01',relationship:'synonyms-antonyms',words:['big','large','huge','small'],answer:3,explain:'Big, large and huge describe something of great size. Small describes something of little size.',challengeExplain:'Big, large and huge describe something of great size. Tiny describes something of very small size.',hint:'Which three describe size in a similar way?',context:'Basic size vocabulary.'},
       {id:'A1-FUN-02',relationship:'function',words:['key','password','code','plate'],answer:3,explain:'A key, password and code can all give access or unlock something. A plate is used for serving food.',challengeExplain:"A passcode, PIN and keycard can grant access to something. A bowl is used to hold or serve food.",hint:'Which three can help you open or access something?',context:'Simple everyday purposes.'},
       {id:'A1-CAT-03',relationship:'category',words:['Monday','Tuesday','Friday','summer'],answer:3,explain:'Monday, Tuesday and Friday are days of the week. Summer is a season.',challengeExplain:"Wednesday, Saturday and Sunday are days of the week. Winter is a season.",hint:'Which three belong to the same calendar group?',context:'Days and seasons.'},
       {id:'A1-CAT-04',relationship:'category',words:['shirt','trousers','shoes','orange'],answer:3,explain:'A shirt, trousers and shoes are things people wear. An orange is a fruit.',challengeExplain:'A jacket, socks and a skirt are things people wear. A banana is a fruit.',hint:'Which three can you wear?',context:'Clothes and everyday objects.'},
       {id:'A1-PW-02',relationship:'part-whole',words:['page','cover','chapter','reader'],answer:3,explain:'A page, cover and chapter are parts of a book. A reader is the person who reads it.',challengeExplain:'A title, page and cover are parts of a book. An author is the person who writes it.',hint:'Which three are parts of the same object?',context:'Parts of a familiar book.'},
-      {id:'A1-WC-02',relationship:'word-class',words:['eat','drink','sleep','beautiful'],answer:3,explain:'Eat, drink and sleep are verbs that name actions. Beautiful is an adjective that describes something.',challengeExplain:'Walk, run and swim are verbs that name actions. Beautiful is an adjective that describes something.',hint:'Which three words name actions?',context:'Everyday actions and descriptions.'},
+      {id:'A1-CAT-05',relationship:'category',words:['red','blue','green','bread'],answer:3,explain:'Red, blue and green are colours. Bread is a food.',challengeExplain:'Yellow, black and white are colours. Cheese is a food.',hint:'Which three name colours?',context:'Basic colours and food.'},
       {id:'A1-COL-01',relationship:'collocations',words:['breakfast','lunch','dinner','homework'],answer:3,explain:'We commonly say “eat breakfast”, “eat lunch” and “eat dinner”. We say “do homework”, not “eat homework”.',challengeExplain:'“Eat breakfast”, “eat lunch” and “eat supper” are natural combinations. “Do homework” is the natural expression for schoolwork.',hint:'Which three words naturally follow the verb “eat”?',context:'Common verb and noun combinations.'}
     ],
     A2: [
@@ -95,16 +95,16 @@
         "blanket"
     ],
     "A1-PW-01": [
-        "saddle",
-        "chain",
-        "brake",
-        "cyclist"
+        "wheel",
+        "door",
+        "seat",
+        "driver"
     ],
     "A1-WC-01": [
-        "quietly",
-        "happily",
-        "easily",
-        "quiet"
+        "eat",
+        "drink",
+        "sleep",
+        "kind"
     ],
     "A1-SYN-01": [
         "big",
@@ -136,11 +136,11 @@
         "cover",
         "author"
     ],
-    "A1-WC-02": [
-        "walk",
-        "run",
-        "swim",
-        "beautiful"
+    "A1-CAT-05": [
+        "yellow",
+        "black",
+        "white",
+        "cheese"
     ],
     "A1-COL-01": [
         "breakfast",
