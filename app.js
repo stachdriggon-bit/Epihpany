@@ -69,7 +69,7 @@
   ];
 
   /* ---------- state ---------- */
-  const defaults = () => ({xp:0, quests:0, words:[], review:[], encounteredWords:[], wordMonthProgress:{}, dailyTreasure:{date:'',index:0,opened:false}, teachMeAttempts:[], immersionWeek:{startedAt:null,endsAt:null,days:{},active:false}, focusTimer:{mode:'focus',duration:1500,remaining:1500,endsAt:null,running:false,sessions:0}, xpActivity:{days:{}}, _lastSavedXp:null, adaptiveOffset:0, adaptiveStreak:0, adaptiveErrorStreak:0, adaptiveSignals:{}, thinkLabRewardKeys:{}, learningActivity:{days:{}}, dailyChallengeDate:null, dailyChallengeResult:null, dailySessionDate:null, dailySessionStep:'review', dailySessionDone:false, oneLifeBest:0, translationEnabled:false, storyReaderSettings:{fontScale:1,lineSpacing:1.75,nightMode:false}, placementDone:false, assessedLevel:'A1', placementResult:null, xpAtLevelStart:null, promotionHistory:[], promotionAttempts:{}, lastPromotionResult:null, completed:[], streak:0, lastDay:null, daily:0, level:'A1', sound:true, helpArabic:false, theme:'light', streakFreezes:1, dailyQuestDate:null, dailyQuestProgress:0, dailyQuestClaimed:false, dailyCorrect:0, dailyXp:0, weeklyKey:null, weeklyProgress:0, weeklyClaimed:false, mistakeTrapErrors:{}, mistakeQuestionErrors:{}, mistakeTrapCorrect:{}, mistakeQuestionCorrect:{}, mistakeTrapSrs:{}, modes:{}, weakTraps:{}, recentQuestions:{}, stories:{}, world:{done:[],stars:{}}});
+  const defaults = () => ({xp:0, quests:0, words:[], review:[], encounteredWords:[], wordMonthProgress:{}, dailyTreasure:{date:'',index:0,opened:false}, teachMeAttempts:[], immersionWeek:{startedAt:null,endsAt:null,days:{},active:false}, focusTimer:{mode:'focus',duration:1500,remaining:1500,endsAt:null,running:false,sessions:0}, xpActivity:{days:{}}, _lastSavedXp:null, adaptiveOffset:0, adaptiveStreak:0, adaptiveErrorStreak:0, adaptiveSignals:{}, thinkLabRewardKeys:{}, learningActivity:{days:{}}, dailyChallengeDate:null, dailyChallengeResult:null, dailySessionDate:null, dailySessionStep:'review', dailySessionDone:false, oneLifeBest:0, soundMazeCEFR:null, translationEnabled:false, storyReaderSettings:{fontScale:1,lineSpacing:1.75,nightMode:false}, placementDone:false, assessedLevel:'A1', placementResult:null, xpAtLevelStart:null, promotionHistory:[], promotionAttempts:{}, lastPromotionResult:null, completed:[], streak:0, lastDay:null, daily:0, level:'A1', sound:true, helpArabic:false, theme:'light', streakFreezes:1, dailyQuestDate:null, dailyQuestProgress:0, dailyQuestClaimed:false, dailyCorrect:0, dailyXp:0, weeklyKey:null, weeklyProgress:0, weeklyClaimed:false, mistakeTrapErrors:{}, mistakeQuestionErrors:{}, mistakeTrapCorrect:{}, mistakeQuestionCorrect:{}, mistakeTrapSrs:{}, modes:{}, weakTraps:{}, recentQuestions:{}, stories:{}, world:{done:[],stars:{}}});
   let state;
   try { state = {...defaults(), ...JSON.parse(localStorage.getItem('epiphany-progress') || '{}')}; } catch { state = defaults(); }
   // Inline question translation is opt-in: migrate existing saved profiles to English-first once.
@@ -126,6 +126,7 @@
   if (!Number.isFinite(state.adaptiveStreak)) state.adaptiveStreak = 0;
   if (!Number.isFinite(state.adaptiveErrorStreak)) state.adaptiveErrorStreak = 0;
   if (!Number.isFinite(state.oneLifeBest)) state.oneLifeBest = 0;
+  if (!['A1','A2','B1','B2','C1','C2'].includes(state.soundMazeCEFR)) state.soundMazeCEFR = null;
   if (state.lastDay !== dayKey()) state.daily = 0;
   if (state.dailyQuestDate !== dayKey()) {
     const hadDailyQuest = !!state.dailyQuestDate;
@@ -459,6 +460,18 @@
     getCEFRLevel() {
       const level = currentLevel();
       return level && LEVELS.some(item => item.id === level.id) ? level.id : 'A1';
+    },
+    getSoundMazeCEFR() {
+      return LEVELS.some(item => item.id === state.soundMazeCEFR) ? state.soundMazeCEFR : null;
+    },
+    setSoundMazeCEFR(level) {
+      if (!LEVELS.some(item => item.id === level)) return false;
+      if (state.soundMazeCEFR !== level) {
+        state.soundMazeCEFR = level;
+        markPreferencesUpdated();
+        save();
+      }
+      return true;
     },
     recordResult(skill, topic, correct, completed = false, options = {}) {
       if (DEV_MODE.active && hasDeveloperAccess()) return {xp:0};
