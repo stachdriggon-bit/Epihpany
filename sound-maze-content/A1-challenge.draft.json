@@ -100,7 +100,7 @@
       "target": "wrist",
       "options": ["list", "rest", "wrist", "west"],
       "answer": "wrist",
-      "explain": "The w in wrist is silent, so the word begins with /r/. List begins with /l/, while rest and west begin with /r/ and /w/ but have different vowel or consonant sounds."
+      "explain": "The w in wrist is silent, so the word begins with /r/. List begins with /l/, rest has /ɛ/ rather than /ɪ/, and west begins with /w/."
     }
   ]
 }
