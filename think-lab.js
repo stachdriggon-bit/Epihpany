@@ -1131,7 +1131,7 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
     for (let i=tiles.length-1;i>0;i--) { const j=Math.floor(Math.random()*(i+1)); [tiles[i],tiles[j]]=[tiles[j],tiles[i]]; }
     return tiles;
   }
-  function speakTarget() { const pool=activePool || getRoundPool('maze');const item=pool[index%pool.length]; if(!('speechSynthesis' in window)||!window.SpeechSynthesisUtterance){const fb=root.querySelector('#tl-feedback');if(fb){fb.hidden=false;fb.className='tl-feedback is-wrong';fb.textContent='Speech playback is not available in this browser.';}return;} window.speechSynthesis.cancel(); const utterance=new SpeechSynthesisUtterance(item.target); utterance.lang='en-US'; utterance.rate=.82; window.speechSynthesis.speak(utterance); }
+  function speakTarget() { const pool=activePool || getRoundPool('maze');const item=pool[index%pool.length];const speech=window.EpiphanySpeech;if(!speech||typeof speech.speak!=='function'){const fb=root.querySelector('#tl-feedback');if(fb){fb.hidden=false;fb.className='tl-feedback is-wrong';fb.textContent='George voice is not ready. Please try again.';}return;}speech.speak(item.target,{rate:.82,onError:()=>{const fb=root.querySelector('#tl-feedback');if(fb){fb.hidden=false;fb.className='tl-feedback is-wrong';fb.textContent='George voice is temporarily unavailable. Please try again.';}}}); }
   let pickerGameId = null;
   let pickerStage = 'landing';
 
@@ -1328,7 +1328,7 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
     }
     const launch=e.target.closest('[data-think-game]'); if(launch){start(launch.dataset.thinkGame);return;}
     if(e.target.closest('[data-think-back]')){
-      if(window.speechSynthesis)window.speechSynthesis.cancel();
+      window.EpiphanySpeech?.stop?.();
       if(pickerStage==='game' && pickerGameId){
         if(pickerGameId==='translator')showTranslatorLevelPicker();
         else if(pickerGameId==='maze')showMazeLevelPicker();
@@ -1347,7 +1347,7 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
     if(e.target.closest('[data-translator-hint]')&&mode==='translator'&&!locked){const pool=activePool||getRoundPool('translator'),item=pool[index%pool.length],hint=root.querySelector('[data-translator-hint-text]'),button=root.querySelector('[data-translator-hint]');if(hint){hint.hidden=false;hint.textContent=item.hint;}if(button){button.disabled=true;button.textContent='Hint revealed';}return;}
     if(e.target.closest('[data-training-hint]')&&mode&&!locked){const hint=root.querySelector('[data-training-hint-text]'),button=root.querySelector('[data-training-hint]');if(hint){hint.hidden=false;hint.textContent=guidedHint(mode);}if(button){button.disabled=true;button.textContent='Hint revealed';}return;}
     if(e.target.closest('[data-think-clue]')){clueCount=Math.min((activePool || getRoundPool('detective'))[index%(activePool || getRoundPool('detective')).length].clues.length-1,clueCount+1);renderGame();return;}
-    if(e.target.closest('[data-think-next]')){if(window.speechSynthesis)window.speechSynthesis.cancel();index++;oddHintStep=0;chainStepIndex=0;chainPath=[];connectionSelected=[];clueCount=0;roundMistakes=0;ladderPath=[];ladderWordNote=null;ladderMistakeRecorded=false;if(index>=(activePool || getRoundPool(mode)).length){const finished=mode;const totalRounds=(activePool || getRoundPool(finished)).length;root.innerHTML='<div class="tl-finish"><span class="tl-finish-mark">∴</span><span class="tl-eyebrow">CASE FILE CLOSED</span><h2>Good thinking.</h2><p>You solved <b>'+score+' of '+totalRounds+'</b> challenges. The goal is not only to get it right—it’s to understand why.</p><button type="button" class="tl-next" data-think-restart>Try another case ↗</button><button type="button" class="tl-back" data-think-back>Back to Think Lab</button></div>';mode=null;activePool=null;activeDifficulty=null;pickerStage='landing';pickerGameId=null;}else renderGame();return;}
+    if(e.target.closest('[data-think-next]')){window.EpiphanySpeech?.stop?.();index++;oddHintStep=0;chainStepIndex=0;chainPath=[];connectionSelected=[];clueCount=0;roundMistakes=0;ladderPath=[];ladderWordNote=null;ladderMistakeRecorded=false;if(index>=(activePool || getRoundPool(mode)).length){const finished=mode;const totalRounds=(activePool || getRoundPool(finished)).length;root.innerHTML='<div class="tl-finish"><span class="tl-finish-mark">∴</span><span class="tl-eyebrow">CASE FILE CLOSED</span><h2>Good thinking.</h2><p>You solved <b>'+score+' of '+totalRounds+'</b> challenges. The goal is not only to get it right—it’s to understand why.</p><button type="button" class="tl-next" data-think-restart>Try another case ↗</button><button type="button" class="tl-back" data-think-back>Back to Think Lab</button></div>';mode=null;activePool=null;activeDifficulty=null;pickerStage='landing';pickerGameId=null;}else renderGame();return;}
     if(e.target.closest('[data-think-restart]')){landing();return;}
     if(e.target.closest('[data-think-speak]')){speakTarget();return;}
     const chainAnswer=e.target.closest('[data-chain-answer]');
