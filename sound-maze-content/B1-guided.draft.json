@@ -152,15 +152,15 @@
     {
       "id": "SM-B1-G-012",
       "axis": "basic_spelling_patterns",
-      "target": "knuckle",
+      "target": "wrench",
       "options": [
-        "nuckle",
-        "knuckle",
-        "nickel",
-        "knack"
+        "wrench",
+        "ranch",
+        "branch",
+        "trench"
       ],
-      "answer": "knuckle",
-      "explain": "Knuckle begins with /n/ because the k is silent. Nickel begins with /n/ too but has a different vowel and ending; knack has a pronounced /k/."
+      "answer": "wrench",
+      "explain": "Wrench begins with /r/ because the written w is silent. Ranch begins with /r/ but has a different vowel and ending; branch and trench begin with /b/ and /t/."
     }
   ]
 }
