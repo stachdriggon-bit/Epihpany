@@ -41,10 +41,10 @@
     {
       "id": "SM-A1-S-005",
       "axis": "initial_consonant_sounds",
-      "target": "rice",
-      "options": ["lice", "rise", "rice", "nice"],
-      "answer": "rice",
-      "explain": "Rice begins with /r/ and ends with the unvoiced /s/ sound. Lice begins with /l/, rise ends with /z/, and nice begins with /n/."
+      "target": "man",
+      "options": ["can", "man", "pan", "van"],
+      "answer": "man",
+      "explain": "Man begins with /m/. Can begins with /k/, pan with /p/, and van with /v/."
     },
     {
       "id": "SM-A1-S-006",
