@@ -1,0 +1,166 @@
+{
+  "level": "B1",
+  "mode": "challenge",
+  "status": "draft",
+  "version": 1,
+  "pronunciation_reference": "General American",
+  "description": "Challenge B1 content batch for The Sound Maze. Each target is spoken aloud; the learner selects its spelling. Draft content is not wired into the live game.",
+  "questions": [
+    {
+      "id": "SM-B1-C-001",
+      "axis": "short_vowel_contrasts",
+      "target": "plausible",
+      "options": [
+        "plausible",
+        "possible",
+        "plosive",
+        "pleasable"
+      ],
+      "answer": "plausible",
+      "explain": "Plausible has /ɔ/ in its first stressed syllable in General American. Possible has /ɑ/ or /ɔ/ depending on speaker and merger; this contrast can vary, so listen for the full word rather than relying on one vowel."
+    },
+    {
+      "id": "SM-B1-C-002",
+      "axis": "short_vowel_contrasts",
+      "target": "endeavor",
+      "options": [
+        "endower",
+        "endeavor",
+        "indoor",
+        "endure"
+      ],
+      "answer": "endeavor",
+      "explain": "Endeavor begins with /ɛ/. Endower begins with /aʊ/, indoor with /ɪ/, and endure with /ɪ/."
+    },
+    {
+      "id": "SM-B1-C-003",
+      "axis": "short_vowel_contrasts",
+      "target": "compass",
+      "options": [
+        "compass",
+        "campus",
+        "composed",
+        "compost"
+      ],
+      "answer": "compass",
+      "explain": "Compass has /ʌ/ in its first syllable in General American. Campus has /æ/, composed has /oʊ/, and compost has /ɑ/."
+    },
+    {
+      "id": "SM-B1-C-004",
+      "axis": "initial_consonant_sounds",
+      "target": "rendezvous",
+      "options": [
+        "rendezvous",
+        "renegade",
+        "repertoire",
+        "reliable"
+      ],
+      "answer": "rendezvous",
+      "explain": "Rendezvous begins with /ˈrɑn/ in General American. Renegade begins with /rɛ/, repertoire with /ˈrɛp/ or /ˈrɛpə/, and reliable with /rɪ/."
+    },
+    {
+      "id": "SM-B1-C-005",
+      "axis": "initial_consonant_sounds",
+      "target": "pneumonia",
+      "options": [
+        "pneumatic",
+        "pneumonia",
+        "phenomenon",
+        "pseudonym"
+      ],
+      "answer": "pneumonia",
+      "explain": "Pneumonia begins with /n/ because the p is silent. Pneumatic also begins /n/ but has a different vowel sequence; phenomenon begins /f/ and pseudonym begins /s/."
+    },
+    {
+      "id": "SM-B1-C-006",
+      "axis": "initial_consonant_sounds",
+      "target": "gnaw",
+      "options": [
+        "gnat",
+        "gnaw",
+        "gnome",
+        "gnash"
+      ],
+      "answer": "gnaw",
+      "explain": "Gnaw begins with /n/ because the g is silent. Gnat, gnome, and gnash also begin with /n/, so the spoken vowel and ending distinguish the words."
+    },
+    {
+      "id": "SM-B1-C-007",
+      "axis": "final_consonant_sounds",
+      "target": "sixths",
+      "options": [
+        "sixth",
+        "sixths",
+        "sixes",
+        "sickles"
+      ],
+      "answer": "sixths",
+      "explain": "Sixths ends with the cluster /ksθs/ in careful pronunciation. Sixth lacks the final /s/, sixes ends /ɪz/, and sickles ends /əlz/."
+    },
+    {
+      "id": "SM-B1-C-008",
+      "axis": "final_consonant_sounds",
+      "target": "heir",
+      "options": [
+        "air",
+        "heir",
+        "hare",
+        "here"
+      ],
+      "answer": "heir",
+      "explain": "Heir ends with the vowel sound /ɛr/ and has a silent h. Air is a homophone of heir in General American, so this pair cannot be distinguished by sound alone; the other choices differ."
+    },
+    {
+      "id": "SM-B1-C-009",
+      "axis": "final_consonant_sounds",
+      "target": "worlds",
+      "options": [
+        "word",
+        "worlds",
+        "works",
+        "worse"
+      ],
+      "answer": "worlds",
+      "explain": "Worlds ends with /ldz/. Word ends with /rd/, works with /rks/, and worse with /rs/."
+    },
+    {
+      "id": "SM-B1-C-010",
+      "axis": "basic_spelling_patterns",
+      "target": "acquaintance",
+      "options": [
+        "acquaintance",
+        "acquantance",
+        "acquaintence",
+        "aquaintance"
+      ],
+      "answer": "acquaintance",
+      "explain": "Acquaintance is spelled with -quaint- and the ending -ance. The other choices are common misspellings."
+    },
+    {
+      "id": "SM-B1-C-011",
+      "axis": "basic_spelling_patterns",
+      "target": "conscience",
+      "options": [
+        "conscience",
+        "conscious",
+        "consciense",
+        "concience"
+      ],
+      "answer": "conscience",
+      "explain": "Conscience ends with -cience and is pronounced /ˈkɑnʃəns/. Conscious ends with -cious and has a different final sound; the other forms are misspellings."
+    },
+    {
+      "id": "SM-B1-C-012",
+      "axis": "basic_spelling_patterns",
+      "target": "queue",
+      "options": [
+        "cue",
+        "queue",
+        "quay",
+        "quite"
+      ],
+      "answer": "queue",
+      "explain": "Queue is spelled with five letters but pronounced like cue /kjuː/. Quay is pronounced /kiː/, while quite has /kwaɪt/."
+    }
+  ]
+}
