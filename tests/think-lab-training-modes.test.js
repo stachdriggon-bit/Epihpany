@@ -83,7 +83,7 @@ test('every Think Lab game opens the shared three-mode picker before play', () =
 test('each training mode is passed into the selected game instead of the adaptive default', () => {
   for (const gameId of gameIds) {
     for (const trainingMode of trainingModes) {
-      const harness = createHarness();
+      const harness = createHarness(gameId === 'maze' ? {soundMazeBank:makeSoundMazeFixture()} : {});
       harness.click('[data-think-game]', {thinkGame:gameId});
       harness.click('[data-think-training-mode]', {thinkTrainingMode:trainingMode,thinkTrainingGame:gameId});
       if (gameId === 'translator') {
