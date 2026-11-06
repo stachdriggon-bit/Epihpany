@@ -301,11 +301,14 @@ test('optional lazy loads respect the adaptive concurrency limit', async () => {
   assert.deepEqual(requested.map(src => src.split('?')[0]), ['practice-lab.js', 'sound-maze-bank.js']);
   scripts[1].onload();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[2].split('?')[0], 'odd-one-out-bank.js');
+  assert.equal(requested[2].split('?')[0], 'sound-maze-content.js');
   scripts[2].onload();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[3].split('?')[0], 'think-lab.js');
+  assert.equal(requested[3].split('?')[0], 'odd-one-out-bank.js');
   scripts[3].onload();
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(requested[4].split('?')[0], 'think-lab.js');
+  scripts[4].onload();
 });
 
 test('explicit navigation bypasses and promotes queued optional loads', async () => {
@@ -354,9 +357,14 @@ test('explicit navigation bypasses and promotes queued optional loads', async ()
 
   scripts[1].onload();
   await new Promise(resolve => setImmediate(resolve));
+  assert.equal(requested[2].split('?')[0], 'sound-maze-content.js');
   scripts[2].onload();
   await new Promise(resolve => setImmediate(resolve));
+  assert.equal(requested[3].split('?')[0], 'odd-one-out-bank.js');
   scripts[3].onload();
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(requested[4].split('?')[0], 'think-lab.js');
+  scripts[4].onload();
   await explicit;
   scripts[0].onload();
 });
@@ -420,11 +428,14 @@ test('background optional loads pause while constrained, resume once, and never 
     'queued optional work should resume when conditions improve');
   scripts[1].onload();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[2].split('?')[0], 'odd-one-out-bank.js');
+  assert.equal(requested[2].split('?')[0], 'sound-maze-content.js');
   scripts[2].onload();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[3].split('?')[0], 'think-lab.js');
+  assert.equal(requested[3].split('?')[0], 'odd-one-out-bank.js');
   scripts[3].onload();
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(requested[4].split('?')[0], 'think-lab.js');
+  scripts[4].onload();
   await new Promise(resolve => setImmediate(resolve));
 
   policy = { ...policy, allowSpeculativePreload: false, deferNonEssentialWork: true };
