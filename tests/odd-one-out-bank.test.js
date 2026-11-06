@@ -10,7 +10,7 @@ const appSource = fs.readFileSync(path.join(__dirname, '..', 'app.js'), 'utf8');
 test('Odd One Out has independent banks for all six CEFR levels', () => {
   for (const level of ['A1','A2','B1','B2','C1','C2']) {
     assert.ok(Array.isArray(bank.banks[level]));
-    assert.equal(bank.banks[level].length, ['A1','A2','B1'].includes(level) ? 12 : 8);
+    assert.equal(bank.banks[level].length, ['A1','A2','B1','B2'].includes(level) ? 12 : 8);
     assert.ok(bank.banks[level].every(item => item.id.startsWith(level + '-')));
   }
 });
@@ -239,6 +239,26 @@ test('A2 expansion provides 12 distinct questions and full target-sized rounds',
     const challenge=bank.selectRound('A2','challenge',[],()=>0.31).questions.find(question=>question.id===id);
     assert.ok(challenge);
     assert.notDeepEqual(challenge.words.slice().sort(),item.words.slice().sort());
+  }
+});
+
+test('B2 expansion provides 12 distinct questions and full target-sized rounds', () => {
+  assert.equal(bank.banks.B2.length,12);
+  for (const [mode,target] of [['guided',8],['steady',10],['challenge',12]]) {
+    const round=bank.selectRound('B2',mode,[],()=>0.37);
+    assert.equal(round.questions.length,target);
+    assert.equal(round.shortened,false);
+    assert.equal(new Set(round.questions.map(question=>question.id)).size,target);
+  }
+  for (const id of ['B2-CAT-02','B2-FUN-02','B2-WC-02','B2-CAUSE-02']) {
+    const item=bank.banks.B2.find(question=>question.id===id);
+    assert.ok(item, id + ' should be in the B2 bank');
+    assert.ok(item.challengeExplain);
+    const challenge=bank.selectRound('B2','challenge',[],()=>0.31).questions.find(question=>question.id===id);
+    assert.ok(challenge);
+    assert.notDeepEqual(challenge.words.slice().sort(),item.words.slice().sort());
+    assert.equal(challenge.explain,item.challengeExplain);
+    assert.equal(challenge.words[challenge.answer],item.challengeWords ? item.challengeWords[item.answer] : challenge.words[challenge.answer]);
   }
 });
 
