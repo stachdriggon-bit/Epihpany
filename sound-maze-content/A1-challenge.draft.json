@@ -1,0 +1,106 @@
+{
+  "level": "A1",
+  "mode": "challenge",
+  "status": "draft",
+  "version": 1,
+  "pronunciation_reference": "General American",
+  "description": "Third A1 content batch for The Sound Maze. Challenge uses closer sound contrasts and less obvious spelling patterns while keeping every spoken target distinguishable.",
+  "questions": [
+    {
+      "id": "SM-A1-C-001",
+      "axis": "short_vowel_contrasts",
+      "target": "luck",
+      "options": ["lock", "lick", "luck", "look"],
+      "answer": "luck",
+      "explain": "Luck has the /ʌ/ vowel. Lock has /ɑ/, lick has /ɪ/, and look has /ʊ/ in General American pronunciation."
+    },
+    {
+      "id": "SM-A1-C-002",
+      "axis": "short_vowel_contrasts",
+      "target": "full",
+      "options": ["fool", "fill", "full", "fell"],
+      "answer": "full",
+      "explain": "Full has the /ʊ/ vowel. Fool has /u/, fill has /ɪ/, and fell has /ɛ/."
+    },
+    {
+      "id": "SM-A1-C-003",
+      "axis": "short_vowel_contrasts",
+      "target": "must",
+      "options": ["mist", "mast", "most", "must"],
+      "answer": "must",
+      "explain": "Must has the /ʌ/ vowel. Mist has /ɪ/, mast has /æ/, and most has /oʊ/."
+    },
+    {
+      "id": "SM-A1-C-004",
+      "axis": "initial_consonant_sounds",
+      "target": "chair",
+      "options": ["share", "dare", "chair", "care"],
+      "answer": "chair",
+      "explain": "Chair begins with /tʃ/, the sound heard at the start of chair. Share begins with /ʃ/, dare with /d/, and care with /k/."
+    },
+    {
+      "id": "SM-A1-C-005",
+      "axis": "initial_consonant_sounds",
+      "target": "jam",
+      "options": ["yam", "sham", "ham", "jam"],
+      "answer": "jam",
+      "explain": "Jam begins with /dʒ/. Yam begins with /j/, sham with /ʃ/, and ham with /h/."
+    },
+    {
+      "id": "SM-A1-C-006",
+      "axis": "initial_consonant_sounds",
+      "target": "that",
+      "options": ["vat", "tat", "sat", "that"],
+      "answer": "that",
+      "explain": "That begins with the voiced /ð/ sound, written th. Vat begins with /v/, tat with /t/, and sat with /s/."
+    },
+    {
+      "id": "SM-A1-C-007",
+      "axis": "final_consonant_sounds",
+      "target": "much",
+      "options": ["mush", "must", "muck", "much"],
+      "answer": "much",
+      "explain": "Much ends with /tʃ/. Mush ends with /ʃ/, must with /t/, and muck with /k/."
+    },
+    {
+      "id": "SM-A1-C-008",
+      "axis": "final_consonant_sounds",
+      "target": "save",
+      "options": ["safe", "same", "sale", "save"],
+      "answer": "save",
+      "explain": "Save ends with the voiced /v/ sound. Safe ends with /f/, same with /m/, and sale with /l/."
+    },
+    {
+      "id": "SM-A1-C-009",
+      "axis": "final_consonant_sounds",
+      "target": "badge",
+      "options": ["batch", "bad", "bag", "badge"],
+      "answer": "badge",
+      "explain": "Badge ends with /dʒ/, written ge. Batch ends with /tʃ/, bad with /d/, and bag with /g/."
+    },
+    {
+      "id": "SM-A1-C-010",
+      "axis": "basic_spelling_patterns",
+      "target": "phone",
+      "options": ["tone", "bone", "phone", "fine"],
+      "answer": "phone",
+      "explain": "Phone begins with ph, which spells the /f/ sound. Tone begins with /t/, bone with /b/, and fine begins with /f/ but has a different vowel and ending."
+    },
+    {
+      "id": "SM-A1-C-011",
+      "axis": "basic_spelling_patterns",
+      "target": "knock",
+      "options": ["rock", "lock", "knock", "sock"],
+      "answer": "knock",
+      "explain": "The k in knock is silent, so the word begins with /n/. Rock, lock, and sock begin with /r/, /l/, and /s/."
+    },
+    {
+      "id": "SM-A1-C-012",
+      "axis": "basic_spelling_patterns",
+      "target": "wrist",
+      "options": ["list", "rest", "wrist", "west"],
+      "answer": "wrist",
+      "explain": "The w in wrist is silent, so the word begins with /r/. List begins with /l/, while rest and west begin with /r/ and /w/ but have different vowel or consonant sounds."
+    }
+  ]
+}
