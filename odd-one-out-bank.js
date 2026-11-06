@@ -16,7 +16,11 @@
       {id:'A1-WC-01',relationship:'word-class',words:['quickly','slowly','carefully','careful'],answer:3,explain:'Quickly, slowly and carefully are adverbs describing how an action happens. Careful is an adjective.',challengeExplain:'Quietly, happily and easily are adverbs describing how an action happens. Quiet is an adjective.',hint:'Look at how each word is formed and used.',context:'Simple descriptions of actions.'},
       {id:'A1-SYN-01',relationship:'synonyms-antonyms',words:['big','large','huge','small'],answer:3,explain:'Big, large and huge describe something of great size. Small describes something of little size.',challengeExplain:'Big, large and huge describe something of great size. Tiny describes something of very small size.',hint:'Which three describe size in a similar way?',context:'Basic size vocabulary.'},
       {id:'A1-FUN-02',relationship:'function',words:['key','password','code','plate'],answer:3,explain:'A key, password and code can all give access or unlock something. A plate is used for serving food.',challengeExplain:"A passcode, PIN and keycard can grant access to something. A bowl is used to hold or serve food.",hint:'Which three can help you open or access something?',context:'Simple everyday purposes.'},
-      {id:'A1-CAT-03',relationship:'category',words:['Monday','Tuesday','Friday','summer'],answer:3,explain:'Monday, Tuesday and Friday are days of the week. Summer is a season.',challengeExplain:"Wednesday, Saturday and Sunday are days of the week. Winter is a season.",hint:'Which three belong to the same calendar group?',context:'Days and seasons.'}
+      {id:'A1-CAT-03',relationship:'category',words:['Monday','Tuesday','Friday','summer'],answer:3,explain:'Monday, Tuesday and Friday are days of the week. Summer is a season.',challengeExplain:"Wednesday, Saturday and Sunday are days of the week. Winter is a season.",hint:'Which three belong to the same calendar group?',context:'Days and seasons.'},
+      {id:'A1-CAT-04',relationship:'category',words:['shirt','trousers','shoes','orange'],answer:3,explain:'A shirt, trousers and shoes are things people wear. An orange is a fruit.',challengeExplain:'A jacket, socks and a skirt are things people wear. A banana is a fruit.',hint:'Which three can you wear?',context:'Clothes and everyday objects.'},
+      {id:'A1-PW-02',relationship:'part-whole',words:['page','cover','chapter','reader'],answer:3,explain:'A page, cover and chapter are parts of a book. A reader is the person who reads it.',challengeExplain:'A title, page and cover are parts of a book. An author is the person who writes it.',hint:'Which three are parts of the same object?',context:'Parts of a familiar book.'},
+      {id:'A1-WC-02',relationship:'word-class',words:['eat','drink','sleep','beautiful'],answer:3,explain:'Eat, drink and sleep are verbs that name actions. Beautiful is an adjective that describes something.',challengeExplain:'Walk, run and swim are verbs that name actions. Beautiful is an adjective that describes something.',hint:'Which three words name actions?',context:'Everyday actions and descriptions.'},
+      {id:'A1-COL-01',relationship:'collocations',words:['breakfast','lunch','dinner','homework'],answer:3,explain:'We commonly say “eat breakfast”, “eat lunch” and “eat dinner”. We say “do homework”, not “eat homework”.',challengeExplain:'“Eat breakfast”, “eat lunch” and “eat supper” are natural combinations. “Do homework” is the natural expression for schoolwork.',hint:'Which three words naturally follow the verb “eat”?',context:'Common verb and noun combinations.'}
     ],
     A2: [
       {id:'A2-CAT-01',relationship:'category',words:['chemist','baker','dentist','bakery'],answer:3,explain:'A chemist, baker and dentist are people or occupations. A bakery is a place.',challengeExplain:"A surgeon, carpenter and cashier are people with occupations. A clinic is a place where medical care is provided.",hint:'Separate people who do jobs from places.',context:'Work and places in a town.'},
@@ -119,6 +123,30 @@
         "Saturday",
         "Sunday",
         "winter"
+    ],
+    "A1-CAT-04": [
+        "jacket",
+        "socks",
+        "skirt",
+        "banana"
+    ],
+    "A1-PW-02": [
+        "title",
+        "page",
+        "cover",
+        "author"
+    ],
+    "A1-WC-02": [
+        "walk",
+        "run",
+        "swim",
+        "beautiful"
+    ],
+    "A1-COL-01": [
+        "breakfast",
+        "lunch",
+        "supper",
+        "homework"
     ],
     "A2-CAT-01": [
         "surgeon",
