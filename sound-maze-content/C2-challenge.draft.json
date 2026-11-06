@@ -2,7 +2,7 @@
   "level": "C2",
   "mode": "challenge",
   "status": "draft",
-  "version": 2,
+  "version": 3,
   "pronunciation_reference": "General American",
   "description": "Challenge C2 content batch for The Sound Maze. Each target is spoken aloud; the learner selects its spelling. Draft content is not wired into the live game.",
   "questions": [
@@ -12,12 +12,12 @@
       "target": "squalid",
       "options": [
         "squalid",
-        "squalor",
-        "squall",
-        "squander"
+        "squint",
+        "squelch",
+        "squirm"
       ],
       "answer": "squalid",
-      "explain": "Squalid begins with /skwɑ/. Squalor has /skwɔr/, squall /skwɔl/, and squander /skwɑn/."
+      "explain": "Squalid has /ɑ/ in its first syllable. Squint has /ɪ/, squelch has /ɛ/, and squirm has /ɜr/."
     },
     {
       "id": "SM-C2-C-002",
@@ -26,11 +26,11 @@
       "options": [
         "quixotic",
         "quiescent",
-        "quintet",
+        "quench",
         "quorum"
       ],
       "answer": "quixotic",
-      "explain": "Quixotic begins with /kwɪ/. Quiescent begins with /kwaɪ/, quintet with /kwɪn/, and quorum with /kwɔr/."
+      "explain": "Quixotic begins with /kwɪ/. Quiescent begins with /kwiː/, quench with /kwɛ/, and quorum with /kwɔ/."
     },
     {
       "id": "SM-C2-C-003",
