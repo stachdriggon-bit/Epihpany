@@ -126,28 +126,28 @@
     {
       "id": "SM-B1-G-010",
       "axis": "basic_spelling_patterns",
-      "target": "muscle",
+      "target": "castle",
       "options": [
-        "mussel",
-        "muscle",
-        "muzzle",
-        "muddle"
+        "castle",
+        "cattle",
+        "cancel",
+        "hassle"
       ],
-      "answer": "muscle",
-      "explain": "Muscle is spelled with sc, but the c is silent; the word is pronounced /ˈmʌsəl/. Mussel is a different word with the same pronunciation."
+      "answer": "castle",
+      "explain": "Castle is spelled with a silent t: the word is pronounced /ˈkæsəl/. Cattle has a /t/ sound, cancel has /n/, and hassle begins with /h/."
     },
     {
       "id": "SM-B1-G-011",
       "axis": "basic_spelling_patterns",
       "target": "station",
       "options": [
-        "stasion",
         "station",
-        "stashion",
-        "stasion"
+        "stating",
+        "stature",
+        "stagnant"
       ],
       "answer": "station",
-      "explain": "Station uses -tion to spell the /ʃən/ ending. The other forms are not standard spellings."
+      "explain": "Station uses -tion to spell the /ʃən/ ending. Stating ends with /tɪŋ/, stature with /tʃər/, and stagnant with /ɡnənt/."
     },
     {
       "id": "SM-B1-G-012",
