@@ -68,10 +68,27 @@ test('the lake-to-belt example has a complete route in the word bank', () => {
   }
 });
 
-test('the word bank can generate enough solvable puzzles for every difficulty', () => {
-  for (const level of ['guided', 'steady', 'challenge']) {
-    const minSteps = level === 'challenge' ? 3 : 1;
-    const maxSteps = level === 'guided' ? 3 : level === 'challenge' ? 7 : 5;
+test('every bank word is defined and can take part in at least one ladder', () => {
+  const meaningsBlock = source.match(/const ladderMeanings = \\{([\\s\\S]*?)\\n  \\};/);
+  assert.ok(meaningsBlock, 'Word Ladder meanings should exist');
+  const definedWords = new Set([...meaningsBlock[1].matchAll(/^\\s*([a-z]+):/gm)].map(match => match[1]));
+
+  for (const word of words) {
+    assert.ok(definedWords.has(word), `Missing definition for ${word}`);
+    assert.ok([...words].some(candidate => differsByOne(word, candidate)),
+      `${word} is isolated and cannot be used in a ladder`);
+  }
+});
+
+test('difficulty bands are distinct and each can generate enough solvable puzzles', () => {
+  const ranges = {
+    guided: [1, 2],
+    steady: [3, 4],
+    challenge: [5, 7]
+  };
+  const occupiedSteps = new Set();
+
+  for (const [level, [minSteps, maxSteps]] of Object.entries(ranges)) {
     let count = 0;
     for (const start of words) {
       const distances = new Map([[start, 0]]);
@@ -85,9 +102,18 @@ test('the word bank can generate enough solvable puzzles for every difficulty', 
         }
       }
       for (const [goal, steps] of distances) {
-        if (goal !== start && steps >= minSteps && steps <= maxSteps) count++;
+        if (goal === start || steps < minSteps || steps > maxSteps) continue;
+        assert.ok(!occupiedSteps.has(level + ':' + steps));
+        occupiedSteps.add(level + ':' + steps);
+        count++;
       }
     }
     assert.ok(count >= 12, `Expected at least 12 solvable ${level} puzzles, found ${count}`);
   }
+
+  assert.deepEqual(ranges, {
+    guided: [1, 2],
+    steady: [3, 4],
+    challenge: [5, 7]
+  });
 });
