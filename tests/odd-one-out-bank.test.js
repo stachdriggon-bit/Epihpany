@@ -10,7 +10,7 @@ const appSource = fs.readFileSync(path.join(__dirname, '..', 'app.js'), 'utf8');
 test('Odd One Out has independent banks for all six CEFR levels', () => {
   for (const level of ['A1','A2','B1','B2','C1','C2']) {
     assert.ok(Array.isArray(bank.banks[level]));
-    assert.equal(bank.banks[level].length, ['A1','A2','B1','B2','C1'].includes(level) ? 12 : 8);
+    assert.equal(bank.banks[level].length, ['A1','A2','B1','B2','C1','C2'].includes(level) ? 12 : 8);
     assert.ok(bank.banks[level].every(item => item.id.startsWith(level + '-')));
   }
 });
@@ -292,6 +292,48 @@ test('C1 expansion provides 12 distinct questions and full target-sized rounds',
     assert.equal(challenge.words[challenge.answer],outsider);
     assert.equal(challenge.explain,item.challengeExplain);
   }
+});
+
+test('C2 expansion provides 12 distinct questions and full target-sized rounds', () => {
+  assert.equal(bank.banks.C2.length,12);
+  for (const [mode,target] of [['guided',8],['steady',10],['challenge',12]]) {
+    const round=bank.selectRound('C2',mode,[],()=>0.37);
+    assert.equal(round.questions.length,target);
+    assert.equal(round.shortened,false);
+    assert.equal(new Set(round.questions.map(question=>question.id)).size,target);
+  }
+  const expectedOutsiders = {
+    'C2-CAT-02':'compendium',
+    'C2-FUN-02':'operator',
+    'C2-PW-02':'agreement',
+    'C2-CTX-02':'physical'
+  };
+  for (const [id,outsider] of Object.entries(expectedOutsiders)) {
+    const item=bank.banks.C2.find(question=>question.id===id);
+    assert.ok(item,id+' should be in the C2 bank');
+    assert.ok(item.challengeExplain);
+    const challenge=bank.selectRound('C2','challenge',[],()=>0.31).questions.find(question=>question.id===id);
+    assert.ok(challenge);
+    assert.notDeepEqual(challenge.words.slice().sort(),item.words.slice().sort());
+    assert.equal(challenge.words[challenge.answer],outsider);
+    assert.equal(challenge.explain,item.challengeExplain);
+  }
+});
+
+test('C2 grammar, collocation and contextual questions use precise classifications and prompts', () => {
+  const contextual=bank.banks.C2.find(question=>question.id==='C2-CTX-01');
+  assert.equal(contextual.relationship,'synonyms-antonyms');
+  const contextualMeaning=bank.banks.C2.find(question=>question.id==='C2-CTX-02');
+  assert.equal(contextualMeaning.relationship,'contextual-meaning');
+  assert.match(contextualMeaning.hint,/court/i);
+  const grammar=bank.banks.C2.find(question=>question.id==='C2-WC-01');
+  assert.deepEqual(grammar.words,['although','though','even though','despite']);
+  assert.match(grammar.explain,/subordinating conjunctions/i);
+  const collocation=bank.banks.C2.find(question=>question.id==='C2-COL-01');
+  assert.ok(collocation.words.every(word=>/regret$/.test(word)));
+  const challenge=bank.selectRound('C2','challenge',[],()=>0.31).questions.find(question=>question.id==='C2-COL-01');
+  assert.ok(challenge.words.every(word=>/regret$/.test(word)));
+  assert.equal(challenge.words[challenge.answer],'vociferously regret');
 });
 
 test('C1 collocation and part-whole questions avoid ambiguous groupings', () => {
