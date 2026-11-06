@@ -152,15 +152,15 @@
     {
       "id": "SM-A2-C-012",
       "axis": "basic_spelling_patterns",
-      "target": "receipt",
+      "target": "knuckle",
       "options": [
-        "receipt",
-        "recipe",
-        "recent",
-        "recite"
+        "knuckle",
+        "nickel",
+        "noble",
+        "needle"
       ],
-      "answer": "receipt",
-      "explain": "Receipt uses ei after c to spell the /i/ sound, and p is silent. Recipe, recent, and recite are real words with different sounds and spellings."
+      "answer": "knuckle",
+      "explain": "Knuckle begins with /n/ because the k is silent. Nickel also begins with /n/ but has /ɪ/ rather than /ʌ/; noble and needle have different vowel and syllable patterns."
     }
   ]
 }
