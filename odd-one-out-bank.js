@@ -369,10 +369,10 @@
         "miserly"
     ],
     "C1-COL-01": [
-        "arouse",
-        "lodge",
-        "harbour",
-        "compile"
+        "register",
+        "file",
+        "voice",
+        "perform"
     ],
     "C1-CTX-01": [
         "provisional",
