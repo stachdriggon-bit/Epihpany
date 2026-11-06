@@ -76,7 +76,8 @@ test('Think Lab integration supplies a visible prompt and mode-specific instruct
     const harness = loadThinkLabHarness(level);
     for (const mode of ['guided','steady','challenge']) {
       const pool = harness.__oddPool(mode);
-      assert.equal(pool.length,level==='A1'?12:8);
+      const target = mode === 'guided' ? 8 : mode === 'steady' ? 10 : 12;
+      assert.equal(pool.length,Math.min(target,bank.banks[level].length),level + ' ' + mode + ' should return the available questions up to its round target');
       assert.ok(pool.every(item => item.prompt === 'Which word does not belong?'));
       assert.ok(pool.every(item => item.cefrLevel === level));
       assert.ok(pool.every(item => item.trainingMode === mode));
@@ -101,7 +102,7 @@ test('all 18 CEFR and training-mode combinations select the intended distinct qu
       assert.equal(round.available,available);
       assert.equal(round.questions.length,Math.min(target,available),level + ' ' + mode + ' should use all available quality-approved items up to its target');
       assert.equal(round.shortened,target>available,level + ' ' + mode + ' should disclose only the rounds shorter than target');
-      assert.equal(new Set(round.questions.map(question=>question.id)).size,8);
+      assert.equal(new Set(round.questions.map(question=>question.id)).size,Math.min(target,available));
       for (const question of round.questions) {
         const source = bank.banks[level].find(item=>item.id===question.id);
         assert.ok(source);
@@ -142,7 +143,7 @@ test('shuffled options preserve the correct word while varying its position', ()
 });
 
 
-test('all 48 questions provide a distinct four-option Challenge set', () => {
+test('all Odd One Out questions provide a distinct four-option Challenge set', () => {
   const result = bank.validateBank();
   assert.deepEqual(result, {valid:true,errors:[]});
   for (const items of Object.values(bank.banks)) {
