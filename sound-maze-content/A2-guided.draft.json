@@ -1,0 +1,166 @@
+{
+  "level": "A2",
+  "mode": "guided",
+  "status": "draft",
+  "version": 1,
+  "pronunciation_reference": "General American",
+  "description": "Guided A2 content batch for The Sound Maze. Each target is spoken aloud; the learner selects its spelling. Draft content is not wired into the live game.",
+  "questions": [
+    {
+      "id": "SM-A2-G-001",
+      "axis": "short_vowel_contrasts",
+      "target": "map",
+      "options": [
+        "map",
+        "mop",
+        "men",
+        "mup"
+      ],
+      "answer": "map",
+      "explain": "Map has the short /æ/ vowel. Mop has /ɑ/, men has /ɛ/, and mup is not a standard English word."
+    },
+    {
+      "id": "SM-A2-G-002",
+      "axis": "short_vowel_contrasts",
+      "target": "neck",
+      "options": [
+        "nick",
+        "neck",
+        "knack",
+        "nook"
+      ],
+      "answer": "neck",
+      "explain": "Neck has the short /ɛ/ vowel. Nick has /ɪ/, knack has /æ/, and nook has /ʊ/."
+    },
+    {
+      "id": "SM-A2-G-003",
+      "axis": "short_vowel_contrasts",
+      "target": "luck",
+      "options": [
+        "lack",
+        "lick",
+        "luck",
+        "lock"
+      ],
+      "answer": "luck",
+      "explain": "Luck has the /ʌ/ vowel. Lack has /æ/, lick has /ɪ/, and lock has /ɑ/ in General American."
+    },
+    {
+      "id": "SM-A2-G-004",
+      "axis": "initial_consonant_sounds",
+      "target": "ship",
+      "options": [
+        "chip",
+        "ship",
+        "sip",
+        "tip"
+      ],
+      "answer": "ship",
+      "explain": "Ship begins with /ʃ/. Chip begins with /tʃ/, sip with /s/, and tip with /t/."
+    },
+    {
+      "id": "SM-A2-G-005",
+      "axis": "initial_consonant_sounds",
+      "target": "zero",
+      "options": [
+        "hero",
+        "zero",
+        "sero",
+        "narrow"
+      ],
+      "answer": "zero",
+      "explain": "Zero begins with /z/, a voiced sound. Hero begins with /h/; the other options do not begin with the same sound."
+    },
+    {
+      "id": "SM-A2-G-006",
+      "axis": "initial_consonant_sounds",
+      "target": "vest",
+      "options": [
+        "west",
+        "best",
+        "vest",
+        "test"
+      ],
+      "answer": "vest",
+      "explain": "Vest begins with /v/, made with vocal-cord vibration. West begins with /w/, while best and test begin with /b/ and /t/."
+    },
+    {
+      "id": "SM-A2-G-007",
+      "axis": "final_consonant_sounds",
+      "target": "rice",
+      "options": [
+        "ride",
+        "rise",
+        "rice",
+        "ripe"
+      ],
+      "answer": "rice",
+      "explain": "Rice ends with /s/. Ride ends with /d/, rise with /z/, and ripe with /p/."
+    },
+    {
+      "id": "SM-A2-G-008",
+      "axis": "final_consonant_sounds",
+      "target": "bath",
+      "options": [
+        "back",
+        "bad",
+        "bat",
+        "bath"
+      ],
+      "answer": "bath",
+      "explain": "Bath ends with the unvoiced th sound /θ/. Back ends with /k/, bad with /d/, and bat with /t/."
+    },
+    {
+      "id": "SM-A2-G-009",
+      "axis": "final_consonant_sounds",
+      "target": "cage",
+      "options": [
+        "cake",
+        "came",
+        "cage",
+        "case"
+      ],
+      "answer": "cage",
+      "explain": "Cage ends with /dʒ/. Cake ends with /k/, came with /m/, and case with /s/."
+    },
+    {
+      "id": "SM-A2-G-010",
+      "axis": "basic_spelling_patterns",
+      "target": "train",
+      "options": [
+        "train",
+        "trane",
+        "trine",
+        "tran"
+      ],
+      "answer": "train",
+      "explain": "Train uses ai to spell the long /eɪ/ vowel sound. The other spellings do not form the target word."
+    },
+    {
+      "id": "SM-A2-G-011",
+      "axis": "basic_spelling_patterns",
+      "target": "cheese",
+      "options": [
+        "chease",
+        "cheese",
+        "chese",
+        "cheze"
+      ],
+      "answer": "cheese",
+      "explain": "Cheese uses ee to spell the long /i/ sound. The double e is a common vowel-team spelling."
+    },
+    {
+      "id": "SM-A2-G-012",
+      "axis": "basic_spelling_patterns",
+      "target": "thumb",
+      "options": [
+        "tumb",
+        "thum",
+        "thumb",
+        "thomb"
+      ],
+      "answer": "thumb",
+      "explain": "Thumb begins with th, pronounced /θ/, and has a silent b at the end."
+    }
+  ]
+}
