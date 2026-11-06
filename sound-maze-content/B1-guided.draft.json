@@ -1,0 +1,166 @@
+{
+  "level": "B1",
+  "mode": "guided",
+  "status": "draft",
+  "version": 1,
+  "pronunciation_reference": "General American",
+  "description": "Guided B1 content batch for The Sound Maze. Each target is spoken aloud; the learner selects its spelling. Draft content is not wired into the live game.",
+  "questions": [
+    {
+      "id": "SM-B1-G-001",
+      "axis": "short_vowel_contrasts",
+      "target": "settle",
+      "options": [
+        "saddle",
+        "settle",
+        "subtle",
+        "title"
+      ],
+      "answer": "settle",
+      "explain": "Settle has the stressed short /ɛ/ vowel. Saddle has /æ/, subtle has /ʌ/, and title has /aɪ/."
+    },
+    {
+      "id": "SM-B1-G-002",
+      "axis": "short_vowel_contrasts",
+      "target": "public",
+      "options": [
+        "panic",
+        "public",
+        "picnic",
+        "pocket"
+      ],
+      "answer": "public",
+      "explain": "Public has the stressed /ʌ/ vowel. Panic has /æ/, picnic has /ɪ/, and pocket has /ɑ/."
+    },
+    {
+      "id": "SM-B1-G-003",
+      "axis": "short_vowel_contrasts",
+      "target": "damage",
+      "options": [
+        "message",
+        "manage",
+        "damage",
+        "village"
+      ],
+      "answer": "damage",
+      "explain": "Damage has the stressed /æ/ vowel. Message has /ɛ/, village has /ɪ/, while manage also has /æ/ but begins with a different consonant and has a different ending."
+    },
+    {
+      "id": "SM-B1-G-004",
+      "axis": "initial_consonant_sounds",
+      "target": "giant",
+      "options": [
+        "client",
+        "giant",
+        "quiet",
+        "violent"
+      ],
+      "answer": "giant",
+      "explain": "Giant begins with /dʒ/. Client begins with /kl/, quiet with /kw/, and violent with /v/."
+    },
+    {
+      "id": "SM-B1-G-005",
+      "axis": "initial_consonant_sounds",
+      "target": "chemist",
+      "options": [
+        "chemist",
+        "chest",
+        "guest",
+        "jest"
+      ],
+      "answer": "chemist",
+      "explain": "Chemist begins with /k/, although ch is written. Chest begins with /tʃ/, guest with /g/, and jest with /dʒ/."
+    },
+    {
+      "id": "SM-B1-G-006",
+      "axis": "initial_consonant_sounds",
+      "target": "psychology",
+      "options": [
+        "biology",
+        "psychology",
+        "technology",
+        "sociology"
+      ],
+      "answer": "psychology",
+      "explain": "Psychology begins with /s/ because the initial p is silent. Biology begins with /b/, technology with /t/, and sociology with /s/ but a different following vowel and syllable pattern."
+    },
+    {
+      "id": "SM-B1-G-007",
+      "axis": "final_consonant_sounds",
+      "target": "laughed",
+      "options": [
+        "loved",
+        "laughed",
+        "laughedly",
+        "loaded"
+      ],
+      "answer": "laughed",
+      "explain": "Laughed ends with /t/: the -ed ending is pronounced /t/ after the voiceless /f/ sound. Loved ends with /d/, and loaded ends with /ɪd/."
+    },
+    {
+      "id": "SM-B1-G-008",
+      "axis": "final_consonant_sounds",
+      "target": "climbed",
+      "options": [
+        "climate",
+        "climbed",
+        "clamp",
+        "climb"
+      ],
+      "answer": "climbed",
+      "explain": "Climbed ends with /d/. Climate ends with /t/, clamp with /p/, and climb has no pronounced final /d/."
+    },
+    {
+      "id": "SM-B1-G-009",
+      "axis": "final_consonant_sounds",
+      "target": "breathes",
+      "options": [
+        "breath",
+        "breathes",
+        "breeds",
+        "breezes"
+      ],
+      "answer": "breathes",
+      "explain": "Breathes ends with /ðz/. Breath ends with /θ/, breeds with /dz/, and breezes with /zɪz/."
+    },
+    {
+      "id": "SM-B1-G-010",
+      "axis": "basic_spelling_patterns",
+      "target": "muscle",
+      "options": [
+        "mussel",
+        "muscle",
+        "muzzle",
+        "muddle"
+      ],
+      "answer": "muscle",
+      "explain": "Muscle is spelled with sc, but the c is silent; the word is pronounced /ˈmʌsəl/. Mussel is a different word with the same pronunciation."
+    },
+    {
+      "id": "SM-B1-G-011",
+      "axis": "basic_spelling_patterns",
+      "target": "station",
+      "options": [
+        "stasion",
+        "station",
+        "stashion",
+        "stasion"
+      ],
+      "answer": "station",
+      "explain": "Station uses -tion to spell the /ʃən/ ending. The other forms are not standard spellings."
+    },
+    {
+      "id": "SM-B1-G-012",
+      "axis": "basic_spelling_patterns",
+      "target": "knuckle",
+      "options": [
+        "nuckle",
+        "knuckle",
+        "nickel",
+        "knack"
+      ],
+      "answer": "knuckle",
+      "explain": "Knuckle begins with /n/ because the k is silent. Nickel begins with /n/ too but has a different vowel and ending; knack has a pronounced /k/."
+    }
+  ]
+}
