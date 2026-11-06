@@ -89,13 +89,13 @@
       "axis": "final_consonant_sounds",
       "target": "peace",
       "options": [
-        "peas",
         "peak",
-        "peace",
-        "peat"
+        "peat",
+        "peach",
+        "peace"
       ],
       "answer": "peace",
-      "explain": "Peace ends with /s/. Peas ends with /z/, peak with /k/, and peat with /t/."
+      "explain": "Peace ends with /s/. Peak ends with /k/, peat with /t/, and peach with /tʃ/."
     },
     {
       "id": "SM-A2-G-008",
