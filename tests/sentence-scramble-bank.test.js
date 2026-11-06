@@ -68,5 +68,7 @@ test('Sentence Scramble is lazy-loaded before Think Lab and its session uses the
   assert.match(think, /EPIPHANY_SENTENCE_SCRAMBLE_BANK/);
   assert.match(think, /mode === 'scramble'\) \? 24/);
   assert.match(think, /accepted=\[item\.sentence/);
-  assert.doesNotMatch(think, /item\.options\[item\.answer\]/);
+  const checkBlock = think.split("if(e.target.closest('[data-scramble-check]'))")[1]?.split("const recommended=")[0] || '';
+  assert.ok(checkBlock, 'Sentence Scramble check handler should exist');
+  assert.doesNotMatch(checkBlock, /item\.options\[item\.answer\]/);
 });
