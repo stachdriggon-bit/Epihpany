@@ -2,7 +2,7 @@
   "level": "B1",
   "mode": "challenge",
   "status": "draft",
-  "version": 2,
+  "version": 3,
   "pronunciation_reference": "General American",
   "description": "Challenge B1 content batch for The Sound Maze. Each target is spoken aloud; the learner selects its spelling. Draft content is not wired into the live game.",
   "questions": [
@@ -24,13 +24,13 @@
       "axis": "short_vowel_contrasts",
       "target": "endeavor",
       "options": [
-        "endower",
+        "android",
         "endeavor",
         "indoor",
         "endure"
       ],
       "answer": "endeavor",
-      "explain": "Endeavor has /ɛ/ in its stressed second syllable. Endower has /aʊ/ in that position, indoor has /ɔ/, and endure has /ʊ/."
+      "explain": "Endeavor begins with /ɛn/. Android begins with /æn/, while indoor and endure begin with different vowel qualities."
     },
     {
       "id": "SM-B1-C-003",
