@@ -47,12 +47,13 @@ test('feature data loader does not request large datasets until requested', asyn
     'sound-maze-bank.js',
     'sound-maze-content.js',
     'odd-one-out-bank.js',
+    'word-connections-bank.js',
     'think-lab.js',
     'life-skills.js'
   ]);
   assert.ok(requested.slice(4).every(src => /\?v=.+/.test(src)));
   await context.window.EPIPHANY_LAZY_LOAD('arabic');
-  assert.deepEqual(requested.slice(10).map(src => src.split('?')[0]), [
+  assert.deepEqual(requested.slice(11).map(src => src.split('?')[0]), [
     'data-translation-ar.js',
     'data-translation-ar-fill.js'
   ]);
@@ -133,15 +134,19 @@ test('overlapping feature groups share one in-flight script request', async () =
   scripts[2].onload();
   await new Promise(resolve => setImmediate(resolve));
   assert.equal(requested.length, 4);
-  assert.match(requested[3], /^think-lab\.js\?/);
+  assert.match(requested[3], /^word-connections-bank\.js\?/);
   scripts[3].onload();
   await new Promise(resolve => setImmediate(resolve));
   assert.equal(requested.length, 5);
-  assert.match(requested[4], /^life-skills\.js\?/);
+  assert.match(requested[4], /^think-lab\.js\?/);
   scripts[4].onload();
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(requested.length, 6);
+  assert.match(requested[5], /^life-skills\.js\?/);
+  scripts[5].onload();
 
   await Promise.all([thinkLab, lifeSkills]);
-  assert.equal(requested.length, 5);
+  assert.equal(requested.length, 6);
 });
 
 test('failed lazy scripts are removed and can be retried', async () => {
@@ -307,8 +312,11 @@ test('optional lazy loads respect the adaptive concurrency limit', async () => {
   assert.equal(requested[3].split('?')[0], 'odd-one-out-bank.js');
   scripts[3].onload();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[4].split('?')[0], 'think-lab.js');
+  assert.equal(requested[4].split('?')[0], 'word-connections-bank.js');
   scripts[4].onload();
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(requested[5].split('?')[0], 'think-lab.js');
+  scripts[5].onload();
 });
 
 test('explicit navigation bypasses and promotes queued optional loads', async () => {
@@ -363,8 +371,11 @@ test('explicit navigation bypasses and promotes queued optional loads', async ()
   assert.equal(requested[3].split('?')[0], 'odd-one-out-bank.js');
   scripts[3].onload();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[4].split('?')[0], 'think-lab.js');
+  assert.equal(requested[4].split('?')[0], 'word-connections-bank.js');
   scripts[4].onload();
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(requested[5].split('?')[0], 'think-lab.js');
+  scripts[5].onload();
   await explicit;
   scripts[0].onload();
 });
@@ -434,8 +445,11 @@ test('background optional loads pause while constrained, resume once, and never 
   assert.equal(requested[3].split('?')[0], 'odd-one-out-bank.js');
   scripts[3].onload();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[4].split('?')[0], 'think-lab.js');
+  assert.equal(requested[4].split('?')[0], 'word-connections-bank.js');
   scripts[4].onload();
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(requested[5].split('?')[0], 'think-lab.js');
+  scripts[5].onload();
   await new Promise(resolve => setImmediate(resolve));
 
   policy = { ...policy, allowSpeculativePreload: false, deferNonEssentialWork: true };
