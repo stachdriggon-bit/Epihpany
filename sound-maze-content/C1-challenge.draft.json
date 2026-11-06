@@ -48,15 +48,15 @@
     {
       "id": "SM-C1-C-004",
       "axis": "initial_consonant_sounds",
-      "target": "phthisis",
+      "target": "psoriasis",
       "options": [
-        "phthisis",
-        "physics",
-        "fiscal",
-        "sizzle"
+        "psoriasis",
+        "zoology",
+        "theory",
+        "fiscal"
       ],
-      "answer": "phthisis",
-      "explain": "Phthisis begins with /θ/ in the established medical pronunciation. Physics and fiscal begin with /f/, while sizzle begins with /s/."
+      "answer": "psoriasis",
+      "explain": "Psoriasis begins with /s/ because the initial p is silent. Zoology begins with /z/, theory with /θ/, and fiscal with /f/."
     },
     {
       "id": "SM-C1-C-005",
@@ -77,12 +77,12 @@
       "target": "chthonic",
       "options": [
         "chthonic",
-        "theory",
         "kinetic",
-        "shallow"
+        "shallow",
+        "gnawing"
       ],
       "answer": "chthonic",
-      "explain": "Chthonic begins with /θ/; the initial ch is silent and the th supplies the first sound. Theory also begins with /θ/, while kinetic begins with /k/ and shallow with /ʃ/."
+      "explain": "Chthonic begins with /θ/; the initial ch is silent and the th supplies the first sound. Kinetic begins with /k/, shallow with /ʃ/, and gnawing with /n/."
     },
     {
       "id": "SM-C1-C-007",
