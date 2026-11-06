@@ -2,7 +2,7 @@
   "level": "C1",
   "mode": "guided",
   "status": "draft",
-  "version": 1,
+  "version": 2,
   "pronunciation_reference": "General American",
   "description": "Guided C1 content batch for The Sound Maze. Each target is spoken aloud; the learner selects its spelling. Draft content is not wired into the live game.",
   "questions": [
@@ -89,13 +89,13 @@
       "axis": "final_consonant_sounds",
       "target": "corps",
       "options": [
-        "core",
+        "cord",
         "corpse",
         "corps",
         "course"
       ],
       "answer": "corps",
-      "explain": "Corps ends with /z/ in General American. Core ends with /r/, while corpse and course end with /s/."
+      "explain": "Corps is pronounced like core and ends in a vowel sound. Cord adds /d/, corpse ends in /ps/, and course ends in /s/."
     },
     {
       "id": "SM-C1-G-008",
