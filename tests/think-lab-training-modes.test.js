@@ -147,7 +147,7 @@ test('Sound Maze CEFR is a saved and cross-device learner preference', () => {
 
 test('active game screen offers a direct Think Lab home route without removing difficulty back', () => {
   for (const gameId of gameIds) {
-    const harness = createHarness();
+    const harness = createHarness(gameId === 'maze' ? {soundMazeBank:makeSoundMazeFixture()} : {});
     harness.click('[data-think-game]', {thinkGame:gameId});
     harness.click('[data-think-training-mode]', {thinkTrainingMode:'steady',thinkTrainingGame:gameId});
     if (gameId === 'translator') {
