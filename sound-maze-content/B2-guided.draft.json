@@ -2,7 +2,7 @@
   "level": "B2",
   "mode": "guided",
   "status": "draft",
-  "version": 3,
+  "version": 4,
   "pronunciation_reference": "General American",
   "description": "Guided B2 content batch for The Sound Maze. Each target is spoken aloud; the learner selects its spelling. Draft content is not wired into the live game.",
   "questions": [
@@ -26,11 +26,11 @@
       "options": [
         "plummet",
         "plumage",
-        "plumb",
-        "planet"
+        "plaid",
+        "plight"
       ],
       "answer": "plummet",
-      "explain": "Plummet has /ʌ/ in its first syllable. Plumage has /uː/, planet has /æ/, and plumb is a shorter word with a different ending."
+      "explain": "Plummet has /ʌ/ in its first syllable. Plumage has /uː/, plaid has /æ/, and plight has /aɪ/."
     },
     {
       "id": "SM-B2-G-003",
