@@ -2,7 +2,7 @@
   "level": "C2",
   "mode": "steady",
   "status": "draft",
-  "version": 1,
+  "version": 2,
   "pronunciation_reference": "General American",
   "description": "Steady C2 content batch for The Sound Maze. Each target is spoken aloud; the learner selects its spelling. Draft content is not wired into the live game.",
   "questions": [
@@ -52,24 +52,24 @@
       "options": [
         "psalter",
         "shelter",
-        "salter",
+        "poultry",
         "halter"
       ],
       "answer": "psalter",
-      "explain": "Psalter begins with /s/ because p is silent. Shelter begins with /ʃ/, salter has a different following sequence, and halter begins with /h/."
+      "explain": "Psalter begins with /s/ because its written p is silent. Shelter begins with /ʃ/, poultry with /p/, and halter with /h/."
     },
     {
       "id": "SM-C2-S-005",
       "axis": "initial_consonant_sounds",
-      "target": "czarina",
+      "target": "xylitol",
       "options": [
-        "czarina",
+        "xylitol",
         "serene",
         "arena",
         "haughty"
       ],
-      "answer": "czarina",
-      "explain": "Czarina is commonly pronounced with initial /z/ in General American. Serene begins with /s/, arena with a vowel, and haughty with /h/."
+      "answer": "xylitol",
+      "explain": "Xylitol begins with /z/, although it is written with x. Serene begins with /s/, arena with a vowel sound, and haughty with /h/."
     },
     {
       "id": "SM-C2-S-006",
