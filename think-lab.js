@@ -512,14 +512,8 @@
   };
   // Curated common English words. A generated puzzle is only shown if graph search finds a valid route.
   const ladderWordBank = new Set(`
-cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut
-cold cord card ward warm word worm form farm harm hard yard bald bold ball fall fell feel feet meet meat heat head heal teal tell tall tail
-belt bell care dare date late gate game came same sale pale pail pull poll pole pool cool cook book boot boat coat cost cast
-sand band bend bent sent send tend tent test best vest west went want pant part cart case cash dash dish fish wish wash goat
-ring sing sink silk milk mild wild will wall walk talk tale tame time lime line wine wind mind mine fine fire five hive have hate
-make take lake like tide ride side site bite bike hike hide wide wife wise rise rice nice nine pine pane pain pair fair fail call calm palm
-bark dark core hand land lane data melt`
-    .trim().split(/\s+/));
+cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold cord card ward warm word worm form farm harm hard yard bald bold ball fall fell feel feet meet meat heat head heal teal tell tall tail belt bell care dare date late gate game came same sale pale pail pull poll pole pool cool cook book boot boat coat cost cast sand band bend bent sent send tend tent test best vest west went want pant part cart case cash dash dish fish wish wash goat ring sing sink silk milk mild wild will wall walk talk tale tame time lime line wine wind mind mine fine fire five hive have hate make take lake like tide ride side site bite bike hike hide wide wife wise rise rice nice nine pine pane pain pair fair fail call calm palm bark dark core hand land lane data melt beat cake cane hall live well bake cave cell fame fate felt hire lend life name nest rate rent rest wing bill cage cape file fill find firm full gave mail meal mile paid park past pile save seat sell
+    `.trim().split(/\s+/));
   function ladderDiffersByOne(a, b) {
     return a.length === b.length && a !== b && [...a].filter((ch, i) => ch !== b[i]).length === 1;
   }
@@ -538,6 +532,24 @@ bark dark core hand land lane data melt`
     }
     return null;
   }
+  const LADDER_RECENT_HISTORY_KEY = 'epiphany-word-ladder-recent-v1';
+  function getRecentLadderPairs() {
+    try {
+      const saved = JSON.parse(window.localStorage.getItem(LADDER_RECENT_HISTORY_KEY) || '[]');
+      return Array.isArray(saved) ? saved.filter(key => typeof key === 'string') : [];
+    } catch (_) {
+      return [];
+    }
+  }
+  function rememberLadderPairs(items) {
+    try {
+      const recent = getRecentLadderPairs();
+      const added = items.map(item => [item.start, item.goal].sort().join(':'));
+      window.localStorage.setItem(LADDER_RECENT_HISTORY_KEY, JSON.stringify([...recent, ...added].slice(-60)));
+    } catch (_) {
+      // Private browsing or storage restrictions should never prevent a round from starting.
+    }
+  }
   function generateWordLadders(level, count = 12) {
     // Keep route-length bands distinct: support changes by mode, and so does puzzle complexity.
     const minSteps = level === 'challenge' ? 5 : level === 'steady' ? 3 : 1;
@@ -545,7 +557,6 @@ bark dark core hand land lane data melt`
     const candidates = [], words = [...ladderWordBank];
 
     // Run one BFS per start word, then reuse its shortest paths for every goal.
-    // The old nested start/goal loop ran a fresh BFS for each pair and froze the UI.
     for (const start of words) {
       const queue = [start];
       const previous = new Map([[start, null]]);
@@ -577,18 +588,19 @@ bark dark core hand land lane data melt`
       }
     }
 
+    // Treat a ladder and its reverse as the same puzzle; avoid the last 60 across sessions.
     for (let i = candidates.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [candidates[i], candidates[j]] = [candidates[j], candidates[i]];
     }
-    const chosen = [], pairs = new Set();
-    for (const item of candidates) {
-      const key = item.start + ':' + item.goal;
-      if (pairs.has(key)) continue;
-      chosen.push(item);
-      pairs.add(key);
-      if (chosen.length >= count) break;
+    const recent = new Set(getRecentLadderPairs());
+    const fresh = candidates.filter(item => !recent.has([item.start, item.goal].sort().join(':')));
+    const chosen = fresh.slice(0, count);
+    if (chosen.length < Math.min(6, count)) {
+      // If storage contains stale or excessive history, fall back to a fresh randomized pool.
+      chosen.splice(0, chosen.length, ...candidates.slice(0, count));
     }
+    rememberLadderPairs(chosen);
     return chosen.length >= Math.min(6, count) ? chosen : [...rounds.wordladder];
   }
   function assignTranslatorAnswerPositions(questions) {
@@ -949,7 +961,47 @@ bark dark core hand land lane data melt`
     boat:'A small vessel used for travelling on water.',
     sale:'An event or period when goods are sold, often at reduced prices.',
     pale:'Light in colour, or having less colour than usual.',
-    pole:'A long, straight, cylindrical piece of material.'
+    pole:'A long, straight, cylindrical piece of material.',
+    beat:'To hit something, or to defeat someone in a game or competition.',
+    cake:'A sweet baked food, usually made with flour, eggs, and sugar.',
+    cane:'A long, thin stick used for support when walking.',
+    hall:'A large room or passage inside a building.',
+    live:'To have your home in a place, or to be alive.',
+    well:'In a good or healthy way; also a deep hole that provides water.',
+    bake:'To cook food using dry heat in an oven.',
+    cave:'A large natural hole in the side of a hill or underground.',
+    cell:'The smallest basic unit of a living thing; also a small room in a prison.',
+    fame:'The state of being known by many people.',
+    fate:'The things that will happen to someone, especially when seen as unavoidable.',
+    felt:'Experienced an emotion or physical sensation; the past tense of feel.',
+    hire:'To pay someone to work for you, or to employ them.',
+    lend:'To give something to someone for a period of time, expecting it back.',
+    life:'The period between being born and dying; the condition of being alive.',
+    name:'The word used to identify a person, place, or thing.',
+    nest:'A place built by a bird or other animal to lay eggs or keep its young.',
+    rate:'A measurement, amount, or level; also to judge the quality of something.',
+    rent:'Money paid regularly to use a home, room, or other property.',
+    rest:'A period of relaxation or sleep after activity.',
+    wing:'One of the parts a bird or insect uses to fly.',
+    bill:'A statement showing how much money you owe; also a proposed law.',
+    cage:'A structure made of bars or wire used to keep an animal inside.',
+    cape:'A sleeveless piece of clothing that hangs from the shoulders.',
+    file:'A collection of information stored on a computer; also a folder for papers.',
+    fill:'To make something full by putting something into it.',
+    find:'To discover something or locate something you were looking for.',
+    firm:'A business or company; also solid and not easily moved.',
+    full:'Containing as much as possible; having no space left.',
+    gave:'Past tense of give; transferred something to another person.',
+    mail:'Letters and parcels sent or delivered by a postal service.',
+    meal:'The food eaten at one time, such as breakfast, lunch, or dinner.',
+    mile:'A unit of distance equal to about 1.6 kilometres.',
+    paid:'Past tense of pay; gave money in exchange for something.',
+    park:'A public green area where people can walk, relax, or play.',
+    past:'The time before now; also gone by or finished.',
+    pile:'A number of things placed on top of one another.',
+    save:'To keep something for later, or to rescue someone from danger.',
+    seat:'A place or object designed for someone to sit on.',
+    sell:'To give something to someone in exchange for money.',
   };
   function nextLadderWord(item, path) {
     const current = path[path.length - 1] || item.start;
