@@ -2,7 +2,7 @@
   "level": "B1",
   "mode": "challenge",
   "status": "draft",
-  "version": 3,
+  "version": 4,
   "pronunciation_reference": "General American",
   "description": "Challenge B1 content batch for The Sound Maze. Each target is spoken aloud; the learner selects its spelling. Draft content is not wired into the live game.",
   "questions": [
@@ -24,13 +24,13 @@
       "axis": "short_vowel_contrasts",
       "target": "endeavor",
       "options": [
-        "android",
         "endeavor",
-        "indoor",
-        "endure"
+        "android",
+        "endower",
+        "under"
       ],
       "answer": "endeavor",
-      "explain": "Endeavor begins with /ɛn/. Android begins with /æn/, while indoor and endure begin with different vowel qualities."
+      "explain": "Endeavor begins with /ɪn/ in General American. Android begins with /æn/, endower with /ɛn/, and under with /ʌn/."
     },
     {
       "id": "SM-B1-C-003",
