@@ -1318,6 +1318,7 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
     if(translatorLevel){selectedTranslatorCEFR=translatorLevel.dataset.translatorLevel;beginGame('translator',selectedTrainingMode);return;}
     const mazeLevel=e.target.closest('[data-sound-maze-level]');
     if(mazeLevel){
+      if(!['A1','A2','B1','B2','C1','C2'].includes(mazeLevel.dataset.soundMazeLevel))return;
       selectedMazeCEFR=mazeLevel.dataset.soundMazeLevel;
       const bridge=window.EpiphanyThinkLab;
       if(bridge&&typeof bridge.setSoundMazeCEFR==='function')bridge.setSoundMazeCEFR(selectedMazeCEFR);
