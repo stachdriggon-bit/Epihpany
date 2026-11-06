@@ -7,7 +7,7 @@ const vm = require('node:vm');
 const root = path.resolve(__dirname, '..');
 
 function normalizedText(sentence) {
-  return String(sentence).toLowerCase().replace(/[.,!?;:]/g, '').replace(/\s+/g, ' ').trim();
+  return String(sentence).toLowerCase().replace(/[^\p{L}\p{N}\s]/gu, '').replace(/\s+/g, ' ').trim();
 }
 
 function normalizedTokens(sentence) {
@@ -30,6 +30,7 @@ test('Sentence Scramble bank contains 72 unique reviewed challenges in three equ
   assert.equal(bank.schemaVersion, 1);
   assert.equal(bank.gameId, 'sentence-scramble');
   assert.equal(bank.totalChallenges, 72);
+  assert.equal(normalizedText('Can you help me please'), normalizedText('Can you help me, please?'), 'punctuation-only differences should normalize equally');
 
   const all = [];
   for (const [mode, prefix] of [['guided', 'SS-G-'], ['steady', 'SS-S-'], ['challenge', 'SS-C-']]) {
