@@ -50,26 +50,26 @@
       "axis": "initial_consonant_sounds",
       "target": "jacket",
       "options": [
-        "yacket",
+        "racket",
+        "packet",
         "jacket",
-        "shacket",
-        "packet"
+        "bracket"
       ],
       "answer": "jacket",
-      "explain": "Jacket begins with /dʒ/. Yacket begins with /j/, packet with /p/, and shacket is not the standard word."
+      "explain": "Jacket begins with /dʒ/. Racket begins with /r/, packet with /p/, and bracket with /b/."
     },
     {
       "id": "SM-A2-S-005",
       "axis": "initial_consonant_sounds",
-      "target": "thin",
+      "target": "three",
       "options": [
-        "tin",
-        "then",
-        "thin",
-        "sin"
+        "tree",
+        "free",
+        "three",
+        "see"
       ],
-      "answer": "thin",
-      "explain": "Thin begins with unvoiced /θ/. Tin begins with /t/, then with voiced /ð/, and sin with /s/."
+      "answer": "three",
+      "explain": "Three begins with unvoiced /θ/. Tree begins with /t/, free with /f/, and see with /s/."
     },
     {
       "id": "SM-A2-S-006",
