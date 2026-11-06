@@ -45,6 +45,7 @@ test('feature data loader does not request large datasets until requested', asyn
   assert.deepEqual(requested.slice(4).map(src => src.split('?')[0]), [
     'practice-lab.js',
     'sound-maze-bank.js',
+    'sound-maze-content.js',
     'odd-one-out-bank.js',
     'think-lab.js',
     'life-skills.js'
@@ -55,11 +56,11 @@ test('feature data loader does not request large datasets until requested', asyn
     'data-translation-ar.js',
     'data-translation-ar-fill.js'
   ]);
-  assert.ok(requested.slice(9).every(src => /\?v=.+/.test(src)));
+  assert.ok(requested.slice(10).every(src => /\?v=.+/.test(src)));
   assert.deepEqual(merged, [true]);
   await context.window.EPIPHANY_LAZY_LOAD('chronicle');
   assert.deepEqual(requested.slice(12).map(src => src.split('?')[0]), ['data-world-registry.js', 'data-world-events.js']);
-  assert.ok(requested.slice(11).every(src => /\?v=.+/.test(src)));
+  assert.ok(requested.slice(12).every(src => /\?v=.+/.test(src)));
 });
 
 test('initial HTML defers stories and World data and keeps loader in offline shell', () => {
@@ -135,9 +136,9 @@ test('overlapping feature groups share one in-flight script request', async () =
   assert.match(requested[3], /^think-lab\.js\?/);
   scripts[3].onload();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested.length, 4);
-  assert.match(requested[3], /^life-skills\.js\?/);
-  scripts[3].onload();
+  assert.equal(requested.length, 5);
+  assert.match(requested[4], /^life-skills\\.js\\?/);
+  scripts[4].onload();
 
   await Promise.all([thinkLab, lifeSkills]);
   assert.equal(requested.length, 5);
