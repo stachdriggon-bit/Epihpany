@@ -10,7 +10,7 @@ const appSource = fs.readFileSync(path.join(__dirname, '..', 'app.js'), 'utf8');
 test('Odd One Out has independent banks for all six CEFR levels', () => {
   for (const level of ['A1','A2','B1','B2','C1','C2']) {
     assert.ok(Array.isArray(bank.banks[level]));
-    assert.equal(bank.banks[level].length, 8);
+    assert.equal(bank.banks[level].length, level === 'A1' ? 12 : 8);
     assert.ok(bank.banks[level].every(item => item.id.startsWith(level + '-')));
   }
 });
@@ -40,11 +40,11 @@ test('round targets are adaptive and never pad a short bank with repeats', () =>
   assert.equal(steady.target,10);
   assert.equal(challenge.target,12);
   assert.equal(guided.questions.length,8);
-  assert.equal(steady.questions.length,8);
-  assert.equal(challenge.questions.length,8);
+  assert.equal(steady.questions.length,10);
+  assert.equal(challenge.questions.length,12);
   assert.equal(guided.shortened,false);
-  assert.equal(steady.shortened,true);
-  assert.equal(challenge.shortened,true);
+  assert.equal(steady.shortened,false);
+  assert.equal(challenge.shortened,false);
   for (const round of [guided,steady,challenge]) {
     assert.equal(new Set(round.questions.map(q=>q.id)).size,round.questions.length);
   }
@@ -97,9 +97,10 @@ test('all 18 CEFR and training-mode combinations select the intended distinct qu
       assert.equal(round.level,level,level + ' ' + mode + ' should retain its CEFR bank');
       assert.equal(round.trainingMode,mode);
       assert.equal(round.target,target);
-      assert.equal(round.available,8);
-      assert.equal(round.questions.length,8,level + ' ' + mode + ' should use all eight quality-approved items');
-      assert.equal(round.shortened,target>8,level + ' ' + mode + ' should disclose only the rounds shorter than target');
+      const available=bank.banks[level].length;
+      assert.equal(round.available,available);
+      assert.equal(round.questions.length,Math.min(target,available),level + ' ' + mode + ' should use all available quality-approved items up to its target');
+      assert.equal(round.shortened,target>available,level + ' ' + mode + ' should disclose only the rounds shorter than target');
       assert.equal(new Set(round.questions.map(question=>question.id)).size,8);
       for (const question of round.questions) {
         const source = bank.banks[level].find(item=>item.id===question.id);
