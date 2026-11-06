@@ -14,7 +14,9 @@ function seeded(seed) {
 
 test('Word Connections bank contains exactly 24 complete groups in each mode', () => {
   assert.deepEqual(Array.from(bank.modes),['guided','steady','challenge']);
-  assert.deepEqual(bank.validateBank(),{valid:true,errors:[]});
+  const validation=bank.validateBank();
+  assert.equal(validation.valid,true);
+  assert.deepEqual(Array.from(validation.errors),[]);
   for(const mode of bank.modes) {
     const rounds=bank.getRounds(mode);
     assert.equal(rounds.length,24,mode+' should contain 24 rounds');
@@ -39,7 +41,7 @@ test('every generated 16-tile board contains its target and no complete alternat
     assert.equal(board.length,16,round.id+' should render 16 tiles');
     assert.equal(new Set(board.map(word=>word.toLowerCase())).size,16,round.id+' should not duplicate tiles');
     for(const word of round.words) assert.ok(board.includes(word),round.id+' must include every target word');
-    assert.deepEqual(bank.findCompleteGroups(board,mode).map(group=>group.id),[round.id],round.id+' must be the only complete bank group');
+    assert.equal(Array.from(bank.findCompleteGroups(board,mode),group=>group.id).join(','),round.id,round.id+' must be the only complete bank group');
     for(const other of bank.getRounds(mode).filter(group=>group.id!==round.id)) {
       const overlap=other.words.filter(word=>board.includes(word));
       assert.ok(overlap.length<=2,round.id+' must not expose three or four words from '+other.id);
