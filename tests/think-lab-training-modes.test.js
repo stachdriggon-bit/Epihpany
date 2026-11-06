@@ -143,3 +143,17 @@ test('Sound Maze CEFR is a saved and cross-device learner preference', () => {
   assert.match(app, /state\.soundMazeCEFR = level/);
   assert.match(account, /PREFERENCE_KEYS = \[[^\]]*'soundMazeCEFR'/);
 });
+
+
+test('active game screen offers a direct Think Lab home route without removing difficulty back', () => {
+  for (const gameId of gameIds) {
+    const harness = createHarness();
+    harness.click('[data-think-game]', {thinkGame:gameId});
+    harness.click('[data-think-training-mode]', {thinkTrainingMode:'steady',thinkTrainingGame:gameId});
+    assert.match(harness.root.innerHTML, /data-think-back/);
+    assert.match(harness.root.innerHTML, /data-think-home/);
+    harness.click('[data-think-home]');
+    assert.match(harness.root.innerHTML, /Don’t just play/);
+    assert.match(harness.root.innerHTML, /data-think-game=/);
+  }
+});

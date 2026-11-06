@@ -144,7 +144,7 @@
       slot.classList.add('ep-thinklab-icon');
     });
     // Arcade cards have no existing dedicated icon slot, so add one only there.
-    const arcadeSelector = root === document ? '#arcade-mini-games [class*="game"], #arcade-library [class*="game"]' : '[class*="game"]';
+    const arcadeSelector = '#arcade-mini-games [class*="game"], #arcade-library [class*="game"]';
     all(arcadeSelector).forEach(card => {
       if (card.querySelector('.ep-activity-icon')) return;
       const label = (card.innerText || card.getAttribute('aria-label') || '').trim();

@@ -29,5 +29,6 @@ test('icon observer scopes DOM work to changed nodes instead of rescanning the d
 
 test('scoped icon scans retain local Think Lab and Arcade selectors', () => {
   assert.match(source, /root === document \? '#think-lab-content \.tl-case\[data-think-game\]' : '\.tl-case\[data-think-game\]'/);
-  assert.match(source, /root === document \? '#arcade-mini-games \[class\*="game"\], #arcade-library \[class\*="game"\]' : '\[class\*="game"\]'/);
+  assert.match(source, /const arcadeSelector = '#arcade-mini-games \\[class\\*="game"\\], #arcade-library \\[class\\*="game"\\]';/);
+  assert.doesNotMatch(source, /: '\\[class\\*="game"\\]'/);
 });
