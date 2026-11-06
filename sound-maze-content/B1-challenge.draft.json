@@ -9,15 +9,15 @@
     {
       "id": "SM-B1-C-001",
       "axis": "short_vowel_contrasts",
-      "target": "plausible",
+      "target": "compass",
       "options": [
-        "plausible",
-        "possible",
-        "plosive",
-        "pleasable"
+        "compass",
+        "campus",
+        "composed",
+        "compost"
       ],
-      "answer": "plausible",
-      "explain": "Plausible has /ɔ/ in its first stressed syllable in General American. Possible has /ɑ/ or /ɔ/ depending on speaker and merger; this contrast can vary, so listen for the full word rather than relying on one vowel."
+      "answer": "compass",
+      "explain": "Compass has /ʌ/ in its first syllable in General American. Campus has /æ/, composed has /oʊ/, and compost has /ɑ/."
     },
     {
       "id": "SM-B1-C-002",
@@ -48,15 +48,15 @@
     {
       "id": "SM-B1-C-004",
       "axis": "initial_consonant_sounds",
-      "target": "rendezvous",
+      "target": "pseudonym",
       "options": [
-        "rendezvous",
-        "renegade",
-        "repertoire",
-        "reliable"
+        "pneumonia",
+        "pseudonym",
+        "pterodactyl",
+        "pharmacy"
       ],
-      "answer": "rendezvous",
-      "explain": "Rendezvous begins with /ˈrɑn/ in General American. Renegade begins with /rɛ/, repertoire with /ˈrɛp/ or /ˈrɛpə/, and reliable with /rɪ/."
+      "answer": "pseudonym",
+      "explain": "Pseudonym begins with /s/ because the initial p is silent. Pneumonia begins with /n/, pterodactyl with /t/, and pharmacy with /f/."
     },
     {
       "id": "SM-B1-C-005",
@@ -74,15 +74,15 @@
     {
       "id": "SM-B1-C-006",
       "axis": "initial_consonant_sounds",
-      "target": "gnaw",
+      "target": "wrinkle",
       "options": [
-        "gnat",
-        "gnaw",
-        "gnome",
-        "gnash"
+        "riddle",
+        "wrinkle",
+        "winkle",
+        "nickel"
       ],
-      "answer": "gnaw",
-      "explain": "Gnaw begins with /n/ because the g is silent. Gnat, gnome, and gnash also begin with /n/, so the spoken vowel and ending distinguish the words."
+      "answer": "wrinkle",
+      "explain": "Wrinkle begins with /r/ because the written w is silent. Riddle also begins with /r/ but has a different vowel and ending; winkle begins with /w/ and nickel with /n/."
     },
     {
       "id": "SM-B1-C-007",
@@ -100,15 +100,15 @@
     {
       "id": "SM-B1-C-008",
       "axis": "final_consonant_sounds",
-      "target": "heir",
+      "target": "debt",
       "options": [
-        "air",
-        "heir",
-        "hare",
-        "here"
+        "debt",
+        "dead",
+        "den",
+        "desk"
       ],
-      "answer": "heir",
-      "explain": "Heir ends with the vowel sound /ɛr/ and has a silent h. Air is a homophone of heir in General American, so this pair cannot be distinguished by sound alone; the other choices differ."
+      "answer": "debt",
+      "explain": "Debt ends with /t/; the written b is silent. Dead ends with /d/, den with /n/, and desk with /sk/."
     },
     {
       "id": "SM-B1-C-009",
