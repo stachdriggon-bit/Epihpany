@@ -154,13 +154,13 @@
       "axis": "basic_spelling_patterns",
       "target": "queue",
       "options": [
-        "cue",
+        "cute",
         "queue",
         "quay",
         "quite"
       ],
       "answer": "queue",
-      "explain": "Queue is spelled with five letters but pronounced like cue /kjuː/. Quay is pronounced /kiː/, while quite has /kwaɪt/."
+      "explain": "Queue is spelled with five letters but pronounced like /kjuː/. Cute begins with the same /kj/ sequence but has a final /t/; quay is /kiː/, and quite is /kwaɪt/."
     }
   ]
 }
