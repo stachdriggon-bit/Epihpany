@@ -1,0 +1,166 @@
+{
+  "level": "A2",
+  "mode": "challenge",
+  "status": "draft",
+  "version": 1,
+  "pronunciation_reference": "General American",
+  "description": "Challenge A2 content batch for The Sound Maze. Each target is spoken aloud; the learner selects its spelling. Draft content is not wired into the live game.",
+  "questions": [
+    {
+      "id": "SM-A2-C-001",
+      "axis": "short_vowel_contrasts",
+      "target": "plaid",
+      "options": [
+        "played",
+        "plaid",
+        "plead",
+        "plied"
+      ],
+      "answer": "plaid",
+      "explain": "Plaid has the /æ/ vowel. Played has /eɪ/, plead has /i/, and plied has /aɪ/."
+    },
+    {
+      "id": "SM-A2-C-002",
+      "axis": "short_vowel_contrasts",
+      "target": "swept",
+      "options": [
+        "swapped",
+        "swept",
+        "sweeped",
+        "swapt"
+      ],
+      "answer": "swept",
+      "explain": "Swept has the short /ɛ/ vowel and ends with /t/. Swapped has /æ/, while sweeped and swapt are not standard spellings."
+    },
+    {
+      "id": "SM-A2-C-003",
+      "axis": "short_vowel_contrasts",
+      "target": "rough",
+      "options": [
+        "roof",
+        "rouge",
+        "rough",
+        "row"
+      ],
+      "answer": "rough",
+      "explain": "Rough has /ʌ/ in General American. Roof has /u/ or /ʊ/ depending on speaker, rouge has /uːʒ/, and row has /oʊ/."
+    },
+    {
+      "id": "SM-A2-C-004",
+      "axis": "initial_consonant_sounds",
+      "target": "genre",
+      "options": [
+        "general",
+        "genre",
+        "gentle",
+        "genuine"
+      ],
+      "answer": "genre",
+      "explain": "Genre begins with /ʒ/, as in the middle sound of measure. The other words begin with /dʒ/."
+    },
+    {
+      "id": "SM-A2-C-005",
+      "axis": "initial_consonant_sounds",
+      "target": "choir",
+      "options": [
+        "quire",
+        "choir",
+        "wire",
+        "fire"
+      ],
+      "answer": "choir",
+      "explain": "Choir begins with /kw/ in General American. Quire has the same pronunciation but is a different, uncommon word; wire and fire begin with /w/ and /f/."
+    },
+    {
+      "id": "SM-A2-C-006",
+      "axis": "initial_consonant_sounds",
+      "target": "thief",
+      "options": [
+        "chief",
+        "thief",
+        "sheaf",
+        "leaf"
+      ],
+      "answer": "thief",
+      "explain": "Thief begins with /θ/. Chief begins with /tʃ/, sheaf with /ʃ/, and leaf with /l/."
+    },
+    {
+      "id": "SM-A2-C-007",
+      "axis": "final_consonant_sounds",
+      "target": "breath",
+      "options": [
+        "bread",
+        "breed",
+        "breath",
+        "breathe"
+      ],
+      "answer": "breath",
+      "explain": "Breath ends with unvoiced /θ/. Bread ends with /d/, breed with /d/, and breathe ends with voiced /ð/."
+    },
+    {
+      "id": "SM-A2-C-008",
+      "axis": "final_consonant_sounds",
+      "target": "clothes",
+      "options": [
+        "close",
+        "clothe",
+        "clothes",
+        "clocks"
+      ],
+      "answer": "clothes",
+      "explain": "Clothes is commonly pronounced with final /ðz/ in General American. Close ends in /z/, clothe in /ð/, and clocks in /ks/."
+    },
+    {
+      "id": "SM-A2-C-009",
+      "axis": "final_consonant_sounds",
+      "target": "asked",
+      "options": [
+        "ask",
+        "asks",
+        "asked",
+        "acting"
+      ],
+      "answer": "asked",
+      "explain": "Asked ends with /t/ after the /s/ sound. Ask has no final /t/, asks ends with /s/, and acting ends with /ŋ/."
+    },
+    {
+      "id": "SM-A2-C-010",
+      "axis": "basic_spelling_patterns",
+      "target": "enough",
+      "options": [
+        "enuff",
+        "enough",
+        "enoughe",
+        "inough"
+      ],
+      "answer": "enough",
+      "explain": "Enough uses gh to spell the final /f/ sound. The other spellings are not standard English."
+    },
+    {
+      "id": "SM-A2-C-011",
+      "axis": "basic_spelling_patterns",
+      "target": "island",
+      "options": [
+        "iland",
+        "island",
+        "aisland",
+        "is-land"
+      ],
+      "answer": "island",
+      "explain": "Island has a silent s; the word begins with the vowel sound /aɪ/. The other forms are not standard spellings."
+    },
+    {
+      "id": "SM-A2-C-012",
+      "axis": "basic_spelling_patterns",
+      "target": "receipt",
+      "options": [
+        "reciept",
+        "receipt",
+        "reseet",
+        "receit"
+      ],
+      "answer": "receipt",
+      "explain": "Receipt uses ei after c to spell the /i/ sound, and p is silent. The other options misspell the word."
+    }
+  ]
+}
