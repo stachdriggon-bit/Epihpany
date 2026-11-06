@@ -24,13 +24,13 @@
       "axis": "short_vowel_contrasts",
       "target": "swept",
       "options": [
-        "swapped",
+        "slept",
+        "sweat",
         "swept",
-        "sweeped",
-        "swapt"
+        "swept"
       ],
       "answer": "swept",
-      "explain": "Swept has the short /ɛ/ vowel and ends with /t/. Swapped has /æ/, while sweeped and swapt are not standard spellings."
+      "explain": "Swept has the short /ɛ/ vowel and ends with the /pt/ cluster. Slept has /sl/ at the start, and sweat ends with /t/ without the /p/ sound."
     },
     {
       "id": "SM-A2-C-003",
@@ -61,15 +61,15 @@
     {
       "id": "SM-A2-C-005",
       "axis": "initial_consonant_sounds",
-      "target": "choir",
+      "target": "quick",
       "options": [
-        "quire",
-        "choir",
-        "wire",
-        "fire"
+        "wick",
+        "kick",
+        "quick",
+        "sick"
       ],
-      "answer": "choir",
-      "explain": "Choir begins with /kw/ in General American. Quire has the same pronunciation but is a different, uncommon word; wire and fire begin with /w/ and /f/."
+      "answer": "quick",
+      "explain": "Quick begins with /kw/. Wick begins with /w/, while kick and sick begin with /k/ and /s/."
     },
     {
       "id": "SM-A2-C-006",
@@ -100,15 +100,15 @@
     {
       "id": "SM-A2-C-008",
       "axis": "final_consonant_sounds",
-      "target": "clothes",
+      "target": "months",
       "options": [
-        "close",
-        "clothe",
-        "clothes",
-        "clocks"
+        "month",
+        "months",
+        "monk",
+        "moss"
       ],
-      "answer": "clothes",
-      "explain": "Clothes is commonly pronounced with final /ðz/ in General American. Close ends in /z/, clothe in /ð/, and clocks in /ks/."
+      "answer": "months",
+      "explain": "Months ends with the /θs/ cluster. Month ends with /θ/, monk with /ŋk/, and moss with /s/."
     },
     {
       "id": "SM-A2-C-009",
@@ -128,39 +128,39 @@
       "axis": "basic_spelling_patterns",
       "target": "enough",
       "options": [
-        "enuff",
         "enough",
-        "enoughe",
-        "inough"
+        "tough",
+        "though",
+        "through"
       ],
       "answer": "enough",
-      "explain": "Enough uses gh to spell the final /f/ sound. The other spellings are not standard English."
+      "explain": "Enough uses gh to spell the final /f/ sound. Tough ends with the same /f/ but has a different vowel; though and through have different vowel sounds and final sounds."
     },
     {
       "id": "SM-A2-C-011",
       "axis": "basic_spelling_patterns",
       "target": "island",
       "options": [
-        "iland",
         "island",
-        "aisland",
-        "is-land"
+        "isle",
+        "islet",
+        "Ireland"
       ],
       "answer": "island",
-      "explain": "Island has a silent s; the word begins with the vowel sound /aɪ/. The other forms are not standard spellings."
+      "explain": "Island has a silent s and is pronounced /ˈaɪlənd/. Isle and islet are different words; Ireland has a different ending and stress pattern."
     },
     {
       "id": "SM-A2-C-012",
       "axis": "basic_spelling_patterns",
       "target": "receipt",
       "options": [
-        "reciept",
         "receipt",
-        "reseet",
-        "receit"
+        "recipe",
+        "recent",
+        "recite"
       ],
       "answer": "receipt",
-      "explain": "Receipt uses ei after c to spell the /i/ sound, and p is silent. The other options misspell the word."
+      "explain": "Receipt uses ei after c to spell the /i/ sound, and p is silent. Recipe, recent, and recite are real words with different sounds and spellings."
     }
   ]
 }
