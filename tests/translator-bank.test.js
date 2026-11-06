@@ -51,6 +51,7 @@ test('The Bold Translator A1, A2, B1, B2, C1 and C2 banks each have 42 complete 
       assert.ok(question.hint.trim(), `${where}: missing hint`);
       assert.equal(question.optionExplanations.length, 3, `${where}: every option needs an explanation`);
       assert.ok(question.optionExplanations.every(explanation => explanation.trim()), `${where}: an option explanation is empty`);
+      assert.match(question.optionExplanations[question.answer], /^Correct:/i, `${where}: the correct answer must be identified by its explanation`);
       if (level === 'C1' || level === 'C2') {
         const correctExplanationIndexes = question.optionExplanations
           .map((explanation, optionIndex) => /^Correct:/i.test(explanation.trim()) ? optionIndex : -1)
