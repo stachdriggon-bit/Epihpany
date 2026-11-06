@@ -7,6 +7,7 @@ const bank = require('../odd-one-out-bank.js');
 const soundMazeTools = require('../sound-maze-bank.js');
 const source = fs.readFileSync(path.join(__dirname, '..', 'think-lab.js'), 'utf8');
 const connectionBankSource = fs.readFileSync(path.join(__dirname, '..', 'word-connections-bank.js'), 'utf8');
+const sentenceScrambleBankSource = fs.readFileSync(path.join(__dirname, '..', 'sentence-scramble-bank.js'), 'utf8');
 
 const gameIds = ['odd','translator','wordladder','maze','connections','scramble','forge','chain'];
 const trainingModes = ['guided','steady','challenge'];
@@ -38,6 +39,8 @@ function makeSoundMazeFixture() {
 function createHarness(options = {}) {
   const connectionContext = vm.createContext({window:{}});
   vm.runInContext(connectionBankSource, connectionContext, {filename:'word-connections-bank.js',timeout:5000});
+  const sentenceScrambleContext = vm.createContext({window:{}});
+  vm.runInContext(sentenceScrambleBankSource, sentenceScrambleContext, {filename:'sentence-scramble-bank.js',timeout:5000});
   const listeners = {};
   const root = {
     innerHTML: '',
@@ -50,6 +53,7 @@ function createHarness(options = {}) {
     EPIPHANY_ODD_ONE_OUT_BANK: bank,
     EPIPHANY_SOUND_MAZE_TOOLS: soundMazeTools,
     EPIPHANY_WORD_CONNECTIONS_BANK: connectionContext.window.EPIPHANY_WORD_CONNECTIONS_BANK,
+    EPIPHANY_SENTENCE_SCRAMBLE_BANK: sentenceScrambleContext.window.EPIPHANY_SENTENCE_SCRAMBLE_BANK,
     ...(options.soundMazeBank ? {EPIPHANY_SOUND_MAZE_BANK:options.soundMazeBank} : {}),
     speechSynthesis: {cancel(){},speak(){}},
     EpiphanyThinkLab: {
