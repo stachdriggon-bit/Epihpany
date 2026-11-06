@@ -3,7 +3,7 @@
   'use strict';
   const bank = {
   "status": "reviewed_for_integration",
-  "version": 2,
+  "version": 3,
   "pronunciation_reference": "General American",
   "levels": {
     "A1": {
@@ -1294,13 +1294,13 @@
           "axis": "short_vowel_contrasts",
           "target": "endeavor",
           "options": [
-            "android",
             "endeavor",
-            "indoor",
-            "endure"
+            "android",
+            "endower",
+            "under"
           ],
           "answer": "endeavor",
-          "explain": "Endeavor begins with /ɛn/. Android begins with /æn/, while indoor and endure begin with different vowel qualities."
+          "explain": "Endeavor begins with /ɪn/ in General American. Android begins with /æn/, endower with /ɛn/, and under with /ʌn/."
         },
         {
           "id": "SM-B1-C-003",
