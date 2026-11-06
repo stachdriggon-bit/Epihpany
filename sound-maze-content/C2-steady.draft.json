@@ -1,0 +1,166 @@
+{
+  "level": "C2",
+  "mode": "steady",
+  "status": "draft",
+  "version": 1,
+  "pronunciation_reference": "General American",
+  "description": "Steady C2 content batch for The Sound Maze. Each target is spoken aloud; the learner selects its spelling. Draft content is not wired into the live game.",
+  "questions": [
+    {
+      "id": "SM-C2-S-001",
+      "axis": "short_vowel_contrasts",
+      "target": "fathom",
+      "options": [
+        "fathom",
+        "feather",
+        "father",
+        "further"
+      ],
+      "answer": "fathom",
+      "explain": "Fathom begins with /æ/. Feather begins with /ɛ/, father with /ɑ/, and further with /ɜr/."
+    },
+    {
+      "id": "SM-C2-S-002",
+      "axis": "short_vowel_contrasts",
+      "target": "livid",
+      "options": [
+        "leaven",
+        "livid",
+        "lavish",
+        "lovely"
+      ],
+      "answer": "livid",
+      "explain": "Livid begins with /ɪ/. Leaven begins with /ɛ/, lavish with /æ/, and lovely with /ʌ/."
+    },
+    {
+      "id": "SM-C2-S-003",
+      "axis": "short_vowel_contrasts",
+      "target": "placid",
+      "options": [
+        "placid",
+        "pleasure",
+        "plunder",
+        "plummet"
+      ],
+      "answer": "placid",
+      "explain": "Placid begins with /æ/. Pleasure begins with /ɛ/, while plunder and plummet begin with /ʌ/."
+    },
+    {
+      "id": "SM-C2-S-004",
+      "axis": "initial_consonant_sounds",
+      "target": "psalter",
+      "options": [
+        "psalter",
+        "shelter",
+        "salter",
+        "halter"
+      ],
+      "answer": "psalter",
+      "explain": "Psalter begins with /s/ because p is silent. Shelter begins with /ʃ/, salter has a different following sequence, and halter begins with /h/."
+    },
+    {
+      "id": "SM-C2-S-005",
+      "axis": "initial_consonant_sounds",
+      "target": "czarina",
+      "options": [
+        "czarina",
+        "serene",
+        "arena",
+        "haughty"
+      ],
+      "answer": "czarina",
+      "explain": "Czarina is commonly pronounced with initial /z/ in General American. Serene begins with /s/, arena with a vowel, and haughty with /h/."
+    },
+    {
+      "id": "SM-C2-S-006",
+      "axis": "initial_consonant_sounds",
+      "target": "knoll",
+      "options": [
+        "knoll",
+        "coal",
+        "droll",
+        "mole"
+      ],
+      "answer": "knoll",
+      "explain": "Knoll begins with /n/ because k is silent. Coal begins with /k/, droll with /d/, and mole with /m/."
+    },
+    {
+      "id": "SM-C2-S-007",
+      "axis": "final_consonant_sounds",
+      "target": "quaffed",
+      "options": [
+        "quaff",
+        "quaffed",
+        "quaffs",
+        "quaffing"
+      ],
+      "answer": "quaffed",
+      "explain": "Quaffed ends with /ft/. Quaff ends with /f/, quaffs with /fs/, and quaffing with /fɪŋ/."
+    },
+    {
+      "id": "SM-C2-S-008",
+      "axis": "final_consonant_sounds",
+      "target": "dwelled",
+      "options": [
+        "dwell",
+        "dwelled",
+        "dwells",
+        "dwelling"
+      ],
+      "answer": "dwelled",
+      "explain": "Dwelled ends with /ld/. Dwell ends with /l/, dwells with /lz/, and dwelling with /lɪŋ/."
+    },
+    {
+      "id": "SM-C2-S-009",
+      "axis": "final_consonant_sounds",
+      "target": "clasped",
+      "options": [
+        "clasp",
+        "clasped",
+        "clasps",
+        "clasping"
+      ],
+      "answer": "clasped",
+      "explain": "Clasped ends with /pst/. Clasp ends with /sp/, clasps with /sps/, and clasping with /spɪŋ/."
+    },
+    {
+      "id": "SM-C2-S-010",
+      "axis": "basic_spelling_patterns",
+      "target": "echelon",
+      "options": [
+        "echelon",
+        "etching",
+        "echoing",
+        "election"
+      ],
+      "answer": "echelon",
+      "explain": "Echelon is pronounced /ˈɛʃəlɑn/. Etching begins with /ɛtʃ/, echoing with /ɛk/, and election has a different medial sequence."
+    },
+    {
+      "id": "SM-C2-S-011",
+      "axis": "basic_spelling_patterns",
+      "target": "faux",
+      "options": [
+        "faux",
+        "fax",
+        "fox",
+        "fall"
+      ],
+      "answer": "faux",
+      "explain": "Faux is pronounced /foʊ/; x is silent. Fax, fox, and fall have different vowel and ending sounds."
+    },
+    {
+      "id": "SM-C2-S-012",
+      "axis": "basic_spelling_patterns",
+      "target": "subpoena",
+      "options": [
+        "subpoena",
+        "subpoenas",
+        "subpoenaed",
+        "supernova"
+      ],
+      "answer": "subpoena",
+      "explain": "Subpoena is pronounced /səˈpiːnə/. Subpoenas and subpoenaed have audible final additions; supernova has a different syllable and stress pattern."
+    }
+  ]
+}
