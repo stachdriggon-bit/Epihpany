@@ -27,10 +27,10 @@
         "slept",
         "sweat",
         "swept",
-        "swept"
+        "wept"
       ],
       "answer": "swept",
-      "explain": "Swept has the short /ɛ/ vowel and ends with the /pt/ cluster. Slept has /sl/ at the start, and sweat ends with /t/ without the /p/ sound."
+      "explain": "Swept has the short /ɛ/ vowel and ends with the /pt/ cluster. Slept and wept have /ɛ/ but begin differently; sweat ends with /t/ without the /p/ sound."
     },
     {
       "id": "SM-A2-C-003",
@@ -48,15 +48,15 @@
     {
       "id": "SM-A2-C-004",
       "axis": "initial_consonant_sounds",
-      "target": "genre",
+      "target": "sugar",
       "options": [
-        "general",
-        "genre",
-        "gentle",
-        "genuine"
+        "supper",
+        "sugar",
+        "shiver",
+        "singer"
       ],
-      "answer": "genre",
-      "explain": "Genre begins with /ʒ/, as in the middle sound of measure. The other words begin with /dʒ/."
+      "answer": "sugar",
+      "explain": "Sugar begins with /ʃ/. Supper and singer begin with /s/, while shiver also begins with /ʃ/ but has a different vowel and ending."
     },
     {
       "id": "SM-A2-C-005",
