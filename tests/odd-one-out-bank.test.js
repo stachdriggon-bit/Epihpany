@@ -76,7 +76,7 @@ test('Think Lab integration supplies a visible prompt and mode-specific instruct
     const harness = loadThinkLabHarness(level);
     for (const mode of ['guided','steady','challenge']) {
       const pool = harness.__oddPool(mode);
-      assert.equal(pool.length,8);
+      assert.equal(pool.length,level==='A1'?12:8);
       assert.ok(pool.every(item => item.prompt === 'Which word does not belong?'));
       assert.ok(pool.every(item => item.cefrLevel === level));
       assert.ok(pool.every(item => item.trainingMode === mode));
