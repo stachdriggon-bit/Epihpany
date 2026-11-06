@@ -100,15 +100,15 @@
     {
       "id": "SM-B2-C-008",
       "axis": "final_consonant_sounds",
-      "target": "sixths",
+      "target": "attempts",
       "options": [
-        "sixes",
-        "sixth",
-        "sixths",
-        "sickles"
+        "attempt",
+        "attempts",
+        "attends",
+        "attentive"
       ],
-      "answer": "sixths",
-      "explain": "Sixths ends with the cluster /ksθs/. Sixes ends with /ɪz/, sixth with /θ/, and sickles with /əlz/."
+      "answer": "attempts",
+      "explain": "Attempts ends with the consonant cluster /mpts/. Attempt ends with /mt/, attends with /ndz/, and attentive with /tɪv/."
     },
     {
       "id": "SM-B2-C-009",
