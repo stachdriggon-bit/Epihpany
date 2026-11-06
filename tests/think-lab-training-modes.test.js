@@ -4,12 +4,37 @@ const fs = require('node:fs');
 const path = require('node:path');
 const vm = require('node:vm');
 const bank = require('../odd-one-out-bank.js');
+const soundMazeTools = require('../sound-maze-bank.js');
 const source = fs.readFileSync(path.join(__dirname, '..', 'think-lab.js'), 'utf8');
 
 const gameIds = ['odd','translator','wordladder','maze','connections','scramble','forge','chain'];
 const trainingModes = ['guided','steady','challenge'];
 
-function createHarness() {
+function makeSoundMazeFixture() {
+  const result = {levels:{}};
+  for (const level of soundMazeTools.LEVELS) {
+    result.levels[level] = {};
+    for (const mode of soundMazeTools.MODES) {
+      result.levels[level][mode] = [];
+      for (let axis = 1; axis <= 4; axis++) {
+        for (let number = 1; number <= 3; number++) {
+          const target = level.toLowerCase() + mode[0] + axis + number;
+          result.levels[level][mode].push({
+            id: level + '-' + mode + '-' + axis + '-' + number,
+            axis:'axis-' + axis,
+            target,
+            options:[target,target+'x',target+'y',target+'z'],
+            answer:target,
+            explain:'The target spelling is preserved in the answer options.'
+          });
+        }
+      }
+    }
+  }
+  return result;
+}
+
+function createHarness(options = {}) {
   const listeners = {};
   const root = {
     innerHTML: '',
@@ -17,10 +42,16 @@ function createHarness() {
     querySelector() { return null; },
     querySelectorAll() { return []; }
   };
+  let savedMazeCEFR = options.savedMazeCEFR || null;
   const window = {
     EPIPHANY_ODD_ONE_OUT_BANK: bank,
+    EPIPHANY_SOUND_MAZE_TOOLS: soundMazeTools,
+    ...(options.soundMazeBank ? {EPIPHANY_SOUND_MAZE_BANK:options.soundMazeBank} : {}),
+    speechSynthesis: {cancel(){},speak(){}},
     EpiphanyThinkLab: {
       getCEFRLevel: () => 'A1',
+      getSoundMazeCEFR: () => savedMazeCEFR,
+      setSoundMazeCEFR: level => { savedMazeCEFR = level; return true; },
       getGameDifficulty: () => ({level:'challenge',hintLevel:2,attempts:0,accuracy:null}),
       getDifficulty: () => ({level:'challenge',hintLevel:2}),
       registerGame() {},
@@ -28,13 +59,13 @@ function createHarness() {
     }
   };
   const document = {getElementById: id => id === 'think-lab-content' ? root : null};
-  vm.runInNewContext(source, {window,document,console,Math}, {filename:'think-lab.js',timeout:10000});
+  vm.runInNewContext(source, {window,document,console,Math,SpeechSynthesisUtterance:function SpeechSynthesisUtterance(text){this.text=text;}}, {filename:'think-lab.js',timeout:10000});
   function click(selector, dataset = {}) {
     const element = {dataset};
     assert.equal(typeof listeners.click, 'function', 'Think Lab click handler should be registered');
     listeners.click({target:{closest: candidate => candidate === selector ? element : null}});
   }
-  return {root,click};
+  return {root,click,getSavedMazeCEFR:()=>savedMazeCEFR};
 }
 
 test('every Think Lab game opens the shared three-mode picker before play', () => {
@@ -58,6 +89,9 @@ test('each training mode is passed into the selected game instead of the adaptiv
       if (gameId === 'translator') {
         assert.match(harness.root.innerHTML, /CHOOSE YOUR ENGLISH LEVEL/);
         harness.click('[data-translator-level]', {translatorLevel:'A1'});
+      } else if (gameId === 'maze') {
+        assert.match(harness.root.innerHTML, /CHOOSE YOUR ENGLISH LEVEL/);
+        harness.click('[data-sound-maze-level]', {soundMazeLevel:'A1'});
       }
       assert.match(
         harness.root.innerHTML,
@@ -74,4 +108,38 @@ test('training modes control hint support and do not overwrite the CEFR level', 
   assert.match(source, /selectedMode = \['guided','steady','challenge'\]/);
   assert.match(source, /selectedTrainingMode = \['guided','steady','challenge'\]/);
   assert.match(source, /data-translator-level="adaptive"/);
+});
+
+
+test('The Sound Maze asks for CEFR separately and persists the selected level', () => {
+  const harness = createHarness({soundMazeBank:makeSoundMazeFixture()});
+  harness.click('[data-think-game]', {thinkGame:'maze'});
+  harness.click('[data-think-training-mode]', {thinkTrainingMode:'challenge',thinkTrainingGame:'maze'});
+  assert.match(harness.root.innerHTML, /CHOOSE YOUR ENGLISH LEVEL/);
+  harness.click('[data-sound-maze-level]', {soundMazeLevel:'C2'});
+  assert.equal(harness.getSavedMazeCEFR(), 'C2');
+  assert.match(harness.root.innerHTML, /LISTENING MAZE · C2/);
+  assert.match(harness.root.innerHTML, /CHALLENGE/);
+  assert.match(harness.root.innerHTML, /ROUND 1 OF 12/);
+});
+
+test('The Sound Maze never presents its temporary sample questions as the approved bank', () => {
+  const harness = createHarness();
+  harness.click('[data-think-game]', {thinkGame:'maze'});
+  harness.click('[data-think-training-mode]', {thinkTrainingMode:'steady',thinkTrainingGame:'maze'});
+  harness.click('[data-sound-maze-level]', {soundMazeLevel:'B2'});
+  assert.equal(harness.getSavedMazeCEFR(), 'B2');
+  assert.match(harness.root.innerHTML, /QUESTION BANK NOT READY/);
+  assert.match(harness.root.innerHTML, /temporary sample questions are intentionally hidden/);
+  assert.doesNotMatch(harness.root.innerHTML, /Target word:|bridge|market|window/);
+});
+
+test('Sound Maze CEFR is a saved and cross-device learner preference', () => {
+  const app = fs.readFileSync(path.join(__dirname, '..', 'app.js'), 'utf8');
+  const account = fs.readFileSync(path.join(__dirname, '..', 'account.js'), 'utf8');
+  assert.match(app, /soundMazeCEFR:null/);
+  assert.match(app, /getSoundMazeCEFR\(\)/);
+  assert.match(app, /setSoundMazeCEFR\(level\)/);
+  assert.match(app, /state\.soundMazeCEFR = level/);
+  assert.match(account, /PREFERENCE_KEYS = \[[^\]]*'soundMazeCEFR'/);
 });
