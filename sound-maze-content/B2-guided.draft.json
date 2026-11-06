@@ -2,7 +2,7 @@
   "level": "B2",
   "mode": "guided",
   "status": "draft",
-  "version": 1,
+  "version": 2,
   "pronunciation_reference": "General American",
   "description": "Guided B2 content batch for The Sound Maze. Each target is spoken aloud; the learner selects its spelling. Draft content is not wired into the live game.",
   "questions": [
@@ -25,12 +25,12 @@
       "target": "plummet",
       "options": [
         "plummet",
-        "plummet-like",
         "plumage",
+        "plumb",
         "planet"
       ],
       "answer": "plummet",
-      "explain": "Plummet has the short /ʌ/ vowel in its first syllable. Plumage begins with /uː/ in many General American pronunciations, and planet has /æ/."
+      "explain": "Plummet has /ʌ/ in its first syllable. Plumage has /uː/, planet has /æ/, and plumb is a shorter word with a different ending."
     },
     {
       "id": "SM-B2-G-003",
@@ -78,11 +78,11 @@
       "options": [
         "gnarled",
         "garbled",
-        "narwhal",
+        "hardy",
         "marble"
       ],
       "answer": "gnarled",
-      "explain": "Gnarled begins with /n/ because the written g is silent. Garbled begins with /g/, narwhal with /n/ but a different vowel sequence, and marble with /m/."
+      "explain": "Gnarled begins with /n/ because the written g is silent. Garbled begins with /g/, hardy with /h/, and marble with /m/."
     },
     {
       "id": "SM-B2-G-007",
