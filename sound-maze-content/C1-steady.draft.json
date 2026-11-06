@@ -2,7 +2,7 @@
   "level": "C1",
   "mode": "steady",
   "status": "draft",
-  "version": 2,
+  "version": 3,
   "pronunciation_reference": "General American",
   "description": "Steady C1 content batch for The Sound Maze. Each target is spoken aloud; the learner selects its spelling. Draft content is not wired into the live game.",
   "questions": [
@@ -61,15 +61,15 @@
     {
       "id": "SM-C1-S-005",
       "axis": "initial_consonant_sounds",
-      "target": "xylitol",
+      "target": "zither",
       "options": [
-        "xylitol",
+        "zither",
         "famine",
         "theory",
         "harmony"
       ],
-      "answer": "xylitol",
-      "explain": "Xylitol begins with /z/, although it is written with x. Famine begins with /f/, theory with /θ/, and harmony with /h/."
+      "answer": "zither",
+      "explain": "Zither begins with /z/. Famine begins with /f/, theory with /θ/, and harmony with /h/."
     },
     {
       "id": "SM-C1-S-006",
