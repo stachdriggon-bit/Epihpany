@@ -9,15 +9,15 @@
     {
       "id": "SM-B1-C-001",
       "axis": "short_vowel_contrasts",
-      "target": "compass",
+      "target": "fabric",
       "options": [
-        "compass",
-        "campus",
-        "composed",
-        "compost"
+        "fabric",
+        "fever",
+        "funnel",
+        "finish"
       ],
-      "answer": "compass",
-      "explain": "Compass has /ʌ/ in its first syllable in General American. Campus has /æ/, composed has /oʊ/, and compost has /ɑ/."
+      "answer": "fabric",
+      "explain": "Fabric has the stressed short /æ/ vowel. Fever has /i/, funnel has /ʌ/, and finish has /ɪ/."
     },
     {
       "id": "SM-B1-C-002",
