@@ -2,7 +2,7 @@
   "level": "C2",
   "mode": "guided",
   "status": "draft",
-  "version": 1,
+  "version": 2,
   "pronunciation_reference": "General American",
   "description": "Guided C2 content batch for The Sound Maze. Each target is spoken aloud; the learner selects its spelling. Draft content is not wired into the live game.",
   "questions": [
@@ -53,10 +53,10 @@
         "rhapsody",
         "lapse",
         "haps",
-        "rapture"
+        "dapper"
       ],
       "answer": "rhapsody",
-      "explain": "Rhapsody begins with /r/; h in rh is silent. Lapse begins with /l/, haps with /h/, and rapture has a different following sequence."
+      "explain": "Rhapsody begins with /r/; its written rh represents /r/. Lapse begins with /l/, haps with /h/, and dapper with /d/."
     },
     {
       "id": "SM-C2-G-005",
@@ -66,10 +66,10 @@
         "chrysalis",
         "shrewd",
         "gregarious",
-        "crevice"
+        "syringe"
       ],
       "answer": "chrysalis",
-      "explain": "Chrysalis begins with /kr/. Shrewd begins with /ʃ/, gregarious with /ɡr/, and crevice with /kr/ but a different full sound sequence."
+      "explain": "Chrysalis begins with /k/ because ch represents /k/. Shrewd begins with /ʃ/, gregarious with /g/, and syringe with /s/."
     },
     {
       "id": "SM-C2-G-006",
@@ -78,11 +78,11 @@
       "options": [
         "wrangle",
         "wangle",
-        "rancor",
+        "jangle",
         "mangle"
       ],
       "answer": "wrangle",
-      "explain": "Wrangle begins with /r/ because w is silent. Wangle begins with /w/, rancor has a different following consonant sequence, and mangle begins with /m/."
+      "explain": "Wrangle begins with /r/ because its written w is silent. Wangle begins with /w/, jangle with /dʒ/, and mangle with /m/."
     },
     {
       "id": "SM-C2-G-007",
