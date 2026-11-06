@@ -2,7 +2,7 @@
   "level": "B2",
   "mode": "guided",
   "status": "draft",
-  "version": 2,
+  "version": 3,
   "pronunciation_reference": "General American",
   "description": "Guided B2 content batch for The Sound Maze. Each target is spoken aloud; the learner selects its spelling. Draft content is not wired into the live game.",
   "questions": [
@@ -12,12 +12,12 @@
       "target": "candid",
       "options": [
         "candid",
-        "candy",
-        "candle",
-        "kindle"
+        "kinship",
+        "kettle",
+        "kudos"
       ],
       "answer": "candid",
-      "explain": "Candid has the short /æ/ vowel in its first stressed syllable. Candy and candle also begin with /kænd/, but candid has a different ending; kindle begins with /ɪ/."
+      "explain": "Candid has /æ/ in its first syllable. Kinship has /ɪ/, kettle has /ɛ/, and kudos has /uː/."
     },
     {
       "id": "SM-B2-G-002",
@@ -38,12 +38,12 @@
       "target": "tenet",
       "options": [
         "tenet",
-        "tenant",
-        "tenor",
-        "tender"
+        "tinnitus",
+        "tandem",
+        "tonic"
       ],
       "answer": "tenet",
-      "explain": "Tenet has /ɛ/ in its first syllable. Tenant has /ɛ/ too but a different second syllable; tenor has /ɛ/ followed by /nər/, and tender ends with a different consonant sequence."
+      "explain": "Tenet has /ɛ/ in its first syllable. Tinnitus has /ɪ/, tandem has /æ/, and tonic has /ɑ/."
     },
     {
       "id": "SM-B2-G-004",
