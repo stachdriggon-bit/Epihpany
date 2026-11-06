@@ -150,6 +150,11 @@ test('active game screen offers a direct Think Lab home route without removing d
     const harness = createHarness();
     harness.click('[data-think-game]', {thinkGame:gameId});
     harness.click('[data-think-training-mode]', {thinkTrainingMode:'steady',thinkTrainingGame:gameId});
+    if (gameId === 'translator') {
+      harness.click('[data-translator-level]', {translatorLevel:'A1'});
+    } else if (gameId === 'maze') {
+      harness.click('[data-sound-maze-level]', {soundMazeLevel:'A1'});
+    }
     assert.match(harness.root.innerHTML, /data-think-back/);
     assert.match(harness.root.innerHTML, /data-think-home/);
     harness.click('[data-think-home]');
