@@ -1,0 +1,166 @@
+{
+  "level": "B2",
+  "mode": "challenge",
+  "status": "draft",
+  "version": 1,
+  "pronunciation_reference": "General American",
+  "description": "Challenge B2 content batch for The Sound Maze. Each target is spoken aloud; the learner selects its spelling. Draft content is not wired into the live game.",
+  "questions": [
+    {
+      "id": "SM-B2-C-001",
+      "axis": "short_vowel_contrasts",
+      "target": "mischievous",
+      "options": [
+        "mischievous",
+        "mischievious",
+        "mischivous",
+        "mischievus"
+      ],
+      "answer": "mischievous",
+      "explain": "Mischievous is pronounced /ˈmɪstʃɪvəs/ in General American. The standard spelling has -iev- and ends in -ous; the other options are misspellings."
+    },
+    {
+      "id": "SM-B2-C-002",
+      "axis": "short_vowel_contrasts",
+      "target": "quandary",
+      "options": [
+        "quandary",
+        "quandery",
+        "quandory",
+        "quandury"
+      ],
+      "answer": "quandary",
+      "explain": "Quandary has /ɑ/ in its first syllable in General American. The other forms are not standard spellings."
+    },
+    {
+      "id": "SM-B2-C-003",
+      "axis": "short_vowel_contrasts",
+      "target": "laconic",
+      "options": [
+        "laconick",
+        "laconic",
+        "laconique",
+        "laconicity"
+      ],
+      "answer": "laconic",
+      "explain": "Laconic has /ə/ in the first unstressed syllable and /ɑ/ in the stressed second syllable. Laconicity has a different stress pattern; the other forms are not standard spellings."
+    },
+    {
+      "id": "SM-B2-C-004",
+      "axis": "initial_consonant_sounds",
+      "target": "tsar",
+      "options": [
+        "czar",
+        "tsar",
+        "star",
+        "scar"
+      ],
+      "answer": "tsar",
+      "explain": "Tsar is commonly pronounced /zɑr/ in General American, with the initial letters representing /z/. Czar is a spelling variant with the same pronunciation; star and scar begin with /st/ and /sk/."
+    },
+    {
+      "id": "SM-B2-C-005",
+      "axis": "initial_consonant_sounds",
+      "target": "phlegm",
+      "options": [
+        "flem",
+        "phlegm",
+        "them",
+        "realm"
+      ],
+      "answer": "phlegm",
+      "explain": "Phlegm begins with /f/, written ph. Them begins with /ð/, realm with /r/, and flem is not the standard spelling."
+    },
+    {
+      "id": "SM-B2-C-006",
+      "axis": "initial_consonant_sounds",
+      "target": "gnostic",
+      "options": [
+        "nostic",
+        "gnostic",
+        "agnostic",
+        "diagnostic"
+      ],
+      "answer": "gnostic",
+      "explain": "Gnostic begins with /n/ because the initial g is silent. Agnostic and diagnostic have an initial vowel sound; nostic is not a standard word."
+    },
+    {
+      "id": "SM-B2-C-007",
+      "axis": "final_consonant_sounds",
+      "target": "lengths",
+      "options": [
+        "length",
+        "lengths",
+        "lenses",
+        "lengthen"
+      ],
+      "answer": "lengths",
+      "explain": "Lengths ends with /ŋθs/ in careful General American pronunciation. Length ends with /ŋθ/, lenses with /ɪz/, and lengthen with /ən/."
+    },
+    {
+      "id": "SM-B2-C-008",
+      "axis": "final_consonant_sounds",
+      "target": "sixths",
+      "options": [
+        "sixes",
+        "sixth",
+        "sixths",
+        "sickles"
+      ],
+      "answer": "sixths",
+      "explain": "Sixths ends with the cluster /ksθs/. Sixes ends with /ɪz/, sixth with /θ/, and sickles with /əlz/."
+    },
+    {
+      "id": "SM-B2-C-009",
+      "axis": "final_consonant_sounds",
+      "target": "glimpsed",
+      "options": [
+        "glimpse",
+        "glimpsed",
+        "glimpses",
+        "glimmer"
+      ],
+      "answer": "glimpsed",
+      "explain": "Glimpsed ends with /pst/: -ed is pronounced /t/ after the voiceless /s/ sound. Glimpse ends with /ps/, glimpses with /ɪz/, and glimmer with /ər/."
+    },
+    {
+      "id": "SM-B2-C-010",
+      "axis": "basic_spelling_patterns",
+      "target": "indict",
+      "options": [
+        "indite",
+        "indict",
+        "indictment",
+        "indicted"
+      ],
+      "answer": "indict",
+      "explain": "Indict is spelled with a silent c before t and is pronounced /ɪnˈdaɪt/. Indite is a different word pronounced the same, so it cannot be used as a sound-only distractor."
+    },
+    {
+      "id": "SM-B2-C-011",
+      "axis": "basic_spelling_patterns",
+      "target": "fuchsia",
+      "options": [
+        "fuschia",
+        "fuchsia",
+        "fuchia",
+        "fushia"
+      ],
+      "answer": "fuchsia",
+      "explain": "Fuchsia is spelled f-u-c-h-s-i-a. The other options are common misspellings."
+    },
+    {
+      "id": "SM-B2-C-012",
+      "axis": "basic_spelling_patterns",
+      "target": "connoisseur",
+      "options": [
+        "connoiseur",
+        "connoisseur",
+        "connosieur",
+        "connoisieur"
+      ],
+      "answer": "connoisseur",
+      "explain": "Connoisseur is spelled with double n, double s, and -isseur. The other options omit or rearrange letters."
+    }
+  ]
+}
