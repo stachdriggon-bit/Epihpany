@@ -1,0 +1,166 @@
+{
+  "level": "B2",
+  "mode": "guided",
+  "status": "draft",
+  "version": 1,
+  "pronunciation_reference": "General American",
+  "description": "Guided B2 content batch for The Sound Maze. Each target is spoken aloud; the learner selects its spelling. Draft content is not wired into the live game.",
+  "questions": [
+    {
+      "id": "SM-B2-G-001",
+      "axis": "short_vowel_contrasts",
+      "target": "candid",
+      "options": [
+        "candid",
+        "candy",
+        "candle",
+        "kindle"
+      ],
+      "answer": "candid",
+      "explain": "Candid has the short /æ/ vowel in its first stressed syllable. Candy and candle also begin with /kænd/, but candid has a different ending; kindle begins with /ɪ/."
+    },
+    {
+      "id": "SM-B2-G-002",
+      "axis": "short_vowel_contrasts",
+      "target": "plummet",
+      "options": [
+        "plummet",
+        "plummet-like",
+        "plumage",
+        "planet"
+      ],
+      "answer": "plummet",
+      "explain": "Plummet has the short /ʌ/ vowel in its first syllable. Plumage begins with /uː/ in many General American pronunciations, and planet has /æ/."
+    },
+    {
+      "id": "SM-B2-G-003",
+      "axis": "short_vowel_contrasts",
+      "target": "tenet",
+      "options": [
+        "tenet",
+        "tenant",
+        "tenor",
+        "tender"
+      ],
+      "answer": "tenet",
+      "explain": "Tenet has /ɛ/ in its first syllable. Tenant has /ɛ/ too but a different second syllable; tenor has /ɛ/ followed by /nər/, and tender ends with a different consonant sequence."
+    },
+    {
+      "id": "SM-B2-G-004",
+      "axis": "initial_consonant_sounds",
+      "target": "rhetoric",
+      "options": [
+        "rhetoric",
+        "ethics",
+        "lethargy",
+        "method"
+      ],
+      "answer": "rhetoric",
+      "explain": "Rhetoric begins with /r/; the written rh is pronounced /r/. Ethics begins with a vowel, lethargy with /l/, and method with /m/."
+    },
+    {
+      "id": "SM-B2-G-005",
+      "axis": "initial_consonant_sounds",
+      "target": "chasm",
+      "options": [
+        "chasm",
+        "chaos",
+        "sham",
+        "gasm"
+      ],
+      "answer": "chasm",
+      "explain": "Chasm begins with /k/ although it is spelled ch. Chaos also begins with /k/, while sham begins with /ʃ/; the full word's vowel and ending distinguish the choices."
+    },
+    {
+      "id": "SM-B2-G-006",
+      "axis": "initial_consonant_sounds",
+      "target": "gnarled",
+      "options": [
+        "gnarled",
+        "garbled",
+        "narwhal",
+        "marble"
+      ],
+      "answer": "gnarled",
+      "explain": "Gnarled begins with /n/ because the written g is silent. Garbled begins with /g/, narwhal with /n/ but a different vowel sequence, and marble with /m/."
+    },
+    {
+      "id": "SM-B2-G-007",
+      "axis": "final_consonant_sounds",
+      "target": "drowned",
+      "options": [
+        "drown",
+        "drowned",
+        "drowsy",
+        "drowning"
+      ],
+      "answer": "drowned",
+      "explain": "Drowned ends with /nd/. Drown ends with /n/, drowsy with /zi/, and drowning with /ɪŋ/."
+    },
+    {
+      "id": "SM-B2-G-008",
+      "axis": "final_consonant_sounds",
+      "target": "depth",
+      "options": [
+        "debt",
+        "dense",
+        "depth",
+        "desk"
+      ],
+      "answer": "depth",
+      "explain": "Depth ends with /θ/. Debt ends with /t/, dense with /s/, and desk with /sk/."
+    },
+    {
+      "id": "SM-B2-G-009",
+      "axis": "final_consonant_sounds",
+      "target": "prompt",
+      "options": [
+        "prom",
+        "pronged",
+        "prompt",
+        "promise"
+      ],
+      "answer": "prompt",
+      "explain": "Prompt ends with /mpt/. Prom ends with /m/, pronged with /ŋdʒd/, and promise with /s/."
+    },
+    {
+      "id": "SM-B2-G-010",
+      "axis": "basic_spelling_patterns",
+      "target": "maintenance",
+      "options": [
+        "maintainance",
+        "maintenance",
+        "maintenence",
+        "maintainence"
+      ],
+      "answer": "maintenance",
+      "explain": "Maintenance is spelled with -ten- and the ending -ance. The other options are common misspellings."
+    },
+    {
+      "id": "SM-B2-G-011",
+      "axis": "basic_spelling_patterns",
+      "target": "privilege",
+      "options": [
+        "priviledge",
+        "privilege",
+        "privelege",
+        "privlege"
+      ],
+      "answer": "privilege",
+      "explain": "Privilege has no d after the g and uses -lege at the end. The other choices add, move, or omit letters."
+    },
+    {
+      "id": "SM-B2-G-012",
+      "axis": "basic_spelling_patterns",
+      "target": "rhythm",
+      "options": [
+        "rythm",
+        "rhythm",
+        "rithym",
+        "rhythym"
+      ],
+      "answer": "rhythm",
+      "explain": "Rhythm is spelled r-h-y-t-h-m. It has no standard vowel letter; y represents the vowel sound."
+    }
+  ]
+}
