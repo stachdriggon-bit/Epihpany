@@ -30,7 +30,11 @@
       {id:'A2-WC-01',relationship:'word-class',words:['decision','arrival','movement','decide'],answer:3,explain:'Decision, arrival and movement are nouns naming things or events. Decide is a verb.',challengeExplain:"Growth, refusal and approval are nouns naming processes or outcomes. Refuse is a verb.",hint:'Which word describes an action rather than naming it?',context:'Word families and grammar.'},
       {id:'A2-CTX-01',relationship:'contextual-meaning',words:['light','bright','luminous','heavy'],answer:3,explain:'Light, bright and luminous can all describe a place or object that gives or reflects plenty of light. Heavy describes weight.',challengeExplain:"Radiant, well-lit and glowing can describe something that gives or reflects light. Weighty refers to physical heaviness or importance.",hint:'Imagine the words describing a room with plenty of daylight.',context:'Words understood from a shared situation.'},
       {id:'A2-COL-01',relationship:'collocations',words:['make','reach','take','do'],answer:3,explain:'Make a decision, reach a decision and take a decision are established combinations. Do a decision is not a natural English expression.',challengeExplain:"Reach a decision, make a decision and take a decision are established combinations. Perform a decision is not a natural collocation; perform is used with actions or tasks.",hint:'Try the words before “a decision”, “homework” and “a break”.',context:'Common verb–noun partnerships.'},
-      {id:'A2-REG-01',relationship:'register-tone',words:['kids','children','youngsters','furniture'],answer:3,explain:'Kids, children and youngsters can all refer to young people, with different levels of formality. Furniture is unrelated.',challengeExplain:"Youths, young people and adolescents all refer to young people. Equipment refers to tools or items needed for an activity.",hint:'Which three can refer to the same group of people?',context:'Everyday and more formal vocabulary.'}
+      {id:'A2-REG-01',relationship:'register-tone',words:['kids','children','youngsters','furniture'],answer:3,explain:'Kids, children and youngsters can all refer to young people, with different levels of formality. Furniture is unrelated.',challengeExplain:"Youths, young people and adolescents all refer to young people. Equipment refers to tools or items needed for an activity.",hint:'Which three can refer to the same group of people?',context:'Everyday and more formal vocabulary.'},
+      {id:'A2-CAT-02',relationship:'category',words:['violin','guitar','piano','concert'],answer:3,explain:'A violin, guitar and piano are musical instruments. A concert is an event where people perform music.',challengeExplain:'A flute, cello and trumpet are musical instruments. An orchestra is a group of musicians, not an instrument.',hint:'Which three are objects musicians play?',context:'Music, instruments and events.'},
+      {id:'A2-CAUSE-01',relationship:'cause-effect',words:['icy roads','heavy rain','poor visibility','road closure'],answer:3,explain:'Icy roads, heavy rain and poor visibility are conditions that can cause a road to close. A road closure is the result, not a condition.',challengeExplain:'Black ice, dense fog and falling snow are hazardous conditions that can lead to a road being closed. A diversion is a route used after a closure, not a hazardous condition.',hint:'Which three are dangerous conditions, rather than a response to them?',context:'Weather conditions and their consequences.'},
+      {id:'A2-CON-01',relationship:'connotation',words:['generous','kind','thoughtful','selfish'],answer:3,explain:'Generous, kind and thoughtful usually have positive associations when describing a person. Selfish has a negative association.',challengeExplain:'Considerate, caring and selfless usually suggest positive qualities. Greedy usually suggests a negative quality.',hint:'Which three usually praise someone’s behaviour?',context:'Positive and negative impressions of character.'},
+      {id:'A2-FUN-02',relationship:'function',words:['key','password','code','door'],answer:3,explain:'A key, password and code can all be used to gain access. A door is the thing someone may need to open or pass through.',challengeExplain:'A passcode, access card and security token can all verify permission to enter a system or place. A gate is the barrier being opened, not proof of permission.',hint:'Which three can prove or provide permission to enter?',context:'Access and security.'}
     ],
     B1: [
       {id:'B1-CAUSE-01',relationship:'cause-effect',words:['drought','water shortage','crop failure','harvest festival'],answer:3,explain:'Drought and water shortage can lead to crop failure. A harvest festival is a celebration, not an effect of water scarcity.',challengeExplain:'Water scarcity, failed crops and reduced yields can all result from drought. A seasonal celebration is an event, not an environmental or agricultural consequence.',hint:'Follow the chain from a lack of rain to its likely result.',context:'Environment and consequences.'},
@@ -195,6 +199,30 @@
         "young people",
         "adolescents",
         "equipment"
+    ],
+    "A2-CAT-02": [
+        "flute",
+        "cello",
+        "trumpet",
+        "orchestra"
+    ],
+    "A2-CAUSE-01": [
+        "black ice",
+        "dense fog",
+        "falling snow",
+        "diversion"
+    ],
+    "A2-CON-01": [
+        "considerate",
+        "caring",
+        "selfless",
+        "greedy"
+    ],
+    "A2-FUN-02": [
+        "passcode",
+        "access card",
+        "security token",
+        "gate"
     ],
     "B1-CAUSE-01": [
         "water scarcity",
