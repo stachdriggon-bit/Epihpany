@@ -1,9 +1,9 @@
-/* Reviewed Sound Maze question content. The source review batches remain in /sound-maze-content/*.draft.json. */
+/* Reviewed Sound Maze question content. Source review batches are retained in /sound-maze-content/*.draft.json. */
 (function attachSoundMazeContent(root) {
   'use strict';
   const bank = {
   "status": "reviewed_for_integration",
-  "version": 1,
+  "version": 2,
   "pronunciation_reference": "General American",
   "levels": {
     "A1": {
