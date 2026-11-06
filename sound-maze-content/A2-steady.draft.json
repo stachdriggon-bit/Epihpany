@@ -24,10 +24,10 @@
       "axis": "short_vowel_contrasts",
       "target": "fresh",
       "options": [
-        "flash",
+        "flesh",
         "fresh",
-        "frush",
-        "frosh"
+        "flash",
+        "frost"
       ],
       "answer": "fresh",
       "explain": "Fresh has the short /ɛ/ vowel. Flash has /æ/; the other options do not match the spoken vowel."
@@ -40,7 +40,7 @@
         "dream",
         "drum",
         "dram",
-        "droom"
+        "drown"
       ],
       "answer": "drum",
       "explain": "Drum has /ʌ/. Dream has /i/, while dram has /æ/; droom is not a standard spelling."
@@ -128,7 +128,7 @@
       "axis": "basic_spelling_patterns",
       "target": "float",
       "options": [
-        "flote",
+        "flock",
         "float",
         "flout",
         "fleet"
@@ -141,26 +141,26 @@
       "axis": "basic_spelling_patterns",
       "target": "bright",
       "options": [
-        "brite",
-        "brigt",
         "bright",
-        "breight"
+        "bride",
+        "brisk",
+        "brought"
       ],
       "answer": "bright",
-      "explain": "Bright uses igh to spell /aɪ/. Brite is a nonstandard spelling, and the other choices do not spell the target."
+      "explain": "Bright uses igh to spell /aɪ/. Bride has /aɪ/ but ends in /d/, brisk has /ɪ/, and brought has /ɔ/."
     },
     {
       "id": "SM-A2-S-012",
       "axis": "basic_spelling_patterns",
       "target": "knight",
       "options": [
-        "night",
         "knight",
-        "kite",
-        "knit"
+        "knot",
+        "know",
+        "knife"
       ],
       "answer": "knight",
-      "explain": "Knight begins with a silent k and has the /aɪ/ sound. Night sounds the same but is a different word and spelling; kite and knit sound different."
+      "explain": "Knight begins with a silent k and has the /aɪ/ sound. Knot, know, and knife also have a silent k but different vowel sounds and endings."
     }
   ]
 }
