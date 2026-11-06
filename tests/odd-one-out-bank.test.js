@@ -258,7 +258,13 @@ test('B2 expansion provides 12 distinct questions and full target-sized rounds',
     assert.ok(challenge);
     assert.notDeepEqual(challenge.words.slice().sort(),item.words.slice().sort());
     assert.equal(challenge.explain,item.challengeExplain);
-    assert.equal(challenge.words[challenge.answer],item.challengeWords ? item.challengeWords[item.answer] : challenge.words[challenge.answer]);
+    const expectedOutsiders = {
+      'B2-CAT-02':'brass section',
+      'B2-FUN-02':'detector',
+      'B2-WC-02':'meticulously',
+      'B2-CAUSE-02':'mitigate'
+    };
+    assert.equal(challenge.words[challenge.answer],expectedOutsiders[id]);
   }
 });
 
