@@ -9,15 +9,15 @@
     {
       "id": "SM-B1-S-001",
       "axis": "short_vowel_contrasts",
-      "target": "average",
+      "target": "velvet",
       "options": [
-        "average",
-        "avalanche",
-        "overage",
-        "coverage"
+        "valid",
+        "velvet",
+        "village",
+        "volume"
       ],
-      "answer": "average",
-      "explain": "Average has /æ/ in its first stressed syllable. Avalanche begins with /æ/ too but has a different following sound sequence; overage and coverage begin with /oʊ/ and /ʌ/."
+      "answer": "velvet",
+      "explain": "Velvet has /ɛ/ in its first syllable. Valid has /æ/, village has /ɪ/, and volume has /ɑ/ in General American."
     },
     {
       "id": "SM-B1-S-002",
@@ -61,15 +61,15 @@
     {
       "id": "SM-B1-S-005",
       "axis": "initial_consonant_sounds",
-      "target": "wreath",
+      "target": "wren",
       "options": [
-        "reef",
-        "wreath",
-        "wreathe",
-        "wrath"
+        "rent",
+        "wren",
+        "when",
+        "then"
       ],
-      "answer": "wreath",
-      "explain": "Wreath begins with /r/; its written w is silent. Reef begins with /r/ too but has a different vowel; wreathe also begins /r/ but has a voiced /ð/ ending, and wrath begins with /r/ but has a different vowel."
+      "answer": "wren",
+      "explain": "Wren begins with /r/ because the written w is silent. Rent also begins with /r/ but has a pronounced final /t/; when begins with /w/ and then with /ð/."
     },
     {
       "id": "SM-B1-S-006",
@@ -78,24 +78,24 @@
       "options": [
         "sylvan",
         "xylophone",
-        "zoology",
-        "cyclone"
+        "pterodactyl",
+        "pharmacy"
       ],
       "answer": "xylophone",
-      "explain": "Xylophone begins with /z/, the common sound of initial x in this word. Sylvan and cyclone begin with /s/, while zoology begins with /z/ but has a different first vowel and syllable pattern."
+      "explain": "Xylophone begins with /z/, the sound of initial x in this word. Sylvan begins with /s/, pterodactyl with /t/ because p is silent, and pharmacy with /f/."
     },
     {
       "id": "SM-B1-S-007",
       "axis": "final_consonant_sounds",
-      "target": "missed",
+      "target": "mixed",
       "options": [
+        "mix",
         "mist",
-        "missed",
-        "mixed",
-        "mister"
+        "midst",
+        "mixed"
       ],
-      "answer": "missed",
-      "explain": "Missed ends with /t/ because -ed follows the voiceless /s/ sound. Mist also ends with /t/ but has no -ed spelling; mixed ends with /kst/."
+      "answer": "mixed",
+      "explain": "Mixed ends with the consonant cluster /kst/. Mix ends with /ks/, mist with /st/, and midst with /dst/."
     },
     {
       "id": "SM-B1-S-008",
