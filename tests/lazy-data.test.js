@@ -48,20 +48,21 @@ test('feature data loader does not request large datasets until requested', asyn
     'sound-maze-content.js',
     'odd-one-out-bank.js',
     'word-connections-bank.js',
+    'sentence-scramble-bank.js',
     'think-lab.js',
     'life-skills.js'
   ]);
   assert.ok(requested.slice(4).every(src => /\?v=.+/.test(src)));
   await context.window.EPIPHANY_LAZY_LOAD('arabic');
-  assert.deepEqual(requested.slice(11).map(src => src.split('?')[0]), [
+  assert.deepEqual(requested.slice(12).map(src => src.split('?')[0]), [
     'data-translation-ar.js',
     'data-translation-ar-fill.js'
   ]);
-  assert.ok(requested.slice(11).every(src => /\?v=.+/.test(src)));
+  assert.ok(requested.slice(12).every(src => /\?v=.+/.test(src)));
   assert.deepEqual(merged, [true]);
   await context.window.EPIPHANY_LAZY_LOAD('chronicle');
-  assert.deepEqual(requested.slice(13).map(src => src.split('?')[0]), ['data-world-registry.js', 'data-world-events.js']);
-  assert.ok(requested.slice(13).every(src => /\?v=.+/.test(src)));
+  assert.deepEqual(requested.slice(14).map(src => src.split('?')[0]), ['data-world-registry.js', 'data-world-events.js']);
+  assert.ok(requested.slice(14).every(src => /\?v=.+/.test(src)));
 });
 
 test('initial HTML defers stories and World data and keeps loader in offline shell', () => {
@@ -82,14 +83,14 @@ test('initial HTML defers stories and World data and keeps loader in offline she
   const lazyAssets = sw.match(/const LAZY_ASSETS = \[([^\]]*)\];/)?.[1] || '';
   assert.ok(coreAssets, 'service worker should define core offline assets');
   assert.ok(lazyAssets, 'service worker should define lazy offline assets');
-  for (const asset of ['data-stories.js', 'data-world.js', 'data-world-sprites.js', 'sound-maze-bank.js', 'sound-maze-content.js', 'odd-one-out-bank.js', 'think-lab.js', 'practice-lab.js', 'life-skills.js', 'data-translation-ar.js']) {
+  for (const asset of ['data-stories.js', 'data-world.js', 'data-world-sprites.js', 'sound-maze-bank.js', 'sound-maze-content.js', 'odd-one-out-bank.js', 'sentence-scramble-bank.js', 'think-lab.js', 'practice-lab.js', 'life-skills.js', 'data-translation-ar.js']) {
     assert.ok(!coreAssets.includes("'./" + asset + "'"), asset + ' should not be a core startup asset');
   }
   for (const asset of ['resonance.css', 'life-skills.css']) {
     assert.ok(!coreAssets.includes("'./" + asset + "'"), asset + ' must not be part of the core cache');
     assert.ok(lazyAssets.includes("'./" + asset + "'"), asset + ' should be cached as a lazy offline asset');
   }
-  for (const asset of ['data-stories.js', 'data-world.js', 'data-world-registry.js', 'data-world-events.js', 'data-world-sprites.js', 'sound-maze-bank.js', 'sound-maze-content.js', 'odd-one-out-bank.js', 'think-lab.js', 'practice-lab.js', 'life-skills.js', 'language-detective-investigation.js']) {
+  for (const asset of ['data-stories.js', 'data-world.js', 'data-world-registry.js', 'data-world-events.js', 'data-world-sprites.js', 'sound-maze-bank.js', 'sound-maze-content.js', 'odd-one-out-bank.js', 'sentence-scramble-bank.js', 'think-lab.js', 'practice-lab.js', 'life-skills.js', 'language-detective-investigation.js']) {
     assert.ok(lazyAssets.includes("'./" + asset + "'"), asset + ' should be cached as a lazy offline asset');
   }
   assert.match(sw, /const cached = await cache\.match\(request\);\s*if \(cached\) return cached;/);
@@ -315,8 +316,11 @@ test('optional lazy loads respect the adaptive concurrency limit', async () => {
   assert.equal(requested[4].split('?')[0], 'word-connections-bank.js');
   scripts[4].onload();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[5].split('?')[0], 'think-lab.js');
+  assert.equal(requested[5].split('?')[0], 'sentence-scramble-bank.js');
   scripts[5].onload();
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(requested[6].split('?')[0], 'think-lab.js');
+  scripts[6].onload();
 });
 
 test('explicit navigation bypasses and promotes queued optional loads', async () => {
@@ -374,8 +378,11 @@ test('explicit navigation bypasses and promotes queued optional loads', async ()
   assert.equal(requested[4].split('?')[0], 'word-connections-bank.js');
   scripts[4].onload();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[5].split('?')[0], 'think-lab.js');
+  assert.equal(requested[5].split('?')[0], 'sentence-scramble-bank.js');
   scripts[5].onload();
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(requested[6].split('?')[0], 'think-lab.js');
+  scripts[6].onload();
   await explicit;
   scripts[0].onload();
 });
@@ -448,8 +455,11 @@ test('background optional loads pause while constrained, resume once, and never 
   assert.equal(requested[4].split('?')[0], 'word-connections-bank.js');
   scripts[4].onload();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[5].split('?')[0], 'think-lab.js');
+  assert.equal(requested[5].split('?')[0], 'sentence-scramble-bank.js');
   scripts[5].onload();
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(requested[6].split('?')[0], 'think-lab.js');
+  scripts[6].onload();
   await new Promise(resolve => setImmediate(resolve));
 
   policy = { ...policy, allowSpeculativePreload: false, deferNonEssentialWork: true };
