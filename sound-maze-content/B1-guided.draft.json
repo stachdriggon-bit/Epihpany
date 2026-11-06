@@ -76,13 +76,13 @@
       "axis": "initial_consonant_sounds",
       "target": "psychology",
       "options": [
-        "biology",
         "psychology",
+        "biology",
         "technology",
-        "sociology"
+        "phonology"
       ],
       "answer": "psychology",
-      "explain": "Psychology begins with /s/ because the initial p is silent. Biology begins with /b/, technology with /t/, and sociology with /s/ but a different following vowel and syllable pattern."
+      "explain": "Psychology begins with /s/ because the initial p is silent. Biology begins with /b/, technology with /t/, and phonology with /f/."
     },
     {
       "id": "SM-B1-G-007",
