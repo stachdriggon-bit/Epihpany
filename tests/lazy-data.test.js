@@ -44,13 +44,14 @@ test('feature data loader does not request large datasets until requested', asyn
   await context.window.EPIPHANY_LAZY_LOAD('lifeskills');
   assert.deepEqual(requested.slice(4).map(src => src.split('?')[0]), [
     'practice-lab.js',
+    'sound-maze-bank.js',
     'odd-one-out-bank.js',
     'think-lab.js',
     'life-skills.js'
   ]);
   assert.ok(requested.slice(4).every(src => /\?v=.+/.test(src)));
   await context.window.EPIPHANY_LAZY_LOAD('arabic');
-  assert.deepEqual(requested.slice(8).map(src => src.split('?')[0]), [
+  assert.deepEqual(requested.slice(9).map(src => src.split('?')[0]), [
     'data-translation-ar.js',
     'data-translation-ar-fill.js'
   ]);
