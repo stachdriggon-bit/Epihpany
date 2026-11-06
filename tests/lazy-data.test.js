@@ -80,14 +80,14 @@ test('initial HTML defers stories and World data and keeps loader in offline she
   const lazyAssets = sw.match(/const LAZY_ASSETS = \[([^\]]*)\];/)?.[1] || '';
   assert.ok(coreAssets, 'service worker should define core offline assets');
   assert.ok(lazyAssets, 'service worker should define lazy offline assets');
-  for (const asset of ['data-stories.js', 'data-world.js', 'data-world-sprites.js', 'odd-one-out-bank.js', 'think-lab.js', 'practice-lab.js', 'life-skills.js', 'data-translation-ar.js']) {
+  for (const asset of ['data-stories.js', 'data-world.js', 'data-world-sprites.js', 'sound-maze-bank.js', 'odd-one-out-bank.js', 'think-lab.js', 'practice-lab.js', 'life-skills.js', 'data-translation-ar.js']) {
     assert.ok(!coreAssets.includes("'./" + asset + "'"), asset + ' should not be a core startup asset');
   }
   for (const asset of ['resonance.css', 'life-skills.css']) {
     assert.ok(!coreAssets.includes("'./" + asset + "'"), asset + ' must not be part of the core cache');
     assert.ok(lazyAssets.includes("'./" + asset + "'"), asset + ' should be cached as a lazy offline asset');
   }
-  for (const asset of ['data-stories.js', 'data-world.js', 'data-world-registry.js', 'data-world-events.js', 'data-world-sprites.js', 'odd-one-out-bank.js', 'think-lab.js', 'practice-lab.js', 'life-skills.js', 'language-detective-investigation.js']) {
+  for (const asset of ['data-stories.js', 'data-world.js', 'data-world-registry.js', 'data-world-events.js', 'data-world-sprites.js', 'sound-maze-bank.js', 'odd-one-out-bank.js', 'think-lab.js', 'practice-lab.js', 'life-skills.js', 'language-detective-investigation.js']) {
     assert.ok(lazyAssets.includes("'./" + asset + "'"), asset + ' should be cached as a lazy offline asset');
   }
   assert.match(sw, /const cached = await cache\.match\(request\);\s*if \(cached\) return cached;/);
@@ -118,19 +118,25 @@ test('overlapping feature groups share one in-flight script request', async () =
   const thinkLab = context.window.EPIPHANY_LAZY_LOAD('thinklab');
   const lifeSkills = context.window.EPIPHANY_LAZY_LOAD('lifeskills');
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested.length, 2, 'the bank and shared Think Lab script should each be requested once');
-  assert.match(requested[0], /^odd-one-out-bank\.js\?/);
-  assert.match(requested[1], /^think-lab\.js\?/);
+  assert.equal(requested.length, 1, 'overlapping groups should share the first Sound Maze dependency');
+  assert.match(requested[0], /^sound-maze-bank\.js\?/);
 
   scripts[0].onload();
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(requested.length, 2);
+  assert.match(requested[1], /^odd-one-out-bank\.js\?/);
   scripts[1].onload();
   await new Promise(resolve => setImmediate(resolve));
   assert.equal(requested.length, 3);
-  assert.match(requested[2], /^life-skills\.js\?/);
+  assert.match(requested[2], /^think-lab\.js\?/);
   scripts[2].onload();
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(requested.length, 4);
+  assert.match(requested[3], /^life-skills\.js\?/);
+  scripts[3].onload();
 
   await Promise.all([thinkLab, lifeSkills]);
-  assert.equal(requested.length, 3);
+  assert.equal(requested.length, 4);
 });
 
 test('failed lazy scripts are removed and can be retried', async () => {
@@ -287,11 +293,14 @@ test('optional lazy loads respect the adaptive concurrency limit', async () => {
   scripts[0].onload();
   await new Promise(resolve => setImmediate(resolve));
   await new Promise(resolve => setImmediate(resolve));
-  assert.deepEqual(requested.map(src => src.split('?')[0]), ['practice-lab.js', 'odd-one-out-bank.js']);
+  assert.deepEqual(requested.map(src => src.split('?')[0]), ['practice-lab.js', 'sound-maze-bank.js']);
   scripts[1].onload();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[2].split('?')[0], 'think-lab.js');
+  assert.equal(requested[2].split('?')[0], 'odd-one-out-bank.js');
   scripts[2].onload();
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(requested[3].split('?')[0], 'think-lab.js');
+  scripts[3].onload();
 });
 
 test('explicit navigation bypasses and promotes queued optional loads', async () => {
@@ -335,12 +344,14 @@ test('explicit navigation bypasses and promotes queued optional loads', async ()
 
   const explicit = context.window.EPIPHANY_LAZY_LOAD('thinklab');
   await new Promise(resolve => setImmediate(resolve));
-  assert.deepEqual(requested.map(src => src.split('?')[0]), ['practice-lab.js', 'odd-one-out-bank.js'],
+  assert.deepEqual(requested.map(src => src.split('?')[0]), ['practice-lab.js', 'sound-maze-bank.js'],
     'an explicit request must promote its matching queued prefetch immediately');
 
   scripts[1].onload();
   await new Promise(resolve => setImmediate(resolve));
   scripts[2].onload();
+  await new Promise(resolve => setImmediate(resolve));
+  scripts[3].onload();
   await explicit;
   scripts[0].onload();
 });
@@ -400,22 +411,25 @@ test('background optional loads pause while constrained, resume once, and never 
   policy = { ...policy, allowSpeculativePreload: true, deferNonEssentialWork: false };
   subscribers.forEach(fn => fn());
   await new Promise(resolve => setImmediate(resolve));
-  assert.deepEqual(requested.map(src => src.split('?')[0]), ['practice-lab.js', 'odd-one-out-bank.js'],
+  assert.deepEqual(requested.map(src => src.split('?')[0]), ['practice-lab.js', 'sound-maze-bank.js'],
     'queued optional work should resume when conditions improve');
   scripts[1].onload();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[2].split('?')[0], 'think-lab.js');
+  assert.equal(requested[2].split('?')[0], 'odd-one-out-bank.js');
   scripts[2].onload();
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(requested[3].split('?')[0], 'think-lab.js');
+  scripts[3].onload();
   await new Promise(resolve => setImmediate(resolve));
 
   policy = { ...policy, allowSpeculativePreload: false, deferNonEssentialWork: true };
   const explicit = context.window.EPIPHANY_LAZY_LOAD('world');
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[3].split('?')[0], 'data-world.js',
+  assert.equal(requested[4].split('?')[0], 'data-world.js',
     'explicit navigation must bypass background deferral');
-  scripts[3].onload();
-  await new Promise(resolve => setImmediate(resolve));
   scripts[4].onload();
+  await new Promise(resolve => setImmediate(resolve));
+  scripts[5].onload();
   await explicit;
 });
 
