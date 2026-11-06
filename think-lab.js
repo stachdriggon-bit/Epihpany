@@ -455,7 +455,7 @@
     {start:'bark',goal:'care',path:['dark','dare','care'],hint:'You can change a consonant at the start or at the end.',explain:'bark → dark → dare → care is a valid one-letter ladder.'},
     {start:'wind',goal:'like',path:['wine','line','lime','like'],hint:'Keep checking that each new word differs from the previous one by just one letter.',explain:'wind → wine → line → lime → like changes one letter per move.'},
     {start:'late',goal:'gate',path:['date','dare','care','came','game','gate'],hint:'This one takes several steps. Focus only on the next move, not the whole route.',explain:'late → date → dare → care → came → game → gate changes one letter at every step.'},
-    {start:'book',goal:'tail',path:['cook','cool','pool','poll','pall','pail','tail'],hint:'A longer challenge: solve one small step at a time. Every intermediate word is part of the puzzle.',explain:'book → cook → cool → pool → poll → pall → pail → tail is a valid ladder.'},
+    {start:'book',goal:'tail',path:['cook','cool','pool','poll','pole','pale','pail','tail'],hint:'A longer challenge: solve one small step at a time. Every intermediate word is part of the puzzle.',explain:'book → cook → cool → pool → poll → pole → pale → pail → tail is a valid ladder.'},
     {start:'pane',goal:'pine',path:['pine'],hint:'Can you spot the one-letter change immediately?',explain:'pane → pine changes just one letter: A becomes I.'},
     {start:'cold',goal:'cord',path:['cord'],hint:'Sometimes the shortest ladder is just one move.',explain:'cold → cord changes one letter: L becomes R.'},
     {start:'game',goal:'gate',path:['gate'],hint:'Compare the final letters carefully.',explain:'game → gate changes one letter: M becomes T.'}
@@ -513,12 +513,12 @@
   // Curated common English words. A generated puzzle is only shown if graph search finds a valid route.
   const ladderWordBank = new Set(`
 cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut
-cold cord card ward warm word worm form farm harm hard bard bald bold ball fall fell feel feet meet meat heat head heal teal tell tall tail
-belt bell care dare date late gate game came same sale pale pail pall poll pole pool cool cook book boot boat coat cost cast
+cold cord card ward warm word worm form farm harm hard yard bald bold ball fall fell feel feet meet meat heat head heal teal tell tall tail
+belt bell care dare date late gate game came same sale pale pail pull poll pole pool cool cook book boot boat coat cost cast
 sand band bend bent sent send tend tent test best vest west went want pant part cart case cash dash dish fish wish wash goat
 ring sing sink silk milk mild wild will wall walk talk tale tame time lime line wine wind mind mine fine fire five hive have hate
 make take lake like tide ride side site bite bike hike hide wide wife wise rise rice nice nine pine pane pain pair fair fail call calm palm
-bark dark core hand land lane data duty melt`
+bark dark core hand land lane data melt`
     .trim().split(/\s+/));
   function ladderDiffersByOne(a, b) {
     return a.length === b.length && a !== b && [...a].filter((ch, i) => ch !== b[i]).length === 1;
@@ -539,8 +539,9 @@ bark dark core hand land lane data duty melt`
     return null;
   }
   function generateWordLadders(level, count = 12) {
-    const minSteps = level === 'challenge' ? 3 : 1;
-    const maxSteps = level === 'guided' ? 3 : level === 'challenge' ? 7 : 5;
+    // Keep route-length bands distinct: support changes by mode, and so does puzzle complexity.
+    const minSteps = level === 'challenge' ? 5 : level === 'steady' ? 3 : 1;
+    const maxSteps = level === 'guided' ? 2 : level === 'steady' ? 4 : 7;
     const candidates = [], words = [...ladderWordBank];
 
     // Run one BFS per start word, then reuse its shortest paths for every goal.
@@ -849,7 +850,7 @@ bark dark core hand land lane data duty melt`
     cool:'Slightly cold; also informal for stylish or impressive.',
     pool:'A small area of still water, or a game played with cue sticks.',
     poll:'A survey that collects people’s opinions or votes.',
-    pall:'A cloth spread over a coffin; less commonly, something that casts a gloomy feeling.',
+    pull:'To move something towards yourself, usually by using your hands.',
     pail:'A bucket, usually with a handle.',
     pane:'A single sheet or section of glass in a window.',
     pine:'An evergreen tree with needle-like leaves.',
@@ -874,7 +875,7 @@ bark dark core hand land lane data duty melt`
     farm:'Land used to grow crops or raise animals.',
     harm:'Physical injury or damage.',
     hard:'Firm, difficult, or requiring a lot of effort.',
-    bard:'A poet, especially one who writes or sings about heroic stories.',
+    yard:'An area of land next to or around a building; also a unit of length.',
     bald:'Having little or no hair on the head.',
     bold:'Confident and willing to take risks; easy to notice.',
     fell:'Past tense of fall; moved down to the ground.',
@@ -943,7 +944,7 @@ bark dark core hand land lane data duty melt`
     fire:'Heat and light produced when something burns.',
     palm:'The inner surface of the hand between the wrist and fingers.',
     data:'Facts or information collected for reference or analysis.',
-    duty:'Something a person is expected or required to do.',
+
     boot:'A sturdy shoe that covers the foot and often the ankle.',
     boat:'A small vessel used for travelling on water.',
     sale:'An event or period when goods are sold, often at reduced prices.',
