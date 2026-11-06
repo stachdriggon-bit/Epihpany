@@ -338,7 +338,7 @@ test('main navigation tabs open without uncaught page errors', { timeout: 18 * 6
         assert.equal(await mazeCard.locator('[data-think-answer]').count(), 4,
           'Sound Maze should render four spelling choices');
         const mazeChoices = await mazeCard.locator('[data-think-answer]').allInnerTexts();
-        assert.equal(new Set(mazeChoices.map(value => value.replace(/^\\s*[A-D]\\s*/, '').trim().toLowerCase())).size, 4,
+        assert.equal(new Set(mazeChoices.map(value => value.replace(/^\s*[A-D]\s*/, '').trim().toLowerCase())).size, 4,
           'Sound Maze choices should be distinct');
         await mazeCard.locator('[data-think-answer]').first().click();
         assert.equal(await mazeCard.locator('#tl-feedback').isVisible(), true,
