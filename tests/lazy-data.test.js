@@ -139,15 +139,19 @@ test('overlapping feature groups share one in-flight script request', async () =
   scripts[3].onload();
   await new Promise(resolve => setImmediate(resolve));
   assert.equal(requested.length, 5);
-  assert.match(requested[4], /^think-lab\.js\?/);
+  assert.match(requested[4], /^sentence-scramble-bank\.js\?/);
   scripts[4].onload();
   await new Promise(resolve => setImmediate(resolve));
   assert.equal(requested.length, 6);
-  assert.match(requested[5], /^life-skills\.js\?/);
+  assert.match(requested[5], /^think-lab\.js\?/);
   scripts[5].onload();
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(requested.length, 7);
+  assert.match(requested[6], /^life-skills\.js\?/);
+  scripts[6].onload();
 
   await Promise.all([thinkLab, lifeSkills]);
-  assert.equal(requested.length, 6);
+  assert.equal(requested.length, 7);
 });
 
 test('failed lazy scripts are removed and can be retried', async () => {
