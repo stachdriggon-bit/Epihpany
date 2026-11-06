@@ -66,9 +66,9 @@
       "id": "SM-A1-S-008",
       "axis": "final_consonant_sounds",
       "target": "pack",
-      "options": ["back", "pat", "pan", "pack"],
+      "options": ["pad", "pat", "pan", "pack"],
       "answer": "pack",
-      "explain": "Pack ends with /k/. Back begins with a different consonant, while pat ends with /t/ and pan with /n/."
+      "explain": "Pack ends with /k/. Pad ends with /d/, pat with /t/, and pan with /n/."
     },
     {
       "id": "SM-A1-S-009",
@@ -82,17 +82,17 @@
       "id": "SM-A1-S-010",
       "axis": "basic_spelling_patterns",
       "target": "time",
-      "options": ["team", "tame", "time", "tame"],
+      "options": ["team", "tub", "time", "tame"],
       "answer": "time",
-      "explain": "Time uses i followed by a consonant and a final silent e to spell the /aɪ/ sound. Team has /iː/, and tame has /eɪ/."
+      "explain": "Time uses i followed by a consonant and a final silent e to spell the /aɪ/ sound. Team has /iː/, tub has /ʌ/, and tame has /eɪ/."
     },
     {
       "id": "SM-A1-S-011",
       "axis": "basic_spelling_patterns",
       "target": "snow",
-      "options": ["now", "saw", "snow", "slow"],
+      "options": ["now", "sun", "snow", "slow"],
       "answer": "snow",
-      "explain": "Snow uses ow to spell the /oʊ/ sound. Now has /aʊ/, saw has /ɔ/ in this pronunciation reference, and slow uses the same vowel sound with a different first consonant."
+      "explain": "Snow uses ow to spell the /oʊ/ sound. Now has /aʊ/, sun has /ʌ/, and slow uses the same vowel sound with a different first consonant."
     },
     {
       "id": "SM-A1-S-012",
