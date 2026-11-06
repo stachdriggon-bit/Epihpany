@@ -111,7 +111,7 @@
     if (email) email.textContent = currentUser ? currentUser.email || 'Signed-in player' : '';
     if (!showSignedIn && recoveryMode) setMode('newpassword');
   }
-  const PREFERENCE_KEYS = ['helpArabic', 'translationEnabled', 'sound', 'theme', 'storyReaderSettings'];
+  const PREFERENCE_KEYS = ['helpArabic', 'translationEnabled', 'sound', 'theme', 'storyReaderSettings', 'soundMazeCEFR'];
   function mergeProgress(local, cloud, root = true) {
     let merged;
     if (Array.isArray(local) && Array.isArray(cloud)) {
