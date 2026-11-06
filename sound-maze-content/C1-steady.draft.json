@@ -24,10 +24,10 @@
       "axis": "short_vowel_contrasts",
       "target": "cumbersome",
       "options": [
-        "customary",
+        "cosmic",
         "cumbersome",
-        "cosmetic",
-        "cement"
+        "cement",
+        "cavern"
       ],
       "answer": "cumbersome",
       "explain": "Cumbersome begins with /ʌ/. Customary also begins with /ʌ/, while cosmetic begins with /ɑ/ and cement with /ɪ/."
@@ -64,9 +64,9 @@
       "target": "tsunami",
       "options": [
         "tsunami",
-        "safari",
+        "famine",
         "zoology",
-        "ceramic"
+        "theory"
       ],
       "answer": "tsunami",
       "explain": "Tsunami begins with /s/ in standard General American pronunciation; the initial t is silent. Zoology begins with /z/, while safari and ceramic begin with /s/ but have different following sounds."
