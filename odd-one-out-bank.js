@@ -447,6 +447,30 @@
         "resentment",
         "rancour",
         "apathy"
+    ],
+    "B2-CAT-02": [
+        "trumpet",
+        "trombone",
+        "tuba",
+        "brass section"
+    ],
+    "B2-FUN-02": [
+        "governor",
+        "rheostat",
+        "regulator",
+        "detector"
+    ],
+    "B2-WC-02": [
+        "meticulous",
+        "rigorous",
+        "extensive",
+        "meticulously"
+    ],
+    "B2-CAUSE-02": [
+        "instigate",
+        "engender",
+        "spark",
+        "mitigate"
     ]
 };
 
