@@ -376,28 +376,6 @@
     {prompt:'Forge the word from the letter tiles.',clue:'A person who designs or builds machines and systems.',letters:'NIGENEER',answerWord:'engineer',explain:'An ENGINEER designs, builds, or maintains systems and structures.'},
     {prompt:'Forge the word from the letter tiles.',clue:'To make something better.',letters:'RIPVOME',answerWord:'improve',explain:'To IMPROVE is to make something better.'}
   ];
-  rounds.scramble = [
-    {prompt:'Build the sentence in the correct order.',words:['usually','coffee','I','morning','drink','the','in'],options:['Usually coffee I drink in the morning.','I usually drink coffee in the morning.','I drink usually in the coffee morning.'],answer:1,explain:'The natural order is subject + adverb of frequency + verb + object + time phrase.'},
-    {prompt:'Build the sentence in the correct order.',words:['already','has','she','finished','work','her'],options:['She has already finished her work.','Already she finished has her work.','She already has finish her work.'],answer:0,explain:'In the present perfect, “already” commonly appears between has and the past participle.'},
-    {prompt:'Build the sentence in the correct order.',words:['you','could','me','help','please'],options:['You could me help please.','Could you help me, please?','Could help you me please?'],answer:1,explain:'“Could you help me, please?” is a natural, polite request.'},
-    {prompt:'Build the sentence in the correct order.',words:['because','stayed','it','home','raining','was','we'],options:['Because raining it was we stayed home.','We stayed home because it was raining.','We because it was raining stayed home.'],answer:1,explain:'The main clause is followed by “because” and the reason.'},
-    {prompt:'Build the sentence in the correct order.',words:['never','such','I','seen','have','a','view','beautiful'],options:['I have never seen such a beautiful view.','I never have such seen a beautiful view.','Never I seen have a beautiful such view.'],answer:0,explain:'“Never” goes between have and the past participle in this sentence.'},
-    {prompt:'Build the sentence in the correct order.',words:['if','we','had','left','earlier','we','would','arrived','have','on','time'],options:['If we had left earlier, we would have arrived on time.','If we would have left earlier, we had arrived on time.','We would arrived on time if had left earlier.'],answer:0,explain:'This is a third conditional: If + past perfect, would have + past participle.'},
-    {prompt:'Build the sentence in the correct order.',words:['often','walks','to','school','Mina'],options:['Mina walks often school to.','Mina often walks to school.','Often to school walks Mina.'],answer:1,explain:'A frequency adverb usually comes before the main verb: “Mina often walks…”'},
-    {prompt:'Build the sentence in the correct order.',words:['they','have','already','eaten','lunch'],options:['They have already eaten lunch.','They already have eat lunch.','Already eaten they have lunch.'],answer:0,explain:'Use have + past participle; “already” commonly comes after have.'},
-    {prompt:'Build the sentence in the correct order.',words:['if','rains','we','will','stay','inside','it'],options:['If rains it, we inside stay will.','We will stay inside if it rains.','If it will rain, we stay inside.'],answer:1,explain:'For a real future possibility, use present simple in the if-clause and “will” in the main clause.'},
-    {prompt:'Build the sentence in the correct order.',words:['the','movie','was','more','interesting','than','I','expected'],options:['The movie was more interesting than I expected.','The movie more was interesting I than expected.','More interesting than expected I was the movie.'],answer:0,explain:'Use “more + adjective + than” to compare things.'},
-    {prompt:'Build the sentence in the correct order.',words:['she','has','been','learning','English','for','two','years'],options:['She has been learning English for two years.','She is learning English since two years.','She has learning been English for two years.'],answer:0,explain:'The present perfect continuous describes an activity continuing over a period up to now.'},
-    {prompt:'Build the sentence in the correct order.',words:['despite','being','tired','he','finished','the','report'],options:['Despite he was tired, finished the report.','Despite being tired, he finished the report.','Despite tired being, he the report finished.'],answer:1,explain:'“Despite” can be followed by a noun or an -ing form: “Despite being tired…”'},
-    {prompt:'Build the sentence in the correct order.',words:['not','only','did','she','apologize','but','she','also','fixed','the','mistake'],options:['Not only she apologized, but also fixed the mistake.','Not only did she apologize, but she also fixed the mistake.','Not only did apologize she, but fixed she also the mistake.'],answer:1,explain:'When “not only” begins the clause, auxiliary inversion is used: “Not only did she…”'},
-    {prompt:'Build the sentence in the correct order.',words:['the','proposal','would','have','worked','if','we','had','tested','it'],options:['The proposal would have worked if we had tested it.','The proposal would worked have if we tested had it.','If we would have tested it, the proposal had worked.'],answer:0,explain:'This is a third conditional: would have + past participle, with if + past perfect.'},
-    {prompt:'Build the sentence in the correct order.',words:['what','makes','the','evidence','particularly','compelling'],options:['What makes the evidence particularly compelling?','What the evidence makes particularly compelling?','What makes particularly the compelling evidence?'],answer:0,explain:'In a direct question, “what” is followed by the verb “makes” and its object.'},
-    {prompt:'Build the sentence in the correct order.',words:['rarely','have','I','encountered','such','a','thoughtful','argument'],options:['Rarely I have encountered such a thoughtful argument.','Rarely have I encountered such a thoughtful argument.','Rarely encountered I have such a thoughtful argument.'],answer:1,explain:'A negative or restrictive adverb at the beginning triggers subject–auxiliary inversion.'},
-    {prompt:'Build the sentence in the correct order.',words:['the','results','suggest','that','further','research','is','needed'],options:['The results suggest that further research is needed.','The results that suggest further research needed is.','Suggest the results that is needed further research.'],answer:0,explain:'The sentence uses “suggest that” followed by a complete clause.'},
-    {prompt:'Build the sentence in the correct order.',words:['had','I','known','about','the','delay','I','would','have','left','later'],options:['Had I known about the delay, I would have left later.','Had I knew about the delay, I would left have later.','I had known the delay about, would have I left later.'],answer:0,explain:'“Had I known…” is an inverted third conditional, equivalent to “If I had known…”'},
-    {prompt:'Build the sentence in the correct order.',words:['the','more','you','practice','the','more','confident','you','become'],options:['The more you practice, the more confident you become.','More you practice, more confident become you.','The more practice you, the more you become confident.'],answer:0,explain:'The correlative pattern is “the more…, the more…”'},
-    {prompt:'Build the sentence in the correct order.',words:['although','the','deadline','was','tight','the','team','delivered','excellent','work'],options:['Although the deadline was tight, the team delivered excellent work.','Although was the deadline tight, the team excellent delivered work.','The deadline although was tight, delivered the team work excellent.'],answer:0,explain:'An “although” clause can introduce a contrast before the main clause.'}
-  ];
   rounds.chain = [
     {prompt:'Continue the word association chain: RAIN → ?',options:['umbrella','desert','pillow'],answer:0,explain:'An umbrella is commonly used to stay dry in the rain.'},
     {prompt:'Continue the word association chain: BOOK → ?',options:['oven','library','helmet'],answer:1,explain:'A library is a place associated with books.'},
@@ -702,6 +680,23 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
       }));
       return assignTranslatorAnswerPositions(round);
     }
+    if (id === 'scramble') {
+      const bank = window.EPIPHANY_SENTENCE_SCRAMBLE_BANK;
+      const trainingMode = ['guided','steady','challenge'].includes(level) ? level : 'steady';
+      const challenges = bank && bank.modes && Array.isArray(bank.modes[trainingMode]) ? bank.modes[trainingMode].slice() : [];
+      for (let i = challenges.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [challenges[i], challenges[j]] = [challenges[j], challenges[i]];
+      }
+      return challenges.map(item => {
+        const words = String(item.sentence || '').trim().split(/\s+/).filter(Boolean);
+        for (let i = words.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [words[i], words[j]] = [words[j], words[i]];
+        }
+        return { ...item, words, explain: item.explanation || item.skill || '' };
+      });
+    }
     if (id === 'connections') {
       const bank = window.EPIPHANY_WORD_CONNECTIONS_BANK;
       const trainingMode = ['guided','steady','challenge'].includes(level) ? level : 'steady';
@@ -710,7 +705,7 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
     if (level === 'guided' && guidedRounds[id]) return guidedRounds[id];
     if (level === 'challenge' && challengeRounds[id]) return challengeRounds[id];
     if (id === 'wordladder') return generateWordLadders(level, 12);
-    if (['forge','connections','scramble','chain'].includes(id)) return rounds[id];
+    if (['forge','connections','chain'].includes(id)) return rounds[id];
     return rounds[id];
   }
 
@@ -1030,10 +1025,10 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
     const pool = activePool || getRoundPool(mode);
     const item = pool[index % pool.length];
     const difficulty = activeDifficulty || difficultyForMode(mode);
-    const roundTarget = mode === 'maze' ? 12 : mode === 'connections' ? 24 : ({guided:8,steady:10,challenge:12}[difficulty.level] || 10);
+    const roundTarget = mode === 'maze' ? 12 : (mode === 'connections' || mode === 'scramble') ? 24 : ({guided:8,steady:10,challenge:12}[difficulty.level] || 10);
     const roundNote = mode === 'odd' && pool.length < roundTarget
       ? '<p class="tl-game-instruction">This round is shorter than the '+roundTarget+'-question target because only '+pool.length+' distinct questions are currently available at this level.</p>'
-      : mode === 'connections' && pool.length < roundTarget
+      : (mode === 'connections' || mode === 'scramble') && pool.length < roundTarget
         ? '<p class="tl-game-instruction">This round is shorter than the 24-challenge target because the selected bank has fewer reviewed questions available.</p>'
         : mode === 'translator' && item.adaptiveFallback
         ? '<p class="tl-game-instruction tl-translator-fallback" role="status">Your current level is '+esc(item.requestedCEFRLevel)+'. A '+esc(item.requestedCEFRLevel)+' question bank is not available yet, so this round uses '+esc(item.cefrLevel)+' practice for now.</p>'
@@ -1159,6 +1154,10 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
       showMazeBankUnavailable();
       return;
     }
+    if (id === 'scramble' && (!activePool.length || activePool.length !== 24 || !window.EPIPHANY_SENTENCE_SCRAMBLE_BANK)) {
+      root.innerHTML = '<div class="tl-game-card"><div class="tl-game-kicker">SENTENCE SCRAMBLE</div><h2>QUESTION BANK NOT READY</h2><p class="tl-game-instruction">The reviewed Sentence Scramble bank could not be loaded completely. No sample questions will be shown.</p><button type="button" class="tl-back" data-think-back>← Choose difficulty</button><button type="button" class="tl-back" data-think-home>Think Lab home</button></div>';
+      return;
+    }
     if (id === 'connections' && (!activePool.length || !window.EPIPHANY_WORD_CONNECTIONS_BANK)) {
       root.innerHTML = '<div class="tl-game-card"><div class="tl-game-kicker">WORD CONNECTIONS</div><h2>QUESTION BANK NOT READY</h2><p class="tl-game-instruction">The reviewed Word Connections bank could not be loaded. No sample questions will be shown.</p><button type="button" class="tl-back" data-think-back>← Choose difficulty</button><button type="button" class="tl-back" data-think-home>Think Lab home</button></div>';
       return;
@@ -1281,12 +1280,10 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
     if(e.target.closest('[data-scramble-check]')){
       if(locked)return;
       const pool=activePool||getRoundPool('scramble'),item=pool[index%pool.length],fb=root.querySelector('#tl-feedback');
-      const attempt=scramblePlaced.every(x=>x!==null)?scramblePlaced.map(i=>item.words[i]).join(' ').toLowerCase().replace(/[.,!?;:]/g,'').trim():'';
-      const target=item.options[item.answer].toLowerCase().replace(/[.,!?;:]/g,'').trim();
-      if(attempt!==target){roundMistakes++;fb.hidden=false;fb.className='tl-feedback is-wrong';fb.innerHTML='<strong>Not quite—rearrange the word tiles.</strong><p>Check the subject and verb first, then place adverbs and time phrases where they sound natural.</p>'+(roundMistakes>=2?'<p>'+esc(adaptiveHint('scramble'))+'</p>':'');return;}
+      const attempt=scramblePlaced.every(x=>x!==null)?scramblePlaced.map(i=>item.words[i]).join(' ').toLowerCase().replace(/[.,!?;:]/g,'').replace(/\s+/g,' ').trim():'';\n      const accepted=[item.sentence,...(Array.isArray(item.acceptedAnswers)?item.acceptedAnswers:[])].map(value=>String(value||'').toLowerCase().replace(/[.,!?;:]/g,'').replace(/\s+/g,' ').trim());\n      if(!accepted.includes(attempt)){roundMistakes++;fb.hidden=false;fb.className='tl-feedback is-wrong';fb.innerHTML='<strong>Not quite—rearrange the word tiles.</strong><p>Check the subject and verb first, then place adverbs and time phrases where they sound natural.</p>'+(roundMistakes>=2?'<p>'+esc(adaptiveHint('scramble'))+'</p>':'');return;}
       score++;locked=true;if(window.EpiphanyThinkLab)window.EpiphanyThinkLab.recordResult('grammar','sentence-scramble',true,index===pool.length-1);
       root.querySelectorAll('[data-scramble-tile],[data-scramble-slot],[data-scramble-check],[data-scramble-reset]').forEach(el=>el.disabled=true);
-      fb.hidden=false;fb.className='tl-feedback is-correct';fb.innerHTML='<strong>✓ Sentence built!</strong><p>'+esc(item.options[item.answer])+' — '+esc(item.explain)+'</p>';const next=root.querySelector('[data-think-next]');if(next)next.hidden=false;return;
+      fb.hidden=false;fb.className='tl-feedback is-correct';fb.innerHTML='<strong>✓ Sentence built!</strong><p>'+esc(item.sentence)+' — '+esc(item.explain)+'</p>';const next=root.querySelector('[data-think-next]');if(next)next.hidden=false;return;
     }
 
     const recommended=e.target.closest('[data-think-recommended]'); if(recommended){start(recommended.dataset.thinkRecommended);return;}
