@@ -1,0 +1,98 @@
+/* EPIPHANY — Sentence Scramble content bank.
+ * Source: approved 72-sentence draft supplied on 2026-11-06.
+ * Arabic skill notes are preserved verbatim from the source.
+ * No separate teaching explanations were supplied; explanation mirrors the
+ * corresponding skill note until dedicated feedback is authored.
+ */
+(function (global) {
+  'use strict';
+
+  const prompt = 'Build the sentence in the correct order.';
+  const modes = {
+    guided: [
+      {"id":"SS-G-001","prompt":"Build the sentence in the correct order.","sentence":"My sister reads a book every evening.","acceptedAnswers":[],"skill":"ترتيب الجملة: الفاعل ثم الفعل ثم المفعول، والوقت في النهاية.","explanation":"ترتيب الجملة: الفاعل ثم الفعل ثم المفعول، والوقت في النهاية."},
+      {"id":"SS-G-002","prompt":"Build the sentence in the correct order.","sentence":"The children are playing in the garden.","acceptedAnswers":[],"skill":"المضارع المستمر: are + verb-ing.","explanation":"المضارع المستمر: are + verb-ing."},
+      {"id":"SS-G-003","prompt":"Build the sentence in the correct order.","sentence":"Daniel usually walks to school.","acceptedAnswers":[],"skill":"موضع ظرف التكرار قبل الفعل الرئيسي.","explanation":"موضع ظرف التكرار قبل الفعل الرئيسي."},
+      {"id":"SS-G-004","prompt":"Build the sentence in the correct order.","sentence":"We visited our grandparents last weekend.","acceptedAnswers":[],"skill":"الماضي البسيط مع تعبير زمني في النهاية.","explanation":"الماضي البسيط مع تعبير زمني في النهاية."},
+      {"id":"SS-G-005","prompt":"Build the sentence in the correct order.","sentence":"She does not like cold weather.","acceptedAnswers":[],"skill":"النفي في المضارع باستخدام does not + base verb.","explanation":"النفي في المضارع باستخدام does not + base verb."},
+      {"id":"SS-G-006","prompt":"Build the sentence in the correct order.","sentence":"They did not watch the film yesterday.","acceptedAnswers":[],"skill":"النفي في الماضي باستخدام did not + base verb.","explanation":"النفي في الماضي باستخدام did not + base verb."},
+      {"id":"SS-G-007","prompt":"Build the sentence in the correct order.","sentence":"Is your brother at home now?","acceptedAnswers":[],"skill":"سؤال يبدأ بفعل be.","explanation":"سؤال يبدأ بفعل be."},
+      {"id":"SS-G-008","prompt":"Build the sentence in the correct order.","sentence":"Where does your father work?","acceptedAnswers":[],"skill":"ترتيب سؤال يبدأ بأداة استفهام ثم الفعل المساعد.","explanation":"ترتيب سؤال يبدأ بأداة استفهام ثم الفعل المساعد."},
+      {"id":"SS-G-009","prompt":"Build the sentence in the correct order.","sentence":"Can you open the window, please?","acceptedAnswers":[],"skill":"السؤال باستخدام الفعل الناقص can.","explanation":"السؤال باستخدام الفعل الناقص can."},
+      {"id":"SS-G-010","prompt":"Build the sentence in the correct order.","sentence":"I have two older brothers.","acceptedAnswers":[],"skill":"ترتيب الملكية والوصف قبل الاسم.","explanation":"ترتيب الملكية والوصف قبل الاسم."},
+      {"id":"SS-G-011","prompt":"Build the sentence in the correct order.","sentence":"There is a small café near the station.","acceptedAnswers":[],"skill":"استخدام there is ووضع الصفة قبل الاسم.","explanation":"استخدام there is ووضع الصفة قبل الاسم."},
+      {"id":"SS-G-012","prompt":"Build the sentence in the correct order.","sentence":"There are three apples on the table.","acceptedAnswers":[],"skill":"استخدام there are مع الجمع.","explanation":"استخدام there are مع الجمع."},
+      {"id":"SS-G-013","prompt":"Build the sentence in the correct order.","sentence":"He is wearing a blue jacket today.","acceptedAnswers":[],"skill":"المضارع المستمر وترتيب الصفة قبل الاسم.","explanation":"المضارع المستمر وترتيب الصفة قبل الاسم."},
+      {"id":"SS-G-014","prompt":"Build the sentence in the correct order.","sentence":"My mother cooks dinner every night.","acceptedAnswers":[],"skill":"المضارع البسيط مع الفاعل المفرد.","explanation":"المضارع البسيط مع الفاعل المفرد."},
+      {"id":"SS-G-015","prompt":"Build the sentence in the correct order.","sentence":"We were tired after the long journey.","acceptedAnswers":[],"skill":"الماضي من be مع الصفة.","explanation":"الماضي من be مع الصفة."},
+      {"id":"SS-G-016","prompt":"Build the sentence in the correct order.","sentence":"The train arrived at the station early.","acceptedAnswers":[],"skill":"الماضي البسيط وترتيب المكان والوقت.","explanation":"الماضي البسيط وترتيب المكان والوقت."},
+      {"id":"SS-G-017","prompt":"Build the sentence in the correct order.","sentence":"I never drink coffee before breakfast.","acceptedAnswers":[],"skill":"موضع never قبل الفعل الرئيسي.","explanation":"موضع never قبل الفعل الرئيسي."},
+      {"id":"SS-G-018","prompt":"Build the sentence in the correct order.","sentence":"She is always kind to her friends.","acceptedAnswers":[],"skill":"موضع ظرف التكرار مع فعل be.","explanation":"موضع ظرف التكرار مع فعل be."},
+      {"id":"SS-G-019","prompt":"Build the sentence in the correct order.","sentence":"Please put your bag under the desk.","acceptedAnswers":[],"skill":"الأمر وترتيب المفعول ثم المكان.","explanation":"الأمر وترتيب المفعول ثم المكان."},
+      {"id":"SS-G-020","prompt":"Build the sentence in the correct order.","sentence":"My best friend lives in a quiet village.","acceptedAnswers":[],"skill":"الصفة قبل الاسم، ثم المكان.","explanation":"الصفة قبل الاسم، ثم المكان."},
+      {"id":"SS-G-021","prompt":"Build the sentence in the correct order.","sentence":"We are going to visit the museum tomorrow.","acceptedAnswers":[],"skill":"المستقبل باستخدام be going to.","explanation":"المستقبل باستخدام be going to."},
+      {"id":"SS-G-022","prompt":"Build the sentence in the correct order.","sentence":"He can speak three different languages.","acceptedAnswers":[],"skill":"الفعل الناقص يتبعه الفعل بصيغته الأساسية.","explanation":"الفعل الناقص يتبعه الفعل بصيغته الأساسية."},
+      {"id":"SS-G-023","prompt":"Build the sentence in the correct order.","sentence":"Did you finish your homework last night?","acceptedAnswers":[],"skill":"سؤال الماضي باستخدام did والفعل الأساسي.","explanation":"سؤال الماضي باستخدام did والفعل الأساسي."},
+      {"id":"SS-G-024","prompt":"Build the sentence in the correct order.","sentence":"The shop closes at six o'clock every day.","acceptedAnswers":[],"skill":"المضارع البسيط مع الفاعل المفرد وتعبير التكرار.","explanation":"المضارع البسيط مع الفاعل المفرد وتعبير التكرار."}
+    ],
+    steady: [
+      {"id":"SS-S-001","prompt":"Build the sentence in the correct order.","sentence":"She has already finished her science project.","acceptedAnswers":[],"skill":"موضع already بين الفعل المساعد والتصريف الثالث.","explanation":"موضع already بين الفعل المساعد والتصريف الثالث."},
+      {"id":"SS-S-002","prompt":"Build the sentence in the correct order.","sentence":"We have lived in this town for five years.","acceptedAnswers":[],"skill":"المضارع التام مع مدة زمنية.","explanation":"المضارع التام مع مدة زمنية."},
+      {"id":"SS-S-003","prompt":"Build the sentence in the correct order.","sentence":"Mark was reading a novel when I called him.","acceptedAnswers":[],"skill":"الماضي المستمر مع حدث قصير في الماضي.","explanation":"الماضي المستمر مع حدث قصير في الماضي."},
+      {"id":"SS-S-004","prompt":"Build the sentence in the correct order.","sentence":"I will send you the details after the meeting.","acceptedAnswers":[],"skill":"المستقبل وترتيب المفعول ثم الزمن.","explanation":"المستقبل وترتيب المفعول ثم الزمن."},
+      {"id":"SS-S-005","prompt":"Build the sentence in the correct order.","sentence":"Because the road was flooded, we took another route.","acceptedAnswers":[],"skill":"تقديم جملة السبب باستخدام because.","explanation":"تقديم جملة السبب باستخدام because."},
+      {"id":"SS-S-006","prompt":"Build the sentence in the correct order.","sentence":"We took another route because the road was flooded.","acceptedAnswers":[],"skill":"وضع جملة السبب بعد الجملة الرئيسية.","explanation":"وضع جملة السبب بعد الجملة الرئيسية."},
+      {"id":"SS-S-007","prompt":"Build the sentence in the correct order.","sentence":"Although it was raining, the match continued.","acceptedAnswers":[],"skill":"تقديم جملة التنازل باستخدام although.","explanation":"تقديم جملة التنازل باستخدام although."},
+      {"id":"SS-S-008","prompt":"Build the sentence in the correct order.","sentence":"The match continued although it was raining.","acceptedAnswers":[],"skill":"وضع جملة التنازل بعد الجملة الرئيسية.","explanation":"وضع جملة التنازل بعد الجملة الرئيسية."},
+      {"id":"SS-S-009","prompt":"Build the sentence in the correct order.","sentence":"My new laptop is much faster than my old one.","acceptedAnswers":[],"skill":"المقارنة باستخدام faster than.","explanation":"المقارنة باستخدام faster than."},
+      {"id":"SS-S-010","prompt":"Build the sentence in the correct order.","sentence":"This is the most useful guide in the library.","acceptedAnswers":[],"skill":"صيغة التفضيل مع the most.","explanation":"صيغة التفضيل مع the most."},
+      {"id":"SS-S-011","prompt":"Build the sentence in the correct order.","sentence":"She speaks English more confidently than before.","acceptedAnswers":[],"skill":"المقارنة باستخدام more + adverb.","explanation":"المقارنة باستخدام more + adverb."},
+      {"id":"SS-S-012","prompt":"Build the sentence in the correct order.","sentence":"The teacher explained the difficult rule very clearly.","acceptedAnswers":[],"skill":"موضع الظرف بعد المفعول لتوضيح طريقة الفعل.","explanation":"موضع الظرف بعد المفعول لتوضيح طريقة الفعل."},
+      {"id":"SS-S-013","prompt":"Build the sentence in the correct order.","sentence":"I have been studying English since last September.","acceptedAnswers":[],"skill":"المضارع التام المستمر مع since.","explanation":"المضارع التام المستمر مع since."},
+      {"id":"SS-S-014","prompt":"Build the sentence in the correct order.","sentence":"They had left before the storm began.","acceptedAnswers":[],"skill":"الماضي التام لحدث سبق حدثاً آخر.","explanation":"الماضي التام لحدث سبق حدثاً آخر."},
+      {"id":"SS-S-015","prompt":"Build the sentence in the correct order.","sentence":"If you heat ice, it melts into water.","acceptedAnswers":[],"skill":"الشرط الصفري: حقيقة عامة في المضارع.","explanation":"الشرط الصفري: حقيقة عامة في المضارع."},
+      {"id":"SS-S-016","prompt":"Build the sentence in the correct order.","sentence":"If it rains tomorrow, we will cancel the picnic.","acceptedAnswers":[],"skill":"الشرط الأول: المضارع في جملة الشرط والمستقبل في النتيجة.","explanation":"الشرط الأول: المضارع في جملة الشرط والمستقبل في النتيجة."},
+      {"id":"SS-S-017","prompt":"Build the sentence in the correct order.","sentence":"The book that you lent me was fascinating.","acceptedAnswers":[],"skill":"جملة الوصل التي تصف الاسم.","explanation":"جملة الوصل التي تصف الاسم."},
+      {"id":"SS-S-018","prompt":"Build the sentence in the correct order.","sentence":"The woman who lives next door is a doctor.","acceptedAnswers":[],"skill":"استخدام who للإشارة إلى شخص.","explanation":"استخدام who للإشارة إلى شخص."},
+      {"id":"SS-S-019","prompt":"Build the sentence in the correct order.","sentence":"He carefully placed the glass on the shelf.","acceptedAnswers":[],"skill":"موضع الظرف قبل الفعل في هذه الجملة.","explanation":"موضع الظرف قبل الفعل في هذه الجملة."},
+      {"id":"SS-S-020","prompt":"Build the sentence in the correct order.","sentence":"We should have booked the tickets earlier.","acceptedAnswers":[],"skill":"should have + past participle للتعبير عن نصيحة لم تُتبع.","explanation":"should have + past participle للتعبير عن نصيحة لم تُتبع."},
+      {"id":"SS-S-021","prompt":"Build the sentence in the correct order.","sentence":"The package was delivered to our office this morning.","acceptedAnswers":[],"skill":"المبني للمجهول وترتيب المكان والوقت.","explanation":"المبني للمجهول وترتيب المكان والوقت."},
+      {"id":"SS-S-022","prompt":"Build the sentence in the correct order.","sentence":"She asked me whether I needed any help.","acceptedAnswers":[],"skill":"سؤال غير مباشر باستخدام whether.","explanation":"سؤال غير مباشر باستخدام whether."},
+      {"id":"SS-S-023","prompt":"Build the sentence in the correct order.","sentence":"Neither the manager nor the employees were available.","acceptedAnswers":[],"skill":"تركيب neither...nor وتوافق الفعل مع الفاعل الأقرب.","explanation":"تركيب neither...nor وتوافق الفعل مع الفاعل الأقرب."},
+      {"id":"SS-S-024","prompt":"Build the sentence in the correct order.","sentence":"The more you read, the more your vocabulary grows.","acceptedAnswers":[],"skill":"تركيب المقارنة المزدوجة the more..., the more....","explanation":"تركيب المقارنة المزدوجة the more..., the more...."}
+    ],
+    challenge: [
+      {"id":"SS-C-001","prompt":"Build the sentence in the correct order.","sentence":"Rarely have I seen such a remarkable performance.","acceptedAnswers":[],"skill":"القلب بعد rarely: يأتي الفعل المساعد قبل الفاعل.","explanation":"القلب بعد rarely: يأتي الفعل المساعد قبل الفاعل."},
+      {"id":"SS-C-002","prompt":"Build the sentence in the correct order.","sentence":"Never had she imagined that the truth would be so difficult to accept.","acceptedAnswers":[],"skill":"القلب بعد never في الماضي التام.","explanation":"القلب بعد never في الماضي التام."},
+      {"id":"SS-C-003","prompt":"Build the sentence in the correct order.","sentence":"Not only did he solve the problem, but he also explained the solution.","acceptedAnswers":[],"skill":"القلب بعد not only مع التوازي بين جزأي الجملة.","explanation":"القلب بعد not only مع التوازي بين جزأي الجملة."},
+      {"id":"SS-C-004","prompt":"Build the sentence in the correct order.","sentence":"Only after the meeting did we understand the full impact.","acceptedAnswers":[],"skill":"القلب بعد عبارة تبدأ بـ only.","explanation":"القلب بعد عبارة تبدأ بـ only."},
+      {"id":"SS-C-005","prompt":"Build the sentence in the correct order.","sentence":"Had I known about the change, I would have acted differently.","acceptedAnswers":[],"skill":"حذف if في الشرط الثالث وقلب الفعل المساعد.","explanation":"حذف if في الشرط الثالث وقلب الفعل المساعد."},
+      {"id":"SS-C-006","prompt":"Build the sentence in the correct order.","sentence":"If they had followed the instructions, the system would have worked.","acceptedAnswers":[],"skill":"الشرط الثالث: ماضٍ تام في الشرط وwould have في النتيجة.","explanation":"الشرط الثالث: ماضٍ تام في الشرط وwould have في النتيجة."},
+      {"id":"SS-C-007","prompt":"Build the sentence in the correct order.","sentence":"Unless we reduce our energy use, costs will continue to rise.","acceptedAnswers":[],"skill":"استخدام unless بمعنى "إذا لم".","explanation":"استخدام unless بمعنى "إذا لم"."},
+      {"id":"SS-C-008","prompt":"Build the sentence in the correct order.","sentence":"Were the evidence stronger, the committee might reconsider its decision.","acceptedAnswers":[],"skill":"قلب الشرط الافتراضي باستخدام were.","explanation":"قلب الشرط الافتراضي باستخدام were."},
+      {"id":"SS-C-009","prompt":"Build the sentence in the correct order.","sentence":"The report is believed to have been written by an independent researcher.","acceptedAnswers":[],"skill":"المبني للمجهول مع تركيب is believed to have been.","explanation":"المبني للمجهول مع تركيب is believed to have been."},
+      {"id":"SS-C-010","prompt":"Build the sentence in the correct order.","sentence":"Several important documents had been removed before the inspection began.","acceptedAnswers":[],"skill":"الماضي التام المبني للمجهول.","explanation":"الماضي التام المبني للمجهول."},
+      {"id":"SS-C-011","prompt":"Build the sentence in the correct order.","sentence":"The proposal will be reviewed by the board next Monday.","acceptedAnswers":[],"skill":"المستقبل المبني للمجهول.","explanation":"المستقبل المبني للمجهول."},
+      {"id":"SS-C-012","prompt":"Build the sentence in the correct order.","sentence":"Having completed the experiment, the researchers analyzed the results.","acceptedAnswers":[],"skill":"عبارة المشاركة التامة في بداية الجملة.","explanation":"عبارة المشاركة التامة في بداية الجملة."},
+      {"id":"SS-C-013","prompt":"Build the sentence in the correct order.","sentence":"Despite facing several unexpected difficulties, the team completed the project.","acceptedAnswers":[],"skill":"despite + verb-ing للتعبير عن التنازل.","explanation":"despite + verb-ing للتعبير عن التنازل."},
+      {"id":"SS-C-014","prompt":"Build the sentence in the correct order.","sentence":"The committee rejected the plan because it lacked sufficient evidence.","acceptedAnswers":[],"skill":"جملة السبب مع ضمير يعود على الخطة.","explanation":"جملة السبب مع ضمير يعود على الخطة."},
+      {"id":"SS-C-015","prompt":"Build the sentence in the correct order.","sentence":"What the researchers discovered changed our understanding of the disease.","acceptedAnswers":[],"skill":"جملة اسمية تبدأ بـ what وتعمل كفاعل.","explanation":"جملة اسمية تبدأ بـ what وتعمل كفاعل."},
+      {"id":"SS-C-016","prompt":"Build the sentence in the correct order.","sentence":"It was the final experiment that revealed the hidden error.","acceptedAnswers":[],"skill":"تركيب التركيز It was ... that.","explanation":"تركيب التركيز It was ... that."},
+      {"id":"SS-C-017","prompt":"Build the sentence in the correct order.","sentence":"The issue is not whether the method works, but whether it can be repeated.","acceptedAnswers":[],"skill":"التوازي باستخدام not...but في سؤالين غير مباشرين.","explanation":"التوازي باستخدام not...but في سؤالين غير مباشرين."},
+      {"id":"SS-C-018","prompt":"Build the sentence in the correct order.","sentence":"She is responsible for collecting the data, checking the results, and preparing the report.","acceptedAnswers":[],"skill":"التوازي بين ثلاثة أفعال بصيغة -ing.","explanation":"التوازي بين ثلاثة أفعال بصيغة -ing."},
+      {"id":"SS-C-019","prompt":"Build the sentence in the correct order.","sentence":"The findings indicate that the original assumption was incorrect.","acceptedAnswers":[],"skill":"جملة تابعة تبدأ بـ that بعد فعل أكاديمي.","explanation":"جملة تابعة تبدأ بـ that بعد فعل أكاديمي."},
+      {"id":"SS-C-020","prompt":"Build the sentence in the correct order.","sentence":"No sooner had the lecture started than the fire alarm rang.","acceptedAnswers":[],"skill":"no sooner...than مع القلب والماضي التام.","explanation":"no sooner...than مع القلب والماضي التام."},
+      {"id":"SS-C-021","prompt":"Build the sentence in the correct order.","sentence":"So complex was the problem that no one could solve it alone.","acceptedAnswers":[],"skill":"القلب باستخدام so + adjective.","explanation":"القلب باستخدام so + adjective."},
+      {"id":"SS-C-022","prompt":"Build the sentence in the correct order.","sentence":"The decision, which had been postponed twice, was finally announced.","acceptedAnswers":[],"skill":"جملة وصل اعتراضية داخل جملة مبنية للمجهول.","explanation":"جملة وصل اعتراضية داخل جملة مبنية للمجهول."},
+      {"id":"SS-C-023","prompt":"Build the sentence in the correct order.","sentence":"Having been warned about the risks, the team proceeded with caution.","acceptedAnswers":[],"skill":"المبني للمجهول في عبارة المشاركة التامة.","explanation":"المبني للمجهول في عبارة المشاركة التامة."},
+      {"id":"SS-C-024","prompt":"Build the sentence in the correct order.","sentence":"The success of the project depends not only on careful planning but also on effective communication.","acceptedAnswers":[],"skill":"التوازي بين عبارتين اسميتين بعد not only...but also.","explanation":"التوازي بين عبارتين اسميتين بعد not only...but also."}
+    ]
+  };
+
+  global.EPIPHANY_SENTENCE_SCRAMBLE_BANK = {
+    schemaVersion: 1,
+    gameId: 'sentence-scramble',
+    totalChallenges: 72,
+    modes
+  };
+})(window);
