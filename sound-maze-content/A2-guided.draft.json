@@ -2,7 +2,7 @@
   "level": "A2",
   "mode": "guided",
   "status": "draft",
-  "version": 1,
+  "version": 2,
   "pronunciation_reference": "General American",
   "description": "Guided A2 content batch for The Sound Maze. Each target is spoken aloud; the learner selects its spelling. Draft content is not wired into the live game.",
   "questions": [
@@ -52,11 +52,11 @@
       "options": [
         "chop",
         "shop",
-        "shot",
+        "spot",
         "stop"
       ],
       "answer": "shop",
-      "explain": "Shop begins with /ʃ/. Chop begins with /tʃ/, shot has the same first sound but a different ending, and stop begins with /st/."
+      "explain": "Shop begins with /ʃ/. Chop begins with /tʃ/, while spot and stop begin with /sp/ and /st/."
     },
     {
       "id": "SM-A2-G-005",
