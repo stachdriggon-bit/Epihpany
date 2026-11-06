@@ -142,7 +142,7 @@ test('the expanded bank adds 40 unique, defined, connected words', () => {
 test('generated ladders avoid recently used pairs across sessions', () => {
   assert.match(source, /const LADDER_RECENT_HISTORY_KEY = 'epiphany-word-ladder-recent-v1';/);
   assert.match(source, /window\.localStorage\.getItem\(LADDER_RECENT_HISTORY_KEY/);
-  assert.match(source, /const fresh = candidates\.filter\(item => !recent\.has\(\[item\.start, item\.goal\]\.sort\(\)\.join\(':')\)\);/);
+  assert.ok(source.includes("const fresh = candidates.filter(item => !recent.has([item.start, item.goal].sort().join(':')));"));
   assert.match(source, /const chosen = \[\], selectedPairs = new Set\(\);/);
   assert.match(source, /\.slice\(-60\)/);
   assert.match(source, /rememberLadderPairs\(chosen\);/);
