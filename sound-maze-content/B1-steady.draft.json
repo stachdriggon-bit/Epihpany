@@ -2,7 +2,7 @@
   "level": "B1",
   "mode": "steady",
   "status": "draft",
-  "version": 1,
+  "version": 2,
   "pronunciation_reference": "General American",
   "description": "Steady B1 content batch for The Sound Maze. Each target is spoken aloud; the learner selects its spelling. Draft content is not wired into the live game.",
   "questions": [
@@ -63,13 +63,13 @@
       "axis": "initial_consonant_sounds",
       "target": "wren",
       "options": [
-        "rent",
+        "tent",
         "wren",
         "when",
         "then"
       ],
       "answer": "wren",
-      "explain": "Wren begins with /r/ because the written w is silent. Rent also begins with /r/ but has a pronounced final /t/; when begins with /w/ and then with /ð/."
+      "explain": "Wren begins with /r/ because its written w is silent. Tent begins with /t/, when with /w/, and then with /ð/."
     },
     {
       "id": "SM-B1-S-006",
@@ -128,39 +128,39 @@
       "axis": "basic_spelling_patterns",
       "target": "doubtful",
       "options": [
-        "doutful",
         "doubtful",
-        "doubtle",
-        "doutfull"
+        "dutiful",
+        "doughty",
+        "dotted"
       ],
       "answer": "doubtful",
-      "explain": "Doubtful keeps the silent b in doubt before adding -ful. The other options are misspellings."
+      "explain": "Doubtful is pronounced with the /daʊt/ sequence and a silent b in its spelling. Dutiful, doughty, and dotted have different vowel or consonant patterns."
     },
     {
       "id": "SM-B1-S-011",
       "axis": "basic_spelling_patterns",
       "target": "mission",
       "options": [
-        "mition",
         "mission",
-        "mishion",
-        "mession"
+        "mansion",
+        "motion",
+        "mention"
       ],
       "answer": "mission",
-      "explain": "Mission uses ssion to spell the /ʃən/ ending. The other options are not standard spellings."
+      "explain": "Mission has the /ˈmɪʃən/ sound pattern. Mansion, motion, and mention have different stressed vowels and/or consonant sequences."
     },
     {
       "id": "SM-B1-S-012",
       "axis": "basic_spelling_patterns",
       "target": "foreign",
       "options": [
-        "foriegn",
         "foreign",
-        "forein",
-        "forign"
+        "forage",
+        "forfeit",
+        "fountain"
       ],
       "answer": "foreign",
-      "explain": "Foreign is spelled f-o-r-e-i-g-n; the i comes before the g. The other options use incorrect letter order or omit a letter."
+      "explain": "Foreign is pronounced /ˈfɔrən/. Forage, forfeit, and fountain have different vowel and consonant sequences, so the spoken word identifies the spelling."
     }
   ]
 }
