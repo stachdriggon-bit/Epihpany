@@ -595,7 +595,14 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
     }
     const recent = new Set(getRecentLadderPairs());
     const fresh = candidates.filter(item => !recent.has([item.start, item.goal].sort().join(':')));
-    const chosen = fresh.slice(0, count);
+    const chosen = [], selectedPairs = new Set();
+    for (const item of fresh) {
+      const key = [item.start, item.goal].sort().join(':');
+      if (selectedPairs.has(key)) continue;
+      chosen.push(item);
+      selectedPairs.add(key);
+      if (chosen.length >= count) break;
+    }
     if (chosen.length < Math.min(6, count)) {
       // If storage contains stale or excessive history, fall back to a fresh randomized pool.
       chosen.splice(0, chosen.length, ...candidates.slice(0, count));
