@@ -2,7 +2,7 @@
   "level": "B1",
   "mode": "steady",
   "status": "draft",
-  "version": 2,
+  "version": 3,
   "pronunciation_reference": "General American",
   "description": "Steady B1 content batch for The Sound Maze. Each target is spoken aloud; the learner selects its spelling. Draft content is not wired into the live game.",
   "questions": [
@@ -40,10 +40,10 @@
         "flatter",
         "flitter",
         "flutter",
-        "fluter"
+        "fluent"
       ],
       "answer": "flutter",
-      "explain": "Flutter has /ʌ/ in its first syllable. Flatter has /æ/, flitter has /ɪ/, and fluter is not the standard spelling of the common word."
+      "explain": "Flutter has /ʌ/ in its first syllable. Flatter has /æ/, flitter has /ɪ/, and fluent has /uː/."
     },
     {
       "id": "SM-B1-S-004",
