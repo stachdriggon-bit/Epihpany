@@ -2,7 +2,7 @@
   "level": "A2",
   "mode": "steady",
   "status": "draft",
-  "version": 1,
+  "version": 2,
   "pronunciation_reference": "General American",
   "description": "Steady A2 content batch for The Sound Maze. Each target is spoken aloud; the learner selects its spelling. Draft content is not wired into the live game.",
   "questions": [
@@ -24,13 +24,13 @@
       "axis": "short_vowel_contrasts",
       "target": "fresh",
       "options": [
-        "flesh",
+        "frizz",
         "fresh",
         "flash",
         "frost"
       ],
       "answer": "fresh",
-      "explain": "Fresh has the short /ɛ/ vowel. Flash has /æ/; the other options do not match the spoken vowel."
+      "explain": "Fresh has /ɛ/. Frizz has /ɪ/, flash has /æ/, and frost has /ɔ/."
     },
     {
       "id": "SM-A2-S-003",
