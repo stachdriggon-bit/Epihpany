@@ -2,7 +2,7 @@
   "level": "C2",
   "mode": "challenge",
   "status": "draft",
-  "version": 1,
+  "version": 2,
   "pronunciation_reference": "General American",
   "description": "Challenge C2 content batch for The Sound Maze. Each target is spoken aloud; the learner selects its spelling. Draft content is not wired into the live game.",
   "questions": [
@@ -52,11 +52,11 @@
       "options": [
         "gnomic",
         "comic",
-        "gnawing",
+        "gibberish",
         "homing"
       ],
       "answer": "gnomic",
-      "explain": "Gnomic begins with /n/ because g is silent. Comic begins with /k/, gnawing also begins with /n/ but has a different full word sound, and homing begins with /h/."
+      "explain": "Gnomic begins with /n/ because its written g is silent. Comic begins with /k/, gibberish with /dʒ/, and homing with /h/."
     },
     {
       "id": "SM-C2-C-005",
@@ -74,15 +74,15 @@
     {
       "id": "SM-C2-C-006",
       "axis": "initial_consonant_sounds",
-      "target": "czarism",
+      "target": "xenial",
       "options": [
-        "czarism",
+        "xenial",
         "sarcasm",
         "charisma",
         "harbor"
       ],
-      "answer": "czarism",
-      "explain": "Czarism begins with /z/ in General American. Sarcasm begins with /s/, charisma with /k/, and harbor with /h/."
+      "answer": "xenial",
+      "explain": "Xenial begins with /z/, although it is written with x. Sarcasm begins with /s/, charisma with /k/, and harbor with /h/."
     },
     {
       "id": "SM-C2-C-007",
@@ -91,11 +91,11 @@
       "options": [
         "thrust",
         "thrusts",
-        "thrusting",
-        "thrusted"
+        "trussed",
+        "thrusting"
       ],
       "answer": "thrusts",
-      "explain": "Thrusts ends with /sts/. Thrust ends with /st/, thrusting adds /ɪŋ/, and thrusted adds /ɪd/."
+      "explain": "Thrusts ends with the /sts/ cluster. Thrust and trussed end with /st/, while thrusting has a different final syllable."
     },
     {
       "id": "SM-C2-C-008",
