@@ -2,7 +2,7 @@
   "level": "A2",
   "mode": "challenge",
   "status": "draft",
-  "version": 3,
+  "version": 4,
   "pronunciation_reference": "General American",
   "description": "Challenge A2 content batch for The Sound Maze. Each target is spoken aloud; the learner selects its spelling. Draft content is not wired into the live game.",
   "questions": [
@@ -24,26 +24,26 @@
       "axis": "short_vowel_contrasts",
       "target": "swept",
       "options": [
-        "slept",
-        "sweat",
+        "swapped",
         "swept",
-        "wept"
+        "swooped",
+        "swiped"
       ],
       "answer": "swept",
-      "explain": "Swept has the short /ɛ/ vowel and ends with the /pt/ cluster. Slept and wept have /ɛ/ but begin differently; sweat ends with /t/ without the /p/ sound."
+      "explain": "Swept has /ɛ/. Swapped has /ɑ/, swooped has /uː/, and swiped has /aɪ/."
     },
     {
       "id": "SM-A2-C-003",
       "axis": "short_vowel_contrasts",
       "target": "rough",
       "options": [
-        "roof",
-        "rouge",
         "rough",
-        "row"
+        "roof",
+        "row",
+        "rag"
       ],
       "answer": "rough",
-      "explain": "Rough has /ʌ/ in General American. Roof has /u/ or /ʊ/ depending on speaker, rouge has /uːʒ/, and row has /oʊ/."
+      "explain": "Rough has /ʌ/. Roof has /uː/, row has /oʊ/, and rag has /æ/."
     },
     {
       "id": "SM-A2-C-004",
