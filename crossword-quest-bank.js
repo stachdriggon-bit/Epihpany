@@ -55,6 +55,7 @@
     }
 
     const entries = Array.isArray(puzzle.entries) ? puzzle.entries : [];
+    const expectedByKey = new Map(expected.map(entry => [entry.number + ':' + entry.direction, entry]));
     const actualKeys = new Set();
     for (const entry of entries) {
       if (!entry || !['across', 'down'].includes(entry.direction)) {
@@ -64,6 +65,8 @@
       const key = entry.number + ':' + entry.direction;
       if (actualKeys.has(key)) errors.push('Duplicate entry ' + key + '.');
       actualKeys.add(key);
+      const expectedEntry = expectedByKey.get(key);
+      if (!expectedEntry || expectedEntry.row !== entry.row || expectedEntry.col !== entry.col) errors.push('Entry ' + key + ' does not match its numbered start cell.');
       if (!String(entry.clue || '').trim()) errors.push('Entry ' + key + ' has no clue.');
       if (!Number.isInteger(entry.row) || !Number.isInteger(entry.col) || entry.row < 0 || entry.col < 0 || entry.row >= size || entry.col >= size) {
         errors.push('Entry ' + key + ' has an invalid starting cell.');
@@ -71,6 +74,12 @@
       }
       const cells = [...String(entry.answer || '').toUpperCase()];
       if (cells.length < 3) errors.push('Entry ' + key + ' must be at least three letters long.');
+      if (!cells.length || cells.some(letter => !/^[A-Z]$/.test(letter))) errors.push('Entry ' + key + ' must contain English letters only.');
+      let runLength = 0;
+      while (entry.row + (entry.direction === 'down' ? runLength : 0) < size &&
+        entry.col + (entry.direction === 'across' ? runLength : 0) < size &&
+        layout[entry.row + (entry.direction === 'down' ? runLength : 0)][entry.col + (entry.direction === 'across' ? runLength : 0)] === '.') runLength++;
+      if (cells.length !== runLength) errors.push('Entry ' + key + ' must cover its complete uninterrupted answer slot.');
       for (let i = 0; i < cells.length; i++) {
         const row = entry.row + (entry.direction === 'down' ? i : 0);
         const col = entry.col + (entry.direction === 'across' ? i : 0);
