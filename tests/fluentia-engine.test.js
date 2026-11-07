@@ -140,11 +140,19 @@ test('no eligible pool and exhausted content finish safely without inventing ite
 test('rejects invalid item levels and invalid evaluator results with explicit error codes', () => {
   const engine = Fluentia.createEngine();
   engine.registerActivity({
-    id: 'bad-item', domain: 'textwise', interactionType: 'choice',
-    getItems: () => [{ id: 'x', prompt: 'Missing CEFR' }],
+    id: 'untagged-item', domain: 'textwise', interactionType: 'choice',
+    getItems: () => [{ id: 'legacy', prompt: 'No CEFR tag' }],
     evaluate: () => ({ correct: true })
   });
-  assert.throws(() => engine.createSession({ mode: 'single', activityId: 'bad-item', level: 'A1' }),
+  assert.throws(() => engine.createSession({ mode: 'single', activityId: 'untagged-item', level: 'A1' }),
+    error => error.code === Fluentia.errorCodes.NO_ELIGIBLE_ITEMS);
+  const malformed = Fluentia.createEngine();
+  malformed.registerActivity({
+    id: 'bad-item', domain: 'textwise', interactionType: 'choice',
+    getItems: () => [{ level: 'A1', prompt: 'Missing stable id' }],
+    evaluate: () => ({ correct: true })
+  });
+  assert.throws(() => malformed.createSession({ mode: 'single', activityId: 'bad-item', level: 'A1' }),
     error => error.code === Fluentia.errorCodes.INVALID_ITEM);
   const other = Fluentia.createEngine();
   other.registerActivity({
