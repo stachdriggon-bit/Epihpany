@@ -9,6 +9,7 @@ const source = fs.readFileSync(path.join(__dirname, '..', 'think-lab.js'), 'utf8
 const connectionBankSource = fs.readFileSync(path.join(__dirname, '..', 'word-connections-bank.js'), 'utf8');
 const sentenceScrambleBankSource = fs.readFileSync(path.join(__dirname, '..', 'sentence-scramble-bank.js'), 'utf8');
 const wordForgeBankSource = fs.readFileSync(path.join(__dirname, '..', 'word-forge-bank.js'), 'utf8');
+const chainReactionBankSource = fs.readFileSync(path.join(__dirname, '..', 'chain-reaction-bank.js'), 'utf8');
 
 const gameIds = ['odd','translator','wordladder','maze','connections','scramble','forge','chain'];
 const trainingModes = ['guided','steady','challenge'];
@@ -44,11 +45,14 @@ function createHarness(options = {}) {
   vm.runInContext(sentenceScrambleBankSource, sentenceScrambleContext, {filename:'sentence-scramble-bank.js',timeout:5000});
   const wordForgeContext = vm.createContext({window:{}});
   vm.runInContext(wordForgeBankSource, wordForgeContext, {filename:'word-forge-bank.js',timeout:5000});
+  const chainReactionContext = vm.createContext({window:{}});
+  vm.runInContext(chainReactionBankSource, chainReactionContext, {filename:'chain-reaction-bank.js',timeout:5000});
   const listeners = {};
+  const feedback = {hidden:true,className:'',innerHTML:'',textContent:''};
   const root = {
     innerHTML: '',
     addEventListener(type, callback) { listeners[type] = callback; },
-    querySelector() { return null; },
+    querySelector(selector) { return selector === '#tl-feedback' ? feedback : null; },
     querySelectorAll() { return []; }
   };
   let savedMazeCEFR = options.savedMazeCEFR || null;
@@ -58,6 +62,7 @@ function createHarness(options = {}) {
     EPIPHANY_WORD_CONNECTIONS_BANK: connectionContext.window.EPIPHANY_WORD_CONNECTIONS_BANK,
     EPIPHANY_SENTENCE_SCRAMBLE_BANK: sentenceScrambleContext.window.EPIPHANY_SENTENCE_SCRAMBLE_BANK,
     EPIPHANY_WORD_FORGE_BANK: wordForgeContext.window.EPIPHANY_WORD_FORGE_BANK,
+    EPIPHANY_CHAIN_REACTION_BANK: chainReactionContext.window.EPIPHANY_CHAIN_REACTION_BANK,
     ...(options.soundMazeBank ? {EPIPHANY_SOUND_MAZE_BANK:options.soundMazeBank} : {}),
     speechSynthesis: {cancel(){},speak(){}},
     EpiphanyThinkLab: {
@@ -77,7 +82,7 @@ function createHarness(options = {}) {
     assert.equal(typeof listeners.click, 'function', 'Think Lab click handler should be registered');
     listeners.click({target:{closest: candidate => candidate === selector ? element : null}});
   }
-  return {root,click,getSavedMazeCEFR:()=>savedMazeCEFR};
+  return {root,click,getSavedMazeCEFR:()=>savedMazeCEFR,chainBank:window.EPIPHANY_CHAIN_REACTION_BANK,feedback};
 }
 
 test('every Think Lab game opens the shared three-mode picker before play', () => {
@@ -211,4 +216,50 @@ test('Word Forge uses the approved bank skill and records incorrect complete att
   assert.match(source, /Complete the word first/);
   assert.match(source, /Skill:/);
   assert.doesNotMatch(source, /rounds\.forge\s*=/);
+});
+
+
+test('Chain Reaction loads 24 distinct approved challenges for each training mode', () => {
+  for (const trainingMode of trainingModes) {
+    const harness = createHarness();
+    harness.click('[data-think-game]', {thinkGame:'chain'});
+    harness.click('[data-think-training-mode]', {thinkTrainingMode:trainingMode,thinkTrainingGame:'chain'});
+    assert.match(harness.root.innerHTML, /ROUND 1 OF 24/);
+    assert.match(harness.root.innerHTML, /LINK 1 OF 3/);
+    assert.match(harness.root.innerHTML, new RegExp('<div class="tl-level-tag">' + trainingMode.toUpperCase() + '<\\/div>'));
+    assert.equal((harness.root.innerHTML.match(/data-chain-answer=/g) || []).length, 3);
+    assert.ok(harness.chainBank.getRounds(trainingMode).every(item => item.id.startsWith('CR-' + trainingMode[0].toUpperCase() + '-')));
+  }
+});
+
+test('Chain Reaction uses explicit multi-word starts and reveals every link explanation', () => {
+  const harness = createHarness();
+  const challenge = harness.chainBank.getRounds('challenge').find(item => item.id === 'CR-C-007');
+  assert.equal(challenge.start, 'REFRACTING TELESCOPE');
+  assert.equal(challenge.links[0].from, challenge.start);
+  harness.click('[data-think-game]', {thinkGame:'chain'});
+  harness.click('[data-think-training-mode]', {thinkTrainingMode:'challenge',thinkTrainingGame:'chain'});
+  const title = harness.root.innerHTML.match(/<h2>([^<]+)<\\/h2>/);
+  const item = harness.chainBank.getRounds('challenge').find(entry => entry.title === (title && title[1]));
+  assert.ok(item, 'the rendered challenge title should map to an approved bank entry');
+  for (let step = 0; step < 3; step++) {
+    const current = item.links[step];
+    const optionMatches = [...harness.root.innerHTML.matchAll(/data-chain-answer="(\\d+)"[\\s\\S]*?<strong>([^<]+)<\\/strong>/g)];
+    const correct = optionMatches.find(match => match[2] === current.to);
+    assert.ok(correct, 'the canonical answer should appear in the rendered choices');
+    harness.click('[data-chain-answer]', {chainAnswer:correct[1]});
+    assert.match(harness.feedback.innerHTML, new RegExp(current.explanation.replace(/[.*+?^${}()|[\\]\\\\]/g, '\\\\$&')));
+    if (step < 2) assert.match(harness.root.innerHTML, new RegExp('LINK ' + (step + 2) + ' OF 3'));
+  }
+  assert.match(harness.feedback.innerHTML, /Chain complete!/);
+  for (const link of item.links) assert.ok(harness.feedback.innerHTML.includes(link.explanation));
+});
+
+test('Chain Reaction does not show an empty Challenge hint and records wrong links', () => {
+  const harness = createHarness();
+  harness.click('[data-think-game]', {thinkGame:'chain'});
+  harness.click('[data-think-training-mode]', {thinkTrainingMode:'challenge',thinkTrainingGame:'chain'});
+  for (let attempt = 0; attempt < 2; attempt++) harness.click('[data-chain-answer]', {chainAnswer:'99'});
+  assert.doesNotMatch(harness.feedback.innerHTML, /<p><\\/p>/);
+  assert.match(source, /recordResult\('vocabulary','chain',false,false\)/);
 });
