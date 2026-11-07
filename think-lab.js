@@ -748,7 +748,7 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
   }
   // Register each game against the shared adaptive policy. New games should add
   // one entry here; difficulty thresholds, confidence and hint calibration remain central.
-  const gameSkills = {odd:'vocabulary', translator:'conversation', maze:'listening', wordladder:'spelling', forge:'spelling', connections:'vocabulary', scramble:'grammar', chain:'vocabulary'};
+  const gameSkills = {odd:'vocabulary', translator:'conversation', maze:'listening', wordladder:'spelling', forge:'spelling', connections:'vocabulary', scramble:'grammar', chain:'vocabulary', wordhunt:'vocabulary'};
   Object.keys(gameSkills).forEach(id => {
     if (window.EpiphanyThinkLab && typeof window.EpiphanyThinkLab.registerGame === 'function') {
       window.EpiphanyThinkLab.registerGame(id, gameSkills[id]);
