@@ -163,6 +163,19 @@
       }));
     }
 
+    if (Array.isArray(sources.soundscapeDictationBank)) {
+      adapters.push(makeAdapter({
+        id:'soundscape-dictation-bank', domain:'soundscape', legacyId:'soundscape-dictation',
+        interactionType:'typed', skills:['listening-transcription'],
+        getSource:() => sources.soundscapeDictationBank,
+        evaluate:(item, answer) => {
+          const correct = normalize(item.text) === normalize(answer);
+          return {correct, errorType:correct ? null : 'dictation-transcription'};
+        },
+        correctAnswer:item => item.text
+      }));
+    }
+
     if (sources.soundMazeBank && sources.soundMazeBank.levels) {
       adapters.push(makeAdapter({
         id: 'soundscape-sound-maze', domain: 'soundscape', legacyId: 'sound-maze', interactionType: 'listening', skills: ['phonological-recognition'],
@@ -238,6 +251,27 @@
       }));
     }
 
+    if (Array.isArray(sources.wordOfDayItems)) {
+      adapters.push(makeAdapter({
+        id:'wordcraft-speed-round', domain:'wordcraft', legacyId:'speed',
+        interactionType:'typed', skills:['rapid-vocabulary-retrieval'],
+        getSource:() => [],
+        getItems:({level}) => {
+          const reviewState = typeof sources.reviewState === 'function' ? sources.reviewState() : sources.reviewState;
+          const saved = new Set((reviewState?.review || []).filter(row=>row&&row.word).map(row=>normalize(row.word)));
+          (reviewState?.words || []).forEach(row=>saved.add(normalize(Array.isArray(row)?row[0]:row&&row.word)));
+          const candidates = sources.wordOfDayItems.filter(item=>item&&item.level===level&&item.word&&item.meaning);
+          const prioritized = candidates.filter(item=>saved.has(normalize(item.word)));
+          return (prioritized.length ? prioritized : candidates).map(item=>({...item,sourceActivityId:'speed'}));
+        },
+        evaluate:(item, answer) => {
+          const correct = normalize(answer) === normalize(item.word);
+          return {correct,errorType:correct?null:'rapid-vocabulary-recall'};
+        },
+        correctAnswer:item=>item.word
+      }));
+    }
+
     if (sources.reviewState && sources.games) {
       const getReviewState = () => typeof sources.reviewState === 'function' ? sources.reviewState() : sources.reviewState;
       const reviewItems = (level, sourceQuestions, predicate, score) => sourceQuestions
@@ -286,6 +320,7 @@
       }));
     }
 
+    if (typeof sources.onProgress === 'function') adapters.forEach(adapter => { adapter.onProgress = sources.onProgress; });
     return adapters;
   }
 
