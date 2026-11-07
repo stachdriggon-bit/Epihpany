@@ -428,6 +428,26 @@ test('main navigation tabs open without uncaught page errors', { timeout: 18 * 6
           'completing all three links should unlock the next challenge');
         checkpoint('thinklab: Chain Reaction three-link path and all explanations verified');
 
+        await page.locator('#thinklab-view [data-think-back]').first().click();
+        await page.locator('#thinklab-view [data-think-back]').click();
+        await page.locator('#thinklab-view [data-think-game="codebreaker"]').click();
+        assert.ok(requested.some(path => path.endsWith('/codebreaker-bank.js')),
+          'Codebreaker bank should load on demand with Think Lab');
+        assert.ok(requested.some(path => path.endsWith('/codebreaker.js')),
+          'Codebreaker engine should load on demand with Think Lab');
+        assert.equal(await page.evaluate(() => window.EPIPHANY_CODEBREAKER_BANK.validateBank().valid), true,
+          'the complete Codebreaker bank should validate in the browser');
+        await page.locator('#thinklab-view [data-cb-level="easy"]').click();
+        const codebreaker = page.locator('#thinklab-view .cb-panel');
+        await codebreaker.locator('[data-cb-symbol="J"]').first().click();
+        await codebreaker.locator('[data-cb-plain="L"]').click();
+        await codebreaker.locator('[data-cb-symbol="S"]').first().click();
+        await codebreaker.locator('[data-cb-plain="E"]').click();
+        await codebreaker.locator('[data-cb-check]').click();
+        await codebreaker.getByText('Message decoded!', {exact:false}).waitFor({state:'visible',timeout:5000});
+        assert.match(await codebreaker.innerText(), /APPLE/);
+        checkpoint('thinklab: Codebreaker key assignment and message validation verified');
+
 
       }
       if (view === 'casebound') {
