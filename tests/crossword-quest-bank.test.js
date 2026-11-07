@@ -77,6 +77,21 @@ test('Crossword Quest Easy lexicon covers all eight approved themes with distinc
   }
 });
 
+test('Crossword Quest short-word expansion adds 96 distinct 3–6 letter candidates across the eight approved themes', () => {
+  const bank = loadBank();
+  assert.equal(bank.easyShortLexicon.length, 8);
+  const expanded = bank.easyShortLexicon.flatMap(group => group.words);
+  assert.equal(expanded.length, 96);
+  assert.equal(new Set(expanded.map(item => item.answer)).size, 96, 'short candidate answers must be unique');
+  for (const group of bank.easyShortLexicon) {
+    assert.equal(group.words.length, 12, group.theme);
+    for (const item of group.words) {
+      assert.match(item.answer, /^[A-Z]{3,6}$/);
+      assert.ok(item.clue.length >= 12, item.answer + ' needs a useful clue');
+    }
+  }
+});
+
 test('Crossword Quest validator rejects disconnected grids and repeated clues', () => {
   const bank = loadBank();
   const disconnected = {
