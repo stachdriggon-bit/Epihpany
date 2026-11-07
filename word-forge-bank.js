@@ -7,7 +7,7 @@
     guided: [
       {id:'WF-G-001',clue:'A fruit that is often red or green and grows on a tree.',letters:'PPLAE',answerWord:'apple',explain:'An apple is a common fruit that grows on an apple tree.',skill:'Food vocabulary'},
       {id:'WF-G-002',clue:'A structure built over a river or road so people can cross it.',letters:'DRIBGE',answerWord:'bridge',explain:'A bridge connects two sides across an obstacle.',skill:'Places and structures'},
-      {id:'WF-G-003',clue:'A stick of wax with a wick that gives light when lit.',letters:'DNC ALE'.replace(/ /g,''),answerWord:'candle',explain:'A candle produces light as its wax burns.',skill:'Everyday objects'},
+      {id:'WF-G-003',clue:'A stick of wax with a wick that gives light when lit.',letters:'DNCALE',answerWord:'candle',explain:'A candle produces light as its wax burns.',skill:'Everyday objects'},
       {id:'WF-G-004',clue:'A medical professional trained to diagnose illnesses and prescribe treatment.',letters:'TOCDRO',answerWord:'doctor',explain:'A doctor examines patients, diagnoses illnesses, and recommends treatment.',skill:'People and jobs'},
       {id:'WF-G-005',clue:'People who are related to one another, such as parents and children.',letters:'MAFILY',answerWord:'family',explain:'A family is a group of related people.',skill:'People and relationships'},
       {id:'WF-G-006',clue:'An area where people grow flowers, vegetables, or other plants.',letters:'DRGAEN',answerWord:'garden',explain:'A garden is an area used for growing plants.',skill:'Nature and places'},
@@ -15,9 +15,9 @@
       {id:'WF-G-008',clue:'A light outer garment, usually with sleeves and a front opening, worn over other clothes.',letters:'KAJCET',answerWord:'jacket',explain:'A jacket is an outer layer of clothing.',skill:'Clothing'},
       {id:'WF-G-009',clue:'The room in a home where food is prepared and cooked.',letters:'HCTIKEN',answerWord:'kitchen',explain:'A kitchen is used for preparing meals.',skill:'Home vocabulary'},
       {id:'WF-G-010',clue:'A place where people can borrow books to read or study.',letters:'RARIBLY',answerWord:'library',explain:'A library lends books and provides places to read or study.',skill:'Places and learning'},
-      {id:'WF-G-011',clue:'A place, often with several stalls, where sellers offer food and other goods.',letters:'MARKET',answerWord:'market',explain:'A market is a place where people buy and sell goods.',skill:'Shopping vocabulary'},
+      {id:'WF-G-011',clue:'A place, often with several stalls, where sellers offer food and other goods.',letters:'KETRAM',answerWord:'market',explain:'A market is a place where people buy and sell goods.',skill:'Shopping vocabulary'},
       {id:'WF-G-012',clue:'To pay attention to sounds so that you can hear and understand them.',letters:'TSILEN',answerWord:'listen',explain:'To listen means to give attention to what you hear.',skill:'Communication verbs'},
-      {id:'WF-G-013',clue:'A common writing tool with a graphite core, often sharpened at one end.',letters:'CIPE NL'.replace(/ /g,''),answerWord:'pencil',explain:'A pencil is used for writing or drawing and can usually be erased.',skill:'School objects'},
+      {id:'WF-G-013',clue:'A common writing tool with a graphite core, often sharpened at one end.',letters:'CIPENL',answerWord:'pencil',explain:'A pencil is used for writing or drawing and can usually be erased.',skill:'School objects'},
       {id:'WF-G-014',clue:'A large celestial body that travels around a star.',letters:'TAPLNE',answerWord:'planet',explain:'A planet orbits a star; Earth is one example.',skill:'Science vocabulary'},
       {id:'WF-G-015',clue:'A small sewn space in clothing used for carrying things.',letters:'TOPCKE',answerWord:'pocket',explain:'A pocket is attached to clothing or a bag for holding small items.',skill:'Clothing and objects'},
       {id:'WF-G-016',clue:'A small animal often kept as a pet, with long ears and strong back legs for jumping.',letters:'BATRIB',answerWord:'rabbit',explain:'Rabbits are known for their long ears and powerful hind legs.',skill:'Animals'},
@@ -28,7 +28,7 @@
       {id:'WF-G-021',clue:'A container for liquids with a narrow neck and usually a cap.',letters:'TOBLET',answerWord:'bottle',explain:'A bottle stores liquids and usually has a narrow neck.',skill:'Everyday objects'},
       {id:'WF-G-022',clue:'A large natural area of land densely covered with trees.',letters:'ROFEST',answerWord:'forest',explain:'A forest is a large area where trees form the main vegetation.',skill:'Nature'},
       {id:'WF-G-023',clue:'To take something or someone from one place to another.',letters:'RYACR',answerWord:'carry',explain:'To carry means to hold and move something from one place to another.',skill:'Practical verbs'},
-      {id:'WF-G-024',clue:'To go on a trip to another place, often for pleasure or work.',letters:'VAR TEL'.replace(/ /g,''),answerWord:'travel',explain:'Travel means going from one place to another, usually over some distance.',skill:'Common verbs'}
+      {id:'WF-G-024',clue:'To go on a trip to another place, often for pleasure or work.',letters:'VARTEL',answerWord:'travel',explain:'Travel means going from one place to another, usually over some distance.',skill:'Common verbs'}
     ],
     steady: [
       {id:'WF-S-001',clue:'A heavy device lowered into water to stop a boat from drifting away.',letters:'CHARON',answerWord:'anchor',explain:'An anchor holds a boat in position by gripping the bottom.',skill:'Transport and sailing'},
@@ -50,10 +50,10 @@
       {id:'WF-S-017',clue:'A small community of homes in the countryside, usually smaller than a town.',letters:'LAGVELI',answerWord:'village',explain:'A village is a small settlement, usually smaller than a town.',skill:'Communities'},
       {id:'WF-S-018',clue:'To speak so quietly that your voice is difficult for people farther away to hear.',letters:'PEHWSRI',answerWord:'whisper',explain:'To whisper is to speak in a very low voice.',skill:'Communication verbs'},
       {id:'WF-S-019',clue:'A condition in which something stays steady because its parts or weight are evenly distributed.',letters:'CALANBE',answerWord:'balance',explain:'Balance can describe physical stability or a fair distribution.',skill:'Abstract nouns'},
-      {id:'WF-S-020',clue:'Eager to learn or find out more about something.',letters:'OUCI RUS'.replace(/ /g,''),answerWord:'curious',explain:'A curious person is eager to discover or understand things.',skill:'Personality adjectives'},
+      {id:'WF-S-020',clue:'Eager to learn or find out more about something.',letters:'OUCIRUS',answerWord:'curious',explain:'A curious person is eager to discover or understand things.',skill:'Personality adjectives'},
       {id:'WF-S-021',clue:'To take or bring something to a person or place.',letters:'VEDLIRE',answerWord:'deliver',explain:'To deliver is to bring or transport something to its destination.',skill:'Practical verbs'},
       {id:'WF-S-022',clue:'To keep someone or something safe from harm or damage.',letters:'TORCTEP',answerWord:'protect',explain:'To protect is to defend against danger or harm.',skill:'Safety verbs'},
-      {id:'WF-S-023',clue:'To think carefully about an experience or idea.',letters:'FECL RTE'.replace(/ /g,''),answerWord:'reflect',explain:'To reflect is to think deeply or carefully about an experience or idea.',skill:'Thinking skills'},
+      {id:'WF-S-023',clue:'To think carefully about an experience or idea.',letters:'FECLRTE',answerWord:'reflect',explain:'To reflect is to think deeply or carefully about an experience or idea.',skill:'Thinking skills'},
       {id:'WF-S-024',clue:'The outside or upper layer of an object or material.',letters:'FACERUS',answerWord:'surface',explain:'A surface is the outermost part of an object or material.',skill:'Science and description'}
     ],
     challenge: [
