@@ -66,10 +66,10 @@ test('Crossword Quest Easy lexicon covers all eight approved themes with distinc
   const bank = loadBank();
   assert.equal(bank.easyLexicon.length, 8);
   const allWords = bank.easyLexicon.flatMap(group => group.words);
-  assert.equal(allWords.length, 80);
+  assert.equal(allWords.length, 144);
   assert.equal(new Set(allWords.map(item => item.answer)).size, 80, 'candidate answers must be unique');
   for (const group of bank.easyLexicon) {
-    assert.equal(group.words.length, 10, group.theme);
+    assert.equal(group.words.length, 18, group.theme);
     for (const item of group.words) {
       assert.match(item.answer, /^[A-Z]{3,7}$/);
       assert.ok(item.clue.length >= 12, item.answer + ' needs a useful clue');
