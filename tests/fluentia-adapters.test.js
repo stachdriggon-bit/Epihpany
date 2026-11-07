@@ -152,7 +152,7 @@ test('Sound Maze, dictation, shadowing and Word Match keep distinct evaluation s
   assert.equal(get('soundscape-sound-picture-match').evaluate(picture, 'apple').correct, true);
   const [match] = get('wordcraft-word-match').getItems({level:'A1'});
   assert.equal(get('wordcraft-word-match').evaluate(match, {word:'apple',meaning:'a round fruit'}).correct, true);
-  assert.equal(match.sourceActivityId, 'match');
+  assert.equal(match.sourceActivityId, 'word-of-the-day');
 });
 
 test('Textwise sequencing is independent and order-sensitive', () => {
@@ -238,7 +238,7 @@ test('Soundscape dictation bank and Wordcraft Speed Round preserve CEFR and answ
   assert.equal(dictation.getItems({level:'C1'}).length, 0);
   assert.ok(speed);
   assert.equal(speed.interactionType, 'typed');
-  assert.equal(speed.getItems({level:'A1'})[0].sourceActivityId, 'speed');
+  assert.equal(speed.getItems({level:'A1'})[0].sourceActivityId, 'word-of-the-day');
   assert.equal(speed.evaluate(speed.getItems({level:'A1'})[0], 'apple').correct, true);
 });
 
