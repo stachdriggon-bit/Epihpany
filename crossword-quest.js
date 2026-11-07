@@ -21,7 +21,9 @@
 
   function levelReady(level) {
     const list = bank.puzzles[level] || [];
-    return list.length === levels[level].count && list.every(item => bank.validatePuzzle(item, levels[level].size).valid);
+    const ids = new Set(list.map(item => item && item.id).filter(Boolean));
+    return list.length === levels[level].count && ids.size === list.length &&
+      list.every(item => bank.validatePuzzle(item, levels[level].size).valid);
   }
 
   function open() {
