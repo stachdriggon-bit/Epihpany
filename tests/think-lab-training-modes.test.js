@@ -104,12 +104,13 @@ test('existing mode-based Think Lab games open the shared three-mode picker befo
 });
 
 
-test('Crossword Quest opens its own level selection instead of the shared training-mode picker', () => {
+test('paused Crossword Quest is not exposed as a playable Think Lab entry', () => {
   const harness = createHarness();
   harness.click('[data-think-game]', {thinkGame:'crossword'});
-  assert.equal(harness.getCrosswordOpened(), 1);
-  assert.equal(harness.root.innerHTML, 'crossword-level-picker');
+  assert.equal(harness.getCrosswordOpened(), 0);
+  assert.match(harness.root.innerHTML, /This game is paused/);
   assert.doesNotMatch(harness.root.innerHTML, /How would you like to play/);
+  assert.doesNotMatch(source, /id:'crossword',num:/);
 });
 
 test('Word Hunt opens its own level picker instead of the shared training-mode picker', () => {
