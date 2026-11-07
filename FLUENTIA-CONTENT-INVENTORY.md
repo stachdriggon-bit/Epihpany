@@ -210,3 +210,12 @@ The current next action is to complete Phase 3 source integration and progress c
 - No-repeat identity is canonical source ID plus item ID, covering items shared across adapters (including Word-of-the-Day and Practice Lab).
 - Every selected item must match the session's exact CEFR level. Sparse/exhausted domains are skipped; the session never duplicates or fabricates content.
 - Phase 4 tests cover domain and activity distribution, cross-adapter duplicate suppression, strict CEFR filtering and sparse-domain fallback. CI for the Phase 4 commit is pending.
+
+## Fluentia Phase 5 — learner UI
+
+- Added a dedicated Fluentia view and Learn navigation entry for desktop and mobile.
+- Added cards for Wordcraft, Sentence Studio, Textwise, Soundscape, Real World and Fine Sense.
+- Added CEFR level selection, activity choosers, Section Mixed and Fluentia Mix entry points, plus a dedicated Your Review panel.
+- Added engine-backed practice screens and completion summaries. No legacy Arcade XP/reward logic is duplicated.
+- Added offline core-cache entries for the Fluentia UI assets and static UI integration tests.
+- Status: implementation complete; CI/browser verification pending.
