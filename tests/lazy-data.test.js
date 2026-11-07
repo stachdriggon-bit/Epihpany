@@ -64,11 +64,11 @@ test('feature data loader does not request large datasets until requested', asyn
     'data-translation-ar.js',
     'data-translation-ar-fill.js'
   ]);
-  assert.ok(requested.slice(16).every(src => /\?v=.+/.test(src)));
+  assert.ok(requested.slice(19).every(src => /\?v=.+/.test(src)));
   assert.deepEqual(merged, [true]);
   await context.window.EPIPHANY_LAZY_LOAD('chronicle');
   assert.deepEqual(requested.slice(21).map(src => src.split('?')[0]), ['data-world-registry.js', 'data-world-events.js']);
-  assert.ok(requested.slice(18).every(src => /\?v=.+/.test(src)));
+  assert.ok(requested.slice(21).every(src => /\?v=.+/.test(src)));
 });
 
 test('initial HTML defers stories and World data and keeps loader in offline shell', () => {
