@@ -35,7 +35,9 @@ test('Crossword Quest validator accepts a complete, correctly numbered 3x3 cross
       { number: 5, direction: 'across', row: 2, col: 0, answer: 'TEN', clue: 'The number after nine' }
     ]
   };
-  const result = bank.validatePuzzle(puzzle, 3);\n  assert.equal(result.valid, true, result.errors.join('\\n'));\n  assert.equal(result.errors.length, 0);
+  const result = bank.validatePuzzle(puzzle, 3);
+  assert.equal(result.valid, true, result.errors.join('\n'));
+  assert.equal(result.errors.length, 0);
 });
 
 test('Crossword Quest validator rejects inconsistent crossings and missing clues', () => {
