@@ -72,7 +72,7 @@
       '<div class="tl-game-head"><button class="tl-back" type="button" data-wh-levels>← Choose level</button><span class="tl-eyebrow">WORD HUNT · ' + config.label.toUpperCase() + '</span></div>' +
       '<section class="wh-panel"><div class="wh-progress-row"><span class="wh-kicker">' + esc(item.title) + '</span><span class="wh-progress">' +
       (puzzleIndex + 1) + ' / ' + config.count + ' puzzles</span></div>' +
-      '<h2>Find the words</h2><p class="wh-instruction">Tap a starting letter, then tap the final letter in a straight line. Words may run in the directions shown for this level.</p>' +
+      '<h2>Find the words</h2><p class="wh-instruction">Tap a starting letter, then tap the final letter in a straight line. <strong>' + directionNote + '.</strong></p>' +
       '<div class="wh-score-row"><strong>' + foundCount + ' <span>/ ' + item.words.length + ' found</span></strong><span>' + (item.words.length - foundCount) + ' left</span></div>' +
       '<div class="wh-board-wrap"><div class="wh-board" style="--wh-size:' + config.size + '" role="group" aria-label="' + config.size + ' by ' + config.size + ' letter grid">' + grid + '</div></div>' +
       '<div class="wh-targets"><div class="wh-targets-head"><strong>Words to find</strong><span>' + esc(item.title) + '</span></div><div class="wh-word-list">' + words + '</div></div>' +
