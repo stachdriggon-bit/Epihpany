@@ -352,7 +352,10 @@ test('main navigation tabs open without uncaught page errors', { timeout: 18 * 6
         checkpoint('thinklab: returning to the game list to open Word Forge');
         await page.locator('#thinklab-view [data-think-back]').first().click();
         await page.locator('#thinklab-view [data-think-back]').click();
-        await page.locator('#thinklab-view [data-think-game="forge"]').click();
+        await page.locator('#thinklab-view [data-think-back]').click();
+        const forgeLaunch = page.locator('#thinklab-view [data-think-game="forge"]');
+        await forgeLaunch.waitFor({state:'visible',timeout:5000});
+        await forgeLaunch.click();
         const forgeModePicker = page.locator('#thinklab-view .tl-mode-picker');
         await forgeModePicker.waitFor({state:'visible',timeout:5000});
         await forgeModePicker.locator('[data-think-training-mode="guided"]').click();
