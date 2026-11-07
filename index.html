@@ -25,7 +25,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Cairo:wght@500;700&family=DM+Sans:wght@400;500;700&family=Cinzel:wght@600;700&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=outline-icons-20261105-1"><link rel="stylesheet" href="guidance.css?v=contextual-tips-20261031-1"><link rel="stylesheet" href="help-center.css?v=help-center-wallet-20261031-1"><link rel="stylesheet" href="cards.css?v=interface-polish-20261030-2">
+  <link rel="stylesheet" href="style.css?v=outline-icons-20261105-1"><link rel="stylesheet" href="guidance.css?v=contextual-tips-20261031-1"><link rel="stylesheet" href="help-center.css?v=help-center-wallet-20261031-1"><link rel="stylesheet" href="cards.css?v=interface-polish-20261030-2"><link rel="stylesheet" href="fluentia-ui.css?v=fluentia-ui-20261107-1">
   <script src="data.js?v=7f0faa36" defer></script>
   <script src="data-mistakes.js?v=e7fd865a" defer></script>
   <script src="data-spot.js?v=45301cdb" defer></script>
@@ -47,6 +47,7 @@
   <script src="fluentia-adapters.js?v=fluentia-phase3-source-adapters-20261107-4" defer></script>
   <script src="fluentia-progress-bridge.js?v=progress-compat-20261107-2" defer></script>
   <script src="app.js?v=fluentia-phase3-integration-20261107-6" defer></script>
+  <script src="fluentia-ui.js?v=fluentia-ui-20261107-1" defer></script>
   <script src="guidance.js?v=contextual-tips-20261031-1" defer></script>
   <script src="help-center.js?v=help-center-wallet-20261031-1" defer></script>
   <script src="data-cards.js?v=ilaris-epic-20261031-1" defer></script>
@@ -166,6 +167,7 @@
       <details class="nav-group">
         <summary><span aria-hidden="true">📚</span><span>Learn</span><svg class="nav-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 10 5 5 5-5"/></svg></summary>
         <div class="nav-submenu">
+          <button class="tab" data-view="fluentia">✦ Fluentia <small>Six connected practice domains</small></button>
           <button class="tab" data-view="stories">📖 Stories <small>Learn through choices</small></button>
           <button class="tab" data-view="words">📘 Words <small>Saved vocabulary and review</small></button>
           <button class="tab" data-view="lifeskills">✳ Life Skills <small>Everyday English and practical skills</small></button>
@@ -210,7 +212,7 @@
       <button class="tab mobile-nav-home" data-view="home">⌂ <span>Home</span><span class="mobile-home-xp" aria-label="Total experience points"><b id="mobile-home-xp">0</b><small>XP</small></span></button>
       <details class="mobile-nav-group">
         <summary><span class="mobile-nav-label">LEARN</span><svg class="mobile-nav-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 10 5 5 5-5"/></svg></summary>
-        <div class="mobile-nav-links"><button class="tab" data-view="stories">📖 <span>Stories</span></button><button class="tab" data-view="words">📘 <span>Words</span></button><button class="tab" data-view="lifeskills">✳ <span>Life Skills</span></button><button class="tab" data-view="mytools">✎ <span>My Tools</span></button></div>
+        <div class="mobile-nav-links"><button class="tab" data-view="fluentia">✦ <span>Fluentia</span></button><button class="tab" data-view="stories">📖 <span>Stories</span></button><button class="tab" data-view="words">📘 <span>Words</span></button><button class="tab" data-view="lifeskills">✳ <span>Life Skills</span></button><button class="tab" data-view="mytools">✎ <span>My Tools</span></button></div>
       </details>
       <details class="mobile-nav-group">
         <summary><span class="mobile-nav-label">PLAY</span><svg class="mobile-nav-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 10 5 5 5-5"/></svg></summary>
@@ -600,6 +602,15 @@
 
   <!-- THE RESONANCE: standalone visual-novel investigation -->
   <section class="view" id="resonance-view" aria-labelledby="resonance-title"><div class="res-shell"><div class="res-intro"><p class="res-kicker">CHAPTER 01 · THE MISSING MESSAGE</p><h1 id="resonance-title" tabindex="-1">The Resonance</h1><p>Loading the investigation…</p></div></div></section>
+
+  <!-- FLUENTIA: connected practice domains and mixed sessions -->
+  <section class="view" id="fluentia-view" aria-labelledby="fluentia-title">
+    <div class="page fluentia-page">
+      <div id="fluentia-content" aria-live="polite">
+        <div class="fluentia-empty" role="status">Preparing your Fluentia practice space…</div>
+      </div>
+    </div>
+  </section>
 
   <!-- ARCADE: standalone games and practice library -->
   <section class="view" id="arcade-view" aria-labelledby="arcade-title">
