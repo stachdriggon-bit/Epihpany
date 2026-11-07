@@ -171,15 +171,15 @@ test('overlapping feature groups share one in-flight script request', async () =
   scripts[9].onload();
   await new Promise(resolve => setImmediate(resolve));
   assert.equal(requested.length, 11);
-  assert.match(requested[10], /^word-hunt-bank\\.js\\?/);
+  assert.match(requested[10], /^word-hunt-bank\.js\?/);
   scripts[10].onload();
   await new Promise(resolve => setImmediate(resolve));
   assert.equal(requested.length, 12);
-  assert.match(requested[11], /^word-hunt\\.js\\?/);
+  assert.match(requested[11], /^word-hunt\.js\?/);
   scripts[11].onload();
   await new Promise(resolve => setImmediate(resolve));
   assert.equal(requested.length, 13);
-  assert.match(requested[12], /^life-skills\\.js\\?/);
+  assert.match(requested[12], /^life-skills\.js\?/);
   scripts[12].onload();
 
   await Promise.all([thinkLab, lifeSkills]);
@@ -376,10 +376,10 @@ test('optional lazy loads respect the adaptive concurrency limit', async () => {
   assert.equal(requested[10].split('?')[0], 'crossword-quest.js');
   scripts[10].onload();
   await new Promise(resolve => setImmediate(resolve));
-  assert.match(requested[11], /^word-hunt-bank\\.js\\?/);
+  assert.match(requested[11], /^word-hunt-bank\.js\?/);
   scripts[11].onload();
   await new Promise(resolve => setImmediate(resolve));
-  assert.match(requested[12], /^word-hunt\\.js\\?/);
+  assert.match(requested[12], /^word-hunt\.js\?/);
   scripts[12].onload();
 });
 
