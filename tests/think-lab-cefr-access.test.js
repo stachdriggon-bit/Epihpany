@@ -16,8 +16,8 @@ test('Think Lab exposes only CEFR levels reached by the learner, unless develope
 
 test('Sound Maze and The Bold Translator visibly disable locked CEFR levels', () => {
   const thinkLab = read('think-lab.js');
-  assert.match(thinkLab, /data-sound-maze-level=.*?disabled aria-disabled="true"/);
-  assert.match(thinkLab, /data-translator-level=.*?disabled aria-disabled="true"/);
+  assert.equal((thinkLab.match(/unlocked\?'':'disabled aria-disabled="true"/g) || []).length, 2,
+    'both level pickers should disable unavailable CEFR choices');
   assert.match(thinkLab, /Locked · progress to unlock/);
 });
 
