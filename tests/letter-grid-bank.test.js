@@ -31,7 +31,7 @@ test('Letter Grid contains four independent levels and 48 fixed puzzles',()=>{
             const prev=word.path[i-1],pr=Math.floor(prev/cfg.size),pc=prev%cfg.size;
             assert.equal(Math.max(Math.abs(row-pr),Math.abs(col-pc)),1,word.id+' neighboring step');
             if(Math.abs(row-pr)===1&&Math.abs(col-pc)===1)diagonalSteps++;
-            if(i>1){const before=word.path[i-2],br=Math.floor(before/cfg.size),bc=before%cfg.size;if(br!==pr||bc!==pc)turns++;}
+            if(i>1){const before=word.path[i-2],br=Math.floor(before/cfg.size),bc=before%cfg.size;if((pr-br)!==(row-pr)||(pc-bc)!==(col-pc))turns++;}
           }
         }
       }
