@@ -43,6 +43,7 @@ test('each Word Forge mode contains 24 complete, uniquely identified challenges'
       assert.ok(item.explain.trim(), item.id + ' needs an explanation');
       assert.ok(item.skill.trim(), item.id + ' needs a skill label');
       assert.equal(sortedLetters(item.letters), sortedLetters(item.answerWord), item.id + ' letters must exactly match its answer');
+      assert.notEqual(item.letters, item.answerWord.toUpperCase(), item.id + ' letters should not reveal the answer in order');
       assert.equal(item.prompt, 'Forge the word from the letter tiles.');
     }
   }
