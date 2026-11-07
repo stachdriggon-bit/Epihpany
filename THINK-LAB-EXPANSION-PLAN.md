@@ -67,4 +67,4 @@ Word Hunt has a complete first-release specification and a fixed 48-puzzle conte
 
 ## Paused game: Crossword Quest
 
-Crossword Quest is **paused, not deleted**. Its specification, prototype engine, styles, validator, lexicons, tests, and partial bank work remain in the repository. See [`CROSSWORD-QUEST-SPEC.md`](./CROSSWORD-QUEST-SPEC.md). It remains unavailable to players until a complete reviewed puzzle bank exists. Do not remove or rewrite its files while Word Hunt is being completed.
+Crossword Quest is **paused, not deleted**. Its player-facing card and lazy runtime loading have been disabled. Its specification, prototype engine, styles, validator, lexicons, tests, and partial bank work remain in the repository. See [`CROSSWORD-QUEST-SPEC.md`](./CROSSWORD-QUEST-SPEC.md). It remains unavailable to players until a complete reviewed puzzle bank exists. Do not remove or rewrite its files while Word Hunt is being completed.
