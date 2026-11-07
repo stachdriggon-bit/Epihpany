@@ -90,6 +90,7 @@ test('adapter registration is idempotent and works with the shared session engin
   assert.equal(event.correct, true);
   assert.equal(event.domain, 'wordcraft');
   assert.equal(event.activityId, 'wordcraft-vocabulary');
+  assert.equal(event.sourceActivityId, 'vocabulary');
 });
 
 test('legacy source banks remain unchanged after adapter creation and evaluation', () => {
