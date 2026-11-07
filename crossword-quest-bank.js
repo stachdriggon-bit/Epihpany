@@ -63,6 +63,7 @@
         continue;
       }
       const key = entry.number + ':' + entry.direction;
+      if (!Number.isInteger(entry.number) || entry.number < 1) errors.push('Entry numbers must be positive integers.');
       if (actualKeys.has(key)) errors.push('Duplicate entry ' + key + '.');
       actualKeys.add(key);
       const expectedEntry = expectedByKey.get(key);
