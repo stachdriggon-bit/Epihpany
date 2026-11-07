@@ -113,6 +113,12 @@ test('paused Crossword Quest is not exposed as a playable Think Lab entry', () =
   assert.doesNotMatch(source, /id:'crossword',num:/);
 });
 
+test('Word Hunt has a dedicated icon in the shared Think Lab outline system', () => {
+  const icons = fs.readFileSync(path.join(__dirname, '..', 'icon-system.js'), 'utf8');
+  assert.match(icons, /'word-hunt':/);
+  assert.match(icons, /wordhunt:'word-hunt'/);
+});
+
 test('Word Hunt opens its own level picker instead of the shared training-mode picker', () => {
   const harness = createHarness();
   harness.click('[data-think-game]', {thinkGame:'wordhunt'});
