@@ -38,10 +38,20 @@
     job.started = true;
     if (job.key) queuedOptionalLoads.delete(job.key);
     if (!asUser) activeOptionalLoads++;
-    Promise.resolve().then(job.run).then(job.resolve, job.reject).finally(() => {
+    // Release the concurrency slot before resolving the job promise. The next
+    // file in a sequential feature group can then enter the queue immediately,
+    // without racing the caller's promise continuation against queue pumping.
+    const finish = () => {
       if (!asUser) activeOptionalLoads = Math.max(0, activeOptionalLoads - 1);
       if (job.key) queuedOptionalLoads.delete(job.key);
       pumpOptionalQueue();
+    };
+    Promise.resolve().then(job.run).then(value => {
+      finish();
+      job.resolve(value);
+    }, error => {
+      finish();
+      job.reject(error);
     });
   }
 
