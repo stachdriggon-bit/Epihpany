@@ -2,7 +2,7 @@
 
 - Game: `chain-reaction`
 - Schema version: 1
-- Status: Guided approved; Steady and Challenge pending
+- Status: Guided and Steady approved; Challenge pending
 - Total Guided challenges: 24
 - Total links: 72
 - Choices per link: 3
@@ -276,3 +276,270 @@ Start: `PAINT`
    Explanation: An artist uses a brush for painting.
 3. **CANVAS** — Options: CANVAS / PILLOW / MIRROR  
    Explanation: An artist can paint on a canvas.
+
+
+## Steady
+
+### CR-S-001 — The Ship's Journey
+
+Start: `SHIP`
+
+1. **ANCHOR** — Options: ANCHOR / SAIL / COMPASS  
+   Explanation: An anchor is used to hold a ship in place.
+2. **SEABED** — Options: SURFACE / SEABED / HORIZON  
+   Explanation: An anchor reaches the seabed when it is lowered.
+3. **SHELL** — Options: SHELL / FEATHER / BRANCH  
+   Explanation: Some shell-bearing marine animals live on the seabed.
+
+### CR-S-002 — A Scientific Discovery
+
+Start: `EXPERIMENT`
+
+1. **HYPOTHESIS** — Options: HYPOTHESIS / CONCLUSION / INVENTION  
+   Explanation: A scientist often begins an experiment with a hypothesis to test.
+2. **EVIDENCE** — Options: EVIDENCE / OPINION / RUMOUR  
+   Explanation: Experiment results provide evidence that can be used to test a hypothesis.
+3. **CONCLUSION** — Options: CONCLUSION / QUESTION / PREDICTION  
+   Explanation: A researcher draws a conclusion based on the evidence.
+
+### CR-S-003 — The Photographer's Eye
+
+Start: `CAMERA`
+
+1. **LENS** — Options: LENS / SCREEN / BATTERY  
+   Explanation: Light passes through a camera lens to form an image.
+2. **FOCUS** — Options: FOCUS / ZOOM / FLASH  
+   Explanation: Adjusting the focus helps make the subject clear.
+3. **SHARPNESS** — Options: SHARPNESS / BRIGHTNESS / DISTANCE  
+   Explanation: Accurate focus affects the sharpness and clarity of an image.
+
+### CR-S-004 — The Ancient Message
+
+Start: `ARCHAEOLOGIST`
+
+1. **ARTIFACT** — Options: ARTIFACT / BLUEPRINT / MACHINE  
+   Explanation: An archaeologist studies objects left by earlier civilizations.
+2. **INSCRIPTION** — Options: INSCRIPTION / SCULPTURE / MOSAIC  
+   Explanation: An artifact may carry an inscription written on its surface.
+3. **TRANSLATION** — Options: TRANSLATION / RESTORATION / EXCAVATION  
+   Explanation: A researcher may need to translate an inscription to understand its words.
+
+### CR-S-005 — Weather Warning
+
+Start: `STORM`
+
+1. **PRESSURE** — Options: PRESSURE / TEMPERATURE / HUMIDITY  
+   Explanation: Storm systems are often associated with changing air pressure.
+2. **BAROMETER** — Options: THERMOMETER / BAROMETER / ANEMOMETER  
+   Explanation: A barometer measures atmospheric pressure.
+3. **READING** — Options: READING / FORECAST / WARNING  
+   Explanation: A barometer provides a pressure reading that meteorologists can use when preparing forecasts.
+
+### CR-S-006 — The Theatre Production
+
+Start: `THEATRE`
+
+1. **SCRIPT** — Options: SCRIPT / POSTER / TICKET  
+   Explanation: Actors rely on a written script to perform their roles.
+2. **DIALOGUE** — Options: DIALOGUE / MONOLOGUE / NARRATION  
+   Explanation: Much of a play's script consists of dialogue between characters.
+3. **REHEARSAL** — Options: REHEARSAL / PREMIERE / APPLAUSE  
+   Explanation: Actors practise their dialogue during rehearsals before a performance.
+
+### CR-S-007 — A Growing Business
+
+Start: `STARTUP`
+
+1. **INVESTMENT** — Options: INVESTMENT / REVENUE / EXPENSE  
+   Explanation: Startups often need investment to fund their growth.
+2. **CAPITAL** — Options: CAPITAL / PROFIT / DEBT  
+   Explanation: Investment provides capital that a company can use in its activities.
+3. **EXPANSION** — Options: EXPANSION / BANKRUPTCY / REDUCTION  
+   Explanation: A company can use capital to finance expansion.
+
+### CR-S-008 — The Mountain Rescue
+
+Start: `MOUNTAIN`
+
+1. **ALTITUDE** — Options: ALTITUDE / LATITUDE / LONGITUDE  
+   Explanation: Mountains are associated with high elevations above sea level.
+2. **OXYGEN** — Options: OXYGEN / NITROGEN / CARBON  
+   Explanation: The available oxygen pressure for breathing decreases as altitude increases.
+3. **BREATHING** — Options: BREATHING / HEARING / DIGESTION  
+   Explanation: Oxygen availability affects the body's ability to breathe normally.
+
+### CR-S-009 — The Legal Case
+
+Start: `COURT`
+
+1. **WITNESS** — Options: WITNESS / JUDGE / LAWYER  
+   Explanation: A court may call a witness to provide information about a case.
+2. **TESTIMONY** — Options: TESTIMONY / VERDICT / SENTENCE  
+   Explanation: A witness gives testimony in court.
+3. **CREDIBILITY** — Options: CREDIBILITY / AUTHORITY / POPULARITY  
+   Explanation: The credibility of testimony is considered when assessing how reliable it is.
+
+### CR-S-010 — The Printing Workshop
+
+Start: `PRINTING`
+
+1. **INK** — Options: INK / GLUE / WAX  
+   Explanation: Printing uses ink to transfer text and images onto paper.
+2. **CARTRIDGE** — Options: CARTRIDGE / TONER / DRUM  
+   Explanation: Some printers contain an ink cartridge.
+3. **NOZZLE** — Options: NOZZLE / SENSOR / SWITCH  
+   Explanation: Tiny nozzles release ink droplets in inkjet printers.
+
+### CR-S-011 — The Orchestra
+
+Start: `ORCHESTRA`
+
+1. **CONDUCTOR** — Options: CONDUCTOR / COMPOSER / SOLOIST  
+   Explanation: An orchestra conductor leads the musicians' performance.
+2. **BATON** — Options: BATON / VIOLIN / SCORE  
+   Explanation: A conductor uses a baton to guide timing and entrances.
+3. **TEMPO** — Options: TEMPO / MELODY / HARMONY  
+   Explanation: The conductor's gestures help control the speed of the music.
+
+### CR-S-012 — The Greenhouse
+
+Start: `GREENHOUSE`
+
+1. **PHOTOSYNTHESIS** — Options: PHOTOSYNTHESIS / RESPIRATION / GERMINATION  
+   Explanation: Plants carry out photosynthesis in a greenhouse just as they do in other growing environments.
+2. **CHLOROPHYLL** — Options: CHLOROPHYLL / CELLULOSE / GLUCOSE  
+   Explanation: Chlorophyll absorbs the light needed for photosynthesis.
+3. **PIGMENT** — Options: PIGMENT / ENZYME / MINERAL  
+   Explanation: Chlorophyll is a pigment that gives leaves their green colour.
+
+### CR-S-013 — The Digital Network
+
+Start: `INTERNET`
+
+1. **SERVER** — Options: SERVER / BROWSER / ROUTER  
+   Explanation: Servers host websites and services that we access through the internet.
+2. **DATABASE** — Options: DATABASE / INTERFACE / PASSWORD  
+   Explanation: A server can store and retrieve data from a database.
+3. **QUERY** — Options: QUERY / BACKUP / DOWNLOAD  
+   Explanation: A user or application sends a query to a database to request specific information.
+
+### CR-S-014 — The Medical Laboratory
+
+Start: `LABORATORY`
+
+1. **SPECIMEN** — Options: SPECIMEN / PRESCRIPTION / SYMPTOM  
+   Explanation: A laboratory examines specimens collected from patients.
+2. **MICROSCOPE** — Options: MICROSCOPE / STETHOSCOPE / SCANNER  
+   Explanation: A specialist uses a microscope to examine tiny details in a specimen.
+3. **MAGNIFICATION** — Options: MAGNIFICATION / TEMPERATURE / PRESSURE  
+   Explanation: Magnification makes details visible that cannot be seen with the unaided eye.
+
+### CR-S-015 — The Film Industry
+
+Start: `FILM`
+
+1. **DIRECTOR** — Options: DIRECTOR / PRODUCER / EDITOR  
+   Explanation: The director guides the creative work during film production.
+2. **STORYBOARD** — Options: STORYBOARD / SOUNDTRACK / SUBTITLE  
+   Explanation: A director uses a storyboard to plan shots visually.
+3. **SEQUENCE** — Options: SEQUENCE / CHARACTER / LOCATION  
+   Explanation: A storyboard arranges shots in a visual sequence.
+
+### CR-S-016 — The Banking System
+
+Start: `BANK`
+
+1. **INTEREST** — Options: INTEREST / BALANCE / TRANSFER  
+   Explanation: A bank may charge interest on loans or pay it on certain deposits.
+2. **LOAN** — Options: LOAN / ACCOUNT / CHEQUE  
+   Explanation: Interest is commonly charged on money borrowed as a loan.
+3. **REPAYMENT** — Options: REPAYMENT / WITHDRAWAL / DEPOSIT  
+   Explanation: A borrower makes repayments to return the money borrowed.
+
+### CR-S-017 — The Space Mission
+
+Start: `SATELLITE`
+
+1. **ORBIT** — Options: ORBIT / ATMOSPHERE / GALAXY  
+   Explanation: A satellite travels around a celestial body in an orbit.
+2. **PLANET** — Options: PLANET / COMET / ASTEROID  
+   Explanation: Many satellites orbit a planet.
+3. **MASS** — Options: MASS / VELOCITY / VOLUME  
+   Explanation: A planet has mass, which contributes to its gravitational pull.
+
+### CR-S-018 — The Fashion Studio
+
+Start: `FABRIC`
+
+1. **TEXTURE** — Options: TEXTURE / PATTERN / COLOUR  
+   Explanation: Texture describes the nature of a fabric's surface when touched.
+2. **WEAVE** — Options: WEAVE / DYE / PRINT  
+   Explanation: The way threads are woven affects the fabric's texture.
+3. **LOOM** — Options: LOOM / NEEDLE / SCISSORS  
+   Explanation: A loom is used to weave threads into fabric.
+
+### CR-S-019 — The Library Archive
+
+Start: `LIBRARY`
+
+1. **CATALOGUE** — Options: CATALOGUE / SHELF / COUNTER  
+   Explanation: A library catalogue helps organize and locate library resources.
+2. **CLASSIFICATION** — Options: CLASSIFICATION / CIRCULATION / RESTORATION  
+   Explanation: A catalogue's organization may classify books by subject or other features.
+3. **CATEGORY** — Options: CATEGORY / EDITION / AUTHOR  
+   Explanation: A category groups materials that share a subject or type.
+
+### CR-S-020 — The Ocean Research
+
+Start: `OCEAN`
+
+1. **CURRENT** — Options: CURRENT / WAVE / TIDE  
+   Explanation: Ocean water moves in currents.
+2. **DIRECTION** — Options: DIRECTION / DEPTH / SALINITY  
+   Explanation: Ocean currents are described partly by the direction in which they flow.
+3. **COMPASS** — Options: COMPASS / THERMOMETER / BAROMETER  
+   Explanation: A compass can be used to determine directions during sea navigation.
+
+### CR-S-021 — The Construction Project
+
+Start: `ARCHITECT`
+
+1. **BLUEPRINT** — Options: BLUEPRINT / BRICK / HAMMER  
+   Explanation: An architect uses plans to show a building's design.
+2. **DIMENSION** — Options: DIMENSION / MATERIAL / FOUNDATION  
+   Explanation: A plan specifies the dimensions of parts of a building.
+3. **SCALE** — Options: SCALE / WEIGHT / HEIGHT  
+   Explanation: An architectural drawing uses a scale to represent real dimensions proportionally.
+
+### CR-S-022 — The Language Classroom
+
+Start: `LANGUAGE`
+
+1. **GRAMMAR** — Options: GRAMMAR / ACCENT / VOCABULARY  
+   Explanation: Grammar organizes how sentences are formed in a language.
+2. **RULE** — Options: RULE / EXAMPLE / EXCEPTION  
+   Explanation: Grammar consists of rules that guide how language is used.
+3. **SENTENCE** — Options: SENTENCE / PARAGRAPH / DICTIONARY  
+   Explanation: Grammar rules help us form well-structured sentences.
+
+### CR-S-023 — The Energy Station
+
+Start: `ELECTRICITY`
+
+1. **GENERATOR** — Options: GENERATOR / TRANSFORMER / BATTERY  
+   Explanation: A generator converts other forms of energy into electrical energy.
+2. **TURBINE** — Options: TURBINE / CABLE / SWITCH  
+   Explanation: Steam, water, or wind can turn a turbine connected to a generator.
+3. **ROTATION** — Options: ROTATION / COMBUSTION / CONDUCTION  
+   Explanation: The turbine's rotation drives the generator in many power stations.
+
+### CR-S-024 — The Human Memory
+
+Start: `MEMORY`
+
+1. **ENCODING** — Options: ENCODING / RECALL / FORGETTING  
+   Explanation: Encoding is the process of turning experiences or information into a form that memory can store.
+2. **INFORMATION** — Options: INFORMATION / EMOTION / MOVEMENT  
+   Explanation: During encoding, the brain processes information so it can be retained.
+3. **STORAGE** — Options: STORAGE / ATTENTION / REACTION  
+   Explanation: Storage refers to keeping encoded information in memory over time.
