@@ -69,7 +69,7 @@ test('bridge persists normalized events idempotently without changing XP or lega
 test('bridge history is bounded and rejects events without stable attribution', () => {
   const state={fluentiaHistory:[]};
   const bridge=Bridge.createBridge(()=>state,history=>{state.fluentiaHistory=history;});
-  assert.throws(()=>bridge.recordEvent({correct:true}),/normalized Fluentia result event/);
+  assert.throws(()=>bridge.recordEvent({correct:true}),/stable attribution fields/);
   for(let i=0;i<510;i++) bridge.recordEvent({
     eventId:'bounded:'+i,sessionId:'bounded',itemId:'item-'+i,
     activityId:'wordcraft-vocabulary',sourceActivityId:'vocabulary',
