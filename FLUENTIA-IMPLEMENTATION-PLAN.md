@@ -1,6 +1,6 @@
 # Fluentia — Implementation Plan
 
-Status: **Approved plan; Phase 1 completed and documented; Phase 2 pending**
+Status: **Approved plan; Phase 1 completed; Phase 2 implementation committed, verification pending**
 Target branch: `main`
 Product area: former Arcade / English practice activities
 Working principle: complete each phase as one coherent unit rather than scattering work across many small edits. Do not begin the next phase until the current phase has a documented outcome and its required checks are accounted for.
@@ -109,7 +109,7 @@ Deliverables: a repository-grounded inventory and final activity-to-domain mappi
 
 ### Phase 2 — Shared practice/session architecture
 
-Design and implement the shared orchestration layer based on Phase 1 findings. Define stable activity adapters/contracts, question selection, CEFR filtering, session state, answer evaluation/feedback hooks, progress events, error taxonomy and resume behavior. Preserve activity-specific mechanics where needed. Add unit tests for the contracts and selection rules.
+**Implementation committed; CI verification pending.** The shared engine is in `fluentia-engine.js`, loaded before `app.js`, with its API and contract documented in [FLUENTIA-SESSION-ARCHITECTURE.md](./FLUENTIA-SESSION-ARCHITECTURE.md). It defines canonical domains, CEFR validation, distinct interaction types, activity adapters, single/Section Mixed/Fluentia Mix session scopes, balanced no-repeat selection, answer/feedback hooks, normalized progress events, lifecycle states, serialization/restore and explicit error codes. Dedicated tests are in `tests/fluentia-engine.test.js`. Existing activities, UI, banks and progress storage remain untouched until integration phases. Do not mark this phase verified until unit and browser CI results have been inspected.
 
 ### Phase 3 — Domain integration and content consolidation
 
@@ -149,4 +149,5 @@ Run and resolve relevant unit, content-quality, syntax/static, browser-smoke and
 - Stories separation and Your Review placement: **approved**.
 - The approved plan is recorded in this document. Phase 1's repository audit and canonical activity mapping are documented in [FLUENTIA-CONTENT-INVENTORY.md](./FLUENTIA-CONTENT-INVENTORY.md).
 - Phase 1 was documentation-only: no live Arcade/Fluentia product code or existing activity banks were migrated or modified.
-- **Next: execute Phase 2 — shared practice/session architecture — as one coherent implementation batch, using the verified activity types, progress constraints and test gaps in the inventory.**
+- Phase 2 implementation is committed; see [FLUENTIA-SESSION-ARCHITECTURE.md](./FLUENTIA-SESSION-ARCHITECTURE.md). CI verification is pending.
+- **Next: verify Phase 2 with unit/browser CI, then proceed to Phase 3 — domain integration and content consolidation.****
