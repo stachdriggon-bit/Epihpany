@@ -1,6 +1,6 @@
 # Think Lab Expansion Plan
 
-**Status:** Expansion direction approved; Codebreaker is the current implementation. Word Hunt's first implementation and 48-puzzle bank are prepared and awaiting CI/manual QA. Crossword Quest is paused and preserved for possible future resumption.  
+**Status:** Expansion direction approved; Letter Grid is the current implementation. Word Hunt and Codebreaker have their first implementations and fixed banks on `main`, with final CI/manual QA pending. Crossword Quest is paused and preserved for possible future resumption.  
 **Branch:** `main`
 
 ## Product direction
@@ -65,9 +65,13 @@ Integrate through the existing lazy-loading path. Preserve Think Lab's shared pr
 
 Word Hunt has its first implementation and fixed 48-puzzle content bank on `main`. See [`WORD-HUNT-SPEC.md`](./WORD-HUNT-SPEC.md). Its independent four-level flow, content validator, responsive grid, icon, and lazy-loading integration are in place. The first release contains 12 puzzles per level and 432 target-word placements. CI and manual phone/desktop review remain pending before release acceptance.
 
-## Current game: Codebreaker
+## Previous game: Codebreaker
 
 Codebreaker has its first implementation and fixed 48-cryptogram bank on `main`. See [`CODEBREAKER-SPEC.md`](./CODEBREAKER-SPEC.md). It uses a distinct substitution-cipher deduction loop, its own four-level picker, starter letter keys, optional single-letter hints, a no-penalty retry flow, a dedicated icon, responsive styling, and lazy loading. Its bank/engine tests are included; CI and manual phone/desktop review remain pending.
+
+## Current game: Letter Grid
+
+Letter Grid has its first implementation and fixed 48-puzzle bank on `main`. See [`LETTER-GRID-SPEC.md`](./LETTER-GRID-SPEC.md). It uses a clue-led adjacent-letter path mechanic: players connect neighboring cells in any of eight directions, with turns and backtracking, to spell hidden answers. The first release contains 216 target words, a separate four-level picker, optional starting-letter hints, no-penalty retries, a dedicated outline icon, responsive styling, lazy loading, offline caching, and focused bank/engine/browser tests. CI and manual phone/desktop review remain pending.
 
 ## Paused game: Crossword Quest
 
