@@ -448,6 +448,27 @@ test('main navigation tabs open without uncaught page errors', { timeout: 18 * 6
         assert.match(await codebreaker.innerText(), /APPLE/);
         checkpoint('thinklab: Codebreaker key assignment and message validation verified');
 
+        await page.locator('#thinklab-view [data-cb-levels]').click();
+        await page.locator('#thinklab-view [data-cb-home]').click();
+        await page.locator('#thinklab-view [data-think-game="lettergrid"]').click();
+        assert.ok(requested.some(path => path.endsWith('/letter-grid-bank.js')),
+          'Letter Grid bank should load on demand with Think Lab');
+        assert.ok(requested.some(path => path.endsWith('/letter-grid.js')),
+          'Letter Grid engine should load on demand with Think Lab');
+        assert.equal(await page.evaluate(() => window.EPIPHANY_LETTER_GRID_BANK.validateBank().valid), true,
+          'the complete Letter Grid bank should validate in the browser');
+        await page.locator('#thinklab-view [data-lg-level="easy"]').click();
+        const firstLetterClue = await page.evaluate(() => {
+          const item = window.EPIPHANY_LETTER_GRID_BANK.puzzles.easy[0].words[0];
+          return {id:item.id,path:item.path};
+        });
+        await page.locator('#thinklab-view [data-lg-clue="' + firstLetterClue.id + '"]').click();
+        for (const cell of firstLetterClue.path) {
+          await page.locator('#thinklab-view [data-lg-cell="' + cell + '"]').click();
+        }
+        await page.locator('#thinklab-view .lg-clue.is-found').waitFor({state:'visible',timeout:5000});
+        checkpoint('thinklab: Letter Grid adjacent-letter path and clue validation verified');
+
 
       }
       if (view === 'casebound') {
