@@ -167,7 +167,7 @@ Not yet registered: Soundscape's currently untagged Sound & Picture Match bank a
 
 ## 11. Phase 3 integration — expanded source coverage
 
-The next integration batch adds the following sources without replacing their current interfaces:
+The expanded integration batch now includes the following sources without replacing their current interfaces:
 
 - **Wordcraft — Word Match:** the existing Word of the Day bank supplies level-tagged word/meaning pairs for the matching interaction. The dynamic personal vocabulary adapter reads only saved terms that can be matched to an explicitly level-tagged legacy vocabulary item.
 - **Sentence Studio — Sentence Builder:** the ten existing sentence prompts are tagged A1/A2 and registered as an ordering interaction.
