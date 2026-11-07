@@ -247,17 +247,11 @@ test('navigation intent prefetches optional sections only when the adaptive poli
     visibilityState: 'visible',
     addEventListener(name, fn) { listeners['document:' + name] = fn; },
     createElement(tag) {
-      const element = { tagName: tag, src: '', href: '', async: true, remove() {} };
-      if (tag === 'script') scripts.push(element);
-      return element;
+      const script = { src: '', async: true, remove() {} };
+      scripts.push(script);
+      return script;
     },
-    head: { appendChild(element) {
-      if (element.tagName === 'link') {
-        Promise.resolve().then(() => element.onload && element.onload());
-      } else {
-        requested.push(element.src);
-      }
-    } }
+    head: { appendChild(script) { requested.push(script.src); } }
   };
   const engine = { getPolicy: () => ({
     allowSpeculativePreload: true, deferNonEssentialWork: false
@@ -301,11 +295,17 @@ test('optional lazy loads respect the adaptive concurrency limit', async () => {
     visibilityState: 'visible',
     addEventListener(name, fn) { listeners['document:' + name] = fn; },
     createElement(tag) {
-      const script = { src: '', async: true, remove() {} };
-      scripts.push(script);
-      return script;
+      const element = { tagName: tag, src: '', href: '', async: true, remove() {} };
+      if (tag === 'script') scripts.push(element);
+      return element;
     },
-    head: { appendChild(script) { requested.push(script.src); } }
+    head: { appendChild(element) {
+      if (element.tagName === 'link') {
+        Promise.resolve().then(() => element.onload && element.onload());
+      } else {
+        requested.push(element.src);
+      }
+    } }
   };
   const window = {
     EPIPHANY_ADAPTIVE_ENGINE: { getPolicy: () => ({
@@ -375,18 +375,12 @@ test('explicit navigation bypasses and promotes queued optional loads', async ()
   const document = {
     visibilityState: 'visible',
     addEventListener(name, fn) { listeners['document:' + name] = fn; },
-    createElement(tag) {
-      const element = { tagName: tag, src: '', href: '', async: true, remove() {} };
-      if (tag === 'script') scripts.push(element);
-      return element;
+    createElement() {
+      const script = { src: '', async: true, remove() {} };
+      scripts.push(script);
+      return script;
     },
-    head: { appendChild(element) {
-      if (element.tagName === 'link') {
-        Promise.resolve().then(() => element.onload && element.onload());
-      } else {
-        requested.push(element.src);
-      }
-    } }
+    head: { appendChild(script) { requested.push(script.src); } }
   };
   const window = {
     EPIPHANY_ADAPTIVE_ENGINE: { getPolicy: () => ({
@@ -460,12 +454,18 @@ test('background optional loads pause while constrained, resume once, and never 
   const document = {
     visibilityState: 'visible',
     addEventListener(name, fn) { listeners['document:' + name] = fn; },
-    createElement() {
-      const script = { src: '', async: true, remove() {} };
-      scripts.push(script);
-      return script;
+    createElement(tag) {
+      const element = { tagName: tag, src: '', href: '', async: true, remove() {} };
+      if (tag === 'script') scripts.push(element);
+      return element;
     },
-    head: { appendChild(script) { requested.push(script.src); } }
+    head: { appendChild(element) {
+      if (element.tagName === 'link') {
+        Promise.resolve().then(() => element.onload && element.onload());
+      } else {
+        requested.push(element.src);
+      }
+    } }
   };
   const window = {
     EPIPHANY_ADAPTIVE_ENGINE: {
