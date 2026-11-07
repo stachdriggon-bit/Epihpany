@@ -1269,7 +1269,7 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
         roundMistakes++;
         if(window.EpiphanyThinkLab)window.EpiphanyThinkLab.recordResult('spelling','word-forge',false,false);
         fb.hidden=false;fb.className='tl-feedback is-wrong';
-        fb.innerHTML='<strong>Not forged yet—try again.</strong><p>Check the clue and the order of the letters. Every tile must be used exactly once.</p>'+(roundMistakes>=2&&difficultyForMode('forge').hintLevel>0?'<p>'+esc(adaptiveHint('forge'))+'</p>':'');
+        fb.innerHTML='<strong>Not forged yet—try again.</strong><p>Check the clue and the order of the letters. Every tile must be used exactly once.</p>'+(roundMistakes>=2&&activeDifficulty&&activeDifficulty.hintLevel>0?'<p>'+esc(adaptiveHint('forge'))+'</p>':'');
         return;
       }
       score++;locked=true;if(window.EpiphanyThinkLab)window.EpiphanyThinkLab.recordResult('spelling','word-forge',true,index===pool.length-1);
