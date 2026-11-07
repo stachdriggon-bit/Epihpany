@@ -248,7 +248,7 @@ test('Chain Reaction uses explicit multi-word starts and reveals every link expl
     const correct = optionMatches.find(match => match[2] === current.to);
     assert.ok(correct, 'the canonical answer should appear in the rendered choices');
     harness.click('[data-chain-answer]', {chainAnswer:correct[1]});
-    assert.match(harness.feedback.innerHTML, new RegExp(current.explanation.replace(/[.*+?^${}()|[\\]\\\\]/g, '\\\\$&')));
+    assert.ok(harness.feedback.innerHTML.includes(current.explanation), 'the accepted link should reveal its explanation');
     if (step < 2) assert.match(harness.root.innerHTML, new RegExp('LINK ' + (step + 2) + ' OF 3'));
   }
   assert.match(harness.feedback.innerHTML, /Chain complete!/);
