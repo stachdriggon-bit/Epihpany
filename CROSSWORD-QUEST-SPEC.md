@@ -1,6 +1,6 @@
 # Crossword Quest — Game Specification
 
-**Status:** Core direction approved; implementation foundation committed; Easy starter lexicon added (80 candidate answers across eight themes); 24 reviewed Easy grids and the remaining level banks are pending.  
+**Status:** Core direction approved; implementation foundation committed; Easy candidate lexicon expanded to 144 answers across eight themes; 24 reviewed Easy grids and the remaining level banks are pending.  
 **Branch:** `main`
 
 ## Product direction
@@ -90,7 +90,7 @@ The theme mix remains consistent at every level; the language demand and clue co
 
 - Final scoring and reward integration with shared EPIPHANY progression.
 - Exact persistence/resume behavior for puzzle progress.
-- Final content-bank entries and all 96 reviewed grids. The Easy starter lexicon is a curated candidate pool only; it is not yet a playable puzzle bank.
+- Final content-bank entries and all 96 reviewed grids. The Easy lexicon is a curated candidate pool only; it is not yet a playable puzzle bank.
 - Any optional assistance beyond the approved on-demand clue.
 
 Do not invent scoring or reward changes while implementing the grid interaction. Preserve existing shared progression behavior until its integration is explicitly reviewed.
