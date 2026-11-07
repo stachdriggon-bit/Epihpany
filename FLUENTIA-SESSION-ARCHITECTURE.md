@@ -2,7 +2,7 @@
 
 Implementation date: 2026-11-07
 Branch: `main`
-Status: **Phases 2–3 verified; Phase 4 mixed-session orchestration implemented, CI pending**
+Status: **Phases 2–3 verified; Phase 4 implemented (verification pending); Phase 5 UI implemented (verification pending)**
 Related documents: [Implementation plan](./FLUENTIA-IMPLEMENTATION-PLAN.md), [Phase 1 inventory](./FLUENTIA-CONTENT-INVENTORY.md)
 
 ## 1. Scope delivered
@@ -212,3 +212,19 @@ Phase 4 implements the two approved scopes in the shared engine without creating
 - **Deterministic verification:** tests cover equal domain distribution despite unequal adapter counts, equal activity distribution inside a section, cross-adapter duplicate suppression, strict level matching and sparse-domain fallback.
 
 The existing session counters (`activityUse`, `domainUse`) remain part of the serializable snapshot and can support later result summaries. Phase 4 does not add UI, XP/reward logic, or a new content bank.
+
+## 10. Phase 5 learner interface
+
+The learner-facing Fluentia experience is implemented in the additive `fluentia-ui.js` and `fluentia-ui.css` assets and is mounted as its own `fluentia-view`.
+
+- Desktop and mobile Learn navigation both include Fluentia; Stories and Think Lab retain their existing routes and identity.
+- The landing screen presents the six canonical domains, CEFR practice-level selection, Section Mixed and Fluentia Mix entry points, and a dedicated Your Review area.
+- Each domain opens an activity chooser showing only adapters with content explicitly tagged for the selected level.
+- Section Mixed first asks for a domain, then starts an engine-managed balanced session in that domain. Fluentia Mix starts an engine-managed cross-domain session.
+- Single-activity and review-only sessions use explicit adapter IDs. Review-only adapters are not added to ordinary mixed sessions.
+- The practice screen uses the shared engine for eligibility, item selection and evaluation; it renders controls for the currently integrated interaction families and reports a session summary.
+- Answer events continue through the Phase 3 progress bridge. This UI does not award legacy Arcade XP or change existing reward counters.
+- The UI script and stylesheet are included in the service worker's core offline asset list.
+- `tests/fluentia-ui.test.js` checks the canonical domain set, mixed-mode entry points, engine delegation, review separation and asset/navigation wiring.
+
+CI and browser-level interaction checks remain required before calling Phase 5 verified. Some optional activities are registered only after their existing lazy source modules load; the domain chooser shows the eligible activities currently registered for the chosen CEFR level.
