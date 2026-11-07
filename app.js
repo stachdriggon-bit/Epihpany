@@ -465,7 +465,8 @@
       return LEVELS.some(item => item.id === state.soundMazeCEFR) ? state.soundMazeCEFR : null;
     },
     setSoundMazeCEFR(level) {
-      if (!LEVELS.some(item => item.id === level)) return false;
+      const requestedIndex = LEVELS.findIndex(item => item.id === level);
+      if (requestedIndex < 0 || (!hasDeveloperAccess() && requestedIndex > levelIndex())) return false;
       if (state.soundMazeCEFR !== level) {
         state.soundMazeCEFR = level;
         markPreferencesUpdated();
