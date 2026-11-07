@@ -162,17 +162,19 @@ The additive adapter registry is implemented in `fluentia-adapters.js` and loade
 
 The adapters retain source records and existing renderers. They use explicit CEFR tags only, deterministic content-derived IDs when an eligible legacy record has no ID, and activity-specific evaluators for choice, error identification, typed answers and map coordinates. Registration failure is isolated so the legacy Arcade continues to work. The new contract suite is `tests/fluentia-adapters.test.js`.
 
-Not yet registered: Soundscape's currently untagged Sound & Picture Match bank and lazy Practice Lab sources; Textwise's independent sequencing bank (the Stories corpus must not be reused); dynamic Wordcraft pools; and the cross-domain Your Review selector. These require source-level CEFR/identity and compatibility work before they can safely enter mixed sessions. No UI migration, progress writes, XP changes or Practice Lab statistics migration is part of this batch.
+The legacy Speed Round timer remains renderer-specific; it is represented as a typed-recall adapter without simulating time or rewards in the shared engine. Sound & Picture Match retains its existing A1/A2-only tagged source. Practice Lab speaking/dictation remains a small A1–B2 legacy sample set and is not treated as a full six-level assessment. These require source-level CEFR/identity and compatibility work before they can safely enter mixed sessions. No UI migration, progress writes, XP changes or Practice Lab statistics migration is part of this batch.
 
 
 ## 11. Phase 3 integration — expanded source coverage
 
-The expanded integration batch now includes the following sources without replacing their current interfaces:
+The expanded integration batch now includes 21 canonical adapters when all optional sources are loaded, without replacing existing interfaces:
 
-- **Wordcraft — Word Match:** the existing Word of the Day bank supplies level-tagged word/meaning pairs for the matching interaction. The dynamic personal vocabulary adapter reads only saved terms that can be matched to an explicitly level-tagged legacy vocabulary item.
+- **Wordcraft — Word Match:** the existing Word of the Day bank supplies level-tagged word/meaning pairs for the matching interaction.
+- **Wordcraft — Speed Round:** a distinct typed-recall adapter uses CEFR-tagged Word of the Day items and prioritizes saved/review terms. Its legacy 60-second timer and reward loop remain in the existing renderer. The dynamic personal vocabulary adapter reads only saved terms that can be matched to an explicitly level-tagged legacy vocabulary item.
 - **Sentence Studio — Sentence Builder:** the ten existing sentence prompts are tagged A1/A2 and registered as an ordering interaction.
 - **Sentence Studio — Your Review:** a personalized adapter ranks existing Common Mistakes items using the learner's saved trap and question-error counters. It does not create synthetic questions. Both review adapters are marked review-only and are excluded from ordinary Section Mixed/Fluentia Mix sessions; a dedicated review flow can explicitly select them.
-- **Textwise — sequencing:** `fluentia-textwise-bank.js` contains 18 independently authored short informational/practical sequence tasks, three per CEFR level. It does not import or reuse `STORIES`.
+- **Textwise — sequencing:** `fluentia-textwise-bank.js` contains 36 independently authored short informational/practical sequence tasks, six per CEFR level. It does not import or reuse `STORIES`.
+- **Soundscape — dictation bank:** `fluentia-soundscape-bank.js` supplies 36 authored transcription prompts, six per CEFR level, including C1 and C2; normalized punctuation-insensitive comparison is used for transcription evaluation.
 - **Soundscape — Sound & Picture Match:** the existing twelve spoken-word/picture prompts are tagged A1/A2 and registered as a listening interaction.
 - **Soundscape — Sound Maze:** the reviewed 216-item bank is registered when its existing lazy-loaded content script becomes available; 36 items are exposed per CEFR level across Guided, Steady and Challenge.
 - **Soundscape — Dictation:** Practice Lab's eight A1–B2 sentences are registered when Practice Lab is lazy-loaded. Exact normalized transcription is the adapter's correctness rule.
