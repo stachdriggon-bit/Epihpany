@@ -615,7 +615,7 @@ Start: \`SOUND\`
 
 ### CR-C-007 — Looking Through a Telescope
 
-Start: \`TELESCOPE\`
+Start: \`REFRACTING TELESCOPE\`
 
 1. **LENS** — Options: LENS / MIRROR / TRIPOD  
    Explanation: A refracting telescope uses lenses to gather and focus light.
