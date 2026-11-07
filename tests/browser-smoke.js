@@ -350,7 +350,7 @@ test('main navigation tabs open without uncaught page errors', { timeout: 18 * 6
         checkpoint('thinklab: Sound Maze content, choices and feedback verified');
 
         checkpoint('thinklab: returning to the game list to open Word Forge');
-        await mazeCard.locator('[data-think-back]').click();
+        await page.locator('#thinklab-view [data-think-back]').first().click();
         await page.locator('#thinklab-view [data-think-back]').click();
         await page.locator('#thinklab-view [data-think-game="forge"]').click();
         const forgeModePicker = page.locator('#thinklab-view .tl-mode-picker');
