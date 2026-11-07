@@ -108,11 +108,17 @@
     renderQuestion();
   }
   function promptText(item) {
-    return item.reviewPrompt || item.prompt || item.q || item.text || item.sentence || item.instruction || item.question || item.word || 'Choose the best response.';
+    if (currentQuestion.activityId==='wordcraft-speed-round') return item.meaning || 'Type the word that matches the meaning.';
+    if (currentQuestion.activityId==='soundscape-sound-picture-match') return 'Listen to the word, then choose the matching picture.';
+    if (['soundscape-dictation-bank','soundscape-dictation'].includes(currentQuestion.activityId)) return 'Listen to the sentence, then type what you hear.';
+    if (currentQuestion.activityId==='real-world-speaking-shadowing') return 'Listen to the sentence, then repeat it aloud or type what you said.';
+    if (currentQuestion.activityId==='sentence-studio-sentence-builder') return 'Rebuild the sentence in the correct order.';
+    if (currentQuestion.interactionType==='correction') return item.prompt || 'Select the incorrect word in the sentence.';
+    return item.reviewPrompt || item.prompt || item.q || item.instruction || item.question || item.sentence || item.text || item.word || 'Choose the best response.';
   }
   function optionsFor(item) {
     let rows = Array.isArray(item.answers) ? item.answers : Array.isArray(item.options) ? item.options : null;
-    if (!rows && currentQuestion.interactionType==='correction') rows = Array.isArray(item.words) ? item.words : Array.isArray(item.tokens) ? item.tokens : null;
+    if (!rows && currentQuestion.interactionType==='correction') rows = Array.isArray(item.words) ? item.words : Array.isArray(item.tokens) ? item.tokens : (item.text ? String(item.text).trim().split(/\\s+/) : null);
     if (!rows && currentQuestion.interactionType==='listening' && currentQuestion.activityId==='soundscape-sound-picture-match') {
       const source = activities.find(activity=>activity.id==='soundscape-sound-picture-match');
       rows = (source?.items || []).map(row=>row.word).filter(Boolean);
@@ -122,7 +128,7 @@
   function inputFor(item) {
     const type = currentQuestion.interactionType;
     if (type==='choice'||type==='correction'||(type==='listening' && optionsFor(item))) return null;
-    if (type==='matching') return '<div class="fluentia-answer-grid"><label>Word<input class="fluentia-answer-input" id="fluentia-match-word" autocomplete="off" value="'+esc(item.word||'')+'" aria-label="Word"></label><label>Meaning<input class="fluentia-answer-input" id="fluentia-match-meaning" autocomplete="off" placeholder="Type the matching meaning" aria-label="Matching meaning"></label></div>';
+    if (type==='matching') return '<label>Match the meaning for <b>'+esc(item.word||'this word')+'</b><input class="fluentia-answer-input" id="fluentia-match-meaning" autocomplete="off" placeholder="Type the matching meaning" aria-label="Matching meaning"></label>';
     return '<input class="fluentia-answer-input" id="fluentia-answer" type="text" autocomplete="off" placeholder="'+(type==='speech'?'Say the response, or type what you would say':type==='ordering'?'Enter each step in order, separated by >':type==='map'?'Enter the map coordinate, for example 2,3':'Type your answer')+'" aria-label="Your answer">';
   }
   function renderQuestion() {
@@ -132,16 +138,16 @@
     const choices = opts && ['choice','correction','listening','matching','map'].includes(currentQuestion.interactionType)
       ? '<div class="fluentia-answer-grid">'+opts.map((option,index)=>'<button type="button" class="fluentia-answer" data-answer-index="'+index+'" data-answer-value="'+esc(option)+'"><span class="fluentia-answer-index">'+(index+1)+'</span><span>'+esc(option)+'</span></button>').join('')+'</div>'
       : inputFor(item);
-    const spoken = item.word || item.target || ''; const listen = spoken && window.EpiphanySpeech ? '<button type="button" class="btn btn-ghost" data-fluentia-speak="'+esc(spoken)+'">♫ Listen</button>' : '';
+    const spoken = currentQuestion.activityId==='wordcraft-speed-round' ? '' : (item.word || item.target || item.text || ''); const listen = spoken && window.EpiphanySpeech ? '<button type="button" class="btn btn-ghost" data-fluentia-speak="'+esc(spoken)+'">♫ Listen</button>' : '';
     root.innerHTML = '<div class="fluentia-session"><div class="fluentia-session-top"><button type="button" class="fluentia-back" data-exit>← Leave session</button><span class="pill">'+esc(currentModeLabel)+' · '+esc(selectedLevel)+'</span></div><div class="fluentia-session-progress" role="progressbar" aria-valuemin="0" aria-valuemax="'+currentSession.targetCount+'" aria-valuenow="'+count+'"><span style="width:'+percent+'%"></span></div><article class="fluentia-question-card"><p class="kicker">'+esc(domainDefs.find(d=>d.id===currentQuestion.domain)?.name||currentQuestion.domain)+' · '+esc(interactionLabels[currentQuestion.interactionType]||currentQuestion.interactionType)+'</p><p class="fluentia-question-prompt">Question '+count+' of '+currentSession.targetCount+'</p><h2>'+esc(prompt)+'</h2>'+listen+(item.sub?'<p class="fluentia-question-prompt">'+esc(item.sub)+'</p>':'')+(choices||'<div class="fluentia-empty">This activity does not yet have a compatible response control.</div>')+'<div id="fluentia-feedback" aria-live="polite"></div><div class="fluentia-session-actions">'+(opts&&choices?'<span class="fluentia-question-prompt">Choose one answer</span>':'<button type="button" class="btn" data-submit>Check answer</button>')+'<button type="button" class="btn" data-next hidden>Continue →</button></div></article></div>';
   }
   function submit(answer) {
     if (answered || !currentQuestion) return;
     if (answer === undefined) {
       if (currentQuestion.interactionType==='matching') {
-        const word=$('#fluentia-match-word'), meaning=$('#fluentia-match-meaning');
-        answer={word:word?.value.trim()||'',meaning:meaning?.value.trim()||''};
-        if(!answer.word||!answer.meaning){(word?.value.trim()?meaning:word)?.focus();return;}
+        const meaning=$('#fluentia-match-meaning');
+        answer={word:currentQuestion.item.word||'',meaning:meaning?.value.trim()||''};
+        if(!answer.word||!answer.meaning){meaning?.focus();return;}
       } else {
         const input = $('#fluentia-answer');
         answer = input ? input.value.trim() : '';
@@ -156,8 +162,8 @@
       const explain = translated && feedback.explanationAr ? feedback.explanationAr : feedback.explanation;
       const correctAnswer = feedback.correctAnswer;
       const host = $('#fluentia-feedback');
-      if (host) host.innerHTML = '<div class="fluentia-feedback '+(lastEvent.correct?'':'is-wrong')+'"><strong>'+(lastEvent.correct?'Correct — well done.':'Good attempt. Let’s learn from it.')+'</strong>'+(explain?'<p>'+esc(explain)+'</p>':'')+(correctAnswer&&!lastEvent.correct?'<p><b>Answer:</b> '+esc(Array.isArray(correctAnswer)?correctAnswer.join(' · '):correctAnswer)+'</p>':'')+(feedback.explanationAr?'<button type="button" class="btn btn-ghost fluentia-translation" data-translate>'+ (translated?'Show English':'عرض المساعدة بالعربية')+'</button>':'')+'</div>';
-      root.querySelectorAll('[data-answer-index],#fluentia-answer,[data-submit]').forEach(el=>el.disabled=true);
+      if (host) host.innerHTML = '<div class="fluentia-feedback '+(lastEvent.correct?'':'is-wrong')+'"><strong>'+(lastEvent.correct?'Correct — well done.':'Good attempt. Let’s learn from it.')+'</strong>'+(explain?'<p>'+esc(explain)+'</p>':'')+(correctAnswer&&!lastEvent.correct?'<p><b>Answer:</b> '+esc(Array.isArray(correctAnswer)?correctAnswer.join(' · '):(correctAnswer&&typeof correctAnswer==='object'?Object.values(correctAnswer).join(' — '):correctAnswer))+'</p>':'')+(feedback.explanationAr?'<button type="button" class="btn btn-ghost fluentia-translation" data-translate>'+ (translated?'Show English':'عرض المساعدة بالعربية')+'</button>':'')+'</div>';
+      root.querySelectorAll('[data-answer-index],#fluentia-answer,#fluentia-match-meaning,[data-submit]').forEach(el=>el.disabled=true);
       const next = $('[data-next]'); if(next) next.hidden=false;
       const actions = $('.fluentia-session-actions'); if(actions){const note=document.createElement('span');note.className='fluentia-question-prompt';note.textContent=lastEvent.correct?'✓':'↻';actions.prepend(note);}
     } catch (error) { const host=$('#fluentia-feedback'); if(host)host.textContent=error.message||'Could not check this answer.'; }
