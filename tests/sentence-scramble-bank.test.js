@@ -41,6 +41,7 @@ test('Sentence Scramble bank contains 72 unique reviewed challenges in three equ
       assert.ok(item.sentence && item.sentence.trim(), item.id + ' needs a sentence');
       assert.ok(item.skill && item.skill.trim(), item.id + ' needs a skill note');
       assert.ok(item.explanation && item.explanation.trim(), item.id + ' needs an explanation field');
+      assert.notEqual(normalizedText(item.explanation), normalizedText(item.skill), item.id + ' explanation must teach the sentence rather than repeat the skill note');
       assert.ok(item.prompt && item.prompt.trim(), item.id + ' needs a prompt');
       assert.ok(normalizedTokens(item.sentence).length > 0, item.id + ' must produce tiles');
       assert.ok(Array.isArray(item.acceptedAnswers), item.id + ' acceptedAnswers must be an array');
