@@ -107,7 +107,14 @@
     const letters = [];
     for (let i = 0; i <= steps; i++) letters.push(puzzle().grid[startCell.row + dr * i][startCell.col + dc * i]);
     const selected = letters.join('');
-    const matchedWord = puzzle().words.find(word => word === selected || word === [...selected].reverse().join(''));
+    const directionAllowed = level === 'easy'
+      ? (dr === 0 && dc === 1) || (dr === 1 && dc === 0)
+      : level === 'medium'
+        ? (dr >= 0 && dc >= 0) || (dr === 1 && dc === -1)
+        : true;
+    const matchedWord = directionAllowed
+      ? puzzle().words.find(word => word === selected || word === [...selected].reverse().join(''))
+      : null;
     const answer = matchedWord && !found.has(matchedWord) ? matchedWord : null;
     if (answer) {
       found.add(answer);
@@ -127,7 +134,9 @@
         if (window.EpiphanyThinkLab && typeof window.EpiphanyThinkLab.recordResult === 'function') {
           window.EpiphanyThinkLab.recordResult('vocabulary', 'word-hunt', false, false, {trackAdaptive:false});
         }
-        feedback = 'Not a target word yet. Try another line—there is no penalty.';
+        feedback = directionAllowed
+          ? 'Not a target word yet. Try another line—there is no penalty.'
+          : 'That direction is not available at this level. Try the directions shown above.';
       }
       startCell = null;
     }
