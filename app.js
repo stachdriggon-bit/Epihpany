@@ -204,6 +204,7 @@
         typing: typeof TYPING_QUESTIONS !== 'undefined' ? TYPING_QUESTIONS : [],
         directions: typeof DIRECTION_ITEMS !== 'undefined' ? DIRECTION_ITEMS : [],
         reviewState: state,
+        wordOfDayItems: typeof WOTD_WORDS !== 'undefined' ? WOTD_WORDS : [],
         textwiseSequenceBank: window.EPIPHANY_TEXTWISE_SEQUENCE_BANK || [],
         ...(extra || {})
       });
@@ -4147,7 +4148,21 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
   if (typeof window.EPIPHANY_FLUENTIA_REGISTER_SOURCES === 'function') {
     window.EPIPHANY_FLUENTIA_REGISTER_SOURCES({audioItems: MINI_AUDIO_ITEMS});
   }
-  const MINI_SENTENCES=[{text:'I drink water every morning.',ar:'أشرب الماء كل صباح.'},{text:'She is reading a book.',ar:'هي تقرأ كتابًا.'},{text:'We are going to school.',ar:'نحن ذاهبون إلى المدرسة.'},{text:'He bought a new phone.',ar:'اشترى هاتفًا جديدًا.'},{text:'Please open the window.',ar:'من فضلك افتح النافذة.'},{text:'They play football after school.',ar:'يلعبون كرة القدم بعد المدرسة.'},{text:'I would like a cup of tea.',ar:'أود كوبًا من الشاي.'},{text:'The train arrives at six.',ar:'يصل القطار عند السادسة.'},{text:'My friend lives near the park.',ar:'يعيش صديقي بالقرب من الحديقة.'},{text:'Could you help me, please?',ar:'هل يمكنك مساعدتي من فضلك؟'}];
+  const MINI_SENTENCES=[
+    {id:'SB-A1-01',level:'A1',text:'I drink water every morning.',ar:'أشرب الماء كل صباح.'},
+    {id:'SB-A1-02',level:'A1',text:'She is reading a book.',ar:'هي تقرأ كتابًا.'},
+    {id:'SB-A1-03',level:'A1',text:'We are going to school.',ar:'نحن ذاهبون إلى المدرسة.'},
+    {id:'SB-A1-04',level:'A1',text:'He bought a new phone.',ar:'اشترى هاتفًا جديدًا.'},
+    {id:'SB-A1-05',level:'A1',text:'Please open the window.',ar:'من فضلك افتح النافذة.'},
+    {id:'SB-A1-06',level:'A1',text:'They play football after school.',ar:'يلعبون كرة القدم بعد المدرسة.'},
+    {id:'SB-A1-07',level:'A1',text:'I would like a cup of tea.',ar:'أود كوبًا من الشاي.'},
+    {id:'SB-A1-08',level:'A1',text:'The train arrives at six.',ar:'يصل القطار عند السادسة.'},
+    {id:'SB-A2-01',level:'A2',text:'My friend lives near the park.',ar:'يعيش صديقي بالقرب من الحديقة.'},
+    {id:'SB-A1-09',level:'A1',text:'Could you help me, please?',ar:'هل يمكنك مساعدتي من فضلك؟'}
+  ];
+  if (typeof window.EPIPHANY_FLUENTIA_REGISTER_SOURCES === 'function') {
+    window.EPIPHANY_FLUENTIA_REGISTER_SOURCES({sentenceItems: MINI_SENTENCES});
+  }
   function miniSentenceSetup(){MG.pool=SHUF(MINI_SENTENCES);MG.total=8;MG.i=0;MG.score=0;MG.answered=false;miniSentenceRender();}
   function miniSentenceRender(){const q=MG.pool[MG.i%MG.pool.length];MG.current=q;if(MG.sentenceQuestion!==MG.i){MG.sentenceQuestion=MG.i;MG.tokens=SHUF(q.text.replace(/[.!?]$/,'').split(/\s+/).map((word,id)=>({word,id})));MG.placed=[];MG.answered=false;}miniSteps();$('#game-body').innerHTML='<div class="q-meta"><span class="pill">↔ Sentence Builder</span><span class="q-count">'+(MG.i+1)+' of '+MG.total+'</span></div><h2 class="q-text" id="q-text" tabindex="-1"'+arAttr('رتّب الكلمات ترتيبًا صحيحًا')+'>Put the words in the right order</h2>'+miniTranslateButton()+'<p class="q-sub"'+arAttr('اضغط على الكلمات بالأسفل لتكوين جملة طبيعية. معنى الجملة: '+q.ar)+'>Tap words below to build a natural sentence.</p><div class="mini-sentence-answer" aria-live="polite">'+(MG.placed.length?MG.placed.map((t,i)=>'<button type="button" class="mini-word-token" data-mini-sentence-remove="'+i+'">'+esc(t.word)+'</button>').join(' '):'<span>Tap words to build the sentence…</span>')+'</div><div class="mini-sentence-bank">'+MG.tokens.filter(t=>!MG.placed.some(p=>p.id===t.id)).map(t=>'<button type="button" class="mini-word-token" data-mini-sentence-word="'+t.id+'">'+esc(t.word)+'</button>').join(' ')+'</div><div class="mini-sentence-actions"><button type="button" class="btn" data-mini-sentence-check>Check sentence</button><button type="button" class="btn btn-ghost" data-mini-sentence-reset>Reset</button></div>'+(MG.feedback?'<p class="mini-feedback" data-tx'+arAttr(MG.feedbackAr)+'>'+esc(MG.feedback)+'</p>':'');MG.feedback='';MG.feedbackAr='';}
 
