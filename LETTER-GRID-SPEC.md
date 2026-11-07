@@ -24,9 +24,9 @@ Letter Grid is a clue-led word-path puzzle. It is distinct from Word Hunt: playe
 | Level | Grid | Clues per puzzle | Answer length | Puzzles |
 |---|---:|---:|---:|---:|
 | Easy | 4 × 4 | 3 | 3–4 | 12 |
-| Medium | 5 × 5 | 4 | 4–5 | 12 |
-| Hard | 6 × 6 | 5 | 4–6 | 12 |
-| Expert | 7 × 7 | 6 | 5–7 | 12 |
+| Medium | 6 × 6 | 4 | 4–5 | 12 |
+| Hard | 7 × 7 | 5 | 4–6 | 12 |
+| Expert | 8 × 8 | 6 | 5–7 | 12 |
 
 The first release contains **48 fixed puzzles and 216 target words**. Every clue has one fixed answer and one prevalidated neighboring-cell path. Boards and paths are authored into the bank; gameplay does not generate or randomize puzzles.
 
