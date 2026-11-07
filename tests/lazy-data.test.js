@@ -51,23 +51,21 @@ test('feature data loader does not request large datasets until requested', asyn
     'sentence-scramble-bank.js',
     'word-forge-bank.js',
     'chain-reaction-bank.js',
-    'crossword-quest-bank.js',
-    'think-lab.js',
-    'crossword-quest.js',
     'word-hunt-bank.js',
+    'think-lab.js',
     'word-hunt.js',
     'life-skills.js'
   ]);
   assert.ok(requested.slice(4).every(src => /\?v=.+/.test(src)));
   await context.window.EPIPHANY_LAZY_LOAD('arabic');
-  assert.deepEqual(requested.slice(18).map(src => src.split('?')[0]), [
+  assert.deepEqual(requested.slice(16).map(src => src.split('?')[0]), [
     'data-translation-ar.js',
     'data-translation-ar-fill.js'
   ]);
   assert.ok(requested.slice(18).every(src => /\?v=.+/.test(src)));
   assert.deepEqual(merged, [true]);
   await context.window.EPIPHANY_LAZY_LOAD('chronicle');
-  assert.deepEqual(requested.slice(20).map(src => src.split('?')[0]), ['data-world-registry.js', 'data-world-events.js']);
+  assert.deepEqual(requested.slice(18).map(src => src.split('?')[0]), ['data-world-registry.js', 'data-world-events.js']);
   assert.ok(requested.slice(20).every(src => /\?v=.+/.test(src)));
 });
 
@@ -158,32 +156,28 @@ test('overlapping feature groups share one in-flight script request', async () =
   assert.match(requested[6], /^chain-reaction-bank\.js\?/);
   scripts[6].onload();
   await new Promise(resolve => setImmediate(resolve));
+  assert.equal(requested.length, 7);
+  assert.match(requested[6], /^chain-reaction-bank\\.js\\?/);
+  scripts[6].onload();
+  await new Promise(resolve => setImmediate(resolve));
   assert.equal(requested.length, 8);
-  assert.match(requested[7], /^crossword-quest-bank\.js\?/);
+  assert.match(requested[7], /^word-hunt-bank\\.js\\?/);
   scripts[7].onload();
   await new Promise(resolve => setImmediate(resolve));
   assert.equal(requested.length, 9);
-  assert.match(requested[8], /^think-lab\.js\?/);
+  assert.match(requested[8], /^think-lab\\.js\\?/);
   scripts[8].onload();
   await new Promise(resolve => setImmediate(resolve));
   assert.equal(requested.length, 10);
-  assert.match(requested[9], /^crossword-quest\.js\?/);
+  assert.match(requested[9], /^word-hunt\\.js\\?/);
   scripts[9].onload();
   await new Promise(resolve => setImmediate(resolve));
   assert.equal(requested.length, 11);
-  assert.match(requested[10], /^word-hunt-bank\.js\?/);
+  assert.match(requested[10], /^life-skills\\.js\\?/);
   scripts[10].onload();
-  await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested.length, 12);
-  assert.match(requested[11], /^word-hunt\.js\?/);
-  scripts[11].onload();
-  await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested.length, 13);
-  assert.match(requested[12], /^life-skills\.js\?/);
-  scripts[12].onload();
 
   await Promise.all([thinkLab, lifeSkills]);
-  assert.equal(requested.length, 13);
+  assert.equal(requested.length, 11);
 });
 
 test('failed lazy scripts are removed and can be retried', async () => {
@@ -447,20 +441,20 @@ test('explicit navigation bypasses and promotes queued optional loads', async ()
   assert.equal(requested[7].split('?')[0], 'chain-reaction-bank.js');
   scripts[7].onload();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[8].split('?')[0], 'crossword-quest-bank.js');
+  assert.equal(requested[6].split('?')[0], 'chain-reaction-bank.js');
+  scripts[6].onload();
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(requested[7].split('?')[0], 'word-hunt-bank.js');
+  scripts[7].onload();
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(requested[8].split('?')[0], 'think-lab.js');
   scripts[8].onload();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[9].split('?')[0], 'think-lab.js');
+  assert.equal(requested[9].split('?')[0], 'word-hunt.js');
   scripts[9].onload();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[10].split('?')[0], 'crossword-quest.js');
+  assert.equal(requested[10].split('?')[0], 'life-skills.js');
   scripts[10].onload();
-  await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[11].split('?')[0], 'word-hunt-bank.js');
-  scripts[11].onload();
-  await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[12].split('?')[0], 'word-hunt.js');
-  scripts[12].onload();
   await explicit;
   scripts[0].onload();
 });
@@ -548,29 +542,29 @@ test('background optional loads pause while constrained, resume once, and never 
   assert.equal(requested[7].split('?')[0], 'chain-reaction-bank.js');
   scripts[7].onload();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[8].split('?')[0], 'crossword-quest-bank.js');
+  assert.equal(requested[6].split('?')[0], 'chain-reaction-bank.js');
+  scripts[6].onload();
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(requested[7].split('?')[0], 'word-hunt-bank.js');
+  scripts[7].onload();
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(requested[8].split('?')[0], 'think-lab.js');
   scripts[8].onload();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[9].split('?')[0], 'think-lab.js');
   scripts[9].onload();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[10].split('?')[0], 'crossword-quest.js');
   scripts[10].onload();
-  await new Promise(resolve => setImmediate(resolve));
-  scripts[11].onload();
-  await new Promise(resolve => setImmediate(resolve));
-  scripts[12].onload();
   await new Promise(resolve => setImmediate(resolve));
 
   policy = { ...policy, allowSpeculativePreload: false, deferNonEssentialWork: true };
   const explicit = context.window.EPIPHANY_LAZY_LOAD('world');
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[13].split('?')[0], 'data-world.js',
+  assert.equal(requested[11].split('?')[0], 'data-world.js',
     'explicit navigation must bypass background deferral');
-  scripts[13].onload();
+  scripts[11].onload();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[14].split('?')[0], 'data-world-sprites.js');
-  scripts[14].onload();
+  assert.equal(requested[12].split('?')[0], 'data-world-sprites.js');
+  scripts[12].onload();
   await explicit;
 });
 
