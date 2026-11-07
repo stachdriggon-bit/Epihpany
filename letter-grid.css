@@ -1,0 +1,56 @@
+/* Letter Grid — responsive adjacent-letter word-path puzzle. */
+.lg-shell{width:min(100%,980px);margin:0 auto;color:var(--text,#243047)}
+.lg-shell .tl-game-head{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:0 0 14px}
+.lg-shell .tl-game-head .tl-eyebrow{margin-left:auto}
+.lg-panel{background:var(--surface,#fff);border:1px solid var(--border,#dfe4ec);border-radius:22px;padding:clamp(16px,3vw,28px);box-shadow:0 12px 36px rgba(28,39,62,.06)}
+.lg-kicker{font-size:.72rem;font-weight:800;letter-spacing:.12em;color:var(--accent,#7462b8)}
+.lg-panel h2{margin:7px 0 8px;font-size:clamp(1.35rem,3vw,1.9rem);color:var(--heading,#202b43)}
+.lg-intro{color:var(--muted,#667085);line-height:1.65;margin:0}
+.lg-level-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:20px}
+.lg-level-card{display:flex;flex-direction:column;align-items:flex-start;gap:8px;min-height:125px;padding:16px;border:1px solid var(--border,#dfe4ec);border-radius:16px;background:var(--surface-soft,#f8f8fc);color:inherit;text-align:left;cursor:pointer;transition:border-color .16s,transform .16s}
+.lg-level-card:hover:not(:disabled){border-color:var(--accent,#7462b8);transform:translateY(-2px)}
+.lg-level-card:disabled{opacity:.5;cursor:not-allowed}
+.lg-level-card strong{font-size:1.05rem}
+.lg-level-card>span:last-child{font-size:.8rem;color:var(--muted,#667085)}
+.lg-level-size{font-size:.78rem;font-weight:750;color:var(--accent,#7462b8)}
+.lg-progress-row,.lg-score-row,.lg-clues-head{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.lg-progress{font-size:.82rem;color:var(--muted,#667085);font-variant-numeric:tabular-nums}
+.lg-score-row{margin:15px 0;padding:10px 13px;border-radius:12px;background:var(--surface-soft,#f6f6fa)}
+.lg-score-row strong{font-size:1.08rem;color:var(--heading,#202b43)}
+.lg-score-row strong span,.lg-score-row>span{font-size:.8rem;font-weight:500;color:var(--muted,#667085)}
+.lg-game-layout{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(250px,.85fr);gap:clamp(16px,3vw,26px);align-items:start}
+.lg-board-wrap{display:flex;justify-content:center;width:100%;padding:clamp(8px,2vw,15px);border-radius:18px;background:var(--board-frame,#eef0f7)}
+.lg-board{display:grid;grid-template-columns:repeat(var(--lg-size),minmax(0,1fr));grid-template-rows:repeat(var(--lg-size),minmax(0,1fr));gap:4px;width:min(100%,510px);aspect-ratio:1;padding:5px;border-radius:12px;background:var(--board-line,#d4d9e5);touch-action:manipulation;user-select:none}
+.lg-cell{display:flex;align-items:center;justify-content:center;min-width:0;min-height:0;padding:0;border:0;border-radius:6px;background:var(--cell,#fff);color:var(--heading,#26324a);font-size:clamp(.75rem,2.3vw,1.12rem);font-weight:800;line-height:1;cursor:pointer;transition:background .12s,color .12s,box-shadow .12s}
+.lg-cell:disabled{opacity:1;cursor:default}
+.lg-cell:not(:disabled):hover{background:#eee9fb}
+.lg-cell.is-selected{background:#e7ddff;color:#49377d;box-shadow:inset 0 0 0 2px #8b75c9}
+.lg-cell.is-hint{box-shadow:inset 0 0 0 3px #d99a39;background:#fff1d9}
+.lg-cell.is-found{background:#dcefe4;color:#205b3d;box-shadow:inset 0 0 0 1px #a9d4ba}
+.lg-path-preview{display:flex;flex-direction:column;gap:5px;margin-top:11px;padding:10px 12px;border-radius:10px;background:var(--surface-soft,#f6f6fa);min-height:58px}
+.lg-path-label{font-size:.65rem;font-weight:800;letter-spacing:.12em;color:var(--muted,#758096)}
+.lg-path-preview strong{font-size:.85rem;color:var(--heading,#26324a);letter-spacing:.05em}
+.lg-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:11px}
+.lg-actions button:disabled{opacity:.45;cursor:not-allowed}
+.lg-clues{display:flex;flex-direction:column;gap:8px}
+.lg-clues-head{margin-bottom:3px}
+.lg-clues-head strong{color:var(--heading,#26324a)}
+.lg-clues-head span{font-size:.78rem;color:var(--muted,#667085)}
+.lg-clue{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;padding:11px 12px;border:1px solid var(--border,#dfe4ec);border-radius:12px;background:var(--surface-soft,#f8f8fc);color:var(--heading,#26324a);text-align:left;cursor:pointer}
+.lg-clue-main{display:flex;flex-direction:column;gap:4px;min-width:0}
+.lg-clue-main strong{font-size:.86rem;line-height:1.4;font-weight:650}
+.lg-clue-main small{font-size:.7rem;color:var(--muted,#667085)}
+.lg-clue-state{flex:none;font-size:.7rem;font-weight:750;color:var(--muted,#667085)}
+.lg-clue.is-active{border-color:var(--accent,#7462b8);background:#eee9fb}
+.lg-clue.is-active .lg-clue-state{color:var(--accent,#7462b8)}
+.lg-clue.is-found{border-color:#b7d9c3;background:#e8f4ec;cursor:default}
+.lg-clue.is-found .lg-clue-state{color:#286344}
+.lg-feedback{margin:13px 0 0;padding:11px 13px;border-radius:10px;background:var(--surface-soft,#f6f6fa);color:var(--muted,#526078);font-size:.9rem;line-height:1.5}
+.lg-complete{margin-top:18px;padding:16px;border-radius:14px;background:#e8f4ec;border:1px solid #c6e2d0;color:#245a3c}
+.lg-complete p,.lg-finish p{line-height:1.6}
+.lg-complete .tl-next{margin-top:8px}
+.lg-finish{padding-block:clamp(24px,6vw,48px)}
+.lg-finish p{color:var(--muted,#667085)}
+.lg-cell:focus-visible,.lg-level-card:focus-visible,.lg-clue:focus-visible{outline:3px solid var(--accent,#7462b8);outline-offset:2px}
+@media(max-width:760px){.lg-level-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.lg-level-card{min-height:110px}.lg-game-layout{grid-template-columns:1fr}.lg-board{width:min(100%,460px)}.lg-clues{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.lg-clues-head{grid-column:1/-1}}
+@media(max-width:420px){.lg-panel{padding:13px}.lg-board{gap:2px;padding:4px}.lg-cell{border-radius:4px;font-size:clamp(.7rem,4vw,.95rem)}.lg-clues{grid-template-columns:1fr}.lg-score-row>span{max-width:120px;text-align:right}}
