@@ -196,3 +196,18 @@ test('Sentence Builder preserves ordering interaction and exact token order', ()
   assert.equal(builder.evaluate(item, ['I','drink','water','every','morning.']).correct, true);
   assert.equal(builder.evaluate(item, ['I','water','drink','every','morning.']).correct, false);
 });
+
+test('personal review adapters read the latest learner state after account-state replacement', () => {
+  const sources = expandedFixture();
+  sources.games.vocabulary.questions.push({
+    id:'v-a1-banana',level:'A1',word:['banana','a long yellow fruit'],
+    answers:['a long yellow fruit','a round fruit'],correct:0
+  });
+  let currentState = {words:[['apple','a round fruit']],review:[],mistakeTrapErrors:{},mistakeQuestionErrors:{}};
+  sources.reviewState = () => currentState;
+  const adapters = AdapterFactory.createAdapters(sources);
+  const review = adapters.find(item => item.id === 'wordcraft-personal-review');
+  assert.deepEqual(review.getItems({level:'A1'}).map(item => item.reviewPrompt), ['apple']);
+  currentState = {words:[['banana','a long yellow fruit']],review:[],mistakeTrapErrors:{},mistakeQuestionErrors:{}};
+  assert.deepEqual(review.getItems({level:'A1'}).map(item => item.reviewPrompt), ['banana']);
+});
