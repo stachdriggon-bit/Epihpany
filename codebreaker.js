@@ -50,13 +50,13 @@
     const answer=puzzle().answer,cipher=puzzle().cipher;
     for(let i=0;i<cipher.length;i++){
       const coded=cipher[i],plain=answer[i];
-      if(/[A-Z]/.test(coded)&&!mapping[coded]){
+      if(/[A-Z]/.test(coded)&&!mapping[coded]&&!Object.keys(mapping).some(code=>mapping[code]===plain)){
         mapping[coded]=plain;locked.add(coded);active='';
         feedback='Key revealed: '+coded+' = '+plain+'. Use it to narrow down the message.';
         renderPuzzle();return;
       }
     }
-    feedback='All letter keys are already filled in.';renderPuzzle();
+    feedback='The remaining letters are already assigned elsewhere. Clear an incorrect key before using another hint.';renderPuzzle();
   }
   function checkMessage(){
     const item=puzzle(),missing=uniqueCipher().filter(ch=>!mapping[ch]);
