@@ -11,7 +11,7 @@ test('Letter Grid contains four independent levels and 48 fixed puzzles',()=>{
   assert.deepEqual(Object.keys(bank.levels),['easy','medium','hard','expert']);
   assert.equal(bank.validateBank().valid,true,bank.validateBank().errors.join('\n'));
   assert.equal(Object.values(bank.puzzles).flat().length,48);
-  assert.equal(Object.values(bank.puzzles).flatMap(p=>p.words).length,216);
+  assert.equal(Object.values(bank.puzzles).flat().flatMap(p=>p.words).length,216);
   for(const [level,cfg] of Object.entries(bank.levels)){
     let diagonalSteps=0,turns=0;
     assert.equal(bank.puzzles[level].length,cfg.count,level);
