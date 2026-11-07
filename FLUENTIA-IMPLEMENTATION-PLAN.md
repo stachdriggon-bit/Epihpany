@@ -1,6 +1,6 @@
 # Fluentia — Implementation Plan
 
-Status: **Approved plan; implementation not yet started**
+Status: **Approved plan; Phase 1 completed and documented; Phase 2 pending**
 Target branch: `main`
 Product area: former Arcade / English practice activities
 Working principle: complete each phase as one coherent unit rather than scattering work across many small edits. Do not begin the next phase until the current phase has a documented outcome and its required checks are accounted for.
@@ -147,5 +147,6 @@ Run and resolve relevant unit, content-quality, syntax/static, browser-smoke and
 - Six domains and names: **approved**, including **Textwise** replacing Storyline.
 - Two-scope Mixed model: **approved**.
 - Stories separation and Your Review placement: **approved**.
-- This document records the plan only. No Fluentia product code or existing Arcade activities have been migrated by creating this plan.
-- **Next: execute Phase 1 as one complete repository audit and commit its inventory/mapping document before starting Phase 2.**
+- The approved plan is recorded in this document. Phase 1's repository audit and canonical activity mapping are documented in [FLUENTIA-CONTENT-INVENTORY.md](./FLUENTIA-CONTENT-INVENTORY.md).
+- Phase 1 was documentation-only: no live Arcade/Fluentia product code or existing activity banks were migrated or modified.
+- **Next: execute Phase 2 — shared practice/session architecture — as one coherent implementation batch, using the verified activity types, progress constraints and test gaps in the inventory.**
