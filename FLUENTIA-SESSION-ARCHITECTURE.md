@@ -169,9 +169,11 @@ Not yet registered: Soundscape's currently untagged Sound & Picture Match bank a
 
 The next integration batch adds the following sources without replacing their current interfaces:
 
-- **Wordcraft — Word Match:** the twelve existing picture/meaning pairs are given explicit A1/A2 metadata in the adapter source and exposed as a matching interaction. The dynamic personal vocabulary adapter reads only saved terms that can be matched to an explicitly level-tagged legacy vocabulary item.
+- **Wordcraft — Word Match:** the existing Word of the Day bank supplies level-tagged word/meaning pairs for the matching interaction. The dynamic personal vocabulary adapter reads only saved terms that can be matched to an explicitly level-tagged legacy vocabulary item.
+- **Sentence Studio — Sentence Builder:** the ten existing sentence prompts are tagged A1/A2 and registered as an ordering interaction.
 - **Sentence Studio — Your Review:** a personalized adapter ranks existing Common Mistakes items using the learner's saved trap and question-error counters. It does not create synthetic questions.
 - **Textwise — sequencing:** `fluentia-textwise-bank.js` contains 18 independently authored short informational/practical sequence tasks, three per CEFR level. It does not import or reuse `STORIES`.
+- **Soundscape — Sound & Picture Match:** the existing twelve spoken-word/picture prompts are tagged A1/A2 and registered as a listening interaction.
 - **Soundscape — Sound Maze:** the reviewed 216-item bank is registered when its existing lazy-loaded content script becomes available; 36 items are exposed per CEFR level across Guided, Steady and Challenge.
 - **Soundscape — Dictation:** Practice Lab's eight A1–B2 sentences are registered when Practice Lab is lazy-loaded. Exact normalized transcription is the adapter's correctness rule.
 - **Real World — Speaking & Shadowing:** the same eight Practice Lab sentences are exposed as speech tasks. The score is explicitly a recognized-word coverage estimate, not a pronunciation-quality score.
