@@ -157,15 +157,23 @@ test('overlapping feature groups share one in-flight script request', async () =
   scripts[6].onload();
   await new Promise(resolve => setImmediate(resolve));
   assert.equal(requested.length, 8);
-  assert.match(requested[7], /^think-lab\.js\?/);
+  assert.match(requested[7], /^crossword-quest-bank\.js\?/);
   scripts[7].onload();
   await new Promise(resolve => setImmediate(resolve));
   assert.equal(requested.length, 9);
-  assert.match(requested[8], /^life-skills\.js\?/);
+  assert.match(requested[8], /^think-lab\.js\?/);
   scripts[8].onload();
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(requested.length, 10);
+  assert.match(requested[9], /^crossword-quest\.js\?/);
+  scripts[9].onload();
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(requested.length, 11);
+  assert.match(requested[10], /^life-skills\.js\?/);
+  scripts[10].onload();
 
   await Promise.all([thinkLab, lifeSkills]);
-  assert.equal(requested.length, 9);
+  assert.equal(requested.length, 11);
 });
 
 test('failed lazy scripts are removed and can be retried', async () => {
@@ -343,8 +351,14 @@ test('optional lazy loads respect the adaptive concurrency limit', async () => {
   assert.equal(requested[7].split('?')[0], 'chain-reaction-bank.js');
   scripts[7].onload();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[8].split('?')[0], 'think-lab.js');
+  assert.equal(requested[8].split('?')[0], 'crossword-quest-bank.js');
   scripts[8].onload();
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(requested[9].split('?')[0], 'think-lab.js');
+  scripts[9].onload();
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(requested[10].split('?')[0], 'crossword-quest.js');
+  scripts[10].onload();
 });
 
 test('explicit navigation bypasses and promotes queued optional loads', async () => {
@@ -411,8 +425,14 @@ test('explicit navigation bypasses and promotes queued optional loads', async ()
   assert.equal(requested[7].split('?')[0], 'chain-reaction-bank.js');
   scripts[7].onload();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[8].split('?')[0], 'think-lab.js');
+  assert.equal(requested[8].split('?')[0], 'crossword-quest-bank.js');
   scripts[8].onload();
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(requested[9].split('?')[0], 'think-lab.js');
+  scripts[9].onload();
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(requested[10].split('?')[0], 'crossword-quest.js');
+  scripts[10].onload();
   await explicit;
   scripts[0].onload();
 });
@@ -494,8 +514,14 @@ test('background optional loads pause while constrained, resume once, and never 
   assert.equal(requested[7].split('?')[0], 'chain-reaction-bank.js');
   scripts[7].onload();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[8].split('?')[0], 'think-lab.js');
+  assert.equal(requested[8].split('?')[0], 'crossword-quest-bank.js');
   scripts[8].onload();
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(requested[9].split('?')[0], 'think-lab.js');
+  scripts[9].onload();
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(requested[10].split('?')[0], 'crossword-quest.js');
+  scripts[10].onload();
   await new Promise(resolve => setImmediate(resolve));
 
   policy = { ...policy, allowSpeculativePreload: false, deferNonEssentialWork: true };
