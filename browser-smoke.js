@@ -225,7 +225,7 @@ test('main navigation tabs open without uncaught page errors', async t => {
         assert.ok(requested.some(path => path.endsWith('/crossword-quest.js')), 'Crossword Quest engine should load with Think Lab');
         const crosswordCard = page.locator('#thinklab-view [data-think-game="crossword"]');
         await crosswordCard.waitFor({state:'visible',timeout:5000});
-        assert.ok(await crosswordCard.locator('.tl-case-icon svg').count(), 'Crossword Quest should receive its dedicated outline icon');
+        await crosswordCard.locator('.tl-case-icon svg').waitFor({state:'attached',timeout:5000});
         await crosswordCard.click();
         await page.locator('#thinklab-view .cq-shell').waitFor({state:'visible',timeout:5000});
         assert.equal(await page.locator('#thinklab-view [data-cq-level]').count(), 4, 'Crossword Quest should present its four independent levels');
