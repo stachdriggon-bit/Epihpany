@@ -144,8 +144,8 @@ test('rejects invalid item levels and invalid evaluator results with explicit er
     getItems: () => [{ id: 'x', prompt: 'Missing CEFR' }],
     evaluate: () => ({ correct: true })
   });
-  const session = engine.createSession({ mode: 'single', activityId: 'bad-item', level: 'A1' });
-  assert.throws(() => engine.selectNext(session), error => error.code === Fluentia.errorCodes.INVALID_ITEM);
+  assert.throws(() => engine.createSession({ mode: 'single', activityId: 'bad-item', level: 'A1' }),
+    error => error.code === Fluentia.errorCodes.INVALID_ITEM);
   const other = Fluentia.createEngine();
   other.registerActivity({
     id: 'bad-eval', domain: 'textwise', interactionType: 'choice',
