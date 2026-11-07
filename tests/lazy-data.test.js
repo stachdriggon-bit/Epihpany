@@ -49,6 +49,7 @@ test('feature data loader does not request large datasets until requested', asyn
     'odd-one-out-bank.js',
     'word-connections-bank.js',
     'sentence-scramble-bank.js',
+    'word-forge-bank.js',
     'think-lab.js',
     'life-skills.js'
   ]);
@@ -83,14 +84,14 @@ test('initial HTML defers stories and World data and keeps loader in offline she
   const lazyAssets = sw.match(/const LAZY_ASSETS = \[([^\]]*)\];/)?.[1] || '';
   assert.ok(coreAssets, 'service worker should define core offline assets');
   assert.ok(lazyAssets, 'service worker should define lazy offline assets');
-  for (const asset of ['data-stories.js', 'data-world.js', 'data-world-sprites.js', 'sound-maze-bank.js', 'sound-maze-content.js', 'odd-one-out-bank.js', 'sentence-scramble-bank.js', 'think-lab.js', 'practice-lab.js', 'life-skills.js', 'data-translation-ar.js']) {
+  for (const asset of ['data-stories.js', 'data-world.js', 'data-world-sprites.js', 'sound-maze-bank.js', 'sound-maze-content.js', 'odd-one-out-bank.js', 'sentence-scramble-bank.js', 'word-forge-bank.js', 'think-lab.js', 'practice-lab.js', 'life-skills.js', 'data-translation-ar.js']) {
     assert.ok(!coreAssets.includes("'./" + asset + "'"), asset + ' should not be a core startup asset');
   }
   for (const asset of ['resonance.css', 'life-skills.css']) {
     assert.ok(!coreAssets.includes("'./" + asset + "'"), asset + ' must not be part of the core cache');
     assert.ok(lazyAssets.includes("'./" + asset + "'"), asset + ' should be cached as a lazy offline asset');
   }
-  for (const asset of ['data-stories.js', 'data-world.js', 'data-world-registry.js', 'data-world-events.js', 'data-world-sprites.js', 'sound-maze-bank.js', 'sound-maze-content.js', 'odd-one-out-bank.js', 'sentence-scramble-bank.js', 'think-lab.js', 'practice-lab.js', 'life-skills.js', 'language-detective-investigation.js']) {
+  for (const asset of ['data-stories.js', 'data-world.js', 'data-world-registry.js', 'data-world-events.js', 'data-world-sprites.js', 'sound-maze-bank.js', 'sound-maze-content.js', 'odd-one-out-bank.js', 'sentence-scramble-bank.js', 'word-forge-bank.js', 'think-lab.js', 'practice-lab.js', 'life-skills.js', 'language-detective-investigation.js']) {
     assert.ok(lazyAssets.includes("'./" + asset + "'"), asset + ' should be cached as a lazy offline asset');
   }
   assert.match(sw, /const cached = await cache\.match\(request\);\s*if \(cached\) return cached;/);
@@ -151,7 +152,7 @@ test('overlapping feature groups share one in-flight script request', async () =
   scripts[6].onload();
 
   await Promise.all([thinkLab, lifeSkills]);
-  assert.equal(requested.length, 7);
+  assert.equal(requested.length, 8);
 });
 
 test('failed lazy scripts are removed and can be retried', async () => {
