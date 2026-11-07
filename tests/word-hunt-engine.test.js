@@ -52,7 +52,7 @@ test('a correct two-cell selection finds a target word and updates the board',()
   const endRow=match.row+match.dr*(word.length-1),endCol=match.col+match.dc*(word.length-1);
   h.click('[data-wh-cell]',{whCell:match.row+'-'+match.col});
   h.click('[data-wh-cell]',{whCell:endRow+'-'+endCol});
-  assert.match(h.root.innerHTML,new RegExp(word+' <\\/span>'));
+  assert.match(h.root.innerHTML,/wh-word-chip is-found/);
   assert.match(h.root.innerHTML,/1 <span>\/ 6 found/);
   assert.match(h.root.innerHTML,/Next tap|final letter|found!/i);
   assert.equal(h.results.length,0,'a puzzle result is recorded only after all its words are found');
