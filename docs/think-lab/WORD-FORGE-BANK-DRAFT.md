@@ -36,34 +36,34 @@
 | WF-G-023 | To take something or someone from one place to another. | R Y A C R | **CARRY** | To carry means to hold and move something from one place to another. | Practical verbs |
 | WF-G-024 | To go on a trip to another place, often for pleasure or work. | V A R T E L | **TRAVEL** | Travel means going from one place to another, usually over some distance. | Common verbs |
 
-## 2. Steady — 24 challenges (pending review)
+## 2. Steady — 24 approved challenges
 
 | ID | Clue | Letters | Answer | Explanation | Skill |
 |---|---|---|---|---|---|
-| WF-S-001 | A heavy object dropped into water to keep a boat in one place. | A N C H O R | **ANCHOR** | An anchor holds a boat in position by gripping the bottom. | Transport and sailing |
-| WF-S-002 | A warm covering placed over a bed or around a person. | B L A N K E T | **BLANKET** | A blanket helps keep someone warm. | Home and comfort |
-| WF-S-003 | A device or tool used to show direction. | C O M P A S S | **COMPASS** | A compass uses a magnetic needle to indicate direction. | Navigation |
-| WF-S-004 | A very dry region that receives little rainfall. | D E S E R T | **DESERT** | Deserts receive very little precipitation; not all are hot. | Geography and climate |
-| WF-S-005 | The gathering of crops when they are ready. | H A R V E S T | **HARVEST** | A harvest is the process or result of collecting mature crops. | Farming |
-| WF-S-006 | A long trip from one place to another. | J O U R N E Y | **JOURNEY** | A journey is travel, especially over a considerable distance. | Travel vocabulary |
-| WF-S-007 | A portable light with a handle, often used outdoors at night. | L A N T E R N | **LANTERN** | A lantern protects a light source and makes it easier to carry. | Everyday objects |
-| WF-S-008 | To find the size, amount, or degree of something using a tool or standard. | M E A S U R E | **MEASURE** | To measure is to determine dimensions or quantity. | Practical verbs |
-| WF-S-009 | Feeling worried or afraid about what may happen. | N E R V O U S | **NERVOUS** | Nervous describes worry, anxiety, or unease. | Feelings |
-| WF-S-010 | To watch or notice something carefully. | O B S E R V E | **OBSERVE** | To observe is to pay close attention in order to notice details. | Thinking skills |
-| WF-S-011 | Able to wait calmly or deal with difficulties without becoming upset. | P A T I E N T | **PATIENT** | A patient person can wait calmly; the same word can also mean someone receiving medical care. | Personality and multiple meanings |
-| WF-S-012 | The standard of something when compared with other things. | Q U A L I T Y | **QUALITY** | Quality describes how good or bad something is. | Abstract nouns |
-| WF-S-013 | To save someone from danger or harm. | R E S C U E | **RESCUE** | To rescue someone is to bring them out of danger. | Action verbs |
-| WF-S-014 | A place that gives protection from bad weather or danger. | S H E L T E R | **SHELTER** | A shelter provides protection or a safe place. | Safety and places |
-| WF-S-015 | The movement of vehicles, people, or goods along roads or routes. | T R A F F I C | **TRAFFIC** | Traffic refers to vehicles or the movement of people and goods. | Transport |
-| WF-S-016 | Different from what is usual or expected. | U N U S U A L | **UNUSUAL** | Unusual describes something uncommon or unexpected. | Descriptive adjectives |
-| WF-S-017 | A small group of houses and buildings in the countryside. | V I L L A G E | **VILLAGE** | A village is a small settlement, usually smaller than a town. | Communities |
-| WF-S-018 | To speak very quietly so that only nearby people can hear. | W H I S P E R | **WHISPER** | To whisper is to speak in a very low voice. | Communication verbs |
-| WF-S-019 | A state in which different parts are in the correct proportions or stable. | B A L A N C E | **BALANCE** | Balance can describe physical stability or a fair distribution. | Abstract nouns |
-| WF-S-020 | Wanting to know or learn more about something. | C U R I O U S | **CURIOUS** | A curious person is eager to discover or understand things. | Personality adjectives |
-| WF-S-021 | To take something to a person or place. | D E L I V E R | **DELIVER** | To deliver is to bring or transport something to its destination. | Practical verbs |
-| WF-S-022 | To keep someone or something safe from harm or damage. | P R O T E C T | **PROTECT** | To protect is to defend against danger or harm. | Safety verbs |
-| WF-S-023 | To think carefully about something that happened or something you learned. | R E F L E C T | **REFLECT** | To reflect is to think deeply or carefully about an experience or idea. | Thinking skills |
-| WF-S-024 | The outside or top layer of something. | S U R F A C E | **SURFACE** | A surface is the outermost part of an object or material. | Science and description |
+| WF-S-001 | A heavy device lowered into water to stop a boat from drifting away. | C H A R O N | **ANCHOR** | An anchor holds a boat in position by gripping the bottom. | Transport and sailing |
+| WF-S-002 | A thick piece of cloth used to keep a person warm or cover a bed. | K T A B L E N | **BLANKET** | A blanket provides warmth and can be placed over a bed or around a person. | Home and comfort |
+| WF-S-003 | An instrument with a magnetic needle that points north and helps people find directions. | S P O C M A S | **COMPASS** | A compass uses a magnetic needle to indicate direction. | Navigation |
+| WF-S-004 | A region that receives very little rain and often has little plant life. | T S E R E D | **DESERT** | Deserts receive very little precipitation; not all deserts are hot. | Geography and climate |
+| WF-S-005 | The process of collecting crops when they are ready. | V T R A H E S | **HARVEST** | A harvest is the process or result of collecting mature crops. | Farming |
+| WF-S-006 | A trip from one place to another, especially a long one. | R O J U N E Y | **JOURNEY** | A journey is a trip, often involving considerable distance. | Travel vocabulary |
+| WF-S-007 | A portable light, often protected by glass or a case, used outdoors or during power cuts. | N T A R L E N | **LANTERN** | A lantern protects a light source and makes it easier to carry. | Everyday objects |
+| WF-S-008 | To find the size, length, weight, or amount of something. | S A R M E U E | **MEASURE** | To measure is to determine dimensions or quantity. | Practical verbs |
+| WF-S-009 | Worried or uneasy about something that may happen. | V O R U S E N | **NERVOUS** | Nervous describes worry, anxiety, or unease. | Feelings |
+| WF-S-010 | To watch something carefully in order to notice details. | V S O B E R E | **OBSERVE** | To observe is to pay close attention to something. | Thinking skills |
+| WF-S-011 | Able to wait calmly without becoming annoyed. | T E P N I A T | **PATIENT** | A patient person can wait calmly; the same word can also mean someone receiving medical care. | Personality and multiple meanings |
+| WF-S-012 | How good or bad something is; the standard of something. | T Y A Q U I L | **QUALITY** | Quality describes the standard of something or how good it is. | Abstract nouns |
+| WF-S-013 | To save someone from a dangerous situation. | C U E R S E | **RESCUE** | To rescue someone is to bring them out of danger. | Action verbs |
+| WF-S-014 | A place that protects people from bad weather or danger. | T E H R L E S | **SHELTER** | A shelter provides protection or a safe place. | Safety and places |
+| WF-S-015 | Vehicles moving along roads, or the movement of vehicles on roads. | F I C T R A F | **TRAFFIC** | Traffic commonly refers to vehicles travelling along roads. | Transport |
+| WF-S-016 | Not common or expected; different from what is normal. | S U A N U L | **UNUSUAL** | Unusual describes something uncommon or unexpected. | Descriptive adjectives |
+| WF-S-017 | A small community of homes in the countryside, usually smaller than a town. | L A G V E L I | **VILLAGE** | A village is a small settlement, usually smaller than a town. | Communities |
+| WF-S-018 | To speak so quietly that your voice is difficult for people farther away to hear. | P E H W S R I | **WHISPER** | To whisper is to speak in a very low voice. | Communication verbs |
+| WF-S-019 | A condition in which something stays steady because its parts or weight are evenly distributed. | C A L A N B E | **BALANCE** | Balance can describe physical stability or a fair distribution. | Abstract nouns |
+| WF-S-020 | Eager to learn or find out more about something. | O U C I R U S | **CURIOUS** | A curious person is eager to discover or understand things. | Personality adjectives |
+| WF-S-021 | To take or bring something to a person or place. | V E D L I R E | **DELIVER** | To deliver is to bring or transport something to its destination. | Practical verbs |
+| WF-S-022 | To keep someone or something safe from harm or damage. | T O R C T E P | **PROTECT** | To protect is to defend against danger or harm. | Safety verbs |
+| WF-S-023 | To think carefully about an experience or idea. | F E C L R T E | **REFLECT** | To reflect is to think deeply or carefully about an experience or idea. | Thinking skills |
+| WF-S-024 | The outside or upper layer of an object or material. | F A C E R U S | **SURFACE** | A surface is the outermost part of an object or material. | Science and description |
 
 ## 3. Challenge — 24 challenges (pending review)
 
@@ -97,6 +97,6 @@
 ## Review record
 
 - Guided: 24/24 reviewed and approved by the user; saved in this document.
-- Steady: 24 challenges; review pending.
+- Steady: 24/24 reviewed and approved by the user; saved in this document.
 - Challenge: 24 challenges; review pending.
 - No game code has been changed as part of this content approval.
