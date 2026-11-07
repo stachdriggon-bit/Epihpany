@@ -25,7 +25,7 @@
   const interactionLabels = {choice:'Choose an answer',correction:'Find the correction',typed:'Written answer',ordering:'Put in order',matching:'Match the pairs',map:'Map response',listening:'Listening task',speech:'Speaking practice',dynamic:'Adaptive practice'};
   const symbols = {choice:'◉',correction:'✎',typed:'Aa',ordering:'↔',matching:'⤳',map:'⌖',listening:'♫',speech:'◖',dynamic:'✦'};
   let engine = null, activities = [], selectedLevel = 'A1', currentDomain = null, currentSession = null, currentModeLabel = '', currentMode = '', currentQuestion = null, answered = false, lastEvent = null;
-  let translated = false;
+  let translated = false, choosingSectionMixed = false;
   const levelNames = {A1:'Beginner',A2:'Elementary',B1:'Intermediate',B2:'Upper intermediate',C1:'Advanced',C2:'Proficient'};
   function getProgress() { try { return window.__epiphanyReadProgress?.() || {}; } catch { return {}; } }
   function currentLevel() {
@@ -59,7 +59,7 @@
   }
   function renderHome() {
     refreshActivities();
-    currentDomain = null;
+    currentDomain = null; choosingSectionMixed = false;
     const globalCount = activities.filter(a => !a.reviewOnly && a.items.length).length;
     root.innerHTML = '<div class="fluentia-hero"><div><p class="kicker">YOUR ENGLISH PRACTICE SPACE</p><h1 id="fluentia-title">Fluentia</h1><p>Build fluency through short activities across six connected areas. Choose one skill, practise within a domain, or let Fluentia create a balanced session.</p></div><div class="fluentia-hero-mark" aria-hidden="true">F</div></div>'+toolbar()+'<div class="fluentia-modes">'+modeCard('section-mixed')+modeCard('fluentia-mix')+'</div><div class="fluentia-section-heading"><div><h2>Explore the six domains</h2><p>Each domain brings related English skills together.</p></div></div><div class="fluentia-domain-grid">'+domainDefs.map(domain=>domainMarkup(domain,activities.filter(a=>a.domain===domain.id&&!a.reviewOnly&&a.items.length).length)).join('')+'</div>'+reviewPanel();
     bindToolbar();
@@ -76,7 +76,7 @@
     refreshActivities();
     const domain = domainDefs.find(item=>item.id===domainId);
     if (!domain) return renderHome();
-    currentDomain = domainId;
+    currentDomain = domainId; choosingSectionMixed = false;
     const items = activities.filter(a=>a.domain===domainId&&!a.reviewOnly&&a.items.length);
     root.innerHTML = '<button type="button" class="fluentia-back" data-back>← All Fluentia</button><div class="fluentia-domain-intro"><span class="fluentia-domain-icon">'+domain.icon+'</span><div><p class="kicker">FLUENTIA DOMAIN</p><h2>'+domain.name+'</h2><p>'+domain.desc+'</p></div></div><div class="fluentia-section-heading"><div><h2>Choose an activity</h2><p>Every activity uses your selected '+selectedLevel+' level.</p></div></div>'+(items.length?'<div class="fluentia-activity-list">'+items.map(activityCard).join('')+'</div>':'<div class="fluentia-empty">No activities have eligible content for '+selectedLevel+' yet. Choose another level or return later.</div>');
   }
@@ -162,11 +162,11 @@
   }
   function handleClick(event) {
     const domain=event.target.closest('[data-domain]');
-    if(domain){renderDomain(domain.dataset.domain);return;}
+    if(domain){if(choosingSectionMixed){choosingSectionMixed=false;startSession('section-mixed',{domain:domain.dataset.domain});}else renderDomain(domain.dataset.domain);return;}
     if(event.target.closest('[data-back]')){currentSession=null;renderHome();return;}
     if(event.target.closest('[data-exit]')){leaveSession();return;}
     const mode=event.target.closest('[data-mode]');
-    if(mode){if(mode.dataset.mode==='section-mixed'){root.innerHTML='<button type="button" class="fluentia-back" data-back>← All Fluentia</button><div class="fluentia-section-heading"><div><h2>Choose a domain for Section Mixed</h2><p>Your session will stay within that domain.</p></div></div><div class="fluentia-domain-grid">'+domainDefs.map(domain=>domainMarkup(domain,activities.filter(a=>a.domain===domain.id&&!a.reviewOnly&&a.items.length).length)).join('')+'</div>';return;}startSession('fluentia-mix');return;}
+    if(mode){if(mode.dataset.mode==='section-mixed'){choosingSectionMixed=true;root.innerHTML='<button type="button" class="fluentia-back" data-back>← All Fluentia</button><div class="fluentia-section-heading"><div><h2>Choose a domain for Section Mixed</h2><p>Your session will stay within that domain.</p></div></div><div class="fluentia-domain-grid">'+domainDefs.map(domain=>domainMarkup(domain,activities.filter(a=>a.domain===domain.id&&!a.reviewOnly&&a.items.length).length)).join('')+'</div>';return;}startSession('fluentia-mix');return;}
     const activity=event.target.closest('[data-activity]');
     if(activity){startSession('single',{activityId:activity.dataset.activity,label:activityNames[activity.dataset.activity]||'Practice'});return;}
     const answer=event.target.closest('[data-answer-index]');
