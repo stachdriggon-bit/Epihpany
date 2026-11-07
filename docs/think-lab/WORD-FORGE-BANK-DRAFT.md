@@ -55,7 +55,7 @@
 | WF-S-013 | To save someone from a dangerous situation. | C U E R S E | **RESCUE** | To rescue someone is to bring them out of danger. | Action verbs |
 | WF-S-014 | A place that protects people from bad weather or danger. | T E H R L E S | **SHELTER** | A shelter provides protection or a safe place. | Safety and places |
 | WF-S-015 | Vehicles moving along roads, or the movement of vehicles on roads. | F I C T R A F | **TRAFFIC** | Traffic commonly refers to vehicles travelling along roads. | Transport |
-| WF-S-016 | Not common or expected; different from what is normal. | S U A N U L | **UNUSUAL** | Unusual describes something uncommon or unexpected. | Descriptive adjectives |
+| WF-S-016 | Not common or expected; different from what is normal. | S U A N U L U | **UNUSUAL** | Unusual describes something uncommon or unexpected. | Descriptive adjectives |
 | WF-S-017 | A small community of homes in the countryside, usually smaller than a town. | L A G V E L I | **VILLAGE** | A village is a small settlement, usually smaller than a town. | Communities |
 | WF-S-018 | To speak so quietly that your voice is difficult for people farther away to hear. | P E H W S R I | **WHISPER** | To whisper is to speak in a very low voice. | Communication verbs |
 | WF-S-019 | A condition in which something stays steady because its parts or weight are evenly distributed. | C A L A N B E | **BALANCE** | Balance can describe physical stability or a fair distribution. | Abstract nouns |
