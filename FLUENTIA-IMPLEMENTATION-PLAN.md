@@ -1,6 +1,6 @@
 # Fluentia — Implementation Plan
 
-Status: **Approved plan; Phase 1 completed; Phase 2 implementation committed, verification pending**
+Status: **Approved plan; Phase 1 completed; Phase 2 verified; Phase 3 integration in progress**
 Target branch: `main`
 Product area: former Arcade / English practice activities
 Working principle: complete each phase as one coherent unit rather than scattering work across many small edits. Do not begin the next phase until the current phase has a documented outcome and its required checks are accounted for.
@@ -109,11 +109,11 @@ Deliverables: a repository-grounded inventory and final activity-to-domain mappi
 
 ### Phase 2 — Shared practice/session architecture
 
-**Implementation committed; CI verification pending.** The shared engine is in `fluentia-engine.js`, loaded before `app.js`, with its API and contract documented in [FLUENTIA-SESSION-ARCHITECTURE.md](./FLUENTIA-SESSION-ARCHITECTURE.md). It defines canonical domains, CEFR validation, distinct interaction types, activity adapters, single/Section Mixed/Fluentia Mix session scopes, balanced no-repeat selection, answer/feedback hooks, normalized progress events, lifecycle states, serialization/restore and explicit error codes. Dedicated tests are in `tests/fluentia-engine.test.js`. Existing activities, UI, banks and progress storage remain untouched until integration phases. Do not mark this phase verified until unit and browser CI results have been inspected.
+**Verified complete.** The shared engine is in `fluentia-engine.js`, loaded before `app.js`, with its API and contract documented in [FLUENTIA-SESSION-ARCHITECTURE.md](./FLUENTIA-SESSION-ARCHITECTURE.md). It defines canonical domains, CEFR validation, distinct interaction types, activity adapters, single/Section Mixed/Fluentia Mix session scopes, balanced no-repeat selection, answer/feedback hooks, normalized progress events, lifecycle states, serialization/restore and explicit error codes. Dedicated tests are in `tests/fluentia-engine.test.js`. Existing activities, UI, banks and progress storage remain untouched until integration phases. The user confirmed all required checks passed before Phase 3 began.
 
 ### Phase 3 — Domain integration and content consolidation
 
-Integrate existing activities under the six approved domains. Preserve useful banks and distinctive question types, consolidate duplicate flows without duplicating source content, and make all eligible content available through the shared architecture. Retain compatibility with existing progress and saved review data.
+**In progress.** The first integration batch adds `fluentia-adapters.js` and registers ten adapters over the existing core, Common Mistakes, Spot the Mistake, Type It and Directions banks. It preserves each bank's native answer semantics, filters strictly by CEFR, generates deterministic IDs only where legacy items lack IDs, and leaves existing renderers and source records unchanged. The adapter engine is registered additively at app startup; legacy Arcade remains the fallback if registration fails. Soundscape's untagged mini-game bank, Practice Lab's lazy-loaded samples, Textwise's independent sequencing content, dynamic Wordcraft pools and cross-domain Your Review remain excluded until their source metadata and mechanics are ready. No learner-facing UI or progress migration is enabled in this batch. Continue Phase 3 by integrating those remaining sources and an explicit compatibility bridge before starting Mixed modes.
 
 ### Phase 4 — Section Mixed and Fluentia Mix
 
@@ -149,5 +149,5 @@ Run and resolve relevant unit, content-quality, syntax/static, browser-smoke and
 - Stories separation and Your Review placement: **approved**.
 - The approved plan is recorded in this document. Phase 1's repository audit and canonical activity mapping are documented in [FLUENTIA-CONTENT-INVENTORY.md](./FLUENTIA-CONTENT-INVENTORY.md).
 - Phase 1 was documentation-only: no live Arcade/Fluentia product code or existing activity banks were migrated or modified.
-- Phase 2 implementation is committed; see [FLUENTIA-SESSION-ARCHITECTURE.md](./FLUENTIA-SESSION-ARCHITECTURE.md). CI verification is pending.
-- **Next: verify Phase 2 with unit/browser CI, then proceed to Phase 3 — domain integration and content consolidation.****
+- Phase 2 is verified complete; see [FLUENTIA-SESSION-ARCHITECTURE.md](./FLUENTIA-SESSION-ARCHITECTURE.md).
+- Phase 3 is underway; the first adapter batch and contract tests are committed. Remaining content families are listed above and in the Phase 1 inventory.**
