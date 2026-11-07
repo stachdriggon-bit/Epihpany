@@ -47,6 +47,13 @@ test('Word Hunt direction progression is enforced by the content validator', () 
   assert.equal(bank.validatePuzzle(expert,'expert').valid,true);
 });
 
+test('Word Hunt bank validation reports malformed records without throwing', () => {
+  const malformed = {...bank.puzzles, easy:[null, ...bank.puzzles.easy.slice(1)]};
+  assert.equal(bank.validateBank(malformed).valid,false);
+  const malformedPuzzle = {...bank.puzzles.easy[0], words:[null, ...bank.puzzles.easy[0].words.slice(1)]};
+  assert.equal(bank.validatePuzzle(malformedPuzzle,'easy').valid,false);
+});
+
 test('Word Hunt rejects missing, duplicated, and malformed target entries', () => {
   const original = bank.puzzles.easy[0];
   assert.equal(bank.validatePuzzle({...original,words:original.words.slice(1)},'easy').valid,false);
