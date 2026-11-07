@@ -354,28 +354,6 @@
   let selectedTrainingMode = null;
   let mode = null, index = 0, score = 0, locked = false, clueCount = 0, oddHintStep = 0, ladderPath = [], ladderWordNote = null, ladderMistakeRecorded = false, roundMistakes = 0, activePool = null, activeDifficulty = null, forgePlaced = [], scramblePlaced = [], connectionSelected = [], chainStepIndex = 0, chainPath = [];
 
-  rounds.forge = [
-    {prompt:'Forge the word from the letter tiles.',clue:'A small animal often kept as a pet.',letters:'TAC',answerWord:'cat',explain:'CAT uses all three letters and matches the clue.'},
-    {prompt:'Forge the word from the letter tiles.',clue:'A place where you borrow books.',letters:'YBRRALI',answerWord:'library',explain:'A LIBRARY is a place to borrow books, read, or study.'},
-    {prompt:'Forge the word from the letter tiles.',clue:'The opposite of noisy.',letters:'TEQUI',answerWord:'quiet',explain:'QUIET means making little or no noise.'},
-    {prompt:'Forge the word from the letter tiles.',clue:'A person whose job is to help students learn.',letters:'CEHTARE',answerWord:'teacher',explain:'A TEACHER helps people learn.'},
-    {prompt:'Forge the word from the letter tiles.',clue:'Move through the air.',letters:'YFL',answerWord:'fly',explain:'To FLY is to move through the air.'},
-    {prompt:'Forge the word from the letter tiles.',clue:'Feeling pleased or content.',letters:'PYHAP',answerWord:'happy',explain:'HAPPY describes a feeling of pleasure or contentment.'},
-    {prompt:'Forge the word from the letter tiles.',clue:'A large grey animal with a trunk.',letters:'PHEALENT',answerWord:'elephant',explain:'An ELEPHANT is a large mammal with a trunk.'},
-    {prompt:'Forge the word from the letter tiles.',clue:'A bright object in the night sky.',letters:'TARS',answerWord:'star',explain:'A STAR is a luminous object in space.'},
-    {prompt:'Forge the word from the letter tiles.',clue:'The planet we live on.',letters:'HRAET',answerWord:'earth',explain:'EARTH is the planet on which we live.'},
-    {prompt:'Forge the word from the letter tiles.',clue:'The time when the sun goes down.',letters:'TUNSES',answerWord:'sunset',explain:'SUNSET is the time when the sun disappears below the horizon.'},
-    {prompt:'Forge the word from the letter tiles.',clue:'A person who writes books or stories.',letters:'RUTHOA',answerWord:'author',explain:'An AUTHOR writes books, articles, or other texts.'},
-    {prompt:'Forge the word from the letter tiles.',clue:'To pay attention to a sound.',letters:'TENSIL',answerWord:'listen',explain:'To LISTEN is to give attention to sounds.'},
-    {prompt:'Forge the word from the letter tiles.',clue:'The opposite of arrive.',letters:'VEALE',answerWord:'leave',explain:'LEAVE means to go away from a place; it is the opposite of arrive in this context.'},
-    {prompt:'Forge the word from the letter tiles.',clue:'A place where plants and flowers grow.',letters:'DGNARE',answerWord:'garden',explain:'A GARDEN is an area where plants and flowers are grown.'},
-    {prompt:'Forge the word from the letter tiles.',clue:'A journey by air.',letters:'GHILTF',answerWord:'flight',explain:'A FLIGHT is a journey made by aircraft.'},
-    {prompt:'Forge the word from the letter tiles.',clue:'The meal eaten in the morning.',letters:'KAFSRETAB',answerWord:'breakfast',explain:'BREAKFAST is the first meal of the day.'},
-    {prompt:'Forge the word from the letter tiles.',clue:'A place where you can see many kinds of animals.',letters:'OZO',answerWord:'zoo',explain:'A ZOO is a place where animals are kept for people to observe.'},
-    {prompt:'Forge the word from the letter tiles.',clue:'A device used to take photographs.',letters:'AMREAC',answerWord:'camera',explain:'A CAMERA captures photographs or video.'},
-    {prompt:'Forge the word from the letter tiles.',clue:'A person who designs or builds machines and systems.',letters:'NIGENEER',answerWord:'engineer',explain:'An ENGINEER designs, builds, or maintains systems and structures.'},
-    {prompt:'Forge the word from the letter tiles.',clue:'To make something better.',letters:'RIPVOME',answerWord:'improve',explain:'To IMPROVE is to make something better.'}
-  ];
   rounds.chain = [
     {prompt:'Continue the word association chain: RAIN → ?',options:['umbrella','desert','pillow'],answer:0,explain:'An umbrella is commonly used to stay dry in the rain.'},
     {prompt:'Continue the word association chain: BOOK → ?',options:['oven','library','helmet'],answer:1,explain:'A library is a place associated with books.'},
@@ -697,6 +675,11 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
         return { ...item, words, explain: item.explanation || item.skill || '' };
       });
     }
+    if (id === 'forge') {
+      const bank = window.EPIPHANY_WORD_FORGE_BANK;
+      const trainingMode = ['guided','steady','challenge'].includes(level) ? level : 'steady';
+      return bank && typeof bank.selectRound === 'function' ? bank.selectRound(trainingMode) : [];
+    }
     if (id === 'connections') {
       const bank = window.EPIPHANY_WORD_CONNECTIONS_BANK;
       const trainingMode = ['guided','steady','challenge'].includes(level) ? level : 'steady';
@@ -705,7 +688,7 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
     if (level === 'guided' && guidedRounds[id]) return guidedRounds[id];
     if (level === 'challenge' && challengeRounds[id]) return challengeRounds[id];
     if (id === 'wordladder') return generateWordLadders(level, 12);
-    if (['forge','connections','chain'].includes(id)) return rounds[id];
+    if (['connections','chain'].includes(id)) return rounds[id];
     return rounds[id];
   }
 
@@ -1025,11 +1008,11 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
     const pool = activePool || getRoundPool(mode);
     const item = pool[index % pool.length];
     const difficulty = activeDifficulty || difficultyForMode(mode);
-    const roundTarget = mode === 'maze' ? 12 : (mode === 'connections' || mode === 'scramble') ? 24 : ({guided:8,steady:10,challenge:12}[difficulty.level] || 10);
+    const roundTarget = mode === 'maze' ? 12 : (mode === 'forge' || mode === 'connections' || mode === 'scramble') ? 24 : ({guided:8,steady:10,challenge:12}[difficulty.level] || 10);
     const roundNote = mode === 'odd' && pool.length < roundTarget
       ? '<p class="tl-game-instruction">This round is shorter than the '+roundTarget+'-question target because only '+pool.length+' distinct questions are currently available at this level.</p>'
-      : (mode === 'connections' || mode === 'scramble') && pool.length < roundTarget
-        ? '<p class="tl-game-instruction">This round is shorter than the 24-challenge target because the selected bank has fewer reviewed questions available.</p>'
+      : (mode === 'forge' || mode === 'connections' || mode === 'scramble') && pool.length < roundTarget
+        ? '<p class="tl-game-instruction">This round is shorter than the 24-challenge target because the selected reviewed bank has fewer questions available.</p>'
         : mode === 'translator' && item.adaptiveFallback
         ? '<p class="tl-game-instruction tl-translator-fallback" role="status">Your current level is '+esc(item.requestedCEFRLevel)+'. A '+esc(item.requestedCEFRLevel)+' question bank is not available yet, so this round uses '+esc(item.cefrLevel)+' practice for now.</p>'
         : '';
@@ -1158,6 +1141,10 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
       root.innerHTML = '<div class="tl-game-card"><div class="tl-game-kicker">SENTENCE SCRAMBLE</div><h2>QUESTION BANK NOT READY</h2><p class="tl-game-instruction">The reviewed Sentence Scramble bank could not be loaded completely. No sample questions will be shown.</p><button type="button" class="tl-back" data-think-back>← Choose difficulty</button><button type="button" class="tl-back" data-think-home>Think Lab home</button></div>';
       return;
     }
+    if (id === 'forge' && (!activePool.length || activePool.length !== 24 || !window.EPIPHANY_WORD_FORGE_BANK || typeof window.EPIPHANY_WORD_FORGE_BANK.validateBank !== 'function' || !window.EPIPHANY_WORD_FORGE_BANK.validateBank().valid)) {
+      root.innerHTML = '<div class="tl-game-card"><div class="tl-game-kicker">WORD FORGE</div><h2>QUESTION BANK NOT READY</h2><p class="tl-game-instruction">The approved 72-challenge Word Forge bank could not be loaded completely. No sample questions will be shown.</p><button type="button" class="tl-back" data-think-back>← Choose difficulty</button><button type="button" class="tl-back" data-think-home>Think Lab home</button></div>';
+      return;
+    }
     if (id === 'connections' && (!activePool.length || !window.EPIPHANY_WORD_CONNECTIONS_BANK)) {
       root.innerHTML = '<div class="tl-game-card"><div class="tl-game-kicker">WORD CONNECTIONS</div><h2>QUESTION BANK NOT READY</h2><p class="tl-game-instruction">The reviewed Word Connections bank could not be loaded. No sample questions will be shown.</p><button type="button" class="tl-back" data-think-back>← Choose difficulty</button><button type="button" class="tl-back" data-think-home>Think Lab home</button></div>';
       return;
@@ -1271,11 +1258,25 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
     if(e.target.closest('[data-scramble-reset]')){scramblePlaced=Array(scramblePlaced.length).fill(null);refreshPuzzleBoard('scramble');return;}
     if(e.target.closest('[data-forge-check]')){
       if(locked)return;
-      const pool=activePool||getRoundPool('forge'),item=pool[index%pool.length],answer=forgePlaced.every(x=>x!==null)?forgePlaced.map(i=>[...item.letters][i]).join('').toLowerCase():'',fb=root.querySelector('#tl-feedback');
-      if(answer!==item.answerWord){roundMistakes++;fb.hidden=false;fb.className='tl-feedback is-wrong';fb.innerHTML='<strong>Not forged yet—try again.</strong><p>Use each letter tile once and check the clue. You can move letters between slots.</p>'+(roundMistakes>=2?'<p>'+esc(adaptiveHint('forge'))+'</p>':'');return;}
+      const pool=activePool||getRoundPool('forge'),item=pool[index%pool.length],fb=root.querySelector('#tl-feedback');
+      if(!forgePlaced.every(x=>x!==null)){
+        fb.hidden=false;fb.className='tl-feedback is-wrong';
+        fb.innerHTML='<strong>Complete the word first.</strong><p>Fill every letter slot before checking your answer. You can still move or return any tile.</p>';
+        return;
+      }
+      const answer=forgePlaced.map(i=>[...item.letters][i]).join('').toLowerCase();
+      if(answer!==item.answerWord){
+        roundMistakes++;
+        if(window.EpiphanyThinkLab)window.EpiphanyThinkLab.recordResult('spelling','word-forge',false,false);
+        fb.hidden=false;fb.className='tl-feedback is-wrong';
+        fb.innerHTML='<strong>Not forged yet—try again.</strong><p>Check the clue and the order of the letters. Every tile must be used exactly once.</p>'+(roundMistakes>=2&&difficultyForMode('forge').hintLevel>0?'<p>'+esc(adaptiveHint('forge'))+'</p>':'');
+        return;
+      }
       score++;locked=true;if(window.EpiphanyThinkLab)window.EpiphanyThinkLab.recordResult('spelling','word-forge',true,index===pool.length-1);
       root.querySelectorAll('[data-forge-tile],[data-forge-slot],[data-forge-check],[data-forge-reset]').forEach(el=>el.disabled=true);
-      fb.hidden=false;fb.className='tl-feedback is-correct';fb.innerHTML='<strong>✓ Word forged!</strong><p><b>'+esc(item.answerWord.toUpperCase())+'</b> — '+esc(item.explain)+'</p>';const next=root.querySelector('[data-think-next]');if(next)next.hidden=false;return;
+      fb.hidden=false;fb.className='tl-feedback is-correct';
+      fb.innerHTML='<strong>✓ Word forged!</strong><p><b>'+esc(item.answerWord.toUpperCase())+'</b> — '+esc(item.explain)+'</p><p><strong>Skill:</strong> '+esc(item.skill)+'</p>';
+      const next=root.querySelector('[data-think-next]');if(next)next.hidden=false;return;
     }
     if(e.target.closest('[data-scramble-check]')){
       if(locked)return;
