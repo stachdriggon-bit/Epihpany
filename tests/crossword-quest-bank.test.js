@@ -15,7 +15,7 @@ test('Crossword Quest declares four independent levels with 24 puzzles each', ()
   const bank = loadBank();
   assert.deepEqual(Object.keys(bank.levels), ['easy', 'medium', 'hard', 'expert']);
   for (const level of Object.values(bank.levels)) assert.equal(level.count, 24);
-  assert.deepEqual(bank.validateBank().counts, { easy: 0, medium: 0, hard: 0, expert: 0 });
+  assert.equal(JSON.stringify(bank.validateBank().counts), JSON.stringify({ easy: 0, medium: 0, hard: 0, expert: 0 }));
   assert.equal(bank.validateBank().valid, false, 'an empty draft bank must never be treated as playable');
 });
 
@@ -35,7 +35,7 @@ test('Crossword Quest validator accepts a complete, correctly numbered 3x3 cross
       { number: 5, direction: 'across', row: 2, col: 0, answer: 'TEN', clue: 'The number after nine' }
     ]
   };
-  assert.deepEqual(bank.validatePuzzle(puzzle, 3), { valid: true, errors: [] });
+  const result = bank.validatePuzzle(puzzle, 3);\n  assert.equal(result.valid, true, result.errors.join('\\n'));\n  assert.equal(result.errors.length, 0);
 });
 
 test('Crossword Quest validator rejects inconsistent crossings and missing clues', () => {
