@@ -1,0 +1,83 @@
+/* Fluentia Phase 5 — calm domain hub and practice flow */
+.fluentia-page{max-width:1120px}
+.fluentia-hero{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(220px,.75fr);gap:24px;align-items:center;padding:clamp(22px,4vw,36px);border:1.5px solid var(--line);border-radius:28px;background:linear-gradient(125deg,#fff 0%,#f2efff 100%);margin-bottom:28px}
+.fluentia-hero .kicker{color:#6654c8}
+.fluentia-hero h1{font-size:clamp(38px,5vw,58px);margin:5px 0 12px}
+.fluentia-hero p{max-width:55ch;color:var(--ink-2)}
+.fluentia-hero-mark{justify-self:end;width:150px;aspect-ratio:1;border-radius:34px;background:#e9e5ff;color:#5b49c8;display:grid;place-items:center;font:800 70px/1 var(--display);transform:rotate(4deg);box-shadow:inset 0 0 0 1px rgba(91,73,200,.12)}
+.fluentia-toolbar{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin:24px 0}
+.fluentia-level-control{display:flex;align-items:center;gap:10px;color:var(--ink-2);font-weight:700}
+.fluentia-level-control select{min-height:44px;padding:0 36px 0 13px;border:1.5px solid var(--line);border-radius:13px;background:var(--surface);color:var(--ink);font:700 15px var(--body)}
+.fluentia-modes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin:18px 0 36px}
+.fluentia-mode-card{display:flex;flex-direction:column;align-items:flex-start;gap:10px;min-height:190px;padding:22px;border:1.5px solid var(--line);border-radius:22px;background:var(--surface);text-align:left;transition:transform .15s,border-color .15s,box-shadow .15s}
+.fluentia-mode-card:hover{transform:translateY(-2px);border-color:var(--violet);box-shadow:0 8px 24px rgba(33,27,77,.07)}
+.fluentia-mode-card.is-global{background:#f2efff;border-color:#d8d0ff}
+.fluentia-mode-icon{display:grid;place-items:center;width:42px;height:42px;border-radius:13px;background:var(--violet-soft);color:#5947c5;font-size:23px;font-weight:800}
+.fluentia-mode-card strong{font:800 22px/1.15 var(--display)}
+.fluentia-mode-card p{color:var(--ink-2);font-size:15px;max-width:50ch}
+.fluentia-mode-meta{margin-top:auto;color:var(--ink-3);font-size:13px;font-weight:700}
+.fluentia-section-heading{display:flex;align-items:end;justify-content:space-between;gap:16px;margin:34px 0 16px}
+.fluentia-section-heading h2{font-size:clamp(25px,3vw,32px)}
+.fluentia-section-heading p{margin-top:5px;color:var(--ink-2)}
+.fluentia-domain-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px}
+.fluentia-domain-card{--domain-accent:#7463dc;--domain-soft:#eeeaff;display:flex;flex-direction:column;align-items:flex-start;gap:12px;min-width:0;min-height:190px;padding:20px;border:1.5px solid var(--line);border-radius:21px;background:var(--surface);text-align:left;transition:transform .15s,border-color .15s}
+.fluentia-domain-card:hover:not(:disabled){transform:translateY(-2px);border-color:var(--domain-accent)}
+.fluentia-domain-card:disabled{opacity:.62;cursor:not-allowed}
+.fluentia-domain-card[data-domain="sentence-studio"]{--domain-accent:#d66d50;--domain-soft:#fff0e9}
+.fluentia-domain-card[data-domain="textwise"]{--domain-accent:#398bbd;--domain-soft:#e7f4fb}
+.fluentia-domain-card[data-domain="soundscape"]{--domain-accent:#168e79;--domain-soft:#e2f6f0}
+.fluentia-domain-card[data-domain="real-world"]{--domain-accent:#526a9d;--domain-soft:#eaf0fb}
+.fluentia-domain-card[data-domain="fine-sense"]{--domain-accent:#b47a2d;--domain-soft:#fbf1df}
+.fluentia-domain-icon{display:grid;place-items:center;width:43px;height:43px;border-radius:14px;background:var(--domain-soft);color:var(--domain-accent);font-size:22px;font-weight:800}
+.fluentia-domain-card strong{font:800 20px/1.15 var(--display)}
+.fluentia-domain-card p{color:var(--ink-2);font-size:14px;line-height:1.45}
+.fluentia-domain-foot{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;margin-top:auto;color:var(--ink-3);font-size:12px;font-weight:800}
+.fluentia-domain-foot span:last-child{color:var(--domain-accent)}
+.fluentia-back{display:inline-flex;align-items:center;gap:8px;min-height:40px;margin:0 0 18px;color:var(--violet);font-weight:800}
+.fluentia-domain-intro{display:flex;align-items:center;gap:16px;padding:22px;border:1.5px solid var(--line);border-radius:22px;background:var(--surface);margin-bottom:22px}
+.fluentia-domain-intro .fluentia-domain-icon{width:54px;height:54px;flex:none}
+.fluentia-domain-intro h2{font-size:28px}
+.fluentia-domain-intro p{margin-top:5px;color:var(--ink-2)}
+.fluentia-activity-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.fluentia-activity-card{display:flex;align-items:center;gap:14px;min-width:0;padding:17px;border:1.5px solid var(--line);border-radius:17px;background:var(--surface);text-align:left}
+.fluentia-activity-card:hover{border-color:var(--violet)}
+.fluentia-activity-symbol{display:grid;place-items:center;width:42px;height:42px;flex:none;border-radius:13px;background:var(--violet-soft);color:var(--violet);font-size:20px}
+.fluentia-activity-copy{min-width:0;flex:1}
+.fluentia-activity-copy strong{display:block;font-size:16px}
+.fluentia-activity-copy small{display:block;margin-top:4px;color:var(--ink-3);font-size:12px}
+.fluentia-activity-arrow{font-size:20px;color:var(--violet)}
+.fluentia-review-panel{margin-top:34px;padding:22px;border:1.5px solid var(--line);border-radius:22px;background:#fffaf0}
+.fluentia-review-panel h2{font-size:24px}
+.fluentia-review-panel p{margin:7px 0 14px;color:var(--ink-2)}
+.fluentia-review-actions{display:flex;flex-wrap:wrap;gap:10px}
+.fluentia-empty{padding:22px;border:1.5px dashed var(--line-2);border-radius:18px;color:var(--ink-2);background:var(--surface)}
+.fluentia-session{max-width:760px;margin:0 auto}
+.fluentia-session-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}
+.fluentia-session-progress{height:9px;border-radius:99px;background:var(--navy-soft);overflow:hidden;margin:0 0 24px}
+.fluentia-session-progress span{display:block;height:100%;background:var(--violet);transition:width .2s}
+.fluentia-question-card{padding:clamp(20px,4vw,34px);border:1.5px solid var(--line);border-radius:24px;background:var(--surface)}
+.fluentia-question-card h2{font-size:clamp(23px,3vw,30px);line-height:1.25;margin:12px 0 20px;overflow-wrap:anywhere}
+.fluentia-question-prompt{color:var(--ink-2);font-weight:700}
+.fluentia-answer-grid{display:grid;gap:10px}
+.fluentia-answer{display:flex;align-items:center;gap:12px;width:100%;min-height:54px;padding:12px 15px;border:1.5px solid var(--line);border-radius:14px;background:var(--surface);text-align:left;font-weight:700}
+.fluentia-answer:hover:not(:disabled){border-color:var(--violet);background:var(--violet-soft)}
+.fluentia-answer:disabled{cursor:default}
+.fluentia-answer-index{display:grid;place-items:center;width:28px;height:28px;flex:none;border-radius:9px;background:var(--ground);font-size:12px}
+.fluentia-answer-input{width:100%;min-height:54px;padding:12px 15px;border:1.5px solid var(--line-2);border-radius:14px;background:var(--surface);color:var(--ink);font:inherit}
+.fluentia-session-actions{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:20px}
+.fluentia-feedback{margin-top:18px;padding:15px;border-radius:15px;background:var(--mint-soft);color:var(--ink)}
+.fluentia-feedback.is-wrong{background:var(--coral-soft)}
+.fluentia-feedback p{margin-top:7px;color:var(--ink-2)}
+.fluentia-translation{margin-top:10px}
+.fluentia-summary{padding:clamp(22px,4vw,34px);border:1.5px solid var(--line);border-radius:24px;background:var(--surface);text-align:center}
+.fluentia-summary-score{font:800 clamp(42px,7vw,64px)/1 var(--display);margin:16px 0;color:var(--violet)}
+.fluentia-summary-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:22px 0}
+.fluentia-summary-stats div{padding:13px;border-radius:14px;background:var(--ground)}
+.fluentia-summary-stats b{display:block;font-size:22px}
+.fluentia-summary-stats span{color:var(--ink-2);font-size:12px}
+.fluentia-review-source{margin-top:18px;padding:14px;border-radius:14px;background:var(--ground);color:var(--ink-2);font-size:13px}
+body[data-theme="dark"] .fluentia-hero,body[data-theme="dark"] .fluentia-domain-card,body[data-theme="dark"] .fluentia-mode-card,body[data-theme="dark"] .fluentia-activity-card,body[data-theme="dark"] .fluentia-question-card,body[data-theme="dark"] .fluentia-summary{background:var(--surface);color:var(--ink)}
+body[data-theme="dark"] .fluentia-review-panel{background:#29291f}
+body.ar-on .fluentia-hero,body.ar-on .fluentia-domain-intro,body.ar-on .fluentia-mode-card,body.ar-on .fluentia-domain-card,body.ar-on .fluentia-activity-card{text-align:right;direction:rtl}
+@media(max-width:820px){.fluentia-domain-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.fluentia-hero{grid-template-columns:1fr}.fluentia-hero-mark{display:none}}
+@media(max-width:580px){.fluentia-modes,.fluentia-domain-grid,.fluentia-activity-list{grid-template-columns:1fr}.fluentia-mode-card{min-height:160px}.fluentia-domain-card{min-height:155px}.fluentia-toolbar{align-items:flex-start}.fluentia-summary-stats{grid-template-columns:1fr 1fr}.fluentia-session-actions .btn{width:100%}}
