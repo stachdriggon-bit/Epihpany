@@ -63,6 +63,4 @@ Integrate through the existing lazy-loading path. Preserve Think Lab's shared pr
 
 ## Current next step: Crossword Quest
 
-Begin with a complete gameplay specification for Crossword Quest. The working concept is a crossword with numbered across/down clues; the exact interaction and presentation (classic grid versus a more modern clue-focused interface) remains to be decided before implementation.
-
-No code implementation or content bank is authorized by this plan alone. Those follow after the first game's specification and content are reviewed and explicitly approved.
+The core direction and first-release content target for Crossword Quest are approved. See [`CROSSWORD-QUEST-SPEC.md`](./CROSSWORD-QUEST-SPEC.md) for the current specification. Begin implementation one isolated layer at a time, using the existing lazy-loading and Think Lab icon systems. Keep the 96-puzzle bank separate and do not expose the game as fully playable until all 24 puzzles per level have been designed, validated, and reviewed. Scoring/reward changes and persistence details remain out of scope until reviewed.
