@@ -31,7 +31,7 @@ These are implementation defaults, subject to review during the first puzzle-ban
 | Hard | 9×9 | 24 |
 | Expert | 11×11 | 24 |
 
-- Minimum word length: 3 letters.
+- Minimum answer length: 2 letters in Easy only (common standalone English words; no abbreviations or filler); 3 letters in Medium, Hard, and Expert.
 - Use classic black and white cells and standard clue numbering.
 - Every open cell must participate in both an across and a down answer.
 - Every answer must be a real, level-appropriate English word with a clear clue.
