@@ -1,42 +1,42 @@
-# Word Forge — 72-Challenge Bank (Draft Snapshot)
+# Word Forge — 72-Challenge Bank
 
-**Status:** محفوظ كما عُرض للمراجعة الأولية — غير معتمد نهائياً بعد.  
-**Scope:** توثيق نسخة البنك الحالية دون تعديل المحتوى.  
+**Status:** Guided معتمد نهائياً؛ Steady وChallenge ما زالا مسودتين بانتظار المراجعة والاعتماد.  
+**Scope:** بنك من 72 تحدياً، موزع على ثلاثة أنماط (24 تحدياً لكل نمط).  
 **Modes:** Guided (24), Steady (24), Challenge (24).  
-**Review workflow:** مراجعة كل نمط على دفعات؛ بعد اعتماد كل دفعة تُحدّث هذه الوثيقة وتُحفظ في المستودع قبل الانتقال إلى الدفعة التالية.
+**Review workflow:** تُراجع الأنماط كاملةً، نمطاً واحداً في كل مرة. بعد اعتماد النمط يُحدّث هذا الملف قبل الانتقال إلى النمط التالي.
 
-> هذه الوثيقة تحفظ النسخة الأصلية كما عُرضت. لا تُعدّ الموافقة على حفظها موافقة على اعتماد محتواها النهائي، ولا يوجد أي تعديل على كود اللعبة في هذه المرحلة.
+> تم اعتماد محتوى Guided وحفظه في المستودع. لا يعني ذلك اعتماد Steady أو Challenge، ولم تُجرَ أي تعديلات على كود اللعبة في هذه المرحلة.
 
-## 1. Guided — 24 challenges
+## 1. Guided — 24 approved challenges
 
 | ID | Clue | Letters | Answer | Explanation | Skill |
 |---|---|---|---|---|---|
 | WF-G-001 | A fruit that is often red or green and grows on a tree. | P P L A E | **APPLE** | An apple is a common fruit that grows on an apple tree. | Food vocabulary |
-| WF-G-002 | A structure built over a river or road so people can cross. | D R I B G E | **BRIDGE** | A bridge connects two sides across an obstacle. | Places and structures |
+| WF-G-002 | A structure built over a river or road so people can cross it. | D R I B G E | **BRIDGE** | A bridge connects two sides across an obstacle. | Places and structures |
 | WF-G-003 | A stick of wax with a wick that gives light when lit. | D N C A L E | **CANDLE** | A candle produces light as its wax burns. | Everyday objects |
-| WF-G-004 | A person trained to treat people who are ill. | T O C D R O | **DOCTOR** | A doctor examines patients and helps treat illness. | People and jobs |
+| WF-G-004 | A medical professional trained to diagnose illnesses and prescribe treatment. | T O C D R O | **DOCTOR** | A doctor examines patients, diagnoses illnesses, and recommends treatment. | People and jobs |
 | WF-G-005 | People who are related to one another, such as parents and children. | M A F I L Y | **FAMILY** | A family is a group of related people. | People and relationships |
-| WF-G-006 | A place where flowers, trees, or vegetables are grown. | D R G A E N | **GARDEN** | A garden is an area used for growing plants. | Nature and places |
+| WF-G-006 | An area where people grow flowers, vegetables, or other plants. | D R G A E N | **GARDEN** | A garden is an area used for growing plants. | Nature and places |
 | WF-G-007 | A piece of land completely surrounded by water. | A N I S L D | **ISLAND** | An island has water all around it. | Geography |
-| WF-G-008 | A piece of clothing worn on the upper body, often outdoors. | K A J C E T | **JACKET** | A jacket is an outer layer of clothing. | Clothing |
-| WF-G-009 | The room where food is prepared and cooked. | K I T C H E N | **KITCHEN** | A kitchen is used for preparing meals. | Home vocabulary |
-| WF-G-010 | A place where people can borrow books to read. | L I B R A R Y | **LIBRARY** | A library lends books and provides places to read or study. | Places and learning |
-| WF-G-011 | A place where people buy and sell goods. | M A R K E T | **MARKET** | A market is a place for buying and selling. | Shopping vocabulary |
-| WF-G-012 | A small primate known for climbing and having a long tail in many species. | M O N K E Y | **MONKEY** | Monkeys are primates that often live in trees. | Animals |
-| WF-G-013 | A tool with graphite inside, used for writing or drawing. | P E N C I L | **PENCIL** | A pencil leaves marks that can usually be erased. | School objects |
-| WF-G-014 | A large round object in space that travels around a star. | P L A N E T | **PLANET** | Planets orbit stars; Earth is one of them. | Science vocabulary |
-| WF-G-015 | A small sewn space in clothing used for carrying things. | P O C K E T | **POCKET** | A pocket is attached to clothing or a bag for holding small items. | Clothing and objects |
-| WF-G-016 | A small mammal with long ears that can hop. | R A B B I T | **RABBIT** | Rabbits are mammals known for their long ears and powerful hind legs. | Animals |
-| WF-G-017 | A place where children and adults go to learn in classes. | S C H O O L | **SCHOOL** | A school is an institution for education. | Education |
-| WF-G-018 | A precious-looking grey-white metal often used in jewellery. | S I L V E R | **SILVER** | Silver is a shiny metal used in jewellery and other objects. | Materials |
-| WF-G-019 | An opening in a wall, usually with glass, that lets in light. | W I N D O W | **WINDOW** | A window lets light into a room and may allow people to look outside. | Home vocabulary |
-| WF-G-020 | The colour of ripe lemons. | Y E L L O W | **YELLOW** | Yellow is a bright colour commonly associated with ripe lemons. | Colours |
-| WF-G-021 | A container, often made of glass or plastic, used for drinks. | B O T T L E | **BOTTLE** | A bottle stores liquids and usually has a narrow neck. | Everyday objects |
-| WF-G-022 | A large area of land covered mainly with trees. | F O R E S T | **FOREST** | A forest is an ecosystem dominated by trees. | Nature |
-| WF-G-023 | The warmest season of the year in many regions. | S U M M E R | **SUMMER** | Summer is typically the warmest season of the year. | Weather and seasons |
-| WF-G-024 | To go from one place to another, especially over a distance. | T R A V E L | **TRAVEL** | Travel means going from one place to another. | Common verbs |
+| WF-G-008 | A light outer garment, usually with sleeves and a front opening, worn over other clothes. | K A J C E T | **JACKET** | A jacket is an outer layer of clothing. | Clothing |
+| WF-G-009 | The room in a home where food is prepared and cooked. | H C T I K E N | **KITCHEN** | A kitchen is used for preparing meals. | Home vocabulary |
+| WF-G-010 | A place where people can borrow books to read or study. | R A R I B L Y | **LIBRARY** | A library lends books and provides places to read or study. | Places and learning |
+| WF-G-011 | A place, often with several stalls, where sellers offer food and other goods. | M A R K E T | **MARKET** | A market is a place where people buy and sell goods. | Shopping vocabulary |
+| WF-G-012 | To pay attention to sounds so that you can hear and understand them. | T S I L E N | **LISTEN** | To listen means to give attention to what you hear. | Communication verbs |
+| WF-G-013 | A common writing tool with a graphite core, often sharpened at one end. | C I P E N L | **PENCIL** | A pencil is used for writing or drawing and can usually be erased. | School objects |
+| WF-G-014 | A large celestial body that travels around a star. | T A P L N E | **PLANET** | A planet orbits a star; Earth is one example. | Science vocabulary |
+| WF-G-015 | A small sewn space in clothing used for carrying things. | T O P C K E | **POCKET** | A pocket is attached to clothing or a bag for holding small items. | Clothing and objects |
+| WF-G-016 | A small animal often kept as a pet, with long ears and strong back legs for jumping. | B A T R I B | **RABBIT** | Rabbits are known for their long ears and powerful hind legs. | Animals |
+| WF-G-017 | An institution where children attend lessons with teachers, usually from an early age. | H O C S O L | **SCHOOL** | A school is a place where pupils receive education. | Education |
+| WF-G-018 | Feeling pleased and cheerful because something good has happened. | P H Y A P | **HAPPY** | Happy describes a positive feeling of pleasure or joy. | Feelings and adjectives |
+| WF-G-019 | An opening in a wall, usually with glass, that lets light into a room. | D O W I N W | **WINDOW** | A window lets light into a room and allows people to look outside. | Home vocabulary |
+| WF-G-020 | A bright colour often associated with sunshine and ripe bananas. | W L O Y E L | **YELLOW** | Yellow is a bright colour commonly associated with sunshine. | Colours |
+| WF-G-021 | A container for liquids with a narrow neck and usually a cap. | T O B L E T | **BOTTLE** | A bottle stores liquids and usually has a narrow neck. | Everyday objects |
+| WF-G-022 | A large natural area of land densely covered with trees. | R O F E S T | **FOREST** | A forest is a large area where trees form the main vegetation. | Nature |
+| WF-G-023 | To take something or someone from one place to another. | R Y A C R | **CARRY** | To carry means to hold and move something from one place to another. | Practical verbs |
+| WF-G-024 | To go on a trip to another place, often for pleasure or work. | V A R T E L | **TRAVEL** | Travel means going from one place to another, usually over some distance. | Common verbs |
 
-## 2. Steady — 24 challenges
+## 2. Steady — 24 challenges (pending review)
 
 | ID | Clue | Letters | Answer | Explanation | Skill |
 |---|---|---|---|---|---|
@@ -65,7 +65,7 @@
 | WF-S-023 | To think carefully about something that happened or something you learned. | R E F L E C T | **REFLECT** | To reflect is to think deeply or carefully about an experience or idea. | Thinking skills |
 | WF-S-024 | The outside or top layer of something. | S U R F A C E | **SURFACE** | A surface is the outermost part of an object or material. | Science and description |
 
-## 3. Challenge — 24 challenges
+## 3. Challenge — 24 challenges (pending review)
 
 | ID | Clue | Letters | Answer | Explanation | Skill |
 |---|---|---|---|---|---|
@@ -94,9 +94,9 @@
 | WF-C-023 | The power to affect how someone or something develops, behaves, or is decided. | I N F L U E N C E | **INFLUENCE** | Influence is the ability to affect people, events, or decisions. | Abstract nouns |
 | WF-C-024 | To continue to have or keep something at the same level or condition. | M A I N T A I N | **MAINTAIN** | To maintain is to keep something in good condition or at a particular level. | Sustaining and managing |
 
-## Initial review note (preserved from the presentation)
+## Review record
 
-- Total: 72 challenges.
-- Guided: 24; Steady: 24; Challenge: 24.
-- The initial presentation stated that answer-letter counts and repetitions had been checked. This note records that statement; the full independent content review remains pending.
-- Review the bank one mode at a time, in batches. After each batch is reviewed and approved, update and save that approved batch in this repository document.
+- Guided: 24/24 reviewed and approved by the user; saved in this document.
+- Steady: 24 challenges; review pending.
+- Challenge: 24 challenges; review pending.
+- No game code has been changed as part of this content approval.
