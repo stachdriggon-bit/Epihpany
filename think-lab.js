@@ -1322,6 +1322,9 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
         return;
       }
       locked=true;score++;
+      const pathElement=root.querySelector('.tl-chain-path');
+      if(pathElement)pathElement.innerHTML=[item.start,...chainPath].map(word=>'<span class="tl-chain-link">'+esc(word)+'</span>').join('<span class="tl-ladder-step"> → </span>');
+      root.querySelectorAll('[data-chain-answer]').forEach(button=>button.disabled=true);
       if(window.EpiphanyThinkLab)window.EpiphanyThinkLab.recordResult('vocabulary','chain',true,index===pool.length-1);
       fb.hidden=false;fb.className='tl-feedback is-correct';
       fb.innerHTML='<strong>✓ Chain complete!</strong>'+steps.map((part,i)=>'<p><strong>Link '+(i+1)+':</strong> '+esc(part.from)+' → '+esc(part.to)+'. '+esc(part.explanation)+'</p>').join('');
