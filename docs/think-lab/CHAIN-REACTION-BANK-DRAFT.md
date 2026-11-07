@@ -2,12 +2,12 @@
 
 - Game: `chain-reaction`
 - Schema version: 1
-- Status: Guided and Steady approved; Challenge pending
-- Total Guided challenges: 24
-- Total links: 72
+- Status: Guided, Steady, and Challenge approved
+- Total challenges: 72 (24 per mode)
+- Total links: 216 (72 per mode)
 - Choices per link: 3
-- Correct answers: 72
-- Distractors: 144
+- Correct answers: 216
+- Distractors: 432
 
 This is the approved Guided content source. Do not implement or alter its content without an explicit decision. Choice order may be randomized at runtime, but the approved answer and explanation must remain associated with each link.
 
@@ -543,3 +543,270 @@ Start: `MEMORY`
    Explanation: During encoding, the brain processes information so it can be retained.
 3. **STORAGE** — Options: STORAGE / ATTENTION / REACTION  
    Explanation: Storage refers to keeping encoded information in memory over time.
+
+
+## Challenge
+
+### CR-C-001 — The Life of a Seed
+
+Start: \`SEED\`
+
+1. **GERMINATION** — Options: GERMINATION / POLLINATION / HARVEST  
+   Explanation: A seed begins to grow when the conditions for germination are suitable.
+2. **RADICLE** — Options: RADICLE / PETAL / FRUIT  
+   Explanation: The radicle is the first part of the embryo to emerge during germination.
+3. **ROOT** — Options: ROOT / STEM / LEAF  
+   Explanation: The radicle develops into the plant's primary root.
+
+### CR-C-002 — Shaping the Landscape
+
+Start: \`GLACIER\`
+
+1. **EROSION** — Options: EROSION / EVAPORATION / CONDENSATION  
+   Explanation: Moving glacier ice wears away rock and reshapes the land.
+2. **SEDIMENT** — Options: SEDIMENT / GRANITE / CRYSTAL  
+   Explanation: Erosion produces fragments of rock and material that can be transported as sediment.
+3. **DELTA** — Options: DELTA / CAVERN / CRATER  
+   Explanation: Sediment deposited by a river can gradually build a delta where it enters a larger body of water.
+
+### CR-C-003 — From Draft to Publication
+
+Start: \`MANUSCRIPT\`
+
+1. **EDITOR** — Options: EDITOR / READER / PRINTER  
+   Explanation: An editor reviews a manuscript and helps prepare it for publication.
+2. **PROOFREADING** — Options: PROOFREADING / TRANSLATION / BINDING  
+   Explanation: After editing, proofreading checks the text for remaining errors.
+3. **TYPO** — Options: TYPO / CHAPTER / PREFACE  
+   Explanation: Proofreading aims to catch typographical errors before publication.
+
+### CR-C-004 — Inside a Volcano
+
+Start: \`VOLCANO\`
+
+1. **MAGMA** — Options: MAGMA / ASH / CRUST  
+   Explanation: Magma is molten rock beneath the Earth's surface.
+2. **LAVA** — Options: LAVA / MINERAL / FOSSIL  
+   Explanation: Magma that reaches the surface is called lava.
+3. **BASALT** — Options: BASALT / MARBLE / LIMESTONE  
+   Explanation: Basalt commonly forms when lava cools and solidifies.
+
+### CR-C-005 — The Body's Defence
+
+Start: \`VACCINE\`
+
+1. **IMMUNITY** — Options: IMMUNITY / INFECTION / INFLAMMATION  
+   Explanation: Vaccination trains the immune system to recognize a target and develop protection.
+2. **ANTIBODY** — Options: ANTIBODY / HORMONE / ENZYME  
+   Explanation: The immune system can produce antibodies that recognize specific targets.
+3. **ANTIGEN** — Options: ANTIGEN / TISSUE / PLASMA  
+   Explanation: An antigen is the substance or structure that an antibody can specifically recognize.
+
+### CR-C-006 — Understanding Sound
+
+Start: \`SOUND\`
+
+1. **VIBRATION** — Options: VIBRATION / REFLECTION / ABSORPTION  
+   Explanation: Sound is produced by vibrations that travel through a medium.
+2. **FREQUENCY** — Options: FREQUENCY / AMPLITUDE / VELOCITY  
+   Explanation: Frequency describes how many vibrations occur each second.
+3. **PITCH** — Options: PITCH / ECHO / VOLUME  
+   Explanation: The frequency of a sound wave is closely related to the pitch we hear.
+
+### CR-C-007 — Looking Through a Telescope
+
+Start: \`TELESCOPE\`
+
+1. **LENS** — Options: LENS / MIRROR / TRIPOD  
+   Explanation: A refracting telescope uses lenses to gather and focus light.
+2. **FOCAL LENGTH** — Options: FOCAL LENGTH / DIAMETER / THICKNESS  
+   Explanation: The focal length describes the distance over which a lens brings light to focus.
+3. **MAGNIFICATION** — Options: MAGNIFICATION / REFLECTION / TRANSPARENCY  
+   Explanation: A telescope's magnification depends on the relationship between its objective and eyepiece focal lengths.
+
+### CR-C-008 — Managing a Drought
+
+Start: \`DROUGHT\`
+
+1. **RESERVOIR** — Options: RESERVOIR / WATERFALL / ESTUARY  
+   Explanation: A reservoir stores water that can be used during periods of low rainfall.
+2. **DAM** — Options: DAM / CANAL / AQUEDUCT  
+   Explanation: A dam can hold back water to create or maintain a reservoir.
+3. **SPILLWAY** — Options: SPILLWAY / TURBINE / FILTER  
+   Explanation: A spillway safely releases excess water from a dam.
+
+### CR-C-009 — From Code to Execution
+
+Start: \`SOURCE CODE\`
+
+1. **COMPILER** — Options: COMPILER / BROWSER / KEYBOARD  
+   Explanation: A compiler translates source code into another form that a computer can process.
+2. **BYTECODE** — Options: BYTECODE / PIXEL / DATABASE  
+   Explanation: Some compilers produce an intermediate instruction format called bytecode.
+3. **VIRTUAL MACHINE** — Options: VIRTUAL MACHINE / OPERATING SYSTEM / ROUTER  
+   Explanation: A virtual machine can execute bytecode in a managed runtime environment.
+
+### CR-C-010 — The Journey of Pollen
+
+Start: \`POLLINATION\`
+
+1. **STIGMA** — Options: STIGMA / PETAL / SEPAL  
+   Explanation: In flowering plants, pollen commonly lands on the stigma during pollination.
+2. **POLLEN TUBE** — Options: POLLEN TUBE / ROOT HAIR / LEAF VEIN  
+   Explanation: After compatible pollen germinates, it can grow a pollen tube through the style.
+3. **OVULE** — Options: OVULE / ANTHER / FILAMENT  
+   Explanation: The pollen tube carries the male gametes toward the ovule, where fertilization can occur.
+
+### CR-C-011 — Measuring a Population
+
+Start: \`CENSUS\`
+
+1. **POPULATION** — Options: POPULATION / TERRITORY / ECONOMY  
+   Explanation: A census counts and collects information about the people in a defined area.
+2. **DENSITY** — Options: DENSITY / DIVERSITY / MOBILITY  
+   Explanation: Population density relates the number of people to the area they occupy.
+3. **URBAN PLANNING** — Options: URBAN PLANNING / ISOLATION / IRRIGATION  
+   Explanation: Population density data helps planners decide how cities should allocate housing, transport, and public services.
+
+### CR-C-012 — A Contract in Action
+
+Start: \`CONTRACT\`
+
+1. **CLAUSE** — Options: CLAUSE / SIGNATURE / WITNESS  
+   Explanation: A contract is made up of provisions or clauses that set out its terms.
+2. **OBLIGATION** — Options: OBLIGATION / PERMISSION / SUGGESTION  
+   Explanation: A clause may establish a duty that one or more parties must fulfil.
+3. **PERFORMANCE** — Options: PERFORMANCE / NEGOTIATION / TERMINATION  
+   Explanation: Contractual performance means carrying out the obligations agreed upon.
+
+### CR-C-013 — The Science of Fermentation
+
+Start: \`FERMENTATION\`
+
+1. **YEAST** — Options: YEAST / OXYGEN / STARCH  
+   Explanation: Yeast is a microorganism commonly used to ferment sugars.
+2. **ETHANOL** — Options: ETHANOL / GLUCOSE / PROTEIN  
+   Explanation: In alcoholic fermentation, yeast converts sugars into ethanol and carbon dioxide.
+3. **DISTILLATION** — Options: DISTILLATION / FILTRATION / CRYSTALLIZATION  
+   Explanation: Distillation can separate and concentrate ethanol from a fermented mixture.
+
+### CR-C-014 — Life in an Ecosystem
+
+Start: \`ECOSYSTEM\`
+
+1. **NICHE** — Options: NICHE / CLIMATE / CONTINENT  
+   Explanation: An ecological niche describes the role of a species and how it interacts with its environment.
+2. **COMPETITION** — Options: COMPETITION / MIGRATION / MUTATION  
+   Explanation: Species may compete when their niches overlap and they require the same limited resources.
+3. **ADAPTATION** — Options: ADAPTATION / EXTINCTION / HIBERNATION  
+   Explanation: Adaptations can help organisms survive and reproduce under particular environmental conditions.
+
+### CR-C-015 — Protecting a Secret
+
+Start: \`ENCRYPTION\`
+
+1. **CIPHER** — Options: CIPHER / PASSWORD / FIREWALL  
+   Explanation: A cipher is a method or algorithm used to transform readable information into encrypted form.
+2. **KEY** — Options: KEY / MESSAGE / SERVER  
+   Explanation: An encryption key controls the transformation performed by a cipher.
+3. **DECRYPTION** — Options: DECRYPTION / COMPRESSION / DUPLICATION  
+   Explanation: Decryption uses the appropriate key and method to recover readable information.
+
+### CR-C-016 — From Fibre to Fabric
+
+Start: \`TEXTILE\`
+
+1. **FIBRE** — Options: FIBRE / BUTTON / PATTERN  
+   Explanation: Textiles are made from fibres, which can be natural or synthetic.
+2. **SPINNING** — Options: SPINNING / DYEING / PRINTING  
+   Explanation: Spinning twists fibres together to produce yarn.
+3. **YARN** — Options: YARN / NEEDLE / LOOM  
+   Explanation: Yarn is the continuous strand produced by spinning and used to make fabric.
+
+### CR-C-017 — Recording an Earthquake
+
+Start: \`EARTHQUAKE\`
+
+1. **SEISMOGRAPH** — Options: SEISMOGRAPH / THERMOMETER / BAROMETER  
+   Explanation: A seismograph records ground motion caused by seismic waves.
+2. **SEISMOGRAM** — Options: SEISMOGRAM / MAP / TIMELINE  
+   Explanation: The recorded trace produced by a seismograph is called a seismogram.
+3. **MAGNITUDE** — Options: MAGNITUDE / ALTITUDE / LATITUDE  
+   Explanation: Scientists use seismic recordings to help determine an earthquake's magnitude.
+
+### CR-C-018 — The Architecture of a Coral Reef
+
+Start: \`CORAL REEF\`
+
+1. **POLYP** — Options: POLYP / PLANKTON / MOLLUSK  
+   Explanation: Reef-building corals are colonies of tiny animals called polyps.
+2. **COLONY** — Options: COLONY / SHELL / SKELETON  
+   Explanation: Many coral polyps live together and form a colony.
+3. **CALCIUM CARBONATE** — Options: CALCIUM CARBONATE / CARTILAGE / CELLULOSE  
+   Explanation: Coral colonies build their hard structures by depositing calcium carbonate.
+
+### CR-C-019 — Reaching an Agreement
+
+Start: \`NEGOTIATION\`
+
+1. **COMPROMISE** — Options: COMPROMISE / COMPETITION / DEBATE  
+   Explanation: Negotiating parties may reach an agreement by making concessions.
+2. **CONCESSION** — Options: CONCESSION / DEMAND / OBJECTION  
+   Explanation: A compromise often involves each side giving up something it initially wanted.
+3. **RECIPROCITY** — Options: RECIPROCITY / AUTHORITY / SECRECY  
+   Explanation: Reciprocity describes a mutual exchange in which concessions or benefits are returned by the other side.
+
+### CR-C-020 — Reading the Light of Stars
+
+Start: \`ASTRONOMY\`
+
+1. **SPECTRUM** — Options: SPECTRUM / ORBIT / CONSTELLATION  
+   Explanation: Astronomers analyse the spectrum of light received from stars and other celestial objects.
+2. **WAVELENGTH** — Options: WAVELENGTH / BRIGHTNESS / DISTANCE  
+   Explanation: A spectrum separates light according to its wavelengths.
+3. **REDSHIFT** — Options: REDSHIFT / ECLIPSE / REFLECTION  
+   Explanation: A shift toward longer wavelengths can indicate that an astronomical object is moving away from the observer.
+
+### CR-C-021 — Understanding Insurance
+
+Start: \`INSURANCE\`
+
+1. **PREMIUM** — Options: PREMIUM / DIVIDEND / SALARY  
+   Explanation: A premium is the amount paid to maintain an insurance policy.
+2. **CLAIM** — Options: CLAIM / CONTRACT / RECEIPT  
+   Explanation: A policyholder submits a claim when requesting coverage for a loss or event.
+3. **INDEMNITY** — Options: INDEMNITY / INVESTMENT / INTEREST  
+   Explanation: Indemnity is the principle of compensating an insured party for a covered loss, subject to the policy's terms.
+
+### CR-C-022 — The Language of Literature
+
+Start: \`METAPHOR\`
+
+1. **FIGURATIVE LANGUAGE** — Options: FIGURATIVE LANGUAGE / GRAMMAR / PUNCTUATION  
+   Explanation: A metaphor is a form of figurative language that describes one thing in terms of another.
+2. **IMAGERY** — Options: IMAGERY / SYNTAX / RHYTHM  
+   Explanation: Metaphors can create imagery by helping readers picture or sense an idea.
+3. **SYMBOLISM** — Options: SYMBOLISM / NARRATION / ALLITERATION  
+   Explanation: Imagery can contribute to symbolism when an image represents a deeper idea or meaning.
+
+### CR-C-023 — Preserving Historical Evidence
+
+Start: \`ARCHIVE\`
+
+1. **CONSERVATION** — Options: CONSERVATION / EXCAVATION / RECONSTRUCTION  
+   Explanation: Archives preserve documents and records through conservation practices.
+2. **HUMIDITY** — Options: ACIDITY / HUMIDITY / SALINITY  
+   Explanation: Humidity levels must be controlled because excessive moisture can damage many archival materials.
+3. **MOLD** — Options: MOLD / STATIC / DUST  
+   Explanation: Excessive humidity in archival storage can encourage mold growth and damage documents.
+
+### CR-C-024 — The Logic of a Scientific Study
+
+Start: \`HYPOTHESIS\`
+
+1. **PREDICTION** — Options: PREDICTION / OBSERVATION / MEASUREMENT  
+   Explanation: A hypothesis can be used to derive a prediction that can be tested.
+2. **EXPERIMENT** — Options: EXPERIMENT / THEORY / OPINION  
+   Explanation: An experiment tests a prediction under controlled or systematically observed conditions.
+3. **REPRODUCIBILITY** — Options: REPRODUCIBILITY / SPECULATION / GENERALIZATION  
+   Explanation: Reproducibility means that other researchers can obtain consistent results when repeating the study under the same conditions.
