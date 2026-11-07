@@ -778,7 +778,7 @@
   function openSpeechDb() {
     if (!('indexedDB' in window)) return Promise.resolve(null);
     if (speechDbPromise) return speechDbPromise;
-    speechDbPromise = new Promise(resolve => {
+    speechDbPromise = Promise.resolve().then(() => new Promise(resolve => {
       let req;
       try { req = indexedDB.open('epiphany-speech-cache', 1); } catch { speechDbPromise = null; return resolve(null); }
       req.onupgradeneeded = () => { if (!req.result.objectStoreNames.contains('audio')) req.result.createObjectStore('audio'); };
@@ -788,7 +788,7 @@
         resolve(db);
       };
       req.onerror = () => { speechDbPromise = null; resolve(null); };
-    });
+    }));
     return speechDbPromise;
   }
   async function cachedNaturalAudio(key) {
