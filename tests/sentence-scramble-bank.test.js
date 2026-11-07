@@ -69,7 +69,7 @@ test('Sentence Scramble is lazy-loaded before Think Lab and its session uses the
   assert.ok(bankIndex >= 0 && thinkLabIndex > bankIndex, 'bank must load before the Think Lab runtime');
   assert.match(worker, /'\.\/sentence-scramble-bank\.js'/);
   assert.match(think, /EPIPHANY_SENTENCE_SCRAMBLE_BANK/);
-  assert.match(think, /mode === 'scramble'\) \? 24/);
+  assert.match(think, /mode === 'forge' \|\| mode === 'connections' \|\| mode === 'scramble' \|\| mode === 'chain'\) \? 24/);
   assert.match(think, /accepted=\[item\.sentence/);
   const checkBlock = think.split("if(e.target.closest('[data-scramble-check]'))")[1]?.split("const recommended=")[0] || '';
   assert.ok(checkBlock, 'Sentence Scramble check handler should exist');
