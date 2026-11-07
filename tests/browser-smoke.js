@@ -422,7 +422,7 @@ test('main navigation tabs open without uncaught page errors', { timeout: 18 * 6
         const completedChainPath = await chainCard.locator('.tl-chain-path').innerText();
         assert.ok(completedChainPath.includes(chainChallenge.start) && completedChainPath.includes(chainChallenge.links[2].to),
           'the completed path should display the start and all three answers');
-        assert.doesNotMatch(completedChainPath, /\\?/,
+        assert.doesNotMatch(completedChainPath, /\?/,
           'the completed path should no longer end with an unanswered marker');
         assert.equal(await chainCard.locator('[data-think-next]').isVisible(), true,
           'completing all three links should unlock the next challenge');
