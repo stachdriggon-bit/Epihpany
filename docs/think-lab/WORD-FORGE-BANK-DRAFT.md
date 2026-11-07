@@ -21,7 +21,7 @@
 | WF-G-008 | A light outer garment, usually with sleeves and a front opening, worn over other clothes. | K A J C E T | **JACKET** | A jacket is an outer layer of clothing. | Clothing |
 | WF-G-009 | The room in a home where food is prepared and cooked. | H C T I K E N | **KITCHEN** | A kitchen is used for preparing meals. | Home vocabulary |
 | WF-G-010 | A place where people can borrow books to read or study. | R A R I B L Y | **LIBRARY** | A library lends books and provides places to read or study. | Places and learning |
-| WF-G-011 | A place, often with several stalls, where sellers offer food and other goods. | M A R K E T | **MARKET** | A market is a place where people buy and sell goods. | Shopping vocabulary |
+| WF-G-011 | A place, often with several stalls, where sellers offer food and other goods. | K E T R A M | **MARKET** | A market is a place where people buy and sell goods. | Shopping vocabulary |
 | WF-G-012 | To pay attention to sounds so that you can hear and understand them. | T S I L E N | **LISTEN** | To listen means to give attention to what you hear. | Communication verbs |
 | WF-G-013 | A common writing tool with a graphite core, often sharpened at one end. | C I P E N L | **PENCIL** | A pencil is used for writing or drawing and can usually be erased. | School objects |
 | WF-G-014 | A large celestial body that travels around a star. | T A P L N E | **PLANET** | A planet orbits a star; Earth is one example. | Science vocabulary |
