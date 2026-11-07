@@ -57,6 +57,10 @@ test('a correct two-cell selection finds a target word and updates the board',()
   assert.match(h.root.innerHTML,/Next tap|final letter|found!/i);
   assert.equal(h.results.length,1,'a correct word is recorded as an attempt');
   assert.equal(h.results[0][2],true);
+  h.click('[data-wh-cell]',{whCell:match.row+'-'+match.col});
+  h.click('[data-wh-cell]',{whCell:endRow+'-'+endCol});
+  assert.equal(h.results.length,1,'selecting an already-found word is not recorded as a failed attempt');
+  assert.match(h.root.innerHTML,/already found/i);
 });
 
 test('completing all Easy words records one result and advances to the next fixed puzzle',()=>{
