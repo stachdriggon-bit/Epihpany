@@ -171,7 +171,7 @@ Gaps identified for Fluentia:
 
 ## Phase 3 integration update (2026-11-07)
 
-The Phase 3 integration now includes the 18-item independent Textwise sequence bank (three per CEFR level), the reviewed Sound Maze bank (36 items per level), the lazy-loaded Practice Lab sample set (eight items across A1–B2), the twelve existing Word Match pairs with explicit A1/A2 tags, and two Your Review feeds based on saved vocabulary and grammar error signals. Directions and the original six core adapters remain integrated. See `FLUENTIA-SESSION-ARCHITECTURE.md` for the adapter IDs, answer contracts, lazy registration and progress-compatibility rules.
+The Phase 3 integration now includes the 18-item independent Textwise sequence bank (three per CEFR level), the reviewed Sound Maze bank (36 items per level), the lazy-loaded Practice Lab sample set (eight items across A1–B2), Word Match pairs from the CEFR-tagged Word of the Day bank, ten CEFR-tagged Sentence Builder prompts, twelve A1/A2 Sound & Picture listening prompts, and two Your Review feeds based on saved vocabulary and grammar error signals. Directions and the original six core adapters remain integrated. See `FLUENTIA-SESSION-ARCHITECTURE.md` for the adapter IDs, answer contracts, lazy registration and progress-compatibility rules.
 
 The legacy Speed Round timer/reward loop remains a renderer-specific concern; tagged dynamic vocabulary review candidates are exposed, but no timer is simulated in the shared engine. Untagged learner-saved words and missing Practice Lab CEFR levels are excluded rather than guessed. This is a code-integration update, not a claim that CI has passed.
 
