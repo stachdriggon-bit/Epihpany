@@ -717,8 +717,7 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
     {id:'scramble',num:'06',icon:'↔',name:'Sentence Scramble',tag:'SENTENCE BUILDING',desc:'Study mixed-up words and build a natural English sentence.',time:'5–8 min'},
     {id:'forge',num:'07',icon:'✳',name:'Word Forge',tag:'SPELLING & VOCABULARY',desc:'Use a letter set and a clue to identify the word.',time:'2–3 min'},
     {id:'chain',num:'08',icon:'⤳',name:'Chain Reaction',tag:'WORD ASSOCIATION',desc:'Continue a chain by choosing the strongest word association.',time:'2–3 min'},
-    {id:'crossword',num:'09',icon:'▦',name:'Crossword Quest',tag:'CLASSIC WORD PUZZLES',desc:'Solve carefully designed across-and-down crosswords at your own pace.',time:'At your own pace'},
-    {id:'wordhunt',num:'10',icon:'⌕',name:'Word Hunt',tag:'HIDDEN WORD SEARCH',desc:'Find themed English words hidden across, down and diagonally in a letter grid.',time:'At your own pace'}
+    {id:'wordhunt',num:'09',icon:'⌕',name:'Word Hunt',tag:'HIDDEN WORD SEARCH',desc:'Find themed English words in a letter grid as the search directions grow more challenging.',time:'At your own pace'}
   ];
   function insightsMarkup() {
     const data = window.EpiphanyThinkLab && typeof window.EpiphanyThinkLab.getInsights === 'function'
