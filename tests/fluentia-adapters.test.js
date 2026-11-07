@@ -99,3 +99,83 @@ test('legacy source banks remain unchanged after adapter creation and evaluation
   adapters.forEach(adapter => adapter.getItems({level:'A1'}));
   assert.equal(JSON.stringify(sources), before);
 });
+
+function expandedFixture() {
+  const sources = fixture();
+  sources.games.vocabulary.questions[0].word = 'apple';
+  sources.audioItems = [{id:'WM-A1-01',level:'A1',word:'apple',meaning:'a round fruit'}];
+  sources.practiceSamples = [{id:'PL-A1-01',level:'A1',text:'I would like water.'}];
+  sources.textwiseSequenceBank = [{id:'TW-A1-01',level:'A1',title:'A notice',steps:['Read the notice.','Check the date.','Follow the instructions.']}];
+  sources.soundMazeBank = {levels:{A1:{guided:[{id:'SM-A1-01',target:'cat',options:['cat','cut','kit','cot'],explain:'Cat has /æ/.'}],steady:[],challenge:[]}}};
+  sources.reviewState = {
+    review:[{word:'apple',meaning:'a round fruit',errors:3}],
+    words:[['apple','a round fruit']],
+    mistakeTrapErrors:{articles:2},
+    mistakeQuestionErrors:{'mi-a1':1}
+  };
+  return sources;
+}
+
+test('extended sources register matching, listening, speech, sequencing and review adapters', () => {
+  const adapters = AdapterFactory.createAdapters(expandedFixture());
+  const ids = new Set(adapters.map(item => item.id));
+  for (const id of [
+    'wordcraft-word-match','soundscape-sound-maze','soundscape-dictation',
+    'real-world-speaking-shadowing','textwise-sequence',
+    'wordcraft-personal-review','sentence-studio-personal-review'
+  ]) assert.ok(ids.has(id), id);
+  assert.equal(adapters.length, 17);
+});
+
+test('Sound Maze, dictation, shadowing and Word Match keep distinct evaluation semantics', () => {
+  const adapters = AdapterFactory.createAdapters(expandedFixture());
+  const get = id => adapters.find(item => item.id === id);
+  const [sound] = get('soundscape-sound-maze').getItems({level:'A1'});
+  assert.equal(get('soundscape-sound-maze').evaluate(sound, 'cat').correct, true);
+  assert.equal(get('soundscape-sound-maze').evaluate(sound, 1).correct, false);
+
+  const [dictation] = get('soundscape-dictation').getItems({level:'A1'});
+  assert.equal(get('soundscape-dictation').evaluate(dictation, 'I would like water!').correct, true);
+  assert.equal(get('soundscape-dictation').evaluate(dictation, 'I like water').correct, false);
+
+  const [speech] = get('real-world-speaking-shadowing').getItems({level:'A1'});
+  const partial = get('real-world-speaking-shadowing').evaluate(speech, 'I would like');
+  assert.equal(partial.correct, false);
+  assert.equal(partial.accuracy, 75);
+  assert.equal(get('real-world-speaking-shadowing').evaluate(speech, 'I would like water').correct, true);
+
+  const [match] = get('wordcraft-word-match').getItems({level:'A1'});
+  assert.equal(get('wordcraft-word-match').evaluate(match, 'a round fruit').correct, true);
+});
+
+test('Textwise sequencing is independent and order-sensitive', () => {
+  const adapters = AdapterFactory.createAdapters(expandedFixture());
+  const sequence = adapters.find(item => item.id === 'textwise-sequence');
+  const [item] = sequence.getItems({level:'A1'});
+  assert.equal(sequence.evaluate(item, item.steps).correct, true);
+  assert.equal(sequence.evaluate(item, item.steps.slice().reverse()).correct, false);
+});
+
+test('Your Review adapters use only level-tagged source questions and existing learner signals', () => {
+  const adapters = AdapterFactory.createAdapters(expandedFixture());
+  const wordReview = adapters.find(item => item.id === 'wordcraft-personal-review');
+  const grammarReview = adapters.find(item => item.id === 'sentence-studio-personal-review');
+  assert.equal(wordReview.getItems({level:'A1'}).length, 1);
+  assert.equal(wordReview.getItems({level:'B1'}).length, 0);
+  assert.equal(grammarReview.getItems({level:'A1'}).length, 1);
+  assert.equal(grammarReview.getItems({level:'C2'}).length, 0);
+  assert.equal(wordReview.evaluate(wordReview.getItems({level:'A1'})[0], 'a round fruit').correct, true);
+});
+
+test('incremental source registration adds lazy sources without replacing existing activities', () => {
+  const engine = Engine.createEngine();
+  AdapterFactory.registerAll(engine, fixture());
+  const added = AdapterFactory.registerSources(engine, {
+    practiceSamples: [{id:'PL-A1-01',level:'A1',text:'Hello there.'}]
+  });
+  assert.deepEqual(added, ['soundscape-dictation','real-world-speaking-shadowing']);
+  assert.equal(engine.listActivities().length, 12);
+  assert.deepEqual(AdapterFactory.registerSources(engine, {
+    practiceSamples: [{id:'PL-A1-01',level:'A1',text:'Hello there.'}]
+  }), []);
+});
