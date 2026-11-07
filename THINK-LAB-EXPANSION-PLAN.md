@@ -63,7 +63,7 @@ Integrate through the existing lazy-loading path. Preserve Think Lab's shared pr
 
 ## Previous game: Word Hunt
 
-Word Hunt has its first implementation and fixed 48-puzzle content bank on `main`. See [`WORD-HUNT-SPEC.md`](./WORD-HUNT-SPEC.md). Its independent four-level flow, content validator, responsive grid, icon, and lazy-loading integration are in place. The first release contains 12 puzzles per level and 432 target-word placements. CI and manual phone/desktop review remain pending before release acceptance.
+Word Hunt has its first implementation and fixed 48-puzzle content bank on `main`. See [`WORD-HUNT-SPEC.md`](./WORD-HUNT-SPEC.md). Its independent four-level flow, content validator, responsive grid, icon, and lazy-loading integration are in place. The first release contains 12 puzzles per level and 432 target-word placements. Automated CI passes; manual phone/desktop review remains pending before release acceptance.
 
 ## Previous game: Codebreaker
 
