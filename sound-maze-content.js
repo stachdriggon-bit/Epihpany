@@ -2870,4 +2870,5 @@
       root.EPIPHANY_FLUENTIA_REGISTER_SOURCES({soundMazeBank: bank});
     }
   }
+  if (typeof module !== 'undefined' && module.exports) module.exports = bank;
 })(typeof window !== 'undefined' ? window : null);
