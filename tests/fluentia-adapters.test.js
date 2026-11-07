@@ -212,3 +212,13 @@ test('personal review adapters read the latest learner state after account-state
   currentState = {words:[['banana','a long yellow fruit']],review:[],mistakeTrapErrors:{},mistakeQuestionErrors:{}};
   assert.deepEqual(review.getItems({level:'A1'}).map(item => item.reviewPrompt), ['banana']);
 });
+
+test('Your Review feeds stay out of ordinary mixed sessions but remain individually selectable', () => {
+  const engine = Engine.createEngine();
+  AdapterFactory.registerAll(engine, expandedFixture());
+  const mixed = engine.createSession({mode:'fluentia-mix',level:'A1',itemCount:5});
+  assert.ok(!mixed.activityIds.includes('wordcraft-personal-review'));
+  assert.ok(!mixed.activityIds.includes('sentence-studio-personal-review'));
+  const review = engine.createSession({mode:'single',activityId:'wordcraft-personal-review',level:'A1',itemCount:1});
+  assert.deepEqual(review.activityIds, ['wordcraft-personal-review']);
+});
