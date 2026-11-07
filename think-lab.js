@@ -1311,6 +1311,7 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
         return;
       }
       chainPath.push(step.to);
+      roundMistakes=0;
       const fb=root.querySelector('#tl-feedback');
       if(chainStepIndex<steps.length-1){
         const explanation='<p><strong>Link '+(chainStepIndex+1)+':</strong> '+esc(step.explanation)+'</p>';
