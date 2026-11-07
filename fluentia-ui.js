@@ -16,8 +16,8 @@
   ];
   const activityNames = {
     'wordcraft-vocabulary':'Word Collector','wordcraft-spelling':'Word Detective','wordcraft-word-match':'Word Match','wordcraft-speed-round':'Speed Round','wordcraft-personal-vocabulary':'Personal Vocabulary',
-    'sentence-studio-grammar':'Sentence Shaper','sentence-studio-common-mistakes':'Common Mistakes','sentence-studio-spot-the-mistake':'Spot the Mistake','sentence-studio-type-it':'Type It','sentence-studio-sentence-builder':'Sentence Builder','sentence-studio-your-review':'Your Review',
-    'textwise-meaning-detective':'Meaning Detective','textwise-sequencing':'Text Sequencing',
+    'sentence-studio-grammar':'Sentence Shaper','sentence-studio-common-mistakes':'Common Mistakes','sentence-studio-spot-the-mistake':'Spot the Mistake','sentence-studio-type-it':'Type It','sentence-studio-sentence-builder':'Sentence Builder','sentence-studio-your-review':'Your Review','wordcraft-personal-review':'Your Vocabulary Review','sentence-studio-personal-review':'Your Grammar Review',
+    'textwise-meaning-detective':'Meaning Detective','textwise-sequence':'Text Sequencing',
     'soundscape-sound-picture-match':'Sound & Picture Match','soundscape-sound-maze':'Sound Maze','soundscape-dictation-bank':'Dictation','soundscape-practice-dictation':'Practice Dictation',
     'real-world-lost-in-london':'Lost in London','real-world-directions':'Directions','real-world-speaking-shadowing':'Speaking & Shadowing','real-world-your-review':'Your Review',
     'fine-sense-nuance-navigator':'Nuance Navigator'
@@ -108,33 +108,46 @@
     renderQuestion();
   }
   function promptText(item) {
-    return item.prompt || item.q || item.text || item.sentence || item.instruction || item.question || item.word || 'Choose the best response.';
+    return item.reviewPrompt || item.prompt || item.q || item.text || item.sentence || item.instruction || item.question || item.word || 'Choose the best response.';
   }
   function optionsFor(item) {
-    const rows = Array.isArray(item.answers) ? item.answers : Array.isArray(item.options) ? item.options : null;
-    return rows ? rows.map(value=>typeof value==='string'?value:(value.label||value.text||value.word||JSON.stringify(value))) : null;
+    let rows = Array.isArray(item.answers) ? item.answers : Array.isArray(item.options) ? item.options : null;
+    if (!rows && currentQuestion.interactionType==='correction') rows = Array.isArray(item.words) ? item.words : Array.isArray(item.tokens) ? item.tokens : null;
+    if (!rows && currentQuestion.interactionType==='listening' && currentQuestion.activityId==='soundscape-sound-picture-match') {
+      const source = activities.find(activity=>activity.id==='soundscape-sound-picture-match');
+      rows = (source?.items || []).map(row=>row.word).filter(Boolean);
+    }
+    return rows ? rows.map(value=>typeof value==='string'?value:(value.label||value.text||value.word||String(value))) : null;
   }
   function inputFor(item) {
     const type = currentQuestion.interactionType;
-    if (type==='choice'||type==='correction'||type==='listening'||type==='matching') return null;
-    return '<input class="fluentia-answer-input" id="fluentia-answer" type="text" autocomplete="off" placeholder="'+(type==='speech'?'Say the response, or type what you would say':type==='ordering'?'Enter the words in the correct order':'Type your answer')+'" aria-label="Your answer">';
+    if (type==='choice'||type==='correction'||(type==='listening' && optionsFor(item))) return null;
+    if (type==='matching') return '<div class="fluentia-answer-grid"><label>Word<input class="fluentia-answer-input" id="fluentia-match-word" autocomplete="off" value="'+esc(item.word||'')+'" aria-label="Word"></label><label>Meaning<input class="fluentia-answer-input" id="fluentia-match-meaning" autocomplete="off" placeholder="Type the matching meaning" aria-label="Matching meaning"></label></div>';
+    return '<input class="fluentia-answer-input" id="fluentia-answer" type="text" autocomplete="off" placeholder="'+(type==='speech'?'Say the response, or type what you would say':type==='ordering'?'Enter each step in order, separated by >':type==='map'?'Enter the map coordinate, for example 2,3':'Type your answer')+'" aria-label="Your answer">';
   }
   function renderQuestion() {
     const item = currentQuestion.item, opts = optionsFor(item), prompt = promptText(item);
     const meta = activities.find(a=>a.id===currentQuestion.activityId);
     const count = currentSession.completedCount+1, percent = (currentSession.completedCount/currentSession.targetCount)*100;
     const choices = opts && ['choice','correction','listening','matching','map'].includes(currentQuestion.interactionType)
-      ? '<div class="fluentia-answer-grid">'+opts.map((option,index)=>'<button type="button" class="fluentia-answer" data-answer-index="'+index+'"><span class="fluentia-answer-index">'+(index+1)+'</span><span>'+esc(option)+'</span></button>').join('')+'</div>'
+      ? '<div class="fluentia-answer-grid">'+opts.map((option,index)=>'<button type="button" class="fluentia-answer" data-answer-index="'+index+'" data-answer-value="'+esc(option)+'"><span class="fluentia-answer-index">'+(index+1)+'</span><span>'+esc(option)+'</span></button>').join('')+'</div>'
       : inputFor(item);
-    const listen = item.word && window.EpiphanySpeech ? '<button type="button" class="btn btn-ghost" data-fluentia-speak="'+esc(item.word)+'">♫ Listen</button>' : '';
+    const spoken = item.word || item.target || ''; const listen = spoken && window.EpiphanySpeech ? '<button type="button" class="btn btn-ghost" data-fluentia-speak="'+esc(spoken)+'">♫ Listen</button>' : '';
     root.innerHTML = '<div class="fluentia-session"><div class="fluentia-session-top"><button type="button" class="fluentia-back" data-exit>← Leave session</button><span class="pill">'+esc(currentModeLabel)+' · '+esc(selectedLevel)+'</span></div><div class="fluentia-session-progress" role="progressbar" aria-valuemin="0" aria-valuemax="'+currentSession.targetCount+'" aria-valuenow="'+count+'"><span style="width:'+percent+'%"></span></div><article class="fluentia-question-card"><p class="kicker">'+esc(domainDefs.find(d=>d.id===currentQuestion.domain)?.name||currentQuestion.domain)+' · '+esc(interactionLabels[currentQuestion.interactionType]||currentQuestion.interactionType)+'</p><p class="fluentia-question-prompt">Question '+count+' of '+currentSession.targetCount+'</p><h2>'+esc(prompt)+'</h2>'+listen+(item.sub?'<p class="fluentia-question-prompt">'+esc(item.sub)+'</p>':'')+(choices||'<div class="fluentia-empty">This activity does not yet have a compatible response control.</div>')+'<div id="fluentia-feedback" aria-live="polite"></div><div class="fluentia-session-actions">'+(opts&&choices?'<span class="fluentia-question-prompt">Choose one answer</span>':'<button type="button" class="btn" data-submit>Check answer</button>')+'<button type="button" class="btn" data-next hidden>Continue →</button></div></article></div>';
   }
   function submit(answer) {
     if (answered || !currentQuestion) return;
     if (answer === undefined) {
-      const input = $('#fluentia-answer');
-      answer = input ? input.value.trim() : '';
-      if (!answer) { if(input) input.focus(); return; }
+      if (currentQuestion.interactionType==='matching') {
+        const word=$('#fluentia-match-word'), meaning=$('#fluentia-match-meaning');
+        answer={word:word?.value.trim()||'',meaning:meaning?.value.trim()||''};
+        if(!answer.word||!answer.meaning){(word?.value.trim()?meaning:word)?.focus();return;}
+      } else {
+        const input = $('#fluentia-answer');
+        answer = input ? input.value.trim() : '';
+        if (!answer) { if(input) input.focus(); return; }
+        if (currentQuestion.interactionType==='ordering') answer=answer.split(/\\s*>\\s*/).map(value=>value.trim()).filter(Boolean);
+      }
     }
     try {
       lastEvent = engine.submitAnswer(currentSession,answer);
@@ -170,7 +183,7 @@
     const activity=event.target.closest('[data-activity]');
     if(activity){startSession('single',{activityId:activity.dataset.activity,label:activityNames[activity.dataset.activity]||'Practice'});return;}
     const answer=event.target.closest('[data-answer-index]');
-    if(answer){submit(Number(answer.dataset.answerIndex));return;}
+    if(answer){const index=Number(answer.dataset.answerIndex);submit(currentQuestion?.activityId==='soundscape-sound-picture-match'?answer.dataset.answerValue||answer.querySelector('span:last-child')?.textContent||'':index);return;}
     if(event.target.closest('[data-submit]')){submit();return;}
     if(event.target.closest('[data-next]')){nextQuestion();return;}
     if(event.target.closest('[data-translate]')){translated=!translated;const feedback=lastEvent?.feedback||{};const host=$('#fluentia-feedback');if(host){const explain=translated?feedback.explanationAr:feedback.explanation;host.querySelector('p')?.replaceChildren(document.createTextNode(explain||''));const button=host.querySelector('[data-translate]');if(button)button.textContent=translated?'Show English':'عرض المساعدة بالعربية';}return;}
