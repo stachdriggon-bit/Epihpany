@@ -106,6 +106,7 @@
         if (!/^[A-Z]+$/.test(item.letters)) errors.push(item.id + ' letters must contain uppercase A–Z only');
         if (!/^[a-z]+$/.test(item.answerWord)) errors.push(item.id + ' answerWord must be lowercase A–Z only');
         if (normalized(item.letters) !== normalized(item.answerWord)) errors.push(item.id + ' letters do not match answerWord');
+        if (item.letters === item.answerWord.toUpperCase()) errors.push(item.id + ' letters must be shuffled rather than shown in answer order');
       });
     });
     if (totalChallenges !== 72) errors.push('The bank must contain exactly 72 challenges');
