@@ -352,6 +352,23 @@
   let selectedTranslatorCEFR = 'adaptive';
   let selectedMazeCEFR = null;
   let selectedTrainingMode = null;
+
+  const THINK_LAB_CEFR_LEVELS = ['A1','A2','B1','B2','C1','C2'];
+  function currentThinkLabCEFR() {
+    const bridge = window.EpiphanyThinkLab;
+    const level = bridge && typeof bridge.getCEFRLevel === 'function' ? bridge.getCEFRLevel() : 'A1';
+    return THINK_LAB_CEFR_LEVELS.includes(level) ? level : 'A1';
+  }
+  function hasThinkLabDeveloperAccess() {
+    return !!(window.EpiphanyAuth && typeof window.EpiphanyAuth.isDeveloper === 'function' && window.EpiphanyAuth.isDeveloper());
+  }
+  function availableThinkLabCEFRLevels() {
+    if (hasThinkLabDeveloperAccess()) return THINK_LAB_CEFR_LEVELS.slice();
+    return THINK_LAB_CEFR_LEVELS.slice(0, THINK_LAB_CEFR_LEVELS.indexOf(currentThinkLabCEFR()) + 1);
+  }
+  function canChooseThinkLabCEFR(level) {
+    return THINK_LAB_CEFR_LEVELS.includes(level) && (hasThinkLabDeveloperAccess() || availableThinkLabCEFRLevels().includes(level));
+  }
   let mode = null, index = 0, score = 0, locked = false, clueCount = 0, oddHintStep = 0, ladderPath = [], ladderWordNote = null, ladderMistakeRecorded = false, roundMistakes = 0, activePool = null, activeDifficulty = null, forgePlaced = [], scramblePlaced = [], connectionSelected = [], chainStepIndex = 0, chainPath = [];
 
   rounds.wordladder = [
@@ -1067,13 +1084,13 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
     mode = null;
     const bridge = window.EpiphanyThinkLab;
     const savedLevel = bridge && typeof bridge.getSoundMazeCEFR === 'function' ? bridge.getSoundMazeCEFR() : null;
-    const currentLevel = bridge && typeof bridge.getCEFRLevel === 'function' ? bridge.getCEFRLevel() : 'A1';
-    selectedMazeCEFR = savedLevel || currentLevel || 'A1';
+    const currentLevel = currentThinkLabCEFR();
+    selectedMazeCEFR = canChooseThinkLabCEFR(savedLevel) ? savedLevel : currentLevel;
     activePool = getRoundPool('maze', selectedTrainingMode);
     preparedMazeCEFR = selectedMazeCEFR;
     if (activePool[0]?.target) window.EpiphanySpeech?.prefetch?.(activePool[0].target, {rate:0.82});
-    const levels = ['A1','A2','B1','B2','C1','C2'];
-    root.innerHTML = '<div class="tl-game-head"><button class="tl-back" type="button" data-think-back>← Choose training mode</button><span class="tl-eyebrow">THE SOUND MAZE</span></div><div class="tl-game-card"><div class="tl-game-kicker">CHOOSE YOUR ENGLISH LEVEL</div><h2>Which level would you like to practise?</h2><p class="tl-game-instruction">Choose the CEFR level independently of Guided, Steady or Challenge. Your selection is saved with your learner preferences.</p><div class="tl-answer-options">'+levels.map(level => '<button type="button" class="tl-option" data-sound-maze-level="'+level+'" aria-pressed="'+(selectedMazeCEFR===level?'true':'false')+'"><strong>'+level+'</strong><span>'+(selectedMazeCEFR===level?'Selected':'Choose this level')+'</span></button>').join('')+'</div></div>';
+    const available = new Set(availableThinkLabCEFRLevels());
+    root.innerHTML = '<div class="tl-game-head"><button class="tl-back" type="button" data-think-back>← Choose training mode</button><span class="tl-eyebrow">THE SOUND MAZE</span></div><div class="tl-game-card"><div class="tl-game-kicker">CHOOSE YOUR ENGLISH LEVEL</div><h2>Which level would you like to practise?</h2><p class="tl-game-instruction">Choose from the CEFR levels you have unlocked. Higher levels open as you progress and pass your level checks. This choice stays separate from Guided, Steady or Challenge.</p><div class="tl-answer-options">'+THINK_LAB_CEFR_LEVELS.map(level => { const unlocked = available.has(level); return '<button type="button" class="tl-option" data-sound-maze-level="'+level+'" '+(unlocked?'':'disabled aria-disabled="true"')+' aria-pressed="'+(selectedMazeCEFR===level?'true':'false')+'"><strong>'+level+'</strong><span>'+(unlocked?(selectedMazeCEFR===level?'Selected':'Choose this level'):'🔒 Locked · progress to unlock')+'</span></button>'; }).join('')+'</div></div>';
   }
   function showMazeBankUnavailable() {
     pickerStage = 'level';
@@ -1084,10 +1101,22 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
     pickerStage = 'level';
     mode = 'translator';
     activePool = null;
-    const levels = ['A1','A2','B1','B2','C1','C2'];
-    root.innerHTML = '<div class="tl-game-head"><button class="tl-back" type="button" data-think-back>← Choose difficulty</button><span class="tl-eyebrow">THE BOLD TRANSLATOR</span></div><div class="tl-game-card"><div class="tl-game-kicker">CHOOSE YOUR ENGLISH LEVEL</div><h2>Which level would you like to practise?</h2><p class="tl-game-instruction">Adaptive follows your current learning level. A1–C2 are available where reviewed question banks exist. If your adaptive level has no bank yet, the game temporarily uses A1 content. This choice does not change your learning level.</p><div class="tl-answer-options"><button type="button" class="tl-option" data-translator-level="adaptive"><strong>Adaptive · Recommended</strong><span>Use my current EPIPHANY level</span></button>'+levels.map(level => '<button type="button" class="tl-option" data-translator-level="'+level+'" '+(translatorBanks[level] ? '' : 'disabled')+'><strong>'+level+'</strong><span>'+(translatorBanks[level] ? 'Available' : 'Coming soon')+'</span></button>').join('')+'</div></div>';
+    const available = new Set(availableThinkLabCEFRLevels());
+    root.innerHTML = '<div class="tl-game-head"><button class="tl-back" type="button" data-think-back>← Choose difficulty</button><span class="tl-eyebrow">THE BOLD TRANSLATOR</span></div><div class="tl-game-card"><div class="tl-game-kicker">CHOOSE YOUR ENGLISH LEVEL</div><h2>Which level would you like to practise?</h2><p class="tl-game-instruction">Adaptive follows your current EPIPHANY level. You can also revisit levels you have unlocked. Higher levels open through your learning progress and level checks.</p><div class="tl-answer-options"><button type="button" class="tl-option" data-translator-level="adaptive"><strong>Adaptive · Recommended</strong><span>Use my current EPIPHANY level</span></button>'+THINK_LAB_CEFR_LEVELS.map(level => { const unlocked = available.has(level); const bankReady = !!translatorBanks[level]; return '<button type="button" class="tl-option" data-translator-level="'+level+'" '+(!unlocked || !bankReady?'disabled aria-disabled="true"':'')+'><strong>'+level+'</strong><span>'+(!unlocked?'🔒 Locked · progress to unlock':bankReady?'Available':'Coming soon')+'</span></button>'; }).join('')+'</div></div>';
   }
   function beginGame(id, trainingMode) {
+    if (id === 'maze' && !canChooseThinkLabCEFR(selectedMazeCEFR)) {
+      selectedMazeCEFR = currentThinkLabCEFR();
+      activePool = null;
+      preparedMazeCEFR = null;
+      showMazeLevelPicker();
+      return;
+    }
+    if (id === 'translator' && selectedTranslatorCEFR !== 'adaptive' && !canChooseThinkLabCEFR(selectedTranslatorCEFR)) {
+      selectedTranslatorCEFR = 'adaptive';
+      showTranslatorLevelPicker();
+      return;
+    }
     pickerGameId = id;
     pickerStage = 'game';
     selectedTrainingMode = ['guided','steady','challenge'].includes(trainingMode) ? trainingMode : 'steady';
@@ -1268,10 +1297,15 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
       return;
     }
     const translatorLevel=e.target.closest('[data-translator-level]');
-    if(translatorLevel){selectedTranslatorCEFR=translatorLevel.dataset.translatorLevel;beginGame('translator',selectedTrainingMode);return;}
+    if(translatorLevel){
+      const requestedLevel=translatorLevel.dataset.translatorLevel;
+      if(requestedLevel!=='adaptive'&&!canChooseThinkLabCEFR(requestedLevel))return;
+      selectedTranslatorCEFR=requestedLevel;
+      beginGame('translator',selectedTrainingMode);return;
+    }
     const mazeLevel=e.target.closest('[data-sound-maze-level]');
     if(mazeLevel){
-      if(!['A1','A2','B1','B2','C1','C2'].includes(mazeLevel.dataset.soundMazeLevel))return;
+      if(!canChooseThinkLabCEFR(mazeLevel.dataset.soundMazeLevel))return;
       selectedMazeCEFR=mazeLevel.dataset.soundMazeLevel;
       if (preparedMazeCEFR !== selectedMazeCEFR) {
         activePool = getRoundPool('maze', selectedTrainingMode);
