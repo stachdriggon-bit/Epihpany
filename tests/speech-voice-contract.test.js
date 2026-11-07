@@ -45,6 +45,8 @@ test('shared George speech cache deduplicates requests and prefetches the next S
   assert.match(app, /const naturalAudioInflight = new Map\(\)/, 'identical audio requests should share one in-flight fetch');
   assert.match(app, /async function getNaturalAudio\(/);
   assert.match(app, /prefetch:\s*prefetchNaturalSpeech/, 'the shared speech API should expose background prefetch');
+  assert.match(thinkLab, /preparedMazeCEFR = selectedMazeCEFR/, 'the selected level pool should be prepared before the game opens');
+  assert.match(thinkLab, /prefetch\?\.\(activePool\[0\]\.target, \{rate:0\.82\}\)/, 'the first word should warm while the learner is choosing the level');
   assert.match(thinkLab, /mode === 'maze' && index \+ 1 < pool\.length/);
   assert.match(thinkLab, /EpiphanySpeech\?\.prefetch\?\.\(nextTarget, \{rate:0\.82\}\)/, 'Sound Maze should prefetch the next word at its existing George rate');
 });
