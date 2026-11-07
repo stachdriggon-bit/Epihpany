@@ -107,7 +107,8 @@
     const letters = [];
     for (let i = 0; i <= steps; i++) letters.push(puzzle().grid[startCell.row + dr * i][startCell.col + dc * i]);
     const selected = letters.join('');
-    const answer = puzzle().words.find(word => !found.has(word) && (word === selected || word === [...selected].reverse().join('')));
+    const matchedWord = puzzle().words.find(word => word === selected || word === [...selected].reverse().join(''));
+    const answer = matchedWord && !found.has(matchedWord) ? matchedWord : null;
     if (answer) {
       found.add(answer);
       startCell = null;
@@ -120,11 +121,15 @@
       }
       if (puzzleComplete) completed = true;
     } else {
-      if (window.EpiphanyThinkLab && typeof window.EpiphanyThinkLab.recordResult === 'function') {
-        window.EpiphanyThinkLab.recordResult('vocabulary', 'word-hunt', false, false, {trackAdaptive:false});
+      if (matchedWord && found.has(matchedWord)) {
+        feedback = 'You have already found that word.';
+      } else {
+        if (window.EpiphanyThinkLab && typeof window.EpiphanyThinkLab.recordResult === 'function') {
+          window.EpiphanyThinkLab.recordResult('vocabulary', 'word-hunt', false, false, {trackAdaptive:false});
+        }
+        feedback = 'Not a target word yet. Try another line—there is no penalty.';
       }
       startCell = null;
-      feedback = 'Not a target word yet. Try another line—there is no penalty.';
     }
     renderPuzzle();
   }
