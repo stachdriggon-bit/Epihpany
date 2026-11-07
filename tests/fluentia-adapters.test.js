@@ -127,7 +127,7 @@ test('extended sources register matching, listening, speech, sequencing and revi
     'real-world-speaking-shadowing','textwise-sequence','sentence-studio-sentence-builder',
     'wordcraft-personal-review','sentence-studio-personal-review'
   ]) assert.ok(ids.has(id), id);
-  assert.equal(adapters.length, 19);
+  assert.equal(adapters.length, 21);
 });
 
 test('Sound Maze, dictation, shadowing and Word Match keep distinct evaluation semantics', () => {
@@ -221,4 +221,36 @@ test('Your Review feeds stay out of ordinary mixed sessions but remain individua
   assert.ok(!mixed.activityIds.includes('sentence-studio-personal-review'));
   const review = engine.createSession({mode:'single',activityId:'wordcraft-personal-review',level:'A1',itemCount:1});
   assert.deepEqual(review.activityIds, ['wordcraft-personal-review']);
+});
+
+test('Soundscape dictation bank and Wordcraft Speed Round preserve CEFR and answer semantics', () => {
+  const sources = expandedFixture();
+  sources.soundscapeDictationBank = [
+    {id:'SD-A1-01',level:'A1',text:'I like fresh bread.'},
+    {id:'SD-B2-01',level:'B2',text:'The report was revised.'}
+  ];
+  const adapters = AdapterFactory.createAdapters(sources);
+  const dictation = adapters.find(item => item.id === 'soundscape-dictation-bank');
+  const speed = adapters.find(item => item.id === 'wordcraft-speed-round');
+  assert.deepEqual(dictation.getItems({level:'A1'}).map(item=>item.id), ['SD-A1-01']);
+  assert.equal(dictation.evaluate(dictation.getItems({level:'A1'})[0], 'I like fresh bread!').correct, true);
+  assert.equal(dictation.getItems({level:'C1'}).length, 0);
+  assert.ok(speed);
+  assert.equal(speed.interactionType, 'typed');
+  assert.equal(speed.getItems({level:'A1'})[0].sourceActivityId, 'speed');
+  assert.equal(speed.evaluate(speed.getItems({level:'A1'})[0], 'apple').correct, true);
+});
+
+test('adapter progress callback is carried into the engine and receives normalized events', () => {
+  const events = [];
+  const sources = fixture();
+  sources.onProgress = event => events.push(event);
+  const engine = Engine.createEngine();
+  AdapterFactory.registerAll(engine, sources);
+  const session = engine.createSession({mode:'single',activityId:'wordcraft-vocabulary',level:'A1',itemCount:1});
+  engine.selectNext(session);
+  engine.submitAnswer(session, 1);
+  assert.equal(events.length, 1);
+  assert.equal(events[0].sourceActivityId, 'vocabulary');
+  assert.equal(events[0].domain, 'wordcraft');
 });
