@@ -217,6 +217,7 @@
       const event = {
         eventId: session.id + ':' + session.completedCount,
         sessionId: session.id, itemId: current.item.id, activityId: activity.id,
+        sourceActivityId: cleanId(current.item.sourceActivityId) || activity.id,
         domain: current.domain, interactionType: current.interactionType,
         level: session.level, correct: evaluation.correct,
         errorType: cleanId(evaluation.errorType) || null,
