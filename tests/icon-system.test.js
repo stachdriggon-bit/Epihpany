@@ -33,3 +33,8 @@ test('scoped icon scans retain local Think Lab and Arcade selectors', () => {
   assert.doesNotMatch(source, /const arcadeSelector = root === document/);
   assert.doesNotMatch(source, /: '\\[class\\*="game"\\]'/);
 });
+
+test('Crossword Quest uses its own outline icon in the existing Think Lab icon slot', () => {
+  assert.match(source, /'crossword-quest':'<rect/);
+  assert.match(source, /crossword:'crossword-quest'/);
+});
