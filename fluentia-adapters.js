@@ -217,10 +217,12 @@
           const saved = new Set((reviewState.review || []).filter(row => row && row.word).map(row => normalize(row.word)));
           (reviewState.words || []).forEach(row => saved.add(normalize(Array.isArray(row) ? row[0] : row && row.word)));
           const bank = sources.games.vocabulary && sources.games.vocabulary.questions || [];
-          return reviewItems(level, bank, item => saved.has(normalize(item.word || item.q)), item => {
-            const row = (reviewState.review || []).find(entry => entry && normalize(entry.word) === normalize(item.word || item.q));
+          const term = item => Array.isArray(item.word) ? item.word[0] : (item.word || item.q);
+          const meaning = item => Array.isArray(item.word) ? item.word[1] : item.answers?.[item.correct];
+          return reviewItems(level, bank, item => saved.has(normalize(term(item))), item => {
+            const row = (reviewState.review || []).find(entry => entry && normalize(entry.word) === normalize(term(item)));
             return Number(row && row.errors) || 0;
-          }).map(item => ({...item, reviewPrompt:item.word || item.q, reviewMeaning:item.answers?.[item.correct]}));
+          }).map(item => ({...item, reviewPrompt:term(item), reviewMeaning:meaning(item)}));
         },
         evaluate: (item, answer) => ({correct: normalize(answer) === normalize(item.reviewMeaning), errorType: normalize(answer) === normalize(item.reviewMeaning) ? null : 'vocabulary-recall'}),
         correctAnswer: item => item.reviewMeaning
