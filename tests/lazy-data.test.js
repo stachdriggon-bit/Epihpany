@@ -257,11 +257,17 @@ test('feature styles load only when requested', async () => {
   await life;
   const think = context.window.EPIPHANY_LAZY_STYLE('thinklab');
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested.length, 5);
+  assert.equal(requested.length, 3);
   assert.match(requested[2], /^word-hunt\.css\?v=/);
+  links[2].onload();
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(requested.length, 4);
   assert.match(requested[3], /^codebreaker\.css\?v=/);
+  links[3].onload();
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(requested.length, 5);
   assert.match(requested[4], /^letter-grid\.css\?v=/);
-  links[2].onload(); links[3].onload(); links[4].onload();
+  links[4].onload();
   await think;
 });
 
