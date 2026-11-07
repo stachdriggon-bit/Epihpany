@@ -80,6 +80,8 @@ test('initial HTML defers stories and World data and keeps loader in offline she
   assert.match(html, /lazy-data\.js\?v=[^\"&]+/);
   assert.doesNotMatch(html, /href=\"(?:resonance|life-skills)\.css/);
   assert.match(fs.readFileSync(path.join(root, 'lazy-data.js'), 'utf8'), /EPIPHANY_LAZY_STYLE/);
+  assert.match(fs.readFileSync(path.join(root, 'app.js'), 'utf8'), /EPIPHANY_LAZY_LOAD\('thinklab'\), window\.EPIPHANY_LAZY_STYLE\('thinklab'\)/);
+  assert.doesNotMatch(html, /<script[^>]+src="(?:crossword-quest|crossword-quest-bank)\.js/);
   assert.doesNotMatch(html, /<script[^>]+src="data-translation-ar\.js/);
   assert.doesNotMatch(html, /<script[^>]+src="(?:think-lab|practice-lab|life-skills)\.js/);
   assert.match(sw, /'\.\/lazy-data\.js'/);
@@ -94,7 +96,7 @@ test('initial HTML defers stories and World data and keeps loader in offline she
     assert.ok(!coreAssets.includes("'./" + asset + "'"), asset + ' must not be part of the core cache');
     assert.ok(lazyAssets.includes("'./" + asset + "'"), asset + ' should be cached as a lazy offline asset');
   }
-  for (const asset of ['data-stories.js', 'data-world.js', 'data-world-registry.js', 'data-world-events.js', 'data-world-sprites.js', 'sound-maze-bank.js', 'sound-maze-content.js', 'odd-one-out-bank.js', 'sentence-scramble-bank.js', 'word-forge-bank.js', 'chain-reaction-bank.js', 'think-lab.js', 'practice-lab.js', 'life-skills.js', 'language-detective-investigation.js']) {
+  for (const asset of ['data-stories.js', 'data-world.js', 'data-world-registry.js', 'data-world-events.js', 'data-world-sprites.js', 'sound-maze-bank.js', 'sound-maze-content.js', 'odd-one-out-bank.js', 'sentence-scramble-bank.js', 'word-forge-bank.js', 'chain-reaction-bank.js', 'crossword-quest-bank.js', 'think-lab.js', 'crossword-quest.js', 'practice-lab.js', 'life-skills.js', 'language-detective-investigation.js']) {
     assert.ok(lazyAssets.includes("'./" + asset + "'"), asset + ' should be cached as a lazy offline asset');
   }
   assert.match(sw, /const cached = await cache\.match\(request\);\s*if \(cached\) return cached;/);
