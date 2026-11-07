@@ -121,7 +121,7 @@ Deliverables: a repository-grounded inventory and final activity-to-domain mappi
 
 ### Phase 5 — Fluentia UI and Your Review
 
-Build the landing page, six domain entry points, in-domain activity chooser, Section Mixed entry, global Fluentia Mix entry and Your Review. Follow EPIPHANY's visual direction: warm neutral surfaces, navy text, purple navigation/links, yellow primary actions, restrained section accents, balanced density and one clear primary action per screen. Keep Stories and Think Lab navigation/identity separate.
+**Implemented; CI verification pending.** Added a dedicated Fluentia view and Learn navigation entry on desktop and mobile; the six canonical domain cards; an in-domain activity chooser; a CEFR selector; Section Mixed domain selection; one-click Fluentia Mix; and dedicated Your Review entries for review-only adapters. The session screen delegates item selection and evaluation to the shared engine, supports the current choice, correction, typed, ordering, matching, map, listening and speech adapter shapes, and shows a completion summary. Fluentia answer events continue through the Phase 3 progress bridge; this UI does not award legacy Arcade XP or duplicate rewards. New assets are included in the service worker's core cache. Static integration tests were added in tests/fluentia-ui.test.js. Keep Stories and Think Lab navigation/identity separate.
 
 ### Phase 6 — Quality, regression and documentation
 
@@ -151,4 +151,5 @@ Run and resolve relevant unit, content-quality, syntax/static, browser-smoke and
 - Phase 1 was documentation-only: no live Arcade/Fluentia product code or existing activity banks were migrated or modified.
 - Phase 2 is verified complete; see [FLUENTIA-SESSION-ARCHITECTURE.md](./FLUENTIA-SESSION-ARCHITECTURE.md).
 - Phase 3 source integration, content banks, adapters and progress bridge are implemented and verified by green repository CI on `aa5008876a1d6876253971e768371742cd0e3fb7`.
-- Phase 4 mixed-session orchestration is implemented; await CI on the current Phase 4 commit before proceeding to Phase 5.**
+- Phase 4 mixed-session orchestration is implemented; its CI verification status must be confirmed separately.
+- Phase 5 Fluentia learner UI is implemented; CI verification is pending.
