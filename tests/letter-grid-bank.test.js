@@ -13,6 +13,7 @@ test('Letter Grid contains four independent levels and 48 fixed puzzles',()=>{
   assert.equal(Object.values(bank.puzzles).flat().length,48);
   assert.equal(Object.values(bank.puzzles).flatMap(p=>p.words).length,216);
   for(const [level,cfg] of Object.entries(bank.levels)){
+    let diagonalSteps=0,turns=0;
     assert.equal(bank.puzzles[level].length,cfg.count,level);
     assert.equal(new Set(bank.puzzles[level].map(p=>p.id)).size,cfg.count,level+' puzzle IDs');
     for(const puzzle of bank.puzzles[level]){
@@ -29,10 +30,14 @@ test('Letter Grid contains four independent levels and 48 fixed puzzles',()=>{
           if(i){
             const prev=word.path[i-1],pr=Math.floor(prev/cfg.size),pc=prev%cfg.size;
             assert.equal(Math.max(Math.abs(row-pr),Math.abs(col-pc)),1,word.id+' neighboring step');
+            if(Math.abs(row-pr)===1&&Math.abs(col-pc)===1)diagonalSteps++;
+            if(i>1){const before=word.path[i-2],br=Math.floor(before/cfg.size),bc=before%cfg.size;if(br!==pr||bc!==pc)turns++;}
           }
         }
       }
     }
+    assert.ok(diagonalSteps>0,level+' should include diagonal letter paths');
+    assert.ok(turns>0,level+' should include turning letter paths');
   }
 });
 
