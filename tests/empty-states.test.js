@@ -55,5 +55,5 @@ test('changed scripts are versioned and the offline shell cache is refreshed', (
   assert.match(html, /style\.css\?v=outline-icons-20261105-1/);
   assert.match(read('style.css'), /Helpful empty-state actions/);
   assert.match(read('lazy-data.js'), /think-lab\.js\?v=crossword-card-20261107-1/);
-  assert.match(sw, /epiphany-stability-gallery-identity-20261105-1-chain-reaction-72-20261107-1/);
+  assert.match(sw, /epiphany-stability-gallery-identity-20261105-1-chain-reaction-72-20261107-1-crossword-quest-20261107-1/);
 });
