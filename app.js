@@ -17,28 +17,6 @@
     document.body.appendChild(errorPanel);
     return;
   }
-  // Phase 3: register canonical adapters over the existing banks without replacing their renderers.
-  let fluentiaSessionEngine = null;
-  try {
-    const engineApi = window.EPIPHANY_FLUENTIA_ENGINE;
-    const adapterApi = window.EPIPHANY_FLUENTIA_ADAPTERS;
-    if (engineApi && adapterApi) {
-      fluentiaSessionEngine = engineApi.createEngine();
-      adapterApi.registerAll(fluentiaSessionEngine, {
-        games: GAMES,
-        spot: typeof SPOT_QUESTIONS !== 'undefined' ? SPOT_QUESTIONS : [],
-        typing: typeof TYPING_QUESTIONS !== 'undefined' ? TYPING_QUESTIONS : [],
-        directions: typeof DIRECTION_ITEMS !== 'undefined' ? DIRECTION_ITEMS : []
-      });
-      Object.defineProperty(window, 'EPIPHANY_FLUENTIA_SESSION_ENGINE', {
-        configurable: false, enumerable: false, writable: false, value: fluentiaSessionEngine
-      });
-    }
-  } catch (error) {
-    // Fluentia is additive during migration; a registration issue must not block legacy Arcade.
-    console.warn('[Fluentia] Domain adapter registration was skipped.', error);
-    fluentiaSessionEngine = null;
-  }
   const $ = s => document.querySelector(s);
   const $$ = s => [...document.querySelectorAll(s)];
   let bidiLastMode = null;
@@ -206,6 +184,28 @@
   const UNLOCK = {vocabulary:0, spelling:0, grammar:1, story:2, listening:3, advanced:4, mistakes:0, spot:0, typing:0};
   GAMES.mistakes = {title:'Common Mistakes', category:'GRAMMAR', xp:40, desc:'Understand common mistakes made by English learners.', questions:MISTAKE_QUESTIONS.map(q=>({q:q.prompt,sub:q.sub,answers:q.options,correct:q.answer,explain:q.why_en,word:null,level:q.level,ar:q.arabic_hint,id:q.id,trap:q.trap,why_ar:q.why_ar,arabic_hint:q.arabic_hint,q_ar:q.q_ar,sub_ar:q.sub_ar,explain_ar:q.why_ar,aha:null}))};
   GAMES.personalized = {title:'Your Weak Spots',category:'PERSONAL REVIEW',xp:45,desc:'A short practice set built from the mistake patterns you have missed before.',questions:GAMES.mistakes.questions.slice()};
+  // Phase 3: register canonical adapters over the existing banks without replacing their renderers.
+  let fluentiaSessionEngine = null;
+  try {
+    const engineApi = window.EPIPHANY_FLUENTIA_ENGINE;
+    const adapterApi = window.EPIPHANY_FLUENTIA_ADAPTERS;
+    if (engineApi && adapterApi) {
+      fluentiaSessionEngine = engineApi.createEngine();
+      adapterApi.registerAll(fluentiaSessionEngine, {
+        games: GAMES,
+        spot: typeof SPOT_QUESTIONS !== 'undefined' ? SPOT_QUESTIONS : [],
+        typing: typeof TYPING_QUESTIONS !== 'undefined' ? TYPING_QUESTIONS : [],
+        directions: typeof DIRECTION_ITEMS !== 'undefined' ? DIRECTION_ITEMS : []
+      });
+      Object.defineProperty(window, 'EPIPHANY_FLUENTIA_SESSION_ENGINE', {
+        configurable: false, enumerable: false, writable: false, value: fluentiaSessionEngine
+      });
+    }
+  } catch (error) {
+    // Fluentia is additive during migration; a registration issue must not block legacy Arcade.
+    console.warn('[Fluentia] Domain adapter registration was skipped.', error);
+    fluentiaSessionEngine = null;
+  }
   // Assign a topic only when the prompt or its explanation provides a clear grammar signal.
   // These tags let writing and error-spotting rounds share the same review history as grammar.
   function inferGrammarTrap(q) {
