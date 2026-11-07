@@ -1,6 +1,6 @@
 # Letter Grid — Game Specification
 
-**Status:** First implementation and fixed first-release content bank committed to `main`; CI and manual review are pending.  
+**Status:** First implementation and fixed first-release content bank committed to `main`. Unit/static, browser smoke, and content-quality CI checks pass; manual phone/desktop visual review remains pending until Vercel deployment is available.  
 **Think Lab position:** Game 11.  
 **Gameplay model:** Independent Easy / Medium / Hard / Expert selection. No Guided / Steady / Challenge modes.
 
