@@ -191,6 +191,13 @@
     const adapterApi = window.EPIPHANY_FLUENTIA_ADAPTERS;
     if (engineApi && adapterApi) {
       fluentiaSessionEngine = engineApi.createEngine();
+      const bridgeApi = window.EPIPHANY_FLUENTIA_PROGRESS_BRIDGE;
+      if (bridgeApi && typeof bridgeApi.createBridge === 'function') {
+        Object.defineProperty(window, 'EPIPHANY_FLUENTIA_PROGRESS', {
+          configurable: false, enumerable: false, writable: false,
+          value: bridgeApi.createBridge(() => state)
+        });
+      }
       const registerFluentiaSources = extra => adapterApi.registerSources(fluentiaSessionEngine, {
         games: GAMES,
         spot: typeof SPOT_QUESTIONS !== 'undefined' ? SPOT_QUESTIONS : [],
