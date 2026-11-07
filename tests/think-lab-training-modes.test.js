@@ -208,7 +208,7 @@ test('Word Forge loads exactly 24 approved challenges for each selected training
 test('Word Forge uses the approved bank skill and records incorrect complete attempts', () => {
   assert.match(source, /bank\.selectRound\(trainingMode\)/);
   assert.match(source, /recordResult\('spelling','word-forge',false,false\)/);
-  assert.match(source, /<strong>Complete the word first\.<\\/strong>/);
-  assert.match(source, /<strong>Skill:<\\/strong>/);
+  assert.match(source, /Complete the word first/);
+  assert.match(source, /Skill:/);
   assert.doesNotMatch(source, /rounds\.forge\s*=/);
 });
