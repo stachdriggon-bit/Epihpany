@@ -1,6 +1,6 @@
 # Crossword Quest
 
-> **Project status:** Paused, not deleted. Keep its code and content work intact; do not expose it until the complete reviewed bank is ready.
+> **Project status:** Paused, not deleted. Keep its code and content work intact; do not expose it until the complete reviewed bank is ready. The Think Lab card and lazy runtime loading are disabled; the source files remain archived in the repository.
  — Game Specification
 
 **Status:** Core direction approved; implementation foundation committed; Easy candidate lexicon expanded to 144 answers across eight themes; 24 reviewed Easy grids and the remaining level banks are pending.  
