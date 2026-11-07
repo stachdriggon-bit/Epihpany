@@ -388,7 +388,38 @@ test('main navigation tabs open without uncaught page errors', { timeout: 18 * 6
           'successful feedback should identify the vocabulary skill');
         assert.equal(await forgeCard.locator('[data-think-next]').isVisible(), true,
           'a correct answer should unlock the next challenge');
+
         checkpoint('thinklab: Word Forge board, answer checking and feedback verified');
+
+        await page.locator('#thinklab-view [data-think-back]').first().click();
+        await page.locator('#thinklab-view [data-think-back]').click();
+        await page.locator('#thinklab-view [data-think-game="chain"]').click();
+        const chainModePicker = page.locator('#thinklab-view .tl-mode-picker');
+        await chainModePicker.waitFor({state:'visible',timeout:5000});
+        await chainModePicker.locator('[data-think-training-mode="guided"]').click();
+        const chainCard = page.locator('#thinklab-view .tl-game-card');
+        await chainCard.waitFor({state:'visible',timeout:5000});
+        assert.ok(requested.some(path => path.endsWith('/chain-reaction-bank.js')),
+          'Chain Reaction bank should load on demand before Think Lab');
+        assert.equal(await page.evaluate(() => window.EPIPHANY_CHAIN_REACTION_BANK.validateBank().valid), true,
+          'the complete approved Chain Reaction bank should validate in the browser');
+        assert.match(await chainCard.locator('.tl-game-actions').innerText(), /ROUND 1 OF 24/);
+        assert.match(await chainCard.locator('.tl-connection-count').innerText(), /LINK 1 OF 3/);
+        const chainTitle = await chainCard.locator('h2').innerText();
+        const chainChallenge = await page.evaluate(title => window.EPIPHANY_CHAIN_REACTION_BANK.getRounds('guided').find(item => item.title === title), chainTitle);
+        assert.ok(chainChallenge, 'the displayed chain title should map to an approved challenge');
+        for (let step = 0; step < 3; step++) {
+          const link = chainChallenge.links[step];
+          await chainCard.locator('[data-chain-answer]').filter({hasText:link.to}).click();
+          await chainCard.locator('#tl-feedback').waitFor({state:'visible',timeout:5000});
+          await chainCard.locator('#tl-feedback').getByText(link.explanation, {exact:false}).waitFor({state:'visible',timeout:5000});
+          if (step < 2) assert.match(await chainCard.locator('.tl-connection-count').innerText(), new RegExp('LINK ' + (step + 2) + ' OF 3'));
+        }
+        assert.match(await chainCard.locator('#tl-feedback').innerText(), /Chain complete!/);
+        assert.equal(await chainCard.locator('[data-think-next]').isVisible(), true,
+          'completing all three links should unlock the next challenge');
+        checkpoint('thinklab: Chain Reaction three-link path and all explanations verified');
+
 
       }
       if (view === 'casebound') {
