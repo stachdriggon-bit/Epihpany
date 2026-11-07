@@ -147,7 +147,8 @@
         id: 'wordcraft-word-match', domain: 'wordcraft', interactionType: 'matching', skills: ['word-meaning-retrieval'],
         getSource: () => [],
         getItems: ({level}) => {
-          const saved = new Set((sources.reviewState?.words || []).map(row => normalize(Array.isArray(row) ? row[0] : row && row.word)));
+          const reviewState = typeof sources.reviewState === 'function' ? sources.reviewState() : sources.reviewState;
+          const saved = new Set((reviewState?.words || []).map(row => normalize(Array.isArray(row) ? row[0] : row && row.word)));
           const rows = sources.wordOfDayItems.filter(item => item && item.level === level && item.word && item.meaning);
           return rows.map(item => ({...item, savedForReview:saved.has(normalize(item.word))}));
         },
@@ -237,7 +238,7 @@
     }
 
     if (sources.reviewState && sources.games) {
-      const reviewState = sources.reviewState;
+      const getReviewState = () => typeof sources.reviewState === 'function' ? sources.reviewState() : sources.reviewState;
       const reviewItems = (level, sourceQuestions, predicate, score) => sourceQuestions
         .filter(item => item && item.level === level && predicate(item))
         .map(item => ({...item, reviewWeight: score(item), sourceActivityId: item.sourceActivityId || 'legacy-review'}))
@@ -246,6 +247,7 @@
         id: 'wordcraft-personal-review', domain: 'wordcraft', interactionType: 'dynamic', skills: ['vocabulary-retrieval'],
         getSource: () => [],
         getItems: ({level}) => {
+          const reviewState = getReviewState() || {};
           const saved = new Set((reviewState.review || []).filter(row => row && row.word).map(row => normalize(row.word)));
           (reviewState.words || []).forEach(row => saved.add(normalize(Array.isArray(row) ? row[0] : row && row.word)));
           const bank = sources.games.vocabulary && sources.games.vocabulary.questions || [];
@@ -263,6 +265,7 @@
         id: 'sentence-studio-personal-review', domain: 'sentence-studio', interactionType: 'choice', skills: ['grammar-retrieval'],
         getSource: () => [],
         getItems: ({level}) => {
+          const reviewState = getReviewState() || {};
           const errors = reviewState.mistakeTrapErrors || {};
           const questionErrors = reviewState.mistakeQuestionErrors || {};
           const bank = sources.games.mistakes && sources.games.mistakes.questions || [];
