@@ -56,18 +56,20 @@ test('feature data loader does not request large datasets until requested', asyn
     'word-hunt.js',
     'codebreaker-bank.js',
     'codebreaker.js',
+    'letter-grid-bank.js',
+    'letter-grid.js',
     'life-skills.js'
   ]);
   assert.ok(requested.slice(4).every(src => /\?v=.+/.test(src)));
   await context.window.EPIPHANY_LAZY_LOAD('arabic');
-  assert.deepEqual(requested.slice(18).map(src => src.split('?')[0]), [
+  assert.deepEqual(requested.slice(20).map(src => src.split('?')[0]), [
     'data-translation-ar.js',
     'data-translation-ar-fill.js'
   ]);
-  assert.ok(requested.slice(18).every(src => /\?v=.+/.test(src)));
+  assert.ok(requested.slice(22).every(src => /\?v=.+/.test(src)));
   assert.deepEqual(merged, [true]);
   await context.window.EPIPHANY_LAZY_LOAD('chronicle');
-  assert.deepEqual(requested.slice(20).map(src => src.split('?')[0]), ['data-world-registry.js', 'data-world-events.js']);
+  assert.deepEqual(requested.slice(22).map(src => src.split('?')[0]), ['data-world-registry.js', 'data-world-events.js']);
   assert.ok(requested.slice(20).every(src => /\?v=.+/.test(src)));
 });
 
@@ -91,10 +93,10 @@ test('initial HTML defers stories and World data and keeps loader in offline she
   const lazyAssets = sw.match(/const LAZY_ASSETS = \[([^\]]*)\];/)?.[1] || '';
   assert.ok(coreAssets, 'service worker should define core offline assets');
   assert.ok(lazyAssets, 'service worker should define lazy offline assets');
-  for (const asset of ['data-stories.js', 'data-world.js', 'data-world-sprites.js', 'sound-maze-bank.js', 'sound-maze-content.js', 'odd-one-out-bank.js', 'sentence-scramble-bank.js', 'word-forge-bank.js', 'chain-reaction-bank.js', 'crossword-quest-bank.js', 'think-lab.js', 'crossword-quest.js', 'word-hunt-bank.js', 'word-hunt.js', 'codebreaker-bank.js', 'codebreaker.js', 'practice-lab.js', 'life-skills.js', 'data-translation-ar.js']) {
+  for (const asset of ['data-stories.js', 'data-world.js', 'data-world-sprites.js', 'sound-maze-bank.js', 'sound-maze-content.js', 'odd-one-out-bank.js', 'sentence-scramble-bank.js', 'word-forge-bank.js', 'chain-reaction-bank.js', 'crossword-quest-bank.js', 'think-lab.js', 'crossword-quest.js', 'word-hunt-bank.js', 'word-hunt.js', 'codebreaker-bank.js', 'codebreaker.js', 'letter-grid-bank.js', 'letter-grid.js', 'practice-lab.js', 'life-skills.js', 'data-translation-ar.js']) {
     assert.ok(!coreAssets.includes("'./" + asset + "'"), asset + ' should not be a core startup asset');
   }
-  for (const asset of ['resonance.css', 'life-skills.css', 'crossword-quest.css', 'word-hunt.css', 'codebreaker.css']) {
+  for (const asset of ['resonance.css', 'life-skills.css', 'crossword-quest.css', 'word-hunt.css', 'codebreaker.css', 'letter-grid.css']) {
     assert.ok(!coreAssets.includes("'./" + asset + "'"), asset + ' must not be part of the core cache');
     assert.ok(lazyAssets.includes("'./" + asset + "'"), asset + ' should be cached as a lazy offline asset');
   }
@@ -179,11 +181,19 @@ test('overlapping feature groups share one in-flight script request', async () =
   scripts[11].onload();
   await new Promise(resolve => setImmediate(resolve));
   assert.equal(requested.length, 13);
-  assert.match(requested[12], /^life-skills\.js\?/);
+  assert.match(requested[12], /^letter-grid-bank\.js\?/);
   scripts[12].onload();
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(requested.length, 14);
+  assert.match(requested[13], /^letter-grid\.js\?/);
+  scripts[13].onload();
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(requested.length, 15);
+  assert.match(requested[14], /^life-skills\.js\?/);
+  scripts[14].onload();
 
   await Promise.all([thinkLab, lifeSkills]);
-  assert.equal(requested.length, 13);
+  assert.equal(requested.length, 15);
 });
 
 test('failed lazy scripts are removed and can be retried', async () => {
@@ -381,6 +391,12 @@ test('optional lazy loads respect the adaptive concurrency limit', async () => {
   await new Promise(resolve => setImmediate(resolve));
   assert.equal(requested[12].split('?')[0], 'codebreaker.js');
   scripts[12].onload();
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(requested[13].split('?')[0], 'letter-grid-bank.js');
+  scripts[13].onload();
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(requested[14].split('?')[0], 'letter-grid.js');
+  scripts[14].onload();
 });
 
 test('explicit navigation bypasses and promotes queued optional loads', async () => {
@@ -461,6 +477,12 @@ test('explicit navigation bypasses and promotes queued optional loads', async ()
   await new Promise(resolve => setImmediate(resolve));
   assert.equal(requested[12].split('?')[0], 'codebreaker.js');
   scripts[12].onload();
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(requested[13].split('?')[0], 'letter-grid-bank.js');
+  scripts[13].onload();
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(requested[14].split('?')[0], 'letter-grid.js');
+  scripts[14].onload();
   await explicit;
   scripts[0].onload();
 });
@@ -562,6 +584,12 @@ test('background optional loads pause while constrained, resume once, and never 
   await new Promise(resolve => setImmediate(resolve));
   assert.equal(requested[12].split('?')[0], 'codebreaker.js');
   scripts[12].onload();
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(requested[13].split('?')[0], 'letter-grid-bank.js');
+  scripts[13].onload();
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(requested[14].split('?')[0], 'letter-grid.js');
+  scripts[14].onload();
   await new Promise(resolve => setImmediate(resolve));
 
   policy = { ...policy, allowSpeculativePreload: false, deferNonEssentialWork: true };
