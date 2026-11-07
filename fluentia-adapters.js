@@ -38,6 +38,7 @@
       domain: config.domain,
       interactionType: config.interactionType,
       skills: config.skills,
+      reviewOnly: !!config.reviewOnly,
       getItems({level}) {
         const rows = typeof config.getItems === 'function' ? config.getItems({level}) : source;
         if (!Array.isArray(rows)) return [];
@@ -244,7 +245,7 @@
         .map(item => ({...item, reviewWeight: score(item), sourceActivityId: item.sourceActivityId || 'legacy-review'}))
         .sort((a,b) => b.reviewWeight - a.reviewWeight);
       adapters.push(makeAdapter({
-        id: 'wordcraft-personal-review', domain: 'wordcraft', interactionType: 'dynamic', skills: ['vocabulary-retrieval'],
+        id: 'wordcraft-personal-review', domain: 'wordcraft', interactionType: 'dynamic', skills: ['vocabulary-retrieval'], reviewOnly: true,
         getSource: () => [],
         getItems: ({level}) => {
           const reviewState = getReviewState() || {};
@@ -262,7 +263,7 @@
         correctAnswer: item => item.reviewMeaning
       }));
       adapters.push(makeAdapter({
-        id: 'sentence-studio-personal-review', domain: 'sentence-studio', interactionType: 'choice', skills: ['grammar-retrieval'],
+        id: 'sentence-studio-personal-review', domain: 'sentence-studio', interactionType: 'choice', skills: ['grammar-retrieval'], reviewOnly: true,
         getSource: () => [],
         getItems: ({level}) => {
           const reviewState = getReviewState() || {};
