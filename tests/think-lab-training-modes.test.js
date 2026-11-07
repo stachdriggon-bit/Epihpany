@@ -57,6 +57,7 @@ function createHarness(options = {}) {
     querySelectorAll() { return []; }
   };
   let savedMazeCEFR = options.savedMazeCEFR || null;
+  let crosswordOpened = 0;
   const window = {
     EpiphanyAuth: {isDeveloper: () => true},
     EPIPHANY_ODD_ONE_OUT_BANK: bank,
@@ -65,6 +66,7 @@ function createHarness(options = {}) {
     EPIPHANY_SENTENCE_SCRAMBLE_BANK: sentenceScrambleContext.window.EPIPHANY_SENTENCE_SCRAMBLE_BANK,
     EPIPHANY_WORD_FORGE_BANK: wordForgeContext.window.EPIPHANY_WORD_FORGE_BANK,
     EPIPHANY_CHAIN_REACTION_BANK: chainReactionContext.window.EPIPHANY_CHAIN_REACTION_BANK,
+    EPIPHANY_CROSSWORD_QUEST: { open() { crosswordOpened++; root.innerHTML = 'crossword-level-picker'; } },
     ...(options.soundMazeBank ? {EPIPHANY_SOUND_MAZE_BANK:options.soundMazeBank} : {}),
     speechSynthesis: {cancel(){},speak(){}},
     EpiphanyThinkLab: {
@@ -84,10 +86,10 @@ function createHarness(options = {}) {
     assert.equal(typeof listeners.click, 'function', 'Think Lab click handler should be registered');
     listeners.click({target:{closest: candidate => candidate === selector ? element : null}});
   }
-  return {root,click,getSavedMazeCEFR:()=>savedMazeCEFR,chainBank:window.EPIPHANY_CHAIN_REACTION_BANK,feedback,recordedResults};
+  return {root,click,getSavedMazeCEFR:()=>savedMazeCEFR,chainBank:window.EPIPHANY_CHAIN_REACTION_BANK,feedback,recordedResults,getCrosswordOpened:()=>crosswordOpened};
 }
 
-test('every Think Lab game opens the shared three-mode picker before play', () => {
+test('existing mode-based Think Lab games open the shared three-mode picker before play', () => {
   for (const gameId of gameIds) {
     const harness = createHarness();
     harness.click('[data-think-game]', {thinkGame:gameId});
@@ -97,6 +99,15 @@ test('every Think Lab game opens the shared three-mode picker before play', () =
     }
     assert.match(harness.root.innerHTML, new RegExp('data-think-training-game="' + gameId + '"'));
   }
+});
+
+
+test('Crossword Quest opens its own level selection instead of the shared training-mode picker', () => {
+  const harness = createHarness();
+  harness.click('[data-think-game]', {thinkGame:'crossword'});
+  assert.equal(harness.getCrosswordOpened(), 1);
+  assert.equal(harness.root.innerHTML, 'crossword-level-picker');
+  assert.doesNotMatch(harness.root.innerHTML, /How would you like to play/);
 });
 
 test('each training mode is passed into the selected game instead of the adaptive default', () => {
