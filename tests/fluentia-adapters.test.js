@@ -166,6 +166,9 @@ test('Your Review adapters use only level-tagged source questions and existing l
   assert.equal(grammarReview.getItems({level:'A1'}).length, 1);
   assert.equal(grammarReview.getItems({level:'C2'}).length, 0);
   assert.equal(wordReview.evaluate(wordReview.getItems({level:'A1'})[0], 'a round fruit').correct, true);
+  assert.equal(wordReview.getItems({level:'A1'})[0].sourceActivityId, 'vocabulary');
+  assert.equal(grammarReview.getItems({level:'A1'})[0].sourceActivityId, 'mistakes');
+  assert.equal(wordReview.interactionType, 'dynamic');
 });
 
 test('incremental source registration adds lazy sources without replacing existing activities', () => {
