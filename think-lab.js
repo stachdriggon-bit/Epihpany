@@ -354,29 +354,6 @@
   let selectedTrainingMode = null;
   let mode = null, index = 0, score = 0, locked = false, clueCount = 0, oddHintStep = 0, ladderPath = [], ladderWordNote = null, ladderMistakeRecorded = false, roundMistakes = 0, activePool = null, activeDifficulty = null, forgePlaced = [], scramblePlaced = [], connectionSelected = [], chainStepIndex = 0, chainPath = [];
 
-  rounds.chain = [
-    {prompt:'Continue the word association chain: RAIN → ?',options:['umbrella','desert','pillow'],answer:0,explain:'An umbrella is commonly used to stay dry in the rain.'},
-    {prompt:'Continue the word association chain: BOOK → ?',options:['oven','library','helmet'],answer:1,explain:'A library is a place associated with books.'},
-    {prompt:'Continue the word association chain: CHEF → ?',options:['airport','kitchen','forest'],answer:1,explain:'A chef usually works in a kitchen.'},
-    {prompt:'Continue the word association chain: SCHOOL → ?',options:['student','pilot','painter'],answer:0,explain:'Students attend school to learn.'},
-    {prompt:'Continue the word association chain: DOCTOR → ?',options:['stadium','hospital','bakery'],answer:1,explain:'Doctors often work in hospitals.'},
-    {prompt:'Continue the word association chain: MUSIC → ?',options:['passport','instrument','blanket'],answer:1,explain:'Music can be played on a musical instrument.'},
-    {prompt:'Continue the word association chain: BEE → ?',options:['honey','snow','metal'],answer:0,explain:'Bees produce honey.'},
-    {prompt:'Continue the word association chain: CAMERA → ?',options:['photograph','sandwich','thunder'],answer:0,explain:'A camera is used to take photographs.'},
-    {prompt:'Continue the word association chain: WINTER → ?',options:['scarf','cactus','sunburn'],answer:0,explain:'A scarf is commonly worn to keep warm in winter.'},
-    {prompt:'Continue the word association chain: KEY → ?',options:['lock','cloud','pencil'],answer:0,explain:'A key is used to open or secure a lock.'},
-    {prompt:'Continue the word association chain: GARDEN → ?',options:['flower','engine','ticket'],answer:0,explain:'Flowers commonly grow in a garden.'},
-    {prompt:'Continue the word association chain: AIRPORT → ?',options:['luggage','saucepan','pillowcase'],answer:0,explain:'Travellers commonly bring luggage to an airport.'},
-    {prompt:'Continue the word association chain: PAINTER → ?',options:['brush','stethoscope','compass'],answer:0,explain:'A painter uses a brush.'},
-    {prompt:'Continue the word association chain: OCEAN → ?',options:['wave','brick','ladder'],answer:0,explain:'Waves are a familiar feature of the ocean.'},
-    {prompt:'Continue the word association chain: CLOCK → ?',options:['time','flour','forest'],answer:0,explain:'A clock measures or displays time.'},
-    {prompt:'Continue the word association chain: LIBRARY → ?',options:['borrow','bake','whistle'],answer:0,explain:'People often borrow books from a library.'},
-    {prompt:'Continue the word association chain: FIRE → ?',options:['smoke','snowflake','pillow'],answer:0,explain:'Smoke is commonly produced by fire.'},
-    {prompt:'Continue the word association chain: SEED → ?',options:['plant','helmet','receipt'],answer:0,explain:'A seed can grow into a plant.'},
-    {prompt:'Continue the word association chain: BREAD → ?',options:['bakery','garage','pharmacy'],answer:0,explain:'Bread is commonly made and sold at a bakery.'},
-    {prompt:'Continue the word association chain: THUNDER → ?',options:['lightning','footprint','whisper'],answer:0,explain:'Thunder and lightning are often associated during storms.'}
-  ];
-
   rounds.wordladder = [
     {start:'cat',goal:'dog',path:['cot','dot','dog'],hint:'Change exactly one letter at each step. Every step must be a real English word.',explain:'cat → cot → dot → dog changes one letter at each step, and every step forms a real word.'},
     {start:'cold',goal:'warm',path:['cord','card','ward','warm'],hint:'Change one letter per move. Keep every intermediate word meaningful.',explain:'cold → cord → card → ward → warm changes one letter at a time and makes valid words.'},
@@ -675,6 +652,11 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
         return { ...item, words, explain: item.explanation || item.skill || '' };
       });
     }
+    if (id === 'chain') {
+      const bank = window.EPIPHANY_CHAIN_REACTION_BANK;
+      const trainingMode = ['guided','steady','challenge'].includes(level) ? level : 'steady';
+      return bank && typeof bank.selectRound === 'function' ? bank.selectRound(trainingMode) : [];
+    }
     if (id === 'forge') {
       const bank = window.EPIPHANY_WORD_FORGE_BANK;
       const trainingMode = ['guided','steady','challenge'].includes(level) ? level : 'steady';
@@ -688,7 +670,7 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
     if (level === 'guided' && guidedRounds[id]) return guidedRounds[id];
     if (level === 'challenge' && challengeRounds[id]) return challengeRounds[id];
     if (id === 'wordladder') return generateWordLadders(level, 12);
-    if (['connections','chain'].includes(id)) return rounds[id];
+    if (id === 'connections') return rounds[id];
     return rounds[id];
   }
 
@@ -1008,10 +990,10 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
     const pool = activePool || getRoundPool(mode);
     const item = pool[index % pool.length];
     const difficulty = activeDifficulty || difficultyForMode(mode);
-    const roundTarget = mode === 'maze' ? 12 : (mode === 'forge' || mode === 'connections' || mode === 'scramble') ? 24 : ({guided:8,steady:10,challenge:12}[difficulty.level] || 10);
+    const roundTarget = mode === 'maze' ? 12 : (mode === 'forge' || mode === 'connections' || mode === 'scramble' || mode === 'chain') ? 24 : ({guided:8,steady:10,challenge:12}[difficulty.level] || 10);
     const roundNote = mode === 'odd' && pool.length < roundTarget
       ? '<p class="tl-game-instruction">This round is shorter than the '+roundTarget+'-question target because only '+pool.length+' distinct questions are currently available at this level.</p>'
-      : (mode === 'forge' || mode === 'connections' || mode === 'scramble') && pool.length < roundTarget
+      : (mode === 'forge' || mode === 'connections' || mode === 'scramble' || mode === 'chain') && pool.length < roundTarget
         ? '<p class="tl-game-instruction">This round is shorter than the 24-challenge target because the selected reviewed bank has fewer questions available.</p>'
         : mode === 'translator' && item.adaptiveFallback
         ? '<p class="tl-game-instruction tl-translator-fallback" role="status">Your current level is '+esc(item.requestedCEFRLevel)+'. A '+esc(item.requestedCEFRLevel)+' question bank is not available yet, so this round uses '+esc(item.cefrLevel)+' practice for now.</p>'
@@ -1040,7 +1022,7 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
     if (mode === 'forge') { forgePlaced=Array(item.answerWord.length).fill(null); intro='<div class="tl-word-clue"><span>WORD CLUE</span><p>'+esc(item.clue)+'</p></div>'+forgeBoard(item)+'<button class="tl-next" type="button" data-forge-check>Check word →</button><button class="tl-secondary" type="button" data-forge-reset>Reset tiles</button>'; }
     if (mode === 'connections') { connectionSelected=[]; const tiles=connectionTiles(item); intro='<p class="tl-connection-count" aria-live="polite">Select the four words that belong together.</p><div class="tl-connection-grid tl-connection-board">'+tiles.map((w,i)=>'<button type="button" class="tl-connection-word" data-connection-tile="'+i+'" aria-pressed="false">'+esc(w)+'</button>').join('')+'</div><div class="tl-connection-controls"><span data-connection-count>0 / 4 selected</span><button class="tl-next" type="button" data-connection-check>Check group →</button><button class="tl-secondary" type="button" data-connection-reset>Clear selection</button></div>'; }
     if (mode === 'scramble') { scramblePlaced=Array(item.words.length).fill(null); intro=scrambleBoard(item)+'<button class="tl-next" type="button" data-scramble-check>Check sentence →</button><button class="tl-secondary" type="button" data-scramble-reset>Reset words</button>'; }
-    if (mode === 'chain') { const steps=chainSteps(item),step=steps[chainStepIndex]; const path=[(item.prompt.match(/chain: ([A-Z]+) →/)||[])[1]||'WORD',...chainPath]; intro='<div class="tl-chain-path">'+path.map((w,i)=>'<span class="tl-chain-link">'+esc(w)+'</span>').join('<span class="tl-ladder-step"> → </span>')+'<span class="tl-ladder-step"> → ?</span></div><p class="tl-connection-count">LINK '+(chainStepIndex+1)+' OF '+steps.length+' · Connect “'+esc(step.from)+'” to the strongest next word.</p><div class="tl-answer-options">'+step.options.map((w,i)=>'<button type="button" class="tl-option" data-chain-answer="'+i+'"><span class="tl-option-index">'+String.fromCharCode(65+i)+'</span><strong>'+esc(w)+'</strong></button>').join('')+'</div>'; }
+    if (mode === 'chain') { const steps=item.links,step=steps[chainStepIndex],path=[item.start,...chainPath]; intro='<div class="tl-chain-path">'+path.map(w=>'<span class="tl-chain-link">'+esc(w)+'</span>').join('<span class="tl-ladder-step"> → </span>')+'<span class="tl-ladder-step"> → ?</span></div><p class="tl-connection-count">LINK '+(chainStepIndex+1)+' OF '+steps.length+' · Connect “'+esc(step.from)+'” to the strongest next word.</p><div class="tl-answer-options">'+step.options.map((w,i)=>'<button type="button" class="tl-option" data-chain-answer="'+i+'"><span class="tl-option-index">'+String.fromCharCode(65+i)+'</span><strong>'+esc(w)+'</strong></button>').join('')+'</div>'; }
     if (mode === 'maze') intro = '<div class="tl-maze-target"><span class="tl-maze-sound">♫</span><div><span>LISTEN FOR THIS WORD</span><strong>Find the matching word</strong></div><button type="button" class="tl-secondary" data-think-speak>▶ Play word</button></div><div class="tl-maze-path"><span class="tl-maze-start">START</span><span>···</span><span class="tl-maze-finish">EXIT</span></div><div class="tl-answer-options">'+item.options.map((w,i)=>'<button type="button" class="tl-option" data-think-answer="'+i+'"><span class="tl-option-index">'+String.fromCharCode(65+i)+'</span><strong>'+esc(w)+'</strong></button>').join('')+'</div>';
     if (mode === 'detective') {
       const visibleClueCount = difficulty.level === 'challenge' ? item.clues.length : Math.min(item.clues.length,clueCount+1+(difficulty.hintLevel>=2?1:0));
@@ -1049,35 +1031,7 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
     if (difficulty.level === 'guided' && ['maze','forge','connections','scramble','chain'].includes(mode)) {
       intro += '<div class="tl-odd-hint tl-guided-support"><button type="button" class="tl-secondary" data-training-hint>Reveal a hint</button><p class="tl-game-instruction" data-training-hint-text hidden></p></div>';
     }
-    root.innerHTML = '<div class="tl-game-head"><div class="tl-game-nav"><button class="tl-back" type="button" data-think-back>← Choose difficulty</button><button class="tl-back tl-home-back" type="button" data-think-home>Think Lab home</button></div><span class="tl-eyebrow">CASE '+String(index+1).padStart(2,'0')+' / '+pool.length+'</span><span class="tl-score">SOLVED <b>'+score+'</b></span></div><div class="tl-game-card"><div class="tl-game-kicker">'+(mode==='odd'?'PATTERN ANALYSIS · '+esc(item.cefrLevel || 'A1'):mode==='detective'?'EVIDENCE BOARD':mode==='translator'?'NATURAL EXPRESSION · '+esc(item.cefrLevel || 'A1'):mode==='wordladder'?'WORD TRANSFORMATION':mode==='forge'?'WORD FORGE':mode==='connections'?'WORD CONNECTIONS':mode==='scramble'?'SENTENCE BUILDING':mode==='chain'?'WORD ASSOCIATION':'LISTENING MAZE · '+esc(selectedMazeCEFR || 'A1'))+'</div><div class="tl-level-tag">'+(difficulty.level==='challenge'?'CHALLENGE':difficulty.level==='steady'?'STEADY':'GUIDED')+'</div><h2>'+esc(mode==='detective'?item.title:mode==='wordladder'?'Transform the word':mode==='maze'?'Find the sound path':item.prompt)+'</h2><p class="tl-game-instruction">'+esc(mode==='odd'?item.why:mode==='translator'?'Read the Arabic sentence, then choose the natural English equivalent.':mode==='wordladder'?'Build a chain of real words. Only one letter may change in each move.':mode==='maze'?'Listen carefully, replay the word if needed, then choose the matching spelling.':mode==='forge'?'Use the available letters and clue to build the word yourself.':mode==='connections'?'Find the four words that form one precise shared group. The remaining tiles are carefully selected distractors.':mode==='scramble'?'Build a natural English sentence from the mixed-up word bank.':mode==='chain'?'Build a three-link association chain. Each choice becomes the starting point for the next link.':'Reveal the clues and select the conclusion they support.')+'</p>'+intro+roundNote+'<div class="tl-feedback" id="tl-feedback" aria-live="polite" hidden></div><div class="tl-game-actions"><span>ROUND '+(index+1)+' OF '+pool.length+'</span><button class="tl-next" type="button" data-think-next hidden>Next round →</button></div></div>';
-  }
-  function chainSteps(item) {
-    const start=(item.prompt.match(/chain: ([A-Z]+) →/)||[])[1]||'WORD';
-    const first=item.options[item.answer];
-    const links={
-      umbrella:[['raincoat',['raincoat','sandwich','hammer'],'A raincoat is another way to stay dry in wet weather.'],['waterproof',['waterproof','sleepy','wooden'],'Raincoats are designed to be waterproof.']],
-      library:[['bookshelf',['bookshelf','frying pan','steering wheel'],'Books are commonly stored on bookshelves.'],['reading',['reading','swimming','baking'],'Libraries are strongly associated with reading.']],
-      kitchen:[['recipe',['recipe','passport','ladder'],'Recipes guide people through preparing food.'],['ingredients',['ingredients','footprints','headphones'],'A recipe lists the ingredients needed for a dish.']],
-      student:[['notebook',['notebook','wrench','pillow'],'Students often use notebooks to take notes.'],['notes',['notes','clouds','coins'],'Notes help students review what they learn.']],
-      hospital:[['nurse',['nurse','cashier','pilot'],'Nurses care for patients in hospitals.'],['patient',['patient','customer','passenger'],'A nurse provides care to a patient.']],
-      instrument:[['melody',['melody','receipt','ladder'],'Musical instruments can play a melody.'],['song',['song','storm','engine'],'A melody can form part of a song.']],
-      honey:[['sweet',['sweet','metallic','silent'],'Honey is known for its sweet taste.'],['sugar',['sugar','stone','paper'],'Sugar is another familiar sweetener.']],
-      photograph:[['album',['album','toolbox','kettle'],'Photographs are often collected in an album.'],['memories',['memories','traffic','weather'],'Photographs often help people preserve memories.']],
-      scarf:[['wool',['wool','glass','sand'],'Many scarves are made from wool.'],['sheep',['sheep','shark','eagle'],'Wool commonly comes from sheep.']],
-      lock:[['door',['door','cloud','spoon'],'Locks are often fitted to doors.'],['key',['key','blanket','candle'],'A key can operate a lock on a door.']],
-      flower:[['petal',['petal','engine','ticket'],'A flower is made up of petals and other parts.'],['garden',['garden','garage','airport'],'Flowers are commonly grown in gardens.']],
-      luggage:[['suitcase',['suitcase','teapot','pencil'],'A suitcase is a common type of luggage.'],['travel',['travel','whisper','freeze'],'People take luggage when they travel.']],
-      brush:[['paint',['paint','bread','rain'],'Painters use brushes to apply paint.'],['color',['color','silence','distance'],'Paint adds color to a surface.']],
-      wave:[['beach',['beach','library','factory'],'Waves often reach the beach.'],['sand',['sand','wool','smoke'],'Many beaches have sand.']],
-      time:[['clock',['clock','ladle','feather'],'A clock displays the time.'],['alarm',['alarm','recipe','saddle'],'An alarm clock can signal a set time.']],
-      borrow:[['return',['return','melt','whistle'],'Borrowed library books are normally returned.'],['library',['library','desert','kitchen'],'Libraries lend books for people to borrow.']],
-      smoke:[['fire',['fire','ice','fabric'],'Smoke is commonly associated with fire.'],['heat',['heat','feather','music'],'Fire produces heat as well as smoke.']],
-      plant:[['soil',['soil','glass','music'],'Plants often grow in soil.'],['garden',['garden','airport','kitchen'],'Many plants are grown in gardens.']],
-      bakery:[['bread',['bread','helmet','cloud'],'Bread is commonly made or sold at a bakery.'],['butter',['butter','steel','cotton'],'Butter is a common food eaten with bread.']],
-      lightning:[['storm',['storm','blanket','library'],'Lightning is associated with thunderstorms.'],['rain',['rain','sandwich','keyboard'],'Storms often bring rain.']]
-    };
-    const extra=links[first]||[['related word',['related word','pillow','engine'],'Think about a familiar connection.'],['next link',['next link','window','spoon'],'Follow the association one step further.']];
-    return [{from:start,options:item.options,answer:item.answer,explain:item.explain},...extra.map(([word,options,explain])=>({from:chainPath.length?chainPath[chainPath.length-1]:first,options,answer:options.indexOf(word),explain}))];
+    root.innerHTML = '<div class="tl-game-head"><div class="tl-game-nav"><button class="tl-back" type="button" data-think-back>← Choose difficulty</button><button class="tl-back tl-home-back" type="button" data-think-home>Think Lab home</button></div><span class="tl-eyebrow">CASE '+String(index+1).padStart(2,'0')+' / '+pool.length+'</span><span class="tl-score">SOLVED <b>'+score+'</b></span></div><div class="tl-game-card"><div class="tl-game-kicker">'+(mode==='odd'?'PATTERN ANALYSIS · '+esc(item.cefrLevel || 'A1'):mode==='detective'?'EVIDENCE BOARD':mode==='translator'?'NATURAL EXPRESSION · '+esc(item.cefrLevel || 'A1'):mode==='wordladder'?'WORD TRANSFORMATION':mode==='forge'?'WORD FORGE':mode==='connections'?'WORD CONNECTIONS':mode==='scramble'?'SENTENCE BUILDING':mode==='chain'?'WORD ASSOCIATION':'LISTENING MAZE · '+esc(selectedMazeCEFR || 'A1'))+'</div><div class="tl-level-tag">'+(difficulty.level==='challenge'?'CHALLENGE':difficulty.level==='steady'?'STEADY':'GUIDED')+'</div><h2>'+esc(mode==='detective'||mode==='chain'?item.title:mode==='wordladder'?'Transform the word':mode==='maze'?'Find the sound path':item.prompt)+'</h2><p class="tl-game-instruction">'+esc(mode==='odd'?item.why:mode==='translator'?'Read the Arabic sentence, then choose the natural English equivalent.':mode==='wordladder'?'Build a chain of real words. Only one letter may change in each move.':mode==='maze'?'Listen carefully, replay the word if needed, then choose the matching spelling.':mode==='forge'?'Use the available letters and clue to build the word yourself.':mode==='connections'?'Find the four words that form one precise shared group. The remaining tiles are carefully selected distractors.':mode==='scramble'?'Build a natural English sentence from the mixed-up word bank.':mode==='chain'?'Build a three-link association chain. Each choice becomes the starting point for the next link.':'Reveal the clues and select the conclusion they support.')+'</p>'+intro+roundNote+'<div class="tl-feedback" id="tl-feedback" aria-live="polite" hidden></div><div class="tl-game-actions"><span>ROUND '+(index+1)+' OF '+pool.length+'</span><button class="tl-next" type="button" data-think-next hidden>Next round →</button></div></div>';
   }
   function connectionTiles(item) {
     const bank = window.EPIPHANY_WORD_CONNECTIONS_BANK;
@@ -1139,6 +1093,10 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
     }
     if (id === 'scramble' && (!activePool.length || activePool.length !== 24 || !window.EPIPHANY_SENTENCE_SCRAMBLE_BANK)) {
       root.innerHTML = '<div class="tl-game-card"><div class="tl-game-kicker">SENTENCE SCRAMBLE</div><h2>QUESTION BANK NOT READY</h2><p class="tl-game-instruction">The reviewed Sentence Scramble bank could not be loaded completely. No sample questions will be shown.</p><button type="button" class="tl-back" data-think-back>← Choose difficulty</button><button type="button" class="tl-back" data-think-home>Think Lab home</button></div>';
+      return;
+    }
+    if (id === 'chain' && (!activePool.length || activePool.length !== 24 || !window.EPIPHANY_CHAIN_REACTION_BANK || typeof window.EPIPHANY_CHAIN_REACTION_BANK.validateBank !== 'function' || !window.EPIPHANY_CHAIN_REACTION_BANK.validateBank().valid)) {
+      root.innerHTML = '<div class="tl-game-card"><div class="tl-game-kicker">CHAIN REACTION</div><h2>QUESTION BANK NOT READY</h2><p class="tl-game-instruction">The approved 72-challenge Chain Reaction bank could not be loaded or validated. No legacy or sample questions will be shown.</p><button type="button" class="tl-back" data-think-back>← Choose difficulty</button><button type="button" class="tl-back" data-think-home>Think Lab home</button></div>';
       return;
     }
     if (id === 'forge' && (!activePool.length || activePool.length !== 24 || !window.EPIPHANY_WORD_FORGE_BANK || typeof window.EPIPHANY_WORD_FORGE_BANK.validateBank !== 'function' || !window.EPIPHANY_WORD_FORGE_BANK.validateBank().valid)) {
@@ -1343,12 +1301,29 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
     if(e.target.closest('[data-think-speak]')){speakTarget();return;}
     const chainAnswer=e.target.closest('[data-chain-answer]');
     if(chainAnswer&&mode==='chain'&&!locked){
-      const pool=activePool||getRoundPool('chain'),item=pool[index%pool.length],steps=chainSteps(item),step=steps[chainStepIndex],chosen=Number(chainAnswer.dataset.chainAnswer);
-      if(chosen!==step.answer){roundMistakes++;const fb=root.querySelector('#tl-feedback');fb.hidden=false;fb.className='tl-feedback is-wrong';fb.innerHTML='<strong>That link is possible, but not the strongest fit.</strong><p>Try a word that connects more directly to “'+esc(step.from)+'”.</p>'+(roundMistakes>=2?'<p>'+esc(adaptiveHint('chain'))+'</p>':'');return;}
-      chainPath.push(step.options[chosen]);roundMistakes=0;
-      if(chainStepIndex<steps.length-1){chainStepIndex++;renderGame();return;}
-      locked=true;score++;if(window.EpiphanyThinkLab)window.EpiphanyThinkLab.recordResult('vocabulary','chain',true,index===pool.length-1);
-      const fb=root.querySelector('#tl-feedback');fb.hidden=false;fb.className='tl-feedback is-correct';fb.innerHTML='<strong>✓ Chain complete!</strong><p>'+esc(step.explain)+'</p>';
+      const pool=activePool||getRoundPool('chain'),item=pool[index%pool.length],steps=item.links,step=steps[chainStepIndex],chosen=Number(chainAnswer.dataset.chainAnswer);
+      if(chosen!==step.answer){
+        roundMistakes++;
+        if(window.EpiphanyThinkLab)window.EpiphanyThinkLab.recordResult('vocabulary','chain',false,false);
+        const fb=root.querySelector('#tl-feedback');fb.hidden=false;fb.className='tl-feedback is-wrong';
+        const hint=roundMistakes>=2?adaptiveHint('chain'):'';
+        fb.innerHTML='<strong>That link is possible, but not the strongest fit.</strong><p>Try a word that connects more directly to “'+esc(step.from)+'”.</p>'+(hint?'<p>'+esc(hint)+'</p>':'');
+        return;
+      }
+      chainPath.push(step.to);
+      const fb=root.querySelector('#tl-feedback');
+      if(chainStepIndex<steps.length-1){
+        const explanation='<p><strong>Link '+(chainStepIndex+1)+':</strong> '+esc(step.explanation)+'</p>';
+        chainStepIndex++;
+        renderGame();
+        const updated=root.querySelector('#tl-feedback');
+        if(updated){updated.hidden=false;updated.className='tl-feedback is-correct';updated.innerHTML='<strong>✓ Link connected.</strong>'+explanation;}
+        return;
+      }
+      locked=true;score++;
+      if(window.EpiphanyThinkLab)window.EpiphanyThinkLab.recordResult('vocabulary','chain',true,index===pool.length-1);
+      fb.hidden=false;fb.className='tl-feedback is-correct';
+      fb.innerHTML='<strong>✓ Chain complete!</strong>'+steps.map((part,i)=>'<p><strong>Link '+(i+1)+':</strong> '+esc(part.from)+' → '+esc(part.to)+'. '+esc(part.explanation)+'</p>').join('');
       const next=root.querySelector('[data-think-next]');if(next)next.hidden=false;return;
     }
     if(e.target.closest('[data-odd-hint]') && mode === 'odd' && !locked) {
