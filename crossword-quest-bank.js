@@ -107,6 +107,9 @@
       }
     }
 
+    const normalizedClues = entries.map(entry => String(entry.clue || '').trim().toLocaleLowerCase());
+    if (new Set(normalizedClues).size !== normalizedClues.length) errors.push('Clues must be distinct within a puzzle.');
+
     const expectedKeys = new Set(expected.map(entry => entry.number + ':' + entry.direction));
     for (const key of expectedKeys) if (!actualKeys.has(key)) errors.push('Missing numbered entry ' + key + '.');
     for (const key of actualKeys) if (!expectedKeys.has(key)) errors.push('Unexpected numbered entry ' + key + '.');
@@ -118,6 +121,24 @@
         const down = entries.some(entry => entry.direction === 'down' && col === entry.col && row >= entry.row && row < entry.row + String(entry.answer || '').length);
         if (!across || !down) errors.push('Open cell at row ' + (row + 1) + ', column ' + (col + 1) + ' must belong to both an across and a down entry.');
       }
+    }
+
+    const openCells = [];
+    for (let row = 0; row < size; row++) for (let col = 0; col < size; col++) if (layout[row][col] === '.') openCells.push(row + ',' + col);
+    if (openCells.length) {
+      const visited = new Set([openCells[0]]);
+      const queue = [openCells[0]];
+      while (queue.length) {
+        const [row, col] = queue.shift().split(',').map(Number);
+        for (const [dr, dc] of [[1,0],[-1,0],[0,1],[0,-1]]) {
+          const nr = row + dr, nc = col + dc, key = nr + ',' + nc;
+          if (nr >= 0 && nc >= 0 && nr < size && nc < size && layout[nr][nc] === '.' && !visited.has(key)) {
+            visited.add(key);
+            queue.push(key);
+          }
+        }
+      }
+      if (visited.size !== openCells.length) errors.push('All open cells must form one connected crossword grid.');
     }
 
     return { valid: errors.length === 0, errors };
