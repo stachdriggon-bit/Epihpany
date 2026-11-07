@@ -90,8 +90,9 @@
         (!scope.skills || !scope.skills.length || activity.skills.some(skill => scope.skills.includes(skill))) &&
         (() => {
           const items = activity.getItems({ level, domain: activity.domain, activityId: activity.id }) || [];
-          items.forEach(item => validateItem(item, activity));
-          return items.some(item => normalizeLevel(item.level || item.cefr) === level);
+          const levelItems = items.filter(item => normalizeLevel(item && (item.level || item.cefr)) === level);
+          levelItems.forEach(item => validateItem(item, activity));
+          return levelItems.length > 0;
         })()
       );
     }
@@ -152,8 +153,10 @@
         try { items = activity.getItems({ level: session.level, domain: activity.domain, activityId: activity.id }) || []; }
         catch (error) { session.error = { code: 'ACTIVITY_SOURCE_FAILED', activityId: activity.id, message: String(error && error.message || error) }; continue; }
         for (const raw of items) {
+          // Legacy banks may contain intentionally untagged records. Exclude them;
+          // only validate items explicitly eligible for this learner's CEFR level.
+          if (normalizeLevel(raw && (raw.level || raw.cefr)) !== session.level) continue;
           const item = validateItem(raw, activity);
-          if (item.level !== session.level) continue;
           const key = activity.id + ':' + item.id;
           if (session.seenItemKeys.includes(key)) continue;
           candidates.push({ activity, item, key });
