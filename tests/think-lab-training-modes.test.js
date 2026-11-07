@@ -58,6 +58,7 @@ function createHarness(options = {}) {
   };
   let savedMazeCEFR = options.savedMazeCEFR || null;
   const window = {
+    EpiphanyAuth: {isDeveloper: () => true},
     EPIPHANY_ODD_ONE_OUT_BANK: bank,
     EPIPHANY_SOUND_MAZE_TOOLS: soundMazeTools,
     EPIPHANY_WORD_CONNECTIONS_BANK: connectionContext.window.EPIPHANY_WORD_CONNECTIONS_BANK,
