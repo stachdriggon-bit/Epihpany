@@ -86,10 +86,10 @@ test('adapter registration is idempotent and works with the shared session engin
   const session = engine.createSession({mode:'single', activityId:'wordcraft-vocabulary', level:'A1', length:1});
   const item = engine.selectNext(session);
   assert.equal(item.id, 'v-a1');
-  const result = engine.submitAnswer(session, 1);
-  assert.equal(result.correct, true);
-  assert.equal(result.event.domain, 'wordcraft');
-  assert.equal(result.event.activityId, 'wordcraft-vocabulary');
+  const event = engine.submitAnswer(session, 1);
+  assert.equal(event.correct, true);
+  assert.equal(event.domain, 'wordcraft');
+  assert.equal(event.activityId, 'wordcraft-vocabulary');
 });
 
 test('legacy source banks remain unchanged after adapter creation and evaluation', () => {
