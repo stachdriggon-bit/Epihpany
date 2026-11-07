@@ -32,13 +32,26 @@
     if (words.length !== config.wordsPerPuzzle) errors.push('Puzzle has the wrong number of target words.');
     if (new Set(words).size !== words.length) errors.push('Target words must be unique.');
     if (words.some(word => typeof word !== 'string' || word.length < config.minWordLength || word.length > size || !/^[A-Z]+$/.test(word))) errors.push('Target words must be valid uppercase English letter strings for this level.');
+    const directionCounts = new Map(DIRECTIONS.map(([dr,dc]) => [dr + ',' + dc, 0]));
     if (grid.length === size && grid.every(row => typeof row === 'string' && row.length === size && /^[A-Z]+$/.test(row))) {
       for (const word of words) {
         if (typeof word !== 'string' || !/^[A-Z]+$/.test(word)) continue;
         const matches = occurrences(grid, word);
         if (matches.length !== 1) errors.push(word + ' must appear exactly once in the grid; found ' + matches.length + '.');
-        else if (!allowedDirection(level, matches[0].dr, matches[0].dc)) errors.push(word + ' uses a direction not allowed in ' + level + '.');
+        else {
+          const match = matches[0], key = match.dr + ',' + match.dc;
+          directionCounts.set(key, (directionCounts.get(key) || 0) + 1);
+          if (!allowedDirection(level, match.dr, match.dc)) errors.push(word + ' uses a direction not allowed in ' + level + '.');
+        }
       }
+    }
+    if (level === 'medium') {
+      const across = directionCounts.get('0,1') || 0, down = directionCounts.get('1,0') || 0;
+      const diagonal = DIRECTIONS.filter(([dr,dc]) => dr !== 0 && dc !== 0).reduce((sum,[dr,dc]) => sum + (directionCounts.get(dr + ',' + dc) || 0), 0);
+      if (across < 2 || down < 2 || diagonal < 4) errors.push('Medium puzzles need at least two across, two down, and four diagonal words.');
+    }
+    if (level === 'hard' || level === 'expert') {
+      for (const [dr,dc] of DIRECTIONS) if (!(directionCounts.get(dr + ',' + dc) > 0)) errors.push('Hard and Expert puzzles must use all eight directions.');
     }
     if (!String(puzzle.id || '').trim() || !String(puzzle.title || '').trim()) errors.push('Puzzle needs a stable id and a theme title.');
     return {valid:errors.length === 0, errors};
