@@ -17,6 +17,28 @@
     document.body.appendChild(errorPanel);
     return;
   }
+  // Phase 3: register canonical adapters over the existing banks without replacing their renderers.
+  let fluentiaSessionEngine = null;
+  try {
+    const engineApi = window.EPIPHANY_FLUENTIA_ENGINE;
+    const adapterApi = window.EPIPHANY_FLUENTIA_ADAPTERS;
+    if (engineApi && adapterApi) {
+      fluentiaSessionEngine = engineApi.createEngine();
+      adapterApi.registerAll(fluentiaSessionEngine, {
+        games: GAMES,
+        spot: typeof SPOT_QUESTIONS !== 'undefined' ? SPOT_QUESTIONS : [],
+        typing: typeof TYPING_QUESTIONS !== 'undefined' ? TYPING_QUESTIONS : [],
+        directions: typeof DIRECTION_ITEMS !== 'undefined' ? DIRECTION_ITEMS : []
+      });
+      Object.defineProperty(window, 'EPIPHANY_FLUENTIA_SESSION_ENGINE', {
+        configurable: false, enumerable: false, writable: false, value: fluentiaSessionEngine
+      });
+    }
+  } catch (error) {
+    // Fluentia is additive during migration; a registration issue must not block legacy Arcade.
+    console.warn('[Fluentia] Domain adapter registration was skipped.', error);
+    fluentiaSessionEngine = null;
+  }
   const $ = s => document.querySelector(s);
   const $$ = s => [...document.querySelectorAll(s)];
   let bidiLastMode = null;
