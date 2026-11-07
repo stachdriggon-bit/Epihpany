@@ -1,6 +1,6 @@
 # Crossword Quest — Game Specification
 
-**Status:** Core direction approved; implementation may begin.  
+**Status:** Core direction approved; implementation foundation committed; 96-puzzle bank pending.  
 **Branch:** `main`
 
 ## Product direction
@@ -56,6 +56,13 @@ Use a dedicated Crossword Quest icon in the existing Think Lab icon system. It s
 ## Content distribution
 
 The 96-puzzle bank should mix familiar and progressively more demanding themes across all four levels. Candidate themes include everyday life, home, food, nature, animals, travel, places, work, science, technology, culture, arts, and language expressions. Theme choice is flexible; vocabulary and clue difficulty must remain appropriate to the selected level.
+
+## Implementation checkpoint
+
+- Added the independent crossword grid interaction layer and responsive styles.
+- Added the four-level bank schema and validation contract.
+- Added the dedicated Think Lab outline icon and lazy-loading integration.
+- The level buttons remain unavailable until the full 24-puzzle set for that level passes validation. No sample or unreviewed content is shown.
 
 ## Still to define during implementation and content review
 
