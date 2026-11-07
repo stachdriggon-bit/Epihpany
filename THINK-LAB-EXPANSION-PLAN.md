@@ -1,6 +1,6 @@
 # Think Lab Expansion Plan
 
-**Status:** Expansion direction approved; Word Hunt is the current implementation. Crossword Quest is paused and preserved for possible future resumption.  
+**Status:** Expansion direction approved; Codebreaker is the current implementation. Word Hunt's first implementation and 48-puzzle bank are prepared and awaiting CI/manual QA. Crossword Quest is paused and preserved for possible future resumption.  
 **Branch:** `main`
 
 ## Product direction
@@ -61,9 +61,13 @@ Integrate through the existing lazy-loading path. Preserve Think Lab's shared pr
 - Avoid unnecessary changes to shared navigation, card artwork, World, or The Resonance.
 - Prefer distinct mechanics over increasing the game count for its own sake.
 
-## Current game: Word Hunt
+## Previous game: Word Hunt
 
-Word Hunt has a complete first-release specification and a fixed 48-puzzle content bank. See [`WORD-HUNT-SPEC.md`](./WORD-HUNT-SPEC.md). Its independent four-level flow, content validator, responsive grid, icon, and lazy-loading integration are in place. The first release contains 12 puzzles per level and 432 target-word placements. Run the unit and browser suites, then manually review phone and desktop interactions before calling the game release-ready.
+Word Hunt has its first implementation and fixed 48-puzzle content bank on `main`. See [`WORD-HUNT-SPEC.md`](./WORD-HUNT-SPEC.md). Its independent four-level flow, content validator, responsive grid, icon, and lazy-loading integration are in place. The first release contains 12 puzzles per level and 432 target-word placements. CI and manual phone/desktop review remain pending before release acceptance.
+
+## Current game: Codebreaker
+
+Codebreaker has its first implementation and fixed 48-cryptogram bank on `main`. See [`CODEBREAKER-SPEC.md`](./CODEBREAKER-SPEC.md). It uses a distinct substitution-cipher deduction loop, its own four-level picker, starter letter keys, optional single-letter hints, a no-penalty retry flow, a dedicated icon, responsive styling, and lazy loading. Its bank/engine tests are included; CI and manual phone/desktop review remain pending.
 
 ## Paused game: Crossword Quest
 
