@@ -113,13 +113,16 @@
       startCell = null;
       hintWord = null;
       feedback = '✓ ' + answer + ' found!';
-      if (found.size === puzzle().words.length) {
-        completed = true;
-        if (window.EpiphanyThinkLab && typeof window.EpiphanyThinkLab.recordResult === 'function') {
-          window.EpiphanyThinkLab.recordResult('vocabulary', 'word-hunt', true, puzzleIndex === puzzleList().length - 1);
-        }
+      const puzzleComplete = found.size === puzzle().words.length;
+      if (window.EpiphanyThinkLab && typeof window.EpiphanyThinkLab.recordResult === 'function') {
+        window.EpiphanyThinkLab.recordResult('vocabulary', 'word-hunt', true,
+          puzzleComplete && puzzleIndex === puzzleList().length - 1, {trackAdaptive:false});
       }
+      if (puzzleComplete) completed = true;
     } else {
+      if (window.EpiphanyThinkLab && typeof window.EpiphanyThinkLab.recordResult === 'function') {
+        window.EpiphanyThinkLab.recordResult('vocabulary', 'word-hunt', false, false, {trackAdaptive:false});
+      }
       startCell = null;
       feedback = 'Not a target word yet. Try another line—there is no penalty.';
     }
