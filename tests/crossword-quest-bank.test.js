@@ -67,7 +67,7 @@ test('Crossword Quest Easy lexicon covers all eight approved themes with distinc
   assert.equal(bank.easyLexicon.length, 8);
   const allWords = bank.easyLexicon.flatMap(group => group.words);
   assert.equal(allWords.length, 144);
-  assert.equal(new Set(allWords.map(item => item.answer)).size, 80, 'candidate answers must be unique');
+  assert.equal(new Set(allWords.map(item => item.answer)).size, 144, 'all curated candidate answers must be unique');
   for (const group of bank.easyLexicon) {
     assert.equal(group.words.length, 18, group.theme);
     for (const item of group.words) {
@@ -101,7 +101,7 @@ test('Crossword Quest allows common two-letter answers in Easy while retaining t
     solution: ['IN#', 'NOD', '#TO'],
     entries: [
       { number: 1, direction: 'across', row: 0, col: 0, answer: 'IN', clue: 'Contained by or within' },
-      { number: 2, direction: 'down', row: 0, col: 0, answer: 'IN', clue: 'The opposite of out' },
+      { number: 1, direction: 'down', row: 0, col: 0, answer: 'IN', clue: 'The opposite of out' },
       { number: 2, direction: 'down', row: 0, col: 1, answer: 'NOT', clue: 'Used to make a statement negative' },
       { number: 3, direction: 'across', row: 1, col: 0, answer: 'NOD', clue: 'A small movement of the head' },
       { number: 4, direction: 'down', row: 1, col: 2, answer: 'DO', clue: 'To perform an action' },
