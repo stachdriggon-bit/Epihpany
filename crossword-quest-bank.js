@@ -9,6 +9,19 @@
     expert: Object.freeze({ label: 'Expert', size: 11, count: 24 })
   });
 
+  // Curated starter lexicon for Easy. Candidate answers only: they become
+  // playable content only after being placed in a valid reviewed crossword grid.
+  const easyLexicon = Object.freeze([
+    { theme: 'Everyday life and home', words: [['BED','A piece of furniture used for sleeping'],['DOOR','A hinged or sliding entrance to a room'],['LAMP','An object that gives light'],['TABLE','Furniture with a flat top for meals or work'],['CHAIR','A seat for one person, usually with a back'],['ROOM','A space inside a building'],['FLOOR','The surface you walk on indoors'],['WALL','A vertical part of a room or building'],['SHELF','A flat surface used to hold books or objects'],['SINK','A bowl with a water tap, often in a kitchen']] },
+    { theme: 'Food and cooking', words: [['APPLE','A round fruit that may be red, green, or yellow'],['BREAD','A baked food often made from flour'],['CHEESE','A food made from milk'],['EGG','A food with a shell, often laid by a hen'],['RICE','Small grains cooked as food'],['SOUP','A food made with liquid and other ingredients'],['SALAD','A dish often made with raw vegetables'],['LEMON','A yellow citrus fruit with a sour taste'],['GRAPE','A small round fruit that grows in bunches'],['HONEY','A sweet food made by bees']] },
+    { theme: 'Nature and animals', words: [['TREE','A tall plant with a trunk and branches'],['FLOWER','The colorful part of a plant that may produce seeds'],['RIVER','A natural stream of flowing water'],['CLOUD','A white or grey mass seen in the sky'],['RAIN','Water that falls from clouds'],['HORSE','A large animal that people can ride'],['TIGER','A large wild cat with dark stripes'],['RABBIT','A small animal with long ears'],['SHEEP','A farm animal raised for wool'],['WHALE','A very large animal that lives in the sea']] },
+    { theme: 'Travel and places', words: [['TRAIN','Connected vehicles that run on rails'],['PLANE','An aircraft with wings'],['HOTEL','A place where travelers pay to stay'],['BEACH','An area beside the sea, often covered with sand'],['ROAD','A route for cars and other vehicles'],['TICKET','A document that lets you travel or enter an event'],['MAP','A drawing that shows where places are'],['TOWN','A place where people live, smaller than a city'],['CITY','A large and busy place where many people live'],['PARK','A public green space for walking or play']] },
+    { theme: 'Work and study', words: [['BOOK','Pages with writing or pictures, joined together'],['CLASS','A lesson or a group of students learning together'],['DESK','A table used for writing or working'],['PAPER','Thin material used for writing or printing'],['PENCIL','A tool for writing that can be erased'],['LESSON','A period of learning about a subject'],['TEACHER','A person whose job is to help others learn'],['STUDENT','A person who is learning at a school or college'],['SCHOOL','A place where children or young people learn'],['JOB','Work that a person does regularly to earn money']] },
+    { theme: 'Science and technology', words: [['PHONE','A device used to call or message people'],['SCREEN','The flat surface on a device that shows images or text'],['MOUSE','A small device used to control a computer pointer'],['ROBOT','A machine that can perform tasks automatically'],['PLANET','A large round object that travels around a star'],['ENERGY','The power needed to make things work or move'],['METAL','A hard material such as iron or gold'],['MAGNET','An object that attracts certain metals'],['CAMERA','A device used to take photographs'],['SIGNAL','A sound, light, or message that carries information']] },
+    { theme: 'Arts and culture', words: [['MUSIC','Sounds arranged to create rhythm or melody'],['DANCE','Moving the body in time with music'],['POEM','A piece of writing often arranged in lines'],['STORY','A description of events, real or imagined'],['PAINT','Colored liquid used to make pictures'],['ARTIST','A person who creates art'],['DRAMA','A story written to be performed by actors'],['STAGE','A raised area where performers appear'],['COLOR','A quality such as red, blue, or green'],['MOVIE','A story shown as moving pictures']] },
+    { theme: 'Language and expressions', words: [['WORD','A unit of language with meaning'],['NAME','A word used to identify a person or thing'],['SOUND','Something that can be heard'],['SPEAK','To say words aloud'],['LISTEN','To pay attention to what you can hear'],['LETTER','A written character such as A or B'],['PHRASE','A small group of words that work together'],['HELLO','A common word used when greeting someone'],['QUIET','Making little or no noise'],['ANSWER','A response to a question']] }
+  ].map(group => Object.freeze({ theme: group.theme, words: Object.freeze(group.words.map(([answer, clue]) => Object.freeze({ answer, clue }))) })));
+
   // Puzzle records are added only after their grids, entries, crossings and clues
   // have been reviewed. Keep this bank separate from the game engine.
   const puzzles = { easy: [], medium: [], hard: [], expert: [] };
@@ -131,6 +144,7 @@
 
   window.EPIPHANY_CROSSWORD_QUEST_BANK = Object.freeze({
     levels: LEVELS,
+    easyLexicon,
     puzzles: Object.freeze(puzzles),
     validatePuzzle,
     validateBank
