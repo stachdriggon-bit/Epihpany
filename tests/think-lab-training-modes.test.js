@@ -201,7 +201,7 @@ test('Word Forge loads exactly 24 approved challenges for each selected training
     assert.match(harness.root.innerHTML, /WORD CLUE/);
     assert.match(harness.root.innerHTML, /data-forge-tile=/);
     assert.match(harness.root.innerHTML, /data-forge-check/);
-    assert.match(harness.root.innerHTML, new RegExp('<div class="tl-level-tag">' + trainingMode.toUpperCase() + '<\\\\/div>'));
+    assert.match(harness.root.innerHTML, new RegExp('<div class="tl-level-tag">' + trainingMode.toUpperCase() + '</div>'));
   }
 });
 
