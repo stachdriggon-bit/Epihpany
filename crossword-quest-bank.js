@@ -35,6 +35,23 @@
     { theme: 'Language and expressions', words: [['ASK','To say that you want an answer'],['TELL','To give information in words'],['SAY','To speak words'],['WHY','A question word used to ask for a reason'],['WHO','A question word used to ask about a person'],['HOW','A question word used to ask about a way or method'],['HINT','A small piece of help that guides you'],['CLUE','A fact that helps you find an answer'],['TEXT','Words written or printed'],['LINE','A row of words in a text'],['QUOTE','Words repeated from what someone said or wrote'],['IDIOM','A phrase whose meaning is different from its literal words']].map(([answer, clue]) => Object.freeze({ answer, clue })) }
   ].map(group => Object.freeze({ theme: group.theme, words: Object.freeze(group.words) }));
 
+  // Carefully curated standalone two-letter words for Easy only.
+  // They are candidates, not playable entries until used in a fully reviewed grid.
+  const easyTwoLetterLexicon = Object.freeze([
+    ['IN','Contained by or within'], ['ON','Resting on the surface of something'],
+    ['AT','Used to show a particular place or time'], ['UP','Towards a higher place or position'],
+    ['TO','A word showing direction or destination'], ['OF','A word showing connection or belonging'],
+    ['OR','A word used to offer a choice'], ['AS','Used to compare or describe a role'],
+    ['AN','The form of “a” used before a vowel sound'], ['AM','The first-person form of the verb “be”'],
+    ['BE','To exist or have a particular state'], ['BY','A word showing who did something or how'],
+    ['HE','A word used for a male person'], ['WE','A word meaning the speaker and others'],
+    ['ME','The speaker as the object of a verb or preposition'], ['MY','Belonging to the speaker'],
+    ['US','The speaker and at least one other person'], ['IT','A word used for a thing or animal'],
+    ['IS','The third-person singular form of “be”'], ['NO','A word used to give a negative answer'],
+    ['SO','A word meaning “therefore” or “to such a degree”'], ['DO','To perform an action'],
+    ['GO','To move or travel from one place to another'], ['IF','A word used to introduce a condition']
+  ].map(([answer, clue]) => Object.freeze({ answer, clue })));
+
   // Puzzle records are added only after their grids, entries, crossings and clues
   // have been reviewed. Keep this bank separate from the game engine.
   const puzzles = { easy: [], medium: [], hard: [], expert: [] };
@@ -180,6 +197,7 @@
     levels: LEVELS,
     easyLexicon,
     easyShortLexicon,
+    easyTwoLetterLexicon,
     puzzles: Object.freeze(puzzles),
     validatePuzzle,
     validateBank
