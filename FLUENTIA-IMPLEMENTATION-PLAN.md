@@ -1,6 +1,6 @@
 # Fluentia — Implementation Plan
 
-Status: **Approved plan; Phase 1 completed; Phase 2 verified; Phase 3 integration in progress**
+Status: **Phases 1–5 implemented; Phase 5 CI verified; Phase 6 quality and regression verification in progress**
 Target branch: `main`
 Product area: former Arcade / English practice activities
 Working principle: complete each phase as one coherent unit rather than scattering work across many small edits. Do not begin the next phase until the current phase has a documented outcome and its required checks are accounted for.
@@ -125,7 +125,9 @@ Deliverables: a repository-grounded inventory and final activity-to-domain mappi
 
 ### Phase 6 — Quality, regression and documentation
 
-Run and resolve relevant unit, content-quality, syntax/static, browser-smoke and accessibility checks. Verify mobile and desktop flows, translation behavior, saved progress, audio/speech limitations, offline/lazy-loading behavior and performance. Document architecture, activity mapping, content counts and known limitations. Do not claim release readiness until CI is green and the relevant experience has been manually exercised when available.
+**In progress on `main`.** The Phase 5 baseline is now green on commit `6cdeb263a942d7b476d3e6c8ef37e0b33621b0f1` (`EPIPHANY checks` and `Content quality`). Phase 6 adds direct Chromium coverage for Fluentia navigation, all six domain cards, single-activity answering, progress-bridge persistence, in-place Arabic explanation toggling when available, Section Mixed domain confinement, Fluentia Mix entry, and narrow-phone horizontal overflow. The CI syntax gate now explicitly checks the Fluentia engine, adapters, progress bridge and UI scripts. Existing engine/adapters/progress unit suites remain the contract tests for CEFR eligibility, balancing, no-repeat behavior, attribution, lifecycle and restore.
+
+Remaining verification includes running the expanded CI on the resulting commit, inspecting any failures and fixing them, checking mobile drawer access and offline cache behavior, reviewing audio/speech fallbacks and performance, and recording known content limitations. Do not claim release readiness until both CI workflows are green and the relevant experience has been manually exercised when available.
 
 ## 6. Preservation and scope guardrails
 
@@ -152,4 +154,5 @@ Run and resolve relevant unit, content-quality, syntax/static, browser-smoke and
 - Phase 2 is verified complete; see [FLUENTIA-SESSION-ARCHITECTURE.md](./FLUENTIA-SESSION-ARCHITECTURE.md).
 - Phase 3 source integration, content banks, adapters and progress bridge are implemented and verified by green repository CI on `aa5008876a1d6876253971e768371742cd0e3fb7`.
 - Phase 4 mixed-session orchestration is implemented; its CI verification status must be confirmed separately.
-- Phase 5 Fluentia learner UI is implemented; CI verification is pending.
+- Phase 5 Fluentia learner UI is implemented; both required CI workflows passed on `6cdeb263a942d7b476d3e6c8ef37e0b33621b0f1`.
+- Phase 6 browser-level Fluentia coverage and explicit syntax checks are being added; expanded CI and remaining manual checks are pending.

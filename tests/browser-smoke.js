@@ -115,7 +115,7 @@ test('main navigation tabs open without uncaught page errors', { timeout: 18 * 6
     await firstVisitPage.close();
     checkpoint('first-visit onboarding passed');
 
-    const views = ['home','stories','chronicle','resonance','world','arcade','thinklab','casebound','summon','words','trophies','progress','profile'];
+    const views = ['home','fluentia','stories','chronicle','resonance','world','arcade','thinklab','casebound','summon','words','trophies','progress','profile'];
     for (const view of views) {
       checkpoint('starting view ' + view);
       const page = await browser.newPage();
@@ -203,6 +203,56 @@ test('main navigation tabs open without uncaught page errors', { timeout: 18 * 6
           checkpoint('view ' + view + ': active class evaluated as ' + isActive);
           assert.equal(isActive, true, view + ' view should become active');
         }
+      }
+      if (view === 'fluentia') {
+        const fluentia = page.locator('#fluentia-content');
+        await fluentia.locator('#fluentia-title').waitFor({state:'visible',timeout:5000});
+        assert.equal(await fluentia.locator('.fluentia-domain-card').count(),6,'Fluentia should render its six canonical domains');
+        assert.equal(await fluentia.locator('[data-mode="section-mixed"]').count(),1,'Section Mixed should have one landing entry');
+        assert.equal(await fluentia.locator('[data-mode="fluentia-mix"]').count(),1,'Fluentia Mix should have one landing entry');
+        assert.equal(await fluentia.locator('.fluentia-review-panel').count(),1,'Your Review should remain a separate destination');
+        await fluentia.locator('.fluentia-domain-card[data-domain="wordcraft"]').click();
+        await fluentia.locator('.fluentia-activity-card').first().waitFor({state:'visible',timeout:5000});
+        await fluentia.locator('.fluentia-activity-card').first().click();
+        const question = fluentia.locator('.fluentia-question-card');
+        await question.waitFor({state:'visible',timeout:5000});
+        assert.match(await question.locator('.kicker').innerText(),/Wordcraft/i,'single activity should retain its canonical domain');
+        if (await question.locator('[data-answer-index]').count()) {
+          await question.locator('[data-answer-index]').first().click();
+        } else {
+          const answerInput = question.locator('#fluentia-answer, #fluentia-match-meaning').first();
+          await answerInput.fill('test answer');
+          await question.locator('[data-submit]').click();
+        }
+        await question.locator('.fluentia-feedback').waitFor({state:'visible',timeout:5000});
+        const history = await page.evaluate(() => window.__epiphanyReadProgress?.().fluentiaHistory || []);
+        assert.ok(history.length > 0,'a Fluentia answer should be recorded through the existing progress bridge');
+        assert.equal(history.at(-1).source,'fluentia','progress history should preserve Fluentia attribution');
+        const translation = question.locator('[data-translate]');
+        if (await translation.count()) {
+          const explanation = question.locator('#fluentia-feedback p').first();
+          const before = await explanation.innerText();
+          await translation.click();
+          assert.equal(await question.locator('[data-translate]').innerText(),'Show English','Arabic help should replace the explanation in place');
+          await question.locator('[data-translate]').click();
+          assert.equal(await explanation.innerText(),before,'returning to English should restore the same explanation slot');
+        }
+        await question.locator('[data-exit]').click();
+        await fluentia.locator('[data-mode="section-mixed"]').click();
+        await fluentia.locator('.fluentia-domain-card[data-domain="wordcraft"]').click();
+        await question.waitFor({state:'visible',timeout:5000});
+        assert.match(await fluentia.locator('.fluentia-session-top .pill').innerText(),/Section Mixed/,'Section Mixed should start inside the chosen domain');
+        assert.match(await question.locator('.kicker').innerText(),/Wordcraft/i,'Section Mixed must not leak into another domain');
+        await question.locator('[data-exit]').click();
+        await fluentia.locator('[data-mode="fluentia-mix"]').click();
+        await question.waitFor({state:'visible',timeout:5000});
+        assert.match(await fluentia.locator('.fluentia-session-top .pill').innerText(),/Fluentia Mix/,'Fluentia Mix should start from the landing page');
+        assert.ok(['Wordcraft','Sentence Studio','Textwise','Soundscape','Real World','Fine Sense'].some(name => (question.locator('.kicker')).evaluate(el => el.textContent.includes(name))), 'Fluentia Mix should present a question with a canonical domain');
+        await question.locator('[data-exit]').click();
+        await page.setViewportSize({width:390,height:844});
+        const layout = await fluentia.evaluate(el => ({scrollWidth:el.scrollWidth,clientWidth:el.clientWidth,cardCount:el.querySelectorAll('.fluentia-domain-card').length}));
+        assert.ok(layout.scrollWidth <= layout.clientWidth + 1,'Fluentia landing should not overflow horizontally on a phone: '+JSON.stringify(layout));
+        assert.equal(layout.cardCount,6,'all six domains should remain available on mobile');
       }
       if (view === 'stories') {
         await page.waitForFunction(() => typeof STORIES !== 'undefined' && Array.isArray(STORIES) && STORIES.length >= 34, null, { timeout: 5000 });

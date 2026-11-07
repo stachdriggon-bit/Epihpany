@@ -2,7 +2,7 @@
 
 Implementation date: 2026-11-07
 Branch: `main`
-Status: **Phases 2–3 verified; Phase 4 implemented (verification pending); Phase 5 UI implemented (verification pending)**
+Status: **Phases 2–5 implemented; Phase 5 CI verified on `6cdeb263`; Phase 6 QA/regression in progress**
 Related documents: [Implementation plan](./FLUENTIA-IMPLEMENTATION-PLAN.md), [Phase 1 inventory](./FLUENTIA-CONTENT-INVENTORY.md)
 
 ## 1. Scope delivered
@@ -228,3 +228,7 @@ The learner-facing Fluentia experience is implemented in the additive `fluentia-
 - `tests/fluentia-ui.test.js` checks the canonical domain set, mixed-mode entry points, engine delegation, review separation and asset/navigation wiring.
 
 CI and browser-level interaction checks remain required before calling Phase 5 verified. Some optional activities are registered only after their existing lazy source modules load; the domain chooser shows the eligible activities currently registered for the chosen CEFR level.
+
+## 12. Phase 6 verification focus
+
+The green Phase 5 baseline (`6cdeb263`) confirms the full existing EPIPHANY check workflow and content-quality workflow. Phase 6 adds a real Chromium path through the Fluentia learner UI: landing/navigation, six domains, a single activity answer and progress-history write, Arabic explanation replacement when the selected item supplies Arabic feedback, Section Mixed domain confinement, Fluentia Mix startup and narrow-phone layout. CI also performs explicit syntax checks on all four Fluentia runtime scripts. Existing engine, adapter, content-integration and progress-bridge tests continue to cover strict CEFR selection, mixed-session balancing, canonical duplicate suppression, answer attribution, review-only exclusion and legacy progress compatibility. Audio/speech capability and offline behavior remain subject to separate environment-aware checks; a browser smoke pass alone does not prove microphone permission or offline service-worker behavior.

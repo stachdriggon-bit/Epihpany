@@ -45,6 +45,10 @@ jobs:
           node --check data.js
           node --check data-expansion.js
           node --check think-lab.js
+          node --check fluentia-engine.js
+          node --check fluentia-adapters.js
+          node --check fluentia-progress-bridge.js
+          node --check fluentia-ui.js
       - name: Stamp generated asset versions
         run: npm run stamp
       - name: Run unit and static tests
