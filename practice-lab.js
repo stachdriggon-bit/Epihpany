@@ -11,6 +11,11 @@
     {level:'B2', text:'If I had more time, I would listen to a different accent each week.'},
     {level:'B2', text:'The most useful way to improve is to practise a little and often.'}
   ];
+  // Expose the reviewed, level-tagged sample set to Fluentia without moving its
+  // existing speaking/dictation UI or local statistics into the shared engine.
+  if (typeof window !== 'undefined' && typeof window.EPIPHANY_FLUENTIA_REGISTER_SOURCES === 'function') {
+    window.EPIPHANY_FLUENTIA_REGISTER_SOURCES({practiceSamples: samples.map((item, index) => ({...item, id: 'PL-' + item.level + '-' + String(index + 1).padStart(2, '0')}))});
+  }
   const esc = value => String(value).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const norm = value => String(value || '').toLowerCase().normalize('NFC').replace(/[’']/g, '').replace(/[^\\p{L}\\p{N}\\s]/gu, ' ').replace(/\\s+/g, ' ').trim();
   let data = {speakingAttempts:0, speakingBest:0, dictationAttempts:0, dictationBest:0, completed:0};
