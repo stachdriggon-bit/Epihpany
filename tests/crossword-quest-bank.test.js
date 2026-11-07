@@ -105,7 +105,7 @@ test('Crossword Quest allows common two-letter answers in Easy while retaining t
       { number: 3, direction: 'down', row: 0, col: 1, answer: 'NOT', clue: 'Used to make a statement negative' },
       { number: 4, direction: 'across', row: 1, col: 0, answer: 'NOD', clue: 'A small movement of the head' },
       { number: 5, direction: 'down', row: 1, col: 2, answer: 'DO', clue: 'To perform an action' },
-      { number: 6, direction: 'across', row: 2, col: 1, answer: 'TO', clue: 'A word showing direction or destination' }
+      { number: 5, direction: 'across', row: 2, col: 1, answer: 'TO', clue: 'A word showing direction or destination' }
     ]
   };
   assert.equal(bank.validatePuzzle(puzzle, 3, 2).valid, true);
