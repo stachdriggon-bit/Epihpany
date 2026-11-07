@@ -55,7 +55,8 @@ test('a correct two-cell selection finds a target word and updates the board',()
   assert.match(h.root.innerHTML,/wh-word-chip is-found/);
   assert.match(h.root.innerHTML,/1 <span>\/ 6 found/);
   assert.match(h.root.innerHTML,/Next tap|final letter|found!/i);
-  assert.equal(h.results.length,0,'a puzzle result is recorded only after all its words are found');
+  assert.equal(h.results.length,1,'a correct word is recorded as an attempt');
+  assert.equal(h.results[0][2],true);
 });
 
 test('completing all Easy words records one result and advances to the next fixed puzzle',()=>{
@@ -70,10 +71,24 @@ test('completing all Easy words records one result and advances to the next fixe
     h.click('[data-wh-cell]',{whCell:endRow+'-'+endCol});
   }
   assert.match(h.root.innerHTML,/Grid cleared!/);
-  assert.equal(h.results.length,1);
-  assert.deepEqual(h.results[0],['vocabulary','word-hunt',true,false]);
+  assert.equal(h.results.length,6,'each found word is recorded once');
+  assert.deepEqual(h.results[5].slice(0,4),['vocabulary','word-hunt',true,true]);
+  assert.equal(h.results[5][4].trackAdaptive,false);
   h.click('[data-wh-next]');
   assert.match(h.root.innerHTML,/Food Market/);
+});
+
+test('a straight-line miss is tracked without blocking retries or adding a score penalty',()=>{
+  const h=createHarness();
+  h.window.EPIPHANY_WORD_HUNT.open();
+  h.click('[data-wh-level]',{whLevel:'easy'});
+  h.click('[data-wh-cell]',{whCell:'0-0'});
+  h.click('[data-wh-cell]',{whCell:'0-1'});
+  assert.equal(h.results.length,1);
+  assert.equal(h.results[0][2],false);
+  assert.equal(h.results[0][4].trackAdaptive,false);
+  assert.match(h.root.innerHTML,/there is no penalty/i);
+  assert.match(h.root.innerHTML,/0 <span>\/ 6 found/);
 });
 
 test('Word Hunt has no timer and invalid non-linear selections do not reveal answers',()=>{
