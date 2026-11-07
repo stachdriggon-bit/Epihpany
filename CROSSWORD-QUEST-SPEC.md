@@ -64,6 +64,28 @@ The 96-puzzle bank should mix familiar and progressively more demanding themes a
 - Added the dedicated Think Lab outline icon and lazy-loading integration.
 - The level buttons remain unavailable until the full 24-puzzle set for that level passes validation. No sample or unreviewed content is shown.
 
+## Planned theme and difficulty balance
+
+Use eight broad theme families, with three puzzles from each family in every level. This gives each level a balanced mix instead of assigning one topic to one difficulty:
+
+1. Everyday life and home.
+2. Food and cooking.
+3. Nature and animals.
+4. Travel and places.
+5. Work and study.
+6. Science and technology.
+7. Arts and culture.
+8. Language, common expressions, and word relationships.
+
+Difficulty should progress across all themes:
+
+- **Easy:** familiar everyday vocabulary, short common answers, direct definitions and clear descriptions.
+- **Medium:** broader familiar vocabulary, synonyms, collocations, and clues that require one simple inference.
+- **Hard:** less obvious but useful vocabulary, contextual meanings, stronger crossing dependency, and clues that require more interpretation.
+- **Expert:** precise and nuanced vocabulary, indirect yet fair clues, idiomatic or conceptual relationships where appropriate, and stronger deduction.
+
+The theme mix remains consistent at every level; the language demand and clue construction provide the progression.
+
 ## Still to define during implementation and content review
 
 - Final scoring and reward integration with shared EPIPHANY progression.
