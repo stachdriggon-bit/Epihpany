@@ -151,6 +151,7 @@ test('Sound Maze, dictation, shadowing and Word Match keep distinct evaluation s
   assert.equal(get('soundscape-sound-picture-match').evaluate(picture, 'apple').correct, true);
   const [match] = get('wordcraft-word-match').getItems({level:'A1'});
   assert.equal(get('wordcraft-word-match').evaluate(match, {word:'apple',meaning:'a round fruit'}).correct, true);
+  assert.equal(match.sourceActivityId, 'match');
 });
 
 test('Textwise sequencing is independent and order-sensitive', () => {
