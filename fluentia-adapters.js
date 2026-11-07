@@ -209,6 +209,19 @@
       }));
     }
 
+    if (Array.isArray(sources.sentenceItems)) {
+      adapters.push(makeAdapter({
+        id: 'sentence-studio-sentence-builder', domain: 'sentence-studio', interactionType: 'ordering', skills: ['sentence-construction'],
+        getSource: () => sources.sentenceItems,
+        evaluate: (item, answer) => {
+          const actual = Array.isArray(answer) ? answer.join(' ') : String(answer || '');
+          const correct = normalize(actual) === normalize(item.text);
+          return {correct, errorType: correct ? null : 'word-order'};
+        },
+        correctAnswer: item => item.text
+      }));
+    }
+
     if (Array.isArray(sources.textwiseSequenceBank)) {
       adapters.push(makeAdapter({
         id: 'textwise-sequence', domain: 'textwise', interactionType: 'ordering', skills: ['text-sequencing'],
