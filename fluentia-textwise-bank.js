@@ -22,6 +22,7 @@
     {id:'TW-C2-002',level:'C2',title:'Auditing a performance measure',text:'A public organisation reviews a target that may reward speed at the expense of quality.',steps:['Auditors examine how the target influences staff behaviour.','They compare speed data with quality and complaint records.','They identify unintended incentives and missing safeguards.','They recommend a balanced measure and regular review.']},
     {id:'TW-C2-003',level:'C2',title:'Managing a disputed conclusion',text:'A committee must publish a conclusion while credible evidence remains incomplete.',steps:['Members separate established facts from interpretations.','They document the strongest unresolved objections.','They agree on a conclusion limited to what the evidence supports.','They publish the caveats and specify what new evidence would change the view.']}
   ];
+  bank.push(
     {id:'TW-A1-004',level:'A1',title:'A morning appointment',text:'Lina has a check-up at the health centre.',steps:["Lina checks the appointment card.","She arrives ten minutes early.","She tells the receptionist her name."]},
     {id:'TW-A1-005',level:'A1',title:'Sending a parcel',text:'Sam wants to send a small parcel to his cousin.',steps:["Sam wraps the book safely.","He writes the address on the parcel.","He takes it to the post office."]},
     {id:'TW-A1-006',level:'A1',title:'A simple recipe',text:'Maya wants to make a fruit salad.',steps:["She washes the fruit.","She cuts the fruit into small pieces.","She puts the pieces in a bowl."]},
@@ -39,7 +40,8 @@
     {id:'TW-C1-006',level:'C1',title:'Assessing an intervention',text:'An evaluation team is asked whether a programme caused an observed improvement.',steps:["It defines the outcome and relevant comparison period.","It examines alternative explanations and selection effects.","It limits its conclusion to what the design can establish."]},
     {id:'TW-C2-004',level:'C2',title:'Responding to a fragile consensus',text:'A panel reaches agreement, although members attach different assumptions to the same conclusion.',steps:["The chair asks each member to state the assumptions explicitly.","The panel distinguishes shared findings from conditional interpretations.","It publishes the consensus with its scope and qualifications."]},
     {id:'TW-C2-005',level:'C2',title:'Revising a strategic forecast',text:'A company’s long-term forecast is challenged by a structural change in its market.',steps:["Analysts identify which assumptions the change invalidates.","They rebuild scenarios rather than merely adjusting the original figures.","Leaders adopt trigger points for revisiting the strategy."]},
-    {id:'TW-C2-006',level:'C2',title:'Evaluating competing explanations',text:'A review board must choose between explanations that fit the same incomplete evidence.',steps:["Members define what each explanation predicts.","They compare the predictions against independent observations.","They retain the best-supported account while specifying what could falsify it."]},
+    {id:'TW-C2-006',level:'C2',title:'Evaluating competing explanations',text:'A review board must choose between explanations that fit the same incomplete evidence.',steps:["Members define what each explanation predicts.","They compare the predictions against independent observations.","They retain the best-supported account while specifying what could falsify it."]}
+  );
   const ids = new Set();
   const errors = [];
   for (const item of bank) {
