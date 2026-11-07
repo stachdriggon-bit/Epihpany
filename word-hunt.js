@@ -49,6 +49,7 @@
     const item = puzzle();
     if (!item) return renderLevels();
     const config = bank.levels[level];
+    const directionNote = level === 'easy' ? 'Across and down' : level === 'medium' ? 'Across, down and diagonal' : 'All eight directions, including backwards';
     const foundCount = found.size;
     const foundCells = new Set();
     for (const word of found) for (const cell of wordCells(item, word)) foundCells.add(cell.row + ',' + cell.col);
@@ -174,6 +175,7 @@
       const next = puzzle().words.find(word => !found.has(word));
       if (next) {
         hintWord = next;
+        startCell = null;
         const first = wordCells(puzzle(), next)[0];
         feedback = first ? 'Hint: start from the highlighted letter, then follow a straight line.' : 'Try another word in this theme.';
         renderPuzzle();
