@@ -41,3 +41,40 @@ test('bridge rejects incomplete result events instead of fabricating progress', 
   const bridge = Bridge.createBridge(() => ({}));
   assert.throws(() => bridge.toLegacyResult({correct:1}), /normalized Fluentia result event/);
 });
+
+test('bridge persists normalized events idempotently without changing XP or legacy review state', () => {
+  const state = {xp:125,review:[{word:'borrow',errors:2}],fluentiaHistory:[]};
+  let writes=0;
+  const bridge=Bridge.createBridge(()=>state,history=>{state.fluentiaHistory=history;writes++;});
+  const event={
+    eventId:'session-2:1',sessionId:'session-2',itemId:'q-2',
+    activityId:'soundscape-dictation-bank',sourceActivityId:'soundscape-dictation',
+    level:'C1',correct:false,errorType:'dictation-transcription',skill:'listening-transcription',
+    domain:'soundscape',answeredAt:'2026-11-07T11:00:00.000Z'
+  };
+  const first=bridge.recordEvent(event);
+  assert.equal(first.stored,true);
+  assert.equal(writes,1);
+  assert.equal(state.fluentiaHistory[0].game,'soundscape-dictation');
+  assert.equal(state.fluentiaHistory[0].questionId,'q-2');
+  assert.equal(state.xp,125);
+  assert.deepEqual(state.review,[{word:'borrow',errors:2}]);
+  const second=bridge.recordEvent(event);
+  assert.equal(second.stored,false);
+  assert.equal(second.duplicate,true);
+  assert.equal(writes,1);
+  assert.equal(bridge.getHistory().length,1);
+});
+
+test('bridge history is bounded and rejects events without stable attribution', () => {
+  const state={fluentiaHistory:[]};
+  const bridge=Bridge.createBridge(()=>state,history=>{state.fluentiaHistory=history;});
+  assert.throws(()=>bridge.recordEvent({correct:true}),/normalized Fluentia result event/);
+  for(let i=0;i<510;i++) bridge.recordEvent({
+    eventId:'bounded:'+i,sessionId:'bounded',itemId:'item-'+i,
+    activityId:'wordcraft-vocabulary',sourceActivityId:'vocabulary',
+    level:'A1',correct:true,domain:'wordcraft',answeredAt:'2026-11-07T11:00:00.000Z'
+  });
+  assert.equal(bridge.getHistory().length,500);
+  assert.equal(bridge.getHistory()[0].eventId,'bounded:10');
+});
