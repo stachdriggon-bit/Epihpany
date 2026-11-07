@@ -55,15 +55,15 @@ test('feature data loader does not request large datasets until requested', asyn
   ]);
   assert.ok(requested.slice(4).every(src => /\?v=.+/.test(src)));
   await context.window.EPIPHANY_LAZY_LOAD('arabic');
-  assert.deepEqual(requested.slice(12).map(src => src.split('?')[0]), [
+  assert.deepEqual(requested.slice(13).map(src => src.split('?')[0]), [
     'data-translation-ar.js',
     'data-translation-ar-fill.js'
   ]);
-  assert.ok(requested.slice(12).every(src => /\?v=.+/.test(src)));
+  assert.ok(requested.slice(13).every(src => /\?v=.+/.test(src)));
   assert.deepEqual(merged, [true]);
   await context.window.EPIPHANY_LAZY_LOAD('chronicle');
-  assert.deepEqual(requested.slice(14).map(src => src.split('?')[0]), ['data-world-registry.js', 'data-world-events.js']);
-  assert.ok(requested.slice(14).every(src => /\?v=.+/.test(src)));
+  assert.deepEqual(requested.slice(15).map(src => src.split('?')[0]), ['data-world-registry.js', 'data-world-events.js']);
+  assert.ok(requested.slice(15).every(src => /\?v=.+/.test(src)));
 });
 
 test('initial HTML defers stories and World data and keeps loader in offline shell', () => {
@@ -328,8 +328,11 @@ test('optional lazy loads respect the adaptive concurrency limit', async () => {
   assert.equal(requested[5].split('?')[0], 'sentence-scramble-bank.js');
   scripts[5].onload();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[6].split('?')[0], 'think-lab.js');
+  assert.equal(requested[6].split('?')[0], 'word-forge-bank.js');
   scripts[6].onload();
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(requested[7].split('?')[0], 'think-lab.js');
+  scripts[7].onload();
 });
 
 test('explicit navigation bypasses and promotes queued optional loads', async () => {
@@ -390,8 +393,11 @@ test('explicit navigation bypasses and promotes queued optional loads', async ()
   assert.equal(requested[5].split('?')[0], 'sentence-scramble-bank.js');
   scripts[5].onload();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[6].split('?')[0], 'think-lab.js');
+  assert.equal(requested[6].split('?')[0], 'word-forge-bank.js');
   scripts[6].onload();
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(requested[7].split('?')[0], 'think-lab.js');
+  scripts[7].onload();
   await explicit;
   scripts[0].onload();
 });
@@ -467,18 +473,21 @@ test('background optional loads pause while constrained, resume once, and never 
   assert.equal(requested[5].split('?')[0], 'sentence-scramble-bank.js');
   scripts[5].onload();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[6].split('?')[0], 'think-lab.js');
+  assert.equal(requested[6].split('?')[0], 'word-forge-bank.js');
   scripts[6].onload();
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(requested[7].split('?')[0], 'think-lab.js');
+  scripts[7].onload();
   await new Promise(resolve => setImmediate(resolve));
 
   policy = { ...policy, allowSpeculativePreload: false, deferNonEssentialWork: true };
   const explicit = context.window.EPIPHANY_LAZY_LOAD('world');
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[7].split('?')[0], 'data-world.js',
+  assert.equal(requested[8].split('?')[0], 'data-world.js',
     'explicit navigation must bypass background deferral');
-  scripts[7].onload();
-  await new Promise(resolve => setImmediate(resolve));
   scripts[8].onload();
+  await new Promise(resolve => setImmediate(resolve));
+  scripts[9].onload();
   await explicit;
 });
 
