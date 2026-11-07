@@ -133,7 +133,7 @@
         targetCount, completedCount: 0, correctCount: 0,
         activityIds: activities.map(activity => activity.id),
         seenItemKeys: [], activityUse: {}, domainUse: {},
-        current: null, answers: [], lastActivityId: null,
+        current: null, answers: [], lastActivityId: null, lastDomainId: null,
         error: null
       };
       return session;
@@ -160,7 +160,8 @@
           // only validate items explicitly eligible for this learner's CEFR level.
           if (normalizeLevel(raw && (raw.level || raw.cefr)) !== session.level) continue;
           const item = validateItem(raw, activity);
-          const key = activity.id + ':' + item.id;
+          const sourceId = cleanId(item.sourceActivityId) || activity.id;
+          const key = sourceId + ':' + item.id;
           if (session.seenItemKeys.includes(key)) continue;
           candidates.push({ activity, item, key });
         }
@@ -173,17 +174,30 @@
       }
       const activityCounts = session.activityUse;
       const domainCounts = session.domainUse;
-      const candidateActivityIds = Array.from(new Set(candidates.map(candidate => candidate.activity.id)));
-      const minActivityUse = Math.min(...candidateActivityIds.map(id => activityCounts[id] || 0));
-      let pool = candidates.filter(c => (activityCounts[c.activity.id] || 0) === minActivityUse);
-      if (pool.length > 1 && session.lastActivityId) {
-        const alternate = pool.filter(c => c.activity.id !== session.lastActivityId);
-        if (alternate.length) pool = alternate;
+      const candidateDomains = Array.from(new Set(candidates.map(candidate => candidate.activity.domain)));
+      let domainPool = candidates;
+      if (session.mode === 'fluentia-mix') {
+        const minDomainUse = Math.min(...candidateDomains.map(domain => domainCounts[domain] || 0));
+        const leastUsedDomains = candidateDomains.filter(domain => (domainCounts[domain] || 0) === minDomainUse);
+        let selectedDomains = leastUsedDomains;
+        if (selectedDomains.length > 1 && session.lastDomainId) {
+          const alternatives = selectedDomains.filter(domain => domain !== session.lastDomainId);
+          if (alternatives.length) selectedDomains = alternatives;
+        }
+        const chosenDomain = selectedDomains[Math.min(selectedDomains.length - 1,
+          Math.floor(Math.max(0, Math.min(0.999999999, Number(random()) || 0)) * selectedDomains.length))];
+        domainPool = candidates.filter(candidate => candidate.activity.domain === chosenDomain);
       }
-      const candidateDomains = Array.from(new Set(pool.map(c => c.activity.domain)));
-      const minDomainUse = Math.min(...candidateDomains.map(d => domainCounts[d] || 0));
-      const balanced = pool.filter(c => (domainCounts[c.activity.domain] || 0) === minDomainUse);
-      const selected = balanced[Math.min(balanced.length - 1, Math.floor(Math.max(0, Math.min(0.999999999, Number(random()) || 0)) * balanced.length))];
+
+      const candidateActivityIds = Array.from(new Set(domainPool.map(candidate => candidate.activity.id)));
+      const minActivityUse = Math.min(...candidateActivityIds.map(id => activityCounts[id] || 0));
+      let activityPool = domainPool.filter(candidate => (activityCounts[candidate.activity.id] || 0) === minActivityUse);
+      if (activityPool.length > 1 && session.lastActivityId) {
+        const alternate = activityPool.filter(candidate => candidate.activity.id !== session.lastActivityId);
+        if (alternate.length) activityPool = alternate;
+      }
+      const selected = activityPool[Math.min(activityPool.length - 1,
+        Math.floor(Math.max(0, Math.min(0.999999999, Number(random()) || 0)) * activityPool.length))];
       session.current = {
         activityId: selected.activity.id, domain: selected.activity.domain,
         interactionType: selected.activity.interactionType, item: clone(selected.item),
@@ -234,6 +248,7 @@
       session.completedCount += 1;
       if (evaluation.correct) session.correctCount += 1;
       session.lastActivityId = activity.id;
+      session.lastDomainId = current.domain;
       session.current = null;
       session.status = session.completedCount >= session.targetCount ? 'completed' : 'ready';
       session.updatedAt = nowIso(clock);
@@ -307,7 +322,7 @@
     }
 
     return Object.freeze({
-      version: '1.0.0', domains: DOMAINS, levels: CEFR_LEVELS,
+      version: '1.1.0', domains: DOMAINS, levels: CEFR_LEVELS,
       interactionTypes: INTERACTION_TYPES, errorCodes: ERROR_CODES,
       registerActivity, getActivity, listActivities,
       createSession, selectNext, submitAnswer,
