@@ -83,9 +83,9 @@ test('adapter registration is idempotent and works with the shared session engin
   assert.deepEqual(repeated, ids);
   assert.equal(engine.listActivities().length, 10);
 
-  const session = engine.createSession({mode:'single', activityId:'wordcraft-vocabulary', level:'A1', length:1});
-  const item = engine.selectNext(session);
-  assert.equal(item.id, 'v-a1');
+  const session = engine.createSession({mode:'single', activityId:'wordcraft-vocabulary', level:'A1', itemCount:1});
+  const selected = engine.selectNext(session);
+  assert.equal(selected.item.id, 'v-a1');
   const event = engine.submitAnswer(session, 1);
   assert.equal(event.correct, true);
   assert.equal(event.domain, 'wordcraft');
