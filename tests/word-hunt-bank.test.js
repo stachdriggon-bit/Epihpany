@@ -27,6 +27,7 @@ test('all 48 Word Hunt grids contain the exact number of unique target words', (
       assert.equal(puzzle.grid.length,config.size,puzzle.id);
       assert.ok(puzzle.grid.every(row => row.length === config.size && /^[A-Z]+$/.test(row)),puzzle.id);
       assert.equal(puzzle.words.length,config.wordsPerPuzzle,puzzle.id);
+      assert.ok(puzzle.words.every(word=>word.length>=config.minWordLength),puzzle.id + ' minimum word length');
       assert.equal(new Set(puzzle.words).size,puzzle.words.length,puzzle.id);
       for (const word of puzzle.words) {
         assert.equal(bank.occurrences(puzzle.grid,word).length,1,puzzle.id + ' ' + word);
