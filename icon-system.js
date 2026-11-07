@@ -37,7 +37,8 @@
     'chain-reaction':'<circle cx="5" cy="12" r="2.3"/><circle cx="12" cy="5" r="2.3"/><circle cx="19" cy="12" r="2.3"/><circle cx="12" cy="19" r="2.3"/><path d="m6.7 10.3 3.6-3.6M13.7 6.7l3.6 3.6M17.3 13.7l-3.6 3.6M10.3 17.3l-3.6-3.6"/><path d="M12 9v6M9 12h6"/>' ,
     'crossword-quest':'<rect x="3" y="3" width="18" height="18" rx="1.5"/><path d="M9 3v18M15 3v18M3 9h18M3 15h18"/><path d="M9 9h6v6H9z"/>',
     'word-hunt':'<circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5M8 8h5M8 11h3M8 14h4"/>',
-    'codebreaker':'<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 9h2m4 0h2m4 0h.01M7 14h.01m4 0h2m4 0h2M9 20v2m6-2v2"/>',
+    'codebreaker':'<rect x="3" y="3" width="18" height="18" rx="3"/><path d="M8 8h.01M16 8h.01M8 16h.01M16 16h.01M8 8l8 8M16 8l-8 8"/>',
+    'letter-grid':'<rect x="3" y="3" width="18" height="18" rx="3"/><path d="M7 7h.01M12 7h.01M17 7h.01M7 12h.01M12 12h.01M17 12h.01M7 17h.01M12 17h.01M17 17h.01M7 12l5-5 5 5 0 5"/>',
     'circle-check':'<circle cx="12" cy="12" r="9"/><path d="m8 12 2.5 2.5L16 9"/>',
     lock:'<rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/>',
     bell:'<path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/>',
@@ -127,7 +128,7 @@
     const thinkLabIcons = {
       odd:'odd-one-out', translator:'bold-translator', wordladder:'word-ladder',
       maze:'sound-maze', connections:'word-connections', scramble:'sentence-scramble',
-      forge:'word-forge', chain:'chain-reaction', crossword:'crossword-quest', wordhunt:'word-hunt', codebreaker:'codebreaker'
+      forge:'word-forge', chain:'chain-reaction', crossword:'crossword-quest', wordhunt:'word-hunt', codebreaker:'codebreaker', lettergrid:'letter-grid'
     };
     const thinkLabSelector = root === document ? '#think-lab-content .tl-case[data-think-game]' : '.tl-case[data-think-game]';
     all(thinkLabSelector).forEach(card => {
