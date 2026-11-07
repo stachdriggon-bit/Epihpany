@@ -64,7 +64,7 @@ test('feature data loader does not request large datasets until requested', asyn
     'data-translation-ar.js',
     'data-translation-ar-fill.js'
   ]);
-  assert.ok(requested.slice(16).every(src => /\?v=.+/.test(src)));
+  assert.ok(requested.slice(18).every(src => /\?v=.+/.test(src)));
   assert.deepEqual(merged, [true]);
   await context.window.EPIPHANY_LAZY_LOAD('chronicle');
   assert.deepEqual(requested.slice(20).map(src => src.split('?')[0]), ['data-world-registry.js', 'data-world-events.js']);
@@ -171,11 +171,19 @@ test('overlapping feature groups share one in-flight script request', async () =
   scripts[9].onload();
   await new Promise(resolve => setImmediate(resolve));
   assert.equal(requested.length, 11);
-  assert.match(requested[10], /^life-skills\.js\?/);
+  assert.match(requested[10], /^word-hunt-bank\\.js\\?/);
   scripts[10].onload();
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(requested.length, 12);
+  assert.match(requested[11], /^word-hunt\\.js\\?/);
+  scripts[11].onload();
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(requested.length, 13);
+  assert.match(requested[12], /^life-skills\\.js\\?/);
+  scripts[12].onload();
 
   await Promise.all([thinkLab, lifeSkills]);
-  assert.equal(requested.length, 11);
+  assert.equal(requested.length, 13);
 });
 
 test('failed lazy scripts are removed and can be retried', async () => {
