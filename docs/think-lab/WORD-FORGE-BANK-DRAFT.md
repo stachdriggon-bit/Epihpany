@@ -65,38 +65,38 @@
 | WF-S-023 | To think carefully about an experience or idea. | F E C L R T E | **REFLECT** | To reflect is to think deeply or carefully about an experience or idea. | Thinking skills |
 | WF-S-024 | The outside or upper layer of an object or material. | F A C E R U S | **SURFACE** | A surface is the outermost part of an object or material. | Science and description |
 
-## 3. Challenge — 24 challenges (pending review)
+## 3. Challenge — 24 approved challenges
 
 | ID | Clue | Letters | Answer | Explanation | Skill |
 |---|---|---|---|---|---|
-| WF-C-001 | Existing in large quantities; more than enough for a particular need. | A B U N D A N T | **ABUNDANT** | Abundant describes something available in large amounts. | Advanced descriptive vocabulary |
-| WF-C-002 | Careful to avoid possible danger, mistakes, or unnecessary risks. | C A U T I O U S | **CAUTIOUS** | A cautious person considers risks before acting. | Decision-making vocabulary |
-| WF-C-003 | Easily damaged or requiring careful handling because it is fragile. | D E L I C A T E | **DELICATE** | Delicate describes something fragile, sensitive, or easily damaged. | Precise adjectives |
-| WF-C-004 | Extremely large in size, amount, or degree. | E N O R M O U S | **ENORMOUS** | Enormous means very large, often beyond the ordinary scale. | Degree and intensity |
-| WF-C-005 | Happening often or at short intervals. | F R E Q U E N T | **FREQUENT** | Frequent describes events that happen many times. | Time and frequency |
-| WF-C-006 | Willing to give money, help, time, or resources freely. | G E N E R O U S | **GENEROUS** | Generous describes someone who gives freely or willingly. | Character and values |
-| WF-C-007 | To pause before doing something because you feel uncertain. | H E S I T A T E | **HESITATE** | To hesitate is to delay action because of doubt or uncertainty. | Nuanced verbs |
-| WF-C-008 | To recognise or name someone or something correctly. | I D E N T I F Y | **IDENTIFY** | To identify is to establish who or what something is. | Reasoning verbs |
-| WF-C-009 | Very beautiful, impressive, or grand in appearance or quality. | M A G N I F I C E N T | **MAGNIFICENT** | Magnificent describes something exceptionally impressive or beautiful. | Evaluative adjectives |
-| WF-C-010 | To discuss something in order to reach an agreement. | N E G O T I A T E | **NEGOTIATE** | To negotiate is to communicate with others to reach an agreement. | Social and professional verbs |
-| WF-C-011 | Unusual or unexpected, sometimes in a way that seems strange. | P E C U L I A R | **PECULIAR** | Peculiar describes something noticeably unusual or strange. | Nuanced adjectives |
-| WF-C-012 | Unwilling to do something, often because of doubt or reluctance. | R E L U C T A N T | **RELUCTANT** | Reluctant describes someone who is not willing or eager to act. | Attitudes and feelings |
-| WF-C-013 | Important enough to be noticed or to have a meaningful effect. | S I G N I F I C A N T | **SIGNIFICANT** | Significant means important, meaningful, or large enough to matter. | Academic vocabulary |
-| WF-C-014 | Lasting for only a limited period of time. | T E M P O R A R Y | **TEMPORARY** | Temporary describes something that is not permanent. | Time and change |
-| WF-C-015 | To change something completely in form, appearance, or character. | T R A N S F O R M | **TRANSFORM** | To transform is to make a marked change in form or nature. | Change verbs |
-| WF-C-016 | Worth a lot, or useful enough to be important. | V A L U A B L E | **VALUABLE** | Valuable can refer to high monetary worth or great usefulness. | Evaluation vocabulary |
-| WF-C-017 | Correct and free from errors, especially in details or measurements. | A C C U R A T E | **ACCURATE** | Accurate means correct and precise. | Precision vocabulary |
-| WF-C-018 | Producing a good or helpful result; having a positive effect. | B E N E F I C I A L | **BENEFICIAL** | Beneficial describes something that produces an advantage or improvement. | Cause and effect |
-| WF-C-019 | A result or effect of an action or situation, especially an important one. | C O N S E Q U E N C E | **CONSEQUENCE** | A consequence is something that follows from an action or event. | Cause and effect |
-| WF-C-020 | To reach a decision or discover an answer after considering evidence. | D E T E R M I N E | **DETERMINE** | To determine is to establish something through reasoning or investigation. | Reasoning verbs |
-| WF-C-021 | Working well without wasting time, energy, or resources. | E F F I C I E N T | **EFFICIENT** | Efficient describes a process that achieves results with little waste. | Work and process vocabulary |
-| WF-C-022 | Absolutely necessary; so important that something cannot be done without it. | E S S E N T I A L | **ESSENTIAL** | Essential means necessary or fundamental. | Priority and importance |
-| WF-C-023 | The power to affect how someone or something develops, behaves, or is decided. | I N F L U E N C E | **INFLUENCE** | Influence is the ability to affect people, events, or decisions. | Abstract nouns |
-| WF-C-024 | To continue to have or keep something at the same level or condition. | M A I N T A I N | **MAINTAIN** | To maintain is to keep something in good condition or at a particular level. | Sustaining and managing |
+| WF-C-001 | Existing in large quantities; more than enough for a particular need. | N T A D U B A N | **ABUNDANT** | Abundant describes something available in large amounts. | Advanced descriptive vocabulary |
+| WF-C-002 | Careful to avoid possible danger, mistakes, or unnecessary risks. | S U T I O A C U | **CAUTIOUS** | A cautious person considers risks before acting. | Decision-making vocabulary |
+| WF-C-003 | Easily damaged or requiring careful handling because of its fragile nature. | C A T E L I D E | **DELICATE** | Delicate describes something fragile, sensitive, or easily damaged. | Precise adjectives |
+| WF-C-004 | Extremely large in size, amount, or degree. | M O U S E N R O | **ENORMOUS** | Enormous means very large, often beyond the ordinary scale. | Degree and intensity |
+| WF-C-005 | Occurring many times within a particular period. | Q U E N F R E T | **FREQUENT** | Frequent describes something that happens repeatedly or often. | Time and frequency |
+| WF-C-006 | Willing to give money, help, time, or resources freely. | R O U S E N E G | **GENEROUS** | Generous describes someone who gives freely or willingly. | Character and values |
+| WF-C-007 | To pause before doing something because you feel uncertain. | T A E H I S T E | **HESITATE** | To hesitate is to delay action because of doubt or uncertainty. | Nuanced verbs |
+| WF-C-008 | To establish who someone is or what something is, using clues or evidence. | F Y I D E N T I | **IDENTIFY** | To identify is to establish the identity or nature of someone or something. | Reasoning verbs |
+| WF-C-009 | Very beautiful, impressive, or grand in appearance or quality. | C E N T I F G A N I M | **MAGNIFICENT** | Magnificent describes something exceptionally impressive or beautiful. | Evaluative adjectives |
+| WF-C-010 | To discuss terms with another person or group in order to reach an agreement. | T E N O G A T I E | **NEGOTIATE** | To negotiate is to communicate with others to reach an agreement. | Social and professional verbs |
+| WF-C-011 | Unusual or unexpected, sometimes in a way that seems strange. | C U L I A R E P | **PECULIAR** | Peculiar describes something noticeably unusual or strange. | Nuanced adjectives |
+| WF-C-012 | Unwilling to do something, often because of doubt or lack of confidence. | T A N L E R U C T | **RELUCTANT** | Reluctant describes someone who is not willing or eager to act. | Attitudes and feelings |
+| WF-C-013 | Important enough to be noticed or to have a meaningful effect. | F I C A N T G I N S I | **SIGNIFICANT** | Significant means important, meaningful, or large enough to matter. | Academic vocabulary |
+| WF-C-014 | Lasting for only a limited period of time and not intended to be permanent. | R A M P O R E T Y | **TEMPORARY** | Temporary describes something that exists or lasts for a limited time. | Time and change |
+| WF-C-015 | To change something greatly in form, appearance, or character. | F O M R A N S T R | **TRANSFORM** | To transform is to make a marked change in form or nature. | Change verbs |
+| WF-C-016 | Worth a lot, or useful enough to be important. | L U A B V A L E | **VALUABLE** | Valuable can refer to high monetary worth or great usefulness. | Evaluation vocabulary |
+| WF-C-017 | Correct and free from errors, especially in details or measurements. | C U R A T C A E | **ACCURATE** | Accurate means correct and precise. | Precision vocabulary |
+| WF-C-018 | Producing a good or helpful result; having a positive effect. | F I C A N E B I L E | **BENEFICIAL** | Beneficial describes something that produces an advantage or improvement. | Cause and effect |
+| WF-C-019 | A result or effect that follows from an action or situation. | E C N E U Q E S N O C | **CONSEQUENCE** | A consequence is something that follows from an action or event. | Cause and effect |
+| WF-C-020 | To reach a decision or establish something after considering facts or evidence. | M I N E R E T E D | **DETERMINE** | To determine is to establish something through reasoning or investigation. | Reasoning verbs |
+| WF-C-021 | Achieving results without wasting time, energy, or resources. | F I C I E N T F E | **EFFICIENT** | Efficient describes a process that achieves results with little waste. | Work and process vocabulary |
+| WF-C-022 | Absolutely necessary; so important that something cannot be done without it. | T I A L E S S E N | **ESSENTIAL** | Essential means necessary or fundamental. | Priority and importance |
+| WF-C-023 | The power to affect how someone or something develops, behaves, or is decided. | C E N U F L I E N | **INFLUENCE** | Influence is the ability to affect people, events, or decisions. | Abstract nouns |
+| WF-C-024 | To continue to have or keep something at the same level or condition. | N I A T N I A M | **MAINTAIN** | To maintain is to keep something in good condition or at a particular level. | Sustaining and managing |
 
 ## Review record
 
 - Guided: 24/24 reviewed and approved by the user; saved in this document.
 - Steady: 24/24 reviewed and approved by the user; saved in this document.
-- Challenge: 24 challenges; review pending.
+- Challenge: 24/24 reviewed and approved by the user; saved in this document.
 - No game code has been changed as part of this content approval.
