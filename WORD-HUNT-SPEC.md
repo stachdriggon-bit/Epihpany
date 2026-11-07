@@ -22,12 +22,12 @@ No timer is imposed. Incorrect selections do not remove points, consume attempts
 
 ## Direction rules and progression
 
-| Level | Grid | Words per puzzle | Allowed directions | Content count |
-|---|---:|---:|---|---:|
-| Easy | 8×8 | 6 | Across and down, forward only | 12 |
-| Medium | 10×10 | 8 | Across, down, and forward diagonals | 12 |
-| Hard | 12×12 | 10 | All eight directions, including backwards | 12 |
-| Expert | 14×14 | 12 | All eight directions, including backwards | 12 |
+| Level | Grid | Words per puzzle | Minimum word length | Allowed directions | Content count |
+|---|---:|---:|---:|---|---:|
+| Easy | 8×8 | 6 | 3 letters | Across and down, forward only | 12 |
+| Medium | 10×10 | 8 | 4 letters | Across, down, and forward diagonals | 12 |
+| Hard | 12×12 | 10 | 4 letters | All eight directions, including backwards | 12 |
+| Expert | 14×14 | 12 | 5 letters | All eight directions, including backwards | 12 |
 
 The first release contains **48 fixed puzzles and 432 target-word placements** across 12 themes: At Home, Food Market, Wildlife, Outdoors, Travel, School, Technology, Sports, Arts, Weather, Workplace, and Everyday Actions. Themes recur across levels with denser grids and broader direction rules.
 
