@@ -26,7 +26,7 @@ test('CEFR level restrictions are checked again before starting a game and savin
   const app = read('app.js');
   assert.match(thinkLab, /if \(id === 'maze' && !canChooseThinkLabCEFR\(selectedMazeCEFR\)\)/);
   assert.match(thinkLab, /if \(id === 'translator' && selectedTranslatorCEFR !== 'adaptive' && !canChooseThinkLabCEFR\(selectedTranslatorCEFR\)\)/);
-  assert.match(thinkLab, /if \(!canChooseThinkLabCEFR\(mazeLevel\.dataset\.soundMazeLevel\)\)return/);
+  assert.match(thinkLab, /if\s*\(!canChooseThinkLabCEFR\(mazeLevel\.dataset\.soundMazeLevel\)\)\s*return/);
   assert.match(thinkLab, /requestedLevel!=='adaptive'&&!canChooseThinkLabCEFR\(requestedLevel\)/);
   assert.match(app, /requestedIndex < 0 \|\| \(!hasDeveloperAccess\(\) && requestedIndex > levelIndex\(\)\)/);
 });
