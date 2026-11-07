@@ -61,3 +61,32 @@ test('Crossword Quest validator rejects inconsistent crossings and missing clues
   assert.ok(result.errors.some(error => /does not match the solution/.test(error)));
   assert.ok(result.errors.some(error => /has no clue/.test(error)));
 });
+
+test('Crossword Quest Easy lexicon covers all eight approved themes with distinct common entries', () => {
+  const bank = loadBank();
+  assert.equal(bank.easyLexicon.length, 8);
+  const allWords = bank.easyLexicon.flatMap(group => group.words);
+  assert.equal(allWords.length, 80);
+  assert.equal(new Set(allWords.map(item => item.answer)).size, 80, 'candidate answers must be unique');
+  for (const group of bank.easyLexicon) {
+    assert.equal(group.words.length, 10, group.theme);
+    for (const item of group.words) {
+      assert.match(item.answer, /^[A-Z]{3,7}$/);
+      assert.ok(item.clue.length >= 12, item.answer + ' needs a useful clue');
+    }
+  }
+});
+
+test('Crossword Quest validator rejects disconnected grids and repeated clues', () => {
+  const bank = loadBank();
+  const disconnected = {
+    id: 'fixture-disconnected', size: 7,
+    layout: ['...####','...####','...####','####...','####...','####...','####...'],
+    solution: ['CAT####','ARE####','TEN####','####DOG','####OWL','####PIG','#######'],
+    entries: []
+  };
+  const result = bank.validatePuzzle(disconnected, 7);
+  assert.equal(result.valid, false);
+  assert.ok(result.errors.some(error => /connected crossword grid/.test(error)));
+});
+
