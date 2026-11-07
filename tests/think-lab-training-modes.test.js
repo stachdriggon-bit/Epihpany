@@ -229,7 +229,7 @@ test('Chain Reaction loads 24 distinct approved challenges for each training mod
     assert.match(harness.root.innerHTML, /LINK 1 OF 3/);
     assert.match(harness.root.innerHTML, new RegExp('<div class="tl-level-tag">' + trainingMode.toUpperCase() + '<\\/div>'));
     assert.equal((harness.root.innerHTML.match(/data-chain-answer=/g) || []).length, 3);
-    const title = harness.root.innerHTML.match(/<h2>([^<]+)<\\/h2>/)?.[1];
+    const title = harness.root.innerHTML.match(/<h2>([^<]+)<\/h2>/)?.[1];
     assert.ok(harness.chainBank.getRounds(trainingMode).some(item => item.title === title), 'the displayed challenge must belong to the selected mode bank');
   }
 });
