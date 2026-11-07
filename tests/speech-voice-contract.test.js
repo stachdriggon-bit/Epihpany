@@ -37,6 +37,18 @@ test('all generated English speech is routed through the shared George voice', (
   }
 });
 
+test('shared George speech cache deduplicates requests and prefetches the next Sound Maze word', () => {
+  const app = read('app.js');
+  const thinkLab = read('think-lab.js');
+
+  assert.match(app, /let speechDbPromise = null/, 'IndexedDB connection should be shared');
+  assert.match(app, /const naturalAudioInflight = new Map\(\)/, 'identical audio requests should share one in-flight fetch');
+  assert.match(app, /async function getNaturalAudio\(/);
+  assert.match(app, /prefetch:\s*prefetchNaturalSpeech/, 'the shared speech API should expose background prefetch');
+  assert.match(thinkLab, /mode === 'maze' && index \+ 1 < pool\.length/);
+  assert.match(thinkLab, /EpiphanySpeech\?\.prefetch\?\.\(nextTarget, \{rate:0\.82\}\)/, 'Sound Maze should prefetch the next word at its existing George rate');
+});
+
 test('no application script contains a native text-to-speech implementation', () => {
   const offenders = applicationScripts(root)
     .map(file => ({file:path.relative(root, file), source:fs.readFileSync(file, 'utf8')}))
