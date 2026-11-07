@@ -33,6 +33,48 @@ function loadHarness(options = {}) {
   return window;
 }
 
+
+test('The Bold Translator Challenge banks retain the reviewed A1, A2 and B1 grammar targets', () => {
+  const harness = loadHarness();
+  const find = (level, prompt) => harnessBankQuestion(harness, level, 'challenge', prompt);
+
+  const a1 = find('A1', 'أين اشتريت هذا القميص؟');
+  assert.equal(a1.options[a1.answer], 'Where did you buy this shirt?');
+  assert.match(a1.optionExplanations[a1.answer], /“did” carries the past tense/);
+
+  const a2PresentPerfect = find('A2', 'لقد تناولت الغداء للتو.');
+  assert.equal(a2PresentPerfect.options[a2PresentPerfect.answer], 'I have just had lunch.');
+  assert.match(a2PresentPerfect.optionExplanations[a2PresentPerfect.answer], /past participle/);
+
+  const a2ZeroConditional = find('A2', 'إذا سخّنت الماء إلى 100 درجة مئوية، فإنه يغلي.');
+  assert.equal(a2ZeroConditional.options[a2ZeroConditional.answer], 'If you heat water to 100°C, it boils.');
+  assert.match(a2ZeroConditional.optionExplanations[a2ZeroConditional.answer], /zero conditional/);
+
+  const a2PastObligation = find('A2', 'اضطررنا إلى الانتظار لأن القطار كان متأخراً.');
+  assert.equal(a2PastObligation.options[a2PastObligation.answer], 'We had to wait because the train was late.');
+  assert.match(a2PastObligation.optionExplanations[a2PastObligation.answer], /past form of “have to”/);
+
+  const b1 = find('B1', 'لو أخبرتني مبكراً، لاستطعت مساعدتك.');
+  assert.equal(b1.options[b1.answer], 'If you had told me earlier, I could have helped you.');
+  assert.match(b1.optionExplanations[b1.answer], /past perfect.*could have/s);
+});
+
+test('The Bold Translator preserves the B2 third-conditional label and Arabic-English nuance', () => {
+  const harness = loadHarness();
+  const b2 = harnessBankQuestion(harness, 'B2', 'guided', 'لم أكن لأصل في الوقت المحدد لولا مساعدتك.');
+  assert.match(b2.optionExplanations[b2.answer], /third conditional/i);
+  assert.doesNotMatch(b2.optionExplanations[b2.answer], /mixed conditional/i);
+
+  const engineer = harnessBankQuestion(harness, 'B2', 'guided', 'يُقال إن المبنى صُمم على يد مهندس محلي.');
+  assert.equal(engineer.options[engineer.answer], 'The building is said to have been designed by a local engineer.');
+
+  const apology = harnessBankQuestion(harness, 'C2', 'guided', 'لم يكن اعتذارها اعترافاً بالمسؤولية بقدر ما كان محاولة لاحتواء الموقف.');
+  assert.match(apology.options[apology.answer], /attempt to contain the situation/);
+
+  const contradiction = harnessBankQuestion(harness, 'C2', 'guided', 'ليس المقصود أن نغض الطرف عن التناقض، بل أن نحدد مدى تأثيره في الحجة.');
+  assert.match(contradiction.options[contradiction.answer], /assess the extent to which it affects the argument/);
+});
+
 test('The Bold Translator A1, A2, B1, B2, C1 and C2 banks each have 42 complete questions with three explained options', () => {
   const harness = loadHarness();
   for (const level of ['A1', 'A2', 'B1', 'B2', 'C1', 'C2']) {
