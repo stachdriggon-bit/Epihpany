@@ -716,7 +716,8 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
     {id:'connections',num:'05',icon:'▦',name:'Word Connections',tag:'CATEGORIES & PATTERNS',desc:'Find the category that connects a group of four words.',time:'5–7 min'},
     {id:'scramble',num:'06',icon:'↔',name:'Sentence Scramble',tag:'SENTENCE BUILDING',desc:'Study mixed-up words and build a natural English sentence.',time:'5–8 min'},
     {id:'forge',num:'07',icon:'✳',name:'Word Forge',tag:'SPELLING & VOCABULARY',desc:'Use a letter set and a clue to identify the word.',time:'2–3 min'},
-    {id:'chain',num:'08',icon:'⤳',name:'Chain Reaction',tag:'WORD ASSOCIATION',desc:'Continue a chain by choosing the strongest word association.',time:'2–3 min'}
+    {id:'chain',num:'08',icon:'⤳',name:'Chain Reaction',tag:'WORD ASSOCIATION',desc:'Continue a chain by choosing the strongest word association.',time:'2–3 min'},
+    {id:'crossword',num:'09',icon:'▦',name:'Crossword Quest',tag:'CLASSIC WORD PUZZLES',desc:'Solve carefully designed across-and-down crosswords at your own pace.',time:'10–20 min'}
   ];
   function insightsMarkup() {
     const data = window.EpiphanyThinkLab && typeof window.EpiphanyThinkLab.getInsights === 'function'
@@ -1150,6 +1151,11 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
     if(id==='maze') speakTarget();
   }
   function start(id) {
+    if (id === 'crossword') {
+      if (window.EPIPHANY_CROSSWORD_QUEST && typeof window.EPIPHANY_CROSSWORD_QUEST.open === 'function') window.EPIPHANY_CROSSWORD_QUEST.open();
+      else root.innerHTML = '<div class="tl-game-card"><h2>Crossword Quest is loading</h2><p class="tl-game-instruction">Please return to Think Lab and open the game again.</p><button type="button" class="tl-back" data-think-home>Think Lab home</button></div>';
+      return;
+    }
     if(id==='translator') selectedTranslatorCEFR='adaptive';
     showTrainingModePicker(id);
   }
