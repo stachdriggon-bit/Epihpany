@@ -255,6 +255,14 @@ test('feature styles load only when requested', async () => {
   assert.match(requested[1], /^life-skills\.css\?v=/);
   links[1].onload();
   await life;
+  const think = context.window.EPIPHANY_LAZY_STYLE('thinklab');
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(requested.length, 5);
+  assert.match(requested[2], /^word-hunt\.css\?v=/);
+  assert.match(requested[3], /^codebreaker\.css\?v=/);
+  assert.match(requested[4], /^letter-grid\.css\?v=/);
+  links[2].onload(); links[3].onload(); links[4].onload();
+  await think;
 });
 
 
