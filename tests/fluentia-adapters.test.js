@@ -104,7 +104,9 @@ test('legacy source banks remain unchanged after adapter creation and evaluation
 function expandedFixture() {
   const sources = fixture();
   sources.games.vocabulary.questions[0].word = 'apple';
-  sources.audioItems = [{id:'WM-A1-01',level:'A1',word:'apple',meaning:'a round fruit'}];
+  sources.audioItems = [{id:'SP-A1-01',level:'A1',word:'apple',meaning:'a round fruit'}];
+  sources.wordOfDayItems = [{id:'WM-A1-01',level:'A1',word:'apple',meaning:'a round fruit'}];
+  sources.sentenceItems = [{id:'SB-A1-01',level:'A1',text:'I drink water every morning.'}];
   sources.practiceSamples = [{id:'PL-A1-01',level:'A1',text:'I would like water.'}];
   sources.textwiseSequenceBank = [{id:'TW-A1-01',level:'A1',title:'A notice',steps:['Read the notice.','Check the date.','Follow the instructions.']}];
   sources.soundMazeBank = {levels:{A1:{guided:[{id:'SM-A1-01',target:'cat',options:['cat','cut','kit','cot'],explain:'Cat has /æ/.'}],steady:[],challenge:[]}}};
@@ -121,11 +123,11 @@ test('extended sources register matching, listening, speech, sequencing and revi
   const adapters = AdapterFactory.createAdapters(expandedFixture());
   const ids = new Set(adapters.map(item => item.id));
   for (const id of [
-    'wordcraft-word-match','soundscape-sound-maze','soundscape-dictation',
-    'real-world-speaking-shadowing','textwise-sequence',
+    'wordcraft-word-match','soundscape-sound-picture-match','soundscape-sound-maze','soundscape-dictation',
+    'real-world-speaking-shadowing','textwise-sequence','sentence-studio-sentence-builder',
     'wordcraft-personal-review','sentence-studio-personal-review'
   ]) assert.ok(ids.has(id), id);
-  assert.equal(adapters.length, 17);
+  assert.equal(adapters.length, 19);
 });
 
 test('Sound Maze, dictation, shadowing and Word Match keep distinct evaluation semantics', () => {
@@ -145,8 +147,10 @@ test('Sound Maze, dictation, shadowing and Word Match keep distinct evaluation s
   assert.equal(partial.accuracy, 75);
   assert.equal(get('real-world-speaking-shadowing').evaluate(speech, 'I would like water').correct, true);
 
+  const [picture] = get('soundscape-sound-picture-match').getItems({level:'A1'});
+  assert.equal(get('soundscape-sound-picture-match').evaluate(picture, 'apple').correct, true);
   const [match] = get('wordcraft-word-match').getItems({level:'A1'});
-  assert.equal(get('wordcraft-word-match').evaluate(match, 'a round fruit').correct, true);
+  assert.equal(get('wordcraft-word-match').evaluate(match, {word:'apple',meaning:'a round fruit'}).correct, true);
 });
 
 test('Textwise sequencing is independent and order-sensitive', () => {
@@ -182,4 +186,13 @@ test('incremental source registration adds lazy sources without replacing existi
   assert.deepEqual(AdapterFactory.registerSources(engine, {
     practiceSamples: [{id:'PL-A1-01',level:'A1',text:'Hello there.'}]
   }), []);
+});
+
+test('Sentence Builder preserves ordering interaction and exact token order', () => {
+  const adapters = AdapterFactory.createAdapters(expandedFixture());
+  const builder = adapters.find(item => item.id === 'sentence-studio-sentence-builder');
+  const [item] = builder.getItems({level:'A1'});
+  assert.equal(builder.interactionType, 'ordering');
+  assert.equal(builder.evaluate(item, ['I','drink','water','every','morning.']).correct, true);
+  assert.equal(builder.evaluate(item, ['I','water','drink','every','morning.']).correct, false);
 });
