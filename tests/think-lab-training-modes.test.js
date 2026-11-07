@@ -60,6 +60,7 @@ function createHarness(options = {}) {
   let crosswordOpened = 0;
   let wordHuntOpened = 0;
   let codebreakerOpened = 0;
+  let letterGridOpened = 0;
   const window = {
     EpiphanyAuth: {isDeveloper: () => true},
     EPIPHANY_ODD_ONE_OUT_BANK: bank,
@@ -71,6 +72,7 @@ function createHarness(options = {}) {
     EPIPHANY_CROSSWORD_QUEST: { open() { crosswordOpened++; root.innerHTML = 'crossword-level-picker'; } },
     EPIPHANY_WORD_HUNT: { open() { wordHuntOpened++; root.innerHTML = 'word-hunt-level-picker'; } },
     EPIPHANY_CODEBREAKER: { open() { codebreakerOpened++; root.innerHTML = 'codebreaker-level-picker'; } },
+    EPIPHANY_LETTER_GRID: { open() { letterGridOpened++; root.innerHTML = 'letter-grid-level-picker'; } },
     ...(options.soundMazeBank ? {EPIPHANY_SOUND_MAZE_BANK:options.soundMazeBank} : {}),
     speechSynthesis: {cancel(){},speak(){}},
     EpiphanyThinkLab: {
@@ -90,7 +92,7 @@ function createHarness(options = {}) {
     assert.equal(typeof listeners.click, 'function', 'Think Lab click handler should be registered');
     listeners.click({target:{closest: candidate => candidate === selector ? element : null}});
   }
-  return {root,click,getSavedMazeCEFR:()=>savedMazeCEFR,chainBank:window.EPIPHANY_CHAIN_REACTION_BANK,feedback,recordedResults,getCrosswordOpened:()=>crosswordOpened,getWordHuntOpened:()=>wordHuntOpened,getCodebreakerOpened:()=>codebreakerOpened};
+  return {root,click,getSavedMazeCEFR:()=>savedMazeCEFR,chainBank:window.EPIPHANY_CHAIN_REACTION_BANK,feedback,recordedResults,getCrosswordOpened:()=>crosswordOpened,getWordHuntOpened:()=>wordHuntOpened,getCodebreakerOpened:()=>codebreakerOpened,getLetterGridOpened:()=>letterGridOpened};
 }
 
 test('existing mode-based Think Lab games open the shared three-mode picker before play', () => {
@@ -309,5 +311,18 @@ test('Codebreaker has a dedicated Think Lab card, icon, and independent level pi
   harness.click('[data-think-game]',{thinkGame:'codebreaker'});
   assert.equal(harness.getCodebreakerOpened(),1);
   assert.equal(harness.root.innerHTML,'codebreaker-level-picker');
+  assert.doesNotMatch(harness.root.innerHTML,/How would you like to play/);
+});
+
+
+test('Letter Grid has a dedicated Think Lab card, icon, and independent level picker',()=>{
+  const harness=createHarness();
+  assert.match(source,/id:'lettergrid',num:'11'/);
+  const icons=fs.readFileSync(path.join(__dirname,'..','icon-system.js'),'utf8');
+  assert.match(icons,/'letter-grid':/);
+  assert.match(icons,/lettergrid:'letter-grid'/);
+  harness.click('[data-think-game]',{thinkGame:'lettergrid'});
+  assert.equal(harness.getLetterGridOpened(),1);
+  assert.equal(harness.root.innerHTML,'letter-grid-level-picker');
   assert.doesNotMatch(harness.root.innerHTML,/How would you like to play/);
 });
