@@ -148,7 +148,8 @@ test('The Bold Translator defaults to adaptive CEFR and keeps manual practice se
   assert.match(source, /This choice does not change your learning level/);
   assert.match(source, /data-translator-level="adaptive"/);
   assert.match(source, /data-translator-level="'\+level\+'"/);
-  assert.match(source, /!unlocked \|\| !bankReady\?'disabled aria-disabled="true"':' '/);
+  assert.ok(source.includes("(!unlocked || !bankReady?'disabled aria-disabled=\\"true\\":'')"),
+    'manual CEFR choices must be disabled when locked or when their bank is unavailable');
   assert.match(source, /Locked · progress to unlock/);
   assert.match(source, /availableThinkLabCEFRLevels\(\)/);
   assert.match(source, /This choice does not change your learning level/);
