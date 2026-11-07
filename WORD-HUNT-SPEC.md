@@ -48,7 +48,7 @@ Puzzles are authored and stored as fixed grids. The game does not generate or sh
 - A valid selection marks the word in the grid and target list.
 - An invalid selection gives neutral retry guidance; it is not a scored failure.
 - A hint identifies a starting cell only; it never exposes the target word.
-- A completed puzzle records one vocabulary result through the existing Think Lab bridge.
+- Each straight-line guess is recorded as a vocabulary attempt through the existing Think Lab bridge, while adaptive difficulty remains unchanged. Incorrect selections do not remove points or limit retries. The final found word marks the final puzzle in the level as complete.
 - The experience has no countdown, forced pace, or penalty for mistakes.
 - Existing reward/progression services remain authoritative; Word Hunt does not create a separate currency or reward system.
 
