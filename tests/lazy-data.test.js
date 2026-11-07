@@ -56,14 +56,14 @@ test('feature data loader does not request large datasets until requested', asyn
   ]);
   assert.ok(requested.slice(4).every(src => /\?v=.+/.test(src)));
   await context.window.EPIPHANY_LAZY_LOAD('arabic');
-  assert.deepEqual(requested.slice(13).map(src => src.split('?')[0]), [
+  assert.deepEqual(requested.slice(14).map(src => src.split('?')[0]), [
     'data-translation-ar.js',
     'data-translation-ar-fill.js'
   ]);
   assert.ok(requested.slice(13).every(src => /\?v=.+/.test(src)));
   assert.deepEqual(merged, [true]);
   await context.window.EPIPHANY_LAZY_LOAD('chronicle');
-  assert.deepEqual(requested.slice(15).map(src => src.split('?')[0]), ['data-world-registry.js', 'data-world-events.js']);
+  assert.deepEqual(requested.slice(16).map(src => src.split('?')[0]), ['data-world-registry.js', 'data-world-events.js']);
   assert.ok(requested.slice(15).every(src => /\?v=.+/.test(src)));
 });
 
