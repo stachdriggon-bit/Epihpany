@@ -349,6 +349,47 @@ test('main navigation tabs open without uncaught page errors', { timeout: 18 * 6
           'Sound Maze feedback should unlock the next question');
         checkpoint('thinklab: Sound Maze content, choices and feedback verified');
 
+        checkpoint('thinklab: returning to the game list to open Word Forge');
+        await mazeCard.locator('[data-think-back]').click();
+        await page.locator('#thinklab-view [data-think-back]').click();
+        await page.locator('#thinklab-view [data-think-game="forge"]').click();
+        const forgeModePicker = page.locator('#thinklab-view .tl-mode-picker');
+        await forgeModePicker.waitFor({state:'visible',timeout:5000});
+        await forgeModePicker.locator('[data-think-training-mode="guided"]').click();
+        const forgeCard = page.locator('#thinklab-view .tl-game-card');
+        await forgeCard.waitFor({state:'visible',timeout:5000});
+        checkpoint('thinklab: Word Forge loaded its approved bank');
+        assert.ok(requested.some(path => path.endsWith('/word-forge-bank.js')),
+          'Word Forge bank should load on demand with Think Lab');
+        assert.equal(await page.evaluate(() => window.EPIPHANY_WORD_FORGE_BANK.validateBank().valid), true,
+          'the complete approved Word Forge bank should validate in the browser');
+        assert.match(await forgeCard.locator('.tl-game-actions').innerText(), /ROUND 1 OF 24/);
+        assert.equal(await forgeCard.locator('[data-forge-tile]').count() > 0, true,
+          'Word Forge should render its available letter tiles');
+        assert.equal(await forgeCard.locator('[data-forge-slot]').count() > 0, true,
+          'Word Forge should render answer slots');
+        assert.equal(await forgeCard.locator('[data-training-hint]').count(), 1,
+          'Guided Word Forge should provide its training hint');
+        const forgeClue = await forgeCard.locator('.tl-word-clue p').innerText();
+        const forgeAnswer = await page.evaluate(clue => {
+          const item = window.EPIPHANY_WORD_FORGE_BANK.getRounds('guided').find(round => round.clue === clue);
+          return item && item.answerWord.toUpperCase();
+        }, forgeClue);
+        assert.ok(forgeAnswer, 'the displayed clue should map to one approved bank entry');
+        for (const letter of forgeAnswer) {
+          await forgeCard.locator('[data-forge-tile]:not(:disabled)').filter({hasText:letter}).first().click();
+        }
+        assert.equal(await forgeCard.locator('[data-forge-slot].is-filled').count(), forgeAnswer.length,
+          'each answer letter should occupy one slot');
+        await forgeCard.locator('[data-forge-check]').click();
+        assert.equal(await forgeCard.locator('#tl-feedback').isVisible(), true,
+          'a correct forged word should reveal educational feedback');
+        assert.match(await forgeCard.locator('#tl-feedback').innerText(), /Skill:/,
+          'successful feedback should identify the vocabulary skill');
+        assert.equal(await forgeCard.locator('[data-think-next]').isVisible(), true,
+          'a correct answer should unlock the next challenge');
+        checkpoint('thinklab: Word Forge board, answer checking and feedback verified');
+
       }
       if (view === 'casebound') {
         assert.ok(requested.some(path => path.endsWith('/language-detective-assessment-schemas.js')), 'CASEBOUND schemas should load on first open');
