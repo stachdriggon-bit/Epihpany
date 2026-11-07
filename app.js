@@ -203,7 +203,7 @@
         spot: typeof SPOT_QUESTIONS !== 'undefined' ? SPOT_QUESTIONS : [],
         typing: typeof TYPING_QUESTIONS !== 'undefined' ? TYPING_QUESTIONS : [],
         directions: typeof DIRECTION_ITEMS !== 'undefined' ? DIRECTION_ITEMS : [],
-        reviewState: state,
+        reviewState: () => state,
         wordOfDayItems: typeof WOTD_WORDS !== 'undefined' ? WOTD_WORDS : [],
         textwiseSequenceBank: window.EPIPHANY_TEXTWISE_SEQUENCE_BANK || [],
         ...(extra || {})
