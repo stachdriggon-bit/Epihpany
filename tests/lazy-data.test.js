@@ -148,7 +148,7 @@ test('overlapping feature groups share one in-flight script request', async () =
   scripts[5].onload();
   await new Promise(resolve => setImmediate(resolve));
   assert.equal(requested.length, 7);
-  assert.match(requested[6], /^think-lab\.js\?/);
+  assert.match(requested[6], /^language-detective-assessment-schemas\.js\?/);
   scripts[6].onload();
   await new Promise(resolve => setImmediate(resolve));
   assert.equal(requested.length, 8);
