@@ -211,7 +211,7 @@
         .map(item => ({...item, reviewWeight: score(item), sourceActivityId: item.sourceActivityId || 'legacy-review'}))
         .sort((a,b) => b.reviewWeight - a.reviewWeight);
       adapters.push(makeAdapter({
-        id: 'wordcraft-personal-review', domain: 'wordcraft', interactionType: 'matching', skills: ['vocabulary-retrieval'],
+        id: 'wordcraft-personal-review', domain: 'wordcraft', interactionType: 'dynamic', skills: ['vocabulary-retrieval'],
         getSource: () => [],
         getItems: ({level}) => {
           const saved = new Set((reviewState.review || []).filter(row => row && row.word).map(row => normalize(row.word)));
