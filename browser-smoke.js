@@ -221,6 +221,17 @@ test('main navigation tabs open without uncaught page errors', async t => {
         if (await page.locator('#game-body .answer').count()) await page.locator('#game-body .answer').first().click();
       }
       if (view === 'thinklab') {
+        assert.ok(requested.some(path => path.endsWith('/crossword-quest-bank.js')), 'Crossword Quest bank schema should load with Think Lab');
+        assert.ok(requested.some(path => path.endsWith('/crossword-quest.js')), 'Crossword Quest engine should load with Think Lab');
+        const crosswordCard = page.locator('#thinklab-view [data-think-game="crossword"]');
+        await crosswordCard.waitFor({state:'visible',timeout:5000});
+        assert.ok(await crosswordCard.locator('.tl-case-icon svg').count(), 'Crossword Quest should receive its dedicated outline icon');
+        await crosswordCard.click();
+        await page.locator('#thinklab-view .cq-shell').waitFor({state:'visible',timeout:5000});
+        assert.equal(await page.locator('#thinklab-view [data-cq-level]').count(), 4, 'Crossword Quest should present its four independent levels');
+        assert.equal(await page.locator('#thinklab-view [data-cq-level]:enabled').count(), 0, 'levels must remain unavailable until all reviewed puzzles are present');
+        await page.locator('#thinklab-view [data-cq-home]').click();
+        await page.locator('#thinklab-view .tl-cases').waitFor({state:'visible',timeout:5000});
         assert.ok(requested.some(path => path.endsWith('/odd-one-out-bank.js')), 'Odd One Out bank should load with Think Lab');
         assert.ok(requested.some(path => path.endsWith('/think-lab.js')), 'Think Lab should load on first open');
         await page.locator('#thinklab-view [data-think-game="odd"]').click();
