@@ -88,7 +88,11 @@
         (!allowed || allowed.has(activity.id)) &&
         (!scope.interactionTypes || scope.interactionTypes.includes(activity.interactionType)) &&
         (!scope.skills || !scope.skills.length || activity.skills.some(skill => scope.skills.includes(skill))) &&
-        activity.getItems({ level, domain: activity.domain, activityId: activity.id }).some(item => normalizeLevel(item.level || item.cefr) === level)
+        (() => {
+          const items = activity.getItems({ level, domain: activity.domain, activityId: activity.id }) || [];
+          items.forEach(item => validateItem(item, activity));
+          return items.some(item => normalizeLevel(item.level || item.cefr) === level);
+        })()
       );
     }
 
@@ -163,13 +167,15 @@
       }
       const activityCounts = session.activityUse;
       const domainCounts = session.domainUse;
-      const minActivityUse = Math.min(...eligible.map(a => activityCounts[a.id] || 0));
+      const candidateActivityIds = Array.from(new Set(candidates.map(candidate => candidate.activity.id)));
+      const minActivityUse = Math.min(...candidateActivityIds.map(id => activityCounts[id] || 0));
       let pool = candidates.filter(c => (activityCounts[c.activity.id] || 0) === minActivityUse);
       if (pool.length > 1 && session.lastActivityId) {
         const alternate = pool.filter(c => c.activity.id !== session.lastActivityId);
         if (alternate.length) pool = alternate;
       }
-      const minDomainUse = Math.min(...Array.from(new Set(pool.map(c => c.activity.domain))).map(d => domainCounts[d] || 0));
+      const candidateDomains = Array.from(new Set(pool.map(c => c.activity.domain)));
+      const minDomainUse = Math.min(...candidateDomains.map(d => domainCounts[d] || 0));
       const balanced = pool.filter(c => (domainCounts[c.activity.domain] || 0) === minDomainUse);
       const selected = balanced[Math.min(balanced.length - 1, Math.floor(Math.max(0, Math.min(0.999999999, Number(random()) || 0)) * balanced.length))];
       session.current = {
