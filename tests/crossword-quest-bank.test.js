@@ -88,5 +88,21 @@ test('Crossword Quest validator rejects disconnected grids and repeated clues', 
   const result = bank.validatePuzzle(disconnected, 7);
   assert.equal(result.valid, false);
   assert.ok(result.errors.some(error => /connected crossword grid/.test(error)));
+
+  const duplicateClues = {
+    id: 'fixture-duplicate-clues', size: 3,
+    layout: ['...', '...', '...'],
+    solution: ['CAT', 'ARE', 'TEN'],
+    entries: [
+      { number: 1, direction: 'across', row: 0, col: 0, answer: 'CAT', clue: 'A pet that may purr' },
+      { number: 1, direction: 'down', row: 0, col: 0, answer: 'CAT', clue: 'A pet that may purr' },
+      { number: 2, direction: 'down', row: 0, col: 1, answer: 'ARE', clue: 'Second-person form of be' },
+      { number: 3, direction: 'down', row: 0, col: 2, answer: 'TEN', clue: 'Twice five' },
+      { number: 4, direction: 'across', row: 1, col: 0, answer: 'ARE', clue: 'Plural present of be' },
+      { number: 5, direction: 'across', row: 2, col: 0, answer: 'TEN', clue: 'Number after nine' }
+    ]
+  };
+  const clueResult = bank.validatePuzzle(duplicateClues, 3);
+  assert.ok(clueResult.errors.some(error => /Clues must be distinct/.test(error)));
 });
 
