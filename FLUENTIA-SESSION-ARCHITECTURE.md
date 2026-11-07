@@ -2,7 +2,7 @@
 
 Implementation date: 2026-11-07
 Branch: `main`
-Status: **Engine and contract tests committed; CI verification pending**
+Status: **Phase 2 verified; Phase 3 adapter integration in progress**
 Related documents: [Implementation plan](./FLUENTIA-IMPLEMENTATION-PLAN.md), [Phase 1 inventory](./FLUENTIA-CONTENT-INVENTORY.md)
 
 ## 1. Scope delivered
@@ -135,7 +135,7 @@ The dedicated test file covers:
 - serialization and restoration of an active session;
 - sparse/exhausted pools and invalid content/evaluator/snapshot behavior.
 
-The repository's `npm run test:unit` and `npm run test:browser` have **not yet been run in this environment**. GitHub Actions results must be checked before Phase 2 is marked verified. No CI or browser success is claimed here.
+The user confirmed that all required repository checks passed before Phase 3 began. Phase 2 is therefore recorded as verified.
 
 ## 9. Explicitly deferred
 
@@ -148,3 +148,18 @@ The repository's `npm run test:unit` and `npm run test:browser` have **not yet b
 - Changing XP, quests, streaks, translation preferences or answer-safety behavior.
 
 These are integration/product phases, not responsibilities of the shared orchestration engine.
+
+
+## 10. Phase 3 adapter integration (initial batch)
+
+The additive adapter registry is implemented in `fluentia-adapters.js` and loaded before `app.js`. The app creates a separate Fluentia engine instance and registers ten canonical adapters over existing sources:
+
+- Wordcraft: Word Collector and Word Detective.
+- Sentence Studio: Sentence Shaper, Common Mistakes, Spot the Mistake and Type It.
+- Textwise: Meaning Detective (reading comprehension; legacy internal key remains unchanged).
+- Real World: Lost in London and Directions.
+- Fine Sense: Nuance Navigator.
+
+The adapters retain source records and existing renderers. They use explicit CEFR tags only, deterministic content-derived IDs when an eligible legacy record has no ID, and activity-specific evaluators for choice, error identification, typed answers and map coordinates. Registration failure is isolated so the legacy Arcade continues to work. The new contract suite is `tests/fluentia-adapters.test.js`.
+
+Not yet registered: Soundscape's currently untagged Sound & Picture Match bank and lazy Practice Lab sources; Textwise's independent sequencing bank (the Stories corpus must not be reused); dynamic Wordcraft pools; and the cross-domain Your Review selector. These require source-level CEFR/identity and compatibility work before they can safely enter mixed sessions. No UI migration, progress writes, XP changes or Practice Lab statistics migration is part of this batch.
