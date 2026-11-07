@@ -151,7 +151,7 @@ Textwise's Meaning Detective activity can remain based on non-fiction/practical 
 
 ## 7. Test coverage and known gaps
 
-The repository currently contains 59 files in `tests/`. Relevant existing coverage includes:
+The repository contained 59 test files at the time of the Phase 1 audit; Fluentia has since added dedicated engine and adapter contract suites. Relevant existing coverage includes:
 - `content-quality.test.js`: loads `data.js`, `data-wotd.js`, `data-expansion.js`, `data-stories.js` and `data-stories-expansion.js`; checks core question validity/duplicates/translations and story structure/comprehension.
 - `expansion-translation-safety.test.js`, `comprehension-translation-safety.test.js`, `listening-translation-safety.test.js`, `spot-translation-safety.test.js`, `blank-translation-safety.test.js`, `translation-safety.test.js`, `translation-targets.test.js`, `translation-blank-preservation.test.js`: targeted translation and answer-safety coverage.
 - `data-readiness.test.js`: missing core-data recovery and several progress/adaptive behavior contracts.
