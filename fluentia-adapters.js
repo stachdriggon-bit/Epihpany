@@ -131,14 +131,33 @@
 
     if (Array.isArray(sources.audioItems)) {
       adapters.push(makeAdapter({
-        id: 'wordcraft-word-match', domain: 'wordcraft', interactionType: 'matching', skills: ['word-meaning'],
+        id: 'soundscape-sound-picture-match', domain: 'soundscape', interactionType: 'listening', skills: ['spoken-word-recognition'],
         getSource: () => sources.audioItems,
         evaluate: (item, answer) => {
-          const selected = typeof answer === 'string' ? answer : answer && (answer.meaning || answer.word);
-          const correct = normalize(selected) === normalize(item.meaning) || normalize(selected) === normalize(item.word);
-          return {correct, errorType: correct ? null : 'word-meaning-match'};
+          const selected = typeof answer === 'string' ? answer : answer && (answer.word || answer.selected);
+          const correct = normalize(selected) === normalize(item.word);
+          return {correct, errorType: correct ? null : 'audio-word-picture-match'};
         },
-        correctAnswer: item => item.meaning
+        correctAnswer: item => item.word
+      }));
+    }
+
+    if (Array.isArray(sources.wordOfDayItems)) {
+      adapters.push(makeAdapter({
+        id: 'wordcraft-word-match', domain: 'wordcraft', interactionType: 'matching', skills: ['word-meaning-retrieval'],
+        getSource: () => [],
+        getItems: ({level}) => {
+          const saved = new Set((sources.reviewState?.words || []).map(row => normalize(Array.isArray(row) ? row[0] : row && row.word)));
+          const rows = sources.wordOfDayItems.filter(item => item && item.level === level && item.word && item.meaning);
+          return rows.map(item => ({...item, savedForReview:saved.has(normalize(item.word))}));
+        },
+        evaluate: (item, answer) => {
+          const word = answer && typeof answer === 'object' ? answer.word : '';
+          const meaning = answer && typeof answer === 'object' ? answer.meaning : '';
+          const correct = normalize(word) === normalize(item.word) && normalize(meaning) === normalize(item.meaning);
+          return {correct, errorType: correct ? null : 'word-pair-mismatch'};
+        },
+        correctAnswer: item => ({word:item.word,meaning:item.meaning})
       }));
     }
 
