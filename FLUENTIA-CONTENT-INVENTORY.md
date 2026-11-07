@@ -169,7 +169,7 @@ Gaps identified for Fluentia:
 
 **Execution note:** this phase inspected source and derived static/loaded data counts. It did not run `npm test`, `npm run test:unit`, `npm run test:browser` or GitHub Actions. No test result is claimed.
 
-## 8. Phase 1 conclusions and handoff to Phase 2
+## 8. Phase 1 conclusions and integration handoff
 
 Phase 1 inventory is complete. The canonical mapping is:
 
@@ -181,7 +181,7 @@ Phase 1 inventory is complete. The canonical mapping is:
 - Fine Sense: precise meaning, nuance and pragmatic interpretation.
 - Your Review: cross-domain personalized revision.
 
-Before Phase 3 integration, Phase 2 should define stable adapters for:
+Phase 2 is now verified complete. Phase 3 has begun with ten adapters over the currently level-tagged legacy sources. The initial integration batch covers Wordcraft, Sentence Studio, Textwise, Real World and Fine Sense. Soundscape, Textwise sequencing, dynamic personalized pools and Your Review remain gated until their content identity, CEFR coverage and compatibility rules are ready. The following interaction families remain integration requirements for those deferred sources:
 - multiple-choice banks;
 - one-correction/tap-the-error items;
 - typed-answer/accepted-answer items;
@@ -194,4 +194,4 @@ Before Phase 3 integration, Phase 2 should define stable adapters for:
 
 The common session layer must not flatten these into one generic multiple-choice renderer. It should standardize identity, CEFR eligibility, answer/result events, feedback, progress attribution and session lifecycle while leaving each interaction type's renderer/evaluator intact.
 
-The next phase is **Phase 2 — Shared practice/session architecture**. Do not change the live Arcade landing page or migrate content as part of this inventory document.
+The current next action is to complete Phase 3 source integration and progress compatibility. This inventory remains a historical Phase 1 audit; it does not imply that any untagged content has become eligible.
