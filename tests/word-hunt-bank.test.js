@@ -36,7 +36,7 @@ test('all 48 Word Hunt grids contain the exact number of unique target words', (
 });
 
 test('Word Hunt direction progression is enforced by the content validator', () => {
-  const easy = bank.puzzles.easy[0];
+  const easy = bank.puzzles.easy[1];
   const easyResult = bank.validatePuzzle({...easy,grid:easy.grid.map(row=>row.split('').reverse().join(''))},'easy');
   assert.equal(easyResult.valid,false,'reversing the grid must invalidate at least the forward-only Easy placements');
   const medium = bank.puzzles.medium[0];
