@@ -85,6 +85,7 @@
       const allowed = Array.isArray(activityIds) && activityIds.length ? new Set(activityIds) : null;
       return Array.from(adapters.values()).filter(activity =>
         (!scope.domain || activity.domain === scope.domain) &&
+        (!activity.reviewOnly || !!scope.includeReview || !!(allowed && allowed.has(activity.id))) &&
         (!allowed || allowed.has(activity.id)) &&
         (!scope.interactionTypes || scope.interactionTypes.includes(activity.interactionType)) &&
         (!scope.skills || !scope.skills.length || activity.skills.some(skill => scope.skills.includes(skill))) &&
@@ -118,7 +119,8 @@
       const scope = {
         domain,
         interactionTypes: Array.isArray(cfg.interactionTypes) ? cfg.interactionTypes.slice() : null,
-        skills: Array.isArray(cfg.skills) ? cfg.skills.slice() : null
+        skills: Array.isArray(cfg.skills) ? cfg.skills.slice() : null,
+        includeReview: cfg.includeReview === true
       };
       const activities = getEligibleActivities(scope, level, mode === 'single' ? [cfg.activityId] : cfg.activityIds);
       if (!activities.length) fail(ERROR_CODES.NO_ELIGIBLE_ITEMS, 'No registered activity has eligible items for this session.', { mode, domain, level });
