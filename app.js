@@ -195,7 +195,7 @@
       if (bridgeApi && typeof bridgeApi.createBridge === 'function') {
         Object.defineProperty(window, 'EPIPHANY_FLUENTIA_PROGRESS', {
           configurable: false, enumerable: false, writable: false,
-          value: bridgeApi.createBridge(() => state)
+          value: bridgeApi.createBridge(() => state, history => { state.fluentiaHistory = history; save(); })
         });
       }
       const registerFluentiaSources = extra => adapterApi.registerSources(fluentiaSessionEngine, {
@@ -206,6 +206,8 @@
         reviewState: () => state,
         wordOfDayItems: typeof WOTD_WORDS !== 'undefined' ? WOTD_WORDS : [],
         textwiseSequenceBank: window.EPIPHANY_TEXTWISE_SEQUENCE_BANK || [],
+        soundscapeDictationBank: window.EPIPHANY_SOUNDSCAPE_DICTATION_BANK || [],
+        onProgress: event => window.EPIPHANY_FLUENTIA_PROGRESS?.recordEvent(event),
         ...(extra || {})
       });
       Object.defineProperty(window, 'EPIPHANY_FLUENTIA_REGISTER_SOURCES', {
