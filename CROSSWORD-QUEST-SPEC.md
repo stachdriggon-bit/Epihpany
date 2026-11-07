@@ -91,6 +91,7 @@ The theme mix remains consistent at every level; the language demand and clue co
 - Final scoring and reward integration with shared EPIPHANY progression.
 - Exact persistence/resume behavior for puzzle progress.
 - Final content-bank entries and all 96 reviewed grids. The Easy lexicon is a curated candidate pool only; it is not yet a playable puzzle bank.
+- Easy lexicon sourcing and filtering policy: `CROSSWORD-QUEST-EASY-LEXICON-SOURCES.md`.
 - Any optional assistance beyond the approved on-demand clue.
 
 Do not invent scoring or reward changes while implementing the grid interaction. Preserve existing shared progression behavior until its integration is explicitly reviewed.
