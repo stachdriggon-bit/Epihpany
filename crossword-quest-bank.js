@@ -3,7 +3,7 @@
   'use strict';
 
   const LEVELS = Object.freeze({
-    easy: Object.freeze({ label: 'Easy', size: 5, count: 24 }),
+    easy: Object.freeze({ label: 'Easy', size: 7, count: 24 }),
     medium: Object.freeze({ label: 'Medium', size: 7, count: 24 }),
     hard: Object.freeze({ label: 'Hard', size: 9, count: 24 }),
     expert: Object.freeze({ label: 'Expert', size: 11, count: 24 })
