@@ -2,7 +2,7 @@
 
 Implementation date: 2026-11-07
 Branch: `main`
-Status: **Phase 2 verified; Phase 3 adapter integration in progress**
+Status: **Phases 2–3 verified; Phase 4 mixed-session orchestration implemented, CI pending**
 Related documents: [Implementation plan](./FLUENTIA-IMPLEMENTATION-PLAN.md), [Phase 1 inventory](./FLUENTIA-CONTENT-INVENTORY.md)
 
 ## 1. Scope delivered
@@ -198,3 +198,17 @@ This bridge intentionally does **not** write to localStorage/Supabase, change re
 - Practice Lab currently supplies A1–B2 samples only; it does not fabricate C1/C2 speaking or dictation items.
 - The new sequencing bank is an independent first content batch; expanding its volume is separate from the adapter contract.
 - No mixed-session UI, progress writes, XP changes, or visual redesign is enabled by this integration batch.
+
+
+## 9. Phase 4 mixed-session implementation
+
+Phase 4 implements the two approved scopes in the shared engine without creating duplicate banks or changing individual activity renderers.
+
+- **Section Mixed:** activity-first round-robin balancing within the requested domain.
+- **Fluentia Mix:** domain-first balancing across all eligible domains, followed by activity balancing inside the selected domain.
+- **Canonical no-repeat identity:** `sourceActivityId + item.id`; adapters that expose the same source question cannot cause a duplicate later in the same session. Word Match and Speed Round now share the same Word-of-the-Day source identity; Practice Lab's Dictation and Speaking/Shadowing continue to share their source identity.
+- **CEFR:** every selection is filtered again against the session's exact level; no fallback may cross levels or invent an item.
+- **Sparse banks:** exhausted domains and activities leave the candidate pool; other domains continue until the requested count or all unique eligible content is exhausted.
+- **Deterministic verification:** tests cover equal domain distribution despite unequal adapter counts, equal activity distribution inside a section, cross-adapter duplicate suppression, strict level matching and sparse-domain fallback.
+
+The existing session counters (`activityUse`, `domainUse`) remain part of the serializable snapshot and can support later result summaries. Phase 4 does not add UI, XP/reward logic, or a new content bank.
