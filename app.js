@@ -773,15 +773,23 @@
   }
   let naturalAudioPlayer = null;
   const naturalAudioMemory = new Map();
+  const naturalAudioInflight = new Map();
+  let speechDbPromise = null;
   function openSpeechDb() {
-    return new Promise(resolve => {
-      if (!('indexedDB' in window)) return resolve(null);
+    if (!('indexedDB' in window)) return Promise.resolve(null);
+    if (speechDbPromise) return speechDbPromise;
+    speechDbPromise = new Promise(resolve => {
       let req;
-      try { req = indexedDB.open('epiphany-speech-cache', 1); } catch { return resolve(null); }
+      try { req = indexedDB.open('epiphany-speech-cache', 1); } catch { speechDbPromise = null; return resolve(null); }
       req.onupgradeneeded = () => { if (!req.result.objectStoreNames.contains('audio')) req.result.createObjectStore('audio'); };
-      req.onsuccess = () => resolve(req.result);
-      req.onerror = () => resolve(null);
+      req.onsuccess = () => {
+        const db = req.result;
+        db.onversionchange = () => { db.close(); speechDbPromise = null; };
+        resolve(db);
+      };
+      req.onerror = () => { speechDbPromise = null; resolve(null); };
     });
+    return speechDbPromise;
   }
   async function cachedNaturalAudio(key) {
     if (naturalAudioMemory.has(key)) return naturalAudioMemory.get(key);
@@ -800,6 +808,31 @@
     const db = await openSpeechDb();
     if (!db) return;
     try { db.transaction('audio', 'readwrite').objectStore('audio').put(blob, key); } catch {}
+  }
+  async function getNaturalAudio(key, part, rate, allowNetwork = true) {
+    const cached = await cachedNaturalAudio(key);
+    if (cached) return cached;
+    if (!allowNetwork || !navigator.onLine) return null;
+    if (naturalAudioInflight.has(key)) return naturalAudioInflight.get(key);
+    const pending = (async () => {
+      let response;
+      try {
+        response = await fetch('/api/tts', {
+          method:'POST',
+          headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({text:part, rate:Math.max(0.75, Math.min(1.05, rate))})
+        });
+      } catch { return null; }
+      if (!response.ok) return null;
+      let blob;
+      try { blob = await response.blob(); } catch { return null; }
+      if (!blob || !blob.size) return null;
+      await saveNaturalAudio(key, blob);
+      return blob;
+    })();
+    naturalAudioInflight.set(key, pending);
+    try { return await pending; }
+    finally { if (naturalAudioInflight.get(key) === pending) naturalAudioInflight.delete(key); }
   }
   function splitNaturalTtsChunks(phrase, limit = 1700) {
     const sentences = String(phrase || '').match(/[^.!?;:]+[.!?;:]*/g) || [String(phrase || '')];
@@ -837,24 +870,9 @@
       if (request !== speechRequest) return true;
       const part = chunks[index];
       const key = 'elevenlabs-george|' + rate.toFixed(2) + '|' + part.toLowerCase();
-      let blob = await cachedNaturalAudio(key);
+      const blob = await getNaturalAudio(key, part, rate, allowNetwork);
       if (request !== speechRequest) return true;
-      if (!blob) {
-        if (!allowNetwork || !navigator.onLine) return false;
-        let response;
-        try {
-          response = await fetch('/api/tts', {
-            method:'POST',
-            headers:{'Content-Type':'application/json'},
-            body:JSON.stringify({text:part, rate:Math.max(0.75, Math.min(1.05, rate))})
-          });
-        } catch { return false; }
-        if (!response.ok) return false;
-        try { blob = await response.blob(); } catch { return false; }
-        if (!blob || !blob.size || request !== speechRequest) return request !== speechRequest;
-        await saveNaturalAudio(key, blob);
-      }
-      if (request !== speechRequest) return true;
+      if (!blob) return false;
       try {
         if (naturalAudioPlayer) { naturalAudioPlayer.pause(); naturalAudioPlayer.src = ''; }
         const url = URL.createObjectURL(blob);
@@ -915,7 +933,16 @@
       if (onError) onError(error);
     });
   }
-  window.EpiphanySpeech = Object.freeze({speak, stop:stopSpeechPlayback});
+  function prefetchNaturalSpeech(phrase, opts) {
+    if (lowDataMode || !navigator.onLine) return;
+    const part = splitNaturalTtsChunks(String(phrase == null ? '' : phrase).replace(/\\s+/g, ' ').trim())[0];
+    if (!part) return;
+    const requestedRate = Number(opts && opts.rate);
+    const rate = Math.max(0.75, Math.min(1.05, Number.isFinite(requestedRate) && requestedRate > 0 ? requestedRate : voicePref.rate || 0.92));
+    const key = 'elevenlabs-george|' + rate.toFixed(2) + '|' + part.toLowerCase();
+    getNaturalAudio(key, part, rate, true).catch(() => {});
+  }
+  window.EpiphanySpeech = Object.freeze({speak, stop:stopSpeechPlayback, prefetch:prefetchNaturalSpeech});
   function openVoiceSheet() {
     let m=$('#voice-modal');
     if(!m){m=document.createElement('div');m.id='voice-modal';m.className='voice-modal';m.setAttribute('role','dialog');m.setAttribute('aria-modal','true');document.body.appendChild(m);}
