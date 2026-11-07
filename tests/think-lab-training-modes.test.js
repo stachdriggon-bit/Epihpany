@@ -239,12 +239,12 @@ test('Chain Reaction uses explicit multi-word starts and reveals every link expl
   assert.equal(challenge.links[0].from, challenge.start);
   harness.click('[data-think-game]', {thinkGame:'chain'});
   harness.click('[data-think-training-mode]', {thinkTrainingMode:'challenge',thinkTrainingGame:'chain'});
-  const title = harness.root.innerHTML.match(/<h2>([^<]+)<\\/h2>/);
+  const title = harness.root.innerHTML.match(/<h2>([^<]+)<\/h2>/);
   const item = harness.chainBank.getRounds('challenge').find(entry => entry.title === (title && title[1]));
   assert.ok(item, 'the rendered challenge title should map to an approved bank entry');
   for (let step = 0; step < 3; step++) {
     const current = item.links[step];
-    const optionMatches = [...harness.root.innerHTML.matchAll(/data-chain-answer="(\\d+)"[\\s\\S]*?<strong>([^<]+)<\\/strong>/g)];
+    const optionMatches = [...harness.root.innerHTML.matchAll(/data-chain-answer="(\d+)"[\s\S]*?<strong>([^<]+)<\/strong>/g)];
     const correct = optionMatches.find(match => match[2] === current.to);
     assert.ok(correct, 'the canonical answer should appear in the rendered choices');
     harness.click('[data-chain-answer]', {chainAnswer:correct[1]});
@@ -260,6 +260,6 @@ test('Chain Reaction does not show an empty Challenge hint and records wrong lin
   harness.click('[data-think-game]', {thinkGame:'chain'});
   harness.click('[data-think-training-mode]', {thinkTrainingMode:'challenge',thinkTrainingGame:'chain'});
   for (let attempt = 0; attempt < 2; attempt++) harness.click('[data-chain-answer]', {chainAnswer:'99'});
-  assert.doesNotMatch(harness.feedback.innerHTML, /<p><\\/p>/);
+  assert.doesNotMatch(harness.feedback.innerHTML, /<p><\/p>/);
   assert.match(source, /recordResult\('vocabulary','chain',false,false\)/);
 });
