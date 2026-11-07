@@ -38,11 +38,13 @@ test('Letter Grid contains four independent levels and 48 fixed puzzles',()=>{
 
 test('Letter Grid validator rejects broken paths, overlapping cells and duplicate targets',()=>{
   const original=bank.puzzles.easy[0];
-  const brokenPath={...original,words:original.words.map((w,i)=>i===0?{...w,path:[...w.path.slice(0,-1),0]}:w)};
+  const brokenPath={...original,words:original.words.map((w,i)=>i===0?{...w,path:[w.path[0],...w.path.slice(1)]}:w)};
   assert.equal(bank.validatePuzzle(brokenPath,'easy').valid,false);
   const duplicate={...original,words:[...original.words.slice(0,-1),{...original.words[0],id:'duplicate'}]};
   assert.equal(bank.validatePuzzle(duplicate,'easy').valid,false);
   const badGrid={...original,grid:['ABC']};
   assert.equal(bank.validatePuzzle(badGrid,'easy').valid,false);
+  assert.equal(bank.validatePuzzle({...original,words:[null]},'easy').valid,false);
+  assert.equal(bank.validatePuzzle({...original,words:[{id:'bad',clue:'Broken',answer:null,path:[]}]},'easy').valid,false);
   assert.equal(bank.validateBank({...bank.puzzles,easy:bank.puzzles.easy.slice(1)}).valid,false);
 });
