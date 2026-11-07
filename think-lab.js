@@ -1044,12 +1044,14 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
   function speakTarget() { const pool=activePool || getRoundPool('maze');const item=pool[index%pool.length];const speech=window.EpiphanySpeech;if(!speech||typeof speech.speak!=='function'){const fb=root.querySelector('#tl-feedback');if(fb){fb.hidden=false;fb.className='tl-feedback is-wrong';fb.textContent='George voice is not ready. Please try again.';}return;}speech.speak(item.target,{rate:.82,onError:()=>{const fb=root.querySelector('#tl-feedback');if(fb){fb.hidden=false;fb.className='tl-feedback is-wrong';fb.textContent='George voice is temporarily unavailable. Please try again.';}}}); }
   let pickerGameId = null;
   let pickerStage = 'landing';
+  let preparedMazeCEFR = null;
 
   function showTrainingModePicker(id) {
     pickerGameId = id;
     pickerStage = 'mode';
     mode = null;
     activePool = null;
+    preparedMazeCEFR = null;
     const game = games.find(item => item.id === id);
     const title = game ? game.name : 'Think Lab';
     const modes = [
@@ -1063,11 +1065,13 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
     pickerGameId = 'maze';
     pickerStage = 'level';
     mode = null;
-    activePool = null;
     const bridge = window.EpiphanyThinkLab;
     const savedLevel = bridge && typeof bridge.getSoundMazeCEFR === 'function' ? bridge.getSoundMazeCEFR() : null;
     const currentLevel = bridge && typeof bridge.getCEFRLevel === 'function' ? bridge.getCEFRLevel() : 'A1';
     selectedMazeCEFR = savedLevel || currentLevel || 'A1';
+    activePool = getRoundPool('maze', selectedTrainingMode);
+    preparedMazeCEFR = selectedMazeCEFR;
+    if (activePool[0]?.target) window.EpiphanySpeech?.prefetch?.(activePool[0].target, {rate:0.82});
     const levels = ['A1','A2','B1','B2','C1','C2'];
     root.innerHTML = '<div class="tl-game-head"><button class="tl-back" type="button" data-think-back>← Choose training mode</button><span class="tl-eyebrow">THE SOUND MAZE</span></div><div class="tl-game-card"><div class="tl-game-kicker">CHOOSE YOUR ENGLISH LEVEL</div><h2>Which level would you like to practise?</h2><p class="tl-game-instruction">Choose the CEFR level independently of Guided, Steady or Challenge. Your selection is saved with your learner preferences.</p><div class="tl-answer-options">'+levels.map(level => '<button type="button" class="tl-option" data-sound-maze-level="'+level+'" aria-pressed="'+(selectedMazeCEFR===level?'true':'false')+'"><strong>'+level+'</strong><span>'+(selectedMazeCEFR===level?'Selected':'Choose this level')+'</span></button>').join('')+'</div></div>';
   }
@@ -1090,7 +1094,9 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
     mode=id; index=0; score=0; chainStepIndex=0; chainPath=[]; clueCount=0; roundMistakes=0; ladderPath=[]; ladderWordNote=null; ladderMistakeRecorded=false; oddHintStep=0;
     const hintLevel = selectedTrainingMode === 'guided' ? 2 : selectedTrainingMode === 'steady' ? 1 : 0;
     activeDifficulty = Object.assign({}, difficultyForMode(id), {level:selectedTrainingMode,hintLevel});
-    activePool=getRoundPool(id,selectedTrainingMode);
+    const preparedMazePool = id === 'maze' && preparedMazeCEFR === selectedMazeCEFR && activePool && activePool.length ? activePool : null;
+    activePool = preparedMazePool || getRoundPool(id,selectedTrainingMode);
+    if (id === 'maze') preparedMazeCEFR = null;
     if (id === 'maze' && !activePool.length) {
       showMazeBankUnavailable();
       return;
@@ -1267,6 +1273,11 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
     if(mazeLevel){
       if(!['A1','A2','B1','B2','C1','C2'].includes(mazeLevel.dataset.soundMazeLevel))return;
       selectedMazeCEFR=mazeLevel.dataset.soundMazeLevel;
+      if (preparedMazeCEFR !== selectedMazeCEFR) {
+        activePool = getRoundPool('maze', selectedTrainingMode);
+        preparedMazeCEFR = selectedMazeCEFR;
+        if (activePool[0]?.target) window.EpiphanySpeech?.prefetch?.(activePool[0].target, {rate:0.82});
+      }
       const bridge=window.EpiphanyThinkLab;
       if(bridge&&typeof bridge.setSoundMazeCEFR==='function')bridge.setSoundMazeCEFR(selectedMazeCEFR);
       const tools=window.EPIPHANY_SOUND_MAZE_TOOLS,bank=window.EPIPHANY_SOUND_MAZE_BANK;
