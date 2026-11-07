@@ -92,6 +92,28 @@ test('Crossword Quest short-word expansion adds 96 distinct 3–6 letter candida
   }
 });
 
+
+test('Crossword Quest allows common two-letter answers in Easy while retaining the three-letter minimum elsewhere', () => {
+  const bank = loadBank();
+  const puzzle = {
+    id: 'fixture-two-letter-easy', size: 3,
+    layout: ['..#', '...', '#..'],
+    solution: ['IN#', 'NOD', '#TO'],
+    entries: [
+      { number: 1, direction: 'across', row: 0, col: 0, answer: 'IN', clue: 'Contained by or within' },
+      { number: 2, direction: 'down', row: 0, col: 0, answer: 'IN', clue: 'The opposite of out' },
+      { number: 3, direction: 'down', row: 0, col: 1, answer: 'NOT', clue: 'Used to make a statement negative' },
+      { number: 4, direction: 'across', row: 1, col: 0, answer: 'NOD', clue: 'A small movement of the head' },
+      { number: 5, direction: 'down', row: 1, col: 2, answer: 'DO', clue: 'To perform an action' },
+      { number: 6, direction: 'across', row: 2, col: 1, answer: 'TO', clue: 'A word showing direction or destination' }
+    ]
+  };
+  assert.equal(bank.validatePuzzle(puzzle, 3, 2).valid, true);
+  const strict = bank.validatePuzzle(puzzle, 3, 3);
+  assert.equal(strict.valid, false);
+  assert.ok(strict.errors.some(error => /at least 3 letters/.test(error)));
+});
+
 test('Crossword Quest validator rejects disconnected grids and repeated clues', () => {
   const bank = loadBank();
   const disconnected = {
