@@ -1,6 +1,6 @@
 # Think Lab Expansion Plan
 
-**Status:** Expansion direction approved; individual game specifications and content are pending approval.  
+**Status:** Expansion direction approved; Word Hunt is the current implementation. Crossword Quest is paused and preserved for possible future resumption.  
 **Branch:** `main`
 
 ## Product direction
@@ -61,6 +61,10 @@ Integrate through the existing lazy-loading path. Preserve Think Lab's shared pr
 - Avoid unnecessary changes to shared navigation, card artwork, World, or The Resonance.
 - Prefer distinct mechanics over increasing the game count for its own sake.
 
-## Current next step: Crossword Quest
+## Current game: Word Hunt
 
-The core direction and first-release content target for Crossword Quest are approved. See [`CROSSWORD-QUEST-SPEC.md`](./CROSSWORD-QUEST-SPEC.md) for the current specification. Begin implementation one isolated layer at a time, using the existing lazy-loading and Think Lab icon systems. Keep the 96-puzzle bank separate and do not expose the game as fully playable until all 24 puzzles per level have been designed, validated, and reviewed. Scoring/reward changes and persistence details remain out of scope until reviewed.
+Word Hunt has a complete first-release specification and a fixed 48-puzzle content bank. See [`WORD-HUNT-SPEC.md`](./WORD-HUNT-SPEC.md). Its independent four-level flow, content validator, responsive grid, icon, and lazy-loading integration are in place. The first release contains 12 puzzles per level and 432 target-word placements. Run the unit and browser suites, then manually review phone and desktop interactions before calling the game release-ready.
+
+## Paused game: Crossword Quest
+
+Crossword Quest is **paused, not deleted**. Its specification, prototype engine, styles, validator, lexicons, tests, and partial bank work remain in the repository. See [`CROSSWORD-QUEST-SPEC.md`](./CROSSWORD-QUEST-SPEC.md). It remains unavailable to players until a complete reviewed puzzle bank exists. Do not remove or rewrite its files while Word Hunt is being completed.
