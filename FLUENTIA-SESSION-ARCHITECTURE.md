@@ -163,3 +163,34 @@ The additive adapter registry is implemented in `fluentia-adapters.js` and loade
 The adapters retain source records and existing renderers. They use explicit CEFR tags only, deterministic content-derived IDs when an eligible legacy record has no ID, and activity-specific evaluators for choice, error identification, typed answers and map coordinates. Registration failure is isolated so the legacy Arcade continues to work. The new contract suite is `tests/fluentia-adapters.test.js`.
 
 Not yet registered: Soundscape's currently untagged Sound & Picture Match bank and lazy Practice Lab sources; Textwise's independent sequencing bank (the Stories corpus must not be reused); dynamic Wordcraft pools; and the cross-domain Your Review selector. These require source-level CEFR/identity and compatibility work before they can safely enter mixed sessions. No UI migration, progress writes, XP changes or Practice Lab statistics migration is part of this batch.
+
+
+## 11. Phase 3 integration — expanded source coverage
+
+The next integration batch adds the following sources without replacing their current interfaces:
+
+- **Wordcraft — Word Match:** the twelve existing picture/meaning pairs are given explicit A1/A2 metadata in the adapter source and exposed as a matching interaction. The dynamic personal vocabulary adapter reads only saved terms that can be matched to an explicitly level-tagged legacy vocabulary item.
+- **Sentence Studio — Your Review:** a personalized adapter ranks existing Common Mistakes items using the learner's saved trap and question-error counters. It does not create synthetic questions.
+- **Textwise — sequencing:** `fluentia-textwise-bank.js` contains 18 independently authored short informational/practical sequence tasks, three per CEFR level. It does not import or reuse `STORIES`.
+- **Soundscape — Sound Maze:** the reviewed 216-item bank is registered when its existing lazy-loaded content script becomes available; 36 items are exposed per CEFR level across Guided, Steady and Challenge.
+- **Soundscape — Dictation:** Practice Lab's eight A1–B2 sentences are registered when Practice Lab is lazy-loaded. Exact normalized transcription is the adapter's correctness rule.
+- **Real World — Speaking & Shadowing:** the same eight Practice Lab sentences are exposed as speech tasks. The score is explicitly a recognized-word coverage estimate, not a pronunciation-quality score.
+- **Real World — Directions:** existing map-coordinate answer semantics remain intact.
+
+### Lazy source registration
+
+`EPIPHANY_FLUENTIA_REGISTER_SOURCES` incrementally registers sources when their existing lazy modules load. This avoids eagerly downloading Practice Lab or Sound Maze content at app startup. The service worker caches the small Textwise bank as a core asset; the existing optional asset policy remains in place for large lazy modules.
+
+### Legacy progress compatibility
+
+`fluentia-progress-bridge.js` provides a read-only snapshot of saved vocabulary, review records, grammar trap counters and adaptive skill signals. It also projects normalized Fluentia result events back to the legacy source activity, question ID, CEFR level, skill and error/trap fields. The engine result event now carries `sourceActivityId`.
+
+This bridge intentionally does **not** write to localStorage/Supabase, change review schedules, or award XP. Legacy renderers remain responsible for their current progress and rewards until the new Fluentia UI is implemented and its result-writing behavior is tested. This prevents double-counting while both systems coexist.
+
+### Remaining content boundaries
+
+- User-entered/saved words without a verified CEFR match remain outside mixed sessions; the adapter will not guess a level.
+- Speed Round's timer/reward loop remains a legacy renderer. The new dynamic Wordcraft review source supplies tagged personalized retrieval candidates, but does not claim to reproduce the 60-second timer.
+- Practice Lab currently supplies A1–B2 samples only; it does not fabricate C1/C2 speaking or dictation items.
+- The new sequencing bank is an independent first content batch; expanding its volume is separate from the adapter contract.
+- No mixed-session UI, progress writes, XP changes, or visual redesign is enabled by this integration batch.
