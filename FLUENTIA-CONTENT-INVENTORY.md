@@ -201,3 +201,12 @@ Phase 2 is now verified complete. Phase 3 has begun with ten adapters over the c
 The common session layer must not flatten these into one generic multiple-choice renderer. It should standardize identity, CEFR eligibility, answer/result events, feedback, progress attribution and session lifecycle while leaving each interaction type's renderer/evaluator intact.
 
 The current next action is to complete Phase 3 source integration and progress compatibility. This inventory remains a historical Phase 1 audit; it does not imply that any untagged content has become eligible.
+
+
+## Phase 3–4 implementation status (2026-11-07)
+
+- Phase 3 is verified complete by green `EPIPHANY checks` and `Content quality` workflows on `aa5008876a1d6876253971e768371742cd0e3fb7`.
+- Phase 4 mixed-session orchestration is implemented in `fluentia-engine.js`: Section Mixed balances activities within one domain; Fluentia Mix balances domains first and activities second.
+- No-repeat identity is canonical source ID plus item ID, covering items shared across adapters (including Word-of-the-Day and Practice Lab).
+- Every selected item must match the session's exact CEFR level. Sparse/exhausted domains are skipped; the session never duplicates or fabricates content.
+- Phase 4 tests cover domain and activity distribution, cross-adapter duplicate suppression, strict CEFR filtering and sparse-domain fallback. CI for the Phase 4 commit is pending.
