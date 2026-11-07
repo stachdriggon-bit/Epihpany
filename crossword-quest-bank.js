@@ -107,7 +107,7 @@
       }
     }
 
-    const normalizedClues = entries.map(entry => String(entry.clue || '').trim().toLocaleLowerCase());
+    const normalizedClues = entries.map(entry => String(entry && entry.clue || '').trim().toLocaleLowerCase());
     if (new Set(normalizedClues).size !== normalizedClues.length) errors.push('Clues must be distinct within a puzzle.');
 
     const expectedKeys = new Set(expected.map(entry => entry.number + ':' + entry.direction));
