@@ -40,12 +40,18 @@ test('Word Hunt direction progression is enforced by the content validator', () 
   const easy = bank.puzzles.easy[1];
   const easyResult = bank.validatePuzzle({...easy,grid:easy.grid.map(row=>row.split('').reverse().join(''))},'easy');
   assert.equal(easyResult.valid,false,'reversing the grid must invalidate at least the forward-only Easy placements');
-  const medium = bank.puzzles.medium[0];
-  assert.equal(bank.validatePuzzle(medium,'medium').valid,true);
-  const hard = bank.puzzles.hard[0];
-  assert.equal(bank.validatePuzzle(hard,'hard').valid,true);
-  const expert = bank.puzzles.expert[0];
-  assert.equal(bank.validatePuzzle(expert,'expert').valid,true);
+  for (const medium of bank.puzzles.medium) {
+    assert.equal(bank.validatePuzzle(medium,'medium').valid,true,medium.id);
+    const directions=medium.words.map(word=>bank.occurrences(medium.grid,word)[0]).map(({dr,dc})=>dr+','+dc);
+    assert.ok(directions.filter(d=>d==='0,1').length>=2,medium.id+' across variety');
+    assert.ok(directions.filter(d=>d==='1,0').length>=2,medium.id+' down variety');
+    assert.ok(directions.filter(d=>d==='1,1'||d==='1,-1').length>=4,medium.id+' diagonal variety');
+  }
+  for (const level of ['hard','expert']) for (const puzzle of bank.puzzles[level]) {
+    assert.equal(bank.validatePuzzle(puzzle,level).valid,true,puzzle.id);
+    const directions=new Set(puzzle.words.map(word=>bank.occurrences(puzzle.grid,word)[0]).map(({dr,dc})=>dr+','+dc));
+    assert.equal(directions.size,8,puzzle.id+' must use every direction');
+  }
 });
 
 test('Word Hunt bank validation reports malformed records without throwing', () => {
