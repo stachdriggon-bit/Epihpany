@@ -22,11 +22,11 @@ Crossword Quest is a classic crossword puzzle presented through a modern, respon
 
 ## Working technical defaults
 
-These are implementation defaults, subject to review during the first puzzle-bank review:
+These are implementation defaults, subject to review during the first puzzle-bank review. The Easy grid size was explicitly approved as 7×7:
 
 | Level | Working grid size | Puzzle count |
 |---|---:|---:|
-| Easy | 5×5 | 24 |
+| Easy | 7×7 | 24 |
 | Medium | 7×7 | 24 |
 | Hard | 9×9 | 24 |
 | Expert | 11×11 | 24 |
