@@ -58,6 +58,7 @@ function createHarness(options = {}) {
   };
   let savedMazeCEFR = options.savedMazeCEFR || null;
   let crosswordOpened = 0;
+  let wordHuntOpened = 0;
   const window = {
     EpiphanyAuth: {isDeveloper: () => true},
     EPIPHANY_ODD_ONE_OUT_BANK: bank,
@@ -67,6 +68,7 @@ function createHarness(options = {}) {
     EPIPHANY_WORD_FORGE_BANK: wordForgeContext.window.EPIPHANY_WORD_FORGE_BANK,
     EPIPHANY_CHAIN_REACTION_BANK: chainReactionContext.window.EPIPHANY_CHAIN_REACTION_BANK,
     EPIPHANY_CROSSWORD_QUEST: { open() { crosswordOpened++; root.innerHTML = 'crossword-level-picker'; } },
+    EPIPHANY_WORD_HUNT: { open() { wordHuntOpened++; root.innerHTML = 'word-hunt-level-picker'; } },
     ...(options.soundMazeBank ? {EPIPHANY_SOUND_MAZE_BANK:options.soundMazeBank} : {}),
     speechSynthesis: {cancel(){},speak(){}},
     EpiphanyThinkLab: {
@@ -86,7 +88,7 @@ function createHarness(options = {}) {
     assert.equal(typeof listeners.click, 'function', 'Think Lab click handler should be registered');
     listeners.click({target:{closest: candidate => candidate === selector ? element : null}});
   }
-  return {root,click,getSavedMazeCEFR:()=>savedMazeCEFR,chainBank:window.EPIPHANY_CHAIN_REACTION_BANK,feedback,recordedResults,getCrosswordOpened:()=>crosswordOpened};
+  return {root,click,getSavedMazeCEFR:()=>savedMazeCEFR,chainBank:window.EPIPHANY_CHAIN_REACTION_BANK,feedback,recordedResults,getCrosswordOpened:()=>crosswordOpened,getWordHuntOpened:()=>wordHuntOpened};
 }
 
 test('existing mode-based Think Lab games open the shared three-mode picker before play', () => {
@@ -107,6 +109,14 @@ test('Crossword Quest opens its own level selection instead of the shared traini
   harness.click('[data-think-game]', {thinkGame:'crossword'});
   assert.equal(harness.getCrosswordOpened(), 1);
   assert.equal(harness.root.innerHTML, 'crossword-level-picker');
+  assert.doesNotMatch(harness.root.innerHTML, /How would you like to play/);
+});
+
+test('Word Hunt opens its own level picker instead of the shared training-mode picker', () => {
+  const harness = createHarness();
+  harness.click('[data-think-game]', {thinkGame:'wordhunt'});
+  assert.equal(harness.getWordHuntOpened(), 1);
+  assert.equal(harness.root.innerHTML, 'word-hunt-level-picker');
   assert.doesNotMatch(harness.root.innerHTML, /How would you like to play/);
 });
 
