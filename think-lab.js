@@ -717,7 +717,8 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
     {id:'scramble',num:'06',icon:'↔',name:'Sentence Scramble',tag:'SENTENCE BUILDING',desc:'Study mixed-up words and build a natural English sentence.',time:'5–8 min'},
     {id:'forge',num:'07',icon:'✳',name:'Word Forge',tag:'SPELLING & VOCABULARY',desc:'Use a letter set and a clue to identify the word.',time:'2–3 min'},
     {id:'chain',num:'08',icon:'⤳',name:'Chain Reaction',tag:'WORD ASSOCIATION',desc:'Continue a chain by choosing the strongest word association.',time:'2–3 min'},
-    {id:'crossword',num:'09',icon:'▦',name:'Crossword Quest',tag:'CLASSIC WORD PUZZLES',desc:'Solve carefully designed across-and-down crosswords at your own pace.',time:'At your own pace'}
+    {id:'crossword',num:'09',icon:'▦',name:'Crossword Quest',tag:'CLASSIC WORD PUZZLES',desc:'Solve carefully designed across-and-down crosswords at your own pace.',time:'At your own pace'},
+    {id:'wordhunt',num:'10',icon:'⌕',name:'Word Hunt',tag:'HIDDEN WORD SEARCH',desc:'Find themed English words hidden across, down and diagonally in a letter grid.',time:'At your own pace'}
   ];
   function insightsMarkup() {
     const data = window.EpiphanyThinkLab && typeof window.EpiphanyThinkLab.getInsights === 'function'
@@ -1151,6 +1152,11 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
     if(id==='maze') speakTarget();
   }
   function start(id) {
+    if (id === 'wordhunt') {
+      if (window.EPIPHANY_WORD_HUNT && typeof window.EPIPHANY_WORD_HUNT.open === 'function') window.EPIPHANY_WORD_HUNT.open();
+      else root.innerHTML = '<div class="tl-game-card"><h2>Word Hunt is loading</h2><p class="tl-game-instruction">Please return to Think Lab and open the game again.</p><button type="button" class="tl-back" data-think-home>Think Lab home</button></div>';
+      return;
+    }
     if (id === 'crossword') {
       if (window.EPIPHANY_CROSSWORD_QUEST && typeof window.EPIPHANY_CROSSWORD_QUEST.open === 'function') window.EPIPHANY_CROSSWORD_QUEST.open();
       else root.innerHTML = '<div class="tl-game-card"><h2>Crossword Quest is loading</h2><p class="tl-game-instruction">Please return to Think Lab and open the game again.</p><button type="button" class="tl-back" data-think-home>Think Lab home</button></div>';
@@ -1414,5 +1420,10 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
     const fb=root.querySelector('#tl-feedback');fb.hidden=false;fb.className='tl-feedback '+(correct?'is-correct':'is-wrong');fb.innerHTML='<strong>'+(correct?(mode==='maze'?'✓ Path cleared!':'✓ Well reasoned.'):'↗ Look at the clues again.')+'</strong><p>'+esc(item.explain)+'</p>'+(mode==='odd'&&item.relationshipLabel?'<p><strong>Relationship:</strong> '+esc(item.relationshipLabel)+'</p>':'')+(!correct&&mode==='odd'&&activeDifficulty&&activeDifficulty.level==='guided'&&!oddHintStep?'<p>'+esc(item.hint)+'</p>':!correct&&adaptiveHint(mode)?'<p>'+esc(adaptiveHint(mode))+'</p>':'')+(mode==='maze'?'<p class="tl-heard-word">Target word: <b>'+esc(item.target)+'</b></p>':'');
     const next=root.querySelector('[data-think-next]');if(next)next.hidden=false;
   });
+  window.EPIPHANY_THINK_LAB_HOME = function () {
+    window.EpiphanySpeech?.stop?.();
+    mode = null; activePool = null; activeDifficulty = null; pickerStage = 'landing'; pickerGameId = null;
+    landing();
+  };
   landing();
 })();
