@@ -131,7 +131,7 @@
 
     if (Array.isArray(sources.audioItems)) {
       adapters.push(makeAdapter({
-        id: 'soundscape-sound-picture-match', domain: 'soundscape', interactionType: 'listening', skills: ['spoken-word-recognition'],
+        id: 'soundscape-sound-picture-match', domain: 'soundscape', legacyId: 'audioImage', interactionType: 'listening', skills: ['spoken-word-recognition'],
         getSource: () => sources.audioItems,
         evaluate: (item, answer) => {
           const selected = typeof answer === 'string' ? answer : answer && (answer.word || answer.selected);
@@ -144,7 +144,7 @@
 
     if (Array.isArray(sources.wordOfDayItems)) {
       adapters.push(makeAdapter({
-        id: 'wordcraft-word-match', domain: 'wordcraft', interactionType: 'matching', skills: ['word-meaning-retrieval'],
+        id: 'wordcraft-word-match', domain: 'wordcraft', legacyId: 'match', interactionType: 'matching', skills: ['word-meaning-retrieval'],
         getSource: () => [],
         getItems: ({level}) => {
           const reviewState = typeof sources.reviewState === 'function' ? sources.reviewState() : sources.reviewState;
@@ -164,7 +164,7 @@
 
     if (sources.soundMazeBank && sources.soundMazeBank.levels) {
       adapters.push(makeAdapter({
-        id: 'soundscape-sound-maze', domain: 'soundscape', interactionType: 'listening', skills: ['phonological-recognition'],
+        id: 'soundscape-sound-maze', domain: 'soundscape', legacyId: 'sound-maze', interactionType: 'listening', skills: ['phonological-recognition'],
         getSource: () => [],
         getItems: ({level}) => {
           const group = sources.soundMazeBank.levels[level];
@@ -184,7 +184,7 @@
 
     if (Array.isArray(sources.practiceSamples)) {
       adapters.push(makeAdapter({
-        id: 'soundscape-dictation', domain: 'soundscape', interactionType: 'typed', skills: ['listening-transcription'],
+        id: 'soundscape-dictation', domain: 'soundscape', legacyId: 'practice-lab', interactionType: 'typed', skills: ['listening-transcription'],
         getSource: () => sources.practiceSamples,
         evaluate: (item, answer) => {
           const correct = normalize(item.text) === normalize(answer);
@@ -193,7 +193,7 @@
         correctAnswer: item => item.text
       }));
       adapters.push(makeAdapter({
-        id: 'real-world-speaking-shadowing', domain: 'real-world', interactionType: 'speech', skills: ['spoken-communication'],
+        id: 'real-world-speaking-shadowing', domain: 'real-world', legacyId: 'practice-lab', interactionType: 'speech', skills: ['spoken-communication'],
         getSource: () => sources.practiceSamples,
         evaluate: (item, answer) => {
           const expected = normalize(item.text).split(' ').filter(Boolean);
@@ -212,7 +212,7 @@
 
     if (Array.isArray(sources.sentenceItems)) {
       adapters.push(makeAdapter({
-        id: 'sentence-studio-sentence-builder', domain: 'sentence-studio', interactionType: 'ordering', skills: ['sentence-construction'],
+        id: 'sentence-studio-sentence-builder', domain: 'sentence-studio', legacyId: 'sentenceOrder', interactionType: 'ordering', skills: ['sentence-construction'],
         getSource: () => sources.sentenceItems,
         evaluate: (item, answer) => {
           const actual = Array.isArray(answer) ? answer.join(' ') : String(answer || '');
