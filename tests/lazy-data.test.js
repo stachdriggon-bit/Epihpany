@@ -357,20 +357,14 @@ test('optional lazy loads respect the adaptive concurrency limit', async () => {
   assert.equal(requested[7].split('?')[0], 'chain-reaction-bank.js');
   scripts[7].onload();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[8].split('?')[0], 'crossword-quest-bank.js');
+  assert.equal(requested[8].split('?')[0], 'word-hunt-bank.js');
   scripts[8].onload();
   await new Promise(resolve => setImmediate(resolve));
   assert.equal(requested[9].split('?')[0], 'think-lab.js');
   scripts[9].onload();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[10].split('?')[0], 'crossword-quest.js');
+  assert.equal(requested[10].split('?')[0], 'word-hunt.js');
   scripts[10].onload();
-  await new Promise(resolve => setImmediate(resolve));
-  assert.match(requested[11], /^word-hunt-bank\.js\?/);
-  scripts[11].onload();
-  await new Promise(resolve => setImmediate(resolve));
-  assert.match(requested[12], /^word-hunt\.js\?/);
-  scripts[12].onload();
 });
 
 test('explicit navigation bypasses and promotes queued optional loads', async () => {
