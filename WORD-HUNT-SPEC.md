@@ -31,7 +31,7 @@ No timer is imposed. Incorrect selections do not remove points, consume attempts
 
 The first release contains **48 fixed puzzles and 432 target-word placements** across 12 themes: At Home, Food Market, Wildlife, Outdoors, Travel, School, Technology, Sports, Arts, Weather, Workplace, and Everyday Actions. Themes recur across levels with denser grids and broader direction rules.
 
-Puzzles are authored and stored as fixed grids. The game does not generate or shuffle puzzle content at runtime. Each listed target must appear exactly once in its grid and must follow that level's direction policy.
+Puzzles are prepared and stored as fixed grids. The game does not generate or shuffle puzzle content at runtime. Each listed target must appear exactly once in its grid and must follow that level's direction policy. To keep the higher tiers from collapsing into mostly horizontal or vertical searches, every Medium puzzle contains at least two across, two down, and four diagonal words; every Hard and Expert puzzle uses all eight directions.
 
 ## Validation and availability
 
@@ -40,6 +40,7 @@ Puzzles are authored and stored as fixed grids. The game does not generate or sh
 - Each puzzle must contain the configured number of distinct target words.
 - Every target word must occur exactly once in its grid.
 - Every placement must obey the direction rules for its level.
+- Medium grids must meet the minimum across/down/diagonal mix; Hard and Expert grids must each use all eight directions.
 - Stable puzzle IDs and non-empty theme titles are required.
 - A level is unavailable if any puzzle in that level fails validation. No fallback or sample puzzles are shown.
 
