@@ -39,7 +39,7 @@
   // have been reviewed. Keep this bank separate from the game engine.
   const puzzles = { easy: [], medium: [], hard: [], expert: [] };
 
-  function validatePuzzle(puzzle, expectedSize) {
+  function validatePuzzle(puzzle, expectedSize, minAnswerLength = 3) {
     const errors = [];
     if (!puzzle || typeof puzzle !== 'object') return { valid: false, errors: ['Puzzle record is missing.'] };
     const size = Number(puzzle.size);
@@ -100,7 +100,7 @@
         continue;
       }
       const cells = [...String(entry.answer || '').toUpperCase()];
-      if (cells.length < 3) errors.push('Entry ' + key + ' must be at least three letters long.');
+      if (cells.length < minAnswerLength) errors.push('Entry ' + key + ' must be at least ' + minAnswerLength + ' letters long.');
       if (!cells.length || cells.some(letter => !/^[A-Z]$/.test(letter))) errors.push('Entry ' + key + ' must contain English letters only.');
       let runLength = 0;
       while (entry.row + (entry.direction === 'down' ? runLength : 0) < size &&
@@ -169,7 +169,7 @@
         if (!puzzle || !String(puzzle.id || '').trim()) errors.push(config.label + ' puzzle ' + (index + 1) + ' has no stable id.');
         else if (ids.has(puzzle.id)) errors.push(config.label + ' contains duplicate puzzle id ' + puzzle.id + '.');
         else ids.add(puzzle.id);
-        const result = validatePuzzle(puzzle, config.size);
+        const result = validatePuzzle(puzzle, config.size, level === 'easy' ? 2 : 3);
         result.errors.forEach(error => errors.push(config.label + ' puzzle ' + (index + 1) + ': ' + error));
       });
     }
