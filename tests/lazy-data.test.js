@@ -68,7 +68,7 @@ test('feature data loader does not request large datasets until requested', asyn
   assert.deepEqual(merged, [true]);
   await context.window.EPIPHANY_LAZY_LOAD('chronicle');
   assert.deepEqual(requested.slice(20).map(src => src.split('?')[0]), ['data-world-registry.js', 'data-world-events.js']);
-  assert.ok(requested.slice(18).every(src => /\?v=.+/.test(src)));
+  assert.ok(requested.slice(20).every(src => /\?v=.+/.test(src)));
 });
 
 test('initial HTML defers stories and World data and keeps loader in offline shell', () => {
@@ -549,16 +549,20 @@ test('background optional loads pause while constrained, resume once, and never 
   assert.equal(requested[10].split('?')[0], 'crossword-quest.js');
   scripts[10].onload();
   await new Promise(resolve => setImmediate(resolve));
+  scripts[11].onload();
+  await new Promise(resolve => setImmediate(resolve));
+  scripts[12].onload();
+  await new Promise(resolve => setImmediate(resolve));
 
   policy = { ...policy, allowSpeculativePreload: false, deferNonEssentialWork: true };
   const explicit = context.window.EPIPHANY_LAZY_LOAD('world');
   await new Promise(resolve => setImmediate(resolve));
   assert.equal(requested[13].split('?')[0], 'data-world.js',
     'explicit navigation must bypass background deferral');
-  scripts[11].onload();
+  scripts[13].onload();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[12].split('?')[0], 'data-world-sprites.js');
-  scripts[12].onload();
+  assert.equal(requested[14].split('?')[0], 'data-world-sprites.js');
+  scripts[14].onload();
   await explicit;
 });
 
