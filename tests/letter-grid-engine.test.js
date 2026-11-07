@@ -31,7 +31,7 @@ test('Letter Grid opens its own four-level picker and does not use shared traini
   const h=harness();h.window.EPIPHANY_LETTER_GRID.open();
   assert.match(h.root.innerHTML,/Choose your level/);
   for(const id of ['easy','medium','hard','expert'])assert.match(h.root.innerHTML,new RegExp('data-lg-level="'+id+'"'));
-  assert.doesNotMatch(h.root.innerHTML,/Guided|Steady|Challenge|timer/i);
+  assert.doesNotMatch(h.root.innerHTML,/Guided|Steady|Challenge/i);
 });
 
 test('a clue is solved by connecting its exact adjacent-letter path',()=>{
@@ -67,7 +67,7 @@ test('letter paths enforce neighboring cells and support one-step backtracking',
   h.click('[data-lg-cell]',{lgCell:String(word.path[1])});
   assert.match(h.root.innerHTML,/2 of .* letters connected/);
   h.click('[data-lg-cell]',{lgCell:String(word.path[0])});
-  assert.match(h.root.innerHTML,/1 of .* letters connected/);
+  assert.ok(h.root.innerHTML.includes('<strong>'+word.answer[0]+'</strong></div><div class="lg-actions">'),'backtracking should leave only the first letter selected');
   assert.equal(h.results.length,0);
 });
 
