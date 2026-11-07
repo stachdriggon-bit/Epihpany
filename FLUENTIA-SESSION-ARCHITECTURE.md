@@ -2,7 +2,7 @@
 
 Implementation date: 2026-11-07
 Branch: `main`
-Status: **Phases 2–5 implemented; Phase 5 CI verified on `6cdeb263`; Phase 6 QA/regression in progress**
+Status: **Phases 2–5 verified; Phase 6 automated QA passed on `1fd56a5`; manual device verification remains**
 Related documents: [Implementation plan](./FLUENTIA-IMPLEMENTATION-PLAN.md), [Phase 1 inventory](./FLUENTIA-CONTENT-INVENTORY.md)
 
 ## 1. Scope delivered
@@ -229,6 +229,15 @@ The learner-facing Fluentia experience is implemented in the additive `fluentia-
 
 CI and browser-level interaction checks remain required before calling Phase 5 verified. Some optional activities are registered only after their existing lazy source modules load; the domain chooser shows the eligible activities currently registered for the chosen CEFR level.
 
-## 12. Phase 6 verification focus
+## 12. Phase 6 verification outcome
 
-The green Phase 5 baseline (`6cdeb263`) confirms the full existing EPIPHANY check workflow and content-quality workflow. Phase 6 adds a real Chromium path through the Fluentia learner UI: landing/navigation, six domains, a single activity answer and progress-history write, Arabic explanation replacement when the selected item supplies Arabic feedback, Section Mixed domain confinement, Fluentia Mix startup and narrow-phone layout. CI also performs explicit syntax checks on all four Fluentia runtime scripts. Existing engine, adapter, content-integration and progress-bridge tests continue to cover strict CEFR selection, mixed-session balancing, canonical duplicate suppression, answer attribution, review-only exclusion and legacy progress compatibility. Audio/speech capability and offline behavior remain subject to separate environment-aware checks; a browser smoke pass alone does not prove microphone permission or offline service-worker behavior.
+Automated verification passed on `main` at commit `1fd56a5ec0f01e5ac4e745fbbcf5c6c45978869c`:
+
+- `EPIPHANY checks`: success.
+- `Content quality`: success.
+- Unit/static suite: 474 passed, 0 failed.
+- Syntax gate: all Fluentia runtime scripts passed `node --check`.
+- Chromium browser smoke: 1 passed, 0 failed. It exercised desktop Fluentia navigation, six domain cards, single activity answer flow, progress history persistence, Arabic explanation replacement when supplied, Section Mixed scope, Fluentia Mix startup, narrow-phone layout, and opening Fluentia through the mobile drawer.
+- Existing navigation regression, card portal/dossier interaction, and offline service-worker checks also passed in the same browser run.
+
+The automated run does not certify real-device microphone permissions, speech recognition, TTS latency/quality, screen-reader behavior, low-end device performance, or extended-session memory behavior. These remain explicit manual/device sign-off items rather than implied CI results.
