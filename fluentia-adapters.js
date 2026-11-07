@@ -151,7 +151,7 @@
           const reviewState = typeof sources.reviewState === 'function' ? sources.reviewState() : sources.reviewState;
           const saved = new Set((reviewState?.words || []).map(row => normalize(Array.isArray(row) ? row[0] : row && row.word)));
           const rows = sources.wordOfDayItems.filter(item => item && item.level === level && item.word && item.meaning);
-          return rows.map(item => ({...item, savedForReview:saved.has(normalize(item.word))}));
+          return rows.map(item => ({...item, sourceActivityId:'word-of-the-day', savedForReview:saved.has(normalize(item.word))}));
         },
         evaluate: (item, answer) => {
           const word = answer && typeof answer === 'object' ? answer.word : '';
@@ -262,7 +262,7 @@
           (reviewState?.words || []).forEach(row=>saved.add(normalize(Array.isArray(row)?row[0]:row&&row.word)));
           const candidates = sources.wordOfDayItems.filter(item=>item&&item.level===level&&item.word&&item.meaning);
           const prioritized = candidates.filter(item=>saved.has(normalize(item.word)));
-          return (prioritized.length ? prioritized : candidates).map(item=>({...item,sourceActivityId:'speed'}));
+          return (prioritized.length ? prioritized : candidates).map(item=>({...item,sourceActivityId:'word-of-the-day'}));
         },
         evaluate:(item, answer) => {
           const correct = normalize(answer) === normalize(item.word);
