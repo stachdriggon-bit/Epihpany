@@ -935,7 +935,7 @@
   }
   function prefetchNaturalSpeech(phrase, opts) {
     if (lowDataMode || !navigator.onLine) return;
-    const part = splitNaturalTtsChunks(String(phrase == null ? '' : phrase).replace(/\\s+/g, ' ').trim())[0];
+    const part = splitNaturalTtsChunks(String(phrase == null ? '' : phrase).replace(/\s+/g, ' ').trim())[0];
     if (!part) return;
     const requestedRate = Number(opts && opts.rate);
     const rate = Math.max(0.75, Math.min(1.05, Number.isFinite(requestedRate) && requestedRate > 0 ? requestedRate : voicePref.rate || 0.92));
