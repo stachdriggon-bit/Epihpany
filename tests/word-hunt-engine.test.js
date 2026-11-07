@@ -44,6 +44,15 @@ test('Word Hunt opens an independent four-level picker, not the shared training-
   assert.doesNotMatch(h.root.innerHTML,/Guided|Steady|Challenge/);
 });
 
+test('optional Word Hunt hint highlights a starting cell without revealing a solution',()=>{
+  const h=createHarness();
+  h.window.EPIPHANY_WORD_HUNT.open();
+  h.click('[data-wh-level]',{whLevel:'easy'});
+  h.click('[data-wh-hint]');
+  assert.match(h.root.innerHTML,/wh-cell is-hint/);
+  assert.match(h.root.innerHTML,/highlighted letter/);
+});
+
 test('a correct two-cell selection finds a target word and updates the board',()=>{
   const h=createHarness();
   h.window.EPIPHANY_WORD_HUNT.open();
