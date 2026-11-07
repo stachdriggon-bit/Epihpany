@@ -1,7 +1,7 @@
 # Word Hunt — Game Specification
 
 **Status:** Implemented foundation and prepared first-release content bank on `main`; automated grid and direction validation is included. CI and manual device review remain pending.  
-**Think Lab position:** Game 10.  
+**Think Lab position:** Game 9.  
 **Gameplay model:** Independent four-level puzzle selection; it does not use Guided / Steady / Challenge.
 
 ## Product role
