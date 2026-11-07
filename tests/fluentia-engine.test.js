@@ -171,3 +171,97 @@ test('rejects malformed session snapshots and prevents answers without an active
   const session = engine.createSession({ mode: 'single', activityId: 'word-pick', level: 'A1' });
   assert.throws(() => engine.submitAnswer(session, 'x'), error => error.code === Fluentia.errorCodes.SESSION_NOT_ACTIVE);
 });
+
+
+function balancedFixture() {
+  let randomValue = 0;
+  const engine = Fluentia.createEngine({ random: () => randomValue });
+  const domains = Fluentia.domains;
+  domains.forEach((domain, domainIndex) => {
+    const activityCount = domain === 'wordcraft' ? 3 : 1;
+    for (let activityIndex = 0; activityIndex < activityCount; activityIndex++) {
+      const id = domain + '-activity-' + activityIndex;
+      engine.registerActivity({
+        id, domain, interactionType: activityIndex % 2 ? 'typed' : 'choice',
+        getItems: ({level}) => Array.from({length: 12}, (_, index) => ({
+          id: id + '-item-' + index, level, sourceActivityId: id
+        })),
+        evaluate: () => ({correct:true})
+      });
+    }
+  });
+  return engine;
+}
+
+test('Fluentia Mix balances all eligible domains before balancing activities within a domain', () => {
+  const engine = balancedFixture();
+  const session = engine.createSession({mode:'fluentia-mix',level:'B1',itemCount:12});
+  const domains = {};
+  const activities = {};
+  while (session.status !== 'completed') {
+    const current = engine.selectNext(session);
+    if (!current) break;
+    domains[current.domain] = (domains[current.domain] || 0) + 1;
+    activities[current.activityId] = (activities[current.activityId] || 0) + 1;
+    engine.submitAnswer(session, current.item.id);
+  }
+  assert.deepEqual(Object.values(domains).sort((a,b)=>a-b), [2,2,2,2,2,2]);
+  const wordcraftCounts = Object.entries(activities).filter(([id])=>id.startsWith('wordcraft-')).map(([,count])=>count);
+  assert.ok(Math.max(...wordcraftCounts) - Math.min(...wordcraftCounts) <= 1);
+});
+
+test('Section Mixed balances activities inside its domain and never leaks another domain', () => {
+  const engine = balancedFixture();
+  const session = engine.createSession({mode:'section-mixed',domain:'wordcraft',level:'A2',itemCount:9});
+  const counts = {};
+  while (session.status !== 'completed') {
+    const current = engine.selectNext(session);
+    if (!current) break;
+    assert.equal(current.domain,'wordcraft');
+    assert.equal(current.item.level,'A2');
+    counts[current.activityId] = (counts[current.activityId] || 0) + 1;
+    engine.submitAnswer(session,current.item.id);
+  }
+  assert.deepEqual(Object.values(counts).sort((a,b)=>a-b),[3,3,3]);
+});
+
+test('mixed sessions deduplicate the same source item exposed by multiple adapters', () => {
+  const engine = Fluentia.createEngine({random:()=>0});
+  const shared = {id:'shared-question',level:'A1',sourceActivityId:'one-canonical-bank'};
+  ['shared-a','shared-b'].forEach(id=>engine.registerActivity({
+    id,domain:'textwise',interactionType:'choice',
+    getItems:()=>[shared],evaluate:()=>({correct:true})
+  }));
+  const session = engine.createSession({mode:'section-mixed',domain:'textwise',level:'A1',itemCount:5});
+  const first = engine.selectNext(session);
+  engine.submitAnswer(session,first.item.id);
+  assert.equal(engine.selectNext(session),null);
+  assert.equal(session.status,'completed');
+  assert.equal(session.completedCount,1);
+});
+
+test('Fluentia Mix falls back to remaining domains when a sparse domain is exhausted', () => {
+  const engine = Fluentia.createEngine({random:()=>0});
+  engine.registerActivity({
+    id:'sparse-word',domain:'wordcraft',interactionType:'choice',
+    getItems:()=>[{id:'only-word',level:'C1'}],evaluate:()=>({correct:true})
+  });
+  engine.registerActivity({
+    id:'rich-text',domain:'textwise',interactionType:'choice',
+    getItems:()=>Array.from({length:3},(_,i)=>({id:'text-'+i,level:'C1'})),
+    evaluate:()=>({correct:true})
+  });
+  const session=engine.createSession({mode:'fluentia-mix',level:'C1',itemCount:4});
+  let count=0;
+  while(session.status!=='completed'){
+    const current=engine.selectNext(session);
+    if(!current) break;
+    assert.equal(current.item.level,'C1');
+    engine.submitAnswer(session,current.item.id);
+    count++;
+  }
+  assert.equal(count,4);
+  assert.equal(session.status,'completed');
+  assert.equal(session.domainUse.wordcraft,1);
+  assert.equal(session.domainUse.textwise,3);
+});
