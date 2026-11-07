@@ -106,6 +106,7 @@ function expandedFixture() {
   sources.games.vocabulary.questions[0].word = 'apple';
   sources.audioItems = [{id:'SP-A1-01',level:'A1',word:'apple',meaning:'a round fruit'}];
   sources.wordOfDayItems = [{id:'WM-A1-01',level:'A1',word:'apple',meaning:'a round fruit'}];
+  sources.soundscapeDictationBank = [{id:'SD-A1-01',level:'A1',text:'I like fresh bread.'}];
   sources.sentenceItems = [{id:'SB-A1-01',level:'A1',text:'I drink water every morning.'}];
   sources.practiceSamples = [{id:'PL-A1-01',level:'A1',text:'I would like water.'}];
   sources.textwiseSequenceBank = [{id:'TW-A1-01',level:'A1',title:'A notice',steps:['Read the notice.','Check the date.','Follow the instructions.']}];
