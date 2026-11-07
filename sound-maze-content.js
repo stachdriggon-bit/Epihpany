@@ -2864,5 +2864,10 @@
     }
   }
 };
-  if (root) root.EPIPHANY_SOUND_MAZE_BANK = bank;
+  if (root) {
+    root.EPIPHANY_SOUND_MAZE_BANK = bank;
+    if (typeof root.EPIPHANY_FLUENTIA_REGISTER_SOURCES === 'function') {
+      root.EPIPHANY_FLUENTIA_REGISTER_SOURCES({soundMazeBank: bank});
+    }
+  }
 })(typeof window !== 'undefined' ? window : null);
