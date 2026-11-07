@@ -1157,8 +1157,7 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
       return;
     }
     if (id === 'crossword') {
-      if (window.EPIPHANY_CROSSWORD_QUEST && typeof window.EPIPHANY_CROSSWORD_QUEST.open === 'function') window.EPIPHANY_CROSSWORD_QUEST.open();
-      else root.innerHTML = '<div class="tl-game-card"><h2>Crossword Quest is loading</h2><p class="tl-game-instruction">Please return to Think Lab and open the game again.</p><button type="button" class="tl-back" data-think-home>Think Lab home</button></div>';
+      root.innerHTML = '<div class="tl-game-card"><div class="tl-game-kicker">CROSSWORD QUEST</div><h2>This game is paused.</h2><p class="tl-game-instruction">Its prototype and content work are being kept in the project, but the game is not currently available to play.</p><button type="button" class="tl-back" data-think-home>Think Lab home</button></div>';
       return;
     }
     if(id==='translator') selectedTranslatorCEFR='adaptive';
