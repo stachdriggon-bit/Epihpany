@@ -63,6 +63,20 @@ test('a correct two-cell selection finds a target word and updates the board',()
   assert.match(h.root.innerHTML,/already found/i);
 });
 
+test('Easy rejects backwards selection even when the letters spell a target word',()=>{
+  const h=createHarness();
+  h.window.EPIPHANY_WORD_HUNT.open();
+  h.click('[data-wh-level]',{whLevel:'easy'});
+  const puzzle=h.bank.puzzles.easy[0], word=puzzle.words[0], match=h.bank.occurrences(puzzle.grid,word)[0];
+  const endRow=match.row+match.dr*(word.length-1),endCol=match.col+match.dc*(word.length-1);
+  h.click('[data-wh-cell]',{whCell:endRow+'-'+endCol});
+  h.click('[data-wh-cell]',{whCell:match.row+'-'+match.col});
+  assert.match(h.root.innerHTML,/direction is not available/i);
+  assert.match(h.root.innerHTML,/0 <span>\/ 6 found/);
+  assert.equal(h.results.length,1);
+  assert.equal(h.results[0][2],false);
+});
+
 test('completing all Easy words records one result and advances to the next fixed puzzle',()=>{
   const h=createHarness();
   h.window.EPIPHANY_WORD_HUNT.open();
