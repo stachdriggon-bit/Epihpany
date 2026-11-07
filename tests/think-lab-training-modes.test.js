@@ -8,6 +8,7 @@ const soundMazeTools = require('../sound-maze-bank.js');
 const source = fs.readFileSync(path.join(__dirname, '..', 'think-lab.js'), 'utf8');
 const connectionBankSource = fs.readFileSync(path.join(__dirname, '..', 'word-connections-bank.js'), 'utf8');
 const sentenceScrambleBankSource = fs.readFileSync(path.join(__dirname, '..', 'sentence-scramble-bank.js'), 'utf8');
+const wordForgeBankSource = fs.readFileSync(path.join(__dirname, '..', 'word-forge-bank.js'), 'utf8');
 
 const gameIds = ['odd','translator','wordladder','maze','connections','scramble','forge','chain'];
 const trainingModes = ['guided','steady','challenge'];
@@ -41,6 +42,8 @@ function createHarness(options = {}) {
   vm.runInContext(connectionBankSource, connectionContext, {filename:'word-connections-bank.js',timeout:5000});
   const sentenceScrambleContext = vm.createContext({window:{}});
   vm.runInContext(sentenceScrambleBankSource, sentenceScrambleContext, {filename:'sentence-scramble-bank.js',timeout:5000});
+  const wordForgeContext = vm.createContext({window:{}});
+  vm.runInContext(wordForgeBankSource, wordForgeContext, {filename:'word-forge-bank.js',timeout:5000});
   const listeners = {};
   const root = {
     innerHTML: '',
@@ -54,6 +57,7 @@ function createHarness(options = {}) {
     EPIPHANY_SOUND_MAZE_TOOLS: soundMazeTools,
     EPIPHANY_WORD_CONNECTIONS_BANK: connectionContext.window.EPIPHANY_WORD_CONNECTIONS_BANK,
     EPIPHANY_SENTENCE_SCRAMBLE_BANK: sentenceScrambleContext.window.EPIPHANY_SENTENCE_SCRAMBLE_BANK,
+    EPIPHANY_WORD_FORGE_BANK: wordForgeContext.window.EPIPHANY_WORD_FORGE_BANK,
     ...(options.soundMazeBank ? {EPIPHANY_SOUND_MAZE_BANK:options.soundMazeBank} : {}),
     speechSynthesis: {cancel(){},speak(){}},
     EpiphanyThinkLab: {
@@ -186,4 +190,25 @@ test('Word Connections loads 24 distinct challenges for each independently selec
 test('Word Connections records incorrect complete-group attempts instead of tracking only wins', () => {
   assert.match(source, /recordResult\('vocabulary','connections',false,false\)/);
   assert.match(source, /bank\.matchGroup\(chosen,selectedTrainingMode\)/);
+});
+
+test('Word Forge loads exactly 24 approved challenges for each selected training mode', () => {
+  for (const trainingMode of trainingModes) {
+    const harness = createHarness();
+    harness.click('[data-think-game]', {thinkGame:'forge'});
+    harness.click('[data-think-training-mode]', {thinkTrainingMode:trainingMode,thinkTrainingGame:'forge'});
+    assert.match(harness.root.innerHTML, /ROUND 1 OF 24/);
+    assert.match(harness.root.innerHTML, /WORD CLUE/);
+    assert.match(harness.root.innerHTML, /data-forge-tile=/);
+    assert.match(harness.root.innerHTML, /data-forge-check/);
+    assert.match(harness.root.innerHTML, new RegExp('<div class="tl-level-tag">' + trainingMode.toUpperCase() + '<\\\\/div>'));
+  }
+});
+
+test('Word Forge uses the approved bank skill and records incorrect complete attempts', () => {
+  assert.match(source, /bank\.selectRound\(trainingMode\)/);
+  assert.match(source, /recordResult\('spelling','word-forge',false,false\)/);
+  assert.match(source, /<strong>Complete the word first\.<\\/strong>/);
+  assert.match(source, /<strong>Skill:<\\/strong>/);
+  assert.doesNotMatch(source, /rounds\.forge\s*=/);
 });
