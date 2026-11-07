@@ -248,7 +248,7 @@ test('main navigation tabs open without uncaught page errors', { timeout: 18 * 6
         await question.waitFor({state:'visible',timeout:5000});
         assert.match(await fluentia.locator('.fluentia-session-top .pill').innerText(),/Fluentia Mix/i,'Fluentia Mix should start from the landing page');
         const mixedKicker = await question.locator('.kicker').innerText();
-        assert.match(mixedKicker,/Wordcraft|Sentence Studio|Textwise|Soundscape|Real World|Fine Sense/,'Fluentia Mix should present a question with a canonical domain');
+        assert.match(mixedKicker,/Wordcraft|Sentence Studio|Textwise|Soundscape|Real World|Fine Sense/i,'Fluentia Mix should present a question with a canonical domain');
         await fluentia.locator('[data-exit]').click();
         await page.setViewportSize({width:390,height:844});
         const layout = await fluentia.evaluate(el => ({scrollWidth:el.scrollWidth,clientWidth:el.clientWidth,cardCount:el.querySelectorAll('.fluentia-domain-card').length}));
