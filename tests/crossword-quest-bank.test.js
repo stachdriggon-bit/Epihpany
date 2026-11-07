@@ -114,6 +114,16 @@ test('Crossword Quest allows common two-letter answers in Easy while retaining t
   assert.ok(strict.errors.some(error => /at least 3 letters/.test(error)));
 });
 
+test('Crossword Quest has a curated Easy-only two-letter word pool', () => {
+  const bank = loadBank();
+  assert.equal(bank.easyTwoLetterLexicon.length, 24);
+  assert.equal(new Set(bank.easyTwoLetterLexicon.map(item => item.answer)).size, 24);
+  for (const item of bank.easyTwoLetterLexicon) {
+    assert.match(item.answer, /^[A-Z]{2}$/);
+    assert.ok(item.clue.length >= 12, item.answer + ' needs a useful clue');
+  }
+});
+
 test('Crossword Quest validator rejects disconnected grids and repeated clues', () => {
   const bank = loadBank();
   const disconnected = {
