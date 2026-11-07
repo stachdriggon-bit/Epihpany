@@ -237,18 +237,19 @@ test('main navigation tabs open without uncaught page errors', { timeout: 18 * 6
           await question.locator('[data-translate]').click();
           assert.equal(await explanation.innerText(),before,'returning to English should restore the same explanation slot');
         }
-        await question.locator('[data-exit]').click();
+        await fluentia.locator('[data-exit]').click();
         await fluentia.locator('[data-mode="section-mixed"]').click();
         await fluentia.locator('.fluentia-domain-card[data-domain="wordcraft"]').click();
         await question.waitFor({state:'visible',timeout:5000});
         assert.match(await fluentia.locator('.fluentia-session-top .pill').innerText(),/Section Mixed/,'Section Mixed should start inside the chosen domain');
         assert.match(await question.locator('.kicker').innerText(),/Wordcraft/i,'Section Mixed must not leak into another domain');
-        await question.locator('[data-exit]').click();
+        await fluentia.locator('[data-exit]').click();
         await fluentia.locator('[data-mode="fluentia-mix"]').click();
         await question.waitFor({state:'visible',timeout:5000});
         assert.match(await fluentia.locator('.fluentia-session-top .pill').innerText(),/Fluentia Mix/,'Fluentia Mix should start from the landing page');
-        assert.ok(['Wordcraft','Sentence Studio','Textwise','Soundscape','Real World','Fine Sense'].some(name => (question.locator('.kicker')).evaluate(el => el.textContent.includes(name))), 'Fluentia Mix should present a question with a canonical domain');
-        await question.locator('[data-exit]').click();
+        const mixedKicker = await question.locator('.kicker').innerText();
+        assert.match(mixedKicker,/Wordcraft|Sentence Studio|Textwise|Soundscape|Real World|Fine Sense/,'Fluentia Mix should present a question with a canonical domain');
+        await fluentia.locator('[data-exit]').click();
         await page.setViewportSize({width:390,height:844});
         const layout = await fluentia.evaluate(el => ({scrollWidth:el.scrollWidth,clientWidth:el.clientWidth,cardCount:el.querySelectorAll('.fluentia-domain-card').length}));
         assert.ok(layout.scrollWidth <= layout.clientWidth + 1,'Fluentia landing should not overflow horizontally on a phone: '+JSON.stringify(layout));
