@@ -222,7 +222,7 @@
           return reviewItems(level, bank, item => saved.has(normalize(term(item))), item => {
             const row = (reviewState.review || []).find(entry => entry && normalize(entry.word) === normalize(term(item)));
             return Number(row && row.errors) || 0;
-          }).map(item => ({...item, reviewPrompt:term(item), reviewMeaning:meaning(item)}));
+          }).map(item => ({...item, sourceActivityId:'vocabulary', reviewPrompt:term(item), reviewMeaning:meaning(item)}));
         },
         evaluate: (item, answer) => ({correct: normalize(answer) === normalize(item.reviewMeaning), errorType: normalize(answer) === normalize(item.reviewMeaning) ? null : 'vocabulary-recall'}),
         correctAnswer: item => item.reviewMeaning
@@ -235,7 +235,8 @@
           const questionErrors = reviewState.mistakeQuestionErrors || {};
           const bank = sources.games.mistakes && sources.games.mistakes.questions || [];
           return reviewItems(level, bank, item => (Number(questionErrors[item.id]) || 0) > 0 || (Number(errors[item.trap]) || 0) > 0,
-            item => (Number(questionErrors[item.id]) || 0) * 3 + (Number(errors[item.trap]) || 0) * 2);
+            item => (Number(questionErrors[item.id]) || 0) * 3 + (Number(errors[item.trap]) || 0) * 2)
+            .map(item => ({...item, sourceActivityId:'mistakes'}));
         },
         evaluate: (item, answer) => {
           const selected = typeof answer === 'number' ? answer : Number(answer);
