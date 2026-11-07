@@ -72,6 +72,7 @@
       const normalized = Object.freeze({
         id, domain: activity.domain, interactionType: activity.interactionType,
         skills: Object.freeze(Array.isArray(activity.skills) ? activity.skills.filter(x => typeof x === 'string' && x.trim()).map(x => x.trim()) : []),
+        reviewOnly: activity.reviewOnly === true,
         getItems: activity.getItems,
         evaluate: activity.evaluate,
         getFeedback: typeof activity.getFeedback === 'function' ? activity.getFeedback : null,
