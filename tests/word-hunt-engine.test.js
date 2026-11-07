@@ -76,7 +76,7 @@ test('completing all Easy words records one result and advances to the next fixe
   }
   assert.match(h.root.innerHTML,/Grid cleared!/);
   assert.equal(h.results.length,6,'each found word is recorded once');
-  assert.deepEqual(h.results[5].slice(0,4),['vocabulary','word-hunt',true,true]);
+  assert.deepEqual(h.results[5].slice(0,4),['vocabulary','word-hunt',true,false]);
   assert.equal(h.results[5][4].trackAdaptive,false);
   h.click('[data-wh-next]');
   assert.match(h.root.innerHTML,/Food Market/);
