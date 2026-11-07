@@ -153,7 +153,7 @@ test('overlapping feature groups share one in-flight script request', async () =
   scripts[6].onload();
   await new Promise(resolve => setImmediate(resolve));
   assert.equal(requested.length, 8);
-  assert.match(requested[7], /^language-detective-assessment-schemas\.js\?/);
+  assert.match(requested[7], /^think-lab\.js\?/);
   scripts[7].onload();
   await new Promise(resolve => setImmediate(resolve));
   assert.equal(requested.length, 9);
@@ -497,11 +497,12 @@ test('background optional loads pause while constrained, resume once, and never 
   policy = { ...policy, allowSpeculativePreload: false, deferNonEssentialWork: true };
   const explicit = context.window.EPIPHANY_LAZY_LOAD('world');
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[8].split('?')[0], 'data-world.js',
+  assert.equal(requested[9].split('?')[0], 'data-world.js',
     'explicit navigation must bypass background deferral');
-  scripts[8].onload();
-  await new Promise(resolve => setImmediate(resolve));
   scripts[9].onload();
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(requested[10].split('?')[0], 'data-world-sprites.js');
+  scripts[10].onload();
   await explicit;
 });
 
@@ -718,7 +719,7 @@ test('Language Detective lazy load rejects scripts that load without initializin
   const retry = context.window.EPIPHANY_LAZY_LOAD('languageDetective');
   await new Promise(resolve => setImmediate(resolve));
   assert.equal(requested.length, 7);
-  assert.match(requested[6], /^think-lab\.js\?/);
+  assert.match(requested[6], /^language-detective-assessment-schemas\.js\?/);
   scripts[6].onerror();
   await assert.rejects(retry, /Unable to load feature data/);
 });
