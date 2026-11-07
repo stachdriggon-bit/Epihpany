@@ -171,7 +171,7 @@ The next integration batch adds the following sources without replacing their cu
 
 - **Wordcraft — Word Match:** the existing Word of the Day bank supplies level-tagged word/meaning pairs for the matching interaction. The dynamic personal vocabulary adapter reads only saved terms that can be matched to an explicitly level-tagged legacy vocabulary item.
 - **Sentence Studio — Sentence Builder:** the ten existing sentence prompts are tagged A1/A2 and registered as an ordering interaction.
-- **Sentence Studio — Your Review:** a personalized adapter ranks existing Common Mistakes items using the learner's saved trap and question-error counters. It does not create synthetic questions.
+- **Sentence Studio — Your Review:** a personalized adapter ranks existing Common Mistakes items using the learner's saved trap and question-error counters. It does not create synthetic questions. Both review adapters are marked review-only and are excluded from ordinary Section Mixed/Fluentia Mix sessions; a dedicated review flow can explicitly select them.
 - **Textwise — sequencing:** `fluentia-textwise-bank.js` contains 18 independently authored short informational/practical sequence tasks, three per CEFR level. It does not import or reuse `STORIES`.
 - **Soundscape — Sound & Picture Match:** the existing twelve spoken-word/picture prompts are tagged A1/A2 and registered as a listening interaction.
 - **Soundscape — Sound Maze:** the reviewed 216-item bank is registered when its existing lazy-loaded content script becomes available; 36 items are exposed per CEFR level across Guided, Steady and Challenge.
