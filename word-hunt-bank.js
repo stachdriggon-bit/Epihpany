@@ -34,6 +34,7 @@
     if (words.some(word => typeof word !== 'string' || word.length < (level === 'easy' ? 3 : 4) || word.length > size || !/^[A-Z]+$/.test(word))) errors.push('Target words must be valid uppercase English letter strings for this level.');
     if (grid.length === size && grid.every(row => typeof row === 'string' && row.length === size && /^[A-Z]+$/.test(row))) {
       for (const word of words) {
+        if (typeof word !== 'string' || !/^[A-Z]+$/.test(word)) continue;
         const matches = occurrences(grid, word);
         if (matches.length !== 1) errors.push(word + ' must appear exactly once in the grid; found ' + matches.length + '.');
         else if (!allowedDirection(level, matches[0].dr, matches[0].dc)) errors.push(word + ' uses a direction not allowed in ' + level + '.');
@@ -50,6 +51,10 @@
       if (list.length !== config.count) errors.push(level + ' must contain exactly ' + config.count + ' puzzles.');
       const ids = new Set();
       list.forEach((puzzle, index) => {
+        if (!puzzle || typeof puzzle !== 'object') {
+          errors.push(level + ' puzzle ' + (index + 1) + ' is not a valid puzzle record.');
+          return;
+        }
         if (ids.has(puzzle.id)) errors.push(level + ' has duplicate puzzle id ' + puzzle.id + '.');
         ids.add(puzzle.id);
         validatePuzzle(puzzle, level).errors.forEach(error => errors.push(level + ' puzzle ' + (index + 1) + ': ' + error));
