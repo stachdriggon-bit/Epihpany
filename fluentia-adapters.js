@@ -257,7 +257,10 @@
           return reviewItems(level, bank, item => saved.has(normalize(term(item))), item => {
             const row = (reviewState.review || []).find(entry => entry && normalize(entry.word) === normalize(term(item)));
             return Number(row && row.errors) || 0;
-          }).map(item => ({...item, sourceActivityId:'vocabulary', reviewPrompt:term(item), reviewMeaning:meaning(item)}));
+          }).map(item => {
+            const row = (reviewState.review || []).find(entry => entry && normalize(entry.word) === normalize(term(item)));
+            return {...item, sourceActivityId:'vocabulary', reviewPrompt:term(item), reviewMeaning:row && row.meaning || meaning(item)};
+          });
         },
         evaluate: (item, answer) => ({correct: normalize(answer) === normalize(item.reviewMeaning), errorType: normalize(answer) === normalize(item.reviewMeaning) ? null : 'vocabulary-recall'}),
         correctAnswer: item => item.reviewMeaning
