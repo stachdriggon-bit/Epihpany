@@ -125,7 +125,7 @@ Textwise's Meaning Detective activity can remain based on non-fiction/practical 
 | **Wordcraft** | Word Collector, Word Detective, Word Match, Speed Round | Keep vocabulary and spelling as distinct selectable modes. Word Match and Speed Round are dynamic modes, not copied banks. |
 | **Sentence Studio** | Sentence Shaper, Common Mistakes, Spot the Mistake, Type It, Sentence Builder | Preserve their different answer mechanics: multiple choice/grammar flow, error diagnosis, tap-to-correct, typed accepted forms and token ordering. |
 | **Textwise** | Meaning Detective, Order the Story sequencing mechanic | Meaning Detective is reading comprehension. Rebuild the sequencing content source independently of Stories before exposing it inside Fluentia. |
-| **Soundscape** | Sound & Picture Match, Dictation | Add level tags/content for C1–C2 and grow the very small sample set. Fix dictation comparison before using it for reliable performance analytics. |
+| **Soundscape** | Sound & Picture Match, Sound Maze, Dictation | Sound & Picture Match remains explicitly A1/A2; Sound Maze supplies 216 reviewed items across A1–C2; the new dictation bank supplies 36 prompts (six per level). Practice Lab's eight A1–B2 samples remain a separate legacy source. |
 | **Real World** | Lost in London, Directions, Speaking & Shadowing | Directions is currently map-based text instruction, not audio. Speaking is transcript/word-recognition feedback, not pronunciation assessment. |
 | **Fine Sense** | Nuance Navigator | The 218-item advanced bank is the canonical starting point. Additional nuance material should be tagged and assigned one canonical home rather than duplicated. |
 | **Your Review** (separate utility) | Current Your Weak Spots plus future cross-domain review | Replace the mistakes-only clone with a unified review selector that retains source domain, activity, level and error type. It is not a seventh domain. |
@@ -140,7 +140,7 @@ Textwise's Meaning Detective activity can remain based on non-fiction/practical 
 - Mini-game completion uses the shared activity reward path for XP, quests, daily/weekly progress and streaks. The current mini-game result screen does not provide a normalized per-domain/per-skill/per-item history equivalent to the core question/error records.
 - Practice Lab uses a separate localStorage key, `epiphany-practice-lab-v1`, for speaking/dictation attempt and best-score counters. Its statistics are not part of the shared `epiphany-progress` shape in `practice-lab.js`.
 
-**Migration rule:** do not replace the main progress key or discard old activity identifiers. Introduce a compatibility mapping/adapter so existing history remains available while new domain/skill events are added. Decide explicitly whether Practice Lab's local counters are migrated or retained as legacy statistics.
+**Migration rule:** do not replace the main progress key or discard old activity identifiers. The compatibility bridge now appends normalized, deduplicated answer events to an additive `fluentiaHistory` profile field (latest 500), preserving legacy game/question/level/error attribution. It does not alter XP or review schedules. Practice Lab's separate counters remain retained as legacy statistics.
 
 ### Translation and language behavior
 
@@ -171,9 +171,9 @@ Gaps identified for Fluentia:
 
 ## Phase 3 integration update (2026-11-07)
 
-The Phase 3 integration now includes the 18-item independent Textwise sequence bank (three per CEFR level), the reviewed Sound Maze bank (36 items per level), the lazy-loaded Practice Lab sample set (eight items across A1–B2), Word Match pairs from the CEFR-tagged Word of the Day bank, ten CEFR-tagged Sentence Builder prompts, twelve A1/A2 Sound & Picture listening prompts, and two Your Review feeds based on saved vocabulary and grammar error signals. Directions and the original six core adapters remain integrated. See `FLUENTIA-SESSION-ARCHITECTURE.md` for the adapter IDs, answer contracts, lazy registration and progress-compatibility rules.
+The Phase 3 integration now includes the 36-item independent Textwise sequence bank (six per CEFR level), the reviewed Sound Maze bank (36 items per level), a 36-item Soundscape dictation bank (six per level), the lazy-loaded Practice Lab sample set (eight items across A1–B2), Word Match and Speed Round adapters over the CEFR-tagged Word of the Day bank, ten CEFR-tagged Sentence Builder prompts, twelve A1/A2 Sound & Picture listening prompts, and two Your Review feeds based on saved vocabulary and grammar error signals. Directions and the original six core adapters remain integrated. See `FLUENTIA-SESSION-ARCHITECTURE.md` for the adapter IDs, answer contracts, lazy registration and progress-compatibility rules.
 
-The legacy Speed Round timer/reward loop remains a renderer-specific concern; tagged dynamic vocabulary review candidates are exposed, but no timer is simulated in the shared engine. Untagged learner-saved words and missing Practice Lab CEFR levels are excluded rather than guessed. This is a code-integration update, not a claim that CI has passed.
+Speed Round is now a distinct typed-recall adapter over tagged vocabulary, prioritizing saved/review terms. Its 60-second timer and reward loop remain renderer-specific and are not simulated in the shared engine. Untagged learner-saved words and missing Practice Lab CEFR levels are excluded rather than guessed. This is a code-integration update, not a claim that CI has passed.
 
 ## 8. Phase 1 conclusions and integration handoff
 
