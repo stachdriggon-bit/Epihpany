@@ -49,6 +49,7 @@ function createHarness(options = {}) {
   vm.runInContext(chainReactionBankSource, chainReactionContext, {filename:'chain-reaction-bank.js',timeout:5000});
   const listeners = {};
   const feedback = {hidden:true,className:'',innerHTML:'',textContent:''};
+  const recordedResults = [];
   const root = {
     innerHTML: '',
     addEventListener(type, callback) { listeners[type] = callback; },
@@ -72,7 +73,7 @@ function createHarness(options = {}) {
       getGameDifficulty: () => ({level:'challenge',hintLevel:2,attempts:0,accuracy:null}),
       getDifficulty: () => ({level:'challenge',hintLevel:2}),
       registerGame() {},
-      recordResult() {}
+      recordResult(...args) { recordedResults.push(args); }
     }
   };
   const document = {getElementById: id => id === 'think-lab-content' ? root : null};
@@ -82,7 +83,7 @@ function createHarness(options = {}) {
     assert.equal(typeof listeners.click, 'function', 'Think Lab click handler should be registered');
     listeners.click({target:{closest: candidate => candidate === selector ? element : null}});
   }
-  return {root,click,getSavedMazeCEFR:()=>savedMazeCEFR,chainBank:window.EPIPHANY_CHAIN_REACTION_BANK,feedback};
+  return {root,click,getSavedMazeCEFR:()=>savedMazeCEFR,chainBank:window.EPIPHANY_CHAIN_REACTION_BANK,feedback,recordedResults};
 }
 
 test('every Think Lab game opens the shared three-mode picker before play', () => {
@@ -228,7 +229,8 @@ test('Chain Reaction loads 24 distinct approved challenges for each training mod
     assert.match(harness.root.innerHTML, /LINK 1 OF 3/);
     assert.match(harness.root.innerHTML, new RegExp('<div class="tl-level-tag">' + trainingMode.toUpperCase() + '<\\/div>'));
     assert.equal((harness.root.innerHTML.match(/data-chain-answer=/g) || []).length, 3);
-    assert.ok(harness.chainBank.getRounds(trainingMode).every(item => item.id.startsWith('CR-' + trainingMode[0].toUpperCase() + '-')));
+    const title = harness.root.innerHTML.match(/<h2>([^<]+)<\\/h2>/)?.[1];
+    assert.ok(harness.chainBank.getRounds(trainingMode).some(item => item.title === title), 'the displayed challenge must belong to the selected mode bank');
   }
 });
 
@@ -261,5 +263,7 @@ test('Chain Reaction does not show an empty Challenge hint and records wrong lin
   harness.click('[data-think-training-mode]', {thinkTrainingMode:'challenge',thinkTrainingGame:'chain'});
   for (let attempt = 0; attempt < 2; attempt++) harness.click('[data-chain-answer]', {chainAnswer:'99'});
   assert.doesNotMatch(harness.feedback.innerHTML, /<p><\/p>/);
-  assert.match(source, /recordResult\('vocabulary','chain',false,false\)/);
+  assert.equal(harness.recordedResults.filter(result => result[0] === 'vocabulary' && result[1] === 'chain' && result[2] === false).length, 2);
+  assert.doesNotMatch(source, /rounds\.chain\s*=/);
+  assert.doesNotMatch(source, /function chainSteps\(item\)/);
 });
