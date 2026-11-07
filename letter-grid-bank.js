@@ -11,21 +11,24 @@
     if(!Array.isArray(item.words)||item.words.length!==cfg.wordsPerPuzzle)errors.push('Puzzle must contain the configured number of target clues.');
     const seen=new Set(),occupied=new Set();
     for(const entry of item.words||[]){
-      if(!entry||typeof entry.id!=='string'||!entry.id||typeof entry.clue!=='string'||!entry.clue.trim())errors.push('Every target needs a stable ID and a clue.');
-      if(typeof entry.answer!=='string'||entry.answer!==entry.answer.toUpperCase()||entry.answer.length<cfg.minWordLength||entry.answer.length>cfg.maxWordLength||![...entry.answer].every(isLetter))errors.push('Target answer has an invalid word or length.');
-      if(seen.has(entry.answer))errors.push('Target answers must be unique within a puzzle.');
-      seen.add(entry.answer);
-      if(!Array.isArray(entry.path)||entry.path.length!==entry.answer.length)errors.push('Target path length must match its answer.');
+      if(!entry||typeof entry!=='object'){errors.push('Every target must be a valid clue record.');continue;}
+      if(typeof entry.id!=='string'||!entry.id||typeof entry.clue!=='string'||!entry.clue.trim())errors.push('Every target needs a stable ID and a clue.');
+      const answer=typeof entry.answer==='string'?entry.answer:'';
+      if(!answer||answer!==answer.toUpperCase()||answer.length<cfg.minWordLength||answer.length>cfg.maxWordLength||![...answer].every(isLetter))errors.push('Target answer has an invalid word or length.');
+      if(seen.has(answer))errors.push('Target answers must be unique within a puzzle.');
+      seen.add(answer);
+      const path=Array.isArray(entry.path)?entry.path:[];
+      if(!Array.isArray(entry.path)||path.length!==answer.length)errors.push('Target path length must match its answer.');
       const local=new Set();
-      for(let i=0;i<(entry.path||[]).length;i++){
-        const cell=entry.path[i];
+      for(let i=0;i<path.length;i++){
+        const cell=path[i];
         if(!Number.isInteger(cell)||cell<0||cell>=cfg.size*cfg.size){errors.push('Path contains an invalid grid cell.');continue;}
         if(local.has(cell))errors.push('A path cannot reuse a cell.');
         if(occupied.has(cell))errors.push('Target paths cannot overlap.');
         local.add(cell);occupied.add(cell);
         const row=Math.floor(cell/cfg.size),col=cell%cfg.size;
-        if(item.grid?.[row]?.[col]!==entry.answer[i])errors.push('Path letters must spell the target answer.');
-        if(i){const prev=entry.path[i-1],pr=Math.floor(prev/cfg.size),pc=prev%cfg.size;if(Math.max(Math.abs(row-pr),Math.abs(col-pc))!==1)errors.push('Every step must connect to a neighboring cell.');}
+        if(item.grid?.[row]?.[col]!==answer[i])errors.push('Path letters must spell the target answer.');
+        if(i){const prev=path[i-1],pr=Math.floor(prev/cfg.size),pc=prev%cfg.size;if(Math.max(Math.abs(row-pr),Math.abs(col-pc))!==1)errors.push('Every step must connect to a neighboring cell.');}
       }
     }
     return {valid:errors.length===0,errors};
