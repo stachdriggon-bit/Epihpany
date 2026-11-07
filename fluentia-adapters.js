@@ -39,9 +39,10 @@
       interactionType: config.interactionType,
       skills: config.skills,
       getItems({level}) {
-        if (!Array.isArray(source)) return [];
-        return source.filter(item => item && LEVELS.includes(item.level) && item.level === level)
-          .map((item, index) => ({...item, id: stableId(config.id, item, index), level: item.level, sourceActivityId: config.legacyId || config.id}));
+        const rows = typeof config.getItems === 'function' ? config.getItems({level}) : source;
+        if (!Array.isArray(rows)) return [];
+        return rows.filter(item => item && LEVELS.includes(item.level) && item.level === level)
+          .map((item, index) => ({...item, id: stableId(config.id, item, index), level: item.level, sourceActivityId: item.sourceActivityId || config.legacyId || config.id}));
       },
       evaluate(item, answer) {
         return config.evaluate(item, answer);
@@ -128,12 +129,137 @@
       correctAnswer: item => item.answer
     }));
 
+    if (Array.isArray(sources.audioItems)) {
+      adapters.push(makeAdapter({
+        id: 'wordcraft-word-match', domain: 'wordcraft', interactionType: 'matching', skills: ['word-meaning'],
+        getSource: () => sources.audioItems,
+        evaluate: (item, answer) => {
+          const selected = typeof answer === 'string' ? answer : answer && (answer.meaning || answer.word);
+          const correct = normalize(selected) === normalize(item.meaning) || normalize(selected) === normalize(item.word);
+          return {correct, errorType: correct ? null : 'word-meaning-match'};
+        },
+        correctAnswer: item => item.meaning
+      }));
+    }
+
+    if (sources.soundMazeBank && sources.soundMazeBank.levels) {
+      adapters.push(makeAdapter({
+        id: 'soundscape-sound-maze', domain: 'soundscape', interactionType: 'listening', skills: ['phonological-recognition'],
+        getSource: () => [],
+        getItems: ({level}) => {
+          const group = sources.soundMazeBank.levels[level];
+          if (!group) return [];
+          return ['guided','steady','challenge'].flatMap(mode => (group[mode] || []).map(item => ({
+            ...item, level, trainingMode: mode, target: item.target, sourceActivityId: 'sound-maze'
+          })));
+        },
+        evaluate: (item, answer) => {
+          const selected = typeof answer === 'number' ? item.options?.[answer] : (answer && typeof answer === 'object' ? answer.selected : answer);
+          const correct = normalize(selected) === normalize(item.target);
+          return {correct, errorType: correct ? null : 'sound-discrimination', trainingMode: item.trainingMode};
+        },
+        correctAnswer: item => item.target
+      }));
+    }
+
+    if (Array.isArray(sources.practiceSamples)) {
+      adapters.push(makeAdapter({
+        id: 'soundscape-dictation', domain: 'soundscape', interactionType: 'typed', skills: ['listening-transcription'],
+        getSource: () => sources.practiceSamples,
+        evaluate: (item, answer) => {
+          const correct = normalize(item.text) === normalize(answer);
+          return {correct, errorType: correct ? null : 'dictation-transcription'};
+        },
+        correctAnswer: item => item.text
+      }));
+      adapters.push(makeAdapter({
+        id: 'real-world-speaking-shadowing', domain: 'real-world', interactionType: 'speech', skills: ['spoken-communication'],
+        getSource: () => sources.practiceSamples,
+        evaluate: (item, answer) => {
+          const expected = normalize(item.text).split(' ').filter(Boolean);
+          const actual = normalize(answer).split(' ').filter(Boolean);
+          let cursor = 0, matched = 0;
+          expected.forEach(word => {
+            const found = actual.indexOf(word, cursor);
+            if (found >= cursor) { matched++; cursor = found + 1; }
+          });
+          const accuracy = Math.round(matched / Math.max(1, expected.length) * 100);
+          return {correct: accuracy === 100, accuracy, matchedWords: matched, targetWords: expected.length, errorType: accuracy === 100 ? null : 'speech-recognition-word-match'};
+        },
+        correctAnswer: item => item.text
+      }));
+    }
+
+    if (Array.isArray(sources.textwiseSequenceBank)) {
+      adapters.push(makeAdapter({
+        id: 'textwise-sequence', domain: 'textwise', interactionType: 'ordering', skills: ['text-sequencing'],
+        getSource: () => sources.textwiseSequenceBank,
+        evaluate: (item, answer) => {
+          const actual = Array.isArray(answer) ? answer : [];
+          const expected = item.steps || [];
+          const correct = actual.length === expected.length && actual.every((value, index) => normalize(value) === normalize(expected[index]));
+          return {correct, errorType: correct ? null : 'event-sequencing'};
+        },
+        correctAnswer: item => item.steps
+      }));
+    }
+
+    if (sources.reviewState && sources.games) {
+      const reviewState = sources.reviewState;
+      const reviewItems = (level, sourceQuestions, predicate, score) => sourceQuestions
+        .filter(item => item && item.level === level && predicate(item))
+        .map(item => ({...item, reviewWeight: score(item), sourceActivityId: item.sourceActivityId || 'legacy-review'}))
+        .sort((a,b) => b.reviewWeight - a.reviewWeight);
+      adapters.push(makeAdapter({
+        id: 'wordcraft-personal-review', domain: 'wordcraft', interactionType: 'matching', skills: ['vocabulary-retrieval'],
+        getSource: () => [],
+        getItems: ({level}) => {
+          const saved = new Set((reviewState.review || []).filter(row => row && row.word).map(row => normalize(row.word)));
+          (reviewState.words || []).forEach(row => saved.add(normalize(Array.isArray(row) ? row[0] : row && row.word)));
+          const bank = sources.games.vocabulary && sources.games.vocabulary.questions || [];
+          return reviewItems(level, bank, item => saved.has(normalize(item.word || item.q)), item => {
+            const row = (reviewState.review || []).find(entry => entry && normalize(entry.word) === normalize(item.word || item.q));
+            return Number(row && row.errors) || 0;
+          }).map(item => ({...item, reviewPrompt:item.word || item.q, reviewMeaning:item.answers?.[item.correct]}));
+        },
+        evaluate: (item, answer) => ({correct: normalize(answer) === normalize(item.reviewMeaning), errorType: normalize(answer) === normalize(item.reviewMeaning) ? null : 'vocabulary-recall'}),
+        correctAnswer: item => item.reviewMeaning
+      }));
+      adapters.push(makeAdapter({
+        id: 'sentence-studio-personal-review', domain: 'sentence-studio', interactionType: 'choice', skills: ['grammar-retrieval'],
+        getSource: () => [],
+        getItems: ({level}) => {
+          const errors = reviewState.mistakeTrapErrors || {};
+          const questionErrors = reviewState.mistakeQuestionErrors || {};
+          const bank = sources.games.mistakes && sources.games.mistakes.questions || [];
+          return reviewItems(level, bank, item => (Number(questionErrors[item.id]) || 0) > 0 || (Number(errors[item.trap]) || 0) > 0,
+            item => (Number(questionErrors[item.id]) || 0) * 3 + (Number(errors[item.trap]) || 0) * 2);
+        },
+        evaluate: (item, answer) => {
+          const selected = typeof answer === 'number' ? answer : Number(answer);
+          const correct = Number.isInteger(selected) && selected === Number(item.correct);
+          return {correct, errorType: correct ? null : (item.trap || 'grammar-review')};
+        },
+        correctAnswer: item => item.answers?.[item.correct]
+      }));
+    }
+
     return adapters;
   }
 
   const api = Object.freeze({
     version: '1.0.0',
     createAdapters,
+    registerSources(engine, sources) {
+      if (!engine || typeof engine.registerActivity !== 'function') throw new TypeError('A Fluentia engine is required.');
+      const adapters = createAdapters(sources);
+      const registered = new Set(typeof engine.listActivities === 'function' ? engine.listActivities().map(item => item.id) : []);
+      const added = [];
+      adapters.forEach(adapter => {
+        if (!registered.has(adapter.id)) { engine.registerActivity(adapter); added.push(adapter.id); }
+      });
+      return added;
+    },
     registerAll(engine, sources) {
       if (!engine || typeof engine.registerActivity !== 'function') throw new TypeError('A Fluentia engine is required.');
       const adapters = createAdapters(sources);
