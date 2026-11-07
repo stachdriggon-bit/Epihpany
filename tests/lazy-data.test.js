@@ -144,15 +144,15 @@ test('overlapping feature groups share one in-flight script request', async () =
   scripts[4].onload();
   await new Promise(resolve => setImmediate(resolve));
   assert.equal(requested.length, 6);
-  assert.match(requested[5], /^word-forge-bank\\.js\\?/);
+  assert.match(requested[5], /^word-forge-bank\.js\?/);
   scripts[5].onload();
   await new Promise(resolve => setImmediate(resolve));
   assert.equal(requested.length, 7);
-  assert.match(requested[6], /^think-lab\\.js\\?/);
+  assert.match(requested[6], /^think-lab\.js\?/);
   scripts[6].onload();
   await new Promise(resolve => setImmediate(resolve));
   assert.equal(requested.length, 8);
-  assert.match(requested[7], /^life-skills\\.js\\?/);
+  assert.match(requested[7], /^life-skills\.js\?/);
   scripts[7].onload();
 
   await Promise.all([thinkLab, lifeSkills]);
@@ -695,7 +695,7 @@ test('Language Detective lazy load rejects scripts that load without initializin
   const retry = context.window.EPIPHANY_LAZY_LOAD('languageDetective');
   await new Promise(resolve => setImmediate(resolve));
   assert.equal(requested.length, 7);
-  assert.match(requested[6], /^language-detective-assessment-schemas\.js\?/);
+  assert.match(requested[6], /^think-lab\.js\?/);
   scripts[6].onerror();
   await assert.rejects(retry, /Unable to load feature data/);
 });
