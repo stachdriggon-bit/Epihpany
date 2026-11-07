@@ -241,12 +241,12 @@ test('main navigation tabs open without uncaught page errors', { timeout: 18 * 6
         await fluentia.locator('[data-mode="section-mixed"]').click();
         await fluentia.locator('.fluentia-domain-card[data-domain="wordcraft"]').click();
         await question.waitFor({state:'visible',timeout:5000});
-        assert.match(await fluentia.locator('.fluentia-session-top .pill').innerText(),/Section Mixed/,'Section Mixed should start inside the chosen domain');
+        assert.match(await fluentia.locator('.fluentia-session-top .pill').innerText(),/Section Mixed/i,'Section Mixed should start inside the chosen domain');
         assert.match(await question.locator('.kicker').innerText(),/Wordcraft/i,'Section Mixed must not leak into another domain');
         await fluentia.locator('[data-exit]').click();
         await fluentia.locator('[data-mode="fluentia-mix"]').click();
         await question.waitFor({state:'visible',timeout:5000});
-        assert.match(await fluentia.locator('.fluentia-session-top .pill').innerText(),/Fluentia Mix/,'Fluentia Mix should start from the landing page');
+        assert.match(await fluentia.locator('.fluentia-session-top .pill').innerText(),/Fluentia Mix/i,'Fluentia Mix should start from the landing page');
         const mixedKicker = await question.locator('.kicker').innerText();
         assert.match(mixedKicker,/Wordcraft|Sentence Studio|Textwise|Soundscape|Real World|Fine Sense/,'Fluentia Mix should present a question with a canonical domain');
         await fluentia.locator('[data-exit]').click();
@@ -1042,6 +1042,10 @@ test('main navigation tabs open without uncaught page errors', { timeout: 18 * 6
     await mobileMenuTrigger.click();
     await mobileMenu.locator('.mobile-menu-backdrop').click({position:{x:360,y:200}});
     assert.equal(await mobileMenu.evaluate(el => el.open), false, 'the backdrop should close the mobile drawer');
+    await clickView(cardsPage, 'fluentia');
+    assert.equal(await cardsPage.locator('#fluentia-content .fluentia-domain-card').count(),6,'Fluentia should open from the mobile drawer with all six domains');
+    const fluentiaMobileLayout = await cardsPage.locator('#fluentia-content').evaluate(el => ({scrollWidth:el.scrollWidth,clientWidth:el.clientWidth}));
+    assert.ok(fluentiaMobileLayout.scrollWidth <= fluentiaMobileLayout.clientWidth + 1,'Fluentia should fit the mobile viewport: '+JSON.stringify(fluentiaMobileLayout));
     await clickView(cardsPage, 'collection');
     assert.equal(await mobileMenu.evaluate(el => el.open), false, 'choosing a destination should close the mobile drawer');
     await cardsPage.locator('#cards-gallery').scrollIntoViewIfNeeded();
