@@ -33,6 +33,29 @@ test('Fluentia UI keeps review-only adapters out of mixed sessions and provides 
   assert.match(ui, /Review activities stay outside ordinary mixed sessions/);
 });
 
+test('Fluentia speaking uses browser speech recognition with permission and unsupported-browser fallbacks', () => {
+  const ui = read('fluentia-ui.js');
+  assert.match(ui, /window\.SpeechRecognition \|\| window\.webkitSpeechRecognition/);
+  assert.match(ui, /data-speech-start/);
+  assert.match(ui, /data-speech-stop/);
+  assert.match(ui, /Microphone permission was denied/);
+  assert.match(ui, /Speech recognition is not supported in this browser or context/);
+  assert.match(ui, /fluentia-speech-transcript/);
+  assert.match(ui, /does not assess pronunciation quality/);
+});
+
+test('Fluentia reports source readiness and offers an explicit retry state', () => {
+  const ui = read('fluentia-ui.js');
+  const app = read('app.js');
+  const loader = read('lazy-data.js');
+  assert.match(app, /EPIPHANY_LAZY_LOAD\('fluentia'\)/);
+  assert.match(app, /epiphany:fluentia-sources-ready/);
+  assert.match(ui, /epiphany:fluentia-sources-failed/);
+  assert.match(ui, /data-fluentia-retry/);
+  assert.match(loader, /fluentia: \['sound-maze-bank\.js/);
+  assert.match(loader, /practice-lab\.js/);
+});
+
 test('Fluentia UI is wired into desktop and mobile navigation and offline core assets', () => {
   const html = read('index.html');
   const worker = read('service-worker.js');
