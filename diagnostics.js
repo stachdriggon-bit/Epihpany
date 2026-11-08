@@ -169,12 +169,15 @@
     } catch { return false; }
   }
 
-  window.addEventListener('message', event => {
-    if (!active || !authorized()) return;
-    const data = event && event.data;
-    if (!data || data.type !== 'EPIPHANY_DIAGNOSTIC_EVENT' || !data.event) return;
-    record('cache_result', data.event);
-  });
+  const serviceWorker = window.navigator && window.navigator.serviceWorker;
+  if (serviceWorker && typeof serviceWorker.addEventListener === 'function') {
+    serviceWorker.addEventListener('message', event => {
+      if (!active || !authorized()) return;
+      const data = event && event.data;
+      if (!data || data.type !== 'EPIPHANY_DIAGNOSTIC_EVENT' || !data.event) return;
+      record('cache_result', data.event);
+    });
+  }
 
   window.addEventListener('pagehide', stop);
 
