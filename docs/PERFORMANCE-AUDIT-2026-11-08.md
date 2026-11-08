@@ -167,3 +167,14 @@ The Life Skills loader previously included the full Think Lab payload: Sound Maz
 The Life Skills data group now requests only `life-skills.js`. Think Lab retains its complete ordered dependency group, and Fluentia/Arcade retain the shared Practice Lab and Sound Maze sources they actually register. This removes 14 unnecessary script requests from a first visit directly into Life Skills, without removing its shared difficulty, XP, or progress integration.
 
 A regression test loads Life Skills in isolation and asserts that its only requested script is `life-skills.js`, while also protecting the three shared profile API calls. This is a source/dependency reduction, not a claim of measured real-device speedup.
+
+
+## Fluentia content-bank deferral — 2026-11-08
+
+The initial HTML previously downloaded the Textwise sequencing bank and Soundscape dictation bank for every visit, even when the learner never opened Fluentia. Neither bank is required by the application bootstrap: the Fluentia engine and adapters are initialized by the core scripts, while the two banks are only adapter inputs.
+
+Both banks now load in the Fluentia lazy group on first entry. Once the complete group has loaded, the existing source-registration function is called again so the newly available bank globals become registered activities before the Fluentia UI refreshes. The readiness check now explicitly requires the Textwise sequence and Soundscape dictation-bank activities as well as the existing Sound Maze, Practice Lab, and speaking activities. Think Lab's shared Sound Maze sources and Arcade's Practice Lab dependency remain unchanged.
+
+The two files were moved from the service worker's core precache allowlist to its lazy optional-asset allowlist, and the shell cache version was advanced. Regression coverage checks that the banks are absent from the initial document, requested on Fluentia entry, registered before readiness resolves, and available through the offline lazy-cache policy.
+
+This removes two startup script requests for visits that do not use Fluentia. It is a dependency/loading reduction, not a measured speedup claim. Runtime confirmation remains with the GitHub Actions unit and browser suites; no Vercel deployment was triggered.
