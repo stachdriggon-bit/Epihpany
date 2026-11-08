@@ -105,15 +105,15 @@ function expandedFixture() {
   const sources = fixture();
   sources.games.vocabulary.questions[0].word = 'apple';
   sources.audioItems = [{id:'SP-A1-01',level:'A1',word:'apple',meaning:'a round fruit'}];
-  sources.wordOfDayItems = [{id:'WM-A1-01',level:'A1',word:'apple',meaning:'a round fruit'}];
+  sources.wordOfDayItems = [{id:'WM-A1-01',level:'A1',word:'apple',meaning:'a round fruit'},{id:'WM-A1-02',level:'A1',word:'banana',meaning:'a long yellow fruit'}];
   sources.soundscapeDictationBank = [{id:'SD-A1-01',level:'A1',text:'I like fresh bread.'}];
   sources.sentenceItems = [{id:'SB-A1-01',level:'A1',text:'I drink water every morning.'}];
   sources.practiceSamples = [{id:'PL-A1-01',level:'A1',text:'I would like water.'}];
   sources.textwiseSequenceBank = [{id:'TW-A1-01',level:'A1',title:'A notice',steps:['Read the notice.','Check the date.','Follow the instructions.']}];
   sources.soundMazeBank = {levels:{A1:{guided:[{id:'SM-A1-01',target:'cat',options:['cat','cut','kit','cot'],explain:'Cat has /æ/.'}],steady:[],challenge:[]}}};
   sources.reviewState = {
-    fluentiaHistory:[{eventId:'session-a:0',sessionId:'session-a',activityId:'soundscape-sound-maze',sourceActivityId:'sound-maze',itemId:'SM-A1-01',level:'A1',domain:'soundscape',correct:false,errorType:'sound-discrimination'}],
-    fluentiaReviewState:{'sound-maze:SM-A1-01':{mastered:false,attempts:1}},
+    fluentiaHistory:[{eventId:'session-a:0',sessionId:'session-a',activityId:'soundscape-sound-maze',sourceActivityId:'sound-maze',itemId:'SM-A1-01',level:'A1',domain:'soundscape',correct:false,errorType:'sound-discrimination'},{eventId:'session-a:1',sessionId:'session-a',activityId:'wordcraft-speed-round',sourceActivityId:'word-of-the-day',itemId:'WM-A1-02',level:'A1',domain:'wordcraft',correct:false,errorType:'rapid-vocabulary-retrieval'}],
+    fluentiaReviewState:{'sound-maze:SM-A1-01':{mastered:false,attempts:1},'word-of-the-day:WM-A1-02':{mastered:false,attempts:1}},
     review:[{word:'apple',meaning:'a round fruit',errors:3}],
     words:[['apple','a round fruit']],
     mistakeTrapErrors:{articles:2},
@@ -155,6 +155,15 @@ test('Sound Maze, dictation, shadowing and Word Match keep distinct evaluation s
   const [match] = get('wordcraft-word-match').getItems({level:'A1'});
   assert.equal(get('wordcraft-word-match').evaluate(match, {word:'apple',meaning:'a round fruit'}).correct, true);
   assert.equal(match.sourceActivityId, 'word-of-the-day');
+});
+
+test('history review can recover items excluded by an activity’s normal prioritised feed', () => {
+  const sources = expandedFixture();
+  const adapters = AdapterFactory.createAdapters(sources);
+  const speed = adapters.find(item => item.id === 'wordcraft-speed-round');
+  const review = adapters.find(item => item.id === 'wordcraft-speed-round-history-review');
+  assert.deepEqual(speed.getItems({level:'A1'}).map(item=>item.word), ['apple'], 'normal Speed Round should retain its saved-word priority');
+  assert.deepEqual(review.getItems({level:'A1'}).map(item=>item.word), ['banana'], 'history review must still recover a missed non-prioritised source item');
 });
 
 test('Textwise sequencing is independent and order-sensitive', () => {
