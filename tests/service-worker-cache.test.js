@@ -146,6 +146,24 @@ function createFetchWorker(options = {}) {
   };
 }
 
+test('service worker registers cache persistence synchronously during fetch event dispatch', async () => {
+  const worker = createFetchWorker();
+  let dispatching = true;
+  const original = worker.handlers.fetch;
+  worker.handlers.fetch = event => {
+    const waitUntil = event.waitUntil.bind(event);
+    event.waitUntil = promise => {
+      assert.equal(dispatching, true, 'waitUntil must be called before fetch event dispatch returns');
+      waitUntil(promise);
+    };
+    original(event);
+    dispatching = false;
+  };
+  const response = await worker.dispatch('https://epiphany.test/data-expansion-runtime.js?v=expansion-runtime-20261108-3');
+  assert.equal(response.status, undefined, 'successful network response should pass through unchanged');
+  assert.ok(worker.entries.has('https://epiphany.test/data-expansion-runtime.js?v=expansion-runtime-20261108-3'));
+});
+
 test('successful lazy requests are cached and remain available offline across query-version changes only via exact or unversioned keys', async () => {
   const worker = createFetchWorker();
   const current = 'https://epiphany.test/data-expansion-runtime.js?v=expansion-runtime-20261108-3';
