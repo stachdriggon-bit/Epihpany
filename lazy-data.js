@@ -339,7 +339,7 @@
       .then(() => {
         if (group === 'expansion') {
           const expansion = window.EpiphanyExpansion;
-          const games = window.GAMES;
+          const games = typeof GAMES !== 'undefined' ? GAMES : null;
           const requiredGames = ['vocabulary','spelling','grammar','story','listening','advanced'];
           const ready = expansion && Number.isFinite(Number(expansion.count)) &&
             games && requiredGames.every(name => games[name] && Array.isArray(games[name].questions) &&
