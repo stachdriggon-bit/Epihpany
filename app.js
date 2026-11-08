@@ -4113,7 +4113,20 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
   }
 
   let miniSessionId = 0;
+  let directionsDataLoading = false;
   function startMini(type) {
+    if (type === 'directions' && typeof DIRECTION_ITEMS === 'undefined') {
+      if (directionsDataLoading) return;
+      directionsDataLoading = true;
+      window.EPIPHANY_LAZY_LOAD('directions').then(() => {
+        directionsDataLoading = false;
+        startMini(type);
+      }).catch(() => {
+        directionsDataLoading = false;
+        toast('Directions practice could not load. Connect to the internet and try again.');
+      });
+      return;
+    }
     miniSessionId++;
     G = null; ST = null;
     MG = {type, i: 0, score: 0, total: 0, answered: false, results: []};
