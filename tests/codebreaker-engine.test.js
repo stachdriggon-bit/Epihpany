@@ -87,7 +87,7 @@ test('Pattern hint chooses the most useful unresolved repeated group, not simply
 });
 
 test('Cross-word hint prioritizes an unresolved code shared across multiple words',()=>{
-  const h=harness();h.window.EPIPHANY_CODEBREAKER.open();h.click('[data-cb-level]',{cbLevel:'medium'});
+  const h=harness();h.window.EPIPHANY_CODEBREAKER.open();h.click('[data-cb-level]',{cbLevel:'expert'});
   h.click('[data-cb-hint]');h.click('[data-cb-hint]');
   assert.match(h.root.innerHTML,/Cross-word hint: coded letter/);
   assert.match(h.root.innerHTML,/words/);
