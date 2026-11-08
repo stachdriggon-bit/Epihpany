@@ -236,7 +236,12 @@
     cancelScheduledPrefetch(group);
     lastIntentGroup = group;
     if (pending.has(group) || scheduledPrefetch.has(group)) return false;
+    const task = { kind: 'pending', id: null };
+    scheduledPrefetch.set(group, task);
     const run = () => {
+      // A cancelled callback can already be queued by the browser. Ignore it
+      // unless this exact intent is still the current scheduled task.
+      if (scheduledPrefetch.get(group) !== task) return;
       scheduledPrefetch.delete(group);
       const current = currentAdaptivePolicy();
       if (!current || !current.allowSpeculativePreload || current.deferNonEssentialWork ||
@@ -246,9 +251,11 @@
       Promise.all(tasks).catch(() => {});
     };
     if (typeof window.requestIdleCallback === 'function') {
-      scheduledPrefetch.set(group, { kind: 'idle', id: window.requestIdleCallback(run, { timeout: 1600 }) });
+      task.kind = 'idle';
+      task.id = window.requestIdleCallback(run, { timeout: 1600 });
     } else if (typeof window.setTimeout === 'function') {
-      scheduledPrefetch.set(group, { kind: 'timer', id: window.setTimeout(run, 350) });
+      task.kind = 'timer';
+      task.id = window.setTimeout(run, 350);
     } else {
       Promise.resolve().then(run);
     }
