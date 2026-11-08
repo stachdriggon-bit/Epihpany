@@ -229,3 +229,10 @@ test('runtime pressure monitoring is optional when PerformanceObserver is unavai
   assert.doesNotThrow(() => vm.runInNewContext(source, context));
   assert.equal(context.window.EPIPHANY_ADAPTIVE_ENGINE.getPolicy().runtimePressure, false);
 });
+
+
+test('adaptive policy transitions are exposed to the optional diagnostics bridge', () => {
+  assert.match(source, /diagnostics\\.record\\('adaptive_policy'/);
+  assert.match(source, /runtimePressure: next\\.runtimePressure/);
+  assert.match(source, /limit: policy\\.maxConcurrentOptionalLoads/);
+});
