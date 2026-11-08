@@ -1033,3 +1033,15 @@ test('per-game expansion modules register isolated CEFR banks and preserve share
   assert.equal(context.window.EpiphanyExpansion.addedWords,60);
   assert.equal(context.window.EpiphanyExpansion.extraQuestions,730);
 });
+
+
+test('lazy loader reports load lifecycle and bounded retry events through the optional diagnostics bridge', () => {
+  const source = fs.readFileSync(path.join(root, 'lazy-data.js'), 'utf8');
+  assert.match(source, /function diagnosticRecord\\(type, details\\)/);
+  assert.match(source, /diagnosticRecord\\('load_queued'/);
+  assert.match(source, /diagnosticRecord\\('load_started'/);
+  assert.match(source, /diagnosticRecord\\('load_succeeded'/);
+  assert.match(source, /diagnosticRecord\\('load_failed'/);
+  assert.match(source, /diagnosticRecord\\('retry_scheduled'/);
+  assert.match(source, /diagnosticRecord\\('retry_started'/);
+});
