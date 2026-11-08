@@ -3515,8 +3515,23 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
   function startOneLife() { const type = pickNext(); startGame(GAMES[type] ? type : 'vocabulary', 'oneLife'); }
 
   const writingPracticeLoads = new Set();
+  const expansionGameLoads = new Set();
+  const expansionGames = new Set(['vocabulary','spelling','grammar','story','listening','advanced']);
   function startGame(type, challengeMode = '') {
     if (MINI[type]) { startMini(type); return; }
+    if (expansionGames.has(type) && !window.EpiphanyExpansion) {
+      if (expansionGameLoads.has(type)) return;
+      expansionGameLoads.add(type);
+      window.EPIPHANY_LAZY_LOAD('expansion').then(() => {
+        expansionGameLoads.delete(type);
+        if (!window.EpiphanyExpansion) throw new Error('Expansion data did not initialize.');
+        startGame(type, challengeMode);
+      }).catch(() => {
+        expansionGameLoads.delete(type);
+        toast('This activity could not load its question bank. Connect to the internet and try again.');
+      });
+      return;
+    }
     const dataName = type === 'spot' ? 'spot' : type === 'typing' ? 'typing' : null;
     const dataReady = type === 'spot' ? typeof SPOT_QUESTIONS !== 'undefined' : type === 'typing' ? typeof TYPING_QUESTIONS !== 'undefined' : true;
     if (dataName && !dataReady) {
