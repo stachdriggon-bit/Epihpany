@@ -35,7 +35,7 @@ test('Word Hunt keeps the first letter selected after a failed endpoint so the p
   const match = window.EPIPHANY_WORD_HUNT_BANK.occurrences(puzzle.grid, puzzle.words[0])[0];
   const end = { row: match.row + match.dr * (puzzle.words[0].length - 1), col: match.col + match.dc * (puzzle.words[0].length - 1) };
   const wrongEnd = { row: match.row + match.dr, col: match.col + match.dc };
-  const nonLinearEnd = puzzle.grid.flatMap((row, r) => row.map((_, c) => ({row:r,col:c})))
+  const nonLinearEnd = puzzle.grid.flatMap((row, r) => [...row].map((_, c) => ({row:r,col:c})))
     .find(cell => Math.abs(cell.row - match.row) > 0 &&
       Math.abs(cell.col - match.col) > 0 &&
       Math.abs(cell.row - match.row) !== Math.abs(cell.col - match.col));
