@@ -135,10 +135,11 @@
           window.EpiphanyThinkLab.recordResult('vocabulary', 'word-hunt', false, false, {trackAdaptive:false});
         }
         feedback = directionAllowed
-          ? 'Not a target word yet. Try another line—there is no penalty.'
-          : 'That direction is not available at this level. Try the directions shown above.';
+          ? 'Not a target word yet. Your starting letter is still selected—try a different ending.'
+          : 'That direction is not available at this level. Your starting letter is still selected.';
       }
-      startCell = null;
+      // Keep the original start cell after an unsuccessful attempt. Learners can
+      // try another endpoint without having to select the first letter again.
     }
     renderPuzzle();
   }
