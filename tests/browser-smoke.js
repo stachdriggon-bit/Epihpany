@@ -207,6 +207,12 @@ test('main navigation tabs open without uncaught page errors', { timeout: 18 * 6
       if (view === 'fluentia') {
         const fluentia = page.locator('#fluentia-content');
         await fluentia.locator('#fluentia-title').waitFor({state:'visible',timeout:5000});
+        await page.waitForFunction(() => {
+          const engine = window.EPIPHANY_FLUENTIA_SESSION_ENGINE;
+          return engine && ['soundscape-sound-maze','soundscape-dictation','real-world-speaking-shadowing','soundscape-sound-maze-history-review'].every(id => engine.getActivity(id));
+        }, null, {timeout:5000});
+        assert.ok(requested.some(path => path.endsWith('/sound-maze-content.js')), 'Fluentia should load Sound Maze content on its first open');
+        assert.ok(requested.some(path => path.endsWith('/practice-lab.js')), 'Fluentia should load Practice Lab samples on its first open');
         assert.equal(await fluentia.locator('.fluentia-domain-card').count(),6,'Fluentia should render its six canonical domains');
         assert.equal(await fluentia.locator('[data-mode="section-mixed"]').count(),1,'Section Mixed should have one landing entry');
         assert.equal(await fluentia.locator('[data-mode="fluentia-mix"]').count(),1,'Fluentia Mix should have one landing entry');
