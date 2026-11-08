@@ -605,7 +605,7 @@
       if (!id || !allowed.includes(skill)) return false;
       const progression = window.EPIPHANY_THINK_LAB_PROGRESSION;
       const definition = progression && typeof progression.getGame === 'function' ? progression.getGame(id) : null;
-      if (progression && (!definition || definition.skill !== skill)) return false;
+      if (progression && definition && definition.skill !== skill) return false;
       // Registration is intentionally runtime-only; the policy and saved skill signals stay central.
       this._gameSkills = this._gameSkills || {};
       this._gameSkills[id] = skill;
