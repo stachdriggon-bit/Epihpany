@@ -30,7 +30,7 @@ test('Fluentia UI keeps review-only adapters out of mixed sessions and provides 
   assert.match(ui, /reviewOnly/);
   assert.match(ui, /function reviewPanel\(\)/);
   assert.match(ui, /data-activity=/);
-  assert.match(ui, /Review activities stay outside ordinary mixed sessions/);
+  assert.match(ui, /A question leaves the active review queue after you answer it correctly here/);
 });
 
 test('Fluentia speaking uses browser speech recognition with permission and unsupported-browser fallbacks', () => {
