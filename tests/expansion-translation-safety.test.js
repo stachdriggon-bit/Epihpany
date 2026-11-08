@@ -8,9 +8,9 @@ const source = fs.readFileSync(
   path.resolve(__dirname, '..', 'data-expansion-translations.js'),
   'utf8'
 );
-const translationContext = vm.createContext({ window: {} });
-vm.runInContext(source, translationContext, { filename: 'data-expansion-translations.js' });
-const translations = translationContext.window.EPIPHANY_EXPANSION_TRANSLATIONS;
+const context = vm.createContext({ window: {} });
+vm.runInContext(source, context, { filename: 'data-expansion-translations.js' });
+const translations = context.window.EPIPHANY_EXPANSION_TRANSLATIONS;
 
 test('advanced Arabic prompts preserve grammar structures that reveal the answer when translated', () => {
   const cases = [
@@ -23,10 +23,10 @@ test('advanced Arabic prompts preserve grammar structures that reveal the answer
   ];
 
   for (const [key, english] of cases) {
-    const line = source.split('\n').find(row => row.includes("'" + key + "':"));
-    assert.ok(line, 'question should exist: ' + key);
+    const translation = translations[key];
+    assert.ok(translation, 'shared translation should exist: ' + key);
     assert.ok(
-      line.includes('“' + english + '”'),
+      translation[0].includes('“' + english + '”'),
       'Arabic prompt should preserve the English grammar target: ' + key
     );
   }
@@ -46,8 +46,8 @@ test('advanced vocabulary prompts do not translate the target word into the answ
   ];
 
   for (const [key, expectedPrompt] of cases) {
-    const line = source.split('\\n').find(row => row.includes("'" + key + "':"));
-    assert.ok(line, 'question should exist: ' + key);
-    assert.ok(line.includes(expectedPrompt), 'Arabic prompt should not disclose the answer: ' + key);
+    const translation = translations[key];
+    assert.ok(translation, 'shared translation should exist: ' + key);
+    assert.equal(translation[0], expectedPrompt, 'Arabic prompt should not disclose the answer: ' + key);
   }
 });
