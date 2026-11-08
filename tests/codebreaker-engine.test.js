@@ -51,11 +51,18 @@ test('the substitution key prevents assigning one plaintext letter to two coded 
   assert.equal(h.results.length,0);
 });
 
-test('optional hint reveals one new mapping and does not reveal the complete answer',()=>{
-  const h=harness();h.window.EPIPHANY_CODEBREAKER.open();h.click('[data-cb-level]',{cbLevel:'easy'});
+test('Codebreaker offers structural hints before revealing a letter',()=>{
+  const h=harness();h.window.EPIPHANY_CODEBREAKER.open();h.click('[data-cb-level]',{cbLevel:'hard'});
+  h.click('[data-cb-hint]');
+  assert.match(h.root.innerHTML,/Pattern hint:/);
+  assert.doesNotMatch(h.root.innerHTML,/Key revealed:/);
+  assert.match(h.root.innerHTML,/Cross-word hint/);
+  h.click('[data-cb-hint]');
+  assert.match(h.root.innerHTML,/Cross-word hint:/);
+  assert.doesNotMatch(h.root.innerHTML,/Key revealed:/);
   h.click('[data-cb-hint]');
   assert.match(h.root.innerHTML,/Key revealed:/);
-  assert.doesNotMatch(h.root.innerHTML,/APPLE/);
+  assert.doesNotMatch(h.root.innerHTML,/A CLEAR PLAN MAKES HARD WORK EASIER/);
   assert.equal(h.results.length,0);
 });
 
