@@ -139,6 +139,15 @@ test('repeated feature entry and exit reports Chromium runtime lifecycle metrics
       observer.observe(document, {childList:true,subtree:true});
     });
     await page.addInitScript(() => {
+      const NativeMutationObserver = window.MutationObserver;
+      window.MutationObserver = class extends NativeMutationObserver {
+        observe(target, options) {
+          if (target?.id === 'world-game') window.__epiphanyWorldRootObserver = this;
+          return super.observe(target, options);
+        }
+      };
+    });
+    await page.addInitScript(() => {
       localStorage.setItem('epiphany-progress', JSON.stringify({ placementDone:true, assessedLevel:'A1', level:'A1' }));
       localStorage.setItem('epiphany-landing-seen', '1');
     });
@@ -154,6 +163,15 @@ test('repeated feature entry and exit reports Chromium runtime lifecycle metrics
       await openAndCloseView(page, view);
     }
     await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
+    // Isolate the persistent World-root translation observer. It is test-only
+    // to disconnect it here; the app's gameplay and DOM remain untouched.
+    const worldRootObserverDisconnected = await page.evaluate(() => {
+      const observer = window.__epiphanyWorldRootObserver;
+      if (!observer) return false;
+      observer.disconnect();
+      return true;
+    });
+    assert.ok(worldRootObserverDisconnected, 'World root observer must be available for the isolation check');
     await cdp.send('HeapProfiler.collectGarbage');
     await page.evaluate(() => Promise.resolve());
     const samples = [{ phase:'warm-baseline', ...(await readRuntimeMetrics(cdp, page)), detachedDom:await readDetachedDomMetrics(page) }];
@@ -205,6 +223,7 @@ test('repeated feature entry and exit reports Chromium runtime lifecycle metrics
       baseline,
       final,
       probeShutdown,
+      worldRootObserverDisconnected,
       delta:{
         jsHeapUsedMB:Math.round((final.jsHeapUsedMB - baseline.jsHeapUsedMB) * 100) / 100,
         domNodes:final.domNodes - baseline.domNodes,
