@@ -22,7 +22,7 @@ function harness(){
 function start(h){
   h.window.EPIPHANY_LETTER_GRID.open();
   h.click('[data-lg-level]',{lgLevel:'easy'});
-  return h.bank.puzzles.easy[0].words[0];
+  const word=h.bank.puzzles.easy[0].words[0];\n  h.click('[data-lg-clue]',{lgClue:word.id});\n  return word;
 }
 test('Letter Path opens four independent levels and presents a word-search instruction',()=>{
   const h=harness();h.window.EPIPHANY_LETTER_GRID.open();
@@ -46,7 +46,7 @@ test('tapping a selected letter again steps back one cell',()=>{
   h.click('[data-lg-cell]',{lgCell:String(word.path[0])});
   h.click('[data-lg-cell]',{lgCell:String(word.path[1])});
   h.click('[data-lg-cell]',{lgCell:String(word.path[1])});
-  assert.match(h.root.innerHTML,/YOUR SELECTION/);
+  assert.match(h.root.innerHTML,/YOUR PATH/);
   assert.match(h.root.innerHTML,new RegExp('>'+word.answer[0]+'<'));
   assert.equal(h.results.length,0);
 });
@@ -65,7 +65,7 @@ test('the path cannot turn after its direction is established',()=>{
 });
 test('hint highlights a starting cell without revealing a path',()=>{
   const h=harness();start(h);h.click('[data-lg-hint]');
-  assert.match(h.root.innerHTML,/Starting letter highlighted/);
+  assert.match(h.root.innerHTML,/Starting letter:/);
   assert.match(h.root.innerHTML,/is-hint/);
   assert.equal(h.results.length,0);
 });
