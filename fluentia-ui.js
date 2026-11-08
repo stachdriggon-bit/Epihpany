@@ -171,7 +171,7 @@
       }
     }
     try {
-      stopSpeechRecognition();
+      stopFluentiaMedia();
       lastEvent = engine.submitAnswer(currentSession,answer);
       answered = true;
       const feedback = lastEvent.feedback || {};
@@ -267,8 +267,12 @@
     const byDomain={};currentSession.answers.forEach(answer=>byDomain[answer.domain]=(byDomain[answer.domain]||0)+1);
     root.innerHTML='<div class="fluentia-summary"><p class="kicker">SESSION COMPLETE</p><h2>'+esc(currentModeLabel)+'</h2><div class="fluentia-summary-score">'+percent+'%</div><p>'+correct+' correct out of '+total+' questions.</p><div class="fluentia-summary-stats"><div><b>'+total+'</b><span>Questions</span></div><div><b>'+correct+'</b><span>Correct</span></div><div><b>'+Object.keys(byDomain).length+'</b><span>Domains</span></div></div><div class="fluentia-review-source">Your answers have been added to Fluentia practice history. This session does not add legacy Arcade XP or duplicate legacy rewards.</div><div class="fluentia-session-actions"><button type="button" class="btn" data-restart>Practise again</button><button type="button" class="btn btn-ghost" data-back>Back to Fluentia</button></div></div>';
   }
-  function leaveSession({ render = true } = {}) {
+  function stopFluentiaMedia() {
     stopSpeechRecognition();
+    try { window.EpiphanySpeech?.stop?.(); } catch {}
+  }
+  function leaveSession({ render = true } = {}) {
+    stopFluentiaMedia();
     if (currentSession && !['completed','abandoned'].includes(currentSession.status)) {
       try { engine.abandonSession(currentSession); } catch {}
     }
@@ -310,8 +314,9 @@
     if(event.detail?.view!=='fluentia')leaveSession({render:false});
   });
   document.addEventListener('visibilitychange',()=>{
-    if(document.hidden)stopSpeechRecognition();
+    if(document.hidden)stopFluentiaMedia();
   });
+  window.addEventListener('pagehide',stopFluentiaMedia);
   document.addEventListener('epiphany:fluentia-sources-ready',()=>{
     if(root.closest('.view')?.classList.contains('is-active')){selectedLevel=currentLevel();renderHome();}
   });

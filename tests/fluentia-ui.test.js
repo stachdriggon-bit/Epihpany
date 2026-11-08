@@ -95,7 +95,10 @@ test('Fluentia releases active sessions and microphone recognition on navigation
   assert.match(ui, /if\(event\.detail\?\.view!=='fluentia'\)leaveSession\(\{render:false\}\)/);
   assert.match(ui, /if\(nav\)\{leaveSession\(\{render:false\}\);selectedLevel=currentLevel\(\);renderLoading\(\);\}/);
   assert.match(ui, /if\(event\.target\.closest\('\[data-back\]'\)\)\{leaveSession\(\);return;\}/);
-  assert.match(ui, /if\(document\.hidden\)stopSpeechRecognition\(\)/);
+  assert.match(ui, /if\(document\.hidden\)stopFluentiaMedia\(\)/);
+  assert.match(ui, /window\.addEventListener\('pagehide',stopFluentiaMedia\)/);
+  assert.match(ui, /window\.EpiphanySpeech\?\.stop\?\.\(\)/);
+  assert.match(ui, /function stopFluentiaMedia\(\)/);
 });
 
 test('Fluentia ignores stale speech-recognition callbacks after an abort or replacement', () => {

@@ -67,7 +67,7 @@ The lifecycle review found that leaving Fluentia through the main navigation did
 The fix now:
 - abandons unfinished sessions on view exit and on the in-view Back action;
 - clears the active session state when the learner reopens Fluentia;
-- aborts microphone recognition when leaving Fluentia or when the document becomes hidden;
+- aborts microphone recognition and stops shared generated speech when leaving Fluentia, submitting an answer, when the document becomes hidden, and on `pagehide`;
 - detaches recognition callbacks before aborting and ignores late events from obsolete recognition instances.
 
 Regression contracts cover navigation exit/re-entry, Back cleanup, hidden-page microphone cleanup, and stale recognition callbacks.
