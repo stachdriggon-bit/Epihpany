@@ -133,5 +133,20 @@ The result did **not** change the detached-node count:
 
 The retained labels continue to be dominated by the World region menu subtree (region cards, wrappers, SVG artwork, and their descendants). This is evidence of repeatable detached-node retention during World navigation, but it does not identify the retaining reference or prove that a particular application component owns it. Disconnecting MutationObservers without changing the result makes them an unlikely cause; the earlier focus check also found that focus had returned to `body` after each World exit.
 
-**Next diagnostic step:** capture a Chromium heap snapshot and inspect strong retaining paths for representative detached World nodes. Do not change `app.js` or the World rendering lifecycle until a retaining path identifies a concrete owner. The profile remains a CI diagnostic, not a production-device memory benchmark.
+### Heap-profile false positive identified and corrected — 2026-11-08
+
+The first heap-profile investigation exposed a retention bug in the **test harness**, not in World: a Playwright `page.waitForFunction()` predicate returned a matching DOM element. Playwright therefore returned/retained an element handle while the profile continued. The predicate now returns a boolean (`!!(...)`) and does not hand a DOM node back to the test runner.
+
+The corrected profile completed successfully in CI, including a fresh Chromium heap snapshot:
+
+- Warm baseline: 0 live detached elements.
+- After two, four, and six navigation cycles: 0 live detached elements at every checkpoint.
+- After probe shutdown and forced garbage collection: 0 of 12,749 tracked weak references remained as detached live elements.
+- JavaScript event listeners remained stable at 362; attached element count changed by -4 and text-node count remained stable.
+- JavaScript heap used rose from 6.60 MB to 7.49 MB across the run. This small single-run change is diagnostic only and is not evidence of a leak.
+- The heap snapshot was captured successfully (23,571,389 bytes) and uploaded as the `world-retention-heap-snapshot` CI artifact.
+
+This resolves the previously reported 266/532/798 detached-node increase as a profiling-harness false positive. The corrected measurement provides no evidence of detached World DOM accumulating across these six navigation cycles. No production World code or `app.js` change was needed. The profile remains a CI diagnostic, not a production-device memory benchmark.
+
+The earlier 266/532/798 figures below are retained as investigation history; they should not be treated as a current application leak finding.
 
