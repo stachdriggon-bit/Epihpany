@@ -718,8 +718,8 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
     {id:'forge',num:'07',icon:'✳',name:'Word Forge',tag:'SPELLING & VOCABULARY',desc:'Use a letter set and a clue to identify the word.',time:'2–3 min'},
     {id:'chain',num:'08',icon:'⤳',name:'Chain Reaction',tag:'WORD ASSOCIATION',desc:'Continue a chain by choosing the strongest word association.',time:'2–3 min'},
     {id:'wordhunt',num:'09',icon:'⌕',name:'Word Hunt',tag:'HIDDEN WORD SEARCH',desc:'Find themed English words in a letter grid as the search directions grow more challenging.',time:'At your own pace'},
-    {id:'codebreaker',num:'10',icon:'⌘',name:'Codebreaker',tag:'CIPHER & DEDUCTION',desc:'Crack hidden English messages by matching coded letters and spotting patterns.',time:'At your own pace'},
-    {id:'lettergrid',num:'11',icon:'⌗',name:'Letter Grid',tag:'CONNECTED WORD PATHS',desc:'Solve word clues by connecting neighboring letters through flexible paths.',time:'At your own pace'}
+    {id:'codebreaker',num:'10',icon:'⌘',name:'Codebreaker',tag:'CIPHER & DEDUCTION',desc:'Decode encrypted messages by discovering the letter-substitution key.',time:'At your own pace'},
+    {id:'lettergrid',num:'11',icon:'⌗',name:'Letter Path',tag:'STRAIGHT-LINE WORD SEARCH',desc:'Find hidden words running across, down, or diagonally through a crowded letter grid.',time:'At your own pace'}
   ];
   function insightsMarkup() {
     const data = window.EpiphanyThinkLab && typeof window.EpiphanyThinkLab.getInsights === 'function'
