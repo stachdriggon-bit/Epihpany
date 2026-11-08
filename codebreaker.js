@@ -8,6 +8,26 @@
   const esc=value=>String(value??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
   const list=()=>level?(bank.puzzles[level]||[]):[];
   const puzzle=()=>list()[index]||null;
+  const BANK_VERSION='codebreaker-bank-v1';
+  function progression(){return window.EpiphanyThinkLab;}
+  function saveProgress(){
+    if(!level||!puzzle())return;
+    progression()?.saveGameSnapshot?.('codebreaker',{bankVersion:BANK_VERSION,level,trainingMode:null,position:index,payload:{mapping:{...mapping},locked:[...locked],hintStage,completed,feedback}});
+  }
+  function resumeProgress(){
+    const snapshot=progression()?.getGameSnapshot?.('codebreaker',{bankVersion:BANK_VERSION});
+    if(!snapshot||!levelReady(snapshot.level)||snapshot.position>=(bank.puzzles[snapshot.level]||[]).length)return false;
+    const item=bank.puzzles[snapshot.level][snapshot.position],p=snapshot.payload;
+    if(!p||!p.mapping||typeof p.mapping!=='object'||Array.isArray(p.mapping)||!Array.isArray(p.locked)||!Number.isInteger(p.hintStage)||p.hintStage<0||p.hintStage>3||typeof p.completed!=='boolean')return false;
+    const cipher=new Set([...item.cipher].filter(ch=>/[A-Z]/.test(ch))),values=Object.values(p.mapping);
+    if(Object.keys(p.mapping).some(ch=>!cipher.has(ch))||values.some(ch=>typeof ch!=='string'||!/^[A-Z]$/.test(ch))||new Set(values).size!==values.length)return false;
+    if(item.known.some(pair=>p.mapping[pair.cipher]!==pair.plain)||p.locked.some(ch=>!Object.prototype.hasOwnProperty.call(p.mapping,ch)))return false;
+    const decoded=[...item.cipher].map(ch=>/[A-Z]/.test(ch)?p.mapping[ch]||'':ch).join('');
+    if(p.completed&&decoded!==item.answer)return false;
+    level=snapshot.level;index=snapshot.position;mapping=Object.assign(Object.create(null),p.mapping);
+    locked=new Set([...item.known.map(pair=>pair.cipher),...p.locked]);active='';hintStage=p.hintStage;completed=p.completed;
+    feedback=typeof p.feedback==='string'?p.feedback:'';progression()?.recordGameStart?.('codebreaker',{level});renderPuzzle();return true;
+  }
   const uniqueCipher=()=>[...new Set((puzzle()?.cipher||'').replace(/[^A-Z]/g,''))];
   const levelReady=id=>!!bank.levels[id]&&(bank.puzzles[id]||[]).length===bank.levels[id].count&&(bank.puzzles[id]||[]).every(p=>bank.validatePuzzle(p,id).valid);
   function seedPuzzle(){
@@ -17,7 +37,10 @@
   function renderLevels(){
     level=null;
     const status=bank.validateBank();
-    root.innerHTML='<div class="cb-shell"><div class="tl-game-head"><button class="tl-back" type="button" data-cb-home>← Think Lab home</button><span class="tl-eyebrow">CODEBREAKER</span></div><section class="cb-panel"><div class="cb-kicker">CRACK THE MESSAGE</div><h2>Choose your level</h2><p class="cb-intro">Each coded letter stands for one English letter. Use the starter key and the repeated-letter patterns to decode the hidden message. There is no definition that gives away the answer; the challenge is to discover the letter substitutions.</p><div class="cb-example"><strong>How the code works</strong><div class="cb-example-line"><span>Encrypted</span><b>O H H J S</b></div><div class="cb-example-line"><span>Starter key</span><b>O → A &nbsp; H → P</b></div><div class="cb-example-line"><span>Revealed so far</span><b>A P P _ _</b></div><p>In this example, you discover that <b>J → L</b> and <b>S → E</b>, so the message becomes <b>APPLE</b>.</p><small>During a real puzzle, only the starter key is provided. You work out the missing letters yourself.</small></div><div class="cb-level-grid">'+Object.entries(bank.levels).map(([id,cfg])=>'<button class="cb-level-card" type="button" data-cb-level="'+id+'"'+(levelReady(id)?'':' disabled')+'><span class="cb-level-count">'+cfg.count+' signals</span><strong>'+cfg.label+'</strong><span>'+(id==='easy'?'Single words':id==='medium'?'Short phrases':id==='hard'?'Full sentences':'Long messages')+'</span></button>').join('')+'</div>'+(status.valid?'':'<p class="cb-feedback" role="status">A level opens only when its complete message set passes validation.</p>')+'</section></div>';
+    const saved=progression()?.getGameSnapshot?.('codebreaker',{bankVersion:BANK_VERSION});
+    const resumeMarkup=saved&&levelReady(saved.level)&&saved.position<(bank.puzzles[saved.level]||[]).length
+      ?'<button type="button" class="tl-next" data-cb-resume>Resume '+esc(bank.levels[saved.level].label)+' · Signal '+(saved.position+1)+' ↗</button>':'';
+    root.innerHTML='<div class="cb-shell"><div class="tl-game-head"><button class="tl-back" type="button" data-cb-home>← Think Lab home</button><span class="tl-eyebrow">CODEBREAKER</span></div><section class="cb-panel"><div class="cb-kicker">CRACK THE MESSAGE</div><h2>Choose your level</h2><p class="cb-intro">Each coded letter stands for one English letter. Use the starter key and the repeated-letter patterns to decode the hidden message. There is no definition that gives away the answer; the challenge is to discover the letter substitutions.</p>'+resumeMarkup+'<div class="cb-example"><strong>How the code works</strong><div class="cb-example-line"><span>Encrypted</span><b>O H H J S</b></div><div class="cb-example-line"><span>Starter key</span><b>O → A &nbsp; H → P</b></div><div class="cb-example-line"><span>Revealed so far</span><b>A P P _ _</b></div><p>In this example, you discover that <b>J → L</b> and <b>S → E</b>, so the message becomes <b>APPLE</b>.</p><small>During a real puzzle, only the starter key is provided. You work out the missing letters yourself.</small></div><div class="cb-level-grid">'+Object.entries(bank.levels).map(([id,cfg])=>'<button class="cb-level-card" type="button" data-cb-level="'+id+'"'+(levelReady(id)?'':' disabled')+'><span class="cb-level-count">'+cfg.count+' signals</span><strong>'+cfg.label+'</strong><span>'+(id==='easy'?'Single words':id==='medium'?'Short phrases':id==='hard'?'Full sentences':'Long messages')+'</span></button>').join('')+'</div>'+(status.valid?'':'<p class="cb-feedback" role="status">A level opens only when its complete message set passes validation.</p>')+'</section></div>';
   }
   function renderPuzzle(){
     const item=puzzle();if(!item)return renderLevels();
@@ -33,6 +56,7 @@
       return '<button type="button" class="cb-letter-key" data-cb-plain="'+ch+'"'+(!active||locked.has(active)||used||completed?' disabled':'')+'>'+ch+'</button>';
     }).join('');
     root.innerHTML='<div class="cb-shell"><div class="tl-game-head"><button class="tl-back" type="button" data-cb-levels>← Choose level</button><span class="tl-eyebrow">CODEBREAKER · '+cfg.label.toUpperCase()+'</span></div><section class="cb-panel"><div class="cb-progress-row"><span class="cb-kicker">'+esc(item.title)+'</span><span class="cb-progress">'+(index+1)+' / '+cfg.count+'</span></div><h2>Decode the message</h2><p class="cb-instruction">Decode the message using the substitution key. Select a coded letter, then choose the English letter it represents. Every occurrence of that coded letter updates together, and the same coded letter always means the same English letter.</p><div class="cb-rules"><span><b>1</b> Select a coded letter</span><span><b>2</b> Assign an English letter</span><span><b>3</b> Decode the whole message</span></div><div class="cb-message-wrap"><span class="cb-label">ENCRYPTED MESSAGE</span><div class="cb-message" aria-label="Encrypted message">'+message+'</div></div><div class="cb-key-area"><div class="cb-key-heading"><strong>Your letter key</strong><span>Select a coded letter, then assign its replacement</span></div><div class="cb-key-grid">'+key+'</div><div class="cb-alphabet" aria-label="Choose the decoded letter">'+alphabet+'</div></div><div class="cb-actions"><button type="button" class="tl-secondary" data-cb-hint'+(completed?' disabled':'')+'>'+(hintStage===0?'Pattern hint':hintStage===1?'Cross-word hint':'Reveal one letter')+'</button><button type="button" class="tl-secondary" data-cb-clear'+(!active||locked.has(active)||completed?' disabled':'')+'>Clear selected key</button><button type="button" class="tl-next" data-cb-check'+(completed?' disabled':'')+'>Check message</button></div>'+(feedback?'<p class="cb-feedback" role="status">'+esc(feedback)+'</p>':'')+(completed?'<div class="cb-complete" role="status"><strong>✓ Message decoded!</strong><p>'+esc(item.answer)+'</p><button type="button" class="tl-next" data-cb-next>'+(index+1<cfg.count?'Next signal ↗':'Finish level ↗')+'</button></div>':'')+'</section></div>';
+    saveProgress();
   }
   function selectSymbol(ch){
     if(completed||locked.has(ch))return;
@@ -123,6 +147,7 @@
   function nextPuzzle(){
     if(!completed)return;
     if(index+1>=list().length){
+      progression()?.clearGameSnapshot?.('codebreaker');
       root.innerHTML='<div class="cb-shell"><section class="cb-panel cb-finish"><span class="cb-kicker">LEVEL COMPLETE</span><h2>Every signal decoded.</h2><p>You solved all '+list().length+' '+bank.levels[level].label+' messages. Each one was cracked at your own pace.</p><button type="button" class="tl-next" data-cb-levels>Choose another level</button><button type="button" class="tl-back" data-cb-home>Back to Think Lab</button></section></div>';
       return;
     }
@@ -130,10 +155,12 @@
   }
   function startLevel(id){
     if(!levelReady(id))return;
+    progression()?.clearGameSnapshot?.('codebreaker');
+    progression()?.recordGameStart?.('codebreaker',{level:id});
     level=id;index=0;seedPuzzle();renderPuzzle();
   }
   root.addEventListener('click',event=>{
-    const target=event.target.closest('[data-cb-home],[data-cb-levels],[data-cb-level],[data-cb-symbol],[data-cb-plain],[data-cb-hint],[data-cb-clear],[data-cb-check],[data-cb-next]');
+    const target=event.target.closest('[data-cb-resume],[data-cb-home],[data-cb-levels],[data-cb-level],[data-cb-symbol],[data-cb-plain],[data-cb-hint],[data-cb-clear],[data-cb-check],[data-cb-next]');
     if(!target||!root.contains(target))return;
     if(target.hasAttribute('data-cb-home')){
       window.EpiphanySpeech?.stop?.();level=null;root.innerHTML='';
@@ -141,6 +168,7 @@
       else root.dispatchEvent(new CustomEvent('epiphany:think-lab-home'));
       return;
     }
+    if(target.hasAttribute('data-cb-resume')){if(!resumeProgress())renderLevels();return;}
     if(target.hasAttribute('data-cb-levels')){renderLevels();return;}
     if(target.hasAttribute('data-cb-level')){startLevel(target.dataset.cbLevel);return;}
     if(target.hasAttribute('data-cb-symbol')){selectSymbol(target.dataset.cbSymbol);return;}

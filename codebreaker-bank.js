@@ -108,5 +108,5 @@
     return report;
   }
   const puzzles=Object.freeze(Object.fromEntries(Object.entries(source).map(([level,list])=>[level,Object.freeze(list.map(p=>Object.freeze({...p,known:Object.freeze(p.known.map(pair=>Object.freeze({...pair})))})))])));
-  window.EPIPHANY_CODEBREAKER_BANK=Object.freeze({levels:LEVELS,puzzles,validatePuzzle,validateBank,analyzePuzzle,qualityReport,letters:LETTERS});
+  window.EPIPHANY_CODEBREAKER_BANK=Object.freeze({version:'codebreaker-bank-v1',levels:LEVELS,puzzles,validatePuzzle,validateBank,analyzePuzzle,qualityReport,letters:LETTERS});
 })();

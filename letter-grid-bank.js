@@ -41,5 +41,5 @@
     const errors=[];for(const [level,cfg] of Object.entries(LEVELS)){const list=source[level]||[];if(!Array.isArray(list)||list.length!==cfg.count){errors.push(level+' must contain '+cfg.count+' puzzles.');continue;}const ids=new Set();for(const item of list){if(ids.has(item.id))errors.push(level+' has duplicate puzzle IDs.');ids.add(item.id);const result=validatePuzzle(item,level);if(!result.valid)errors.push(item.id+': '+result.errors.join(' '));}}
     return {valid:errors.length===0,errors};
   }
-  window.EPIPHANY_LETTER_GRID_BANK=Object.freeze({levels:LEVELS,puzzles,validatePuzzle,validateBank,occurrences});
+  window.EPIPHANY_LETTER_GRID_BANK=Object.freeze({version:'letter-grid-bank-v1',levels:LEVELS,puzzles,validatePuzzle,validateBank,occurrences});
 })();
