@@ -33,8 +33,8 @@ The Diagnostics panel is a developer-only troubleshooting tool for loading, adap
 2. Select **Start recording**.
 3. Reproduce the slow load or failure in the app. The recording continues while the developer panel is closed.
 4. Return to Diagnostics to inspect the latest events.
-5. Stop recording before exporting or clearing the log.
-6. Export JSON only when a local diagnostic artifact is needed.
+5. Stop recording when you have captured the issue.
+6. Export the current sanitized buffer when a local diagnostic artifact is needed; clearing the buffer is also available during a session.
 
 The panel shows the latest 60 events while the in-memory buffer retains up to 200. Export includes the sanitized events currently in memory.
 
