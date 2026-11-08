@@ -9,7 +9,10 @@
     $$('[data-dev-panel]').forEach(panel=>panel.classList.toggle('is-active',panel.dataset.devPanel===name));
     if(name==='diagnostics'){
       refreshDiagnostics();
-      loadDiagnostics().then(initDiagnostics).catch(()=>{
+      loadDiagnostics().then(()=>{
+        initDiagnostics();
+        if(diagnosticsRender&&window.EPIPHANY_DIAGNOSTICS)diagnosticsRender(window.EPIPHANY_DIAGNOSTICS.getSnapshot());
+      }).catch(()=>{
         const status=$('#diagnostics-status');
         if(status)status.textContent='Diagnostics could not load. Reopen this section to retry.';
       });
@@ -44,6 +47,7 @@
   let developerToolsPromise = null;
   let diagnosticsPromise = null;
   let diagnosticsInitialized = false;
+  let diagnosticsRender = null;
 
   function loadDiagnostics(){
     if(window.EPIPHANY_DIAGNOSTICS)return Promise.resolve();
@@ -72,6 +76,8 @@
       if(stop)stop.disabled=!snapshot.active;
       if(clear)clear.disabled=!events.length;
       if(exportButton)exportButton.disabled=!events.length;
+      const panel=$('[data-dev-panel="diagnostics"]');
+      if(!panel||!panel.classList.contains('is-active')||$('#developer-overlay')?.hidden)return;
       const log=$('#diagnostics-log');
       if(!log)return;
       log.replaceChildren();
@@ -89,6 +95,7 @@
         row.append(time,label,detail);log.appendChild(row);
       });
     };
+    diagnosticsRender=render;
     api.subscribe(render);
     $('#diagnostics-start')?.addEventListener('click',()=>{
       if(!allowed())return;
