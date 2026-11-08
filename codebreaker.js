@@ -66,7 +66,7 @@
     if(correct){
       completed=true;feedback='Every letter is in the right place.';
     }else{
-      feedback='Not quite. Compare the repeated letters and clue, then adjust your key. There is no penalty.';
+      feedback='Not quite. Compare the repeated-letter patterns and your existing key, then adjust your assignments. There is no penalty.';
     }
     if(window.EpiphanyThinkLab&&typeof window.EpiphanyThinkLab.recordResult==='function'){
       window.EpiphanyThinkLab.recordResult('vocabulary','codebreaker',correct,correct&&index===list().length-1,{trackAdaptive:false});
