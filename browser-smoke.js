@@ -110,7 +110,7 @@ test('main navigation tabs open without uncaught page errors', async t => {
     assert.equal(await firstVisitPage.evaluate(() => sessionStorage.getItem('epiphany-account-prompt-shown-v1')), '1', 'the invitation dismissal must be remembered for this session');
     await firstVisitPage.close();
 
-    const views = ['home','stories','chronicle','resonance','world','arcade','thinklab','casebound','summon','words','trophies','progress','profile'];
+    const views = ['home','stories','chronicle','resonance','world','fluentia','thinklab','casebound','summon','words','trophies','progress','profile'];
     for (const view of views) {
       const page = await browser.newPage();
       await page.setViewportSize({ width: 1280, height: 900 });
@@ -213,12 +213,10 @@ test('main navigation tabs open without uncaught page errors', async t => {
         assert.ok(requested.some(path => path.endsWith('/data-world.js')), 'World should load its data on first open');
         assert.ok(requested.some(path => path.endsWith('/data-world-sprites.js')), 'World should load its art on first open');
       }
-      if (view === 'arcade') {
-        assert.ok(requested.some(path => path.endsWith('/practice-lab.js')), 'Arcade should load practice tools on first open');
-        await page.locator('.arcade-play').first().click();
-        await page.locator('#game').waitFor({ state: 'visible', timeout: 5000 });
-        await page.locator('#game-body').waitFor({ state: 'visible', timeout: 5000 });
-        if (await page.locator('#game-body .answer').count()) await page.locator('#game-body .answer').first().click();
+      if (view === 'fluentia') {
+        await page.locator('.fluentia-domain-card').first().waitFor({ state: 'visible', timeout: 5000 });
+        assert.equal(await page.locator('.fluentia-domain-card').count(), 6, 'Fluentia should expose all six practice domains');
+        assert.ok(await page.locator('.fluentia-mode-card').count() >= 1, 'Fluentia should expose its mixed-practice entry');
       }
       if (view === 'thinklab') {
         assert.ok(requested.some(path => path.endsWith('/crossword-quest-bank.js')), 'Crossword Quest bank schema should load with Think Lab');
