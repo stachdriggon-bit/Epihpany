@@ -37,7 +37,7 @@
     'asset-manager.css?v=asset-manager-20261030-1',
     'artwork-manager.css?v=artwork-manager-20261030-1',
     'card-image-editor.css?v=card-image-editor-20261031-1',
-    'diagnostics.css?v=diagnostics-20261108-1'
+    'diagnostics.css?v=diagnostics-20261108-2'
   ];
   const developerScripts = [
     'asset-manager.js?v=asset-manager-20261030-1',
@@ -52,7 +52,7 @@
   function loadDiagnostics(){
     if(window.EPIPHANY_DIAGNOSTICS)return Promise.resolve();
     if(!diagnosticsPromise){
-      diagnosticsPromise=loadScript('diagnostics.js?v=diagnostics-20261108-1')
+      diagnosticsPromise=loadScript('diagnostics.js?v=diagnostics-20261108-2')
         .catch(error=>{diagnosticsPromise=null;throw error;});
     }
     return diagnosticsPromise;
