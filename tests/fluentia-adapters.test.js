@@ -111,6 +111,8 @@ function expandedFixture() {
   sources.practiceSamples = [{id:'PL-A1-01',level:'A1',text:'I would like water.'}];
   sources.textwiseSequenceBank = [{id:'TW-A1-01',level:'A1',title:'A notice',steps:['Read the notice.','Check the date.','Follow the instructions.']}];
   sources.soundMazeBank = {levels:{A1:{guided:[{id:'SM-A1-01',target:'cat',options:['cat','cut','kit','cot'],explain:'Cat has /æ/.'}],steady:[],challenge:[]}}};
+  sources.fluentiaHistory = [{eventId:'session-a:0',sessionId:'session-a',activityId:'soundscape-sound-maze',sourceActivityId:'sound-maze',itemId:'SM-A1-01',level:'A1',domain:'soundscape',correct:false,errorType:'sound-discrimination'}];
+  sources.fluentiaReviewState = {'sound-maze:SM-A1-01':{mastered:false,attempts:1}};
   sources.reviewState = {
     review:[{word:'apple',meaning:'a round fruit',errors:3}],
     words:[['apple','a round fruit']],
@@ -128,7 +130,7 @@ test('extended sources register matching, listening, speech, sequencing and revi
     'real-world-speaking-shadowing','textwise-sequence','sentence-studio-sentence-builder',
     'wordcraft-personal-review','sentence-studio-personal-review'
   ]) assert.ok(ids.has(id), id);
-  assert.equal(adapters.length, 21);
+  assert.equal(adapters.length, 40);
 });
 
 test('Sound Maze, dictation, shadowing and Word Match keep distinct evaluation semantics', () => {
@@ -222,6 +224,24 @@ test('Your Review feeds stay out of ordinary mixed sessions but remain individua
   assert.ok(!mixed.activityIds.includes('sentence-studio-personal-review'));
   const review = engine.createSession({mode:'single',activityId:'wordcraft-personal-review',level:'A1',itemCount:1});
   assert.deepEqual(review.activityIds, ['wordcraft-personal-review']);
+});
+
+test('Your Review includes missed Fluentia items with their original interaction and mastery state', () => {
+  const sources = expandedFixture();
+  const adapters = AdapterFactory.createAdapters(sources);
+  const review = adapters.find(item => item.id === 'soundscape-sound-maze-history-review');
+  assert.ok(review, 'Sound Maze should have a history review adapter');
+  assert.equal(review.reviewOnly, true);
+  assert.equal(review.interactionType, 'listening');
+  const [missed] = review.getItems({level:'A1'});
+  assert.equal(missed.id, 'SM-A1-01');
+  assert.equal(missed.sourceActivityId, 'sound-maze');
+  assert.equal(missed.reviewErrorType, 'sound-discrimination');
+  assert.equal(review.evaluate(missed, 'cat').correct, true);
+  sources.fluentiaReviewState['sound-maze:SM-A1-01'].mastered = true;
+  assert.deepEqual(review.getItems({level:'A1'}), [], 'a correctly reviewed item should leave the active review queue');
+  sources.fluentiaReviewState['sound-maze:SM-A1-01'].mastered = false;
+  assert.equal(review.getItems({level:'A1'}).length, 1, 'a later mistake should make the item eligible again');
 });
 
 test('Soundscape dictation bank and Wordcraft Speed Round preserve CEFR and answer semantics', () => {
