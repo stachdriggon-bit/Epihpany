@@ -42,6 +42,29 @@
       const state = readState() || {};
       return clone(Array.isArray(state.fluentiaHistory) ? state.fluentiaHistory : []);
     }
+    function recordReviewOutcome(event) {
+      if (!event || typeof event !== 'object' || typeof event.correct !== 'boolean' ||
+          !event.itemId || !(event.sourceActivityId || event.activityId)) {
+        throw new TypeError('A fully attributed Fluentia review outcome is required.');
+      }
+      const history = getHistory();
+      if (event.eventId && history.some(row => row && row.eventId === event.eventId)) {
+        const state = readState() || {};
+        const key = String(event.sourceActivityId || event.activityId) + ':' + String(event.itemId);
+        return clone((state.fluentiaReviewState || {})[key] || null);
+      }
+      const state = readState() || {};
+      const key = String(event.sourceActivityId || event.activityId) + ':' + String(event.itemId);
+      const previous = state.fluentiaReviewState || {};
+      const prior = previous[key] || {};
+      const outcome = {
+        mastered: event.correct === true,
+        attempts: (Number(prior.attempts) || 0) + 1,
+        updatedAt: event.answeredAt || null
+      };
+      state.fluentiaReviewState = {...previous, [key]: outcome};
+      return clone(outcome);
+    }
     function recordEvent(event) {
       const projected = toLegacyResult(event);
       if (!projected.eventId || !projected.sessionId || !projected.activityId || !projected.questionId) {
@@ -53,7 +76,7 @@
       if (typeof writeHistory === 'function') writeHistory(clone(next));
       return {stored:true, duplicate:false, history:clone(next)};
     }
-    return Object.freeze({getReviewSnapshot, toLegacyResult, getHistory, recordEvent});
+    return Object.freeze({getReviewSnapshot, toLegacyResult, getHistory, recordReviewOutcome, recordEvent});
   }
   const api = Object.freeze({version:'1.1.0', createBridge});
   if (root) root.EPIPHANY_FLUENTIA_PROGRESS_BRIDGE = api;
