@@ -207,7 +207,20 @@
         wordOfDayItems: typeof WOTD_WORDS !== 'undefined' ? WOTD_WORDS : [],
         textwiseSequenceBank: window.EPIPHANY_TEXTWISE_SEQUENCE_BANK || [],
         soundscapeDictationBank: window.EPIPHANY_SOUNDSCAPE_DICTATION_BANK || [],
-        onProgress: event => window.EPIPHANY_FLUENTIA_PROGRESS?.recordEvent(event),
+        onProgress: event => {
+          const key = String(event.sourceActivityId || event.activityId) + ':' + String(event.itemId || '');
+          const previous = state.fluentiaReviewState || {};
+          const prior = previous[key] || {};
+          state.fluentiaReviewState = {
+            ...previous,
+            [key]: {
+              mastered: event.correct === true,
+              attempts: (Number(prior.attempts) || 0) + 1,
+              updatedAt: event.answeredAt || new Date().toISOString()
+            }
+          };
+          window.EPIPHANY_FLUENTIA_PROGRESS?.recordEvent(event);
+        },
         ...(extra || {})
       });
       Object.defineProperty(window, 'EPIPHANY_FLUENTIA_REGISTER_SOURCES', {
@@ -2053,6 +2066,13 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     if (name === 'mytools') { renderMyTools(); }
     if (name === 'home') injectMonthlyWordThread(name);
     if (name === 'progress') renderProgressForecast();
+    if (name === 'fluentia') {
+      const host = $('#fluentia-content');
+      if (host) host.innerHTML = '<div class="fluentia-empty" role="status">Preparing your practice activities…</div>';
+      window.EPIPHANY_LAZY_LOAD('fluentia')
+        .then(() => document.dispatchEvent(new CustomEvent('epiphany:fluentia-sources-ready')))
+        .catch(error => document.dispatchEvent(new CustomEvent('epiphany:fluentia-sources-failed', {detail:{message:String(error && error.message || error)}})));
+    }
     if (name === 'home') renderHome();
     if (name === 'arcade') { renderArcade(); window.EPIPHANY_LAZY_LOAD('arcade').catch(() => toast('Practice tools could not load. Connect to the internet and try again.')); }
     if (name === 'stories') renderStories();
