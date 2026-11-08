@@ -17,7 +17,7 @@
   const byId = new Map(definitions.map(item => [item.id,item]));
   const SKILL_IDS = Object.freeze(['vocabulary','grammar','listening','conversation','reading','spelling']);
   const TRAINING_MODES = Object.freeze(['guided','steady','challenge']);
-  const MAX_SNAPSHOT_BYTES = 16384;
+  const MAX_SNAPSHOT_BYTES = 65536;
   const clone = value => value == null ? value : JSON.parse(JSON.stringify(value));
   const validId = id => typeof id === 'string' && byId.has(id);
   const plainObject = value => !!value && typeof value === 'object' && !Array.isArray(value) &&

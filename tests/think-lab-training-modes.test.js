@@ -51,6 +51,7 @@ function createHarness(options = {}) {
   const listeners = {};
   const feedback = {hidden:true,className:'',innerHTML:'',textContent:''};
   const recordedResults = [];
+  const savedSnapshots = options.savedSnapshots || {};
   const root = {
     innerHTML: '',
     addEventListener(type, callback) { listeners[type] = callback; },
@@ -83,7 +84,13 @@ function createHarness(options = {}) {
       getGameDifficulty: () => ({level:'challenge',hintLevel:2,attempts:0,accuracy:null}),
       getDifficulty: () => ({level:'challenge',hintLevel:2}),
       registerGame() {},
-      recordResult(...args) { recordedResults.push(args); }
+      recordResult(...args) { recordedResults.push(args); },
+      recordGameStart() {},
+      recordGameCompletion() {},
+      saveGameSnapshot(gameId,snapshot) { savedSnapshots[gameId]={...snapshot,gameId,schemaVersion:1}; return {saved:true}; },
+      getGameSnapshot(gameId,expected={}) { const value=savedSnapshots[gameId]; if(!value)return null; if(expected.bankVersion&&value.bankVersion!==expected.bankVersion)return null; return value; },
+      clearGameSnapshot(gameId) { delete savedSnapshots[gameId]; return true; },
+      getGameHistory() { return {games:{},recentGames:Object.keys(savedSnapshots)}; }
     }
   };
   const document = {getElementById: id => id === 'think-lab-content' ? root : null};
@@ -94,7 +101,7 @@ function createHarness(options = {}) {
     assert.equal(typeof listeners.click, 'function', 'Think Lab click handler should be registered');
     listeners.click({target:{closest: candidate => candidate === selector ? element : null}});
   }
-  return {root,click,getSavedMazeCEFR:()=>savedMazeCEFR,chainBank:window.EPIPHANY_CHAIN_REACTION_BANK,feedback,recordedResults,getCrosswordOpened:()=>crosswordOpened,getWordHuntOpened:()=>wordHuntOpened,getCodebreakerOpened:()=>codebreakerOpened,getLetterGridOpened:()=>letterGridOpened};
+  return {root,click,getSavedMazeCEFR:()=>savedMazeCEFR,chainBank:window.EPIPHANY_CHAIN_REACTION_BANK,feedback,recordedResults,getCrosswordOpened:()=>crosswordOpened,getWordHuntOpened:()=>wordHuntOpened,getCodebreakerOpened:()=>codebreakerOpened,getLetterGridOpened:()=>letterGridOpened,savedSnapshots};
 }
 
 test('existing mode-based Think Lab games open the shared three-mode picker before play', () => {
@@ -336,4 +343,20 @@ test('Think Lab game skill registration is sourced from the canonical progressio
   for (const game of registry) assert.ok(game.id && game.skill);
   assert.match(source, /progressionRegistry\.getRegistry\(\)\.reduce/);
   assert.doesNotMatch(source, /const gameSkills = \{odd:/);
+});
+
+test('core Think Lab rounds resume from the next unrecorded round without replaying XP',()=>{
+  const first=createHarness();
+  first.click('[data-think-game]',{thinkGame:'odd'});
+  first.click('[data-think-training-mode]',{thinkTrainingMode:'steady',thinkTrainingGame:'odd'});
+  assert.match(first.root.innerHTML,/ROUND 1 OF/);
+  first.click('[data-think-answer]',{thinkAnswer:'0'});
+  const snapshot=first.savedSnapshots.odd;
+  assert.ok(snapshot,'the active round should be saved to the shared player profile');
+  assert.equal(snapshot.position,1,'an answered round is checkpointed at the next round');
+  const resumed=createHarness({savedSnapshots:first.savedSnapshots});
+  assert.match(resumed.root.innerHTML,/Resume session/);
+  resumed.click('[data-think-resume]',{thinkResume:'odd'});
+  assert.match(resumed.root.innerHTML,/ROUND 2 OF/);
+  assert.equal(resumed.recordedResults.length,0,'restoring must not record the previous answer or award XP again');
 });

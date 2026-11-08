@@ -721,6 +721,70 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
     {id:'codebreaker',num:'10',icon:'⌘',name:'Codebreaker',tag:'CIPHER & DEDUCTION',desc:'Decode encrypted messages by discovering the letter-substitution key.',time:'At your own pace'},
     {id:'lettergrid',num:'11',icon:'⌗',name:'Letter Path',tag:'STRAIGHT-LINE WORD SEARCH',desc:'Find hidden words running across, down, or diagonally through a crowded letter grid.',time:'At your own pace'}
   ];
+  const INTERNAL_SESSION_BANK_VERSION = 'think-lab-rounds-20261109-v1';
+  let restoringInternalSession = false;
+  function saveInternalProgress(position = index) {
+    const bridge = window.EpiphanyThinkLab, registry = window.EPIPHANY_THINK_LAB_PROGRESSION;
+    const definition = registry && registry.getGame ? registry.getGame(mode) : null;
+    if (restoringInternalSession || !bridge || !definition || definition.adapter !== 'think-lab' || !Array.isArray(activePool) || !activePool.length) return false;
+    const payload = {
+      pool:activePool, score, roundMistakes, clueCount, oddHintStep, ladderPath:ladderPath.slice(),
+      ladderWordNote, ladderMistakeRecorded, forgePlaced:forgePlaced.slice(), scramblePlaced:scramblePlaced.slice(),
+      chainStepIndex, chainPath:chainPath.slice(), cefrLevel:mode==='maze'?selectedMazeCEFR:mode==='translator'?selectedTranslatorCEFR:null
+    };
+    const result = bridge.saveGameSnapshot?.(mode,{bankVersion:INTERNAL_SESSION_BANK_VERSION,level:selectedTrainingMode,trainingMode:selectedTrainingMode,position,payload});
+    return !!(result && result.saved);
+  }
+  function internalResumeMarkup() {
+    const bridge=window.EpiphanyThinkLab,registry=window.EPIPHANY_THINK_LAB_PROGRESSION;
+    if(!bridge?.getGameHistory||!bridge?.getGameSnapshot||!registry?.getGame)return '';
+    const history=bridge.getGameHistory(),recent=Array.isArray(history.recentGames)?history.recentGames:[];
+    for(const id of recent){
+      const definition=registry.getGame(id);
+      if(!definition||definition.adapter!=='think-lab')continue;
+      const snapshot=bridge.getGameSnapshot(id,{bankVersion:INTERNAL_SESSION_BANK_VERSION});
+      if(!snapshot||!snapshot.payload||!Array.isArray(snapshot.payload.pool))continue;
+      return '<div class="tl-game-card tl-resume-card"><div class="tl-game-kicker">YOUR SAVED SESSION</div><p>Continue '+esc(definition.name)+' · '+esc(snapshot.trainingMode.toUpperCase())+' · Round '+Math.min(snapshot.position+1,snapshot.payload.pool.length)+' of '+snapshot.payload.pool.length+'</p><button type="button" class="tl-next" data-think-resume="'+esc(id)+'">Resume session ↗</button></div>';
+    }
+    return '';
+  }
+  function resumeInternalGame(id) {
+    const bridge=window.EpiphanyThinkLab,registry=window.EPIPHANY_THINK_LAB_PROGRESSION;
+    const definition=registry?.getGame?.(id);
+    const snapshot=bridge?.getGameSnapshot?.(id,{bankVersion:INTERNAL_SESSION_BANK_VERSION});
+    const p=snapshot?.payload;
+    if(!definition||definition.adapter!=='think-lab'||!snapshot||!p||!Array.isArray(p.pool)||!p.pool.length||p.pool.length>24||
+       !['guided','steady','challenge'].includes(snapshot.trainingMode)||snapshot.level!==snapshot.trainingMode||
+       !Number.isInteger(snapshot.position)||snapshot.position<0||snapshot.position>p.pool.length||
+       !Number.isInteger(p.score)||p.score<0||p.score>p.pool.length||p.pool.some(item=>!item||typeof item!=='object'||Array.isArray(item)))return false;
+    if(id==='maze'&&(!THINK_LAB_CEFR_LEVELS.includes(p.cefrLevel)||!canChooseThinkLabCEFR(p.cefrLevel)))return false;
+    if(id==='translator'&&p.cefrLevel!=='adaptive'&&(!THINK_LAB_CEFR_LEVELS.includes(p.cefrLevel)||!canChooseThinkLabCEFR(p.cefrLevel)))return false;
+    const current=p.pool[snapshot.position]||p.pool[p.pool.length-1];
+    if(id==='wordladder'&&(!current||typeof current.start!=='string'||typeof current.goal!=='string'||!Array.isArray(p.ladderPath)||p.ladderPath.some(word=>typeof word!=='string')))return false;
+    if(id==='chain'&&(!current||!Array.isArray(current.links)||!Number.isInteger(p.chainStepIndex)||p.chainStepIndex<0||p.chainStepIndex>=current.links.length))return false;
+    if(id==='forge'&&(!Array.isArray(p.forgePlaced)||p.forgePlaced.length!==(current.answerWord||'').length||p.forgePlaced.some(value=>value!==null&&(!Number.isInteger(value)||value<0||value>=String(current.letters||'').length))))return false;
+    if(id==='scramble'&&(!Array.isArray(p.scramblePlaced)||p.scramblePlaced.length!==(current.words||[]).length||p.scramblePlaced.some(value=>value!==null&&(!Number.isInteger(value)||value<0||value>=current.words.length))))return false;
+    mode=id;pickerGameId=id;pickerStage='game';selectedTrainingMode=snapshot.trainingMode;activePool=p.pool;
+    index=snapshot.position;score=p.score;roundMistakes=Math.max(0,Number(p.roundMistakes)||0);clueCount=Math.max(0,Number(p.clueCount)||0);
+    oddHintStep=Math.max(0,Math.min(2,Number(p.oddHintStep)||0));ladderPath=Array.isArray(p.ladderPath)?p.ladderPath.slice():[];
+    ladderWordNote=p.ladderWordNote&&typeof p.ladderWordNote==='object'?p.ladderWordNote:null;
+    ladderMistakeRecorded=!!p.ladderMistakeRecorded;forgePlaced=Array.isArray(p.forgePlaced)?p.forgePlaced.slice():[];
+    scramblePlaced=Array.isArray(p.scramblePlaced)?p.scramblePlaced.slice():[];
+    connectionSelected=[];chainStepIndex=Math.max(0,Number(p.chainStepIndex)||0);chainPath=Array.isArray(p.chainPath)?p.chainPath.slice():[];
+    selectedMazeCEFR=id==='maze'?p.cefrLevel:null;selectedTranslatorCEFR=id==='translator'?(p.cefrLevel||'adaptive'):'adaptive';
+    const hintLevel=selectedTrainingMode==='guided'?2:selectedTrainingMode==='steady'?1:0;
+    activeDifficulty=Object.assign({},difficultyForMode(id),{level:selectedTrainingMode,hintLevel});locked=false;
+    bridge.recordGameStart?.(id,{level:id==='maze'?selectedMazeCEFR:id==='translator'?selectedTranslatorCEFR:selectedTrainingMode,trainingMode:selectedTrainingMode});
+    if(index>=activePool.length){
+      root.innerHTML='<div class="tl-finish"><span class="tl-finish-mark">∴</span><span class="tl-eyebrow">CASE FILE CLOSED</span><h2>Good thinking.</h2><p>You solved <b>'+score+' of '+activePool.length+'</b> challenges. Your saved session is complete.</p><button type="button" class="tl-next" data-think-restart>Try another case ↗</button><button type="button" class="tl-back" data-think-home>Back to Think Lab</button></div>';
+      bridge.clearGameSnapshot?.(id);bridge.recordGameCompletion?.(id,'session');
+      mode=null;activePool=null;activeDifficulty=null;pickerStage='landing';pickerGameId=null;return true;
+    }
+    restoringInternalSession=true;renderGame();restoringInternalSession=false;
+    if(id==='forge')refreshPuzzleBoard('forge');
+    if(id==='scramble')refreshPuzzleBoard('scramble');
+    saveInternalProgress(index);return true;
+  }
   function insightsMarkup() {
     const data = window.EpiphanyThinkLab && typeof window.EpiphanyThinkLab.getInsights === 'function'
       ? window.EpiphanyThinkLab.getInsights() : null;
@@ -745,7 +809,8 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
   }
   function landing() {
     mode = null;
-    root.innerHTML = '<div class="tl-mission"><div><span class="tl-eyebrow"><i></i> THINKING MODE · ENGLISH INSIDE</span><h2>Don’t just play.<br><em>Figure it out.</em></h2><p>Every challenge is a small case to solve. Notice patterns, connect evidence and discover why one answer fits better than another.</p><div class="tl-mission-meta"><span>⌁ Logic</span><span>◉ Context</span><span>⇄ Expression</span></div></div><div class="tl-orbit" aria-hidden="true"><span class="tl-orbit-core">EP<span>·</span></span><i class="tl-node tl-node-a">?</i><i class="tl-node tl-node-b">A≠B</i><i class="tl-node tl-node-c">∴</i><i class="tl-link tl-link-a"></i><i class="tl-link tl-link-b"></i></div></div>'+insightsMarkup()+'<div class="tl-daily"><div><span class="tl-eyebrow">EXPLORE THINK LAB</span><h3>11 challenges. One sharper mind.</h3><p>Choose from eleven distinct games covering vocabulary, listening, spelling, language patterns and deduction. Every challenge explains the reasoning behind the answer.</p></div><span class="tl-case-stamp">THINK LAB<br><b>11 GAMES</b></span></div><div class="tl-cases">'+games.map(g=>'<button type="button" class="tl-case" data-think-game="'+g.id+'"><span class="tl-case-top"><span class="tl-case-number">'+g.num+' / CASE</span><span class="tl-case-icon">'+g.icon+'</span></span><span class="tl-case-tag">'+g.tag+'</span><strong>'+g.name+'</strong><span class="tl-case-desc">'+g.desc+'</span><span class="tl-case-bottom"><span>'+g.time+'</span><b>Open case ↗</b></span></button>').join('')+'</div><p class="tl-footer-note"><span>✳</span> No guessing blindly. Every answer comes with a reason.</p>';
+    const resumeMarkup = internalResumeMarkup();
+    root.innerHTML = '<div class="tl-mission"><div><span class="tl-eyebrow"><i></i> THINKING MODE · ENGLISH INSIDE</span><h2>Don’t just play.<br><em>Figure it out.</em></h2><p>Every challenge is a small case to solve. Notice patterns, connect evidence and discover why one answer fits better than another.</p><div class="tl-mission-meta"><span>⌁ Logic</span><span>◉ Context</span><span>⇄ Expression</span></div></div><div class="tl-orbit" aria-hidden="true"><span class="tl-orbit-core">EP<span>·</span></span><i class="tl-node tl-node-a">?</i><i class="tl-node tl-node-b">A≠B</i><i class="tl-node tl-node-c">∴</i><i class="tl-link tl-link-a"></i><i class="tl-link tl-link-b"></i></div></div>'+insightsMarkup()+'<div class="tl-daily"><div><span class="tl-eyebrow">EXPLORE THINK LAB</span><h3>11 challenges. One sharper mind.</h3><p>Choose from eleven distinct games covering vocabulary, listening, spelling, language patterns and deduction. Every challenge explains the reasoning behind the answer.</p></div><span class="tl-case-stamp">THINK LAB<br><b>11 GAMES</b></span></div>'+resumeMarkup+'<div class="tl-cases">'+games.map(g=>'<button type="button" class="tl-case" data-think-game="'+g.id+'"><span class="tl-case-top"><span class="tl-case-number">'+g.num+' / CASE</span><span class="tl-case-icon">'+g.icon+'</span></span><span class="tl-case-tag">'+g.tag+'</span><strong>'+g.name+'</strong><span class="tl-case-desc">'+g.desc+'</span><span class="tl-case-bottom"><span>'+g.time+'</span><b>Open case ↗</b></span></button>').join('')+'</div><p class="tl-footer-note"><span>✳</span> No guessing blindly. Every answer comes with a reason.</p>';
   }
   // Register each game against the shared adaptive policy. New games should add
   // one entry here; difficulty thresholds, confidence and hint calibration remain central.
@@ -1054,6 +1119,7 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
       intro += '<div class="tl-odd-hint tl-guided-support"><button type="button" class="tl-secondary" data-training-hint>Reveal a hint</button><p class="tl-game-instruction" data-training-hint-text hidden></p></div>';
     }
     root.innerHTML = '<div class="tl-game-head"><div class="tl-game-nav"><button class="tl-back" type="button" data-think-back>← Choose difficulty</button><button class="tl-back tl-home-back" type="button" data-think-home>Think Lab home</button></div><span class="tl-eyebrow">CASE '+String(index+1).padStart(2,'0')+' / '+pool.length+'</span><span class="tl-score">SOLVED <b>'+score+'</b></span></div><div class="tl-game-card"><div class="tl-game-kicker">'+(mode==='odd'?'PATTERN ANALYSIS · '+esc(item.cefrLevel || 'A1'):mode==='detective'?'EVIDENCE BOARD':mode==='translator'?'NATURAL EXPRESSION · '+esc(item.cefrLevel || 'A1'):mode==='wordladder'?'WORD TRANSFORMATION':mode==='forge'?'WORD FORGE':mode==='connections'?'WORD CONNECTIONS':mode==='scramble'?'SENTENCE BUILDING':mode==='chain'?'WORD ASSOCIATION':'LISTENING MAZE · '+esc(selectedMazeCEFR || 'A1'))+'</div><div class="tl-level-tag">'+(difficulty.level==='challenge'?'CHALLENGE':difficulty.level==='steady'?'STEADY':'GUIDED')+'</div><h2>'+esc(mode==='detective'||mode==='chain'?item.title:mode==='wordladder'?'Transform the word':mode==='maze'?'Find the sound path':item.prompt)+'</h2><p class="tl-game-instruction">'+esc(mode==='odd'?item.why:mode==='translator'?'Read the Arabic sentence, then choose the natural English equivalent.':mode==='wordladder'?'Build a chain of real words. Only one letter may change in each move.':mode==='maze'?'Listen carefully, replay the word if needed, then choose the matching spelling.':mode==='forge'?'Use the available letters and clue to build the word yourself.':mode==='connections'?'Find the four words that form one precise shared group. The remaining tiles are carefully selected distractors.':mode==='scramble'?'Build a natural English sentence from the mixed-up word bank.':mode==='chain'?'Build a three-link association chain. Each choice becomes the starting point for the next link.':'Reveal the clues and select the conclusion they support.')+'</p>'+intro+roundNote+'<div class="tl-feedback" id="tl-feedback" aria-live="polite" hidden></div><div class="tl-game-actions"><span>ROUND '+(index+1)+' OF '+pool.length+'</span><button class="tl-next" type="button" data-think-next hidden>Next round →</button></div></div>';
+    saveInternalProgress(index);
     if (mode === 'maze' && index + 1 < pool.length) {
       const nextTarget = pool[index + 1].target;
       window.EpiphanySpeech?.prefetch?.(nextTarget, {rate:0.82});
@@ -1151,6 +1217,7 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
       root.innerHTML = '<div class="tl-game-card"><div class="tl-game-kicker">WORD CONNECTIONS</div><h2>QUESTION BANK NOT READY</h2><p class="tl-game-instruction">The reviewed Word Connections bank could not be loaded. No sample questions will be shown.</p><button type="button" class="tl-back" data-think-back>← Choose difficulty</button><button type="button" class="tl-back" data-think-home>Think Lab home</button></div>';
       return;
     }
+    window.EpiphanyThinkLab?.clearGameSnapshot?.(id);
     if (window.EpiphanyThinkLab && typeof window.EpiphanyThinkLab.recordGameStart === 'function') {
       const selectedLevel = id === 'maze' ? selectedMazeCEFR : id === 'translator' ? selectedTranslatorCEFR : selectedTrainingMode;
       window.EpiphanyThinkLab.recordGameStart(id,{level:selectedLevel,trainingMode:selectedTrainingMode});
@@ -1317,6 +1384,7 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
       fb.hidden=false;fb.className='tl-feedback is-correct';fb.innerHTML='<strong>✓ Sentence built!</strong><p>'+esc(item.sentence)+' — '+esc(item.explain)+'</p>';const next=root.querySelector('[data-think-next]');if(next)next.hidden=false;return;
     }
 
+    const resume=e.target.closest('[data-think-resume]');if(resume){if(!resumeInternalGame(resume.dataset.thinkResume))landing();return;}
     const recommended=e.target.closest('[data-think-recommended]'); if(recommended){start(recommended.dataset.thinkRecommended);return;}
     const trainingChoice=e.target.closest('[data-think-training-mode]');
     if(trainingChoice){
@@ -1376,7 +1444,7 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
     if(e.target.closest('[data-translator-hint]')&&mode==='translator'&&!locked){const pool=activePool||getRoundPool('translator'),item=pool[index%pool.length],hint=root.querySelector('[data-translator-hint-text]'),button=root.querySelector('[data-translator-hint]');if(hint){hint.hidden=false;hint.textContent=item.hint;}if(button){button.disabled=true;button.textContent='Hint revealed';}return;}
     if(e.target.closest('[data-training-hint]')&&mode&&!locked){const hint=root.querySelector('[data-training-hint-text]'),button=root.querySelector('[data-training-hint]');if(hint){hint.hidden=false;hint.textContent=guidedHint(mode);}if(button){button.disabled=true;button.textContent='Hint revealed';}return;}
     if(e.target.closest('[data-think-clue]')){clueCount=Math.min((activePool || getRoundPool('detective'))[index%(activePool || getRoundPool('detective')).length].clues.length-1,clueCount+1);renderGame();return;}
-    if(e.target.closest('[data-think-next]')){window.EpiphanySpeech?.stop?.();index++;oddHintStep=0;chainStepIndex=0;chainPath=[];connectionSelected=[];clueCount=0;roundMistakes=0;ladderPath=[];ladderWordNote=null;ladderMistakeRecorded=false;if(index>=(activePool || getRoundPool(mode)).length){const finished=mode;const totalRounds=(activePool || getRoundPool(finished)).length;root.innerHTML='<div class="tl-finish"><span class="tl-finish-mark">∴</span><span class="tl-eyebrow">CASE FILE CLOSED</span><h2>Good thinking.</h2><p>You solved <b>'+score+' of '+totalRounds+'</b> challenges. The goal is not only to get it right—it’s to understand why.</p><button type="button" class="tl-next" data-think-restart>Try another case ↗</button><button type="button" class="tl-back" data-think-back>Back to Think Lab</button></div>';mode=null;activePool=null;activeDifficulty=null;pickerStage='landing';pickerGameId=null;}else renderGame();return;}
+    if(e.target.closest('[data-think-next]')){window.EpiphanySpeech?.stop?.();index++;oddHintStep=0;chainStepIndex=0;chainPath=[];connectionSelected=[];clueCount=0;roundMistakes=0;ladderPath=[];ladderWordNote=null;ladderMistakeRecorded=false;if(index>=(activePool || getRoundPool(mode)).length){const finished=mode;const totalRounds=(activePool || getRoundPool(finished)).length;window.EpiphanyThinkLab?.clearGameSnapshot?.(finished);window.EpiphanyThinkLab?.recordGameCompletion?.(finished,'session');root.innerHTML='<div class="tl-finish"><span class="tl-finish-mark">∴</span><span class="tl-eyebrow">CASE FILE CLOSED</span><h2>Good thinking.</h2><p>You solved <b>'+score+' of '+totalRounds+'</b> challenges. The goal is not only to get it right—it’s to understand why.</p><button type="button" class="tl-next" data-think-restart>Try another case ↗</button><button type="button" class="tl-back" data-think-back>Back to Think Lab</button></div>';mode=null;activePool=null;activeDifficulty=null;pickerStage='landing';pickerGameId=null;}else renderGame();return;}
     if(e.target.closest('[data-think-restart]')){landing();return;}
     if(e.target.closest('[data-think-speak]')){speakTarget();return;}
     const chainAnswer=e.target.closest('[data-chain-answer]');
@@ -1428,6 +1496,7 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
     if(mode==='wordladder')return;
     locked=true;const chosen=Number(answer.dataset.thinkAnswer),correct=mode==='maze'?item.options[chosen]===item.target:chosen===item.answer;if(correct)score++;else roundMistakes++;
     if(window.EpiphanyThinkLab){const skill=mode==='maze'?'listening':mode==='translator'?'conversation':mode==='detective'?'reading':mode==='wordladder'||mode==='forge'?'spelling':mode==='scramble'?'grammar':'vocabulary';window.EpiphanyThinkLab.recordResult(skill,mode,correct,index===(activePool || getRoundPool(mode)).length-1,{trackAdaptive:mode !== 'translator' || selectedTranslatorCEFR === 'adaptive',rewardKey:mode==='odd'?item.rewardKey:undefined,completionKey:mode==='odd'&&index===(activePool || getRoundPool(mode)).length-1?item.completionKey:undefined});}
+    saveInternalProgress(index+1);
     root.querySelectorAll('[data-think-answer]').forEach(b=>{b.disabled=true;const n=Number(b.dataset.thinkAnswer);const isRight=mode==='maze'?item.options[n]===item.target:n===item.answer;if(isRight)b.classList.add('is-correct');if(n===chosen&&!correct)b.classList.add('is-wrong');});
     if(mode==='translator'){
       const details = item.optionExplanations.map((reason,i)=>'<li><strong>'+(i===item.answer?'Correct answer':'Option '+String.fromCharCode(65+i))+':</strong> '+esc(reason)+'</li>').join('');

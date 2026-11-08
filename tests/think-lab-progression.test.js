@@ -30,7 +30,7 @@ test('snapshot validation rejects unknown games, invalid modes, oversized or mal
   assert.equal(progression.validateSnapshot({...valid,trainingMode:'expert'}).reason, 'invalid-training-mode');
   assert.equal(progression.validateSnapshot({...valid,position:-1}).reason, 'invalid-position');
   assert.equal(progression.validateSnapshot({...valid,payload:[]}).reason, 'invalid-payload');
-  assert.equal(progression.validateSnapshot({...valid,payload:{large:'x'.repeat(17000)}}).reason, 'snapshot-too-large');
+  assert.equal(progression.validateSnapshot({...valid,payload:{large:'x'.repeat(70000)}}).reason, 'snapshot-too-large');
   assert.equal(progression.validateSnapshot(valid,{bankVersion:'new-bank'}).reason, 'bank-version-mismatch');
   assert.equal(progression.validateSnapshot(valid,{level:'medium'}).reason, 'level-mismatch');
 });
