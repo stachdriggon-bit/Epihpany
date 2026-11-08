@@ -226,6 +226,29 @@ test('repeated feature entry and exit reports Chromium runtime lifecycle metrics
       }
     }
 
+    // Capture a real V8 heap snapshot after repeated World entry/exit. The
+    // snapshot is saved as a CI artifact so Chrome DevTools can reveal strong
+    // retaining paths; WeakRef counts alone cannot identify the owner.
+    const heapSnapshotChunks = [];
+    const onHeapSnapshotChunk = event => heapSnapshotChunks.push(event.chunk);
+    cdp.on('HeapProfiler.addHeapSnapshotChunk', onHeapSnapshotChunk);
+    await cdp.send('HeapProfiler.takeHeapSnapshot', {
+      reportProgress:false,
+      captureNumericValue:false,
+      exposeInternals:true
+    });
+    cdp.off('HeapProfiler.addHeapSnapshotChunk', onHeapSnapshotChunk);
+    const heapSnapshotPath = path.join(root, 'test-results', 'world-retention.heapsnapshot');
+    fs.mkdirSync(path.dirname(heapSnapshotPath), {recursive:true});
+    const heapSnapshotText = heapSnapshotChunks.join('');
+    fs.writeFileSync(heapSnapshotPath, heapSnapshotText);
+    const heapSnapshot = {
+      path:'test-results/world-retention.heapsnapshot',
+      chunks:heapSnapshotChunks.length,
+      bytes:Buffer.byteLength(heapSnapshotText)
+    };
+    assert.ok(heapSnapshot.bytes > 0, 'Chromium heap snapshot must contain data');
+
     assert.deepEqual(pageErrors, [], 'uncaught browser errors during repeated navigation: ' + pageErrors.join(' | '));
     assert.ok(samples.every(sample => Number.isFinite(sample.domNodes) && Number.isFinite(sample.jsHeapUsedMB)),
       'Chromium must provide DOM node and JavaScript heap metrics: ' + JSON.stringify(samples));
@@ -261,6 +284,7 @@ test('repeated feature entry and exit reports Chromium runtime lifecycle metrics
       baseline,
       final,
       probeShutdown,
+      heapSnapshot,
       worldRootObserverDisconnected,
       observerIsolation,
       worldExitFocusChecks:page.__worldExitFocusChecks || [],
