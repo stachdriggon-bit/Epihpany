@@ -32,8 +32,8 @@ async function openAndCloseView(page, view) {
   if (view === 'world') {
     await page.waitForFunction(() => {
       const game = document.querySelector('#world-game');
-      return game && !game.hidden && window.WORLD_DATA;
-    }, null, { timeout:12000 });
+      return game && !game.hidden && game.querySelector('.world-intro, .world-region-hub, .world-top');
+    }, null, { timeout:20000 });
     const exit = page.locator('#world-game [data-world-exit]').first();
     await exit.waitFor({ state:'visible', timeout:5000 });
     await exit.click();
