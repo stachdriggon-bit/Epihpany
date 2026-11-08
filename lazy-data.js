@@ -12,6 +12,8 @@
     languageDetective: ['language-detective-assessment-schemas.js?v=casebound-foundation-1', 'language-detective-investigation.js?v=casebound-investigation-model-1', 'language-detective-cefr-patterns.js?v=casebound-foundation-1', 'language-detective-assessment-engine.js?v=casebound-foundation-1', 'language-detective-assessment-fixtures.js?v=casebound-foundation-1', 'language-detective-ui.js?v=casebound-skin-2'],
     lifeskills: ['life-skills.js?v=life-skills-standalone-20261108-1'],
     directions: ['data-minigames.js?v=directions-bank-lazy-20261108-1'],
+    spot: ['data-spot.js?v=spot-bank-lazy-20261108-1'],
+    typing: ['data-typing.js?v=typing-bank-lazy-20261108-1'],
     arabic: ['data-translation-ar.js?v=question-context-20261026-20', 'data-translation-ar-fill.js?v=fill-4']
   };
   const styleGroups = {
