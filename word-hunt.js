@@ -97,8 +97,7 @@
     }
     const diagonal = Math.abs(drRaw) === Math.abs(dcRaw);
     if (!(drRaw === 0 || dcRaw === 0 || diagonal)) {
-      startCell = {row, col};
-      feedback = 'Choose a straight line: across, down, or diagonal.';
+      feedback = 'Choose a straight line: across, down, or diagonal. Your starting letter is still selected.';
       renderPuzzle();
       return;
     }
