@@ -117,16 +117,20 @@ test('repeated feature entry and exit reports Chromium runtime lifecycle metrics
     page.on('pageerror', error => pageErrors.push(error.message));
     await page.addInitScript(() => {
       const probe = window.__epiphanyDetachedProbe = { entries:[], limit:50000 };
+      const seen = new WeakSet();
       const label = node => {
         const tag = String(node.tagName || node.nodeName || 'node').toLowerCase();
         const id = node.id ? '#' + node.id : '';
         const classes = typeof node.className === 'string' && node.className.trim()
-          ? '.' + node.className.trim().split(/\\s+/).slice(0,3).join('.') : '';
+          ? '.' + node.className.trim().split(/\s+/).slice(0,3).join('.') : '';
         return tag + id + classes;
       };
       const remember = node => {
         if (!node || probe.entries.length >= probe.limit) return;
-        if (node.nodeType === 1) probe.entries.push({ref:new WeakRef(node),label:label(node)});
+        if (node.nodeType === 1 && !seen.has(node)) {
+          seen.add(node);
+          probe.entries.push({ref:new WeakRef(node),label:label(node)});
+        }
         for (const child of node.childNodes || []) remember(child);
       };
       const observer = new MutationObserver(records => {
