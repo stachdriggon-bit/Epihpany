@@ -107,7 +107,7 @@
         const time=document.createElement('time');time.textContent=new Date(item.time).toLocaleTimeString();
         const label=document.createElement('b');label.textContent=item.type.replace(/_/g,' ');
         const detail=document.createElement('small');
-        detail.textContent=[item.group,item.asset,item.outcome,item.priority].filter(Boolean).join(' · ');
+        detail.textContent=[item.group,item.asset,item.outcome,item.priority,Number.isFinite(item.waitMs)?'wait '+item.waitMs+' ms':null,Number.isFinite(item.durationMs)?'duration '+item.durationMs+' ms':null,Number.isFinite(item.activeLoads)?'active '+item.activeLoads+'/'+(item.limit||'?'):null].filter(Boolean).join(' · ');
         row.append(time,label,detail);log.appendChild(row);
       });
     };
