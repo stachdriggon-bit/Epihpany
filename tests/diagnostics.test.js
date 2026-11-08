@@ -39,7 +39,7 @@ function createDiagnostics({ developer = true } = {}) {
     Promise
   });
   vm.runInContext(source, context);
-  return { api: window.EPIPHANY_DIAGNOSTICS, window, listeners, workerListeners, messages, downloads };
+  return { api: window.EPIPHANY_DIAGNOSTICS, window, listeners, workerListeners, messages, downloads, setDeveloper: value => { developer = value; } };
 }
 
 test('diagnostics is dormant by default and does not persist or transmit logs', () => {
@@ -119,4 +119,15 @@ test('diagnostics clear and export only sanitized in-memory events', () => {
   assert.ok(downloads.some(item => item[0] === 'click'));
   assert.equal(api.clear(), true);
   assert.equal(api.getSnapshot().count, 0);
+});
+
+
+test('diagnostics immediately stops and unregisters its worker client when developer access is revoked', () => {
+  const { api, messages, setDeveloper } = createDiagnostics();
+  api.start();
+  setDeveloper(false);
+  assert.equal(api.record('load_failed', { asset: 'secret.js' }), false);
+  assert.equal(api.isActive(), false);
+  assert.equal(messages.at(-1).type, 'EPIPHANY_DIAGNOSTICS_STOP');
+  assert.equal(api.getSnapshot().events.some(event => event.asset === 'secret.js'), false);
 });
