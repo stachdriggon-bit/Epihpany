@@ -159,3 +159,11 @@ The lazy-data navigation prefetch scheduler previously allowed multiple pending 
 The scheduler now keeps only the latest pending navigation intent and cancels older scheduled timers/idle callbacks. A callback that was already queued when cancelled is also guarded by its task identity and cannot start a stale load. Explicit feature-open requests retain their existing user priority and are not cancelled by this speculative scheduling rule. A regression test covers rapid movement between sections and stale callback execution.
 
 This change limits unnecessary speculative work; it does not change feature content, rendering, or the order of explicitly requested feature loads. GitHub Actions remains the runtime validation source for the change.
+
+## Independent Life Skills loading — 2026-11-08
+
+The Life Skills loader previously included the full Think Lab payload: Sound Maze sources, every Think Lab question bank, the Think Lab renderer, and the dedicated engines for Word Hunt, Codebreaker, and Letter Grid. Source tracing showed that `life-skills.js` does not consume those game modules or banks. Its only shared integration is the `window.EpiphanyThinkLab` profile API (`registerGame`, `getGameDifficulty`, and `recordResult`), which is initialized by the already-loaded `app.js` before a learner can open a lazy-loaded view.
+
+The Life Skills data group now requests only `life-skills.js`. Think Lab retains its complete ordered dependency group, and Fluentia/Arcade retain the shared Practice Lab and Sound Maze sources they actually register. This removes 14 unnecessary script requests from a first visit directly into Life Skills, without removing its shared difficulty, XP, or progress integration.
+
+A regression test loads Life Skills in isolation and asserts that its only requested script is `life-skills.js`, while also protecting the three shared profile API calls. This is a source/dependency reduction, not a claim of measured real-device speedup.
