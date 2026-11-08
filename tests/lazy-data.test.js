@@ -27,7 +27,7 @@ test('feature data loader does not request large datasets until requested', asyn
     requested.push(script.src);
     queueMicrotask(() => {
       const match = script.src.match(/data-expansion-(vocabulary|spelling|grammar|story|listening|advanced)\.js/);
-      if (match) context.window.EPIPHANY_EXPANSION_BANKS[match[1]] = true;
+      if (match) { context.window.EPIPHANY_EXPANSION_BANKS[match[1]] = true; context.GAMES[match[1]].questions.push({id:'exp-a1-'+match[1],level:'A1'}); }
       script.onload();
     });
   };
@@ -104,7 +104,7 @@ test('a game expansion loader rejects incomplete registration and permits a clea
   let context, attempts = 0;
   const document = {
     createElement() { return { src: '', remove() {} }; },
-    head: { appendChild(script) { requested.push(script.src); queueMicrotask(() => { if(script.src.includes('data-expansion-vocabulary.js')&&++attempts>1)context.window.EPIPHANY_EXPANSION_BANKS.vocabulary=true; script.onload(); }); } },
+    head: { appendChild(script) { requested.push(script.src); queueMicrotask(() => { if(script.src.includes('data-expansion-vocabulary.js')&&++attempts>1){context.window.EPIPHANY_EXPANSION_BANKS.vocabulary=true;context.GAMES.vocabulary.questions.push({id:'exp-a1-vocabulary',level:'A1'});} script.onload(); }); } },
     querySelectorAll() { return []; }
   };
   context = vm.createContext({ GAMES:{vocabulary:{questions:[{level:'A1'}]}}, WOTD_WORDS:[], window:{EPIPHANY_EXPANSION_BANKS:{},EPIPHANY_REGISTER_EXPANSION_BANK(){},EPIPHANY_EXPANSION_TRANSLATIONS:{}}, document, Promise, Map, Set, Object, Error, Number });
