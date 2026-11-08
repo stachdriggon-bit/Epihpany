@@ -4654,6 +4654,16 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     save();renderHeader();renderWords();renderTrophies();return earned;
   }
   function worldShell(inner){const t=worldTask(),progress=WORLD&&WORLD.tasks.length?Math.round(((WORLD.index+(WORLD.mode==='success'?1:0))/WORLD.tasks.length)*100):0;return '<div class="world-top"><div class="world-task-count">Task <b>'+(WORLD.index+1)+'</b> / '+WORLD.tasks.length+'<span class="world-progress-track" role="progressbar" aria-label="Mission progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="'+progress+'"><span style="width:'+progress+'%"></span></span></div>'+(t&&t.dialogue?'<div class="world-dialogue">'+esc(t.dialogue)+'</div>':'')+'<div class="world-instruction"><strong id="world-instruction-text" data-tx-skip'+(t?arAttr(t.ar):'')+'>'+esc(t?t.instruction:'Adventure complete!')+'</strong><span>Follow the mission in the world.</span></div><div class="world-top-actions"><button type="button" class="world-translate" data-world-translate aria-label="Translate mission" title="Translate mission">ع</button><button type="button" class="world-home" data-world-regions aria-label="Open map" title="Open map">⌖ Map</button><button type="button" class="world-rotate" data-world-rotate aria-label="Enter fullscreen or rotate screen" title="Enter fullscreen or rotate screen"><span class="world-rotate-desktop-icon" aria-hidden="true">⛶</span><span class="world-rotate-mobile-icon" aria-hidden="true">↻</span></button><button type="button" class="world-collection-open" data-world-collection aria-label="Word pouch" title="Word pouch">🎒</button><button class="world-exit" data-world-exit aria-label="Exit World" title="Exit World">✕</button></div></div>'+inner;}
+  function worldMotionRestricted(){
+    let reducedMotion=false;
+    try { reducedMotion=!!window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch {}
+    let constrained=false;
+    try {
+      const capabilities=window.EPIPHANY_ADAPTIVE_ENGINE?.getSnapshot?.();
+      constrained=!!(capabilities&&(capabilities.lowResources||capabilities.runtimePressure));
+    } catch {}
+    return reducedMotion||constrained;
+  }
   function worldDraw(){
     if(!WORLD||WORLD.mode!=='play')return;if(WORLD.idle){clearTimeout(WORLD.idle);WORLD.idle=0;}const c=$('#world-canvas');if(!c)return;const r=c.getBoundingClientRect(),d=Math.max(1,Math.min(2,devicePixelRatio||1));if(!r.width||!r.height)return;
     if(c.width!==Math.round(r.width*d)||c.height!==Math.round(r.height*d)){c.width=Math.round(r.width*d);c.height=Math.round(r.height*d);}
@@ -4889,19 +4899,19 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
       x.strokeStyle='#765039';x.lineWidth=tile*.06;x.beginPath();x.moveTo(cx-tile*.25,cy-tile*.1);x.lineTo(cx-tile*.25,cy-tile*.37);x.lineTo(cx+tile*.25,cy-tile*.37);x.lineTo(cx+tile*.25,cy-tile*.1);x.stroke();
       x.strokeStyle='#c99a5d';x.lineWidth=tile*.025;x.beginPath();x.moveTo(cx-tile*.19,cy-tile*.31);x.lineTo(cx+tile*.19,cy-tile*.31);x.stroke();
     }
-    function worldOverlayObjects(){
+    function worldOverlayObjects(animate){
       const tag=(txt,cx,cy)=>{const fs=Math.max(9,Math.round(tile*.27));x.font='700 '+fs+'px DM Sans, system-ui, sans-serif';x.textAlign='center';x.textBaseline='middle';const w=x.measureText(txt).width+fs*.9,h=fs*1.45;roundRect(x,cx-w/2,cy-h/2,w,h,h/2,'rgba(255,255,255,.92)','rgba(23,32,61,.25)');x.fillStyle='#17203d';x.fillText(txt,cx,cy+fs*.04);x.textBaseline='alphabetic';};
       const step=worldStep();
       WORLD.objects.forEach(o=>{
         if(o.id==='river'||o.id==='bridge')return;
         const cx=ox+(o.x+.5)*tile,cy=oy+(o.y+.5)*tile,reach=worldReachableFromPlayer(o);
         if(WORLD.labels){const nm=String(o.name||o.id||'').replace(/-/g,' ');if(nm)tag(nm,cx,cy+tile*(o.person?.52:.66));}
-        if(o.person&&reach&&!(step&&(step.type==='pickup'||step.type==='give'))){const by=cy-tile*.62+Math.sin(performance.now()/260)*tile*.03;roundRect(x,cx-tile*.2,by-tile*.15,tile*.4,tile*.3,tile*.12,'#fff','rgba(23,32,61,.35)');x.fillStyle='#17203d';[-.1,0,.1].forEach(dx=>{x.beginPath();x.arc(cx+tile*dx,by,tile*.03,0,Math.PI*2);x.fill();});}
+        if(o.person&&reach&&!(step&&(step.type==='pickup'||step.type==='give'))){const by=cy-tile*.62+(animate?Math.sin(performance.now()/260)*tile*.03:0);roundRect(x,cx-tile*.2,by-tile*.15,tile*.4,tile*.3,tile*.12,'#fff','rgba(23,32,61,.35)');x.fillStyle='#17203d';[-.1,0,.1].forEach(dx=>{x.beginPath();x.arc(cx+tile*dx,by,tile*.03,0,Math.PI*2);x.fill();});}
         if(!o.person&&reach&&step&&step.type==='pickup'&&step.object===o.id){x.fillStyle='#ffc531';x.beginPath();x.arc(cx,cy-tile*.5,tile*.15,0,Math.PI*2);x.fill();x.fillStyle='#17203d';x.font='800 '+Math.round(tile*.22)+'px sans-serif';x.textAlign='center';x.fillText('!',cx,cy-tile*.43);}
       });
       if(WORLD.tapMark&&WORLD.tapMark.until>performance.now()){const tm=WORLD.tapMark;x.strokeStyle='rgba(255,197,49,.9)';x.lineWidth=3;x.beginPath();x.arc(ox+(tm.x+.5)*tile,oy+(tm.y+.5)*tile,tile*.28,0,Math.PI*2);x.stroke();}
     }
-    const anim=WORLD.anim!==false,T=performance.now()/1000;
+    const anim=WORLD.anim!==false&&!worldMotionRestricted(),T=performance.now()/1000;
     const phaseOf=id=>{let h=0;for(const ch of String(id))h=(h*31+ch.charCodeAt(0))%997;return h/997*6.28;};
     function drawSprite(spr,cx,cy,o){
       const size=(spr.size||(o&&o.person?1.3:1.2))*tile,img=spr.img,gy=cy+tile*.44;
@@ -5002,13 +5012,13 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
       else{roundRect(x,cx-tile*.22,cy-tile*.18,tile*.44,tile*.36,tile*.06,'#d9e3d2','#82957d');x.strokeStyle='#82957d';x.lineWidth=tile*.03;x.stroke();}
       x.restore();
     });
-    worldOverlayObjects();
+    worldOverlayObjects(anim);
         const p=WORLD.player,elapsed=Math.min(1,(performance.now()-(p.moveAt||0))/160),e=elapsed*elapsed*(3-2*elapsed),px=ox+(p.fromX+(p.x-p.fromX)*e+.5)*tile,py=oy+(p.fromY+(p.y-p.fromY)*e+.5)*tile;
     x.strokeStyle='rgba(255,197,49,.95)';x.lineWidth=Math.max(2,tile*.06);x.beginPath();x.ellipse(px,py+tile*.3,tile*.36,tile*.14,0,0,Math.PI*2);x.stroke();x.fillStyle='rgba(255,197,49,.25)';x.fill();
     x.fillStyle='rgba(36,55,43,.24)';x.beginPath();x.ellipse(px,py+tile*.3,tile*.28,tile*.1,0,0,Math.PI*2);x.fill();
     const bob=p.moveAt&&elapsed<1?Math.sin(elapsed*Math.PI*4)*tile*.025:0;
     const psp=window.WORLD_SPRITES&&WORLD_SPRITES.getPlayer(WORLD.outfit);
-    if(psp){const sz=1.3*tile,mv=p.moveAt&&elapsed<1,gy=py+tile*.44,br=WORLD.anim!==false?Math.sin(T*2.3):0,
+    if(psp){const sz=1.3*tile,mv=p.moveAt&&elapsed<1,gy=py+tile*.44,br=anim?Math.sin(T*2.3):0,
       hop=mv?-Math.abs(Math.sin(elapsed*Math.PI))*tile*.12:0,tilt=mv?Math.sin(elapsed*Math.PI*2)*.13:0,
       sq=mv?1+Math.sin(elapsed*Math.PI*2)*.04:1+br*.022,face=WORLD.facing<0?-1:1;
       x.save();x.translate(px,gy);x.rotate(tilt);x.scale(face/sq,sq);
@@ -5023,17 +5033,17 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     x.fillStyle='#fff';x.beginPath();x.arc(px-tile*.055,py-tile*.16,tile*.027,0,Math.PI*2);x.arc(px+tile*.055,py-tile*.16,tile*.027,0,Math.PI*2);x.fill();x.fillStyle='#34465a';x.beginPath();x.arc(px-tile*.05,py-tile*.16,tile*.012,0,Math.PI*2);x.arc(px+tile*.06,py-tile*.16,tile*.012,0,Math.PI*2);x.fill();
     x.strokeStyle='#8d5140';x.lineWidth=tile*.018;x.beginPath();x.arc(px,py-tile*.115,tile*.045,.15,Math.PI-.3);x.stroke();
     }
-    if(WORLD.target){x.strokeStyle='rgba(255,197,49,'+(.35+.65*(.5+.5*Math.sin(performance.now()/180)))+')';x.lineWidth=4;x.setLineDash([5,4]);x.strokeRect(ox+WORLD.target.x*tile+3,oy+WORLD.target.y*tile+3,tile-6,tile-6);x.setLineDash([]);}
+    if(WORLD.target){x.strokeStyle=anim?'rgba(255,197,49,'+(.35+.65*(.5+.5*Math.sin(performance.now()/180)))+')':'rgba(255,197,49,.7)';x.lineWidth=4;x.setLineDash([5,4]);x.strokeRect(ox+WORLD.target.x*tile+3,oy+WORLD.target.y*tile+3,tile-6,tile-6);x.setLineDash([]);}
     {const vg=x.createRadialGradient(r.width/2,r.height/2,Math.min(r.width,r.height)*.35,r.width/2,r.height/2,Math.max(r.width,r.height)*.75);vg.addColorStop(0,'rgba(20,40,25,0)');vg.addColorStop(1,'rgba(20,40,25,.22)');x.fillStyle=vg;x.fillRect(0,0,r.width,r.height);}
     if(p.moveAt&&elapsed>=1&&p.queuedKey){const queued=p.queuedKey;p.queuedKey=null;worldMove(queued);return;}
     // Redraw continuously only while the player is moving. A help marker is static,
     // so it must not keep an expensive full-map render loop running forever.
     if(p.moveAt&&elapsed<1)WORLD.raf=requestAnimationFrame(worldDraw);
-    else if(WORLD.anim!==false&&!document.hidden&&window.WORLD_SPRITES)WORLD.idle=setTimeout(()=>{WORLD&&WORLD.mode==='play'&&(WORLD.raf=requestAnimationFrame(worldDraw));},WORLD.idleMs||90);
+    else if(anim&&!document.hidden&&window.WORLD_SPRITES)WORLD.idle=setTimeout(()=>{WORLD&&WORLD.mode==='play'&&(WORLD.raf=requestAnimationFrame(worldDraw));},WORLD.idleMs||90);
   }
   if(window.WORLD_SPRITES){WORLD_SPRITES.onReady=()=>{if(WORLD&&WORLD.mode==='play')worldDraw();};WORLD_SPRITES.preload();WORLD_SPRITES.preloadScenes();}
   function worldStatus(){const s=$('#world-step');if(s)s.textContent=worldTask().check.type==='sequence'?'Step '+(WORLD.step+1)+' of '+worldTask().check.steps.length:'';const carry=$('#world-carry');if(carry)carry.textContent=WORLD.carried?'Carrying '+(WORLD.carried==='key'?'the key':'the basket'):'';}
-  function worldRenderPlay(){if(WORLD&&(!WORLD.picked||WORLD.picked.size===0)&&!WORLD.carried)WORLD.origObjs=WORLD.objects.map(o=>({...o}));if(WORLD.anim===undefined){try{WORLD.anim=!window.matchMedia('(prefers-reduced-motion: reduce)').matches;}catch{WORLD.anim=true;}}if(WORLD.labels===undefined){try{WORLD.labels=localStorage.getItem('epiphany-world-labels')==='1';}catch{WORLD.labels=false;}}const t=worldTask();WORLD.taskStart={x:WORLD.player.x,y:WORLD.player.y};wFixOffset(t);const c0=t.check.type==='sequence'?t.check.steps[0]:t.check;WORLD.needLeave=WORLD.run==='practice'&&!['pickup','give','offset'].includes(c0.type)&&worldCheck(c0);$('#world-game').innerHTML=worldShell('<div class="world-stage" data-world-weather="'+(WORLD.weather||'clear')+'" data-world-time="'+(WORLD.timeOfDay||'morning')+'"><div class="world-atmosphere" aria-live="polite">'+(WORLD.weather==='rain'?'🌧 Rainy':'☀ Clear')+' · '+({morning:'🌅 Morning',evening:'🌇 Evening',night:'🌙 Night'}[WORLD.timeOfDay]||'🌅 Morning')+'</div><canvas id="world-canvas" aria-label="Top-down world map"></canvas><div class="world-overlay-status"><span id="world-step"></span><span id="world-carry"></span></div><section class="world-help-panel" id="world-help-panel" hidden aria-live="polite"><div class="world-help-heading"><strong>Need a hint?</strong><span>Choose the level of help you need.</span></div><p id="world-help-copy">Keyboard: use Arrow keys or WASD to move, Space to interact, N to toggle names, L to listen, and H for hints. On touch screens, tap a place to walk or swipe to take a step.</p><div class="world-help-actions"><button data-world-help-level="1">Small hint</button><button data-world-help-level="2">Show target</button><button data-world-help-level="3">Explain in Arabic</button></div></section><div class="world-overlay-controls" role="toolbar" aria-label="World actions"><button class="world-interact" data-world-interact aria-label="Interact" title="Interact">✦ <span>Interact</span></button><button data-world-labels aria-label="Toggle names" title="Toggle names" aria-pressed="'+(WORLD.labels?'true':'false')+'" class="'+(WORLD.labels?'is-on':'')+'">🏷</button><button data-world-speak aria-label="Listen to mission" title="Listen">🔊</button><button data-world-help-toggle aria-label="Hints" title="Hints" aria-expanded="false">💡</button></div></div>');worldStatus();if(WORLD.needLeave)worldFeedback('You are already close! Step away, then come back.');requestAnimationFrame(worldDraw);}
+  function worldRenderPlay(){if(WORLD&&(!WORLD.picked||WORLD.picked.size===0)&&!WORLD.carried)WORLD.origObjs=WORLD.objects.map(o=>({...o}));if(WORLD.anim===undefined){WORLD.anim=!worldMotionRestricted();}if(WORLD.labels===undefined){try{WORLD.labels=localStorage.getItem('epiphany-world-labels')==='1';}catch{WORLD.labels=false;}}const t=worldTask();WORLD.taskStart={x:WORLD.player.x,y:WORLD.player.y};wFixOffset(t);const c0=t.check.type==='sequence'?t.check.steps[0]:t.check;WORLD.needLeave=WORLD.run==='practice'&&!['pickup','give','offset'].includes(c0.type)&&worldCheck(c0);$('#world-game').innerHTML=worldShell('<div class="world-stage" data-world-weather="'+(WORLD.weather||'clear')+'" data-world-time="'+(WORLD.timeOfDay||'morning')+'"><div class="world-atmosphere" aria-live="polite">'+(WORLD.weather==='rain'?'🌧 Rainy':'☀ Clear')+' · '+({morning:'🌅 Morning',evening:'🌇 Evening',night:'🌙 Night'}[WORLD.timeOfDay]||'🌅 Morning')+'</div><canvas id="world-canvas" aria-label="Top-down world map"></canvas><div class="world-overlay-status"><span id="world-step"></span><span id="world-carry"></span></div><section class="world-help-panel" id="world-help-panel" hidden aria-live="polite"><div class="world-help-heading"><strong>Need a hint?</strong><span>Choose the level of help you need.</span></div><p id="world-help-copy">Keyboard: use Arrow keys or WASD to move, Space to interact, N to toggle names, L to listen, and H for hints. On touch screens, tap a place to walk or swipe to take a step.</p><div class="world-help-actions"><button data-world-help-level="1">Small hint</button><button data-world-help-level="2">Show target</button><button data-world-help-level="3">Explain in Arabic</button></div></section><div class="world-overlay-controls" role="toolbar" aria-label="World actions"><button class="world-interact" data-world-interact aria-label="Interact" title="Interact">✦ <span>Interact</span></button><button data-world-labels aria-label="Toggle names" title="Toggle names" aria-pressed="'+(WORLD.labels?'true':'false')+'" class="'+(WORLD.labels?'is-on':'')+'">🏷</button><button data-world-speak aria-label="Listen to mission" title="Listen">🔊</button><button data-world-help-toggle aria-label="Hints" title="Hints" aria-expanded="false">💡</button></div></div>');worldStatus();if(WORLD.needLeave)worldFeedback('You are already close! Step away, then come back.');requestAnimationFrame(worldDraw);}
   function worldRegionArt(id){
     const art={
       village:'<svg viewBox="0 0 64 64" aria-hidden="true"><ellipse cx="32" cy="54" rx="23" ry="5" fill="#b6d6a0"/><path d="M8 30 28 12l20 18v21H8z" fill="#f0d7b1" stroke="#a86d51" stroke-width="2.5" stroke-linejoin="round"/><path d="M4 30 28 8l24 22" fill="#c86f59" stroke="#98503f" stroke-width="3" stroke-linejoin="round"/><rect x="23" y="35" width="11" height="16" rx="2" fill="#7e5b45"/><rect x="12" y="33" width="8" height="8" rx="1" fill="#a9d8df"/><circle cx="51" cy="18" r="8" fill="#6da86d"/><circle cx="47" cy="15" r="5" fill="#8cc47c"/></svg>',

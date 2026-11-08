@@ -25,3 +25,15 @@ test('World fullscreen control toggles off and stays synchronized with browser E
   assert.ok(app.includes("root?.requestFullscreen"));
   assert.ok(app.includes("button.setAttribute('aria-pressed',String(active))"));
 });
+
+
+test('World ambient animation yields to reduced-motion and constrained-device policies', () => {
+  assert.ok(app.includes('function worldMotionRestricted(){'));
+  assert.ok(app.includes("window.matchMedia('(prefers-reduced-motion: reduce)')"));
+  assert.ok(app.includes('capabilities.lowResources||capabilities.runtimePressure'));
+  assert.ok(app.includes('const anim=WORLD.anim!==false&&!worldMotionRestricted()'));
+  assert.ok(app.includes('function worldOverlayObjects(animate)'));
+  assert.ok(app.includes('worldOverlayObjects(anim)'));
+  assert.ok(app.includes('else if(anim&&!document.hidden&&window.WORLD_SPRITES)'));
+  assert.ok(app.includes('WORLD.anim=!worldMotionRestricted()'));
+});
