@@ -1,6 +1,6 @@
 # Fluentia — Implementation Plan
 
-Status: **Phases 1–5 implemented and verified; Phase 6 automated QA passed; manual device/audio review remains**
+Status: **Automated QA passed; final integration audit recorded three functional blockers (optional source loading, microphone-based speaking integration, and Fluentia-history-driven review); manual device/audio review remains**
 Target branch: `main`
 Product area: former Arcade / English practice activities
 Working principle: complete each phase as one coherent unit rather than scattering work across many small edits. Do not begin the next phase until the current phase has a documented outcome and its required checks are accounted for.
@@ -117,11 +117,11 @@ Deliverables: a repository-grounded inventory and final activity-to-domain mappi
 
 ### Phase 4 — Section Mixed and Fluentia Mix
 
-**Implemented; CI verification pending.** The engine now balances Section Mixed by activity within its single domain and Fluentia Mix by domain first, then activity within the selected domain. Canonical source identity prevents the same question from repeating across adapters. Sparse domains are skipped without cross-level fallback. Deterministic tests cover six-domain balance despite unequal adapter counts, activity balance within a section, cross-adapter duplicate suppression, strict CEFR matching and sparse-domain continuation. No UI or new question bank was added.
+**Implemented and covered by the Phase 6 green CI run.** The engine balances Section Mixed by activity within its single domain and Fluentia Mix by domain first, then activity within the selected domain. Canonical source identity prevents the same question from repeating across adapters. Sparse domains are skipped without cross-level fallback. Deterministic tests cover six-domain balance despite unequal adapter counts, activity balance within a section, cross-adapter duplicate suppression, strict CEFR matching and sparse-domain continuation. No UI or new question bank was added.
 
 ### Phase 5 — Fluentia UI and Your Review
 
-**Implemented; navigation placement corrected.** Added a dedicated Fluentia view in the former Arcade position under the Play group on desktop and mobile. Fluentia replaces Arcade as the learner-facing English-practice destination; it is not an additional Learn section. The legacy Arcade view and activity renderers remain in the repository for compatibility while the Fluentia adapters use the authoritative existing activity logic; the six canonical domain cards; an in-domain activity chooser; a CEFR selector; Section Mixed domain selection; one-click Fluentia Mix; and dedicated Your Review entries for review-only adapters. The session screen delegates item selection and evaluation to the shared engine, supports the current choice, correction, typed, ordering, matching, map, listening and speech adapter shapes, and shows a completion summary. Fluentia answer events continue through the Phase 3 progress bridge; this UI does not award legacy Arcade XP or duplicate rewards. New assets are included in the service worker's core cache. Static integration tests were added in tests/fluentia-ui.test.js. Keep Stories and Think Lab navigation/identity separate.
+**Navigation and core UI implemented; final integration audit found outstanding source/readiness gaps.** Fluentia is in the former Arcade position under the Play group on desktop and mobile, and replaces Arcade as the learner-facing English-practice destination. The legacy Arcade view and activity renderers remain in the repository for compatibility. The six canonical domain cards, activity chooser, CEFR selector, Section Mixed, Fluentia Mix and dedicated review-only entries are present. The session screen delegates selection and evaluation to the shared engine and renders the currently wired interaction types. However, the final audit (see [FLUENTIA-INTEGRATION-AUDIT.md](./FLUENTIA-INTEGRATION-AUDIT.md)) found that Practice Lab and Sound Maze sources are not loaded by opening Fluentia directly, the speech adapter currently renders a text field rather than the legacy microphone workflow, and Your Review does not yet consume errors from Fluentia's own history. These are implementation blockers, not verified features. Fluentia answer events are stored through the progress bridge without duplicating XP or legacy rewards. Keep Stories and Think Lab navigation/identity separate.
 
 ### Phase 6 — Quality, regression and documentation
 
@@ -153,6 +153,6 @@ Remaining sign-off is device/manual verification of speech and microphone permis
 - Phase 1 was documentation-only: no live Arcade/Fluentia product code or existing activity banks were migrated or modified.
 - Phase 2 is verified complete; see [FLUENTIA-SESSION-ARCHITECTURE.md](./FLUENTIA-SESSION-ARCHITECTURE.md).
 - Phase 3 source integration, content banks, adapters and progress bridge are implemented and verified by green repository CI on `aa5008876a1d6876253971e768371742cd0e3fb7`.
-- Phase 4 mixed-session orchestration is implemented; its CI verification status must be confirmed separately.
-- Phase 5 Fluentia learner UI is implemented; both required CI workflows passed on `6cdeb263a942d7b476d3e6c8ef37e0b33621b0f1`.
-- Phase 6 automated QA is green on `1fd56a5ec0f01e5ac4e745fbbcf5c6c45978869c`; 474/474 unit/static tests and the Chromium browser smoke test passed. Manual device/audio/accessibility/performance sign-off remains.
+- Phase 4 mixed-session orchestration is implemented and covered by the green Phase 6 CI run.
+- Phase 5 navigation and core Fluentia UI are implemented; the final integration audit records remaining functional blockers in `FLUENTIA-INTEGRATION-AUDIT.md`.
+- Phase 6 automated QA was green on `1fd56a5ec0f01e5ac4e745fbbcf5c6c45978869c`; the later navigation correction is also green on `b2b24de74ebf8b7acf1011a5ee717c44d3f27e00` (both required workflows passed). The final integration audit found F-01–F-03 blockers; manual device/audio/accessibility/performance sign-off also remains. Do not call the full Arcade-to-Fluentia migration complete until those blockers are resolved.
