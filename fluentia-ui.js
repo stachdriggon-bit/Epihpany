@@ -202,20 +202,23 @@
     stopSpeechRecognition();
     speechErrorMessage = '';
     try {
-      speechRecognition = new Recognition();
-      speechRecognition.lang = 'en-US';
-      speechRecognition.interimResults = true;
-      speechRecognition.continuous = false;
+      const recognition = new Recognition();
+      speechRecognition = recognition;
+      recognition.lang = 'en-US';
+      recognition.interimResults = true;
+      recognition.continuous = false;
       speechListening = true;
       if (start) start.disabled = true;
       if (stop) stop.disabled = false;
       if (status) status.textContent = 'Listening… repeat the sentence now.';
-      speechRecognition.onresult = event => {
+      recognition.onresult = event => {
+        if (speechRecognition !== recognition) return;
         const transcript = Array.from(event.results || []).map(result => result[0]?.transcript || '').join(' ').trim();
         const input = $('#fluentia-speech-transcript');
         if (input) input.value = transcript;
       };
-      speechRecognition.onerror = event => {
+      recognition.onerror = event => {
+        if (speechRecognition !== recognition) return;
         const reason = event.error === 'not-allowed' || event.error === 'service-not-allowed'
           ? 'Microphone permission was denied. Allow microphone access in your browser settings, then try again.'
           : event.error === 'audio-capture'
@@ -226,16 +229,17 @@
         speechErrorMessage = reason;
         if (status) status.textContent = reason;
       };
-      speechRecognition.onend = () => {
+      recognition.onend = () => {
+        if (speechRecognition !== recognition) return;
+        speechRecognition = null;
         speechListening = false;
         if (start) start.disabled = answered;
         if (stop) stop.disabled = true;
         if (status && root.contains(status)) status.textContent = speechErrorMessage || ($('#fluentia-speech-transcript')?.value.trim()
           ? 'Speech captured. Check the recognised words, edit them if needed, then submit.'
           : 'No words were captured. Try again or type your transcript.');
-        speechRecognition = null;
       };
-      speechRecognition.start();
+      recognition.start();
     } catch (error) {
       speechListening = false;
       speechRecognition = null;
@@ -245,11 +249,15 @@
     }
   }
   function stopSpeechRecognition() {
-    if (speechRecognition) {
-      try { speechRecognition.abort(); } catch {}
-      speechRecognition = null;
-    }
+    const active = speechRecognition;
+    speechRecognition = null;
     speechListening = false;
+    if (active) {
+      active.onresult = null;
+      active.onerror = null;
+      active.onend = null;
+      try { active.abort(); } catch {}
+    }
     const start = $('[data-speech-start]'), stop = $('[data-speech-stop]');
     if (start && currentQuestion?.interactionType === 'speech' && !answered) start.disabled = false;
     if (stop) stop.disabled = true;
@@ -259,12 +267,14 @@
     const byDomain={};currentSession.answers.forEach(answer=>byDomain[answer.domain]=(byDomain[answer.domain]||0)+1);
     root.innerHTML='<div class="fluentia-summary"><p class="kicker">SESSION COMPLETE</p><h2>'+esc(currentModeLabel)+'</h2><div class="fluentia-summary-score">'+percent+'%</div><p>'+correct+' correct out of '+total+' questions.</p><div class="fluentia-summary-stats"><div><b>'+total+'</b><span>Questions</span></div><div><b>'+correct+'</b><span>Correct</span></div><div><b>'+Object.keys(byDomain).length+'</b><span>Domains</span></div></div><div class="fluentia-review-source">Your answers have been added to Fluentia practice history. This session does not add legacy Arcade XP or duplicate legacy rewards.</div><div class="fluentia-session-actions"><button type="button" class="btn" data-restart>Practise again</button><button type="button" class="btn btn-ghost" data-back>Back to Fluentia</button></div></div>';
   }
-  function leaveSession() {
+  function leaveSession({ render = true } = {}) {
     stopSpeechRecognition();
     if (currentSession && !['completed','abandoned'].includes(currentSession.status)) {
       try { engine.abandonSession(currentSession); } catch {}
     }
-    currentSession=null;currentQuestion=null;renderHome();
+    currentSession=null;currentQuestion=null;answered=false;lastEvent=null;translated=false;
+    currentMode='';currentModeLabel='';currentDomain=null;choosingSectionMixed=false;
+    if (render) renderHome();
   }
   function handleClick(event) {
     if(event.target.closest('[data-fluentia-retry]')){
@@ -276,7 +286,7 @@
     if(event.target.closest('[data-speech-stop]')){if(speechRecognition){try{speechRecognition.stop();}catch{stopSpeechRecognition();}}else stopSpeechRecognition();const status=$('#fluentia-speech-status');if(status)status.textContent='Stopping microphone…';return;}
     const domain=event.target.closest('[data-domain]');
     if(domain){if(choosingSectionMixed){choosingSectionMixed=false;startSession('section-mixed',{domain:domain.dataset.domain});}else renderDomain(domain.dataset.domain);return;}
-    if(event.target.closest('[data-back]')){currentSession=null;renderHome();return;}
+    if(event.target.closest('[data-back]')){leaveSession();return;}
     if(event.target.closest('[data-exit]')){leaveSession();return;}
     const mode=event.target.closest('[data-mode]');
     if(mode){if(mode.dataset.mode==='section-mixed'){if(currentDomain){startSession('section-mixed',{domain:currentDomain});return;}choosingSectionMixed=true;root.innerHTML='<button type="button" class="fluentia-back" data-back>← All Fluentia</button><div class="fluentia-section-heading"><div><h2>Choose a domain for Section Mixed</h2><p>Your session will stay within that domain.</p></div></div><div class="fluentia-domain-grid">'+domainDefs.map(domain=>domainMarkup(domain,activities.filter(a=>a.domain===domain.id&&!a.reviewOnly&&a.items.length).length)).join('')+'</div>';return;}startSession('fluentia-mix');return;}
@@ -294,8 +304,14 @@
   root.addEventListener('keydown',event=>{if(event.key==='Enter'&&event.target.id==='fluentia-answer'){event.preventDefault();submit();}});
   document.addEventListener('click',event=>{
     const nav=event.target.closest('.tab[data-view="fluentia"]');
-    if(nav){selectedLevel=currentLevel();renderLoading();}
+    if(nav){leaveSession({render:false});selectedLevel=currentLevel();renderLoading();}
   },true);
+  document.addEventListener('epiphany:view-changed',event=>{
+    if(event.detail?.view!=='fluentia')leaveSession({render:false});
+  });
+  document.addEventListener('visibilitychange',()=>{
+    if(document.hidden)stopSpeechRecognition();
+  });
   document.addEventListener('epiphany:fluentia-sources-ready',()=>{
     if(root.closest('.view')?.classList.contains('is-active')){selectedLevel=currentLevel();renderHome();}
   });

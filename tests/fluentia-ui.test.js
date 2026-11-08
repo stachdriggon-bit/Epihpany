@@ -86,3 +86,24 @@ test('Fluentia UI is wired into desktop and mobile navigation and offline core a
   assert.match(worker, /\.\/fluentia-ui\.js/);
   assert.match(worker, /\.\/fluentia-ui\.css/);
 });
+
+test('Fluentia releases active sessions and microphone recognition on navigation and back actions', () => {
+  const ui = read('fluentia-ui.js');
+  assert.match(ui, /function leaveSession\(\{ render = true \} = \{\}\)/);
+  assert.match(ui, /engine\.abandonSession\(currentSession\)/);
+  assert.match(ui, /if \(render\) renderHome\(\)/);
+  assert.match(ui, /if\(event\.detail\?\.view!=='fluentia'\)leaveSession\(\{render:false\}\)/);
+  assert.match(ui, /if\(nav\)\{leaveSession\(\{render:false\}\);selectedLevel=currentLevel\(\);renderLoading\(\);\}/);
+  assert.match(ui, /if\(event\.target\.closest\('\[data-back\]'\)\)\{leaveSession\(\);return;\}/);
+  assert.match(ui, /if\(document\.hidden\)stopSpeechRecognition\(\)/);
+});
+
+test('Fluentia ignores stale speech-recognition callbacks after an abort or replacement', () => {
+  const ui = read('fluentia-ui.js');
+  assert.match(ui, /const recognition = new Recognition\(\)/);
+  assert.equal((ui.match(/if \(speechRecognition !== recognition\) return;/g) || []).length, 3);
+  assert.match(ui, /active\.onresult = null/);
+  assert.match(ui, /active\.onerror = null/);
+  assert.match(ui, /active\.onend = null/);
+  assert.match(ui, /active\.abort\(\)/);
+});

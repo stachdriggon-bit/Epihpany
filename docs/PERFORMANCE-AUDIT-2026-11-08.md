@@ -49,7 +49,7 @@ A regression test covers the cleanup hooks and stale-callback guards.
 ### Other lifecycle findings
 
 - **World:** movement, auto-walk, hold-repeat, idle timeout, and animation-frame work are explicitly cancelled when returning to regions or closing World. Its document/window listeners are installed once at application startup and are gated by the current World session.
-- **Fluentia:** speech recognition is stopped on answer submission and when leaving a session. Its delegated listeners are installed once on the persistent Fluentia root/document.
+- **Fluentia:** speech recognition is stopped on answer submission, when leaving a session, when the view changes away from Fluentia, and when the page becomes hidden. Leaving or re-entering the view abandons any unfinished session rather than retaining it invisibly. Recognition callbacks are detached before aborting and stale callbacks from replaced instances are ignored. Its delegated listeners are installed once on the persistent Fluentia root/document.
 - **Think Lab and its small game modules:** event handlers are delegated from persistent roots; no per-round timer or observer accumulation was found in the inspected entry points.
 - **Adaptive engine:** owns its PerformanceObserver and browser listeners and exposes a `destroy()` cleanup path. It is instantiated as a page singleton.
 - **Translation observers, icon observer, and navigation observers:** these are page-lifetime observers attached once to stable application roots. They are not created per game entry. Their broad observation scopes and callback costs remain candidates for future profiling, but the current inspection did not establish a per-navigation leak.
@@ -58,3 +58,16 @@ A regression test covers the cleanup hooks and stale-callback guards.
 ### Limits
 
 This was a source-level lifecycle review. It did not include heap snapshots, detached-DOM profiling, microphone hardware testing, or repeated long-session profiling in a real browser. Those remain necessary before making quantitative memory/performance claims.
+
+
+### Additional confirmed issue fixed — Fluentia
+
+The lifecycle review found that leaving Fluentia through the main navigation did not dispose of an unfinished session or abort its speech-recognition instance. The in-view Back action also cleared the session reference without asking the shared engine to abandon it. Re-entering Fluentia could therefore replace the visible UI while retaining stale session state.
+
+The fix now:
+- abandons unfinished sessions on view exit and on the in-view Back action;
+- clears the active session state when the learner reopens Fluentia;
+- aborts microphone recognition when leaving Fluentia or when the document becomes hidden;
+- detaches recognition callbacks before aborting and ignores late events from obsolete recognition instances.
+
+Regression contracts cover navigation exit/re-entry, Back cleanup, hidden-page microphone cleanup, and stale recognition callbacks.
