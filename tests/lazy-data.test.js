@@ -95,14 +95,14 @@ test('initial HTML defers stories and World data and keeps loader in offline she
   const lazyAssets = sw.match(/const LAZY_ASSETS = \[([^\]]*)\];/)?.[1] || '';
   assert.ok(coreAssets, 'service worker should define core offline assets');
   assert.ok(lazyAssets, 'service worker should define lazy offline assets');
-  for (const asset of ['data-stories.js', 'data-world.js', 'data-world-sprites.js', 'sound-maze-bank.js', 'sound-maze-content.js', 'odd-one-out-bank.js', 'sentence-scramble-bank.js', 'word-forge-bank.js', 'chain-reaction-bank.js', 'crossword-quest-bank.js', 'think-lab.js', 'crossword-quest.js', 'word-hunt-bank.js', 'word-hunt.js', 'codebreaker-bank.js', 'codebreaker.js', 'letter-grid-bank.js', 'letter-grid.js', 'practice-lab.js', 'life-skills.js', 'data-translation-ar.js']) {
+  for (const asset of ['data-stories.js', 'data-world.js', 'data-world-sprites.js', 'sound-maze-bank.js', 'sound-maze-content.js', 'odd-one-out-bank.js', 'sentence-scramble-bank.js', 'word-forge-bank.js', 'chain-reaction-bank.js', 'think-lab.js', 'word-hunt-bank.js', 'word-hunt.js', 'codebreaker-bank.js', 'codebreaker.js', 'letter-grid-bank.js', 'letter-grid.js', 'practice-lab.js', 'life-skills.js', 'data-translation-ar.js']) {
     assert.ok(!coreAssets.includes("'./" + asset + "'"), asset + ' should not be a core startup asset');
   }
-  for (const asset of ['resonance.css', 'life-skills.css', 'crossword-quest.css', 'word-hunt.css', 'codebreaker.css', 'letter-grid.css']) {
+  for (const asset of ['resonance.css', 'life-skills.css', 'word-hunt.css', 'codebreaker.css', 'letter-grid.css']) {
     assert.ok(!coreAssets.includes("'./" + asset + "'"), asset + ' must not be part of the core cache');
     assert.ok(lazyAssets.includes("'./" + asset + "'"), asset + ' should be cached as a lazy offline asset');
   }
-  for (const asset of ['data-stories.js', 'data-world.js', 'data-world-registry.js', 'data-world-events.js', 'data-world-sprites.js', 'sound-maze-bank.js', 'sound-maze-content.js', 'odd-one-out-bank.js', 'sentence-scramble-bank.js', 'word-forge-bank.js', 'chain-reaction-bank.js', 'crossword-quest-bank.js', 'think-lab.js', 'crossword-quest.js', 'word-hunt-bank.js', 'word-hunt.js', 'codebreaker-bank.js', 'codebreaker.js', 'letter-grid-bank.js', 'letter-grid.js', 'practice-lab.js', 'life-skills.js', 'language-detective-investigation.js']) {
+  for (const asset of ['data-stories.js', 'data-world.js', 'data-world-registry.js', 'data-world-events.js', 'data-world-sprites.js', 'sound-maze-bank.js', 'sound-maze-content.js', 'odd-one-out-bank.js', 'sentence-scramble-bank.js', 'word-forge-bank.js', 'chain-reaction-bank.js', 'think-lab.js', 'word-hunt-bank.js', 'word-hunt.js', 'codebreaker-bank.js', 'codebreaker.js', 'letter-grid-bank.js', 'letter-grid.js', 'practice-lab.js', 'life-skills.js', 'language-detective-investigation.js']) {
     assert.ok(lazyAssets.includes("'./" + asset + "'"), asset + ' should be cached as a lazy offline asset');
   }
   assert.match(sw, /const cached = await cache\.match\(request\);\s*if \(cached\) return cached;/);
@@ -111,7 +111,8 @@ test('initial HTML defers stories and World data and keeps loader in offline she
   assert.doesNotMatch(app, /if \(state\.helpArabic \|\| state\.translationEnabled\) ensureArabicTranslationCatalog\(\)/);
   assert.match(app, /if \(state\.helpArabic\) ensureArabicTranslationCatalog\(\)/);
   assert.match(app, /if \(state\.helpArabic\) ensureArabicTranslationCatalog\(\)/);
-  assert.doesNotMatch(sw, /'\.\/data-translation-ar\.js'/);
+  assert.ok(lazyAssets.includes("'./data-translation-ar.js'"), 'Arabic translation catalogue should be available for offline reuse after it is requested');
+  assert.ok(lazyAssets.includes("'./data-translation-ar-fill.js'"), 'Arabic translation fill should be available for offline reuse after it is requested');
 });
 
 
