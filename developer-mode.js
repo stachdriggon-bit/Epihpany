@@ -64,7 +64,7 @@
       if(!allowed())return;
       const events=snapshot.events||[];
       set('diagnostics-event-count',events.length);
-      set('diagnostics-failures',events.filter(item=>item.type==='load_failed').length);
+      set('diagnostics-failures',events.filter(item=>item.type==='load_failed'&&item.group).length);
       set('diagnostics-retries',events.filter(item=>item.type==='retry_started').length);
       set('diagnostics-status',snapshot.active?'Recording locally · '+events.length+'/200 events':'Recording is off. Nothing new is being collected.');
       const start=$('#diagnostics-start'),stop=$('#diagnostics-stop'),clear=$('#diagnostics-clear'),exportButton=$('#diagnostics-export');
