@@ -273,7 +273,7 @@
       return;
     }
     if(event.target.closest('[data-speech-start]')){startSpeechRecognition();return;}
-    if(event.target.closest('[data-speech-stop]')){stopSpeechRecognition();const status=$('#fluentia-speech-status');if(status)status.textContent='Recording stopped. Check the transcript or try again.';return;}
+    if(event.target.closest('[data-speech-stop]')){if(speechRecognition){try{speechRecognition.stop();}catch{stopSpeechRecognition();}}else stopSpeechRecognition();const status=$('#fluentia-speech-status');if(status)status.textContent='Stopping microphone…';return;}
     const domain=event.target.closest('[data-domain]');
     if(domain){if(choosingSectionMixed){choosingSectionMixed=false;startSession('section-mixed',{domain:domain.dataset.domain});}else renderDomain(domain.dataset.domain);return;}
     if(event.target.closest('[data-back]')){currentSession=null;renderHome();return;}
