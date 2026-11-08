@@ -955,3 +955,58 @@ test('scheduled speculative prefetch is cancelled while hidden and can resume wh
   await new Promise(resolve => setImmediate(resolve));
   scripts[1].onload();
 });
+
+
+test('speculative navigation keeps only the latest pending section intent', async () => {
+  const requested = [];
+  const scripts = [];
+  const listeners = {};
+  const timers = [];
+  const document = {
+    visibilityState: 'visible',
+    addEventListener(name, fn) { listeners['document:' + name] = fn; },
+    createElement() {
+      const script = { src: '', async: true, remove() {} };
+      scripts.push(script);
+      return script;
+    },
+    head: { appendChild(script) { requested.push(script.src); } }
+  };
+  const window = {
+    EPIPHANY_ADAPTIVE_ENGINE: { getPolicy: () => ({
+      allowSpeculativePreload: true, deferNonEssentialWork: false
+    }) },
+    navigator: { onLine: true },
+    addEventListener(name, fn) { listeners['window:' + name] = fn; },
+    setTimeout(fn) {
+      const timer = { fn, cleared: false };
+      timers.push(timer);
+      return timer;
+    },
+    clearTimeout(timer) { if (timer) timer.cleared = true; }
+  };
+  const context = vm.createContext({ window, document, Promise, Map, Set, Object, Error });
+  vm.runInNewContext(fs.readFileSync(path.join(root, 'lazy-data.js'), 'utf8'), context);
+
+  const intent = view => listeners['document:pointerover']({
+    type: 'pointerover', pointerType: 'mouse',
+    target: { closest: () => ({ getAttribute: () => view }) }
+  });
+  intent('stories');
+  intent('world');
+  assert.equal(timers.length, 2);
+  assert.equal(timers[0].cleared, true, 'the previous section intent should be cancelled');
+  assert.equal(timers[1].cleared, false, 'the latest section intent should remain scheduled');
+
+  timers[0].fn();
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(requested.length, 0, 'a cancelled stale intent must not load its section');
+
+  timers[1].fn();
+  await new Promise(resolve => setImmediate(resolve));
+  assert.deepEqual(requested.map(src => src.split('?')[0]), ['data-world.js']);
+  scripts[0].onload();
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(requested[1].split('?')[0], 'data-world-sprites.js');
+  scripts[1].onload();
+});
