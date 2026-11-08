@@ -40,6 +40,14 @@ jobs:
       - name: Run browser smoke tests
         timeout-minutes: 20
         run: npm run test:browser
+      - name: Upload World retention heap snapshot
+        if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: world-retention-heap-snapshot
+          path: test-results/world-retention.heapsnapshot
+          if-no-files-found: ignore
+          retention-days: 7
       - name: Upload card dossier visual verification screenshots
         if: always()
         uses: actions/upload-artifact@v6
