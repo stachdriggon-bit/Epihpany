@@ -782,8 +782,8 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
       mode=null;activePool=null;activeDifficulty=null;pickerStage='landing';pickerGameId=null;return true;
     }
     restoringInternalSession=true;renderGame();restoringInternalSession=false;
-    if(id==='forge')refreshPuzzleBoard('forge');
-    if(id==='scramble')refreshPuzzleBoard('scramble');
+    if(id==='forge'){forgePlaced=p.forgePlaced.slice();refreshPuzzleBoard('forge');}
+    if(id==='scramble'){scramblePlaced=p.scramblePlaced.slice();refreshPuzzleBoard('scramble');}
     if(id==='connections'&&Array.isArray(p.connectionWords)){
       const tiles=[...root.querySelectorAll('[data-connection-tile]')];
       connectionSelected=p.connectionWords.map(word=>tiles.findIndex(button=>button.textContent.trim()===word)).filter(value=>value>=0);
