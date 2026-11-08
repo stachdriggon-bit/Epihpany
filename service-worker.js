@@ -119,14 +119,15 @@ self.addEventListener('fetch', event => {
     return;
   }
   // Same-origin app assets use network first so deployments update promptly.
-  // Keep the cache write alive for the lifetime of this fetch event.
-  event.respondWith(fetch(request).then(response => {
+  // Register the cache-write lifetime synchronously, before the fetch event ends.
+  const networkRequest = fetch(request);
+  const cacheWrite = networkRequest.then(response => {
     if (response && response.ok) {
-      const copy = response.clone();
-      event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.put(request, copy)));
+      return caches.open(CACHE_NAME).then(cache => cache.put(request, response.clone()));
     }
-    return response;
-  }).catch(async () => {
+  }).catch(() => {});
+  event.waitUntil(cacheWrite);
+  event.respondWith(networkRequest.catch(async () => {
     // Prefer the exact versioned URL. Falling back with ignoreSearch could
     // serve an older script under a newer ?v= cache-busting key.
     const cached = await caches.match(request);
