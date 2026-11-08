@@ -232,7 +232,7 @@ test('runtime pressure monitoring is optional when PerformanceObserver is unavai
 
 
 test('adaptive policy transitions are exposed to the optional diagnostics bridge', () => {
-  assert.match(source, /diagnostics\\.record\\('adaptive_policy'/);
-  assert.match(source, /runtimePressure: next\\.runtimePressure/);
-  assert.match(source, /limit: policy\\.maxConcurrentOptionalLoads/);
+  assert.match(source, /diagnostics\.record\('adaptive_policy'/);
+  assert.match(source, /runtimePressure: next\.runtimePressure/);
+  assert.match(source, /limit: policy\.maxConcurrentOptionalLoads/);
 });
