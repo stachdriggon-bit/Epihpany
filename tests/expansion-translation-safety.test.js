@@ -2,11 +2,15 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
+const vm = require('node:vm');
 
 const source = fs.readFileSync(
-  path.resolve(__dirname, '..', 'data-expansion.js'),
+  path.resolve(__dirname, '..', 'data-expansion-translations.js'),
   'utf8'
 );
+const translationContext = vm.createContext({ window: {} });
+vm.runInContext(source, translationContext, { filename: 'data-expansion-translations.js' });
+const translations = translationContext.window.EPIPHANY_EXPANSION_TRANSLATIONS;
 
 test('advanced Arabic prompts preserve grammar structures that reveal the answer when translated', () => {
   const cases = [
