@@ -6,12 +6,12 @@
 
 ## Product role
 
-Letter Path is a classic hidden-word search. Players scan a crowded letter grid and find a visible list of target words. It is not a clue-led path-building exercise: players do not choose a clue and may not turn a path around neighboring letters.
+Letter Path is a classic hidden-word search. Players scan a crowded letter grid and find a visible list of target words. It remains clue-led: players choose a clue, then locate its hidden answer. The path itself must be straight; it cannot turn around neighboring letters.
 
 ## Core loop
 
 1. Choose Easy, Medium, Hard, or Expert.
-2. Read the target-word list.
+2. Choose one clue from the clue list.
 3. Find each word hidden in the grid. Every word is laid out in one straight line: horizontal, vertical, or diagonal.
 4. Words may run in either direction, including backwards.
 5. Tap the letters in sequence. Once the direction is established, every next letter must continue along that same line.
@@ -50,9 +50,9 @@ The first release contains **48 fixed puzzles and 216 target words**. Word place
 
 - The board remains responsive from phone to desktop and uses square cells.
 - Each grid cell is a real button with row, column, and letter accessible names.
-- The target list is visible beside or below the board.
+- The clue list is visible beside or below the board; each clue shows its letter count, and the answer remains hidden until found.
 - The selection preview announces the current letters; found words remain visibly marked.
-- No clue-selection panel, turning-path mechanic, timer, or forced pace.
+- Clue selection remains the starting point for each word. Turning paths are not allowed. No timer or forced pace.
 
 ## Implementation files
 
