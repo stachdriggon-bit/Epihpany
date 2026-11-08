@@ -89,6 +89,24 @@ test('feature data loader does not request large datasets until requested', asyn
   assert.equal(fluentiaRegistrations, 3, 'Fluentia adapters should refresh after expansion content is ready');
 });
 
+test('expansion loader rejects incomplete banks and permits a clean retry', async () => {
+  const requested = [];
+  const removed = [];
+  const document = {
+    createElement() { return { src: '', remove() { removed.push(this.src); } }; },
+    head: { appendChild(script) { requested.push(script.src); queueMicrotask(() => script.onload()); } },
+    querySelectorAll() { return []; }
+  };
+  const context = vm.createContext({ window: {}, document, Promise, Map, Set, Object, Error, Number });
+  vm.runInContext(fs.readFileSync(path.join(root, 'lazy-data.js'), 'utf8'), context);
+  await assert.rejects(context.window.EPIPHANY_LAZY_LOAD('expansion'), /required question banks did not initialize/);
+  context.GAMES = Object.fromEntries(['vocabulary','spelling','grammar','story','listening','advanced'].map(name => [name, {questions:[{level:'A1'}]}]));
+  context.window.EpiphanyExpansion = {count:6};
+  await context.window.EPIPHANY_LAZY_LOAD('expansion');
+  assert.equal(requested.length, 2, 'a failed initialization must not poison the next load attempt');
+  assert.equal(removed.length, 0, 'the retry should not require cleanup of a previously registered script node in this harness');
+});
+
 test('initial HTML defers stories and World data and keeps loader in offline shell', () => {
   const html = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
   const sw = fs.readFileSync(path.join(root, 'service-worker.js'), 'utf8');
