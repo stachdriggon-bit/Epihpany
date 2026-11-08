@@ -9,7 +9,7 @@
     "check": "npm run stamp && npm test",
     "test:install": "playwright install chromium",
     "test:unit": "node --test --test-force-exit --test-concurrency=1 --test-timeout=30000 tests/*.test.js",
-    "test:browser": "node --test tests/browser-smoke.js"
+    "test:browser": "node --test --test-force-exit --test-concurrency=1 tests/browser-smoke.js tests/runtime-profile.js"
   },
   "devDependencies": {
     "playwright": "^1.56.1"

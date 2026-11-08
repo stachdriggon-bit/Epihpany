@@ -71,3 +71,24 @@ The fix now:
 - detaches recognition callbacks before aborting and ignores late events from obsolete recognition instances.
 
 Regression contracts cover navigation exit/re-entry, Back cleanup, hidden-page microphone cleanup, and stale recognition callbacks.
+
+
+## Runtime lifecycle profiling — 2026-11-08
+
+### Automated same-tab profiling
+
+A dedicated Playwright/Chromium test now warms Fluentia, Think Lab, and World, then enters and exits each feature six additional times in the same browser tab. It records Chromium DevTools Protocol measurements after forced garbage collection at the warm baseline and after cycles 2, 4, and 6:
+
+- JavaScript heap used (MB)
+- DOM node count and page element count
+- JavaScript event-listener count
+- document/frame counts
+- World container child count
+
+The test is included in `npm run test:browser`, so the normal EPIPHANY checks execute it after the existing browser smoke suite. It also fails on uncaught page errors and missing core CDP metrics.
+
+### Interpretation and limits
+
+The measurements are diagnostic, not a pass/fail leak threshold. Chromium heap size and listener/node counts vary with browser version, lazy-loaded content, garbage collection, and CI machine pressure; a single CI run cannot establish a production leak or a real-device performance improvement. Compare the full baseline and later samples, and investigate sustained growth rather than a one-off increase.
+
+This automation does **not** yet provide heap-snapshot dominator analysis, reliable detached-DOM attribution, microphone hardware validation, or representative mobile-device CPU/memory measurements. Those require a headed browser session and/or real devices. The report deliberately makes no quantitative improvement claim. The repeatable same-tab route is now available for future before/after comparisons.
