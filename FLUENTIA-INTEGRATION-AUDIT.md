@@ -1,104 +1,68 @@
-# Fluentia — Final Integration Audit
+# Fluentia — Integration Remediation Report
 
 Date: 2026-11-08  
 Branch: `main`  
-Audited commit: `b2b24de74ebf8b7acf1011a5ee717c44d3f27e00`  
-Scope: learner-facing Arcade → Fluentia migration, source registration, progress/review integration, and regression coverage.
+Implementation commit under verification: `9220f70ff8668d768deb9d31c05c505ec3355e44`
 
 ## Executive result
 
-**Navigation migration: passed. Full functional migration: not yet complete.**
+**The three functional blockers from the final integration audit have been implemented.** Fluentia now loads its own optional banks when opened, provides a real microphone-based Speaking & Shadowing interaction with explicit fallback states, and turns incorrect Fluentia answers into activity-specific Your Review queues.
 
-Fluentia is the only learner-facing English-practice destination in the Play navigation on desktop and mobile. The old Arcade destination is absent from navigation, and the existing browser smoke test asserts that state. However, several source modules still register their activities only when legacy destinations are opened. As a result, a learner who opens Fluentia directly does not receive the complete planned activity inventory.
+The old Arcade shell and shared legacy code have been retained for compatibility. No Vercel deployment was triggered.
 
-No learner-facing code was changed during this audit. The findings below are recorded as the next implementation batch so the remaining work can be completed coherently without deleting legacy content or breaking existing behavior.
+## F-01 — First-open activity source readiness
 
-## Verified areas
+<badge color="success">Implemented</badge>
 
-### 1. Navigation and information architecture
+- Added a dedicated `fluentia` lazy-load group containing only Sound Maze's bank/content modules and the Practice Lab source module.
+- Fluentia does not load the full Think Lab or Life Skills bundles to obtain its practice content.
+- The app opens Fluentia in a clear loading state, then refreshes the activity inventory only after the lazy group resolves.
+- The loader verifies that Sound Maze, Practice Dictation and Speaking & Shadowing adapters registered successfully. Failed or partially initialized source loads clear their script cache and show a retry action.
+- Practice Lab's legacy standalone UI no longer mounts invisibly inside the retired Arcade view when its source is loaded for Fluentia.
+- Added lazy-loader and browser-smoke coverage for loading the optional sources on Fluentia's first open.
 
-- Desktop Play contains Fluentia, Think Lab and Casebound.
-- Mobile Play contains the same three destinations.
-- Fluentia is not in Learn.
-- No `data-view="arcade"` navigation entry remains.
-- Think Lab and Casebound remain separate destinations.
-- Stories remains a separate narrative destination; Textwise sequencing uses its own bank.
+## F-02 — Speaking & Shadowing microphone interaction
 
-### 2. Fluentia foundation
+<badge color="success">Implemented</badge>
 
-- The six approved domains are present: Wordcraft, Sentence Studio, Textwise, Soundscape, Real World and Fine Sense.
-- Fluentia Mix and Section Mixed are distinct entry points.
-- Section Mixed is configured with a single selected domain; Fluentia Mix spans eligible domains.
-- The engine enforces exact CEFR matching, stable item identity and no-repeat selection.
-- The progress bridge appends deduplicated Fluentia events to `epiphany-progress.fluentiaHistory`, bounded to the latest 500 events, without duplicating XP or legacy rewards.
-- Your Review is a separate destination and its adapters are excluded from ordinary mixed sessions.
+- Replaced the generic speech text input with a microphone control backed by the browser's `SpeechRecognition` / `webkitSpeechRecognition` API.
+- Added start and stop controls, live editable transcript capture, and explicit states for unsupported browser/context, denied microphone permission, missing microphone, no detected speech and other recognition failures.
+- Kept a manual transcript entry fallback when speech recognition is unavailable.
+- The activity evaluates recognised-word matching only. The interface explicitly says it does not assess pronunciation quality.
+- The original eight reviewed A1–B2 Practice Lab sample sentences remain the source; no invented C1/C2 content was added.
 
-### 3. Existing activity/content preservation
+Manual microphone testing across supported browsers and real devices remains necessary; CI cannot grant or verify a user's microphone permission.
 
-The canonical adapter registry covers the original core activity families and the additional Word Match, Speed Round, Sentence Builder, Sound & Picture Match, Textwise sequencing, Sound Maze, dictation and review feeds when their optional sources have registered. The legacy Arcade DOM, renderer and data remain in the repository; they have not been deleted.
+## F-03 — Fluentia-history-driven Your Review
 
-## Findings requiring implementation
+<badge color="success">Implemented</badge>
 
-### F-01 — Fluentia does not load all of its optional activity sources
+- Added activity-specific history review adapters for every registered non-review activity. Each adapter retains the source activity's domain, interaction type, skill, evaluator and original question identity.
+- Your Review now reads incorrect events from `epiphany-progress.fluentiaHistory` and resolves them back to their canonical source-bank items.
+- Review-only adapters remain excluded from ordinary Section Mixed and Fluentia Mix sessions.
+- Added `fluentiaReviewState`, keyed by `sourceActivityId:itemId`, to track attempts and mastery without mutating legacy spaced-repetition schedules or XP.
+- A correct review answer marks that source question mastered and removes it from the active queue. A later incorrect answer reopens it. Duplicate events do not inflate attempts.
+- Existing saved-vocabulary and legacy grammar-review feeds remain available alongside the new history-driven queues.
 
-**Severity: High**
+## F-04 — Legacy Arcade shell
 
-The app registers Practice Lab samples only when `practice-lab.js` executes. That file belongs to the `arcade` lazy-load group, and `openView('arcade')` is the only route that requests that group. Since Arcade is no longer in navigation, opening Fluentia directly does not register the Practice Lab dictation and Speaking & Shadowing adapters.
+<badge color="warning">Retained intentionally</badge>
 
-Sound Maze has the same class of issue: `sound-maze-content.js` registers its bank when it executes, but it is loaded through the Think Lab / Life Skills lazy groups, not through Fluentia. Fluentia itself does not request either source group.
+The old Arcade DOM, renderer and lazy-load group remain in the repository for compatibility. Arcade is still absent from learner navigation. Practice Lab's old UI mount now checks that the Arcade view is actually active, so loading its data for Fluentia does not mount a hidden duplicate. Removal of the remaining legacy shell is deferred until a separate reference audit proves that no compatibility or shared runtime path depends on it.
 
-**Required fix:** give Fluentia an explicit, bounded source-readiness step for the specific optional banks it owns. Do not load the full Think Lab or Life Skills feature bundles just to obtain Sound Maze content; separate the content asset from unrelated game UI where appropriate. Re-render the Fluentia activity inventory after registration and provide a clear retry/error state if a source fails to load.
+## Regression coverage added
 
-### F-02 — Speaking & Shadowing is not currently a speaking interaction in Fluentia
+- Adapter tests verify history-derived review items preserve source IDs and original interaction semantics, and leave the queue after mastery.
+- Progress-bridge tests verify review-state snapshot isolation, mastery transitions and duplicate-event idempotency.
+- Fluentia UI tests cover microphone support, permission/unsupported states, editable transcript fallback and source-load retry behavior.
+- Lazy-data tests verify Fluentia first-open loads only its own source files, without requesting the full Think Lab/Life Skills bundle.
+- Browser smoke now verifies Sound Maze and Practice Lab adapters are registered after opening Fluentia directly.
 
-**Severity: High**
+## CI and release status
 
-The Speaking & Shadowing adapter is conditionally registered from the Practice Lab samples and is labelled with interaction type `speech`. However, Fluentia's `inputFor()` renders a normal text input for this type. The old microphone / SpeechRecognition interface is mounted by `practice-lab.js` inside `#arcade-view .arcade-page`, which is the retired learner-facing shell.
+The implementation is on `main`. The first run against the implementation found one stale UI-copy assertion; it was corrected. The latest verification run for commit `9220f70ff8668d768deb9d31c05c505ec3355e44` was pending/in progress at the time this report was updated:
 
-Consequently, the current Fluentia session can accept a typed transcript and compare words, but it does not provide the microphone-based speaking workflow implied by the activity name. It must not be described as a pronunciation assessment; the original Practice Lab correctly describes its score as recognised-word matching, not pronunciation quality.
+- [EPIPHANY checks](https://github.com/stachdriggon-bit/Epihpany/actions/runs/42472780307)
+- [Content quality](https://github.com/stachdriggon-bit/Epihpany/actions/runs/42472780395)
 
-**Required fix:** integrate the actual speaking workflow into Fluentia's Real World activity experience (including unsupported-browser and microphone-permission states), or explicitly keep it unavailable until that integration is complete. Do not silently present a text field as a working microphone activity.
-
-### F-03 — Fluentia mistakes are stored but do not feed Your Review
-
-**Severity: High**
-
-The progress bridge stores normalized events in `fluentiaHistory`. The current vocabulary review adapter reads saved words and legacy review rows; the grammar review adapter reads `mistakeTrapErrors` and `mistakeQuestionErrors`. Neither adapter reads Fluentia history.
-
-Therefore, wrong answers made inside Fluentia are preserved in the history log, but are not themselves eligible signals for the dedicated Your Review feeds. The current Your Review panel can still use qualifying legacy saved-word and grammar-error signals, but it is not yet a fully cross-domain review of Fluentia's own answer history.
-
-**Required fix:** extend the review selection layer to consume Fluentia history with stable source activity, domain, CEFR level, skill and error-type attribution. Keep review-only items out of ordinary Mixed sessions, preserve source-question identity, and avoid repeating items already mastered or already reviewed according to a documented policy. Do not mutate legacy SRS schedules or duplicate XP.
-
-### F-04 — Legacy Arcade shell remains in runtime code
-
-**Severity: Medium / intentional compatibility**
-
-The old `#arcade-view`, Arcade renderer and the `arcade` lazy group remain. Keeping legacy code during migration is reasonable, but the old shell is also still the only mounting target for Practice Lab's standalone UI. This dependency contributes directly to F-01 and F-02.
-
-**Required fix:** after the replacement experiences are integrated and tested, remove or retire only obsolete learner-facing Arcade shell behavior. Retain shared activity logic, content banks, progress compatibility and any renderer still used by other parts of EPIPHANY.
-
-## Test coverage gaps
-
-The current Fluentia UI and browser smoke tests verify navigation, the six domain cards, one Wordcraft activity, history recording, Arabic feedback replacement, both Mixed entry points, mobile layout and mobile navigation. They do not currently prove:
-
-- that Fluentia opened first loads every activity source promised by its inventory;
-- that Sound Maze is available without first opening Think Lab or Life Skills;
-- that Practice Lab dictation and Speaking & Shadowing are available without opening Arcade;
-- that microphone permissions and SpeechRecognition work from Fluentia;
-- that a wrong Fluentia answer later appears in the appropriate Your Review feed;
-- that the review feed preserves source/domain/skill/error attribution and avoids duplicate or mastered items.
-
-These should be added to automated tests where deterministic, with microphone/audio quality and assistive-technology checks retained as manual device sign-off.
-
-## Current CI status
-
-At the audited commit `b2b24de74ebf8b7acf1011a5ee717c44d3f27e00`:
-
-- **EPIPHANY checks:** passed — [workflow run](https://github.com/stachdriggon-bit/Epihpany/actions/runs/42469445229)
-- **Content quality:** passed — [workflow run](https://github.com/stachdriggon-bit/Epihpany/actions/runs/42469445203)
-
-These are genuine green CI results for the audited commit. They do not close the functional gaps listed above.
-
-## Recommended next batch
-
-Implement F-01, F-02 and F-03 together as one Fluentia integration batch, with tests for first-open source readiness, speaking interaction behavior and history-driven personalized review. Then reassess F-04 and retire only the now-unused Arcade shell. Keep the manual device/audio/accessibility/performance sign-off separate from automated CI. Do not trigger a Vercel deployment while the deployment rate limit is active.
+Do not treat the migration as release-signed until the latest CI runs are green. After CI, manually verify microphone permission prompts, successful capture, denied permission, unsupported browsers, audio playback, accessibility and lower-powered phone performance. Do not trigger a Vercel deployment while its deployment rate limit is active.
