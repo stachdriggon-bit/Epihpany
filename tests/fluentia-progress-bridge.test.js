@@ -102,11 +102,16 @@ test('bridge history is bounded and rejects events without stable attribution', 
   const state={fluentiaHistory:[]};
   const bridge=Bridge.createBridge(()=>state,history=>{state.fluentiaHistory=history;});
   assert.throws(()=>bridge.recordEvent({correct:true}),/stable attribution fields/);
-  for(let i=0;i<510;i++) bridge.recordEvent({
-    eventId:'bounded:'+i,sessionId:'bounded',itemId:'item-'+i,
-    activityId:'wordcraft-vocabulary',sourceActivityId:'vocabulary',
-    level:'A1',correct:true,domain:'wordcraft',answeredAt:'2026-11-07T11:00:00.000Z'
-  });
+  for(let i=0;i<510;i++) {
+    const event = {
+      eventId:'bounded:'+i,sessionId:'bounded',itemId:'item-'+i,
+      activityId:'wordcraft-vocabulary',sourceActivityId:'vocabulary',
+      level:'A1',correct:true,domain:'wordcraft',answeredAt:'2026-11-07T11:00:00.000Z'
+    };
+    bridge.recordReviewOutcome(event);
+    bridge.recordEvent(event);
+  }
   assert.equal(bridge.getHistory().length,500);
   assert.equal(bridge.getHistory()[0].eventId,'bounded:10');
+  assert.ok(Object.keys(state.fluentiaReviewState).length <= 501, 'review mastery metadata should stay bounded with retained history');
 });
