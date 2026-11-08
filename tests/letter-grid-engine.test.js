@@ -35,21 +35,11 @@ test('Letter Path opens four independent levels and presents a word-search instr
 test('answers stay hidden behind clues and are revealed after a straight-line find',()=>{
   const h=harness(),word=start(h);
   assert.match(h.root.innerHTML,/Word clues/);
-  assert.match(h.root.innerHTML,new RegExp(word.clue.replace(/[.*+?^${}()|[\]\\]/g,'\\test('target words are visible and found by selecting their straight-line letters',()=>{
-  const h=harness(),word=start(h);
-  assert.match(h.root.innerHTML,new RegExp(word.answer));
-  assert.doesNotMatch(h.root.innerHTML,/Choose clue|Word clues/);
-  for(const cell of word.path)h.click('[data-lg-cell]',{lgCell:String(cell)});
-  assert.match(h.root.innerHTML,/lg-word is-found/);
-  assert.equal(h.results.length,1);
-  assert.equal(h.results[0][1],'letter-grid');
-  assert.equal(h.results[0][2],true);
-  assert.equal(h.results[0][4].trackAdaptive,false);
-});')));
-  assert.doesNotMatch(h.root.innerHTML,new RegExp('>'+word.answer+'<'));
+  assert.ok(h.root.innerHTML.includes(word.clue));
+  assert.equal(h.root.innerHTML.includes('>'+word.answer+'<'),false);
   for(const cell of word.path)h.click('[data-lg-cell]',{lgCell:String(cell)});
   assert.match(h.root.innerHTML,/lg-clue is-found/);
-  assert.match(h.root.innerHTML,new RegExp('>'+word.answer+'<'));
+  assert.ok(h.root.innerHTML.includes('>'+word.answer+'<'));
   assert.equal(h.results.length,1);
   assert.equal(h.results[0][1],'letter-grid');
   assert.equal(h.results[0][2],true);
