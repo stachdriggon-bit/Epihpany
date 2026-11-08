@@ -73,7 +73,7 @@ test('Easy bank uses repeated-letter patterns as a visible deduction mechanic',(
 
 test('Medium 01 starter key exposes a useful cross-word anchor',()=>{
   const puzzle=bank.puzzles.medium.find(item=>item.id==='cb-medium-01');
-  assert.deepEqual(puzzle.known.map(pair=>[pair.cipher,pair.plain]),[['O','K'],['R','I'],['V','D']]);
+  assert.equal(JSON.stringify(puzzle.known.map(pair=>[pair.cipher,pair.plain])),JSON.stringify([['O','K'],['R','I'],['V','D']]));
   const words=puzzle.cipher.split(' ');
   assert.ok(words[0].includes('V')&&words[1].includes('V'));
   assert.equal(bank.validatePuzzle(puzzle,'medium').valid,true);
