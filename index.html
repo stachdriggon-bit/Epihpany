@@ -399,9 +399,20 @@
             </div>
             <div class="developer-diagnostics-summary">
               <div><b id="diagnostics-event-count">0</b><small>Events in memory</small></div>
-              <div><b id="diagnostics-failures">0</b><small>Load failures</small></div>
+              <div><b id="diagnostics-failures">0</b><small>Failed feature groups</small></div>
               <div><b id="diagnostics-retries">0</b><small>Retry attempts</small></div>
+              <div><b id="diagnostics-average-wait">—</b><small>Average optional queue wait</small></div>
             </div>
+            <label class="developer-diagnostics-filter">Filter events
+              <select id="diagnostics-filter">
+                <option value="all">All events</option>
+                <option value="loading">Loading</option>
+                <option value="failures">Failures</option>
+                <option value="retries">Retries</option>
+                <option value="cache">Cache</option>
+                <option value="adaptive">Adaptive policy</option>
+              </select>
+            </label>
             <div class="developer-diagnostics-log" id="diagnostics-log" role="log" aria-label="Diagnostic event log"><div class="developer-diagnostics-empty">Start a recording session to collect diagnostic events.</div></div>
             <p class="developer-diagnostics-note">The log is kept in memory only (maximum 200 events). It is not sent to Supabase or any external service. Export is manual and only includes sanitized technical events.</p>
           </div>
