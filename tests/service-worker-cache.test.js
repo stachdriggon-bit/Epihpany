@@ -33,7 +33,10 @@ function createWorker(cachedAssets = [], navigatorOptions = {}) {
       return { ok: true, clone() { return { asset }; } };
     },
     Promise, Number, String, Object, URL, console,
-    clients: { claim: async () => {} }
+    clients: {
+      claim: async () => {},
+      get: async id => id === 'diagnostic-client' ? { postMessage(message) { diagnosticMessages.push(message); } } : null
+    }
   });
   vm.runInContext(source, context);
   return { handlers, added, matched, refreshed, cacheEntries };
@@ -85,6 +88,7 @@ test('reconnect does not warm optional assets on constrained devices or data-sav
 function createFetchWorker(options = {}) {
   const handlers = {};
   const entries = new Map();
+  const diagnosticMessages = [];
   const cache = {
     async match(key) {
       const value = typeof key === 'string' ? key : key.url;
@@ -128,14 +132,21 @@ function createFetchWorker(options = {}) {
   });
   vm.runInContext(source, context);
   return {
-    handlers, entries,
+    handlers, entries, diagnosticMessages,
     setOnline(value) { online = value; },
+    startDiagnostics() {
+      handlers.message({ data: { type: 'EPIPHANY_DIAGNOSTICS_START' }, source: { id: 'diagnostic-client' } });
+    },
+    stopDiagnostics() {
+      handlers.message({ data: { type: 'EPIPHANY_DIAGNOSTICS_STOP' }, source: { id: 'diagnostic-client' } });
+    },
     async dispatch(url, mode = 'no-cors') {
       const waits = [];
       let responsePromise;
       const request = { method: 'GET', url, mode, destination: 'script' };
       handlers.fetch({
         request,
+        clientId: 'diagnostic-client',
         respondWith(promise) { responsePromise = promise; },
         waitUntil(promise) { waits.push(promise); }
       });
@@ -194,4 +205,22 @@ test('missing optional assets fail with a clear offline response instead of an e
   const response = await worker.dispatch('https://epiphany.test/data-expansion-grammar.js?v=expansion-grammar-20261108-1');
   assert.equal(response.status, 503);
   assert.equal(response.statusText, 'Offline');
+});
+
+
+test('service-worker cache diagnostics are delivered only to an explicitly started client session', async () => {
+  const worker = createFetchWorker();
+  await worker.dispatch('https://epiphany.test/data-stories.js?v=1');
+  assert.equal(worker.diagnosticMessages.length, 0, 'diagnostics must be silent by default');
+
+  worker.startDiagnostics();
+  await worker.dispatch('https://epiphany.test/data-expansion-grammar.js?v=1');
+  assert.equal(worker.diagnosticMessages.length, 1);
+  assert.equal(worker.diagnosticMessages[0].type, 'EPIPHANY_DIAGNOSTIC_EVENT');
+  assert.equal(worker.diagnosticMessages[0].event.asset, 'data-expansion-grammar.js');
+  assert.equal(worker.diagnosticMessages[0].event.outcome, 'network_success');
+
+  worker.stopDiagnostics();
+  await worker.dispatch('https://epiphany.test/data-expansion-story.js?v=1');
+  assert.equal(worker.diagnosticMessages.length, 1, 'stopping diagnostics must stop service-worker events immediately');
 });
