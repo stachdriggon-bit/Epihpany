@@ -1,78 +1,67 @@
-# Letter Grid — Game Specification
+# Letter Path — Game Specification
 
-**Status:** First implementation and fixed first-release content bank committed to `main`. Unit/static, browser smoke, and content-quality CI checks pass; manual phone/desktop visual review remains pending until Vercel deployment is available.  
-**Think Lab position:** Game 11.  
+**Status:** Redesigned as a straight-line word-search game. The first-release bank contains 48 fixed randomized boards and 216 target words; automated verification is being updated for the new interaction model.  
+**Think Lab position:** Existing Letter Grid slot (display name: Letter Path).  
 **Gameplay model:** Independent Easy / Medium / Hard / Expert selection. No Guided / Steady / Challenge modes.
 
 ## Product role
 
-Letter Grid is a clue-led word-path puzzle. It is distinct from Word Hunt: players do not select the first and last letters along a straight line. They select a clue and connect adjacent letters one cell at a time; paths may turn horizontally, vertically, or diagonally. Each target answer is hidden until solved.
+Letter Path is a classic hidden-word search. Players scan a crowded letter grid and find a visible list of target words. It is not a clue-led path-building exercise: players do not choose a clue and may not turn a path around neighboring letters.
 
 ## Core loop
 
 1. Choose Easy, Medium, Hard, or Expert.
-2. Read one short English definition and its answer length.
-3. Select the clue, then tap neighboring letters in sequence to spell the answer.
-4. Each next cell must touch the previous cell, including diagonal neighbors. A cell cannot be reused within one word.
-5. Players may step back one cell or clear the path at any time.
-6. A complete path is checked automatically. Correct words are revealed and marked found. An incorrect full path can be retried without a penalty.
-7. An optional hint reveals only the starting letter and highlights its cell; it never draws the answer path.
-8. Solve all clues in a puzzle to advance. Complete all 12 puzzles to finish the level.
+2. Read the target-word list.
+3. Find each word hidden in the grid. Every word is laid out in one straight line: horizontal, vertical, or diagonal.
+4. Words may run in either direction, including backwards.
+5. Tap the letters in sequence. Once the direction is established, every next letter must continue along that same line.
+6. Tap a selected letter again to remove it and step back. The player may also clear the entire selection.
+7. Correct words are marked in the grid and crossed off the target list. No timer or penalty is imposed.
 
 ## Difficulty and fixed content
 
-| Level | Grid | Clues per puzzle | Answer length | Puzzles |
+| Level | Grid | Words per puzzle | Word length | Puzzles |
 |---|---:|---:|---:|---:|
 | Easy | 4 × 4 | 3 | 3–4 | 12 |
 | Medium | 6 × 6 | 4 | 4–5 | 12 |
 | Hard | 7 × 7 | 5 | 4–6 | 12 |
 | Expert | 8 × 8 | 6 | 5–7 | 12 |
 
-The first release contains **48 fixed puzzles and 216 target words**. Every clue has one fixed answer and one prevalidated neighboring-cell path. Boards and paths are authored into the bank; gameplay does not generate or randomize puzzles.
+The first release contains **48 fixed puzzles and 216 target words**. Word placements are mixed across each board and randomized when the fixed bank is authored; they are not assigned to predictable corners or positions at runtime. Every target appears exactly once. The runtime does not generate or shuffle puzzles.
 
-## Content and path validation
+## Placement and validation
 
-- Exactly 12 puzzles per level and the configured number of clues per puzzle.
-- Every grid is square, with uppercase A–Z cells only.
-- Each answer is unique within its puzzle and fits that level's length range.
-- Each target path contains exactly one cell per answer letter.
-- Path indices stay inside the grid, never repeat a cell, and never overlap another target path.
-- Every path cell contains the matching answer letter.
-- Every consecutive pair of cells is adjacent in one of the eight directions.
-- A level is unavailable unless its entire bank validates.
+- Every grid is square and contains uppercase A–Z letters only.
+- Every target has one fixed path with exactly one cell per answer letter.
+- A path must be a single straight line in one of eight directions; turning paths are invalid.
+- A path cannot reuse or overlap another target path.
+- Every target must appear exactly once in the board, including reverse-direction searches.
+- Each level is unavailable unless all 12 boards pass validation.
 
 ## Feedback, progression, and rewards
 
-- Correct paths reveal the word and mark its clue as found.
-- Incorrect full-length paths receive neutral retry guidance. There is no score deduction, attempt limit, timer, or leaderboard.
-- A single-step backtrack and a clear-path action let players correct selections without restarting a clue.
-- The hint reveals the first letter only.
-- Successful and incorrect completed paths are recorded through the existing Think Lab vocabulary bridge with adaptive tracking disabled. No separate currency or reward system is introduced.
+- A correct word is marked in the grid and crossed off the target list.
+- An invalid sequence receives neutral retry guidance; it is not a scored failure.
+- Tapping a selected cell again steps back through the current selection. Clear selection remains available as a full reset.
+- An optional hint highlights only a starting cell; it does not reveal the word or its route.
+- Existing Think Lab progression remains authoritative; no separate currency or reward system is introduced.
 
 ## Interface and accessibility
 
-- Dedicated Think Lab card and outline icon.
-- Independent four-level picker.
-- Grid cells are real buttons with row, column, and letter accessible labels.
-- Clues are selectable buttons; found answers are revealed in place.
-- The current path is shown as readable letters and announced through a live status region.
-- Touch-friendly square grid, responsive clue layout, visible keyboard focus, and no forced pace.
+- The board remains responsive from phone to desktop and uses square cells.
+- Each grid cell is a real button with row, column, and letter accessible names.
+- The target list is visible beside or below the board.
+- The selection preview announces the current letters; found words remain visibly marked.
+- No clue-selection panel, turning-path mechanic, timer, or forced pace.
 
 ## Implementation files
 
-- `letter-grid-bank.js` — fixed 48-puzzle bank and path validator.
-- `letter-grid.js` — level flow, clue selection, path interaction, hints, checking, progression, and Think Lab bridge.
-- `letter-grid.css` — responsive board and clue interface.
-- `tests/letter-grid-bank.test.js` — bank shape, answer, and path integrity.
-- `tests/letter-grid-engine.test.js` — clue selection, adjacency, backtracking, hint, and retry behavior.
+- `letter-grid-bank.js` — fixed grids, straight-line placements, and content validator.
+- `letter-grid.js` — word selection, step-back, hints, completion, and Think Lab bridge.
+- `letter-grid.css` — responsive board and target-word list.
+- `tests/letter-grid-bank.test.js` — bank shape, unique placements, and straight-line validation.
+- `tests/letter-grid-engine.test.js` — straight-line selection, step-back, hints, and progression.
 - `think-lab.js`, `icon-system.js`, `lazy-data.js`, `service-worker.js` — Think Lab registration and lazy/offline integration.
-
-## Verification checklist
-
-- [ ] `npm run test:unit`
-- [ ] `npm run test:browser`
-- [ ] Manual phone and desktop pass: clue selection, diagonal and turning paths, backtracking, clear path, hints, incorrect paths, puzzle progression, and return to Think Lab.
-- [ ] Confirm the game and bank load only through Think Lab's lazy-loading path.
 
 ## Deferred
 
