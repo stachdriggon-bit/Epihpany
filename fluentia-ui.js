@@ -26,7 +26,14 @@
   const symbols = {choice:'◉',correction:'✎',typed:'Aa',ordering:'↔',matching:'⤳',map:'⌖',listening:'♫',speech:'◖',dynamic:'✦'};
   let engine = null, activities = [], selectedLevel = 'A1', currentDomain = null, currentSession = null, currentModeLabel = '', currentMode = '', currentQuestion = null, answered = false, lastEvent = null;
   let translated = false, choosingSectionMixed = false;
+  let speechRecognition = null, speechListening = false;
   const levelNames = {A1:'Beginner',A2:'Elementary',B1:'Intermediate',B2:'Upper intermediate',C1:'Advanced',C2:'Proficient'};
+  function activityLabel(id) {
+    if (activityNames[id]) return activityNames[id];
+    const review = String(id).match(/^(.*)-history-review$/);
+    if (review) return (activityNames[review[1]] || review[1].replace(/^[^-]+-/,'').replace(/-/g,' ')) + ' · Review';
+    return String(id).replace(/^[^-]+-/,'').replace(/-/g,' ').replace(/\b\w/g,c=>c.toUpperCase());
+  }
   function getProgress() { try { return window.__epiphanyReadProgress?.() || {}; } catch { return {}; } }
   function currentLevel() {
     const state = getProgress();
@@ -66,7 +73,7 @@
   }
   function reviewPanel() {
     const reviews = activities.filter(a => a.reviewOnly && a.items.length);
-    return '<section class="fluentia-review-panel"><h2>Your Review</h2><p>Revisit personalised grammar and vocabulary questions drawn from your saved learning history. Review activities stay outside ordinary mixed sessions.</p><div class="fluentia-review-actions">'+(reviews.length?reviews.map(a=>'<button type="button" class="btn btn-ghost" data-activity="'+esc(a.id)+'">'+esc(activityNames[a.id]||a.id)+' · '+a.items.length+'</button>').join(''):'<span class="fluentia-empty">Your personalised review will appear when eligible saved practice data is available.</span>')+'</div></section>';
+    return '<section class="fluentia-review-panel"><h2>Your Review</h2><p>Revisit questions you missed in Fluentia, alongside your saved vocabulary and grammar review. A question leaves the active review queue after you answer it correctly here.</p><div class="fluentia-review-actions">'+(reviews.length?reviews.map(a=>'<button type="button" class="btn btn-ghost" data-activity="'+esc(a.id)+'">'+esc(activityLabel(a.id))+' · '+a.items.length+'</button>').join(''):'<span class="fluentia-empty">Your personalised review will appear after you save learning or miss a Fluentia question.</span>')+'</div></section>';
   }
   function bindToolbar() {
     const select = $('#fluentia-level');
@@ -81,7 +88,7 @@
     root.innerHTML = '<button type="button" class="fluentia-back" data-back>← All Fluentia</button><div class="fluentia-domain-intro"><span class="fluentia-domain-icon">'+domain.icon+'</span><div><p class="kicker">FLUENTIA DOMAIN</p><h2>'+domain.name+'</h2><p>'+domain.desc+'</p></div></div><div class="fluentia-section-heading"><div><h2>Choose an activity</h2><p>Every activity uses your selected '+selectedLevel+' level.</p></div></div>'+(items.length?'<div class="fluentia-activity-list">'+items.map(activityCard).join('')+'</div>':'<div class="fluentia-empty">No activities have eligible content for '+selectedLevel+' yet. Choose another level or return later.</div>');
   }
   function activityCard(activity) {
-    const label = activityNames[activity.id] || activity.id.replace(/^[^-]+-/,'').replace(/-/g,' ').replace(/\b\w/g,c=>c.toUpperCase());
+    const label = activityLabel(activity.id);
     return '<button type="button" class="fluentia-activity-card" data-activity="'+esc(activity.id)+'"><span class="fluentia-activity-symbol">'+(symbols[activity.interactionType]||'✦')+'</span><span class="fluentia-activity-copy"><strong>'+esc(label)+'</strong><small>'+esc(interactionLabels[activity.interactionType]||activity.interactionType)+' · '+activity.items.length+' items · '+selectedLevel+'</small></span><span class="fluentia-activity-arrow" aria-hidden="true">→</span></button>';
   }
   function startSession(mode, options = {}) {
@@ -129,7 +136,11 @@
     const type = currentQuestion.interactionType;
     if (type==='choice'||type==='correction'||(type==='listening' && optionsFor(item))) return null;
     if (type==='matching') return '<label>Match the meaning for <b>'+esc(item.word||'this word')+'</b><input class="fluentia-answer-input" id="fluentia-match-meaning" autocomplete="off" placeholder="Type the matching meaning" aria-label="Matching meaning"></label>';
-    return '<input class="fluentia-answer-input" id="fluentia-answer" type="text" autocomplete="off" placeholder="'+(type==='speech'?'Say the response, or type what you would say':type==='ordering'?'Enter each step in order, separated by >':type==='map'?'Enter the map coordinate, for example 2,3':'Type your answer')+'" aria-label="Your answer">';
+    if (type==='speech') {
+      const supported = !!(window.isSecureContext !== false && (window.SpeechRecognition || window.webkitSpeechRecognition));
+      return '<div class="fluentia-speech-tools"><div class="fluentia-speech-actions"><button type="button" class="btn" data-speech-start '+(supported?'':'disabled')+'>🎙 Start speaking</button><button type="button" class="btn btn-ghost" data-speech-stop disabled>Stop</button></div><p class="fluentia-speech-status" id="fluentia-speech-status" role="status" aria-live="polite">'+(supported?'Allow microphone access when your browser asks, then repeat the sentence.':'Speech recognition is not supported in this browser or context. You can still type your transcript below.')+'</p><label for="fluentia-speech-transcript">Recognised words (editable)</label><textarea class="fluentia-answer-input fluentia-speech-transcript" id="fluentia-speech-transcript" rows="3" placeholder="Your recognised words will appear here…"></textarea><p class="fluentia-speech-note">This compares recognised words with the target. It does not assess pronunciation quality.</p></div>';
+    }
+    return '<input class="fluentia-answer-input" id="fluentia-answer" type="text" autocomplete="off" placeholder="'+(type==='ordering'?'Enter each step in order, separated by >':type==='map'?'Enter the map coordinate, for example 2,3':'Type your answer')+'" aria-label="Your answer">';
   }
   function renderQuestion() {
     const item = currentQuestion.item, opts = optionsFor(item), prompt = promptText(item);
@@ -148,6 +159,10 @@
         const meaning=$('#fluentia-match-meaning');
         answer={word:currentQuestion.item.word||'',meaning:meaning?.value.trim()||''};
         if(!answer.word||!answer.meaning){meaning?.focus();return;}
+      } else if (currentQuestion.interactionType==='speech') {
+        const input = $('#fluentia-speech-transcript');
+        answer = input ? input.value.trim() : '';
+        if (!answer) { input?.focus(); return; }
       } else {
         const input = $('#fluentia-answer');
         answer = input ? input.value.trim() : '';
@@ -156,6 +171,7 @@
       }
     }
     try {
+      stopSpeechRecognition();
       lastEvent = engine.submitAnswer(currentSession,answer);
       answered = true;
       const feedback = lastEvent.feedback || {};
@@ -163,10 +179,78 @@
       const correctAnswer = feedback.correctAnswer;
       const host = $('#fluentia-feedback');
       if (host) host.innerHTML = '<div class="fluentia-feedback '+(lastEvent.correct?'':'is-wrong')+'"><strong>'+(lastEvent.correct?'Correct — well done.':'Good attempt. Let’s learn from it.')+'</strong>'+(explain?'<p>'+esc(explain)+'</p>':'')+(correctAnswer&&!lastEvent.correct?'<p><b>Answer:</b> '+esc(Array.isArray(correctAnswer)?correctAnswer.join(' · '):(correctAnswer&&typeof correctAnswer==='object'?Object.values(correctAnswer).join(' — '):correctAnswer))+'</p>':'')+(feedback.explanationAr?'<button type="button" class="btn btn-ghost fluentia-translation" data-translate>'+ (translated?'Show English':'عرض المساعدة بالعربية')+'</button>':'')+'</div>';
-      root.querySelectorAll('[data-answer-index],#fluentia-answer,#fluentia-match-meaning,[data-submit]').forEach(el=>el.disabled=true);
+      root.querySelectorAll('[data-answer-index],#fluentia-answer,#fluentia-match-meaning,#fluentia-speech-transcript,[data-submit],[data-speech-start],[data-speech-stop]').forEach(el=>el.disabled=true);
       const next = $('[data-next]'); if(next) next.hidden=false;
       const actions = $('.fluentia-session-actions'); if(actions){const note=document.createElement('span');note.className='fluentia-question-prompt';note.textContent=lastEvent.correct?'✓':'↻';actions.prepend(note);}
     } catch (error) { const host=$('#fluentia-feedback'); if(host)host.textContent=error.message||'Could not check this answer.'; }
+  }
+  function renderLoading() {
+    root.innerHTML = '<div class="fluentia-empty" role="status">Preparing your practice activities…</div>';
+  }
+  function renderLoadError(message) {
+    root.innerHTML = '<div class="fluentia-empty" role="alert"><b>Fluentia could not prepare its activities.</b><p>'+esc(message||'Check your connection, then try again.')+'</p><button type="button" class="btn" data-fluentia-retry>Try again</button></div>';
+  }
+  function startSpeechRecognition() {
+    const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const status = $('#fluentia-speech-status');
+    const start = $('[data-speech-start]'), stop = $('[data-speech-stop]');
+    if (!Recognition || window.isSecureContext === false) {
+      if (status) status.textContent = 'Speech recognition is unavailable here. Type the words you said into the transcript instead.';
+      if (start) start.disabled = true;
+      return;
+    }
+    stopSpeechRecognition();
+    try {
+      speechRecognition = new Recognition();
+      speechRecognition.lang = 'en-US';
+      speechRecognition.interimResults = true;
+      speechRecognition.continuous = false;
+      speechListening = true;
+      if (start) start.disabled = true;
+      if (stop) stop.disabled = false;
+      if (status) status.textContent = 'Listening… repeat the sentence now.';
+      speechRecognition.onresult = event => {
+        const transcript = Array.from(event.results || []).map(result => result[0]?.transcript || '').join(' ').trim();
+        const input = $('#fluentia-speech-transcript');
+        if (input) input.value = transcript;
+      };
+      speechRecognition.onerror = event => {
+        const reason = event.error === 'not-allowed' || event.error === 'service-not-allowed'
+          ? 'Microphone permission was denied. Allow microphone access in your browser settings, then try again.'
+          : event.error === 'audio-capture'
+            ? 'No microphone was found. Connect or enable a microphone, then try again.'
+            : event.error === 'no-speech'
+              ? 'No speech was detected. Try again and speak a little closer to your microphone.'
+              : 'Speech recognition failed ('+String(event.error||'unknown')+'). You can type your transcript instead.';
+        if (status) status.textContent = reason;
+      };
+      speechRecognition.onend = () => {
+        speechListening = false;
+        if (start) start.disabled = false;
+        if (stop) stop.disabled = true;
+        if (status && root.contains(status)) status.textContent = $('#fluentia-speech-transcript')?.value.trim()
+          ? 'Speech captured. Check the recognised words, edit them if needed, then submit.'
+          : 'No words were captured. Try again or type your transcript.';
+        speechRecognition = null;
+      };
+      speechRecognition.start();
+    } catch (error) {
+      speechListening = false;
+      speechRecognition = null;
+      if (start) start.disabled = false;
+      if (stop) stop.disabled = true;
+      if (status) status.textContent = 'The microphone could not start. Check browser permissions and try again.';
+    }
+  }
+  function stopSpeechRecognition() {
+    if (speechRecognition) {
+      try { speechRecognition.abort(); } catch {}
+      speechRecognition = null;
+    }
+    speechListening = false;
+    const start = $('[data-speech-start]'), stop = $('[data-speech-stop]');
+    if (start && currentQuestion?.interactionType === 'speech' && !answered) start.disabled = false;
+    if (stop) stop.disabled = true;
   }
   function renderSummary() {
     const total=currentSession.completedCount,correct=currentSession.correctCount,percent=total?Math.round(correct/total*100):0;
@@ -174,12 +258,20 @@
     root.innerHTML='<div class="fluentia-summary"><p class="kicker">SESSION COMPLETE</p><h2>'+esc(currentModeLabel)+'</h2><div class="fluentia-summary-score">'+percent+'%</div><p>'+correct+' correct out of '+total+' questions.</p><div class="fluentia-summary-stats"><div><b>'+total+'</b><span>Questions</span></div><div><b>'+correct+'</b><span>Correct</span></div><div><b>'+Object.keys(byDomain).length+'</b><span>Domains</span></div></div><div class="fluentia-review-source">Your answers have been added to Fluentia practice history. This session does not add legacy Arcade XP or duplicate legacy rewards.</div><div class="fluentia-session-actions"><button type="button" class="btn" data-restart>Practise again</button><button type="button" class="btn btn-ghost" data-back>Back to Fluentia</button></div></div>';
   }
   function leaveSession() {
+    stopSpeechRecognition();
     if (currentSession && !['completed','abandoned'].includes(currentSession.status)) {
       try { engine.abandonSession(currentSession); } catch {}
     }
     currentSession=null;currentQuestion=null;renderHome();
   }
   function handleClick(event) {
+    if(event.target.closest('[data-fluentia-retry]')){
+      renderLoading();
+      window.EPIPHANY_LAZY_LOAD('fluentia').then(()=>renderHome()).catch(error=>renderLoadError(error.message));
+      return;
+    }
+    if(event.target.closest('[data-speech-start]')){startSpeechRecognition();return;}
+    if(event.target.closest('[data-speech-stop]')){stopSpeechRecognition();const status=$('#fluentia-speech-status');if(status)status.textContent='Recording stopped. Check the transcript or try again.';return;}
     const domain=event.target.closest('[data-domain]');
     if(domain){if(choosingSectionMixed){choosingSectionMixed=false;startSession('section-mixed',{domain:domain.dataset.domain});}else renderDomain(domain.dataset.domain);return;}
     if(event.target.closest('[data-back]')){currentSession=null;renderHome();return;}
@@ -200,8 +292,14 @@
   root.addEventListener('keydown',event=>{if(event.key==='Enter'&&event.target.id==='fluentia-answer'){event.preventDefault();submit();}});
   document.addEventListener('click',event=>{
     const nav=event.target.closest('[data-view="fluentia"]');
-    if(nav){window.setTimeout(()=>{selectedLevel=currentLevel();renderHome();},0);}
+    if(nav){selectedLevel=currentLevel();renderLoading();}
   },true);
+  document.addEventListener('epiphany:fluentia-sources-ready',()=>{
+    if(root.closest('.view')?.classList.contains('is-active')){selectedLevel=currentLevel();renderHome();}
+  });
+  document.addEventListener('epiphany:fluentia-sources-failed',event=>{
+    if(root.closest('.view')?.classList.contains('is-active'))renderLoadError(event.detail?.message);
+  });
   window.addEventListener('epiphany:progress-saved',()=>{if(root.closest('.view')?.classList.contains('is-active')&&!currentSession){selectedLevel=currentLevel();renderHome();}});
   selectedLevel=currentLevel();
   renderHome();
