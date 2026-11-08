@@ -68,7 +68,7 @@
     refreshActivities();
     currentDomain = null; choosingSectionMixed = false;
     const globalCount = activities.filter(a => !a.reviewOnly && a.items.length).length;
-    root.innerHTML = '<div class="fluentia-hero"><div><p class="kicker">YOUR ENGLISH PRACTICE SPACE</p><h1 id="fluentia-title">Fluentia</h1><p>Build fluency through short activities across six connected areas. Choose one skill, practise within a domain, or let Fluentia create a balanced session.</p></div><div class="fluentia-hero-mark" aria-hidden="true">F</div></div>'+toolbar()+'<div class="fluentia-modes">'+modeCard('section-mixed')+modeCard('fluentia-mix')+'</div><div class="fluentia-section-heading"><div><h2>Explore the six domains</h2><p>Each domain brings related English skills together.</p></div></div><div class="fluentia-domain-grid">'+domainDefs.map(domain=>domainMarkup(domain,activities.filter(a=>a.domain===domain.id&&!a.reviewOnly&&a.items.length).length)).join('')+'</div>'+reviewPanel();
+    root.innerHTML = '<div class="fluentia-hero"><div><p class="kicker">YOUR ENGLISH PRACTICE SPACE</p><h1 id="fluentia-title">Fluentia</h1><p>Build fluency through short activities across six connected areas. Choose a skill or explore a domain. For a cross-domain session, try Fluentia Mix.</p></div><div class="fluentia-hero-mark" aria-hidden="true">F</div></div>'+toolbar()+'<div class="fluentia-modes">'+modeCard('fluentia-mix')+'</div><div class="fluentia-section-heading"><div><h2>Explore the six domains</h2><p>Each domain brings related English skills together.</p></div></div><div class="fluentia-domain-grid">'+domainDefs.map(domain=>domainMarkup(domain,activities.filter(a=>a.domain===domain.id&&!a.reviewOnly&&a.items.length).length)).join('')+'</div>'+reviewPanel();
     bindToolbar();
   }
   function reviewPanel() {
@@ -85,7 +85,7 @@
     if (!domain) return renderHome();
     currentDomain = domainId; choosingSectionMixed = false;
     const items = activities.filter(a=>a.domain===domainId&&!a.reviewOnly&&a.items.length);
-    root.innerHTML = '<button type="button" class="fluentia-back" data-back>← All Fluentia</button><div class="fluentia-domain-intro"><span class="fluentia-domain-icon">'+domain.icon+'</span><div><p class="kicker">FLUENTIA DOMAIN</p><h2>'+domain.name+'</h2><p>'+domain.desc+'</p></div></div><div class="fluentia-section-heading"><div><h2>Choose an activity</h2><p>Every activity uses your selected '+selectedLevel+' level.</p></div></div>'+(items.length?'<div class="fluentia-activity-list">'+items.map(activityCard).join('')+'</div>':'<div class="fluentia-empty">No activities have eligible content for '+selectedLevel+' yet. Choose another level or return later.</div>');
+    root.innerHTML = '<button type="button" class="fluentia-back" data-back>← All Fluentia</button><div class="fluentia-domain-intro"><span class="fluentia-domain-icon">'+domain.icon+'</span><div><p class="kicker">FLUENTIA DOMAIN</p><h2>'+domain.name+'</h2><p>'+domain.desc+'</p></div></div><div class="fluentia-section-heading"><div><h2>Choose an activity</h2><p>Every activity uses your selected '+selectedLevel+' level.</p></div></div><div class="fluentia-modes fluentia-domain-modes">'+modeCard('section-mixed')+'</div>'+(items.length?'<div class="fluentia-activity-list">'+items.map(activityCard).join('')+'</div>':'<div class="fluentia-empty">No activities have eligible content for '+selectedLevel+' yet. Choose another level or return later.</div>');
   }
   function activityCard(activity) {
     const label = activityLabel(activity.id);
@@ -293,7 +293,7 @@
   root.addEventListener('click',handleClick);
   root.addEventListener('keydown',event=>{if(event.key==='Enter'&&event.target.id==='fluentia-answer'){event.preventDefault();submit();}});
   document.addEventListener('click',event=>{
-    const nav=event.target.closest('[data-view="fluentia"]');
+    const nav=event.target.closest('.tab[data-view="fluentia"]');
     if(nav){selectedLevel=currentLevel();renderLoading();}
   },true);
   document.addEventListener('epiphany:fluentia-sources-ready',()=>{
