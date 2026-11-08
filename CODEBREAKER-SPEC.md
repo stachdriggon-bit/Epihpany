@@ -70,3 +70,19 @@ The first release contains **48 fixed cryptograms**. Each message uses a fixed m
 - Procedural cryptogram generation.
 - Timed, competitive, or multiplayer modes.
 - Additional content beyond the first 48 messages.
+
+
+## Content quality standard (added after Hard-bank review)
+
+A valid substitution is not automatically a fair or well-designed puzzle. Bank validation therefore checks structural integrity, while editorial review checks the player's actual starting position.
+
+- Do not store semantic definitions, paraphrases, or answer-revealing clues in the player-facing puzzle bank. The intended plaintext is not a player hint.
+- Review the visible starter mappings and the resulting partial word shapes before approving a puzzle. Assess whether they provide a reasonable first hypothesis without assuming the intended answer.
+- Evaluate repeated-letter patterns and relationships across words as constraints, not as proof that a particular word is uniquely determined.
+- Never describe a candidate as deduced unless the visible constraints actually establish it. Cryptogram solving may involve testing and revising hypotheses.
+- Keep a written editorial review for each level. Record weak openings and repair them by improving starter mappings or replacing the puzzle; do not compensate with a hidden semantic clue.
+- Automated bank validation must not claim linguistic solvability or unique English plaintext unless a real dictionary-backed solver has established that property.
+
+## Hard level review
+
+The first editorial pass is recorded in `docs/think-lab/CODEBREAKER-HARD-QUALITY-REVIEW.md`. Hard 01's starter key was adjusted from `O → A, A → C` to `O → A, P → L` to give the player a more informative opening pattern while retaining exactly two starter mappings.
