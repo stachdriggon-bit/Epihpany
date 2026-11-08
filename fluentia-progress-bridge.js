@@ -62,7 +62,11 @@
         attempts: (Number(prior.attempts) || 0) + 1,
         updatedAt: event.answeredAt || null
       };
-      state.fluentiaReviewState = {...previous, [key]: outcome};
+      const retainedKeys = new Set(history.map(row => row && row.source && row.questionId
+        ? String(row.game || row.activityId || '') + ':' + String(row.questionId) : '').filter(Boolean));
+      retainedKeys.add(key);
+      const retained = Object.fromEntries(Object.entries(previous).filter(([existingKey]) => retainedKeys.has(existingKey)));
+      state.fluentiaReviewState = {...retained, [key]: outcome};
       return clone(outcome);
     }
     function recordEvent(event) {
