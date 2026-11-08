@@ -21,7 +21,7 @@ test('feature data loader does not request large datasets until requested', asyn
     }
   };
   const merged = [];
-  const context = { window: { EPIPHANY_MERGE_AR_TRANSLATIONS: () => merged.push(true) }, document, Promise, Map, Set, Object, Error };
+  const context = { window: { EPIPHANY_MERGE_AR_TRANSLATIONS: () => merged.push(true), EPIPHANY_FLUENTIA_SESSION_ENGINE: { getActivity: () => ({}) } }, document, Promise, Map, Set, Object, Error };
   const source = fs.readFileSync(path.join(root, 'lazy-data.js'), 'utf8');
   assert.doesNotThrow(() => new vm.Script(source, { filename: 'lazy-data.js' }));
   vm.runInNewContext(source, context);
@@ -39,13 +39,15 @@ test('feature data loader does not request large datasets until requested', asyn
     'data-world-sprites.js'
   ]);
   assert.ok(requested.slice(2).every(src => /\?v=.+/.test(src)));
+  await context.window.EPIPHANY_LAZY_LOAD('fluentia');
+  assert.deepEqual(requested.slice(4).map(src => src.split('?')[0]), ['sound-maze-bank.js','sound-maze-content.js','practice-lab.js'], 'Fluentia should load only its own optional content sources');
   await context.window.EPIPHANY_LAZY_LOAD('arcade');
   await context.window.EPIPHANY_LAZY_LOAD('thinklab');
   await context.window.EPIPHANY_LAZY_LOAD('lifeskills');
   assert.deepEqual(requested.slice(4).map(src => src.split('?')[0]), [
-    'practice-lab.js',
     'sound-maze-bank.js',
     'sound-maze-content.js',
+    'practice-lab.js',
     'odd-one-out-bank.js',
     'word-connections-bank.js',
     'sentence-scramble-bank.js',
