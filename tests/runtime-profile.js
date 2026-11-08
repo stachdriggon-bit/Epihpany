@@ -133,7 +133,7 @@ test('repeated feature entry and exit reports Chromium runtime lifecycle metrics
         }
         for (const child of node.childNodes || []) remember(child);
       };
-      const observer = new MutationObserver(records => {
+      const observer = probe.observer = new MutationObserver(records => {
         for (const record of records) for (const removed of record.removedNodes) remember(removed);
       });
       observer.observe(document, {childList:true,subtree:true});
@@ -176,12 +176,35 @@ test('repeated feature entry and exit reports Chromium runtime lifecycle metrics
 
     const baseline = samples[0];
     const final = samples[samples.length - 1];
+
+    // Control check: determine whether the test-only observer/registry itself
+    // is keeping detached nodes alive. Preserve WeakRefs only, then disconnect
+    // the observer, clear its registry, force GC, and re-check those references.
+    await page.evaluate(() => {
+      const probe = window.__epiphanyDetachedProbe;
+      window.__epiphanyDetachedControlRefs = probe.entries.map(entry => entry.ref);
+      probe.observer.disconnect();
+      probe.observer.takeRecords();
+      probe.entries.length = 0;
+    });
+    await cdp.send('HeapProfiler.collectGarbage');
+    const probeShutdown = await page.evaluate(() => {
+      const refs = window.__epiphanyDetachedControlRefs || [];
+      let liveDetached = 0;
+      for (const ref of refs) {
+        const node = ref.deref();
+        if (node && !node.isConnected) liveDetached++;
+      }
+      return { checked:refs.length, liveDetached };
+    });
+
     const report = {
       cycles:6,
       featureEntries:21,
       note:'Diagnostic measurements only; WeakRef samples count removed elements still alive after forced GC and exclude nodes reattached to the document. No fixed leak threshold is asserted.',
       baseline,
       final,
+      probeShutdown,
       delta:{
         jsHeapUsedMB:Math.round((final.jsHeapUsedMB - baseline.jsHeapUsedMB) * 100) / 100,
         domNodes:final.domNodes - baseline.domNodes,
