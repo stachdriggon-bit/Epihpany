@@ -29,26 +29,9 @@ jobs:
         run: npm ci
       - name: Install Chromium for browser smoke tests
         run: npx playwright install --with-deps chromium
-      - name: Check JavaScript syntax before browser tests
+      - name: Check syntax for every project JavaScript file
         run: |
-          node --check app.js
-          node --check cards.js
-          node --check data-cards.js
-          node --check data-character-profiles.js
-          node --check service-worker.js
-          node --check adaptive-engine.js
-          node --check asset-manager.js
-          node --check artwork-manager.js
-          node --check card-image-editor.js
-          node --check account.js
-          node --check navigation-enhancements.js
-          node --check data.js
-          node --check data-expansion.js
-          node --check think-lab.js
-          node --check fluentia-engine.js
-          node --check fluentia-adapters.js
-          node --check fluentia-progress-bridge.js
-          node --check fluentia-ui.js
+          find . -type f -name '*.js' ! -path './node_modules/*' ! -path './.git/*' -print0 | xargs -0 -r -n1 node --check
       - name: Stamp generated asset versions
         run: npm run stamp
       - name: Run unit and static tests
