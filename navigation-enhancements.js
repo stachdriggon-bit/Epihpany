@@ -5,7 +5,7 @@
   const $ = (s, root = document) => root.querySelector(s);
   const $$ = (s, root = document) => [...root.querySelectorAll(s)];
   const labels = {
-    home: 'Home', stories: 'Stories', chronicle: 'Codex', resonance: 'The Resonance', summon: 'Card Portal', arcade: 'Arcade', thinklab: 'Think Lab', casebound: 'Casebound',
+    home: 'Home', stories: 'Stories', chronicle: 'Codex', resonance: 'The Resonance', summon: 'Card Portal', fluentia: 'Fluentia', arcade: 'Arcade', thinklab: 'Think Lab', casebound: 'Casebound',
     world: 'World', lifeskills: 'Life Skills', words: 'Words', mytools: 'My Tools',
     trophies: 'Trophies', progress: 'Progress', profile: 'Profile'
   };
@@ -202,7 +202,7 @@
         Object.entries(GAMES).forEach(([id, game]) => {
           const title = String(game.title || game.name || id).replace(/[-_]/g, ' ');
           const searchable = normalize([title, game.description, game.subtitle, id].filter(Boolean).join(' '));
-          if (title && searchable.includes(q)) found.push({ title, detail: 'Game · Arcade', view: 'arcade', score: 1 });
+          if (title && searchable.includes(q)) found.push({ title, detail: 'Practice · Fluentia', view: 'fluentia', score: 1 });
         });
       }
       // Search all currently-rendered section content, including hidden views.
