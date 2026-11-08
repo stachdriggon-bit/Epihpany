@@ -68,7 +68,7 @@ All messages remain unchanged. Six starter keys were reselected based on actual 
 | 04 | W → A | 6 |
 | 05 | R → O | 7 |
 | 06 | O → T | 6 |
-| 07 | O → O | 5 |
+| 07 | S → R | 5 |
 | 08 | K → A | 6 |
 | 09 | X → S | 5 |
 | 10 | G → O | 7 |
