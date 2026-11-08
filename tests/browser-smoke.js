@@ -914,9 +914,9 @@ test('main navigation tabs open without uncaught page errors', { timeout: 18 * 6
         assert.equal(await groupedDestinations.count(), await groupedDestinations.evaluateAll(buttons => new Set(buttons.map(button => button.dataset.view)).size), 'each destination should appear in only one purpose group');
         const mobileDestinations = page.locator('.mobile-menu nav [data-view]');
         assert.equal(await mobileDestinations.count(), 16, 'all current destinations, including Fluentia, Codex and CASEBOUND, should remain available in the mobile menu');
-        assert.equal(await mobileDestinations.locator('[data-view="fluentia"]').count(), 1, 'Fluentia should replace Arcade as the single Play practice destination');
-        assert.equal(await mobileDestinations.locator('[data-view="arcade"]').count(), 0, 'legacy Arcade should not remain as a separate navigation destination');
-        assert.equal(await mobileDestinations.locator('[data-view="casebound"]').count(), 1, 'CASEBOUND should appear exactly once as a standalone Play destination');
+        assert.equal(await page.locator('.mobile-menu nav [data-view="fluentia"]').count(), 1, 'Fluentia should replace Arcade as the single Play practice destination');
+        assert.equal(await page.locator('.mobile-menu nav [data-view="arcade"]').count(), 0, 'legacy Arcade should not remain as a separate navigation destination');
+        assert.equal(await page.locator('.mobile-menu nav [data-view="casebound"]').count(), 1, 'CASEBOUND should appear exactly once as a standalone Play destination');
         const quickActions = page.locator('.quick-actions-more');
         assert.equal(await quickActions.evaluate(el => el.open), false, 'secondary practice options should start collapsed');
         assert.equal(await page.locator('#listen-only-start').isVisible(), false, 'collapsed secondary actions should not clutter the home screen');
