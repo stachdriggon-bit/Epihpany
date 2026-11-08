@@ -30,3 +30,31 @@ These changes need profiling and regression tests in a dedicated batch before th
 ## Validation
 
 The new regression contract test checks that World uses the adaptive motion policy and that the idle redraw scheduler is gated by the resulting animation flag. GitHub Actions is the authoritative runtime validation for this commit. No Lighthouse, real-device CPU, memory, or network-throttling measurements were available during this repository-only audit; the report does not claim measured percentage improvements.
+
+
+## Long-session lifecycle review — 2026-11-08
+
+### Confirmed issue fixed
+
+The Arcade Practice Lab could leave the browser's speech-recognition session running when the learner navigated to another view, hid the page, or closed the tab. A delayed `onresult`, `onerror`, or `onend` callback from a replaced recognition instance could also update the current UI.
+
+The Practice Lab now:
+- aborts microphone recognition when leaving Arcade, when the page becomes hidden, and on `pagehide`;
+- stops shared generated speech at the same lifecycle boundaries;
+- stops active media when switching between Speaking and Dictation;
+- detaches callbacks before aborting and checks the active recognition instance before accepting events.
+
+A regression test covers the cleanup hooks and stale-callback guards.
+
+### Other lifecycle findings
+
+- **World:** movement, auto-walk, hold-repeat, idle timeout, and animation-frame work are explicitly cancelled when returning to regions or closing World. Its document/window listeners are installed once at application startup and are gated by the current World session.
+- **Fluentia:** speech recognition is stopped on answer submission and when leaving a session. Its delegated listeners are installed once on the persistent Fluentia root/document.
+- **Think Lab and its small game modules:** event handlers are delegated from persistent roots; no per-round timer or observer accumulation was found in the inspected entry points.
+- **Adaptive engine:** owns its PerformanceObserver and browser listeners and exposes a `destroy()` cleanup path. It is instantiated as a page singleton.
+- **Translation observers, icon observer, and navigation observers:** these are page-lifetime observers attached once to stable application roots. They are not created per game entry. Their broad observation scopes and callback costs remain candidates for future profiling, but the current inspection did not establish a per-navigation leak.
+- **Cards:** the gallery IntersectionObserver disconnects before refreshing its observed card set. The 60-second daily-count interval and global pointer/resize listeners are page-lifetime singletons; they are low-frequency/global work, not per-session accumulation. The particle animation loop is demand-driven and stops when no particles, spawner, or ambient effect remains.
+
+### Limits
+
+This was a source-level lifecycle review. It did not include heap snapshots, detached-DOM profiling, microphone hardware testing, or repeated long-session profiling in a real browser. Those remain necessary before making quantitative memory/performance claims.

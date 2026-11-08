@@ -25,6 +25,27 @@
   let recognition = null;
   let listening = false;
   let lastTranscript = '';
+  // A recording belongs to the active Arcade view only. Detach callbacks before
+  // aborting so a late browser event cannot update a screen that has been left.
+  const abortRecognition = () => {
+    const active = recognition;
+    recognition = null;
+    listening = false;
+    if (active) {
+      active.onresult = null;
+      active.onerror = null;
+      active.onend = null;
+      try { active.abort(); } catch {}
+    }
+    const start = document.querySelector('[data-pl-action="record"]');
+    const stop = document.querySelector('[data-pl-action="stop"]');
+    if (start) start.disabled = false;
+    if (stop) stop.disabled = true;
+  };
+  const stopPracticeMedia = () => {
+    abortRecognition();
+    try { window.EpiphanySpeech?.stop?.(); } catch {}
+  };
   const voiceLocale = 'en-US';
   const phrase = () => samples[sampleIndex];
   const save = () => { try { localStorage.setItem(STORE, JSON.stringify(data)); } catch {} };
@@ -89,6 +110,7 @@
     renderPhrase();
   };
   const setMode = mode => {
+    if (mode !== currentMode) stopPracticeMedia();
     currentMode=mode;
     document.querySelectorAll('[data-pl-mode]').forEach(btn=>{const active=btn.dataset.plMode===mode;btn.classList.toggle('is-active',active);btn.setAttribute('aria-selected',String(active));});
     document.querySelector('#pl-speaking-panel').hidden=mode!=='speaking';
@@ -108,14 +130,15 @@
       const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
       if(!SR){status('pl-speaking-status','Speech recognition is not available in this browser. Try a supported version of Chrome.','error');return;}
       try{
-        if(recognition){recognition.abort();recognition=null;}
-        recognition=new SR();recognition.lang=voiceLocale;recognition.interimResults=true;recognition.continuous=false;
+        abortRecognition();
+        const activeRecognition = new SR();
+        recognition=activeRecognition;activeRecognition.lang=voiceLocale;activeRecognition.interimResults=true;activeRecognition.continuous=false;
         listening=true;button.disabled=true;const stopButton=document.querySelector('[data-pl-action="stop"]');if(stopButton)stopButton.disabled=false;
         status('pl-speaking-status','Listening… say the sentence now.');
-        recognition.onresult=e=>{lastTranscript=Array.from(e.results).map(r=>r[0].transcript).join(' ');const input=document.querySelector('#pl-transcript');if(input)input.value=lastTranscript;};
-        recognition.onerror=e=>status('pl-speaking-status',e.error==='not-allowed'?'Microphone permission was denied. Allow microphone access and try again.':'Speech recognition error: '+e.error,'error');
-        recognition.onend=()=>{listening=false;button.disabled=false;if(stopButton)stopButton.disabled=true;if(lastTranscript){status('pl-speaking-status','Speech captured. Compare the recognised words below.');compareSpeaking();}else if(listening===false){}};
-        recognition.start();
+        activeRecognition.onresult=e=>{if(recognition!==activeRecognition)return;lastTranscript=Array.from(e.results).map(r=>r[0].transcript).join(' ');const input=document.querySelector('#pl-transcript');if(input)input.value=lastTranscript;};
+        activeRecognition.onerror=e=>{if(recognition!==activeRecognition)return;status('pl-speaking-status',e.error==='not-allowed'?'Microphone permission was denied. Allow microphone access and try again.':'Speech recognition error: '+e.error,'error');};
+        activeRecognition.onend=()=>{if(recognition!==activeRecognition)return;recognition=null;listening=false;button.disabled=false;if(stopButton)stopButton.disabled=true;if(lastTranscript){status('pl-speaking-status','Speech captured. Compare the recognised words below.');compareSpeaking();}};
+        activeRecognition.start();
       }catch(error){listening=false;button.disabled=false;status('pl-speaking-status','Could not start the microphone. Check permissions and try again.','error');}
       return;
     }
@@ -147,6 +170,11 @@
     save();updateStats();
   };
   document.addEventListener('DOMContentLoaded',mount);
-  document.addEventListener('epiphany:view-changed',event=>{if(event.detail?.view==='arcade')mount();});
+  document.addEventListener('epiphany:view-changed',event=>{
+    if(event.detail?.view==='arcade') mount();
+    else stopPracticeMedia();
+  });
+  document.addEventListener('visibilitychange',()=>{if(document.hidden)stopPracticeMedia();});
+  window.addEventListener('pagehide',stopPracticeMedia);
   if(document.readyState!=='loading')mount();
 })();
