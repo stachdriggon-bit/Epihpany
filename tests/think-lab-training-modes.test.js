@@ -360,3 +360,20 @@ test('core Think Lab rounds resume from the next unrecorded round without replay
   assert.match(resumed.root.innerHTML,/ROUND 2 OF/);
   assert.equal(resumed.recordedResults.length,0,'restoring must not record the previous answer or award XP again');
 });
+
+test('multiple internal games keep independent resumable sessions and restore tile placement',()=>{
+  const first=createHarness();
+  first.click('[data-think-game]',{thinkGame:'odd'});
+  first.click('[data-think-training-mode]',{thinkTrainingMode:'steady',thinkTrainingGame:'odd'});
+  first.click('[data-think-game]',{thinkGame:'forge'});
+  first.click('[data-think-training-mode]',{thinkTrainingMode:'steady',thinkTrainingGame:'forge'});
+  first.click('[data-forge-tile]',{forgeTile:'0'});
+  assert.ok(first.savedSnapshots.odd);
+  assert.equal(first.savedSnapshots.forge.payload.forgePlaced[0],0);
+  const resumed=createHarness({savedSnapshots:first.savedSnapshots});
+  assert.match(resumed.root.innerHTML,/data-think-resume="odd"/);
+  assert.match(resumed.root.innerHTML,/data-think-resume="forge"/);
+  resumed.click('[data-think-resume]',{thinkResume:'forge'});
+  assert.equal(resumed.savedSnapshots.forge.payload.forgePlaced[0],0);
+  assert.equal(resumed.recordedResults.length,0);
+});

@@ -746,14 +746,15 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
     const bridge=window.EpiphanyThinkLab,registry=window.EPIPHANY_THINK_LAB_PROGRESSION;
     if(!bridge?.getGameHistory||!bridge?.getGameSnapshot||!registry?.getGame)return '';
     const history=bridge.getGameHistory(),recent=Array.isArray(history.recentGames)?history.recentGames:[];
+    const cards=[];
     for(const id of recent){
       const definition=registry.getGame(id);
       if(!definition||definition.adapter!=='think-lab')continue;
       const snapshot=bridge.getGameSnapshot(id,{bankVersion:INTERNAL_SESSION_BANK_VERSION});
       if(!snapshot||!snapshot.payload||!Array.isArray(snapshot.payload.pool))continue;
-      return '<div class="tl-game-card tl-resume-card"><div class="tl-game-kicker">YOUR SAVED SESSION</div><p>Continue '+esc(definition.name)+' · '+esc(snapshot.trainingMode.toUpperCase())+' · Round '+Math.min(snapshot.position+1,snapshot.payload.pool.length)+' of '+snapshot.payload.pool.length+'</p><button type="button" class="tl-next" data-think-resume="'+esc(id)+'">Resume session ↗</button></div>';
+      cards.push('<div class="tl-game-card tl-resume-card"><div class="tl-game-kicker">SAVED SESSION</div><p>Continue '+esc(definition.name)+' · '+esc(snapshot.trainingMode.toUpperCase())+' · Round '+Math.min(snapshot.position+1,snapshot.payload.pool.length)+' of '+snapshot.payload.pool.length+'</p><button type="button" class="tl-next" data-think-resume="'+esc(id)+'">Resume session ↗</button></div>');
     }
-    return '';
+    return cards.length?'<section class="tl-resume-sessions" aria-label="Saved Think Lab sessions">'+cards.join('')+'</section>':'';
   }
   function resumeInternalGame(id) {
     const bridge=window.EpiphanyThinkLab,registry=window.EPIPHANY_THINK_LAB_PROGRESSION;

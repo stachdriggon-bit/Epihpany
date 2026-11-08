@@ -54,7 +54,7 @@ test('changed scripts are versioned and the offline shell cache is refreshed', (
   assert.match(html, /account\.js\?v=empty-states-20261031-1/);
   assert.match(html, /style\.css\?v=outline-icons-20261105-1/);
   assert.match(read('style.css'), /Helpful empty-state actions/);
-  assert.match(read('lazy-data.js'), /think-lab\.js\?v=think-lab-resume-20261109-4/);
+  assert.match(read('lazy-data.js'), /think-lab\.js\?v=think-lab-resume-20261109-5/);
   assert.match(read('lazy-data.js'), /think-lab-progression\.js\?v=think-lab-progression-snapshot-20261109-2/);
   assert.match(read('lazy-data.js'), /word-hunt\.js\?v=word-hunt-engine-20261109-2/);
   assert.match(read('lazy-data.js'), /codebreaker\.js\?v=codebreaker-engine-20261109-2/);
