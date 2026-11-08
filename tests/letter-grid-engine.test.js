@@ -23,7 +23,8 @@ function start(h){
   h.window.EPIPHANY_LETTER_GRID.open();
   h.click('[data-lg-level]',{lgLevel:'easy'});
   const word=h.bank.puzzles.easy[0].words[0];
-  h.click('[data-lg-clue]',{lgClue:word.id});\n  return word;
+  h.click('[data-lg-clue]',{lgClue:word.id});
+  return word;
 }
 test('Letter Path opens four independent levels and presents a word-search instruction',()=>{
   const h=harness();h.window.EPIPHANY_LETTER_GRID.open();
