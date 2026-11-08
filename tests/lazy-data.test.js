@@ -116,87 +116,33 @@ test('initial HTML defers stories and World data and keeps loader in offline she
 });
 
 
-test('overlapping feature groups share one in-flight script request', async () => {
+test('Life Skills loads independently without Think Lab game banks', async () => {
   const requested = [];
-  const scripts = [];
   const document = {
     createElement(tag) {
       assert.equal(tag, 'script');
-      const script = { async: true, src: '', removed: false, remove() { this.removed = true; } };
-      scripts.push(script);
-      return script;
+      return { async: true, src: '', remove() {} };
     },
-    head: { appendChild(script) { requested.push(script.src); } }
+    head: {
+      appendChild(script) {
+        requested.push(script.src);
+        queueMicrotask(() => script.onload());
+      }
+    }
   };
-  const context = vm.createContext({ window: {}, document });
+  const context = vm.createContext({ window: {}, document, Promise, Map, Set, Object, Error });
   vm.runInContext(fs.readFileSync(path.join(root, 'lazy-data.js'), 'utf8'), context);
 
-  const thinkLab = context.window.EPIPHANY_LAZY_LOAD('thinklab');
-  const lifeSkills = context.window.EPIPHANY_LAZY_LOAD('lifeskills');
-  await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested.length, 1, 'overlapping groups should share the first Sound Maze dependency');
-  assert.match(requested[0], /^sound-maze-bank\.js\?/);
+  await context.window.EPIPHANY_LAZY_LOAD('lifeskills');
+  assert.deepEqual(requested.map(src => src.split('?')[0]), ['life-skills.js']);
+  assert.match(requested[0], /^life-skills\.js\?v=/);
 
-  scripts[0].onload();
-  await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested.length, 2);
-  assert.match(requested[1], /^sound-maze-content\.js\?/);
-  scripts[1].onload();
-  await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested.length, 3);
-  assert.match(requested[2], /^odd-one-out-bank\.js\?/);
-  scripts[2].onload();
-  await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested.length, 4);
-  assert.match(requested[3], /^word-connections-bank\.js\?/);
-  scripts[3].onload();
-  await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested.length, 5);
-  assert.match(requested[4], /^sentence-scramble-bank\.js\?/);
-  scripts[4].onload();
-  await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested.length, 6);
-  assert.match(requested[5], /^word-forge-bank\.js\?/);
-  scripts[5].onload();
-  await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested.length, 7);
-  assert.match(requested[6], /^chain-reaction-bank\.js\?/);
-  scripts[6].onload();
-  await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested.length, 8);
-  assert.match(requested[7], /^word-hunt-bank\.js\?/);
-  scripts[7].onload();
-  await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested.length, 9);
-  assert.match(requested[8], /^think-lab\.js\?/);
-  scripts[8].onload();
-  await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested.length, 10);
-  assert.match(requested[9], /^word-hunt\.js\?/);
-  scripts[9].onload();
-  await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested.length, 11);
-  assert.match(requested[10], /^codebreaker-bank\.js\?/);
-  scripts[10].onload();
-  await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested.length, 12);
-  assert.match(requested[11], /^codebreaker\.js\?/);
-  scripts[11].onload();
-  await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested.length, 13);
-  assert.match(requested[12], /^letter-grid-bank\.js\?/);
-  scripts[12].onload();
-  await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested.length, 14);
-  assert.match(requested[13], /^letter-grid\.js\?/);
-  scripts[13].onload();
-  await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested.length, 15);
-  assert.match(requested[14], /^life-skills\.js\?/);
-  scripts[14].onload();
-
-  await Promise.all([thinkLab, lifeSkills]);
-  assert.equal(requested.length, 15);
+  const app = fs.readFileSync(path.join(root, 'app.js'), 'utf8');
+  const lifeSkills = fs.readFileSync(path.join(root, 'life-skills.js'), 'utf8');
+  assert.match(app, /window\.EpiphanyThinkLab\s*=\s*\{/);
+  assert.match(lifeSkills, /window\.EpiphanyThinkLab\.registerGame/);
+  assert.match(lifeSkills, /window\.EpiphanyThinkLab\.getGameDifficulty/);
+  assert.match(lifeSkills, /window\.EpiphanyThinkLab\.recordResult/);
 });
 
 test('failed lazy scripts are removed and can be retried', async () => {
