@@ -23,7 +23,7 @@ Codebreaker is a substitution-cipher puzzle. The player receives an encrypted me
 
 | Level | Message shape | Starter key | Puzzles |
 |---|---|---:|---:|
-| Easy | Single five-letter word | 2 mappings | 12 |
+| Easy | Single five-letter word with a repeated-letter pattern | 2 mappings | 12 |
 | Medium | Short phrases | 3 mappings | 12 |
 | Hard | Full sentences | 2 mappings | 12 |
 | Expert | Longer multi-clause messages | 1 mapping | 12 |
@@ -37,6 +37,8 @@ The first release contains **48 fixed cryptograms**. Each message uses a fixed m
 - Every plaintext letter maps to exactly one cipher letter, and every cipher letter maps to exactly one plaintext letter.
 - Starter key pairs match the encoded message and cannot repeat either side.
 - Every puzzle retains at least one unknown mapping for the player to solve.
+- Easy words are five letters, contain a repeated-letter group, and expose at least one letter from that group in the starter key.
+- Expert's single starter letter appears 4–8 times in the message to provide a useful but non-dominating opening.
 - A level is unavailable if its full bank fails validation.
 
 ## Feedback, progression, and rewards
@@ -91,8 +93,13 @@ The first editorial pass is recorded in `docs/think-lab/CODEBREAKER-HARD-QUALITY
 ### Progressive hint behavior
 
 The single hint control advances through three non-penalizing stages on each puzzle:
-1. **Pattern hint:** identifies a repeated-letter pattern within a word and names the matching positions without suggesting a plaintext word.
-2. **Cross-word hint:** identifies an unresolved coded letter that occurs in multiple words, reminding the player that all occurrences share one decoded letter.
+1. **Pattern hint:** ranks words by unresolved repeated-letter evidence, then identifies the strongest pattern and matching positions without suggesting a plaintext word. If there is no repeated pattern, it directs the player to compare recurring letters across words.
+2. **Cross-word hint:** prioritizes an unresolved coded letter shared by the largest number of words, then by total occurrences. If no unresolved letter crosses word boundaries, it reports the most frequent unresolved letter and its word locations.
 3. **Letter reveal:** reveals and locks one correct mapping, preserving the existing explicit assistance behavior.
 
 The control resets for each new puzzle. These hints must never expose the intended plaintext or use a semantic definition.
+
+
+## Full level review
+
+The complete editorial review for Easy, Medium, and Expert is recorded in `docs/think-lab/CODEBREAKER-LEVELS-QUALITY-REVIEW.md`. It documents all 36 puzzles, the Easy word-bank rebuild, Medium 01's improved cross-word starter key, and the six rebalanced Expert starter mappings. The review explicitly distinguishes structural fairness from proof of unique plaintext.
