@@ -205,8 +205,14 @@
       return job.promise;
     }
     job = { priority, promise: null };
+    const groupStartedAt = Date.now();
+    diagnosticRecord('load_queued', { group: 'style:' + group, priority });
     job.promise = styleGroups[group].reduce((chain, href) => chain.then(() => loadStyle(href, job.priority)), Promise.resolve())
-      .then(() => clearFailedOptionalLoad('style-group:' + group), error => {
+      .then(() => {
+        diagnosticRecord('load_succeeded', { group: 'style:' + group, durationMs: Date.now() - groupStartedAt });
+        clearFailedOptionalLoad('style-group:' + group);
+      }, error => {
+        diagnosticRecord('load_failed', { group: 'style:' + group, durationMs: Date.now() - groupStartedAt });
         pendingStyles.delete(group);
         rememberFailedOptionalLoad('style-group:' + group, () => loadStyleGroup(group, 'optional'));
         throw error;
