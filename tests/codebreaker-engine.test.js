@@ -5,9 +5,15 @@ const path=require('node:path');
 const vm=require('node:vm');
 const bankSource=fs.readFileSync(path.join(__dirname,'..','codebreaker-bank.js'),'utf8');
 const engineSource=fs.readFileSync(path.join(__dirname,'..','codebreaker.js'),'utf8');
-function harness(){
+function harness(savedSnapshots = {}){
   const listeners={},root={innerHTML:'',addEventListener(type,fn){listeners[type]=fn;},contains(){return true;}},results=[];
-  const window={EpiphanyThinkLab:{recordResult(...args){results.push(args);}},EpiphanySpeech:{stop(){}}};
+  const window={EpiphanyThinkLab:{
+      recordResult(...args){results.push(args);},
+      saveGameSnapshot(gameId,snapshot){savedSnapshots[gameId]={...snapshot,gameId,schemaVersion:1};return {saved:true};},
+      getGameSnapshot(gameId,expected={}){const value=savedSnapshots[gameId];return value&&(!expected.bankVersion||value.bankVersion===expected.bankVersion)?value:null;},
+      clearGameSnapshot(gameId){delete savedSnapshots[gameId];return true;},
+      recordGameStart(){}
+    },EpiphanySpeech:{stop(){}}};
   const document={getElementById:id=>id==='think-lab-content'?root:null};
   const context=vm.createContext({window,document,Set,Map,Object,Array,String,Number,Math,CustomEvent:function(type){this.type=type;}});
   vm.runInContext(bankSource,context,{filename:'codebreaker-bank.js',timeout:5000});
@@ -17,7 +23,7 @@ function harness(){
     const target={dataset,closest(query){return query.split(',').some(part=>part.trim()===selector)?this:null;},hasAttribute(name){return attrs.has(name);}};
     listeners.click({target});
   }
-  return {root,click,results,window,bank:window.EPIPHANY_CODEBREAKER_BANK};
+  return {root,click,results,window,bank:window.EPIPHANY_CODEBREAKER_BANK ,savedSnapshots};
 }
 
 test('Codebreaker opens its own four-level picker and never uses shared training modes',()=>{
@@ -93,4 +99,14 @@ test('Cross-word hint prioritizes an unresolved code shared across multiple word
   assert.match(h.root.innerHTML,/words/);
   assert.match(h.root.innerHTML,/positions total/);
   assert.doesNotMatch(h.root.innerHTML,/KIND WORDS HELP/);
+});
+
+test('Codebreaker restores the substitution key without replaying the completed attempt',()=>{
+  const first=harness();first.window.EPIPHANY_CODEBREAKER.open();first.click('[data-cb-level]',{cbLevel:'easy'});
+  first.click('[data-cb-symbol]',{cbSymbol:'J'});first.click('[data-cb-plain]',{cbPlain:'L'});
+  assert.equal(first.savedSnapshots.codebreaker.payload.mapping.J,'L');
+  const resumed=harness(first.savedSnapshots);resumed.window.EPIPHANY_CODEBREAKER.open();
+  assert.match(resumed.root.innerHTML,/data-cb-resume/);resumed.click('[data-cb-resume]');
+  assert.match(resumed.root.innerHTML,/data-cb-symbol="J"[\s\S]*?<strong>L<\/strong>/);
+  assert.equal(resumed.results.length,0,'restoring a letter assignment must not emit another result');
 });

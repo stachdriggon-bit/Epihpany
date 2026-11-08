@@ -7,7 +7,7 @@ const vm = require('node:vm');
 const bankSource = fs.readFileSync(path.join(__dirname,'..','word-hunt-bank.js'),'utf8');
 const engineSource = fs.readFileSync(path.join(__dirname,'..','word-hunt.js'),'utf8');
 
-function createHarness() {
+function createHarness(savedSnapshots = {}) {
   const listeners = {};
   const root = {
     innerHTML:'',
@@ -16,7 +16,13 @@ function createHarness() {
   };
   const results = [];
   const window = {
-    EpiphanyThinkLab:{recordResult(...args){results.push(args);}},
+    EpiphanyThinkLab:{
+      recordResult(...args){results.push(args);},
+      saveGameSnapshot(gameId,snapshot){savedSnapshots[gameId]={...snapshot,gameId,schemaVersion:1};return {saved:true};},
+      getGameSnapshot(gameId,expected={}){const value=savedSnapshots[gameId];return value&&(!expected.bankVersion||value.bankVersion===expected.bankVersion)?value:null;},
+      clearGameSnapshot(gameId){delete savedSnapshots[gameId];return true;},
+      recordGameStart(){}
+    },
     EpiphanySpeech:{stop(){}}
   };
   const document = {getElementById:id=>id==='think-lab-content'?root:null};
@@ -32,7 +38,7 @@ function createHarness() {
     };
     listeners.click({target});
   }
-  return {root,click,results,bank:window.EPIPHANY_WORD_HUNT_BANK,window};
+  return {root,click,results,bank:window.EPIPHANY_WORD_HUNT_BANK,window ,savedSnapshots};
 }
 
 test('Word Hunt opens an independent four-level picker, not the shared training-mode picker',()=>{
@@ -127,4 +133,19 @@ test('Word Hunt has no timer and invalid non-linear selections do not reveal ans
   assert.match(h.root.innerHTML,/straight line/);
   assert.doesNotMatch(engineSource,/setTimeout|setInterval|countdown/i);
   assert.doesNotMatch(h.root.innerHTML,/Correct answer|solution:/i);
+});
+
+test('Word Hunt restores the same puzzle and found words without replaying XP events',()=>{
+  const first=createHarness();
+  first.window.EPIPHANY_WORD_HUNT.open();first.click('[data-wh-level]',{whLevel:'easy'});
+  const puzzle=first.bank.puzzles.easy[0],word=puzzle.words[0],match=first.bank.occurrences(puzzle.grid,word)[0];
+  const endRow=match.row+match.dr*(word.length-1),endCol=match.col+match.dc*(word.length-1);
+  first.click('[data-wh-cell]',{whCell:match.row+'-'+match.col});first.click('[data-wh-cell]',{whCell:endRow+'-'+endCol});
+  assert.deepEqual(first.savedSnapshots.wordhunt.payload.found,[word]);
+  const resumed=createHarness(first.savedSnapshots);
+  resumed.window.EPIPHANY_WORD_HUNT.open();
+  assert.match(resumed.root.innerHTML,/data-wh-resume/);
+  resumed.click('[data-wh-resume]');
+  assert.match(resumed.root.innerHTML,/wh-word-chip is-found/);
+  assert.equal(resumed.results.length,0,'restoring a saved find must not award its XP again');
 });

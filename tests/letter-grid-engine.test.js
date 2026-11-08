@@ -5,9 +5,15 @@ const path=require('node:path');
 const vm=require('node:vm');
 const bankSource=fs.readFileSync(path.join(__dirname,'..','letter-grid-bank.js'),'utf8');
 const engineSource=fs.readFileSync(path.join(__dirname,'..','letter-grid.js'),'utf8');
-function harness(){
+function harness(savedSnapshots = {}){
   const listeners={},root={innerHTML:'',addEventListener(type,fn){listeners[type]=fn;},contains(){return true;}},results=[];
-  const window={EpiphanyThinkLab:{recordResult(...args){results.push(args);}},EpiphanySpeech:{stop(){}}};
+  const window={EpiphanyThinkLab:{
+      recordResult(...args){results.push(args);},
+      saveGameSnapshot(gameId,snapshot){savedSnapshots[gameId]={...snapshot,gameId,schemaVersion:1};return {saved:true};},
+      getGameSnapshot(gameId,expected={}){const value=savedSnapshots[gameId];return value&&(!expected.bankVersion||value.bankVersion===expected.bankVersion)?value:null;},
+      clearGameSnapshot(gameId){delete savedSnapshots[gameId];return true;},
+      recordGameStart(){}
+    },EpiphanySpeech:{stop(){}}};
   const document={getElementById:id=>id==='think-lab-content'?root:null};
   const context=vm.createContext({window,document,Set,Map,Object,Array,String,Number,Math,CustomEvent:function(type){this.type=type;}});
   vm.runInContext(bankSource,context,{filename:'letter-grid-bank.js',timeout:5000});
@@ -17,7 +23,7 @@ function harness(){
     const target={dataset,closest(query){return query.split(',').some(part=>part.trim()===selector)?this:null;},hasAttribute(name){return attrs.has(name);}};
     listeners.click({target});
   }
-  return {root,click,results,window,bank:window.EPIPHANY_LETTER_GRID_BANK};
+  return {root,click,results,window,bank:window.EPIPHANY_LETTER_GRID_BANK ,savedSnapshots};
 }
 function start(h){
   h.window.EPIPHANY_LETTER_GRID.open();
@@ -72,4 +78,16 @@ test('hint highlights a starting cell without revealing a path',()=>{
   assert.match(h.root.innerHTML,/Starting letter:/);
   assert.match(h.root.innerHTML,/is-hint/);
   assert.equal(h.results.length,0);
+});
+
+test('Letter Path restores the selected clue and partial path without replaying XP',()=>{
+  const first=harness(),word=start(first);
+  first.click('[data-lg-cell]',{lgCell:String(word.path[0])});
+  first.click('[data-lg-cell]',{lgCell:String(word.path[1])});
+  assert.deepEqual(first.savedSnapshots.lettergrid.payload.path,word.path.slice(0,2));
+  const resumed=harness(first.savedSnapshots);resumed.window.EPIPHANY_LETTER_GRID.open();
+  assert.match(resumed.root.innerHTML,/data-lg-resume/);resumed.click('[data-lg-resume]');
+  assert.match(resumed.root.innerHTML,/YOUR PATH/);
+  assert.ok(resumed.root.innerHTML.includes(word.answer[0]));
+  assert.equal(resumed.results.length,0,'restoring a partial path must not emit a result');
 });
