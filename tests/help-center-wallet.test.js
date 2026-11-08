@@ -35,7 +35,7 @@ test('Help Center is bilingual, preserves context, supports replay and accessibl
 test('Help Center links to the established sections and does not replace navigation logic', () => {
   const html = read('index.html');
   const js = read('help-center.js');
-  for (const view of ['stories','words','lifeskills','mytools','arcade','thinklab','summon','collection','world','chronicle','resonance','progress','trophies','profile']) {
+  for (const view of ['stories','words','lifeskills','mytools','fluentia','thinklab','summon','collection','world','chronicle','resonance','progress','trophies','profile']) {
     assert.match(html, new RegExp('data-help-view="' + view + '"'));
   }
   assert.match(js, /document\.querySelector\('\[data-view=/);
