@@ -74,6 +74,30 @@ test('bridge persists normalized events idempotently without changing XP or lega
   assert.equal(bridge.getHistory().length,1);
 });
 
+test('review mastery follows latest answers and duplicate events do not inflate attempts', () => {
+  const state = {fluentiaHistory:[],fluentiaReviewState:{}};
+  const bridge = Bridge.createBridge(() => state, history => { state.fluentiaHistory = history; });
+  const event = {
+    eventId:'review-session:0',sessionId:'review-session',itemId:'sound-1',
+    activityId:'soundscape-sound-maze',sourceActivityId:'sound-maze',
+    level:'A2',correct:false,errorType:'sound-discrimination',
+    domain:'soundscape',answeredAt:'2026-11-08T09:00:00.000Z'
+  };
+  bridge.recordReviewOutcome(event);
+  bridge.recordEvent(event);
+  assert.deepEqual(state.fluentiaReviewState['sound-maze:sound-1'], {
+    mastered:false,attempts:1,updatedAt:event.answeredAt
+  });
+  bridge.recordReviewOutcome(event);
+  bridge.recordEvent(event);
+  assert.equal(state.fluentiaReviewState['sound-maze:sound-1'].attempts,1);
+  const reviewAnswer = {...event,eventId:'review-session:1',activityId:'soundscape-sound-maze-history-review',correct:true,answeredAt:'2026-11-08T09:02:00.000Z'};
+  bridge.recordReviewOutcome(reviewAnswer);
+  bridge.recordEvent(reviewAnswer);
+  assert.equal(state.fluentiaReviewState['sound-maze:sound-1'].mastered,true);
+  assert.equal(state.fluentiaReviewState['sound-maze:sound-1'].attempts,2);
+});
+
 test('bridge history is bounded and rejects events without stable attribution', () => {
   const state={fluentiaHistory:[]};
   const bridge=Bridge.createBridge(()=>state,history=>{state.fluentiaHistory=history;});
