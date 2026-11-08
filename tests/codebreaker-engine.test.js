@@ -23,6 +23,9 @@ function harness(){
 test('Codebreaker opens its own four-level picker and never uses shared training modes',()=>{
   const h=harness();h.window.EPIPHANY_CODEBREAKER.open();
   assert.match(h.root.innerHTML,/Choose your level/);
+  assert.match(h.root.innerHTML,/How the code works/);
+  assert.match(h.root.innerHTML,/O H H J S/);
+  assert.doesNotMatch(h.root.innerHTML,/Use the clue/);
   for(const id of ['easy','medium','hard','expert'])assert.match(h.root.innerHTML,new RegExp('data-cb-level="'+id+'"'));
   assert.doesNotMatch(h.root.innerHTML,/Guided|Steady|Challenge/);
 });
