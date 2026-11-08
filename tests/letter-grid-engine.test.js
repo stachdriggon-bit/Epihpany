@@ -58,7 +58,7 @@ test('the path cannot turn after its direction is established',()=>{
   const dr=Math.floor(second/n)-Math.floor(first/n),dc=second%n-first%n;
   const r=Math.floor(last/n),col=last%n;
   const alternatives=[[-1,-1],[-1,0],[-1,1],[0,-1],[0,1],[1,-1],[1,0],[1,1]];
-  const turn=alternatives.map(([rr,cc])=>({rr,cc,index:(r+rr)*n+col+cc})).find(x=>Math.max(Math.abs(x.rr),Math.abs(x.cc))===1&&x.rr!==dr&&x.cc!==dc&&r+x.rr>=0&&r+x.rr<n&&col+x.cc>=0&&col+x.cc<n&&!word.path.includes(x.index));
+  const turn=alternatives.map(([rr,cc])=>({rr,cc,index:(r+rr)*n+col+cc})).find(x=>Math.max(Math.abs(x.rr),Math.abs(x.cc))===1&&(x.rr!==dr||x.cc!==dc)&&r+x.rr>=0&&r+x.rr<n&&col+x.cc>=0&&col+x.cc<n&&!word.path.includes(x.index));
   if(turn)h.click('[data-lg-cell]',{lgCell:String(turn.index)});
   assert.match(h.root.innerHTML,/same straight line/);
   assert.equal(h.results.length,0);
