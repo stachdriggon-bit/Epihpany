@@ -54,6 +54,7 @@ async function readRuntimeMetrics(cdp, page) {
   const metrics = Object.fromEntries(response.metrics.map(item => [item.name, item.value]));
   const dom = await page.evaluate(() => ({
     elementCount:document.querySelectorAll('*').length,
+    textNodeCount:(() => { const walker=document.createTreeWalker(document, NodeFilter.SHOW_TEXT); let count=0; while(walker.nextNode()) count++; return count; })(),
     worldChildren:document.querySelector('#world-game')?.children.length || 0
   }));
   return {
@@ -63,6 +64,7 @@ async function readRuntimeMetrics(cdp, page) {
     documents:metrics.Documents ?? null,
     frames:metrics.Frames ?? null,
     elementCount:dom.elementCount,
+    textNodeCount:dom.textNodeCount,
     worldChildren:dom.worldChildren
   };
 }
@@ -139,7 +141,8 @@ test('repeated feature entry and exit reports Chromium runtime lifecycle metrics
         jsHeapUsedMB:Math.round((final.jsHeapUsedMB - baseline.jsHeapUsedMB) * 100) / 100,
         domNodes:final.domNodes - baseline.domNodes,
         jsEventListeners:final.jsEventListeners - baseline.jsEventListeners,
-        elementCount:final.elementCount - baseline.elementCount
+        elementCount:final.elementCount - baseline.elementCount,
+        textNodeCount:final.textNodeCount - baseline.textNodeCount
       },
       samples
     };

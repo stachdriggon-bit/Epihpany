@@ -92,3 +92,16 @@ The test is included in `npm run test:browser`, so the normal EPIPHANY checks ex
 The measurements are diagnostic, not a pass/fail leak threshold. Chromium heap size and listener/node counts vary with browser version, lazy-loaded content, garbage collection, and CI machine pressure; a single CI run cannot establish a production leak or a real-device performance improvement. Compare the full baseline and later samples, and investigate sustained growth rather than a one-off increase.
 
 This automation does **not** yet provide heap-snapshot dominator analysis, reliable detached-DOM attribution, microphone hardware validation, or representative mobile-device CPU/memory measurements. Those require a headed browser session and/or real devices. The report deliberately makes no quantitative improvement claim. The repeatable same-tab route is now available for future before/after comparisons.
+
+
+## Follow-up lifecycle investigation — 2026-11-08
+
+### Confirmed navigation-listener accumulation fixed
+
+The first same-tab runtime profile showed a repeatable increase in Chromium's JavaScript event-listener count during feature navigation. Source inspection identified a concrete cause in `openView()`: every visit attached a one-shot `keydown` listener to the destination heading, but the listener was only removed if a key was pressed while that heading retained focus. Normal navigation did not guarantee that event, so listeners accumulated on persistent headings.
+
+The cleanup is now handled by one delegated document-level `keydown` listener installed once at startup. `openView()` only applies the focus class and focuses the heading; it no longer creates a per-entry listener. A regression contract test protects this boundary.
+
+### More precise DOM-node diagnostics
+
+The runtime profile now records attached text-node count alongside element count. Chromium's CDP `Nodes` metric includes more than elements, so this helps distinguish growth in attached text nodes from growth in detached/otherwise retained nodes. It remains a diagnostic measure, not proof of a leak. The next post-fix CI profile should be compared against the previous baseline before drawing conclusions about the remaining DOM-node increase.
