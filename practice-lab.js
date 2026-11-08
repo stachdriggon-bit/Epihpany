@@ -66,8 +66,9 @@
     const el=document.querySelector('#pl-stats'); if(el) el.innerHTML='<span><strong>'+data.speakingAttempts+'</strong> speaking tries</span><span><strong>'+data.dictationAttempts+'</strong> dictation tries</span><span><strong>'+data.completed+'</strong> exact matches</span>';
   };
   const mount = () => {
-    const page = document.querySelector('#arcade-view .arcade-page');
-    if (!page || document.querySelector('#practice-lab')) return;
+    const arcadeView = document.querySelector('#arcade-view');
+    const page = arcadeView?.querySelector('.arcade-page');
+    if (!page || !arcadeView.classList.contains('is-active') || document.querySelector('#practice-lab')) return;
     const section = document.createElement('section');
     section.className='block practice-lab'; section.id='practice-lab';
     section.innerHTML = '<div class="block-head"><div><p class="kicker">NEW · SPEAK · LISTEN · REPEAT</p><h2>Speaking & listening lab</h2><p>Practise aloud, compare the words you said, and train your ear with short dictations.</p></div></div>'+
@@ -146,5 +147,6 @@
     save();updateStats();
   };
   document.addEventListener('DOMContentLoaded',mount);
+  document.addEventListener('epiphany:view-changed',event=>{if(event.detail?.view==='arcade')mount();});
   if(document.readyState!=='loading')mount();
 })();
