@@ -55,7 +55,7 @@ test('player-facing cryptograms contain no semantic answer clues',()=>{
 test('Hard 01 starts with a more useful structural foothold without revealing a word',()=>{
   const puzzle=bank.puzzles.hard.find(item=>item.id==='cb-hard-01');
   assert.deepEqual(puzzle.known.map(pair=>[pair.cipher,pair.plain]),[['O','A'],['P','L']]);
-  const partial=[...puzzle.cipher].map(letter=>({O:'A',P:'L'}[letter]||'·')).join('');
-  assert.equal(partial,'A ·L·A· ·L·· ····· ···· ···· ··L···'.replaceAll(' ',''));
+  const partialWords=puzzle.cipher.split(' ').map(word=>[...word].map(letter=>({O:'A',P:'L'}[letter]||'·')).join(''));
+  assert.deepEqual(partialWords,['A','·L·A·','·L··','·A···','·A··','····','·A····']);
   assert.equal(puzzle.known.length,2);
 });
