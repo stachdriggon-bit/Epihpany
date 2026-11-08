@@ -5,7 +5,7 @@ const path = require('node:path');
 
 const read = file => fs.readFileSync(path.join(__dirname, '..', file), 'utf8');
 
-test('Fluentia UI exposes all six canonical domains and both mixed-session entry points', () => {
+test('Fluentia UI exposes six domains, global mix, and domain-scoped section mix', () => {
   const ui = read('fluentia-ui.js');
   for (const id of ['wordcraft','sentence-studio','textwise','soundscape','real-world','fine-sense']) {
     assert.match(ui, new RegExp("id:'" + id + "'"));
@@ -13,6 +13,12 @@ test('Fluentia UI exposes all six canonical domains and both mixed-session entry
   assert.match(ui, /data-mode=/);
   assert.match(ui, /section-mixed/);
   assert.match(ui, /fluentia-mix/);
+  assert.match(ui, /fluentia-domain-modes/);
+  assert.match(ui, /closest\('\.tab\[data-view="fluentia"\]'\)/);
+  const home = ui.slice(ui.indexOf('function renderHome'), ui.indexOf('function reviewPanel'));
+  const domain = ui.slice(ui.indexOf('function renderDomain'), ui.indexOf('function activityCard'));
+  assert.doesNotMatch(home, /modeCard\('section-mixed'\)/, 'Section Mixed must not be shown on the Fluentia landing page');
+  assert.match(domain, /modeCard\('section-mixed'\)/, 'Section Mixed must be available inside every domain');
   assert.match(ui, /engine\.createSession\(config\)/);
 });
 
