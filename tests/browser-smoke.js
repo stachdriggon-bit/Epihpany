@@ -214,7 +214,7 @@ test('main navigation tabs open without uncaught page errors', { timeout: 18 * 6
         assert.ok(requested.some(path => path.endsWith('/sound-maze-content.js')), 'Fluentia should load Sound Maze content on its first open');
         assert.ok(requested.some(path => path.endsWith('/practice-lab.js')), 'Fluentia should load Practice Lab samples on its first open');
         assert.equal(await fluentia.locator('.fluentia-domain-card').count(),6,'Fluentia should render its six canonical domains');
-        assert.equal(await fluentia.locator('[data-mode="section-mixed"]').count(),1,'Section Mixed should have one landing entry');
+        assert.equal(await fluentia.locator('[data-mode="section-mixed"]').count(),0,'Section Mixed should not appear on the Fluentia landing page');
         assert.equal(await fluentia.locator('[data-mode="fluentia-mix"]').count(),1,'Fluentia Mix should have one landing entry');
         assert.equal(await fluentia.locator('.fluentia-review-panel').count(),1,'Your Review should remain a separate destination');
         await fluentia.locator('.fluentia-domain-card[data-domain="wordcraft"]').click();
@@ -244,8 +244,9 @@ test('main navigation tabs open without uncaught page errors', { timeout: 18 * 6
           assert.equal(await explanation.innerText(),before,'returning to English should restore the same explanation slot');
         }
         await fluentia.locator('[data-exit]').click();
-        await fluentia.locator('[data-mode="section-mixed"]').click();
         await fluentia.locator('.fluentia-domain-card[data-domain="wordcraft"]').click();
+        assert.equal(await fluentia.locator('[data-mode="section-mixed"]').count(),1,'Section Mixed should be available inside a domain');
+        await fluentia.locator('[data-mode="section-mixed"]').click();
         await question.waitFor({state:'visible',timeout:5000});
         assert.match(await fluentia.locator('.fluentia-session-top .pill').innerText(),/Section Mixed/i,'Section Mixed should start inside the chosen domain');
         assert.match(await question.locator('.kicker').innerText(),/Wordcraft/i,'Section Mixed must not leak into another domain');
