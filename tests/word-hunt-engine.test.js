@@ -141,7 +141,8 @@ test('Word Hunt restores the same puzzle and found words without replaying XP ev
   const puzzle=first.bank.puzzles.easy[0],word=puzzle.words[0],match=first.bank.occurrences(puzzle.grid,word)[0];
   const endRow=match.row+match.dr*(word.length-1),endCol=match.col+match.dc*(word.length-1);
   first.click('[data-wh-cell]',{whCell:match.row+'-'+match.col});first.click('[data-wh-cell]',{whCell:endRow+'-'+endCol});
-  assert.deepEqual(first.savedSnapshots.wordhunt.payload.found,[word]);
+  assert.equal(first.savedSnapshots.wordhunt.payload.found.length,1);
+  assert.equal(first.savedSnapshots.wordhunt.payload.found[0],word);
   const resumed=createHarness(first.savedSnapshots);
   resumed.window.EPIPHANY_WORD_HUNT.open();
   assert.match(resumed.root.innerHTML,/data-wh-resume/);

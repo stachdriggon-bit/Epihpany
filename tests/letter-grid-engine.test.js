@@ -84,7 +84,7 @@ test('Letter Path restores the selected clue and partial path without replaying 
   const first=harness(),word=start(first);
   first.click('[data-lg-cell]',{lgCell:String(word.path[0])});
   first.click('[data-lg-cell]',{lgCell:String(word.path[1])});
-  assert.deepEqual(first.savedSnapshots.lettergrid.payload.path,word.path.slice(0,2));
+  assert.deepEqual(Array.from(first.savedSnapshots.lettergrid.payload.path),Array.from(word.path.slice(0,2)));
   const resumed=harness(first.savedSnapshots);resumed.window.EPIPHANY_LETTER_GRID.open();
   assert.match(resumed.root.innerHTML,/data-lg-resume/);resumed.click('[data-lg-resume]');
   assert.match(resumed.root.innerHTML,/YOUR PATH/);
