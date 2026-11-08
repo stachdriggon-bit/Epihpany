@@ -64,6 +64,7 @@
 .fluentia-answer:disabled{cursor:default}
 .fluentia-answer-index{display:grid;place-items:center;width:28px;height:28px;flex:none;border-radius:9px;background:var(--ground);font-size:12px}
 .fluentia-answer-input{width:100%;min-height:54px;padding:12px 15px;border:1.5px solid var(--line-2);border-radius:14px;background:var(--surface);color:var(--ink);font:inherit}
+.fluentia-speech-tools{display:grid;gap:12px}.fluentia-speech-actions{display:flex;flex-wrap:wrap;gap:10px}.fluentia-speech-status{padding:12px 14px;border-radius:12px;background:var(--ground);color:var(--ink-2);font-size:14px}.fluentia-speech-transcript{min-height:100px;resize:vertical}.fluentia-speech-note{color:var(--ink-3);font-size:12px}
 .fluentia-session-actions{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:20px}
 .fluentia-feedback{margin-top:18px;padding:15px;border-radius:15px;background:var(--mint-soft);color:var(--ink)}
 .fluentia-feedback.is-wrong{background:var(--coral-soft)}
