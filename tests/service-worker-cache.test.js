@@ -33,10 +33,7 @@ function createWorker(cachedAssets = [], navigatorOptions = {}) {
       return { ok: true, clone() { return { asset }; } };
     },
     Promise, Number, String, Object, URL, console,
-    clients: {
-      claim: async () => {},
-      get: async id => id === 'diagnostic-client' ? { postMessage(message) { diagnosticMessages.push(message); } } : null
-    }
+    clients: { claim: async () => {} }
   });
   vm.runInContext(source, context);
   return { handlers, added, matched, refreshed, cacheEntries };
