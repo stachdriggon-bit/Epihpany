@@ -10,8 +10,12 @@ function notifyDiagnostics(clientId, outcome, request) {
   return clients.get(clientId).then(client => {
     if (client && typeof client.postMessage === 'function') {
       client.postMessage({ type: 'EPIPHANY_DIAGNOSTIC_EVENT', event: { asset, outcome } });
+    } else {
+      diagnosticClientIds.delete(clientId);
     }
-  }).catch(() => {});
+  }).catch(() => {
+    diagnosticClientIds.delete(clientId);
+  });
 }
 const CORE_ASSETS = ['./', './index.html', './style.css', './icon-system.js', './guidance.css', './help-center.css', './help-center.js', './app.js', './guidance.js', './data.js', './data-mistakes.js', './data-wotd.js', './data-aha.js', './mini-games.css', './supabase-config.js', './account.js', './asset-manager.js', './asset-manager.css', './artwork-manager.js', './artwork-manager.css', './telemetry.js', './diagnostics.js', './diagnostics.css', './adaptive-engine.js', './lazy-data.js', './fluentia-engine.js', './fluentia-adapters.js', './fluentia-progress-bridge.js', './fluentia-ui.js', './fluentia-ui.css', './navigation-enhancements.js', './manifest.webmanifest', './icon.svg', './social-preview.svg', './wotd-card.html', './notifications.js', './data-cards.js', './data-character-profiles.js', './cards.js', './cards.css', './assets/cards/epiphany-portraits.svg', './assets/cards/card-ornaments.svg'];
 // Allowlist of optional feature files eligible for on-demand offline caching.
