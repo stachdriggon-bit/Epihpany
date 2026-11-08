@@ -161,7 +161,7 @@
     $$('[data-dev-open]').forEach(button=>button.addEventListener('click',()=>showSection(button.dataset.devOpen)));
     document.addEventListener('keydown',event=>{if(event.key==='Escape'&&!$('#developer-overlay')?.hidden)close();});
     document.addEventListener('epiphany-auth-changed',()=>{refreshEntry();if(!allowed()){window.EPIPHANY_DIAGNOSTICS?.stop?.();if(!$('#developer-overlay')?.hidden)close();}});
-    window.addEventListener('storage',refreshEntry);
+    window.addEventListener('storage',()=>{refreshEntry();if(!allowed()){window.EPIPHANY_DIAGNOSTICS?.stop?.();if(!$('#developer-overlay')?.hidden)close();}});
     refreshDiagnostics();
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
