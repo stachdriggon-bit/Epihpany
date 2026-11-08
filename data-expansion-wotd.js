@@ -121,4 +121,4 @@
     obfuscate: 'قد تجعل المصطلحات التقنية نقطة بسيطة أكثر غموضًا.',
     tenable: 'الاستنتاج قابل للدفاع عنه في ظل هذه الافتراضات.',
     extrapolate: 'من المخاطرة تعميم الاستنتاجات خارج البيانات انطلاقًا من مثال واحد.'
-  }; for(const [level,word,meaning,meaning_ar,pronunciation,example] of moreWords)WOTD_WORDS.push({word,meaning,meaning_ar,pronunciation,level,example,example_ar:arabicExamples[word]||'',origin:'Added in the EPIPHANY expanded learning library.'}); })();
+  }; for(const [level,word,meaning,meaning_ar,pronunciation,example] of moreWords)WOTD_WORDS.push({word,meaning,meaning_ar,pronunciation,level,example,example_ar:arabicExamples[word]||'',origin:'Added in the Epiphany expanded learning library.'}); })();
