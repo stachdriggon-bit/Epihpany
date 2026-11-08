@@ -13,7 +13,18 @@
 .lg-level-card strong{font-size:1.05rem}
 .lg-level-card>span:last-child{font-size:.8rem;color:var(--muted,#667085)}
 .lg-level-size{font-size:.78rem;font-weight:750;color:var(--accent,#7462b8)}
-.lg-progress-row,.lg-score-row,.lg-clues-head{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.lg-progress-row,.lg-score-row,.lg-clues{display:flex;flex-direction:column;gap:8px}
+.lg-clue{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;min-height:58px;padding:10px 12px;border:1px solid var(--border,#dfe4ec);border-radius:11px;background:var(--surface-soft,#f8f8fc);color:var(--heading,#26324a);text-align:left;cursor:pointer}
+.lg-clue-main{display:flex;flex-direction:column;gap:4px;min-width:0}
+.lg-clue-main strong{font-size:.86rem;font-weight:750;line-height:1.35}
+.lg-clue-main small{font-size:.72rem;color:var(--muted,#667085)}
+.lg-clue-state{flex:0 0 auto;font-size:.72rem;color:var(--muted,#667085)}
+.lg-clue.is-active{border-color:var(--accent,#7462b8);background:#eee9fb}
+.lg-clue.is-active .lg-clue-state{color:var(--accent,#7462b8)}
+.lg-clue.is-found{border-color:#b7d9c3;background:#e8f4ec;cursor:default}
+.lg-clue.is-found .lg-clue-state{color:#286344}
+.lg-clue:disabled{opacity:1}
+.lg-clues-head{display:flex;align-items:center;justify-content:space-between;gap:12px}
 .lg-progress{font-size:.82rem;color:var(--muted,#667085);font-variant-numeric:tabular-nums}
 .lg-score-row{margin:15px 0;padding:10px 13px;border-radius:12px;background:var(--surface-soft,#f6f6fa)}
 .lg-score-row strong{font-size:1.08rem;color:var(--heading,#202b43)}
@@ -46,6 +57,6 @@
 .lg-complete .tl-next{margin-top:8px}
 .lg-finish{padding-block:clamp(24px,6vw,48px)}
 .lg-finish p{color:var(--muted,#667085)}
-.lg-cell:focus-visible,.lg-level-card:focus-visible{outline:3px solid var(--accent,#7462b8);outline-offset:2px}
+.lg-cell:focus-visible,.lg-level-card:focus-visible,.lg-clue:focus-visible{outline:3px solid var(--accent,#7462b8);outline-offset:2px}
 @media(max-width:760px){.lg-level-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.lg-level-card{min-height:110px}.lg-game-layout{grid-template-columns:1fr}.lg-board{width:min(100%,460px)}}
 @media(max-width:420px){.lg-panel{padding:13px}.lg-board{gap:2px;padding:4px}.lg-cell{border-radius:4px;font-size:clamp(.7rem,4vw,.95rem)}.lg-score-row>span{max-width:120px;text-align:right}.lg-word{min-height:36px;padding:7px 9px;font-size:.78rem}}
