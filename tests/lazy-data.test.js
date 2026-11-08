@@ -72,7 +72,7 @@ test('feature data loader does not request large datasets until requested', asyn
     'data-translation-ar.js',
     'data-translation-ar-fill.js'
   ]);
-  assert.ok(requested.slice(20).every(src => /\?v=.+/.test(src)));
+  assert.ok(requested.slice(22).every(src => /\?v=.+/.test(src)));
   assert.deepEqual(merged, [true]);
   await context.window.EPIPHANY_LAZY_LOAD('chronicle');
   assert.deepEqual(requested.slice(24).map(src => src.split('?')[0]), ['data-world-registry.js', 'data-world-events.js']);
@@ -113,6 +113,8 @@ test('initial HTML defers stories and World data and keeps loader in offline she
   assert.match(sw, /const cached = await cache\.match\(request\);\s*if \(cached\) return cached;/);
   const app = fs.readFileSync(path.join(root, 'app.js'), 'utf8');
   assert.match(app, /window\.EPIPHANY_MERGE_AR_TRANSLATIONS = mergeArabicTranslationCatalog/);
+  assert.match(app, /textwiseSequenceBank: Array\.isArray\(window\.EPIPHANY_TEXTWISE_SEQUENCE_BANK\) \? window\.EPIPHANY_TEXTWISE_SEQUENCE_BANK : undefined/);
+  assert.match(app, /soundscapeDictationBank: Array\.isArray\(window\.EPIPHANY_SOUNDSCAPE_DICTATION_BANK\) \? window\.EPIPHANY_SOUNDSCAPE_DICTATION_BANK : undefined/);
   assert.doesNotMatch(app, /if \(state\.helpArabic \|\| state\.translationEnabled\) ensureArabicTranslationCatalog\(\)/);
   assert.match(app, /if \(state\.helpArabic\) ensureArabicTranslationCatalog\(\)/);
   assert.match(app, /if \(state\.helpArabic\) ensureArabicTranslationCatalog\(\)/);
