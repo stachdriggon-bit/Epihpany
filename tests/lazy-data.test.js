@@ -22,7 +22,16 @@ test('feature data loader does not request large datasets until requested', asyn
   };
   const merged = [];
   let fluentiaRegistrations = 0;
-  const context = { GAMES: Object.fromEntries(['vocabulary','spelling','grammar','story','listening','advanced'].map(name => [name, {questions:[{level:'A1'}]}])), window: { EpiphanyExpansion: {count:6}, EPIPHANY_MERGE_AR_TRANSLATIONS: () => merged.push(true), EPIPHANY_FLUENTIA_REGISTER_SOURCES: () => { fluentiaRegistrations++; }, EPIPHANY_FLUENTIA_SESSION_ENGINE: { getActivity: () => ({}) } }, document, Promise, Map, Set, Object, Error };
+  let context;
+  document.head.appendChild = script => {
+    requested.push(script.src);
+    queueMicrotask(() => {
+      const match = script.src.match(/data-expansion-(vocabulary|spelling|grammar|story|listening|advanced)\\.js/);
+      if (match) context.window.EPIPHANY_EXPANSION_BANKS[match[1]] = true;
+      script.onload();
+    });
+  };
+  context = { GAMES: Object.fromEntries(['vocabulary','spelling','grammar','story','listening','advanced'].map(name => [name, {questions:[{level:'A1'}]}])), WOTD_WORDS: [], window: { EPIPHANY_EXPANSION_BANKS: {}, EPIPHANY_REGISTER_EXPANSION_BANK() {}, EPIPHANY_EXPANSION_TRANSLATIONS: {}, EPIPHANY_MERGE_AR_TRANSLATIONS: () => merged.push(true), EPIPHANY_FLUENTIA_REGISTER_SOURCES: () => { fluentiaRegistrations++; }, EPIPHANY_FLUENTIA_SESSION_ENGINE: { getActivity: () => ({}) } }, document, Promise, Map, Set, Object, Error };
   const source = fs.readFileSync(path.join(root, 'lazy-data.js'), 'utf8');
   assert.doesNotThrow(() => new vm.Script(source, { filename: 'lazy-data.js' }));
   vm.runInNewContext(source, context);
@@ -83,42 +92,42 @@ test('feature data loader does not request large datasets until requested', asyn
   assert.match(requested[26], /^data-minigames\.js\?v=/);
   assert.equal(fluentiaRegistrations, 2, 'Fluentia adapters should refresh after the deferred directions bank is ready');
 
-  await context.window.EPIPHANY_LAZY_LOAD('expansion');
-  assert.deepEqual(requested.slice(27).map(src => src.split('?')[0]), ['data-expansion.js']);
-  assert.match(requested[27], /^data-expansion\.js\?v=/);
-  assert.equal(fluentiaRegistrations, 3, 'Fluentia adapters should refresh after expansion content is ready');
+  await context.window.EPIPHANY_LAZY_LOAD('expansionVocabulary');
+  assert.deepEqual(requested.slice(27).map(src => src.split('?')[0]), ['data-expansion-translations.js','data-expansion-runtime.js','data-expansion-wotd.js','data-expansion-vocabulary.js']);
+  await context.window.EPIPHANY_LAZY_LOAD('expansionGrammar');
+  assert.deepEqual(requested.slice(31).map(src => src.split('?')[0]), ['data-expansion-grammar.js'], 'other game banks should remain unloaded');
+  assert.equal(fluentiaRegistrations, 4);
 });
 
-test('expansion loader rejects incomplete banks and permits a clean retry', async () => {
+test('a game expansion loader rejects incomplete registration and permits a clean retry', async () => {
   const requested = [];
-  const removed = [];
+  let context, attempts = 0;
   const document = {
-    createElement() { return { src: '', remove() { removed.push(this.src); } }; },
-    head: { appendChild(script) { requested.push(script.src); queueMicrotask(() => script.onload()); } },
+    createElement() { return { src: '', remove() {} }; },
+    head: { appendChild(script) { requested.push(script.src); queueMicrotask(() => { if(script.src.includes('data-expansion-vocabulary.js')&&++attempts>1)context.window.EPIPHANY_EXPANSION_BANKS.vocabulary=true; script.onload(); }); } },
     querySelectorAll() { return []; }
   };
-  const context = vm.createContext({ window: {}, document, Promise, Map, Set, Object, Error, Number });
+  context = vm.createContext({ GAMES:{vocabulary:{questions:[{level:'A1'}]}}, WOTD_WORDS:[], window:{EPIPHANY_EXPANSION_BANKS:{},EPIPHANY_REGISTER_EXPANSION_BANK(){},EPIPHANY_EXPANSION_TRANSLATIONS:{}}, document, Promise, Map, Set, Object, Error, Number });
   vm.runInContext(fs.readFileSync(path.join(root, 'lazy-data.js'), 'utf8'), context);
-  await assert.rejects(context.window.EPIPHANY_LAZY_LOAD('expansion'), /required question banks did not initialize/);
-  context.GAMES = Object.fromEntries(['vocabulary','spelling','grammar','story','listening','advanced'].map(name => [name, {questions:[{level:'A1'}]}]));
-  context.window.EpiphanyExpansion = {count:6};
-  await context.window.EPIPHANY_LAZY_LOAD('expansion');
-  assert.equal(requested.length, 2, 'a failed initialization must not poison the next load attempt');
-  assert.equal(removed.length, 0, 'the retry should not require cleanup of a previously registered script node in this harness');
+  await assert.rejects(context.window.EPIPHANY_LAZY_LOAD('expansionVocabulary'), /vocabulary expansion bank loaded, but its questions did not register/);
+  await context.window.EPIPHANY_LAZY_LOAD('expansionVocabulary');
+  assert.equal(requested.length, 5);
 });
 
 test('initial HTML defers stories and World data and keeps loader in offline shell', () => {
   const html = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
   const sw = fs.readFileSync(path.join(root, 'service-worker.js'), 'utf8');
-  const expansion = fs.readFileSync(path.join(root, 'data-expansion.js'), 'utf8');
-  assert.doesNotMatch(expansion, /STORIES\.push\(/);
+  const expansionFiles = ['data-expansion-translations.js','data-expansion-runtime.js','data-expansion-wotd.js', ...['vocabulary','spelling','grammar','story','listening','advanced'].map(game => 'data-expansion-' + game + '.js')];
+  for (const file of expansionFiles) assert.ok(fs.existsSync(path.join(root, file)), file + ' should exist');
+  assert.ok(!fs.existsSync(path.join(root, 'data-expansion.js')), 'the combined file should be removed');
+
   assert.match(fs.readFileSync(path.join(root, 'lazy-data.js'), 'utf8'), /data-stories-expansion\.js/);
   assert.doesNotMatch(html, /<script[^>]+src="data-stories\.js/);
   assert.doesNotMatch(html, /<script[^>]+src="data-world(?:-sprites)?\.js/);
   assert.doesNotMatch(html, /<script[^>]+src="data-minigames\.js/);
   assert.doesNotMatch(html, /<script[^>]+src="data-spot\.js/);
   assert.doesNotMatch(html, /<script[^>]+src="data-typing\.js/);
-  assert.doesNotMatch(html, /<script[^>]+src="data-expansion\.js/, 'expansion must not load in the initial HTML');
+  assert.doesNotMatch(html, /<script[^>]+src="data-expansion-(?:translations|runtime|wotd|vocabulary|spelling|grammar|story|listening|advanced)\\.js/, 'expansion modules must remain out of initial HTML');
   assert.doesNotMatch(html, /<script[^>]+src="fluentia-(?:textwise|soundscape)-bank\.js/);
   assert.match(html, /lazy-data\.js\?v=[^\"&]+/);
   assert.doesNotMatch(html, /href=\"(?:resonance|life-skills)\.css/);
@@ -133,7 +142,7 @@ test('initial HTML defers stories and World data and keeps loader in offline she
   assert.ok(coreAssets, 'service worker should define core offline assets');
   assert.ok(lazyAssets, 'service worker should define lazy offline assets');
   assert.ok(!coreAssets.includes("'./data-minigames.js'"), 'Directions data should not be a core startup asset');
-  assert.ok(!coreAssets.includes("'./data-expansion.js'"), 'Expansion data should not be a core startup asset');
+  for (const asset of ['data-expansion-translations.js','data-expansion-runtime.js','data-expansion-wotd.js', ...['vocabulary','spelling','grammar','story','listening','advanced'].map(game => 'data-expansion-' + game + '.js')]) { assert.ok(!coreAssets.includes("'./"+asset+"'")); assert.ok(lazyAssets.includes("'./"+asset+"'")); }
   assert.ok(lazyAssets.includes("'./data-expansion.js'"), 'Expansion data should be cached lazily after use');
   assert.ok(lazyAssets.includes("'./data-minigames.js'"), 'Directions data should be cached as a lazy asset after use');
   for (const asset of ['data-spot.js', 'data-typing.js']) {
@@ -142,7 +151,7 @@ test('initial HTML defers stories and World data and keeps loader in offline she
   }
   const app = fs.readFileSync(path.join(root, 'app.js'), 'utf8');
   assert.ok(app.includes("EPIPHANY_LAZY_LOAD(dataName)"));
-  assert.match(app, /expansionGames\.has\(type\)[\s\S]*?EPIPHANY_LAZY_LOAD\('expansion'\)/, 'core CEFR games must await expansion data');
+  assert.match(app, /expansionGames\\.has\\(type\\)[\\s\\S]*?EPIPHANY_LAZY_LOAD\\(expansionGroup\\)/, 'each game must await its own bank');
   assert.ok(app.includes("hydrateWritingPractice(type)"));
   const lazy = fs.readFileSync(path.join(root, 'lazy-data.js'), 'utf8');
   assert.ok(lazy.includes("spot: ['data-spot.js"));
@@ -1009,4 +1018,19 @@ test('speculative navigation keeps only the latest pending section intent', asyn
   await new Promise(resolve => setImmediate(resolve));
   assert.equal(requested[1].split('?')[0], 'data-world-sprites.js');
   scripts[1].onload();
+});
+
+
+test('per-game expansion modules register isolated CEFR banks and preserve shared data', () => {
+  const games=['vocabulary','spelling','grammar','story','listening','advanced'];
+  const context=vm.createContext({GAMES:Object.fromEntries(games.map(g=>[g,{questions:[{id:'base-'+g,level:'A1',q:'Base '+g,sub:'Choose',answers:['a','b'],correct:0}]}])),WOTD_WORDS:[],window:{},Object,Map,Set,Number,String,Array});
+  for(const file of ['data-expansion-translations.js','data-expansion-runtime.js','data-expansion-wotd.js'])vm.runInContext(fs.readFileSync(path.join(root,file),'utf8'),context,{filename:file});
+  assert.equal(context.WOTD_WORDS.length,60);
+  vm.runInContext(fs.readFileSync(path.join(root,'data-expansion-vocabulary.js'),'utf8'),context);
+  assert.ok(context.GAMES.vocabulary.questions.length>1);
+  for(const g of games.slice(1))assert.equal(context.GAMES[g].questions.length,1,g+' should not load with vocabulary');
+  for(const g of games.slice(1))vm.runInContext(fs.readFileSync(path.join(root,'data-expansion-'+g+'.js'),'utf8'),context);
+  for(const g of games){const qs=context.GAMES[g].questions;assert.equal(context.window.EPIPHANY_EXPANSION_BANKS[g],true);assert.ok(['A1','A2','B1','B2','C1','C2'].every(level=>qs.some(q=>q.level===level)));assert.ok(qs.every(q=>!q.answers_ar||q.answers_ar.length===q.answers.length));assert.equal(new Set(qs.map(q=>q.id)).size,qs.length);}
+  assert.equal(context.window.EpiphanyExpansion.addedWords,60);
+  assert.equal(context.window.EpiphanyExpansion.extraQuestions,36);
 });

@@ -3519,17 +3519,15 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
   const expansionGames = new Set(['vocabulary','spelling','grammar','story','listening','advanced']);
   function startGame(type, challengeMode = '') {
     if (MINI[type]) { startMini(type); return; }
-    if (expansionGames.has(type) && !window.EpiphanyExpansion) {
-      if (expansionGameLoads.has(type)) return;
+    if(expansionGames.has(type)&&!window.EPIPHANY_EXPANSION_BANKS?.[type]){
+      if(expansionGameLoads.has(type))return;
       expansionGameLoads.add(type);
-      window.EPIPHANY_LAZY_LOAD('expansion').then(() => {
+      const expansionGroup='expansion'+type.charAt(0).toUpperCase()+type.slice(1);
+      window.EPIPHANY_LAZY_LOAD(expansionGroup).then(()=>{
         expansionGameLoads.delete(type);
-        if (!window.EpiphanyExpansion) throw new Error('Expansion data did not initialize.');
-        startGame(type, challengeMode);
-      }).catch(() => {
-        expansionGameLoads.delete(type);
-        toast('This activity could not load its question bank. Connect to the internet and try again.');
-      });
+        if(!window.EPIPHANY_EXPANSION_BANKS?.[type])throw new Error('The requested expansion bank did not initialize.');
+        startGame(type,challengeMode);
+      }).catch(()=>{expansionGameLoads.delete(type);toast('This activity could not load its question bank. Connect to the internet and try again.');});
       return;
     }
     const dataName = type === 'spot' ? 'spot' : type === 'typing' ? 'typing' : null;
