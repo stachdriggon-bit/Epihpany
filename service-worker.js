@@ -1,6 +1,18 @@
 const CACHE_NAME = 'epiphany-stability-gallery-identity-20261105-1-chain-reaction-72-20261107-1-think-lab-eleven-games-20261108-1-letter-grid-20261107-2-fluentia-session-20261107-1-fluentia-adapters-20261107-1-fluentia-content-20261107-1-progress-bridge-20261107-1-phase3-integration-20261107-4-phase4-mixed-20261107-1-phase5-fluentia-ui-20261107-1-fluentia-integration-20261108-1-offline-translation-20261108-1-world-adaptive-motion-20261108-1-practice-lab-lifecycle-20261108-1-fluentia-lifecycle-20261108-1-fluentia-lifecycle-20261108-2-fluentia-banks-lazy-20261108-1-directions-bank-lazy-20261108-1-writing-banks-lazy-20261108-1-expansion-per-game-20261108-1';
 const CARD_ART_CACHE = 'epiphany-card-art-cloud-only-20261030-1';
 const VENDOR_CACHE = 'epiphany-vendor-20261024m';
+const diagnosticClientIds = new Set();
+
+function notifyDiagnostics(clientId, outcome, request) {
+  if (!clientId || !diagnosticClientIds.has(clientId) || typeof clients.get !== 'function') return Promise.resolve();
+  let asset = 'unknown';
+  try { asset = new URL(request.url).pathname.split('/').pop() || 'unknown'; } catch {}
+  return clients.get(clientId).then(client => {
+    if (client && typeof client.postMessage === 'function') {
+      client.postMessage({ type: 'EPIPHANY_DIAGNOSTIC_EVENT', event: { asset, outcome } });
+    }
+  }).catch(() => {});
+}
 const CORE_ASSETS = ['./', './index.html', './style.css', './icon-system.js', './guidance.css', './help-center.css', './help-center.js', './app.js', './guidance.js', './data.js', './data-mistakes.js', './data-wotd.js', './data-aha.js', './mini-games.css', './supabase-config.js', './account.js', './asset-manager.js', './asset-manager.css', './artwork-manager.js', './artwork-manager.css', './telemetry.js', './adaptive-engine.js', './lazy-data.js', './fluentia-engine.js', './fluentia-adapters.js', './fluentia-progress-bridge.js', './fluentia-ui.js', './fluentia-ui.css', './navigation-enhancements.js', './manifest.webmanifest', './icon.svg', './social-preview.svg', './wotd-card.html', './notifications.js', './data-cards.js', './data-character-profiles.js', './cards.js', './cards.css', './assets/cards/epiphany-portraits.svg', './assets/cards/card-ornaments.svg'];
 // Allowlist of optional feature files eligible for on-demand offline caching.
 const LAZY_ASSETS = ['./resonance.css', './life-skills.css', './language-detective.css', './data-translation-ar.js', './data-translation-ar-fill.js', './data-stories-expansion.js', './data-stories.js', './data-world-registry.js', './data-world-events.js', './data-world-sprites.js', './data-world.js', './resonance.js', './life-skills.js', './practice-lab.js', './language-detective-investigation.js', './language-detective-assessment-schemas.js', './language-detective-cefr-patterns.js', './language-detective-assessment-engine.js', './language-detective-assessment-fixtures.js', './language-detective-ui.js', './sound-maze-bank.js', './sound-maze-content.js', './fluentia-textwise-bank.js', './fluentia-soundscape-bank.js', './odd-one-out-bank.js', './word-connections-bank.js', './sentence-scramble-bank.js', './word-forge-bank.js', './chain-reaction-bank.js', './think-lab.js', './word-hunt-bank.js', './word-hunt.js', './word-hunt.css', './codebreaker-bank.js', './codebreaker.js', './codebreaker.css', './letter-grid-bank.js', './letter-grid.js', './letter-grid.css', './data-minigames.js', './data-spot.js', './data-typing.js', './data-expansion-translations.js', './data-expansion-runtime.js', './data-expansion-wotd.js', './data-expansion-vocabulary.js', './data-expansion-spelling.js', './data-expansion-grammar.js', './data-expansion-story.js', './data-expansion-listening.js', './data-expansion-advanced.js'];
@@ -33,7 +45,16 @@ function canWarmOptionalAssets() {
 }
 
 self.addEventListener('message', event => {
-  if (!event.data || event.data.type !== 'EPIPHANY_WARM_OPTIONAL_CACHE' || !canWarmOptionalAssets()) return;
+  const type = event.data && event.data.type;
+  if (type === 'EPIPHANY_DIAGNOSTICS_START' && event.source && event.source.id) {
+    diagnosticClientIds.add(event.source.id);
+    return;
+  }
+  if (type === 'EPIPHANY_DIAGNOSTICS_STOP' && event.source && event.source.id) {
+    diagnosticClientIds.delete(event.source.id);
+    return;
+  }
+  if (type !== 'EPIPHANY_WARM_OPTIONAL_CACHE' || !canWarmOptionalAssets()) return;
   event.waitUntil((async () => {
     const cache = await caches.open(CACHE_NAME);
     // Refresh only optional assets that were cached through real use or intent prefetch.
@@ -122,23 +143,32 @@ self.addEventListener('fetch', event => {
   // Register the cache-write lifetime synchronously, before the fetch event ends.
   const networkRequest = fetch(request);
   const cacheWrite = networkRequest.then(response => {
-    if (response && response.ok) {
-      return caches.open(CACHE_NAME).then(cache => cache.put(request, response.clone()));
-    }
+    const diagnostic = notifyDiagnostics(event.clientId, response && response.ok ? 'network_success' : 'network_response', request);
+    const write = response && response.ok
+      ? caches.open(CACHE_NAME).then(cache => cache.put(request, response.clone()))
+      : Promise.resolve();
+    return Promise.all([diagnostic, write]);
   }).catch(() => {});
   event.waitUntil(cacheWrite);
   event.respondWith(networkRequest.catch(async () => {
     // Prefer the exact versioned URL. Falling back with ignoreSearch could
     // serve an older script under a newer ?v= cache-busting key.
     const cached = await caches.match(request);
-    if (cached) return cached;
+    if (cached) {
+      await notifyDiagnostics(event.clientId, 'cache_fallback_exact', request);
+      return cached;
+    }
     // Optional assets may also have been warmed under their unversioned path.
     const unversioned = await caches.match(url.origin + url.pathname);
-    if (unversioned) return unversioned;
+    if (unversioned) {
+      await notifyDiagnostics(event.clientId, 'cache_fallback_unversioned', request);
+      return unversioned;
+    }
     if (request.mode === 'navigate') {
       const shell = await caches.match('./index.html');
       if (shell) return shell;
     }
+    await notifyDiagnostics(event.clientId, 'offline_miss', request);
     return new Response('', {status: 503, statusText: 'Offline'});
   }));
 });
