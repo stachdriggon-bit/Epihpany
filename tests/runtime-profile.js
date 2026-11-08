@@ -154,8 +154,20 @@ test('repeated feature entry and exit reports Chromium runtime lifecycle metrics
     });
     await page.addInitScript(() => {
       const NativeMutationObserver = window.MutationObserver;
+      const observers = window.__epiphanyAppMutationObservers = [];
       window.MutationObserver = class extends NativeMutationObserver {
+        constructor(callback) {
+          super(callback);
+          this.__epiphanyObservedTargets = [];
+          observers.push(this);
+        }
         observe(target, options) {
+          const descriptor = {
+            id:target?.id || '',
+            tag:target?.tagName?.toLowerCase() || '',
+            className:typeof target?.className === 'string' ? target.className : ''
+          };
+          this.__epiphanyObservedTargets.push(descriptor);
           if (target?.id === 'world-game') window.__epiphanyWorldRootObserver = this;
           return super.observe(target, options);
         }
@@ -179,12 +191,24 @@ test('repeated feature entry and exit reports Chromium runtime lifecycle metrics
     await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
     // Isolate the persistent World-root translation observer. It is test-only
     // to disconnect it here; the app's gameplay and DOM remain untouched.
-    const worldRootObserverDisconnected = await page.evaluate(() => {
-      const observer = window.__epiphanyWorldRootObserver;
-      if (!observer) return false;
-      observer.disconnect();
-      return true;
+    const observerIsolation = await page.evaluate(() => {
+      const observers = window.__epiphanyAppMutationObservers || [];
+      const probeObserver = window.__epiphanyDetachedProbe?.observer;
+      const targets = observers.map(observer => observer.__epiphanyObservedTargets || []);
+      let disconnected = 0;
+      observers.forEach(observer => {
+        if (observer === probeObserver) return;
+        observer.disconnect();
+        disconnected++;
+      });
+      return {
+        appObserverCount:observers.length,
+        appObserversDisconnected:disconnected,
+        worldRootObserverDisconnected:!!window.__epiphanyWorldRootObserver,
+        observedTargets:targets
+      };
     });
+    const worldRootObserverDisconnected = observerIsolation.worldRootObserverDisconnected;
     assert.ok(worldRootObserverDisconnected, 'World root observer must be available for the isolation check');
     await cdp.send('HeapProfiler.collectGarbage');
     await page.evaluate(() => Promise.resolve());
@@ -238,6 +262,7 @@ test('repeated feature entry and exit reports Chromium runtime lifecycle metrics
       final,
       probeShutdown,
       worldRootObserverDisconnected,
+      observerIsolation,
       worldExitFocusChecks:page.__worldExitFocusChecks || [],
       delta:{
         jsHeapUsedMB:Math.round((final.jsHeapUsedMB - baseline.jsHeapUsedMB) * 100) / 100,
