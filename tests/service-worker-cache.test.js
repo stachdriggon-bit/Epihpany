@@ -80,3 +80,100 @@ test('reconnect does not warm optional assets on constrained devices or data-sav
     assert.deepEqual(worker.refreshed, []);
   }
 });
+
+
+function createFetchWorker(options = {}) {
+  const handlers = {};
+  const entries = new Map();
+  const cache = {
+    async match(key) {
+      const value = typeof key === 'string' ? key : key.url;
+      return entries.get(value);
+    },
+    async put(key, response) {
+      const value = typeof key === 'string' ? key : key.url;
+      entries.set(value, response);
+    },
+    async add(asset) {
+      entries.set(new URL(asset, 'https://epiphany.test').href, { url: asset, cached: true });
+    }
+  };
+  const worker = {
+    navigator: { onLine: true, deviceMemory: 8, hardwareConcurrency: 8 },
+    location: { origin: 'https://epiphany.test' },
+    skipWaiting: async () => {},
+    addEventListener(name, handler) { handlers[name] = handler; }
+  };
+  let online = options.online !== false;
+  const context = vm.createContext({
+    self: worker,
+    caches: {
+      open: async () => cache,
+      keys: async () => [],
+      delete: async () => true,
+      async match(key) {
+        const value = typeof key === 'string' ? new URL(key, worker.location.origin).href : key.url;
+        return entries.get(value);
+      }
+    },
+    fetch: async request => {
+      if (!online) throw new Error('offline');
+      return { ok: true, url: request.url, clone() { return { ok: true, url: request.url, cached: true }; } };
+    },
+    Response: class Response {
+      constructor(body, init = {}) { this.body = body; this.status = init.status || 200; this.statusText = init.statusText || ''; }
+    },
+    Promise, Number, String, Object, URL, console,
+    clients: { claim: async () => {} }
+  });
+  vm.runInContext(source, context);
+  return {
+    handlers, entries,
+    setOnline(value) { online = value; },
+    async dispatch(url, mode = 'no-cors') {
+      const waits = [];
+      let responsePromise;
+      const request = { method: 'GET', url, mode, destination: 'script' };
+      handlers.fetch({
+        request,
+        respondWith(promise) { responsePromise = promise; },
+        waitUntil(promise) { waits.push(promise); }
+      });
+      const response = await responsePromise;
+      await Promise.all(waits);
+      return response;
+    }
+  };
+}
+
+test('successful lazy requests are cached and remain available offline across query-version changes only via exact or unversioned keys', async () => {
+  const worker = createFetchWorker();
+  const current = 'https://epiphany.test/data-expansion-runtime.js?v=expansion-runtime-20261108-3';
+  const onlineResponse = await worker.dispatch(current);
+  assert.equal(onlineResponse.url, current);
+  assert.ok(worker.entries.has(current), 'the exact versioned request should be cached');
+
+  worker.setOnline(false);
+  const offlineResponse = await worker.dispatch(current);
+  assert.equal(offlineResponse.url, current, 'the exact cached version should be served offline');
+
+  const newer = 'https://epiphany.test/data-expansion-runtime.js?v=expansion-runtime-20261108-4';
+  const missingVersion = await worker.dispatch(newer);
+  assert.equal(missingVersion.status, 503, 'a different version must not silently receive stale versioned code');
+});
+
+test('unversioned optional cache entries can serve versioned lazy requests offline', async () => {
+  const worker = createFetchWorker({ online: false });
+  const unversioned = 'https://epiphany.test/data-expansion-runtime.js';
+  worker.entries.set(unversioned, { url: unversioned, cached: true });
+  const response = await worker.dispatch('https://epiphany.test/data-expansion-runtime.js?v=expansion-runtime-20261108-3');
+  assert.equal(response.url, unversioned);
+  assert.equal(response.cached, true);
+});
+
+test('missing optional assets fail with a clear offline response instead of an empty success', async () => {
+  const worker = createFetchWorker({ online: false });
+  const response = await worker.dispatch('https://epiphany.test/data-expansion-grammar.js?v=expansion-grammar-20261108-1');
+  assert.equal(response.status, 503);
+  assert.equal(response.statusText, 'Offline');
+});
