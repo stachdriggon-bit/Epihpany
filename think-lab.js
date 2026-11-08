@@ -741,7 +741,7 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
       const stateLabel = skill.attempts === 0 ? 'Not tested' : skill.accuracy + '% · ' + skill.attempts + ' answers';
       return '<div class="tl-skill-row"><div class="tl-skill-label"><span>'+esc(skill.label)+'</span><b>'+(skill.accuracy===null?'—':skill.accuracy+'%')+'</b></div><div class="tl-skill-track" role="img" aria-label="'+esc(skill.label)+': '+esc(stateLabel)+'"><span style="width:'+value+'%"></span></div><small>'+esc(stateLabel)+'</small></div>';
     }).join('');
-    return '<section class="tl-mastery" aria-labelledby="tl-mastery-title"><div class="tl-section-heading"><div><span class="tl-eyebrow">YOUR LEARNING SIGNALS</span><h3 id="tl-mastery-title">Skill map</h3><p>Accuracy is based on your recorded answers—not a guess about your overall English level.</p></div><div class="tl-mastery-count"><b>'+total+'</b><span>answers tracked</span></div></div><div class="tl-mastery-grid"><div class="tl-skill-list">'+bar+'</div><aside class="tl-recommendation"><span class="tl-recommendation-mark">↗</span><span class="tl-case-tag">YOUR NEXT CHALLENGE</span><h4>'+esc(focus.label)+'</h4><p>'+esc(focus.hint)+'</p><div class="tl-recommendation-stat">'+(focus.attempts ? (focus.accuracy+'% accuracy · '+focus.attempts+' answers') : 'Baseline not measured yet')+'</div><p class="tl-recommendation-reason">'+esc(focus.reason)+'</p><button type="button" class="tl-next" data-think-recommended="'+esc(focus.game)+'">Train this skill ↗</button></aside></div><p class="tl-mastery-foot">'+(total ? 'So far: '+correct+' correct out of '+total+'. Keep practising to make the map more reliable.' : 'Your map will fill in as you answer challenges. Skills without data are marked “Not tested”.')+'</p></section>';
+    return '<section class="tl-mastery" aria-labelledby="tl-mastery-title"><div class="tl-section-heading"><div><span class="tl-eyebrow">YOUR LEARNING SIGNALS</span><h3 id="tl-mastery-title">Skill map</h3><p>Accuracy is based on your recorded answers—not a guess about your overall English level.</p></div><div class="tl-mastery-count"><b>'+total+'</b><span>answers tracked</span></div></div><div class="tl-mastery-grid"><div class="tl-skill-list">'+bar+'</div><aside class="tl-recommendation"><span class="tl-recommendation-mark">↗</span><span class="tl-case-tag">YOUR NEXT CHALLENGE</span><h4>'+esc(focus.label)+'</h4><p>'+esc(focus.hint)+'</p><div class="tl-recommendation-stat">'+(focus.attempts ? (focus.accuracy+'% accuracy · '+focus.attempts+' answers') : 'Baseline not measured yet')+'</div><p class="tl-recommendation-reason">'+esc(focus.reason)+'</p>'+(focus.game ? '<button type="button" class="tl-next" data-think-recommended="'+esc(focus.game)+'">Train this skill ↗</button>' : '<p class="tl-recommendation-reason">This skill is retained in your learning history but is not linked to a Think Lab game.</p>')+'</aside></div><p class="tl-mastery-foot">'+(total ? 'So far: '+correct+' correct out of '+total+'. Keep practising to make the map more reliable.' : 'Your map will fill in as you answer challenges. Skills without data are marked “Not tested”.')+'</p></section>';
   }
   function landing() {
     mode = null;
@@ -749,7 +749,9 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
   }
   // Register each game against the shared adaptive policy. New games should add
   // one entry here; difficulty thresholds, confidence and hint calibration remain central.
-  const gameSkills = {odd:'vocabulary', translator:'conversation', maze:'listening', wordladder:'spelling', forge:'spelling', connections:'vocabulary', scramble:'grammar', chain:'vocabulary', wordhunt:'vocabulary', codebreaker:'vocabulary', lettergrid:'vocabulary'};
+  const progressionRegistry = window.EPIPHANY_THINK_LAB_PROGRESSION;
+  if (!progressionRegistry || typeof progressionRegistry.getRegistry !== 'function') throw new Error('Think Lab progression registry is unavailable.');
+  const gameSkills = progressionRegistry.getRegistry().reduce((result, game) => { result[game.id] = game.skill; return result; }, {});
   Object.keys(gameSkills).forEach(id => {
     if (window.EpiphanyThinkLab && typeof window.EpiphanyThinkLab.registerGame === 'function') {
       window.EpiphanyThinkLab.registerGame(id, gameSkills[id]);
@@ -1149,21 +1151,28 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
       root.innerHTML = '<div class="tl-game-card"><div class="tl-game-kicker">WORD CONNECTIONS</div><h2>QUESTION BANK NOT READY</h2><p class="tl-game-instruction">The reviewed Word Connections bank could not be loaded. No sample questions will be shown.</p><button type="button" class="tl-back" data-think-back>← Choose difficulty</button><button type="button" class="tl-back" data-think-home>Think Lab home</button></div>';
       return;
     }
+    if (window.EpiphanyThinkLab && typeof window.EpiphanyThinkLab.recordGameStart === 'function') {
+      const selectedLevel = id === 'maze' ? selectedMazeCEFR : id === 'translator' ? selectedTranslatorCEFR : selectedTrainingMode;
+      window.EpiphanyThinkLab.recordGameStart(id,{level:selectedLevel,trainingMode:selectedTrainingMode});
+    }
     renderGame();
     if(id==='maze') speakTarget();
   }
   function start(id) {
     if (id === 'wordhunt') {
+      if (window.EpiphanyThinkLab && typeof window.EpiphanyThinkLab.recordGameStart === 'function') window.EpiphanyThinkLab.recordGameStart('wordhunt');
       if (window.EPIPHANY_WORD_HUNT && typeof window.EPIPHANY_WORD_HUNT.open === 'function') window.EPIPHANY_WORD_HUNT.open();
       else root.innerHTML = '<div class="tl-game-card"><h2>Word Hunt is loading</h2><p class="tl-game-instruction">Please return to Think Lab and open the game again.</p><button type="button" class="tl-back" data-think-home>Think Lab home</button></div>';
       return;
     }
     if (id === 'lettergrid') {
+      if (window.EpiphanyThinkLab && typeof window.EpiphanyThinkLab.recordGameStart === 'function') window.EpiphanyThinkLab.recordGameStart('lettergrid');
       if (window.EPIPHANY_LETTER_GRID && typeof window.EPIPHANY_LETTER_GRID.open === 'function') window.EPIPHANY_LETTER_GRID.open();
       else root.innerHTML = '<div class="tl-game-card"><h2>Letter Grid is loading</h2><p class="tl-game-instruction">Please return to Think Lab and open the game again.</p><button type="button" class="tl-back" data-think-home>Think Lab home</button></div>';
       return;
     }
     if (id === 'codebreaker') {
+      if (window.EpiphanyThinkLab && typeof window.EpiphanyThinkLab.recordGameStart === 'function') window.EpiphanyThinkLab.recordGameStart('codebreaker');
       if (window.EPIPHANY_CODEBREAKER && typeof window.EPIPHANY_CODEBREAKER.open === 'function') window.EPIPHANY_CODEBREAKER.open();
       else root.innerHTML = '<div class="tl-game-card"><h2>Codebreaker is loading</h2><p class="tl-game-instruction">Please return to Think Lab and open the game again.</p><button type="button" class="tl-back" data-think-home>Think Lab home</button></div>';
       return;

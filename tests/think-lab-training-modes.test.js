@@ -6,6 +6,7 @@ const vm = require('node:vm');
 const bank = require('../odd-one-out-bank.js');
 const soundMazeTools = require('../sound-maze-bank.js');
 const source = fs.readFileSync(path.join(__dirname, '..', 'think-lab.js'), 'utf8');
+const progressionSource = fs.readFileSync(path.join(__dirname, '..', 'think-lab-progression.js'), 'utf8');
 const connectionBankSource = fs.readFileSync(path.join(__dirname, '..', 'word-connections-bank.js'), 'utf8');
 const sentenceScrambleBankSource = fs.readFileSync(path.join(__dirname, '..', 'sentence-scramble-bank.js'), 'utf8');
 const wordForgeBankSource = fs.readFileSync(path.join(__dirname, '..', 'word-forge-bank.js'), 'utf8');
@@ -86,6 +87,7 @@ function createHarness(options = {}) {
     }
   };
   const document = {getElementById: id => id === 'think-lab-content' ? root : null};
+  vm.runInNewContext(progressionSource, {window,module:undefined}, {filename:'think-lab-progression.js',timeout:5000});
   vm.runInNewContext(source, {window,document,console,Math,SpeechSynthesisUtterance:function SpeechSynthesisUtterance(text){this.text=text;}}, {filename:'think-lab.js',timeout:10000});
   function click(selector, dataset = {}) {
     const element = {dataset};
@@ -325,4 +327,13 @@ test('Letter Grid has a dedicated Think Lab card, icon, and independent level pi
   assert.equal(harness.getLetterGridOpened(),1);
   assert.equal(harness.root.innerHTML,'letter-grid-level-picker');
   assert.doesNotMatch(harness.root.innerHTML,/How would you like to play/);
+});
+
+test('Think Lab game skill registration is sourced from the canonical progression registry', () => {
+  const harness = createHarness();
+  const registry = require('../think-lab-progression.js').getRegistry();
+  assert.equal(registry.length, 11);
+  for (const game of registry) assert.ok(game.id && game.skill);
+  assert.match(source, /progressionRegistry\\.getRegistry\\(\\)\\.reduce/);
+  assert.doesNotMatch(source, /const gameSkills = \\{odd:/);
 });

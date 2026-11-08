@@ -506,7 +506,26 @@
     const attempts=Number(bucket.attempts)||0;recordLearningActivity({attempts:1,minutes:attempts%5===1?1:0});save();
   }
   // Public bridge for Think Lab: keep its results inside the shared learner profile.
+  let thinkLabProgressStore = null;
+  function getThinkLabProgressStore() {
+    const progression = window.EPIPHANY_THINK_LAB_PROGRESSION;
+    if (!progression || typeof progression.createStore !== 'function') return null;
+    if (!thinkLabProgressStore) thinkLabProgressStore = progression.createStore(
+      () => state.thinkLabProgress,
+      value => { state.thinkLabProgress = value; save(); }
+    );
+    return thinkLabProgressStore;
+  }
+
   window.EpiphanyThinkLab = {
+    getGameRegistry() { const progression = window.EPIPHANY_THINK_LAB_PROGRESSION; return progression && typeof progression.getRegistry === 'function' ? progression.getRegistry() : []; },
+    recordGameStart(gameId, context = {}) { const store = getThinkLabProgressStore(); return store ? store.recordStart(gameId, context) : false; },
+    saveGameSnapshot(gameId, snapshot) { const store = getThinkLabProgressStore(); return store ? store.saveSnapshot(gameId, snapshot) : {saved:false,reason:'progression-unavailable'}; },
+    getGameSnapshot(gameId, expected = {}) { const store = getThinkLabProgressStore(); return store ? store.getSnapshot(gameId, expected) : null; },
+    clearGameSnapshot(gameId) { const store = getThinkLabProgressStore(); return store ? store.clearSnapshot(gameId) : false; },
+    recordGameCompletion(gameId, kind = 'round') { const store = getThinkLabProgressStore(); return store ? store.recordCompletion(gameId, kind) : false; },
+    getGameHistory() { const store = getThinkLabProgressStore(); return store ? store.getHistory() : {games:{},recentGames:[]}; },
+    getGameProgress(gameId) { const store = getThinkLabProgressStore(); return store ? store.getGameProgress(gameId) : null; },
     getCEFRLevel() {
       const level = currentLevel();
       return level && LEVELS.some(item => item.id === level.id) ? level.id : 'A1';
@@ -574,14 +593,19 @@
         policy};
     },
     getGameDifficulty(gameId, skill) {
-      const builtInSkills = {odd:'vocabulary', detective:'reading', translator:'conversation', maze:'listening', wordladder:'spelling'};
+      const progression = window.EPIPHANY_THINK_LAB_PROGRESSION;
+      const definition = progression && typeof progression.getGame === 'function' ? progression.getGame(gameId) : null;
+      const builtInSkills = {odd:'vocabulary', translator:'conversation', maze:'listening', wordladder:'spelling'};
       const registeredSkill = this._gameSkills && this._gameSkills[String(gameId || '').toLowerCase()];
-      return this.getDifficulty(skill || registeredSkill || builtInSkills[String(gameId || '').toLowerCase()] || 'vocabulary');
+      return this.getDifficulty(skill || registeredSkill || (definition && definition.skill) || builtInSkills[String(gameId || '').toLowerCase()] || 'vocabulary');
     },
     registerGame(gameId, skill) {
       const allowed = ['vocabulary','grammar','listening','conversation','reading','spelling'];
       const id = String(gameId || '').trim().toLowerCase().slice(0,80);
       if (!id || !allowed.includes(skill)) return false;
+      const progression = window.EPIPHANY_THINK_LAB_PROGRESSION;
+      const definition = progression && typeof progression.getGame === 'function' ? progression.getGame(id) : null;
+      if (progression && (!definition || definition.skill !== skill)) return false;
       // Registration is intentionally runtime-only; the policy and saved skill signals stay central.
       this._gameSkills = this._gameSkills || {};
       this._gameSkills[id] = skill;
@@ -593,7 +617,7 @@
         {id:'grammar',label:'Grammar',game:'translator',hint:'Choose accurate, natural sentence forms.'},
         {id:'listening',label:'Listening',game:'maze',hint:'Recognise spoken words and similar sounds.'},
         {id:'conversation',label:'Natural expression',game:'translator',hint:'Choose how people naturally express an idea.'},
-        {id:'reading',label:'Reading & inference',game:'detective',hint:'Connect details and infer what is most likely.'},
+        {id:'reading',label:'Reading & inference',game:null,hint:'Reading and inference signals are retained, but this skill is not assigned to one of the eleven Think Lab games.'},
         {id:'spelling',label:'Spelling & word logic',game:'wordladder',hint:'Notice letter patterns and transform words.'}
       ];
       const signals = state.adaptiveSignals && typeof state.adaptiveSignals === 'object' ? state.adaptiveSignals : {};

@@ -1,6 +1,6 @@
 # Think Lab Progression and Daily Challenge — Integration Plan
 
-**Status:** Audit complete; implementation not yet started.
+**Status:** Phase 1 implemented on `main`; CI verification pending.
 **Branch:** `main`
 **Scope:** Existing Think Lab games and their shared learner-progress integration.
 
@@ -30,6 +30,8 @@ The current review found these integration gaps:
 ## Implementation sequence
 
 ### 1. Progress contract and game registry
+
+**Implemented:** `think-lab-progression.js` now defines the canonical eleven-game registry, skill attribution, adapter and level metadata, and a versioned/size-bounded snapshot validator/store. The shared `EpiphanyThinkLab` bridge exposes launch history and snapshot APIs backed by the existing `epiphany-progress` profile. Think Lab registration now reads from the registry. Reading signals remain saved but no longer point to the retired `detective` game ID.
 
 Create one canonical registry for the currently playable Think Lab games, including stable ID, supported skill attribution, level model, and progress capabilities. Add a shared progress contract for recording game starts, meaningful progress, puzzle/round completion, and best-known position. Keep game-specific snapshots versioned and validate them before restoration.
 
