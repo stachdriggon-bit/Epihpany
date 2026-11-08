@@ -26,7 +26,7 @@
   const symbols = {choice:'◉',correction:'✎',typed:'Aa',ordering:'↔',matching:'⤳',map:'⌖',listening:'♫',speech:'◖',dynamic:'✦'};
   let engine = null, activities = [], selectedLevel = 'A1', currentDomain = null, currentSession = null, currentModeLabel = '', currentMode = '', currentQuestion = null, answered = false, lastEvent = null;
   let translated = false, choosingSectionMixed = false;
-  let speechRecognition = null, speechListening = false;
+  let speechRecognition = null, speechListening = false, speechErrorMessage = '';
   const levelNames = {A1:'Beginner',A2:'Elementary',B1:'Intermediate',B2:'Upper intermediate',C1:'Advanced',C2:'Proficient'};
   function activityLabel(id) {
     if (activityNames[id]) return activityNames[id];
@@ -99,7 +99,7 @@
     try {
       currentSession = engine.createSession(config);
       currentMode = mode;
-      currentModeLabel = options.label || (mode==='fluentia-mix'?'Fluentia Mix':mode==='section-mixed'?'Section Mixed':activityNames[options.activityId]||'Practice');
+      currentModeLabel = options.label || (mode==='fluentia-mix'?'Fluentia Mix':mode==='section-mixed'?'Section Mixed':activityLabel(options.activityId)||'Practice');
       nextQuestion();
     } catch (error) {
       root.innerHTML = '<div class="fluentia-empty"><b>Practice is not available yet.</b><p>'+esc(error.message||'No eligible questions were found for this level.')+'</p><button class="btn btn-ghost" type="button" data-back>Back to Fluentia</button></div>';
@@ -200,6 +200,7 @@
       return;
     }
     stopSpeechRecognition();
+    speechErrorMessage = '';
     try {
       speechRecognition = new Recognition();
       speechRecognition.lang = 'en-US';
@@ -222,15 +223,16 @@
             : event.error === 'no-speech'
               ? 'No speech was detected. Try again and speak a little closer to your microphone.'
               : 'Speech recognition failed ('+String(event.error||'unknown')+'). You can type your transcript instead.';
+        speechErrorMessage = reason;
         if (status) status.textContent = reason;
       };
       speechRecognition.onend = () => {
         speechListening = false;
-        if (start) start.disabled = false;
+        if (start) start.disabled = answered;
         if (stop) stop.disabled = true;
-        if (status && root.contains(status)) status.textContent = $('#fluentia-speech-transcript')?.value.trim()
+        if (status && root.contains(status)) status.textContent = speechErrorMessage || ($('#fluentia-speech-transcript')?.value.trim()
           ? 'Speech captured. Check the recognised words, edit them if needed, then submit.'
-          : 'No words were captured. Try again or type your transcript.';
+          : 'No words were captured. Try again or type your transcript.');
         speechRecognition = null;
       };
       speechRecognition.start();
