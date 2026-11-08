@@ -50,31 +50,47 @@
     const item=puzzle();
     if(hintStage===0){
       const words=item.cipher.split(' ');
-      for(let wordIndex=0;wordIndex<words.length;wordIndex++){
-        const word=words[wordIndex],positions=new Map();
+      const candidates=words.map((word,wordIndex)=>{
+        const positions=new Map();
         [...word].forEach((letter,index)=>positions.set(letter,[...(positions.get(letter)||[]),index+1]));
-        const repeated=[...positions.entries()].find(([letter,places])=>places.length>1);
-        if(repeated){
-          const pattern=[],seen=new Map();let next=1;
-          for(const letter of word){if(!seen.has(letter))seen.set(letter,next++);pattern.push(seen.get(letter));}
-          feedback='Pattern hint: word '+(wordIndex+1)+' follows '+pattern.join('-')+'. Positions '+repeated[1].join(' and ')+' must decode to the same letter.';
-          hintStage=1;renderPuzzle();return;
-        }
+        const repeated=[...positions.entries()].filter(([letter,places])=>places.length>1);
+        const unresolved=repeated.filter(([letter])=>!mapping[letter]);
+        return {word,wordIndex,repeated,unresolved,score:unresolved.reduce((sum,[,places])=>sum+places.length,0)};
+      }).filter(candidate=>candidate.repeated.length);
+      candidates.sort((a,b)=>b.score-a.score||b.word.length-a.word.length);
+      const best=candidates[0];
+      if(best){
+        const pattern=[],seen=new Map();let next=1;
+        for(const letter of best.word){if(!seen.has(letter))seen.set(letter,next++);pattern.push(seen.get(letter));}
+        const group=best.unresolved[0]||best.repeated[0];
+        const places=group[1].join(' and ');
+        const status=best.unresolved.length?'An unresolved repeated group':'A repeated group already present in your key';
+        feedback='Pattern hint: word '+(best.wordIndex+1)+' follows '+pattern.join('-')+'. '+status+' uses the same coded letter at positions '+places+'.';
+      }else{
+        feedback='Pattern hint: no word contains a repeated coded letter. Compare the same coded letters across different words; every occurrence must decode identically.';
       }
-      feedback='Pattern hint: no word contains a repeated letter. Compare the same coded letters wherever they appear in the message.';
       hintStage=1;renderPuzzle();return;
     }
     if(hintStage===1){
       const words=item.cipher.split(' '),locations=new Map();
       words.forEach((word,index)=>[...new Set(word)].forEach(letter=>{
-        if(!locations.has(letter))locations.set(letter,[]);
-        locations.get(letter).push(index+1);
+        if(!locations.has(letter))locations.set(letter,{words:new Set(),occurrences:0});
+        const record=locations.get(letter);record.words.add(index+1);record.occurrences+=[...word].filter(char=>char===letter).length;
       }));
-      const candidate=[...locations.entries()].find(([letter,wordIndexes])=>!mapping[letter]&&wordIndexes.length>1);
-      if(candidate){
-        feedback='Cross-word hint: coded letter '+candidate[0]+' appears in words '+candidate[1].join(' and ')+'. Those positions must share one decoded letter.';
+      const candidates=[...locations.entries()]
+        .filter(([letter,record])=>!mapping[letter]&&record.words.size>1)
+        .sort((a,b)=>b[1].words.size-a[1].words.size||b[1].occurrences-a[1].occurrences);
+      if(candidates.length){
+        const [letter,record]=candidates[0];
+        feedback='Cross-word hint: coded letter '+letter+' appears in words '+[...record.words].join(' and ')+' ('+record.occurrences+' positions total). These occurrences must share one decoded letter.';
       }else{
-        feedback='Cross-word hint: no unassigned coded letter links multiple words. Focus on the repeated-letter patterns within individual words.';
+        const fallback=[...locations.entries()].filter(([letter])=>!mapping[letter]).sort((a,b)=>b[1].occurrences-a[1].occurrences)[0];
+        if(fallback){
+          const [letter,record]=fallback;
+          feedback='Cross-word hint: no unresolved letter links separate words yet. Coded letter '+letter+' appears '+record.occurrences+' times in word'+(record.occurrences===1?' ':'s ')+[...record.words].join(', ')+'. Use its repeated positions as a frequency clue.';
+        }else{
+          feedback='Cross-word hint: every coded letter is already assigned. Review whether the same decoded letter appears consistently wherever its code repeats.';
+        }
       }
       hintStage=2;renderPuzzle();return;
     }
