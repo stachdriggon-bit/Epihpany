@@ -5,6 +5,7 @@ const path = require('node:path');
 const vm = require('node:vm');
 
 const source = fs.readFileSync(path.join(__dirname, '..', 'think-lab.js'), 'utf8');
+const progressionSource = fs.readFileSync(path.join(__dirname, '..', 'think-lab-progression.js'), 'utf8');
 const appSource = fs.readFileSync(path.join(__dirname, '..', 'app.js'), 'utf8');
 
 function harnessBankQuestion(harness, level, mode, arabicPrompt) {
@@ -20,6 +21,7 @@ function loadHarness(options = {}) {
     }
   };
   const document = { getElementById: id => id === 'think-lab-content' ? root : null };
+  vm.runInNewContext(progressionSource, {window,module:undefined}, {filename:'think-lab-progression.js',timeout:5000});
   const instrumented = source.replace(
     /  landing\(\);\s*\}\)\(\);\s*$/,
     '  window.__translatorBanks = translatorBanks;\n' +

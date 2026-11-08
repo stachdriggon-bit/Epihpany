@@ -5,6 +5,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const vm = require('node:vm');
 const thinkLabSource = fs.readFileSync(path.join(__dirname, '..', 'think-lab.js'), 'utf8');
+const progressionSource = fs.readFileSync(path.join(__dirname, '..', 'think-lab-progression.js'), 'utf8');
 const appSource = fs.readFileSync(path.join(__dirname, '..', 'app.js'), 'utf8');
 
 test('Odd One Out has independent banks for all six CEFR levels', () => {
@@ -61,6 +62,7 @@ function loadThinkLabHarness(cefrLevel = 'A1') {
     }
   };
   const document = {getElementById: id => id === 'think-lab-content' ? root : null};
+  vm.runInNewContext(progressionSource, {window,module:undefined}, {filename:'think-lab-progression.js',timeout:5000});
   const instrumented = thinkLabSource.replace(
     '  landing();\n})();',
     '  window.__oddPool = trainingMode => getRoundPool("odd", trainingMode);\n  landing();\n})();'
