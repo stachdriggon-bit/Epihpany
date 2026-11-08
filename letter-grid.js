@@ -98,7 +98,7 @@
   }
   function nextPuzzle(){
     if(!completed)return;
-    if(puzzleIndex+1>=list().length){progression()?.clearGameSnapshot?.('lettergrid');root.innerHTML='<div class="lg-shell"><section class="lg-panel lg-finish"><span class="lg-kicker">LEVEL COMPLETE</span><h2>Every word found.</h2><p>You completed all '+list().length+' '+cfg().label+' puzzles.</p><button type="button" class="tl-next" data-lg-levels>Choose another level</button><button type="button" class="tl-back" data-lg-home>Back to Think Lab</button></section></div>';return;}
+    if(puzzleIndex+1>=list().length){progression()?.clearGameSnapshot?.('lettergrid');progression()?.recordGameCompletion?.('lettergrid','session');root.innerHTML='<div class="lg-shell"><section class="lg-panel lg-finish"><span class="lg-kicker">LEVEL COMPLETE</span><h2>Every word found.</h2><p>You completed all '+list().length+' '+cfg().label+' puzzles.</p><button type="button" class="tl-next" data-lg-levels>Choose another level</button><button type="button" class="tl-back" data-lg-home>Back to Think Lab</button></section></div>';return;}
     puzzleIndex++;found=new Set();activeClue='';path=[];direction=null;hinted=new Set();feedback='';completed=false;renderPuzzle();
   }
   function startLevel(id){if(!levelReady(id))return;progression()?.clearGameSnapshot?.('lettergrid');progression()?.recordGameStart?.('lettergrid',{level:id});level=id;puzzleIndex=0;found=new Set();activeClue='';path=[];direction=null;hinted=new Set();feedback='';completed=false;renderPuzzle();}

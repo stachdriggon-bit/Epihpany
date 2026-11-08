@@ -730,6 +730,7 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
     const payload = {
       pool:activePool, score, roundMistakes, clueCount, oddHintStep, ladderPath:ladderPath.slice(),
       ladderWordNote, ladderMistakeRecorded, forgePlaced:forgePlaced.slice(), scramblePlaced:scramblePlaced.slice(),
+      connectionWords:mode==='connections'?[...root.querySelectorAll?.('[data-connection-tile]')||[]].filter(button=>connectionSelected.includes(Number(button.dataset.connectionTile))).map(button=>button.textContent.trim()):[],
       chainStepIndex, chainPath:chainPath.slice(), cefrLevel:mode==='maze'?selectedMazeCEFR:mode==='translator'?selectedTranslatorCEFR:null
     };
     const result = bridge.saveGameSnapshot?.(mode,{bankVersion:INTERNAL_SESSION_BANK_VERSION,level:selectedTrainingMode,trainingMode:selectedTrainingMode,position,payload});
@@ -783,6 +784,12 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
     restoringInternalSession=true;renderGame();restoringInternalSession=false;
     if(id==='forge')refreshPuzzleBoard('forge');
     if(id==='scramble')refreshPuzzleBoard('scramble');
+    if(id==='connections'&&Array.isArray(p.connectionWords)){
+      const tiles=[...root.querySelectorAll('[data-connection-tile]')];
+      connectionSelected=p.connectionWords.map(word=>tiles.findIndex(button=>button.textContent.trim()===word)).filter(value=>value>=0);
+      tiles.forEach(button=>{const selected=connectionSelected.includes(Number(button.dataset.connectionTile));button.classList.toggle('is-selected',selected);button.setAttribute('aria-pressed',String(selected));});
+      const count=root.querySelector('[data-connection-count]');if(count)count.textContent=connectionSelected.length+' / 4 selected';
+    }
     saveInternalProgress(index);return true;
   }
   function insightsMarkup() {
@@ -1063,7 +1070,7 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
   function refreshPuzzleBoard(kind) {
     const board=root.querySelector(kind==='forge'?'.tl-forge-board':'.tl-scramble-board');
     const pool=activePool||getRoundPool(mode),item=pool[index%pool.length];
-    if(board)board.outerHTML=kind==='forge'?forgeBoard(item):scrambleBoard(item);
+    if(board)board.outerHTML=kind==='forge'?forgeBoard(item):scrambleBoard(item);saveInternalProgress(index);
   }
   function placePuzzleTile(kind,tileIndex,slotIndex) {
     const placed=kind==='forge'?forgePlaced:scramblePlaced;
@@ -1270,10 +1277,10 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
     const differs=ladderDiffersByOne(previous,word),alreadyUsed=ladderPath.includes(word);
     const route=findLadderPath(word,item.goal,new Set([...ladderPath,word]));
     const allowed=ladderWordBank.has(word)&&differs&&!alreadyUsed&&!!route;
-    if(!allowed){roundMistakes++;const fb=root.querySelector('#tl-feedback');fb.hidden=false;fb.className='tl-feedback is-wrong';const reason=!differs?'Change exactly one letter from “'+esc(previous)+'”.':!ladderWordBank.has(word)?'That word is not in this game’s curated word bank yet. Try another common English word.':alreadyUsed?'You have already used that word. Choose a new step.':'That move closes off the route to the goal. Try a word that keeps a valid path open.';fb.innerHTML='<strong>Not quite—check the move.</strong><p>'+reason+'</p>'+(ladderWordNote.meaning?'<p><strong>'+esc(word)+':</strong> '+esc(ladderWordNote.meaning)+'</p>':'')+(roundMistakes>=2?'<p>'+esc(adaptiveHint('wordladder'))+'</p>':'')+(roundMistakes>=3&&nextLadderWord(item,ladderPath)&&ladderMeanings[nextLadderWord(item,ladderPath)]?'<aside class="tl-ladder-meaning tl-ladder-next-hint" role="note"><strong>Meaning hint for the next word</strong><p>'+esc(ladderMeanings[nextLadderWord(item,ladderPath)])+'</p></aside>':'');if(!ladderMistakeRecorded&&window.EpiphanyThinkLab){window.EpiphanyThinkLab.recordResult('spelling','word-ladder',false,false);ladderMistakeRecorded=true;}input.select();return;}
+    if(!allowed){roundMistakes++;const fb=root.querySelector('#tl-feedback');fb.hidden=false;fb.className='tl-feedback is-wrong';const reason=!differs?'Change exactly one letter from “'+esc(previous)+'”.':!ladderWordBank.has(word)?'That word is not in this game’s curated word bank yet. Try another common English word.':alreadyUsed?'You have already used that word. Choose a new step.':'That move closes off the route to the goal. Try a word that keeps a valid path open.';fb.innerHTML='<strong>Not quite—check the move.</strong><p>'+reason+'</p>'+(ladderWordNote.meaning?'<p><strong>'+esc(word)+':</strong> '+esc(ladderWordNote.meaning)+'</p>':'')+(roundMistakes>=2?'<p>'+esc(adaptiveHint('wordladder'))+'</p>':'')+(roundMistakes>=3&&nextLadderWord(item,ladderPath)&&ladderMeanings[nextLadderWord(item,ladderPath)]?'<aside class="tl-ladder-meaning tl-ladder-next-hint" role="note"><strong>Meaning hint for the next word</strong><p>'+esc(ladderMeanings[nextLadderWord(item,ladderPath)])+'</p></aside>':'');if(!ladderMistakeRecorded&&window.EpiphanyThinkLab){window.EpiphanyThinkLab.recordResult('spelling','word-ladder',false,false);ladderMistakeRecorded=true;}input.select();saveInternalProgress(index);return;}
     ladderPath.push(word);
     if(window.EpiphanyThinkLab)window.EpiphanyThinkLab.recordResult('spelling','word-ladder',true,word===item.goal&&index===(activePool||getRoundPool('wordladder')).length-1);
-    if(word===item.goal){score++;locked=true;roundMistakes=0;renderGame();const fb=root.querySelector('#tl-feedback');fb.hidden=false;fb.className='tl-feedback is-correct';fb.innerHTML='<strong>✓ Ladder complete!</strong><p>'+esc(item.explain)+'</p>';const next=root.querySelector('[data-think-next]');if(next)next.hidden=false;}
+    if(word===item.goal){score++;locked=true;roundMistakes=0;renderGame();const fb=root.querySelector('#tl-feedback');fb.hidden=false;fb.className='tl-feedback is-correct';fb.innerHTML='<strong>✓ Ladder complete!</strong><p>'+esc(item.explain)+'</p>';const next=root.querySelector('[data-think-next]');if(next)next.hidden=false;saveInternalProgress(index+1);}
     else{renderGame();const input2=root.querySelector('#tl-ladder-input');if(input2)input2.focus();}
   });
   root.addEventListener('dragstart', e => {
@@ -1317,11 +1324,11 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
       if(at>=0)connectionSelected.splice(at,1);else if(connectionSelected.length<4)connectionSelected.push(tileIndex);
       root.querySelectorAll('[data-connection-tile]').forEach(btn=>{const selected=connectionSelected.includes(Number(btn.dataset.connectionTile));btn.classList.toggle('is-selected',selected);btn.setAttribute('aria-pressed',String(selected));});
       const count=root.querySelector('[data-connection-count]');if(count)count.textContent=connectionSelected.length+' / 4 selected';
-      return;
+      saveInternalProgress(index);return;
     }
     if(e.target.closest('[data-connection-reset]')&&mode==='connections'&&!locked){
       connectionSelected=[];root.querySelectorAll('[data-connection-tile]').forEach(btn=>{btn.classList.remove('is-selected');btn.setAttribute('aria-pressed','false');});
-      const count=root.querySelector('[data-connection-count]');if(count)count.textContent='0 / 4 selected';return;
+      const count=root.querySelector('[data-connection-count]');if(count)count.textContent='0 / 4 selected';saveInternalProgress(index);return;
     }
     if(e.target.closest('[data-connection-check]')&&mode==='connections'&&!locked){
       const fb=root.querySelector('#tl-feedback'),pool=activePool||getRoundPool('connections'),item=pool[index%pool.length];
@@ -1334,12 +1341,12 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
         if(window.EpiphanyThinkLab)window.EpiphanyThinkLab.recordResult('vocabulary','connections',false,false);
         fb.hidden=false;fb.className='tl-feedback is-wrong';
         fb.innerHTML='<strong>Not this group yet.</strong><p>These four words do not form one of the reviewed groups. You can change your selection and try again.</p>'+(roundMistakes>=2?'<p>'+esc(adaptiveHint('connections'))+'</p>':'');
-        return;
+        saveInternalProgress(index);return;
       }
       locked=true;score++;root.querySelectorAll('[data-connection-tile],[data-connection-check],[data-connection-reset]').forEach(el=>el.disabled=true);
       if(window.EpiphanyThinkLab)window.EpiphanyThinkLab.recordResult('vocabulary','connections',true,index===pool.length-1);
       fb.hidden=false;fb.className='tl-feedback is-correct';fb.innerHTML='<strong>✓ Group found!</strong><p>'+esc(matched.explain)+'</p>';
-      const next=root.querySelector('[data-think-next]');if(next)next.hidden=false;return;
+      const next=root.querySelector('[data-think-next]');if(next)next.hidden=false;saveInternalProgress(index+1);return;
     }
     const forgeTile=e.target.closest('[data-forge-tile]');
     const forgeSlot=e.target.closest('[data-forge-slot]');
@@ -1365,23 +1372,23 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
         if(window.EpiphanyThinkLab)window.EpiphanyThinkLab.recordResult('spelling','word-forge',false,false);
         fb.hidden=false;fb.className='tl-feedback is-wrong';
         fb.innerHTML='<strong>Not forged yet—try again.</strong><p>Check the clue and the order of the letters. Every tile must be used exactly once.</p>'+(roundMistakes>=2&&activeDifficulty&&activeDifficulty.hintLevel>0?'<p>'+esc(adaptiveHint('forge'))+'</p>':'');
-        return;
+        saveInternalProgress(index);return;
       }
       score++;locked=true;if(window.EpiphanyThinkLab)window.EpiphanyThinkLab.recordResult('spelling','word-forge',true,index===pool.length-1);
       root.querySelectorAll('[data-forge-tile],[data-forge-slot],[data-forge-check],[data-forge-reset]').forEach(el=>el.disabled=true);
       fb.hidden=false;fb.className='tl-feedback is-correct';
       fb.innerHTML='<strong>✓ Word forged!</strong><p><b>'+esc(item.answerWord.toUpperCase())+'</b> — '+esc(item.explain)+'</p><p><strong>Skill:</strong> '+esc(item.skill)+'</p>';
-      const next=root.querySelector('[data-think-next]');if(next)next.hidden=false;return;
+      const next=root.querySelector('[data-think-next]');if(next)next.hidden=false;saveInternalProgress(index+1);return;
     }
     if(e.target.closest('[data-scramble-check]')){
       if(locked)return;
       const pool=activePool||getRoundPool('scramble'),item=pool[index%pool.length],fb=root.querySelector('#tl-feedback');
       const attempt=scramblePlaced.every(x=>x!==null)?scramblePlaced.map(i=>item.words[i]).join(' ').toLowerCase().replace(/[^\p{L}\p{N}\s]/gu,'').replace(/\s+/g,' ').trim():'';
       const accepted=[item.sentence,...(Array.isArray(item.acceptedAnswers)?item.acceptedAnswers:[])].map(value=>String(value||'').toLowerCase().replace(/[^\p{L}\p{N}\s]/gu,'').replace(/\s+/g,' ').trim());
-      if(!accepted.includes(attempt)){roundMistakes++;fb.hidden=false;fb.className='tl-feedback is-wrong';fb.innerHTML='<strong>Not quite—rearrange the word tiles.</strong><p>Check the subject and verb first, then place adverbs and time phrases where they sound natural.</p>'+(roundMistakes>=2?'<p>'+esc(adaptiveHint('scramble'))+'</p>':'');return;}
+      if(!accepted.includes(attempt)){roundMistakes++;fb.hidden=false;fb.className='tl-feedback is-wrong';fb.innerHTML='<strong>Not quite—rearrange the word tiles.</strong><p>Check the subject and verb first, then place adverbs and time phrases where they sound natural.</p>'+(roundMistakes>=2?'<p>'+esc(adaptiveHint('scramble'))+'</p>':'');saveInternalProgress(index);return;}
       score++;locked=true;if(window.EpiphanyThinkLab)window.EpiphanyThinkLab.recordResult('grammar','sentence-scramble',true,index===pool.length-1);
       root.querySelectorAll('[data-scramble-tile],[data-scramble-slot],[data-scramble-check],[data-scramble-reset]').forEach(el=>el.disabled=true);
-      fb.hidden=false;fb.className='tl-feedback is-correct';fb.innerHTML='<strong>✓ Sentence built!</strong><p>'+esc(item.sentence)+' — '+esc(item.explain)+'</p>';const next=root.querySelector('[data-think-next]');if(next)next.hidden=false;return;
+      fb.hidden=false;fb.className='tl-feedback is-correct';fb.innerHTML='<strong>✓ Sentence built!</strong><p>'+esc(item.sentence)+' — '+esc(item.explain)+'</p>';const next=root.querySelector('[data-think-next]');if(next)next.hidden=false;saveInternalProgress(index+1);return;
     }
 
     const resume=e.target.closest('[data-think-resume]');if(resume){if(!resumeInternalGame(resume.dataset.thinkResume))landing();return;}
@@ -1441,8 +1448,8 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
       landing();
       return;
     }
-    if(e.target.closest('[data-translator-hint]')&&mode==='translator'&&!locked){const pool=activePool||getRoundPool('translator'),item=pool[index%pool.length],hint=root.querySelector('[data-translator-hint-text]'),button=root.querySelector('[data-translator-hint]');if(hint){hint.hidden=false;hint.textContent=item.hint;}if(button){button.disabled=true;button.textContent='Hint revealed';}return;}
-    if(e.target.closest('[data-training-hint]')&&mode&&!locked){const hint=root.querySelector('[data-training-hint-text]'),button=root.querySelector('[data-training-hint]');if(hint){hint.hidden=false;hint.textContent=guidedHint(mode);}if(button){button.disabled=true;button.textContent='Hint revealed';}return;}
+    if(e.target.closest('[data-translator-hint]')&&mode==='translator'&&!locked){const pool=activePool||getRoundPool('translator'),item=pool[index%pool.length],hint=root.querySelector('[data-translator-hint-text]'),button=root.querySelector('[data-translator-hint]');if(hint){hint.hidden=false;hint.textContent=item.hint;}if(button){button.disabled=true;button.textContent='Hint revealed';}saveInternalProgress(index);return;}
+    if(e.target.closest('[data-training-hint]')&&mode&&!locked){const hint=root.querySelector('[data-training-hint-text]'),button=root.querySelector('[data-training-hint]');if(hint){hint.hidden=false;hint.textContent=guidedHint(mode);}if(button){button.disabled=true;button.textContent='Hint revealed';}saveInternalProgress(index);return;}
     if(e.target.closest('[data-think-clue]')){clueCount=Math.min((activePool || getRoundPool('detective'))[index%(activePool || getRoundPool('detective')).length].clues.length-1,clueCount+1);renderGame();return;}
     if(e.target.closest('[data-think-next]')){window.EpiphanySpeech?.stop?.();index++;oddHintStep=0;chainStepIndex=0;chainPath=[];connectionSelected=[];clueCount=0;roundMistakes=0;ladderPath=[];ladderWordNote=null;ladderMistakeRecorded=false;if(index>=(activePool || getRoundPool(mode)).length){const finished=mode;const totalRounds=(activePool || getRoundPool(finished)).length;window.EpiphanyThinkLab?.clearGameSnapshot?.(finished);window.EpiphanyThinkLab?.recordGameCompletion?.(finished,'session');root.innerHTML='<div class="tl-finish"><span class="tl-finish-mark">∴</span><span class="tl-eyebrow">CASE FILE CLOSED</span><h2>Good thinking.</h2><p>You solved <b>'+score+' of '+totalRounds+'</b> challenges. The goal is not only to get it right—it’s to understand why.</p><button type="button" class="tl-next" data-think-restart>Try another case ↗</button><button type="button" class="tl-back" data-think-back>Back to Think Lab</button></div>';mode=null;activePool=null;activeDifficulty=null;pickerStage='landing';pickerGameId=null;}else renderGame();return;}
     if(e.target.closest('[data-think-restart]')){landing();return;}
@@ -1456,7 +1463,7 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
         const fb=root.querySelector('#tl-feedback');fb.hidden=false;fb.className='tl-feedback is-wrong';
         const hint=roundMistakes>=2?adaptiveHint('chain'):'';
         fb.innerHTML='<strong>That link is possible, but not the strongest fit.</strong><p>Try a word that connects more directly to “'+esc(step.from)+'”.</p>'+(hint?'<p>'+esc(hint)+'</p>':'');
-        return;
+        saveInternalProgress(index);return;
       }
       chainPath.push(step.to);
       roundMistakes=0;
@@ -1467,7 +1474,7 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
         renderGame();
         const updated=root.querySelector('#tl-feedback');
         if(updated){updated.hidden=false;updated.className='tl-feedback is-correct';updated.innerHTML='<strong>✓ Link connected.</strong>'+explanation;}
-        return;
+        saveInternalProgress(index);return;
       }
       locked=true;score++;
       const pathElement=root.querySelector('.tl-chain-path');
@@ -1476,7 +1483,7 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
       if(window.EpiphanyThinkLab)window.EpiphanyThinkLab.recordResult('vocabulary','chain',true,index===pool.length-1);
       fb.hidden=false;fb.className='tl-feedback is-correct';
       fb.innerHTML='<strong>✓ Chain complete!</strong>'+steps.map((part,i)=>'<p><strong>Link '+(i+1)+':</strong> '+esc(part.from)+' → '+esc(part.to)+'. '+esc(part.explanation)+'</p>').join('');
-      const next=root.querySelector('[data-think-next]');if(next)next.hidden=false;return;
+      const next=root.querySelector('[data-think-next]');if(next)next.hidden=false;saveInternalProgress(index+1);return;
     }
     if(e.target.closest('[data-odd-hint]') && mode === 'odd' && !locked) {
       const pool=activePool||getRoundPool('odd'),item=pool[index%pool.length];
@@ -1489,7 +1496,7 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
       }
       const button=root.querySelector('[data-odd-hint]');
       if(button){button.textContent=oddHintStep>=2?'Hints revealed':'Reveal another hint';button.disabled=oddHintStep>=2;}
-      return;
+      saveInternalProgress(index);return;
     }
     const answer=e.target.closest('[data-think-answer]'); if(!answer||locked||!mode)return;
     const pool=activePool || getRoundPool(mode),item=pool[index%pool.length];

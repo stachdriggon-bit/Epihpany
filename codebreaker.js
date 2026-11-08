@@ -148,6 +148,7 @@
     if(!completed)return;
     if(index+1>=list().length){
       progression()?.clearGameSnapshot?.('codebreaker');
+      progression()?.recordGameCompletion?.('codebreaker','session');
       root.innerHTML='<div class="cb-shell"><section class="cb-panel cb-finish"><span class="cb-kicker">LEVEL COMPLETE</span><h2>Every signal decoded.</h2><p>You solved all '+list().length+' '+bank.levels[level].label+' messages. Each one was cracked at your own pace.</p><button type="button" class="tl-next" data-cb-levels>Choose another level</button><button type="button" class="tl-back" data-cb-home>Back to Think Lab</button></section></div>';
       return;
     }

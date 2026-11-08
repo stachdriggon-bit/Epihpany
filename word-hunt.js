@@ -162,6 +162,7 @@
   function startLevel(id) {
     if (!levelReady(id)) return;
     progression()?.clearGameSnapshot?.('wordhunt');
+      progression()?.recordGameCompletion?.('wordhunt','session');
     progression()?.recordGameStart?.('wordhunt',{level:id});
     level = id;
     puzzleIndex = 0;
