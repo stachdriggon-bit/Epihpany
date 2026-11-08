@@ -150,3 +150,12 @@ This resolves the previously reported 266/532/798 detached-node increase as a pr
 
 The earlier 266/532/798 figures below are retained as investigation history; they should not be treated as a current application leak finding.
 
+
+
+## Lazy prefetch intent correction — 2026-11-08
+
+The lazy-data navigation prefetch scheduler previously allowed multiple pending speculative section loads when a pointer or keyboard focus moved across several navigation items before the idle delay elapsed. These loads were optional and did not represent explicit learner navigation, so retaining all of those pending intents could fetch several unused feature groups.
+
+The scheduler now keeps only the latest pending navigation intent and cancels older scheduled timers/idle callbacks. A callback that was already queued when cancelled is also guarded by its task identity and cannot start a stale load. Explicit feature-open requests retain their existing user priority and are not cancelled by this speculative scheduling rule. A regression test covers rapid movement between sections and stale callback execution.
+
+This change limits unnecessary speculative work; it does not change feature content, rendering, or the order of explicitly requested feature loads. GitHub Actions remains the runtime validation source for the change.
