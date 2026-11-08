@@ -208,18 +208,9 @@
         textwiseSequenceBank: window.EPIPHANY_TEXTWISE_SEQUENCE_BANK || [],
         soundscapeDictationBank: window.EPIPHANY_SOUNDSCAPE_DICTATION_BANK || [],
         onProgress: event => {
-          const key = String(event.sourceActivityId || event.activityId) + ':' + String(event.itemId || '');
-          const previous = state.fluentiaReviewState || {};
-          const prior = previous[key] || {};
-          state.fluentiaReviewState = {
-            ...previous,
-            [key]: {
-              mastered: event.correct === true,
-              attempts: (Number(prior.attempts) || 0) + 1,
-              updatedAt: event.answeredAt || new Date().toISOString()
-            }
-          };
-          window.EPIPHANY_FLUENTIA_PROGRESS?.recordEvent(event);
+          const bridge = window.EPIPHANY_FLUENTIA_PROGRESS;
+          bridge?.recordReviewOutcome(event);
+          bridge?.recordEvent(event);
         },
         ...(extra || {})
       });
