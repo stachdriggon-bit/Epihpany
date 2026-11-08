@@ -29,7 +29,10 @@ test('Codebreaker opens its own four-level picker and never uses shared training
 
 test('starter key, letter assignment and exact message checking complete a puzzle',()=>{
   const h=harness();h.window.EPIPHANY_CODEBREAKER.open();h.click('[data-cb-level]',{cbLevel:'easy'});
-  assert.match(h.root.innerHTML,/ENCRYPTED MESSAGE/);\n  assert.match(h.root.innerHTML,/same coded letter always means the same English letter/);\n  assert.match(h.root.innerHTML,/Select a coded letter/);\n  assert.doesNotMatch(h.root.innerHTML,/cb-clue|Clue/);
+  assert.match(h.root.innerHTML,/ENCRYPTED MESSAGE/);
+  assert.match(h.root.innerHTML,/same coded letter always means the same English letter/);
+  assert.match(h.root.innerHTML,/Select a coded letter/);
+  assert.doesNotMatch(h.root.innerHTML,/cb-clue|Clue/);
   h.click('[data-cb-symbol]',{cbSymbol:'J'});h.click('[data-cb-plain]',{cbPlain:'L'});
   h.click('[data-cb-symbol]',{cbSymbol:'S'});h.click('[data-cb-plain]',{cbPlain:'E'});
   h.click('[data-cb-check]');
