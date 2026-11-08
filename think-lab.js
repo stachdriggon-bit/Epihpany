@@ -1162,21 +1162,21 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
     if (id === 'wordhunt') {
       if (window.EPIPHANY_WORD_HUNT && typeof window.EPIPHANY_WORD_HUNT.open === 'function') {
         if (window.EpiphanyThinkLab && typeof window.EpiphanyThinkLab.recordGameStart === 'function') window.EpiphanyThinkLab.recordGameStart('wordhunt');
-      if (window.EPIPHANY_WORD_HUNT && typeof window.EPIPHANY_WORD_HUNT.open === 'function') window.EPIPHANY_WORD_HUNT.open();
+        window.EPIPHANY_WORD_HUNT.open();
       } else root.innerHTML = '<div class="tl-game-card"><h2>Word Hunt is loading</h2><p class="tl-game-instruction">Please return to Think Lab and open the game again.</p><button type="button" class="tl-back" data-think-home>Think Lab home</button></div>';
       return;
     }
     if (id === 'lettergrid') {
       if (window.EPIPHANY_LETTER_GRID && typeof window.EPIPHANY_LETTER_GRID.open === 'function') {
         if (window.EpiphanyThinkLab && typeof window.EpiphanyThinkLab.recordGameStart === 'function') window.EpiphanyThinkLab.recordGameStart('lettergrid');
-      if (window.EPIPHANY_LETTER_GRID && typeof window.EPIPHANY_LETTER_GRID.open === 'function') window.EPIPHANY_LETTER_GRID.open();
+        window.EPIPHANY_LETTER_GRID.open();
       } else root.innerHTML = '<div class="tl-game-card"><h2>Letter Grid is loading</h2><p class="tl-game-instruction">Please return to Think Lab and open the game again.</p><button type="button" class="tl-back" data-think-home>Think Lab home</button></div>';
       return;
     }
     if (id === 'codebreaker') {
       if (window.EPIPHANY_CODEBREAKER && typeof window.EPIPHANY_CODEBREAKER.open === 'function') {
         if (window.EpiphanyThinkLab && typeof window.EpiphanyThinkLab.recordGameStart === 'function') window.EpiphanyThinkLab.recordGameStart('codebreaker');
-      if (window.EPIPHANY_CODEBREAKER && typeof window.EPIPHANY_CODEBREAKER.open === 'function') window.EPIPHANY_CODEBREAKER.open();
+        window.EPIPHANY_CODEBREAKER.open();
       } else root.innerHTML = '<div class="tl-game-card"><h2>Codebreaker is loading</h2><p class="tl-game-instruction">Please return to Think Lab and open the game again.</p><button type="button" class="tl-back" data-think-home>Think Lab home</button></div>';
       return;
     }

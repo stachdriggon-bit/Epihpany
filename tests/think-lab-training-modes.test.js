@@ -334,6 +334,6 @@ test('Think Lab game skill registration is sourced from the canonical progressio
   const registry = require('../think-lab-progression.js').getRegistry();
   assert.equal(registry.length, 11);
   for (const game of registry) assert.ok(game.id && game.skill);
-  assert.match(source, /progressionRegistry\\.getRegistry\\(\\)\\.reduce/);
-  assert.doesNotMatch(source, /const gameSkills = \\{odd:/);
+  assert.match(source, /progressionRegistry\.getRegistry\(\)\.reduce/);
+  assert.doesNotMatch(source, /const gameSkills = \{odd:/);
 });
