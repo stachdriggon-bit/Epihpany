@@ -7,7 +7,13 @@
     if(!allowed())return;
     $$('[data-dev-section]').forEach(button=>button.classList.toggle('is-active',button.dataset.devSection===name));
     $$('[data-dev-panel]').forEach(panel=>panel.classList.toggle('is-active',panel.dataset.devPanel===name));
-    if(name==='diagnostics')refreshDiagnostics();
+    if(name==='diagnostics'){
+      refreshDiagnostics();
+      loadDiagnostics().then(initDiagnostics).catch(()=>{
+        const status=$('#diagnostics-status');
+        if(status)status.textContent='Diagnostics could not load. Reopen this section to retry.';
+      });
+    }
   }
   function refreshEntry(){
     const button=$('#open-developer-mode');
@@ -27,7 +33,8 @@
   const developerStyles = [
     'asset-manager.css?v=asset-manager-20261030-1',
     'artwork-manager.css?v=artwork-manager-20261030-1',
-    'card-image-editor.css?v=card-image-editor-20261031-1'
+    'card-image-editor.css?v=card-image-editor-20261031-1',
+    'diagnostics.css?v=diagnostics-20261108-1'
   ];
   const developerScripts = [
     'asset-manager.js?v=asset-manager-20261030-1',
@@ -35,6 +42,63 @@
     'card-image-editor.js?v=card-image-editor-20261031-1'
   ];
   let developerToolsPromise = null;
+  let diagnosticsPromise = null;
+  let diagnosticsInitialized = false;
+
+  function loadDiagnostics(){
+    if(window.EPIPHANY_DIAGNOSTICS)return Promise.resolve();
+    if(!diagnosticsPromise){
+      diagnosticsPromise=loadScript('diagnostics.js?v=diagnostics-20261108-1')
+        .catch(error=>{diagnosticsPromise=null;throw error;});
+    }
+    return diagnosticsPromise;
+  }
+
+  function initDiagnostics(){
+    if(diagnosticsInitialized||!allowed())return;
+    const api=window.EPIPHANY_DIAGNOSTICS;
+    if(!api)return;
+    diagnosticsInitialized=true;
+    const set=(id,value)=>{const el=$('#'+id);if(el)el.textContent=String(value);};
+    const render=snapshot=>{
+      if(!allowed())return;
+      const events=snapshot.events||[];
+      set('diagnostics-event-count',events.length);
+      set('diagnostics-failures',events.filter(item=>item.type==='load_failed').length);
+      set('diagnostics-retries',events.filter(item=>item.type==='retry_started').length);
+      set('diagnostics-status',snapshot.active?'Recording locally · '+events.length+'/200 events':'Recording is off. Nothing new is being collected.');
+      const start=$('#diagnostics-start'),stop=$('#diagnostics-stop'),clear=$('#diagnostics-clear'),exportButton=$('#diagnostics-export');
+      if(start)start.disabled=snapshot.active;
+      if(stop)stop.disabled=!snapshot.active;
+      if(clear)clear.disabled=!events.length;
+      if(exportButton)exportButton.disabled=!events.length;
+      const log=$('#diagnostics-log');
+      if(!log)return;
+      log.replaceChildren();
+      if(!events.length){
+        const empty=document.createElement('div');empty.className='developer-diagnostics-empty';
+        empty.textContent='No events yet. Start a recording session, then use EPIPHANY normally.';
+        log.appendChild(empty);return;
+      }
+      events.slice(-60).reverse().forEach(item=>{
+        const row=document.createElement('div');row.className='developer-diagnostics-event';
+        const time=document.createElement('time');time.textContent=new Date(item.time).toLocaleTimeString();
+        const label=document.createElement('b');label.textContent=item.type.replace(/_/g,' ');
+        const detail=document.createElement('small');
+        detail.textContent=[item.group,item.asset,item.outcome,item.priority].filter(Boolean).join(' · ');
+        row.append(time,label,detail);log.appendChild(row);
+      });
+    };
+    api.subscribe(render);
+    $('#diagnostics-start')?.addEventListener('click',()=>{
+      if(!allowed())return;
+      if(!api.start())set('diagnostics-status','Developer authorization is required to start recording.');
+    });
+    $('#diagnostics-stop')?.addEventListener('click',()=>api.stop());
+    $('#diagnostics-clear')?.addEventListener('click',()=>api.clear());
+    $('#diagnostics-export')?.addEventListener('click',()=>api.exportJson());
+    render(api.getSnapshot());
+  }
   function loadStyle(href){
     if(document.querySelector('link[data-developer-resource="'+href+'"]'))return Promise.resolve();
     return new Promise((resolve,reject)=>{
@@ -96,7 +160,7 @@
     $$('[data-dev-section]').forEach(button=>button.addEventListener('click',()=>showSection(button.dataset.devSection)));
     $$('[data-dev-open]').forEach(button=>button.addEventListener('click',()=>showSection(button.dataset.devOpen)));
     document.addEventListener('keydown',event=>{if(event.key==='Escape'&&!$('#developer-overlay')?.hidden)close();});
-    document.addEventListener('epiphany-auth-changed',()=>{refreshEntry();if(!allowed()&&!$('#developer-overlay')?.hidden)close();});
+    document.addEventListener('epiphany-auth-changed',()=>{refreshEntry();if(!allowed()){window.EPIPHANY_DIAGNOSTICS?.stop?.();if(!$('#developer-overlay')?.hidden)close();}});
     window.addEventListener('storage',refreshEntry);
     refreshDiagnostics();
   }
