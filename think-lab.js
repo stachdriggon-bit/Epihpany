@@ -1161,7 +1161,6 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
   function start(id) {
     if (id === 'wordhunt') {
       if (window.EPIPHANY_WORD_HUNT && typeof window.EPIPHANY_WORD_HUNT.open === 'function') {
-        if (window.EpiphanyThinkLab && typeof window.EpiphanyThinkLab.recordGameStart === 'function') window.EpiphanyThinkLab.recordGameStart('wordhunt');
         window.EPIPHANY_WORD_HUNT.open();
       } else root.innerHTML = '<div class="tl-game-card"><h2>Word Hunt is loading</h2><p class="tl-game-instruction">Please return to Think Lab and open the game again.</p><button type="button" class="tl-back" data-think-home>Think Lab home</button></div>';
       return;

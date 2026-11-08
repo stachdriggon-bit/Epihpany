@@ -82,6 +82,7 @@
       (completed ? '<div class="wh-complete" role="status"><strong>✓ Grid cleared!</strong><p>You found all ' + item.words.length + ' words. Take a breath, then continue when you are ready.</p>' +
         '<button type="button" class="tl-next" data-wh-next>' + (puzzleIndex + 1 < config.count ? 'Next puzzle ↗' : 'Finish level ↗') + '</button></div>' : '') +
       '</section></div>';
+    saveProgress();
   }
   function selectCell(row, col) {
     if (completed) return;

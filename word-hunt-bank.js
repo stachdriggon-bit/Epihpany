@@ -76,5 +76,5 @@
     return {valid:errors.length === 0, counts, errors};
   }
   const puzzles = Object.freeze(Object.fromEntries(Object.entries(source.puzzles).map(([level, list]) => [level, Object.freeze(list.map(puzzle => Object.freeze({...puzzle, words:Object.freeze(puzzle.words), grid:Object.freeze(puzzle.grid)})))])));
-  window.EPIPHANY_WORD_HUNT_BANK = Object.freeze({levels:LEVELS, puzzles, validatePuzzle, validateBank, occurrences});
+  window.EPIPHANY_WORD_HUNT_BANK = Object.freeze({version:'word-hunt-bank-v1',levels:LEVELS, puzzles, validatePuzzle, validateBank, occurrences});
 })();
