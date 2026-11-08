@@ -320,6 +320,42 @@
       }));
     }
 
+    if (sources.reviewState && sources.games) {
+      const getReviewState = () => typeof sources.reviewState === 'function' ? sources.reviewState() : sources.reviewState;
+      const sourceAdapters = adapters.filter(adapter => !adapter.reviewOnly);
+      sourceAdapters.forEach(sourceAdapter => {
+        adapters.push(makeAdapter({
+          id: sourceAdapter.id + '-history-review',
+          domain: sourceAdapter.domain,
+          legacyId: sourceAdapter.id,
+          interactionType: sourceAdapter.interactionType,
+          skills: sourceAdapter.skills,
+          reviewOnly: true,
+          getSource: () => [],
+          getItems: ({level}) => {
+            const state = getReviewState() || {};
+            const history = Array.isArray(state.fluentiaHistory) ? state.fluentiaHistory : [];
+            const reviewState = state.fluentiaReviewState || {};
+            const failed = new Map();
+            history.forEach(event => {
+              if (!event || event.activityId !== sourceAdapter.id || event.level !== level || event.correct !== false) return;
+              const key = String(event.sourceActivityId || sourceAdapter.id) + ':' + String(event.itemId || '');
+              if (!event.itemId || reviewState[key]?.mastered === true) return;
+              failed.set(String(event.itemId), event);
+            });
+            if (!failed.size) return [];
+            return sourceAdapter.getItems({level}).filter(item => failed.has(String(item.id))).map(item => ({
+              ...item,
+              reviewErrorType: failed.get(String(item.id)).errorType || null,
+              reviewSourceActivityId: sourceAdapter.id
+            }));
+          },
+          evaluate: (item, answer) => sourceAdapter.evaluate(item, answer),
+          correctAnswer: item => sourceAdapter.getFeedback?.(item, null, null)?.correctAnswer
+        }));
+      });
+    }
+
     if (typeof sources.onProgress === 'function') adapters.forEach(adapter => { adapter.onProgress = sources.onProgress; });
     return adapters;
   }
