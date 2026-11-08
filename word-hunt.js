@@ -18,6 +18,20 @@
   }[ch]));
   const puzzleList = () => level ? bank.puzzles[level] || [] : [];
   const puzzle = () => puzzleList()[puzzleIndex] || null;
+  const BANK_VERSION = 'word-hunt-bank-v1';
+  function progression() { return window.EpiphanyThinkLab; }
+  function saveProgress() {
+    if (!level || !puzzle()) return;
+    progression()?.saveGameSnapshot?.('wordhunt', {bankVersion:BANK_VERSION,level,trainingMode:null,position:puzzleIndex,payload:{found:[...found],hintWord,completed,feedback}});
+  }
+  function resumeProgress() {
+    const snapshot = progression()?.getGameSnapshot?.('wordhunt',{bankVersion:BANK_VERSION});
+    if (!snapshot || !levelReady(snapshot.level) || snapshot.position >= (bank.puzzles[snapshot.level] || []).length) return false;
+    const item = bank.puzzles[snapshot.level][snapshot.position], payload = snapshot.payload;
+    if (!Array.isArray(payload.found) || payload.found.some(word => !item.words.includes(word)) || new Set(payload.found).size !== payload.found.length || (payload.hintWord != null && !item.words.includes(payload.hintWord)) || typeof payload.completed !== 'boolean' || payload.completed !== (payload.found.length === item.words.length)) return false;
+    level=snapshot.level; puzzleIndex=snapshot.position; found=new Set(payload.found); hintWord=payload.hintWord || null; startCell=null; completed=payload.completed; feedback=typeof payload.feedback==='string'?payload.feedback:'';
+    progression()?.recordGameStart?.('wordhunt',{level}); renderPuzzle(); return true;
+  }
   const levelReady = id => {
     const config = bank.levels[id], list = bank.puzzles[id] || [];
     return !!config && list.length === config.count && list.every(item => bank.validatePuzzle(item, id).valid);
@@ -32,11 +46,13 @@
   function renderLevels() {
     level = null;
     const status = bank.validateBank();
+    const saved = progression()?.getGameSnapshot?.('wordhunt',{bankVersion:BANK_VERSION});
+    const resumeMarkup = saved && levelReady(saved.level) && saved.position < (bank.puzzles[saved.level] || []).length ? '<button type="button" class="tl-next" data-wh-resume>Resume '+esc(bank.levels[saved.level].label)+' · Puzzle '+(saved.position+1)+' ↗</button>' : ''; 
     root.innerHTML = '<div class="wh-shell">' +
       '<div class="tl-game-head"><button class="tl-back" type="button" data-wh-home>← Think Lab home</button><span class="tl-eyebrow">WORD HUNT</span></div>' +
       '<section class="wh-panel"><div class="wh-kicker">FIND THE HIDDEN WORDS</div><h2>Choose your level</h2>' +
       '<p class="wh-intro">Find every word hidden in the letter grid. Tap the first and last letters of a word. No timer, and no penalty for trying again.</p>' +
-      '<div class="wh-level-grid">' + Object.entries(bank.levels).map(([id, config]) => {
+      resumeMarkup + '<div class="wh-level-grid">' + Object.entries(bank.levels).map(([id, config]) => {
         const ready = levelReady(id), count = (bank.puzzles[id] || []).length;
         return '<button type="button" class="wh-level-card" data-wh-level="' + id + '"' + (ready ? '' : ' disabled') + '>' +
           '<span class="wh-level-size">' + config.size + ' × ' + config.size + '</span><strong>' + config.label + '</strong>' +
@@ -145,6 +161,8 @@
   }
   function startLevel(id) {
     if (!levelReady(id)) return;
+    progression()?.clearGameSnapshot?.('wordhunt');
+    progression()?.recordGameStart?.('wordhunt',{level:id});
     level = id;
     puzzleIndex = 0;
     found = new Set();
@@ -158,6 +176,7 @@
     if (!completed) return;
     if (puzzleIndex + 1 >= puzzleList().length) {
       const total = puzzleList().length;
+      progression()?.clearGameSnapshot?.('wordhunt');
       root.innerHTML = '<div class="wh-shell"><section class="wh-panel wh-finish"><span class="wh-kicker">LEVEL COMPLETE</span><h2>Every word found.</h2>' +
         '<p>You completed all ' + total + ' ' + bank.levels[level].label + ' puzzles. There was no rush—just careful searching.</p>' +
         '<button type="button" class="tl-next" data-wh-levels>Choose another level</button><button type="button" class="tl-back" data-wh-home>Back to Think Lab</button></section></div>';
@@ -172,7 +191,7 @@
     renderPuzzle();
   }
   root.addEventListener('click', event => {
-    const target = event.target.closest('[data-wh-home],[data-wh-levels],[data-wh-level],[data-wh-cell],[data-wh-hint],[data-wh-clear],[data-wh-next]');
+    const target = event.target.closest('[data-wh-home],[data-wh-resume],[data-wh-levels],[data-wh-level],[data-wh-cell],[data-wh-hint],[data-wh-clear],[data-wh-next]');
     if (!target || !root.contains(target)) return;
     if (target.hasAttribute('data-wh-home')) {
       window.EpiphanySpeech?.stop?.();
@@ -182,6 +201,7 @@
       else root.dispatchEvent(new CustomEvent('epiphany:think-lab-home'));
       return;
     }
+    if (target.hasAttribute('data-wh-resume')) { if (!resumeProgress()) renderLevels(); return; }
     if (target.hasAttribute('data-wh-levels')) { renderLevels(); return; }
     if (target.hasAttribute('data-wh-level')) { startLevel(target.dataset.whLevel); return; }
     if (target.hasAttribute('data-wh-cell')) {
