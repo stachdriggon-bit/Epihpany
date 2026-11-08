@@ -111,9 +111,9 @@ function expandedFixture() {
   sources.practiceSamples = [{id:'PL-A1-01',level:'A1',text:'I would like water.'}];
   sources.textwiseSequenceBank = [{id:'TW-A1-01',level:'A1',title:'A notice',steps:['Read the notice.','Check the date.','Follow the instructions.']}];
   sources.soundMazeBank = {levels:{A1:{guided:[{id:'SM-A1-01',target:'cat',options:['cat','cut','kit','cot'],explain:'Cat has /æ/.'}],steady:[],challenge:[]}}};
-  sources.fluentiaHistory = [{eventId:'session-a:0',sessionId:'session-a',activityId:'soundscape-sound-maze',sourceActivityId:'sound-maze',itemId:'SM-A1-01',level:'A1',domain:'soundscape',correct:false,errorType:'sound-discrimination'}];
-  sources.fluentiaReviewState = {'sound-maze:SM-A1-01':{mastered:false,attempts:1}};
   sources.reviewState = {
+    fluentiaHistory:[{eventId:'session-a:0',sessionId:'session-a',activityId:'soundscape-sound-maze',sourceActivityId:'sound-maze',itemId:'SM-A1-01',level:'A1',domain:'soundscape',correct:false,errorType:'sound-discrimination'}],
+    fluentiaReviewState:{'sound-maze:SM-A1-01':{mastered:false,attempts:1}},
     review:[{word:'apple',meaning:'a round fruit',errors:3}],
     words:[['apple','a round fruit']],
     mistakeTrapErrors:{articles:2},
@@ -238,9 +238,9 @@ test('Your Review includes missed Fluentia items with their original interaction
   assert.equal(missed.sourceActivityId, 'sound-maze');
   assert.equal(missed.reviewErrorType, 'sound-discrimination');
   assert.equal(review.evaluate(missed, 'cat').correct, true);
-  sources.fluentiaReviewState['sound-maze:SM-A1-01'].mastered = true;
+  sources.reviewState.fluentiaReviewState['sound-maze:SM-A1-01'].mastered = true;
   assert.deepEqual(review.getItems({level:'A1'}), [], 'a correctly reviewed item should leave the active review queue');
-  sources.fluentiaReviewState['sound-maze:SM-A1-01'].mastered = false;
+  sources.reviewState.fluentiaReviewState['sound-maze:SM-A1-01'].mastered = false;
   assert.equal(review.getItems({level:'A1'}).length, 1, 'a later mistake should make the item eligible again');
 });
 
