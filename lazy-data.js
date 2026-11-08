@@ -7,7 +7,7 @@
     resonance: ['resonance.js?v=resonance-chapters-2-5'],
     world: ['data-world.js?v=e99f5bf6', 'data-world-sprites.js?v=6fff0f70'],
     arcade: ['practice-lab.js?v=practice-lab-lifecycle-20261108-1'],
-    fluentia: ['sound-maze-bank.js?v=sound-maze-contract-1', 'sound-maze-content.js?v=fluentia-source-registration-20261107-1', 'practice-lab.js?v=practice-lab-lifecycle-20261108-1'],
+    fluentia: ['sound-maze-bank.js?v=sound-maze-contract-1', 'sound-maze-content.js?v=fluentia-source-registration-20261107-1', 'fluentia-textwise-bank.js?v=textwise-independent-sequencing-20261107-1', 'fluentia-soundscape-bank.js?v=soundscape-dictation-20261107-1', 'practice-lab.js?v=practice-lab-lifecycle-20261108-1'],
     thinklab: ['sound-maze-bank.js?v=sound-maze-contract-1', 'sound-maze-content.js?v=fluentia-source-registration-20261107-1', 'odd-one-out-bank.js?v=odd-one-out-bank-2', 'word-connections-bank.js?v=word-connections-72-20261106-1', 'sentence-scramble-bank.js?v=sentence-scramble-72-20261106-1', 'word-forge-bank.js?v=word-forge-72-20261107-1', 'chain-reaction-bank.js?v=chain-reaction-72-20261107-1', 'word-hunt-bank.js?v=word-hunt-bank-20261107-4', 'think-lab.js?v=think-lab-eleven-games-20261108-1', 'word-hunt.js?v=word-hunt-engine-20261108-1', 'codebreaker-bank.js?v=codebreaker-bank-20261107-1', 'codebreaker.js?v=codebreaker-engine-20261107-1', 'letter-grid-bank.js?v=letter-grid-bank-20261107-2', 'letter-grid.js?v=letter-grid-engine-20261107-1'],
     languageDetective: ['language-detective-assessment-schemas.js?v=casebound-foundation-1', 'language-detective-investigation.js?v=casebound-investigation-model-1', 'language-detective-cefr-patterns.js?v=casebound-foundation-1', 'language-detective-assessment-engine.js?v=casebound-foundation-1', 'language-detective-assessment-fixtures.js?v=casebound-foundation-1', 'language-detective-ui.js?v=casebound-skin-2'],
     lifeskills: ['life-skills.js?v=life-skills-standalone-20261108-1'],
@@ -334,10 +334,15 @@
     job.promise = groups[group].reduce((chain, src) => chain.then(() => loadScript(src, job.priority)), Promise.resolve())
       .then(() => {
         if (group === 'fluentia') {
+          if (typeof window.EPIPHANY_FLUENTIA_REGISTER_SOURCES === 'function') {
+            window.EPIPHANY_FLUENTIA_REGISTER_SOURCES();
+          }
           const engine = window.EPIPHANY_FLUENTIA_SESSION_ENGINE;
           const ready = engine && typeof engine.getActivity === 'function' &&
             engine.getActivity('soundscape-sound-maze') &&
             engine.getActivity('soundscape-dictation') &&
+            engine.getActivity('textwise-sequence') &&
+            engine.getActivity('soundscape-dictation-bank') &&
             engine.getActivity('real-world-speaking-shadowing');
           if (!ready) {
             groups[group].forEach(src => {
