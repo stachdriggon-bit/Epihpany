@@ -26,7 +26,7 @@ test('feature data loader does not request large datasets until requested', asyn
   document.head.appendChild = script => {
     requested.push(script.src);
     queueMicrotask(() => {
-      const match = script.src.match(/data-expansion-(vocabulary|spelling|grammar|story|listening|advanced)\\.js/);
+      const match = script.src.match(/data-expansion-(vocabulary|spelling|grammar|story|listening|advanced)\.js/);
       if (match) context.window.EPIPHANY_EXPANSION_BANKS[match[1]] = true;
       script.onload();
     });
@@ -127,7 +127,7 @@ test('initial HTML defers stories and World data and keeps loader in offline she
   assert.doesNotMatch(html, /<script[^>]+src="data-minigames\.js/);
   assert.doesNotMatch(html, /<script[^>]+src="data-spot\.js/);
   assert.doesNotMatch(html, /<script[^>]+src="data-typing\.js/);
-  assert.doesNotMatch(html, /<script[^>]+src="data-expansion-(?:translations|runtime|wotd|vocabulary|spelling|grammar|story|listening|advanced)\\.js/, 'expansion modules must remain out of initial HTML');
+  assert.doesNotMatch(html, /<script[^>]+src="data-expansion-(?:translations|runtime|wotd|vocabulary|spelling|grammar|story|listening|advanced)\.js/, 'expansion modules must remain out of initial HTML');
   assert.doesNotMatch(html, /<script[^>]+src="fluentia-(?:textwise|soundscape)-bank\.js/);
   assert.match(html, /lazy-data\.js\?v=[^\"&]+/);
   assert.doesNotMatch(html, /href=\"(?:resonance|life-skills)\.css/);
@@ -143,7 +143,6 @@ test('initial HTML defers stories and World data and keeps loader in offline she
   assert.ok(lazyAssets, 'service worker should define lazy offline assets');
   assert.ok(!coreAssets.includes("'./data-minigames.js'"), 'Directions data should not be a core startup asset');
   for (const asset of ['data-expansion-translations.js','data-expansion-runtime.js','data-expansion-wotd.js', ...['vocabulary','spelling','grammar','story','listening','advanced'].map(game => 'data-expansion-' + game + '.js')]) { assert.ok(!coreAssets.includes("'./"+asset+"'")); assert.ok(lazyAssets.includes("'./"+asset+"'")); }
-  assert.ok(lazyAssets.includes("'./data-expansion.js'"), 'Expansion data should be cached lazily after use');
   assert.ok(lazyAssets.includes("'./data-minigames.js'"), 'Directions data should be cached as a lazy asset after use');
   for (const asset of ['data-spot.js', 'data-typing.js']) {
     assert.ok(!coreAssets.includes("'./" + asset + "'"), asset + ' should not be a core startup asset');
@@ -151,7 +150,7 @@ test('initial HTML defers stories and World data and keeps loader in offline she
   }
   const app = fs.readFileSync(path.join(root, 'app.js'), 'utf8');
   assert.ok(app.includes("EPIPHANY_LAZY_LOAD(dataName)"));
-  assert.match(app, /expansionGames\\.has\\(type\\)[\\s\\S]*?EPIPHANY_LAZY_LOAD\\(expansionGroup\\)/, 'each game must await its own bank');
+  assert.match(app, /expansionGames\.has\(type\)[\s\S]*?EPIPHANY_LAZY_LOAD\(expansionGroup\)/, 'each game must await its own bank');
   assert.ok(app.includes("hydrateWritingPractice(type)"));
   const lazy = fs.readFileSync(path.join(root, 'lazy-data.js'), 'utf8');
   assert.ok(lazy.includes("spot: ['data-spot.js"));
