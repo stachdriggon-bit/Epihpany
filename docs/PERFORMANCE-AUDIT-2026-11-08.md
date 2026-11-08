@@ -105,3 +105,10 @@ The cleanup is now handled by one delegated document-level `keydown` listener in
 ### More precise DOM-node diagnostics
 
 The runtime profile now records attached text-node count alongside element count. Chromium's CDP `Nodes` metric includes more than elements, so this helps distinguish growth in attached text nodes from growth in detached/otherwise retained nodes. It remains a diagnostic measure, not proof of a leak. The next post-fix CI profile should be compared against the previous baseline before drawing conclusions about the remaining DOM-node increase.
+
+
+## Detached-DOM retention profiling — follow-up
+
+The same-tab Chromium profile now installs a test-only `MutationObserver` before application scripts run. When elements are removed, it records weak references and compact element labels (tag, id, and a few classes). At each forced-GC checkpoint it dereferences those weak references and counts only nodes that remain alive **and** are still detached; nodes reinserted into the document are excluded.
+
+This is a diagnostic probe, not a production observer and not a strict leak assertion. The report includes the number of tracked removals, live detached elements, and the most common retained element labels at baseline and each checkpoint. A rising count with repeatable labels provides a starting point for targeted retaining-path analysis. Weak references can be affected by GC scheduling, and the probe is capped to avoid unbounded test overhead.

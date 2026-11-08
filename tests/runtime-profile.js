@@ -49,6 +49,27 @@ async function openAndCloseView(page, view) {
   }
 }
 
+async function readDetachedDomMetrics(page) {
+  return page.evaluate(async () => {
+    await Promise.resolve();
+    const probe = window.__epiphanyDetachedProbe;
+    if (!probe) return { tracked:0, liveDetached:0, samples:[] };
+    const live = [];
+    const counts = new Map();
+    for (const entry of probe.entries) {
+      const node = entry.ref.deref();
+      if (!node || node.isConnected) continue;
+      live.push(entry);
+      counts.set(entry.label, (counts.get(entry.label) || 0) + 1);
+    }
+    return {
+      tracked:probe.entries.length,
+      liveDetached:live.length,
+      samples:[...counts.entries()].sort((a,b)=>b[1]-a[1]).slice(0,15).map(([label,count])=>({label,count}))
+    };
+  });
+}
+
 async function readRuntimeMetrics(cdp, page) {
   const response = await cdp.send('Performance.getMetrics');
   const metrics = Object.fromEntries(response.metrics.map(item => [item.name, item.value]));
@@ -95,6 +116,25 @@ test('repeated feature entry and exit reports Chromium runtime lifecycle metrics
     const pageErrors = [];
     page.on('pageerror', error => pageErrors.push(error.message));
     await page.addInitScript(() => {
+      const probe = window.__epiphanyDetachedProbe = { entries:[], limit:50000 };
+      const label = node => {
+        const tag = String(node.tagName || node.nodeName || 'node').toLowerCase();
+        const id = node.id ? '#' + node.id : '';
+        const classes = typeof node.className === 'string' && node.className.trim()
+          ? '.' + node.className.trim().split(/\\s+/).slice(0,3).join('.') : '';
+        return tag + id + classes;
+      };
+      const remember = node => {
+        if (!node || probe.entries.length >= probe.limit) return;
+        if (node.nodeType === 1) probe.entries.push({ref:new WeakRef(node),label:label(node)});
+        for (const child of node.childNodes || []) remember(child);
+      };
+      const observer = new MutationObserver(records => {
+        for (const record of records) for (const removed of record.removedNodes) remember(removed);
+      });
+      observer.observe(document, {childList:true,subtree:true});
+    });
+    await page.addInitScript(() => {
       localStorage.setItem('epiphany-progress', JSON.stringify({ placementDone:true, assessedLevel:'A1', level:'A1' }));
       localStorage.setItem('epiphany-landing-seen', '1');
     });
@@ -111,7 +151,8 @@ test('repeated feature entry and exit reports Chromium runtime lifecycle metrics
     }
     await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
     await cdp.send('HeapProfiler.collectGarbage');
-    const samples = [{ phase:'warm-baseline', ...(await readRuntimeMetrics(cdp, page)) }];
+    await page.evaluate(() => Promise.resolve());
+    const samples = [{ phase:'warm-baseline', ...(await readRuntimeMetrics(cdp, page)), detachedDom:await readDetachedDomMetrics(page) }];
 
     // Repeated same-tab navigation exercises teardown and re-entry without creating fresh documents.
     for (let cycle = 1; cycle <= 6; cycle++) {
@@ -121,7 +162,7 @@ test('repeated feature entry and exit reports Chromium runtime lifecycle metrics
       if (cycle % 2 === 0) {
         await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
         await cdp.send('HeapProfiler.collectGarbage');
-        samples.push({ phase:'after-cycle-' + cycle, ...(await readRuntimeMetrics(cdp, page)) });
+        samples.push({ phase:'after-cycle-' + cycle, ...(await readRuntimeMetrics(cdp, page)), detachedDom:await readDetachedDomMetrics(page) });
       }
     }
 
@@ -134,7 +175,7 @@ test('repeated feature entry and exit reports Chromium runtime lifecycle metrics
     const report = {
       cycles:6,
       featureEntries:21,
-      note:'Diagnostic measurements only; no fixed leak threshold is asserted because CI runner memory and browser GC are variable.',
+      note:'Diagnostic measurements only; WeakRef samples count removed elements still alive after forced GC and exclude nodes reattached to the document. No fixed leak threshold is asserted.',
       baseline,
       final,
       delta:{
@@ -142,7 +183,8 @@ test('repeated feature entry and exit reports Chromium runtime lifecycle metrics
         domNodes:final.domNodes - baseline.domNodes,
         jsEventListeners:final.jsEventListeners - baseline.jsEventListeners,
         elementCount:final.elementCount - baseline.elementCount,
-        textNodeCount:final.textNodeCount - baseline.textNodeCount
+        textNodeCount:final.textNodeCount - baseline.textNodeCount,
+        liveDetachedDom:final.detachedDom.liveDetached - baseline.detachedDom.liveDetached
       },
       samples
     };
