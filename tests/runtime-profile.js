@@ -41,6 +41,20 @@ async function openAndCloseView(page, view) {
       const game = document.querySelector('#world-game');
       return !game || game.hidden;
     }, null, { timeout:5000 });
+    const focusCheck = await page.evaluate(() => {
+      const root = document.querySelector('#world-game');
+      const active = document.activeElement;
+      const retainedInsideWorld = !!(root && active && root.contains(active));
+      const result = {
+        retainedInsideWorld,
+        tag:active?.tagName?.toLowerCase() || null,
+        id:active?.id || null,
+        classes:typeof active?.className === 'string' ? active.className : ''
+      };
+      if (retainedInsideWorld && typeof active.blur === 'function') active.blur();
+      return result;
+    });
+    (page.__worldExitFocusChecks ||= []).push(focusCheck);
   } else {
     await page.waitForSelector('#' + view + '-view.is-active', { timeout:8000 });
     await page.waitForTimeout(80);
@@ -224,6 +238,7 @@ test('repeated feature entry and exit reports Chromium runtime lifecycle metrics
       final,
       probeShutdown,
       worldRootObserverDisconnected,
+      worldExitFocusChecks:page.__worldExitFocusChecks || [],
       delta:{
         jsHeapUsedMB:Math.round((final.jsHeapUsedMB - baseline.jsHeapUsedMB) * 100) / 100,
         domNodes:final.domNodes - baseline.domNodes,
