@@ -44,3 +44,12 @@ test('diagnostics assets load only after an authorized developer opens the diagn
   assert.match(developerMode, /diagnostics\.js\?v=/);
   assert.match(developerMode, /window\.EPIPHANY_DIAGNOSTICS/);
 });
+
+
+test('diagnostics panel exposes local recording, filtering, and export controls', () => {
+  assert.match(html, /id="diagnostics-start"/);
+  assert.match(html, /id="diagnostics-stop"/);
+  assert.match(html, /id="diagnostics-filter"/);
+  assert.match(html, /id="diagnostics-export"/);
+  assert.match(html, /maximum 200 events/);
+});
