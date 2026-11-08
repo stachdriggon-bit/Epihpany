@@ -279,7 +279,7 @@
     if(event.target.closest('[data-back]')){currentSession=null;renderHome();return;}
     if(event.target.closest('[data-exit]')){leaveSession();return;}
     const mode=event.target.closest('[data-mode]');
-    if(mode){if(mode.dataset.mode==='section-mixed'){choosingSectionMixed=true;root.innerHTML='<button type="button" class="fluentia-back" data-back>← All Fluentia</button><div class="fluentia-section-heading"><div><h2>Choose a domain for Section Mixed</h2><p>Your session will stay within that domain.</p></div></div><div class="fluentia-domain-grid">'+domainDefs.map(domain=>domainMarkup(domain,activities.filter(a=>a.domain===domain.id&&!a.reviewOnly&&a.items.length).length)).join('')+'</div>';return;}startSession('fluentia-mix');return;}
+    if(mode){if(mode.dataset.mode==='section-mixed'){if(currentDomain){startSession('section-mixed',{domain:currentDomain});return;}choosingSectionMixed=true;root.innerHTML='<button type="button" class="fluentia-back" data-back>← All Fluentia</button><div class="fluentia-section-heading"><div><h2>Choose a domain for Section Mixed</h2><p>Your session will stay within that domain.</p></div></div><div class="fluentia-domain-grid">'+domainDefs.map(domain=>domainMarkup(domain,activities.filter(a=>a.domain===domain.id&&!a.reviewOnly&&a.items.length).length)).join('')+'</div>';return;}startSession('fluentia-mix');return;}
     const activity=event.target.closest('[data-activity]');
     if(activity){startSession('single',{activityId:activity.dataset.activity,label:activityNames[activity.dataset.activity]||'Practice'});return;}
     const answer=event.target.closest('[data-answer-index]');
