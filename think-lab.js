@@ -727,11 +727,17 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
     const bridge = window.EpiphanyThinkLab, registry = window.EPIPHANY_THINK_LAB_PROGRESSION;
     const definition = registry && registry.getGame ? registry.getGame(mode) : null;
     if (restoringInternalSession || !bridge || !definition || definition.adapter !== 'think-lab' || !Array.isArray(activePool) || !activePool.length) return false;
+    const nextItem=position>index?activePool[position]:null;
     const payload = {
-      pool:activePool, score, roundMistakes, clueCount, oddHintStep, ladderPath:ladderPath.slice(),
-      ladderWordNote, ladderMistakeRecorded, forgePlaced:forgePlaced.slice(), scramblePlaced:scramblePlaced.slice(),
-      connectionWords:mode==='connections'?[...root.querySelectorAll?.('[data-connection-tile]')||[]].filter(button=>connectionSelected.includes(Number(button.dataset.connectionTile))).map(button=>button.textContent.trim()):[],
-      chainStepIndex, chainPath:chainPath.slice(), cefrLevel:mode==='maze'?selectedMazeCEFR:mode==='translator'?selectedTranslatorCEFR:null
+      pool:activePool, score,
+      roundMistakes:nextItem?0:roundMistakes, clueCount:nextItem?0:clueCount, oddHintStep:nextItem?0:oddHintStep,
+      ladderPath:nextItem?[]:ladderPath.slice(), ladderWordNote:nextItem?null:ladderWordNote,
+      ladderMistakeRecorded:nextItem?false:ladderMistakeRecorded,
+      forgePlaced:nextItem&&mode==='forge'?Array((nextItem.answerWord||'').length).fill(null):forgePlaced.slice(),
+      scramblePlaced:nextItem&&mode==='scramble'?Array((nextItem.words||[]).length).fill(null):scramblePlaced.slice(),
+      connectionWords:mode==='connections'&&!nextItem?[...root.querySelectorAll?.('[data-connection-tile]')||[]].filter(button=>connectionSelected.includes(Number(button.dataset.connectionTile))).map(button=>button.textContent.trim()):[],
+      chainStepIndex:nextItem?0:chainStepIndex, chainPath:nextItem?[]:chainPath.slice(),
+      cefrLevel:mode==='maze'?selectedMazeCEFR:mode==='translator'?selectedTranslatorCEFR:null
     };
     const result = bridge.saveGameSnapshot?.(mode,{bankVersion:INTERNAL_SESSION_BANK_VERSION,level:selectedTrainingMode,trainingMode:selectedTrainingMode,position,payload});
     return !!(result && result.saved);
