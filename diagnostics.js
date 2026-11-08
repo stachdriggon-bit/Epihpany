@@ -65,6 +65,12 @@
 
   function record(type, details = {}) {
     if (!active || !ALLOWED_TYPES.has(type)) return false;
+    if (!authorized()) {
+      active = false;
+      sendWorkerState('EPIPHANY_DIAGNOSTICS_STOP');
+      publish();
+      return false;
+    }
     try {
       const event = Object.freeze({
         id: nextId++,
