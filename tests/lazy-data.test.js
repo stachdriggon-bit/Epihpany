@@ -21,7 +21,8 @@ test('feature data loader does not request large datasets until requested', asyn
     }
   };
   const merged = [];
-  const context = { window: { EPIPHANY_MERGE_AR_TRANSLATIONS: () => merged.push(true), EPIPHANY_FLUENTIA_SESSION_ENGINE: { getActivity: () => ({}) } }, document, Promise, Map, Set, Object, Error };
+  let fluentiaRegistrations = 0;
+  const context = { window: { EPIPHANY_MERGE_AR_TRANSLATIONS: () => merged.push(true), EPIPHANY_FLUENTIA_REGISTER_SOURCES: () => { fluentiaRegistrations++; }, EPIPHANY_FLUENTIA_SESSION_ENGINE: { getActivity: () => ({}) } }, document, Promise, Map, Set, Object, Error };
   const source = fs.readFileSync(path.join(root, 'lazy-data.js'), 'utf8');
   assert.doesNotThrow(() => new vm.Script(source, { filename: 'lazy-data.js' }));
   vm.runInNewContext(source, context);
@@ -40,13 +41,16 @@ test('feature data loader does not request large datasets until requested', asyn
   ]);
   assert.ok(requested.slice(2).every(src => /\?v=.+/.test(src)));
   await context.window.EPIPHANY_LAZY_LOAD('fluentia');
-  assert.deepEqual(requested.slice(4).map(src => src.split('?')[0]), ['sound-maze-bank.js','sound-maze-content.js','practice-lab.js'], 'Fluentia should load only its own optional content sources');
+  assert.deepEqual(requested.slice(4).map(src => src.split('?')[0]), ['sound-maze-bank.js','sound-maze-content.js','fluentia-textwise-bank.js','fluentia-soundscape-bank.js','practice-lab.js'], 'Fluentia should load its optional content sources only when opened');
+  assert.equal(fluentiaRegistrations, 1, 'Fluentia should register its banks after every lazy source has loaded');
   await context.window.EPIPHANY_LAZY_LOAD('arcade');
   await context.window.EPIPHANY_LAZY_LOAD('thinklab');
   await context.window.EPIPHANY_LAZY_LOAD('lifeskills');
   assert.deepEqual(requested.slice(4).map(src => src.split('?')[0]), [
     'sound-maze-bank.js',
     'sound-maze-content.js',
+    'fluentia-textwise-bank.js',
+    'fluentia-soundscape-bank.js',
     'practice-lab.js',
     'odd-one-out-bank.js',
     'word-connections-bank.js',
@@ -64,14 +68,14 @@ test('feature data loader does not request large datasets until requested', asyn
   ]);
   assert.ok(requested.slice(4).every(src => /\?v=.+/.test(src)));
   await context.window.EPIPHANY_LAZY_LOAD('arabic');
-  assert.deepEqual(requested.slice(20).map(src => src.split('?')[0]), [
+  assert.deepEqual(requested.slice(22).map(src => src.split('?')[0]), [
     'data-translation-ar.js',
     'data-translation-ar-fill.js'
   ]);
   assert.ok(requested.slice(20).every(src => /\?v=.+/.test(src)));
   assert.deepEqual(merged, [true]);
   await context.window.EPIPHANY_LAZY_LOAD('chronicle');
-  assert.deepEqual(requested.slice(22).map(src => src.split('?')[0]), ['data-world-registry.js', 'data-world-events.js']);
+  assert.deepEqual(requested.slice(24).map(src => src.split('?')[0]), ['data-world-registry.js', 'data-world-events.js']);
   assert.ok(requested.slice(22).every(src => /\?v=.+/.test(src)));
 });
 
@@ -83,6 +87,7 @@ test('initial HTML defers stories and World data and keeps loader in offline she
   assert.match(fs.readFileSync(path.join(root, 'lazy-data.js'), 'utf8'), /data-stories-expansion\.js/);
   assert.doesNotMatch(html, /<script[^>]+src="data-stories\.js/);
   assert.doesNotMatch(html, /<script[^>]+src="data-world(?:-sprites)?\.js/);
+  assert.doesNotMatch(html, /<script[^>]+src="fluentia-(?:textwise|soundscape)-bank\.js/);
   assert.match(html, /lazy-data\.js\?v=[^\"&]+/);
   assert.doesNotMatch(html, /href=\"(?:resonance|life-skills)\.css/);
   assert.match(fs.readFileSync(path.join(root, 'lazy-data.js'), 'utf8'), /EPIPHANY_LAZY_STYLE/);
@@ -95,14 +100,14 @@ test('initial HTML defers stories and World data and keeps loader in offline she
   const lazyAssets = sw.match(/const LAZY_ASSETS = \[([^\]]*)\];/)?.[1] || '';
   assert.ok(coreAssets, 'service worker should define core offline assets');
   assert.ok(lazyAssets, 'service worker should define lazy offline assets');
-  for (const asset of ['data-stories.js', 'data-world.js', 'data-world-sprites.js', 'sound-maze-bank.js', 'sound-maze-content.js', 'odd-one-out-bank.js', 'sentence-scramble-bank.js', 'word-forge-bank.js', 'chain-reaction-bank.js', 'think-lab.js', 'word-hunt-bank.js', 'word-hunt.js', 'codebreaker-bank.js', 'codebreaker.js', 'letter-grid-bank.js', 'letter-grid.js', 'practice-lab.js', 'life-skills.js', 'data-translation-ar.js', 'data-translation-ar-fill.js']) {
+  for (const asset of ['data-stories.js', 'data-world.js', 'data-world-sprites.js', 'fluentia-textwise-bank.js', 'fluentia-soundscape-bank.js', 'sound-maze-bank.js', 'sound-maze-content.js', 'odd-one-out-bank.js', 'sentence-scramble-bank.js', 'word-forge-bank.js', 'chain-reaction-bank.js', 'think-lab.js', 'word-hunt-bank.js', 'word-hunt.js', 'codebreaker-bank.js', 'codebreaker.js', 'letter-grid-bank.js', 'letter-grid.js', 'practice-lab.js', 'life-skills.js', 'data-translation-ar.js', 'data-translation-ar-fill.js']) {
     assert.ok(!coreAssets.includes("'./" + asset + "'"), asset + ' should not be a core startup asset');
   }
   for (const asset of ['resonance.css', 'life-skills.css', 'word-hunt.css', 'codebreaker.css', 'letter-grid.css']) {
     assert.ok(!coreAssets.includes("'./" + asset + "'"), asset + ' must not be part of the core cache');
     assert.ok(lazyAssets.includes("'./" + asset + "'"), asset + ' should be cached as a lazy offline asset');
   }
-  for (const asset of ['data-stories.js', 'data-world.js', 'data-world-registry.js', 'data-world-events.js', 'data-world-sprites.js', 'sound-maze-bank.js', 'sound-maze-content.js', 'odd-one-out-bank.js', 'sentence-scramble-bank.js', 'word-forge-bank.js', 'chain-reaction-bank.js', 'think-lab.js', 'word-hunt-bank.js', 'word-hunt.js', 'codebreaker-bank.js', 'codebreaker.js', 'letter-grid-bank.js', 'letter-grid.js', 'practice-lab.js', 'life-skills.js', 'language-detective-investigation.js']) {
+  for (const asset of ['fluentia-textwise-bank.js', 'fluentia-soundscape-bank.js', 'data-stories.js', 'data-world.js', 'data-world-registry.js', 'data-world-events.js', 'data-world-sprites.js', 'sound-maze-bank.js', 'sound-maze-content.js', 'odd-one-out-bank.js', 'sentence-scramble-bank.js', 'word-forge-bank.js', 'chain-reaction-bank.js', 'think-lab.js', 'word-hunt-bank.js', 'word-hunt.js', 'codebreaker-bank.js', 'codebreaker.js', 'letter-grid-bank.js', 'letter-grid.js', 'practice-lab.js', 'life-skills.js', 'language-detective-investigation.js']) {
     assert.ok(lazyAssets.includes("'./" + asset + "'"), asset + ' should be cached as a lazy offline asset');
   }
   assert.match(sw, /const cached = await cache\.match\(request\);\s*if \(cached\) return cached;/);
