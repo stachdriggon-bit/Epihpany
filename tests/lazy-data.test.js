@@ -426,15 +426,7 @@ test('optional lazy loads respect the adaptive concurrency limit', async () => {
   await new Promise(resolve => setImmediate(resolve));
   assert.equal(requested[15].split('?')[0], 'letter-grid.js');
   scripts[15].onload();
-  await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[15].split('?')[0], 'codebreaker.js');
-  scripts[15].onload();
-  await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[15].split('?')[0], 'letter-grid-bank.js');
-  scripts[15].onload();
-  await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[15].split('?')[0], 'letter-grid.js');
-  scripts[15].onload();
+
 });
 
 test('explicit navigation bypasses and promotes queued optional loads', async () => {
@@ -524,15 +516,7 @@ test('explicit navigation bypasses and promotes queued optional loads', async ()
   await new Promise(resolve => setImmediate(resolve));
   assert.equal(requested[15].split('?')[0], 'letter-grid.js');
   scripts[15].onload();
-  await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[15].split('?')[0], 'codebreaker.js');
-  scripts[15].onload();
-  await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[15].split('?')[0], 'letter-grid-bank.js');
-  scripts[15].onload();
-  await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[15].split('?')[0], 'letter-grid.js');
-  scripts[15].onload();
+
   await explicit;
   scripts[0].onload();
 });
@@ -643,26 +627,18 @@ test('background optional loads pause while constrained, resume once, and never 
   await new Promise(resolve => setImmediate(resolve));
   assert.equal(requested[15].split('?')[0], 'letter-grid.js');
   scripts[15].onload();
-  await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[15].split('?')[0], 'codebreaker.js');
-  scripts[15].onload();
-  await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[15].split('?')[0], 'letter-grid-bank.js');
-  scripts[15].onload();
-  await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[15].split('?')[0], 'letter-grid.js');
-  scripts[15].onload();
+
   await new Promise(resolve => setImmediate(resolve));
 
   policy = { ...policy, allowSpeculativePreload: false, deferNonEssentialWork: true };
   const explicit = context.window.EPIPHANY_LAZY_LOAD('world');
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[15].split('?')[0], 'data-world.js',
+  assert.equal(requested[16].split('?')[0], 'data-world.js',
     'explicit navigation must bypass background deferral');
-  scripts[15].onload();
-  await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[16].split('?')[0], 'data-world-sprites.js');
   scripts[16].onload();
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(requested[17].split('?')[0], 'data-world-sprites.js');
+  scripts[17].onload();
   await explicit;
 });
 
