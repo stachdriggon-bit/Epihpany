@@ -12,6 +12,7 @@
     languageDetective: ['language-detective-assessment-schemas.js?v=casebound-foundation-1', 'language-detective-investigation.js?v=casebound-investigation-model-1', 'language-detective-cefr-patterns.js?v=casebound-foundation-1', 'language-detective-assessment-engine.js?v=casebound-foundation-1', 'language-detective-assessment-fixtures.js?v=casebound-foundation-1', 'language-detective-ui.js?v=casebound-skin-2'],
     lifeskills: ['life-skills.js?v=life-skills-standalone-20261108-1'],
     directions: ['data-minigames.js?v=directions-bank-lazy-20261108-1'],
+    expansion: ['data-expansion.js?v=expansion-bank-lazy-20261108-1'],
     spot: ['data-spot.js?v=spot-bank-lazy-20261108-1'],
     typing: ['data-typing.js?v=typing-bank-lazy-20261108-1'],
     arabic: ['data-translation-ar.js?v=question-context-20261026-20', 'data-translation-ar-fill.js?v=fill-4']
@@ -336,6 +337,26 @@
     job = { priority, promise: null };
     job.promise = groups[group].reduce((chain, src) => chain.then(() => loadScript(src, job.priority)), Promise.resolve())
       .then(() => {
+        if (group === 'expansion') {
+          const expansion = window.EpiphanyExpansion;
+          const games = window.GAMES;
+          const requiredGames = ['vocabulary','spelling','grammar','story','listening','advanced'];
+          const ready = expansion && Number.isFinite(Number(expansion.count)) &&
+            games && requiredGames.every(name => games[name] && Array.isArray(games[name].questions) &&
+              games[name].questions.some(question => question && question.level));
+          if (!ready) {
+            groups[group].forEach(src => {
+              loaded.delete(src);
+              const file = src.split('?')[0];
+              if (typeof document.querySelectorAll === 'function') document.querySelectorAll('script').forEach(node => {
+                if ((node.getAttribute('src') || '').split('?')[0].endsWith(file)) node.remove();
+              });
+            });
+            pending.delete(group);
+            throw new Error('The expansion bank loaded, but its required question banks did not initialize.');
+          }
+          if (typeof window.EPIPHANY_FLUENTIA_REGISTER_SOURCES === 'function') window.EPIPHANY_FLUENTIA_REGISTER_SOURCES();
+        }
         if (group === 'directions' && typeof window.EPIPHANY_FLUENTIA_REGISTER_SOURCES === 'function') {
           window.EPIPHANY_FLUENTIA_REGISTER_SOURCES();
         }
