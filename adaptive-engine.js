@@ -73,6 +73,20 @@
     snapshot = next;
     if (previous && Object.keys(next).every(key => next[key] === previous[key])) return;
     const policy = buildPolicy(next);
+    try {
+      const diagnostics = window.EPIPHANY_DIAGNOSTICS;
+      if (diagnostics && typeof diagnostics.record === 'function') {
+        diagnostics.record('adaptive_policy', {
+          online: next.online,
+          lowResources: next.lowResources,
+          lowBandwidth: next.lowBandwidth,
+          runtimePressure: next.runtimePressure,
+          deferNonEssentialWork: policy.deferNonEssentialWork,
+          allowSpeculativePreload: policy.allowSpeculativePreload,
+          limit: policy.maxConcurrentOptionalLoads
+        });
+      }
+    } catch {}
     // Reduce motion-heavy decoration on constrained devices, and follow the OS motion preference.
     try {
       const root = document && document.documentElement;
