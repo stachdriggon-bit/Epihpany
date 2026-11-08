@@ -220,7 +220,13 @@ test('service-worker cache diagnostics are delivered only to an explicitly start
   assert.equal(worker.diagnosticMessages[0].event.asset, 'data-expansion-grammar.js');
   assert.equal(worker.diagnosticMessages[0].event.outcome, 'network_success');
 
+  worker.setOnline(false);
+  await worker.dispatch('https://epiphany.test/data-expansion-grammar.js?v=1');
+  assert.equal(worker.diagnosticMessages[1].event.outcome, 'cache_fallback_exact');
+  await worker.dispatch('https://epiphany.test/not-cached.js?v=1');
+  assert.equal(worker.diagnosticMessages[2].event.outcome, 'offline_miss');
+
   worker.stopDiagnostics();
   await worker.dispatch('https://epiphany.test/data-expansion-story.js?v=1');
-  assert.equal(worker.diagnosticMessages.length, 1, 'stopping diagnostics must stop service-worker events immediately');
+  assert.equal(worker.diagnosticMessages.length, 3, 'stopping diagnostics must stop service-worker events immediately');
 });
