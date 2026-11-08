@@ -19,64 +19,50 @@ function harness(){
   }
   return {root,click,results,window,bank:window.EPIPHANY_LETTER_GRID_BANK};
 }
-function startFirstClue(h){
+function start(h){
   h.window.EPIPHANY_LETTER_GRID.open();
   h.click('[data-lg-level]',{lgLevel:'easy'});
-  const item=h.bank.puzzles.easy[0].words[0];
-  h.click('[data-lg-clue]',{lgClue:item.id});
-  return item;
+  return h.bank.puzzles.easy[0].words[0];
 }
-
-test('Letter Grid opens its own four-level picker and does not use shared training modes',()=>{
+test('Letter Path opens four independent levels and presents a word-search instruction',()=>{
   const h=harness();h.window.EPIPHANY_LETTER_GRID.open();
-  assert.match(h.root.innerHTML,/Choose your level/);
   for(const id of ['easy','medium','hard','expert'])assert.match(h.root.innerHTML,new RegExp('data-lg-level="'+id+'"'));
+  assert.match(h.root.innerHTML,/straight line/);
   assert.doesNotMatch(h.root.innerHTML,/Guided|Steady|Challenge/i);
 });
-
-test('a clue is solved by connecting its exact adjacent-letter path',()=>{
-  const h=harness(),word=startFirstClue(h);
-  for(const cell of word.path)h.click('[data-lg-cell]',{lgCell:String(cell)});
-  assert.match(h.root.innerHTML,/lg-clue is-found/);
+test('target words are visible and found by selecting their straight-line letters',()=>{
+  const h=harness(),word=start(h);
   assert.match(h.root.innerHTML,new RegExp(word.answer));
+  assert.doesNotMatch(h.root.innerHTML,/Choose clue|Word clues/);
+  for(const cell of word.path)h.click('[data-lg-cell]',{lgCell:String(cell)});
+  assert.match(h.root.innerHTML,/lg-word is-found/);
   assert.equal(h.results.length,1);
-  assert.equal(h.results[0][0],'vocabulary');
   assert.equal(h.results[0][1],'letter-grid');
   assert.equal(h.results[0][2],true);
   assert.equal(h.results[0][4].trackAdaptive,false);
 });
-
-test('wrong full paths can be retried without a penalty system',()=>{
-  const h=harness(),word=startFirstClue(h);
-  for(const cell of [...word.path].reverse())h.click('[data-lg-cell]',{lgCell:String(cell)});
-  assert.match(h.root.innerHTML,/Not quite/);
-  assert.match(h.root.innerHTML,/data-lg-clue=/);
-  assert.equal(h.results.length,1);
-  assert.equal(h.results[0][2],false);
-  for(const cell of word.path)h.click('[data-lg-cell]',{lgCell:String(cell)});
-  assert.match(h.root.innerHTML,/lg-clue is-found/);
-  assert.equal(h.results.length,2);
-  assert.equal(h.results[1][2],true);
-});
-
-test('letter paths enforce neighboring cells and support one-step backtracking',()=>{
-  const h=harness(),word=startFirstClue(h);
+test('tapping a selected letter again steps back one cell',()=>{
+  const h=harness(),word=start(h);
   h.click('[data-lg-cell]',{lgCell:String(word.path[0])});
-  h.click('[data-lg-cell]',{lgCell:String((word.path[0]+h.bank.levels.easy.size+2)%(h.bank.levels.easy.size**2))});
-  assert.match(h.root.innerHTML,/Choose a cell next to the last letter/);
   h.click('[data-lg-cell]',{lgCell:String(word.path[1])});
-  assert.match(h.root.innerHTML,/2 of .* letters connected/);
-  h.click('[data-lg-cell]',{lgCell:String(word.path[0])});
-  assert.ok(h.root.innerHTML.includes('<strong>'+word.answer[0]+'</strong></div><div class="lg-actions">'),'backtracking should leave only the first letter selected');
+  h.click('[data-lg-cell]',{lgCell:String(word.path[1])});
+  assert.match(h.root.innerHTML,/YOUR SELECTION/);
+  assert.match(h.root.innerHTML,new RegExp('>'+word.answer[0]+'<'));
   assert.equal(h.results.length,0);
 });
-
-test('optional hint reveals only the starting letter and marks its grid cell',()=>{
-  const h=harness(),word=startFirstClue(h);
-  h.click('[data-lg-hint]');
-  assert.match(h.root.innerHTML,new RegExp('Starting letter: '+word.answer[0]));
-  const cellClass=h.root.innerHTML.match(new RegExp('class="([^"]*is-hint[^"]*)" data-lg-cell="'+word.path[0]+'"'));
-  assert.ok(cellClass,'the first path cell should be highlighted');
+test('the path cannot turn after its direction is established',()=>{
+  const h=harness(),word=start(h),n=h.bank.levels.easy.size;
+  h.click('[data-lg-cell]',{lgCell:String(word.path[0])});
+  h.click('[data-lg-cell]',{lgCell:String(word.path[1])});
+  const last=word.path[1],r=Math.floor(last/n),c=last%n;
+  const turn=(r+1)*n+c;
+  if(turn<n*n&&!word.path.includes(turn))h.click('[data-lg-cell]',{lgCell:String(turn)});
+  assert.match(h.root.innerHTML,/same straight line/);
   assert.equal(h.results.length,0);
-  assert.match(h.root.innerHTML,/Reveal starting letter/);
+});
+test('hint highlights a starting cell without revealing a path',()=>{
+  const h=harness();start(h);h.click('[data-lg-hint]');
+  assert.match(h.root.innerHTML,/Starting letter highlighted/);
+  assert.match(h.root.innerHTML,/is-hint/);
+  assert.equal(h.results.length,0);
 });
