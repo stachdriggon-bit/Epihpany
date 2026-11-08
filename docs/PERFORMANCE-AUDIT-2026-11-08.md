@@ -116,3 +116,22 @@ This is a diagnostic probe, not a production observer and not a strict leak asse
 ### Probe correction — unique detached elements
 
 The first probe version could record the same element more than once if it was observed in a removed subtree and then observed again after a later removal. The diagnostic now uses a WeakSet to register each element identity only once, while retaining weak references so the probe does not keep elements alive. This makes the reported live-detached count a count of unique element identities observed by the probe, not removal events. The count still does not identify a retaining path or prove an application leak; heap-snapshot retainer analysis is required before attributing retention to application code.
+
+### MutationObserver isolation result — 2026-11-08
+
+The next controlled profile disconnected all eight MutationObserver instances created by the application after the warm-up phase. The test-only detached-DOM probe remained active so it could continue recording weak references. The browser navigation and lifecycle test completed successfully with no uncaught page errors.
+
+The result did **not** change the detached-node count:
+
+- Warm baseline: 0 live detached elements.
+- After two navigation cycles: 266.
+- After four navigation cycles: 532.
+- After six navigation cycles: 798.
+- After probe shutdown and forced garbage collection: 798 of 12,749 tracked weak references still resolved to detached elements.
+- All eight application observers were disconnected during the repeated cycles. The World-root observer was among them.
+- The JavaScript event-listener count remained 362. Attached element count changed by -4 and attached text-node count did not change.
+
+The retained labels continue to be dominated by the World region menu subtree (region cards, wrappers, SVG artwork, and their descendants). This is evidence of repeatable detached-node retention during World navigation, but it does not identify the retaining reference or prove that a particular application component owns it. Disconnecting MutationObservers without changing the result makes them an unlikely cause; the earlier focus check also found that focus had returned to `body` after each World exit.
+
+**Next diagnostic step:** capture a Chromium heap snapshot and inspect strong retaining paths for representative detached World nodes. Do not change `app.js` or the World rendering lifecycle until a retaining path identifies a concrete owner. The profile remains a CI diagnostic, not a production-device memory benchmark.
+
