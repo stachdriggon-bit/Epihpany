@@ -1,4 +1,4 @@
-/* Codebreaker — calm cryptogram interface. */
+/* Codebreaker — clear substitution-cryptogram interface. */
 .cb-shell{width:min(100%,920px);margin:0 auto;color:var(--text,#243047)}
 .cb-shell .tl-game-head{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:0 0 14px}
 .cb-shell .tl-game-head .tl-eyebrow{margin-left:auto}
@@ -15,8 +15,10 @@
 .cb-level-count{font-size:.78rem;font-weight:750;color:var(--accent,#7462b8)}
 .cb-progress-row{display:flex;align-items:center;justify-content:space-between;gap:12px}
 .cb-progress{font-size:.82rem;color:var(--muted,#667085);font-variant-numeric:tabular-nums}
-.cb-clue{margin:15px 0 18px;padding:12px 14px;border-left:3px solid var(--accent,#7462b8);border-radius:8px;background:var(--surface-soft,#f6f6fa);color:var(--muted,#596579);line-height:1.55}
-.cb-clue strong{display:block;margin-bottom:3px;color:var(--heading,#26324a);font-size:.76rem;text-transform:uppercase;letter-spacing:.08em}
+.cb-instruction{margin:14px 0 10px;color:var(--muted,#596579);line-height:1.6;font-size:.9rem}
+.cb-rules{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 17px}
+.cb-rules span{display:inline-flex;align-items:center;gap:7px;padding:7px 10px;border:1px solid var(--border,#dfe4ec);border-radius:9px;background:var(--surface-soft,#f8f8fc);font-size:.76rem;color:var(--muted,#596579)}
+.cb-rules b{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:#eee9fb;color:#58468f;font-size:.72rem}
 .cb-message-wrap{padding:clamp(13px,2.5vw,22px);border:1px solid var(--border,#dfe4ec);border-radius:16px;background:var(--board-frame,#f0f1f7)}
 .cb-label{display:block;margin-bottom:13px;font-size:.68rem;font-weight:800;letter-spacing:.13em;color:var(--muted,#667085)}
 .cb-message{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:center;gap:7px 5px;line-height:1.2}
