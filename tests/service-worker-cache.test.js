@@ -128,7 +128,10 @@ function createFetchWorker(options = {}) {
       constructor(body, init = {}) { this.body = body; this.status = init.status || 200; this.statusText = init.statusText || ''; }
     },
     Promise, Number, String, Object, URL, console,
-    clients: { claim: async () => {} }
+    clients: {
+      claim: async () => {},
+      get: async id => id === 'diagnostic-client' ? { postMessage(message) { diagnosticMessages.push(message); } } : null
+    }
   });
   vm.runInContext(source, context);
   return {
