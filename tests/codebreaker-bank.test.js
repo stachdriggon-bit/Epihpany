@@ -44,3 +44,18 @@ test('Codebreaker validator rejects inconsistent substitutions and invalid start
   assert.equal(bank.validatePuzzle({...original,answer:'TOO LONG FOR EASY'},'easy').valid,false);
   assert.equal(bank.validateBank({...bank.puzzles,easy:bank.puzzles.easy.slice(1)}).valid,false);
 });
+
+
+test('player-facing cryptograms contain no semantic answer clues',()=>{
+  for(const list of Object.values(bank.puzzles)) for(const puzzle of list){
+    assert.equal(Object.hasOwn(puzzle,'clue'),false,puzzle.id+' must not carry a semantic clue');
+  }
+});
+
+test('Hard 01 starts with a more useful structural foothold without revealing a word',()=>{
+  const puzzle=bank.puzzles.hard.find(item=>item.id==='cb-hard-01');
+  assert.deepEqual(puzzle.known.map(pair=>[pair.cipher,pair.plain]),[['O','A'],['P','L']]);
+  const partial=[...puzzle.cipher].map(letter=>({O:'A',P:'L'}[letter]||'·')).join('');
+  assert.equal(partial,'A ·L·A· ·L·· ····· ···· ···· ··L···'.replaceAll(' ',''));
+  assert.equal(puzzle.known.length,2);
+});
