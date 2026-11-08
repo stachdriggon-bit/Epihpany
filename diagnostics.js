@@ -122,7 +122,7 @@
 
   function stop() {
     if (!active) return false;
-    record('session_stopped');
+    if (authorized()) record('session_stopped');
     active = false;
     sendWorkerState('EPIPHANY_DIAGNOSTICS_STOP');
     publish();
