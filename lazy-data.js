@@ -214,22 +214,28 @@
     } catch { return null; }
   }
 
-  function cancelScheduledPrefetch() {
-    scheduledPrefetch.forEach(task => {
+  function cancelScheduledPrefetch(keepGroup = null) {
+    scheduledPrefetch.forEach((task, group) => {
+      if (keepGroup && group === keepGroup) return;
       try {
         if (task.kind === 'idle' && typeof window.cancelIdleCallback === 'function') window.cancelIdleCallback(task.id);
         else if (task.kind === 'timer' && typeof window.clearTimeout === 'function') window.clearTimeout(task.id);
       } catch {}
+      scheduledPrefetch.delete(group);
     });
-    scheduledPrefetch.clear();
   }
 
   function schedulePrefetch(group) {
     const policy = currentAdaptivePolicy();
     if (!policy || !policy.allowSpeculativePreload || policy.deferNonEssentialWork ||
-        document.visibilityState === 'hidden' || (window.navigator && window.navigator.onLine === false)) return false;
-    if (!Object.prototype.hasOwnProperty.call(groups, group) || pending.has(group) || scheduledPrefetch.has(group)) return false;
+        document.visibilityState === 'hidden' || (window.navigator && window.navigator.onLine === false) ||
+        !Object.prototype.hasOwnProperty.call(groups, group)) return false;
+
+    // A navigation hint is speculative, not a request to preload every section
+    // the pointer crosses. Keep only the latest pending intent.
+    cancelScheduledPrefetch(group);
     lastIntentGroup = group;
+    if (pending.has(group) || scheduledPrefetch.has(group)) return false;
     const run = () => {
       scheduledPrefetch.delete(group);
       const current = currentAdaptivePolicy();
