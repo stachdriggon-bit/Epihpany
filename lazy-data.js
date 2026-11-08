@@ -330,9 +330,14 @@
     if(group.startsWith('expansion')&&group!=='expansionShared')return loadGroup('expansionShared',priority).then(()=>loadGroup(group,priority));
     let job = pending.get(group);
     if (job) {
-      if (priority === 'user') {
+      if (priority === 'user' && job.priority !== 'user') {
         job.priority = 'user';
-        groups[group].forEach(src => runWithPriority('user', () => Promise.resolve(), src));
+        // Promote only assets that are actually waiting in the optional queue.
+        // Calling runWithPriority for every asset in an already-loaded group
+        // creates needless promise work and can amplify repeated navigation.
+        groups[group].forEach(src => {
+          if (queuedOptionalLoads.has(src)) runWithPriority('user', () => Promise.resolve(), src);
+        });
       }
       return job.promise;
     }
