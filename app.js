@@ -183,6 +183,8 @@
   const ORDER = ['vocabulary', 'spelling', 'grammar', 'story', 'listening', 'advanced', 'mistakes', 'typing'];
   const UNLOCK = {vocabulary:0, spelling:0, grammar:1, story:2, listening:3, advanced:4, mistakes:0, spot:0, typing:0};
   GAMES.mistakes = {title:'Common Mistakes', category:'GRAMMAR', xp:40, desc:'Understand common mistakes made by English learners.', questions:MISTAKE_QUESTIONS.map(q=>({q:q.prompt,sub:q.sub,answers:q.options,correct:q.answer,explain:q.why_en,word:null,level:q.level,ar:q.arabic_hint,id:q.id,trap:q.trap,why_ar:q.why_ar,arabic_hint:q.arabic_hint,q_ar:q.q_ar,sub_ar:q.sub_ar,explain_ar:q.why_ar,aha:null}))};
+  GAMES.spot = {title:'Spot the Mistake',category:'GRAMMAR',xp:40,desc:'Tap the one incorrect word in a short text.',questions:[]};
+  GAMES.typing = {title:'Type It',category:'WRITING',xp:45,desc:'Write the missing word without multiple-choice hints.',questions:[]};
   GAMES.personalized = {title:'Your Weak Spots',category:'PERSONAL REVIEW',xp:45,desc:'A short practice set built from the mistake patterns you have missed before.',questions:GAMES.mistakes.questions.slice()};
   // Phase 3: register canonical adapters over the existing banks without replacing their renderers.
   let fluentiaSessionEngine = null;
@@ -340,8 +342,13 @@
     if (has(/\b(use the base verb with i|base verb with i for a regular habit|regular habit|verb after does stays)\b/)) return 'present-simple';
     return null;
   }
-  GAMES.spot = {title:'Spot the Mistake',category:'GRAMMAR',xp:40,desc:'Tap the one incorrect word in a short text.',questions:SPOT_QUESTIONS.map(q=>({...q,q:q.text,sub:'Tap the one incorrect word.',answers:[q.fix],correct:q.wrongIndex,explain:q.why_en,trap:inferGrammarTrap(q),aha:null,mode:'spot'}))};
-  GAMES.typing = {title:'Type It',category:'WRITING',xp:45,desc:'Write the missing word without multiple-choice hints.',questions:TYPING_QUESTIONS.map(q=>({...q,q:q.prompt,sub:'Hint: '+q.hint,answers:q.accept,correct:0,explain:q.why_en,trap:inferGrammarTrap(q),aha:null,mode:'typing'}))};
+  function hydrateWritingPractice(type) {
+    if (type === 'spot' && typeof SPOT_QUESTIONS !== 'undefined') {
+      GAMES.spot.questions = SPOT_QUESTIONS.map(q=>({...q,q:q.text,sub:'Tap the one incorrect word.',answers:[q.fix],correct:q.wrongIndex,explain:q.why_en,trap:inferGrammarTrap(q),aha:null,mode:'spot'}));
+    } else if (type === 'typing' && typeof TYPING_QUESTIONS !== 'undefined') {
+      GAMES.typing.questions = TYPING_QUESTIONS.map(q=>({...q,q:q.prompt,sub:'Hint: '+q.hint,answers:q.accept,correct:0,explain:q.why_en,trap:inferGrammarTrap(q),aha:null,mode:'typing'}));
+    }
+  }
   const AHA_BY_QUESTION = Object.fromEntries(AHA_NOTES.map(note=>[note.questionId,note]));
   Object.values(GAMES).forEach(game=>(game.questions||[]).forEach(item=>{const note=AHA_BY_QUESTION[item.id];if(note)item.aha={en:note.en,ar:note.ar};}));   // level index that suggests each game
   const LEVEL_GAME = ['vocabulary', 'grammar', 'story', 'listening', 'advanced', 'advanced']; // same mapping the world map used
@@ -3507,8 +3514,26 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
   }
   function startOneLife() { const type = pickNext(); startGame(GAMES[type] ? type : 'vocabulary', 'oneLife'); }
 
+  const writingPracticeLoads = new Set();
   function startGame(type, challengeMode = '') {
     if (MINI[type]) { startMini(type); return; }
+    const dataName = type === 'spot' ? 'spot' : type === 'typing' ? 'typing' : null;
+    const dataReady = type === 'spot' ? typeof SPOT_QUESTIONS !== 'undefined' : type === 'typing' ? typeof TYPING_QUESTIONS !== 'undefined' : true;
+    if (dataName && !dataReady) {
+      if (writingPracticeLoads.has(dataName)) return;
+      writingPracticeLoads.add(dataName);
+      window.EPIPHANY_LAZY_LOAD(dataName).then(() => {
+        writingPracticeLoads.delete(dataName);
+        hydrateWritingPractice(type);
+        if (typeof window.EPIPHANY_FLUENTIA_REGISTER_SOURCES === 'function') window.EPIPHANY_FLUENTIA_REGISTER_SOURCES();
+        startGame(type, challengeMode);
+      }).catch(() => {
+        writingPracticeLoads.delete(dataName);
+        toast((type === 'spot' ? 'Spot the Mistake' : 'Type It') + ' could not load. Connect to the internet and try again.');
+      });
+      return;
+    }
+    if (dataName && !GAMES[type].questions.length) hydrateWritingPractice(type);
     const game = GAMES[type]; if (!game) return;
     // Invalidate pending callbacks from any mini-game before switching activities.
     miniSessionId++;
