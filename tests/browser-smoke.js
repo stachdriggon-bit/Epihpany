@@ -1042,6 +1042,7 @@ test('main navigation tabs open without uncaught page errors', { timeout: 18 * 6
     await mobileMenu.locator('.mobile-menu-backdrop').click({position:{x:360,y:200}});
     assert.equal(await mobileMenu.evaluate(el => el.open), false, 'the backdrop should close the mobile drawer');
     await clickView(cardsPage, 'fluentia');
+    await cardsPage.locator('#fluentia-content #fluentia-title').waitFor({state:'visible',timeout:10000});
     assert.equal(await cardsPage.locator('#fluentia-content .fluentia-domain-card').count(),6,'Fluentia should open from the mobile drawer with all six domains');
     const fluentiaMobileLayout = await cardsPage.locator('#fluentia-content').evaluate(el => ({scrollWidth:el.scrollWidth,clientWidth:el.clientWidth}));
     assert.ok(fluentiaMobileLayout.scrollWidth <= fluentiaMobileLayout.clientWidth + 1,'Fluentia should fit the mobile viewport: '+JSON.stringify(fluentiaMobileLayout));
