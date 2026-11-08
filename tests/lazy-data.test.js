@@ -77,6 +77,11 @@ test('feature data loader does not request large datasets until requested', asyn
   await context.window.EPIPHANY_LAZY_LOAD('chronicle');
   assert.deepEqual(requested.slice(24).map(src => src.split('?')[0]), ['data-world-registry.js', 'data-world-events.js']);
   assert.ok(requested.slice(22).every(src => /\?v=.+/.test(src)));
+
+  await context.window.EPIPHANY_LAZY_LOAD('directions');
+  assert.deepEqual(requested.slice(26).map(src => src.split('?')[0]), ['data-minigames.js']);
+  assert.match(requested[26], /^data-minigames\.js\?v=/);
+  assert.equal(fluentiaRegistrations, 2, 'Fluentia adapters should refresh after the deferred directions bank is ready');
 });
 
 test('initial HTML defers stories and World data and keeps loader in offline shell', () => {
@@ -87,6 +92,7 @@ test('initial HTML defers stories and World data and keeps loader in offline she
   assert.match(fs.readFileSync(path.join(root, 'lazy-data.js'), 'utf8'), /data-stories-expansion\.js/);
   assert.doesNotMatch(html, /<script[^>]+src="data-stories\.js/);
   assert.doesNotMatch(html, /<script[^>]+src="data-world(?:-sprites)?\.js/);
+  assert.doesNotMatch(html, /<script[^>]+src="data-minigames\.js/);
   assert.doesNotMatch(html, /<script[^>]+src="fluentia-(?:textwise|soundscape)-bank\.js/);
   assert.match(html, /lazy-data\.js\?v=[^\"&]+/);
   assert.doesNotMatch(html, /href=\"(?:resonance|life-skills)\.css/);
@@ -100,6 +106,8 @@ test('initial HTML defers stories and World data and keeps loader in offline she
   const lazyAssets = sw.match(/const LAZY_ASSETS = \[([^\]]*)\];/)?.[1] || '';
   assert.ok(coreAssets, 'service worker should define core offline assets');
   assert.ok(lazyAssets, 'service worker should define lazy offline assets');
+  assert.ok(!coreAssets.includes("'./data-minigames.js'"), 'Directions data should not be a core startup asset');
+  assert.ok(lazyAssets.includes("'./data-minigames.js'"), 'Directions data should be cached as a lazy asset after use');
   for (const asset of ['data-stories.js', 'data-world.js', 'data-world-sprites.js', 'fluentia-textwise-bank.js', 'fluentia-soundscape-bank.js', 'sound-maze-bank.js', 'sound-maze-content.js', 'odd-one-out-bank.js', 'sentence-scramble-bank.js', 'word-forge-bank.js', 'chain-reaction-bank.js', 'think-lab.js', 'word-hunt-bank.js', 'word-hunt.js', 'codebreaker-bank.js', 'codebreaker.js', 'letter-grid-bank.js', 'letter-grid.js', 'practice-lab.js', 'life-skills.js', 'data-translation-ar.js', 'data-translation-ar-fill.js']) {
     assert.ok(!coreAssets.includes("'./" + asset + "'"), asset + ' should not be a core startup asset');
   }
@@ -113,6 +121,7 @@ test('initial HTML defers stories and World data and keeps loader in offline she
   assert.match(sw, /const cached = await cache\.match\(request\);\s*if \(cached\) return cached;/);
   const app = fs.readFileSync(path.join(root, 'app.js'), 'utf8');
   assert.match(app, /window\.EPIPHANY_MERGE_AR_TRANSLATIONS = mergeArabicTranslationCatalog/);
+  assert.match(app, /type === 'directions' && typeof DIRECTION_ITEMS === 'undefined'[\s\S]*?EPIPHANY_LAZY_LOAD\('directions'\)/, 'Directions sessions must wait for their bank before setup');
   assert.match(app, /textwiseSequenceBank: Array\.isArray\(window\.EPIPHANY_TEXTWISE_SEQUENCE_BANK\) \? window\.EPIPHANY_TEXTWISE_SEQUENCE_BANK : undefined/);
   assert.match(app, /soundscapeDictationBank: Array\.isArray\(window\.EPIPHANY_SOUNDSCAPE_DICTATION_BANK\) \? window\.EPIPHANY_SOUNDSCAPE_DICTATION_BANK : undefined/);
   assert.doesNotMatch(app, /if \(state\.helpArabic \|\| state\.translationEnabled\) ensureArabicTranslationCatalog\(\)/);
