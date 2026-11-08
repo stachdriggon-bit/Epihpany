@@ -45,6 +45,14 @@
         return rows.filter(item => item && LEVELS.includes(item.level) && item.level === level)
           .map((item, index) => ({...item, id: stableId(config.id, item, index), level: item.level, sourceActivityId: item.sourceActivityId || config.legacyId || config.id}));
       },
+      getReviewItems({level}) {
+        const rows = typeof config.getReviewItems === 'function'
+          ? config.getReviewItems({level})
+          : (typeof config.getItems === 'function' ? config.getItems({level}) : source);
+        if (!Array.isArray(rows)) return [];
+        return rows.filter(item => item && LEVELS.includes(item.level) && item.level === level)
+          .map((item, index) => ({...item, id: stableId(config.id, item, index), level: item.level, sourceActivityId: item.sourceActivityId || config.legacyId || config.id}));
+      },
       evaluate(item, answer) {
         return config.evaluate(item, answer);
       },
@@ -264,6 +272,9 @@
           const prioritized = candidates.filter(item=>saved.has(normalize(item.word)));
           return (prioritized.length ? prioritized : candidates).map(item=>({...item,sourceActivityId:'word-of-the-day'}));
         },
+        getReviewItems:({level}) => sources.wordOfDayItems
+          .filter(item=>item&&item.level===level&&item.word&&item.meaning)
+          .map(item=>({...item,sourceActivityId:'word-of-the-day'})),
         evaluate:(item, answer) => {
           const correct = normalize(answer) === normalize(item.word);
           return {correct,errorType:correct?null:'rapid-vocabulary-recall'};
@@ -344,7 +355,7 @@
               failed.set(String(event.itemId), event);
             });
             if (!failed.size) return [];
-            return sourceAdapter.getItems({level}).filter(item => failed.has(String(item.id))).map(item => ({
+            return sourceAdapter.getReviewItems({level}).filter(item => failed.has(String(item.id))).map(item => ({
               ...item,
               reviewErrorType: failed.get(String(item.id)).errorType || null,
               reviewSourceActivityId: sourceAdapter.id
