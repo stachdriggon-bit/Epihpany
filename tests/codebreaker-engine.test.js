@@ -77,3 +77,20 @@ test('wrong complete decoding is retryable and recorded without a penalty system
   assert.equal(h.results.length,1);assert.equal(h.results[0][2],false);
   assert.match(h.root.innerHTML,/data-cb-check/);
 });
+
+test('Pattern hint chooses the most useful unresolved repeated group, not simply the first word',()=>{
+  const h=harness();h.window.EPIPHANY_CODEBREAKER.open();h.click('[data-cb-level]',{cbLevel:'hard'});
+  h.click('[data-cb-hint]');
+  assert.match(h.root.innerHTML,/Pattern hint: word 7 follows 1-2-3-4-1-5/);
+  assert.match(h.root.innerHTML,/positions 1 and 5/);
+  assert.doesNotMatch(h.root.innerHTML,/EASIER/);
+});
+
+test('Cross-word hint prioritizes an unresolved code shared across multiple words',()=>{
+  const h=harness();h.window.EPIPHANY_CODEBREAKER.open();h.click('[data-cb-level]',{cbLevel:'medium'});
+  h.click('[data-cb-hint]');h.click('[data-cb-hint]');
+  assert.match(h.root.innerHTML,/Cross-word hint: coded letter/);
+  assert.match(h.root.innerHTML,/words/);
+  assert.match(h.root.innerHTML,/positions total/);
+  assert.doesNotMatch(h.root.innerHTML,/KIND WORDS HELP/);
+});
