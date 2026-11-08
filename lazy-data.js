@@ -12,7 +12,7 @@
     languageDetective: ['language-detective-assessment-schemas.js?v=casebound-foundation-1', 'language-detective-investigation.js?v=casebound-investigation-model-1', 'language-detective-cefr-patterns.js?v=casebound-foundation-1', 'language-detective-assessment-engine.js?v=casebound-foundation-1', 'language-detective-assessment-fixtures.js?v=casebound-foundation-1', 'language-detective-ui.js?v=casebound-skin-2'],
     lifeskills: ['life-skills.js?v=life-skills-standalone-20261108-1'],
     directions: ['data-minigames.js?v=directions-bank-lazy-20261108-1'],
-    expansionShared: ['data-expansion-translations.js?v=expansion-translations-20261108-1', 'data-expansion-runtime.js?v=expansion-runtime-20261108-1', 'data-expansion-wotd.js?v=expansion-wotd-20261108-1'],
+    expansionShared: ['data-expansion-translations.js?v=expansion-translations-20261108-1', 'data-expansion-runtime.js?v=expansion-runtime-20261108-2', 'data-expansion-wotd.js?v=expansion-wotd-20261108-1'],
     expansionVocabulary: ['data-expansion-vocabulary.js?v=expansion-vocabulary-20261108-1'], expansionSpelling: ['data-expansion-spelling.js?v=expansion-spelling-20261108-1'], expansionGrammar: ['data-expansion-grammar.js?v=expansion-grammar-20261108-1'], expansionStory: ['data-expansion-story.js?v=expansion-story-20261108-1'], expansionListening: ['data-expansion-listening.js?v=expansion-listening-20261108-1'], expansionAdvanced: ['data-expansion-advanced.js?v=expansion-advanced-20261108-1'],
     spot: ['data-spot.js?v=spot-bank-lazy-20261108-1'],
     typing: ['data-typing.js?v=typing-bank-lazy-20261108-1'],
