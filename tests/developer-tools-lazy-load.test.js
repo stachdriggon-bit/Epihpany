@@ -32,3 +32,13 @@ test('developer-only assets load in dependency order only after authorized devel
   assert.match(developerMode, /script\.async=false/);
   assert.match(developerMode, /developerToolsPromise=null;throw error/);
 });
+
+
+test('diagnostics assets load only after an authorized developer opens the diagnostics section', () => {
+  assert.doesNotMatch(html, /diagnostics\\.js/);
+  assert.match(developerMode, /if\\(!allowed\\)return;/);
+  assert.match(developerMode, /if\\(name==='diagnostics'\\)/);
+  assert.match(developerMode, /loadDiagnostics\\(\\)\\.then\\(initDiagnostics\\)/);
+  assert.match(developerMode, /diagnostics\\.js\\?v=/);
+  assert.match(developerMode, /window\\.EPIPHANY_DIAGNOSTICS/);
+});
