@@ -70,6 +70,8 @@
       set('diagnostics-event-count',events.length);
       set('diagnostics-failures',events.filter(item=>item.type==='load_failed'&&item.group).length);
       set('diagnostics-retries',events.filter(item=>item.type==='retry_started').length);
+      const waits=events.filter(item=>item.type==='load_started'&&Number.isFinite(item.waitMs)).map(item=>item.waitMs);
+      set('diagnostics-average-wait',waits.length?Math.round(waits.reduce((sum,value)=>sum+value,0)/waits.length)+' ms':'—');
       set('diagnostics-status',snapshot.active?'Recording locally · '+events.length+'/200 events':'Recording is off. Nothing new is being collected.');
       const start=$('#diagnostics-start'),stop=$('#diagnostics-stop'),clear=$('#diagnostics-clear'),exportButton=$('#diagnostics-export');
       if(start)start.disabled=snapshot.active;
@@ -86,7 +88,21 @@
         empty.textContent='No events yet. Start a recording session, then use EPIPHANY normally.';
         log.appendChild(empty);return;
       }
-      events.slice(-60).reverse().forEach(item=>{
+      const filter=$('#diagnostics-filter')?.value||'all';
+      const filtered=events.filter(item=>{
+        if(filter==='loading')return ['load_queued','load_started','load_succeeded','load_failed'].includes(item.type);
+        if(filter==='failures')return item.type==='load_failed';
+        if(filter==='retries')return item.type==='retry_scheduled'||item.type==='retry_started';
+        if(filter==='cache')return item.type==='cache_result';
+        if(filter==='adaptive')return item.type==='adaptive_policy';
+        return true;
+      });
+      if(!filtered.length){
+        const empty=document.createElement('div');empty.className='developer-diagnostics-empty';
+        empty.textContent='No events match this filter.';
+        log.appendChild(empty);return;
+      }
+      filtered.slice(-60).reverse().forEach(item=>{
         const row=document.createElement('div');row.className='developer-diagnostics-event';
         const time=document.createElement('time');time.textContent=new Date(item.time).toLocaleTimeString();
         const label=document.createElement('b');label.textContent=item.type.replace(/_/g,' ');
@@ -104,6 +120,7 @@
     $('#diagnostics-stop')?.addEventListener('click',()=>api.stop());
     $('#diagnostics-clear')?.addEventListener('click',()=>api.clear());
     $('#diagnostics-export')?.addEventListener('click',()=>api.exportJson());
+    $('#diagnostics-filter')?.addEventListener('change',()=>render(api.getSnapshot()));
     render(api.getSnapshot());
   }
   function loadStyle(href){
