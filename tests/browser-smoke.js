@@ -509,12 +509,13 @@ test('main navigation tabs open without uncaught page errors', { timeout: 18 * 6
         assert.equal(await page.evaluate(() => window.EPIPHANY_LETTER_GRID_BANK.validateBank().valid), true,
           'the complete Letter Grid bank should validate in the browser');
         await page.locator('#thinklab-view [data-lg-level="easy"]').click();
-        const firstTarget = await page.evaluate(() => window.EPIPHANY_LETTER_GRID_BANK.puzzles.easy[0].words[0].path);
-        for (const cell of firstTarget) {
+        const firstTarget = await page.evaluate(() => window.EPIPHANY_LETTER_GRID_BANK.puzzles.easy[0].words[0]);
+        await page.locator('#thinklab-view [data-lg-clue="' + firstTarget.id + '"]').click();
+        for (const cell of firstTarget.path) {
           await page.locator('#thinklab-view [data-lg-cell="' + cell + '"]').click();
         }
-        await page.locator('#thinklab-view .lg-word.is-found').waitFor({state:'visible',timeout:5000});
-        checkpoint('thinklab: Letter Path straight-line word search verified');
+        await page.locator('#thinklab-view .lg-clue.is-found').waitFor({state:'visible',timeout:5000});
+        checkpoint('thinklab: Letter Path clue selection and straight-line search verified');
 
 
       }
