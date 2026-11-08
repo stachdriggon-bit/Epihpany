@@ -1031,5 +1031,5 @@ test('per-game expansion modules register isolated CEFR banks and preserve share
   for(const g of games.slice(1))vm.runInContext(fs.readFileSync(path.join(root,'data-expansion-'+g+'.js'),'utf8'),context);
   for(const g of games){const qs=context.GAMES[g].questions;assert.equal(context.window.EPIPHANY_EXPANSION_BANKS[g],true);assert.ok(['A1','A2','B1','B2','C1','C2'].every(level=>qs.some(q=>q.level===level)));assert.ok(qs.every(q=>!q.answers_ar||q.answers_ar.length===q.answers.length));assert.equal(new Set(qs.map(q=>q.id)).size,qs.length);}
   assert.equal(context.window.EpiphanyExpansion.addedWords,60);
-  assert.equal(context.window.EpiphanyExpansion.extraQuestions,36);
+  assert.equal(context.window.EpiphanyExpansion.extraQuestions,730);
 });
