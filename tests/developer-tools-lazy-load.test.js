@@ -14,7 +14,9 @@ test('developer-only asset tools are not requested during the initial page load'
     'card-image-editor.css',
     'asset-manager.js',
     'artwork-manager.js',
-    'card-image-editor.js'
+    'card-image-editor.js',
+    'diagnostics.css',
+    'diagnostics.js'
   ]) {
     assert.doesNotMatch(html, new RegExp(resource.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
   }
