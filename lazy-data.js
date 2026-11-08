@@ -31,6 +31,13 @@
   const queuedOptionalLoads = new Map();
   let activeOptionalLoads = 0;
 
+  function diagnosticRecord(type, details) {
+    try {
+      const diagnostics = window.EPIPHANY_DIAGNOSTICS;
+      if (diagnostics && typeof diagnostics.record === 'function') diagnostics.record(type, details);
+    } catch {}
+  }
+
   function optionalLoadLimit() {
     try {
       const policy = window.EPIPHANY_ADAPTIVE_ENGINE?.getPolicy?.();
@@ -44,6 +51,14 @@
     job.started = true;
     if (job.key) queuedOptionalLoads.delete(job.key);
     if (!asUser) activeOptionalLoads++;
+    const startedAt = Date.now();
+    diagnosticRecord('load_started', {
+      asset: job.key || 'optional',
+      priority: asUser ? 'user' : 'optional',
+      waitMs: job.queuedAt ? startedAt - job.queuedAt : 0,
+      activeLoads: activeOptionalLoads,
+      limit: optionalLoadLimit()
+    });
     // Release the concurrency slot before resolving the job promise. The next
     // file in a sequential feature group can then enter the queue immediately,
     // without racing the caller's promise continuation against queue pumping.
@@ -53,9 +68,11 @@
       pumpOptionalQueue();
     };
     Promise.resolve().then(job.run).then(value => {
+      diagnosticRecord('load_succeeded', { asset: job.key || 'optional', durationMs: Date.now() - startedAt });
       finish();
       job.resolve(value);
     }, error => {
+      diagnosticRecord('load_failed', { asset: job.key || 'optional', durationMs: Date.now() - startedAt });
       finish();
       job.reject(error);
     });
@@ -83,6 +100,7 @@
       attempts: previous ? previous.attempts : 0,
       retry
     });
+    diagnosticRecord('retry_scheduled', { group: key, attempt: previous ? previous.attempts : 0 });
     recoverFailedOptionalLoads();
   }
 
@@ -104,6 +122,7 @@
       scheduledRecoveries.delete(key);
       if (failedOptionalLoads.get(key) !== entry || !optionalWorkAllowed()) return;
       entry.attempts++;
+      diagnosticRecord('retry_started', { group: key, attempt: entry.attempts });
       recoveringOptionalLoads.add(key);
       Promise.resolve().then(entry.retry).catch(() => {}).finally(() => {
         recoveringOptionalLoads.delete(key);
@@ -141,7 +160,8 @@
       }
       return Promise.resolve().then(run);
     }
-    const job = { key, run, resolve: null, reject: null, started: false, promise: null };
+    const job = { key, run, resolve: null, reject: null, started: false, promise: null, queuedAt: Date.now() };
+    diagnosticRecord('load_queued', { asset: key || 'optional', priority: 'optional' });
     job.promise = new Promise((resolve, reject) => {
       job.resolve = resolve;
       job.reject = reject;
@@ -341,8 +361,11 @@
       return job.promise;
     }
     job = { priority, promise: null };
+    const groupStartedAt = Date.now();
+    diagnosticRecord('load_queued', { group, priority });
     job.promise = groups[group].reduce((chain, src) => chain.then(() => loadScript(src, job.priority)), Promise.resolve())
       .then(() => {
+        diagnosticRecord('load_succeeded', { group, durationMs: Date.now() - groupStartedAt });
         if (group === 'expansionShared') {
           const ready=typeof window.EPIPHANY_REGISTER_EXPANSION_BANK==='function' && window.EPIPHANY_EXPANSION_TRANSLATIONS && typeof window.EPIPHANY_EXPANSION_TRANSLATIONS==='object' && typeof WOTD_WORDS!=='undefined' && Array.isArray(WOTD_WORDS);
           if(!ready){groups[group].forEach(src=>{loaded.delete(src);const file=src.split('?')[0];if(typeof document.querySelectorAll==='function')document.querySelectorAll('script').forEach(node=>{if((node.getAttribute('src')||'').split('?')[0].endsWith(file))node.remove();});});pending.delete(group);throw new Error('Shared expansion data did not initialize.');}
@@ -406,6 +429,7 @@
         }
         clearFailedOptionalLoad('data-group:' + group);
       }, error => {
+        diagnosticRecord('load_failed', { group, durationMs: Date.now() - groupStartedAt });
         pending.delete(group);
         if (group === 'languageDetective') {
           groups[group].forEach(src => {
