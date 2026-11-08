@@ -86,3 +86,13 @@ A valid substitution is not automatically a fair or well-designed puzzle. Bank v
 ## Hard level review
 
 The first editorial pass is recorded in `docs/think-lab/CODEBREAKER-HARD-QUALITY-REVIEW.md`. Hard 01's starter key was adjusted from `O → A, A → C` to `O → A, P → L` to give the player a more informative opening pattern while retaining exactly two starter mappings.
+
+
+### Progressive hint behavior
+
+The single hint control advances through three non-penalizing stages on each puzzle:
+1. **Pattern hint:** identifies a repeated-letter pattern within a word and names the matching positions without suggesting a plaintext word.
+2. **Cross-word hint:** identifies an unresolved coded letter that occurs in multiple words, reminding the player that all occurrences share one decoded letter.
+3. **Letter reveal:** reveals and locks one correct mapping, preserving the existing explicit assistance behavior.
+
+The control resets for each new puzzle. These hints must never expose the intended plaintext or use a semantic definition.
