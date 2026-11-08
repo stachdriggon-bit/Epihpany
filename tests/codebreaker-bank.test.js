@@ -60,3 +60,43 @@ test('Hard 01 starts with a more useful structural foothold without revealing a 
   assert.equal(JSON.stringify(partialWords),JSON.stringify(['A','·L·A·','·LA·','·A···','·A··','····','·A····']));
   assert.equal(puzzle.known.length,2);
 });
+
+test('Easy bank uses repeated-letter patterns as a visible deduction mechanic',()=>{
+  for(const puzzle of bank.puzzles.easy){
+    assert.equal(puzzle.answer.length,5,puzzle.id);
+    const repeated=new Set([...puzzle.answer].filter((letter,index,all)=>all.indexOf(letter)!==index));
+    assert.ok(repeated.size>0,puzzle.id+' must have a repeated plaintext pattern');
+    assert.ok(puzzle.known.some(pair=>repeated.has(pair.plain)),puzzle.id+' starter key must touch a repeated group');
+    assert.equal(bank.validatePuzzle(puzzle,'easy').valid,true,puzzle.id);
+  }
+});
+
+test('Medium 01 starter key exposes a useful cross-word anchor',()=>{
+  const puzzle=bank.puzzles.medium.find(item=>item.id==='cb-medium-01');
+  assert.deepEqual(puzzle.known.map(pair=>[pair.cipher,pair.plain]),[['O','K'],['R','I'],['V','D']]);
+  const words=puzzle.cipher.split(' ');
+  assert.ok(words[0].includes('V')&&words[1].includes('V'));
+  assert.equal(bank.validatePuzzle(puzzle,'medium').valid,true);
+});
+
+test('Expert starter mappings are balanced by actual message frequency',()=>{
+  for(const puzzle of bank.puzzles.expert){
+    const plain=puzzle.known[0].plain;
+    const occurrences=[...puzzle.answer].filter(letter=>letter===plain).length;
+    assert.ok(occurrences>=4&&occurrences<=8,puzzle.id+' starter letter frequency '+occurrences);
+    assert.equal(bank.validatePuzzle(puzzle,'expert').valid,true,puzzle.id);
+  }
+});
+
+test('quality analysis reports within-word patterns and cross-word links without claiming unique solutions',()=>{
+  const puzzle=bank.puzzles.medium.find(item=>item.id==='cb-medium-01');
+  const report=bank.analyzePuzzle(puzzle);
+  assert.ok(Array.isArray(report.repeatedWords));
+  assert.ok(report.crossWordLetters.some(item=>item.letter==='V'&&item.words.includes(1)&&item.words.includes(2)));
+  assert.equal(report.unresolvedDistinctLetters>0,true);
+  const quality=bank.qualityReport();
+  assert.equal(quality.easy.length,12);
+  assert.equal(quality.medium.length,12);
+  assert.equal(quality.expert.length,12);
+  assert.ok(quality.easy.every(item=>item.validation.valid));
+});
