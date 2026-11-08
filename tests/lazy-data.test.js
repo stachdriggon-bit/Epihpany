@@ -131,7 +131,6 @@ test('initial HTML defers stories and World data and keeps loader in offline she
     assert.ok(lazyAssets.includes("'./" + asset + "'"), asset + ' should be cached as a lazy offline asset');
   }
   assert.match(sw, /const cached = await cache\.match\(request\);\s*if \(cached\) return cached;/);
-  const app = fs.readFileSync(path.join(root, 'app.js'), 'utf8');
   assert.match(app, /window\.EPIPHANY_MERGE_AR_TRANSLATIONS = mergeArabicTranslationCatalog/);
   assert.match(app, /type === 'directions' && typeof DIRECTION_ITEMS === 'undefined'[\s\S]*?EPIPHANY_LAZY_LOAD\('directions'\)/, 'Directions sessions must wait for their bank before setup');
   assert.match(app, /textwiseSequenceBank: Array\.isArray\(window\.EPIPHANY_TEXTWISE_SEQUENCE_BANK\) \? window\.EPIPHANY_TEXTWISE_SEQUENCE_BANK : undefined/);
