@@ -8,17 +8,25 @@ test('legacy review snapshot preserves saved words and mistake signals without e
     words:[['borrow','to use and return']],
     mistakeTrapErrors:{articles:3},
     mistakeQuestionErrors:{'q-1':2},
-    adaptiveSignals:{vocabulary:{attempts:4,errors:1}}
+    adaptiveSignals:{vocabulary:{attempts:4,errors:1}},
+    fluentiaHistory:[{eventId:'s:0',correct:false}],
+    fluentiaReviewState:{'vocabulary:q-1':{mastered:false}}
   };
   const bridge = Bridge.createBridge(() => state);
   const snapshot = bridge.getReviewSnapshot();
   assert.deepEqual(snapshot.review, state.review);
   assert.deepEqual(snapshot.words, state.words);
   assert.deepEqual(snapshot.mistakeTrapErrors, state.mistakeTrapErrors);
+  assert.deepEqual(snapshot.fluentiaHistory, state.fluentiaHistory);
+  assert.deepEqual(snapshot.fluentiaReviewState, state.fluentiaReviewState);
   snapshot.review[0].word = 'changed';
   snapshot.mistakeTrapErrors.articles = 99;
+  snapshot.fluentiaHistory[0].eventId = 'changed';
+  snapshot.fluentiaReviewState['vocabulary:q-1'].mastered = true;
   assert.equal(state.review[0].word, 'borrow');
   assert.equal(state.mistakeTrapErrors.articles, 3);
+  assert.equal(state.fluentiaHistory[0].eventId, 's:0');
+  assert.equal(state.fluentiaReviewState['vocabulary:q-1'].mastered, false);
 });
 
 test('Fluentia result projection retains legacy activity, item, level and error attribution', () => {
