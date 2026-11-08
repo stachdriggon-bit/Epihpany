@@ -65,6 +65,8 @@ test('wrong complete decoding is retryable and recorded without a penalty system
   h.click('[data-cb-symbol]',{cbSymbol:'S'});h.click('[data-cb-plain]',{cbPlain:'E'});
   h.click('[data-cb-check]');
   assert.match(h.root.innerHTML,/Not quite/);
+  assert.match(h.root.innerHTML,/repeated-letter patterns and your existing key/);
+  assert.doesNotMatch(h.root.innerHTML,/clue/i);
   assert.equal(h.results.length,1);assert.equal(h.results[0][2],false);
   assert.match(h.root.innerHTML,/data-cb-check/);
 });
