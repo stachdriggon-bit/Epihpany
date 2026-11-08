@@ -148,7 +148,7 @@ test('main navigation tabs open without uncaught page errors', { timeout: 18 * 6
       await dismissFirstVisitOverlays(page);
       checkpoint('view ' + view + ': overlays dismissed; waiting for navigation control');
       await page.waitForSelector('button[data-view="' + view + '"]', { state: 'attached', timeout: 10000 });
-      const eagerDeferred = requested.filter(path => /\/(data-translation-ar|data-stories|data-world(?:-sprites)?|think-lab|practice-lab|life-skills)\.js$/.test(path));
+      const eagerDeferred = requested.filter(path => /\/(data-translation-ar|data-stories|data-world(?:-sprites)?|think-lab|practice-lab|life-skills|fluentia-textwise-bank|fluentia-soundscape-bank)\.js$/.test(path));
       assert.deepEqual(eagerDeferred, [], 'deferred files should not load at startup for ' + view);
       checkpoint('view ' + view + ': navigation control ready; opening view');
       await clickView(page, view);
@@ -212,6 +212,8 @@ test('main navigation tabs open without uncaught page errors', { timeout: 18 * 6
           return engine && ['soundscape-sound-maze','soundscape-dictation','real-world-speaking-shadowing','soundscape-sound-maze-history-review'].every(id => engine.getActivity(id));
         }, null, {timeout:5000});
         assert.ok(requested.some(path => path.endsWith('/sound-maze-content.js')), 'Fluentia should load Sound Maze content on its first open');
+        assert.ok(requested.some(path => path.endsWith('/fluentia-textwise-bank.js')), 'Fluentia should load Textwise sequencing content on its first open');
+        assert.ok(requested.some(path => path.endsWith('/fluentia-soundscape-bank.js')), 'Fluentia should load Soundscape dictation content on its first open');
         assert.ok(requested.some(path => path.endsWith('/practice-lab.js')), 'Fluentia should load Practice Lab samples on its first open');
         assert.equal(await fluentia.locator('.fluentia-domain-card').count(),6,'Fluentia should render its six canonical domains');
         assert.equal(await fluentia.locator('[data-mode="section-mixed"]').count(),0,'Section Mixed should not appear on the Fluentia landing page');
