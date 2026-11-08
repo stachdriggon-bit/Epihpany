@@ -2,7 +2,7 @@
 
 Date: 2026-11-08  
 Branch: `main`  
-Implementation commit under verification: `9220f70ff8668d768deb9d31c05c505ec3355e44`
+Verified implementation commit: `c50ffb18532cd34b270e8cebc6fbcc0f96a27d2a`
 
 ## Executive result
 
@@ -60,9 +60,9 @@ The old Arcade DOM, renderer and lazy-load group remain in the repository for co
 
 ## CI and release status
 
-The implementation is on `main`. The first run against the implementation found one stale UI-copy assertion; it was corrected. The latest verification run for commit `9220f70ff8668d768deb9d31c05c505ec3355e44` was pending/in progress at the time this report was updated:
+The implementation is on `main` at `c50ffb18532cd34b270e8cebc6fbcc0f96a27d2a`. Both required CI workflows are green on this commit:
 
-- [EPIPHANY checks](https://github.com/stachdriggon-bit/Epihpany/actions/runs/42472780307)
-- [Content quality](https://github.com/stachdriggon-bit/Epihpany/actions/runs/42472780395)
+- **EPIPHANY checks:** passed — 486/486 unit/static tests, JavaScript syntax checks and Chromium browser smoke (including Fluentia's first-open sources and mobile drawer). [Workflow run](https://github.com/stachdriggon-bit/Epihpany/actions/runs/42473052912)
+- **Content quality:** passed. [Workflow run](https://github.com/stachdriggon-bit/Epihpany/actions/runs/42473052871)
 
-Do not treat the migration as release-signed until the latest CI runs are green. After CI, manually verify microphone permission prompts, successful capture, denied permission, unsupported browsers, audio playback, accessibility and lower-powered phone performance. Do not trigger a Vercel deployment while its deployment rate limit is active.
+Automated QA is green. Release sign-off still requires manual verification of microphone permission prompts, successful capture, denied permission, unsupported browsers, audio playback, accessibility and lower-powered phone performance. Do not trigger a Vercel deployment while its deployment rate limit is active.

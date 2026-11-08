@@ -1,6 +1,6 @@
 # Fluentia — Implementation Plan
 
-Status: **F-01–F-03 integration fixes implemented on main; latest CI verification pending; manual microphone/device/accessibility/performance sign-off remains**
+Status: **F-01–F-03 implemented; both required CI workflows green on `c50ffb18532cd34b270e8cebc6fbcc0f96a27d2a`; manual microphone/device/accessibility/performance sign-off remains**
 Target branch: `main`
 Product area: former Arcade / English practice activities
 Working principle: complete each phase as one coherent unit rather than scattering work across many small edits. Do not begin the next phase until the current phase has a documented outcome and its required checks are accounted for.
@@ -125,7 +125,7 @@ Deliverables: a repository-grounded inventory and final activity-to-domain mappi
 
 ### Phase 6 — Quality, regression and documentation
 
-**Automated verification passed on `main` at commit `1fd56a5ec0f01e5ac4e745fbbcf5c6c45978869c`.** Both `EPIPHANY checks` and `Content quality` are green. The unit/static suite passed 474/474 tests; JavaScript syntax checks passed for the Fluentia engine, adapters, progress bridge and UI. Chromium browser smoke passed 1/1 and exercised Fluentia desktop navigation, all six domain cards, single-activity answering, progress-bridge history, Arabic explanation replacement when available, Section Mixed domain confinement, Fluentia Mix startup, narrow-phone layout and mobile-drawer entry. The same browser run also passed the existing app navigation, card portal/dossier and offline service-worker checks.
+**Automated verification passed on `main` at commit `c50ffb18532cd34b270e8cebc6fbcc0f96a27d2a`.** Both `EPIPHANY checks` and `Content quality` are green. The unit/static suite passed 486/486 tests; JavaScript syntax checks passed for the Fluentia engine, adapters, progress bridge and UI. Chromium browser smoke passed 1/1 and exercised Fluentia desktop and mobile-drawer navigation, first-open Sound Maze/Practice Lab registration, all six domain cards, single-activity answering, progress-bridge history, Arabic explanation replacement when available, Section Mixed domain confinement, Fluentia Mix startup, narrow-phone layout and the existing app navigation, card portal/dossier and offline service-worker checks.
 
 Remaining sign-off is device/manual verification of speech and microphone permissions, audio playback quality/latency, assistive-technology navigation and performance on a lower-powered phone/long session. These are not claimed as verified by the CI browser run. Keep release readiness distinct from automated CI success.
 
@@ -155,4 +155,4 @@ Remaining sign-off is device/manual verification of speech and microphone permis
 - Phase 3 source integration, content banks, adapters and progress bridge are implemented and verified by green repository CI on `aa5008876a1d6876253971e768371742cd0e3fb7`.
 - Phase 4 mixed-session orchestration is implemented and covered by the green Phase 6 CI run.
 - Phase 5 navigation, core UI and the F-01–F-03 integration fixes are implemented; the audit report records the changes and remaining manual sign-off.
-- Phase 6 automated coverage has been extended for first-open source readiness, microphone states, history-driven review and mastery. The latest EPIPHANY checks and Content quality runs for the remediation are pending/in progress; confirm their final conclusions before calling automated QA green. Manual microphone/device/audio/accessibility/performance sign-off remains.
+- Phase 6 automated QA is green on `c50ffb18532cd34b270e8cebc6fbcc0f96a27d2a`: 486/486 unit/static tests, syntax checks and browser smoke passed; Content quality passed. Manual microphone/device/audio/accessibility/performance sign-off remains.
