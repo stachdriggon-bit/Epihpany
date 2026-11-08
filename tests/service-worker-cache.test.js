@@ -46,6 +46,8 @@ test('service worker install caches core assets but does not download every opti
   await wait;
   assert.ok(worker.added.includes('./index.html'));
   assert.ok(worker.added.includes('./app.js'));
+  assert.ok(worker.added.includes('./diagnostics.js'));
+  assert.ok(worker.added.includes('./diagnostics.css'));
   assert.equal(worker.added.some(asset => /(?:stories|world|think-lab|practice-lab|life-skills|resonance)/i.test(asset)), false);
 });
 
