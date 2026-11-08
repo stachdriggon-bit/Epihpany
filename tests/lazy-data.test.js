@@ -22,7 +22,7 @@ test('feature data loader does not request large datasets until requested', asyn
   };
   const merged = [];
   let fluentiaRegistrations = 0;
-  const context = { window: { EPIPHANY_MERGE_AR_TRANSLATIONS: () => merged.push(true), EPIPHANY_FLUENTIA_REGISTER_SOURCES: () => { fluentiaRegistrations++; }, EPIPHANY_FLUENTIA_SESSION_ENGINE: { getActivity: () => ({}) } }, document, Promise, Map, Set, Object, Error };
+  const context = { GAMES: Object.fromEntries(['vocabulary','spelling','grammar','story','listening','advanced'].map(name => [name, {questions:[{level:'A1'}]}])), window: { EpiphanyExpansion: {count:6}, EPIPHANY_MERGE_AR_TRANSLATIONS: () => merged.push(true), EPIPHANY_FLUENTIA_REGISTER_SOURCES: () => { fluentiaRegistrations++; }, EPIPHANY_FLUENTIA_SESSION_ENGINE: { getActivity: () => ({}) } }, document, Promise, Map, Set, Object, Error };
   const source = fs.readFileSync(path.join(root, 'lazy-data.js'), 'utf8');
   assert.doesNotThrow(() => new vm.Script(source, { filename: 'lazy-data.js' }));
   vm.runInNewContext(source, context);
@@ -85,7 +85,7 @@ test('feature data loader does not request large datasets until requested', asyn
 
   await context.window.EPIPHANY_LAZY_LOAD('expansion');
   assert.deepEqual(requested.slice(27).map(src => src.split('?')[0]), ['data-expansion.js']);
-  assert.match(requested[27], /^data-expansion\\.js\\?v=/);
+  assert.match(requested[27], /^data-expansion\.js\?v=/);
   assert.equal(fluentiaRegistrations, 3, 'Fluentia adapters should refresh after expansion content is ready');
 });
 
