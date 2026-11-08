@@ -323,11 +323,10 @@
     return promise;
   }
 
-  function loadGroup(group, priority) {
+  function loadGroupAssets(group, priority) {
     if (!Object.prototype.hasOwnProperty.call(groups, group)) {
       return Promise.reject(new Error('Unknown feature data group'));
     }
-    if(group.startsWith('expansion')&&group!=='expansionShared')return loadGroup('expansionShared',priority).then(()=>loadGroup(group,priority));
     let job = pending.get(group);
     if (job) {
       if (priority === 'user' && job.priority !== 'user') {
@@ -422,6 +421,21 @@
       });
     pending.set(group, job);
     return job.promise;
+  }
+
+  function loadGroup(group, priority) {
+    if (!Object.prototype.hasOwnProperty.call(groups, group)) {
+      return Promise.reject(new Error('Unknown feature data group'));
+    }
+    // Expansion game banks depend on the shared translation/runtime/WOTD
+    // layer. Call the asset loader directly after that dependency resolves;
+    // routing back through this wrapper would recursively request the shared
+    // layer forever.
+    if (group.startsWith('expansion') && group !== 'expansionShared') {
+      return loadGroupAssets('expansionShared', priority)
+        .then(() => loadGroupAssets(group, priority));
+    }
+    return loadGroupAssets(group, priority);
   }
 
   window.EPIPHANY_LAZY_LOAD = group => loadGroup(group, 'user');
