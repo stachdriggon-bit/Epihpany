@@ -82,6 +82,11 @@ test('feature data loader does not request large datasets until requested', asyn
   assert.deepEqual(requested.slice(26).map(src => src.split('?')[0]), ['data-minigames.js']);
   assert.match(requested[26], /^data-minigames\.js\?v=/);
   assert.equal(fluentiaRegistrations, 2, 'Fluentia adapters should refresh after the deferred directions bank is ready');
+
+  await context.window.EPIPHANY_LAZY_LOAD('expansion');
+  assert.deepEqual(requested.slice(27).map(src => src.split('?')[0]), ['data-expansion.js']);
+  assert.match(requested[27], /^data-expansion\\.js\\?v=/);
+  assert.equal(fluentiaRegistrations, 3, 'Fluentia adapters should refresh after expansion content is ready');
 });
 
 test('initial HTML defers stories and World data and keeps loader in offline shell', () => {
@@ -95,6 +100,7 @@ test('initial HTML defers stories and World data and keeps loader in offline she
   assert.doesNotMatch(html, /<script[^>]+src="data-minigames\.js/);
   assert.doesNotMatch(html, /<script[^>]+src="data-spot\.js/);
   assert.doesNotMatch(html, /<script[^>]+src="data-typing\.js/);
+  assert.doesNotMatch(html, /<script[^>]+src="data-expansion\.js/, 'expansion must not load in the initial HTML');
   assert.doesNotMatch(html, /<script[^>]+src="fluentia-(?:textwise|soundscape)-bank\.js/);
   assert.match(html, /lazy-data\.js\?v=[^\"&]+/);
   assert.doesNotMatch(html, /href=\"(?:resonance|life-skills)\.css/);
@@ -109,6 +115,8 @@ test('initial HTML defers stories and World data and keeps loader in offline she
   assert.ok(coreAssets, 'service worker should define core offline assets');
   assert.ok(lazyAssets, 'service worker should define lazy offline assets');
   assert.ok(!coreAssets.includes("'./data-minigames.js'"), 'Directions data should not be a core startup asset');
+  assert.ok(!coreAssets.includes("'./data-expansion.js'"), 'Expansion data should not be a core startup asset');
+  assert.ok(lazyAssets.includes("'./data-expansion.js'"), 'Expansion data should be cached lazily after use');
   assert.ok(lazyAssets.includes("'./data-minigames.js'"), 'Directions data should be cached as a lazy asset after use');
   for (const asset of ['data-spot.js', 'data-typing.js']) {
     assert.ok(!coreAssets.includes("'./" + asset + "'"), asset + ' should not be a core startup asset');
@@ -116,6 +124,7 @@ test('initial HTML defers stories and World data and keeps loader in offline she
   }
   const app = fs.readFileSync(path.join(root, 'app.js'), 'utf8');
   assert.ok(app.includes("EPIPHANY_LAZY_LOAD(dataName)"));
+  assert.match(app, /expansionGames\.has\(type\)[\s\S]*?EPIPHANY_LAZY_LOAD\('expansion'\)/, 'core CEFR games must await expansion data');
   assert.ok(app.includes("hydrateWritingPractice(type)"));
   const lazy = fs.readFileSync(path.join(root, 'lazy-data.js'), 'utf8');
   assert.ok(lazy.includes("spot: ['data-spot.js"));
