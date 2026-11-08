@@ -50,6 +50,7 @@ test('player-facing cryptograms contain no semantic answer clues',()=>{
   for(const list of Object.values(bank.puzzles)) for(const puzzle of list){
     assert.equal(Object.hasOwn(puzzle,'clue'),false,puzzle.id+' must not carry a semantic clue');
   }
+  assert.equal(bank.validatePuzzle({...bank.puzzles.easy[0],clue:'A fruit you can eat.'},'easy').valid,false);
 });
 
 test('Hard 01 starts with a more useful structural foothold without revealing a word',()=>{
