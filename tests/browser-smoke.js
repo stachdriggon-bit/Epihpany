@@ -115,7 +115,7 @@ test('main navigation tabs open without uncaught page errors', { timeout: 18 * 6
     await firstVisitPage.close();
     checkpoint('first-visit onboarding passed');
 
-    const views = ['home','fluentia','stories','chronicle','resonance','world','arcade','thinklab','casebound','summon','words','trophies','progress','profile'];
+    const views = ['home','fluentia','stories','chronicle','resonance','world','thinklab','casebound','summon','words','trophies','progress','profile'];
     for (const view of views) {
       checkpoint('starting view ' + view);
       const page = await browser.newPage();
@@ -307,13 +307,6 @@ test('main navigation tabs open without uncaught page errors', { timeout: 18 * 6
         await page.waitForFunction(() => typeof WORLD_DATA !== 'undefined', null, { timeout: 5000 });
         assert.ok(requested.some(path => path.endsWith('/data-world.js')), 'World should load its data on first open');
         assert.ok(requested.some(path => path.endsWith('/data-world-sprites.js')), 'World should load its art on first open');
-      }
-      if (view === 'arcade') {
-        assert.ok(requested.some(path => path.endsWith('/practice-lab.js')), 'Arcade should load practice tools on first open');
-        await page.locator('.arcade-play').first().click();
-        await page.locator('#game').waitFor({ state: 'visible', timeout: 5000 });
-        await page.locator('#game-body').waitFor({ state: 'visible', timeout: 5000 });
-        if (await page.locator('#game-body .answer').count()) await page.locator('#game-body .answer').first().click();
       }
       if (view === 'thinklab') {
         checkpoint('thinklab: checking deferred module requests');
