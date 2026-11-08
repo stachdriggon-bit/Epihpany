@@ -118,16 +118,26 @@ self.addEventListener('fetch', event => {
     })());
     return;
   }
-  // Same-origin app assets use network first so deployments update promptly; cache is offline fallback.
+  // Same-origin app assets use network first so deployments update promptly.
+  // Keep the cache write alive for the lifetime of this fetch event.
   event.respondWith(fetch(request).then(response => {
     if (response && response.ok) {
       const copy = response.clone();
-      caches.open(CACHE_NAME).then(cache => cache.put(request, copy));
+      event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.put(request, copy)));
     }
     return response;
-  }).catch(() => caches.match(request, {ignoreSearch:true}).then(cached => {
+  }).catch(async () => {
+    // Prefer the exact versioned URL. Falling back with ignoreSearch could
+    // serve an older script under a newer ?v= cache-busting key.
+    const cached = await caches.match(request);
     if (cached) return cached;
-    if (request.mode === 'navigate') return caches.match('./index.html');
+    // Optional assets may also have been warmed under their unversioned path.
+    const unversioned = await caches.match(url.origin + url.pathname);
+    if (unversioned) return unversioned;
+    if (request.mode === 'navigate') {
+      const shell = await caches.match('./index.html');
+      if (shell) return shell;
+    }
     return new Response('', {status: 503, statusText: 'Offline'});
-  })));
+  }));
 });
