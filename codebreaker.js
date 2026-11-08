@@ -4,14 +4,14 @@
   const root=document.getElementById('think-lab-content');
   const bank=window.EPIPHANY_CODEBREAKER_BANK;
   if(!root||!bank)return;
-  let level=null,index=0,mapping=Object.create(null),locked=new Set(),active='',feedback='',completed=false;
+  let level=null,index=0,mapping=Object.create(null),locked=new Set(),active='',feedback='',completed=false,hintStage=0;
   const esc=value=>String(value??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
   const list=()=>level?(bank.puzzles[level]||[]):[];
   const puzzle=()=>list()[index]||null;
   const uniqueCipher=()=>[...new Set((puzzle()?.cipher||'').replace(/[^A-Z]/g,''))];
   const levelReady=id=>!!bank.levels[id]&&(bank.puzzles[id]||[]).length===bank.levels[id].count&&(bank.puzzles[id]||[]).every(p=>bank.validatePuzzle(p,id).valid);
   function seedPuzzle(){
-    mapping=Object.create(null);locked=new Set();active='';feedback='';completed=false;
+    mapping=Object.create(null);locked=new Set();active='';feedback='';completed=false;hintStage=0;
     for(const pair of puzzle().known){mapping[pair.cipher]=pair.plain;locked.add(pair.cipher);}
   }
   function renderLevels(){
@@ -32,7 +32,7 @@
       const used=Object.keys(mapping).some(code=>mapping[code]===ch&&code!==active);
       return '<button type="button" class="cb-letter-key" data-cb-plain="'+ch+'"'+(!active||locked.has(active)||used||completed?' disabled':'')+'>'+ch+'</button>';
     }).join('');
-    root.innerHTML='<div class="cb-shell"><div class="tl-game-head"><button class="tl-back" type="button" data-cb-levels>← Choose level</button><span class="tl-eyebrow">CODEBREAKER · '+cfg.label.toUpperCase()+'</span></div><section class="cb-panel"><div class="cb-progress-row"><span class="cb-kicker">'+esc(item.title)+'</span><span class="cb-progress">'+(index+1)+' / '+cfg.count+'</span></div><h2>Decode the message</h2><p class="cb-instruction">Decode the message using the substitution key. Select a coded letter, then choose the English letter it represents. Every occurrence of that coded letter updates together, and the same coded letter always means the same English letter.</p><div class="cb-rules"><span><b>1</b> Select a coded letter</span><span><b>2</b> Assign an English letter</span><span><b>3</b> Decode the whole message</span></div><div class="cb-message-wrap"><span class="cb-label">ENCRYPTED MESSAGE</span><div class="cb-message" aria-label="Encrypted message">'+message+'</div></div><div class="cb-key-area"><div class="cb-key-heading"><strong>Your letter key</strong><span>Select a coded letter, then assign its replacement</span></div><div class="cb-key-grid">'+key+'</div><div class="cb-alphabet" aria-label="Choose the decoded letter">'+alphabet+'</div></div><div class="cb-actions"><button type="button" class="tl-secondary" data-cb-hint'+(completed?' disabled':'')+'>Reveal one letter</button><button type="button" class="tl-secondary" data-cb-clear'+(!active||locked.has(active)||completed?' disabled':'')+'>Clear selected key</button><button type="button" class="tl-next" data-cb-check'+(completed?' disabled':'')+'>Check message</button></div>'+(feedback?'<p class="cb-feedback" role="status">'+esc(feedback)+'</p>':'')+(completed?'<div class="cb-complete" role="status"><strong>✓ Message decoded!</strong><p>'+esc(item.answer)+'</p><button type="button" class="tl-next" data-cb-next>'+(index+1<cfg.count?'Next signal ↗':'Finish level ↗')+'</button></div>':'')+'</section></div>';
+    root.innerHTML='<div class="cb-shell"><div class="tl-game-head"><button class="tl-back" type="button" data-cb-levels>← Choose level</button><span class="tl-eyebrow">CODEBREAKER · '+cfg.label.toUpperCase()+'</span></div><section class="cb-panel"><div class="cb-progress-row"><span class="cb-kicker">'+esc(item.title)+'</span><span class="cb-progress">'+(index+1)+' / '+cfg.count+'</span></div><h2>Decode the message</h2><p class="cb-instruction">Decode the message using the substitution key. Select a coded letter, then choose the English letter it represents. Every occurrence of that coded letter updates together, and the same coded letter always means the same English letter.</p><div class="cb-rules"><span><b>1</b> Select a coded letter</span><span><b>2</b> Assign an English letter</span><span><b>3</b> Decode the whole message</span></div><div class="cb-message-wrap"><span class="cb-label">ENCRYPTED MESSAGE</span><div class="cb-message" aria-label="Encrypted message">'+message+'</div></div><div class="cb-key-area"><div class="cb-key-heading"><strong>Your letter key</strong><span>Select a coded letter, then assign its replacement</span></div><div class="cb-key-grid">'+key+'</div><div class="cb-alphabet" aria-label="Choose the decoded letter">'+alphabet+'</div></div><div class="cb-actions"><button type="button" class="tl-secondary" data-cb-hint'+(completed?' disabled':'')+'>'+(hintStage===0?'Pattern hint':hintStage===1?'Cross-word hint':'Reveal one letter')+'</button><button type="button" class="tl-secondary" data-cb-clear'+(!active||locked.has(active)||completed?' disabled':'')+'>Clear selected key</button><button type="button" class="tl-next" data-cb-check'+(completed?' disabled':'')+'>Check message</button></div>'+(feedback?'<p class="cb-feedback" role="status">'+esc(feedback)+'</p>':'')+(completed?'<div class="cb-complete" role="status"><strong>✓ Message decoded!</strong><p>'+esc(item.answer)+'</p><button type="button" class="tl-next" data-cb-next>'+(index+1<cfg.count?'Next signal ↗':'Finish level ↗')+'</button></div>':'')+'</section></div>';
   }
   function selectSymbol(ch){
     if(completed||locked.has(ch))return;
@@ -47,7 +47,38 @@
     mapping[active]=ch;feedback=active+' now decodes as '+ch+'.';active='';renderPuzzle();
   }
   function revealHint(){
-    const answer=puzzle().answer,cipher=puzzle().cipher;
+    const item=puzzle();
+    if(hintStage===0){
+      const words=item.cipher.split(' ');
+      for(let wordIndex=0;wordIndex<words.length;wordIndex++){
+        const word=words[wordIndex],positions=new Map();
+        [...word].forEach((letter,index)=>positions.set(letter,[...(positions.get(letter)||[]),index+1]));
+        const repeated=[...positions.entries()].find(([letter,places])=>places.length>1);
+        if(repeated){
+          const pattern=[],seen=new Map();let next=1;
+          for(const letter of word){if(!seen.has(letter))seen.set(letter,next++);pattern.push(seen.get(letter));}
+          feedback='Pattern hint: word '+(wordIndex+1)+' follows '+pattern.join('-')+'. Positions '+repeated[1].join(' and ')+' must decode to the same letter.';
+          hintStage=1;renderPuzzle();return;
+        }
+      }
+      feedback='Pattern hint: no word contains a repeated letter. Compare the same coded letters wherever they appear in the message.';
+      hintStage=1;renderPuzzle();return;
+    }
+    if(hintStage===1){
+      const words=item.cipher.split(' '),locations=new Map();
+      words.forEach((word,index)=>[...new Set(word)].forEach(letter=>{
+        if(!locations.has(letter))locations.set(letter,[]);
+        locations.get(letter).push(index+1);
+      }));
+      const candidate=[...locations.entries()].find(([letter,wordIndexes])=>!mapping[letter]&&wordIndexes.length>1);
+      if(candidate){
+        feedback='Cross-word hint: coded letter '+candidate[0]+' appears in words '+candidate[1].join(' and ')+'. Those positions must share one decoded letter.';
+      }else{
+        feedback='Cross-word hint: no unassigned coded letter links multiple words. Focus on the repeated-letter patterns within individual words.';
+      }
+      hintStage=2;renderPuzzle();return;
+    }
+    const answer=item.answer,cipher=item.cipher;
     for(let i=0;i<cipher.length;i++){
       const coded=cipher[i],plain=answer[i];
       if(/[A-Z]/.test(coded)&&!mapping[coded]&&!Object.keys(mapping).some(code=>mapping[code]===plain)){
