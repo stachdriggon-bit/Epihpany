@@ -90,4 +90,11 @@ test('expansion banks preserve question structure, CEFR coverage, and Arabic exp
   );
   assert.ok(advanced.some(question => question.explain_ar),
     'Arabic explanation strings supplied by the advanced bank must be preserved');
+
+  const expectedExpansionCount = games.reduce((total, game) => total +
+    context.GAMES[game].questions.filter(question =>
+      question && question.id && question.id.startsWith('exp-')
+    ).length, 0);
+  assert.equal(context.window.EpiphanyExpansion.extraQuestions, expectedExpansionCount,
+    'expansion diagnostics must report the real number of registered expansion questions');
 });
