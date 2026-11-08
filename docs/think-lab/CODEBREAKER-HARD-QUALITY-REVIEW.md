@@ -35,7 +35,7 @@ This is a structural/editorial review, not a proof of unique plaintext. The repo
 1. **Repair Hard 01's starter key.** Use `O → A` and `P → L`, replacing `O → A` and `A → C`. This gives a more informative partial shape without adding a third mapping or exposing the answer.
 2. **Remove unused semantic clue metadata from the fixed bank.** The UI did not display it, but keeping answer-adjacent definitions in the runtime bank contradicted the no-definition design and invited inaccurate feedback.
 3. **Correct retry feedback.** It now refers only to repeated-letter patterns and the player's existing key; it no longer tells the player to compare a clue that is not shown.
-4. **Keep the current one-letter reveal as the explicit answer-assistance mechanism.** Pattern observations are already present in the ciphertext; do not add decorative hints that merely restate visible information.
+4. **Use progressive hints rather than jumping immediately to a revealed letter.** The pattern and cross-word stages teach the player where to look without supplying plaintext; the third stage retains the existing one-letter reveal.
 5. **Do not change the other 11 Hard puzzles based on this pass.** Their openings are structurally reasonable. Revisit any one of them only if playtesting or a dictionary-backed solver shows that the constraints are misleading or unusually underdetermined.
 
 ## What this review does not establish
