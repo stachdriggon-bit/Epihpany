@@ -14,7 +14,9 @@
         mistakeTrapErrors: clone(state.mistakeTrapErrors || {}),
         mistakeQuestionErrors: clone(state.mistakeQuestionErrors || {}),
         mistakeTrapCorrect: clone(state.mistakeTrapCorrect || {}),
-        adaptiveSignals: clone(state.adaptiveSignals || {})
+        adaptiveSignals: clone(state.adaptiveSignals || {}),
+        fluentiaHistory: clone(Array.isArray(state.fluentiaHistory) ? state.fluentiaHistory : []),
+        fluentiaReviewState: clone(state.fluentiaReviewState || {})
       };
     }
     function toLegacyResult(event) {
