@@ -1,6 +1,6 @@
 # Fluentia — Implementation Plan
 
-Status: **Automated QA passed; final integration audit recorded three functional blockers (optional source loading, microphone-based speaking integration, and Fluentia-history-driven review); manual device/audio review remains**
+Status: **F-01–F-03 integration fixes implemented on main; latest CI verification pending; manual microphone/device/accessibility/performance sign-off remains**
 Target branch: `main`
 Product area: former Arcade / English practice activities
 Working principle: complete each phase as one coherent unit rather than scattering work across many small edits. Do not begin the next phase until the current phase has a documented outcome and its required checks are accounted for.
@@ -121,7 +121,7 @@ Deliverables: a repository-grounded inventory and final activity-to-domain mappi
 
 ### Phase 5 — Fluentia UI and Your Review
 
-**Navigation and core UI implemented; final integration audit found outstanding source/readiness gaps.** Fluentia is in the former Arcade position under the Play group on desktop and mobile, and replaces Arcade as the learner-facing English-practice destination. The legacy Arcade view and activity renderers remain in the repository for compatibility. The six canonical domain cards, activity chooser, CEFR selector, Section Mixed, Fluentia Mix and dedicated review-only entries are present. The session screen delegates selection and evaluation to the shared engine and renders the currently wired interaction types. However, the final audit (see [FLUENTIA-INTEGRATION-AUDIT.md](./FLUENTIA-INTEGRATION-AUDIT.md)) found that Practice Lab and Sound Maze sources are not loaded by opening Fluentia directly, the speech adapter currently renders a text field rather than the legacy microphone workflow, and Your Review does not yet consume errors from Fluentia's own history. These are implementation blockers, not verified features. Fluentia answer events are stored through the progress bridge without duplicating XP or legacy rewards. Keep Stories and Think Lab navigation/identity separate.
+**Navigation, core UI and integration remediation implemented; CI verification pending.** Fluentia remains in the former Arcade position under Play on desktop and mobile. Its own lazy-load group now loads only the Sound Maze and Practice Lab source modules and verifies their adapters register before the hub refreshes. Speaking & Shadowing uses browser speech recognition with microphone permission/error states and editable transcript fallback; it evaluates recognised-word matching, not pronunciation quality. Activity-specific history review adapters now turn incorrect Fluentia events into Your Review items, preserve their original interaction types and source identity, and remove an item after a correct review answer. Legacy saved-vocabulary/grammar review feeds remain. The old Arcade shell and shared content are retained intentionally; see [FLUENTIA-INTEGRATION-AUDIT.md](./FLUENTIA-INTEGRATION-AUDIT.md). Stories and Think Lab remain separate.
 
 ### Phase 6 — Quality, regression and documentation
 
@@ -154,5 +154,5 @@ Remaining sign-off is device/manual verification of speech and microphone permis
 - Phase 2 is verified complete; see [FLUENTIA-SESSION-ARCHITECTURE.md](./FLUENTIA-SESSION-ARCHITECTURE.md).
 - Phase 3 source integration, content banks, adapters and progress bridge are implemented and verified by green repository CI on `aa5008876a1d6876253971e768371742cd0e3fb7`.
 - Phase 4 mixed-session orchestration is implemented and covered by the green Phase 6 CI run.
-- Phase 5 navigation and core Fluentia UI are implemented; the final integration audit records remaining functional blockers in `FLUENTIA-INTEGRATION-AUDIT.md`.
-- Phase 6 automated QA was green on `1fd56a5ec0f01e5ac4e745fbbcf5c6c45978869c`; the later navigation correction is also green on `b2b24de74ebf8b7acf1011a5ee717c44d3f27e00` (both required workflows passed). The final integration audit found F-01–F-03 blockers; manual device/audio/accessibility/performance sign-off also remains. Do not call the full Arcade-to-Fluentia migration complete until those blockers are resolved.
+- Phase 5 navigation, core UI and the F-01–F-03 integration fixes are implemented; the audit report records the changes and remaining manual sign-off.
+- Phase 6 automated coverage has been extended for first-open source readiness, microphone states, history-driven review and mastery. The latest EPIPHANY checks and Content quality runs for the remediation are pending/in progress; confirm their final conclusions before calling automated QA green. Manual microphone/device/audio/accessibility/performance sign-off remains.
