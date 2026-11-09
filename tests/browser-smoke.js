@@ -248,6 +248,24 @@ test('main navigation tabs open without uncaught page errors', { timeout: 18 * 6
           assert.equal(await explanation.innerText(),before,'returning to English should restore the same explanation slot');
         }
         await fluentia.locator('[data-exit]').click();
+        const wordMatchActivity = fluentia.locator('[data-activity="wordcraft-word-match"]');
+        await wordMatchActivity.waitFor({state:'visible',timeout:5000});
+        await wordMatchActivity.click();
+        const matchQuestion = fluentia.locator('.fluentia-question-card');
+        await matchQuestion.locator('.fluentia-match-board').waitFor({state:'visible',timeout:5000});
+        assert.equal(await matchQuestion.locator('#fluentia-match-words [data-match-word]').count(),4,'Word Match should present four words in a round when the level bank has enough items');
+        assert.equal(await matchQuestion.locator('#fluentia-match-meanings [data-match-meaning]').count(),4,'Word Match should present four meanings in a separate shuffled column');
+        assert.equal(await matchQuestion.locator('#fluentia-match-meaning').count(),0,'Word Match must not ask for typed meanings');
+        const wordIds = await matchQuestion.locator('#fluentia-match-words [data-match-word]').evaluateAll(buttons=>buttons.map(button=>button.dataset.matchWord));
+        for (const id of wordIds) {
+          await matchQuestion.locator('[data-match-word="'+id+'"]').click();
+          await matchQuestion.locator('[data-match-meaning="'+id+'"]').click();
+        }
+        assert.equal(await matchQuestion.locator('.fluentia-match-pair').count(),4,'all four pairs should be assembled as independent matches');
+        await matchQuestion.locator('[data-submit]').click();
+        await matchQuestion.locator('.fluentia-feedback').waitFor({state:'visible',timeout:5000});
+        assert.match(await matchQuestion.locator('.fluentia-feedback').innerText(),/Correct/i,'the shared evaluator should accept the complete correct matching round');
+        await fluentia.locator('[data-exit]').click();
         for (const level of ['A1','A2','B1','B2','C1','C2']) {
           if (level !== 'A1') await fluentia.locator('#fluentia-level').selectOption(level);
           await fluentia.locator('.fluentia-domain-card[data-domain="soundscape"]').click();
