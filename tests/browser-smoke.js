@@ -267,6 +267,45 @@ test('main navigation tabs open without uncaught page errors', { timeout: 18 * 6
           await question.locator('.fluentia-feedback').waitFor({state:'visible',timeout:5000});
           await fluentia.locator('[data-exit]').click();
         }
+        await fluentia.locator('#fluentia-level').selectOption('A1');
+        await fluentia.locator('.fluentia-domain-card[data-domain="sentence-studio"]').click();
+        await fluentia.locator('[data-activity="sentence-studio-sentence-builder"]').click();
+        await question.waitFor({state:'visible',timeout:5000});
+        const wordTiles = question.locator('[data-order-token]');
+        const wordTileCount = await wordTiles.count();
+        assert.ok(wordTileCount >= 5,'Sentence Builder should provide selectable word tiles');
+        for (let index=0; index<wordTileCount; index++) await question.locator('[data-order-token="'+index+'"]').click();
+        assert.equal(await question.locator('[data-order-remove]').count(),wordTileCount,'selected words should move into the answer sequence');
+        await question.locator('[data-order-remove]').first().click();
+        assert.equal(await question.locator('[data-order-token]').count(),1,'a placed word should be removable back to the bank');
+        await question.locator('[data-order-token]').first().click();
+        await question.locator('[data-submit]').click();
+        await question.locator('.fluentia-feedback').waitFor({state:'visible',timeout:5000});
+        await fluentia.locator('[data-exit]').click();
+
+        await fluentia.locator('.fluentia-domain-card[data-domain="textwise"]').click();
+        await fluentia.locator('[data-activity="textwise-sequence"]').click();
+        await question.waitFor({state:'visible',timeout:5000});
+        assert.equal(await question.locator('.fluentia-order-context').count(),1,'Text Sequencing should show its informational context');
+        const stepTiles = question.locator('[data-order-token]');
+        const stepCount = await stepTiles.count();
+        assert.ok(stepCount>=3,'Text Sequencing should provide reorderable step tiles');
+        for (let index=0; index<stepCount; index++) await question.locator('[data-order-token="'+index+'"]').click();
+        await question.locator('[data-submit]').click();
+        await question.locator('.fluentia-feedback').waitFor({state:'visible',timeout:5000});
+        await fluentia.locator('[data-exit]').click();
+
+        await fluentia.locator('.fluentia-domain-card[data-domain="real-world"]').click();
+        await fluentia.locator('[data-activity="real-world-directions"]').click();
+        await question.waitFor({state:'visible',timeout:5000});
+        assert.equal(await question.locator('.fluentia-map-cell').count(),12,'Directions should render all twelve selectable town destinations');
+        assert.equal(await question.locator('#fluentia-answer').count(),0,'Directions should no longer ask for typed coordinates');
+        await question.locator('.fluentia-map-cell').first().click();
+        assert.equal(await question.locator('.fluentia-map-cell.is-selected').count(),1,'the chosen destination should be visibly selected');
+        await question.locator('[data-submit]').click();
+        await question.locator('.fluentia-feedback').waitFor({state:'visible',timeout:5000});
+        await fluentia.locator('[data-exit]').click();
+        assert.ok(requested.some(path=>path.endsWith('/data-minigames.js')),'Fluentia should load the shared Directions map bank');
         const domainCases = [
           ['wordcraft','Wordcraft'],['sentence-studio','Sentence Studio'],['textwise','Textwise'],
           ['soundscape','Soundscape'],['real-world','Real World'],['fine-sense','Fine Sense']
