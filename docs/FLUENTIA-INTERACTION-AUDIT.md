@@ -8,13 +8,13 @@ Branch: `main`
 **Finding:** The previous Fluentia presentation exposed the object name beside its pictogram and built the choices from every word in the activity bank. That changed a listening-to-picture task into a visible word-recognition task and produced an oversized answer list.
 
 **Implemented correction:**
-- Each question now receives exactly four visual choices from the same CEFR level.
+- Each question now receives exactly four visual choices from the same CEFR level. The source bank covers all six levels: A1 has 9 prompts; A2, B1, B2, C1 and C2 each have 4 prompts.
 - The correct choice is always included; distractors are unique and selected in a stable, deterministic order.
 - The answer tiles render pictogram artwork only. Object names are kept in the answer value for evaluation and are not rendered in the tile.
 - Tiles use neutral accessible labels ("Picture option 1" etc.) rather than announcing the object name.
 - Existing audio playback and the adapter's word-based evaluation are preserved.
 
-**Asset note:** The existing emoji symbols remain as a fallback, and the activity now uses original, locally stored SVG object illustrations through the `image` field. The SVG sprite is served from the repository and its images are cached by the service worker after first use; no external image URLs are required.
+**Asset note:** The existing emoji symbols remain as a fallback, and the activity now uses original, locally stored SVG object illustrations through the `image` field. The SVG sprite is served from the repository and its images are cached by the service worker after first use; no external image URLs are required. Dedicated pictograms are provided for the higher-level vocabulary instead of reusing beginner words.
 
 ## Review of the remaining activities
 
