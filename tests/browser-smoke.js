@@ -258,9 +258,14 @@ test('main navigation tabs open without uncaught page errors', { timeout: 18 * 6
         assert.equal(await matchQuestion.locator('#fluentia-match-meanings [data-match-meaning]').count(),4,'Word Match should present four meanings in a separate shuffled column');
         assert.equal(await matchQuestion.locator('#fluentia-match-meaning').count(),0,'Word Match must not ask for typed meanings');
         const wordIds = await matchQuestion.locator('#fluentia-match-words [data-match-word]').evaluateAll(buttons=>buttons.map(button=>button.dataset.matchWord));
-        for (const id of wordIds) {
-          await matchQuestion.locator('[data-match-word="'+id+'"]').click();
-          await matchQuestion.locator('[data-match-meaning="'+id+'"]').click();
+        for (const [index,id] of wordIds.entries()) {
+          if (index % 2) {
+            await matchQuestion.locator('[data-match-meaning="'+id+'"]').click();
+            await matchQuestion.locator('[data-match-word="'+id+'"]').click();
+          } else {
+            await matchQuestion.locator('[data-match-word="'+id+'"]').click();
+            await matchQuestion.locator('[data-match-meaning="'+id+'"]').click();
+          }
         }
         assert.equal(await matchQuestion.locator('.fluentia-match-pair').count(),4,'all four pairs should be assembled as independent matches');
         await matchQuestion.locator('.fluentia-match-pair [data-match-remove]').first().click();
