@@ -207,16 +207,14 @@
           const submitted = Array.isArray(answer) ? answer : answer && Array.isArray(answer.pairs) ? answer.pairs : [];
           const expected = item.pairs || [];
           const usedWords = new Set();
-          const usedMeanings = new Set();
           const correct = expected.length >= 2 && submitted.length === expected.length &&
             submitted.every(pair => {
               const word = normalize(pair && pair.word);
               const meaning = normalize(pair && pair.meaning);
-              if (!word || !meaning || usedWords.has(word) || usedMeanings.has(meaning)) return false;
+              if (!word || !meaning || usedWords.has(word)) return false;
               usedWords.add(word);
-              usedMeanings.add(meaning);
               return expected.some(row => normalize(row.word) === word && normalize(row.meaning) === meaning);
-            }) && usedWords.size === expected.length && usedMeanings.size === expected.length;
+            }) && usedWords.size === expected.length;
           return {correct, errorType: correct ? null : 'word-pair-mismatch'};
         },
         correctAnswer: item => (item.pairs || []).map(pair => ({word:pair.word,meaning:pair.meaning}))
