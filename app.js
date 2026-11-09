@@ -179,14 +179,14 @@
     spot:      {label:'Spot the Mistake', tone:'coral', glyph:'?!', time:4, blurb:'Tap the one incorrect word.'},
     typing:    {label:'Type It', tone:'sky', glyph:'Aa', time:4, blurb:'Write the missing word from memory.'}
   };
-  const FLUENTIA_SHORTCUTS = Object.freeze({
-    order:{activityId:'textwise-sequence',label:'Text Sequencing',tone:'sky',glyph:'1·2·3',time:4,xp:30,blurb:'Put practical steps in the correct order.'},
-    match:{activityId:'wordcraft-word-match',label:'Word Match',tone:'violet',glyph:'⇄',time:3,xp:25,blurb:'Match each word with its correct meaning.'},
-    directions:{activityId:'real-world-directions',label:'Directions',tone:'navy',glyph:'↱',time:4,xp:35,blurb:'Follow directions on a town map.'},
-    speed:{activityId:'wordcraft-speed-round',label:'Speed Round',tone:'violet',glyph:'⚡',time:3,xp:45,blurb:'Practise rapid vocabulary recall.'},
-    sentenceOrder:{activityId:'sentence-studio-sentence-builder',label:'Sentence Builder',tone:'coral',glyph:'↔',time:3,xp:35,blurb:'Build natural sentences in the correct order.'}
+  const FLUENTIA_HOME_ACTIVITIES = Object.freeze({
+    'textwise-sequence':{label:'Text Sequencing',tone:'sky',glyph:'1·2·3',time:4,xp:30,blurb:'Put practical steps in the correct order.'},
+    'wordcraft-word-match':{label:'Word Match',tone:'violet',glyph:'⇄',time:3,xp:25,blurb:'Match each word with its correct meaning.'},
+    'real-world-directions':{label:'Directions',tone:'navy',glyph:'↱',time:4,xp:35,blurb:'Follow directions on a town map.'},
+    'wordcraft-speed-round':{label:'Speed Round',tone:'violet',glyph:'⚡',time:3,xp:45,blurb:'Practise rapid vocabulary recall.'},
+    'sentence-studio-sentence-builder':{label:'Sentence Builder',tone:'coral',glyph:'↔',time:3,xp:35,blurb:'Build natural sentences in the correct order.'}
   });
-  Object.entries(FLUENTIA_SHORTCUTS).forEach(([id,meta])=>{META[id]={...meta};});
+  Object.entries(FLUENTIA_HOME_ACTIVITIES).forEach(([id,meta])=>{META[id]={...meta};});
   const ORDER = ['vocabulary', 'spelling', 'grammar', 'story', 'listening', 'advanced', 'mistakes', 'typing'];
   const UNLOCK = {vocabulary:0, spelling:0, grammar:1, story:2, listening:3, advanced:4, mistakes:0, spot:0, typing:0};
   GAMES.mistakes = {title:'Common Mistakes', category:'GRAMMAR', xp:40, desc:'Understand common mistakes made by English learners.', questions:MISTAKE_QUESTIONS.map(q=>({q:q.prompt,sub:q.sub,answers:q.options,correct:q.answer,explain:q.why_en,word:null,level:q.level,ar:q.arabic_hint,id:q.id,trap:q.trap,why_ar:q.why_ar,arabic_hint:q.arabic_hint,q_ar:q.q_ar,sub_ar:q.sub_ar,explain_ar:q.why_ar,aha:null}))};
@@ -672,16 +672,16 @@
     const traps=Object.entries(state.mistakeTrapErrors||{}).map(([key,errors])=>({key,errors:Number(errors)||0,correct:Number((state.mistakeTrapCorrect||{})[key])||0})).filter(x=>x.errors>0).sort((a,b)=>(b.errors-Math.floor(b.correct/2))-(a.errors-Math.floor(a.correct/2)));
     const sig=skill=>{const b=signals[skill]||{},topics=Object.entries(b.topics||{}).map(([key,v])=>({key,errors:Number(v.errors)||0,correct:Number(v.correct)||0}));topics.sort((a,b)=>(b.errors-Math.floor(b.correct/2))-(a.errors-Math.floor(a.correct/2)));return{errors:Number(b.errors)||0,correct:Number(b.correct)||0,topic:topics[0]};};
     const c=[];
-    if(dueReview.length)c.push({priority:100+Math.min(dueReview.length,20),game:'speed',title:'Review words due today',reason:'Some saved words are ready for review. A short round helps strengthen your memory before moving on.',detail:dueReview.slice(0,3).map(w=>w.word).join(', '),kind:'review'});
+    if(dueReview.length)c.push({priority:100+Math.min(dueReview.length,20),game:'wordcraft-speed-round',title:'Review words due today',reason:'Some saved words are ready for review. A short round helps strengthen your memory before moving on.',detail:dueReview.slice(0,3).map(w=>w.word).join(', '),kind:'review'});
     if(dueGrammar.length)c.push({priority:80+Math.min(dueGrammar.length,15),game:'personalized',title:'Review grammar patterns due today',reason:'A grammar pattern you have practised is ready for spaced review. Revisit it now to strengthen recall before it fades.',detail:dueGrammar.slice(0,3).map(x=>x.key.replace(/[-_]+/g,' ')).join(', '),kind:'grammar-review'});
     if(traps[0]&&traps[0].errors>=2)c.push({priority:traps[0].errors-Math.floor(traps[0].correct/2),game:'personalized',title:'Your grammar weak spots',reason:'You have missed this grammar pattern more than once. This short review prioritises patterns you find difficult.',detail:traps[0].key.replace(/[-_]+/g,' '),kind:'grammar'});
-    const v=sig('vocabulary');if(hard.length||v.errors>=2)c.push({priority:Math.max(hard.length?Number(hard[0].errors)||0:0,v.errors),game:'speed',title:'Review your difficult words',reason:'Speed Round gives extra attention to saved words and words you have missed before.',detail:hard.length?hard.slice(0,3).map(w=>w.word).join(', '):(v.topic&&v.topic.key)||'vocabulary',kind:'vocabulary'});
+    const v=sig('vocabulary');if(hard.length||v.errors>=2)c.push({priority:Math.max(hard.length?Number(hard[0].errors)||0:0,v.errors),game:'wordcraft-speed-round',title:'Review your difficult words',reason:'Speed Round gives extra attention to saved words and words you have missed before.',detail:hard.length?hard.slice(0,3).map(w=>w.word).join(', '):(v.topic&&v.topic.key)||'vocabulary',kind:'vocabulary'});
     const l=sig('listening');if(l.errors>=2)c.push({priority:l.errors-Math.floor(l.correct/2),game:'listening',title:'Train listening comprehension',reason:'You have missed several listening questions. Practise understanding spoken English in context.',detail:(l.topic&&l.topic.key)||'listening comprehension',kind:'listening'});
-    const s=sig('sentence');if(s.errors>=2)c.push({priority:s.errors-Math.floor(s.correct/2),game:'sentenceOrder',title:'Build sentences with confidence',reason:'Sentence Builder gives you another chance to practise word order and natural sentence structure.',detail:'sentence order',kind:'sentence'});
+    const s=sig('sentence');if(s.errors>=2)c.push({priority:s.errors-Math.floor(s.correct/2),game:'sentence-studio-sentence-builder',title:'Build sentences with confidence',reason:'Sentence Builder gives you another chance to practise word order and natural sentence structure.',detail:'sentence order',kind:'sentence'});
     const d=sig('conversation');if(d.errors>=2)c.push({priority:d.errors-Math.floor(d.correct/2),game:'story',title:'Practise real-life choices',reason:'Some choices in World conversations have been tricky. Try a real-life dialogue and review the context before choosing.',detail:(d.topic&&d.topic.key)||'conversation choices',kind:'conversation'});
     c.sort((a,b)=>b.priority-a.priority);if(c.length)return c[0];
-    if(review.length)return{priority:0,game:'speed',title:'Keep your vocabulary active',reason:'Use a quick round to revisit saved words. As you practise, EPIPHANY will learn which words need more review.',detail:review.slice(0,3).map(w=>w.word).join(', '),kind:'vocabulary'};
-    return{priority:0,game:'speed',title:'Start with a quick word round',reason:'Play a short round to begin building your personal learning signals. Repeated mistakes will help EPIPHANY recommend more targeted practice.',detail:'60-second Speed Round',kind:'starter'};
+    if(review.length)return{priority:0,game:'wordcraft-speed-round',title:'Keep your vocabulary active',reason:'Use a quick round to revisit saved words. As you practise, EPIPHANY will learn which words need more review.',detail:review.slice(0,3).map(w=>w.word).join(', '),kind:'vocabulary'};
+    return{priority:0,game:'wordcraft-speed-round',title:'Start with a quick word round',reason:'Play a short round to begin building your personal learning signals. Repeated mistakes will help EPIPHANY recommend more targeted practice.',detail:'60-second Speed Round',kind:'starter'};
   }
   function preparePersonalizedGame(){
     const all=(GAMES.mistakes&&GAMES.mistakes.questions||[]).slice();if(!all.length||!GAMES.personalized)return;
@@ -767,9 +767,9 @@
     renderChallenges();
     renderDailySessionCard();
     const recommendation = adaptiveRecommendation();
-    const recommendedGame = (GAMES[recommendation.game] || FLUENTIA_SHORTCUTS[recommendation.game]) ? recommendation.game : pickNext();
-    const shortcut = FLUENTIA_SHORTCUTS[recommendedGame];
-    const game = GAMES[recommendedGame] || shortcut || GAMES.vocabulary;
+    const recommendedGame = (GAMES[recommendation.game] || FLUENTIA_HOME_ACTIVITIES[recommendation.game]) ? recommendation.game : pickNext();
+    const fluentiaActivity = FLUENTIA_HOME_ACTIVITIES[recommendedGame];
+    const game = GAMES[recommendedGame] || fluentiaActivity || GAMES.vocabulary;
     const m = META[recommendedGame] || META.vocabulary;
     $('#next-card').className = 'next t-' + (m.tone || 'violet');
     $('#next-cat').textContent = m.label || 'Personal practice';
@@ -777,7 +777,7 @@
     $('#next-desc').textContent = recommendation.reason + (recommendation.detail ? ' Focus: ' + recommendation.detail + '.' : '');
     $('#next-count').textContent = recommendation.kind === 'starter' ? 'A first step · adapts as you practise' : 'Chosen from your practice history';
     $('#next-time').textContent = (m.time || 3) + ' min';
-    $('#next-xp').textContent = shortcut ? 'Fluentia activity' : '+' + (game.xp || m.xp || 25) + ' XP';
+    $('#next-xp').textContent = fluentiaActivity ? 'Fluentia activity' : '+' + (game.xp || m.xp || 25) + ' XP';
     $('#next-art').innerHTML = '<div class="glyph">' + glyph(recommendedGame) + '</div>';
     $('#next-start').dataset.game = recommendedGame;
     renderWeaknessPanel();
@@ -810,9 +810,9 @@
     $('#track-note').innerHTML = '<strong>Current CEFR: ' + lv.id + ' · ' + esc(lv.title) + '</strong> ' + esc(lv.desc) + '<p class="level-note">XP opens a promotion test; only passing the test changes your CEFR level.</p>' + (nx ? '<p class="level-note">Promotion progress: ' + promotion.earned + ' / ' + promotion.required + ' XP</p>' + (promotion.unlocked ? '<button type="button" class="btn" data-promotion-start>Take the ' + nx.id + ' promotion test</button>' : '<p class="level-note">Earn ' + Math.max(0, promotion.required - promotion.earned) + ' more XP to unlock the test.</p>') : '<p class="level-note">You have reached the highest CEFR level. Keep practising to maintain your skills.</p>') + (state.lastPromotionResult ? '<p class="level-note">Last promotion test: ' + esc(state.lastPromotionResult.score + '/' + state.lastPromotionResult.total) + (state.lastPromotionResult.passed ? ' · Passed' : ' · Not passed yet') + '</p>' : '');
 
     const gameCategories = [
-      {id:'words',title:'Words',desc:'Build your vocabulary and recognise words.',icon:'Aa',tone:'violet',games:[['vocabulary','Word collector'],['spelling','Word detective'],['match','Word Match']]},
+      {id:'words',title:'Words',desc:'Build your vocabulary and recognise words.',icon:'Aa',tone:'violet',games:[['vocabulary','Word collector'],['spelling','Word detective'],['wordcraft-word-match','Word Match']]},
       {id:'grammar',title:'Grammar',desc:'Make sentences clearer and more accurate.',icon:'S+V',tone:'coral',games:[['grammar','Sentence shaper'],['mistakes','Common mistakes'],['spot','Spot the mistake'],['typing','Type It']]},
-      {id:'reading',title:'Reading & Listening',desc:'Understand stories, messages and meaning.',icon:'◖',tone:'sky',games:[['story','Lost in London'],['listening','Meaning detective'],['order','Text Sequencing'],['directions','Directions']]},
+      {id:'reading',title:'Reading & Listening',desc:'Understand stories, messages and meaning.',icon:'◖',tone:'sky',games:[['story','Lost in London'],['listening','Meaning detective'],['textwise-sequence','Text Sequencing'],['real-world-directions','Directions']]},
       {id:'challenge',title:'Challenge',desc:'Train your ear for nuance and precise meaning.',icon:'✦',tone:'ink',games:[['advanced','Nuance navigator']]},
     ];
     window.__gameCategories = gameCategories;
@@ -1595,7 +1595,7 @@
       return;
     }
     if (selected.value === '__world') { openView('home'); startWorld(); return; }
-    if (GAMES[selected.value] || FLUENTIA_SHORTCUTS[selected.value]) { openView('home'); startGame(selected.value); }
+    if (GAMES[selected.value] || FLUENTIA_HOME_ACTIVITIES[selected.value]) { openView('home'); startGame(selected.value); }
   }
 
   function renderLearningInsights(){
@@ -2114,17 +2114,17 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     document.dispatchEvent(new CustomEvent('epiphany:view-changed', { detail: { view: name } }));
   }
 
-  function launchFluentiaShortcut(shortcutKey) {
-    const shortcut = FLUENTIA_SHORTCUTS[shortcutKey];
-    if (!shortcut) return false;
+  function launchFluentiaActivity(activityId) {
+    const activity = FLUENTIA_HOME_ACTIVITIES[activityId];
+    if (!activity) return false;
     openView('fluentia');
     window.EPIPHANY_LAZY_LOAD('fluentia').then(() => {
       if (!$('#fluentia-view')?.classList.contains('is-active')) return;
       const launch = window.EPIPHANY_FLUENTIA_START_ACTIVITY;
-      if (typeof launch !== 'function' || !launch(shortcut.activityId, shortcut.label)) {
-        toast(shortcut.label + ' is not available for your selected level yet. Try another Fluentia activity.');
+      if (typeof launch !== 'function' || !launch(activityId, activity.label)) {
+        toast(activity.label + ' is not available for your selected level yet. Try another Fluentia activity.');
       }
-    }).catch(() => toast(shortcut.label + ' could not load. Connect to the internet and try again.'));
+    }).catch(() => toast(activity.label + ' could not load. Connect to the internet and try again.'));
     return true;
   }
 
@@ -3524,7 +3524,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
   const expansionGameLoads = new Set();
   const expansionGames = new Set(['vocabulary','spelling','grammar','story','listening','advanced']);
   function startGame(type, challengeMode = '') {
-    if (FLUENTIA_SHORTCUTS[type]) { launchFluentiaShortcut(type); return; }
+    if (FLUENTIA_HOME_ACTIVITIES[type]) { launchFluentiaActivity(type); return; }
     if(expansionGames.has(type)&&!window.EPIPHANY_EXPANSION_BANKS?.[type]){
       if(expansionGameLoads.has(type))return;
       expansionGameLoads.add(type);
@@ -5295,7 +5295,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
         $('#category-picker-title').textContent=cat.title;
         $('#category-picker-desc').textContent=cat.desc;
         $('#category-options').innerHTML=cat.games.map(([id,label])=>{
-          const gmData=GAMES[id], meta=META[id] || FLUENTIA_SHORTCUTS[id];
+          const gmData=GAMES[id], meta=META[id] || FLUENTIA_HOME_ACTIVITIES[id];
           return '<button type="button" class="category-option t-'+meta.tone+'" data-game="'+id+'"><span class="category-option-icon">'+glyph(id)+'</span><span><strong>'+label+'</strong><small>'+meta.time+' min · +'+((gmData||meta).xp)+' XP</small></span><span class="category-option-arrow" aria-hidden="true">→</span></button>';
         }).join('');
         $('#category-picker').hidden=false;
