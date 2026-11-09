@@ -82,3 +82,12 @@ body[data-theme="dark"] .fluentia-review-panel{background:#29291f}
 body.ar-on .fluentia-hero,body.ar-on .fluentia-domain-intro,body.ar-on .fluentia-mode-card,body.ar-on .fluentia-domain-card,body.ar-on .fluentia-activity-card{text-align:right;direction:rtl}
 @media(max-width:820px){.fluentia-domain-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.fluentia-hero{grid-template-columns:1fr}.fluentia-hero-mark{display:none}}
 @media(max-width:580px){.fluentia-modes,.fluentia-domain-grid,.fluentia-activity-list{grid-template-columns:1fr}.fluentia-mode-card{min-height:160px}.fluentia-domain-card{min-height:155px}.fluentia-toolbar{align-items:flex-start}.fluentia-summary-stats{grid-template-columns:1fr 1fr}.fluentia-session-actions .btn{width:100%}}
+
+.fluentia-picture-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin:18px 0}
+.fluentia-picture-choice{display:grid;place-items:center;min-width:0;min-height:138px;aspect-ratio:1.25;padding:14px;border:1.5px solid var(--line);border-radius:18px;background:var(--surface);transition:border-color .15s,background .15s,transform .15s}
+.fluentia-picture-choice:hover:not(:disabled){border-color:var(--violet);background:var(--violet-soft);transform:translateY(-2px)}
+.fluentia-picture-choice:focus-visible{outline:3px solid var(--violet);outline-offset:3px}
+.fluentia-picture-choice:disabled{cursor:default;opacity:1}
+.fluentia-picture-art{display:grid;place-items:center;width:100%;height:100%;font-size:clamp(58px,9vw,82px);line-height:1}
+.fluentia-picture-art img{display:block;width:100%;height:100%;max-width:120px;max-height:110px;object-fit:contain}
+@media(max-width:420px){.fluentia-picture-grid{gap:10px}.fluentia-picture-choice{min-height:118px;padding:10px}}
