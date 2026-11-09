@@ -281,6 +281,7 @@ test('main navigation tabs open without uncaught page errors', { timeout: 18 * 6
         await matchQuestion.locator('.fluentia-feedback').waitFor({state:'visible',timeout:5000});
         assert.match(await matchQuestion.locator('.fluentia-feedback').innerText(),/Correct/i,'the shared evaluator should accept the complete correct matching round');
         await fluentia.locator('[data-exit]').click();
+        await fluentia.locator('[data-home-back]').click();
         for (const level of ['A1','A2','B1','B2','C1','C2']) {
           if (level !== 'A1') await fluentia.locator('#fluentia-level').selectOption(level);
           await fluentia.locator('.fluentia-domain-card[data-domain="soundscape"]').click();
@@ -301,6 +302,7 @@ test('main navigation tabs open without uncaught page errors', { timeout: 18 * 6
           await pictureChoices.first().click();
           await question.locator('.fluentia-feedback').waitFor({state:'visible',timeout:5000});
           await fluentia.locator('[data-exit]').click();
+          await fluentia.locator('[data-home-back]').click();
         }
         await fluentia.locator('#fluentia-level').selectOption('A1');
         await fluentia.locator('.fluentia-domain-card[data-domain="sentence-studio"]').click();
@@ -321,6 +323,7 @@ test('main navigation tabs open without uncaught page errors', { timeout: 18 * 6
         await question.locator('[data-submit]').click();
         await question.locator('.fluentia-feedback').waitFor({state:'visible',timeout:5000});
         await fluentia.locator('[data-exit]').click();
+        await fluentia.locator('[data-home-back]').click();
 
         await fluentia.locator('.fluentia-domain-card[data-domain="textwise"]').click();
         await fluentia.locator('[data-activity="textwise-sequence"]').click();
@@ -333,6 +336,7 @@ test('main navigation tabs open without uncaught page errors', { timeout: 18 * 6
         await question.locator('[data-submit]').click();
         await question.locator('.fluentia-feedback').waitFor({state:'visible',timeout:5000});
         await fluentia.locator('[data-exit]').click();
+        await fluentia.locator('[data-home-back]').click();
 
         await fluentia.locator('.fluentia-domain-card[data-domain="real-world"]').click();
         await fluentia.locator('[data-activity="real-world-directions"]').click();
@@ -344,6 +348,7 @@ test('main navigation tabs open without uncaught page errors', { timeout: 18 * 6
         await question.locator('[data-submit]').click();
         await question.locator('.fluentia-feedback').waitFor({state:'visible',timeout:5000});
         await fluentia.locator('[data-exit]').click();
+        await fluentia.locator('[data-home-back]').click();
         assert.ok(requested.some(path=>path.endsWith('/data-minigames.js')),'Fluentia should load the shared Directions map bank');
         assert.equal(await page.evaluate(() => window.EPIPHANY_DIRECTIONS_DATA?.items?.length),120,'the complete six-level Directions bank should be registered');
         assert.equal(await page.evaluate(() => window.EPIPHANY_FLUENTIA_SESSION_ENGINE.getActivity('real-world-directions').getItems({level:'A1'}).length),20,'Directions should expose its A1 items after lazy loading');
@@ -357,7 +362,7 @@ test('main navigation tabs open without uncaught page errors', { timeout: 18 * 6
           await page.evaluate(() => window.dispatchEvent(new Event('epiphany:progress-saved')));
           assert.equal(await fluentia.locator('.fluentia-domain-intro h2').innerText(),domainName,'a progress save must preserve the '+domainName+' domain');
           assert.equal(await fluentia.locator('.fluentia-back').count(),1,'the selected domain should remain open after a progress save');
-          await fluentia.locator('[data-back]').click();
+          await fluentia.locator('[data-home-back]').click();
           assert.equal(await fluentia.locator('#fluentia-level').inputValue(),'C2','background saves must preserve the learner-selected practice level');
         }
         await fluentia.locator('.fluentia-domain-card[data-domain="wordcraft"]').click();
