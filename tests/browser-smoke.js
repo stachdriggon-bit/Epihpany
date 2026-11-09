@@ -1161,7 +1161,7 @@ test('main navigation tabs open without uncaught page errors', { timeout: 18 * 6
     await adaptivePage.goto(baseUrl, { waitUntil: 'domcontentloaded' });
     await dismissFirstVisitOverlays(adaptivePage);
     await adaptivePage.waitForFunction(() => document.querySelector('#next-title')?.textContent === 'Review words due today', null, { timeout: 5000 });
-    assert.equal(await adaptivePage.locator('#next-start').getAttribute('data-game'), 'speed', 'words due for spaced review should take priority over a generic activity rotation');
+    assert.equal(await adaptivePage.locator('#next-start').getAttribute('data-game'), 'wordcraft-speed-round', 'words due for spaced review should take priority through Fluentia Speed Round');
     assert.match(await adaptivePage.locator('#next-desc').innerText(), /although/i, 'the recommendation should name the words that need attention');
     await adaptivePage.close();
 
