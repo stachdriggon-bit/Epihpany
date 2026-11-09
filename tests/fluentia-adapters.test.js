@@ -57,6 +57,21 @@ test('missing legacy IDs receive deterministic IDs without mutating source recor
   assert.equal(Object.hasOwn(item, 'id'), false);
 });
 
+test('Directions adapter reads map data that becomes available after adapter registration', () => {
+  const sources = fixture();
+  let liveItems = [];
+  let liveBlocks = [[['🏦','bank','مصرف']]];
+  sources.getDirections = () => liveItems;
+  sources.getDirectionBlocks = () => liveBlocks;
+  const adapter = AdapterFactory.createAdapters(sources).find(item => item.id === 'real-world-directions');
+  assert.equal(adapter.getItems({level:'A1'}).length,0);
+  liveItems = [{id:'dir-late',level:'A1',answer:[0,0],steps:[]}];
+  liveBlocks = [[['📚','library','مكتبة']]];
+  const [item] = adapter.getItems({level:'A1'});
+  assert.equal(item.id,'dir-late');
+  assert.deepEqual(item.mapBlocks,liveBlocks);
+});
+
 test('Directions adapter carries landmark map data into each eligible item', () => {
   const adapter = AdapterFactory.createAdapters(fixture()).find(item => item.id === 'real-world-directions');
   const [item] = adapter.getItems({level:'A1'});
