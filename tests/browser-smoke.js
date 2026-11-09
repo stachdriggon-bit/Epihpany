@@ -277,6 +277,7 @@ test('main navigation tabs open without uncaught page errors', { timeout: 18 * 6
           assert.equal(await fluentia.locator('.fluentia-domain-intro h2').innerText(),domainName,'a progress save must preserve the '+domainName+' domain');
           assert.equal(await fluentia.locator('.fluentia-back').count(),1,'the selected domain should remain open after a progress save');
           await fluentia.locator('[data-back]').click();
+          assert.equal(await fluentia.locator('#fluentia-level').inputValue(),'C2','background saves must preserve the learner-selected practice level');
         }
         await fluentia.locator('.fluentia-domain-card[data-domain="wordcraft"]').click();
                 await fluentia.locator('[data-mode="section-mixed"]').click();
