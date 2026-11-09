@@ -130,6 +130,7 @@ test('Fluentia ordering activities use selectable tiles and map activities use s
   assert.match(ui, /data-order-token=/);
   assert.match(ui, /data-order-remove=/);
   assert.match(ui, /orderingPlaced\.map\(tile=>tile\.text\)/);
+  assert.match(ui, /if\(orderingPool\.length\)\{const status=\$\('#fluentia-order-status'\)/);
   assert.match(ui, /Use every tile before checking your answer/);
   assert.match(ui, /function mapMarkup\(item\)/);
   assert.match(ui, /data-map-cell=/);
