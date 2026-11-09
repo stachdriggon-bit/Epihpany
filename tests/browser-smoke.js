@@ -214,7 +214,7 @@ test('main navigation tabs open without uncaught page errors', { timeout: 18 * 6
         assert.ok(requested.some(path => path.endsWith('/sound-maze-content.js')), 'Fluentia should load Sound Maze content on its first open');
         assert.ok(requested.some(path => path.endsWith('/fluentia-textwise-bank.js')), 'Fluentia should load Textwise sequencing content on its first open');
         assert.ok(requested.some(path => path.endsWith('/fluentia-soundscape-bank.js')), 'Fluentia should load Soundscape dictation content on its first open');
-        assert.ok(requested.some(path => path.endsWith('/practice-lab.js')), 'Fluentia should load Practice Lab samples on its first open');
+        assert.ok(requested.some(path => path.endsWith('/fluentia-practice-bank.js')), 'Fluentia should load Practice Lab samples on its first open');
         assert.equal(await fluentia.locator('.fluentia-domain-card').count(),6,'Fluentia should render its six canonical domains');
         assert.equal(await fluentia.locator('[data-mode="section-mixed"]').count(),0,'Section Mixed should not appear on the Fluentia landing page');
         assert.equal(await fluentia.locator('[data-mode="fluentia-mix"]').count(),1,'Fluentia Mix should have one landing entry');
@@ -350,7 +350,7 @@ test('main navigation tabs open without uncaught page errors', { timeout: 18 * 6
         await question.locator('.fluentia-feedback').waitFor({state:'visible',timeout:5000});
         await fluentia.locator('[data-exit]').click();
         await fluentia.locator('[data-home-back]').click();
-        assert.ok(requested.some(path=>path.endsWith('/data-minigames.js')),'Fluentia should load the shared Directions map bank');
+        assert.ok(requested.some(path=>path.endsWith('/fluentia-directions-bank.js')),'Fluentia should load the shared Directions map bank');
         assert.equal(await page.evaluate(() => window.EPIPHANY_DIRECTIONS_DATA?.items?.length),120,'the complete six-level Directions bank should be registered');
         assert.equal(await page.evaluate(() => window.EPIPHANY_FLUENTIA_SESSION_ENGINE.getActivity('real-world-directions').getItems({level:'A1'}).length),20,'Directions should expose its A1 items after lazy loading');
         await fluentia.locator('#fluentia-level').selectOption('C2');

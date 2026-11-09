@@ -1,4 +1,4 @@
-/* Mini-games data: Directions town map. Route text and answers are generated from structured steps. */
+/* Fluentia Real World: Directions town-map bank. Route text and answers use structured steps. */
 const DIRECTION_BLOCKS = [
   [['🏦','bank','مصرف'],['🥖','bakery','مخبز'],['🏫','school','مدرسة'],['🌳','park','حديقة']],
   [['📚','library','مكتبة'],['🎬','cinema','سينما'],['🏥','hospital','مستشفى'],['☕','café','مقهى']],

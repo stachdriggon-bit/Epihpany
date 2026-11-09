@@ -65,8 +65,8 @@ test('Fluentia reports source readiness and offers an explicit retry state', () 
   assert.match(app, /epiphany:fluentia-sources-ready/);
   assert.match(ui, /epiphany:fluentia-sources-failed/);
   assert.match(ui, /data-fluentia-retry/);
-  assert.match(loader, /fluentia: \['data-minigames\.js[\s\S]*?sound-maze-bank\.js/);
-  assert.match(loader, /practice-lab\.js/);
+  assert.match(loader, /fluentia: \['fluentia-directions-bank\.js[\s\S]*?sound-maze-bank\.js/);
+  assert.match(loader, /fluentia-practice-bank\.js/);
 });
 
 test('Fluentia UI is wired into desktop and mobile navigation and offline core assets', () => {
@@ -152,7 +152,7 @@ test('Fluentia Directions loads its shared map bank with the Fluentia feature', 
   const lazy = read('lazy-data.js');
   const mapData = read('data-minigames.js');
   const adapters = read('fluentia-adapters.js');
-  assert.match(lazy, /fluentia: \['data-minigames\.js\?v=fluentia-directions-map-20261109-2'/);
+  assert.match(lazy, /fluentia: \['fluentia-directions-bank\.js\?v=fluentia-directions-map-20261109-2'/);
   assert.match(mapData, /EPIPHANY_FLUENTIA_REGISTER_SOURCES\(\{directions: DIRECTION_ITEMS, directionBlocks: DIRECTION_BLOCKS\}\)/);
   assert.match(adapters, /typeof sources\.getDirections === 'function' \? sources\.getDirections\(\)/);
   assert.match(adapters, /typeof sources\.getDirectionBlocks === 'function' \? sources\.getDirectionBlocks\(\)/);
@@ -188,4 +188,17 @@ test('Fluentia uses the shared opt-in Arabic translation system and labels both 
   assert.doesNotMatch(ui, /'soundscape-practice-dictation'/, 'use the registered adapter ID for its display name');
   assert.match(app, /if\(!root\|\|!state\.translationEnabled\)return;/);
   assert.match(app, /enhanceTranslationControls\(\$\('#fluentia-content'\)\)/);
+});
+
+
+test('retired Arcade shell and UI are not shipped alongside Fluentia', () => {
+  const html = read('index.html');
+  const app = read('app.js');
+  const loader = read('lazy-data.js');
+  assert.doesNotMatch(html, /id="arcade-view"/);
+  assert.doesNotMatch(app, /function renderArcade|EPIPHANY_LAZY_LOAD\('arcade'\)/);
+  assert.doesNotMatch(loader, /arcade:/);
+  assert.doesNotMatch(loader, /practice-lab\.js|data-minigames\.js/);
+  assert.match(loader, /fluentia-practice-bank\.js/);
+  assert.match(loader, /fluentia-directions-bank\.js/);
 });

@@ -227,7 +227,7 @@
       });
     }
   } catch (error) {
-    // Fluentia is additive during migration; a registration issue must not block legacy Arcade.
+    // Fluentia registration is optional and must never block the rest of the app.
     console.warn('[Fluentia] Domain adapter registration was skipped.', error);
     fluentiaSessionEngine = null;
   }
@@ -669,7 +669,7 @@
     if(dueGrammar.length)c.push({priority:80+Math.min(dueGrammar.length,15),game:'personalized',title:'Review grammar patterns due today',reason:'A grammar pattern you have practised is ready for spaced review. Revisit it now to strengthen recall before it fades.',detail:dueGrammar.slice(0,3).map(x=>x.key.replace(/[-_]+/g,' ')).join(', '),kind:'grammar-review'});
     if(traps[0]&&traps[0].errors>=2)c.push({priority:traps[0].errors-Math.floor(traps[0].correct/2),game:'personalized',title:'Your grammar weak spots',reason:'You have missed this grammar pattern more than once. This short review prioritises patterns you find difficult.',detail:traps[0].key.replace(/[-_]+/g,' '),kind:'grammar'});
     const v=sig('vocabulary');if(hard.length||v.errors>=2)c.push({priority:Math.max(hard.length?Number(hard[0].errors)||0:0,v.errors),game:'speed',title:'Review your difficult words',reason:'Speed Round gives extra attention to saved words and words you have missed before.',detail:hard.length?hard.slice(0,3).map(w=>w.word).join(', '):(v.topic&&v.topic.key)||'vocabulary',kind:'vocabulary'});
-    const l=sig('listening');if(l.errors>=2)c.push({priority:l.errors-Math.floor(l.correct/2),game:'audioImage',title:'Train listening recognition',reason:'You have missed several sound-to-word matches. Practise hearing a word and connecting it to its meaning.',detail:(l.topic&&l.topic.key)||'sound and meaning',kind:'listening'});
+    const l=sig('listening');if(l.errors>=2)c.push({priority:l.errors-Math.floor(l.correct/2),game:'listening',title:'Train listening comprehension',reason:'You have missed several listening questions. Practise understanding spoken English in context.',detail:(l.topic&&l.topic.key)||'listening comprehension',kind:'listening'});
     const s=sig('sentence');if(s.errors>=2)c.push({priority:s.errors-Math.floor(s.correct/2),game:'sentenceOrder',title:'Build sentences with confidence',reason:'Sentence Builder gives you another chance to practise word order and natural sentence structure.',detail:'sentence order',kind:'sentence'});
     const d=sig('conversation');if(d.errors>=2)c.push({priority:d.errors-Math.floor(d.correct/2),game:'story',title:'Practise real-life choices',reason:'Some choices in World conversations have been tricky. Try a real-life dialogue and review the context before choosing.',detail:(d.topic&&d.topic.key)||'conversation choices',kind:'conversation'});
     c.sort((a,b)=>b.priority-a.priority);if(c.length)return c[0];
@@ -706,40 +706,6 @@
       : '<p class="weakness-note">Your pattern report will appear after you practise a few common-mistake questions. It is not a grade — it helps choose what to practise next.</p>';
     const markup = '<section class="review-panel weakness-panel"><div class="review-head"><div><p class="kicker">PERSONAL PRACTICE</p><h2>'+(repeated.length?'Let’s work on your patterns':'Build your learning profile')+'</h2></div><span class="review-count">'+(repeated.length?repeated.length+' focus':'Adaptive')+'</span></div><p class="review-note">'+(repeated.length?'These patterns have tripped you up more than once. Your next practice gives them extra weight.':total?'We’ve started tracking the patterns you miss. A few more answers will help personalise practice.':'Practice normally and Epiphany will learn which patterns need more attention.')+'</p>'+insight+'<button type="button" class="btn '+(repeated.length?'':'btn-ghost')+'" data-game="personalized">'+(repeated.length?'Practise my weak spots':'Try a personal review')+' · 5 questions</button></section>';
     panel.innerHTML=markup;const profilePanel=$('#profile-weakness-panel');if(profilePanel)profilePanel.innerHTML=markup;
-  }
-
-  function renderArcade() {
-    const recommendation=adaptiveRecommendation(), recommendationRoot=$('#arcade-recommendation');
-    if(recommendationRoot){const label=recommendation.kind==='starter'?'A good place to begin':'Chosen from your practice history';recommendationRoot.innerHTML='<article class="adaptive-recommendation"><div class="adaptive-rec-top"><span class="adaptive-rec-icon" aria-hidden="true">✦</span><div><p class="kicker">YOUR NEXT BEST PRACTICE</p><h2>'+esc(recommendation.title)+'</h2></div><span class="adaptive-rec-tag">'+esc(label)+'</span></div><p>'+esc(recommendation.reason)+'</p>'+(recommendation.detail?'<p class="adaptive-rec-detail"><strong>Focus:</strong> '+esc(recommendation.detail)+'</p>':'')+'<button type="button" class="btn" data-game="'+esc(recommendation.game)+'">Start recommended practice '+ic('arrow')+'</button></article>';}
-    const miniRoot = $('#arcade-mini-games');
-    const libraryRoot = $('#arcade-library');
-    if (!miniRoot || !libraryRoot) return;
-    const miniIds = ['speed','audioImage','sentenceOrder','match','order','directions'];
-    miniRoot.innerHTML = miniIds.map(id => {
-      const m = META[id];
-      if (!m) return '';
-      const copy = m.blurb || m.desc || 'A quick English practice game.';
-      const xp = Number(m.xp || (GAMES[id] && GAMES[id].xp) || 25);
-      return '<article class="arcade-game-card t-' + esc(m.tone || 'mint') + '">' +
-        '<div class="arcade-game-mark" aria-hidden="true">' + glyph(id) + '</div>' +
-        '<div class="arcade-game-copy"><h3>' + esc(m.label) + '</h3><p>' + esc(copy) + '</p>' +
-        '<div class="arcade-game-meta"><span>' + Number(m.time || 3) + ' min</span><span>+' + xp + ' XP</span></div></div>' +
-        '<button class="btn arcade-play" type="button" data-game="' + esc(id) + '">Play now ' + ic('arrow') + '</button></article>';
-    }).join('');
-    const cats = window.__gameCategories || [];
-    libraryRoot.innerHTML = cats.filter(cat => cat.id !== 'minigames').map(cat => {
-      const games = cat.games.filter(([id]) => !miniIds.includes(id));
-      if (!games.length) return '';
-      return '<section class="arcade-skill-group" aria-label="' + esc(cat.title) + '">' +
-        '<header class="arcade-skill-head"><span class="arcade-skill-icon">' + esc(cat.icon) + '</span><div><h3>' + esc(cat.title) + '</h3><p>' + esc(cat.desc) + '</p></div></header>' +
-        '<div class="arcade-skill-games">' + games.map(([id,label]) => {
-          const meta = META[id] || {};
-          const game = GAMES[id] || {};
-          return '<button class="arcade-skill-game t-' + esc(meta.tone || cat.tone || 'violet') + '" type="button" data-game="' + esc(id) + '">' +
-            '<span class="arcade-skill-glyph">' + glyph(id) + '</span><span class="arcade-skill-copy"><strong>' + esc(label) + '</strong><small>' + Number(meta.time || 3) + ' min · +' + Number(game.xp || meta.xp || 25) + ' XP</small></span>' +
-            '<span class="arcade-skill-arrow" aria-hidden="true">→</span></button>';
-        }).join('') + '</div></section>';
-    }).join('');
   }
 
   function resetDailySessionIfNeeded() {
@@ -1640,7 +1606,7 @@
     const markup='<section class="block learning-insights"><div class="block-head"><div><p class="kicker">YOUR LAST 7 DAYS</p><h2>Learning rhythm</h2><p>Estimated practice minutes and newly saved words.</p></div><span class="activity-total">'+totalMinutes+' min · '+totalWords+' words</span></div><div class="weekly-bars"><div class="weekly-chart"><h3>Minutes</h3><div class="weekly-bar-list">'+week.map(d=>'<div class="weekly-bar-col" title="'+d.date+': '+d.minutes+' minutes"><span>'+d.minutes+'</span><i style="height:'+Math.max(d.minutes?8:2,d.minutes/maxMinutes*100)+'%"></i><small>'+d.label+'</small></div>').join('')+'</div></div><div class="weekly-chart"><h3>Words learned</h3><div class="weekly-bar-list">'+week.map(d=>'<div class="weekly-bar-col words" title="'+d.date+': '+d.words+' words"><span>'+d.words+'</span><i style="height:'+Math.max(d.words?8:2,d.words/maxWords*100)+'%"></i><small>'+d.label+'</small></div>').join('')+'</div></div></div><div class="activity-heat-wrap"><div class="activity-head"><h3>Activity map</h3><span>Last 12 weeks</span></div><div class="activity-heatmap" role="img" aria-label="Daily learning activity over the last 12 weeks">'+Array.from({length:84},(_,i)=>{const d=new Date(now.getFullYear(),now.getMonth(),now.getDate()-(83-i)),key=dayKey(d),row=days[key]||{},score=(Number(row.minutes)||0)+(Number(row.words)||0)+(Number(row.attempts)||0);return '<span class="activity-cell level-'+(score===0?0:score<3?1:score<8?2:score<16?3:4)+'" title="'+key+': '+(Number(row.minutes)||0)+' min, '+(Number(row.words)||0)+' words"></span>';}).join('')+'</div><div class="activity-legend"><span>Less</span><i class="level-0"></i><i class="level-1"></i><i class="level-2"></i><i class="level-3"></i><i class="level-4"></i><span>More</span></div></div>'+(hardWords.length?'<section class="hard-words weekly-hard-words"><div class="review-head"><div><p class="kicker">A GENTLE WEEKLY REVIEW</p><h3>Words worth revisiting</h3></div><span class="review-count">'+hardWords.length+' focus</span></div><p class="review-note">These words have needed extra practice before. A quick revisit can help them stick.</p><div class="hard-word-list">'+hardWords.map(w=>'<article class="hard-word"><b>'+esc(w.word)+'</b><span>'+esc(w.meaning||'Saved word')+'</span><small>'+Number(w.errors||0)+' earlier misses</small><button class="btn btn-ghost" data-hard-review="'+esc(w.word)+'">Practise</button></article>').join('')+'</div></section>':'')+'</section>';
     if(root)root.innerHTML=markup;if(profileRoot)profileRoot.innerHTML=markup;
   }
-  function renderAll() { renderHeader(); renderHome(); renderArcade(); if ($('#stories-view')?.classList.contains('is-active')) renderStories(); renderWords(); renderTrophies(); renderWeaknessPanel(); renderLearningInsights(); renderProgressForecast(); renderMonthlyAssessmentCard(); injectMonthlyWordThread('home'); const grammarInsight=$('#grammar-progress-insight'); if(grammarInsight) grammarInsight.innerHTML=renderGrammarMap(); syncSettings(); }
+  function renderAll() { renderHeader(); renderHome(); if ($('#stories-view')?.classList.contains('is-active')) renderStories(); renderWords(); renderTrophies(); renderWeaknessPanel(); renderLearningInsights(); renderProgressForecast(); renderMonthlyAssessmentCard(); injectMonthlyWordThread('home'); const grammarInsight=$('#grammar-progress-insight'); if(grammarInsight) grammarInsight.innerHTML=renderGrammarMap(); syncSettings(); }
   document.addEventListener('epiphany-auth-changed', () => { renderAll(); if (WORLD && WORLD.mode === 'regions') worldShowRegions(); });
 
 
@@ -2113,7 +2079,6 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
         .catch(error => document.dispatchEvent(new CustomEvent('epiphany:fluentia-sources-failed', {detail:{message:String(error && error.message || error)}})));
     }
     if (name === 'home') renderHome();
-    if (name === 'arcade') { renderArcade(); window.EPIPHANY_LAZY_LOAD('arcade').catch(() => toast('Practice tools could not load. Connect to the internet and try again.')); }
     if (name === 'stories') renderStories();
     if (name === 'chronicle') renderChronicle();
     if (name === 'resonance') Promise.all([window.EPIPHANY_LAZY_LOAD('resonance'), window.EPIPHANY_LAZY_STYLE('resonance')]).then(() => window.EPIPHANY_RESONANCE?.open()).catch(() => toast('The Resonance could not load. Check your connection and try again.'));
@@ -4158,7 +4123,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     match:     {label:'Word Match',      tone:'violet', glyph:'⇄',     time:3, blurb:'Match each word with its meaning.',   xp:25},
     directions:{label:'Directions',      tone:'sky',    glyph:'↱',     time:4, blurb:'Follow directions on a town map.',    xp:35},
     speed:{label:'Speed Round',tone:'coral',glyph:'⚡',time:1,blurb:'A 60-second sprint focused on your weak words.',xp:45},
-    audioImage:{label:'Sound & Picture Match',tone:'sky',glyph:'🔊',time:3,blurb:'Listen to a word and choose the matching picture.',xp:30},
+    
     sentenceOrder:{label:'Sentence Builder',tone:'mint',glyph:'↔',time:3,blurb:'Arrange shuffled words and hear the sentence when correct.',xp:35}
   };
   Object.assign(META, MINI); Object.keys(MINI).forEach(k => { UNLOCK[k] = 0; });
@@ -4215,8 +4180,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     else if (type === 'match') miniMatchSetup();
     else if (type === 'directions') miniDirSetup();
     else if (type === 'speed') miniSpeedSetup();
-    else if (type === 'audioImage') miniAudioImageSetup();
-    else if (type === 'sentenceOrder') miniSentenceSetup();
+        else if (type === 'sentenceOrder') miniSentenceSetup();
   }
   let miniTimer = null;
   function miniWeakWordPool() {
@@ -4254,10 +4218,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     const opts=SHUF([q,...SHUF(pool.filter(x=>x.word!==q.word)).slice(0,3)]);
     $('#game-body').innerHTML='<div class="q-meta"><span class="pill">⚡ Speed Round</span><span class="q-count" id="mini-speed-time">'+MG.seconds+'s</span></div><div class="mini-speed-meter"><span style="width:'+Math.max(0,MG.seconds/60*100)+'%"></span></div>'+miniTranslateButton()+'<p class="q-sub"'+arAttr('اختر المعنى الصحيح. تُعطى الأولوية للكلمات المحفوظة والصعبة عند توفرها.')+'>Choose the meaning. Saved and difficult words are prioritised when available.</p><h2 class="mini-target-word">'+esc(q.word)+'</h2><div class="mini-choice-grid">'+opts.map(o=>'<button type="button" class="mini-choice" data-mini-speed-answer="'+encodeURIComponent(o.word)+'"'+arAttr(miniMeaningAr(o.word,o.meaning))+'>'+esc(o.meaning)+'</button>').join('')+'</div><p class="mini-live-score">Correct: <b>'+MG.score+'</b> · Answered: <b>'+MG.total+'</b></p>';
   }
-  const MINI_AUDIO_ITEMS=[{level:'A1',word:'apple',meaning:'a round fruit',icon:'🍎',image:'assets/fluentia/soundscape-pictograms.svg#apple',wordAr:'تفاحة',ar:'فاكهة مستديرة'},{level:'A1',word:'book',meaning:'something you read',icon:'📘',image:'assets/fluentia/soundscape-pictograms.svg#book',wordAr:'كتاب',ar:'شيء تقرؤه'},{level:'A1',word:'umbrella',meaning:'keeps you dry in rain',icon:'☂️',image:'assets/fluentia/soundscape-pictograms.svg#umbrella',wordAr:'مظلة',ar:'تبقيك جافًا تحت المطر'},{level:'A1',word:'key',meaning:'opens a lock',icon:'🔑',image:'assets/fluentia/soundscape-pictograms.svg#key',wordAr:'مفتاح',ar:'يفتح القفل'},{level:'A2',word:'train',meaning:'a vehicle that runs on rails',icon:'🚆',image:'assets/fluentia/soundscape-pictograms.svg#train',wordAr:'قطار',ar:'مركبة تسير على القضبان'},{level:'A1',word:'bread',meaning:'food made from flour',icon:'🍞',image:'assets/fluentia/soundscape-pictograms.svg#bread',wordAr:'خبز',ar:'طعام مصنوع من الدقيق'},{level:'A1',word:'clock',meaning:'shows the time',icon:'🕒',image:'assets/fluentia/soundscape-pictograms.svg#clock',wordAr:'ساعة',ar:'تُظهر الوقت'},{level:'A1',word:'lamp',meaning:'gives light',icon:'💡',image:'assets/fluentia/soundscape-pictograms.svg#lamp',wordAr:'مصباح',ar:'يعطي ضوءًا'},{level:'A2',word:'chair',meaning:'a seat for one person',icon:'🪑',image:'assets/fluentia/soundscape-pictograms.svg#chair',wordAr:'كرسي',ar:'مقعد لشخص واحد'},{level:'A2',word:'phone',meaning:'a device for calls',icon:'📱',image:'assets/fluentia/soundscape-pictograms.svg#phone',wordAr:'هاتف',ar:'جهاز للمكالمات'},{level:'A2',word:'bus',meaning:'a vehicle that carries many people',icon:'🚌',image:'assets/fluentia/soundscape-pictograms.svg#bus',wordAr:'حافلة',ar:'مركبة تنقل عددًا كبيرًا من الأشخاص'},{level:'A1',word:'tree',meaning:'a tall plant with a trunk',icon:'🌳',image:'assets/fluentia/soundscape-pictograms.svg#tree',wordAr:'شجرة',ar:'نبات طويل له جذع'},{level:'A1',word:'water',meaning:'a drink we need',icon:'💧',image:'assets/fluentia/soundscape-pictograms.svg#water',wordAr:'ماء',ar:'شراب نحتاج إليه'}];
   const FLUENTIA_AUDIO_ITEMS = Array.isArray(window.EPIPHANY_SOUNDS_PICTURE_BANK) ? window.EPIPHANY_SOUNDS_PICTURE_BANK : [];
-  function miniAudioImageSetup(){MG.pool=SHUF(MINI_AUDIO_ITEMS);MG.total=10;MG.i=0;MG.score=0;MG.answered=false;miniAudioImageRender();}
-  function miniAudioImageRender(){const q=MG.pool[MG.i%MG.pool.length],opts=SHUF([q,...SHUF(MINI_AUDIO_ITEMS.filter(x=>x.word!==q.word)).slice(0,3)]);MG.current=q;MG.answered=false;miniSteps();$('#game-body').innerHTML='<div class="q-meta"><span class="pill">🔊 Sound & Picture</span><span class="q-count">'+(MG.i+1)+' of '+MG.total+'</span></div><h2 class="q-text" id="q-text" tabindex="-1"'+arAttr('استمع، ثم اختر الصورة المناسبة')+'>Listen, then choose the picture</h2>'+miniTranslateButton()+'<button type="button" class="mini-listen-button" data-mini-audio-play>🔊 Play word</button><div class="mini-picture-grid">'+opts.map(o=>'<button type="button" class="mini-picture" data-mini-audio-answer="'+o.word+'" aria-label="Picture: '+esc(o.word)+'"><span class="mini-picture-art" aria-hidden="true">'+o.icon+'</span><span>'+esc(o.word)+'</span></button>').join('')+'</div>';}
   if (typeof window.EPIPHANY_FLUENTIA_REGISTER_SOURCES === 'function') {
     window.EPIPHANY_FLUENTIA_REGISTER_SOURCES({audioItems: FLUENTIA_AUDIO_ITEMS});
   }
@@ -4295,7 +4256,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     const stars = ratio >= .9 ? '★★★' : ratio >= .6 ? '★★☆' : '★☆☆';
     miniSteps(true); hideSheet();
     const type = MG.type;
-    $('#game-body').innerHTML = '<div class="result story-result"><div class="burst">' + (type === 'speed' ? '⚡' : type === 'audioImage' ? '🔊' : type === 'sentenceOrder' ? '↔' : type === 'order' ? '📚' : type === 'match' ? '🧩' : '🧭') + '</div><p class="kicker">' + esc(m.label.toUpperCase()) + ' COMPLETE</p><h2>' + (ratio >= .9 ? 'Brilliant work!' : ratio >= .6 ? 'Nicely done!' : 'Good practice!') + '</h2><div class="story-stars">' + stars + '</div>' +
+    $('#game-body').innerHTML = '<div class="result story-result"><div class="burst">' + (type === 'speed' ? '⚡' : type === 'sentenceOrder' ? '↔' : type === 'order' ? '📚' : type === 'match' ? '🧩' : '🧭') + '</div><p class="kicker">' + esc(m.label.toUpperCase()) + ' COMPLETE</p><h2>' + (ratio >= .9 ? 'Brilliant work!' : ratio >= .6 ? 'Nicely done!' : 'Good practice!') + '</h2><div class="story-stars">' + stars + '</div>' +
       '<div class="stats3"><div class="stat"><b>+' + gain + '</b><span>XP earned</span></div><div class="stat"><b>' + MG.score + '/' + MG.total + '</b><span>' + (type === 'match' ? 'Pairs' : 'Correct') + '</span></div><div class="stat"><b>' + esc(note || '') + '</b><span>' + (type === 'match' ? 'Attempts' : 'Rounds') + '</span></div></div>' +
       (bonus ? '<p class="challenge-bonus">' + esc(bonus) + '</p>' : '') +
       '<div class="result-actions"><button class="btn" data-mini-again="' + type + '">Play again</button><button class="btn btn-ghost" data-mini-close>Back to Home</button></div></div>';
@@ -4448,7 +4409,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
 
   function miniNext() {
     if (!MG) return; hideSheet();
-    if (MG.i < MG.total - 1) { MG.i++; MG.answered = false; if (MG.type === 'order') miniOrderRender(); else if (MG.type === 'directions') miniDirRender(); else if (MG.type === 'audioImage') miniAudioImageRender(); else if (MG.type === 'sentenceOrder') miniSentenceRender(); }
+    if (MG.i < MG.total - 1) { MG.i++; MG.answered = false; if (MG.type === 'order') miniOrderRender(); else if (MG.type === 'directions') miniDirRender(); else if (MG.type === 'sentenceOrder') miniSentenceRender(); }
     else miniFinish(String(MG.total));
   }
   function miniClick(e) {
@@ -4457,8 +4418,6 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     const again = el.closest('[data-mini-again]'); if (again) { startMini(again.dataset.miniAgain); return true; }
     if (MG.done) return false;
     const speedAnswer=el.closest('[data-mini-speed-answer]');if(speedAnswer&&MG.type==='speed'){if(MG.answered)return true;MG.total++;const picked=decodeURIComponent(speedAnswer.dataset.miniSpeedAnswer);const ok=picked===MG.current.word;if(ok)MG.score++;recordAdaptiveResult('vocabulary',MG.current.word,ok);if(!ok)addReview(MG.current.word,MG.current.meaning);sfx(ok?'ok':'no');miniSpeedRender();return true;}
-    if(el.closest('[data-mini-audio-play]')&&MG.type==='audioImage'){miniSpeech(MG.current.word);return true;}
-    const audioAnswer=el.closest('[data-mini-audio-answer]');if(audioAnswer&&MG.type==='audioImage'){if(MG.answered)return true;MG.answered=true;const ok=audioAnswer.dataset.miniAudioAnswer===MG.current.word;if(ok)MG.score++;recordAdaptiveResult('listening',MG.current.word,ok);if(!ok)addReview(MG.current.word,MG.current.meaning);MG.results[MG.i]=ok?'ok':'no';sfx(ok?'ok':'no');$('.mini-picture-grid').querySelectorAll('button').forEach(b=>{b.disabled=true;if(b.dataset.miniAudioAnswer===MG.current.word)b.classList.add('is-right');else if(b===audioAnswer)b.classList.add('is-wrong');});showSheet(ok,'<h3'+arAttr(ok?'أحسنت!':'ليس تمامًا')+'>'+(ok?'That’s it!':'Not quite')+'</h3><p'+arAttr('الكلمة هي «'+MG.current.word+'» ('+(MG.current.wordAr||'')+')، ومعناها: '+(MG.current.ar||''))+'>The word is <b>'+esc(MG.current.word)+'</b> — '+esc(MG.current.meaning)+'.</p><div class="sheet-actions"><button class="btn" id="go-next">'+(MG.i===MG.total-1?'See results':'Next word')+ic('arrow')+'</button></div>');return true;}
     const sentenceWord=el.closest('[data-mini-sentence-word]');if(sentenceWord&&MG.type==='sentenceOrder'&&!MG.answered){const token=MG.tokens.find(t=>t.id===Number(sentenceWord.dataset.miniSentenceWord));if(token)MG.placed.push(token);miniSentenceRender();return true;}
     const sentenceRemove=el.closest('[data-mini-sentence-remove]');if(sentenceRemove&&MG.type==='sentenceOrder'&&!MG.answered){MG.placed.splice(Number(sentenceRemove.dataset.miniSentenceRemove),1);miniSentenceRender();return true;}
     if(el.closest('[data-mini-sentence-reset]')&&MG.type==='sentenceOrder'){if(MG.answered)return true;MG.placed=[];MG.feedback='';miniSentenceRender();return true;}
