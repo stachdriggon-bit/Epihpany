@@ -50,7 +50,7 @@ test('changed scripts are versioned and the offline shell cache is refreshed', (
   const html = read('index.html');
   const sw = read('service-worker.js');
   assert.match(html, /app\.js\?v=soundscape-picture-levels-20261109-2/);
-  assert.match(html, /lazy-data\.js\?v=soundscape-pictograms-20261109-1/);
+  assert.match(html, /lazy-data\.js\?v=fluentia-interactions-20261109-1/);
   assert.match(html, /cards\.js\?v=gallery-identity-asset-refresh-20261105-1/);
   assert.match(html, /account\.js\?v=empty-states-20261031-1/);
   assert.match(html, /style\.css\?v=think-lab-daily-20261109-1/);
