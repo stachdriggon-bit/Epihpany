@@ -110,3 +110,10 @@ test('Fluentia ignores stale speech-recognition callbacks after an abort or repl
   assert.match(ui, /active\.onend = null/);
   assert.match(ui, /active\.abort\(\)/);
 });
+
+test('Fluentia progress refresh preserves the current domain and Section Mixed picker', () => {
+  const ui = read('fluentia-ui.js');
+  assert.match(ui, /if\(currentDomain\)\{\s*if\(choosingSectionMixed\)renderSectionMixedDomainPicker\(\);\s*else renderDomain\(currentDomain\);/);
+  assert.match(ui, /function renderSectionMixedDomainPicker\(\)/);
+  assert.match(ui, /window\.addEventListener\('epiphany:progress-saved',\(\)=>\{[\s\S]*?if\(currentSession\)return;[\s\S]*?if\(currentDomain\)/);
+});
