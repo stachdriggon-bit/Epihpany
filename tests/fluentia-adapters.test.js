@@ -362,13 +362,11 @@ test('adapter progress callback is carried into the engine and receives normaliz
   assert.equal(events[0].domain, 'wordcraft');
 });
 
-test('Fluentia picture content expands its own CEFR bank without changing the legacy Arcade audio pool', () => {
+test('Fluentia Sound & Picture Match uses only its canonical CEFR bank', () => {
   const app = fs.readFileSync(path.join(__dirname, '..', 'app.js'), 'utf8');
-  const legacy = app.match(/const MINI_AUDIO_ITEMS=\[([\s\S]*?)\];\s*const FLUENTIA_AUDIO_ITEMS\s*=/);
-  assert.ok(legacy, 'legacy audio pool and Fluentia CEFR pool should remain separate');
-  assert.doesNotMatch(legacy[1], /SP-B1-|SP-B2-|SP-C1-|SP-C2-/);
-  assert.match(app, /const FLUENTIA_AUDIO_ITEMS\s*=\s*Array\.isArray\(window\.EPIPHANY_SOUNDS_PICTURE_BANK\)/);
-  assert.match(app, /EPIPHANY_FLUENTIA_REGISTER_SOURCES\(\{audioItems: FLUENTIA_AUDIO_ITEMS\}\)/);
+  assert.doesNotMatch(app, /MINI_AUDIO_ITEMS|miniAudioImageSetup|miniAudioImageRender|data-mini-audio-answer/);
+  assert.match(app, /const FLUENTIA_AUDIO_ITEMS\\s*=\\s*Array\\.isArray\\(window\\.EPIPHANY_SOUNDS_PICTURE_BANK\\)/);
+  assert.match(app, /EPIPHANY_FLUENTIA_REGISTER_SOURCES\\(\\{audioItems: FLUENTIA_AUDIO_ITEMS\\}\\)/);
   assert.equal(soundPictureBank.length, 216);
   for (const level of ['A1','A2','B1','B2','C1','C2']) {
     assert.equal(soundPictureBank.filter(item => item.level === level).length, 36, level + ' should have 36 dedicated picture prompts');

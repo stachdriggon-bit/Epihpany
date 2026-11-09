@@ -150,9 +150,9 @@ test('Fluentia ordering activities use selectable tiles and map activities use s
 
 test('Fluentia Directions loads its shared map bank with the Fluentia feature', () => {
   const lazy = read('lazy-data.js');
-  const mapData = read('data-minigames.js');
+  const mapData = read('fluentia-directions-bank.js');
   const adapters = read('fluentia-adapters.js');
-  assert.match(lazy, /fluentia: \['fluentia-directions-bank\.js\?v=fluentia-directions-map-20261109-2'/);
+  assert.match(lazy, /fluentia: \['fluentia-directions-bank\.js\?v=fluentia-directions-map-20261109-3'/);
   assert.match(mapData, /EPIPHANY_FLUENTIA_REGISTER_SOURCES\(\{directions: DIRECTION_ITEMS, directionBlocks: DIRECTION_BLOCKS\}\)/);
   assert.match(adapters, /typeof sources\.getDirections === 'function' \? sources\.getDirections\(\)/);
   assert.match(adapters, /typeof sources\.getDirectionBlocks === 'function' \? sources\.getDirectionBlocks\(\)/);
