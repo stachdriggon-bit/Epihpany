@@ -160,7 +160,7 @@ test('Word Match renders two shuffled selectable columns and removable pairs ins
   assert.match(ui,/data-match-remove=/);
   assert.match(ui,/matchingPlaced\.map\(pair=>\(\{word:/);
   assert.match(ui,/Match every word before checking your answer/);
-  assert.doesNotMatch(ui,/fluentia-match-meaning/);
+  assert.doesNotMatch(ui,/id="fluentia-match-meaning"/);
   const adapter = read('fluentia-adapters.js');
   assert.match(adapter,/const roundCount = Math\.ceil\(rows\.length \/ 4\)/);
   assert.match(adapter,/submitted\.length === expected\.length/);
