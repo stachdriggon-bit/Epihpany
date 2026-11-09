@@ -21,7 +21,7 @@ function fixture() {
     },
     spot: [{id:'spot-a1', level:'A1', text:'She go home.', wrongIndex:1, fix:'goes', why_en:'Use goes.'}],
     typing: [{id:'type-a1', level:'A1', prompt:'She ___ home.', accept:['goes','goes home'], answer:'goes', why_en:'Third-person singular.'}],
-    directions: [{id:'dir-a1', level:'A1', answer:[2,3], steps:[['go',2]]}]
+    directions: [{id:'dir-a1', level:'A1', answer:[2,3], steps:[['go',2]]}], directionBlocks: [[['🏦','bank','مصرف']]]
   };
 }
 
@@ -55,6 +55,13 @@ test('missing legacy IDs receive deterministic IDs without mutating source recor
   assert.match(first, /^wordcraft-vocabulary-/);
   assert.equal(first, second);
   assert.equal(Object.hasOwn(item, 'id'), false);
+});
+
+test('Directions adapter carries landmark map data into each eligible item', () => {
+  const adapter = AdapterFactory.createAdapters(fixture()).find(item => item.id === 'real-world-directions');
+  const [item] = adapter.getItems({level:'A1'});
+  assert.deepEqual(item.mapBlocks, [[['🏦','bank','مصرف']]]);
+  assert.equal(item.answer[0],2);
 });
 
 test('choice, error-identification, typed and map evaluators preserve native answer semantics', () => {
