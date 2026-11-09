@@ -115,5 +115,5 @@ test('Fluentia progress refresh preserves the current domain and Section Mixed p
   const ui = read('fluentia-ui.js');
   assert.match(ui, /if\(currentDomain\)\{\s*if\(choosingSectionMixed\)renderSectionMixedDomainPicker\(\);\s*else renderDomain\(currentDomain\);/);
   assert.match(ui, /function renderSectionMixedDomainPicker\(\)/);
-  assert.match(ui, /window\.addEventListener\('epiphany:progress-saved',\(\)=>\{[\s\S]*?if\(currentSession\)return;[\s\S]*?if\(currentDomain\)/);
+  assert.match(ui, /window\.addEventListener\('epiphany:progress-saved',\(\)=>\{[\s\S]*?if\(currentSession\)return;[\s\S]*?if\(currentDomain\)[\s\S]*?selectedLevel=currentLevel\(\);\s*renderHome\(\);/);
 });
