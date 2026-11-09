@@ -217,6 +217,14 @@ The existing session counters (`activityUse`, `domainUse`) remain part of the se
 
 The learner-facing Fluentia experience is implemented in the additive `fluentia-ui.js` and `fluentia-ui.css` assets and is mounted as its own `fluentia-view`.
 
+### Interaction alignment update (2026-11-09)
+
+- Sentence Builder and Text Sequencing use accessible selectable tiles instead of typed delimiter-separated answers. Their adapters continue receiving ordered arrays and keep their existing answer evaluators.
+- Text Sequencing displays its source title and passage as context while the learner orders the steps.
+- Directions uses the shared 12-landmark town map. Its 120 prompts remain split evenly across A1–C2 (20 per level); Fluentia loads the existing map bank lazily and passes selected coordinate cells to the unchanged evaluator.
+- The Directions adapter reads through live source callbacks so it can use the lazy-loaded bank after the engine's initial registration.
+
+
 - Desktop and mobile Learn navigation both include Fluentia; Stories and Think Lab retain their existing routes and identity.
 - The landing screen presents the six canonical domains, CEFR practice-level selection, Section Mixed and Fluentia Mix entry points, and a dedicated Your Review area.
 - Each domain opens an activity chooser showing only adapters with content explicitly tagged for the selected level.
