@@ -142,7 +142,7 @@ test('Fluentia Directions loads its shared map bank with the Fluentia feature', 
   const lazy = read('lazy-data.js');
   const mapData = read('data-minigames.js');
   const adapters = read('fluentia-adapters.js');
-  assert.match(lazy, /fluentia: \['data-minigames\.js\?v=fluentia-directions-map-20261109-1'/);
+  assert.match(lazy, /fluentia: \['data-minigames\.js\?v=fluentia-directions-map-20261109-2'/);
   assert.match(mapData, /EPIPHANY_FLUENTIA_REGISTER_SOURCES\(\{directions: DIRECTION_ITEMS, directionBlocks: DIRECTION_BLOCKS\}\)/);
   assert.match(adapters, /typeof sources\.getDirections === 'function' \? sources\.getDirections\(\)/);
   assert.match(adapters, /typeof sources\.getDirectionBlocks === 'function' \? sources\.getDirectionBlocks\(\)/);
