@@ -30,6 +30,9 @@ test('Fluentia UI delegates selection and evaluation to the shared engine', () =
   assert.match(ui, /engine\.getActivity\(info\.id\)/);
   assert.match(ui, /engine\.selectNext\(currentSession\)/);
   assert.match(ui, /engine\.submitAnswer\(currentSession,answer\)/);
+  assert.match(ui, /answerOptionOrder = opts && !isPictureMatch \? stableTileShuffle/);
+  assert.match(ui, /answerOptionOrder\[index\]\?\?index/);
+  assert.match(ui, /picturePositions = \{apple:0,book:1,umbrella:2,key:3/);
   assert.match(ui, /engine\.abandonSession\(currentSession\)/);
 });
 
@@ -92,6 +95,9 @@ test('Fluentia UI is wired into desktop and mobile navigation and offline core a
 test('Fluentia releases active sessions and microphone recognition on navigation and back actions', () => {
   const ui = read('fluentia-ui.js');
   assert.match(ui, /function leaveSession\(\{ render = true \} = \{\}\)/);
+  assert.match(ui, /if \(render\) \{ if\(currentDomain\)renderDomain\(currentDomain\); else renderHome\(\); \}/, 'leaving a practice session should return to its domain activity list');
+  assert.match(ui, /data-home-back/, 'domain and Section Mixed pickers should return to Fluentia home');
+  assert.match(ui, /Back to activities/, 'the session exit should clearly return to the activity list');
   assert.match(ui, /engine\.abandonSession\(currentSession\)/);
   assert.match(ui, /if \(render\) renderHome\(\)/);
   assert.match(ui, /if\(event\.detail\?\.view!=='fluentia'\)leaveSession\(\{render:false\}\)/);
