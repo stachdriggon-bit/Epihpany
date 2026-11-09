@@ -127,6 +127,7 @@ test('Fluentia progress refresh preserves the current domain and Section Mixed p
 test('Fluentia ordering activities use selectable tiles and map activities use selectable destinations', () => {
   const ui = read('fluentia-ui.js');
   assert.match(ui, /function orderingMarkup\(item\)/);
+  assert.match(ui, /split\(\/\\s\+\/\)/, 'Sentence Builder must split its source sentence into separate words');
   assert.match(ui, /data-order-token=/);
   assert.match(ui, /data-order-remove=/);
   assert.match(ui, /orderingPlaced\.map\(tile=>tile\.text\)/);
