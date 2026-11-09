@@ -81,3 +81,35 @@ test('completion counters are independent from XP and can be queried per game', 
   assert.equal(state.xp,42);
   assert.equal(state.quests,3);
 });
+
+test('recommendation always targets a registered playable game and avoids recent games when alternatives exist', () => {
+  const registry = progression.getRegistry();
+  const result = progression.recommendNext({
+    availableGameIds: registry.map(game => game.id),
+    history: {games:{odd:{launchCount:8},translator:{launchCount:1}},recentGames:['odd','translator']},
+    signals: {vocabulary:{attempts:6,correct:2,errors:4}}
+  });
+  assert.ok(registry.some(game => game.id === result.game));
+  assert.notEqual(result.game,'odd');
+  assert.equal(result.kind,'skill');
+  assert.equal(result.skill,'vocabulary');
+  assert.equal(result.accuracy,33);
+});
+
+test('recommendation rotates toward less-used games when there is not enough skill evidence', () => {
+  const first = progression.recommendNext({history:{games:{odd:{launchCount:4}},recentGames:['odd']},signals:{}});
+  assert.equal(first.game,'translator');
+  assert.equal(first.kind,'starter');
+  assert.equal(first.attempts,0);
+});
+
+test('recommendation skips unsupported skills and respects the available-game allowlist', () => {
+  const result = progression.recommendNext({
+    availableGameIds:['maze','translator'],
+    history:{games:{maze:{launchCount:5},translator:{launchCount:1}},recentGames:['translator']},
+    signals:{reading:{attempts:8,correct:1,errors:7},listening:{attempts:5,correct:1,errors:4}}
+  });
+  assert.equal(result.game,'maze');
+  assert.equal(result.skill,'listening');
+  assert.equal(progression.recommendNext({availableGameIds:[],signals:{}}),null);
+});
