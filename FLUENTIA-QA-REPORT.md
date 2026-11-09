@@ -15,6 +15,12 @@ Verified commit: `1fd56a5ec0f01e5ac4e745fbbcf5c6c45978869c`
 | Chromium browser smoke | 1 passed, 0 failed |
 | Offline service-worker checks | Passed |
 
+## Sound & Picture Match content coverage
+
+- CEFR coverage: A1 9 prompts; A2, B1, B2, C1 and C2 4 prompts each (29 total).
+- Every prompt has four unique illustrated choices from its own level, including the correct answer.
+- Browser smoke coverage exercises the picture-only answer UI and image loading at all six levels.
+
 ## Fluentia browser coverage
 
 - Desktop navigation opens the Fluentia view without uncaught page errors.
