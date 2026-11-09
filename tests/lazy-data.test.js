@@ -52,7 +52,7 @@ test('feature data loader does not request large datasets until requested', asyn
   await context.window.EPIPHANY_LAZY_LOAD('fluentia');
   assert.deepEqual(requested.slice(4).map(src => src.split('?')[0]), ['fluentia-directions-bank.js','sound-maze-bank.js','sound-maze-content.js','fluentia-textwise-bank.js','fluentia-soundscape-bank.js','fluentia-practice-bank.js'], 'Fluentia should load its optional content sources only when opened');
   assert.equal(fluentiaRegistrations, 1, 'Fluentia should register its banks after every lazy source has loaded');
-  await context.window.EPIPHANY_LAZY_LOAD('arcade');
+  await assert.rejects(context.window.EPIPHANY_LAZY_LOAD('arcade'), /Unknown feature data group/, 'retired Arcade data group must no longer be registered');
   await context.window.EPIPHANY_LAZY_LOAD('thinklab');
   await context.window.EPIPHANY_LAZY_LOAD('lifeskills');
   assert.deepEqual(requested.slice(4).map(src => src.split('?')[0]), [
