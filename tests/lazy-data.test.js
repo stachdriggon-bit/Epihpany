@@ -90,12 +90,12 @@ test('feature data loader does not request large datasets until requested', asyn
   assert.ok(requested.slice(23).every(src => /\?v=.+/.test(src)));
 
   await context.window.EPIPHANY_LAZY_LOAD('directions');
-  assert.deepEqual(requested.slice(29).map(src => src.split('?')[0]), ['data-minigames.js']);
+  assert.deepEqual(requested.slice(28).map(src => src.split('?')[0]), ['data-minigames.js']);
   assert.match(requested[27], /^data-minigames\.js\?v=/);
   assert.equal(fluentiaRegistrations, 2, 'Fluentia adapters should refresh after the deferred directions bank is ready');
 
   await context.window.EPIPHANY_LAZY_LOAD('expansionVocabulary');
-  assert.deepEqual(requested.slice(28).map(src => src.split('?')[0]), ['data-expansion-translations.js','data-expansion-runtime.js','data-expansion-wotd.js','data-expansion-vocabulary.js']);
+  assert.deepEqual(requested.slice(29).map(src => src.split('?')[0]), ['data-expansion-translations.js','data-expansion-runtime.js','data-expansion-wotd.js','data-expansion-vocabulary.js']);
   await context.window.EPIPHANY_LAZY_LOAD('expansionGrammar');
   assert.deepEqual(requested.slice(33).map(src => src.split('?')[0]), ['data-expansion-grammar.js'], 'other game banks should remain unloaded');
   assert.equal(fluentiaRegistrations, 4);
