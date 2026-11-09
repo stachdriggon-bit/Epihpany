@@ -4113,6 +4113,12 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     setTimeout(() => URL.revokeObjectURL(url), 1500); toast(downloadOnly ? 'Result card downloaded.' : 'Result card downloaded — you can now share it.');
   }
 
+  // Fluentia's canonical picture bank is registered here; it is not part of the retired mini-game runtime.
+  const FLUENTIA_AUDIO_ITEMS = Array.isArray(window.EPIPHANY_SOUNDS_PICTURE_BANK) ? window.EPIPHANY_SOUNDS_PICTURE_BANK : [];
+  if (typeof window.EPIPHANY_FLUENTIA_REGISTER_SOURCES === 'function') {
+    window.EPIPHANY_FLUENTIA_REGISTER_SOURCES({audioItems: FLUENTIA_AUDIO_ITEMS});
+  }
+
   function awardActivity(xpGain, correct) {
     if (DEV_MODE.active && hasDeveloperAccess()) return 'Developer test session · no XP, rewards or progress saved.';
     state.xp += xpGain; state.quests++; state.daily = Math.min(2, state.daily + 1);
@@ -4136,6 +4142,14 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     save(); renderAll();
     document.dispatchEvent(new CustomEvent('epiphany:activity-completed', { detail: { source: 'activity' } }));
     return bonus.trim();
+  }
+
+  function closeGame() {
+    stopSpeechPlayback();
+    releaseStoryPronunciationResources();
+    $('#game').hidden = true; hideSheet(); G = null; ST = null;
+    lockPage(false); renderAll();
+    const h = $('.view.is-active h1'); if (h) h.focus({preventScroll: true});
   }
 
   /* ---------- World: tiny top-down village ---------- */

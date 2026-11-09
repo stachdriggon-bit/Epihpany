@@ -49,11 +49,11 @@ test('empty card discovery history points to the daily discovery action', () => 
 test('changed scripts are versioned and the offline shell cache is refreshed', () => {
   const html = read('index.html');
   const sw = read('service-worker.js');
-  assert.match(html, /app\.js\?v=fluentia-directions-registration-20261109-1/);
-  assert.match(html, /lazy-data\.js\?v=fluentia-interactions-20261109-2/);
+  assert.match(html, /app\.js\?v=fluentia-shortcut-migration-20261109-2/);
+  assert.match(html, /lazy-data\.js\?v=fluentia-shortcut-migration-20261109-1/);
   assert.match(html, /cards\.js\?v=gallery-identity-asset-refresh-20261105-1/);
   assert.match(html, /account\.js\?v=empty-states-20261031-1/);
-  assert.match(html, /style\.css\?v=think-lab-daily-20261109-1/);
+  assert.match(html, /style\.css\?v=fluentia-shortcut-migration-20261109-1/);
   assert.match(read('style.css'), /Helpful empty-state actions/);
   assert.match(read('lazy-data.js'), /think-lab\.js\?v=think-lab-daily-20261109-1/);
   assert.match(read('lazy-data.js'), /think-lab-progression\.js\?v=think-lab-daily-20261109-1/);
