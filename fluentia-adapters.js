@@ -142,6 +142,19 @@
       adapters.push(makeAdapter({
         id: 'soundscape-sound-picture-match', domain: 'soundscape', legacyId: 'audioImage', interactionType: 'listening', skills: ['spoken-word-recognition'],
         getSource: () => sources.audioItems,
+        getItems: ({level}) => {
+          const rows = sources.audioItems.filter(item => item && item.level === level && item.word && (item.icon || item.image));
+          if (rows.length < 4) return [];
+          return rows.map(item => {
+            const distractors = rows.filter(option => option !== item)
+              .sort((a,b) => hash(String(item.id || item.word)+':'+String(a.word)).localeCompare(hash(String(item.id || item.word)+':'+String(b.word))))
+              .slice(0,3);
+            const pictureOptions = [item,...distractors]
+              .sort((a,b) => hash(String(item.id || item.word)+':order:'+String(a.word)).localeCompare(hash(String(item.id || item.word)+':order:'+String(b.word))))
+              .map(option => ({word:option.word,icon:option.icon || '',image:option.image || ''}));
+            return {...item,pictureOptions};
+          });
+        },
         evaluate: (item, answer) => {
           const selected = typeof answer === 'string' ? answer : answer && (answer.word || answer.selected);
           const correct = normalize(selected) === normalize(item.word);
