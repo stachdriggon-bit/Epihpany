@@ -246,6 +246,18 @@ test('main navigation tabs open without uncaught page errors', { timeout: 18 * 6
           assert.equal(await explanation.innerText(),before,'returning to English should restore the same explanation slot');
         }
         await fluentia.locator('[data-exit]').click();
+        await fluentia.locator('.fluentia-domain-card[data-domain="soundscape"]').click();
+        const pictureActivity = fluentia.locator('[data-activity="soundscape-sound-picture-match"]');
+        await pictureActivity.waitFor({state:'visible',timeout:5000});
+        await pictureActivity.click();
+        const pictureChoices = question.locator('.fluentia-picture-choice');
+        await pictureChoices.first().waitFor({state:'visible',timeout:5000});
+        assert.equal(await pictureChoices.count(),4,'Sound & Picture Match should show four image choices');
+        assert.deepEqual(await pictureChoices.evaluateAll(buttons=>buttons.map(button=>button.innerText.trim())),['','','',''],'Sound & Picture Match choices must not display object names or any text');
+        assert.deepEqual(await pictureChoices.evaluateAll(buttons=>buttons.map(button=>button.getAttribute('aria-label'))),['Picture option 1','Picture option 2','Picture option 3','Picture option 4'],'picture choices should keep neutral accessible labels');
+        await pictureChoices.first().click();
+        await question.locator('.fluentia-feedback').waitFor({state:'visible',timeout:5000});
+        await fluentia.locator('[data-exit]').click();
         await fluentia.locator('.fluentia-domain-card[data-domain="wordcraft"]').click();
         assert.equal(await fluentia.locator('[data-mode="section-mixed"]').count(),1,'Section Mixed should be available inside a domain');
         await fluentia.locator('[data-mode="section-mixed"]').click();
