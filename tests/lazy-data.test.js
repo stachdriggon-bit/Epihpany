@@ -91,7 +91,7 @@ test('feature data loader does not request large datasets until requested', asyn
 
   await context.window.EPIPHANY_LAZY_LOAD('directions');
   assert.deepEqual(requested.slice(28).map(src => src.split('?')[0]), ['data-minigames.js']);
-  assert.match(requested[27], /^data-minigames\.js\?v=/);
+  assert.match(requested[28], /^data-minigames\.js\?v=/);
   assert.equal(fluentiaRegistrations, 2, 'Fluentia adapters should refresh after the deferred directions bank is ready');
 
   await context.window.EPIPHANY_LAZY_LOAD('expansionVocabulary');
