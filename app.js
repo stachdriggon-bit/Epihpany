@@ -59,7 +59,6 @@
   }
   const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const ic = n => '<svg aria-hidden="true"><use href="#i-' + n + '"/></svg>';
-  if(!document.querySelector('link[href*="mini-games.css"]')) { const miniStyle=document.createElement('link'); miniStyle.rel='stylesheet'; miniStyle.href='mini-games.css?v=mini-games-20261024'; document.head.appendChild(miniStyle); }
   const dayKey = (d = new Date()) => [d.getFullYear(), String(d.getMonth() + 1).padStart(2, '0'), String(d.getDate()).padStart(2, '0')].join('-');
   const weekKey = (d = new Date()) => { const x = new Date(d.getFullYear(), d.getMonth(), d.getDate()); x.setDate(x.getDate() - ((x.getDay() + 6) % 7)); return dayKey(x); };
   const DAILY_QUESTS = [
@@ -180,6 +179,14 @@
     spot:      {label:'Spot the Mistake', tone:'coral', glyph:'?!', time:4, blurb:'Tap the one incorrect word.'},
     typing:    {label:'Type It', tone:'sky', glyph:'Aa', time:4, blurb:'Write the missing word from memory.'}
   };
+  const FLUENTIA_SHORTCUTS = Object.freeze({
+    order:{activityId:'textwise-sequence',label:'Text Sequencing',tone:'sky',glyph:'1·2·3',time:4,xp:30,blurb:'Put practical steps in the correct order.'},
+    match:{activityId:'wordcraft-word-match',label:'Word Match',tone:'violet',glyph:'⇄',time:3,xp:25,blurb:'Match each word with its correct meaning.'},
+    directions:{activityId:'real-world-directions',label:'Directions',tone:'navy',glyph:'↱',time:4,xp:35,blurb:'Follow directions on a town map.'},
+    speed:{activityId:'wordcraft-speed-round',label:'Speed Round',tone:'violet',glyph:'⚡',time:3,xp:45,blurb:'Practise rapid vocabulary recall.'},
+    sentenceOrder:{activityId:'sentence-studio-sentence-builder',label:'Sentence Builder',tone:'coral',glyph:'↔',time:3,xp:35,blurb:'Build natural sentences in the correct order.'}
+  });
+  Object.entries(FLUENTIA_SHORTCUTS).forEach(([id,meta])=>{META[id]={...meta};});
   const ORDER = ['vocabulary', 'spelling', 'grammar', 'story', 'listening', 'advanced', 'mistakes', 'typing'];
   const UNLOCK = {vocabulary:0, spelling:0, grammar:1, story:2, listening:3, advanced:4, mistakes:0, spot:0, typing:0};
   GAMES.mistakes = {title:'Common Mistakes', category:'GRAMMAR', xp:40, desc:'Understand common mistakes made by English learners.', questions:MISTAKE_QUESTIONS.map(q=>({q:q.prompt,sub:q.sub,answers:q.options,correct:q.answer,explain:q.why_en,word:null,level:q.level,ar:q.arabic_hint,id:q.id,trap:q.trap,why_ar:q.why_ar,arabic_hint:q.arabic_hint,q_ar:q.q_ar,sub_ar:q.sub_ar,explain_ar:q.why_ar,aha:null}))};
@@ -760,8 +767,9 @@
     renderChallenges();
     renderDailySessionCard();
     const recommendation = adaptiveRecommendation();
-    const recommendedGame = (GAMES[recommendation.game] || MINI[recommendation.game]) ? recommendation.game : pickNext();
-    const game = GAMES[recommendedGame] || MINI[recommendedGame] || GAMES.vocabulary;
+    const recommendedGame = (GAMES[recommendation.game] || FLUENTIA_SHORTCUTS[recommendation.game]) ? recommendation.game : pickNext();
+    const shortcut = FLUENTIA_SHORTCUTS[recommendedGame];
+    const game = GAMES[recommendedGame] || shortcut || GAMES.vocabulary;
     const m = META[recommendedGame] || META.vocabulary;
     $('#next-card').className = 'next t-' + (m.tone || 'violet');
     $('#next-cat').textContent = m.label || 'Personal practice';
@@ -769,7 +777,7 @@
     $('#next-desc').textContent = recommendation.reason + (recommendation.detail ? ' Focus: ' + recommendation.detail + '.' : '');
     $('#next-count').textContent = recommendation.kind === 'starter' ? 'A first step · adapts as you practise' : 'Chosen from your practice history';
     $('#next-time').textContent = (m.time || 3) + ' min';
-    $('#next-xp').textContent = '+' + (game.xp || m.xp || 25) + ' XP';
+    $('#next-xp').textContent = shortcut ? 'Fluentia activity' : '+' + (game.xp || m.xp || 25) + ' XP';
     $('#next-art').innerHTML = '<div class="glyph">' + glyph(recommendedGame) + '</div>';
     $('#next-start').dataset.game = recommendedGame;
     renderWeaknessPanel();
@@ -1532,7 +1540,6 @@
     if (activitySelect) {
       const previous = activitySelect.value;
       const items = Object.keys(GAMES).map(k => ({value:k,label:(META[k]&&META[k].label?META[k].label+' — ':'')+GAMES[k].title}))
-        .concat(Object.keys(MINI).map(k=>({value:k,label:(META[k]&&META[k].label?META[k].label+' — ':'')+(META[k]&&META[k].label||k)})))
         .concat([{value:'__story',label:'Stories — choose any story'},{value:'__world',label:'World — all regions and missions'}]);
       activitySelect.innerHTML = items.map(item=>'<option value="'+esc(item.value)+'">'+esc(item.label)+'</option>').join('');
       if (items.some(item=>item.value===previous)) activitySelect.value=previous;
@@ -1588,7 +1595,7 @@
       return;
     }
     if (selected.value === '__world') { openView('home'); startWorld(); return; }
-    if (GAMES[selected.value] || MINI[selected.value]) { openView('home'); startGame(selected.value); }
+    if (GAMES[selected.value] || FLUENTIA_SHORTCUTS[selected.value]) { openView('home'); startGame(selected.value); }
   }
 
   function renderLearningInsights(){
@@ -2105,6 +2112,20 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     window.scrollTo(0, 0);
     const h = $('#' + name + '-title'); if (h) { h.classList.add('programmatic-view-focus'); h.focus({preventScroll: true}); }
     document.dispatchEvent(new CustomEvent('epiphany:view-changed', { detail: { view: name } }));
+  }
+
+  function launchFluentiaShortcut(shortcutKey) {
+    const shortcut = FLUENTIA_SHORTCUTS[shortcutKey];
+    if (!shortcut) return false;
+    openView('fluentia');
+    window.EPIPHANY_LAZY_LOAD('fluentia').then(() => {
+      if (!$('#fluentia-view')?.classList.contains('is-active')) return;
+      const launch = window.EPIPHANY_FLUENTIA_START_ACTIVITY;
+      if (typeof launch !== 'function' || !launch(shortcut.activityId, shortcut.label)) {
+        toast(shortcut.label + ' is not available for your selected level yet. Try another Fluentia activity.');
+      }
+    }).catch(() => toast(shortcut.label + ' could not load. Connect to the internet and try again.'));
+    return true;
   }
 
   // Keep keyboard-focus cleanup delegated and page-scoped; do not attach a fresh
@@ -2836,8 +2857,8 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
        2. directQuestionArabic  authored *_ar fields of the current question (fallback)
        3. translateToArabic     phrase catalogue (exact) or a short, fully-known word-by-word gloss
      Text that merely echoes the English is never accepted as an Arabic translation. */
-  const TX_UNIT_SELECTOR='[data-tx],.q-text,.q-sub,.typing-prompt,.spot-text,.mg-route,.answer,.question-text,.prompt-text,.instruction-text,.story-prompt,.story-response,.story-decision-option,.story-text,.world-instruction strong,.world-dialogue,.mg-card,.mg-tile,.mini-choice';
-  const TX_ANSWER_SELECTOR='.answer,.mg-card,.mg-tile,.story-decision-option,.mini-choice';
+  const TX_UNIT_SELECTOR='[data-tx],.q-text,.q-sub,.typing-prompt,.spot-text,.answer,.question-text,.prompt-text,.instruction-text,.story-prompt,.story-response,.story-decision-option,.story-text,.world-instruction strong,.world-dialogue';
+  const TX_ANSWER_SELECTOR='.answer,.story-decision-option';
   // Options that are different spellings / grammatical forms of one phrase are never translated:
   // an Arabic rendering would give the answer away (the catalogue even marks wrong forms as unnatural).
   const TX_NO_ANSWER_TYPES=['spelling','mistakes','personalized'];
@@ -2846,19 +2867,15 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
 
   function hasArabic(value){return /[ء-ي]/.test(String(value==null?'':value));}
   function txGame(){try{return G;}catch{return null;}}
-  function txMiniGame(){try{return MG;}catch{return null;}}
   function cleanTx(value){return String(value==null?'':value).replace(/\s+/g,' ').trim();}
   function arAttr(ar){return hasArabic(ar)?' data-translation-ar="'+esc(cleanTx(ar))+'"':'';}
   function txIsAnswer(el){return el.matches(TX_ANSWER_SELECTOR);}
   function txInSheet(el){return !!el.closest('#sheet');}
-  function txInMini(el){return !!(txMiniGame()&&!txGame()&&el.closest('#game-body'));}
   const txIsDecor=n=>n.nodeType===1&&n.matches(TX_DECOR);
   /* The element whose text is swapped: the text span of an answer/card, otherwise the element itself. */
   function txHolder(el){
     if(el.classList.contains('answer'))return el.querySelector(':scope > span:not(.key)')||el;
     if(el.classList.contains('story-decision-option'))return [...el.children].find(c=>!c.classList.contains('story-decision-letter'))||el;
-    if(el.classList.contains('mg-card'))return [...el.children].find(c=>c.tagName==='SPAN')||el;
-    if(el.classList.contains('mg-tile'))return el.querySelector(':scope > span')||el;
     return el;
   }
   function txRead(el){
@@ -3022,7 +3039,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     if(txIsAnswer(target)&&game&&TX_NO_ANSWER_TYPES.includes(game.type))return;
     target.dataset.txUnit='1';
     // Sheet text and mini-game cards share one screen-level button instead of one button per element.
-    if(txInSheet(target)||txInMini(target))return;
+    if(txInSheet(target))return;
     // Answer options follow the screen-level button; a button beside every option only adds clutter.
     if(txIsAnswer(target)&&!target.classList.contains('story-decision-option')&&document.querySelector('#game-ar'))return;
     // Never offer a dead button once we know there is no Arabic for this text.
@@ -3080,16 +3097,6 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     });
     ensureSheetButton(sheet);
   }
-  /* Mini-games rebuild their markup after every tap, so the chosen language is remembered for the
-     current game screen and re-applied to the fresh elements. A new question starts in English again. */
-  function txMiniKey(){const mg=txMiniGame();return mg?mg.type+':'+mg.i:'';}
-  function txApplyRememberedMini(root){
-    const mg=txMiniGame();
-    if(!mg||txGame())return;
-    const key=txMiniKey();
-    if(mg.txKey!==key){mg.txKey=key;mg.txLang='en';}
-    if(mg.txLang==='ar')txSetMany(txUnits(root),'ar');
-  }
   function txPruneButtons(root){
     (root||document).querySelectorAll('[data-translate-target]').forEach(button=>{
       const el=document.getElementById(button.dataset.translateTarget);
@@ -3108,7 +3115,6 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
       if(el.hasAttribute('data-tx-skip')||el.closest('#sheet'))return;
       addTranslationControl(el);
     });
-    txApplyRememberedMini(root);
     txSyncGroupButtons();
   }
   // Public bridge for standalone learning views such as Casebound.
@@ -3131,8 +3137,6 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
       withArabicCatalog(()=>{
         const root=txGroupRoot(group);if(!root)return;
         const next=txToggleMany(txUnits(root),group);
-        const mg=txMiniGame();
-        if(mg&&!txGame()&&group.dataset.translateGroup==='screen'){mg.txKey=txMiniKey();mg.txLang=next;}
         txPruneButtons(root);
       },group);
       return;
@@ -3171,8 +3175,6 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
       const root=$('#game');if(!root||root.hidden)return;
       enhanceTranslationControls($('#game-body'));enhanceTranslationControls($('#sheet'));
       const next=txToggleMany(txUnits(root),$('#game-ar'));
-      const mg=txMiniGame();
-      if(mg&&!txGame()){mg.txKey=txMiniKey();mg.txLang=next;}
       txPruneButtons(root);
     },$('#game-ar'));
   }
@@ -3316,7 +3318,6 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     if(e.target&&e.target.id==='story-search-input'){STORY_FILTER.query=e.target.value;if(STORY_FILTER.query.trim()&&STORY_FILTER.level!=='all'){STORY_FILTER.level='all';renderStories();const si=$('#story-search-input');if(si){si.focus();const n=si.value.length;try{si.setSelectionRange(n,n);}catch{}}return;}const q=STORY_FILTER.query.trim().toLowerCase();let count=0;$$('.story-card').forEach(card=>{const match=(card.textContent||'').toLowerCase().includes(q);card.hidden=!match;if(match)count++;});$$('.story-level,.story-season,.story-feature-section').forEach(section=>{section.hidden=!section.querySelector('.story-card:not([hidden])');});const out=$('#story-results-count');if(out)out.textContent=count+' stories found';}
   });
   document.addEventListener('click', e => {
-    if (MG && miniClick(e)) return;
     if(e.target.closest('[data-story-reset-filters]')){STORY_FILTER={...STORY_FILTER,query:'',level:'all',length:'all',status:'all'};renderStories();return;}
     const storyMode=e.target.closest('[data-story-mode]');if(storyMode){STORY_MODE=storyMode.dataset.storyMode;renderStories();return;}
     const storyLevelTab=e.target.closest('[data-story-level-tab]');if(storyLevelTab){STORY_FILTER.level=storyLevelTab.dataset.storyLevelTab;renderStories();return;}
@@ -3523,7 +3524,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
   const expansionGameLoads = new Set();
   const expansionGames = new Set(['vocabulary','spelling','grammar','story','listening','advanced']);
   function startGame(type, challengeMode = '') {
-    if (MINI[type]) { startMini(type); return; }
+    if (FLUENTIA_SHORTCUTS[type]) { launchFluentiaShortcut(type); return; }
     if(expansionGames.has(type)&&!window.EPIPHANY_EXPANSION_BANKS?.[type]){
       if(expansionGameLoads.has(type))return;
       expansionGameLoads.add(type);
@@ -3553,9 +3554,6 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     }
     if (dataName && !GAMES[type].questions.length) hydrateWritingPractice(type);
     const game = GAMES[type]; if (!game) return;
-    // Invalidate pending callbacks from any mini-game before switching activities.
-    miniSessionId++;
-    if (miniTimer) { clearInterval(miniTimer); miniTimer = null; }
     const level = currentLevel().id;
     const levelIds = LEVELS.map(l => l.id);
     const currentIndex = Math.max(0, levelIds.indexOf(level));
@@ -4115,21 +4113,6 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     setTimeout(() => URL.revokeObjectURL(url), 1500); toast(downloadOnly ? 'Result card downloaded.' : 'Result card downloaded — you can now share it.');
   }
 
-  /* ---------- mini-games: Order the Story · Word Match · Directions ---------- */
-  let MG = null;
-  const MINI = {
-    order:     {label:'Order the Story', tone:'mint',   glyph:'1·2·3', time:4, blurb:'Put the events of a story in order.', xp:30},
-    match:     {label:'Word Match',      tone:'violet', glyph:'⇄',     time:3, blurb:'Match each word with its meaning.',   xp:25},
-    directions:{label:'Directions',      tone:'sky',    glyph:'↱',     time:4, blurb:'Follow directions on a town map.',    xp:35},
-    speed:{label:'Speed Round',tone:'coral',glyph:'⚡',time:1,blurb:'A 60-second sprint focused on your weak words.',xp:45},
-    
-    sentenceOrder:{label:'Sentence Builder',tone:'mint',glyph:'↔',time:3,blurb:'Arrange shuffled words and hear the sentence when correct.',xp:35}
-  };
-  Object.assign(META, MINI); Object.keys(MINI).forEach(k => { UNLOCK[k] = 0; });
-  const NUM_WORDS = ['zero','one','two','three','four'];
-  const AR_NUM = ['صفر','كتلة واحدة','كتلتين','ثلاث كتل','أربع كتل'];
-  const SHUF = list => { const a = list.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
-
   function awardActivity(xpGain, correct) {
     if (DEV_MODE.active && hasDeveloperAccess()) return 'Developer test session · no XP, rewards or progress saved.';
     state.xp += xpGain; state.quests++; state.daily = Math.min(2, state.daily + 1);
@@ -4154,294 +4137,6 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     document.dispatchEvent(new CustomEvent('epiphany:activity-completed', { detail: { source: 'activity' } }));
     return bonus.trim();
   }
-
-  let miniSessionId = 0;
-  let directionsDataLoading = false;
-  function startMini(type) {
-    if (type === 'directions' && typeof DIRECTION_ITEMS === 'undefined') {
-      if (directionsDataLoading) return;
-      directionsDataLoading = true;
-      window.EPIPHANY_LAZY_LOAD('directions').then(() => {
-        directionsDataLoading = false;
-        startMini(type);
-      }).catch(() => {
-        directionsDataLoading = false;
-        toast('Directions practice could not load. Connect to the internet and try again.');
-      });
-      return;
-    }
-    miniSessionId++;
-    G = null; ST = null;
-    MG = {type, i: 0, score: 0, total: 0, answered: false, results: []};
-    const m = META[type];
-    $('#game').className = 'game t-' + m.tone; $('#game').hidden = false; lockPage(true); hideSheet();
-    if (type === 'order') miniOrderSetup();
-    else if (type === 'match') miniMatchSetup();
-    else if (type === 'directions') miniDirSetup();
-    else if (type === 'speed') miniSpeedSetup();
-        else if (type === 'sentenceOrder') miniSentenceSetup();
-  }
-  let miniTimer = null;
-  function miniWeakWordPool() {
-    const items=[],seen=new Set();
-    const add=(word,meaning,icon)=>{const w=String(word||'').trim(),m=String(meaning||'').trim(),key=w.toLowerCase();if(!w||!m||seen.has(key))return;seen.add(key);items.push({word:w,meaning:m,icon:icon||'🔤'});};
-    (state.review||[]).slice().sort((a,b)=>(Number(b.errors)||0)-(Number(a.errors)||0)).forEach(x=>{if(x&&x.word)add(x.word,x.meaning||x.translation||'Review this word in context.');});
-    (state.words||[]).forEach(x=>{if(Array.isArray(x))add(x[0],x[1]);else if(x&&x.word)add(x.word,x.meaning);});
-    (WOTD_WORDS||[]).forEach(x=>add(x.word,x.meaning));
-    return items;
-  }
-  /* Screen-level translate button used by every mini-game: one tap swaps the whole screen to Arabic
-     in place, another tap swaps it back. Elements without a translation simply stay in English. */
-  const miniTranslateButton = () => '<button type="button" class="translate-btn tx-group-btn" data-translate-group="screen" data-translation-label="الشاشة" aria-pressed="false"' + (state.translationEnabled ? '' : ' hidden') + '><span aria-hidden="true">ع</span> ترجمة الشاشة</button>';
-  function miniMeaningAr(word, meaning) {
-    const hit = (typeof WOTD_WORDS !== 'undefined' ? WOTD_WORDS : []).find(x => String(x.word).toLowerCase() === String(word || '').toLowerCase());
-    return hit && hit.meaning === meaning && hasArabic(hit.meaning_ar) ? hit.meaning_ar : '';
-  }
-  function miniSpeech(text) { speak(text,{rate:voicePref.rate||0.92}); }
-  function miniSpeedSetup() {
-    if(miniTimer){clearInterval(miniTimer);miniTimer=null;}
-    const pool=miniWeakWordPool();
-    const defaults=[
-      {word:'borrow',meaning:'to take something and return it later'},{word:'careful',meaning:'giving attention to avoid mistakes'},
-      {word:'improve',meaning:'to become or make something better'},{word:'choose',meaning:'to select from possibilities'},
-      {word:'journey',meaning:'travel from one place to another'},{word:'quiet',meaning:'making little or no noise'}
-    ];
-    const extras=SHUF(defaults.filter(x=>!pool.some(p=>p.word.toLowerCase()===x.word.toLowerCase())));
-    MG.pool=pool.length>=4?pool:pool.concat(extras.slice(0,Math.max(4-pool.length,0)));
-    MG.seconds=60;MG.total=0;MG.score=0;MG.answered=false;MG.current=null;miniSpeedRender();
-    const speedSession = MG, speedSessionId = miniSessionId;
-    miniTimer=setInterval(()=>{if(!MG||MG!==speedSession||miniSessionId!==speedSessionId||MG.type!=='speed'){clearInterval(miniTimer);miniTimer=null;return;}MG.seconds--;const t=$('#mini-speed-time');if(t)t.textContent=MG.seconds+'s';const bar=$('.mini-speed-meter span');if(bar)bar.style.width=Math.max(0,MG.seconds/60*100)+'%';if(MG.seconds<=0){clearInterval(miniTimer);miniTimer=null;miniFinish('60 seconds');}},1000);
-  }
-  function miniSpeedRender() {
-    const pool=MG.pool;let q=pool[Math.floor(Math.random()*pool.length)];if(pool.length>1&&MG.current&&q.word===MG.current.word)q=pool[(pool.indexOf(q)+1)%pool.length];MG.current=q;MG.answered=false;
-    const opts=SHUF([q,...SHUF(pool.filter(x=>x.word!==q.word)).slice(0,3)]);
-    $('#game-body').innerHTML='<div class="q-meta"><span class="pill">⚡ Speed Round</span><span class="q-count" id="mini-speed-time">'+MG.seconds+'s</span></div><div class="mini-speed-meter"><span style="width:'+Math.max(0,MG.seconds/60*100)+'%"></span></div>'+miniTranslateButton()+'<p class="q-sub"'+arAttr('اختر المعنى الصحيح. تُعطى الأولوية للكلمات المحفوظة والصعبة عند توفرها.')+'>Choose the meaning. Saved and difficult words are prioritised when available.</p><h2 class="mini-target-word">'+esc(q.word)+'</h2><div class="mini-choice-grid">'+opts.map(o=>'<button type="button" class="mini-choice" data-mini-speed-answer="'+encodeURIComponent(o.word)+'"'+arAttr(miniMeaningAr(o.word,o.meaning))+'>'+esc(o.meaning)+'</button>').join('')+'</div><p class="mini-live-score">Correct: <b>'+MG.score+'</b> · Answered: <b>'+MG.total+'</b></p>';
-  }
-  const FLUENTIA_AUDIO_ITEMS = Array.isArray(window.EPIPHANY_SOUNDS_PICTURE_BANK) ? window.EPIPHANY_SOUNDS_PICTURE_BANK : [];
-  if (typeof window.EPIPHANY_FLUENTIA_REGISTER_SOURCES === 'function') {
-    window.EPIPHANY_FLUENTIA_REGISTER_SOURCES({audioItems: FLUENTIA_AUDIO_ITEMS});
-  }
-  const MINI_SENTENCES=[
-    {id:'SB-A1-01',level:'A1',text:'I drink water every morning.',ar:'أشرب الماء كل صباح.'},
-    {id:'SB-A1-02',level:'A1',text:'She is reading a book.',ar:'هي تقرأ كتابًا.'},
-    {id:'SB-A1-03',level:'A1',text:'We are going to school.',ar:'نحن ذاهبون إلى المدرسة.'},
-    {id:'SB-A1-04',level:'A1',text:'He bought a new phone.',ar:'اشترى هاتفًا جديدًا.'},
-    {id:'SB-A1-05',level:'A1',text:'Please open the window.',ar:'من فضلك افتح النافذة.'},
-    {id:'SB-A1-06',level:'A1',text:'They play football after school.',ar:'يلعبون كرة القدم بعد المدرسة.'},
-    {id:'SB-A1-07',level:'A1',text:'I would like a cup of tea.',ar:'أود كوبًا من الشاي.'},
-    {id:'SB-A1-08',level:'A1',text:'The train arrives at six.',ar:'يصل القطار عند السادسة.'},
-    {id:'SB-A2-01',level:'A2',text:'My friend lives near the park.',ar:'يعيش صديقي بالقرب من الحديقة.'},
-    {id:'SB-A1-09',level:'A1',text:'Could you help me, please?',ar:'هل يمكنك مساعدتي من فضلك؟'}
-  ];
-  if (typeof window.EPIPHANY_FLUENTIA_REGISTER_SOURCES === 'function') {
-    window.EPIPHANY_FLUENTIA_REGISTER_SOURCES({sentenceItems: MINI_SENTENCES});
-  }
-  function miniSentenceSetup(){MG.pool=SHUF(MINI_SENTENCES);MG.total=8;MG.i=0;MG.score=0;MG.answered=false;miniSentenceRender();}
-  function miniSentenceRender(){const q=MG.pool[MG.i%MG.pool.length];MG.current=q;if(MG.sentenceQuestion!==MG.i){MG.sentenceQuestion=MG.i;MG.tokens=SHUF(q.text.replace(/[.!?]$/,'').split(/\s+/).map((word,id)=>({word,id})));MG.placed=[];MG.answered=false;}miniSteps();$('#game-body').innerHTML='<div class="q-meta"><span class="pill">↔ Sentence Builder</span><span class="q-count">'+(MG.i+1)+' of '+MG.total+'</span></div><h2 class="q-text" id="q-text" tabindex="-1"'+arAttr('رتّب الكلمات ترتيبًا صحيحًا')+'>Put the words in the right order</h2>'+miniTranslateButton()+'<p class="q-sub"'+arAttr('اضغط على الكلمات بالأسفل لتكوين جملة طبيعية. معنى الجملة: '+q.ar)+'>Tap words below to build a natural sentence.</p><div class="mini-sentence-answer" aria-live="polite">'+(MG.placed.length?MG.placed.map((t,i)=>'<button type="button" class="mini-word-token" data-mini-sentence-remove="'+i+'">'+esc(t.word)+'</button>').join(' '):'<span>Tap words to build the sentence…</span>')+'</div><div class="mini-sentence-bank">'+MG.tokens.filter(t=>!MG.placed.some(p=>p.id===t.id)).map(t=>'<button type="button" class="mini-word-token" data-mini-sentence-word="'+t.id+'">'+esc(t.word)+'</button>').join(' ')+'</div><div class="mini-sentence-actions"><button type="button" class="btn" data-mini-sentence-check>Check sentence</button><button type="button" class="btn btn-ghost" data-mini-sentence-reset>Reset</button></div>'+(MG.feedback?'<p class="mini-feedback" data-tx'+arAttr(MG.feedbackAr)+'>'+esc(MG.feedback)+'</p>':'');MG.feedback='';MG.feedbackAr='';}
-
-  function miniSteps(done) {
-    $('#steps').innerHTML = Array.from({length: MG.total}, (_, i) => '<span class="step ' + (MG.results[i] === 'ok' ? 'ok' : MG.results[i] === 'no' ? 'no' : (i === MG.i && !done ? 'current' : '')) + '"></span>').join('');
-  }
-  function miniFinish(note) {
-    if(!MG || MG.done) return;
-    if(miniTimer){clearInterval(miniTimer);miniTimer=null;}
-    const session = MG;
-    session.done = true; // Lock immediately so any re-entrant finish callback is harmless.
-    const m = META[MG.type];
-    let ratio = MG.type==='speed' ? Math.max(0,Math.min(1,MG.score/Math.max(1,MG.total))) : MG.total ? MG.score / MG.total : 1;
-    if (MG.type === 'match') ratio = Math.max(.4, Math.min(1, MG.total * 1.6 / Math.max(1, MG.attempts)));
-    const gain = DEV_MODE.active ? 0 : Math.max(8, Math.round(m.xp * (.4 + .6 * ratio)));
-    const bonus = awardActivity(gain, MG.score);
-    const stars = ratio >= .9 ? '★★★' : ratio >= .6 ? '★★☆' : '★☆☆';
-    miniSteps(true); hideSheet();
-    const type = MG.type;
-    $('#game-body').innerHTML = '<div class="result story-result"><div class="burst">' + (type === 'speed' ? '⚡' : type === 'sentenceOrder' ? '↔' : type === 'order' ? '📚' : type === 'match' ? '🧩' : '🧭') + '</div><p class="kicker">' + esc(m.label.toUpperCase()) + ' COMPLETE</p><h2>' + (ratio >= .9 ? 'Brilliant work!' : ratio >= .6 ? 'Nicely done!' : 'Good practice!') + '</h2><div class="story-stars">' + stars + '</div>' +
-      '<div class="stats3"><div class="stat"><b>+' + gain + '</b><span>XP earned</span></div><div class="stat"><b>' + MG.score + '/' + MG.total + '</b><span>' + (type === 'match' ? 'Pairs' : 'Correct') + '</span></div><div class="stat"><b>' + esc(note || '') + '</b><span>' + (type === 'match' ? 'Attempts' : 'Rounds') + '</span></div></div>' +
-      (bonus ? '<p class="challenge-bonus">' + esc(bonus) + '</p>' : '') +
-      '<div class="result-actions"><button class="btn" data-mini-again="' + type + '">Play again</button><button class="btn btn-ghost" data-mini-close>Back to Home</button></div></div>';
-    $('#game-scroll').scrollTop = 0; session.done = true; sfx('done');
-    maybeShowAccountPrompt('mini-game', $('#game-body .result'));
-  }
-
-  /* Order the Story */
-  function miniOrderSetup() {
-    const setupSession = MG, setupSessionId = miniSessionId;
-    if (!setupSession || setupSession.type !== 'order') return;
-    if (typeof STORIES === 'undefined') {
-      window.EPIPHANY_LAZY_LOAD('stories').then(() => {
-        if (MG === setupSession && miniSessionId === setupSessionId && MG.type === 'order') miniOrderSetup();
-      }).catch(() => {
-        if (MG === setupSession && miniSessionId === setupSessionId && MG.type === 'order') toast('Stories could not load. Connect to the internet and try again.');
-      });
-      return;
-    }
-    if (MG !== setupSession || miniSessionId !== setupSessionId) return;
-    const idx = levelIndex();
-    let pool = STORIES.filter(s => storyLevelIndex(s.level) <= idx);
-    if (!pool.length) pool = STORIES.slice();
-    const picked = SHUF(pool).slice(0, 3);
-    MG.rounds = picked.map(s => {
-      const n = Math.min(4, s.pages.length), start = Math.floor(Math.random() * (s.pages.length - n + 1));
-      const items = s.pages.slice(start, start + n).map((p, k) => {
-        const first = String(p.text).split(/(?<=[.!?”"])\s+/)[0] || p.text;
-        // The page's Arabic translates the whole page; reuse it only when the card shows the whole page.
-        return {k, text: first, ar: String(first).trim() === String(p.text).trim() ? p.ar : ''};
-      });
-      let order = SHUF(items.map(x => x.k)), tries = 0;
-      while (order.every((v, p) => v === p) && tries++ < 10) order = SHUF(order);
-      return {title: s.title, items, pool: order, placed: []};
-    });
-    MG.total = MG.rounds.length; MG.i = 0; miniOrderRender();
-  }
-  function miniOrderRender() {
-    const r = MG.rounds[MG.i]; MG.answered = false; hideSheet(); miniSteps();
-    const itemOf = k => r.items.find(x => x.k === k);
-    const cardText = k => '<span>' + esc(itemOf(k).text) + '</span>';
-    $('#game-body').innerHTML = '<div class="q-meta"><span class="pill">Order the Story</span><span class="q-count">Story ' + (MG.i + 1) + ' of ' + MG.total + '</span></div>' +
-      '<h2 class="q-text" id="q-text" tabindex="-1"' + arAttr('رتّب الأحداث') + '>Put the events in order</h2>' + miniTranslateButton() +
-      '<p class="q-sub"' + arAttr('من قصة «' + r.title + '». اضغط على الجمل بالترتيب الذي حدثت به.') + '>From “' + esc(r.title) + '”. Tap the sentences in the order they happened.</p>' +
-      '<ol class="mg-slots" aria-label="Your order">' + r.items.map((_, p) => '<li class="mg-slot' + (r.placed[p] !== undefined ? ' is-filled' : '') + '">' + (r.placed[p] !== undefined ? '<button type="button" class="mg-card is-placed" data-mg-unplace="' + p + '"' + arAttr(itemOf(r.placed[p]).ar) + '><b>' + (p + 1) + '</b>' + cardText(r.placed[p]) + '</button>' : '<span class="mg-empty">' + (p + 1) + '</span>') + '</li>').join('') + '</ol>' +
-      '<div class="mg-pool" role="group" aria-label="Sentences to place">' + r.pool.map(k => '<button type="button" class="mg-card" data-mg-place="' + k + '"' + arAttr(itemOf(k).ar) + '>' + cardText(k) + '</button>').join('') + '</div>' +
-      '<div class="mg-actions"><button class="btn" id="mg-check" ' + (r.pool.length ? 'disabled' : '') + '>Check order</button></div>';
-    $('#game-scroll').scrollTop = 0; const h = $('#q-text'); if (h) h.focus({preventScroll: true});
-  }
-  function miniOrderCheck() {
-    const r = MG.rounds[MG.i]; if (MG.answered || r.pool.length) return;
-    MG.answered = true; const correct = r.placed.filter((k, p) => k === p).length, ok = correct === r.items.length;
-    if (ok) MG.score++; MG.results[MG.i] = ok ? 'ok' : 'no'; miniSteps();
-    $$('.mg-slots .mg-card').forEach((b, p) => { b.disabled = true; b.classList.add(r.placed[p] === p ? 'is-right' : 'is-wrong'); });
-    $('#mg-check').disabled = true; sfx(ok ? 'ok' : 'no');
-    showSheet(ok, '<h3' + arAttr(ok ? 'ترتيب ممتاز!' : correct + ' من ' + r.items.length + ' في مكانها الصحيح') + '><span class="sheet-mark">' + ic(ok ? 'check' : 'x') + '</span>' + (ok ? 'Perfect order!' : correct + ' of ' + r.items.length + ' in the right place') + '</h3>' +
-      (ok ? '' : '<p' + arAttr('الترتيب الصحيح:') + '>Correct order:</p><ol class="mg-answer">' + r.items.map(x => '<li' + arAttr(x.ar) + '>' + esc(x.text) + '</li>').join('') + '</ol>') +
-      '<p class="arabic" lang="ar" dir="rtl" data-tx-ar-only hidden>' + (ok ? 'أحسنت! رتّبت الأحداث ترتيبًا صحيحًا.' : 'راجع تسلسل الأحداث ثم حاول مجددًا في القصة التالية.') + '</p>' +
-      '<div class="sheet-actions"><button class="btn" id="go-next">' + (MG.i === MG.total - 1 ? 'See results' : 'Next story') + ic('arrow') + '</button></div>');
-  }
-
-  /* Word Match (memory pairs) */
-  function miniShort(text) { const t = String(text || '').replace(/^to /, '').split(/[;,(]/)[0].trim(); return t.length > 34 ? t.slice(0, 32).trim() + '…' : t; }
-  function miniShortAr(text) { const t = String(text || '').split(/[؛،;,(]/)[0].trim(); return t.length > 34 ? t.slice(0, 32).trim() + '…' : t; }
-  function miniMatchSetup() {
-    const idx = levelIndex(), lvIds = LEVELS.map(l => l.id);
-    const seen = new Set(), pairs = [];
-    const add = (w, m, ar) => { const key = String(w).toLowerCase(); if (!w || !m || seen.has(key) || /^معنى/.test(m)) return; seen.add(key); pairs.push({w: String(w), m: miniShort(m), ar: hasArabic(ar) ? miniShortAr(ar) : ''}); };
-    SHUF(state.words.filter(x => x[1] && x[1] !== 'No explanation has been added for this word yet.')).slice(0, 3).forEach(x => add(x[0], x[1], miniMeaningAr(x[0], x[1])));
-    const wl = WOTD_WORDS.filter(x => lvIds.indexOf(x.level) <= idx + 1);
-    SHUF(wl.length >= 6 ? wl : WOTD_WORDS).forEach(x => { if (pairs.length < 6) add(x.word, x.meaning, x.meaning_ar); });
-    const cards = SHUF(pairs.flatMap((p, n) => [{id: 'w' + n, n, text: p.w, kind: 'word', ar: ''}, {id: 'm' + n, n, text: p.m, kind: 'meaning', ar: p.ar}]));
-    MG.pairs = pairs; MG.cards = cards; MG.open = []; MG.matched = new Set(); MG.attempts = 0; MG.total = pairs.length; MG.lock = false;
-    miniMatchRender();
-  }
-  function miniMatchRender() {
-    miniSteps();
-    $('#game-body').innerHTML = '<div class="q-meta"><span class="pill">Word Match</span><span class="q-count">' + MG.matched.size + ' of ' + MG.total + ' pairs</span></div><h2 class="q-text" id="q-text" tabindex="-1"' + arAttr('طابِق كل كلمة مع معناها') + '>Match each word with its meaning</h2>' + miniTranslateButton() + '<p class="q-sub"' + arAttr('اقلب بطاقتين. الكلمة ومعناها يكوّنان زوجًا.') + '>Flip two cards. A word and its meaning make a pair.</p>' +
-      '<div class="mg-grid" role="group" aria-label="Memory cards">' + MG.cards.map((c, i) => {
-        const open = MG.open.includes(i), done = MG.matched.has(c.n), shown = open || done;
-        // Words stay in English (they are what is being learned); only meanings can switch to Arabic.
-        // Face-down cards carry no translatable text.
-        const tx = shown && c.kind === 'meaning' ? arAttr(c.ar) : ' data-tx-skip';
-        return '<button type="button" class="mg-tile ' + (done ? 'is-done ' : open ? 'is-open ' : '') + 'mg-' + c.kind + '" data-mg-flip="' + i + '" ' + (done ? 'disabled' : '') + ' aria-label="' + (shown ? esc(c.text) : 'Hidden card') + '"' + tx + '><span>' + (shown ? esc(c.text) : '?') + '</span></button>';
-      }).join('') + '</div>';
-    for (let i = 0; i < MG.total; i++) { MG.results[i] = MG.matched.size > i ? 'ok' : ''; } miniSteps();
-  }
-  function miniFlip(i) {
-    if (MG.lock || MG.open.includes(i) || MG.matched.has(MG.cards[i].n)) return;
-    MG.open.push(i); sfx('ok');
-    if (MG.open.length < 2) { miniMatchRender(); return; }
-    MG.attempts++; const [a, b] = MG.open.map(k => MG.cards[k]);
-    if (a.n === b.n && a.kind !== b.kind) { MG.matched.add(a.n); MG.open = []; MG.score = MG.matched.size; miniMatchRender(); if (MG.matched.size === MG.total) { const matchSession = MG, matchSessionId = miniSessionId; setTimeout(() => { if (MG === matchSession && miniSessionId === matchSessionId && MG.type === 'match') miniFinish(String(matchSession.attempts)); }, 700); } return; }
-    MG.lock = true; miniMatchRender(); sfx('no');
-    const mismatchSession = MG, mismatchSessionId = miniSessionId;
-    setTimeout(() => { if (MG !== mismatchSession || miniSessionId !== mismatchSessionId || MG.type !== 'match' || MG.done) return; MG.open = []; MG.lock = false; miniMatchRender(); }, 950);
-  }
-
-  /* Directions */
-  const DIR_V = {N: [0, -1], E: [1, 0], S: [0, 1], W: [-1, 0]}, DIR_L = {N: 'W', W: 'S', S: 'E', E: 'N'}, DIR_R = {W: 'N', S: 'W', E: 'S', N: 'E'};
-  function dirPath(it) {
-    let [x, y] = it.start, d = it.dir; const pts = [[x, y]];
-    for (const s of it.steps) { if (s[0] === 'go') { for (let k = 0; k < s[1]; k++) { x += DIR_V[d][0]; y += DIR_V[d][1]; pts.push([x, y]); } } else d = s[1] === 'left' ? DIR_L[d] : DIR_R[d]; }
-    return pts;
-  }
-  function dirText(it) {
-    const en = ['Start at the dot and face the arrow.'], ar = ['ابدأ من النقطة وواجه السهم.'];
-    it.steps.forEach((s, i) => {
-      if (s[0] === 'go') { en.push((i === 0 ? 'Walk straight for ' : 'Then walk ') + NUM_WORDS[s[1]] + (s[1] === 1 ? ' block.' : ' blocks.')); ar.push('امشِ ' + AR_NUM[s[1]] + '.'); }
-      else { en.push('Turn ' + s[1] + '.'); ar.push('انعطف ' + (s[1] === 'left' ? 'يسارًا.' : 'يمينًا.')); }
-    });
-    en.push('The place is on your ' + it.side + '.'); ar.push('المكان على ' + (it.side === 'left' ? 'يسارك.' : 'يمينك.'));
-    return {en: en.join(' '), ar: ar.join(' ')};
-  }
-  function miniDirSetup() {
-    const idx = levelIndex(), pool = DIRECTION_ITEMS.filter(it => storyLevelIndex(it.level) <= idx);
-    MG.items = SHUF(pool.length >= 5 ? pool : DIRECTION_ITEMS).slice(0, 5); MG.total = MG.items.length; MG.i = 0; miniDirRender();
-  }
-  function dirMapSvg(it, reveal, chosen) {
-    const C = 76, P = 28, W = 4 * C + 2 * P, H = 3 * C + 2 * P, px = x => P + x * C, py = y => P + y * C;
-    let s = '<svg class="mg-map" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Town map"><rect width="' + W + '" height="' + H + '" rx="18" fill="#dfe8c8"/>';
-    for (let y = 0; y <= 3; y++) s += '<line x1="' + px(0) + '" y1="' + py(y) + '" x2="' + px(4) + '" y2="' + py(y) + '" stroke="#c4c8d4" stroke-width="12" stroke-linecap="round"/>';
-    for (let x = 0; x <= 4; x++) s += '<line x1="' + px(x) + '" y1="' + py(0) + '" x2="' + px(x) + '" y2="' + py(3) + '" stroke="#c4c8d4" stroke-width="12" stroke-linecap="round"/>';
-    DIRECTION_BLOCKS.forEach((row, cy) => row.forEach((b, cx) => {
-      const isAns = it.answer[0] === cx && it.answer[1] === cy, isCh = chosen && chosen[0] === cx && chosen[1] === cy;
-      const cls = reveal ? (isAns ? ' is-right' : isCh ? ' is-wrong' : '') : '';
-      s += '<g class="mg-block' + cls + '" data-mg-block="' + cx + ',' + cy + '" tabindex="0" role="button" aria-label="' + esc(b[1]) + '"><rect x="' + (px(cx) + 12) + '" y="' + (py(cy) + 12) + '" width="' + (C - 24) + '" height="' + (C - 24) + '" rx="12"/><text x="' + (px(cx) + C / 2) + '" y="' + (py(cy) + C / 2 - 2) + '" font-size="22" text-anchor="middle">' + b[0] + '</text><text x="' + (px(cx) + C / 2) + '" y="' + (py(cy) + C / 2 + 17) + '" font-size="10.5" font-weight="700" text-anchor="middle">' + esc(b[1]) + '</text></g>';
-    }));
-    if (reveal) { const pts = dirPath(it); s += '<polyline points="' + pts.map(p => px(p[0]) + ',' + py(p[1])).join(' ') + '" fill="none" stroke="#7C6CFF" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="2 9"/>'; }
-    const sx = px(it.start[0]), sy = py(it.start[1]), v = DIR_V[it.dir], ang = Math.atan2(v[1], v[0]) * 180 / Math.PI;
-    s += '<g transform="translate(' + sx + ' ' + sy + ')"><circle r="11" fill="#FFC531" stroke="#121A3A" stroke-width="3"/><g transform="rotate(' + ang + ')"><path d="M14 0 L24 0 M19 -6 L25 0 L19 6" fill="none" stroke="#121A3A" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></g></g></svg>';
-    return s;
-  }
-  function miniDirRender() {
-    const it = MG.items[MG.i]; MG.answered = false; hideSheet(); miniSteps(); const t = dirText(it);
-    $('#game-body').innerHTML = '<div class="q-meta"><span class="pill">Directions</span><span class="q-count">Question ' + (MG.i + 1) + ' of ' + MG.total + '</span></div><h2 class="q-text" id="q-text" tabindex="-1"' + arAttr('أين ينتهي المسار؟') + '>Where does the route end?</h2>' + miniTranslateButton() + '<p class="mg-route"' + arAttr(t.ar) + '>' + esc(t.en) + '</p>' +
-      '<div class="mg-actions mg-actions-top"><button class="btn btn-ghost" data-mg-listen>🔊 Listen</button></div><p class="q-sub"' + arAttr('اضغط على المبنى في الخريطة.') + '>Tap the building on the map.</p><div class="mg-map-wrap">' + dirMapSvg(it, false) + '</div>';
-    $('#game-scroll').scrollTop = 0; const h = $('#q-text'); if (h) h.focus({preventScroll: true});
-  }
-  function miniDirAnswer(cx, cy) {
-    if (MG.answered) return; const it = MG.items[MG.i]; MG.answered = true;
-    const ok = it.answer[0] === cx && it.answer[1] === cy; if (ok) MG.score++; MG.results[MG.i] = ok ? 'ok' : 'no';
-    $('.mg-map-wrap').innerHTML = dirMapSvg(it, true, [cx, cy]); miniSteps(); sfx(ok ? 'ok' : 'no');
-    const right = DIRECTION_BLOCKS[it.answer[1]][it.answer[0]];
-    const arabicFeedback = ok
-      ? 'أحسنت! اتبعت المسار حتى وصلت إلى ' + (right[2] || right[1]) + '. يوضّح الخط المنقّط الطريق.'
-      : 'ليس تمامًا. ينتهي المسار عند ' + (right[2] || right[1]) + '. اتبع الخط المنقّط لمعرفة الطريق.';
-    showSheet(ok, '<h3' + arAttr(ok ? 'صحيح تمامًا!' : 'ليس تمامًا.') + '><span class="sheet-mark">' + ic(ok ? 'check' : 'x') + '</span>' + (ok ? 'Exactly right!' : 'Not quite.') + '</h3><p' + arAttr(arabicFeedback) + '>' + (ok ? 'You followed the route to the ' : 'The route ends at the ') + '<b>' + esc(right[1]) + '</b>. The dotted line shows the way.</p><div class="sheet-actions"><button class="btn" id="go-next">' + (MG.i === MG.total - 1 ? 'See results' : 'Continue') + ic('arrow') + '</button></div>');
-  }
-
-  function miniNext() {
-    if (!MG) return; hideSheet();
-    if (MG.i < MG.total - 1) { MG.i++; MG.answered = false; if (MG.type === 'order') miniOrderRender(); else if (MG.type === 'directions') miniDirRender(); else if (MG.type === 'sentenceOrder') miniSentenceRender(); }
-    else miniFinish(String(MG.total));
-  }
-  function miniClick(e) {
-    const el = e.target;
-    const close = el.closest('[data-mini-close]'); if (close) { closeGame(); openView('home'); return true; }
-    const again = el.closest('[data-mini-again]'); if (again) { startMini(again.dataset.miniAgain); return true; }
-    if (MG.done) return false;
-    const speedAnswer=el.closest('[data-mini-speed-answer]');if(speedAnswer&&MG.type==='speed'){if(MG.answered)return true;MG.total++;const picked=decodeURIComponent(speedAnswer.dataset.miniSpeedAnswer);const ok=picked===MG.current.word;if(ok)MG.score++;recordAdaptiveResult('vocabulary',MG.current.word,ok);if(!ok)addReview(MG.current.word,MG.current.meaning);sfx(ok?'ok':'no');miniSpeedRender();return true;}
-    const sentenceWord=el.closest('[data-mini-sentence-word]');if(sentenceWord&&MG.type==='sentenceOrder'&&!MG.answered){const token=MG.tokens.find(t=>t.id===Number(sentenceWord.dataset.miniSentenceWord));if(token)MG.placed.push(token);miniSentenceRender();return true;}
-    const sentenceRemove=el.closest('[data-mini-sentence-remove]');if(sentenceRemove&&MG.type==='sentenceOrder'&&!MG.answered){MG.placed.splice(Number(sentenceRemove.dataset.miniSentenceRemove),1);miniSentenceRender();return true;}
-    if(el.closest('[data-mini-sentence-reset]')&&MG.type==='sentenceOrder'){if(MG.answered)return true;MG.placed=[];MG.feedback='';miniSentenceRender();return true;}
-    if(el.closest('[data-mini-sentence-check]')&&MG.type==='sentenceOrder'){if(MG.answered)return true;const expected=MG.current.text.replace(/[.!?]$/,'').toLowerCase();const actual=MG.placed.map(t=>t.word).join(' ').toLowerCase();if(actual===expected){recordAdaptiveResult('sentence',MG.current.text,true);MG.answered=true;MG.score++;MG.results[MG.i]='ok';sfx('ok');miniSpeech(MG.current.text);showSheet(true,'<h3'+arAttr('جملة ممتازة!')+'>Perfect sentence!</h3><p'+arAttr(MG.current.ar)+'>'+esc(MG.current.text)+'</p>'+'<div class="sheet-actions"><button class="btn" id="go-next">'+(MG.i===MG.total-1?'See results':'Next sentence')+ic('arrow')+'</button></div>');}else{recordAdaptiveResult('sentence',MG.current.text,false);MG.feedback='Not quite yet. Rearrange the words and try again.';MG.feedbackAr='لم يكتمل ترتيب الجملة بعد. أعد ترتيب الكلمات وحاول مجددًا.';sfx('no');miniSentenceRender();}return true;}
-    if (el.closest('#go-next')) { miniNext(); return true; }
-    const place = el.closest('[data-mg-place]');
-    if (place && MG.type === 'order') { const r = MG.rounds[MG.i]; if (MG.answered) return true; const k = Number(place.dataset.mgPlace); r.pool = r.pool.filter(v => v !== k); r.placed.push(k); miniOrderRender(); return true; }
-    const un = el.closest('[data-mg-unplace]');
-    if (un && MG.type === 'order') { const r = MG.rounds[MG.i]; if (MG.answered) return true; const p = Number(un.dataset.mgUnplace), moved = r.placed.splice(p, 1); r.pool.push(...moved); miniOrderRender(); return true; }
-    if (el.closest('#mg-check')) { miniOrderCheck(); return true; }
-    const flip = el.closest('[data-mg-flip]'); if (flip && MG.type === 'match') { miniFlip(Number(flip.dataset.mgFlip)); return true; }
-    const blk = el.closest('[data-mg-block]'); if (blk && MG.type === 'directions') { const [cx, cy] = blk.dataset.mgBlock.split(',').map(Number); miniDirAnswer(cx, cy); return true; }
-    if (el.closest('[data-mg-listen]') && MG.type === 'directions') { speak(dirText(MG.items[MG.i]).en); return true; }
-    return false;
-  }
-
-  function closeGame() {
-    stopSpeechPlayback();
-    releaseStoryPronunciationResources();
-    miniSessionId++;
-    if(miniTimer){clearInterval(miniTimer);miniTimer=null;} $('#game').hidden = true; hideSheet(); G = null; ST = null; MG = null;
-    lockPage(false); renderAll();
-    const h = $('.view.is-active h1'); if (h) h.focus({preventScroll: true});
-  }
-
 
   /* ---------- World: tiny top-down village ---------- */
   let WORLD=null;
@@ -5586,7 +5281,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
         $('#category-picker-title').textContent=cat.title;
         $('#category-picker-desc').textContent=cat.desc;
         $('#category-options').innerHTML=cat.games.map(([id,label])=>{
-          const gmData=GAMES[id], meta=META[id];
+          const gmData=GAMES[id], meta=META[id] || FLUENTIA_SHORTCUTS[id];
           return '<button type="button" class="category-option t-'+meta.tone+'" data-game="'+id+'"><span class="category-option-icon">'+glyph(id)+'</span><span><strong>'+label+'</strong><small>'+meta.time+' min · +'+((gmData||meta).xp)+' XP</small></span><span class="category-option-arrow" aria-hidden="true">→</span></button>';
         }).join('');
         $('#category-picker').hidden=false;
@@ -5603,7 +5298,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     if (e.target.closest('#developer-start')) { launchDeveloperActivity(); return; }
     if (e.target.closest('#daily-session-start')) { startDailySession(); return; }
     const gm = e.target.closest('[data-game]');
-    if (gm) { closeCategoryPicker(false); if(gm.dataset.game==='personalized')preparePersonalizedGame(); if(MINI[gm.dataset.game])startMini(gm.dataset.game);else startGame(gm.dataset.game); return; }
+    if (gm) { closeCategoryPicker(false); if(gm.dataset.game==='personalized')preparePersonalizedGame(); startGame(gm.dataset.game); return; }
     const lv = e.target.closest('[data-level]');
     if (lv) {
       const i = Number(lv.dataset.level), l = LEVELS[i];

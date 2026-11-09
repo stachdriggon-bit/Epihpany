@@ -421,6 +421,16 @@
     if(event.target.closest('[data-restart]')){const mode=currentMode,domain=currentSession?.domain,activityId=currentSession?.activityIds?.[0];currentSession=null;if(mode==='single')startSession(mode,{activityId,label:currentModeLabel});else if(mode==='section-mixed')startSession(mode,{domain});else startSession(mode);return;}
     const speak=event.target.closest('[data-fluentia-speak]');if(speak){window.EpiphanySpeech?.speak(speak.dataset.fluentiaSpeak);return;}
   }
+  window.EPIPHANY_FLUENTIA_START_ACTIVITY = (activityId, label) => {
+    selectedLevel = currentLevel();
+    refreshActivities();
+    const activity = activities.find(item => item.id === activityId && !item.reviewOnly && item.items.length);
+    if (!activity) { renderHome(); return false; }
+    currentDomain = null;
+    choosingSectionMixed = false;
+    startSession('single', {activityId, label:label || activityLabel(activityId)});
+    return !!currentSession;
+  };
   root.addEventListener('click',handleClick);
   root.addEventListener('keydown',event=>{if(event.key==='Enter'&&event.target.id==='fluentia-answer'){event.preventDefault();submit();}});
   document.addEventListener('click',event=>{

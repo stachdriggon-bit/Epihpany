@@ -202,3 +202,10 @@ test('retired Arcade shell and UI are not shipped alongside Fluentia', () => {
   assert.match(loader, /fluentia-practice-bank\.js/);
   assert.match(loader, /fluentia-directions-bank\.js/);
 });
+
+test('Fluentia exposes a guarded single-activity launcher for Home and category shortcuts', () => {
+  const ui = read('fluentia-ui.js');
+  assert.match(ui, /window\.EPIPHANY_FLUENTIA_START_ACTIVITY = \(activityId, label\) =>/);
+  assert.match(ui, /refreshActivities\(\);[\s\S]*?activities\.find\(item => item\.id === activityId && !item\.reviewOnly && item\.items\.length\)/);
+  assert.match(ui, /startSession\('single', \{activityId, label:label \|\| activityLabel\(activityId\)\}\)/);
+});
