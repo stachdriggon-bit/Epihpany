@@ -1,6 +1,6 @@
 # Think Lab Progression and Daily Challenge — Integration Plan
 
-**Status:** Phases 1–3 verified green on `main`; Phase 4 implementation in progress.
+**Status:** Phases 1–4 implemented and verified green on `main` (commit `54befdba3a195d7aa5b7ef70f0a0ba6600330bdd`).
 **Branch:** `main`
 **Scope:** Existing Think Lab games and their shared learner-progress integration.
 
@@ -41,7 +41,7 @@ Integrate the contract with each playable game without changing its content or r
 
 ### 3. Recommendation reconciliation
 
-**Implemented on `main`; CI verification pending.**
+**Implemented and CI-verified on `main` (`54befdba3a195d7aa5b7ef70f0a0ba6600330bdd`).**
 
 The shared progression module now exposes `recommendNext`, which:
 - accepts only game IDs in the canonical registry and the caller's available-game allowlist;
@@ -61,7 +61,7 @@ Add a distinct Think Lab daily entry point using only approved existing content.
 
 ### 5. Verification and documentation
 
-Add unit tests for registry integrity, progress schema validation, save/restore, corrupted/stale snapshots, duplicate reward prevention, recommendation target validity, recommendation rotation, deterministic daily selection, date boundaries, CEFR eligibility, and one-attempt enforcement. Extend browser smoke coverage for the learner-facing flows. Run the fast, unit, browser, syntax, and content-quality checks through GitHub Actions.
+**Completed and CI-verified on `main`.** Unit coverage includes registry integrity, progress schema validation, save/restore, corrupted/stale snapshots, duplicate reward prevention, recommendation target validity and rotation, deterministic daily selection, date validation, separate daily/regular snapshots, and one-completion-per-date enforcement. Browser smoke verifies that the daily challenge opens a real game and remains resumable after leaving. Fast development checks, JavaScript syntax checks, unit/static tests, browser smoke, and content-quality checks all passed on commit `54befdba3a195d7aa5b7ef70f0a0ba6600330bdd`.
 
 ## Exit criteria
 
