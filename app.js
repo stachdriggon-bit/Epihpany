@@ -2900,7 +2900,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
   function txCapture(el){if(el.dataset.txEn===undefined)el.dataset.txEn=txRead(el);return el.dataset.txEn;}
   function txLabel(el){
     if(el.dataset.txLabel)return el.dataset.txLabel;
-    return txIsAnswer(el)?'الإجابة':txInSheet(el)?'التفسير':el.classList.contains('q-sub')?'التوجيه':el.classList.contains('mg-route')?'التعليمات':el.classList.contains('spot-text')||el.classList.contains('story-text')?'النص':el.classList.contains('typing-prompt')?'الجملة':el.closest('.world-instruction')?'التعليمات':'السؤال';
+    return txIsAnswer(el)?'الإجابة':txInSheet(el)?'التفسير':el.classList.contains('q-sub')?'التوجيه':el.classList.contains('spot-text')||el.classList.contains('story-text')?'النص':el.classList.contains('typing-prompt')?'الجملة':el.closest('.world-instruction')?'التعليمات':'السؤال';
   }
   const TX_BTN_AR='<span aria-hidden="true">EN</span> English';
   const txBtnEn=label=>'<span aria-hidden="true">ع</span> ترجمة '+label;
@@ -3038,7 +3038,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     // Spelling options are spellings of one word: they are never translated (it would reveal the answer).
     if(txIsAnswer(target)&&game&&TX_NO_ANSWER_TYPES.includes(game.type))return;
     target.dataset.txUnit='1';
-    // Sheet text and mini-game cards share one screen-level button instead of one button per element.
+    // Sheet text uses one screen-level translation control instead of one button per element.
     if(txInSheet(target))return;
     // Answer options follow the screen-level button; a button beside every option only adds clutter.
     if(txIsAnswer(target)&&!target.classList.contains('story-decision-option')&&document.querySelector('#game-ar'))return;
@@ -3055,7 +3055,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     button.hidden=!state.translationEnabled;
     if(txIsAnswer(target)&&!target.classList.contains('story-decision-option')){
       const row=document.createElement('div');
-      row.className='answer-translation-row'+(target.classList.contains('mg-card')||target.classList.contains('mg-tile')?' mini-answer-translation-row':'');
+      row.className='answer-translation-row';
       target.parentNode.insertBefore(row,target);row.appendChild(target);row.appendChild(button);
     }else if(target.classList.contains('story-decision-option')){
       const row=document.createElement('div');

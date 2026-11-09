@@ -721,35 +721,6 @@ body[data-theme="dark"] .trap-explanation{background:#252B3C;border-color:var(--
 .world-region-progress{margin-top:auto;font-size:12px;font-weight:750;color:var(--accent,#6c5ce7)}
 @media(max-width:620px){.world-region-hub{padding:18px;border-radius:20px}.world-region-grid{grid-template-columns:1fr;gap:10px;margin:18px 0}.world-region-card{min-height:150px;padding:16px}.world-region-icon{width:44px;height:44px;font-size:24px}}
 
-/* ---------- mini-games ---------- */
-.mg-slots{list-style:none;display:grid;gap:8px;margin:14px 0 18px;padding:0}
-.mg-slot{min-height:54px;border:2px dashed var(--line,#cfd3e6);border-radius:16px;display:flex;align-items:stretch;background:rgba(255,255,255,.55)}
-.mg-slot.is-filled{border-style:solid;border-color:var(--ink);background:#fff}
-.mg-empty{margin:auto 14px;font-weight:900;color:var(--ink-2);opacity:.6}
-.mg-pool{display:grid;gap:8px}
-.mg-card{display:flex;gap:12px;align-items:center;text-align:left;width:100%;min-height:54px;padding:12px 14px;border:2px solid var(--ink);border-radius:16px;background:#fff;box-shadow:0 3px 0 var(--ink);font:600 16px/1.4 var(--body,inherit);color:var(--ink);cursor:pointer}
-.mg-card:active{transform:translateY(2px);box-shadow:0 1px 0 var(--ink)}
-.mg-card.is-placed{border:0;box-shadow:none;background:transparent;min-height:0}
-.mg-card.is-placed b{display:grid;place-items:center;flex:0 0 28px;height:28px;border-radius:50%;background:var(--ink);color:#fff;font-size:14px}
-.mg-card.is-right{background:#E5F8EE}.mg-card.is-wrong{background:#FDE8E4}
-.mg-actions{display:flex;gap:10px;margin-top:18px}.mg-actions-top{margin:6px 0 4px}
-.mg-answer{margin:6px 0 10px 20px;padding:0;display:grid;gap:4px;font-size:15px}
-.mg-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:16px}
-@media(min-width:700px){.mg-grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
-.mg-tile{min-height:92px;padding:8px;border:2px solid var(--ink);border-radius:16px;background:var(--ink);color:#fff;font:800 22px/1.2 var(--display,inherit);box-shadow:0 3px 0 rgba(18,26,58,.35);cursor:pointer;display:grid;place-items:center;text-align:center}
-.mg-tile.is-open,.mg-tile.is-done{font-size:15px;font-weight:700;background:#fff;color:var(--ink)}
-.mg-tile.is-open.mg-word,.mg-tile.is-done.mg-word{background:#EDEAFF}
-.mg-tile.is-open.mg-meaning,.mg-tile.is-done.mg-meaning{background:#FFF3CC}
-.mg-tile.is-done{background:#E5F8EE!important;opacity:.85}
-.mg-route{font-size:18px;font-weight:600;line-height:1.5;margin:6px 0}
-.mg-route-ar{font-size:17px;margin:4px 0;color:var(--ink-2)}
-.mg-map-wrap{max-width:520px;margin:6px auto 0}
-.mg-map{width:100%;height:auto;display:block}
-.mg-block rect{fill:#fff;stroke:#121A3A;stroke-width:2;cursor:pointer;transition:fill .15s}
-.mg-block text{fill:#121A3A;pointer-events:none;font-family:inherit}
-.mg-block:hover rect,.mg-block:focus rect{fill:#FFF3CC;outline:none}
-.mg-block.is-right rect{fill:#BFEBD3;stroke:#1B7F53}
-.mg-block.is-wrong rect{fill:#F9C9C1;stroke:#C0392B}
 
 .world-region-wrap{display:flex;flex-direction:column;gap:8px}
 .world-practice-btn{padding:10px 14px;border:1.5px dashed var(--ink);border-radius:14px;background:#fff;font:700 14px/1.3 inherit;color:var(--ink);cursor:pointer}
@@ -1492,10 +1463,6 @@ body[data-theme="dark"] .avatar-choice { background:var(--surface); }
 .world-instruction .translate-btn{margin-top:8px;align-self:flex-start}
 @media(max-width:520px){.answer-translation-row{grid-template-columns:minmax(0,1fr) auto;gap:6px}.answer-translation-row .translate-btn{padding:6px 8px;font-size:11px}.answer-translation-row .answer{gap:9px;padding:12px 10px;font-size:16px}.translation-result{font-size:14px}}
 
-.mini-answer-translation-row{grid-template-columns:minmax(0,1fr) auto;width:100%;min-width:0}
-.mini-answer-translation-row .mg-card,.mini-answer-translation-row .mg-tile{grid-column:1;grid-row:1;min-width:0;width:100%}
-.mini-answer-translation-row .translate-btn{grid-column:2;grid-row:1;padding:5px 7px;font-size:11px}
-.mini-answer-translation-row .translation-result{grid-column:1/-1}
 
 /* Reviewed phrase translations and the expanded Create Your Story activity */
 .create-story-paragraph{line-height:1.85;max-width:78ch}
@@ -1655,31 +1622,6 @@ body[data-theme="dark"] .world-conversation-card{background:var(--surface,#1b203
 .world-region-hub .world-page-actions{position:sticky;top:0;z-index:5;padding:6px 0;background:var(--surface,#fff)}
 @media(max-width:520px){.world-top-actions{gap:5px}.world-home{min-height:35px;padding:7px 10px;font-size:12px}.world-top{gap:8px}}
 
-/* Arcade: standalone practice library */
-.arcade-page{padding-bottom:36px}
-.arcade-mini-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
-.arcade-game-card{display:grid;grid-template-columns:auto minmax(0,1fr);gap:14px;align-items:start;padding:18px;border:1.5px solid var(--line);border-radius:22px;background:var(--surface);min-width:0}
-.arcade-game-mark{width:52px;height:52px;display:grid;place-items:center;border-radius:16px;background:var(--navy-soft);font-size:25px;font-weight:900;color:var(--ink)}
-.arcade-game-copy{min-width:0}
-.arcade-game-copy h3,.arcade-skill-head h3{margin:0;font-size:18px;line-height:1.25}
-.arcade-game-copy p,.arcade-skill-head p{margin:7px 0 0;color:var(--ink-2);font-size:14px;line-height:1.5}
-.arcade-game-meta{display:flex;gap:12px;flex-wrap:wrap;margin-top:10px;color:var(--ink-2);font-size:12px;font-weight:800}
-.arcade-play{grid-column:1/-1;display:flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:42px}
-.arcade-play svg{width:17px;height:17px}
-.arcade-library-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
-.arcade-skill-group{padding:18px;border:1.5px solid var(--line);border-radius:22px;background:var(--surface);min-width:0}
-.arcade-skill-head{display:flex;align-items:center;gap:12px;margin-bottom:14px}
-.arcade-skill-icon{flex:0 0 44px;width:44px;height:44px;display:grid;place-items:center;border-radius:14px;background:var(--navy-soft);font-weight:900;font-size:18px;color:var(--ink)}
-.arcade-skill-games{display:grid;gap:8px}
-.arcade-skill-game{display:flex;align-items:center;gap:11px;width:100%;min-width:0;padding:12px;border:1px solid var(--line);border-radius:14px;background:var(--ground);color:var(--ink);text-align:left;cursor:pointer}
-.arcade-skill-game:hover{border-color:var(--focus);transform:translateY(-1px)}
-.arcade-skill-glyph{flex:0 0 38px;width:38px;height:38px;display:grid;place-items:center;border-radius:11px;background:var(--surface);font-weight:900}
-.arcade-skill-copy{display:grid;gap:4px;min-width:0;flex:1}
-.arcade-skill-copy strong{font-size:14px;line-height:1.3}
-.arcade-skill-copy small{font-size:12px;color:var(--ink-2)}
-.arcade-skill-arrow{font-size:20px;color:var(--ink-2)}
-@media(max-width:1000px){.arcade-mini-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:640px){.arcade-mini-grid,.arcade-library-grid{grid-template-columns:1fr}.arcade-game-card{padding:15px}.arcade-skill-group{padding:14px}.arcade-skill-head h3{font-size:16px}}
 
 /* Adaptive practice recommendation */
 .adaptive-recommendation{padding:22px;border:1.5px solid var(--line);border-radius:24px;background:linear-gradient(135deg,var(--surface),var(--navy-soft))}
@@ -2899,12 +2841,6 @@ body[data-theme="dark"] .quick-nav-option:has(input:checked){background:#302c4c;
 }
 
 
-/* Word Match: keep long phrases inside the card instead of letting them stretch the grid. */
-.mg-grid{grid-template-columns:repeat(3,minmax(0,1fr));align-items:stretch;}
-.mg-tile{min-width:0;max-width:100%;overflow-wrap:anywhere;word-break:normal;hyphens:auto;white-space:normal;font-size:clamp(13px,1.8vw,18px);line-height:1.25;padding:8px 6px;}
-.mg-tile.is-open,.mg-tile.is-done{font-size:clamp(12px,1.5vw,15px);line-height:1.3;}
-.mini-answer-translation-row .translate-btn{display:none!important;}
-@media(max-width:520px){.mg-grid{gap:7px}.mg-tile{min-height:82px;padding:7px 4px;font-size:12px}.mg-tile.is-open,.mg-tile.is-done{font-size:11px}}
 
 /* ===== Unified translation (single source of truth) =====
    English is the default. A translate button swaps the same text into Arabic in place and back again.
@@ -2930,20 +2866,8 @@ body[data-theme="dark"] .quick-nav-option:has(input:checked){background:#302c4c;
 .ld-notebook-drawer .translate-btn>span{font:800 11px/1 var(--body)}
 
 #game-ar[aria-pressed="true"]{background:var(--ink);color:#fff}
-.translation-result,.mg-route-ar{display:none!important}
+.translation-result{display:none!important}
 
-/* Word Match: cards keep a fixed footprint; long text wraps and shrinks instead of overflowing. */
-.mg-grid{grid-template-columns:repeat(3,minmax(0,1fr));grid-auto-rows:minmax(92px,auto);align-items:stretch}
-.mg-tile{display:flex;align-items:center;justify-content:center;min-width:0;max-width:100%;overflow:hidden;box-sizing:border-box;text-align:center;white-space:normal;overflow-wrap:anywhere;word-break:normal;hyphens:auto;padding:8px 6px}
-.mg-tile>span{display:block;max-width:100%;min-width:0;overflow:hidden;overflow-wrap:anywhere;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:5;line-clamp:5}
-.mg-tile.is-open,.mg-tile.is-done{font-size:clamp(12px,1.5vw,15px);line-height:1.3}
-.mg-tile>span.tx-is-ar{text-align:center;font-size:.95em;line-height:1.45;direction:rtl}
-.mini-answer-translation-row,.answer-translation-row .mg-tile{display:block}
-@media(max-width:520px){.mg-grid{gap:7px;grid-auto-rows:minmax(84px,auto)}.mg-tile{padding:6px 4px;font-size:12px}.mg-tile.is-open,.mg-tile.is-done{font-size:11px}}
-.mg-card{min-width:0;overflow-wrap:anywhere}
-.mg-card>span{min-width:0;flex:1 1 auto}
-.mini-choice{min-width:0;overflow-wrap:anywhere}
-.mg-tile.is-open>span.tx-is-ar,.mg-tile.is-done>span.tx-is-ar{font-size:clamp(13px,3.6vw,16px)}
 
 /* The current-section label would collide with the points pill; the bottom tab bar already shows the section,
    so keep the label for screen readers only. */
@@ -2957,11 +2881,10 @@ body[data-theme="dark"] .quick-nav-option:has(input:checked){background:#302c4c;
   .monthly-word-thread-kicker{overflow-wrap:anywhere}
 }
 
-/* Dark mode: buttons and face-down cards that were unreadable. */
+/* Dark mode: share and finish controls. */
 body[data-theme="dark"] #game-finish-here,
 body[data-theme="dark"] .share-question-btn{color:var(--ink);background:rgba(255,255,255,.06);border-color:var(--line)}
 body[data-theme="dark"] .share-question-btn:hover,body[data-theme="dark"] #game-finish-here:hover{background:rgba(255,255,255,.12)}
-body[data-theme="dark"] .mg-tile:not(.is-open):not(.is-done){background:#2b2f4d;border-color:#4a4f7a;color:#e8ebff;box-shadow:0 3px 0 rgba(0,0,0,.45)}
 .top{background:rgba(245,246,252,.97)}
 body[data-theme="dark"] .top{background:rgba(17,21,34,.97)}
 
@@ -3692,9 +3615,9 @@ body[data-theme="dark"] #home-view .home-intro{background:radial-gradient(circle
 }
 
 /* Distinct, restrained accents make section identity visible without recolouring whole pages. */
-#stories-view{--section-accent:#8d70d9}#arcade-view{--section-accent:#c58a35}#chronicle-view{--section-accent:#3b938b}#thinklab-view{--section-accent:#547fb0}
-#stories-view .intro .kicker,#arcade-view .intro .kicker,#chronicle-view .intro .kicker,#thinklab-view .intro .kicker{color:var(--section-accent)}
-#stories-view .intro,#arcade-view .intro,#chronicle-view .intro,#thinklab-view .intro{border-inline-start:3px solid color-mix(in srgb,var(--section-accent) 65%,transparent);padding-inline-start:15px}
+#stories-view{--section-accent:#8d70d9}#chronicle-view{--section-accent:#3b938b}#thinklab-view{--section-accent:#547fb0}
+#stories-view .intro .kicker,#chronicle-view .intro .kicker,#thinklab-view .intro .kicker{color:var(--section-accent)}
+#stories-view .intro,#chronicle-view .intro,#thinklab-view .intro{border-inline-start:3px solid color-mix(in srgb,var(--section-accent) 65%,transparent);padding-inline-start:15px}
 #profile-view .page{padding-top:18px}
 
 
@@ -4002,7 +3925,6 @@ body[data-theme="dark"] #thinklab-view .tl-mode-choice:hover{border-color:#7165b
 .tab[aria-current=page] .ep-nav-icon{color:inherit}
 .ep-activity-icon{display:inline-grid;place-items:center;width:28px;height:28px;flex:none;margin-inline-end:8px;border-radius:9px;background:color-mix(in srgb,var(--ep-icon-accent,var(--violet)) 10%,transparent);color:var(--ep-icon-accent,var(--violet))}
 .ep-activity-icon .ep-icon-svg{width:22px;height:22px}
-[data-view="arcade"]{--ep-icon-accent:var(--coral)}
 [data-view="thinklab"]{--ep-icon-accent:var(--violet)}
 [data-view="casebound"]{--ep-icon-accent:#B97845}
 [data-view="lifeskills"]{--ep-icon-accent:var(--mint)}
