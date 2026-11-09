@@ -248,6 +248,7 @@ test('main navigation tabs open without uncaught page errors', { timeout: 18 * 6
           assert.equal(await explanation.innerText(),before,'returning to English should restore the same explanation slot');
         }
         await fluentia.locator('[data-exit]').click();
+        await fluentia.locator('.fluentia-domain-card[data-domain="wordcraft"]').click();
         const wordMatchActivity = fluentia.locator('[data-activity="wordcraft-word-match"]');
         await wordMatchActivity.waitFor({state:'visible',timeout:5000});
         await wordMatchActivity.click();
