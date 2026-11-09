@@ -171,3 +171,19 @@ test('Word Match renders two shuffled selectable columns and removable pairs ins
   assert.match(adapter,/const roundCount = Math\.ceil\(rows\.length \/ 4\)/);
   assert.match(adapter,/submitted\.length === expected\.length/);
 });
+
+
+test('Fluentia uses the shared opt-in Arabic translation system and labels both dictation activities distinctly', () => {
+  const ui = read('fluentia-ui.js');
+  const app = read('app.js');
+  assert.match(ui, /function translationAttributes\(arabic\)/);
+  assert.match(ui, /data-translation-ar=/);
+  assert.match(ui, /window\.EPIPHANY_TRANSLATION_ENHANCE\?\.\(root\)/);
+  assert.match(ui, /enhanceFluentiaTranslations\(\);/);
+  assert.doesNotMatch(ui, /data-translate\]/, 'Fluentia must not keep a separate local translation toggle');
+  assert.match(ui, /'soundscape-dictation':'Practice Dictation'/);
+  assert.match(ui, /'soundscape-dictation-bank':'Dictation'/);
+  assert.doesNotMatch(ui, /'soundscape-practice-dictation'/, 'use the registered adapter ID for its display name');
+  assert.match(app, /if\(!root\|\|!state\.translationEnabled\)return;/);
+  assert.match(app, /enhanceTranslationControls\(\$\('#fluentia-content'\)\)/);
+});

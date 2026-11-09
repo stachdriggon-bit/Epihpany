@@ -3217,7 +3217,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
   /* ---------- settings: Arabic help + sound ---------- */
   function syncSettings() {
     document.body.classList.toggle('translation-off', !state.translationEnabled);
-    if(state.translationEnabled){enhanceTranslationControls($('#game-body'));enhanceTranslationControls($('#world-game'));enhanceTranslationControls($('#sheet'));enhanceTranslationControls($('.casebound-page'));enhanceTranslationControls($('#ld-case-notebook'));}
+    if(state.translationEnabled){enhanceTranslationControls($('#game-body'));enhanceTranslationControls($('#world-game'));enhanceTranslationControls($('#sheet'));enhanceTranslationControls($('.casebound-page'));enhanceTranslationControls($('#ld-case-notebook'));enhanceTranslationControls($('#fluentia-content'));}
     const immersionActive = !!(state.immersionWeek?.active && state.immersionWeek.endsAt && Date.now() < Number(state.immersionWeek.endsAt));
     document.body.classList.toggle('immersion-week-active', immersionActive);
     const translationToggle = $('#translation-toggle');

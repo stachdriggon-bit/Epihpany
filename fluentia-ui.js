@@ -18,14 +18,14 @@
     'wordcraft-vocabulary':'Word Collector','wordcraft-spelling':'Word Detective','wordcraft-word-match':'Word Match','wordcraft-speed-round':'Speed Round','wordcraft-personal-vocabulary':'Personal Vocabulary',
     'sentence-studio-grammar':'Sentence Shaper','sentence-studio-common-mistakes':'Common Mistakes','sentence-studio-spot-the-mistake':'Spot the Mistake','sentence-studio-type-it':'Type It','sentence-studio-sentence-builder':'Sentence Builder','sentence-studio-your-review':'Your Review','wordcraft-personal-review':'Your Vocabulary Review','sentence-studio-personal-review':'Your Grammar Review',
     'textwise-meaning-detective':'Meaning Detective','textwise-sequence':'Text Sequencing',
-    'soundscape-sound-picture-match':'Sound & Picture Match','soundscape-sound-maze':'Sound Maze','soundscape-dictation-bank':'Dictation','soundscape-practice-dictation':'Practice Dictation',
+    'soundscape-sound-picture-match':'Sound & Picture Match','soundscape-sound-maze':'Sound Maze','soundscape-dictation-bank':'Dictation','soundscape-dictation':'Practice Dictation',
     'real-world-lost-in-london':'Lost in London','real-world-directions':'Directions','real-world-speaking-shadowing':'Speaking & Shadowing','real-world-your-review':'Your Review',
     'fine-sense-nuance-navigator':'Nuance Navigator'
   };
   const interactionLabels = {choice:'Choose an answer',correction:'Find the correction',typed:'Written answer',ordering:'Put in order',matching:'Match the pairs',map:'Map response',listening:'Listening task',speech:'Speaking practice',dynamic:'Adaptive practice'};
   const symbols = {choice:'◉',correction:'✎',typed:'Aa',ordering:'↔',matching:'⤳',map:'⌖',listening:'♫',speech:'◖',dynamic:'✦'};
   let engine = null, activities = [], selectedLevel = 'A1', currentDomain = null, currentSession = null, currentModeLabel = '', currentMode = '', currentQuestion = null, answered = false, lastEvent = null;
-  let translated = false, choosingSectionMixed = false;
+  let choosingSectionMixed = false;
   let speechRecognition = null, speechListening = false, speechErrorMessage = '';
   let orderingPool = [], orderingPlaced = [], mapChosen = null;
   let matchingWords = [], matchingMeanings = [], matchingPlaced = [], matchingSelectedWord = null, matchingSelectedMeaning = null;
@@ -38,6 +38,13 @@
     return String(id).replace(/^[^-]+-/,'').replace(/-/g,' ').replace(/\b\w/g,c=>c.toUpperCase());
   }
   function getProgress() { try { return window.__epiphanyReadProgress?.() || {}; } catch { return {}; } }
+  function translationAttributes(arabic) {
+    const value = String(arabic ?? '').trim();
+    return ' data-tx="1"' + (/[ء-ي]/.test(value) ? ' data-translation-ar="'+esc(value)+'"' : '');
+  }
+  function enhanceFluentiaTranslations() {
+    try { window.EPIPHANY_TRANSLATION_ENHANCE?.(root); } catch {}
+  }
   function currentLevel() {
     const state = getProgress();
     const level = String(state.assessedLevel || state.level || 'A1').toUpperCase();
@@ -120,7 +127,7 @@
     try { currentQuestion = engine.selectNext(currentSession); }
     catch (error) { root.innerHTML = '<div class="fluentia-empty">'+esc(error.message)+'</div>'; return; }
     if (!currentQuestion) return renderSummary();
-    answered = false; lastEvent = null; translated = false;
+    answered = false; lastEvent = null; 
     orderingPool = []; orderingPlaced = []; mapChosen = null;
     matchingWords = []; matchingMeanings = []; matchingPlaced = []; matchingSelectedWord = null; matchingSelectedMeaning = null;
     renderQuestion();
@@ -153,7 +160,7 @@
     const values = isSequence ? (Array.isArray(item.steps)?item.steps:[]) : String(item.text||'').trim().split(/\s+/).filter(Boolean);
     orderingPool = stableTileShuffle(values,currentQuestion.itemId || item.id);
     orderingPlaced = [];
-    const context = isSequence && item.text ? '<div class="fluentia-order-context"><b>'+esc(item.title||'Read the situation')+'</b><p>'+esc(item.text)+'</p></div>' : '';
+    const context = isSequence && item.text ? '<div class="fluentia-order-context"><b'+translationAttributes(item.title_ar)+'>'+esc(item.title||'Read the situation')+'</b><p'+translationAttributes(item.text_ar)+'>'+esc(item.text)+'</p></div>' : '';
     const label = isSequence ? 'Available steps' : 'Available words';
     return context+'<section class="fluentia-order-builder" aria-label="'+label+'"><p class="fluentia-order-label">'+label+'</p><div class="fluentia-order-bank" id="fluentia-order-bank">'+orderingPool.map(tile=>'<button type="button" class="fluentia-order-tile" data-order-token="'+tile.id+'">'+esc(tile.text)+'</button>').join('')+'</div><p class="fluentia-order-label">Your sequence</p><ol class="fluentia-order-placed" id="fluentia-order-placed" aria-label="Your selected order"><li class="fluentia-order-empty">Select '+(isSequence?'the steps':'the words')+' above to build your answer.</li></ol><p class="fluentia-order-status" id="fluentia-order-status" role="status" aria-live="polite">Select each tile once. Select a placed tile to return it.</p></section>';
   }
@@ -173,7 +180,7 @@
     if(!blocks.length)return '<div class="fluentia-empty">The town map is not available for this question. Return to the activity list and try again.</div>';
     const cells=blocks.flatMap((row,y)=>row.map((place,x)=>'<button type="button" class="fluentia-map-cell" data-map-cell="'+x+','+y+'" aria-pressed="false"><span class="fluentia-map-icon" aria-hidden="true">'+esc(place[0])+'</span><span>'+esc(place[1])+'</span></button>')).join('');
     const start=(item.start||[]).join(', ');
-    return '<div class="fluentia-map-task"><p class="fluentia-map-instructions">'+esc(directionText(item))+'</p><p class="fluentia-map-start">Starting point: <b>'+esc(start)+'</b> · Facing '+esc(({N:'north',E:'east',S:'south',W:'west'})[item.dir]||'the arrow')+'</p><div class="fluentia-town-map" role="group" aria-label="Town map destinations">'+cells+'</div><p class="fluentia-map-status" id="fluentia-map-status" role="status" aria-live="polite">Choose the building where the route ends.</p></div>';
+    return '<div class="fluentia-map-task"><p class="fluentia-map-instructions"'+translationAttributes(item.instruction_ar||item.prompt_ar)+'>'+esc(directionText(item))+'</p><p class="fluentia-map-start">Starting point: <b>'+esc(start)+'</b> · Facing '+esc(({N:'north',E:'east',S:'south',W:'west'})[item.dir]||'the arrow')+'</p><div class="fluentia-town-map" role="group" aria-label="Town map destinations">'+cells+'</div><p class="fluentia-map-status" id="fluentia-map-status" role="status" aria-live="polite">Choose the building where the route ends.</p></div>';
   }
   function matchingMarkup(item) {
     const pairs = Array.isArray(item.pairs) ? item.pairs : [];
@@ -220,8 +227,9 @@
       : opts && ['choice','correction','listening','matching','map'].includes(currentQuestion.interactionType)
         ? '<div class="fluentia-answer-grid">'+answerOptionOrder.map((originalIndex,index)=>'<button type="button" class="fluentia-answer" data-answer-index="'+index+'" data-answer-value="'+esc(opts[originalIndex])+'"><span class="fluentia-answer-index">'+(index+1)+'</span><span>'+esc(opts[originalIndex])+'</span></button>').join('')+'</div>'
         : inputFor(item);
-    const correctionSentence = currentQuestion.interactionType==='correction' && item.text ? '<p class="fluentia-question-prompt">'+esc(item.text)+'</p>' : ''; const spoken = currentQuestion.activityId==='wordcraft-speed-round' ? '' : (item.word || item.target || item.text || ''); const listen = spoken && window.EpiphanySpeech ? '<button type="button" class="btn btn-ghost" data-fluentia-speak="'+esc(spoken)+'">♫ Listen</button>' : '';
-    root.innerHTML = '<div class="fluentia-session"><div class="fluentia-session-top"><button type="button" class="fluentia-back" data-exit>← Back to activities</button><span class="pill">'+esc(currentModeLabel)+' · '+esc(selectedLevel)+'</span></div><div class="fluentia-session-progress" role="progressbar" aria-valuemin="0" aria-valuemax="'+currentSession.targetCount+'" aria-valuenow="'+count+'"><span style="width:'+percent+'%"></span></div><article class="fluentia-question-card"><p class="kicker">'+esc(domainDefs.find(d=>d.id===currentQuestion.domain)?.name||currentQuestion.domain)+' · '+esc(interactionLabels[currentQuestion.interactionType]||currentQuestion.interactionType)+'</p><p class="fluentia-question-prompt">Question '+count+' of '+currentSession.targetCount+'</p><h2>'+esc(prompt)+'</h2>'+correctionSentence+listen+(item.sub?'<p class="fluentia-question-prompt">'+esc(item.sub)+'</p>':'')+(choices||'<div class="fluentia-empty">This activity does not yet have a compatible response control.</div>')+'<div id="fluentia-feedback" aria-live="polite"></div><div class="fluentia-session-actions">'+(opts&&choices?'<span class="fluentia-question-prompt">Choose one answer</span>':'<button type="button" class="btn" data-submit>Check answer</button>')+'<button type="button" class="btn" data-next hidden>Continue →</button></div></article></div>';
+    const correctionSentence = currentQuestion.interactionType==='correction' && item.text ? '<p class="fluentia-question-prompt"'+translationAttributes(item.text_ar)+'>'+esc(item.text)+'</p>' : ''; const spoken = currentQuestion.activityId==='wordcraft-speed-round' ? '' : (item.word || item.target || item.text || ''); const listen = spoken && window.EpiphanySpeech ? '<button type="button" class="btn btn-ghost" data-fluentia-speak="'+esc(spoken)+'">♫ Listen</button>' : '';
+    root.innerHTML = '<div class="fluentia-session"><div class="fluentia-session-top"><button type="button" class="fluentia-back" data-exit>← Back to activities</button><span class="pill">'+esc(currentModeLabel)+' · '+esc(selectedLevel)+'</span></div><div class="fluentia-session-progress" role="progressbar" aria-valuemin="0" aria-valuemax="'+currentSession.targetCount+'" aria-valuenow="'+count+'"><span style="width:'+percent+'%"></span></div><article class="fluentia-question-card"><p class="kicker">'+esc(domainDefs.find(d=>d.id===currentQuestion.domain)?.name||currentQuestion.domain)+' · '+esc(interactionLabels[currentQuestion.interactionType]||currentQuestion.interactionType)+'</p><p class="fluentia-question-prompt">Question '+count+' of '+currentSession.targetCount+'</p><h2'+translationAttributes(item.prompt_ar||item.q_ar||item.instruction_ar||item.question_ar)+'>'+esc(prompt)+'</h2>'+correctionSentence+listen+(item.sub?'<p class="fluentia-question-prompt"'+translationAttributes(item.sub_ar)+'>'+esc(item.sub)+'</p>':'')+(choices||'<div class="fluentia-empty">This activity does not yet have a compatible response control.</div>')+'<div id="fluentia-feedback" aria-live="polite"></div><div class="fluentia-session-actions">'+(opts&&choices?'<span class="fluentia-question-prompt">Choose one answer</span>':'<button type="button" class="btn" data-submit>Check answer</button>')+'<button type="button" class="btn" data-next hidden>Continue →</button></div></article></div>';
+    enhanceFluentiaTranslations();
   }
   function renderOrderingTiles() {
     const bank=$('#fluentia-order-bank'),placed=$('#fluentia-order-placed'),status=$('#fluentia-order-status');
@@ -261,10 +269,11 @@
       lastEvent = engine.submitAnswer(currentSession,answer);
       answered = true;
       const feedback = lastEvent.feedback || {};
-      const explain = translated && feedback.explanationAr ? feedback.explanationAr : feedback.explanation;
+      const explain = feedback.explanation;
       const correctAnswer = feedback.correctAnswer;
       const host = $('#fluentia-feedback');
-      if (host) host.innerHTML = '<div class="fluentia-feedback '+(lastEvent.correct?'':'is-wrong')+'"><strong>'+(lastEvent.correct?'Correct — well done.':'Good attempt. Let’s learn from it.')+'</strong>'+(explain?'<p>'+esc(explain)+'</p>':'')+(correctAnswer&&!lastEvent.correct?'<p><b>Answer:</b> '+esc(Array.isArray(correctAnswer)?correctAnswer.map(value=>value&&typeof value==='object'?Object.values(value).join(' — '):value).join(' · '):(correctAnswer&&typeof correctAnswer==='object'?Object.values(correctAnswer).join(' — '):correctAnswer))+'</p>':'')+(feedback.explanationAr?'<button type="button" class="btn btn-ghost fluentia-translation" data-translate>'+ (translated?'Show English':'عرض المساعدة بالعربية')+'</button>':'')+'</div>';
+      if (host) host.innerHTML = '<div class="fluentia-feedback '+(lastEvent.correct?'':'is-wrong')+'"><strong>'+(lastEvent.correct?'Correct — well done.':'Good attempt. Let’s learn from it.')+'</strong>'+(explain?'<p'+translationAttributes(feedback.explanationAr)+'>'+esc(explain)+'</p>':'')+(correctAnswer&&!lastEvent.correct?'<p><b>Answer:</b> '+esc(Array.isArray(correctAnswer)?correctAnswer.map(value=>value&&typeof value==='object'?Object.values(value).join(' — '):value).join(' · '):(correctAnswer&&typeof correctAnswer==='object'?Object.values(correctAnswer).join(' — '):correctAnswer))+'</p>':'')+'</div>';
+      enhanceFluentiaTranslations();
       root.querySelectorAll('[data-answer-index],[data-order-token],[data-order-remove],[data-map-cell],#fluentia-answer,[data-match-word],[data-match-meaning],[data-match-remove],#fluentia-speech-transcript,[data-submit],[data-speech-start],[data-speech-stop]').forEach(el=>el.disabled=true);
       const next = $('[data-next]'); if(next) next.hidden=false;
       const actions = $('.fluentia-session-actions'); if(actions){const note=document.createElement('span');note.className='fluentia-question-prompt';note.textContent=lastEvent.correct?'✓':'↻';actions.prepend(note);}
@@ -362,7 +371,7 @@
     if (currentSession && !['completed','abandoned'].includes(currentSession.status)) {
       try { engine.abandonSession(currentSession); } catch {}
     }
-    currentSession=null;currentQuestion=null;answered=false;lastEvent=null;translated=false;answerOptionOrder=[];
+    currentSession=null;currentQuestion=null;answered=false;lastEvent=null;answerOptionOrder=[];
     currentMode='';currentModeLabel='';choosingSectionMixed=false;
     if (render) { if(currentDomain)renderDomain(currentDomain); else renderHome(); }
     else currentDomain=null;
@@ -410,7 +419,6 @@
     if(answer){const index=Number(answer.dataset.answerIndex);submit(currentQuestion?.activityId==='soundscape-sound-picture-match'?answer.dataset.answerValue||'':(answerOptionOrder[index]??index));return;}
     if(event.target.closest('[data-submit]')){submit();return;}
     if(event.target.closest('[data-next]')){nextQuestion();return;}
-    if(event.target.closest('[data-translate]')){translated=!translated;const feedback=lastEvent?.feedback||{};const host=$('#fluentia-feedback');if(host){const explain=translated?feedback.explanationAr:feedback.explanation;host.querySelector('p')?.replaceChildren(document.createTextNode(explain||''));const button=host.querySelector('[data-translate]');if(button)button.textContent=translated?'Show English':'عرض المساعدة بالعربية';}return;}
     if(event.target.closest('[data-restart]')){const mode=currentMode,domain=currentSession?.domain,activityId=currentSession?.activityIds?.[0];currentSession=null;if(mode==='single')startSession(mode,{activityId,label:currentModeLabel});else if(mode==='section-mixed')startSession(mode,{domain});else startSession(mode);return;}
     const speak=event.target.closest('[data-fluentia-speak]');if(speak){window.EpiphanySpeech?.speak(speak.dataset.fluentiaSpeak);return;}
   }

@@ -54,3 +54,30 @@ test('Soundscape dictation has six authored transcription items at every CEFR le
   assert.equal(adapter.evaluate(item,item.text).correct,true);
   assert.equal(adapter.evaluate(item,'unrelated words').correct,false);
 });
+
+
+test('Textwise sequencing content has unique prompts and complete, non-repeating step sequences', () => {
+  const normalize = value => String(value).normalize('NFKC').toLowerCase().replace(/[^\p{L}\p{N}]+/gu, ' ').trim();
+  assert.equal(textwise.length, 36);
+  assert.equal(new Set(textwise.map(item => normalize(item.title))).size, textwise.length, 'sequence titles must be unique');
+  assert.equal(new Set(textwise.map(item => normalize(item.text))).size, textwise.length, 'sequence contexts must be unique');
+  for (const item of textwise) {
+    assert.ok(item.title.trim(), item.id + ' needs a title');
+    assert.ok(item.text.trim(), item.id + ' needs a context');
+    assert.ok(item.steps.length >= 3, item.id + ' needs at least three steps');
+    assert.equal(new Set(item.steps.map(normalize)).size, item.steps.length, item.id + ' must not repeat a step');
+    assert.ok(item.steps.every(step => normalize(step).length >= 8), item.id + ' contains an empty or implausibly short step');
+  }
+});
+
+test('Soundscape dictation content has unique level-tagged transcripts and usable instructions', () => {
+  const normalize = value => String(value).normalize('NFKC').toLowerCase().replace(/[^\p{L}\p{N}]+/gu, ' ').trim();
+  assert.equal(soundscapeDictation.length, 36);
+  assert.equal(new Set(soundscapeDictation.map(item => normalize(item.text))).size, soundscapeDictation.length);
+  for (const item of soundscapeDictation) {
+    assert.ok(['A1','A2','B1','B2','C1','C2'].includes(item.level), item.id + ' needs an explicit CEFR level');
+    assert.ok(item.text.trim().split(/\s+/).length >= 5, item.id + ' transcript is too short for dictation');
+    assert.ok(item.prompt.trim(), item.id + ' needs a learner instruction');
+    assert.ok(item.explanation.trim(), item.id + ' needs learning feedback');
+  }
+});
