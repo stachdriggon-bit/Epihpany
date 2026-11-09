@@ -14,7 +14,7 @@ Branch: `main`
 - Tiles use neutral accessible labels ("Picture option 1" etc.) rather than announcing the object name.
 - Existing audio playback and the adapter's word-based evaluation are preserved.
 
-**Asset note:** The current `MINI_AUDIO_ITEMS` source contains emoji pictograms (`icon`), not dedicated image files. Fluentia renders those existing pictograms without adjacent text and also supports an `image` field if proper image assets are added later. This change does not invent or reference unavailable image URLs.
+**Asset note:** The existing emoji symbols remain as a fallback, and the activity now uses original, locally stored SVG object illustrations through the `image` field. The SVG sprite is served from the repository and its images are cached by the service worker after first use; no external image URLs are required.
 
 ## Review of the remaining activities
 
