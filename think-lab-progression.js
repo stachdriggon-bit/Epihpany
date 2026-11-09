@@ -125,7 +125,62 @@
     return Object.freeze({recordStart,saveSnapshot,getSnapshot,clearSnapshot,recordCompletion,getHistory,getGameProgress});
   }
 
-  const api = Object.freeze({version:1,getRegistry,getGame,validateSnapshot,createStore,skillIds:SKILL_IDS.slice(),trainingModes:TRAINING_MODES.slice()});
+  function recommendNext(options = {}) {
+    const history = plainObject(options.history) ? options.history : {};
+    const gameHistory = plainObject(history.games) ? history.games : {};
+    const recent = Array.isArray(history.recentGames) ? history.recentGames.filter(validId) : [];
+    const signals = plainObject(options.signals) ? options.signals : {};
+    const available = Array.isArray(options.availableGameIds)
+      ? new Set(options.availableGameIds.filter(validId))
+      : new Set(definitions.map(game => game.id));
+    const candidates = definitions.filter(game => available.has(game.id) && game.adapter && game.supportsResume);
+    if (!candidates.length) return null;
+    const signalRows = SKILL_IDS.map(skill => {
+      const value = plainObject(signals[skill]) ? signals[skill] : {};
+      const attempts = Math.max(0, Number(value.attempts) || 0);
+      const errors = Math.max(0, Number(value.errors) || 0);
+      const correct = Math.max(0, Number(value.correct) || 0);
+      return {skill,attempts,errors,correct,accuracy:attempts ? Math.round(correct / attempts * 100) : null};
+    }).filter(row => row.attempts >= 2 && row.errors > 0)
+      .sort((a,b) => (a.accuracy-b.accuracy) || (b.errors-a.errors) || (b.attempts-a.attempts));
+    const recentSet = new Set(recent.slice(0,2));
+    const chooseLeastUsed = pool => {
+      const alternatives = pool.filter(game => !recentSet.has(game.id));
+      const source = alternatives.length ? alternatives : pool;
+      return source.slice().sort((a,b) => {
+        const ah = plainObject(gameHistory[a.id]) ? gameHistory[a.id] : {};
+        const bh = plainObject(gameHistory[b.id]) ? gameHistory[b.id] : {};
+        const aUsage = Math.max(0,Number(ah.launchCount)||0) + Math.max(0,Number(ah.completedRounds)||0) * 0.5;
+        const bUsage = Math.max(0,Number(bh.launchCount)||0) + Math.max(0,Number(bh.completedRounds)||0) * 0.5;
+        return aUsage-bUsage || definitions.indexOf(a)-definitions.indexOf(b);
+      })[0];
+    };
+    for (const signal of signalRows) {
+      const matching = candidates.filter(game => game.skill === signal.skill);
+      if (!matching.length) continue;
+      const selected = chooseLeastUsed(matching);
+      return {
+        game:selected.id, skill:signal.skill, label:selected.name, title:selected.name,
+        hint:'A focused activity for '+signal.skill+' practice.',
+        attempts:signal.attempts, accuracy:signal.accuracy,
+        reason:'Chosen from your '+signal.skill+' results and recent game history.',
+        kind:'skill'
+      };
+    }
+    const selected = chooseLeastUsed(candidates);
+    const previous = recent[0];
+    return {
+      game:selected.id, skill:selected.skill, label:selected.name, title:selected.name,
+      hint:'A short activity to build a clearer picture of your strengths.',
+      attempts:0, accuracy:null,
+      reason:previous && previous !== selected.id
+        ? 'A fresh activity, selected from games you have played less often.'
+        : 'Start here to build your personal practice history.',
+      kind:'starter'
+    };
+  }
+
+  const api = Object.freeze({version:1,getRegistry,getGame,validateSnapshot,createStore,recommendNext,skillIds:SKILL_IDS.slice(),trainingModes:TRAINING_MODES.slice()});
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   if (typeof window !== 'undefined') window.EPIPHANY_THINK_LAB_PROGRESSION = api;
 })();
