@@ -177,15 +177,49 @@
           const reviewState = typeof sources.reviewState === 'function' ? sources.reviewState() : sources.reviewState;
           const saved = new Set((reviewState?.words || []).map(row => normalize(Array.isArray(row) ? row[0] : row && row.word)));
           const rows = sources.wordOfDayItems.filter(item => item && item.level === level && item.word && item.meaning);
-          return rows.map(item => ({...item, sourceActivityId:'word-of-the-day', savedForReview:saved.has(normalize(item.word))}));
+          // Build balanced rounds of 2–4 pairs so every prompt is a real matching task.
+          const roundCount = Math.ceil(rows.length / 4);
+          if (!roundCount) return [];
+          const baseSize = Math.floor(rows.length / roundCount);
+          const extra = rows.length % roundCount;
+          const rounds = [];
+          let cursor = 0;
+          for (let index = 0; index < roundCount; index++) {
+            const size = baseSize + (index < extra ? 1 : 0);
+            const pairs = rows.slice(cursor, cursor + size).map((item, pairIndex) => ({
+              id: String(item.id || stableId('wordcraft-word-match-pair', item, cursor + pairIndex)),
+              word: item.word,
+              meaning: item.meaning
+            }));
+            cursor += size;
+            if (pairs.length < 2) continue;
+            rounds.push({
+              id: 'word-match-' + level + '-' + pairs.map(pair => hash(pair.id)).join('-'),
+              level,
+              pairs,
+              sourceActivityId: 'word-of-the-day',
+              savedForReview: pairs.some(pair => saved.has(normalize(pair.word)))
+            });
+          }
+          return rounds;
         },
         evaluate: (item, answer) => {
-          const word = answer && typeof answer === 'object' ? answer.word : '';
-          const meaning = answer && typeof answer === 'object' ? answer.meaning : '';
-          const correct = normalize(word) === normalize(item.word) && normalize(meaning) === normalize(item.meaning);
+          const submitted = Array.isArray(answer) ? answer : answer && Array.isArray(answer.pairs) ? answer.pairs : [];
+          const expected = item.pairs || [];
+          const usedWords = new Set();
+          const usedMeanings = new Set();
+          const correct = expected.length >= 2 && submitted.length === expected.length &&
+            submitted.every(pair => {
+              const word = normalize(pair && pair.word);
+              const meaning = normalize(pair && pair.meaning);
+              if (!word || !meaning || usedWords.has(word) || usedMeanings.has(meaning)) return false;
+              usedWords.add(word);
+              usedMeanings.add(meaning);
+              return expected.some(row => normalize(row.word) === word && normalize(row.meaning) === meaning);
+            }) && usedWords.size === expected.length && usedMeanings.size === expected.length;
           return {correct, errorType: correct ? null : 'word-pair-mismatch'};
         },
-        correctAnswer: item => ({word:item.word,meaning:item.meaning})
+        correctAnswer: item => (item.pairs || []).map(pair => ({word:pair.word,meaning:pair.meaning}))
       }));
     }
 
