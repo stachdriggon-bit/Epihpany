@@ -384,9 +384,19 @@
     const matchRemove=event.target.closest('[data-match-remove]');
     if(matchRemove){const index=Number(matchRemove.dataset.matchRemove);if(Number.isInteger(index)&&matchingPlaced[index]){matchingPlaced.splice(index,1);renderMatchingTiles();}return;}
     const matchWord=event.target.closest('[data-match-word]');
-    if(matchWord){matchingSelectedWord=matchWord.dataset.matchWord;renderMatchingTiles();return;}
+    if(matchWord){
+      const id=matchWord.dataset.matchWord;
+      if(matchingSelectedMeaning!==null){matchingPlaced.push({wordId:id,meaningId:matchingSelectedMeaning});matchingSelectedWord=null;matchingSelectedMeaning=null;}
+      else matchingSelectedWord=id;
+      renderMatchingTiles();return;
+    }
     const matchMeaning=event.target.closest('[data-match-meaning]');
-    if(matchMeaning){matchingSelectedMeaning=matchMeaning.dataset.matchMeaning;if(matchingSelectedWord!==null){matchingPlaced.push({wordId:matchingSelectedWord,meaningId:matchingSelectedMeaning});matchingSelectedWord=null;matchingSelectedMeaning=null;}renderMatchingTiles();return;}
+    if(matchMeaning){
+      const id=matchMeaning.dataset.matchMeaning;
+      if(matchingSelectedWord!==null){matchingPlaced.push({wordId:matchingSelectedWord,meaningId:id});matchingSelectedWord=null;matchingSelectedMeaning=null;}
+      else matchingSelectedMeaning=id;
+      renderMatchingTiles();return;
+    }
     const mapCell=event.target.closest('[data-map-cell]');
     if(mapCell){mapChosen=mapCell.dataset.mapCell.split(',').map(Number);root.querySelectorAll('[data-map-cell]').forEach(button=>{const selected=button===mapCell;button.classList.toggle('is-selected',selected);button.setAttribute('aria-pressed',String(selected));});const status=$('#fluentia-map-status');if(status)status.textContent='Selected: '+mapCell.textContent.trim()+'. Check your answer when ready.';return;}
     const answer=event.target.closest('[data-answer-index]');
