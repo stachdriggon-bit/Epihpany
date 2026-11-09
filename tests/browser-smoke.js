@@ -262,6 +262,12 @@ test('main navigation tabs open without uncaught page errors', { timeout: 18 * 6
           await matchQuestion.locator('[data-match-meaning="'+id+'"]').click();
         }
         assert.equal(await matchQuestion.locator('.fluentia-match-pair').count(),4,'all four pairs should be assembled as independent matches');
+        await matchQuestion.locator('.fluentia-match-pair [data-match-remove]').first().click();
+        assert.equal(await matchQuestion.locator('.fluentia-match-pair').count(),3,'a selected pair should be removable before submission');
+        const returnedWordId = await matchQuestion.locator('#fluentia-match-words [data-match-word]').getAttribute('data-match-word');
+        await matchQuestion.locator('[data-match-word="'+returnedWordId+'"]').click();
+        await matchQuestion.locator('[data-match-meaning="'+returnedWordId+'"]').click();
+        assert.equal(await matchQuestion.locator('.fluentia-match-pair').count(),4,'a removed pair should be selectable again');
         await matchQuestion.locator('[data-submit]').click();
         await matchQuestion.locator('.fluentia-feedback').waitFor({state:'visible',timeout:5000});
         assert.match(await matchQuestion.locator('.fluentia-feedback').innerText(),/Correct/i,'the shared evaluator should accept the complete correct matching round');
