@@ -98,7 +98,8 @@
   }
   function startSession(mode, options = {}) {
     refreshActivities();
-    const config = {mode,level:selectedLevel,itemCount:10};
+    const availableCount = mode==='single' ? activities.find(activity=>activity.id===options.activityId)?.items.length : 10;
+    const config = {mode,level:selectedLevel,itemCount:Math.min(10,availableCount||10)};
     if (mode==='section-mixed') config.domain = options.domain || currentDomain;
     if (mode==='single') config.activityId = options.activityId;
     try {
