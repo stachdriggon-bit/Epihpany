@@ -10,7 +10,7 @@ Status: implementation batch
 - The 216 words and illustration URLs are unique.
 - Four answer images are selected from the same CEFR level. Every question has exactly one correct picture and three distinct distractors.
 - The listening target is spoken through EPIPHANY's existing speech layer; Fluentia picture choices do not display the answer word.
-- The legacy Arcade Sound & Picture Match also uses the expanded bank and same-level distractors.
+- The expansion belongs to Fluentia's Sound & Picture Match adapter. The separate legacy Arcade mini-game keeps its own existing pool and behavior; the two content sources remain intentionally isolated.
 - Artwork is loaded on demand from a pinned OpenMoji revision. jsDelivr is already an approved, runtime-cached vendor origin in the service worker; only images requested by the learner are fetched and cached.
 
 ## Content progression

@@ -32,7 +32,9 @@ test('Fluentia UI delegates selection and evaluation to the shared engine', () =
   assert.match(ui, /engine\.submitAnswer\(currentSession,answer\)/);
   assert.match(ui, /answerOptionOrder = opts && !isPictureMatch \? stableTileShuffle/);
   assert.match(ui, /answerOptionOrder\[index\]\?\?index/);
-  assert.match(ui, /picturePositions = \{apple:0,book:1,umbrella:2,key:3/);
+  assert.match(ui, /option\.image\?'<img class="fluentia-picture-art" src=/, 'picture choices must render the authored vector image');
+  assert.match(ui, /loading="eager" decoding="async"/);
+  assert.doesNotMatch(ui, /picturePositions/, 'picture artwork no longer depends on a hard-coded sprite index map');
   assert.match(ui, /engine\.abandonSession\(currentSession\)/);
 });
 
