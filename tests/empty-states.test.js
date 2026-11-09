@@ -61,4 +61,5 @@ test('changed scripts are versioned and the offline shell cache is refreshed', (
   assert.match(read('lazy-data.js'), /codebreaker\.js\?v=codebreaker-engine-20261109-2/);
   assert.match(read('lazy-data.js'), /letter-grid\.js\?v=letter-grid-engine-20261109-2/);
   assert.match(sw, /epiphany-stability-gallery-identity-20261105-1[\s\S]*think-lab-eleven-games-20261108-1[\s\S]*offline-translation-20261108-1/);
+  assert.match(sw, /CARD_ART_CACHE = 'epiphany-card-art-cloud-only-20261030-1-fluentia-picture-bank-20261109-1'/);
 });
