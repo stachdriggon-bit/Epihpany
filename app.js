@@ -205,6 +205,8 @@
         spot: typeof SPOT_QUESTIONS !== 'undefined' ? SPOT_QUESTIONS : [],
         typing: typeof TYPING_QUESTIONS !== 'undefined' ? TYPING_QUESTIONS : [],
         directions: typeof DIRECTION_ITEMS !== 'undefined' ? DIRECTION_ITEMS : [],
+        getDirections: () => window.EPIPHANY_DIRECTIONS_DATA?.items || [],
+        getDirectionBlocks: () => window.EPIPHANY_DIRECTIONS_DATA?.blocks || [],
         reviewState: () => state,
         wordOfDayItems: typeof WOTD_WORDS !== 'undefined' ? WOTD_WORDS : [],
         textwiseSequenceBank: Array.isArray(window.EPIPHANY_TEXTWISE_SEQUENCE_BANK) ? window.EPIPHANY_TEXTWISE_SEQUENCE_BANK : undefined,
