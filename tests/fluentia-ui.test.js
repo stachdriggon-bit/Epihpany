@@ -150,3 +150,18 @@ test('Fluentia Directions loads its shared map bank with the Fluentia feature', 
   assert.match(adapters, /typeof sources\.getDirectionBlocks === 'function' \? sources\.getDirectionBlocks\(\)/);
   assert.match(read('app.js'), /getDirections: \(\) => window\.EPIPHANY_DIRECTIONS_DATA\?\.items \|\| \[\]/);
 });
+
+
+test('Word Match renders two shuffled selectable columns and removable pairs instead of a text field', () => {
+  const ui = read('fluentia-ui.js');
+  assert.match(ui,/function matchingMarkup\(item\)/);
+  assert.match(ui,/data-match-word=/);
+  assert.match(ui,/data-match-meaning=/);
+  assert.match(ui,/data-match-remove=/);
+  assert.match(ui,/matchingPlaced\.map\(pair=>\(\{word:/);
+  assert.match(ui,/Match every word before checking your answer/);
+  assert.doesNotMatch(ui,/fluentia-match-meaning/);
+  const adapter = read('fluentia-adapters.js');
+  assert.match(adapter,/const roundCount = Math\.ceil\(rows\.length \/ 4\)/);
+  assert.match(adapter,/submitted\.length === expected\.length/);
+});
