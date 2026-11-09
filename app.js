@@ -806,7 +806,6 @@
       {id:'grammar',title:'Grammar',desc:'Make sentences clearer and more accurate.',icon:'S+V',tone:'coral',games:[['grammar','Sentence shaper'],['mistakes','Common mistakes'],['spot','Spot the mistake'],['typing','Type It']]},
       {id:'reading',title:'Reading & Listening',desc:'Understand stories, messages and meaning.',icon:'◖',tone:'sky',games:[['story','Lost in London'],['listening','Meaning detective'],['order','Order the Story'],['directions','Directions']]},
       {id:'challenge',title:'Challenge',desc:'Train your ear for nuance and precise meaning.',icon:'✦',tone:'ink',games:[['advanced','Nuance navigator']]},
-      {id:'minigames',title:'Mini-games',desc:'Quick, playful rounds that adapt to what you need to practise.',icon:'⚡',tone:'mint',games:[['speed','60-second Speed Round'],['audioImage','Sound & Picture Match'],['sentenceOrder','Sentence Builder']]}
     ];
     window.__gameCategories = gameCategories;
     $('#games').innerHTML = gameCategories.map(cat =>
