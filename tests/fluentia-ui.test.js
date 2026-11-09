@@ -20,6 +20,8 @@ test('Fluentia UI exposes six domains, global mix, and domain-scoped section mix
   assert.doesNotMatch(home, /modeCard\('section-mixed'\)/, 'Section Mixed must not be shown on the Fluentia landing page');
   assert.match(domain, /modeCard\('section-mixed'\)/, 'Section Mixed must be available inside every domain');
   assert.match(ui, /engine\.createSession\(config\)/);
+  assert.match(ui, /const availableCount = mode==='single' \? activities\.find\(activity=>activity\.id===options\.activityId\)\?\.items\.length : 10;/);
+  assert.match(ui, /itemCount:Math\.min\(10,availableCount\|\|10\)/);
 });
 
 test('Fluentia UI delegates selection and evaluation to the shared engine', () => {
