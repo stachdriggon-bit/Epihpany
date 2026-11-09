@@ -329,12 +329,12 @@
   });
   window.addEventListener('epiphany:progress-saved',()=>{
     if(!root.closest('.view')?.classList.contains('is-active')||currentSession)return;
-    selectedLevel=currentLevel();
     if(currentDomain){
       if(choosingSectionMixed)renderSectionMixedDomainPicker();
       else renderDomain(currentDomain);
       return;
     }
+    selectedLevel=currentLevel();
     renderHome();
   });
   selectedLevel=currentLevel();
