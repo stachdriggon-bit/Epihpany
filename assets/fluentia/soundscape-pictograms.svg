@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300">
+  <title>Soundscape picture choices</title>
+  <view id="apple" viewBox="0 0 100 100"/>
+  <view id="book" viewBox="100 0 100 100"/>
+  <view id="umbrella" viewBox="200 0 100 100"/>
+  <view id="key" viewBox="300 0 100 100"/>
+  <view id="train" viewBox="0 100 100 100"/>
+  <view id="bread" viewBox="100 100 100 100"/>
+  <view id="clock" viewBox="200 100 100 100"/>
+  <view id="lamp" viewBox="300 100 100 100"/>
+  <view id="chair" viewBox="0 200 100 100"/>
+  <view id="phone" viewBox="100 200 100 100"/>
+  <view id="tree" viewBox="200 200 100 100"/>
+  <view id="water" viewBox="300 200 100 100"/>
+  <g stroke="#25324a" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round">
+    <g transform="translate(0 0)">
+      <path d="M50 31c-7-10-25-8-31 7-8 20 8 49 25 49 5 0 7-4 12-4s8 4 13 4c16 0 32-29 24-49-6-15-24-17-31-7-4 5-8 5-12 0Z" fill="#ef6b72"/>
+      <path d="M51 31c-1-13 6-21 19-23-1 11-8 20-19 23Z" fill="#5eaa73"/>
+      <path d="M50 29c-5-7-11-9-18-8" fill="none"/>
+    </g>
+    <g transform="translate(100 0)">
+      <path d="M22 18h43l14 13v53H22Z" fill="#f4f0df"/>
+      <path d="M65 18v15h14" fill="#d9e8fb"/>
+      <path d="M22 18h43v15H22Z" fill="#75a9e6"/>
+      <path d="M33 46h35M33 57h35M33 68h25" fill="none"/>
+    </g>
+    <g transform="translate(200 0)">
+      <path d="M12 48a38 38 0 0 1 76 0Z" fill="#f4c85b"/>
+      <path d="M50 48v36M38 84h24M50 48 26 70M50 48l24 22" fill="none"/>
+      <path d="M12 48c7 12 16 12 24 0 8 12 16 12 24 0 8 12 18 12 28 0" fill="none"/>
+    </g>
+    <g transform="translate(300 0)">
+      <circle cx="31" cy="51" r="18" fill="#f2c45c"/>
+      <circle cx="31" cy="51" r="7" fill="#fff4c9"/>
+      <path d="M49 51h37M68 51v13M79 51v9" fill="none"/>
+    </g>
+    <g transform="translate(0 100)">
+      <rect x="15" y="21" width="70" height="61" rx="15" fill="#7bb3e8"/>
+      <path d="M15 47h70M29 21v61M71 21v61" fill="none"/>
+      <rect x="27" y="33" width="10" height="8" rx="2" fill="#fff4cf" stroke="none"/>
+      <rect x="63" y="33" width="10" height="8" rx="2" fill="#fff4cf" stroke="none"/>
+      <circle cx="32" cy="82" r="7" fill="#25324a"/><circle cx="68" cy="82" r="7" fill="#25324a"/>
+    </g>
+    <g transform="translate(100 100)">
+      <path d="M17 59c0-17 13-30 31-30h19c10 0 18 8 18 18v17H17Z" fill="#e9a75f"/>
+      <path d="M17 59h68v12H17Z" fill="#d78b4a"/>
+      <path d="M31 38v10M48 34v14M65 35v13" fill="none"/>
+      <path d="M24 72v8M78 72v8" fill="none"/>
+    </g>
+    <g transform="translate(200 100)">
+      <circle cx="50" cy="50" r="36" fill="#f6df91"/>
+      <circle cx="50" cy="50" r="29" fill="#fff9e8"/>
+      <path d="M50 30v21l15 10" fill="none"/>
+      <path d="M50 15v5M85 50h-5M50 85v-5M15 50h5" fill="none"/>
+    </g>
+    <g transform="translate(300 100)">
+      <path d="M35 17h30l-5 28H40Z" fill="#f2c45c"/>
+      <path d="M50 45v31M35 77h30" fill="none"/>
+      <path d="M22 88h56" fill="none"/>
+      <path d="M50 5v7M20 18l6 6M80 18l-6 6" fill="none"/>
+    </g>
+    <g transform="translate(0 200)">
+      <path d="M26 17v36h48V17M26 53v33M74 53v33M26 53h48" fill="none"/>
+      <rect x="21" y="13" width="58" height="43" rx="7" fill="#79b89a"/>
+      <path d="M26 56v30M74 56v30" fill="none"/>
+    </g>
+    <g transform="translate(100 200)">
+      <rect x="29" y="9" width="42" height="82" rx="9" fill="#6f9fd7"/>
+      <rect x="34" y="18" width="32" height="58" rx="3" fill="#dcecff" stroke="none"/>
+      <circle cx="50" cy="83" r="3" fill="#fff"/>
+    </g>
+    <g transform="translate(200 200)">
+      <path d="M50 12 22 50h13L19 69h62L65 50h13Z" fill="#70ad79"/>
+      <path d="M50 69v22" fill="none"/>
+      <path d="M50 78h-12M50 84h12" fill="none"/>
+    </g>
+    <g transform="translate(300 200)">
+      <path d="M50 12C38 32 22 47 22 64a28 28 0 0 0 56 0C78 47 62 32 50 12Z" fill="#72c8e5"/>
+      <path d="M38 65c1 8 6 13 14 14" fill="none" stroke="#fff" stroke-width="5"/>
+    </g>
+  </g>
+</svg>
