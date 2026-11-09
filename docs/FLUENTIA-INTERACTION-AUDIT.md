@@ -26,13 +26,13 @@ Branch: `main`
 | Sentence Studio — Sentence Shaper / Common Mistakes | Multiple-choice answers | Appropriate for selecting a grammatical form or correction. |
 | Sentence Studio — Spot the Mistake | Selects a word token from the sentence | Appropriate: the selectable words are the target of the error-identification task. |
 | Sentence Studio — Type It | Typed response | Appropriate: it tests production without multiple-choice hints. |
-| Sentence Studio — Sentence Builder | Types the ordered words separated by `>` | Interaction mismatch: the activity is a word-order builder, but Fluentia currently uses a plain text field instead of movable/selectable word tiles. |
+| Sentence Studio — Sentence Builder | Selectable word tiles; placed words can be returned to the bank | Corrected: the learner constructs the sentence by selecting individual words in order, without typing separators. |
 | Textwise — Meaning Detective | Multiple-choice comprehension | Appropriate for a comprehension question. |
-| Textwise — Text Sequencing | Types the ordered steps separated by `>` | Interaction mismatch: sequencing should be a reorderable sequence, not a free-text transcription task. |
+| Textwise — Text Sequencing | Selectable step tiles with the source context shown above | Corrected: the learner builds the event sequence from individual steps; the original passage remains visible as context. |
 | Soundscape — Sound Maze | Word choices for phonological contrasts | Appropriate: the task distinguishes spoken sound patterns/phonemes; visible word forms are meaningful answer choices, unlike Sound & Picture Match. |
 | Soundscape — Dictation / Practice Dictation | Types the sentence heard | Appropriate: transcription is the intended skill. |
 | Real World — Lost in London | Multiple-choice practical communication | Appropriate for the supplied scenario questions. |
-| Real World — Directions | Types map coordinates | Interaction mismatch: the content is spatial/map-based, but the Fluentia control asks for coordinates instead of allowing a map location to be selected. |
+| Real World — Directions | Selects one of twelve town landmarks on a map | Corrected: the shared 120-item bank (20 per CEFR level) and its landmark map are loaded lazily; the learner selects a destination and the existing coordinate evaluator checks it. |
 | Real World — Speaking & Shadowing | Speech recognition with editable transcript fallback | Partially appropriate: it captures words and compares the transcript, but does not assess pronunciation quality. The current UI explicitly discloses this limitation. |
 | Fine Sense — Nuance Navigator | Multiple-choice interpretation | Appropriate for comparing subtle meanings and pragmatic nuance. |
 
