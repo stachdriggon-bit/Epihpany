@@ -8,6 +8,9 @@ const DIRECTION_ITEMS = [{"start":[0,0],"dir":"E","steps":[["go",1]],"side":"rig
 
 
 // Register the shared town-map bank when Fluentia lazily loads this file.
-if (typeof window !== 'undefined' && typeof window.EPIPHANY_FLUENTIA_REGISTER_SOURCES === 'function') {
-  window.EPIPHANY_FLUENTIA_REGISTER_SOURCES({directions: DIRECTION_ITEMS, directionBlocks: DIRECTION_BLOCKS});
+if (typeof window !== 'undefined') {
+  window.EPIPHANY_DIRECTIONS_DATA = {items: DIRECTION_ITEMS, blocks: DIRECTION_BLOCKS};
+  if (typeof window.EPIPHANY_FLUENTIA_REGISTER_SOURCES === 'function') {
+    window.EPIPHANY_FLUENTIA_REGISTER_SOURCES({directions: DIRECTION_ITEMS, directionBlocks: DIRECTION_BLOCKS});
+  }
 }
