@@ -104,7 +104,7 @@ test('legacy source banks remain unchanged after adapter creation and evaluation
 function expandedFixture() {
   const sources = fixture();
   sources.games.vocabulary.questions[0].word = 'apple';
-  sources.audioItems = [{id:'SP-A1-01',level:'A1',word:'apple',meaning:'a round fruit',icon:'🍎',image:'assets/fluentia/soundscape-pictograms.svg#apple'},{id:'SP-A1-02',level:'A1',word:'book',meaning:'something you read',icon:'📘',image:'assets/fluentia/soundscape-pictograms.svg#book'},{id:'SP-A1-03',level:'A1',word:'umbrella',meaning:'keeps you dry in rain',icon:'☂️',image:'assets/fluentia/soundscape-pictograms.svg#umbrella'},{id:'SP-A1-04',level:'A1',word:'key',meaning:'opens a lock',icon:'🔑',image:'assets/fluentia/soundscape-pictograms.svg#key'}];
+  sources.audioItems = [{id:'SP-A1-01',level:'A1',word:'apple',meaning:'a round fruit',icon:'🍎',image:'assets/fluentia/soundscape-pictograms.svg#apple'},{id:'SP-A1-02',level:'A1',word:'book',meaning:'something you read',icon:'📘',image:'assets/fluentia/soundscape-pictograms.svg#book'},{id:'SP-A1-03',level:'A1',word:'umbrella',meaning:'keeps you dry in rain',icon:'☂️',image:'assets/fluentia/soundscape-pictograms.svg#umbrella'},{id:'SP-A1-04',level:'A1',word:'key',meaning:'opens a lock',icon:'🔑',image:'assets/fluentia/soundscape-pictograms.svg#key'}],{id:'SP-A2-01',level:'A2',word:'train',icon:'🚆',image:'assets/fluentia/soundscape-pictograms.svg#train'},{id:'SP-A2-02',level:'A2',word:'chair',icon:'🪑',image:'assets/fluentia/soundscape-pictograms.svg#chair'},{id:'SP-A2-03',level:'A2',word:'phone',icon:'📱',image:'assets/fluentia/soundscape-pictograms.svg#phone'},{id:'SP-A2-04',level:'A2',word:'bus',icon:'🚌',image:'assets/fluentia/soundscape-pictograms.svg#bus'}];
   sources.wordOfDayItems = [{id:'WM-A1-01',level:'A1',word:'apple',meaning:'a round fruit'},{id:'WM-A1-02',level:'A1',word:'banana',meaning:'a long yellow fruit'}];
   sources.soundscapeDictationBank = [{id:'SD-A1-01',level:'A1',text:'I like fresh bread.'}];
   sources.sentenceItems = [{id:'SB-A1-01',level:'A1',text:'I drink water every morning.'}];
@@ -159,7 +159,10 @@ test('Sound Maze, dictation, shadowing and Word Match keep distinct evaluation s
   assert.ok(picture.pictureOptions.every(option => option.icon || option.image), 'every choice must have visual artwork');
   assert.equal(new Set(picture.pictureOptions.map(option => option.word)).size, 4, 'picture choices must be unique');
   assert.deepEqual(picture.pictureOptions, pictureAdapter.getItems({level:'A1'})[0].pictureOptions, 'picture choice order should remain stable for the same item');
-  assert.equal(pictureAdapter.getItems({level:'A2'}).length, 0, 'picture questions must not leak across CEFR levels');
+  const a2Picture = pictureAdapter.getItems({level:'A2'})[0];
+  assert.equal(a2Picture.pictureOptions.length, 4, 'A2 must also have four same-level picture choices');
+  assert.ok(a2Picture.pictureOptions.some(option => option.word === a2Picture.word));
+  assert.ok(a2Picture.pictureOptions.every(option => option.image), 'A2 picture options should use actual SVG artwork');
   assert.equal(pictureAdapter.evaluate(picture, picture.word).correct, true);
   assert.equal(pictureAdapter.evaluate(picture, picture.pictureOptions.find(option => option.word !== picture.word).word).correct, false);
   const [match] = get('wordcraft-word-match').getItems({level:'A1'});
