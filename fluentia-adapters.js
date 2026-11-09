@@ -156,7 +156,7 @@
               .slice(0,3);
             const pictureOptions = [item,...distractors]
               .sort((a,b) => hash(String(item.id || item.word)+':order:'+String(a.word)).localeCompare(hash(String(item.id || item.word)+':order:'+String(b.word))))
-              .map(option => ({word:option.word,icon:option.icon || '',image:option.image || ''}));
+              .map(option => ({word:option.word,wordAr:option.wordAr || '',icon:'',image:option.image || '',artId:option.artId || '',artIndex:Number.isInteger(option.artIndex)?option.artIndex:null}));
             return {...item,pictureOptions};
           });
         },

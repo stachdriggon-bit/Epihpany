@@ -3,6 +3,7 @@ const assert = require('node:assert/strict');
 const textwise = require('../fluentia-textwise-bank.js');
 const soundMaze = require('../sound-maze-content.js');
 const soundscapeDictation = require('../fluentia-soundscape-bank.js');
+const soundPictureBank = require('../fluentia-sound-picture-bank.js');
 const AdapterFactory = require('../fluentia-adapters.js');
 const SoundMazeTools = require('../sound-maze-bank.js');
 
@@ -79,5 +80,34 @@ test('Soundscape dictation content has unique level-tagged transcripts and usabl
     assert.ok(item.text.trim().split(/\s+/).length >= 5, item.id + ' transcript is too short for dictation');
     assert.ok(item.prompt.trim(), item.id + ' needs a learner instruction');
     assert.ok(item.explanation.trim(), item.id + ' needs learning feedback');
+  }
+});
+
+
+test('Sound & Picture Match has 216 unique illustrated words balanced across all CEFR levels', () => {
+  const levels = ['A1','A2','B1','B2','C1','C2'];
+  assert.equal(soundPictureBank.length, 216);
+  assert.equal(new Set(soundPictureBank.map(item => item.word.toLowerCase())).size, 216);
+  assert.equal(new Set(soundPictureBank.map(item => item.artId)).size, 216);
+  assert.equal(new Set(soundPictureBank.map(item => item.image)).size, 216);
+  assert.equal(new Set(soundPictureBank.map(item => item.artIndex)).size, 216);
+  assert.ok(soundPictureBank.every(item => item.wordAr && item.image && item.image.includes('/openmoji@3e01de523ddefe9c5e46a7765b15efef04bf9002/color/svg/')));
+  const counts = Object.fromEntries(levels.map(level => [level, soundPictureBank.filter(item => item.level === level).length]));
+  assert.deepEqual(counts, {A1:36,A2:36,B1:36,B2:36,C1:36,C2:36});
+  assert.ok(soundPictureBank.slice(180).some(item => item.word === 'chiropteran'));
+  assert.ok(soundPictureBank.slice(180).some(item => item.word === 'gastropod'));
+
+  const adapter = AdapterFactory.createAdapters({audioItems:soundPictureBank}).find(item => item.id === 'soundscape-sound-picture-match');
+  assert.ok(adapter);
+  for (const level of levels) {
+    const items = adapter.getItems({level});
+    assert.equal(items.length, 36, level);
+    assert.ok(items.every(item => item.pictureOptions.length === 4));
+    for (const item of items) {
+      const words = item.pictureOptions.map(option => option.word);
+      assert.equal(words.filter(word => word === item.word).length, 1, item.id + ' must include exactly one correct picture');
+      assert.equal(new Set(words).size, 4, item.id + ' must have four distinct picture choices');
+      assert.ok(item.pictureOptions.every(option => option.image.startsWith('https://cdn.jsdelivr.net/')));
+    }
   }
 });
