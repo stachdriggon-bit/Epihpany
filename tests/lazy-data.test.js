@@ -166,7 +166,7 @@ test('initial HTML defers stories and World data and keeps loader in offline she
   }
   assert.match(sw, /const cached = await cache\.match\(request\);\s*if \(cached\) return cached;/);
   assert.match(app, /window\.EPIPHANY_MERGE_AR_TRANSLATIONS = mergeArabicTranslationCatalog/);
-  assert.match(app, /function launchFluentiaShortcut[\\s\\S]*?EPIPHANY_LAZY_LOAD\\('fluentia'\\)/, 'Directions shortcuts must await the shared Fluentia bank before launch');
+  assert.ok(app.includes('function launchFluentiaShortcut(shortcutKey)') && app.includes("window.EPIPHANY_LAZY_LOAD('fluentia').then"), 'Directions shortcuts must await the shared Fluentia bank before launch');
   assert.match(app, /textwiseSequenceBank: Array\.isArray\(window\.EPIPHANY_TEXTWISE_SEQUENCE_BANK\) \? window\.EPIPHANY_TEXTWISE_SEQUENCE_BANK : undefined/);
   assert.match(app, /soundscapeDictationBank: Array\.isArray\(window\.EPIPHANY_SOUNDSCAPE_DICTATION_BANK\) \? window\.EPIPHANY_SOUNDSCAPE_DICTATION_BANK : undefined/);
   assert.doesNotMatch(app, /if \(state\.helpArabic \|\| state\.translationEnabled\) ensureArabicTranslationCatalog\(\)/);
