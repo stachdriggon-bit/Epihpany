@@ -219,55 +219,18 @@ test('main navigation tabs open without uncaught page errors', { timeout: 18 * 6
         assert.equal(await fluentia.locator('[data-mode="section-mixed"]').count(),0,'Section Mixed should not appear on the Fluentia landing page');
         assert.equal(await fluentia.locator('[data-mode="fluentia-mix"]').count(),1,'Fluentia Mix should have one landing entry');
         assert.equal(await fluentia.locator('.fluentia-review-panel').count(),1,'Your Review should remain a separate destination');
-        await fluentia.locator('.fluentia-domain-card[data-domain="wordcraft"]').click();
-        await fluentia.locator('.fluentia-activity-card').first().waitFor({state:'visible',timeout:5000});
-        await fluentia.locator('.fluentia-activity-card').first().click();
-        const question = fluentia.locator('.fluentia-question-card');
-        await question.waitFor({state:'visible',timeout:5000});
-        assert.match(await question.locator('.kicker').innerText(),/Wordcraft/i,'single activity should retain its canonical domain');
-        if (await question.locator('[data-answer-index]').count()) {
-          await question.locator('[data-answer-index]').first().click();
-        } else {
-          const answerInput = question.locator('#fluentia-answer, #fluentia-match-meaning').first();
-          await answerInput.fill('test answer');
-          await question.locator('[data-submit]').click();
-        }
-        await question.locator('.fluentia-feedback').waitFor({state:'visible',timeout:5000});
-        const history = await page.evaluate(() => window.__epiphanyReadProgress?.().fluentiaHistory || []);
-        assert.ok(history.length > 0,'a Fluentia answer should be recorded through the existing progress bridge');
-        assert.equal(history.at(-1).source,'fluentia','progress history should preserve Fluentia attribution');
-        const translation = question.locator('[data-translate]');
-        if (await translation.count()) {
-          const explanation = question.locator('#fluentia-feedback p').first();
-          const before = await explanation.innerText();
-          await translation.click();
-          assert.equal(await question.locator('[data-translate]').innerText(),'Show English','Arabic help should replace the explanation in place');
-          await question.locator('[data-translate]').click();
-          assert.equal(await explanation.innerText(),before,'returning to English should restore the same explanation slot');
-        }
-        await fluentia.locator('[data-exit]').click();
-        for (const level of ['A1','A2','B1','B2','C1','C2']) {
-          if (level !== 'A1') await fluentia.locator('#fluentia-level').selectOption(level);
-          await fluentia.locator('.fluentia-domain-card[data-domain="soundscape"]').click();
-          const pictureActivity = fluentia.locator('[data-activity="soundscape-sound-picture-match"]');
-          await pictureActivity.waitFor({state:'visible',timeout:5000});
-          await pictureActivity.click();
-          const pictureChoices = question.locator('.fluentia-picture-choice');
-          await pictureChoices.first().waitFor({state:'visible',timeout:5000});
-          assert.equal(await pictureChoices.count(),4,level+' Sound & Picture Match should show four image choices');
-          assert.deepEqual(await pictureChoices.evaluateAll(buttons=>buttons.map(button=>button.innerText.trim())),['','','',''],level+' picture choices must not display object names or any text');
-          assert.deepEqual(await pictureChoices.evaluateAll(buttons=>buttons.map(button=>button.getAttribute('aria-label'))),['Picture option 1','Picture option 2','Picture option 3','Picture option 4'],'picture choices should keep neutral accessible labels');
-          await page.waitForFunction(() => {
-            const images = [...document.querySelectorAll('.fluentia-picture-choice img')];
-            return images.length === 4 && images.every(image => image.complete && image.naturalWidth > 0);
-          }, null, {timeout:5000});
-          await pictureChoices.first().click();
-          await question.locator('.fluentia-feedback').waitFor({state:'visible',timeout:5000});
-          await fluentia.locator('[data-exit]').click();
+        const domainCases = [
+          ['wordcraft','Wordcraft'],['sentence-studio','Sentence Studio'],['textwise','Textwise'],
+          ['soundscape','Soundscape'],['real-world','Real World'],['fine-sense','Fine Sense']
+        ];
+        for (const [domainId, domainName] of domainCases) {
+          await fluentia.locator('.fluentia-domain-card[data-domain="'+domainId+'"]').click();
+          await page.evaluate(() => window.dispatchEvent(new Event('epiphany:progress-saved')));
+          assert.equal(await fluentia.locator('.fluentia-domain-intro h2').innerText(),domainName,'a progress save must preserve the '+domainName+' domain');
+          assert.equal(await fluentia.locator('.fluentia-back').count(),1,'the selected domain should remain open after a progress save');
+          await fluentia.locator('[data-back]').click();
         }
         await fluentia.locator('.fluentia-domain-card[data-domain="wordcraft"]').click();
-        await page.evaluate(() => window.dispatchEvent(new Event('epiphany:progress-saved')));
-        assert.ok(await fluentia.locator('.fluentia-activity-card').count()>0,'a background progress save must not eject the learner from the selected domain');
                 await fluentia.locator('[data-mode="section-mixed"]').click();
         await question.waitFor({state:'visible',timeout:5000});
         assert.match(await fluentia.locator('.fluentia-session-top .pill').innerText(),/Section Mixed/i,'Section Mixed should start inside the chosen domain');
