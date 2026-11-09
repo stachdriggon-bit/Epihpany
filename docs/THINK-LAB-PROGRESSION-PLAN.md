@@ -1,6 +1,6 @@
 # Think Lab Progression and Daily Challenge — Integration Plan
 
-**Status:** Phase 1 implemented on `main`; CI verification pending.
+**Status:** Phases 1–2 complete; Phase 3 implementation committed on `main` and awaiting CI verification. Phase 4 not started.
 **Branch:** `main`
 **Scope:** Existing Think Lab games and their shared learner-progress integration.
 
@@ -41,7 +41,17 @@ Integrate the contract with each playable game without changing its content or r
 
 ### 3. Recommendation reconciliation
 
-Use the canonical game registry and saved game history to ensure every recommendation points to a currently playable destination. Combine reliable skill signals with recent game usage and completion state. Avoid unsupported skill-to-game mappings, repeated recommendations where alternatives exist, and recommendations for locked/unavailable content. Retain a sensible starter recommendation when there is insufficient evidence.
+**Implemented on `main`; CI verification pending.**
+
+The shared progression module now exposes `recommendNext`, which:
+- accepts only game IDs in the canonical registry and the caller's available-game allowlist;
+- uses skill signals only after at least two recorded attempts and at least one error;
+- chooses a registered game matching the weakest supported skill, preferring games with lower launch/completion counts;
+- avoids the two most recently launched games whenever another eligible alternative exists;
+- skips skills with no registered game mapping (including reading) rather than inventing a destination;
+- falls back to the least-used eligible game when evidence is insufficient.
+
+The existing Think Lab skill map now displays this history-aware game recommendation and launches the selected registered game through the existing game start flow. It continues to use the existing `epiphany-progress` history and does not change XP, rewards, question banks, or game renderers. Unit coverage was added for valid targets, rotation, skill targeting, unsupported mappings, and availability filtering.
 
 ### 4. Think Lab Daily Challenge
 
