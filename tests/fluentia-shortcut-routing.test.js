@@ -43,3 +43,10 @@ test('Fluentia shortcut destinations are registered adapters using the shared se
   assert.match(ui, /engine\.createSession\(config\)/);
   assert.match(ui, /engine\.submitAnswer\(currentSession,answer\)/);
 });
+
+test('changed Fluentia launcher and lazy loader scripts use fresh cache-busting URLs', () => {
+  const html = read('index.html');
+  assert.match(html, /lazy-data\.js\?v=fluentia-shortcut-migration-20261109-1/);
+  assert.match(html, /fluentia-ui\.js\?v=fluentia-shortcut-launch-20261109-1/);
+  assert.match(html, /app\.js\?v=fluentia-shortcut-migration-20261109-1/);
+});
