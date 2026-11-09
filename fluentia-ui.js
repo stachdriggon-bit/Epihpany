@@ -210,7 +210,7 @@
         answer={word:currentQuestion.item.word||'',meaning:meaning?.value.trim()||''};
         if(!answer.word||!answer.meaning){meaning?.focus();return;}
       } else if (currentQuestion.interactionType==='ordering') {
-        if(orderingPlaced.length!==orderingPool.length){const status=$('#fluentia-order-status');if(status)status.textContent='Use every tile before checking your answer.';return;}
+        if(orderingPool.length){const status=$('#fluentia-order-status');if(status)status.textContent='Use every tile before checking your answer.';return;}
         answer=orderingPlaced.map(tile=>tile.text);
       } else if (currentQuestion.interactionType==='map') {
         if(!mapChosen){const status=$('#fluentia-map-status');if(status)status.textContent='Choose a destination on the map first.';return;}
