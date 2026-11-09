@@ -378,7 +378,7 @@ test('main navigation tabs open without uncaught page errors', { timeout: 18 * 6
         const mixedKicker = await question.locator('.kicker').innerText();
         assert.match(mixedKicker,/Wordcraft|Sentence Studio|Textwise|Soundscape|Real World|Fine Sense/i,'Fluentia Mix should present a question with a canonical domain');
         await fluentia.locator('[data-exit]').click();
-        await fluentia.locator('[data-home-back]').click();
+        // Fluentia Mix exits directly to the hub because it has no selected domain.
         // Full Fluentia interaction matrix: every canonical domain at every CEFR level.
         // The selected response is deliberately varied by interaction type so the test
         // verifies real controls and feedback, not only engine eligibility.
