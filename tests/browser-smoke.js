@@ -295,10 +295,11 @@ test('main navigation tabs open without uncaught page errors', { timeout: 18 * 6
           assert.deepEqual(await pictureChoices.evaluateAll(buttons=>buttons.map(button=>button.getAttribute('aria-label'))),['Picture option 1','Picture option 2','Picture option 3','Picture option 4'],'picture choices should keep neutral accessible labels');
           await page.waitForFunction(() => {
             const art = [...document.querySelectorAll('.fluentia-picture-choice .fluentia-picture-art')];
-            return art.length === 4 && art.every(node => getComputedStyle(node).backgroundImage.includes('soundscape-pictograms.svg'));
+            return art.length === 4 && art.every(node => node.tagName === 'IMG' && node.getAttribute('src')?.includes('/openmoji@3e01de523ddefe9c5e46a7765b15efef04bf9002/color/svg/'));
           }, null, {timeout:5000});
-          const spritePositions = await pictureChoices.locator('.fluentia-picture-art').evaluateAll(nodes=>nodes.map(node=>getComputedStyle(node).backgroundPosition));
-          assert.equal(new Set(spritePositions).size,4,level+' picture choices should display four distinct pictograms from the sprite sheet');
+          const imageSources = await pictureChoices.locator('.fluentia-picture-art').evaluateAll(nodes=>nodes.map(node=>node.getAttribute('src')));
+          assert.equal(new Set(imageSources).size,4,level+' picture choices should use four distinct vector illustrations');
+          assert.ok(imageSources.every(src=>src.startsWith('https://cdn.jsdelivr.net/gh/hfg-gmuend/openmoji@3e01de523ddefe9c5e46a7765b15efef04bf9002/color/svg/')),level+' picture choices should use the pinned OpenMoji artwork');
           await pictureChoices.first().click();
           await question.locator('.fluentia-feedback').waitFor({state:'visible',timeout:5000});
           await fluentia.locator('[data-exit]').click();
