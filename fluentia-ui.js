@@ -146,7 +146,7 @@
   }
   function orderingMarkup(item) {
     const isSequence = currentQuestion.activityId==='textwise-sequence';
-    const values = isSequence ? (Array.isArray(item.steps)?item.steps:[]) : String(item.text||'').trim().split(/\\s+/).filter(Boolean);
+    const values = isSequence ? (Array.isArray(item.steps)?item.steps:[]) : String(item.text||'').trim().split(/\s+/).filter(Boolean);
     orderingPool = stableTileShuffle(values,currentQuestion.itemId || item.id);
     orderingPlaced = [];
     const context = isSequence && item.text ? '<div class="fluentia-order-context"><b>'+esc(item.title||'Read the situation')+'</b><p>'+esc(item.text)+'</p></div>' : '';
