@@ -87,6 +87,11 @@
     const items = activities.filter(a=>a.domain===domainId&&!a.reviewOnly&&a.items.length);
     root.innerHTML = '<button type="button" class="fluentia-back" data-back>← All Fluentia</button><div class="fluentia-domain-intro"><span class="fluentia-domain-icon">'+domain.icon+'</span><div><p class="kicker">FLUENTIA DOMAIN</p><h2>'+domain.name+'</h2><p>'+domain.desc+'</p></div></div><div class="fluentia-section-heading"><div><h2>Choose an activity</h2><p>Every activity uses your selected '+selectedLevel+' level.</p></div></div><div class="fluentia-modes fluentia-domain-modes">'+modeCard('section-mixed')+'</div>'+(items.length?'<div class="fluentia-activity-list">'+items.map(activityCard).join('')+'</div>':'<div class="fluentia-empty">No activities have eligible content for '+selectedLevel+' yet. Choose another level or return later.</div>');
   }
+  function renderSectionMixedDomainPicker() {
+    refreshActivities();
+    choosingSectionMixed = true;
+    root.innerHTML = '<button type="button" class="fluentia-back" data-back>← All Fluentia</button><div class="fluentia-section-heading"><div><h2>Choose a domain for Section Mixed</h2><p>Your session will stay within that domain.</p></div></div><div class="fluentia-domain-grid">'+domainDefs.map(domain=>domainMarkup(domain,activities.filter(a=>a.domain===domain.id&&!a.reviewOnly&&a.items.length).length)).join('')+'</div>';
+  }
   function activityCard(activity) {
     const label = activityLabel(activity.id);
     return '<button type="button" class="fluentia-activity-card" data-activity="'+esc(activity.id)+'"><span class="fluentia-activity-symbol">'+(symbols[activity.interactionType]||'✦')+'</span><span class="fluentia-activity-copy"><strong>'+esc(label)+'</strong><small>'+esc(interactionLabels[activity.interactionType]||activity.interactionType)+' · '+activity.items.length+' items · '+selectedLevel+'</small></span><span class="fluentia-activity-arrow" aria-hidden="true">→</span></button>';
@@ -292,7 +297,7 @@
     if(event.target.closest('[data-back]')){leaveSession();return;}
     if(event.target.closest('[data-exit]')){leaveSession();return;}
     const mode=event.target.closest('[data-mode]');
-    if(mode){if(mode.dataset.mode==='section-mixed'){if(currentDomain){startSession('section-mixed',{domain:currentDomain});return;}choosingSectionMixed=true;root.innerHTML='<button type="button" class="fluentia-back" data-back>← All Fluentia</button><div class="fluentia-section-heading"><div><h2>Choose a domain for Section Mixed</h2><p>Your session will stay within that domain.</p></div></div><div class="fluentia-domain-grid">'+domainDefs.map(domain=>domainMarkup(domain,activities.filter(a=>a.domain===domain.id&&!a.reviewOnly&&a.items.length).length)).join('')+'</div>';return;}startSession('fluentia-mix');return;}
+    if(mode){if(mode.dataset.mode==='section-mixed'){if(currentDomain){startSession('section-mixed',{domain:currentDomain});return;}renderSectionMixedDomainPicker();return;}startSession('fluentia-mix');return;}
     const activity=event.target.closest('[data-activity]');
     if(activity){startSession('single',{activityId:activity.dataset.activity,label:activityNames[activity.dataset.activity]||'Practice'});return;}
     const answer=event.target.closest('[data-answer-index]');
@@ -322,7 +327,16 @@
   document.addEventListener('epiphany:fluentia-sources-failed',event=>{
     if(root.closest('.view')?.classList.contains('is-active'))renderLoadError(event.detail?.message);
   });
-  window.addEventListener('epiphany:progress-saved',()=>{if(root.closest('.view')?.classList.contains('is-active')&&!currentSession){selectedLevel=currentLevel();renderHome();}});
+  window.addEventListener('epiphany:progress-saved',()=>{
+    if(!root.closest('.view')?.classList.contains('is-active')||currentSession)return;
+    selectedLevel=currentLevel();
+    if(currentDomain){
+      if(choosingSectionMixed)renderSectionMixedDomainPicker();
+      else renderDomain(currentDomain);
+      return;
+    }
+    renderHome();
+  });
   selectedLevel=currentLevel();
   renderHome();
 })();
