@@ -17,7 +17,7 @@ test('Fluentia practice samples register independently of the retired Practice L
     {A1:2,A2:2,B1:2,B2:2}
   );
   assert.equal(new Set(sources.practiceSamples.map(item => item.id)).size, 8);
-  assert.ok(sources.practiceSamples.every(item => item.text.trim().split(/\\s+/).length >= 7));
+  assert.ok(sources.practiceSamples.every(item => item.text.trim().split(/\s+/).length >= 7));
 });
 
 test('Fluentia dictation and speaking adapters consume the extracted practice bank', () => {

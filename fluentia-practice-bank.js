@@ -1,4 +1,4 @@
-/* Fluentia speaking and dictation samples, kept as a focused Fluentia content bank. */
+/* Fluentia speaking and dictation samples, a focused Fluentia content bank. */
 (() => {
   'use strict';
   const samples = [

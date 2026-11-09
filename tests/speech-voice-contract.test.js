@@ -20,7 +20,7 @@ function applicationScripts(directory, found = []) {
 test('all generated English speech is routed through the shared George voice', () => {
   const app = read('app.js');
   const thinkLab = read('think-lab.js');
-  const practiceLab = read('practice-lab.js');
+  const fluentia = read('fluentia-ui.js');
   const tts = read('api/tts.js');
   const audition = read('api/tts-test.js');
 
@@ -30,9 +30,9 @@ test('all generated English speech is routed through the shared George voice', (
   assert.match(app, /fetch\('\/api\/tts'/);
   assert.match(app, /elevenlabs-george\|/);
   assert.match(thinkLab, /window\.EpiphanySpeech/);
-  assert.match(practiceLab, /window\.EpiphanySpeech/);
+  assert.match(fluentia, /window\.EpiphanySpeech/);
 
-  for (const [name, source] of [['app.js', app], ['think-lab.js', thinkLab], ['practice-lab.js', practiceLab]]) {
+  for (const [name, source] of [['app.js', app], ['think-lab.js', thinkLab], ['fluentia-ui.js', fluentia]]) {
     assert.doesNotMatch(source, /new\s+SpeechSynthesisUtterance|speechSynthesis\s*\.\s*speak\s*\(/, name + ' must not synthesize speech with a device voice');
   }
 });
