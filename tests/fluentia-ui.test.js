@@ -144,5 +144,7 @@ test('Fluentia Directions loads its shared map bank with the Fluentia feature', 
   const adapters = read('fluentia-adapters.js');
   assert.match(lazy, /fluentia: \['data-minigames\.js\?v=fluentia-directions-map-20261109-1'/);
   assert.match(mapData, /EPIPHANY_FLUENTIA_REGISTER_SOURCES\(\{directions: DIRECTION_ITEMS, directionBlocks: DIRECTION_BLOCKS\}\)/);
-  assert.match(adapters, /mapBlocks: sources\.directionBlocks \|\| \[\]/);
+  assert.match(adapters, /typeof sources\.getDirections === 'function' \? sources\.getDirections\(\)/);
+  assert.match(adapters, /typeof sources\.getDirectionBlocks === 'function' \? sources\.getDirectionBlocks\(\)/);
+  assert.match(read('app.js'), /getDirections: \(\) => window\.EPIPHANY_DIRECTIONS_DATA\?\.items \|\| \[\]/);
 });
