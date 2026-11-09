@@ -48,7 +48,7 @@ test('changed Fluentia launcher and lazy loader scripts use fresh cache-busting 
   const html = read('index.html');
   assert.match(html, /lazy-data\.js\?v=fluentia-shortcut-migration-20261109-1/);
   assert.match(html, /fluentia-ui\.js\?v=fluentia-shortcut-launch-20261109-1/);
-  assert.match(html, /app\.js\?v=fluentia-shortcut-migration-20261109-1/);
+  assert.match(html, /app\.js\?v=fluentia-shortcut-migration-20261109-3/);
 });
 
 test('the public site no longer ships Arcade or mini-game presentation rules', () => {

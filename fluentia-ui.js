@@ -360,6 +360,7 @@
     const total=currentSession.completedCount,correct=currentSession.correctCount,percent=total?Math.round(correct/total*100):0;
     const byDomain={};currentSession.answers.forEach(answer=>byDomain[answer.domain]=(byDomain[answer.domain]||0)+1);
     root.innerHTML='<div class="fluentia-summary"><p class="kicker">SESSION COMPLETE</p><h2>'+esc(currentModeLabel)+'</h2><div class="fluentia-summary-score">'+percent+'%</div><p>'+correct+' correct out of '+total+' questions.</p><div class="fluentia-summary-stats"><div><b>'+total+'</b><span>Questions</span></div><div><b>'+correct+'</b><span>Correct</span></div><div><b>'+Object.keys(byDomain).length+'</b><span>Domains</span></div></div><div class="fluentia-review-source">Your answers have been added to Fluentia practice history. This session is recorded in Fluentia practice history; XP rewards are not awarded here.</div><div class="fluentia-session-actions"><button type="button" class="btn" data-restart>Practise again</button><button type="button" class="btn btn-ghost" data-back>Back to Fluentia</button></div></div>';
+    window.EPIPHANY_MAYBE_SHOW_ACCOUNT_PROMPT?.('fluentia', root.querySelector('.fluentia-summary'));
   }
   function stopFluentiaMedia() {
     stopSpeechRecognition();

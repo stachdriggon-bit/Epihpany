@@ -56,8 +56,11 @@ test('account invitation is session-limited, optional, and only attached to elig
   const challenge = section(app, 'function showChallengeResults(', 'async function shareResult(');
   assert.doesNotMatch(challenge, /maybeShowAccountPrompt/);
 
-  const miniGame = section(app, 'function miniFinish(', '/* Order the Story */');
-  assert.match(miniGame, /maybeShowAccountPrompt\('mini-game'/);
+  assert.match(app, /window\.EPIPHANY_MAYBE_SHOW_ACCOUNT_PROMPT = maybeShowAccountPrompt/);
+  const fluentia = fs.readFileSync(path.join(root, 'fluentia-ui.js'), 'utf8');
+  const fluentiaResult = section(fluentia, 'function renderSummary()', 'function stopFluentiaMedia(');
+  assert.match(fluentiaResult, /EPIPHANY_MAYBE_SHOW_ACCOUNT_PROMPT\?\.\('fluentia'/,
+    'Fluentia completion is an eligible first-result screen for guest account invitation');
 
   const dailySession = section(app, 'function startDailySession(', 'function renderHome(');
   assert.match(dailySession, /if \(G\) G\.dailySession = true/);

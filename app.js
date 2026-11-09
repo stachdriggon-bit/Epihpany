@@ -4113,7 +4113,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     setTimeout(() => URL.revokeObjectURL(url), 1500); toast(downloadOnly ? 'Result card downloaded.' : 'Result card downloaded — you can now share it.');
   }
 
-  // Fluentia's canonical picture bank is registered here; it is not part of the retired mini-game runtime.
+  // Fluentia's canonical picture bank is registered here.
   const FLUENTIA_AUDIO_ITEMS = Array.isArray(window.EPIPHANY_SOUNDS_PICTURE_BANK) ? window.EPIPHANY_SOUNDS_PICTURE_BANK : [];
   if (typeof window.EPIPHANY_FLUENTIA_REGISTER_SOURCES === 'function') {
     window.EPIPHANY_FLUENTIA_REGISTER_SOURCES({audioItems: FLUENTIA_AUDIO_ITEMS});
@@ -5599,6 +5599,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     if(auth&&typeof auth.whenReady==='function')auth.whenReady().then(show).catch(()=>{});
     else show();
   }
+  window.EPIPHANY_MAYBE_SHOW_ACCOUNT_PROMPT = maybeShowAccountPrompt;
 
   function showPlacement(){
     if(state.placementDone)return;

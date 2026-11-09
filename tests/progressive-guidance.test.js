@@ -67,10 +67,11 @@ test('guidance assets are included in the offline shell and cache version is ref
 test('contextual tips are bilingual, first-visit only, and separate from the tour', () => {
   const source = read('guidance.js');
   assert.match(source, /const CONTEXT_TIPS =/);
-  for (const view of ['stories','words','lifeskills','mytools','arcade','thinklab','summon','collection','chronicle','progress','trophies','profile','resonance']) {
+  for (const view of ['stories','words','lifeskills','mytools','thinklab','summon','collection','chronicle','progress','trophies','profile','resonance']) {
     assert.match(source, new RegExp(view + ': \\{ en:'));
     assert.match(source, new RegExp(view + ': \\{ en:[\\s\\S]*?ar:'));
   }
+  assert.doesNotMatch(source, /arcade/i, 'retired Arcade tips should not remain in the public guidance layer');
   assert.match(source, /state\.tipsSeen\.includes\(viewName\)/);
   assert.match(source, /status:'not-started', step:0, tipsSeen:\[\]/);
   assert.match(source, /state\.tipsSeen\.push\(viewName\)/);
