@@ -371,12 +371,14 @@ test('main navigation tabs open without uncaught page errors', { timeout: 18 * 6
         assert.match(await fluentia.locator('.fluentia-session-top .pill').innerText(),/Section Mixed/i,'Section Mixed should start inside the chosen domain');
         assert.match(await question.locator('.kicker').innerText(),/Wordcraft/i,'Section Mixed must not leak into another domain');
         await fluentia.locator('[data-exit]').click();
+        await fluentia.locator('[data-home-back]').click();
         await fluentia.locator('[data-mode="fluentia-mix"]').click();
         await question.waitFor({state:'visible',timeout:5000});
         assert.match(await fluentia.locator('.fluentia-session-top .pill').innerText(),/Fluentia Mix/i,'Fluentia Mix should start from the landing page');
         const mixedKicker = await question.locator('.kicker').innerText();
         assert.match(mixedKicker,/Wordcraft|Sentence Studio|Textwise|Soundscape|Real World|Fine Sense/i,'Fluentia Mix should present a question with a canonical domain');
         await fluentia.locator('[data-exit]').click();
+        await fluentia.locator('[data-home-back]').click();
         // Full Fluentia interaction matrix: every canonical domain at every CEFR level.
         // The selected response is deliberately varied by interaction type so the test
         // verifies real controls and feedback, not only engine eligibility.
@@ -424,6 +426,7 @@ test('main navigation tabs open without uncaught page errors', { timeout: 18 * 6
             }
             await question.locator('.fluentia-feedback').waitFor({state:'visible',timeout:5000});
             await fluentia.locator('[data-exit]').click();
+            await fluentia.locator('[data-home-back]').click();
           }
         }
         await fluentia.locator('#fluentia-level').selectOption('A1');
