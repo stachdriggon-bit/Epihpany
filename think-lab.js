@@ -1511,6 +1511,7 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
     }
     if(e.target.closest('[data-think-back]')){
       window.EpiphanySpeech?.stop?.();
+      if(dailyChallengeActive){dailyChallengeActive=null;mode=null;activePool=null;activeDifficulty=null;pickerStage='landing';pickerGameId=null;landing();return;}
       if(pickerStage==='game' && pickerGameId){
         if(pickerGameId==='translator')showTranslatorLevelPicker();
         else if(pickerGameId==='maze')showMazeLevelPicker();

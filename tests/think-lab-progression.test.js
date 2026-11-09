@@ -100,11 +100,14 @@ test('daily challenge is persisted separately, resumes safely, and can complete 
   assert.equal(started.status,'active');
   assert.deepEqual(store.startDailyChallenge(selected),started);
   assert.equal(store.startDailyChallenge({...selected,gameId:selected.gameId==='odd'?'maze':'odd'}),false);
+  const regularSnapshot = {bankVersion:'regular-rounds-v1',level:'steady',trainingMode:'steady',position:0,payload:{pool:[{id:'regular'}],score:0}};
+  assert.equal(store.saveSnapshot(selected.gameId,regularSnapshot).saved,true);
   const snapshot = {bankVersion:'think-lab-rounds-v1',level:'steady',trainingMode:'steady',position:0,payload:{pool:[{id:'one'}],score:0}};
   assert.equal(store.saveDailyChallengeSnapshot(selected.date,selected.gameId,snapshot).saved,true);
   assert.deepEqual(store.getDailyChallenge(selected.date).snapshot.payload.pool,snapshot.payload.pool);
   assert.equal(store.completeDailyChallenge(selected.date,selected.gameId).completed,true);
   assert.equal(store.getDailyChallenge(selected.date).snapshot,null);
+  assert.deepEqual(store.getSnapshot(selected.gameId).payload.pool,regularSnapshot.payload.pool,'daily completion must preserve the regular game resume');
   assert.equal(store.completeDailyChallenge(selected.date,selected.gameId).duplicate,true);
   assert.equal(state.xp,42);
   assert.equal(state.quests,3);
