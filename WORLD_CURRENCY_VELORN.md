@@ -116,7 +116,48 @@ Agreed direction:
 
 Exact reward amounts, draw prices, limits, balancing formulas, and UI placement remain **Open** until separately designed and approved.
 
-## 11. Explicitly unresolved details
+## 11. Scalability across current and future games
+
+Velorn's earning system must be designed as a **site-wide economy**, not as a reward system hard-coded separately for the games that exist today.
+
+Core principles:
+
+- Any current or future game may participate in the Velorn economy through a shared reward integration.
+- Adding a new game must not require redesigning the currency, changing its meaning, or creating a separate game-specific currency.
+- A game may award Velorn only through explicitly configured, approved reward events. Merely opening a game, replaying a round, or repeating an easily farmed action must not automatically generate unlimited currency.
+- Reward rules should be configurable by activity, achievement, difficulty, level, or other approved criteria where appropriate; not every game needs to use every criterion.
+- The central economy should own common rules such as reward limits, duplicate-event protection, cooldowns or reset periods, anti-farming checks, and transaction history. Individual games should report validated outcomes rather than implement their own independent wallet logic.
+- The reward layer should support new game types and different session structures without assuming that every game has questions, levels, rounds, scores, or a fixed session length.
+- Existing game rewards must remain stable when another game is added. New rewards should be introduced deliberately and balanced against the total site-wide earning rate.
+- The same shared Velorn balance and transaction history should be used across the site. Do not create separate balances for Think Lab, Fluenta, or future game sections.
+- XP and Shards remain separate resources. A game may award XP under its own progression rules, but this does not imply a Velorn reward.
+- Reward configuration should be versionable and auditable so balance changes can be tracked without losing the history of earlier transactions.
+
+### Recommended integration model
+
+1. **Game outcome:** a game reports a completed, validated outcome with a stable activity/game identifier and the relevant result metadata.
+2. **Reward eligibility:** the shared reward layer checks whether that outcome qualifies and whether limits or anti-farming rules permit a reward.
+3. **Reward calculation:** a central, configurable policy determines the Velorn amount. Games should not independently decide or directly write arbitrary currency amounts.
+4. **Wallet transaction:** the shared wallet records the credit or debit exactly once, with a reason/source reference and timestamp.
+5. **Player history:** the player can see where Velorn came from and where it was spent.
+
+This is a target architecture for future implementation, not a claim that these services already exist in the current codebase.
+
+### Future-game onboarding checklist
+
+When adding a game, assess:
+
+- Whether it should award Velorn at all.
+- Which validated outcomes or achievements qualify.
+- Whether rewards should depend on difficulty, progression, first completion, or another meaningful condition.
+- How replaying, retries, repeated sessions, and simultaneous submissions are prevented from creating duplicate or farmable rewards.
+- How the game integrates with the shared reward layer without creating its own wallet or currency.
+- How its rewards affect the overall earning budget and Card Portal affordability.
+- Which unit, integration, and browser tests prove that the new game cannot bypass shared economy rules.
+
+A new game should be able to join the economy through a small, explicit integration rather than a rewrite of the currency system.
+
+## 12. Explicitly unresolved details
 
 Do not invent or silently finalize the following:
 
@@ -129,7 +170,7 @@ Do not invent or silently finalize the following:
 
 These details require separate decisions before they become canon or implementation requirements.
 
-## 12. Scope and implementation note
+## 13. Scope and implementation note
 
 This document records the agreed worldbuilding direction and product-economy principles. It does **not** mean that:
 
