@@ -29,6 +29,7 @@
   let speechRecognition = null, speechListening = false, speechErrorMessage = '';
   let orderingPool = [], orderingPlaced = [], mapChosen = null;
   let matchingWords = [], matchingMeanings = [], matchingPlaced = [], matchingSelectedWord = null, matchingSelectedMeaning = null;
+  let answerOptionOrder = [];
   const levelNames = {A1:'Beginner',A2:'Elementary',B1:'Intermediate',B2:'Upper intermediate',C1:'Advanced',C2:'Proficient'};
   function activityLabel(id) {
     if (activityNames[id]) return activityNames[id];
@@ -87,12 +88,12 @@
     if (!domain) return renderHome();
     currentDomain = domainId; choosingSectionMixed = false;
     const items = activities.filter(a=>a.domain===domainId&&!a.reviewOnly&&a.items.length);
-    root.innerHTML = '<button type="button" class="fluentia-back" data-back>← All Fluentia</button><div class="fluentia-domain-intro"><span class="fluentia-domain-icon">'+domain.icon+'</span><div><p class="kicker">FLUENTIA DOMAIN</p><h2>'+domain.name+'</h2><p>'+domain.desc+'</p></div></div><div class="fluentia-section-heading"><div><h2>Choose an activity</h2><p>Every activity uses your selected '+selectedLevel+' level.</p></div></div><div class="fluentia-modes fluentia-domain-modes">'+modeCard('section-mixed')+'</div>'+(items.length?'<div class="fluentia-activity-list">'+items.map(activityCard).join('')+'</div>':'<div class="fluentia-empty">No activities have eligible content for '+selectedLevel+' yet. Choose another level or return later.</div>');
+    root.innerHTML = '<button type="button" class="fluentia-back" data-home-back>← All Fluentia</button><div class="fluentia-domain-intro"><span class="fluentia-domain-icon">'+domain.icon+'</span><div><p class="kicker">FLUENTIA DOMAIN</p><h2>'+domain.name+'</h2><p>'+domain.desc+'</p></div></div><div class="fluentia-section-heading"><div><h2>Choose an activity</h2><p>Every activity uses your selected '+selectedLevel+' level.</p></div></div><div class="fluentia-modes fluentia-domain-modes">'+modeCard('section-mixed')+'</div>'+(items.length?'<div class="fluentia-activity-list">'+items.map(activityCard).join('')+'</div>':'<div class="fluentia-empty">No activities have eligible content for '+selectedLevel+' yet. Choose another level or return later.</div>');
   }
   function renderSectionMixedDomainPicker() {
     refreshActivities();
     choosingSectionMixed = true;
-    root.innerHTML = '<button type="button" class="fluentia-back" data-back>← All Fluentia</button><div class="fluentia-section-heading"><div><h2>Choose a domain for Section Mixed</h2><p>Your session will stay within that domain.</p></div></div><div class="fluentia-domain-grid">'+domainDefs.map(domain=>domainMarkup(domain,activities.filter(a=>a.domain===domain.id&&!a.reviewOnly&&a.items.length).length)).join('')+'</div>';
+    root.innerHTML = '<button type="button" class="fluentia-back" data-home-back>← All Fluentia</button><div class="fluentia-section-heading"><div><h2>Choose a domain for Section Mixed</h2><p>Your session will stay within that domain.</p></div></div><div class="fluentia-domain-grid">'+domainDefs.map(domain=>domainMarkup(domain,activities.filter(a=>a.domain===domain.id&&!a.reviewOnly&&a.items.length).length)).join('')+'</div>';
   }
   function activityCard(activity) {
     const label = activityLabel(activity.id);
@@ -110,7 +111,7 @@
       currentModeLabel = options.label || (mode==='fluentia-mix'?'Fluentia Mix':mode==='section-mixed'?'Section Mixed':activityLabel(options.activityId)||'Practice');
       nextQuestion();
     } catch (error) {
-      root.innerHTML = '<div class="fluentia-empty"><b>Practice is not available yet.</b><p>'+esc(error.message||'No eligible questions were found for this level.')+'</p><button class="btn btn-ghost" type="button" data-back>Back to Fluentia</button></div>';
+      root.innerHTML = '<div class="fluentia-empty"><b>Practice is not available yet.</b><p>'+esc(error.message||'No eligible questions were found for this level.')+'</p><button class="btn btn-ghost" type="button" data-back>Back to activities</button></div>';
     }
   }
   function nextQuestion() {
@@ -212,13 +213,15 @@
     const opts = isPictureMatch ? (Array.isArray(item.pictureOptions) ? item.pictureOptions : []) : optionsFor(item);
     const prompt = promptText(item);
     const count = currentSession.completedCount+1, percent = (currentSession.completedCount/currentSession.targetCount)*100;
+    const picturePositions = {apple:0,book:1,umbrella:2,key:3,train:4,bread:5,clock:6,lamp:7,chair:8,phone:9,tree:10,water:11,bus:12,suitcase:13,camera:14,bicycle:15,headphones:16,microscope:17,telescope:18,binoculars:19,compass:20,hourglass:21,magnifier:22,globe:23,typewriter:24,sextant:25,astrolabe:26,metronome:27,abacus:28};
+    answerOptionOrder = opts && !isPictureMatch ? stableTileShuffle(opts,currentSession.id+'-'+currentQuestion.itemId+'-'+currentQuestion.activityId).map(tile=>tile.id) : (opts||[]).map((_,index)=>index);
     const choices = isPictureMatch
-      ? '<div class="fluentia-picture-grid" role="group" aria-label="Choose the matching picture">'+opts.map((option,index)=>'<button type="button" class="fluentia-picture-choice" data-answer-index="'+index+'" data-answer-value="'+esc(option.word)+'" aria-label="Picture option '+(index+1)+'"><span class="fluentia-picture-art" aria-hidden="true">'+(option.image?'<img src="'+esc(option.image)+'" alt="">':esc(option.icon||'◻'))+'</span></button>').join('')+'</div>'
+      ? '<div class="fluentia-picture-grid" role="group" aria-label="Choose the matching picture">'+opts.map((option,index)=>{const slug=String(option.image||'').match(/#([a-z0-9-]+)$/i)?.[1];const position=picturePositions[slug];const art=position!==undefined?'<span class="fluentia-picture-art" style="--picture-x:'+((position%4)*100/3)+'%;--picture-y:'+(Math.floor(position/4)*100/7)+'%" aria-hidden="true"></span>':option.icon?'<span class="fluentia-picture-art fluentia-picture-fallback" aria-hidden="true">'+esc(option.icon)+'</span>':'<span class="fluentia-picture-art fluentia-picture-fallback" aria-hidden="true">◻</span>';return '<button type="button" class="fluentia-picture-choice" data-answer-index="'+index+'" data-answer-value="'+esc(option.word)+'" aria-label="Picture option '+(index+1)+'">'+art+'</button>';}).join('')+'</div>'
       : opts && ['choice','correction','listening','matching','map'].includes(currentQuestion.interactionType)
-        ? '<div class="fluentia-answer-grid">'+opts.map((option,index)=>'<button type="button" class="fluentia-answer" data-answer-index="'+index+'" data-answer-value="'+esc(option)+'"><span class="fluentia-answer-index">'+(index+1)+'</span><span>'+esc(option)+'</span></button>').join('')+'</div>'
+        ? '<div class="fluentia-answer-grid">'+answerOptionOrder.map((originalIndex,index)=>'<button type="button" class="fluentia-answer" data-answer-index="'+index+'" data-answer-value="'+esc(opts[originalIndex])+'"><span class="fluentia-answer-index">'+(index+1)+'</span><span>'+esc(opts[originalIndex])+'</span></button>').join('')+'</div>'
         : inputFor(item);
     const correctionSentence = currentQuestion.interactionType==='correction' && item.text ? '<p class="fluentia-question-prompt">'+esc(item.text)+'</p>' : ''; const spoken = currentQuestion.activityId==='wordcraft-speed-round' ? '' : (item.word || item.target || item.text || ''); const listen = spoken && window.EpiphanySpeech ? '<button type="button" class="btn btn-ghost" data-fluentia-speak="'+esc(spoken)+'">♫ Listen</button>' : '';
-    root.innerHTML = '<div class="fluentia-session"><div class="fluentia-session-top"><button type="button" class="fluentia-back" data-exit>← Leave session</button><span class="pill">'+esc(currentModeLabel)+' · '+esc(selectedLevel)+'</span></div><div class="fluentia-session-progress" role="progressbar" aria-valuemin="0" aria-valuemax="'+currentSession.targetCount+'" aria-valuenow="'+count+'"><span style="width:'+percent+'%"></span></div><article class="fluentia-question-card"><p class="kicker">'+esc(domainDefs.find(d=>d.id===currentQuestion.domain)?.name||currentQuestion.domain)+' · '+esc(interactionLabels[currentQuestion.interactionType]||currentQuestion.interactionType)+'</p><p class="fluentia-question-prompt">Question '+count+' of '+currentSession.targetCount+'</p><h2>'+esc(prompt)+'</h2>'+correctionSentence+listen+(item.sub?'<p class="fluentia-question-prompt">'+esc(item.sub)+'</p>':'')+(choices||'<div class="fluentia-empty">This activity does not yet have a compatible response control.</div>')+'<div id="fluentia-feedback" aria-live="polite"></div><div class="fluentia-session-actions">'+(opts&&choices?'<span class="fluentia-question-prompt">Choose one answer</span>':'<button type="button" class="btn" data-submit>Check answer</button>')+'<button type="button" class="btn" data-next hidden>Continue →</button></div></article></div>';
+    root.innerHTML = '<div class="fluentia-session"><div class="fluentia-session-top"><button type="button" class="fluentia-back" data-exit>← Back to activities</button><span class="pill">'+esc(currentModeLabel)+' · '+esc(selectedLevel)+'</span></div><div class="fluentia-session-progress" role="progressbar" aria-valuemin="0" aria-valuemax="'+currentSession.targetCount+'" aria-valuenow="'+count+'"><span style="width:'+percent+'%"></span></div><article class="fluentia-question-card"><p class="kicker">'+esc(domainDefs.find(d=>d.id===currentQuestion.domain)?.name||currentQuestion.domain)+' · '+esc(interactionLabels[currentQuestion.interactionType]||currentQuestion.interactionType)+'</p><p class="fluentia-question-prompt">Question '+count+' of '+currentSession.targetCount+'</p><h2>'+esc(prompt)+'</h2>'+correctionSentence+listen+(item.sub?'<p class="fluentia-question-prompt">'+esc(item.sub)+'</p>':'')+(choices||'<div class="fluentia-empty">This activity does not yet have a compatible response control.</div>')+'<div id="fluentia-feedback" aria-live="polite"></div><div class="fluentia-session-actions">'+(opts&&choices?'<span class="fluentia-question-prompt">Choose one answer</span>':'<button type="button" class="btn" data-submit>Check answer</button>')+'<button type="button" class="btn" data-next hidden>Continue →</button></div></article></div>';
   }
   function renderOrderingTiles() {
     const bank=$('#fluentia-order-bank'),placed=$('#fluentia-order-placed'),status=$('#fluentia-order-status');
@@ -359,9 +362,10 @@
     if (currentSession && !['completed','abandoned'].includes(currentSession.status)) {
       try { engine.abandonSession(currentSession); } catch {}
     }
-    currentSession=null;currentQuestion=null;answered=false;lastEvent=null;translated=false;
-    currentMode='';currentModeLabel='';currentDomain=null;choosingSectionMixed=false;
-    if (render) renderHome();
+    currentSession=null;currentQuestion=null;answered=false;lastEvent=null;translated=false;answerOptionOrder=[];
+    currentMode='';currentModeLabel='';choosingSectionMixed=false;
+    if (render) { if(currentDomain)renderDomain(currentDomain); else renderHome(); }
+    else currentDomain=null;
   }
   function handleClick(event) {
     if(event.target.closest('[data-fluentia-retry]')){
@@ -373,6 +377,7 @@
     if(event.target.closest('[data-speech-stop]')){if(speechRecognition){try{speechRecognition.stop();}catch{stopSpeechRecognition();}}else stopSpeechRecognition();const status=$('#fluentia-speech-status');if(status)status.textContent='Stopping microphone…';return;}
     const domain=event.target.closest('[data-domain]');
     if(domain){if(choosingSectionMixed){choosingSectionMixed=false;startSession('section-mixed',{domain:domain.dataset.domain});}else renderDomain(domain.dataset.domain);return;}
+    if(event.target.closest('[data-home-back]')){currentDomain=null;choosingSectionMixed=false;renderHome();return;}
     if(event.target.closest('[data-back]')){leaveSession();return;}
     if(event.target.closest('[data-exit]')){leaveSession();return;}
     const mode=event.target.closest('[data-mode]');
@@ -402,7 +407,7 @@
     const mapCell=event.target.closest('[data-map-cell]');
     if(mapCell){mapChosen=mapCell.dataset.mapCell.split(',').map(Number);root.querySelectorAll('[data-map-cell]').forEach(button=>{const selected=button===mapCell;button.classList.toggle('is-selected',selected);button.setAttribute('aria-pressed',String(selected));});const status=$('#fluentia-map-status');if(status)status.textContent='Selected: '+mapCell.textContent.trim()+'. Check your answer when ready.';return;}
     const answer=event.target.closest('[data-answer-index]');
-    if(answer){const index=Number(answer.dataset.answerIndex);submit(currentQuestion?.activityId==='soundscape-sound-picture-match'?answer.dataset.answerValue||answer.querySelector('span:last-child')?.textContent||'':index);return;}
+    if(answer){const index=Number(answer.dataset.answerIndex);submit(currentQuestion?.activityId==='soundscape-sound-picture-match'?answer.dataset.answerValue||'':(answerOptionOrder[index]??index));return;}
     if(event.target.closest('[data-submit]')){submit();return;}
     if(event.target.closest('[data-next]')){nextQuestion();return;}
     if(event.target.closest('[data-translate]')){translated=!translated;const feedback=lastEvent?.feedback||{};const host=$('#fluentia-feedback');if(host){const explain=translated?feedback.explanationAr:feedback.explanation;host.querySelector('p')?.replaceChildren(document.createTextNode(explain||''));const button=host.querySelector('[data-translate]');if(button)button.textContent=translated?'Show English':'عرض المساعدة بالعربية';}return;}
