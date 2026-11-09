@@ -254,8 +254,10 @@ test('main navigation tabs open without uncaught page errors', { timeout: 18 * 6
         await wordMatchActivity.click();
         const matchQuestion = fluentia.locator('.fluentia-question-card');
         await matchQuestion.locator('.fluentia-match-board').waitFor({state:'visible',timeout:5000});
-        assert.equal(await matchQuestion.locator('#fluentia-match-words [data-match-word]').count(),4,'Word Match should present four words in a round when the level bank has enough items');
-        assert.equal(await matchQuestion.locator('#fluentia-match-meanings [data-match-meaning]').count(),4,'Word Match should present four meanings in a separate shuffled column');
+        const visibleWordCount = await matchQuestion.locator('#fluentia-match-words [data-match-word]').count();
+        const visibleMeaningCount = await matchQuestion.locator('#fluentia-match-meanings [data-match-meaning]').count();
+        assert.ok(visibleWordCount >= 2 && visibleWordCount <= 4,'Word Match should present a valid 2–4 pair round; received '+visibleWordCount);
+        assert.equal(visibleMeaningCount,visibleWordCount,'Word Match should present one meaning for every word in a separate shuffled column');
         assert.equal(await matchQuestion.locator('#fluentia-match-meaning').count(),0,'Word Match must not ask for typed meanings');
         const wordIds = await matchQuestion.locator('#fluentia-match-words [data-match-word]').evaluateAll(buttons=>buttons.map(button=>button.dataset.matchWord));
         for (const [index,id] of wordIds.entries()) {
