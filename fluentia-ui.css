@@ -91,3 +91,30 @@ body.ar-on .fluentia-hero,body.ar-on .fluentia-domain-intro,body.ar-on .fluentia
 .fluentia-picture-art{display:grid;place-items:center;width:100%;height:100%;font-size:clamp(58px,9vw,82px);line-height:1}
 .fluentia-picture-art img{display:block;width:100%;height:100%;max-width:120px;max-height:110px;object-fit:contain}
 @media(max-width:420px){.fluentia-picture-grid{gap:10px}.fluentia-picture-choice{min-height:118px;padding:10px}}
+
+
+/* Fluentia ordering and map interactions */
+.fluentia-order-builder{display:grid;gap:12px;margin:18px 0}
+.fluentia-order-label{font-size:13px;font-weight:800;color:var(--ink-2)}
+.fluentia-order-bank,.fluentia-order-placed{display:flex;flex-wrap:wrap;gap:9px;min-height:56px;padding:12px;border:1.5px dashed var(--line-2);border-radius:15px;background:var(--ground)}
+.fluentia-order-tile,.fluentia-order-placed-tile{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:9px 13px;border:1.5px solid var(--line);border-radius:12px;background:var(--surface);color:var(--ink);font:700 14px/1.3 var(--body);cursor:pointer}
+.fluentia-order-tile:hover,.fluentia-order-placed-tile:hover{border-color:var(--violet);background:var(--violet-soft)}
+.fluentia-order-placed{list-style:none;margin:0}
+.fluentia-order-placed li{display:flex}
+.fluentia-order-position{display:grid;place-items:center;width:22px;height:22px;border-radius:7px;background:var(--violet-soft);color:var(--violet);font-size:11px}
+.fluentia-order-empty,.fluentia-order-complete,.fluentia-order-status{color:var(--ink-3);font-size:13px}
+.fluentia-order-context{margin:14px 0;padding:15px 17px;border-radius:14px;background:var(--ground);color:var(--ink-2)}
+.fluentia-order-context b{display:block;color:var(--ink);margin-bottom:5px}
+.fluentia-order-context p{line-height:1.5}
+.fluentia-map-task{display:grid;gap:12px;margin:18px 0}
+.fluentia-map-instructions{padding:15px 17px;border-radius:14px;background:var(--ground);font-weight:700;line-height:1.55}
+.fluentia-map-start,.fluentia-map-status{font-size:13px;color:var(--ink-2)}
+.fluentia-town-map{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;padding:12px;border-radius:18px;background:#e8eddf}
+.fluentia-map-cell{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;min-width:0;min-height:94px;padding:9px 5px;border:2px solid transparent;border-radius:13px;background:#fff;color:#1c2940;font:700 12px/1.25 var(--body);overflow-wrap:anywhere}
+.fluentia-map-cell:hover{border-color:#6b60c8}
+.fluentia-map-cell.is-selected{border-color:#5947c5;background:#eeebff;box-shadow:0 0 0 2px rgba(89,71,197,.15)}
+.fluentia-map-cell:focus-visible{outline:3px solid var(--violet);outline-offset:2px}
+.fluentia-map-icon{font-size:25px;line-height:1}
+body[data-theme="dark"] .fluentia-town-map{background:#303a35}
+body[data-theme="dark"] .fluentia-map-cell{background:#f4f5f0;color:#1c2940}
+@media(max-width:420px){.fluentia-town-map{gap:6px;padding:8px}.fluentia-map-cell{min-height:82px;font-size:11px}.fluentia-map-icon{font-size:22px}}
