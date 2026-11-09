@@ -17,6 +17,7 @@ test('Fluentia practice samples and sentence-builder prompts register from one c
   assert.deepEqual(Object.fromEntries(['A1','A2','B1','B2','C1','C2'].map(level => [level, sources.sentenceItems.filter(item => item.level === level).length])), {A1:6,A2:6,B1:6,B2:6,C1:6,C2:6});
   assert.equal(new Set(sources.sentenceItems.map(item => item.id)).size, 36);
   assert.ok(sources.sentenceItems.every(item => item.text.trim().length > 10 && /[.!?]$/.test(item.text) && /[ء-ي]/.test(item.ar)));
+  assert.ok(sources.sentenceItems.filter(item => item.level === 'A1').every(item => item.text.trim().split(/\s+/).length >= 5), 'A1 sentence-builder prompts must provide at least five selectable word tiles');
   assert.deepEqual(
     Object.fromEntries(['A1','A2','B1','B2'].map(level => [level, sources.practiceSamples.filter(item => item.level === level).length])),
     {A1:2,A2:2,B1:2,B2:2}

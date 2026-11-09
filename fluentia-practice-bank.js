@@ -16,7 +16,7 @@
     {level:'A1',text:'She is reading a book.',ar:'هي تقرأ كتابًا.'},
     {level:'A1',text:'We are going to school.',ar:'نحن ذاهبون إلى المدرسة.'},
     {level:'A1',text:'He bought a new phone.',ar:'اشترى هاتفًا جديدًا.'},
-    {level:'A1',text:'Please open the window.',ar:'من فضلك افتح النافذة.'},
+    {level:'A1',text:'Please open the large window.',ar:'من فضلك افتح النافذة الكبيرة.'},
     {level:'A1',text:'They play football after school.',ar:'يلعبون كرة القدم بعد المدرسة.'},
     {level:'A2',text:'My friend lives near the park.',ar:'يعيش صديقي بالقرب من الحديقة.'},
     {level:'A2',text:'Could you tell me where the bus stop is?',ar:'هل يمكنك إخباري أين تقع محطة الحافلات؟'},
