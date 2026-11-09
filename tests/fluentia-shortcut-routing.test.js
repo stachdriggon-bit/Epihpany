@@ -59,3 +59,10 @@ test('the public site no longer ships Arcade or mini-game presentation rules', (
   assert.doesNotMatch(html, /arcade-view|data-view="arcade"|mini-games/i);
   assert.doesNotMatch(ui, /legacy Arcade|Arcade XP/i);
 });
+
+test('navigation and contextual guidance contain no retired Arcade destination', () => {
+  const navigation = read('navigation-enhancements.js');
+  const guidance = read('guidance.js');
+  assert.doesNotMatch(navigation, /arcade/i);
+  assert.doesNotMatch(guidance, /arcade/i);
+});

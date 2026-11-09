@@ -138,7 +138,6 @@
     words: { en:['Your word vault','Words you save appear here. Review the ones that are due whenever you have a moment.'], ar:['خزنة مفرداتك','تظهر هنا الكلمات التي تحفظها. راجع الكلمات المستحقة عندما يتوفر لديك بعض الوقت.'] },
     lifeskills: { en:['English for everyday life','Practise useful language for real situations, one scenario at a time.'], ar:['الإنجليزية للحياة اليومية','تدرّب على لغة مفيدة لمواقف واقعية، سيناريو واحدًا في كل مرة.'] },
     mytools: { en:['Your personal toolkit','Save words and notes you meet outside the app. The context will help you remember them.'], ar:['أدواتك الشخصية','احفظ الكلمات والملاحظات التي تصادفها خارج التطبيق؛ فالسياق يساعدك على تذكرها.'] },
-    arcade: { en:['Choose your kind of practice','Pick a short game by skill. You can explore freely without following a fixed order.'], ar:['اختر طريقة التدريب','اختر لعبة قصيرة حسب المهارة. يمكنك الاستكشاف بحرية دون ترتيب إلزامي.'] },
     thinklab: { en:['Think it through','Take your time: observe clues, connect ideas, and explain your reasoning.'], ar:['فكّر بهدوء','خذ وقتك في ملاحظة الأدلة وربط الأفكار وتوضيح طريقة تفكيرك.'] },
     summon: { en:['Discover a new card','Card Portal is where you discover cards. Your collected cards are kept in Collection.'], ar:['اكتشف بطاقة جديدة','هنا تكتشف البطاقات، أما البطاقات التي تجمعها فتجدها في قسم Collection.'] },
     collection: { en:['Your collection','Open a card to explore its details and the connections around it.'], ar:['مجموعتك','افتح أي بطاقة لاستكشاف تفاصيلها والروابط المرتبطة بها.'] },

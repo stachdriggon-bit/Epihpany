@@ -5,7 +5,7 @@
   const $ = (s, root = document) => root.querySelector(s);
   const $$ = (s, root = document) => [...root.querySelectorAll(s)];
   const labels = {
-    home: 'Home', stories: 'Stories', chronicle: 'Codex', resonance: 'The Resonance', summon: 'Card Portal', fluentia: 'Fluentia', arcade: 'Arcade', thinklab: 'Think Lab', casebound: 'Casebound',
+    home: 'Home', stories: 'Stories', chronicle: 'Codex', resonance: 'The Resonance', summon: 'Card Portal', fluentia: 'Fluentia', thinklab: 'Think Lab', casebound: 'Casebound',
     world: 'World', lifeskills: 'Life Skills', words: 'Words', mytools: 'My Tools',
     trophies: 'Trophies', progress: 'Progress', profile: 'Profile'
   };
@@ -363,7 +363,7 @@
     }, { passive: true });
 
     // Convert lazy-feature failures into a useful, retryable message inside that section.
-    const groupViews = { stories: 'stories', world: 'world', arcade: 'arcade', thinklab: 'thinklab', lifeskills: 'lifeskills' };
+    const groupViews = { stories: 'stories', world: 'world', thinklab: 'thinklab', lifeskills: 'lifeskills' };
     if (typeof window.EPIPHANY_LAZY_LOAD === 'function' && !window.__epiphanyLoadErrorHandlerInstalled) {
       const originalLoad = window.EPIPHANY_LAZY_LOAD;
       window.EPIPHANY_LAZY_LOAD = function (group, ...args) {
