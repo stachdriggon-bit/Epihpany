@@ -631,11 +631,22 @@
       const pool = eligible.length ? eligible : measured;
       pool.sort((a,b) => (a.accuracy-b.accuracy) || (b.errors-a.errors) || (b.attempts-a.attempts));
       const focus = pool[0] || null;
+      const progression = window.EPIPHANY_THINK_LAB_PROGRESSION;
+      const progressStore = getThinkLabProgressStore();
+      const registry = progression && typeof progression.getRegistry === 'function' ? progression.getRegistry() : [];
+      const recommendation = progression && typeof progression.recommendNext === 'function'
+        ? progression.recommendNext({
+            history:progressStore ? progressStore.getHistory() : {games:{},recentGames:[]},
+            signals,
+            availableGameIds:registry.map(game => game.id)
+          })
+        : null;
       return {
         skills,
         totalAttempts:skills.reduce((n,x)=>n+x.attempts,0),
         totalCorrect:skills.reduce((n,x)=>n+x.correct,0),
-        focus:focus ? {id:focus.id,label:focus.label,game:focus.game,hint:focus.hint,attempts:focus.attempts,accuracy:focus.accuracy,reason:focus.attempts<2?'This is an early signal. A few more answers will make the recommendation more reliable.':'This is currently your lowest-accuracy area among skills with enough practice data.'} : {id:'vocabulary',label:'Vocabulary',game:'odd',hint:'Start with a short pattern challenge to establish your baseline.',attempts:0,accuracy:null,reason:'No Think Lab skill data yet. Your first challenges will establish a starting point.'}
+        focus:focus ? {id:focus.id,label:focus.label,game:focus.game,hint:focus.hint,attempts:focus.attempts,accuracy:focus.accuracy,reason:focus.attempts<2?'This is an early signal. A few more answers will make the recommendation more reliable.':'This is currently your lowest-accuracy area among skills with enough practice data.'} : {id:'vocabulary',label:'Vocabulary',game:'odd',hint:'Start with a short pattern challenge to establish your baseline.',attempts:0,accuracy:null,reason:'No Think Lab skill data yet. Your first challenges will establish a starting point.'},
+        recommendation
       };
     }
   };
