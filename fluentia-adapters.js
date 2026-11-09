@@ -129,6 +129,8 @@
     adapters.push(makeAdapter({
       id: 'real-world-directions', domain: 'real-world', interactionType: 'map',
       skills: ['following-directions'], getSource: () => sources.directions,
+      getItems: ({level}) => (sources.directions || []).filter(item => item && item.level === level)
+        .map(item => ({...item, mapBlocks: sources.directionBlocks || []})),
       evaluate: (item, answer) => {
         const expected = coordinate(item.answer);
         const actual = coordinate(answer);
