@@ -366,7 +366,7 @@ test('Fluentia Sound & Picture Match uses only its canonical CEFR bank', () => {
   const app = fs.readFileSync(path.join(__dirname, '..', 'app.js'), 'utf8');
   assert.doesNotMatch(app, /MINI_AUDIO_ITEMS|miniAudioImageSetup|miniAudioImageRender|data-mini-audio-answer/);
   assert.match(app, /const FLUENTIA_AUDIO_ITEMS\s*=\s*Array\.isArray\(window\.EPIPHANY_SOUNDS_PICTURE_BANK\)/);
-  assert.match(app, /EPIPHANY_FLUENTIA_REGISTER_SOURCES\(\\{audioItems: FLUENTIA_AUDIO_ITEMS\\}\)/);
+  assert.ok(app.includes('EPIPHANY_FLUENTIA_REGISTER_SOURCES({audioItems: FLUENTIA_AUDIO_ITEMS})'));
   assert.equal(soundPictureBank.length, 216);
   for (const level of ['A1','A2','B1','B2','C1','C2']) {
     assert.equal(soundPictureBank.filter(item => item.level === level).length, 36, level + ' should have 36 dedicated picture prompts');
