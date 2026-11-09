@@ -129,8 +129,11 @@
     adapters.push(makeAdapter({
       id: 'real-world-directions', domain: 'real-world', interactionType: 'map',
       skills: ['following-directions'], getSource: () => sources.directions,
-      getItems: ({level}) => (sources.directions || []).filter(item => item && item.level === level)
-        .map(item => ({...item, mapBlocks: sources.directionBlocks || []})),
+      getItems: ({level}) => {
+        const rows = typeof sources.getDirections === 'function' ? sources.getDirections() : (sources.directions || []);
+        const blocks = typeof sources.getDirectionBlocks === 'function' ? sources.getDirectionBlocks() : (sources.directionBlocks || []);
+        return rows.filter(item => item && item.level === level).map(item => ({...item, mapBlocks: blocks}));
+      },
       evaluate: (item, answer) => {
         const expected = coordinate(item.answer);
         const actual = coordinate(answer);
