@@ -104,7 +104,7 @@ test('legacy source banks remain unchanged after adapter creation and evaluation
 function expandedFixture() {
   const sources = fixture();
   sources.games.vocabulary.questions[0].word = 'apple';
-  sources.audioItems = [{id:'SP-A1-01',level:'A1',word:'apple',meaning:'a round fruit',icon:'🍎'},{id:'SP-A1-02',level:'A1',word:'book',meaning:'something you read',icon:'📘'},{id:'SP-A1-03',level:'A1',word:'umbrella',meaning:'keeps you dry in rain',icon:'☂️'},{id:'SP-A1-04',level:'A1',word:'key',meaning:'opens a lock',icon:'🔑'}];
+  sources.audioItems = [{id:'SP-A1-01',level:'A1',word:'apple',meaning:'a round fruit',icon:'🍎',image:'assets/fluentia/soundscape-pictograms.svg#apple'},{id:'SP-A1-02',level:'A1',word:'book',meaning:'something you read',icon:'📘',image:'assets/fluentia/soundscape-pictograms.svg#book'},{id:'SP-A1-03',level:'A1',word:'umbrella',meaning:'keeps you dry in rain',icon:'☂️',image:'assets/fluentia/soundscape-pictograms.svg#umbrella'},{id:'SP-A1-04',level:'A1',word:'key',meaning:'opens a lock',icon:'🔑',image:'assets/fluentia/soundscape-pictograms.svg#key'}];
   sources.wordOfDayItems = [{id:'WM-A1-01',level:'A1',word:'apple',meaning:'a round fruit'},{id:'WM-A1-02',level:'A1',word:'banana',meaning:'a long yellow fruit'}];
   sources.soundscapeDictationBank = [{id:'SD-A1-01',level:'A1',text:'I like fresh bread.'}];
   sources.sentenceItems = [{id:'SB-A1-01',level:'A1',text:'I drink water every morning.'}];
