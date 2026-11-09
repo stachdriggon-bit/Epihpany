@@ -273,7 +273,11 @@ test('main navigation tabs open without uncaught page errors', { timeout: 18 * 6
         await question.waitFor({state:'visible',timeout:5000});
         const wordTiles = question.locator('[data-order-token]');
         const wordTileCount = await wordTiles.count();
-        assert.ok(wordTileCount >= 5,'Sentence Builder should provide selectable word tiles');
+        const sentenceSource = await page.evaluate(() => {
+          const adapter = window.EPIPHANY_FLUENTIA_SESSION_ENGINE?.getActivity('sentence-studio-sentence-builder');
+          return {interactionType:adapter?.interactionType,items:adapter?.getItems({level:'A1'}).slice(0,2)};
+        });
+        assert.ok(wordTileCount >= 5,'Sentence Builder should provide selectable word tiles. Source='+JSON.stringify(sentenceSource)+' UI='+JSON.stringify(await question.innerText())+' HTML='+String(await question.innerHTML()).slice(0,1200));
         for (let index=0; index<wordTileCount; index++) await question.locator('[data-order-token="'+index+'"]').click();
         assert.equal(await question.locator('[data-order-remove]').count(),wordTileCount,'selected words should move into the answer sequence');
         await question.locator('[data-order-remove]').first().click();
