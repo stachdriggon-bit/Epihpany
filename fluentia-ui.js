@@ -28,6 +28,7 @@
   let translated = false, choosingSectionMixed = false;
   let speechRecognition = null, speechListening = false, speechErrorMessage = '';
   let orderingPool = [], orderingPlaced = [], mapChosen = null;
+  let matchingWords = [], matchingMeanings = [], matchingPlaced = [], matchingSelectedWord = null, matchingSelectedMeaning = null;
   const levelNames = {A1:'Beginner',A2:'Elementary',B1:'Intermediate',B2:'Upper intermediate',C1:'Advanced',C2:'Proficient'};
   function activityLabel(id) {
     if (activityNames[id]) return activityNames[id];
@@ -120,11 +121,13 @@
     if (!currentQuestion) return renderSummary();
     answered = false; lastEvent = null; translated = false;
     orderingPool = []; orderingPlaced = []; mapChosen = null;
+    matchingWords = []; matchingMeanings = []; matchingPlaced = []; matchingSelectedWord = null; matchingSelectedMeaning = null;
     renderQuestion();
   }
   function promptText(item) {
     if (currentQuestion.activityId==='wordcraft-speed-round') return item.meaning || 'Type the word that matches the meaning.';
     if (currentQuestion.activityId==='soundscape-sound-picture-match') return 'Listen to the word, then choose the matching picture.';
+    if (currentQuestion.activityId==='wordcraft-word-match') return 'Match each word with its correct meaning.';
     if (['soundscape-dictation-bank','soundscape-dictation'].includes(currentQuestion.activityId)) return 'Listen to the sentence, then type what you hear.';
     if (currentQuestion.activityId==='real-world-speaking-shadowing') return 'Listen to the sentence, then repeat it aloud or type what you said.';
     if (currentQuestion.activityId==='sentence-studio-sentence-builder') return 'Build the sentence by selecting the words in the correct order.';
@@ -171,10 +174,29 @@
     const start=(item.start||[]).join(', ');
     return '<div class="fluentia-map-task"><p class="fluentia-map-instructions">'+esc(directionText(item))+'</p><p class="fluentia-map-start">Starting point: <b>'+esc(start)+'</b> · Facing '+esc(({N:'north',E:'east',S:'south',W:'west'})[item.dir]||'the arrow')+'</p><div class="fluentia-town-map" role="group" aria-label="Town map destinations">'+cells+'</div><p class="fluentia-map-status" id="fluentia-map-status" role="status" aria-live="polite">Choose the building where the route ends.</p></div>';
   }
+  function matchingMarkup(item) {
+    const pairs = Array.isArray(item.pairs) ? item.pairs : [];
+    matchingWords = stableTileShuffle(pairs.map(pair => ({id:pair.id,text:pair.word})), currentQuestion.itemId + '-words');
+    matchingMeanings = stableTileShuffle(pairs.map(pair => ({id:pair.id,text:pair.meaning})), currentQuestion.itemId + '-meanings');
+    matchingPlaced = [];
+    matchingSelectedWord = null;
+    matchingSelectedMeaning = null;
+    const wordTiles = matchingWords.map(tile => '<button type="button" class="fluentia-match-tile" data-match-word="'+esc(tile.id)+'" aria-pressed="false">'+esc(tile.text)+'</button>').join('');
+    const meaningTiles = matchingMeanings.map(tile => '<button type="button" class="fluentia-match-tile" data-match-meaning="'+esc(tile.id)+'" aria-pressed="false">'+esc(tile.text)+'</button>').join('');
+    return '<section class="fluentia-match-board" aria-label="Match words with meanings"><div class="fluentia-match-columns"><div><p class="fluentia-order-label">Words</p><div class="fluentia-match-list" id="fluentia-match-words">'+wordTiles+'</div></div><div><p class="fluentia-order-label">Meanings</p><div class="fluentia-match-list" id="fluentia-match-meanings">'+meaningTiles+'</div></div></div><p class="fluentia-match-status" id="fluentia-match-status" role="status" aria-live="polite">Choose a word, then its meaning. You can remove any pair before checking.</p><div class="fluentia-match-placed" id="fluentia-match-placed" aria-label="Your matched pairs"></div></section>';
+  }
+  function renderMatchingTiles() {
+    const words = $('#fluentia-match-words'), meanings = $('#fluentia-match-meanings');
+    const placed = $('#fluentia-match-placed'), status = $('#fluentia-match-status');
+    if (words) words.innerHTML = matchingWords.filter(tile => !matchingPlaced.some(pair => pair.wordId === tile.id)).map(tile => '<button type="button" class="fluentia-match-tile" data-match-word="'+esc(tile.id)+'" aria-pressed="'+String(matchingSelectedWord===tile.id)+'">'+esc(tile.text)+'</button>').join('') || '<span class="fluentia-order-complete">All words paired</span>';
+    if (meanings) meanings.innerHTML = matchingMeanings.filter(tile => !matchingPlaced.some(pair => pair.meaningId === tile.id)).map(tile => '<button type="button" class="fluentia-match-tile" data-match-meaning="'+esc(tile.id)+'" aria-pressed="'+String(matchingSelectedMeaning===tile.id)+'">'+esc(tile.text)+'</button>').join('') || '<span class="fluentia-order-complete">All meanings paired</span>';
+    if (placed) placed.innerHTML = matchingPlaced.map((pair,index) => '<div class="fluentia-match-pair"><span>'+esc(matchingWords.find(tile=>tile.id===pair.wordId)?.text||'')+'</span><span aria-hidden="true">↔</span><span>'+esc(matchingMeanings.find(tile=>tile.id===pair.meaningId)?.text||'')+'</span><button type="button" data-match-remove="'+index+'" aria-label="Remove matched pair '+(index+1)+'">×</button></div>').join('');
+    if (status) status.textContent = matchingPlaced.length+' of '+matchingWords.length+' pairs matched.'+(matchingSelectedWord!==null?' Choose its meaning.':'');
+  }
   function inputFor(item) {
     const type = currentQuestion.interactionType;
     if (type==='choice'||type==='correction'||(type==='listening' && optionsFor(item))) return null;
-    if (type==='matching') return '<label>Match the meaning for <b>'+esc(item.word||'this word')+'</b><input class="fluentia-answer-input" id="fluentia-match-meaning" autocomplete="off" placeholder="Type the matching meaning" aria-label="Matching meaning"></label>';
+    if (type==='matching') return matchingMarkup(item);
     if (type==='ordering') return orderingMarkup(item);
     if (type==='map') return mapMarkup(item);
     if (type==='speech') {
@@ -206,9 +228,12 @@
     if (answered || !currentQuestion) return;
     if (answer === undefined) {
       if (currentQuestion.interactionType==='matching') {
-        const meaning=$('#fluentia-match-meaning');
-        answer={word:currentQuestion.item.word||'',meaning:meaning?.value.trim()||''};
-        if(!answer.word||!answer.meaning){meaning?.focus();return;}
+        if (matchingPlaced.length !== matchingWords.length) {
+          const status=$('#fluentia-match-status');
+          if(status)status.textContent='Match every word before checking your answer.';
+          return;
+        }
+        answer=matchingPlaced.map(pair=>({word:matchingWords.find(tile=>tile.id===pair.wordId)?.text||'',meaning:matchingMeanings.find(tile=>tile.id===pair.meaningId)?.text||''}));
       } else if (currentQuestion.interactionType==='ordering') {
         if(orderingPool.length){const status=$('#fluentia-order-status');if(status)status.textContent='Use every tile before checking your answer.';return;}
         answer=orderingPlaced.map(tile=>tile.text);
@@ -235,7 +260,7 @@
       const correctAnswer = feedback.correctAnswer;
       const host = $('#fluentia-feedback');
       if (host) host.innerHTML = '<div class="fluentia-feedback '+(lastEvent.correct?'':'is-wrong')+'"><strong>'+(lastEvent.correct?'Correct — well done.':'Good attempt. Let’s learn from it.')+'</strong>'+(explain?'<p>'+esc(explain)+'</p>':'')+(correctAnswer&&!lastEvent.correct?'<p><b>Answer:</b> '+esc(Array.isArray(correctAnswer)?correctAnswer.join(' · '):(correctAnswer&&typeof correctAnswer==='object'?Object.values(correctAnswer).join(' — '):correctAnswer))+'</p>':'')+(feedback.explanationAr?'<button type="button" class="btn btn-ghost fluentia-translation" data-translate>'+ (translated?'Show English':'عرض المساعدة بالعربية')+'</button>':'')+'</div>';
-      root.querySelectorAll('[data-answer-index],[data-order-token],[data-order-remove],[data-map-cell],#fluentia-answer,#fluentia-match-meaning,#fluentia-speech-transcript,[data-submit],[data-speech-start],[data-speech-stop]').forEach(el=>el.disabled=true);
+      root.querySelectorAll('[data-answer-index],[data-order-token],[data-order-remove],[data-map-cell],#fluentia-answer,[data-match-word],[data-match-meaning],[data-match-remove],#fluentia-speech-transcript,[data-submit],[data-speech-start],[data-speech-stop]').forEach(el=>el.disabled=true);
       const next = $('[data-next]'); if(next) next.hidden=false;
       const actions = $('.fluentia-session-actions'); if(actions){const note=document.createElement('span');note.className='fluentia-question-prompt';note.textContent=lastEvent.correct?'✓':'↻';actions.prepend(note);}
     } catch (error) { const host=$('#fluentia-feedback'); if(host)host.textContent=error.message||'Could not check this answer.'; }
@@ -356,6 +381,12 @@
     if(orderToken){const id=Number(orderToken.dataset.orderToken);const tile=orderingPool.find(row=>row.id===id);if(tile){orderingPool=orderingPool.filter(row=>row.id!==id);orderingPlaced.push(tile);renderOrderingTiles();}return;}
     const orderRemove=event.target.closest('[data-order-remove]');
     if(orderRemove){const id=Number(orderRemove.dataset.orderRemove);const tile=orderingPlaced.find(row=>row.id===id);if(tile){orderingPlaced=orderingPlaced.filter(row=>row.id!==id);orderingPool.push(tile);orderingPool.sort((a,b)=>a.id-b.id);renderOrderingTiles();}return;}
+    const matchRemove=event.target.closest('[data-match-remove]');
+    if(matchRemove){const index=Number(matchRemove.dataset.matchRemove);if(Number.isInteger(index)&&matchingPlaced[index]){matchingPlaced.splice(index,1);renderMatchingTiles();}return;}
+    const matchWord=event.target.closest('[data-match-word]');
+    if(matchWord){matchingSelectedWord=matchWord.dataset.matchWord;renderMatchingTiles();return;}
+    const matchMeaning=event.target.closest('[data-match-meaning]');
+    if(matchMeaning){matchingSelectedMeaning=matchMeaning.dataset.matchMeaning;if(matchingSelectedWord!==null){matchingPlaced.push({wordId:matchingSelectedWord,meaningId:matchingSelectedMeaning});matchingSelectedWord=null;matchingSelectedMeaning=null;}renderMatchingTiles();return;}
     const mapCell=event.target.closest('[data-map-cell]');
     if(mapCell){mapChosen=mapCell.dataset.mapCell.split(',').map(Number);root.querySelectorAll('[data-map-cell]').forEach(button=>{const selected=button===mapCell;button.classList.toggle('is-selected',selected);button.setAttribute('aria-pressed',String(selected));});const status=$('#fluentia-map-status');if(status)status.textContent='Selected: '+mapCell.textContent.trim()+'. Check your answer when ready.';return;}
     const answer=event.target.closest('[data-answer-index]');
