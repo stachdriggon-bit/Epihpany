@@ -112,7 +112,23 @@ function expandedFixture() {
     {id:'SP-A2-01',level:'A2',word:'train',icon:'🚆',image:'assets/fluentia/soundscape-pictograms.svg#train'},
     {id:'SP-A2-02',level:'A2',word:'chair',icon:'🪑',image:'assets/fluentia/soundscape-pictograms.svg#chair'},
     {id:'SP-A2-03',level:'A2',word:'phone',icon:'📱',image:'assets/fluentia/soundscape-pictograms.svg#phone'},
-    {id:'SP-A2-04',level:'A2',word:'bus',icon:'🚌',image:'assets/fluentia/soundscape-pictograms.svg#bus'}
+    {id:'SP-A2-04',level:'A2',word:'bus',icon:'🚌',image:'assets/fluentia/soundscape-pictograms.svg#bus'},
+    {id:'SP-B1-01',level:'B1',word:'suitcase',icon:'🔎',image:'assets/fluentia/soundscape-pictograms.svg#suitcase'},
+    {id:'SP-B1-02',level:'B1',word:'camera',icon:'🔎',image:'assets/fluentia/soundscape-pictograms.svg#camera'},
+    {id:'SP-B1-03',level:'B1',word:'bicycle',icon:'🔎',image:'assets/fluentia/soundscape-pictograms.svg#bicycle'},
+    {id:'SP-B1-04',level:'B1',word:'headphones',icon:'🔎',image:'assets/fluentia/soundscape-pictograms.svg#headphones'},
+    {id:'SP-B2-01',level:'B2',word:'microscope',icon:'🔎',image:'assets/fluentia/soundscape-pictograms.svg#microscope'},
+    {id:'SP-B2-02',level:'B2',word:'telescope',icon:'🔎',image:'assets/fluentia/soundscape-pictograms.svg#telescope'},
+    {id:'SP-B2-03',level:'B2',word:'binoculars',icon:'🔎',image:'assets/fluentia/soundscape-pictograms.svg#binoculars'},
+    {id:'SP-B2-04',level:'B2',word:'compass',icon:'🔎',image:'assets/fluentia/soundscape-pictograms.svg#compass'},
+    {id:'SP-C1-01',level:'C1',word:'hourglass',icon:'🔎',image:'assets/fluentia/soundscape-pictograms.svg#hourglass'},
+    {id:'SP-C1-02',level:'C1',word:'magnifier',icon:'🔎',image:'assets/fluentia/soundscape-pictograms.svg#magnifier'},
+    {id:'SP-C1-03',level:'C1',word:'globe',icon:'🔎',image:'assets/fluentia/soundscape-pictograms.svg#globe'},
+    {id:'SP-C1-04',level:'C1',word:'typewriter',icon:'🔎',image:'assets/fluentia/soundscape-pictograms.svg#typewriter'},
+    {id:'SP-C2-01',level:'C2',word:'sextant',icon:'🔎',image:'assets/fluentia/soundscape-pictograms.svg#sextant'},
+    {id:'SP-C2-02',level:'C2',word:'astrolabe',icon:'🔎',image:'assets/fluentia/soundscape-pictograms.svg#astrolabe'},
+    {id:'SP-C2-03',level:'C2',word:'metronome',icon:'🔎',image:'assets/fluentia/soundscape-pictograms.svg#metronome'},
+    {id:'SP-C2-04',level:'C2',word:'abacus',icon:'🔎',image:'assets/fluentia/soundscape-pictograms.svg#abacus'}
   ];
   sources.wordOfDayItems = [{id:'WM-A1-01',level:'A1',word:'apple',meaning:'a round fruit'},{id:'WM-A1-02',level:'A1',word:'banana',meaning:'a long yellow fruit'}];
   sources.soundscapeDictationBank = [{id:'SD-A1-01',level:'A1',text:'I like fresh bread.'}];
@@ -172,6 +188,17 @@ test('Sound Maze, dictation, shadowing and Word Match keep distinct evaluation s
   assert.equal(a2Picture.pictureOptions.length, 4, 'A2 must also have four same-level picture choices');
   assert.ok(a2Picture.pictureOptions.some(option => option.word === a2Picture.word));
   assert.ok(a2Picture.pictureOptions.every(option => option.image), 'A2 picture options should use actual SVG artwork');
+  const expectedPictureCounts = {A1:4,A2:4,B1:4,B2:4,C1:4,C2:4};
+  for (const [level, minimum] of Object.entries(expectedPictureCounts)) {
+    const levelItems = pictureAdapter.getItems({level});
+    assert.ok(levelItems.length >= minimum, level + ' must have enough picture prompts to play');
+    for (const row of levelItems) {
+      assert.equal(row.pictureOptions.length, 4, level + ' questions must show exactly four pictures');
+      assert.equal(new Set(row.pictureOptions.map(option => option.word)).size, 4, level + ' choices must be unique');
+      assert.ok(row.pictureOptions.some(option => option.word === row.word), level + ' choices must include the answer');
+      assert.ok(row.pictureOptions.every(option => option.image), level + ' choices must use SVG artwork');
+    }
+  }
   assert.equal(pictureAdapter.evaluate(picture, picture.word).correct, true);
   assert.equal(pictureAdapter.evaluate(picture, picture.pictureOptions.find(option => option.word !== picture.word).word).correct, false);
   const [match] = get('wordcraft-word-match').getItems({level:'A1'});
