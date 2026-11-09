@@ -50,12 +50,13 @@ test('feature data loader does not request large datasets until requested', asyn
   ]);
   assert.ok(requested.slice(2).every(src => /\?v=.+/.test(src)));
   await context.window.EPIPHANY_LAZY_LOAD('fluentia');
-  assert.deepEqual(requested.slice(4).map(src => src.split('?')[0]), ['sound-maze-bank.js','sound-maze-content.js','fluentia-textwise-bank.js','fluentia-soundscape-bank.js','practice-lab.js'], 'Fluentia should load its optional content sources only when opened');
+  assert.deepEqual(requested.slice(4).map(src => src.split('?')[0]), ['data-minigames.js','sound-maze-bank.js','sound-maze-content.js','fluentia-textwise-bank.js','fluentia-soundscape-bank.js','practice-lab.js'], 'Fluentia should load its optional content sources only when opened');
   assert.equal(fluentiaRegistrations, 1, 'Fluentia should register its banks after every lazy source has loaded');
   await context.window.EPIPHANY_LAZY_LOAD('arcade');
   await context.window.EPIPHANY_LAZY_LOAD('thinklab');
   await context.window.EPIPHANY_LAZY_LOAD('lifeskills');
   assert.deepEqual(requested.slice(4).map(src => src.split('?')[0]), [
+    'data-minigames.js',
     'sound-maze-bank.js',
     'sound-maze-content.js',
     'fluentia-textwise-bank.js',
