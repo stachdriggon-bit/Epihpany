@@ -99,7 +99,7 @@ test('Fluentia releases active sessions and microphone recognition on navigation
   assert.match(ui, /data-home-back/, 'domain and Section Mixed pickers should return to Fluentia home');
   assert.match(ui, /Back to activities/, 'the session exit should clearly return to the activity list');
   assert.match(ui, /engine\.abandonSession\(currentSession\)/);
-  assert.match(ui, /if \(render\) renderHome\(\)/);
+  assert.match(ui, /if\(currentDomain\)renderDomain\(currentDomain\); else renderHome\(\)/, 'leaving a session should return to the selected domain, or Fluentia home when no domain is selected');
   assert.match(ui, /if\(event\.detail\?\.view!=='fluentia'\)leaveSession\(\{render:false\}\)/);
   assert.match(ui, /if\(nav\)\{leaveSession\(\{render:false\}\);selectedLevel=currentLevel\(\);renderLoading\(\);\}/);
   assert.match(ui, /if\(event\.target\.closest\('\[data-back\]'\)\)\{leaveSession\(\);return;\}/);
