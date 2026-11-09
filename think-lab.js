@@ -604,7 +604,7 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
     }
     if (id === 'odd' && window.EPIPHANY_ODD_ONE_OUT_BANK) {
       const bridge = window.EpiphanyThinkLab;
-      const cefr = bridge && typeof bridge.getCEFRLevel === 'function' ? bridge.getCEFRLevel() : 'A1';
+      const cefr = dailyChallengeActive && dailyChallengeActive.gameId === 'odd' ? dailyChallengeActive.level : bridge && typeof bridge.getCEFRLevel === 'function' ? bridge.getCEFRLevel() : 'A1';
       const trainingMode = ['guided','steady','challenge'].includes(level) ? level : 'steady';
       const selected = window.EPIPHANY_ODD_ONE_OUT_BANK.selectRound(cefr, trainingMode);
       const completionKey = 'odd:' + selected.level + ':' + trainingMode + ':' + selected.questions.map(question => question.id).sort().join('|');
@@ -752,16 +752,16 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
   function todayDailyChallenge() {
     const progression = window.EPIPHANY_THINK_LAB_PROGRESSION;
     if (!progression || typeof progression.selectDailyChallenge !== 'function') return null;
-    const date = localDayKey(), level = currentThinkLabCEFR();
-    const selection = progression.selectDailyChallenge({date,level,availableGameIds:availableDailyGameIds(level)});
-    if (!selection) return null;
-    return window.EpiphanyThinkLab?.getDailyChallenge?.(date) || selection;
+    const date = localDayKey(), saved = window.EpiphanyThinkLab?.getDailyChallenge?.(date);
+    if (saved) return saved;
+    const level = currentThinkLabCEFR();
+    return progression.selectDailyChallenge({date,level,availableGameIds:availableDailyGameIds(level)});
   }
   function dailyChallengeMarkup() {
     const selection = todayDailyChallenge();
     if (!selection) return '<div class="tl-daily-challenge"><div><span class="tl-eyebrow">TODAY IN THINK LAB</span><strong>Daily challenge</strong><p>The approved challenge for your current level is not available yet.</p></div></div>';
     const game = games.find(item => item.id === selection.gameId), completed = selection.status === 'completed', active = selection.status === 'active';
-    return '<div class="tl-daily-challenge"><div class="tl-daily-challenge-copy"><span class="tl-eyebrow">DAILY · '+esc(selection.level)+'</span><strong>Daily challenge</strong><p>'+(completed?'Completed for today. A new challenge arrives tomorrow.':active?'Your challenge is saved. Continue where you left off.':'One focused challenge from an approved Think Lab game.')+'</p><small>'+(game?esc(game.name):'Think Lab')+'</small></div><button type="button" class="tl-next" data-think-daily '+(completed?'disabled aria-disabled="true"':'')+'>'+(completed?'✓ Completed':active?'Continue ↗':'Start ↗')+'</button></div>';
+    return '<div class="tl-daily-challenge"><div class="tl-daily-challenge-copy"><span class="tl-eyebrow">DAILY · '+esc(selection.level)+'</span><strong>Daily challenge</strong><p>'+(completed?'Completed for today. A new challenge arrives tomorrow.':active?'Your challenge is saved. Continue where you left off.':'One focused challenge from an approved Think Lab game.')+'</p><small>'+(game?esc(game.name):'Think Lab')+'</small></div><button type="button" class="tl-next" data-think-daily '+(completed?'disabled':'')+'>'+(completed?'✓ Completed':active?'Continue challenge ↗':'Start daily challenge ↗')+'</button></div>';
   }
   function beginDailyChallenge() {
     const selection = todayDailyChallenge();
@@ -770,7 +770,7 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
     if (!saved || saved.status === 'completed') { landing(); return false; }
     dailyChallengeActive = saved;
     if (saved.gameId === 'maze') { selectedMazeCEFR=saved.level; preparedMazeCEFR=null; activePool=null; }
-    if (saved.gameId === 'translator') selectedTranslatorCEFR='adaptive';
+    if (saved.gameId === 'translator') selectedTranslatorCEFR=saved.level;
     if (saved.snapshot && resumeInternalGame(saved.gameId,saved)) return true;
     beginGame(saved.gameId,'steady',{daily:true});
     return true;
@@ -814,7 +814,7 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
   function resumeInternalGame(id, dailyRecord = null) {
     const bridge=window.EpiphanyThinkLab,registry=window.EPIPHANY_THINK_LAB_PROGRESSION;
     const definition=registry?.getGame?.(id);
-    const savedDaily = dailyRecord || bridge?.getDailyChallenge?.(localDayKey());
+    const savedDaily = dailyRecord || null;
     const dailySnapshot = savedDaily && savedDaily.status === 'active' && savedDaily.gameId === id ? savedDaily.snapshot : null;
     const snapshot = dailySnapshot || bridge?.getGameSnapshot?.(id,{bankVersion:INTERNAL_SESSION_BANK_VERSION});
     dailyChallengeActive = dailySnapshot ? savedDaily : null;
@@ -1295,7 +1295,7 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
       return;
     }
     if (options.daily === true && dailyChallengeActive && dailyChallengeActive.gameId === id) {
-      if (!activePool.length) { dailyChallengeActive = null; landing(); return; }
+      if (!activePool.length) { dailyChallengeActive = null; root.innerHTML='<div class="tl-game-card"><h2>Daily challenge unavailable</h2><p class="tl-game-instruction">The approved question could not be prepared. Your daily attempt has not been used.</p><button type="button" class="tl-back" data-think-home>Think Lab home</button></div>'; return; }
       activePool = [activePool[0]];
     } else {
       window.EpiphanyThinkLab?.clearGameSnapshot?.(id);
