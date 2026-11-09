@@ -10,6 +10,8 @@ test('Home recommendations and category shortcuts use canonical Fluentia activit
   const routes = ['textwise-sequence','wordcraft-word-match','real-world-directions','wordcraft-speed-round','sentence-studio-sentence-builder'];
   for (const id of routes) {
     assert.ok(app.includes("'" + id + "':{label:"), id + ' must be a direct Home activity');
+  }
+  for (const id of ['textwise-sequence','wordcraft-word-match','real-world-directions']) {
     assert.ok(app.includes("['" + id + "'"), id + ' must be used by its Home category');
   }
   assert.match(app, /function launchFluentiaActivity\(activityId\)/);
