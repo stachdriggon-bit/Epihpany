@@ -122,3 +122,27 @@ test('Fluentia progress refresh preserves the current domain and Section Mixed p
   assert.match(refresh, /if\(currentDomain\)\{[\s\S]*?renderDomain\(currentDomain\);[\s\S]*?return;/);
   assert.match(refresh, /selectedLevel=currentLevel\(\);\s*renderHome\(\);/);
 });
+
+
+test('Fluentia ordering activities use selectable tiles and map activities use selectable destinations', () => {
+  const ui = read('fluentia-ui.js');
+  assert.match(ui, /function orderingMarkup\(item\)/);
+  assert.match(ui, /data-order-token=/);
+  assert.match(ui, /data-order-remove=/);
+  assert.match(ui, /orderingPlaced\.map\(tile=>tile\.text\)/);
+  assert.match(ui, /Use every tile before checking your answer/);
+  assert.match(ui, /function mapMarkup\(item\)/);
+  assert.match(ui, /data-map-cell=/);
+  assert.match(ui, /mapChosen=mapCell\.dataset\.mapCell\.split\(', '\)\.map\(Number\)/);
+  assert.doesNotMatch(ui, /Enter the map coordinate/);
+  assert.doesNotMatch(ui, /separated by >/);
+});
+
+test('Fluentia Directions loads its shared map bank with the Fluentia feature', () => {
+  const lazy = read('lazy-data.js');
+  const mapData = read('data-minigames.js');
+  const adapters = read('fluentia-adapters.js');
+  assert.match(lazy, /fluentia: \['data-minigames\.js\?v=fluentia-directions-map-20261109-1'/);
+  assert.match(mapData, /EPIPHANY_FLUENTIA_REGISTER_SOURCES\(\{directions: DIRECTION_ITEMS, directionBlocks: DIRECTION_BLOCKS\}\)/);
+  assert.match(adapters, /mapBlocks: sources\.directionBlocks \|\| \[\]/);
+});
