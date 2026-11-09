@@ -89,15 +89,13 @@ test('feature data loader does not request large datasets until requested', asyn
   assert.deepEqual(requested.slice(26).map(src => src.split('?')[0]), ['data-world-registry.js', 'data-world-events.js']);
   assert.ok(requested.slice(24).every(src => /\?v=.+/.test(src)));
 
-  await context.window.EPIPHANY_LAZY_LOAD('directions');
-  assert.deepEqual(requested.slice(28).map(src => src.split('?')[0]), [], 'the Directions feature should reuse the already-loaded map script instead of executing its top-level declarations twice');
-  assert.equal(fluentiaRegistrations, 2, 'Fluentia adapters should refresh after the Directions feature is requested');
+  await assert.rejects(context.window.EPIPHANY_LAZY_LOAD('directions'), /Unknown feature data group/, 'the standalone Directions loader is retired; its bank loads only with Fluentia');
 
   await context.window.EPIPHANY_LAZY_LOAD('expansionVocabulary');
   assert.deepEqual(requested.slice(28).map(src => src.split('?')[0]), ['data-expansion-translations.js','data-expansion-runtime.js','data-expansion-wotd.js','data-expansion-vocabulary.js']);
   await context.window.EPIPHANY_LAZY_LOAD('expansionGrammar');
   assert.deepEqual(requested.slice(32).map(src => src.split('?')[0]), ['data-expansion-grammar.js'], 'other game banks should remain unloaded');
-  assert.equal(fluentiaRegistrations, 4);
+  assert.equal(fluentiaRegistrations, 3);
 });
 
 test('a game expansion loader rejects incomplete registration and permits a clean retry', async () => {
@@ -168,7 +166,7 @@ test('initial HTML defers stories and World data and keeps loader in offline she
   }
   assert.match(sw, /const cached = await cache\.match\(request\);\s*if \(cached\) return cached;/);
   assert.match(app, /window\.EPIPHANY_MERGE_AR_TRANSLATIONS = mergeArabicTranslationCatalog/);
-  assert.match(app, /type === 'directions' && typeof DIRECTION_ITEMS === 'undefined'[\s\S]*?EPIPHANY_LAZY_LOAD\('directions'\)/, 'Directions sessions must wait for their bank before setup');
+  assert.match(app, /function launchFluentiaShortcut[\\s\\S]*?EPIPHANY_LAZY_LOAD\\('fluentia'\\)/, 'Directions shortcuts must await the shared Fluentia bank before launch');
   assert.match(app, /textwiseSequenceBank: Array\.isArray\(window\.EPIPHANY_TEXTWISE_SEQUENCE_BANK\) \? window\.EPIPHANY_TEXTWISE_SEQUENCE_BANK : undefined/);
   assert.match(app, /soundscapeDictationBank: Array\.isArray\(window\.EPIPHANY_SOUNDSCAPE_DICTATION_BANK\) \? window\.EPIPHANY_SOUNDSCAPE_DICTATION_BANK : undefined/);
   assert.doesNotMatch(app, /if \(state\.helpArabic \|\| state\.translationEnabled\) ensureArabicTranslationCatalog\(\)/);
