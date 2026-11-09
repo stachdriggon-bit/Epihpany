@@ -60,7 +60,7 @@ test('Fluentia reports source readiness and offers an explicit retry state', () 
   assert.match(app, /epiphany:fluentia-sources-ready/);
   assert.match(ui, /epiphany:fluentia-sources-failed/);
   assert.match(ui, /data-fluentia-retry/);
-  assert.match(loader, /fluentia: \['sound-maze-bank\.js/);
+  assert.match(loader, /fluentia: \['data-minigames\.js[\s\S]*?sound-maze-bank\.js/);
   assert.match(loader, /practice-lab\.js/);
 });
 
