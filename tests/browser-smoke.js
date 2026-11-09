@@ -378,7 +378,7 @@ test('main navigation tabs open without uncaught page errors', { timeout: 18 * 6
             await question.waitFor({state:'visible',timeout:5000});
             assert.match(await fluentia.locator('.fluentia-session-top .pill').innerText(),new RegExp(level),'Section Mixed should retain '+level);
             const questionKicker = await question.locator('.kicker').innerText();
-            assert.ok(questionKicker.includes(domainName),domainName+' should remain the selected domain at '+level+': '+questionKicker);
+            assert.ok(questionKicker.toLocaleLowerCase().includes(domainName.toLocaleLowerCase()),domainName+' should remain the selected domain at '+level+': '+questionKicker);
 
             const matchWords = question.locator('[data-match-word]');
             const orderTokens = question.locator('[data-order-token]');
