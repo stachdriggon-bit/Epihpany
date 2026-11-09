@@ -380,8 +380,8 @@ test('Word Match creates balanced multi-pair rounds without changing source voca
   const adapter = AdapterFactory.createAdapters(sources).find(item=>item.id==='wordcraft-word-match');
   const rounds = adapter.getItems({level:'B2'});
   assert.deepEqual(rounds.map(round=>round.pairs.length),[4,3,3]);
-  assert.equal(adapter.getItems({level:'A1'}).length,1);
-  assert.equal(adapter.getItems({level:'A2'}).length,0);
+  assert.equal(adapter.getItems({level:'A1'}).length,0,'B2-only source rows must not leak into A1');
+  assert.equal(adapter.getItems({level:'A2'}).length,0,'B2-only source rows must not leak into A2');
   assert.ok(rounds.every(round=>round.pairs.every(pair=>pair.word&&pair.meaning)));
   const wrong = rounds[0].pairs.map((pair,index,all)=>({word:pair.word,meaning:all[(index+1)%all.length].meaning}));
   assert.equal(adapter.evaluate(rounds[0],wrong).correct,false);
