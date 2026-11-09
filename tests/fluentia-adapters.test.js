@@ -226,7 +226,10 @@ test('Sound Maze, dictation, shadowing and Word Match keep distinct evaluation s
   assert.equal(pictureAdapter.evaluate(picture, picture.word).correct, true);
   assert.equal(pictureAdapter.evaluate(picture, picture.pictureOptions.find(option => option.word !== picture.word).word).correct, false);
   const [match] = get('wordcraft-word-match').getItems({level:'A1'});
-  assert.equal(get('wordcraft-word-match').evaluate(match, {word:'apple',meaning:'a round fruit'}).correct, true);
+  assert.equal(match.pairs.length, 2);
+  assert.equal(get('wordcraft-word-match').evaluate(match, match.pairs.map(pair=>({word:pair.word,meaning:pair.meaning}))).correct, true);
+  assert.equal(get('wordcraft-word-match').evaluate(match, [{word:'apple',meaning:'something you read'},{word:'banana',meaning:'a round fruit'}]).correct, false);
+  assert.equal(get('wordcraft-word-match').evaluate(match, [{word:'apple',meaning:'a round fruit'}]).correct, false);
   assert.equal(match.sourceActivityId, 'word-of-the-day');
 });
 
@@ -368,4 +371,18 @@ test('Fluentia picture content does not expand the legacy Arcade audio pool', ()
   for (const level of ['B1','B2','C1','C2']) {
     assert.equal((app.match(new RegExp("id:'SP-" + level + "-\\d{2}'", 'g')) || []).length, 4, level + ' should have four dedicated prompts');
   }
+});
+
+
+test('Word Match creates balanced multi-pair rounds without changing source vocabulary or CEFR levels', () => {
+  const sources = expandedFixture();
+  sources.wordOfDayItems = Array.from({length:10},(_,index)=>({id:'WM-B2-'+index,level:'B2',word:'word'+index,meaning:'meaning '+index}));
+  const adapter = AdapterFactory.createAdapters(sources).find(item=>item.id==='wordcraft-word-match');
+  const rounds = adapter.getItems({level:'B2'});
+  assert.deepEqual(rounds.map(round=>round.pairs.length),[4,3,3]);
+  assert.equal(adapter.getItems({level:'A1'}).length,1);
+  assert.equal(adapter.getItems({level:'A2'}).length,0);
+  assert.ok(rounds.every(round=>round.pairs.every(pair=>pair.word&&pair.meaning)));
+  const wrong = rounds[0].pairs.map((pair,index,all)=>({word:pair.word,meaning:all[(index+1)%all.length].meaning}));
+  assert.equal(adapter.evaluate(rounds[0],wrong).correct,false);
 });
