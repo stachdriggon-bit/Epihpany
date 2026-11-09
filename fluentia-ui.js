@@ -181,7 +181,7 @@
       const supported = !!(window.isSecureContext !== false && (window.SpeechRecognition || window.webkitSpeechRecognition));
       return '<div class="fluentia-speech-tools"><div class="fluentia-speech-actions"><button type="button" class="btn" data-speech-start '+(supported?'':'disabled')+'>🎙 Start speaking</button><button type="button" class="btn btn-ghost" data-speech-stop disabled>Stop</button></div><p class="fluentia-speech-status" id="fluentia-speech-status" role="status" aria-live="polite">'+(supported?'Allow microphone access when your browser asks, then repeat the sentence.':'Speech recognition is not supported in this browser or context. You can still type your transcript below.')+'</p><label for="fluentia-speech-transcript">Recognised words (editable)</label><textarea class="fluentia-answer-input fluentia-speech-transcript" id="fluentia-speech-transcript" rows="3" placeholder="Your recognised words will appear here…"></textarea><p class="fluentia-speech-note">This compares recognised words with the target. It does not assess pronunciation quality.</p></div>';
     }
-    return '<input class="fluentia-answer-input" id="fluentia-answer" type="text" autocomplete="off" placeholder="'+(type==='ordering'?'Enter each step in order, separated by >':type==='map'?'Enter the map coordinate, for example 2,3':'Type your answer')+'" aria-label="Your answer">';
+    return '<input class="fluentia-answer-input" id="fluentia-answer" type="text" autocomplete="off" placeholder="Type your answer" aria-label="Your answer">';
   }
   function renderQuestion() {
     const item = currentQuestion.item, isPictureMatch = currentQuestion.activityId==='soundscape-sound-picture-match';
