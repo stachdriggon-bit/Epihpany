@@ -126,10 +126,6 @@
   function optionsFor(item) {
     let rows = Array.isArray(item.answers) ? item.answers : Array.isArray(item.options) ? item.options : null;
     if (!rows && currentQuestion.interactionType==='correction') rows = Array.isArray(item.words) ? item.words : Array.isArray(item.tokens) ? item.tokens : (item.text ? String(item.text).trim().split(/\\s+/) : null);
-    if (!rows && currentQuestion.interactionType==='listening' && currentQuestion.activityId==='soundscape-sound-picture-match') {
-      const source = activities.find(activity=>activity.id==='soundscape-sound-picture-match');
-      rows = (source?.items || []).map(row=>row.word).filter(Boolean);
-    }
     return rows ? rows.map(value=>typeof value==='string'?value:(value.label||value.text||value.word||String(value))) : null;
   }
   function inputFor(item) {
@@ -143,12 +139,15 @@
     return '<input class="fluentia-answer-input" id="fluentia-answer" type="text" autocomplete="off" placeholder="'+(type==='ordering'?'Enter each step in order, separated by >':type==='map'?'Enter the map coordinate, for example 2,3':'Type your answer')+'" aria-label="Your answer">';
   }
   function renderQuestion() {
-    const item = currentQuestion.item, opts = optionsFor(item), prompt = promptText(item);
-    const meta = activities.find(a=>a.id===currentQuestion.activityId);
+    const item = currentQuestion.item, isPictureMatch = currentQuestion.activityId==='soundscape-sound-picture-match';
+    const opts = isPictureMatch ? (Array.isArray(item.pictureOptions) ? item.pictureOptions : []) : optionsFor(item);
+    const prompt = promptText(item);
     const count = currentSession.completedCount+1, percent = (currentSession.completedCount/currentSession.targetCount)*100;
-    const choices = opts && ['choice','correction','listening','matching','map'].includes(currentQuestion.interactionType)
-      ? '<div class="fluentia-answer-grid">'+opts.map((option,index)=>'<button type="button" class="fluentia-answer" data-answer-index="'+index+'" data-answer-value="'+esc(option)+'"><span class="fluentia-answer-index">'+(index+1)+'</span><span>'+esc(option)+'</span></button>').join('')+'</div>'
-      : inputFor(item);
+    const choices = isPictureMatch
+      ? '<div class="fluentia-picture-grid" role="group" aria-label="Choose the matching picture">'+opts.map((option,index)=>'<button type="button" class="fluentia-picture-choice" data-answer-index="'+index+'" data-answer-value="'+esc(option.word)+'" aria-label="Picture option '+(index+1)+'"><span class="fluentia-picture-art" aria-hidden="true">'+(option.image?'<img src="'+esc(option.image)+'" alt="">':esc(option.icon||'◻'))+'</span></button>').join('')+'</div>'
+      : opts && ['choice','correction','listening','matching','map'].includes(currentQuestion.interactionType)
+        ? '<div class="fluentia-answer-grid">'+opts.map((option,index)=>'<button type="button" class="fluentia-answer" data-answer-index="'+index+'" data-answer-value="'+esc(option)+'"><span class="fluentia-answer-index">'+(index+1)+'</span><span>'+esc(option)+'</span></button>').join('')+'</div>'
+        : inputFor(item);
     const correctionSentence = currentQuestion.interactionType==='correction' && item.text ? '<p class="fluentia-question-prompt">'+esc(item.text)+'</p>' : ''; const spoken = currentQuestion.activityId==='wordcraft-speed-round' ? '' : (item.word || item.target || item.text || ''); const listen = spoken && window.EpiphanySpeech ? '<button type="button" class="btn btn-ghost" data-fluentia-speak="'+esc(spoken)+'">♫ Listen</button>' : '';
     root.innerHTML = '<div class="fluentia-session"><div class="fluentia-session-top"><button type="button" class="fluentia-back" data-exit>← Leave session</button><span class="pill">'+esc(currentModeLabel)+' · '+esc(selectedLevel)+'</span></div><div class="fluentia-session-progress" role="progressbar" aria-valuemin="0" aria-valuemax="'+currentSession.targetCount+'" aria-valuenow="'+count+'"><span style="width:'+percent+'%"></span></div><article class="fluentia-question-card"><p class="kicker">'+esc(domainDefs.find(d=>d.id===currentQuestion.domain)?.name||currentQuestion.domain)+' · '+esc(interactionLabels[currentQuestion.interactionType]||currentQuestion.interactionType)+'</p><p class="fluentia-question-prompt">Question '+count+' of '+currentSession.targetCount+'</p><h2>'+esc(prompt)+'</h2>'+correctionSentence+listen+(item.sub?'<p class="fluentia-question-prompt">'+esc(item.sub)+'</p>':'')+(choices||'<div class="fluentia-empty">This activity does not yet have a compatible response control.</div>')+'<div id="fluentia-feedback" aria-live="polite"></div><div class="fluentia-session-actions">'+(opts&&choices?'<span class="fluentia-question-prompt">Choose one answer</span>':'<button type="button" class="btn" data-submit>Check answer</button>')+'<button type="button" class="btn" data-next hidden>Continue →</button></div></article></div>';
   }
