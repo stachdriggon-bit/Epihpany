@@ -176,8 +176,10 @@
   }
   function matchingMarkup(item) {
     const pairs = Array.isArray(item.pairs) ? item.pairs : [];
-    matchingWords = stableTileShuffle(pairs.map(pair => ({id:pair.id,text:pair.word})), currentQuestion.itemId + '-words');
-    matchingMeanings = stableTileShuffle(pairs.map(pair => ({id:pair.id,text:pair.meaning})), currentQuestion.itemId + '-meanings');
+    matchingWords = stableTileShuffle(pairs.map(pair => pair.word), currentQuestion.itemId + '-words')
+      .map(tile => ({id:pairs[tile.id].id,text:tile.text}));
+    matchingMeanings = stableTileShuffle(pairs.map(pair => pair.meaning), currentQuestion.itemId + '-meanings')
+      .map(tile => ({id:pairs[tile.id].id,text:tile.text}));
     matchingPlaced = [];
     matchingSelectedWord = null;
     matchingSelectedMeaning = null;
