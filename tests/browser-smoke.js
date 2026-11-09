@@ -308,6 +308,7 @@ test('main navigation tabs open without uncaught page errors', { timeout: 18 * 6
         assert.ok(requested.some(path=>path.endsWith('/data-minigames.js')),'Fluentia should load the shared Directions map bank');
         assert.equal(await page.evaluate(() => window.EPIPHANY_DIRECTIONS_DATA?.items?.length),120,'the complete six-level Directions bank should be registered');
         assert.equal(await page.evaluate(() => window.EPIPHANY_FLUENTIA_SESSION_ENGINE.getActivity('real-world-directions').getItems({level:'A1'}).length),20,'Directions should expose its A1 items after lazy loading');
+        await fluentia.locator('#fluentia-level').selectOption('C2');
         const domainCases = [
           ['wordcraft','Wordcraft'],['sentence-studio','Sentence Studio'],['textwise','Textwise'],
           ['soundscape','Soundscape'],['real-world','Real World'],['fine-sense','Fine Sense']
