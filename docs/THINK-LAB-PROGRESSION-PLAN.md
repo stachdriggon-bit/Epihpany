@@ -1,6 +1,6 @@
 # Think Lab Progression and Daily Challenge — Integration Plan
 
-**Status:** Phases 1–2 complete; Phase 3 implementation committed on `main` and awaiting CI verification. Phase 4 not started.
+**Status:** Phases 1–3 verified green on `main`; Phase 4 implementation in progress.
 **Branch:** `main`
 **Scope:** Existing Think Lab games and their shared learner-progress integration.
 
@@ -55,7 +55,9 @@ The existing Think Lab skill map now displays this history-aware game recommenda
 
 ### 4. Think Lab Daily Challenge
 
-Add a distinct Think Lab daily entry point using only approved existing content. Select the daily game and challenge deterministically for the date, respect the learner's unlocked CEFR level, and enforce one completed attempt per day. Keep it separate from Arcade Daily Challenge. Reuse existing reward/idempotency rules; do not create bonus XP or a parallel reward ledger without an explicit product decision.
+**Implemented on `main`; CI verification pending.**
+
+Add a distinct Think Lab daily entry point using only approved existing content. Select one of the eight shared-round games deterministically from the local date, current unlocked CEFR level, and available banks. Seed the existing round selector so the single daily item remains stable for that date and level. Keep the three independent multi-puzzle modules in their own level-selection flows until they expose a single-puzzle daily adapter; never map their puzzle difficulty to CEFR by assumption. Persist the selected game, level, seed, and active/completed status in the existing Think Lab progress record, with a separate daily snapshot so regular game resumes are preserved. Allow an unfinished daily challenge to resume, but prevent a second completion on the same local date. Keep it separate from Arcade Daily Challenge. Reuse existing reward/idempotency rules; do not create bonus XP or a parallel reward ledger.
 
 ### 5. Verification and documentation
 

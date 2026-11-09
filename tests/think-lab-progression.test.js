@@ -82,6 +82,44 @@ test('completion counters are independent from XP and can be queried per game', 
   assert.equal(state.quests,3);
 });
 
+test('daily challenge selection is stable by local date and CEFR and only uses available registered games', () => {
+  const options = {date:'2026-11-09',level:'A1',availableGameIds:['odd','maze','forge']};
+  assert.deepEqual(progression.selectDailyChallenge(options),progression.selectDailyChallenge(options));
+  assert.ok(options.availableGameIds.includes(progression.selectDailyChallenge(options).gameId));
+  assert.equal(progression.selectDailyChallenge({...options,date:'2026-02-30'}),null);
+  assert.equal(progression.selectDailyChallenge({...options,level:'A9'}),null);
+  assert.equal(progression.selectDailyChallenge({...options,availableGameIds:['retired']}),null);
+  assert.equal(progression.selectDailyChallenge({...options,availableGameIds:[]}),null);
+});
+
+test('daily challenge is persisted separately, resumes safely, and can complete only once per date', () => {
+  const state = {xp:42,quests:3};
+  const store = progression.createStore(() => state.thinkLabProgress, value => { state.thinkLabProgress = value; }, () => '2026-11-09T10:00:00.000Z');
+  const selected = progression.selectDailyChallenge({date:'2026-11-09',level:'A1',availableGameIds:['odd','maze']});
+  const started = store.startDailyChallenge(selected);
+  assert.equal(started.status,'active');
+  assert.deepEqual(store.startDailyChallenge(selected),started);
+  assert.equal(store.startDailyChallenge({...selected,gameId:selected.gameId==='odd'?'maze':'odd'}),false);
+  const snapshot = {bankVersion:'think-lab-rounds-v1',level:'steady',trainingMode:'steady',position:0,payload:{pool:[{id:'one'}],score:0}};
+  assert.equal(store.saveDailyChallengeSnapshot(selected.date,selected.gameId,snapshot).saved,true);
+  assert.deepEqual(store.getDailyChallenge(selected.date).snapshot.payload.pool,snapshot.payload.pool);
+  assert.equal(store.completeDailyChallenge(selected.date,selected.gameId).completed,true);
+  assert.equal(store.getDailyChallenge(selected.date).snapshot,null);
+  assert.equal(store.completeDailyChallenge(selected.date,selected.gameId).duplicate,true);
+  assert.equal(state.xp,42);
+  assert.equal(state.quests,3);
+});
+
+test('daily challenge history is date-scoped and keeps yesterday separate from today', () => {
+  const state = {};
+  const store = progression.createStore(() => state.thinkLabProgress, value => { state.thinkLabProgress = value; }, () => '2026-11-09T10:00:00.000Z');
+  const yesterday = progression.selectDailyChallenge({date:'2026-11-08',level:'A1',availableGameIds:['odd']});
+  const today = progression.selectDailyChallenge({date:'2026-11-09',level:'A1',availableGameIds:['maze']});
+  store.startDailyChallenge(yesterday); store.completeDailyChallenge(yesterday.date,yesterday.gameId); store.startDailyChallenge(today);
+  assert.equal(store.getDailyChallenge(yesterday.date).status,'completed');
+  assert.equal(store.getDailyChallenge(today.date).status,'active');
+});
+
 test('recommendation always targets a registered playable game and avoids recent games when alternatives exist', () => {
   const registry = progression.getRegistry();
   const result = progression.recommendNext({

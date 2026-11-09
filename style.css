@@ -2640,6 +2640,13 @@ body.navigation-pointer :focus-visible{outline:none;box-shadow:none}
 #thinklab-view .tl-recommendation p{font-size:.8rem;line-height:1.6}
 #thinklab-view .tl-mastery-foot{margin:14px 0 0;padding-top:12px;border-top:1px solid var(--line);font-size:.75rem;line-height:1.6}
 #thinklab-view .tl-daily{grid-area:chooser;align-items:flex-end;margin-top:25px;padding:0 0 13px;border-bottom:0}
+#thinklab-view .tl-daily-challenge{display:flex;align-items:center;justify-content:space-between;gap:12px;flex:1 1 360px;min-width:0;padding:12px 14px;border:1px solid var(--line);border-radius:14px;background:var(--surface)}
+#thinklab-view .tl-daily-challenge-copy{display:grid;gap:3px;min-width:0}
+#thinklab-view .tl-daily-challenge .tl-eyebrow{font-size:.58rem;color:#6b5bc8}
+#thinklab-view .tl-daily-challenge strong{font-size:.98rem;color:var(--ink)}
+#thinklab-view .tl-daily-challenge p{margin:0;font-size:.75rem;line-height:1.45;color:var(--ink-2)}
+#thinklab-view .tl-daily-challenge small{font-size:.68rem;color:var(--ink-3)}
+#thinklab-view .tl-daily-challenge .tl-next{flex:0 0 auto;min-height:40px;padding:9px 13px}
 #thinklab-view .tl-daily h3{font-size:1.4rem;letter-spacing:-.035em;margin:5px 0}
 #thinklab-view .tl-daily p{max-width:620px;font-size:.84rem;line-height:1.55}
 #thinklab-view .tl-case-stamp{display:none}
@@ -2691,7 +2698,8 @@ body[data-theme="dark"] #thinklab-view .tl-case-icon{background:#302d4c;color:#d
   #thinklab-view .tl-mission{padding:21px 18px;border-radius:17px}
   #thinklab-view .tl-mission h2{font-size:clamp(1.9rem,8vw,2.6rem)}
   #thinklab-view .tl-mission p{font-size:.87rem}
-  #thinklab-view .tl-daily{align-items:flex-start;margin-top:22px;padding-bottom:12px}
+  #thinklab-view .tl-daily{align-items:stretch;flex-direction:column;margin-top:22px;padding-bottom:12px}
+  #thinklab-view .tl-daily-challenge{width:100%;flex-basis:auto;align-items:flex-start}
   #thinklab-view .tl-daily h3{font-size:1.22rem}
   #thinklab-view .tl-cases{grid-template-columns:minmax(0,1fr);gap:9px}
   #thinklab-view .tl-case{grid-template-columns:42px minmax(0,1fr);padding:14px}

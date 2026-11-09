@@ -20,6 +20,7 @@
   const MAX_SNAPSHOT_BYTES = 65536;
   const clone = value => value == null ? value : JSON.parse(JSON.stringify(value));
   const validId = id => typeof id === 'string' && byId.has(id);
+  const validDateKey = value => typeof value === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(value) && Number.isFinite(new Date(value + 'T12:00:00.000Z').getTime()) && new Date(value + 'T12:00:00.000Z').toISOString().slice(0,10) === value;
   const plainObject = value => !!value && typeof value === 'object' && !Array.isArray(value) &&
     (Object.getPrototypeOf(value) === Object.prototype || Object.getPrototypeOf(value) === null);
 
@@ -113,6 +114,57 @@
       commit(state);
       return clone(next);
     }
+    function getDailyChallenge(date) {
+      if (!validDateKey(date)) return null;
+      const state = current(), records = plainObject(state.dailyChallenges) ? state.dailyChallenges : {};
+      const record = records[date];
+      return plainObject(record) ? clone(record) : null;
+    }
+    function startDailyChallenge(challenge) {
+      if (!plainObject(challenge) || !validDateKey(challenge.date) || !validId(challenge.gameId) ||
+          !/^(A1|A2|B1|B2|C1|C2)$/.test(challenge.level) ||
+          !Number.isSafeInteger(challenge.seed) || challenge.seed < 0 || challenge.seed > 0xffffffff) return false;
+      const state = current(), records = plainObject(state.dailyChallenges) ? state.dailyChallenges : (state.dailyChallenges = {});
+      const existing = records[challenge.date];
+      if (plainObject(existing)) {
+        if (existing.gameId !== challenge.gameId || existing.level !== challenge.level || existing.seed !== challenge.seed) return false;
+        return clone(existing);
+      }
+      const record = {
+        date:challenge.date, gameId:challenge.gameId, level:challenge.level, seed:challenge.seed,
+        challengeId:typeof challenge.challengeId === 'string' ? challenge.challengeId.slice(0,100) : challenge.gameId + ':' + challenge.seed.toString(36),
+        status:'active', startedAt:now(), completedAt:null, snapshot:null
+      };
+      records[challenge.date] = record;
+      Object.keys(records).sort().slice(0, Math.max(0,Object.keys(records).length-30)).forEach(key => { delete records[key]; });
+      commit(state);
+      return clone(record);
+    }
+    function saveDailyChallengeSnapshot(date, gameId, input) {
+      if (!validDateKey(date) || !validId(gameId) || !plainObject(input)) return {saved:false,reason:'invalid-request'};
+      const state = current(), records = plainObject(state.dailyChallenges) ? state.dailyChallenges : {};
+      const record = records[date];
+      if (!plainObject(record) || record.gameId !== gameId || record.status !== 'active') return {saved:false,reason:'challenge-not-active'};
+      const candidate = {...input,gameId,schemaVersion:1,updatedAt:now()};
+      const checked = validateSnapshot(candidate);
+      if (!checked.valid) return {saved:false,reason:checked.reason};
+      record.snapshot = checked.snapshot;
+      commit(state);
+      return {saved:true,snapshot:clone(checked.snapshot)};
+    }
+    function completeDailyChallenge(date, gameId) {
+      if (!validDateKey(date) || !validId(gameId)) return {completed:false,reason:'invalid-request'};
+      const state = current(), records = plainObject(state.dailyChallenges) ? state.dailyChallenges : {};
+      const record = records[date];
+      if (!plainObject(record) || record.gameId !== gameId) return {completed:false,reason:'challenge-not-started'};
+      if (record.status === 'completed') return {completed:false,duplicate:true,record:clone(record)};
+      if (record.status !== 'active') return {completed:false,reason:'invalid-status'};
+      record.status = 'completed';
+      record.completedAt = now();
+      record.snapshot = null;
+      commit(state);
+      return {completed:true,duplicate:false,record:clone(record)};
+    }
     function getHistory() {
       const state = current();
       return {games:clone(state.games),recentGames:state.recentGames.filter(validId).slice()};
@@ -122,7 +174,19 @@
       const state = current();
       return plainObject(state.games[gameId]) ? clone(state.games[gameId]) : null;
     }
-    return Object.freeze({recordStart,saveSnapshot,getSnapshot,clearSnapshot,recordCompletion,getHistory,getGameProgress});
+    return Object.freeze({recordStart,saveSnapshot,getSnapshot,clearSnapshot,recordCompletion,getHistory,getGameProgress,getDailyChallenge,startDailyChallenge,saveDailyChallengeSnapshot,completeDailyChallenge});
+  }
+
+  function selectDailyChallenge(options = {}) {
+    const date = options.date, level = String(options.level || '').toUpperCase();
+    if (!validDateKey(date) || !/^(A1|A2|B1|B2|C1|C2)$/.test(level)) return null;
+    const available = Array.isArray(options.availableGameIds) ? [...new Set(options.availableGameIds.filter(validId))] : [];
+    if (!available.length) return null;
+    let hash = 2166136261;
+    const source = date + '|' + level;
+    for (let i = 0; i < source.length; i++) { hash ^= source.charCodeAt(i); hash = Math.imul(hash,16777619); }
+    const seed = hash >>> 0, gameId = available[seed % available.length];
+    return {date,level,gameId,seed,challengeId:gameId + ':' + seed.toString(36)};
   }
 
   function recommendNext(options = {}) {
@@ -180,7 +244,7 @@
     };
   }
 
-  const api = Object.freeze({version:1,getRegistry,getGame,validateSnapshot,createStore,recommendNext,skillIds:SKILL_IDS.slice(),trainingModes:TRAINING_MODES.slice()});
+  const api = Object.freeze({version:1,getRegistry,getGame,validateSnapshot,createStore,recommendNext,selectDailyChallenge,skillIds:SKILL_IDS.slice(),trainingModes:TRAINING_MODES.slice()});
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   if (typeof window !== 'undefined') window.EPIPHANY_THINK_LAB_PROGRESSION = api;
 })();

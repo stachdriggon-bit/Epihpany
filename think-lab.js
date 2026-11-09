@@ -723,6 +723,58 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
   ];
   const INTERNAL_SESSION_BANK_VERSION = 'think-lab-rounds-20261109-v1';
   let restoringInternalSession = false;
+  let dailyChallengeActive = null;
+  function localDayKey(date = new Date()) {
+    return date.getFullYear() + '-' + String(date.getMonth()+1).padStart(2,'0') + '-' + String(date.getDate()).padStart(2,'0');
+  }
+  function seededDailyRandom(seed) {
+    let value = seed >>> 0;
+    return function () {
+      value += 0x6D2B79F5;
+      let t = value;
+      t = Math.imul(t ^ (t >>> 15), t | 1);
+      t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+  function availableDailyGameIds(level) {
+    const ids = [];
+    if (window.EPIPHANY_ODD_ONE_OUT_BANK && typeof window.EPIPHANY_ODD_ONE_OUT_BANK.selectRound === 'function') ids.push('odd');
+    if (translatorBanks[level]?.steady?.length) ids.push('translator');
+    if (window.EPIPHANY_SOUND_MAZE_BANK?.levels?.[level]?.steady?.length && window.EPIPHANY_SOUND_MAZE_TOOLS) ids.push('maze');
+    if (ladderWordBank && ladderWordBank.size) ids.push('wordladder');
+    if (window.EPIPHANY_WORD_CONNECTIONS_BANK && typeof window.EPIPHANY_WORD_CONNECTIONS_BANK.selectRound === 'function') ids.push('connections');
+    if (window.EPIPHANY_SENTENCE_SCRAMBLE_BANK?.modes?.steady?.length === 24) ids.push('scramble');
+    if (window.EPIPHANY_WORD_FORGE_BANK && typeof window.EPIPHANY_WORD_FORGE_BANK.selectRound === 'function') ids.push('forge');
+    if (window.EPIPHANY_CHAIN_REACTION_BANK && typeof window.EPIPHANY_CHAIN_REACTION_BANK.selectRound === 'function') ids.push('chain');
+    return ids;
+  }
+  function todayDailyChallenge() {
+    const progression = window.EPIPHANY_THINK_LAB_PROGRESSION;
+    if (!progression || typeof progression.selectDailyChallenge !== 'function') return null;
+    const date = localDayKey(), level = currentThinkLabCEFR();
+    const selection = progression.selectDailyChallenge({date,level,availableGameIds:availableDailyGameIds(level)});
+    if (!selection) return null;
+    return window.EpiphanyThinkLab?.getDailyChallenge?.(date) || selection;
+  }
+  function dailyChallengeMarkup() {
+    const selection = todayDailyChallenge();
+    if (!selection) return '<div class="tl-daily-challenge"><div><span class="tl-eyebrow">TODAY IN THINK LAB</span><strong>Daily challenge</strong><p>The approved challenge for your current level is not available yet.</p></div></div>';
+    const game = games.find(item => item.id === selection.gameId), completed = selection.status === 'completed', active = selection.status === 'active';
+    return '<div class="tl-daily-challenge"><div class="tl-daily-challenge-copy"><span class="tl-eyebrow">DAILY · '+esc(selection.level)+'</span><strong>Daily challenge</strong><p>'+(completed?'Completed for today. A new challenge arrives tomorrow.':active?'Your challenge is saved. Continue where you left off.':'One focused challenge from an approved Think Lab game.')+'</p><small>'+(game?esc(game.name):'Think Lab')+'</small></div><button type="button" class="tl-next" data-think-daily '+(completed?'disabled aria-disabled="true"':'')+'>'+(completed?'✓ Completed':active?'Continue ↗':'Start ↗')+'</button></div>';
+  }
+  function beginDailyChallenge() {
+    const selection = todayDailyChallenge();
+    if (!selection || selection.status === 'completed') return false;
+    const bridge = window.EpiphanyThinkLab, saved = bridge?.startDailyChallenge?.(selection);
+    if (!saved || saved.status === 'completed') { landing(); return false; }
+    dailyChallengeActive = saved;
+    if (saved.gameId === 'maze') { selectedMazeCEFR=saved.level; preparedMazeCEFR=null; activePool=null; }
+    if (saved.gameId === 'translator') selectedTranslatorCEFR='adaptive';
+    if (saved.snapshot && resumeInternalGame(saved.gameId,saved)) return true;
+    beginGame(saved.gameId,'steady',{daily:true});
+    return true;
+  }
   function saveInternalProgress(position = index) {
     const bridge = window.EpiphanyThinkLab, registry = window.EPIPHANY_THINK_LAB_PROGRESSION;
     const definition = registry && registry.getGame ? registry.getGame(mode) : null;
@@ -739,7 +791,10 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
       chainStepIndex:nextItem?0:chainStepIndex, chainPath:nextItem?[]:chainPath.slice(),
       cefrLevel:mode==='maze'?selectedMazeCEFR:mode==='translator'?selectedTranslatorCEFR:null
     };
-    const result = bridge.saveGameSnapshot?.(mode,{bankVersion:INTERNAL_SESSION_BANK_VERSION,level:selectedTrainingMode,trainingMode:selectedTrainingMode,position,payload});
+    const snapshot = {bankVersion:INTERNAL_SESSION_BANK_VERSION,level:selectedTrainingMode,trainingMode:selectedTrainingMode,position,payload};
+    const result = dailyChallengeActive && dailyChallengeActive.gameId === mode
+      ? bridge.saveDailyChallengeSnapshot?.(dailyChallengeActive.date,mode,snapshot)
+      : bridge.saveGameSnapshot?.(mode,snapshot);
     return !!(result && result.saved);
   }
   function internalResumeMarkup() {
@@ -756,10 +811,13 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
     }
     return cards.length?'<section class="tl-resume-sessions" aria-label="Saved Think Lab sessions">'+cards.join('')+'</section>':'';
   }
-  function resumeInternalGame(id) {
+  function resumeInternalGame(id, dailyRecord = null) {
     const bridge=window.EpiphanyThinkLab,registry=window.EPIPHANY_THINK_LAB_PROGRESSION;
     const definition=registry?.getGame?.(id);
-    const snapshot=bridge?.getGameSnapshot?.(id,{bankVersion:INTERNAL_SESSION_BANK_VERSION});
+    const savedDaily = dailyRecord || bridge?.getDailyChallenge?.(localDayKey());
+    const dailySnapshot = savedDaily && savedDaily.status === 'active' && savedDaily.gameId === id ? savedDaily.snapshot : null;
+    const snapshot = dailySnapshot || bridge?.getGameSnapshot?.(id,{bankVersion:INTERNAL_SESSION_BANK_VERSION});
+    dailyChallengeActive = dailySnapshot ? savedDaily : null;
     const p=snapshot?.payload;
     if(!definition||definition.adapter!=='think-lab'||!snapshot||!p||!Array.isArray(p.pool)||!p.pool.length||p.pool.length>24||
        !['guided','steady','challenge'].includes(snapshot.trainingMode)||snapshot.level!==snapshot.trainingMode||
@@ -785,7 +843,8 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
     bridge.recordGameStart?.(id,{level:id==='maze'?selectedMazeCEFR:id==='translator'?selectedTranslatorCEFR:selectedTrainingMode,trainingMode:selectedTrainingMode});
     if(index>=activePool.length){
       root.innerHTML='<div class="tl-finish"><span class="tl-finish-mark">∴</span><span class="tl-eyebrow">CASE FILE CLOSED</span><h2>Good thinking.</h2><p>You solved <b>'+score+' of '+activePool.length+'</b> challenges. Your saved session is complete.</p><button type="button" class="tl-next" data-think-restart>Try another case ↗</button><button type="button" class="tl-back" data-think-home>Back to Think Lab</button></div>';
-      bridge.clearGameSnapshot?.(id);bridge.recordGameCompletion?.(id,'session');
+      if(dailyChallengeActive&&dailyChallengeActive.gameId===id){const result=bridge.completeDailyChallenge?.(dailyChallengeActive.date,id);if(result?.completed)dailyChallengeActive=null;}else bridge.clearGameSnapshot?.(id);
+      bridge.recordGameCompletion?.(id,'session');
       mode=null;activePool=null;activeDifficulty=null;pickerStage='landing';pickerGameId=null;return true;
     }
     restoringInternalSession=true;renderGame();restoringInternalSession=false;
@@ -825,7 +884,7 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
   function landing() {
     mode = null;
     const resumeMarkup = internalResumeMarkup();
-    root.innerHTML = '<div class="tl-mission"><div><span class="tl-eyebrow"><i></i> THINKING MODE · ENGLISH INSIDE</span><h2>Don’t just play.<br><em>Figure it out.</em></h2><p>Every challenge is a small case to solve. Notice patterns, connect evidence and discover why one answer fits better than another.</p><div class="tl-mission-meta"><span>⌁ Logic</span><span>◉ Context</span><span>⇄ Expression</span></div></div><div class="tl-orbit" aria-hidden="true"><span class="tl-orbit-core">EP<span>·</span></span><i class="tl-node tl-node-a">?</i><i class="tl-node tl-node-b">A≠B</i><i class="tl-node tl-node-c">∴</i><i class="tl-link tl-link-a"></i><i class="tl-link tl-link-b"></i></div></div>'+insightsMarkup()+'<div class="tl-daily"><div><span class="tl-eyebrow">EXPLORE THINK LAB</span><h3>11 challenges. One sharper mind.</h3><p>Choose from eleven distinct games covering vocabulary, listening, spelling, language patterns and deduction. Every challenge explains the reasoning behind the answer.</p></div><span class="tl-case-stamp">THINK LAB<br><b>11 GAMES</b></span></div>'+resumeMarkup+'<div class="tl-cases">'+games.map(g=>'<button type="button" class="tl-case" data-think-game="'+g.id+'"><span class="tl-case-top"><span class="tl-case-number">'+g.num+' / CASE</span><span class="tl-case-icon">'+g.icon+'</span></span><span class="tl-case-tag">'+g.tag+'</span><strong>'+g.name+'</strong><span class="tl-case-desc">'+g.desc+'</span><span class="tl-case-bottom"><span>'+g.time+'</span><b>Open case ↗</b></span></button>').join('')+'</div><p class="tl-footer-note"><span>✳</span> No guessing blindly. Every answer comes with a reason.</p>';
+    root.innerHTML = '<div class="tl-mission"><div><span class="tl-eyebrow"><i></i> THINKING MODE · ENGLISH INSIDE</span><h2>Don’t just play.<br><em>Figure it out.</em></h2><p>Every challenge is a small case to solve. Notice patterns, connect evidence and discover why one answer fits better than another.</p><div class="tl-mission-meta"><span>⌁ Logic</span><span>◉ Context</span><span>⇄ Expression</span></div></div><div class="tl-orbit" aria-hidden="true"><span class="tl-orbit-core">EP<span>·</span></span><i class="tl-node tl-node-a">?</i><i class="tl-node tl-node-b">A≠B</i><i class="tl-node tl-node-c">∴</i><i class="tl-link tl-link-a"></i><i class="tl-link tl-link-b"></i></div></div>'+insightsMarkup()+'<div class="tl-daily"><div><span class="tl-eyebrow">EXPLORE THINK LAB</span><h3>11 challenges. One sharper mind.</h3><p>Choose from eleven distinct games covering vocabulary, listening, spelling, language patterns and deduction. Every challenge explains the reasoning behind the answer.</p></div>'+dailyChallengeMarkup()+'<span class="tl-case-stamp">THINK LAB<br><b>11 GAMES</b></span></div>'+resumeMarkup+'<div class="tl-cases">'+games.map(g=>'<button type="button" class="tl-case" data-think-game="'+g.id+'"><span class="tl-case-top"><span class="tl-case-number">'+g.num+' / CASE</span><span class="tl-case-icon">'+g.icon+'</span></span><span class="tl-case-tag">'+g.tag+'</span><strong>'+g.name+'</strong><span class="tl-case-desc">'+g.desc+'</span><span class="tl-case-bottom"><span>'+g.time+'</span><b>Open case ↗</b></span></button>').join('')+'</div><p class="tl-footer-note"><span>✳</span> No guessing blindly. Every answer comes with a reason.</p>';
   }
   // Register each game against the shared adaptive policy. New games should add
   // one entry here; difficulty thresholds, confidence and hint calibration remain central.
@@ -1190,7 +1249,7 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
     const available = new Set(availableThinkLabCEFRLevels());
     root.innerHTML = '<div class="tl-game-head"><button class="tl-back" type="button" data-think-back>← Choose difficulty</button><span class="tl-eyebrow">THE BOLD TRANSLATOR</span></div><div class="tl-game-card"><div class="tl-game-kicker">CHOOSE YOUR ENGLISH LEVEL</div><h2>Which level would you like to practise?</h2><p class="tl-game-instruction">Adaptive follows your current EPIPHANY level. You can also revisit levels you have unlocked. This choice does not change your learning level. Higher levels open through your learning progress and level checks.</p><div class="tl-answer-options"><button type="button" class="tl-option" data-translator-level="adaptive"><strong>Adaptive · Recommended</strong><span>Use my current EPIPHANY level</span></button>'+THINK_LAB_CEFR_LEVELS.map(level => { const unlocked = available.has(level); const bankReady = !!translatorBanks[level]; return '<button type="button" class="tl-option" data-translator-level="'+level+'" '+(!unlocked || !bankReady?'disabled aria-disabled="true"':'')+'><strong>'+level+'</strong><span>'+(!unlocked?'🔒 Locked · progress to unlock':bankReady?'Available':'Coming soon')+'</span></button>'; }).join('')+'</div></div>';
   }
-  function beginGame(id, trainingMode) {
+  function beginGame(id, trainingMode, options = {}) {
     if (id === 'maze' && !canChooseThinkLabCEFR(selectedMazeCEFR)) {
       selectedMazeCEFR = currentThinkLabCEFR();
       activePool = null;
@@ -1210,7 +1269,10 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
     const hintLevel = selectedTrainingMode === 'guided' ? 2 : selectedTrainingMode === 'steady' ? 1 : 0;
     activeDifficulty = Object.assign({}, difficultyForMode(id), {level:selectedTrainingMode,hintLevel});
     const preparedMazePool = id === 'maze' && preparedMazeCEFR === selectedMazeCEFR && activePool && activePool.length ? activePool : null;
-    activePool = preparedMazePool || getRoundPool(id,selectedTrainingMode);
+    const previousRandom = Math.random;
+    if (options.daily === true && dailyChallengeActive) Math.random = seededDailyRandom(dailyChallengeActive.seed);
+    try { activePool = preparedMazePool || getRoundPool(id,selectedTrainingMode); }
+    finally { Math.random = previousRandom; }
     if (id === 'maze') preparedMazeCEFR = null;
     if (id === 'maze' && !activePool.length) {
       showMazeBankUnavailable();
@@ -1232,7 +1294,12 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
       root.innerHTML = '<div class="tl-game-card"><div class="tl-game-kicker">WORD CONNECTIONS</div><h2>QUESTION BANK NOT READY</h2><p class="tl-game-instruction">The reviewed Word Connections bank could not be loaded. No sample questions will be shown.</p><button type="button" class="tl-back" data-think-back>← Choose difficulty</button><button type="button" class="tl-back" data-think-home>Think Lab home</button></div>';
       return;
     }
-    window.EpiphanyThinkLab?.clearGameSnapshot?.(id);
+    if (options.daily === true && dailyChallengeActive && dailyChallengeActive.gameId === id) {
+      if (!activePool.length) { dailyChallengeActive = null; landing(); return; }
+      activePool = [activePool[0]];
+    } else {
+      window.EpiphanyThinkLab?.clearGameSnapshot?.(id);
+    }
     if (window.EpiphanyThinkLab && typeof window.EpiphanyThinkLab.recordGameStart === 'function') {
       const selectedLevel = id === 'maze' ? selectedMazeCEFR : id === 'translator' ? selectedTranslatorCEFR : selectedTrainingMode;
       window.EpiphanyThinkLab.recordGameStart(id,{level:selectedLevel,trainingMode:selectedTrainingMode});
@@ -1241,6 +1308,7 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
     if(id==='maze') speakTarget();
   }
   function start(id) {
+    dailyChallengeActive = null;
     if (id === 'wordhunt') {
       if (window.EPIPHANY_WORD_HUNT && typeof window.EPIPHANY_WORD_HUNT.open === 'function') {
         window.EPIPHANY_WORD_HUNT.open();
@@ -1399,6 +1467,7 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
       fb.hidden=false;fb.className='tl-feedback is-correct';fb.innerHTML='<strong>✓ Sentence built!</strong><p>'+esc(item.sentence)+' — '+esc(item.explain)+'</p>';const next=root.querySelector('[data-think-next]');if(next)next.hidden=false;saveInternalProgress(index+1);return;
     }
 
+    const daily=e.target.closest('[data-think-daily]');if(daily){beginDailyChallenge();return;}
     const resume=e.target.closest('[data-think-resume]');if(resume){if(!resumeInternalGame(resume.dataset.thinkResume))landing();return;}
     const recommended=e.target.closest('[data-think-recommended]'); if(recommended){start(recommended.dataset.thinkRecommended);return;}
     const trainingChoice=e.target.closest('[data-think-training-mode]');
@@ -1435,6 +1504,7 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
     const launch=e.target.closest('[data-think-game]'); if(launch){start(launch.dataset.thinkGame);return;}
     if(e.target.closest('[data-think-home]')){
       window.EpiphanySpeech?.stop?.();
+      dailyChallengeActive=null;
       mode=null;activePool=null;activeDifficulty=null;pickerStage='landing';pickerGameId=null;
       landing();
       return;
@@ -1459,7 +1529,11 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
     if(e.target.closest('[data-translator-hint]')&&mode==='translator'&&!locked){const pool=activePool||getRoundPool('translator'),item=pool[index%pool.length],hint=root.querySelector('[data-translator-hint-text]'),button=root.querySelector('[data-translator-hint]');if(hint){hint.hidden=false;hint.textContent=item.hint;}if(button){button.disabled=true;button.textContent='Hint revealed';}saveInternalProgress(index);return;}
     if(e.target.closest('[data-training-hint]')&&mode&&!locked){const hint=root.querySelector('[data-training-hint-text]'),button=root.querySelector('[data-training-hint]');if(hint){hint.hidden=false;hint.textContent=guidedHint(mode);}if(button){button.disabled=true;button.textContent='Hint revealed';}saveInternalProgress(index);return;}
     if(e.target.closest('[data-think-clue]')){clueCount=Math.min((activePool || getRoundPool('detective'))[index%(activePool || getRoundPool('detective')).length].clues.length-1,clueCount+1);renderGame();return;}
-    if(e.target.closest('[data-think-next]')){window.EpiphanySpeech?.stop?.();index++;oddHintStep=0;chainStepIndex=0;chainPath=[];connectionSelected=[];clueCount=0;roundMistakes=0;ladderPath=[];ladderWordNote=null;ladderMistakeRecorded=false;if(index>=(activePool || getRoundPool(mode)).length){const finished=mode;const totalRounds=(activePool || getRoundPool(finished)).length;window.EpiphanyThinkLab?.clearGameSnapshot?.(finished);window.EpiphanyThinkLab?.recordGameCompletion?.(finished,'session');root.innerHTML='<div class="tl-finish"><span class="tl-finish-mark">∴</span><span class="tl-eyebrow">CASE FILE CLOSED</span><h2>Good thinking.</h2><p>You solved <b>'+score+' of '+totalRounds+'</b> challenges. The goal is not only to get it right—it’s to understand why.</p><button type="button" class="tl-next" data-think-restart>Try another case ↗</button><button type="button" class="tl-back" data-think-back>Back to Think Lab</button></div>';mode=null;activePool=null;activeDifficulty=null;pickerStage='landing';pickerGameId=null;}else renderGame();return;}
+    if(e.target.closest('[data-think-next]')){window.EpiphanySpeech?.stop?.();index++;oddHintStep=0;chainStepIndex=0;chainPath=[];connectionSelected=[];clueCount=0;roundMistakes=0;ladderPath=[];ladderWordNote=null;ladderMistakeRecorded=false;if(index>=(activePool || getRoundPool(mode)).length){const finished=mode;const totalRounds=(activePool || getRoundPool(finished)).length;const finishingDaily=dailyChallengeActive&&dailyChallengeActive.gameId===finished;
+if(!finishingDaily)window.EpiphanyThinkLab?.clearGameSnapshot?.(finished);
+window.EpiphanyThinkLab?.recordGameCompletion?.(finished,'session');
+if(finishingDaily){const result=window.EpiphanyThinkLab?.completeDailyChallenge?.(dailyChallengeActive.date,finished);if(result?.completed)dailyChallengeActive=null;}
+root.innerHTML='<div class="tl-finish"><span class="tl-finish-mark">∴</span><span class="tl-eyebrow">CASE FILE CLOSED</span><h2>Good thinking.</h2><p>You solved <b>'+score+' of '+totalRounds+'</b> challenges. The goal is not only to get it right—it’s to understand why.</p><button type="button" class="tl-next" data-think-restart>Try another case ↗</button><button type="button" class="tl-back" data-think-back>Back to Think Lab</button></div>';mode=null;activePool=null;activeDifficulty=null;pickerStage='landing';pickerGameId=null;}else renderGame();return;}
     if(e.target.closest('[data-think-restart]')){landing();return;}
     if(e.target.closest('[data-think-speak]')){speakTarget();return;}
     const chainAnswer=e.target.closest('[data-chain-answer]');

@@ -53,6 +53,7 @@ test('changed scripts are versioned and the offline shell cache is refreshed', (
   assert.match(html, /cards\.js\?v=gallery-identity-asset-refresh-20261105-1/);
   assert.match(html, /account\.js\?v=empty-states-20261031-1/);
   assert.match(html, /style\.css\?v=outline-icons-20261105-1/);
+  assert.match(html, /style\.css\?v=think-lab-daily-20261109-1/);
   assert.match(read('style.css'), /Helpful empty-state actions/);
   assert.match(read('lazy-data.js'), /think-lab\.js\?v=think-lab-recommendations-20261109-1/);
   assert.match(read('lazy-data.js'), /think-lab-progression\.js\?v=think-lab-recommendations-20261109-1/);

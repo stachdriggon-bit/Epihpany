@@ -321,7 +321,17 @@ test('main navigation tabs open without uncaught page errors', { timeout: 18 * 6
         checkpoint('thinklab: checking deferred module requests');
         assert.ok(requested.some(path => path.endsWith('/odd-one-out-bank.js')),  'Odd One Out bank should load with Think Lab');
         assert.ok(requested.some(path => path.endsWith('/think-lab.js')), 'Think Lab should load on first open');
-        checkpoint('thinklab: modules requested; opening Odd One Out');
+        checkpoint('thinklab: modules requested; checking the daily challenge entry');
+        const dailyCard = page.locator('#thinklab-view .tl-daily-challenge');
+        await dailyCard.waitFor({state:'visible',timeout:5000});
+        assert.equal(await dailyCard.locator('[data-think-daily]').isEnabled(),true,'an eligible daily challenge should be available');
+        await dailyCard.locator('[data-think-daily]').click();
+        await page.locator('#thinklab-view [data-think-home]').waitFor({state:'visible',timeout:5000});
+        assert.equal(await page.locator('#thinklab-view .tl-game-card').count(),1,'the daily challenge should open a real Think Lab game');
+        await page.locator('#thinklab-view [data-think-home]').click();
+        assert.match(await page.locator('#thinklab-view .tl-daily-challenge').innerText(),/Continue challenge/i,'an unfinished daily challenge should remain resumable');
+        checkpoint('thinklab: daily challenge entry and resume state verified');
+        checkpoint('thinklab: opening Odd One Out');
         await page.locator('#thinklab-view [data-think-game="odd"]').click();
         checkpoint('thinklab: Odd One Out selected; waiting for mode picker');
         const modePicker = page.locator('#thinklab-view .tl-mode-picker');

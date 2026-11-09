@@ -526,6 +526,10 @@
     recordGameCompletion(gameId, kind = 'round') { const store = getThinkLabProgressStore(); return store ? store.recordCompletion(gameId, kind) : false; },
     getGameHistory() { const store = getThinkLabProgressStore(); return store ? store.getHistory() : {games:{},recentGames:[]}; },
     getGameProgress(gameId) { const store = getThinkLabProgressStore(); return store ? store.getGameProgress(gameId) : null; },
+    getDailyChallenge(date) { const store = getThinkLabProgressStore(); return store ? store.getDailyChallenge(date) : null; },
+    startDailyChallenge(challenge) { const store = getThinkLabProgressStore(); return store ? store.startDailyChallenge(challenge) : false; },
+    saveDailyChallengeSnapshot(date,gameId,snapshot) { const store = getThinkLabProgressStore(); return store ? store.saveDailyChallengeSnapshot(date,gameId,snapshot) : {saved:false,reason:'progression-unavailable'}; },
+    completeDailyChallenge(date,gameId) { const store = getThinkLabProgressStore(); return store ? store.completeDailyChallenge(date,gameId) : {completed:false,reason:'progression-unavailable'}; },
     getCEFRLevel() {
       const level = currentLevel();
       return level && LEVELS.some(item => item.id === level.id) ? level.id : 'A1';
