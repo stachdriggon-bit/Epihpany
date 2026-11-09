@@ -367,6 +367,55 @@ test('main navigation tabs open without uncaught page errors', { timeout: 18 * 6
         const mixedKicker = await question.locator('.kicker').innerText();
         assert.match(mixedKicker,/Wordcraft|Sentence Studio|Textwise|Soundscape|Real World|Fine Sense/i,'Fluentia Mix should present a question with a canonical domain');
         await fluentia.locator('[data-exit]').click();
+        // Full Fluentia interaction matrix: every canonical domain at every CEFR level.
+        // The selected response is deliberately varied by interaction type so the test
+        // verifies real controls and feedback, not only engine eligibility.
+        for (const level of ['A1','A2','B1','B2','C1','C2']) {
+          await fluentia.locator('#fluentia-level').selectOption(level);
+          for (const [domainId, domainName] of domainCases) {
+            await fluentia.locator('.fluentia-domain-card[data-domain="'+domainId+'"]').click();
+            await fluentia.locator('[data-mode="section-mixed"]').click();
+            await question.waitFor({state:'visible',timeout:5000});
+            assert.match(await fluentia.locator('.fluentia-session-top .pill').innerText(),new RegExp(level),'Section Mixed should retain '+level);
+            assert.match(await question.locator('.kicker').innerText(),new RegExp(domainName.replace(/[.*+?^${}()|[\]\\]/g,'\\        await page.setViewportSize({width:390,height:844});'),'i'),domainName+' should remain the selected domain at '+level);
+
+            const matchWords = question.locator('[data-match-word]');
+            const orderTokens = question.locator('[data-order-token]');
+            const mapCells = question.locator('[data-map-cell]');
+            const speechTranscript = question.locator('#fluentia-speech-transcript');
+            const answerInput = question.locator('#fluentia-answer');
+            const answerChoices = question.locator('[data-answer-index]');
+
+            if (await matchWords.count()) {
+              const ids = await matchWords.evaluateAll(buttons=>buttons.map(button=>button.dataset.matchWord));
+              for (const id of ids) {
+                await question.locator('[data-match-word="'+id+'"]').click();
+                await question.locator('[data-match-meaning="'+id+'"]').click();
+              }
+              await question.locator('[data-submit]').click();
+            } else if (await orderTokens.count()) {
+              const count = await orderTokens.count();
+              for (let index=0; index<count; index++) await question.locator('[data-order-token]').first().click();
+              await question.locator('[data-submit]').click();
+            } else if (await mapCells.count()) {
+              await mapCells.first().click();
+              await question.locator('[data-submit]').click();
+            } else if (await speechTranscript.count()) {
+              await speechTranscript.fill('A practice transcript.');
+              await question.locator('[data-submit]').click();
+            } else if (await answerChoices.count()) {
+              await answerChoices.first().click();
+            } else if (await answerInput.count()) {
+              await answerInput.fill('A practice response.');
+              await question.locator('[data-submit]').click();
+            } else {
+              throw new Error(domainName+' '+level+' rendered no supported answer control: '+await question.innerText());
+            }
+            await question.locator('.fluentia-feedback').waitFor({state:'visible',timeout:5000});
+            await fluentia.locator('[data-exit]').click();
+          }
+        }
+        await fluentia.locator('#fluentia-level').selectOption('A1');
         await page.setViewportSize({width:390,height:844});
         const layout = await fluentia.evaluate(el => ({scrollWidth:el.scrollWidth,clientWidth:el.clientWidth,cardCount:el.querySelectorAll('.fluentia-domain-card').length}));
         assert.ok(layout.scrollWidth <= layout.clientWidth + 1,'Fluentia landing should not overflow horizontally on a phone: '+JSON.stringify(layout));
