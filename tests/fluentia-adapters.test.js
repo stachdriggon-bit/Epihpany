@@ -104,7 +104,7 @@ test('legacy source banks remain unchanged after adapter creation and evaluation
 function expandedFixture() {
   const sources = fixture();
   sources.games.vocabulary.questions[0].word = 'apple';
-  sources.audioItems = [{id:'SP-A1-01',level:'A1',word:'apple',meaning:'a round fruit'}];
+  sources.audioItems = [{id:'SP-A1-01',level:'A1',word:'apple',meaning:'a round fruit',icon:'🍎'},{id:'SP-A1-02',level:'A1',word:'book',meaning:'something you read',icon:'📘'},{id:'SP-A1-03',level:'A1',word:'umbrella',meaning:'keeps you dry in rain',icon:'☂️'},{id:'SP-A1-04',level:'A1',word:'key',meaning:'opens a lock',icon:'🔑'}];
   sources.wordOfDayItems = [{id:'WM-A1-01',level:'A1',word:'apple',meaning:'a round fruit'},{id:'WM-A1-02',level:'A1',word:'banana',meaning:'a long yellow fruit'}];
   sources.soundscapeDictationBank = [{id:'SD-A1-01',level:'A1',text:'I like fresh bread.'}];
   sources.sentenceItems = [{id:'SB-A1-01',level:'A1',text:'I drink water every morning.'}];
@@ -150,8 +150,18 @@ test('Sound Maze, dictation, shadowing and Word Match keep distinct evaluation s
   assert.equal(partial.accuracy, 75);
   assert.equal(get('real-world-speaking-shadowing').evaluate(speech, 'I would like water').correct, true);
 
-  const [picture] = get('soundscape-sound-picture-match').getItems({level:'A1'});
-  assert.equal(get('soundscape-sound-picture-match').evaluate(picture, 'apple').correct, true);
+  const pictureAdapter = get('soundscape-sound-picture-match');
+  const pictureItems = pictureAdapter.getItems({level:'A1'});
+  assert.equal(pictureItems.length, 4);
+  const [picture] = pictureItems;
+  assert.equal(picture.pictureOptions.length, 4, 'each Sound & Picture question should offer exactly four picture choices');
+  assert.ok(picture.pictureOptions.some(option => option.word === picture.word), 'the correct picture must be present');
+  assert.ok(picture.pictureOptions.every(option => option.icon || option.image), 'every choice must have visual artwork');
+  assert.equal(new Set(picture.pictureOptions.map(option => option.word)).size, 4, 'picture choices must be unique');
+  assert.deepEqual(picture.pictureOptions, pictureAdapter.getItems({level:'A1'})[0].pictureOptions, 'picture choice order should remain stable for the same item');
+  assert.equal(pictureAdapter.getItems({level:'A2'}).length, 0, 'picture questions must not leak across CEFR levels');
+  assert.equal(pictureAdapter.evaluate(picture, picture.word).correct, true);
+  assert.equal(pictureAdapter.evaluate(picture, picture.pictureOptions.find(option => option.word !== picture.word).word).correct, false);
   const [match] = get('wordcraft-word-match').getItems({level:'A1'});
   assert.equal(get('wordcraft-word-match').evaluate(match, {word:'apple',meaning:'a round fruit'}).correct, true);
   assert.equal(match.sourceActivityId, 'word-of-the-day');
