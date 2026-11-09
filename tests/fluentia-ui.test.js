@@ -133,7 +133,7 @@ test('Fluentia ordering activities use selectable tiles and map activities use s
   assert.match(ui, /Use every tile before checking your answer/);
   assert.match(ui, /function mapMarkup\(item\)/);
   assert.match(ui, /data-map-cell=/);
-  assert.match(ui, /mapChosen=mapCell\.dataset\.mapCell\.split\(', '\)\.map\(Number\)/);
+  assert.match(ui, /mapChosen=mapCell\.dataset\.mapCell\.split\(','\)\.map\(Number\)/);
   assert.doesNotMatch(ui, /Enter the map coordinate/);
   assert.doesNotMatch(ui, /separated by >/);
 });
