@@ -510,3 +510,10 @@ This document records the agreed worldbuilding direction and the approved workin
 - Every detail in the proposed coin design is immutable canon.
 
 Any future implementation should follow this reference and separately approved economy-balance specifications.
+
+
+## 10.13 Technical architecture
+
+The technical design for implementing the shared wallet, immutable transaction ledger, validated mission and achievement rewards, and atomic Card Portal transactions is maintained separately in [VELORN-TECHNICAL-ARCHITECTURE.md](docs/VELORN-TECHNICAL-ARCHITECTURE.md).
+
+That document is an architecture proposal only. It records the verified current EPIPHANY/Supabase state, target data model, security and transaction boundaries, rollout phases, acceptance tests, and unresolved decisions. It does not implement or activate the economy.
