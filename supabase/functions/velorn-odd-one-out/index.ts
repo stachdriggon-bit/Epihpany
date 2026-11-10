@@ -1,5 +1,5 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
-import { createClient } from "npm:@supabase/supabase-js@2.119.0";
+import { createClient } from "npm:@supabase/supabase-js@2.58.0";
 import "./odd-one-out-bank.js";
 import { safeSessionQuestions, validateAnswerRequest } from "./odd-one-out-validator.mjs";
 
@@ -67,7 +67,7 @@ Deno.serve(async (req: Request) => {
         p_user_id: userId,
         p_session_id: sessionId,
         p_validator_version: VERSION,
-        p_cefr_level: level,
+        p_challenge_level: level,
         p_training_mode: trainingMode,
         p_questions: questions,
         p_expires_at: expiresAt,
