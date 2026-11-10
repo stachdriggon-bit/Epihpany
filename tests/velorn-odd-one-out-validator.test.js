@@ -35,7 +35,7 @@ test("Edge Function authenticates the bearer token and never trusts a client use
   assert.match(edge, /const userId = authData\.user\.id/);
   assert.match(edge, /SUPABASE_SERVICE_ROLE_KEY/);
   assert.match(edge, /npm:@supabase\/supabase-js@2\.119\.0/);
-  assert.match(edge, /p_cefr_level: level/);
+  assert.match(edge, /p_challenge_level: level/);
   assert.doesNotMatch(edge, /body\.userId|body\.rewardAmount|body\.correctCount/);
 });
 
@@ -48,7 +48,7 @@ test("server challenge uses the exact reviewed canonical Odd One Out bank", () =
 
 test("database validator serializes answers and records completion atomically", () => {
   const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-  const sql = fs.readFileSync(path.join(root, "supabase/migrations/20261110193000_velorn_odd_one_out_validator.sql"), "utf8");
+  const sql = ["20261110193000_velorn_odd_one_out_validator.sql", "20261110193500_velorn_odd_one_out_abuse_controls.sql"].map(file => fs.readFileSync(path.join(root, "supabase/migrations", file), "utf8")).join("\n");
   assert.match(sql, /FOR UPDATE/);
   assert.match(sql, /700 milliseconds/);
   assert.match(sql, /15 minutes/);
