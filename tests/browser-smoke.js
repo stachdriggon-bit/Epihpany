@@ -518,10 +518,21 @@ test('main navigation tabs open without uncaught page errors', { timeout: 18 * 6
         checkpoint('thinklab: selecting Guided mode');
         await modePicker.locator('[data-think-training-mode="guided"]').click();
         checkpoint('thinklab: Guided selected; waiting for game card');
-        const gameCard = page.locator('#thinklab-view .tl-game-card');
+        await modePicker.waitFor({state:'hidden',timeout:15000});
+        checkpoint('thinklab: mode picker closed; waiting for server-backed guest round');
+        await page.waitForFunction(() => {
+          const view = document.querySelector('#thinklab-view');
+          const text = view?.innerText || '';
+          return text.includes('Which word does not belong?') || text.includes('Secure challenge unavailable');
+        }, null, {timeout:15000});
+        const gameCard = page.locator('#thinklab-view .tl-game-card').filter({hasText:'Which word does not belong?'});
+        if (!(await gameCard.count())) {
+          const failureText = await page.locator('#thinklab-view').innerText();
+          assert.fail('Guest validator did not prepare Odd One Out: ' + failureText);
+        }
         await gameCard.waitFor({state:'visible',timeout:5000});
-        checkpoint('thinklab: game card visible; validating prompt and choices');
-        assert.equal(await gameCard.locator('h2').innerText(), 'Which word does not belong?', 'Odd One Out must render its question prompt after Guided is selected');
+        checkpoint('thinklab: server-backed game card visible; validating prompt and choices');
+        assert.equal(await gameCard.locator('h2').innerText(), 'Which word does not belong?', 'Odd One Out must render its question prompt after the guest validator responds');
         assert.equal(await gameCard.locator('[data-think-answer]').count(), 4, 'Odd One Out must render four answer choices');
         assert.match(await gameCard.locator('.tl-game-kicker').innerText(), /PATTERN ANALYSIS · A1/);
         assert.match(await gameCard.locator('.tl-game-instruction').first().innerText(), /relationship/i);
