@@ -1,6 +1,9 @@
 export function publicQuestion(question) {
   if (!question || typeof question !== "object") throw new TypeError("Question is required");
-  const { answer, explain, challengeExplain, ...safe } = question;
+  const safe = {};
+  for (const key of ["id", "words", "relationship", "hint", "cefrLevel", "trainingMode"]) {
+    if (Object.prototype.hasOwnProperty.call(question, key)) safe[key] = question[key];
+  }
   return safe;
 }
 
