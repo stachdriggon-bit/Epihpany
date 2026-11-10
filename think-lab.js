@@ -602,33 +602,7 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
       if (!tools || !bank) return [];
       return tools.selectRound(bank, selectedMazeCEFR || 'A1', trainingMode).questions;
     }
-    if (id === 'odd' && window.EPIPHANY_ODD_ONE_OUT_BANK) {
-      const bridge = window.EpiphanyThinkLab;
-      const cefr = dailyChallengeActive && dailyChallengeActive.gameId === 'odd' ? dailyChallengeActive.level : bridge && typeof bridge.getCEFRLevel === 'function' ? bridge.getCEFRLevel() : 'A1';
-      const trainingMode = ['guided','steady','challenge'].includes(level) ? level : 'steady';
-      const selected = window.EPIPHANY_ODD_ONE_OUT_BANK.selectRound(cefr, trainingMode);
-      const completionKey = 'odd:' + selected.level + ':' + trainingMode + ':' + selected.questions.map(question => question.id).sort().join('|');
-      const relationshipLabels = {
-        'category':'Category','function':'Function','synonyms-antonyms':'Synonyms & antonyms',
-        'part-whole':'Part & whole','word-class':'Word class','cause-effect':'Cause & effect',
-        'contextual-meaning':'Contextual meaning','collocations':'Collocations',
-        'register-tone':'Register & tone','connotation':'Connotation'
-      };
-      return selected.questions.map(item => ({
-        ...item,
-        prompt:'Which word does not belong?',
-        cefrLevel:selected.level,
-        trainingMode,
-        rewardKey:'odd:' + selected.level + ':' + item.id,
-        completionKey,
-        relationshipLabel:relationshipLabels[item.relationship] || item.relationship,
-        why:trainingMode === 'guided'
-          ? 'Find the one word that does not share the relationship held by the other three.'
-          : trainingMode === 'challenge'
-            ? 'Identify the precise link shared by three words; avoid broad or superficial similarities. Context: ' + item.context
-            : 'Compare the four words in this context: ' + item.context
-      }));
-    }
+    if (id === 'odd') return []; // No browser-side bank or offline fallback.
     if (id === 'translator') {
       const bridge = window.EpiphanyThinkLab;
       const adaptiveLevel = bridge && typeof bridge.getCEFRLevel === 'function' ? bridge.getCEFRLevel() : 'A1';
@@ -724,6 +698,9 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
   const INTERNAL_SESSION_BANK_VERSION = 'think-lab-rounds-20261109-v1';
   let restoringInternalSession = false;
   let validatorSessionId = null;
+  let validatorClientForSession = null;
+  let validatorFunctionName = null;
+  let validatorGuestToken = null;
   let dailyChallengeActive = null;
   function localDayKey(date = new Date()) {
     return date.getFullYear() + '-' + String(date.getMonth()+1).padStart(2,'0') + '-' + String(date.getDate()).padStart(2,'0');
@@ -740,7 +717,7 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
   }
   function availableDailyGameIds(level) {
     const ids = [];
-    if (window.EPIPHANY_ODD_ONE_OUT_BANK && typeof window.EPIPHANY_ODD_ONE_OUT_BANK.selectRound === 'function') ids.push('odd');
+    ids.push('odd'); // Server-validated for guests and signed-in players.
     if (translatorBanks[level]?.steady?.length) ids.push('translator');
     if (window.EPIPHANY_SOUND_MAZE_BANK?.levels?.[level]?.steady?.length && window.EPIPHANY_SOUND_MAZE_TOOLS) ids.push('maze');
     if (ladderWordBank && ladderWordBank.size) ids.push('wordladder');
@@ -1272,43 +1249,41 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
     const preparedMazePool = id === 'maze' && preparedMazeCEFR === selectedMazeCEFR && activePool && activePool.length ? activePool : null;
     const previousRandom = Math.random;
     if (options.daily === true && dailyChallengeActive) Math.random = seededDailyRandom(dailyChallengeActive.seed);
-    try { activePool = preparedMazePool || getRoundPool(id,selectedTrainingMode); }
+    try { activePool = id === 'odd' ? [] : preparedMazePool || getRoundPool(id,selectedTrainingMode); }
     finally { Math.random = previousRandom; }
     validatorSessionId = null;
-    if (id === 'odd' && typeof window.EpiphanyAuth?.isSignedIn === 'function') {
-      await (window.EpiphanyAuth.whenReady?.() || Promise.resolve());
-      if (window.EpiphanyAuth.isSignedIn()) {
-        const validatorClient = window.EpiphanyAuth.getValidatorClient();
-        const level = window.EpiphanyThinkLab?.getCEFRLevel?.() || 'A1';
-        if (!validatorClient) {
-          mode = null; activePool = null;
-          root.innerHTML = '<div class="tl-game-card"><h2>Secure challenge unavailable</h2><p class="tl-game-instruction">Your account connection is not ready. Please try again.</p><button type="button" class="tl-back" data-think-home>Think Lab home</button></div>';
-          return;
-        }
-        const {data, error} = await validatorClient.functions.invoke('velorn-odd-one-out', {
-          body: {action:'start', level, trainingMode:selectedTrainingMode}
-        });
-        if (error || !data?.sessionId || !Array.isArray(data.questions) || !data.questions.length) {
-          console.error('Trusted Odd One Out session could not start:', error?.message || data?.error || 'invalid response');
-          mode = null; activePool = null;
-          root.innerHTML = '<div class="tl-game-card"><h2>Secure challenge unavailable</h2><p class="tl-game-instruction">We could not prepare a verified challenge. Your attempt has not started. Please try again.</p><button type="button" class="tl-back" data-think-home>Think Lab home</button></div>';
-          return;
-        }
-        validatorSessionId = data.sessionId;
-        const relationshipLabels = {
-          category:'Category',function:'Function','synonyms-antonyms':'Synonyms & antonyms',
-          'part-whole':'Part & whole','word-class':'Word class','cause-effect':'Cause & effect',
-          'contextual-meaning':'Contextual meaning',collocations:'Collocations',
-          'register-tone':'Register & tone',connotation:'Connotation'
-        };
-        activePool = data.questions.map(question => ({
-          ...question,
-          prompt:'Which word does not belong?',
-          cefrLevel:data.level,
-          trainingMode:data.trainingMode,
-          relationshipLabel:relationshipLabels[question.relationship] || question.relationship
-        }));
+    validatorClientForSession = null;
+    validatorFunctionName = null;
+    validatorGuestToken = null;
+    if (id === 'odd') {
+      await (window.EpiphanyAuth?.whenReady?.() || Promise.resolve());
+      const signedIn = window.EpiphanyAuth?.isSignedIn?.() === true;
+      const validatorClient = signedIn ? window.EpiphanyAuth?.getValidatorClient?.() : window.EpiphanyAuth?.getGuestValidatorClient?.();
+      const functionName = signedIn ? 'velorn-odd-one-out' : 'velorn-odd-one-out-guest';
+      const level = window.EpiphanyThinkLab?.getCEFRLevel?.() || 'A1';
+      if (!validatorClient) {
+        mode = null; activePool = null;
+        root.innerHTML = '<div class="tl-game-card"><h2>Secure challenge unavailable</h2><p class="tl-game-instruction">An internet connection is required to prepare this verified challenge. Please try again.</p><button type="button" class="tl-back" data-think-home>Think Lab home</button></div>';
+        return;
       }
+      const {data,error} = await validatorClient.functions.invoke(functionName,{body:{action:'start',level,trainingMode:selectedTrainingMode}});
+      const guestTokenValid = signedIn || (typeof data?.guestToken === 'string' && /^[0-9a-f]{64}$/.test(data.guestToken));
+      if (error || !data?.sessionId || !Array.isArray(data.questions) || !data.questions.length || !guestTokenValid) {
+        console.error('Trusted Odd One Out session could not start:',error?.message||data?.error||'invalid response');
+        mode=null;activePool=null;
+        root.innerHTML='<div class="tl-game-card"><h2>Secure challenge unavailable</h2><p class="tl-game-instruction">We could not prepare a verified challenge. Your attempt has not started. Please check your connection and try again.</p><button type="button" class="tl-back" data-think-home>Think Lab home</button></div>';
+        return;
+      }
+      validatorSessionId=data.sessionId; validatorClientForSession=validatorClient;
+      validatorFunctionName=functionName; validatorGuestToken=signedIn?null:data.guestToken;
+      const labels={category:'Category',function:'Function','synonyms-antonyms':'Synonyms & antonyms','part-whole':'Part & whole','word-class':'Word class','cause-effect':'Cause & effect','contextual-meaning':'Contextual meaning',collocations:'Collocations','register-tone':'Register & tone',connotation:'Connotation'};
+      const completionKey='odd:'+data.level+':'+data.trainingMode+':'+data.questions.map(question=>question.id).sort().join('|');
+      activePool=data.questions.map(question=>({...question,prompt:'Which word does not belong?',cefrLevel:data.level,trainingMode:data.trainingMode,
+        rewardKey:'odd:'+data.level+':'+question.id,completionKey,
+        why:selectedTrainingMode==='guided'?'Find the one word that does not share the relationship held by the other three.':
+          selectedTrainingMode==='challenge'?'Identify the precise link shared by three words; avoid broad or superficial similarities. Context: '+(question.context||''):
+          'Compare the four words in this context: '+(question.context||''),
+        relationshipLabel:labels[question.relationship]||question.relationship}));
     }
     if (id === 'maze') preparedMazeCEFR = null;
     if (id === 'maze' && !activePool.length) {
@@ -1623,27 +1598,20 @@ root.innerHTML='<div class="tl-finish"><span class="tl-finish-mark">∴</span><s
     if(mode==='wordladder')return;
     locked=true;
     const chosen=Number(answer.dataset.thinkAnswer);
-    if (mode === 'odd' && validatorSessionId) {
-      const validatorClient = window.EpiphanyAuth?.getValidatorClient?.();
-      if (!validatorClient) {
-        locked = false;
-        const fb=root.querySelector('#tl-feedback');fb.hidden=false;fb.className='tl-feedback is-wrong';fb.textContent='Your secure session is unavailable. Please return to Think Lab and start again.';
-        return;
+    let serverAnswerResult=null;
+    if(mode==='odd'){
+      if(!validatorSessionId||!validatorClientForSession||!validatorFunctionName||(validatorFunctionName==='velorn-odd-one-out-guest'&&!validatorGuestToken)){
+        locked=false;const fb=root.querySelector('#tl-feedback');fb.hidden=false;fb.className='tl-feedback is-wrong';fb.textContent='Your secure session is unavailable. Please return to Think Lab and start again.';return;
       }
-      const {data, error} = await validatorClient.functions.invoke('velorn-odd-one-out', {
-        body: {action:'answer', sessionId:validatorSessionId, questionIndex:index, selectedIndex:chosen}
-      });
-      if (error || !data || !Number.isInteger(data.correctIndex)) {
-        locked = false;
-        const fb=root.querySelector('#tl-feedback');fb.hidden=false;fb.className='tl-feedback is-wrong';fb.textContent='We could not verify that answer. Please retry this question.';
-        return;
+      const answerBody={action:'answer',sessionId:validatorSessionId,questionIndex:index,selectedIndex:chosen};
+      if(validatorFunctionName==='velorn-odd-one-out-guest')answerBody.guestToken=validatorGuestToken;
+      const {data,error}=await validatorClientForSession.functions.invoke(validatorFunctionName,{body:answerBody});
+      if(error||!data||!Number.isInteger(data.correctIndex)||typeof data.correct!=='boolean'){
+        locked=false;const fb=root.querySelector('#tl-feedback');fb.hidden=false;fb.className='tl-feedback is-wrong';fb.textContent='We could not verify that answer. Please retry this question.';return;
       }
-      item.answer = data.correctIndex;
-      item.explain = data.explanation || '';
-      item.hint = data.hint || item.hint;
-      item.relationshipLabel = data.relationship || item.relationshipLabel;
+      serverAnswerResult=data.correct;item.answer=data.correctIndex;item.explain=data.explanation||'';item.hint=data.hint||item.hint;item.relationshipLabel=data.relationship||item.relationshipLabel;
     }
-    const correct=mode==='maze'?item.options[chosen]===item.target:chosen===item.answer;
+    const correct=mode==='odd'?serverAnswerResult:mode==='maze'?item.options[chosen]===item.target:chosen===item.answer;
     if(correct)score++;else roundMistakes++;
     if(window.EpiphanyThinkLab){const skill=mode==='maze'?'listening':mode==='translator'?'conversation':mode==='detective'?'reading':mode==='wordladder'||mode==='forge'?'spelling':mode==='scramble'?'grammar':'vocabulary';window.EpiphanyThinkLab.recordResult(skill,mode,correct,index===(activePool || getRoundPool(mode)).length-1,{trackAdaptive:mode !== 'translator' || selectedTranslatorCEFR === 'adaptive',rewardKey:mode==='odd'?item.rewardKey:undefined,completionKey:mode==='odd'&&index===(activePool || getRoundPool(mode)).length-1?item.completionKey:undefined});}
     saveInternalProgress(index+1);
@@ -1660,7 +1628,7 @@ root.innerHTML='<div class="tl-finish"><span class="tl-finish-mark">∴</span><s
   });
   window.EPIPHANY_THINK_LAB_HOME = function () {
     window.EpiphanySpeech?.stop?.();
-    mode = null; activePool = null; activeDifficulty = null; validatorSessionId = null; pickerStage = 'landing'; pickerGameId = null;
+    mode = null; activePool = null; activeDifficulty = null; validatorSessionId = null; validatorClientForSession = null; validatorFunctionName = null; validatorGuestToken = null; pickerStage = 'landing'; pickerGameId = null;
     landing();
   };
   landing();

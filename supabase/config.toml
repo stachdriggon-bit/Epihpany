@@ -18,3 +18,9 @@ port = 54323
 [storage]
 enabled = true
 file_size_limit = "12MiB"
+
+[functions.velorn-odd-one-out]
+verify_jwt = true
+
+[functions.velorn-odd-one-out-guest]
+verify_jwt = false

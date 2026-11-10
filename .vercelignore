@@ -10,3 +10,6 @@ playwright-report
 browser-smoke.js
 *.md
 *.sql
+
+# Supabase Edge Function source and migrations are deployed separately, never as static assets.
+supabase/

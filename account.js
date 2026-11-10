@@ -710,6 +710,7 @@
     isWelcomeOpen: () => !!($('account-welcome-modal') && !$('account-welcome-modal').hidden),
     isSignedIn: () => !!currentUser,
     getValidatorClient: () => currentUser ? client : null,
+    getGuestValidatorClient: () => client,
     whenReady: () => authReadyPromise,
     queueSave(progress) {
       if (!client || !currentUser) return;
@@ -727,9 +728,6 @@
     const verifyButton=$('developer-verify-character-art');
     verifyButton?.addEventListener('click',async()=>{verifyButton.disabled=true;const status=$('developer-art-status');if(status)status.textContent='Checking bucket contents…';try{const report=await inspectCharacterArtAssets();const ok=report.assets.filter(x=>x.status==='verified').length;if(status)status.textContent='Verification complete: '+ok+'/'+report.assets.length+' objects found.';}catch(error){if(status)status.textContent='Verification failed: '+(error?.message||String(error));}finally{verifyButton.disabled=false;}});
     const form = $('account-form');
-    if (!form) { markAuthReady(); return; }
-    setMode('signin');
-    wirePlayerProfile();
     $('account-google-signin')?.addEventListener('click', () => signInWithProvider('google'));
     $('account-facebook-signin')?.addEventListener('click', () => signInWithProvider('facebook'));
     if (!config || !config.url || !config.publishableKey || !sdk || !sdk.createClient) {
@@ -738,8 +736,10 @@
       return;
     }
     client = sdk.createClient(config.url, config.publishableKey);
-    // The card gallery may initialize before this DOMContentLoaded callback creates the client.
     window.dispatchEvent(new CustomEvent('epiphany:supabase-ready'));
+    if (!form) { markAuthReady(); return; }
+    setMode('signin');
+    wirePlayerProfile();
     form.addEventListener('submit', async event => {
       event.preventDefault();
       const email = $('account-email-input').value.trim();

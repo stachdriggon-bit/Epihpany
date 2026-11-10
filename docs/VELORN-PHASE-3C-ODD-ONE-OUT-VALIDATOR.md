@@ -76,3 +76,14 @@ Mission templates remain unmapped and unassignable. Reward claims remain unwrita
 - expired and non-active sessions are rejected;
 - rate limits and minimum answer spacing are enforced by the database;
 - no wallet, ledger, claim, or achievement write occurs.
+
+
+## Guest play and static-asset isolation
+
+- Odd One Out is online-only for guests and signed-in players. The browser does not load, cache, or fall back to an answer-bearing bank.
+- The canonical bank stays in the private Supabase Edge Function source tree. Guest and authenticated copies are byte-identical and tested.
+- Vercel excludes the entire `supabase/` tree via `.vercelignore`; Edge Functions are deployed separately.
+- Signed-in sessions use `velorn-odd-one-out` and verified Auth identity. Guest sessions use `velorn-odd-one-out-guest` with a random 256-bit bearer token; only its hash is stored in the private database. The raw token remains in page memory and responses use `Cache-Control: no-store`.
+- Guest sessions have per-IP and answer-pacing limits. They never write trusted activity events, mission claims, wallets, or Velorn ledger entries.
+- The frontend fails closed if the network or validator is unavailable. It never switches to local questions.
+- Daily Think Lab selection may include Odd One Out for guests; starting still requires the trusted online validator.

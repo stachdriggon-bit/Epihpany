@@ -1,6 +1,6 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const bank = require('../odd-one-out-bank.js');
+const bank = require('../supabase/functions/velorn-odd-one-out/odd-one-out-bank.js');
 const fs = require('node:fs');
 const path = require('node:path');
 const vm = require('node:vm');
@@ -73,22 +73,10 @@ function loadThinkLabHarness(cefrLevel = 'A1') {
   return window;
 }
 
-test('Think Lab integration supplies a visible prompt and mode-specific instructions', () => {
-  for (const level of ['A1','A2','B1','B2','C1','C2']) {
-    const harness = loadThinkLabHarness(level);
-    for (const mode of ['guided','steady','challenge']) {
-      const pool = harness.__oddPool(mode);
-      const target = mode === 'guided' ? 8 : mode === 'steady' ? 10 : 12;
-      assert.equal(pool.length,Math.min(target,bank.banks[level].length),level + ' ' + mode + ' should return the available questions up to its round target');
-      assert.ok(pool.every(item => item.prompt === 'Which word does not belong?'));
-      assert.ok(pool.every(item => item.cefrLevel === level));
-      assert.ok(pool.every(item => item.trainingMode === mode));
-      assert.ok(pool.every(item => item.why && item.why.length > 15));
-      assert.ok(pool.every(item => item.relationshipLabel));
-      assert.ok(pool.every(item => item.rewardKey === 'odd:' + level + ':' + item.id));
-      assert.ok(pool.every(item => item.completionKey.startsWith('odd:' + level + ':' + mode + ':')));
-    }
-  }
+test('Think Lab never falls back to a browser-side Odd One Out bank', () => {
+  const harness = loadThinkLabHarness('A1');
+  for (const mode of ['guided','steady','challenge']) assert.deepEqual(harness.__oddPool(mode), []);
+  assert.doesNotMatch(thinkLabSource, /EPIPHANY_ODD_ONE_OUT_BANK/);
 });
 
 test('all 18 CEFR and training-mode combinations select the intended distinct questions', () => {
