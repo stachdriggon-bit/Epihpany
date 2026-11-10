@@ -1275,8 +1275,8 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
     try { activePool = preparedMazePool || getRoundPool(id,selectedTrainingMode); }
     finally { Math.random = previousRandom; }
     validatorSessionId = null;
-    if (id === 'odd' && window.EpiphanyAuth) {
-      await window.EpiphanyAuth.whenReady();
+    if (id === 'odd' && typeof window.EpiphanyAuth?.isSignedIn === 'function') {
+      await (window.EpiphanyAuth.whenReady?.() || Promise.resolve());
       if (window.EpiphanyAuth.isSignedIn()) {
         const validatorClient = window.EpiphanyAuth.getValidatorClient();
         const level = window.EpiphanyThinkLab?.getCEFRLevel?.() || 'A1';
