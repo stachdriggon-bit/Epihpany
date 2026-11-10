@@ -591,8 +591,10 @@ test('main navigation tabs open without uncaught page errors', { timeout: 18 * 6
         assert.ok((await gameCard.locator('[data-odd-hint-text]').innerText()).trim().length > 10);
         checkpoint('thinklab: hint verified; submitting first answer');
         await gameCard.locator('[data-think-answer]').first().click();
-        checkpoint('thinklab: answer submitted; checking feedback');
-        assert.equal(await gameCard.locator('#tl-feedback').isVisible(), true, 'an answer should reveal feedback');
+        checkpoint('thinklab: answer submitted; waiting for server verification feedback');
+        await gameCard.locator('#tl-feedback').waitFor({state:'visible',timeout:5000});
+        checkpoint('thinklab: server feedback visible; checking result');
+        assert.equal(await gameCard.locator('#tl-feedback').isVisible(), true, 'a verified answer should reveal feedback');
         const feedbackState = await gameCard.locator('#tl-feedback').evaluate(el => ({text:el.textContent,html:el.innerHTML,hidden:el.hidden,className:el.className}));
         assert.match(feedbackState.text, /Relationship:/, 'feedback should identify the shared relationship: ' + JSON.stringify(feedbackState));
         assert.deepEqual(guestAnswerRequest,{action:'answer',sessionId:'00000000-0000-4000-8000-000000000001',questionIndex:0,selectedIndex:0,guestToken:'a'.repeat(64)},'guest answer must be verified with the in-memory session token');
