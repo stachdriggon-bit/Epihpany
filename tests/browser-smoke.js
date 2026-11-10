@@ -515,6 +515,36 @@ test('main navigation tabs open without uncaught page errors', { timeout: 18 * 6
         for (const trainingMode of ['guided','steady','challenge']) {
           assert.equal(await modePicker.locator('[data-think-training-mode="'+trainingMode+'"]').isVisible(), true, trainingMode+' mode should be selectable');
         }
+        let guestStartRequest = null;
+        await page.route('**/functions/v1/velorn-odd-one-out-guest', async route => {
+          if (route.request().method() === 'OPTIONS') {
+            await route.fulfill({status:204,headers:{
+              'Access-Control-Allow-Origin':'*',
+              'Access-Control-Allow-Methods':'POST, OPTIONS',
+              'Access-Control-Allow-Headers':'authorization, apikey, content-type, x-client-info'
+            }});
+            return;
+          }
+          guestStartRequest = route.request().postDataJSON();
+          const questions = Array.from({length:8},(_,i)=>({
+            id:'SMOKE-A1-'+String(i+1).padStart(2,'0'),
+            words:['apple','pear','plum','screwdriver'],
+            relationship:'category',
+            hint:'Three words name fruit.',
+            context:'Fruit category',
+            cefrLevel:'A1',
+            trainingMode:'guided'
+          }));
+          await route.fulfill({status:200,contentType:'application/json',headers:{'Access-Control-Allow-Origin':'*'},body:JSON.stringify({
+            sessionId:'00000000-0000-4000-8000-000000000001',
+            guestToken:'a'.repeat(64),
+            validatorVersion:'odd-one-out-rotated-20261110-v2',
+            level:'A1',
+            trainingMode:'guided',
+            questions
+          })});
+        });
+        checkpoint('thinklab: guest validator mock installed');
         checkpoint('thinklab: selecting Guided mode');
         await modePicker.locator('[data-think-training-mode="guided"]').click();
         checkpoint('thinklab: Guided selected; waiting for game card');
@@ -532,6 +562,7 @@ test('main navigation tabs open without uncaught page errors', { timeout: 18 * 6
         }
         await gameCard.waitFor({state:'visible',timeout:5000});
         checkpoint('thinklab: server-backed game card visible; validating prompt and choices');
+        assert.deepEqual(guestStartRequest,{action:'start',level:'A1',trainingMode:'guided'},'guest start must send only the selected level and training mode');
         assert.equal(await gameCard.locator('h2').innerText(), 'Which word does not belong?', 'Odd One Out must render its question prompt after the guest validator responds');
         assert.equal(await gameCard.locator('[data-think-answer]').count(), 4, 'Odd One Out must render four answer choices');
         assert.match(await gameCard.locator('.tl-game-kicker').innerText(), /PATTERN ANALYSIS · A1/);
