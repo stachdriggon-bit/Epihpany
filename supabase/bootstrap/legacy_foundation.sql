@@ -20,6 +20,7 @@ CREATE POLICY "Players can save their own progress" ON public.player_progress
 DROP POLICY IF EXISTS "Players can update their own progress" ON public.player_progress;
 CREATE POLICY "Players can update their own progress" ON public.player_progress
   FOR UPDATE TO authenticated USING (auth.uid() = user_id) WITH CHECK (auth.uid() = user_id);
+REVOKE SELECT, INSERT, UPDATE, DELETE ON public.player_progress FROM authenticated;
 GRANT SELECT, INSERT, UPDATE ON public.player_progress TO authenticated;
 
 CREATE TABLE IF NOT EXISTS public.player_profiles (
@@ -38,6 +39,7 @@ CREATE POLICY "Players create their own profile" ON public.player_profiles
 DROP POLICY IF EXISTS "Players update their own profile" ON public.player_profiles;
 CREATE POLICY "Players update their own profile" ON public.player_profiles
   FOR UPDATE TO authenticated USING (auth.uid() = user_id) WITH CHECK (auth.uid() = user_id);
+REVOKE SELECT, INSERT, UPDATE, DELETE ON public.player_profiles FROM authenticated;
 GRANT SELECT, INSERT, UPDATE ON public.player_profiles TO authenticated;
 
 CREATE TABLE IF NOT EXISTS public.player_posts (
@@ -60,6 +62,7 @@ CREATE POLICY "Players create their own posts" ON public.player_posts
 DROP POLICY IF EXISTS "Players delete their own posts" ON public.player_posts;
 CREATE POLICY "Players delete their own posts" ON public.player_posts
   FOR DELETE TO authenticated USING (auth.uid() = user_id);
+REVOKE SELECT, INSERT, UPDATE, DELETE ON public.player_posts FROM authenticated;
 GRANT SELECT, INSERT, DELETE ON public.player_posts TO authenticated;
 
 -- Pre-existing buckets before Asset Manager.

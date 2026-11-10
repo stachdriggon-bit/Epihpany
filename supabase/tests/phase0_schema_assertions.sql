@@ -100,6 +100,11 @@ BEGIN
      OR NOT has_table_privilege('authenticated','public.player_progress','UPDATE') THEN
     RAISE EXCEPTION 'Authenticated player table grants are incomplete';
   END IF;
+  IF has_table_privilege('authenticated','public.player_profiles','DELETE')
+     OR has_table_privilege('authenticated','public.player_progress','DELETE')
+     OR has_table_privilege('authenticated','public.player_posts','UPDATE') THEN
+    RAISE EXCEPTION 'Authenticated player table grants exceed the hosted privilege boundary';
+  END IF;
   IF NOT has_table_privilege('anon','public.epiphany_telemetry','INSERT')
      OR has_table_privilege('anon','public.epiphany_telemetry','SELECT') THEN
     RAISE EXCEPTION 'Telemetry must allow anonymous INSERT only';
