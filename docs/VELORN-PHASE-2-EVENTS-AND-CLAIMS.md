@@ -1,6 +1,6 @@
 # Velorn Phase 2 — Validated Events and Reward-Claim Foundation
 
-> **Status:** Phase 2 database foundation committed to `main`; clean-room CI verification is pending. Not deployed to the hosted Supabase project. No game integration, live mission boards, reward claims, Velorn issuance, player balance reads, or economy activation is enabled.
+> **Status (2026-11-10):** Phase 2 database foundation is committed to `main`, passed clean-room CI, and is deployed to hosted Supabase as migration `20261110190138`. Post-deployment checks confirmed private-table boundaries, service-role-only event ingestion, inactive template banks, empty event/board/claim/award/wallet tables, and `economy_enabled = false`. No game integration, live mission boards, reward claims, Velorn issuance, player balance reads, or economy activation is enabled.
 
 ## Scope delivered in this foundation
 
