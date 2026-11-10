@@ -67,7 +67,7 @@ Deno.serve(async (req: Request) => {
         p_user_id: userId,
         p_session_id: sessionId,
         p_validator_version: VERSION,
-        p_cefr_level: level,
+        p_challenge_level: level,
         p_training_mode: trainingMode,
         p_questions: questions,
         p_expires_at: expiresAt,
