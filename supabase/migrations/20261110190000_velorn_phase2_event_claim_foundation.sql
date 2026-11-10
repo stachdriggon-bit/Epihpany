@@ -431,8 +431,9 @@ AS $$
   );
 $$;
 
-REVOKE ALL ON ALL FUNCTIONS IN SCHEMA economy_private
-  FROM PUBLIC, anon, authenticated, service_role;
+REVOKE ALL ON FUNCTION economy_private.record_validated_activity_event(
+  uuid, uuid, text, text, text, text, timestamptz, text, jsonb
+) FROM PUBLIC, anon, authenticated, service_role;
 GRANT EXECUTE ON FUNCTION economy_private.record_validated_activity_event(
   uuid, uuid, text, text, text, text, timestamptz, text, jsonb
 ) TO service_role;
