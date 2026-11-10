@@ -291,6 +291,142 @@ Achievements are permanent or milestone-based rewards and are **additional** to 
 - The board should communicate progress, reward, remaining eligible missions, and the completion bonus clearly. Do not hide important eligibility conditions in secondary text.
 - Mission content should be localized, accessible, and understandable without requiring knowledge of internal game or economy terminology.
 
+### 10.12 Mission generation and player-specific assignment
+
+Mission generation is a controlled selection process over the approved mission bank. It is not free-form generation of reward conditions. The system may choose and configure approved templates, but it must not invent new reward values, eligibility rules, or objectives at runtime.
+
+#### Inputs to the mission selector
+
+Before assigning a mission, the central mission service should consider only the minimum relevant player and platform state:
+
+- **Available experiences:** games and activity types currently accessible to the player, including temporary outages or unavailable content.
+- **Validated activity history:** completed event types, distinct activity identifiers, and recent activity categories. Do not infer progress from page views or client-side counters.
+- **Current progress:** active mission progress, completed mission IDs, achievement milestones, and the current daily/weekly period.
+- **Recent assignments:** mission templates and categories shown recently, including declined or replaced assignments, to reduce repetition.
+- **Player learning context:** level or progression information only when the mission explicitly needs it and the underlying game provides a reliable validated value.
+- **Accessibility and eligibility:** content availability and any relevant player-selected accessibility constraints, where supported. Do not assign missions that require inaccessible interaction modes.
+
+Do not use sensitive personal attributes, inferred demographics, or unrelated profile data to choose missions.
+
+#### Eligibility filtering before selection
+
+The selector must filter the mission bank before ranking or random selection:
+
+1. Remove templates whose required game, content, feature, or activity type is unavailable.
+2. Remove templates whose prerequisites are not met or whose progress cannot be reliably measured.
+3. Remove templates already completed or paid for in the current period.
+4. Remove templates that would be impossible because their qualifying objective has already passed, unless the template explicitly supports historical progress.
+5. Remove templates that conflict with another active assignment in a way that makes the combined board impractical.
+6. Remove templates that violate the daily/weekly variety rules or recent-repeat policy.
+7. Remove templates for which the system cannot produce a stable qualifying event ID and verify completion.
+
+If a template cannot be evaluated safely, it is ineligible; do not guess or award on a best-effort client claim.
+
+#### Board composition and ranking
+
+After filtering, compose the board using these priorities in order:
+
+1. **Feasibility:** every displayed mission must be realistically completable by this player during the relevant period.
+2. **Choice:** any three of the four daily missions should be sufficient for the full daily reward. Avoid combinations where three missions all depend on the same narrow game or feature.
+3. **Variety:** prefer different activity families, learning goals, and interaction formats.
+4. **Freshness:** prefer templates not shown on the immediately preceding day and avoid repeating a recent weekly set when alternatives exist.
+5. **Progress relevance:** prefer missions that match the player's available progression without making the board feel like a forced curriculum.
+6. **Fairness:** avoid assigning only the hardest or most time-consuming variants to a particular player. Equivalent templates should have comparable effort expectations for the same reward.
+
+Daily composition constraints:
+
+- Select four distinct eligible mission instances.
+- At least two should be broadly available across multiple experiences or activity types.
+- No more than one should require a specific game feature, case type, or progression state.
+- At least three must remain feasible for the player; if only three eligible missions exist, show those three and preserve the full 40 Velorn earning opportunity.
+- If fewer than three eligible missions exist, do not lower the reward for the player. Use a safe fallback pool of broadly available missions or flag a content/configuration issue for review. Never fabricate an objective simply to fill the board.
+
+Weekly composition constraints:
+
+- Select one consistency-oriented mission, one variety-oriented mission, and one meaningful-progress mission, or validated equivalents.
+- Each must have a viable route for the player with currently available experiences.
+- Do not require the same exact game or activity for more than one weekly objective unless the player has no reasonable alternative and the objectives are genuinely different.
+- If a weekly family has no eligible template, select an approved equivalent from the same family; if none exists, preserve progress and surface a configuration issue rather than silently changing the reward rules.
+
+#### Assignment stability and rotation
+
+- Generate and persist the board once per player and period. Refreshing the page, signing in on another device, or reopening the mission screen must return the same assignments and progress.
+- Each assignment must have a stable ID, template ID, period ID, version, issue timestamp, reward amount, objective parameters, and status.
+- Randomized selection must be reproducible for the same persisted assignment. A refresh must never reroll the board.
+- Use a server-controlled random seed or equivalent deterministic assignment record; never trust a client-generated seed to determine rewards.
+- Do not reroll a mission simply because the player dislikes it. A replacement is allowed only for genuine ineligibility, content unavailability, or a confirmed assignment error.
+- A replacement must preserve the mission slot's reward value and period budget, mark the old assignment as replaced, and prevent both old and new assignment IDs from paying for the same objective.
+- If the player has already made valid progress on a mission before it becomes unavailable, preserve that progress where the replacement objective is compatible; otherwise explain the replacement and do not erase earned rewards.
+- Rotation preferences are soft constraints. Feasibility and fair access take priority over novelty.
+
+#### Progress evaluation and normalized activity events
+
+Games should emit validated, normalized activity events to the shared mission/reward service. The event contract should support different game structures and should not require every activity to expose a score, level, round, question count, or session duration.
+
+A normalized event should carry, where applicable:
+
+- Stable event ID and idempotency key.
+- Player ID from the authenticated server context, not a trusted client-supplied identity.
+- Stable game/experience ID and activity type.
+- Event type, such as validated activity completion, distinct milestone reached, case completed, or verified improvement.
+- Stable activity/objective ID and session reference when applicable.
+- Server timestamp and relevant period attribution.
+- Minimal validated result metadata required by the mission rule.
+- Validation status and source/configuration version.
+
+The shared service maps events to explicit mission predicates. For example:
+
+- Learning Step: one validated event in an approved learning-activity family.
+- Try Something Different: a qualifying event from a distinct eligible experience/activity family compared with the player's credited activity history for that period.
+- Consistent Progress: qualifying events on three distinct local mission dates, not three sessions on the same date.
+- Broaden Your Experience: qualifying events from two distinct experience IDs or approved activity families.
+- Meaningful Progress: one event referencing a registered milestone or completed objective, not an arbitrary client-reported score.
+- Review and Improve: a validated improvement event compared with an eligible prior baseline; a retry without improvement does not qualify.
+
+One normalized event may advance more than one mission only if each mission predicate is independently satisfied. Each mission instance stores its own progress and completion state, and each reward has a unique ledger idempotency key.
+
+#### Reset periods and time handling
+
+- Daily and weekly periods must use one consistent, documented time policy across mission display, event attribution, reward eligibility, and ledger records.
+- Prefer the player's explicitly configured account timezone for period boundaries. If no timezone is configured, use a clearly disclosed platform default; UTC is the safe technical fallback.
+- Store all event and transaction timestamps in UTC while retaining the timezone and period ID used to evaluate the mission.
+- A period boundary must not retroactively move already credited events between periods.
+- Timezone changes must be controlled and take effect at a future period boundary; they must not allow a player to repeat a daily or weekly reward by changing timezone.
+- Weekly periods must have one consistent start day and boundary across the service. The exact default weekday and reset hour remain implementation configuration and must be shown clearly to players.
+
+#### Graceful fallback and unavailable content
+
+- If a game is temporarily unavailable, missions depending on it become ineligible for new assignment; existing progress must be preserved.
+- If a player loses access to assigned content during a period, allow a replacement from the same mission family without reducing the earning opportunity.
+- If the event source is delayed or temporarily unavailable, keep the mission pending verification rather than marking it failed or paying from an unverified client message.
+- If no safe replacement exists, do not issue an impossible mission. Escalate the empty-pool condition for content/configuration review and preserve the player's ability to earn the standard mission budget through available alternatives.
+- Never compensate for a missing mission by silently increasing another mission's reward. Any economy compensation must be an explicit, audited policy change.
+
+#### Security and operational boundaries
+
+- The server is authoritative for assignment, progress, eligibility, reward calculation, period attribution, and payment.
+- The client may display missions and submit activity interactions, but cannot set mission completion, Velorn amount, period ID, or wallet balance.
+- Validate event ownership, event uniqueness, assignment eligibility, assignment period, and reward idempotency before updating progress or paying.
+- Mission configuration changes must be versioned. Existing assignments retain their original version and reward terms for that period unless a documented migration is necessary to correct a serious defect.
+- Log assignment decisions and fallback reasons sufficiently to diagnose empty pools, repeated assignments, and unfair distribution without storing unnecessary personal data.
+
+#### Generation test matrix
+
+Before implementation, test at least:
+
+1. A player with access to all games receives four distinct daily missions, at least two broadly available, with any three sufficient for 40 Velorn.
+2. A player with access to only one game still receives at least three feasible daily missions and is not blocked from the full daily reward.
+3. A player with no eligible game-specific feature does not receive a feature-dependent mission.
+4. Refreshing, changing devices, or reopening the board does not reroll assignments or reset progress.
+5. The same normalized event submitted twice advances progress and pays at most once.
+6. A single event advances multiple missions only when it independently satisfies each predicate.
+7. Three qualifying sessions on one date do not satisfy a three-distinct-day weekly mission.
+8. A game outage triggers a safe replacement or a configuration issue, not an impossible mission or loss of earned progress.
+9. A timezone change cannot duplicate a daily or weekly reward.
+10. A player cannot manipulate the board by repeatedly requesting replacements or refreshing the page.
+11. A client cannot forge player identity, event validation, mission completion, reward amount, or period attribution.
+12. A newly added game can emit the normalized event contract without requiring changes to the shared wallet or existing mission templates.
+
 ### 10.7 Economy validation scenarios
 
 Before implementation or release, test at least these scenarios:
