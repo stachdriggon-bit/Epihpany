@@ -1,5 +1,8 @@
 import test from "node:test";
 import assert from "node:assert/strict";
+import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { publicQuestion, safeSessionQuestions, validateAnswerRequest } from "../supabase/functions/_shared/odd-one-out-validator.mjs";
 
 test("public question payload never includes the answer key or explanation", () => {
@@ -23,4 +26,31 @@ test("answer requests accept only bounded UUID, question index and option index"
   assert.equal(validateAnswerRequest({...valid, questionIndex:12}), false);
   assert.equal(validateAnswerRequest({...valid, sessionId:"not-a-uuid"}), false);
   assert.equal(validateAnswerRequest({...valid, action:"answer", userId:"attacker"}), false);
+});
+
+test("Edge Function authenticates the bearer token and never trusts a client user ID", () => {
+  const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+  const edge = fs.readFileSync(path.join(root, "supabase/functions/velorn-odd-one-out/index.ts"), "utf8");
+  assert.match(edge, /auth\.getUser\(token\)/);
+  assert.match(edge, /const userId = authData\.user\.id/);
+  assert.match(edge, /SUPABASE_SERVICE_ROLE_KEY/);
+  assert.doesNotMatch(edge, /body\.userId|body\.rewardAmount|body\.correctCount/);
+});
+
+test("server challenge uses the exact reviewed canonical Odd One Out bank", () => {
+  const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+  const canonical = fs.readFileSync(path.join(root, "odd-one-out-bank.js"), "utf8");
+  const deployed = fs.readFileSync(path.join(root, "supabase/functions/_shared/odd-one-out-bank.js"), "utf8");
+  assert.equal(deployed, canonical);
+});
+
+test("database validator serializes answers and records completion atomically", () => {
+  const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+  const sql = fs.readFileSync(path.join(root, "supabase/migrations/20261110193000_velorn_odd_one_out_validator.sql"), "utf8");
+  assert.match(sql, /FOR UPDATE/);
+  assert.match(sql, /p_question_index <> v_session\.current_index/);
+  assert.match(sql, /public\.economy_record_validated_activity_event/);
+  assert.match(sql, /REVOKE ALL ON TABLE economy_private\.game_validator_sessions FROM PUBLIC, anon, authenticated, service_role/);
+  assert.match(sql, /GRANT EXECUTE ON FUNCTION public\.velorn_submit_odd_one_out_answer/);
+  assert.doesNotMatch(sql, /wallets\s*\(|wallet_ledger\s*\(|economy_enabled\s*=\s*true/i);
 });
