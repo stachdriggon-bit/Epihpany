@@ -110,7 +110,7 @@ jobs:
 
           psql "$DB_URL" -v ON_ERROR_STOP=1 <<'SQL'
           SELECT set_config('request.jwt.claim.role', 'service_role', false);
-          DO $
+          DO $velorn_phase1$
           DECLARE
             v_balance bigint;
             v_entries integer;
@@ -128,7 +128,7 @@ jobs:
                 v_balance, v_entries, v_mismatches;
             END IF;
           END;
-          $;
+          $velorn_phase1$;
           SQL
 
       - name: Compare complete local catalog with hosted reference snapshot
