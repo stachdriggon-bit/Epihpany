@@ -1,6 +1,6 @@
 # Velorn Phase 3 — Trusted Game Validator Registry
 
-> **Status (2026-11-10):** Phase 3A inventory and trust contract. This document records the current browser-side evidence model and the server-validation boundary. It does not enable event ingestion, missions, claims, rewards, or economy access.
+> **Status (2026-11-10):** Phase 3A inventory and trust contract are complete. Initial Phase 3B/3C Odd One Out validator foundations are deployed, but the event is not reward-eligible because the public question bank still exposes answer indices. Missions, claims, rewards, and economy access remain disabled.
 
 ## 1. Objective
 
@@ -12,7 +12,7 @@ Phase 1 and Phase 2 are deployed. The economy remains disabled. This phase must 
 
 The current application is a static Vanilla-JS PWA. The inspected game engines, answer evaluators, session counters, case progress and most progress snapshots execute in the browser. Learning progress is stored locally and synchronized through `player_progress`; that record is mutable player progress, not authoritative evidence.
 
-Consequently, **no current browser-generated completion event is eligible to earn Velorn yet**. A client-side boolean, score, completed session object, local-storage counter, XP value, or case status is not sufficient proof. A signed-in user ID alone does not make a browser result trustworthy.
+Consequently, **no current browser-generated completion event is eligible to earn Velorn yet**. A client-side boolean, score, completed session object, local-storage counter, XP value, or case status is not sufficient proof. A signed-in user ID alone does not make a browser result trustworthy. Signed-in Odd One Out now sends answers through a server-owned session validator and emits a constrained completion event, but its public static bank still exposes the answer indices; see [Phase 3C deployment and reward gate](VELORN-PHASE-3C-ODD-ONE-OUT-VALIDATOR.md).
 
 The Phase 2 RPC accepts only evidence already validated by a trusted server caller. It is not a validator and must not be called directly from the PWA.
 
@@ -101,10 +101,10 @@ Every validator must demonstrate:
 
 ## 7. Implementation sequence
 
-- **Phase 3A — Inventory and contract:** this document; all current browser-side signals remain ineligible.
-- **Phase 3B — Shared validator service:** implement a server-owned session/challenge and event contract, authentication checks, rate/replay controls, and automated tests.
-- **Phase 3C — First production-quality validator:** select one suitable experience with deterministic, bounded content; keep it isolated behind an explicit allow-list and leave all other games ineligible.
-- **Phase 3D — Expand validators:** add game-specific validators only after the first implementation passes security, replay, concurrency and clean-room tests.
+- **Phase 3A — Inventory and contract:** complete; all current browser-side signals were classified.
+- **Phase 3B — Validator foundation:** the first authenticated session/event contract, private session storage, and server RPC boundary are implemented. A generic reusable validator layer and broader rate/abuse controls remain future work.
+- **Phase 3C — First game validator:** Odd One Out is deployed and connected for signed-in play. It verifies ownership, answer ordering, server-side evaluation, expiry, replay rejection, and atomic event creation; public answer-key exposure blocks reward eligibility.
+- **Phase 3D — Harden and expand:** remove answer-bearing data from public assets, add answer pacing and start-rate controls, then add game-specific validators only after equivalent security and concurrency tests pass.
 - **Phase 3E — Verify mission/achievement predicates:** map approved templates only to proven event facts. No mission or achievement is assignable until every required predicate is verified.
 
 ## 8. Explicit non-goals and gates
