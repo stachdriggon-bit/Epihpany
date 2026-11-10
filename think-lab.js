@@ -723,6 +723,7 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
   ];
   const INTERNAL_SESSION_BANK_VERSION = 'think-lab-rounds-20261109-v1';
   let restoringInternalSession = false;
+  let validatorSessionId = null;
   let dailyChallengeActive = null;
   function localDayKey(date = new Date()) {
     return date.getFullYear() + '-' + String(date.getMonth()+1).padStart(2,'0') + '-' + String(date.getDate()).padStart(2,'0');
@@ -778,7 +779,7 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
   function saveInternalProgress(position = index) {
     const bridge = window.EpiphanyThinkLab, registry = window.EPIPHANY_THINK_LAB_PROGRESSION;
     const definition = registry && registry.getGame ? registry.getGame(mode) : null;
-    if (restoringInternalSession || !bridge || !definition || definition.adapter !== 'think-lab' || !Array.isArray(activePool) || !activePool.length) return false;
+    if (validatorSessionId || restoringInternalSession || !bridge || !definition || definition.adapter !== 'think-lab' || !Array.isArray(activePool) || !activePool.length) return false;
     const nextItem=position>index?activePool[position]:null;
     const payload = {
       pool:activePool, score,
@@ -1249,7 +1250,7 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
     const available = new Set(availableThinkLabCEFRLevels());
     root.innerHTML = '<div class="tl-game-head"><button class="tl-back" type="button" data-think-back>← Choose difficulty</button><span class="tl-eyebrow">THE BOLD TRANSLATOR</span></div><div class="tl-game-card"><div class="tl-game-kicker">CHOOSE YOUR ENGLISH LEVEL</div><h2>Which level would you like to practise?</h2><p class="tl-game-instruction">Adaptive follows your current EPIPHANY level. You can also revisit levels you have unlocked. This choice does not change your learning level. Higher levels open through your learning progress and level checks.</p><div class="tl-answer-options"><button type="button" class="tl-option" data-translator-level="adaptive"><strong>Adaptive · Recommended</strong><span>Use my current EPIPHANY level</span></button>'+THINK_LAB_CEFR_LEVELS.map(level => { const unlocked = available.has(level); const bankReady = !!translatorBanks[level]; return '<button type="button" class="tl-option" data-translator-level="'+level+'" '+(!unlocked || !bankReady?'disabled aria-disabled="true"':'')+'><strong>'+level+'</strong><span>'+(!unlocked?'🔒 Locked · progress to unlock':bankReady?'Available':'Coming soon')+'</span></button>'; }).join('')+'</div></div>';
   }
-  function beginGame(id, trainingMode, options = {}) {
+  async function beginGame(id, trainingMode, options = {}) {
     if (id === 'maze' && !canChooseThinkLabCEFR(selectedMazeCEFR)) {
       selectedMazeCEFR = currentThinkLabCEFR();
       activePool = null;
@@ -1273,6 +1274,42 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
     if (options.daily === true && dailyChallengeActive) Math.random = seededDailyRandom(dailyChallengeActive.seed);
     try { activePool = preparedMazePool || getRoundPool(id,selectedTrainingMode); }
     finally { Math.random = previousRandom; }
+    validatorSessionId = null;
+    if (id === 'odd' && window.EpiphanyAuth) {
+      await window.EpiphanyAuth.whenReady();
+      if (window.EpiphanyAuth.isSignedIn()) {
+        const validatorClient = window.EpiphanyAuth.getValidatorClient();
+        const level = window.EpiphanyThinkLab?.getCEFRLevel?.() || 'A1';
+        if (!validatorClient) {
+          mode = null; activePool = null;
+          root.innerHTML = '<div class="tl-game-card"><h2>Secure challenge unavailable</h2><p class="tl-game-instruction">Your account connection is not ready. Please try again.</p><button type="button" class="tl-back" data-think-home>Think Lab home</button></div>';
+          return;
+        }
+        const {data, error} = await validatorClient.functions.invoke('velorn-odd-one-out', {
+          body: {action:'start', level, trainingMode:selectedTrainingMode}
+        });
+        if (error || !data?.sessionId || !Array.isArray(data.questions) || !data.questions.length) {
+          console.error('Trusted Odd One Out session could not start:', error?.message || data?.error || 'invalid response');
+          mode = null; activePool = null;
+          root.innerHTML = '<div class="tl-game-card"><h2>Secure challenge unavailable</h2><p class="tl-game-instruction">We could not prepare a verified challenge. Your attempt has not started. Please try again.</p><button type="button" class="tl-back" data-think-home>Think Lab home</button></div>';
+          return;
+        }
+        validatorSessionId = data.sessionId;
+        const relationshipLabels = {
+          category:'Category',function:'Function','synonyms-antonyms':'Synonyms & antonyms',
+          'part-whole':'Part & whole','word-class':'Word class','cause-effect':'Cause & effect',
+          'contextual-meaning':'Contextual meaning',collocations:'Collocations',
+          'register-tone':'Register & tone',connotation:'Connotation'
+        };
+        activePool = data.questions.map(question => ({
+          ...question,
+          prompt:'Which word does not belong?',
+          cefrLevel:data.level,
+          trainingMode:data.trainingMode,
+          relationshipLabel:relationshipLabels[question.relationship] || question.relationship
+        }));
+      }
+    }
     if (id === 'maze') preparedMazeCEFR = null;
     if (id === 'maze' && !activePool.length) {
       showMazeBankUnavailable();
@@ -1393,7 +1430,7 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
     }
     refreshPuzzleBoard(kind);
   });
-  root.addEventListener('click', e => {
+  root.addEventListener('click', async e => {
     const connectionTile=e.target.closest('[data-connection-tile]');
     if(connectionTile&&mode==='connections'&&!locked){
       const tileIndex=Number(connectionTile.dataset.connectionTile),at=connectionSelected.indexOf(tileIndex);
@@ -1584,7 +1621,30 @@ root.innerHTML='<div class="tl-finish"><span class="tl-finish-mark">∴</span><s
     const answer=e.target.closest('[data-think-answer]'); if(!answer||locked||!mode)return;
     const pool=activePool || getRoundPool(mode),item=pool[index%pool.length];
     if(mode==='wordladder')return;
-    locked=true;const chosen=Number(answer.dataset.thinkAnswer),correct=mode==='maze'?item.options[chosen]===item.target:chosen===item.answer;if(correct)score++;else roundMistakes++;
+    locked=true;
+    const chosen=Number(answer.dataset.thinkAnswer);
+    if (mode === 'odd' && validatorSessionId) {
+      const validatorClient = window.EpiphanyAuth?.getValidatorClient?.();
+      if (!validatorClient) {
+        locked = false;
+        const fb=root.querySelector('#tl-feedback');fb.hidden=false;fb.className='tl-feedback is-wrong';fb.textContent='Your secure session is unavailable. Please return to Think Lab and start again.';
+        return;
+      }
+      const {data, error} = await validatorClient.functions.invoke('velorn-odd-one-out', {
+        body: {action:'answer', sessionId:validatorSessionId, questionIndex:index, selectedIndex:chosen}
+      });
+      if (error || !data || !Number.isInteger(data.correctIndex)) {
+        locked = false;
+        const fb=root.querySelector('#tl-feedback');fb.hidden=false;fb.className='tl-feedback is-wrong';fb.textContent='We could not verify that answer. Please retry this question.';
+        return;
+      }
+      item.answer = data.correctIndex;
+      item.explain = data.explanation || '';
+      item.hint = data.hint || item.hint;
+      item.relationshipLabel = data.relationship || item.relationshipLabel;
+    }
+    const correct=mode==='maze'?item.options[chosen]===item.target:chosen===item.answer;
+    if(correct)score++;else roundMistakes++;
     if(window.EpiphanyThinkLab){const skill=mode==='maze'?'listening':mode==='translator'?'conversation':mode==='detective'?'reading':mode==='wordladder'||mode==='forge'?'spelling':mode==='scramble'?'grammar':'vocabulary';window.EpiphanyThinkLab.recordResult(skill,mode,correct,index===(activePool || getRoundPool(mode)).length-1,{trackAdaptive:mode !== 'translator' || selectedTranslatorCEFR === 'adaptive',rewardKey:mode==='odd'?item.rewardKey:undefined,completionKey:mode==='odd'&&index===(activePool || getRoundPool(mode)).length-1?item.completionKey:undefined});}
     saveInternalProgress(index+1);
     root.querySelectorAll('[data-think-answer]').forEach(b=>{b.disabled=true;const n=Number(b.dataset.thinkAnswer);const isRight=mode==='maze'?item.options[n]===item.target:n===item.answer;if(isRight)b.classList.add('is-correct');if(n===chosen&&!correct)b.classList.add('is-wrong');});
@@ -1600,7 +1660,7 @@ root.innerHTML='<div class="tl-finish"><span class="tl-finish-mark">∴</span><s
   });
   window.EPIPHANY_THINK_LAB_HOME = function () {
     window.EpiphanySpeech?.stop?.();
-    mode = null; activePool = null; activeDifficulty = null; pickerStage = 'landing'; pickerGameId = null;
+    mode = null; activePool = null; activeDifficulty = null; validatorSessionId = null; pickerStage = 'landing'; pickerGameId = null;
     landing();
   };
   landing();
