@@ -1,7 +1,7 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "npm:@supabase/supabase-js@2.119.0";
-import "../_shared/odd-one-out-bank.js";
-import { safeSessionQuestions, validateAnswerRequest } from "../_shared/odd-one-out-validator.mjs";
+import "./odd-one-out-bank.js";
+import { safeSessionQuestions, validateAnswerRequest } from "./odd-one-out-validator.mjs";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
