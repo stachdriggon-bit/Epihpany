@@ -14,7 +14,7 @@
       {id:'A1-FUN-01',relationship:'function',words:['knife','scissors','saw','mattress'],answer:3,explain:'A mattress is used for sleeping or resting; it is not a cutting tool.',challengeExplain:"A duvet keeps someone warm in bed; it is not a cutting tool.",hint:'Think about what each object is used to do.',context:'Common household objects.'},
       {id:'A1-PW-01',relationship:'part-whole',words:['door','window','seat','minibus'],answer:3,explain:'A minibus is a complete vehicle; a door, window and seat are components of it.',challengeExplain:'A mechanic is a person who repairs vehicles, not a component of one.',hint:'Which three are parts of the same vehicle?',context:'Parts of a familiar minibus.'},
       {id:'A1-WC-01',relationship:'word-class',words:['run','walk','jump','curious'],answer:3,explain:'Run, walk and jump are verbs naming actions. Curious is an adjective describing a feeling.',challengeExplain:'Eat, drink and sleep are verbs naming actions. Gentle is an adjective describing a person.',hint:'Which three words name actions?',context:'Everyday actions and feelings.'},
-      {id:'A1-SYN-01',relationship:'synonyms-antonyms',words:['big','large','huge','little'],answer:3,explain:'Big, large and huge describe something of great size. Little describes something of little size.',challengeExplain:'Big, large and huge describe something of great size. Little describes something of very small size.',hint:'Which three describe size in a similar way?',context:'Basic size vocabulary.'},
+      {id:'A1-SYN-01',relationship:'synonyms-antonyms',words:['big','large','huge','little'],answer:3,explain:'Big, large and huge describe something of great size. Little describes something of little size.',challengeExplain:'Mini means very small or compact, contrasting with big, large and huge.',hint:'Which three describe size in a similar way?',context:'Basic size vocabulary.'},
       {id:'A1-FUN-02',relationship:'function',words:['key','password','code','spoon'],answer:3,explain:'A key, password and code can all give access or unlock something. A spoon is used for serving food.',challengeExplain:"A passcode, PIN and keycard can grant access to something. A saucepan is used to hold or serve food.",hint:'Which three can help you open or access something?',context:'Simple everyday purposes.'},
       {id:'A1-CAT-03',relationship:'category',words:['Monday','Tuesday','Friday','autumn'],answer:3,explain:'Monday, Tuesday and Friday are days of the week. Autumn is a season.',challengeExplain:"Wednesday, Saturday and Sunday are days of the week. Spring is a season.",hint:'Which three belong to the same calendar group?',context:'Days and seasons.'},
       {id:'A1-CAT-04',relationship:'category',words:['shirt','trousers','shoes','plum'],answer:3,explain:'A shirt, trousers and shoes are things people wear. An plum is a fruit.',challengeExplain:'A jacket, socks and a skirt are things people wear. A apricot is a fruit.',hint:'Which three can you wear?',context:'Clothes and everyday objects.'},
@@ -130,7 +130,7 @@
         "big",
         "large",
         "huge",
-        "little"
+        "mini"
     ],
     "A1-FUN-02": [
         "passcode",

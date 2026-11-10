@@ -250,10 +250,10 @@ test('B2 expansion provides 12 distinct questions and full target-sized rounds',
     assert.notDeepEqual(challenge.words.slice().sort(),item.words.slice().sort());
     assert.equal(challenge.explain,item.challengeExplain);
     const expectedOutsiders = {
-      'B2-CAT-02':'brass section',
-      'B2-FUN-02':'detector',
-      'B2-WC-02':'meticulously',
-      'B2-CAUSE-02':'mitigate'
+      'B2-CAT-02':'wind band',
+      'B2-FUN-02':'probe',
+      'B2-WC-02':'systematically',
+      'B2-CAUSE-02':'moderate'
     };
     assert.equal(challenge.words[challenge.answer],expectedOutsiders[id]);
   }
@@ -268,10 +268,10 @@ test('C1 expansion provides 12 distinct questions and full target-sized rounds',
     assert.equal(new Set(round.questions.map(question=>question.id)).size,target);
   }
   const expectedOutsiders = {
-    'C1-CAT-02':'collection',
-    'C1-FUN-02':'geologist',
-    'C1-WC-02':'implicitly',
-    'C1-CAUSE-02':'alleviate'
+    'C1-CAT-02':'poetry volume',
+    'C1-FUN-02':'scientist',
+    'C1-WC-02':'vaguely',
+    'C1-CAUSE-02':'temper'
   };
   for (const [id,outsider] of Object.entries(expectedOutsiders)) {
     const item=bank.banks.C1.find(question=>question.id===id);
@@ -294,10 +294,10 @@ test('C2 expansion provides 12 distinct questions and full target-sized rounds',
     assert.equal(new Set(round.questions.map(question=>question.id)).size,target);
   }
   const expectedOutsiders = {
-    'C2-CAT-02':'compendium',
-    'C2-FUN-02':'operator',
-    'C2-PW-02':'agreement',
-    'C2-CTX-02':'physical'
+    'C2-CAT-02':'reference work',
+    'C2-FUN-02':'engineer',
+    'C2-PW-02':'lease',
+    'C2-CTX-02':'somatic'
   };
   for (const [id,outsider] of Object.entries(expectedOutsiders)) {
     const item=bank.banks.C2.find(question=>question.id===id);
@@ -318,33 +318,33 @@ test('C2 grammar, collocation and contextual questions use precise classificatio
   assert.equal(contextualMeaning.relationship,'contextual-meaning');
   assert.match(contextualMeaning.hint,/court/i);
   const grammar=bank.banks.C2.find(question=>question.id==='C2-WC-01');
-  assert.deepEqual(grammar.words,['although','though','even though','despite']);
+  assert.deepEqual(grammar.words,['although','though','even though','notwithstanding']);
   assert.match(grammar.explain,/subordinating conjunctions/i);
   const collocation=bank.banks.C2.find(question=>question.id==='C2-COL-01');
   assert.ok(collocation.words.every(word=>/regret$/.test(word)));
   const challenge=bank.selectRound('C2','challenge',[],()=>0.31).questions.find(question=>question.id==='C2-COL-01');
   assert.ok(challenge.words.every(word=>/regret$/.test(word)));
-  assert.equal(challenge.words[challenge.answer],'vociferously regret');
+  assert.equal(challenge.words[challenge.answer],'happily regret');
 });
 
 test('C1 collocation and part-whole questions avoid ambiguous groupings', () => {
   const collocation=bank.banks.C1.find(question=>question.id==='C1-COL-01');
-  assert.deepEqual(collocation.words,['raise','lodge','voice','commit']);
-  assert.equal(collocation.words[collocation.answer],'commit');
+  assert.deepEqual(collocation.words,['raise','lodge','voice','execute']);
+  assert.equal(collocation.words[collocation.answer],'execute');
   const collocationChallenge=bank.selectRound('C1','challenge',[],()=>0.31).questions.find(q=>q.id==='C1-COL-01');
-  assert.equal(collocationChallenge.words[collocationChallenge.answer],'perform');
+  assert.equal(collocationChallenge.words[collocationChallenge.answer],'compose');
   const partWhole=bank.banks.C1.find(question=>question.id==='C1-PW-01');
-  assert.deepEqual(partWhole.words,['preface','appendix','index','monograph']);
-  assert.equal(partWhole.words[partWhole.answer],'monograph');
+  assert.deepEqual(partWhole.words,['preface','appendix','index','treatise']);
+  assert.equal(partWhole.words[partWhole.answer],'treatise');
 });
 
 test('A1-SYN-01 uses beginner-friendly vocabulary in both modes', () => {
   const item = bank.banks.A1.find(question => question.id === 'A1-SYN-01');
-  assert.deepEqual(item.words, ['big','large','huge','small']);
+  assert.deepEqual(item.words, ['big','large','huge','little']);
   assert.equal(item.answer, 3);
   const challenge = bank.selectRound('A1','challenge',[],()=>0.31).questions.find(q=>q.id==='A1-SYN-01');
-  assert.deepEqual(challenge.words.map(word=>word.toLowerCase()).sort(), ['big','huge','large','tiny'].sort());
-  assert.equal(challenge.words[challenge.answer], 'tiny');
+  assert.deepEqual(challenge.words.map(word=>word.toLowerCase()).sort(), ['big','huge','large','mini'].sort());
+  assert.equal(challenge.words[challenge.answer], 'mini');
 });
 
 test('B2-COL-01 hint matches the tested collocation', () => {
@@ -356,7 +356,7 @@ test('B2-COL-01 hint matches the tested collocation', () => {
 test('C1-PW-01 Challenge uses the complete work as the outsider', () => {
   const item = bank.selectRound('C1','challenge',[],()=>0.31).questions.find(q=>q.id==='C1-PW-01');
   assert.ok(item);
-  assert.equal(item.words[item.answer], 'book');
+  assert.equal(item.words[item.answer], 'volume');
   assert.match(item.explain, /complete work/i);
 });
 
