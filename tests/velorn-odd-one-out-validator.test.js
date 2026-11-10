@@ -22,5 +22,5 @@ test("answer requests accept only bounded UUID, question index and option index"
   assert.equal(validateAnswerRequest({...valid, selectedIndex:4}), false);
   assert.equal(validateAnswerRequest({...valid, questionIndex:12}), false);
   assert.equal(validateAnswerRequest({...valid, sessionId:"not-a-uuid"}), false);
-  assert.equal(validateAnswerRequest({...valid, userId:"attacker"}), true);
+  assert.equal(validateAnswerRequest({...valid, action:"answer", userId:"attacker"}), false);
 });
