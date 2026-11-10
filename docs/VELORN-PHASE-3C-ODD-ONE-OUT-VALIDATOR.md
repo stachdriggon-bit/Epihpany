@@ -50,7 +50,7 @@ A successful final submission records one `think_lab / think_lab / odd_one_out /
 - The three deployed Edge Function files (`index.ts`, `odd-one-out-bank.js`, and `odd-one-out-validator.mjs`) were compared byte-for-byte with the current repository files and match.
 - The live database contains the hardened `challenge_level` and `last_answer_at` columns and the updated start RPC signature.
 - Latest live-state check: zero validator sessions, zero activity events, and `economy_enabled = false`.
-- A clean-room SQL contract test now exercises private table privileges, service-only RPC access, session creation, too-fast answer rejection, server-side correctness, atomic completion event creation, replay rejection, and the absence of wallet/claim/award writes. The current GitHub schema-reconstruction run must pass before this phase is marked fully verified.
+- Clean-room Supabase migration replay and the Phase 3 SQL contract test passed in GitHub run `42886288805`. The test exercised private table privileges, service-only RPC access, session creation, too-fast answer rejection, server-side correctness, atomic completion event creation, replay rejection, and the absence of wallet/claim/award writes.
 
 ## Important reward limitation — not reward eligible
 
