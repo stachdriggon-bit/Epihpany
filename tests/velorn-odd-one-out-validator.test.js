@@ -6,8 +6,8 @@ import { fileURLToPath } from "node:url";
 import { publicQuestion, safeSessionQuestions, validateAnswerRequest } from "../supabase/functions/velorn-odd-one-out/odd-one-out-validator.mjs";
 
 test("public question payload never includes the answer key or explanation", () => {
-  const question = { id:"A1-CAT-01", words:["apple","pear","banana","pencil"], answer:3, explain:"A pencil is not food.", challengeExplain:"Different options.", hint:"Find the foods.", answerText:"secret answer", internalNotes:"private" };
-  assert.deepEqual(publicQuestion(question), { id:"A1-CAT-01", words:["apple","pear","banana","pencil"], hint:"Find the foods." });
+  const question = { id:"A1-CAT-01", prompt:"Which word does not belong?", why:"Find the shared category.", words:["apple","pear","banana","pencil"], answer:3, explain:"A pencil is not food.", challengeExplain:"Different options.", hint:"Find the foods.", answerText:"secret answer", internalNotes:"private" };
+  assert.deepEqual(publicQuestion(question), { id:"A1-CAT-01", prompt:"Which word does not belong?", why:"Find the shared category.", words:["apple","pear","banana","pencil"], hint:"Find the foods." });
 });
 
 test("safe session question list is bounded and strips all answer keys", () => {
