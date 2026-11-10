@@ -70,6 +70,44 @@ BEGIN
     END IF;
   END LOOP;
 
+
+  FOR expected IN
+    SELECT * FROM (VALUES
+      ('player_progress',3),('player_profiles',3),('player_posts',3),
+      ('player_stories',4),('epiphany_telemetry',1),('epiphany_card_image_views',3),
+      ('epiphany_assets',1),('epiphany_asset_files',1),('epiphany_asset_usages',2)
+    ) AS expected(table_name, expected_policies)
+  LOOP
+    SELECT count(*) INTO actual_count FROM pg_policies
+    WHERE schemaname='public' AND tablename=expected.table_name;
+    IF actual_count <> expected.expected_policies THEN
+      RAISE EXCEPTION 'Policy count mismatch for %: expected %, got %',
+        expected.table_name, expected.expected_policies, actual_count;
+    END IF;
+  END LOOP;
+
+  -- Preserve the observed Data API grant boundary.
+  IF has_table_privilege('anon','public.player_profiles','SELECT')
+     OR has_table_privilege('anon','public.player_posts','SELECT') THEN
+    RAISE EXCEPTION 'Anonymous SELECT must not be granted on player profiles/posts';
+  END IF;
+  IF NOT has_table_privilege('authenticated','public.player_profiles','SELECT')
+     OR NOT has_table_privilege('authenticated','public.player_posts','SELECT')
+     OR NOT has_table_privilege('authenticated','public.player_progress','UPDATE') THEN
+    RAISE EXCEPTION 'Authenticated player table grants are incomplete';
+  END IF;
+  IF NOT has_table_privilege('anon','public.epiphany_telemetry','INSERT')
+     OR has_table_privilege('anon','public.epiphany_telemetry','SELECT') THEN
+    RAISE EXCEPTION 'Telemetry must allow anonymous INSERT only';
+  END IF;
+  IF NOT has_table_privilege('anon','public.epiphany_card_image_views','SELECT')
+     OR has_table_privilege('anon','public.epiphany_card_image_views','INSERT') THEN
+    RAISE EXCEPTION 'Card-image views grant boundary mismatch';
+  END IF;
+  IF NOT has_table_privilege('anon','public.epiphany_asset_usages','SELECT') THEN
+    RAISE EXCEPTION 'Published asset usages must remain anonymously readable';
+  END IF;
+
  IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema='public'
  AND table_name='player_profiles' AND column_name='is_private' AND column_default LIKE '%true%')
  THEN RAISE EXCEPTION 'is_private default must be true'; END IF;

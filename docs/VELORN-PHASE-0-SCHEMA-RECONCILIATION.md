@@ -143,18 +143,14 @@ Its profile columns overlap with the hosted `complete_player_profile_columns` mi
 
 ### 4.3 Other root-level SQL files
 
-- `supabase-privacy-migration.sql` describes the privacy-v2 policy shape, and the live database currently has owner-or-public profile visibility and owner-or-public-author post visibility policies.
-- `supabase-card-image-views.sql` matches the live card-image framing table and its read/developer-write policy model, but is not represented by a tracked versioned migration.
-- `supabase-telemetry.sql` matches the live telemetry table, constrained event allowlist, small metadata limit, and insert-only client grants, but is not represented by a tracked versioned migration.
-
-These files should not be blindly replayed. Their current live outcomes are evidence for a future baseline snapshot, not proof that each file is a safe or complete migration.
+The former `supabase-privacy-migration.sql`, `supabase-card-image-views.sql`, and `supabase-telemetry.sql` bodies are now archived as do-not-run pointers. Their historical contents remain in Git history. The privacy-v2 behavior is represented by the reconstructed timestamped migration; telemetry and card-image framing are represented in the local-only legacy foundation. The CI contract assertions compare their resulting policy and grant boundaries with the captured live catalog.
 
 ## 5. Current access-control shape
 
 - All nine public application tables have RLS enabled.
 - Neither `anon` nor `authenticated` has the PostgreSQL `BYPASSRLS` attribute. The `service_role` does, as expected for Supabase's privileged server role.
 - The existing player-progress policies scope read/write access to the authenticated owner.
-- The current profile and story policies implement public/private visibility rules; older root SQL still contains permissive policy definitions that must not be replayed.
+- The current profile and story policies implement public/private visibility rules; the former permissive root SQL body is preserved only in Git history and the working root file is now a do-not-run pointer.
 - Asset Manager and card-image-view writes are limited by existing developer-account policies.
 - There are no application RPC functions in `public` and no deployed Edge Functions at the time of this audit.
 
@@ -203,10 +199,10 @@ These actions are ordered to preserve the current live data and prevent false mi
 
 1. **Preserve the live schema as the reference.** Obtain a full schema-only snapshot/dump of the connected project, including tables, constraints, indexes, policies, grants, functions, triggers, storage policies, and bucket configuration. Keep secrets and user data out of the snapshot.
 2. **Validate the reconstructed migrations in isolation.** The new `.github/workflows/supabase-schema.yml` starts a disposable local Supabase stack, applies `supabase/bootstrap/legacy_foundation.sql`, replays all nine migrations, and runs `supabase/tests/phase0_schema_assertions.sql`. Do not apply the historical versions to the hosted project; they are already recorded as applied.
-3. **Canonical bootstrap baseline — implemented.** `supabase/bootstrap/legacy_foundation.sql` captures the pre-migration tables, RLS, grants, telemetry, card-image metadata, and pre-existing bucket settings. It is intentionally local/disposable only and is never applied to production.
+3. **Canonical bootstrap baseline — implemented.** `supabase/bootstrap/legacy_foundation.sql` captures the pre-migration tables, RLS, grants, telemetry, card-image metadata, and pre-existing bucket settings. It is intentionally local/disposable only and is never applied to production. The clean-room assertions compare exact table/column/constraint/index/policy counts and critical grants against the live inventory.
 4. **Quarantine obsolete setup scripts — implemented.** The five unsafe or superseded root-level SQL entry points are now do-not-run pointers; their previous contents remain in Git history. The live 3 MiB avatar limit and privacy policies were not changed.
-5. **Add project configuration and a repeatable local workflow.** Pin/check the Supabase CLI version, link the correct project, and document explicit local versus remote commands. Verify the remote target before any command that can change it.
-6. **Run a clean schema diff and review.** The expected result is no unexplained drift between the canonical repository baseline and the live project. Any intentional drift must be documented before the economy migration is created.
+5. **Local project configuration and repeatable workflow — implemented.** `supabase/config.toml` pins PostgreSQL 17 and `.github/workflows/supabase-schema.yml` pins Supabase CLI 3.1.0. The workflow explicitly starts a disposable local stack and never links or targets the hosted project.
+6. **Complete clean-room run and live/catalog comparison.** The CI workflow must pass. Then compare its recorded contract counts and assertions with the live catalog inventory in this report; any unexplained difference must be resolved before the economy migration is created. A full text-level schema diff is not claimed by the current workflow.
 
 ### Phase 0 exit criteria
 
