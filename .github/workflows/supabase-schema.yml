@@ -66,6 +66,14 @@ jobs:
           eval "$(supabase status -o env)"
           psql "$DB_URL" -v ON_ERROR_STOP=1 -f supabase/tests/phase0_schema_assertions.sql
 
+      - name: Assert Phase 1 wallet security and transaction contract
+        timeout-minutes: 5
+        run: |
+          eval "$(supabase status -o env)"
+          grep -Fq 'schemas = ["public", "graphql_public"]' supabase/config.toml
+          ! grep -q 'economy_private' supabase/config.toml
+          psql "$DB_URL" -v ON_ERROR_STOP=1 -f supabase/tests/phase1_wallet_assertions.sql
+
       - name: Compare complete local catalog with hosted reference snapshot
         timeout-minutes: 5
         run: |
