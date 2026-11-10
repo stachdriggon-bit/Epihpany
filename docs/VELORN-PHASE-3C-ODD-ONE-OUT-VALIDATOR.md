@@ -87,3 +87,13 @@ Mission templates remain unmapped and unassignable. Reward claims remain unwrita
 - Guest sessions have per-IP and answer-pacing limits. They never write trusted activity events, mission claims, wallets, or Velorn ledger entries.
 - The frontend fails closed if the network or validator is unavailable. It never switches to local questions.
 - Daily Think Lab selection may include Odd One Out for guests; starting still requires the trusted online validator.
+
+
+## Rotated answer bank (2026-11-10)
+
+The original Odd One Out bank had previously been delivered to browsers as a lazy-loaded static asset. Making the repository private and removing the asset from the current Vercel deployment stops new exposure, but does not invalidate copies that players may already have downloaded.
+
+- All 72 base questions and all 72 Challenge-mode option sets now use new outlier words absent from the former bank.
+- Explanations and challenge explanations were revised alongside the rotated options.
+- The bank exposes the internal version `odd-one-out-rotated-20261110-v2`; both authenticated and guest validators record the same validator version.
+- The browser still receives only the safe question options. Correct indices and explanations remain server-side until each answer is submitted.

@@ -1,6 +1,7 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const bank = require('../supabase/functions/velorn-odd-one-out/odd-one-out-bank.js');
+assert.equal(bank.version, 'odd-one-out-rotated-20261110-v2');
 const fs = require('node:fs');
 const path = require('node:path');
 const vm = require('node:vm');

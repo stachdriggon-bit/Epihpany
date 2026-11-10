@@ -8,8 +8,9 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, apikey, content-type, x-client-info",
   "Access-Control-Allow-Methods": "POST, OPTIONS",
   "Content-Type": "application/json",
+  "Cache-Control": "no-store, private, max-age=0",
 };
-const VERSION = "odd-one-out-v1";
+const VERSION = "odd-one-out-rotated-20261110-v2";
 const json = (status: number, body: Record<string, unknown>) =>
   new Response(JSON.stringify(body), { status, headers: corsHeaders });
 

@@ -10,7 +10,7 @@ const corsHeaders = {
   "Content-Type": "application/json",
   "Cache-Control": "no-store, private, max-age=0",
 };
-const VERSION = "odd-one-out-guest-v2";
+const VERSION = "odd-one-out-rotated-20261110-v2";
 const json = (status: number, body: Record<string, unknown>) =>
   new Response(JSON.stringify(body), { status, headers: corsHeaders });
 function toHex(bytes: Uint8Array) {

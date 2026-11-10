@@ -49,6 +49,7 @@ test("server challenge uses the exact reviewed canonical Odd One Out bank", () =
 
 test("guest validator uses server-only bank, no-store responses and no Velorn writer", () => {
   const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+  const authFunction = fs.readFileSync(path.join(root, "supabase/functions/velorn-odd-one-out/index.ts"), "utf8");
   const guest = fs.readFileSync(path.join(root, "supabase/functions/velorn-odd-one-out-guest/index.ts"), "utf8");
   const lazy = fs.readFileSync(path.join(root, "lazy-data.js"), "utf8");
   const worker = fs.readFileSync(path.join(root, "service-worker.js"), "utf8");
@@ -58,6 +59,9 @@ test("guest validator uses server-only bank, no-store responses and no Velorn wr
   assert.match(guest, /velorn_start_odd_one_out_guest_session/);
   assert.match(guest, /velorn_submit_odd_one_out_guest_answer/);
   assert.match(guest, /guestToken/);
+  assert.match(authFunction, /VERSION = "odd-one-out-rotated-20261110-v2"/);
+  assert.match(authFunction, /Cache-Control.*no-store/);
+  assert.match(guest, /VERSION = "odd-one-out-rotated-20261110-v2"/);
   assert.match(guest, /Cache-Control.*no-store/);
   assert.doesNotMatch(guest, /req\.headers\.get\("apikey"\)\s*!==/);
   assert.doesNotMatch(guest, /economy_record_validated_activity_event|wallet_ledger|wallets/);
