@@ -74,6 +74,12 @@ jobs:
           ! grep -q 'economy_private' supabase/config.toml
           psql "$DB_URL" -v ON_ERROR_STOP=1 -f supabase/tests/phase1_wallet_assertions.sql
 
+      - name: Assert Phase 2 validated-event and claim foundation
+        timeout-minutes: 5
+        run: |
+          eval "$(supabase status -o env)"
+          psql "$DB_URL" -v ON_ERROR_STOP=1 -f supabase/tests/phase2_event_claim_assertions.sql
+
       - name: Verify concurrent wallet idempotency and debit serialization
         timeout-minutes: 5
         run: |
