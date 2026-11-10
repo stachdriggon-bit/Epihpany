@@ -1,7 +1,7 @@
 # EPIPHANY Supabase Schema Reconciliation — Velorn Phase 0
 
 > **Audit date:** 2026-11-10  
-> **Status:** The three missing migration files are reconstructed and labelled; a local-only legacy foundation, pinned Supabase CLI configuration, and clean-room GitHub Actions test have now been added. Phase 0 remains gated on the clean-room workflow passing and final live/catalog comparison. Do not create or apply the first Velorn migration yet.  
+> **Status:** COMPLETE. The three missing migration files are explicitly reconstructed and labelled; the local-only legacy foundation, pinned Supabase CLI configuration, clean-room replay, schema assertions, and exact redacted live-catalog comparison all pass. The hosted database remains unchanged.  
 > **Scope:** EPIPHANY's connected Supabase project and the repository's current `main` branch.
 
 ## 1. Executive result
@@ -197,16 +197,18 @@ Reference: [Supabase CLI v3 breaking change](https://supabase.com/changelog).
 
 These actions are ordered to preserve the current live data and prevent false migration history:
 
-1. **Preserve the live schema as the reference.** Obtain a full schema-only snapshot/dump of the connected project, including tables, constraints, indexes, policies, grants, functions, triggers, storage policies, and bucket configuration. Keep secrets and user data out of the snapshot.
-2. **Validate the reconstructed migrations in isolation.** The new `.github/workflows/supabase-schema.yml` starts a disposable local Supabase stack, applies `supabase/bootstrap/legacy_foundation.sql`, replays all nine migrations, runs `supabase/tests/phase0_schema_assertions.sql`, then compares the full local catalog against the redacted live reference snapshot. Do not apply the historical versions to the hosted project; they are already recorded as applied.
+1. **Preserve the live schema as the reference — complete.** The redacted catalog reference is committed in `supabase/tests/phase0_expected_catalog.json`; its generator is `supabase/tests/phase0_catalog_snapshot.sql`. It captures the nine application tables and their columns, constraints, indexes, public/Storage policies, data grants, role memberships, RLS flags, migration versions, and four Storage bucket configurations. It contains no player rows and redacts developer email literals.
+2. **Validate the reconstructed migrations in isolation — passed.** GitHub Actions started a disposable local Supabase stack, applied `supabase/bootstrap/legacy_foundation.sql` before enabling migration replay, replayed all nine hosted migration versions, passed `supabase/tests/phase0_schema_assertions.sql`, and produced an exact match with the redacted live catalog snapshot. The three historical versions were not applied to production; they are already recorded there.
 3. **Canonical bootstrap baseline — implemented.** `supabase/bootstrap/legacy_foundation.sql` captures the pre-migration tables, RLS, grants, telemetry, card-image metadata, and pre-existing bucket settings. It is intentionally local/disposable only and is never applied to production. The clean-room assertions compare exact table/column/constraint/index/policy counts and critical grants against the live inventory.
 4. **Quarantine obsolete setup scripts — implemented.** The five unsafe or superseded root-level SQL entry points are now do-not-run pointers; their previous contents remain in Git history. The live 3 MiB avatar limit and privacy policies were not changed.
 5. **Local project configuration and repeatable workflow — implemented.** `supabase/config.toml` pins PostgreSQL 17 and `.github/workflows/supabase-schema.yml` pins Supabase CLI 3.1.0. The workflow explicitly starts a disposable local stack and never links or targets the hosted project.
-6. **Complete clean-room run and live/catalog comparison.** The CI workflow must pass all assertions and the full redacted catalog snapshot diff. Any unexplained difference must be resolved before the economy migration is created.
+6. **Complete clean-room run and live/catalog comparison — passed.** All assertions and the full redacted catalog snapshot diff passed with no unexplained differences.
 
 ### Phase 0 exit criteria
 
-Phase 0 is complete only when:
+**All exit criteria satisfied.**
+
+Phase 0 is complete. The following criteria are all satisfied:
 
 - Every applied hosted migration version has a matching repository file; reconstructed files are explicitly labelled and are not misrepresented as original historical SQL.
 - The reconstructed files pass isolated execution and catalog-equivalence checks against a clean bootstrap baseline.
@@ -217,19 +219,14 @@ Phase 0 is complete only when:
 
 ## 9. What was and was not changed
 
-**Completed:** read-only inspection of the live project, application schema, RLS policies, grants, indexes, constraints, storage buckets/policies, hosted migration versions, Edge Functions, repository migration files, root SQL scripts, and Supabase advisor output. Reconstructed and committed the three missing migration files under their hosted version IDs, with provenance warnings and evidence notes.
+**Completed:** read-only inspection of the live project, application schema, RLS policies, grants, indexes, constraints, storage buckets/policies, hosted migration versions, Edge Functions, repository migration files, root SQL scripts, and Supabase advisor output. Reconstructed and committed the three missing migration files under their hosted version IDs, quarantined five obsolete root SQL entry points, created the local-only legacy foundation and full redacted catalog reference, and passed the disposable Supabase clean-room replay plus exact catalog comparison. The EPIPHANY checks and Content quality workflows also passed on the same `main` revision.
 
 **Not performed:**
 
-- No SQL DDL or DML was executed against the project.
-- No migration was applied, created in the live database, or marked as applied.
-- No Supabase policy, grant, bucket, function, or setting was changed.
-- No user or player data was read beyond aggregate inventory/count metadata.
-- No hosted database schema, policy, grant, bucket, setting, or player data was changed.
-- The first clean-room workflow run is still in progress; no SQL runtime test is claimed until its GitHub Actions run reports success.
-- The app fast-check run exposed one test that still read the archived telemetry script; the test now targets the canonical bootstrap and will be re-run.
-- Five unsafe/legacy root SQL entry points were replaced with explicit do-not-run pointers; their prior contents remain in Git history.
-- No hosted database schema, policy, grant, bucket, setting, or player data was changed.
-- No deployment was requested or triggered by this work.
+- No SQL DDL or DML was executed against the hosted production project.
+- No migration was applied to production or marked as applied there.
+- No production Supabase policy, grant, bucket, function, setting, or player data was changed.
+- No player rows or personal content were read; catalog inspection and aggregate metadata only.
+- No manual production deployment was initiated. Repository commits may still invoke integrations configured outside this workflow.
 
-**Conclusion:** The repository now contains all nine hosted migration versions, an explicit local-only legacy foundation, and automated clean-room schema assertions. The historical SQL of three migrations remains unavailable, and the bootstrap is reconstructed from live catalog evidence. Phase 0 remains open until the new GitHub Actions clean-room workflow passes and its resulting catalog is compared with the live schema. No Velorn implementation should begin before that gate is green.
+**Conclusion:** Phase 0 is complete. All nine hosted migration versions have matching repository files; three are best-evidence reconstructions, not recovered originals. A fresh local Supabase database can be rebuilt from the committed legacy foundation and migration chain, and its complete redacted catalog matches the hosted reference exactly. The repository and production migration history are reconciled without changing production. The next safe step is Phase 1: build the private Velorn wallet/ledger foundation with the feature disabled. The unresolved reward, draw, timezone, and ownership-import decisions remain gates for later production activation.

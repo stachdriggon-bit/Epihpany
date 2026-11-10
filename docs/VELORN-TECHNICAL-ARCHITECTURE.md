@@ -410,9 +410,9 @@ Each phase needs its own migration, tests, rollback plan, and documented verific
 - RLS, function grants, schema exposure, and Supabase security/performance advisors are reviewed before activation.
 - A reconciliation query can compare wallet balances with the sum of ledger entries and identify any mismatch.
 
-## 12. Open decisions before implementation
+## 12. Open decisions before production activation
 
-The following are not decided by the approved Velorn economy values and must remain configurable or explicitly resolved before production activation:
+These decisions do not block building the disabled Phase 1 wallet/ledger foundation. They must remain configurable or be explicitly resolved before reward issuance, draws, imports, or user-facing activation:
 
 1. Whether account creation grants any welcome Velorn, and whether any verified guest progress can be converted.
 2. Card Portal pack composition, rarity weights, exact odds, pity threshold, and whether free draws advance pity.
@@ -433,11 +433,11 @@ This architecture is a design artifact only. At this stage:
 - No local token balance, card inventory, or Shards balance has been migrated.
 - No reward or Card Portal price has been activated.
 
-The first implementation task should be **Phase 0: schema and migration reconciliation**, not wallet creation.
+Phase 0 is complete. The next implementation task is **Phase 1: private wallet and append-only ledger foundation**, with the economy feature flag disabled and no automatic grants or user-facing balance.
 
 
 ## 14. Phase 0 schema reconciliation
 
 The Supabase inventory and migration comparison are documented in [VELORN-PHASE-0-SCHEMA-RECONCILIATION.md](VELORN-PHASE-0-SCHEMA-RECONCILIATION.md). All nine hosted application migration versions now have matching files in the repository. The three previously missing files are best-evidence reconstructions, explicitly labelled as such rather than presented as original historical SQL. A local-only legacy foundation now captures the manually created tables and policies, and the root-level SQL entry points are archived as do-not-run pointers. The automated clean-room workflow uses Supabase CLI 3.1.0 and asserts the nine-table schema, migration history, RLS policies, Storage policies and bucket limits.
 
-**Implementation gate:** Do not create or apply the first Velorn migration until the clean-room GitHub Actions workflow passes and the resulting schema is compared with the live catalog. The hosted database remains unchanged.
+**Implementation gate:** Phase 0 is complete. The clean-room replay, schema assertions, and exact redacted catalog comparison all passed; the hosted database remains unchanged. Phase 1 may now create the private wallet/ledger foundation with the economy feature disabled. Do not activate rewards, draws, or user-facing balances until the open decisions in Section 12 are explicitly resolved.
