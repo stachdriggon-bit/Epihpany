@@ -1,6 +1,6 @@
 # Velorn Economy — Technical Architecture
 
-> **Status:** Approved architecture with Phase 1 implementation committed to `main`. The Phase 1 migration and rollback-only PostgreSQL smoke test are in place; clean-room CI is the production gate. No production schema changes, website changes, balance imports, or reward activation have been performed.
+> **Status:** Approved architecture. Phase 1 wallet/ledger foundation is deployed and verified on hosted Supabase. The Phase 2 normalized-event and claim-record foundation is committed to `main`; its clean-room CI gate is pending and it has not been deployed. No reward issuance, website integration, balance imports, or economy activation is enabled.
 
 ## 1. Purpose and design constraints
 
@@ -346,18 +346,20 @@ Do not implement all components in one production migration. The economy is a fi
 - Replay all nine hosted migrations in a disposable Supabase stack and compare the resulting catalog exactly.
 - Preserve production data and leave the hosted database unchanged.
 
-### Phase 1 — private wallet and ledger foundation — IMPLEMENTED IN REPOSITORY
+### Phase 1 — private wallet and ledger foundation — DEPLOYED AND VERIFIED
 - Create `economy_private`, immutable configuration versions, disabled economy settings, one-wallet-per-account storage, and an append-only signed ledger.
 - Add RLS and FORCE RLS, no direct table grants, service-role-only RPC wrappers, constraints, indexes, idempotency, and atomic wallet-row locking.
 - Add snapshot and reconciliation routines.
 - Keep `economy_enabled = false`; wallets are lazy-created only for an accepted trusted transaction. No automatic grants, player-facing balance, browser integration, or Card Portal behavior.
 - The clean-room Phase 1 assertions passed. The hosted migration is applied; post-deployment checks confirmed the disabled setting, empty wallets/ledger, private schema permissions, forced RLS, append-only triggers, and service-role-only RPC execution.
 
-### Phase 2 — normalized events and reward claims
-- Define and test the normalized event contract.
-- Implement server-side event validation, idempotent event ingestion, mission claim records, and achievement award records.
-- Add daily/weekly assignment persistence and stable period handling.
-- Keep production reward issuance disabled until validation coverage is approved.
+### Phase 2 — normalized events and reward-claim foundation — IN PROGRESS
+- The additive private-schema foundation is committed in `supabase/migrations/20261110190000_velorn_phase2_event_claim_foundation.sql`.
+- Seven private tables now model normalized activity evidence, versioned mission/achievement definitions, stable mission boards and assignments, mission claims, and achievement awards.
+- A service-role-only, idempotent validated-event ingestion RPC is implemented. It accepts evidence only from a trusted server validator; it does not validate browser claims itself.
+- Clean-room contract tests cover private privileges, RLS/FORCE RLS, event idempotency, mismatched-payload rejection, and append-only evidence. CI must pass before the migration is deployed.
+- Game-specific server validators, mission/achievement predicate mappings, board generation, timezone/reset policy, and atomic claim writers remain required before reward claims can be paid. See [VELORN-PHASE-2-EVENTS-AND-CLAIMS.md](VELORN-PHASE-2-EVENTS-AND-CLAIMS.md).
+- Keep production reward issuance disabled; do not enable any template until its validator mapping is verified.
 
 ### Phase 3 — Card Portal transactions
 - Implement server-side draw rules, wallet debit, draw history, inventory, pity, and separate Shards transactions.
