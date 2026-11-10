@@ -347,7 +347,7 @@ test('Think Lab game skill registration is sourced from the canonical progressio
 test('server-validated Odd One Out does not persist guest bearer tokens or browser round snapshots',()=>{
   assert.match(source,/velorn-odd-one-out-guest/);
   assert.match(source,/validatorGuestToken/);
-  assert.match(source,/if \(validatorSessionId\) return false/);
+  assert.match(source,/if \(validatorSessionId \|\| restoringInternalSession/);
   assert.doesNotMatch(source,/localStorage\.setItem\([^)]*(?:guestToken|validatorGuestToken)/);
 });
 
