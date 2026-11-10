@@ -1,0 +1,53 @@
+name: Supabase schema reconstruction
+
+on:
+  push:
+    branches: [main]
+    paths: ["supabase/**", ".github/workflows/supabase-schema.yml"]
+  pull_request:
+    branches: [main]
+    paths: ["supabase/**", ".github/workflows/supabase-schema.yml"]
+  workflow_dispatch:
+
+concurrency:
+  group: epiphany-supabase-schema-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  clean-room-rebuild:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v7
+      - name: Set up pinned Supabase CLI
+        uses: supabase/setup-cli@v1
+        with:
+          version: 3.1.0
+      - name: Verify CLI version
+        run: |
+          supabase --version
+          test "$(supabase --version)" = "3.1.0"
+      - name: Start disposable local Supabase stack
+        timeout-minutes: 15
+        run: supabase start
+      - name: Install PostgreSQL client
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes postgresql-client
+      - name: Apply legacy foundation and replay migrations
+        timeout-minutes: 12
+        run: |
+          eval "$(supabase status -o env)"
+          test -n "$DB_URL"
+          psql "$DB_URL" -v ON_ERROR_STOP=1 -f supabase/bootstrap/legacy_foundation.sql
+          supabase migration up
+      - name: Assert clean-room schema
+        timeout-minutes: 5
+        run: |
+          eval "$(supabase status -o env)"
+          psql "$DB_URL" -v ON_ERROR_STOP=1 -f supabase/tests/phase0_schema_assertions.sql
+      - name: Stop disposable local stack
+        if: always()
+        run: supabase stop --no-backup

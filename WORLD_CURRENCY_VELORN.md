@@ -521,4 +521,4 @@ That document is an architecture proposal only. It records the verified current 
 
 ## 10.14 Supabase schema reconciliation gate
 
-Before any Velorn database implementation, complete the schema and migration reconciliation recorded in [docs/VELORN-PHASE-0-SCHEMA-RECONCILIATION.md](docs/VELORN-PHASE-0-SCHEMA-RECONCILIATION.md). The three missing hosted migration files have been reconstructed and labelled as non-original; isolated SQL validation and a reproducible canonical bootstrap/schema baseline are still required. Do not create or apply the economy migration until those checks are complete.
+Before any Velorn database implementation, complete the schema and migration reconciliation recorded in [docs/VELORN-PHASE-0-SCHEMA-RECONCILIATION.md](docs/VELORN-PHASE-0-SCHEMA-RECONCILIATION.md). The three missing hosted migration files have been reconstructed and labelled as non-original. A local-only legacy foundation and a pinned Supabase CLI clean-room workflow now test the complete migration chain. Do not create or apply the economy migration until that workflow passes and the final schema is reconciled with the live project.

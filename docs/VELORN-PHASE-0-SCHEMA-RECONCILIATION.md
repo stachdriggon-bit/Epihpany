@@ -1,7 +1,7 @@
 # EPIPHANY Supabase Schema Reconciliation — Velorn Phase 0
 
 > **Audit date:** 2026-11-10  
-> **Status:** Three missing migration files have been reconstructed and committed to `main` from live catalog and repository evidence. Their exact historical SQL remains unavailable; a clean reproducible baseline and isolated SQL validation are still outstanding. Do not create or apply the first Velorn migration yet.  
+> **Status:** The three missing migration files are reconstructed and labelled; a local-only legacy foundation, pinned Supabase CLI configuration, and clean-room GitHub Actions test have now been added. Phase 0 remains gated on the clean-room workflow passing and final live/catalog comparison. Do not create or apply the first Velorn migration yet.  
 > **Scope:** EPIPHANY's connected Supabase project and the repository's current `main` branch.
 
 ## 1. Executive result
@@ -11,12 +11,12 @@ The live database is healthy and contains the expected EPIPHANY player, communit
 The main blocker is not a live database failure. It is **source-of-truth drift between the live migration history and the Git repository**:
 
 - Supabase records nine applied application migrations.
-- The repository initially tracked only six files in `supabase/migrations/`; three missing source files have now been reconstructed under their hosted version IDs.
+- The repository initially tracked only six files in `supabase/migrations/`; all nine hosted versions now have matching files, with three marked as reconstructed.
 - Several foundational SQL scripts remain at the repository root rather than in the migration sequence.
 - `supabase-player-profile.sql` is corrupted: it is 508 lines long, repeats profile/post/policy/storage statements many times, and contains incomplete regular-expression CHECK expressions. It also contains old permissive public-read policy definitions that were superseded by the privacy migration.
 - A root-level profile customization script would change the live avatar bucket's file-size limit from 3 MiB to 5 MiB if rerun.
 
-The three files now restore the version-to-file mapping, but they are explicitly reconstructed rather than recovered originals. The live database remains unchanged. A separate clean-database/bootstrap baseline and isolated execution test are still required before creating any Velorn schema.
+The three files restore the version-to-file mapping but remain explicitly reconstructed rather than recovered originals. A local-only bootstrap now recreates the legacy manual foundation (including player_progress, profiles/posts, telemetry, card-image views and pre-existing buckets) before the nine timestamped migrations are replayed. A CI workflow validates the chain on a disposable local Supabase stack; production remains untouched.
 
 ## 2. Live project inventory
 
@@ -202,7 +202,7 @@ Reference: [Supabase CLI v3 breaking change](https://supabase.com/changelog).
 These actions are ordered to preserve the current live data and prevent false migration history:
 
 1. **Preserve the live schema as the reference.** Obtain a full schema-only snapshot/dump of the connected project, including tables, constraints, indexes, policies, grants, functions, triggers, storage policies, and bucket configuration. Keep secrets and user data out of the snapshot.
-2. **Validate the reconstructed migrations in isolation.** Apply them only to a disposable local/temporary database with the required legacy bootstrap baseline, then compare the resulting columns, constraints, and policies with the captured live catalog. Do not apply them to the hosted project; those versions are already recorded as applied.
+2. **Validate the reconstructed migrations in isolation.** The new `.github/workflows/supabase-schema.yml` starts a disposable local Supabase stack, applies `supabase/bootstrap/legacy_foundation.sql`, replays all nine migrations, and runs `supabase/tests/phase0_schema_assertions.sql`. Do not apply the historical versions to the hosted project; they are already recorded as applied.
 3. **Establish a canonical bootstrap baseline.** The existing profile/post base schema and some telemetry/card-image structures originated in root-level manual scripts rather than the tracked migration sequence. Convert or replace those setup steps through a separately reviewed baseline strategy; do not silently fold them into the historical migration files.
 4. **Quarantine obsolete setup scripts.** Clearly mark the corrupted `supabase-player-profile.sql` and unsafe legacy privacy definitions as archival/do-not-run while preserving Git history. Keep the 3 MiB live avatar limit and current privacy policies unless a separate approved change says otherwise.
 5. **Add project configuration and a repeatable local workflow.** Pin/check the Supabase CLI version, link the correct project, and document explicit local versus remote commands. Verify the remote target before any command that can change it.
@@ -230,8 +230,9 @@ Phase 0 is complete only when:
 - No Supabase policy, grant, bucket, function, or setting was changed.
 - No user or player data was read beyond aggregate inventory/count metadata.
 - No hosted database schema, policy, grant, bucket, setting, or player data was changed.
-- The three new SQL files were not executed against the hosted project or an isolated database during this task; no SQL runtime test is claimed.
-- No application code or existing root-level SQL script was modified.
-- No application test suite or deployment was run.
+- The clean-room workflow has been added but has not yet completed; no SQL runtime test is claimed until its GitHub Actions run reports success.
+- Five unsafe/legacy root SQL entry points were replaced with explicit do-not-run pointers; their prior contents remain in Git history.
+- No hosted database schema, policy, grant, bucket, setting, or player data was changed.
+- No application test suite or deployment was run as part of this schema task.
 
-**Conclusion:** The migration version/file count now matches the nine hosted application migration records. However, the reconstructed SQL is best-evidence source, not original history, and the legacy bootstrap is still outside the migration sequence. Phase 0 remains open until isolated execution, baseline reconciliation, and a reproducible clean schema diff are completed. Do not begin Velorn schema implementation yet.
+**Conclusion:** The repository now contains all nine hosted migration versions, an explicit local-only legacy foundation, and automated clean-room schema assertions. The historical SQL of three migrations remains unavailable, and the bootstrap is reconstructed from live catalog evidence. Phase 0 remains open until the new GitHub Actions clean-room workflow passes and its resulting catalog is compared with the live schema. No Velorn implementation should begin before that gate is green.

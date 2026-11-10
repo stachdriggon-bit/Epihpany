@@ -26,14 +26,14 @@ DROP POLICY IF EXISTS player_posts_select_visible ON public.player_posts;
 CREATE POLICY player_profiles_select_visible
   ON public.player_profiles
   FOR SELECT TO anon, authenticated
-  USING (is_private = false OR (SELECT auth.uid()) = user_id);
+  USING (is_private = false OR auth.uid() = user_id);
 
 -- Posts follow the author's profile privacy setting; owners can always read their own.
 CREATE POLICY player_posts_select_visible
   ON public.player_posts
   FOR SELECT TO anon, authenticated
   USING (
-    (SELECT auth.uid()) = user_id
+    auth.uid() = user_id
     OR EXISTS (
       SELECT 1
       FROM public.player_profiles AS profile
