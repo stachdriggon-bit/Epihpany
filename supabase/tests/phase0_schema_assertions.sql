@@ -1,6 +1,6 @@
 -- Run only against disposable local Supabase after bootstrap + migrations.
 DO $$
-DECLARE n integer;
+DECLARE n integer; actual_count integer; expected record;
 BEGIN
  SELECT count(*) INTO n FROM supabase_migrations.schema_migrations
  WHERE version IN ('20261023233115','20261024122251','20261030091511',
@@ -21,6 +21,54 @@ BEGIN
  'epiphany_telemetry','epiphany_card_image_views','epiphany_assets',
  'epiphany_asset_files','epiphany_asset_usages') AND c.relrowsecurity;
  IF n<>9 THEN RAISE EXCEPTION 'RLS not enabled on all 9 tables; got %',n; END IF;
+
+
+  -- Compare table shape and catalog object counts with the live Phase 0 inventory.
+  FOR expected IN
+    SELECT * FROM (VALUES
+      ('player_progress',3),('player_profiles',14),('player_posts',4),
+      ('player_stories',12),('epiphany_telemetry',7),('epiphany_card_image_views',6),
+      ('epiphany_assets',13),('epiphany_asset_files',11),('epiphany_asset_usages',12)
+    ) AS expected(table_name, expected_columns)
+  LOOP
+    SELECT count(*) INTO actual_count FROM information_schema.columns
+    WHERE table_schema='public' AND table_name=expected.table_name;
+    IF actual_count <> expected.expected_columns THEN
+      RAISE EXCEPTION 'Column count mismatch for %: expected %, got %',
+        expected.table_name, expected.expected_columns, actual_count;
+    END IF;
+  END LOOP;
+
+  FOR expected IN
+    SELECT * FROM (VALUES
+      ('player_progress',2),('player_profiles',10),('player_posts',3),
+      ('player_stories',10),('epiphany_telemetry',4),('epiphany_card_image_views',5),
+      ('epiphany_assets',10),('epiphany_asset_files',10),('epiphany_asset_usages',7)
+    ) AS expected(table_name, expected_constraints)
+  LOOP
+    SELECT count(*) INTO actual_count
+    FROM pg_constraint
+    WHERE conrelid = format('public.%I', expected.table_name)::regclass;
+    IF actual_count <> expected.expected_constraints THEN
+      RAISE EXCEPTION 'Constraint count mismatch for %: expected %, got %',
+        expected.table_name, expected.expected_constraints, actual_count;
+    END IF;
+  END LOOP;
+
+  FOR expected IN
+    SELECT * FROM (VALUES
+      ('player_progress',1),('player_profiles',1),('player_posts',2),
+      ('player_stories',3),('epiphany_telemetry',3),('epiphany_card_image_views',1),
+      ('epiphany_assets',2),('epiphany_asset_files',4),('epiphany_asset_usages',4)
+    ) AS expected(table_name, expected_indexes)
+  LOOP
+    SELECT count(*) INTO actual_count FROM pg_indexes
+    WHERE schemaname='public' AND tablename=expected.table_name;
+    IF actual_count <> expected.expected_indexes THEN
+      RAISE EXCEPTION 'Index count mismatch for %: expected %, got %',
+        expected.table_name, expected.expected_indexes, actual_count;
+    END IF;
+  END LOOP;
 
  IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema='public'
  AND table_name='player_profiles' AND column_name='is_private' AND column_default LIKE '%true%')
