@@ -54,6 +54,11 @@ BEGIN
  IF NOT EXISTS (SELECT 1 FROM storage.buckets WHERE id='epiphany-assets-private' AND NOT public AND file_size_limit=12582912)
  THEN RAISE EXCEPTION 'epiphany-assets-private bucket mismatch'; END IF;
 
+ IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conrelid='public.epiphany_telemetry'::regclass AND conname='epiphany_telemetry_details_size')
+ THEN RAISE EXCEPTION 'Telemetry details size constraint name/definition missing'; END IF;
+ IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conrelid='public.epiphany_telemetry'::regclass AND conname='epiphany_telemetry_section_length')
+ THEN RAISE EXCEPTION 'Telemetry section length constraint name/definition missing'; END IF;
+
  IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE schemaname='public' AND tablename='player_profiles'
  AND policyname='player_profiles_select_visible' AND qual ILIKE '%is_private%')
  THEN RAISE EXCEPTION 'Private profile SELECT policy missing'; END IF;

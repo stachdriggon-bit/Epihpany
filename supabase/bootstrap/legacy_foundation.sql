@@ -93,9 +93,9 @@ CREATE TABLE IF NOT EXISTS public.epiphany_telemetry (
   'session_start','first_session_complete','return_day_2','return_day_7',
   'section_open','section_exit','client_error','web_vital'
  )),
- section text CHECK (section IS NULL OR length(section)<=40),
+ section text CONSTRAINT epiphany_telemetry_section_length CHECK (section IS NULL OR length(section)<=40),
  app_version text NOT NULL DEFAULT '20261024k',
- details jsonb NOT NULL DEFAULT '{}'::jsonb CHECK (pg_column_size(details)<=1024),
+ details jsonb NOT NULL DEFAULT '{}'::jsonb CONSTRAINT epiphany_telemetry_details_size CHECK (pg_column_size(details)<=1024),
  created_at timestamptz NOT NULL DEFAULT now()
 );
 CREATE INDEX IF NOT EXISTS epiphany_telemetry_created_at_idx ON public.epiphany_telemetry(created_at DESC);
