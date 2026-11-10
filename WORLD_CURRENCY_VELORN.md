@@ -517,3 +517,8 @@ Any future implementation should follow this reference and separately approved e
 The technical design for implementing the shared wallet, immutable transaction ledger, validated mission and achievement rewards, and atomic Card Portal transactions is maintained separately in [VELORN-TECHNICAL-ARCHITECTURE.md](docs/VELORN-TECHNICAL-ARCHITECTURE.md).
 
 That document is an architecture proposal only. It records the verified current EPIPHANY/Supabase state, target data model, security and transaction boundaries, rollout phases, acceptance tests, and unresolved decisions. It does not implement or activate the economy.
+
+
+## 10.14 Supabase schema reconciliation gate
+
+Before any Velorn database implementation, complete the read-only schema and migration reconciliation recorded in [docs/VELORN-PHASE-0-SCHEMA-RECONCILIATION.md](docs/VELORN-PHASE-0-SCHEMA-RECONCILIATION.md). Do not create or apply the economy migration until the live database schema and the repository's canonical migration baseline have been reconciled.
