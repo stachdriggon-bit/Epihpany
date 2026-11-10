@@ -491,7 +491,9 @@ test('main navigation tabs open without uncaught page errors', { timeout: 18 * 6
       }
       if (view === 'thinklab') {
         checkpoint('thinklab: checking deferred module requests');
-        assert.ok(requested.some(path => path.endsWith('/odd-one-out-bank.js')),  'Odd One Out bank should load with Think Lab');
+        assert.equal(requested.some(path => path.endsWith('/odd-one-out-bank.js')), false, 'Odd One Out answer bank must never be sent to the browser');
+        assert.equal(await page.evaluate(() => typeof window.EPIPHANY_ODD_ONE_OUT_BANK), 'undefined', 'no browser-side Odd One Out bank should be exposed');
+        assert.equal(await page.evaluate(() => typeof window.EpiphanyAuth?.getGuestValidatorClient), 'function', 'guest Odd One Out must use the server validator client');
         assert.ok(requested.some(path => path.endsWith('/think-lab.js')), 'Think Lab should load on first open');
         checkpoint('thinklab: modules requested; checking the daily challenge entry');
         const dailyCard = page.locator('#thinklab-view .tl-daily-challenge');
