@@ -72,6 +72,23 @@ BEGIN
     RAISE EXCEPTION 'No mission or achievement definition may be assignable before validator mapping';
   END IF;
 
+  IF (SELECT count(*) FROM economy_private.mission_template_versions) <> 11
+     OR (SELECT count(*) FROM economy_private.achievement_definitions) <> 10 THEN
+    RAISE EXCEPTION 'Expected the approved 11 mission templates and 10 achievement definitions';
+  END IF;
+
+  IF EXISTS (
+    SELECT 1 FROM economy_private.mission_template_versions
+    WHERE validator_mapping_status <> 'unmapped'
+       OR (period_type = 'daily' AND reward_amount <> 10)
+       OR (period_type = 'weekly' AND reward_amount <> 20)
+  ) OR EXISTS (
+    SELECT 1 FROM economy_private.achievement_definitions
+    WHERE validator_mapping_status <> 'unmapped'
+  ) THEN
+    RAISE EXCEPTION 'Seeded approved definitions must remain unmapped and non-assignable';
+  END IF;
+
   IF (SELECT economy_enabled FROM economy_private.economy_settings WHERE singleton)
      IS DISTINCT FROM false THEN
     RAISE EXCEPTION 'Phase 2 must not enable the economy';
