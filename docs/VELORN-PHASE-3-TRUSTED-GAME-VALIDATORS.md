@@ -67,7 +67,7 @@ Use these classes in the registry:
 | Constrained result | Server can independently verify a narrow claim but cannot prove the full learning quality or interaction path | Only the explicitly approved narrow predicate; never a general completion reward |
 | Unverified | Browser/local state or browser-side evaluator is the only evidence | No Velorn, mission progress or achievement progress |
 
-**Initial registry state:** all existing Fluentia, Think Lab and Casebound browser completions are Unverified. No template mapping may be marked `verified` on the basis of current client code alone.
+**Current initial registry:** Fluentia and Casebound browser completions remain Unverified. Think Lab games remain Unverified except signed-in Odd One Out, which now emits a constrained server-validated completion event. Odd One Out is not reward eligible while the public answer-bearing bank remains available. No template mapping may be marked `verified` on the basis of current client code alone.
 
 ## 5. Canonical event contract
 
@@ -104,7 +104,7 @@ Every validator must demonstrate:
 - **Phase 3A — Inventory and contract:** complete; all current browser-side signals were classified.
 - **Phase 3B — Validator foundation:** the first authenticated session/event contract, private session storage, and server RPC boundary are implemented. A generic reusable validator layer and broader rate/abuse controls remain future work.
 - **Phase 3C — First game validator:** Odd One Out is deployed and connected for signed-in play. It verifies ownership, answer ordering, server-side evaluation, expiry, replay rejection, and atomic event creation; public answer-key exposure blocks reward eligibility.
-- **Phase 3D — Harden and expand:** remove answer-bearing data from public assets, add answer pacing and start-rate controls, then add game-specific validators only after equivalent security and concurrency tests pass.
+- **Phase 3D — Harden and expand:** answer pacing and per-user session-start limits are now implemented for Odd One Out. Remove answer-bearing data from public assets before considering it reward eligible, then add other game-specific validators only after equivalent security and concurrency tests pass.
 - **Phase 3E — Verify mission/achievement predicates:** map approved templates only to proven event facts. No mission or achievement is assignable until every required predicate is verified.
 
 ## 8. Explicit non-goals and gates
