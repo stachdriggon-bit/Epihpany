@@ -64,6 +64,62 @@ CREATE TABLE economy_private.achievement_definitions (
   )
 );
 
+-- Preserve the approved content bank as non-assignable definitions.
+-- Predicate mappings remain unmapped until a server validator is implemented and verified.
+INSERT INTO economy_private.mission_template_versions (
+  template_id, template_version, period_type, mission_family,
+  reward_amount, objective_definition, validator_mapping_status, is_assignable
+)
+VALUES
+  ('learning_step', 1, 'daily', 'learning_activity', 10,
+   '{"summary":"Complete one eligible learning activity and receive its validated completion outcome.","requires_validator_mapping":true}'::jsonb, 'unmapped', false),
+  ('put_knowledge_to_use', 1, 'daily', 'practice_activity', 10,
+   '{"summary":"Complete one eligible practice activity that checks or applies a learned skill.","requires_validator_mapping":true}'::jsonb, 'unmapped', false),
+  ('try_something_different', 1, 'daily', 'experience_variety', 10,
+   '{"summary":"Complete an eligible activity from a different game or activity type than the most recently credited daily mission, where an alternative is available.","requires_validator_mapping":true}'::jsonb, 'unmapped', false),
+  ('make_case_progress', 1, 'daily', 'investigation_progress', 10,
+   '{"summary":"Complete one meaningful validated objective in an investigation or multi-step activity; the same objective cannot count again through replay.","requires_validator_mapping":true}'::jsonb, 'unmapped', false),
+  ('solve_a_challenge', 1, 'daily', 'challenge_completion', 10,
+   '{"summary":"Complete an eligible challenge with a validated result; merely opening or entering it does not count.","requires_validator_mapping":true}'::jsonb, 'unmapped', false),
+  ('build_a_learning_habit', 1, 'daily', 'daily_learning', 10,
+   '{"summary":"Complete an eligible activity on a day when the player has not yet received credit for this mission; this is not a login reward.","requires_validator_mapping":true}'::jsonb, 'unmapped', false),
+  ('explore_a_new_experience', 1, 'daily', 'new_experience', 10,
+   '{"summary":"Complete an eligible activity in a game the player has not previously completed, if such an experience is available.","requires_validator_mapping":true}'::jsonb, 'unmapped', false),
+  ('review_and_improve', 1, 'daily', 'verified_improvement', 10,
+   '{"summary":"Complete a distinct review or retry objective that records validated improvement, not simply a repeated attempt.","requires_validator_mapping":true}'::jsonb, 'unmapped', false),
+  ('consistent_progress', 1, 'weekly', 'consistency', 20,
+   '{"summary":"Complete eligible activities on at least three distinct days within the weekly period.","requires_validator_mapping":true}'::jsonb, 'unmapped', false),
+  ('broaden_your_experience', 1, 'weekly', 'variety', 20,
+   '{"summary":"Complete eligible activities in at least two distinct game experiences or activity types within the weekly period.","requires_validator_mapping":true}'::jsonb, 'unmapped', false),
+  ('meaningful_progress', 1, 'weekly', 'meaningful_milestone', 20,
+   '{"summary":"Complete a validated multi-step objective, learning milestone, or substantial challenge during the weekly period.","requires_validator_mapping":true}'::jsonb, 'unmapped', false);
+
+INSERT INTO economy_private.achievement_definitions (
+  achievement_id, stage_id, definition_version, reward_amount,
+  milestone_definition, validator_mapping_status, is_assignable
+)
+VALUES
+  ('first_steps', 'permanent', 1, 25,
+   '{"summary":"Complete the first eligible learning or game activity with a validated outcome.","award_scope":"once_per_player","requires_validator_mapping":true}'::jsonb, 'unmapped', false),
+  ('first_challenge', 'permanent', 1, 25,
+   '{"summary":"Complete the first eligible challenge with a validated outcome.","award_scope":"once_per_player","requires_validator_mapping":true}'::jsonb, 'unmapped', false),
+  ('curious_explorer', 'permanent', 1, 50,
+   '{"summary":"Complete eligible activities in three distinct game experiences.","award_scope":"once_per_player","requires_validator_mapping":true}'::jsonb, 'unmapped', false),
+  ('steady_learner', 'permanent', 1, 50,
+   '{"summary":"Complete ten distinct eligible learning activities.","award_scope":"once_per_player","requires_validator_mapping":true}'::jsonb, 'unmapped', false),
+  ('case_closed', 'per_case', 1, 50,
+   '{"summary":"Complete one investigation or case objective sequence with a validated final outcome.","award_scope":"once_per_distinct_case_reference","requires_validator_mapping":true}'::jsonb, 'unmapped', false),
+  ('skill_builder', 'per_milestone', 1, 100,
+   '{"summary":"Reach a defined learning milestone verified by the relevant activity, such as completing a curated skill set.","award_scope":"once_per_stable_milestone_reference","requires_validator_mapping":true}'::jsonb, 'unmapped', false),
+  ('versatile_mind', 'per_milestone', 1, 100,
+   '{"summary":"Complete meaningful milestones across three distinct activity types or skill families.","award_scope":"once_per_defined_milestone","requires_validator_mapping":true}'::jsonb, 'unmapped', false),
+  ('mastery_milestone', 'per_milestone', 1, 100,
+   '{"summary":"Reach a formally defined mastery threshold in an eligible learning path or game mode.","award_scope":"once_per_stable_mastery_reference","requires_validator_mapping":true}'::jsonb, 'unmapped', false),
+  ('epiphany_pathfinder', 'per_curated_set', 1, 200,
+   '{"summary":"Complete a curated set of substantial milestones across multiple site sections.","award_scope":"once_per_curated_set_reference","requires_validator_mapping":true}'::jsonb, 'unmapped', false),
+  ('long_term_dedication', 'per_milestone', 1, 200,
+   '{"summary":"Complete a long-term progression milestone with distinct validated progress over time.","award_scope":"once_per_defined_milestone","requires_validator_mapping":true}'::jsonb, 'unmapped', false);
+
 CREATE TABLE economy_private.mission_boards (
   board_id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE RESTRICT,
@@ -174,7 +230,7 @@ CREATE TABLE economy_private.achievement_awards (
     REFERENCES economy_private.achievement_definitions(
       achievement_id, stage_id, definition_version
     ) ON DELETE RESTRICT,
-  UNIQUE (user_id, achievement_id, stage_id),
+  UNIQUE (user_id, achievement_id, stage_id, qualifying_reference),
   CONSTRAINT achievement_award_ledger_state_check CHECK (
     (award_status = 'paid' AND ledger_entry_id IS NOT NULL AND paid_at IS NOT NULL)
     OR (award_status <> 'paid' AND ledger_entry_id IS NULL AND paid_at IS NULL)
