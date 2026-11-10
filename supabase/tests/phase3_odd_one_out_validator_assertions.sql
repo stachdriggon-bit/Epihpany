@@ -96,9 +96,9 @@ BEGIN
     AND source_event_key = 'f3000000-0000-4000-8000-000000000022';
 
   IF v_event_count <> 1
-     OR v_event_evidence ->> 'challenge_level' <> 'A1'
-     OR v_event_evidence ->> 'correct_count' <> '0'
-     OR v_event_evidence ->> 'incorrect_count' <> '1' THEN
+     OR v_event_evidence ->> 'challenge_level' IS DISTINCT FROM 'A1'
+     OR v_event_evidence ->> 'correct_count' IS DISTINCT FROM '0'
+     OR v_event_evidence ->> 'incorrect_count' IS DISTINCT FROM '1' THEN
     RAISE EXCEPTION 'Final answer must atomically create one server-validated event: %, %', v_event_count, v_event_evidence;
   END IF;
 
