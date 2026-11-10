@@ -85,16 +85,6 @@ CREATE POLICY "Developer accounts can replace character art"
     )
   );
 
-CREATE POLICY "EPIPHANY developers delete character art"
-  ON storage.objects
-  FOR DELETE TO authenticated
-  USING (
-    bucket_id = 'character-art'
-    AND lower(COALESCE((SELECT auth.jwt() ->> 'email'), '')) = ANY (
-      ARRAY[
-        'abdulrahimaouadi@gmail.com',
-        'crboy952@gmail.com',
-        'girl32761@gmail.com'
-      ]::text[]
-    )
-  );
+-- The DELETE policy is intentionally not created here. It was introduced later
+-- by 20261030201651_asset_manager_foundation.sql; keeping it there preserves
+-- the original migration ordering and prevents a duplicate-policy failure on a fresh replay.
