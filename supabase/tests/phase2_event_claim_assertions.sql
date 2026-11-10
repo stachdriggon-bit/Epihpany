@@ -28,6 +28,14 @@ BEGIN
     RAISE EXCEPTION 'Phase 2 private tables must not grant direct API-role access';
   END IF;
 
+  IF NOT has_function_privilege(
+       'service_role',
+       'economy_private.post_wallet_transaction(uuid,bigint,text,text,text,uuid,text,smallint,jsonb)',
+       'EXECUTE'
+     ) THEN
+    RAISE EXCEPTION 'Phase 2 must preserve the Phase 1 private wallet transaction grant';
+  END IF;
+
   IF has_function_privilege(
        'anon',
        'public.economy_record_validated_activity_event(uuid,uuid,text,text,text,text,timestamptz,text,jsonb)',
