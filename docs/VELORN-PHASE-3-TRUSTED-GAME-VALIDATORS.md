@@ -102,7 +102,7 @@ Every validator must demonstrate:
 ## 7. Implementation sequence
 
 - **Phase 3A — Inventory and contract:** complete; all current browser-side signals were classified.
-- **Phase 3B — Validator foundation:** the first authenticated session/event contract, private session storage, and server RPC boundary are implemented. A generic reusable validator layer and broader rate/abuse controls remain future work.
+- **Phase 3B — Validator foundation:** the first authenticated session/event contract, private session storage, service-only RPC boundary, per-user start limits, and minimum answer pacing are implemented. A generic reusable validator layer and broader abuse signals remain future work.
 - **Phase 3C — First game validator:** Odd One Out is deployed and connected for signed-in play. It verifies ownership, answer ordering, server-side evaluation, expiry, replay rejection, and atomic event creation; public answer-key exposure blocks reward eligibility.
 - **Phase 3D — Harden and expand:** answer pacing and per-user session-start limits are now implemented for Odd One Out. Remove answer-bearing data from public assets before considering it reward eligible, then add other game-specific validators only after equivalent security and concurrency tests pass.
 - **Phase 3E — Verify mission/achievement predicates:** map approved templates only to proven event facts. No mission or achievement is assignable until every required predicate is verified.
