@@ -98,23 +98,124 @@ Specific local currencies, exchange rates, and exchange institutions remain **Op
 - Arabic rendering: **فيلورن**.
 - Avoid generic labels such as “Tokens” when referring to this world currency.
 
-## 10. EPIPHANY reward economy — product decisions
+## 10. EPIPHANY reward economy — approved product direction
 
-The website economy is intended to use Velorn as its named in-app currency.
+The website economy uses **Velorn** as its named in-app currency.
 
-Agreed direction:
+Approved product principles:
 
-- Velorn can be earned through achievements, daily missions, and weekly missions.
-- The earning pace should be sustainable: regular players should be able to make card draws without excessive grinding or uncontrolled accumulation.
+- Velorn is earned through daily missions, weekly missions, and achievements.
+- The economy is intentionally **generous**: a regularly active player should be able to earn approximately one ordinary card draw per day through the recurring mission system.
+- Achievement rewards are **additional** to daily and weekly mission rewards; they are not deducted from or included in the recurring mission budget.
 - Repeating the same activity must not allow unlimited farming.
 - Velorn is spent in the **Card Portal**.
 - The Card Portal remains separate from Collection and Profile.
 - There are no real-money purchases and no cash conversion.
+- The daily free pack remains free and independent of the Velorn wallet.
 - XP remains a separate progression measure and must not be merged with Velorn.
 - Duplicate-card **Shards** remain a separate resource and must not be merged with Velorn.
 - Reward and spending history should be transparent to the player.
+- Earned Velorn does not expire. Missing a day or week must not remove previously earned currency or punish the player by resetting a streak.
 
-Exact reward amounts, draw prices, limits, balancing formulas, and UI placement remain **Open** until separately designed and approved.
+### 10.1 Card Portal prices
+
+The approved working economy proposal uses these prices:
+
+| Card Portal option | Price |
+| --- | ---: |
+| Ordinary draw | **50 Velorn** |
+| Premium draw | **150 Velorn** |
+| Daily free pack | **Free**, independent of Velorn |
+
+The premium draw costs three ordinary draws. This creates a meaningful saving choice without making the ordinary draw inaccessible. Pack contents, card odds, guarantees, and exact premium benefits must be specified separately; price alone must not imply unapproved odds or rarity guarantees.
+
+### 10.2 Daily mission budget
+
+The proposed daily structure presents **four missions**, from which the player completes **any three** to earn the full daily mission reward:
+
+| Daily reward component | Amount |
+| --- | ---: |
+| Each completed eligible daily mission (up to three rewarded missions) | 10 Velorn |
+| Bonus for completing any three daily missions | 10 Velorn |
+| **Maximum recurring daily mission reward** | **40 Velorn** |
+
+The fourth mission provides flexibility; completing all four is optional and does not increase the stated daily budget. Mission selection should offer meaningful variety and should not require every player to use one specific game. Examples include completing a learning activity, trying a different game, finishing a challenge, or reaching a defined learning milestone. These are mission types, not a fixed live mission list.
+
+### 10.3 Weekly mission budget
+
+The proposed weekly structure presents **three weekly missions**:
+
+| Weekly reward component | Amount |
+| --- | ---: |
+| Each completed eligible weekly mission | 20 Velorn |
+| Bonus for completing all three weekly missions | 40 Velorn |
+| **Maximum recurring weekly mission reward** | **100 Velorn** |
+
+Weekly missions should require broader progress or variety than daily missions, such as engaging with multiple activities or completing a meaningful learning sequence. They should not require activity on every day of the week.
+
+### 10.4 Achievement rewards — additional budget
+
+Achievement rewards are paid **on top of** daily and weekly mission earnings.
+
+| Achievement tier | Reward | Intended scope |
+| --- | ---: | --- |
+| Simple | 25 Velorn | A meaningful first-time milestone |
+| Moderate | 50 Velorn | A multi-step or skill-development milestone |
+| Major | 100 Velorn | A substantial progression milestone |
+| Exceptional | 200 Velorn | A rare, difficult, or long-term milestone |
+
+Achievement rewards are not recurring mission income and must not be treated as a guaranteed weekly allowance. Permanent achievements pay once per player. Multi-stage achievements may pay at each explicitly defined milestone, but each stage must be uniquely identified and awarded only once. Replaying an activity or repeating a trivial action must not re-trigger an already claimed achievement.
+
+Achievement tiers are reward bands, not permission to assign rewards solely by click count, session count, or arbitrary difficulty labels. The reward should reflect the significance and effort of the validated milestone.
+
+### 10.5 Recurring earning budget and draw cadence
+
+The recurring mission budget is:
+
+| Source | Maximum recurring reward |
+| --- | ---: |
+| Daily missions: 40 Velorn × 7 days | 280 Velorn per week |
+| Weekly missions | 100 Velorn per week |
+| **Total recurring mission budget** | **380 Velorn per week** |
+
+At the ordinary draw price of 50 Velorn, this supports **seven ordinary draws per week**, with **30 Velorn remaining**. This is approximately one ordinary draw per day for a player who completes the recurring mission requirements. Achievement rewards can provide additional currency, but are excluded from this baseline calculation.
+
+The premium draw costs 150 Velorn, equivalent to three ordinary draws. Players can therefore choose between frequent ordinary draws and saving for premium draws. The daily free pack remains a separate benefit and is not counted as Velorn income or spending.
+
+These figures define the approved working balance target. They should be validated through economy simulations and playtesting before the live reward system is implemented. If later data requires tuning, change the central economy configuration deliberately and record the reason; do not silently change individual games' reward values.
+
+### 10.6 Fairness, anti-farming, and wallet rules
+
+- **One shared wallet:** the player has one Velorn balance across the entire website, not separate balances for Think Lab, Fluenta, or individual games.
+- **Central reward authority:** games report validated outcomes; the shared economy decides eligibility and amount. A game must not write arbitrary Velorn amounts directly to a wallet.
+- **No reward for mere access:** opening a game, entering a section, restarting a session, or replaying a completed activity does not automatically grant Velorn.
+- **Mission identity and period:** each mission reward is uniquely identified and can be claimed only once for its defined daily or weekly period.
+- **Achievement uniqueness:** permanent achievements and individual achievement stages can be paid only once.
+- **Idempotent transactions:** duplicate or simultaneous submissions for the same qualifying event must not create duplicate credits.
+- **Validated completion:** rewardable outcomes must be validated by the relevant game and checked by the shared reward layer.
+- **No trivial repetition:** repeated low-effort actions, retries, or farming loops must not generate additional mission or achievement progress unless an explicit rule says that distinct validated outcomes qualify.
+- **Flexible participation:** missions should not force every player to play every game or game category.
+- **No arbitrary wallet ceiling:** do not impose a maximum stored balance as a substitute for controlling issuance. Control inflation through defined reward budgets, eligibility, and anti-farming rules.
+- **No expiry:** earned Velorn remains in the player's balance until spent; inactivity does not erase it.
+- **Transparent ledger:** every credit and debit records amount, transaction type, source/reason, stable event reference, timestamp, and applicable economy configuration version.
+- **XP and Shards separation:** XP and Shards must never be silently converted to or counted as Velorn.
+
+### 10.7 Economy validation scenarios
+
+Before implementation or release, test at least these scenarios:
+
+1. A player who completes three eligible daily missions on each of seven days and all three weekly missions receives exactly 380 Velorn from recurring missions.
+2. That player can afford seven ordinary draws (350 Velorn) and has 30 Velorn remaining.
+3. A player who completes only two daily missions does not receive the three-mission completion bonus.
+4. Completing the optional fourth daily mission does not exceed the 40 Velorn daily mission budget.
+5. Completing only some weekly missions pays only their individual rewards; the 40 Velorn completion bonus is paid only after all three are completed.
+6. A permanent achievement and each defined achievement stage pay no more than once.
+7. Replaying a game, retrying a session, refreshing, or submitting the same result concurrently cannot duplicate a reward.
+8. The daily free pack neither spends nor grants Velorn.
+9. Ordinary and premium draws debit the shared wallet by exactly 50 and 150 Velorn respectively, and insufficient balances cannot produce a negative balance.
+10. Rewards earned in one game are visible in the same wallet and ledger used by all other participating games.
+11. A newly integrated game cannot bypass central eligibility, reward calculation, idempotency, or anti-farming checks.
+12. Economy configuration changes are versioned, auditable, and do not rewrite historical transactions.
 
 ## 11. Scalability across current and future games
 
@@ -166,17 +267,19 @@ Do not invent or silently finalize the following:
 - Mint names, mint locations, and minting procedures.
 - Counterfeiting laws, penalties, and inspection institutions.
 - Specific local currencies and their exchange rates.
-- Exact in-app earning amounts, spending prices, caps, and anti-farming formulas.
+- Final live mission content, the detailed card-pack contents and odds, and any later economy tuning based on playtesting.
+- Exact technical anti-farming thresholds and implementation-specific validation rules.
 
 These details require separate decisions before they become canon or implementation requirements.
 
 ## 13. Scope and implementation note
 
-This document records the agreed worldbuilding direction and product-economy principles. It does **not** mean that:
+This document records the agreed worldbuilding direction and the approved working product-economy balance. It does **not** mean that:
 
 - Velorn has already been implemented in the website.
 - Existing currency labels or reward logic have been changed.
-- Card Portal prices or mission rewards have been finalized.
+- The reward economy has been implemented in the website.
+- The proposed Card Portal prices and mission rewards have been deployed or tested against live player behavior.
 - Every detail in the proposed coin design is immutable canon.
 
 Any future implementation should follow this reference and separately approved economy-balance specifications.
