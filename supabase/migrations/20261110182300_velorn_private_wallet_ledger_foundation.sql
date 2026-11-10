@@ -173,6 +173,7 @@ DECLARE
   v_balance bigint;
   v_new_balance bigint;
   v_config_version smallint;
+  v_entry_id uuid;
 BEGIN
   IF current_setting('request.jwt.claim.role', true) IS DISTINCT FROM 'service_role' THEN
     RAISE EXCEPTION 'Wallet transactions require the trusted server role.'
@@ -187,7 +188,8 @@ BEGIN
     RAISE EXCEPTION 'Wallet transaction amount must be non-zero.'
       USING ERRCODE = '22023';
   END IF;
-  IF p_transaction_type NOT IN ('credit', 'debit', 'adjustment')
+  IF p_transaction_type IS NULL
+     OR p_transaction_type NOT IN ('credit', 'debit', 'adjustment')
      OR (p_transaction_type = 'credit' AND p_amount < 0)
      OR (p_transaction_type = 'debit' AND p_amount > 0) THEN
     RAISE EXCEPTION 'Transaction type and signed amount do not agree.'
@@ -311,14 +313,14 @@ BEGIN
     p_source_type, p_source_reference, p_idempotency_key, v_config_version,
     p_reason, p_metadata
   )
-  RETURNING wallet_ledger.entry_id INTO entry_id;
+  RETURNING wallet_ledger.entry_id INTO v_entry_id;
 
   RETURN QUERY
     SELECT l.entry_id, l.wallet_id, l.user_id, l.amount, l.balance_after,
            l.transaction_type, l.source_type, l.source_reference,
            l.idempotency_key, l.config_version, l.reason, l.metadata, l.created_at
     FROM economy_private.wallet_ledger AS l
-    WHERE l.entry_id = post_wallet_transaction.entry_id;
+    WHERE l.entry_id = v_entry_id;
 END;
 $$;
 
