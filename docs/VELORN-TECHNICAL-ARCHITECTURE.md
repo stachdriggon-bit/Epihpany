@@ -1,6 +1,6 @@
 # Velorn Economy — Technical Architecture
 
-> **Status (2026-11-10):** Approved architecture. Phase 1 wallet/ledger and Phase 2 normalized-event/claim-record foundations are deployed and verified on hosted Supabase. Phase 3 is beginning with a repository-wide trust and validator inventory; no game validator, mission progress writer, reward claim writer, player balance read, reward issuance, balance import, or economy activation is enabled.
+> **Status (2026-11-10):** Phase 1 wallet/ledger and Phase 2 event/claim-record foundations are deployed. The first Phase 3 Odd One Out validator is deployed and connected for signed-in play, but its public question bank still exposes answer indices; it is not reward-eligible. No mission predicate mapping, board generator, claim writer, player balance read, reward issuance, balance import, or economy activation is enabled.
 
 ## 1. Purpose and design constraints
 
@@ -54,7 +54,7 @@ The inspected public schema currently includes:
 - `epiphany_telemetry`
 - Asset Manager tables and card-image-view metadata
 
-No Velorn wallet, economy ledger, mission assignment, achievement-award, card inventory, or card-draw transaction tables were present in the inspected public schema. The connected project currently reports no deployed Edge Functions.
+Velorn tables are intentionally held in the non-exposed `economy_private` schema, not the public schema. The project has one deployed Edge Function, `velorn-odd-one-out`, with JWT verification enabled.
 
 The inspected RLS policies restrict `player_progress` reads and writes to the owning authenticated user. That is appropriate for learning progress, but it does not provide the transaction, reward-validation, or concurrency guarantees required by an economy.
 
@@ -233,7 +233,7 @@ Use a small API surface rather than exposing tables as a general-purpose economy
 
 Names are illustrative, not final function signatures.
 
-Atomic database routines perform wallet credit/debit and related writes. Phase 1 uses narrow public RPC wrappers with `SECURITY INVOKER`, executable only by `service_role`; their implementations live in the non-exposed `economy_private` schema, use a fixed empty `search_path`, schema-qualify referenced objects, and independently require the trusted `service_role` JWT claim. The service role has schema usage and exact function execution rights but no direct table privileges. No player or browser role can call these routines. When Phase 2 introduces player-facing operations, the server must authenticate the caller and derive the player ID from the verified Auth identity; never trust a client-supplied user ID. Do not create a broadly callable `SECURITY DEFINER` function in the exposed schema.
+Atomic database routines perform wallet credit/debit and related writes. Phase 1 uses narrow public RPC wrappers with `SECURITY INVOKER`, executable only by `service_role`; their implementations live in the non-exposed `economy_private` schema, use a fixed empty `search_path`, schema-qualify referenced objects, and independently require the trusted `service_role` JWT claim. The service role has schema usage and exact function execution rights but no direct table privileges. No player or browser role can call these wallet routines. Game validators authenticate the caller and derive the player ID from the verified Auth identity; never trust a client-supplied user ID. Do not create a broadly callable `SECURITY DEFINER` function in the exposed schema.
 
 Where an Edge Function is used, it must authenticate the request with the user's verified Supabase identity. The service-role key may exist only in server-side function secrets, never in the PWA. The Edge Function is not allowed to accept a user ID or reward amount as proof of authority.
 
@@ -353,27 +353,33 @@ Do not implement all components in one production migration. The economy is a fi
 - Keep `economy_enabled = false`; wallets are lazy-created only for an accepted trusted transaction. No automatic grants, player-facing balance, browser integration, or Card Portal behavior.
 - The clean-room Phase 1 assertions passed. The hosted migration is applied; post-deployment checks confirmed the disabled setting, empty wallets/ledger, private schema permissions, forced RLS, append-only triggers, and service-role-only RPC execution.
 
-### Phase 2 — normalized events and reward-claim foundation — IN PROGRESS
-- The additive private-schema foundation is committed in `supabase/migrations/20261110190000_velorn_phase2_event_claim_foundation.sql`.
-- Seven private tables now model normalized activity evidence, versioned mission/achievement definitions, stable mission boards and assignments, mission claims, and achievement awards.
-- A service-role-only, idempotent validated-event ingestion RPC is implemented. It accepts evidence only from a trusted server validator; it does not validate browser claims itself.
-- Clean-room contract tests cover private privileges, RLS/FORCE RLS, event idempotency, mismatched-payload rejection, and append-only evidence. CI must pass before the migration is deployed.
-- Game-specific server validators, mission/achievement predicate mappings, board generation, timezone/reset policy, and atomic claim writers remain required before reward claims can be paid. See [VELORN-PHASE-2-EVENTS-AND-CLAIMS.md](VELORN-PHASE-2-EVENTS-AND-CLAIMS.md).
+### Phase 2 — normalized events and reward-claim foundation — DEPLOYED FOUNDATION; CLAIMS DISABLED
+- The additive private-schema foundation is deployed on hosted Supabase.
+- Seven private tables model normalized activity evidence, versioned mission/achievement definitions, stable mission boards and assignments, mission claims, and achievement awards.
+- A service-role-only, idempotent validated-event ingestion RPC accepts evidence only from trusted server validators; it does not validate browser claims itself.
+- Mission templates and achievement definitions remain inactive/unmapped. No boards, assignments, claims, or awards have been created.
+- Board generation, timezone/reset policy, and atomic claim writers remain required before rewards can be paid. See [VELORN-PHASE-2-EVENTS-AND-CLAIMS.md](VELORN-PHASE-2-EVENTS-AND-CLAIMS.md).
 - Keep production reward issuance disabled; do not enable any template until its validator mapping is verified.
 
-### Phase 3 — Card Portal transactions
+### Phase 3 — trusted game validators — IN PROGRESS
+- Phase 3A inventory and trust contract are documented in [VELORN-PHASE-3-TRUSTED-GAME-VALIDATORS.md](VELORN-PHASE-3-TRUSTED-GAME-VALIDATORS.md).
+- The first server-owned Odd One Out session validator is deployed through `velorn-odd-one-out`; signed-in players use it, while guest play remains local and untrusted.
+- The private session table and RPCs enforce ownership, ordered answers, expiry, row locking, replay rejection, and atomic validated-event creation.
+- Important limitation: the existing public Odd One Out bank still contains answer indices. The validator is not reward-eligible until answer-bearing content is removed from public assets and rate/pacing controls are added. See [VELORN-PHASE-3C-ODD-ONE-OUT-VALIDATOR.md](VELORN-PHASE-3C-ODD-ONE-OUT-VALIDATOR.md).
+- Expand to other games only after their server-owned evidence and anti-abuse rules are independently reviewed. Keep all mission/achievement mappings inactive.
+
+### Phase 4 — Card Portal transactions
 - Implement server-side draw rules, wallet debit, draw history, inventory, pity, and separate Shards transactions.
 - Resolve and document pack odds, pity rules, free-pack interaction, duplicate conversion, and upgrade costs before activation.
 - Build a one-time reconciliation/import plan for existing local card ownership only if it can be safely verified; never import local Velorn balances.
 
-### Phase 4 — client integration and controlled rollout
+### Phase 5 — client integration and controlled rollout
 - Replace the prototype token display and local spend path with server reads and atomic requests.
 - Remove local reward grants, starter-token grants, developer token grants, and browser-side reward authority.
 - Preserve offline learning and the separate XP system.
-- Enable for a controlled test cohort, monitor ledger reconciliation, duplicate claims, validation rejection, transaction latency, and mission completion rates.
-- Expand only after the security and economy acceptance criteria pass.
+- Enable for a controlled test cohort only after all security and economy acceptance criteria pass; monitor ledger reconciliation, duplicate claims, validation rejection, transaction latency, and mission completion rates.
 
-Each phase needs its own migration, tests, rollback plan, and documented verification. Phase 1 is database-only. Do not deploy an Edge Function, change the PWA, expose player balances, or enable the economy as part of this phase.
+Each phase needs its own migration, tests, rollback plan, and documented verification. A deployed validator does not authorize mission assignment or reward issuance. Do not expose player balances or enable the economy until the later activation gates pass.
 
 ## 11. Required acceptance tests
 
@@ -428,19 +434,13 @@ No value in this list should be silently inferred from the old local token proto
 
 ## 13. Implementation boundary
 
-Phase 1 implementation status:
-- The versioned wallet/ledger migration and dedicated SQL assertions are committed to `main`.
-- A rollback-only transaction smoke test against the connected PostgreSQL 17.11 project passed; the test transaction was rolled back and a follow-up read confirmed no persistent economy schema or RPC was created.
-- Clean-room GitHub Actions passed before deployment; the migration was applied and verified on the hosted Supabase project.
-- No production wallet, ledger, or configuration objects have been persisted; no Edge Function or website code has been changed.
-- No local token balance, card inventory, or Shards balance has been migrated.
-- No reward, draw, or player-facing balance has been activated.
+Phase 1 and Phase 2 foundations are deployed and verified on the hosted Supabase project. Phase 3's first Odd One Out validator is also deployed. A rollback-only PostgreSQL smoke test exercised session creation, correct/incorrect answer evaluation, completion-event creation, and replay rejection; the transaction was rolled back and a follow-up read confirmed no test user, session, or event persisted. The hosted validator migration version is `20261110192426`.
 
-Phase 1 is now deployed and verified on the hosted Supabase project, with the economy still disabled. The next implementation phase is Phase 2: server-validated activity events and idempotent mission/achievement claims.
+The validator created no wallet or ledger entry. No user balances, local token balances, card inventory, or Shards have been imported. Mission templates remain unmapped and unassignable, reward claims remain unwritable, and `economy_enabled = false`. The public answer-key exposure is documented as a blocker before any reward mapping.
 
 
 ## 14. Phase 0 schema reconciliation
 
 The Supabase inventory and migration comparison are documented in [VELORN-PHASE-0-SCHEMA-RECONCILIATION.md](VELORN-PHASE-0-SCHEMA-RECONCILIATION.md). All nine hosted application migration versions now have matching files in the repository. The three previously missing files are best-evidence reconstructions, explicitly labelled as such rather than presented as original historical SQL. A local-only legacy foundation now captures the manually created tables and policies, and the root-level SQL entry points are archived as do-not-run pointers. The automated clean-room workflow uses Supabase CLI 3.1.0 and asserts the nine-table schema, migration history, RLS policies, Storage policies and bucket limits.
 
-**Implementation gate:** Phase 0 is complete. The clean-room replay, schema assertions, and exact redacted catalog comparison all passed; the hosted database remains unchanged. Phase 1 may now create the private wallet/ledger foundation with the economy feature disabled. Do not activate rewards, draws, or user-facing balances until the open decisions in Section 12 are explicitly resolved.
+**Implementation gate:** Phase 0, Phase 1, and the Phase 2 database foundation are deployed and verified. Phase 3 validator work may continue while the economy remains disabled. Do not activate rewards, draws, or user-facing balances until validator eligibility, mission predicates, timezone policy, claim atomicity, and the open decisions in Section 12 are explicitly resolved.
