@@ -87,7 +87,11 @@ BEGIN
   END LOOP;
 
   -- Preserve the observed Data API grant boundary.
-  IF has_table_privilege('anon','public.player_profiles','SELECT')
+  IF EXISTS (SELECT 1 FROM pg_auth_members m JOIN pg_roles r ON r.oid=m.roleid
+     JOIN pg_roles member_role ON member_role.oid=m.member
+     WHERE member_role.rolname='anon' AND r.rolname='authenticated')
+     OR has_table_privilege('anon','public.player_progress','SELECT')
+     OR has_table_privilege('anon','public.player_profiles','SELECT')
      OR has_table_privilege('anon','public.player_posts','SELECT') THEN
     RAISE EXCEPTION 'Anonymous SELECT must not be granted on player profiles/posts';
   END IF;

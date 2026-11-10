@@ -1622,6 +1622,7 @@
       ]
     }
   ],
+  "role_memberships": [],
   "storage_policies": [
     {
       "name": "Avatar images are publicly viewable",

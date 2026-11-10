@@ -47,6 +47,12 @@ CREATE TABLE IF NOT EXISTS public.player_posts (
   created_at timestamptz NOT NULL DEFAULT now()
 );
 CREATE INDEX IF NOT EXISTS player_posts_user_created_idx ON public.player_posts(user_id, created_at DESC);
+
+-- Match the hosted role boundary: anon is not a member of authenticated and has no
+-- data-operation privileges on learning profiles, posts, or progress.
+REVOKE authenticated FROM anon;
+REVOKE SELECT, INSERT, UPDATE, DELETE ON TABLE
+  public.player_progress, public.player_profiles, public.player_posts FROM anon, PUBLIC;
 ALTER TABLE public.player_posts ENABLE ROW LEVEL SECURITY;
 DROP POLICY IF EXISTS "Players create their own posts" ON public.player_posts;
 CREATE POLICY "Players create their own posts" ON public.player_posts
