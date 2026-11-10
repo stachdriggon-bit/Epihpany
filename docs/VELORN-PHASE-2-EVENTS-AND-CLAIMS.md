@@ -11,7 +11,7 @@ The migration `20261110190000_velorn_phase2_event_claim_foundation.sql` adds sev
 - `achievement_definitions`: versioned achievement/stage definitions with reward snapshots and explicit validator-mapping status.
 - `mission_boards`: immutable per-user period assignments, including period boundaries, timezone, and configuration/template-bank versions.
 - `mission_assignments`: stable board slots, objective/reward snapshots, progress state, completion state, and replacement lineage.
-- `mission_reward_claims`: one-time claim identities and the eventual ledger-entry reference.
+- `mission_reward_claims`: one-time claim identities for either an individual assignment or a board completion bonus, with the eventual ledger-entry reference.
 - `achievement_awards`: one-time achievement/stage identities and the eventual ledger-entry reference.
 
 All seven tables have RLS enabled and forced. No API role has direct table privileges. Event, definition, board, claim, and award history is append-only. The existing private-schema boundary and service-role-only server pattern are preserved.
@@ -37,7 +37,7 @@ The source of truth for product values remains `WORLD_CURRENCY_VELORN.md`:
 - Achievement rewards remain additional: 25 / 50 / 100 / 200 Velorn by the approved milestone tier.
 - The approved daily and weekly mission banks and achievement catalogue remain the canonical content definitions.
 
-The migration does not silently translate those descriptions into active database predicates. Mission templates and achievement definitions cannot be marked assignable unless their validator mapping is explicitly `verified`. No definitions are seeded or assigned by this foundation.
+The migration seeds all 11 approved daily/weekly mission templates and all 10 approved achievement definitions as version 1 records. Their approved reward values and objective descriptions are preserved, but every record remains `unmapped` and `is_assignable = false`. They cannot be activated unless their server-side validator mapping is explicitly `verified`. No mission is assigned by this foundation.
 
 ## Deliberately not enabled
 
@@ -64,7 +64,7 @@ The migration does not silently translate those descriptions into active databas
 
 ## Verification gate
 
-The clean-room workflow now includes `supabase/tests/phase2_event_claim_assertions.sql`, covering private-table RLS/privileges, service-role-only event ingestion, idempotent event replay, mismatched-payload rejection, append-only event evidence, and disabled economy state.
+The clean-room workflow now includes `supabase/tests/phase2_event_claim_assertions.sql`, covering private-table RLS/privileges, service-role-only event ingestion, idempotent event replay, mismatched-payload rejection, append-only event evidence, the complete 11-template / 10-achievement seed bank with inactive status, and disabled economy state.
 
 The migration must not be applied to hosted Supabase until the complete clean-room GitHub Actions run passes. This phase-2 foundation is additive and has no website dependency. After deployment, verify all seven tables are private, no API role has direct table access, the RPC is service-role-only, `economy_enabled` remains false, and wallet/ledger/claim/award/board tables remain empty.
 
