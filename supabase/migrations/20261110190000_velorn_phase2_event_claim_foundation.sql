@@ -362,7 +362,7 @@ BEGIN
     p_user_id, p_source_event_key, p_source_system, p_experience_id, p_activity_id,
     p_event_type, p_occurred_at, p_validator_version, p_evidence
   )
-  ON CONFLICT (user_id, source_event_key) DO NOTHING
+  ON CONFLICT ON CONSTRAINT activity_events_user_source_key DO NOTHING
   RETURNING activity_events.event_id INTO v_event_id;
 
   -- A concurrent request may have inserted the same source key after the first lookup.
