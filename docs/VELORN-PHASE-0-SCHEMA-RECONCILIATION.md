@@ -12,9 +12,9 @@ The main blocker is not a live database failure. It is **source-of-truth drift b
 
 - Supabase records nine applied application migrations.
 - The repository initially tracked only six files in `supabase/migrations/`; all nine hosted versions now have matching files, with three marked as reconstructed.
-- Several foundational SQL scripts remain at the repository root rather than in the migration sequence.
-- `supabase-player-profile.sql` is corrupted: it is 508 lines long, repeats profile/post/policy/storage statements many times, and contains incomplete regular-expression CHECK expressions. It also contains old permissive public-read policy definitions that were superseded by the privacy migration.
-- A root-level profile customization script would change the live avatar bucket's file-size limit from 3 MiB to 5 MiB if rerun.
+- Several foundational SQL objects were historically created through root-level manual scripts rather than the timestamped migration sequence. Their safe local reconstruction is now centralized in `supabase/bootstrap/legacy_foundation.sql`.
+- The former `supabase-player-profile.sql` body was corrupted (508 lines, repeated statements, truncated CHECK expressions and obsolete permissive read policies); it is now an archived do-not-run pointer. Its prior content remains in Git history.
+- The former profile-customization script would have changed the avatar bucket limit from 3 MiB to 5 MiB; it is now an archived pointer to the safe versioned migration.
 
 The three files restore the version-to-file mapping but remain explicitly reconstructed rather than recovered originals. A local-only bootstrap now recreates the legacy manual foundation (including player_progress, profiles/posts, telemetry, card-image views and pre-existing buckets) before the nine timestamped migrations are replayed. A CI workflow validates the chain on a disposable local Supabase stack; production remains untouched.
 
@@ -203,8 +203,8 @@ These actions are ordered to preserve the current live data and prevent false mi
 
 1. **Preserve the live schema as the reference.** Obtain a full schema-only snapshot/dump of the connected project, including tables, constraints, indexes, policies, grants, functions, triggers, storage policies, and bucket configuration. Keep secrets and user data out of the snapshot.
 2. **Validate the reconstructed migrations in isolation.** The new `.github/workflows/supabase-schema.yml` starts a disposable local Supabase stack, applies `supabase/bootstrap/legacy_foundation.sql`, replays all nine migrations, and runs `supabase/tests/phase0_schema_assertions.sql`. Do not apply the historical versions to the hosted project; they are already recorded as applied.
-3. **Establish a canonical bootstrap baseline.** The existing profile/post base schema and some telemetry/card-image structures originated in root-level manual scripts rather than the tracked migration sequence. Convert or replace those setup steps through a separately reviewed baseline strategy; do not silently fold them into the historical migration files.
-4. **Quarantine obsolete setup scripts.** Clearly mark the corrupted `supabase-player-profile.sql` and unsafe legacy privacy definitions as archival/do-not-run while preserving Git history. Keep the 3 MiB live avatar limit and current privacy policies unless a separate approved change says otherwise.
+3. **Canonical bootstrap baseline — implemented.** `supabase/bootstrap/legacy_foundation.sql` captures the pre-migration tables, RLS, grants, telemetry, card-image metadata, and pre-existing bucket settings. It is intentionally local/disposable only and is never applied to production.
+4. **Quarantine obsolete setup scripts — implemented.** The five unsafe or superseded root-level SQL entry points are now do-not-run pointers; their previous contents remain in Git history. The live 3 MiB avatar limit and privacy policies were not changed.
 5. **Add project configuration and a repeatable local workflow.** Pin/check the Supabase CLI version, link the correct project, and document explicit local versus remote commands. Verify the remote target before any command that can change it.
 6. **Run a clean schema diff and review.** The expected result is no unexplained drift between the canonical repository baseline and the live project. Any intentional drift must be documented before the economy migration is created.
 
@@ -230,9 +230,10 @@ Phase 0 is complete only when:
 - No Supabase policy, grant, bucket, function, or setting was changed.
 - No user or player data was read beyond aggregate inventory/count metadata.
 - No hosted database schema, policy, grant, bucket, setting, or player data was changed.
-- The clean-room workflow has been added but has not yet completed; no SQL runtime test is claimed until its GitHub Actions run reports success.
+- The first clean-room workflow run is still in progress; no SQL runtime test is claimed until its GitHub Actions run reports success.
+- The app fast-check run exposed one test that still read the archived telemetry script; the test now targets the canonical bootstrap and will be re-run.
 - Five unsafe/legacy root SQL entry points were replaced with explicit do-not-run pointers; their prior contents remain in Git history.
 - No hosted database schema, policy, grant, bucket, setting, or player data was changed.
-- No application test suite or deployment was run as part of this schema task.
+- No deployment was requested or triggered by this work.
 
 **Conclusion:** The repository now contains all nine hosted migration versions, an explicit local-only legacy foundation, and automated clean-room schema assertions. The historical SQL of three migrations remains unavailable, and the bootstrap is reconstructed from live catalog evidence. Phase 0 remains open until the new GitHub Actions clean-room workflow passes and its resulting catalog is compared with the live schema. No Velorn implementation should begin before that gate is green.

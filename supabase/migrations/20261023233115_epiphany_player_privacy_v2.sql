@@ -3,9 +3,9 @@
 -- This is NOT an original historical copy. See docs/VELORN-PHASE-0-SCHEMA-RECONCILIATION.md.
 -- Evidence: supabase-privacy-migration.sql and live pg_policies/catalog inspection.
 --
--- The legacy player profile/post tables are created by the earlier manual bootstrap
--- script (supabase-player-profile.sql); this migration intentionally alters those tables
--- and does not attempt to recreate that separate bootstrap baseline.
+-- The legacy player profile/post tables are created by the local-only reconstructed
+-- foundation (supabase/bootstrap/legacy_foundation.sql); this migration alters those
+-- tables and does not attempt to recreate that separate bootstrap baseline.
 
 ALTER TABLE public.player_profiles
   ADD COLUMN IF NOT EXISTS is_private boolean NOT NULL DEFAULT true;

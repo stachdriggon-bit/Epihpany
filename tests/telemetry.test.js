@@ -25,9 +25,11 @@ test('anonymous telemetry is opt-in and uses only coarse learning events', () =>
   assert.match(script, /send\('web_vital', 'performance'/);
   assert.match(script, /\['LCP', 'CLS', 'INP'\]/);
   assert.match(script, /window\.addEventListener\('pagehide', reportVitals\)/);
-  const telemetrySql = fs.readFileSync(path.join(root, 'supabase-telemetry.sql'), 'utf8');
+  const telemetrySql = fs.readFileSync(path.join(root, 'supabase/bootstrap/legacy_foundation.sql'), 'utf8');
   assert.match(telemetrySql, /'web_vital'/);
-  assert.match(telemetrySql, /drop constraint if exists epiphany_telemetry_event_name_check/i);
+  assert.match(telemetrySql, /event_name text not null check/i);
+  assert.match(telemetrySql, /details jsonb not null default '\\{\\}'::jsonb check/i);
+  assert.match(telemetrySql, /grant insert on public\\.epiphany_telemetry to anon,authenticated/i);
   assert.match(html, /id="anonymous-telemetry"/);
   assert.doesNotMatch(script, /\.from\(['"]player_progress['"]\)/);
   assert.doesNotMatch(script, /safeDetails\.message = String\(details\.message/);
