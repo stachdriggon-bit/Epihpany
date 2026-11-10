@@ -7,7 +7,7 @@ CREATE TABLE economy_private.game_validator_sessions (
   user_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE RESTRICT,
   validator_id text NOT NULL CHECK (validator_id = 'odd_one_out'),
   validator_version text NOT NULL CHECK (char_length(validator_version) BETWEEN 1 AND 80),
-  challenge_level text NOT NULL CHECK (challenge_level IN ('A1','A2','B1','B2','C1','C2')),
+  cefr_level text NOT NULL CHECK (cefr_level IN ('A1','A2','B1','B2','C1','C2')),
   training_mode text NOT NULL CHECK (training_mode IN ('guided','steady','challenge')),
   questions jsonb NOT NULL CHECK (
     jsonb_typeof(questions) = 'array'
@@ -17,7 +17,6 @@ CREATE TABLE economy_private.game_validator_sessions (
   answers jsonb NOT NULL DEFAULT '[]'::jsonb CHECK (jsonb_typeof(answers) = 'array'),
   current_index integer NOT NULL DEFAULT 0 CHECK (current_index >= 0),
   correct_count integer NOT NULL DEFAULT 0 CHECK (correct_count >= 0),
-  last_answer_at timestamptz,
   status text NOT NULL DEFAULT 'active' CHECK (status IN ('active','completed','expired')),
   created_at timestamptz NOT NULL DEFAULT clock_timestamp(),
   expires_at timestamptz NOT NULL,
@@ -38,7 +37,7 @@ CREATE OR REPLACE FUNCTION economy_private.start_odd_one_out_session(
   p_user_id uuid,
   p_session_id uuid,
   p_validator_version text,
-  p_challenge_level text,
+  p_cefr_level text,
   p_training_mode text,
   p_questions jsonb,
   p_expires_at timestamptz
@@ -49,17 +48,9 @@ SECURITY INVOKER
 SET search_path = ''
 AS $$
 BEGIN
-  IF (SELECT count(*) FROM economy_private.game_validator_sessions
-      WHERE user_id = p_user_id AND status = 'active' AND expires_at > clock_timestamp()) >= 3
-     OR (SELECT count(*) FROM economy_private.game_validator_sessions
-      WHERE user_id = p_user_id AND created_at > clock_timestamp() - interval '15 minutes') >= 10
-  THEN
-    RAISE EXCEPTION 'validator session rate limit exceeded' USING ERRCODE = '54000';
-  END IF;
-
   IF p_user_id IS NULL OR p_session_id IS NULL
      OR p_validator_version IS NULL
-     OR p_challenge_level NOT IN ('A1','A2','B1','B2','C1','C2')
+     OR p_cefr_level NOT IN ('A1','A2','B1','B2','C1','C2')
      OR p_training_mode NOT IN ('guided','steady','challenge')
      OR jsonb_typeof(p_questions) <> 'array'
      OR jsonb_array_length(p_questions) NOT BETWEEN 1 AND 12
@@ -71,10 +62,10 @@ BEGIN
 
   INSERT INTO economy_private.game_validator_sessions (
     session_id, user_id, validator_id, validator_version,
-    challenge_level, training_mode, questions, expires_at
+    cefr_level, training_mode, questions, expires_at
   ) VALUES (
     p_session_id, p_user_id, 'odd_one_out', p_validator_version,
-    p_challenge_level, p_training_mode, p_questions, p_expires_at
+    p_cefr_level, p_training_mode, p_questions, p_expires_at
   );
 END;
 $$;
@@ -83,7 +74,7 @@ CREATE OR REPLACE FUNCTION public.velorn_start_odd_one_out_session(
   p_user_id uuid,
   p_session_id uuid,
   p_validator_version text,
-  p_challenge_level text,
+  p_cefr_level text,
   p_training_mode text,
   p_questions jsonb,
   p_expires_at timestamptz
@@ -95,7 +86,7 @@ SET search_path = ''
 AS $$
   SELECT economy_private.start_odd_one_out_session(
     p_user_id, p_session_id, p_validator_version,
-    p_challenge_level, p_training_mode, p_questions, p_expires_at
+    p_cefr_level, p_training_mode, p_questions, p_expires_at
   );
 $$;
 
@@ -137,9 +128,6 @@ BEGIN
       WHERE session_id = p_session_id;
     RAISE EXCEPTION 'validator session expired' USING ERRCODE = '57014';
   END IF;
-  IF clock_timestamp() - COALESCE(v_session.last_answer_at, v_session.created_at) < interval '700 milliseconds' THEN
-    RAISE EXCEPTION 'answer submitted too quickly' USING ERRCODE = '22023';
-  END IF;
   IF p_question_index <> v_session.current_index THEN
     RAISE EXCEPTION 'unexpected question index' USING ERRCODE = '22023';
   END IF;
@@ -169,7 +157,6 @@ BEGIN
   SET answers = answers || jsonb_build_array(v_answer),
       current_index = v_next_index,
       correct_count = correct_count + CASE WHEN v_is_correct THEN 1 ELSE 0 END,
-      last_answer_at = clock_timestamp(),
       status = CASE WHEN v_completed THEN 'completed' ELSE 'active' END,
       completed_at = CASE WHEN v_completed THEN clock_timestamp() ELSE NULL END
   WHERE session_id = p_session_id;
@@ -185,7 +172,7 @@ BEGIN
       clock_timestamp(),
       v_session.validator_version,
       jsonb_build_object(
-        'challenge_level', v_session.challenge_level,
+        'cefr_level', v_session.cefr_level,
         'training_mode', v_session.training_mode,
         'question_count', jsonb_array_length(v_session.questions),
         'correct_count', v_session.correct_count + CASE WHEN v_is_correct THEN 1 ELSE 0 END,
