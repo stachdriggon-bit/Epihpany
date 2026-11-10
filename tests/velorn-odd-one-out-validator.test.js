@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { publicQuestion, safeSessionQuestions, validateAnswerRequest } from "../supabase/functions/_shared/odd-one-out-validator.mjs";
+import { publicQuestion, safeSessionQuestions, validateAnswerRequest } from "../supabase/functions/velorn-odd-one-out/odd-one-out-validator.mjs";
 
 test("public question payload never includes the answer key or explanation", () => {
   const question = { id:"A1-CAT-01", words:["apple","pear","banana","pencil"], answer:3, explain:"A pencil is not food.", challengeExplain:"Different options.", hint:"Find the foods." };
@@ -40,7 +40,7 @@ test("Edge Function authenticates the bearer token and never trusts a client use
 test("server challenge uses the exact reviewed canonical Odd One Out bank", () => {
   const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
   const canonical = fs.readFileSync(path.join(root, "odd-one-out-bank.js"), "utf8");
-  const deployed = fs.readFileSync(path.join(root, "supabase/functions/_shared/odd-one-out-bank.js"), "utf8");
+  const deployed = fs.readFileSync(path.join(root, "supabase/functions/velorn-odd-one-out/odd-one-out-bank.js"), "utf8");
   assert.equal(deployed, canonical);
 });
 
