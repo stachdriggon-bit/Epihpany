@@ -62,7 +62,6 @@ test('feature data loader does not request large datasets until requested', asyn
     'fluentia-textwise-bank.js',
     'fluentia-soundscape-bank.js',
     'fluentia-practice-bank.js',
-    'odd-one-out-bank.js',
     'word-connections-bank.js',
     'sentence-scramble-bank.js',
     'word-forge-bank.js',
@@ -154,14 +153,14 @@ test('initial HTML defers stories and World data and keeps loader in offline she
   const lazy = fs.readFileSync(path.join(root, 'lazy-data.js'), 'utf8');
   assert.ok(lazy.includes("spot: ['data-spot.js"));
   assert.ok(lazy.includes("typing: ['data-typing.js"));
-  for (const asset of ['data-stories.js', 'data-world.js', 'data-world-sprites.js', 'fluentia-textwise-bank.js', 'fluentia-soundscape-bank.js', 'sound-maze-bank.js', 'sound-maze-content.js', 'odd-one-out-bank.js', 'sentence-scramble-bank.js', 'word-forge-bank.js', 'chain-reaction-bank.js', 'think-lab.js', 'think-lab-progression.js', 'word-hunt-bank.js', 'word-hunt.js', 'codebreaker-bank.js', 'codebreaker.js', 'letter-grid-bank.js', 'letter-grid.js', 'fluentia-practice-bank.js', 'life-skills.js', 'data-translation-ar.js', 'data-translation-ar-fill.js']) {
+  for (const asset of ['data-stories.js', 'data-world.js', 'data-world-sprites.js', 'fluentia-textwise-bank.js', 'fluentia-soundscape-bank.js', 'sound-maze-bank.js', 'sound-maze-content.js', 'sentence-scramble-bank.js', 'word-forge-bank.js', 'chain-reaction-bank.js', 'think-lab.js', 'think-lab-progression.js', 'word-hunt-bank.js', 'word-hunt.js', 'codebreaker-bank.js', 'codebreaker.js', 'letter-grid-bank.js', 'letter-grid.js', 'fluentia-practice-bank.js', 'life-skills.js', 'data-translation-ar.js', 'data-translation-ar-fill.js']) {
     assert.ok(!coreAssets.includes("'./" + asset + "'"), asset + ' should not be a core startup asset');
   }
   for (const asset of ['resonance.css', 'life-skills.css', 'word-hunt.css', 'codebreaker.css', 'letter-grid.css']) {
     assert.ok(!coreAssets.includes("'./" + asset + "'"), asset + ' must not be part of the core cache');
     assert.ok(lazyAssets.includes("'./" + asset + "'"), asset + ' should be cached as a lazy offline asset');
   }
-  for (const asset of ['fluentia-textwise-bank.js', 'fluentia-soundscape-bank.js', 'data-stories.js', 'data-world.js', 'data-world-registry.js', 'data-world-events.js', 'data-world-sprites.js', 'sound-maze-bank.js', 'sound-maze-content.js', 'odd-one-out-bank.js', 'sentence-scramble-bank.js', 'word-forge-bank.js', 'chain-reaction-bank.js', 'think-lab.js', 'word-hunt-bank.js', 'word-hunt.js', 'codebreaker-bank.js', 'codebreaker.js', 'letter-grid-bank.js', 'letter-grid.js', 'fluentia-practice-bank.js', 'life-skills.js', 'language-detective-investigation.js']) {
+  for (const asset of ['fluentia-textwise-bank.js', 'fluentia-soundscape-bank.js', 'data-stories.js', 'data-world.js', 'data-world-registry.js', 'data-world-events.js', 'data-world-sprites.js', 'sound-maze-bank.js', 'sound-maze-content.js', 'sentence-scramble-bank.js', 'word-forge-bank.js', 'chain-reaction-bank.js', 'think-lab.js', 'word-hunt-bank.js', 'word-hunt.js', 'codebreaker-bank.js', 'codebreaker.js', 'letter-grid-bank.js', 'letter-grid.js', 'fluentia-practice-bank.js', 'life-skills.js', 'language-detective-investigation.js']) {
     assert.ok(lazyAssets.includes("'./" + asset + "'"), asset + ' should be cached as a lazy offline asset');
   }
   assert.match(sw, /const cached = await cache\.match\(request\);\s*if \(cached\) return cached;/);
@@ -386,38 +385,35 @@ test('optional lazy loads respect the adaptive concurrency limit', async () => {
   assert.equal(requested[2].split('?')[0], 'sound-maze-content.js');
   scripts[2].onload();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[3].split('?')[0], 'odd-one-out-bank.js');
+  assert.equal(requested[3].split('?')[0], 'word-connections-bank.js');
   scripts[3].onload();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[4].split('?')[0], 'word-connections-bank.js');
+  assert.equal(requested[4].split('?')[0], 'sentence-scramble-bank.js');
   scripts[4].onload();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[5].split('?')[0], 'sentence-scramble-bank.js');
+  assert.equal(requested[5].split('?')[0], 'word-forge-bank.js');
   scripts[5].onload();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[6].split('?')[0], 'word-forge-bank.js');
+  assert.equal(requested[6].split('?')[0], 'chain-reaction-bank.js');
   scripts[6].onload();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[7].split('?')[0], 'chain-reaction-bank.js');
+  assert.equal(requested[7].split('?')[0], 'word-hunt-bank.js');
   scripts[7].onload();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[8].split('?')[0], 'word-hunt-bank.js');
+  assert.equal(requested[8].split('?')[0], 'think-lab-progression.js');
   scripts[8].onload();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[9].split('?')[0], 'think-lab-progression.js');
+  assert.equal(requested[9].split('?')[0], 'think-lab.js');
   scripts[9].onload();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[10].split('?')[0], 'think-lab.js');
+  assert.equal(requested[10].split('?')[0], 'word-hunt.js');
   scripts[10].onload();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[11].split('?')[0], 'word-hunt.js');
+  assert.equal(requested[11].split('?')[0], 'codebreaker-bank.js');
   scripts[11].onload();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[12].split('?')[0], 'codebreaker-bank.js');
+  assert.equal(requested[12].split('?')[0], 'codebreaker.js');
   scripts[12].onload();
-  await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[13].split('?')[0], 'codebreaker.js');
-  scripts[13].onload();
   await new Promise(resolve => setImmediate(resolve));
   assert.equal(requested[14].split('?')[0], 'letter-grid-bank.js');
   scripts[14].onload();
@@ -476,38 +472,35 @@ test('explicit navigation bypasses and promotes queued optional loads', async ()
   assert.equal(requested[2].split('?')[0], 'sound-maze-content.js');
   scripts[2].onload();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[3].split('?')[0], 'odd-one-out-bank.js');
+  assert.equal(requested[3].split('?')[0], 'word-connections-bank.js');
   scripts[3].onload();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[4].split('?')[0], 'word-connections-bank.js');
+  assert.equal(requested[4].split('?')[0], 'sentence-scramble-bank.js');
   scripts[4].onload();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[5].split('?')[0], 'sentence-scramble-bank.js');
+  assert.equal(requested[5].split('?')[0], 'word-forge-bank.js');
   scripts[5].onload();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[6].split('?')[0], 'word-forge-bank.js');
+  assert.equal(requested[6].split('?')[0], 'chain-reaction-bank.js');
   scripts[6].onload();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[7].split('?')[0], 'chain-reaction-bank.js');
+  assert.equal(requested[7].split('?')[0], 'word-hunt-bank.js');
   scripts[7].onload();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[8].split('?')[0], 'word-hunt-bank.js');
+  assert.equal(requested[8].split('?')[0], 'think-lab-progression.js');
   scripts[8].onload();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[9].split('?')[0], 'think-lab-progression.js');
+  assert.equal(requested[9].split('?')[0], 'think-lab.js');
   scripts[9].onload();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[10].split('?')[0], 'think-lab.js');
+  assert.equal(requested[10].split('?')[0], 'word-hunt.js');
   scripts[10].onload();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[11].split('?')[0], 'word-hunt.js');
+  assert.equal(requested[11].split('?')[0], 'codebreaker-bank.js');
   scripts[11].onload();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[12].split('?')[0], 'codebreaker-bank.js');
+  assert.equal(requested[12].split('?')[0], 'codebreaker.js');
   scripts[12].onload();
-  await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[13].split('?')[0], 'codebreaker.js');
-  scripts[13].onload();
   await new Promise(resolve => setImmediate(resolve));
   assert.equal(requested[14].split('?')[0], 'letter-grid-bank.js');
   scripts[14].onload();
@@ -587,38 +580,35 @@ test('background optional loads pause while constrained, resume once, and never 
   assert.equal(requested[2].split('?')[0], 'sound-maze-content.js');
   scripts[2].onload();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[3].split('?')[0], 'odd-one-out-bank.js');
+  assert.equal(requested[3].split('?')[0], 'word-connections-bank.js');
   scripts[3].onload();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[4].split('?')[0], 'word-connections-bank.js');
+  assert.equal(requested[4].split('?')[0], 'sentence-scramble-bank.js');
   scripts[4].onload();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[5].split('?')[0], 'sentence-scramble-bank.js');
+  assert.equal(requested[5].split('?')[0], 'word-forge-bank.js');
   scripts[5].onload();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[6].split('?')[0], 'word-forge-bank.js');
+  assert.equal(requested[6].split('?')[0], 'chain-reaction-bank.js');
   scripts[6].onload();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[7].split('?')[0], 'chain-reaction-bank.js');
+  assert.equal(requested[7].split('?')[0], 'word-hunt-bank.js');
   scripts[7].onload();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[8].split('?')[0], 'word-hunt-bank.js');
+  assert.equal(requested[8].split('?')[0], 'think-lab-progression.js');
   scripts[8].onload();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[9].split('?')[0], 'think-lab-progression.js');
+  assert.equal(requested[9].split('?')[0], 'think-lab.js');
   scripts[9].onload();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[10].split('?')[0], 'think-lab.js');
+  assert.equal(requested[10].split('?')[0], 'word-hunt.js');
   scripts[10].onload();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[11].split('?')[0], 'word-hunt.js');
+  assert.equal(requested[11].split('?')[0], 'codebreaker-bank.js');
   scripts[11].onload();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[12].split('?')[0], 'codebreaker-bank.js');
+  assert.equal(requested[12].split('?')[0], 'codebreaker.js');
   scripts[12].onload();
-  await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[13].split('?')[0], 'codebreaker.js');
-  scripts[13].onload();
   await new Promise(resolve => setImmediate(resolve));
   assert.equal(requested[14].split('?')[0], 'letter-grid-bank.js');
   scripts[14].onload();
@@ -816,7 +806,10 @@ test('Think Lab CEFR bridge reads the active assessed or developer test level', 
   assert.match(app, /getCEFRLevel\(\)\s*\{\s*const level = currentLevel\(\);\s*return level && LEVELS\.some\(item => item\.id === level\.id\) \? level\.id : 'A1';/);
   const think = fs.readFileSync(path.join(root, 'think-lab.js'), 'utf8');
   assert.match(think, /bridge\.getCEFRLevel\(\)/);
-  assert.match(think, /EPIPHANY_ODD_ONE_OUT_BANK\.selectRound\(cefr, trainingMode\)/);
+  assert.match(think, /functions\.invoke\(functionName/);
+  assert.match(think, /validatorFunctionName/);
+  assert.match(think, /if \(id === 'odd'\) return \[\]/);
+  assert.doesNotMatch(think, /EPIPHANY_ODD_ONE_OUT_BANK/);
   assert.match(think, /This round is shorter than the '\+roundTarget\+'-question target/);
 });
 
