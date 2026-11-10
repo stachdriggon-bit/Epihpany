@@ -434,3 +434,10 @@ This architecture is a design artifact only. At this stage:
 - No reward or Card Portal price has been activated.
 
 The first implementation task should be **Phase 0: schema and migration reconciliation**, not wallet creation.
+
+
+## 14. Phase 0 schema reconciliation
+
+The read-only Supabase inventory and repository migration comparison are documented in [VELORN-PHASE-0-SCHEMA-RECONCILIATION.md](VELORN-PHASE-0-SCHEMA-RECONCILIATION.md). The live project has nine recorded application migrations, while the repository currently tracks six migration files; three hosted migration sources are missing from the repository. The root-level player-profile SQL is corrupted and contains obsolete permissive public-read policies. A separate profile customization script would also change the live avatar bucket limit if rerun.
+
+**Implementation gate:** Do not create or apply the first Velorn migration until the missing migration sources or a formally approved schema-baseline strategy are recovered, the live schema snapshot is reconciled with Git, and obsolete setup scripts are quarantined. The Phase 0 report records the exact inventory and exit criteria. No live database changes were made during the audit.
