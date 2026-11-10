@@ -48,6 +48,9 @@ test("database validator serializes answers and records completion atomically", 
   const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
   const sql = fs.readFileSync(path.join(root, "supabase/migrations/20261110193000_velorn_odd_one_out_validator.sql"), "utf8");
   assert.match(sql, /FOR UPDATE/);
+  assert.match(sql, /700 milliseconds/);
+  assert.match(sql, /15 minutes/);
+  assert.match(sql, /challenge_level/);
   assert.match(sql, /p_question_index <> v_session\.current_index/);
   assert.match(sql, /public\.economy_record_validated_activity_event/);
   assert.match(sql, /REVOKE ALL ON TABLE economy_private\.game_validator_sessions FROM PUBLIC, anon, authenticated, service_role/);
