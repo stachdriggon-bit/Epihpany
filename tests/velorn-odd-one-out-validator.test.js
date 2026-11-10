@@ -69,7 +69,7 @@ test("guest validator uses server-only bank, no-store responses and no Velorn wr
 
 test("database validator serializes answers and records completion atomically", () => {
   const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-  const sql = ["20261110193000_velorn_odd_one_out_validator.sql", "20261110193500_velorn_odd_one_out_abuse_controls.sql", "20261110195301_velorn_odd_one_out_guest_sessions.sql", "20261110210000_velorn_odd_one_out_guest_payload_cap.sql"].map(file => fs.readFileSync(path.join(root, "supabase/migrations", file), "utf8")).join("\n");
+  const sql = ["20261110193000_velorn_odd_one_out_validator.sql", "20261110193500_velorn_odd_one_out_abuse_controls.sql", "20261110195301_velorn_odd_one_out_guest_sessions.sql", "20261110204437_velorn_odd_one_out_guest_payload_cap.sql"].map(file => fs.readFileSync(path.join(root, "supabase/migrations", file), "utf8")).join("\n");
   assert.match(sql, /FOR UPDATE/);
   assert.match(sql, /700 milliseconds/);
   assert.match(sql, /15 minutes/);
