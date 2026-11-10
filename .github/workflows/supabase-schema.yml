@@ -31,7 +31,7 @@ jobs:
           test "$(supabase --version)" = "3.1.0"
       - name: Start disposable local Supabase stack
         timeout-minutes: 15
-        run: supabase start
+        run: supabase start -x studio,mail,analytics,functions,realtime,pooler
       - name: Install PostgreSQL client
         run: |
           sudo apt-get update
