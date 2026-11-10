@@ -75,7 +75,8 @@ CREATE TABLE economy_private.mission_boards (
     REFERENCES economy_private.economy_config_versions(config_version),
   template_bank_version integer NOT NULL CHECK (template_bank_version > 0),
   created_at timestamptz NOT NULL DEFAULT now(),
-  UNIQUE (user_id, period_type, period_start)
+  UNIQUE (user_id, period_type, period_start),
+  UNIQUE (board_id, user_id)
 );
 
 CREATE INDEX mission_boards_user_period_idx
@@ -117,7 +118,8 @@ CREATE INDEX mission_assignments_user_status_idx
 CREATE TABLE economy_private.mission_reward_claims (
   claim_id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE RESTRICT,
-  assignment_id uuid NOT NULL,
+  assignment_id uuid,
+  board_id uuid,
   claim_key text NOT NULL CHECK (char_length(claim_key) BETWEEN 1 AND 180),
   reward_amount bigint NOT NULL CHECK (reward_amount > 0),
   claim_status text NOT NULL DEFAULT 'eligible'
@@ -130,13 +132,26 @@ CREATE TABLE economy_private.mission_reward_claims (
   FOREIGN KEY (assignment_id, user_id)
     REFERENCES economy_private.mission_assignments(assignment_id, user_id)
     ON DELETE RESTRICT,
+  FOREIGN KEY (board_id, user_id)
+    REFERENCES economy_private.mission_boards(board_id, user_id)
+    ON DELETE RESTRICT,
+  CONSTRAINT mission_claim_target_check CHECK (
+    (assignment_id IS NOT NULL AND board_id IS NULL)
+    OR (assignment_id IS NULL AND board_id IS NOT NULL)
+  ),
   UNIQUE (user_id, claim_key),
-  UNIQUE (assignment_id),
   CONSTRAINT mission_claim_ledger_state_check CHECK (
     (claim_status = 'paid' AND ledger_entry_id IS NOT NULL AND paid_at IS NOT NULL)
     OR (claim_status <> 'paid' AND ledger_entry_id IS NULL AND paid_at IS NULL)
   )
 );
+
+CREATE UNIQUE INDEX mission_reward_claim_assignment_unique
+  ON economy_private.mission_reward_claims (assignment_id)
+  WHERE assignment_id IS NOT NULL;
+CREATE UNIQUE INDEX mission_reward_claim_board_unique
+  ON economy_private.mission_reward_claims (board_id)
+  WHERE board_id IS NOT NULL;
 
 CREATE TABLE economy_private.achievement_awards (
   award_id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -291,7 +306,30 @@ BEGIN
     p_user_id, p_source_event_key, p_source_system, p_experience_id, p_activity_id,
     p_event_type, p_occurred_at, p_validator_version, p_evidence
   )
+  ON CONFLICT (user_id, source_event_key) DO NOTHING
   RETURNING activity_events.event_id INTO v_event_id;
+
+  -- A concurrent request may have inserted the same source key after the first lookup.
+  -- Resolve that race as an idempotent replay, while still rejecting payload substitution.
+  IF v_event_id IS NULL THEN
+    SELECT e.* INTO v_existing
+    FROM economy_private.activity_events AS e
+    WHERE e.user_id = p_user_id
+      AND e.source_event_key = p_source_event_key;
+
+    IF NOT FOUND
+       OR v_existing.source_system <> p_source_system
+       OR v_existing.experience_id <> p_experience_id
+       OR v_existing.activity_id <> p_activity_id
+       OR v_existing.event_type <> p_event_type
+       OR v_existing.occurred_at <> p_occurred_at
+       OR v_existing.validator_version <> p_validator_version
+       OR v_existing.evidence <> p_evidence THEN
+      RAISE EXCEPTION 'Activity event key was already used for a different payload.'
+        USING ERRCODE = '22023';
+    END IF;
+    v_event_id := v_existing.event_id;
+  END IF;
 
   RETURN QUERY
     SELECT e.event_id, e.user_id, e.source_event_key, e.source_system,
