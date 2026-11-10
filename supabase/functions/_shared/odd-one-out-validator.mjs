@@ -5,7 +5,8 @@ export function publicQuestion(question) {
 }
 
 export function validateAnswerRequest(body) {
-  return !!body &&
+  const allowed = new Set(["action", "sessionId", "questionIndex", "selectedIndex"]);
+  return !!body && Object.keys(body).every(key => allowed.has(key)) &&
     typeof body.sessionId === "string" &&
     /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(body.sessionId) &&
     Number.isInteger(body.questionIndex) && body.questionIndex >= 0 && body.questionIndex < 12 &&
