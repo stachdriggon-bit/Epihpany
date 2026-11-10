@@ -88,16 +88,19 @@ The live `supabase_migrations.schema_migrations` table reports these nine applic
 
 ### 3.2 Repository migration files
 
-The repository currently tracks only these six files:
+The repository now tracks all nine files corresponding to the nine hosted application migration versions:
 
+- `20261023233115_epiphany_player_privacy_v2.sql` — reconstructed
 - `20261024122251_add_private_and_shared_player_stories.sql`
+- `20261030091511_restrict_character_art_storage_uploads.sql` — reconstructed
+- `20261030101059_complete_player_profile_columns.sql` — reconstructed
 - `20261030201651_asset_manager_foundation.sql`
 - `20261030201953_asset_manager_public_reference_columns.sql`
 - `20261030202518_asset_manager_common_image_formats.sql`
 - `20261030202723_asset_manager_pending_replacement_links.sql`
 - `20261030221913_restore_asset_usage_read_grants.sql`
 
-The three missing files have now been added to `main` under the exact versions recorded by Supabase:
+The three reconstructed files were added to `main` under the exact versions recorded by Supabase:
 
 1. [`20261023233115_epiphany_player_privacy_v2.sql`](../supabase/migrations/20261023233115_epiphany_player_privacy_v2.sql) — rebuilt from the root privacy-v2 script and confirmed live profile/post SELECT policies.
 2. [`20261030091511_restrict_character_art_storage_uploads.sql`](../supabase/migrations/20261030091511_restrict_character_art_storage_uploads.sql) — rebuilt from the live four developer-only Storage policies for `character-art`; it deliberately does not change bucket visibility, size, MIME types, or objects.
