@@ -1,6 +1,6 @@
 # Velorn Phase 1 — Private Wallet & Ledger Foundation
 
-> **Status:** Implemented in `main`; SQL syntax and transaction behavior validated in a rollback-only transaction against the connected PostgreSQL 17.11 project. The migration has not yet been applied to production. Clean-room GitHub Actions verification is pending.
+> **Status:** Implemented in `main`, clean-room GitHub Actions passed, and the migration is applied to the hosted PostgreSQL 17.11 project. Post-deployment security, privilege, disabled-state, and rollback-only smoke checks passed.
 
 ## Scope
 
@@ -56,10 +56,10 @@ The feature flag is controlled by a database administrator through the private s
 - Rejection of ledger UPDATE and DELETE.
 - Disabling the economy again and confirming that no further transaction is accepted.
 
-The SQL migration and sequential contract test were executed together inside an explicit transaction against the connected project, followed by `ROLLBACK`. The test passed after correcting a PL/pgSQL name ambiguity. A follow-up read confirmed that the private schema and public RPC wrapper do not exist in production and the hosted migration history remains at the original nine entries. The clean-room workflow also now runs two real concurrent identical credits and two concurrent debits that compete for an insufficient balance, then verifies the final balance and ledger count. This concurrency test runs only on the disposable local Supabase stack.
+The SQL migration and sequential contract test passed in a rollback-only smoke test before deployment. The clean-room workflow passed, including two concurrent identical credits and two competing concurrent debits. The migration was then applied to the hosted project and is recorded as `20261110183311`. Post-deployment checks confirmed: private schema exists; anon/authenticated have no schema usage; service_role has schema usage but no direct table access; all four private tables have RLS and FORCE RLS; public RPC wrappers are SECURITY INVOKER and callable only by service_role; append-only triggers are present; economy_enabled remains false; exactly one config version exists; and both wallet and ledger tables contain zero rows. A production disabled-write smoke test also confirmed that a transaction is rejected without creating a wallet; it ran inside a transaction that was rolled back.
 
 ## Production gate
 
-Do not apply the migration to production until the disposable local Supabase workflow passes both the Phase 0 catalog comparison and the Phase 1 assertions. After deployment, verify the migration record, private-schema privileges, disabled setting, zero wallet/ledger rows, and Supabase security/performance advisors.
+The clean-room workflow passed before deployment. The hosted migration record, private-schema privileges, disabled setting, zero wallet/ledger rows, and post-deployment smoke test have now been verified. Supabase advisors were reviewed: the private tables intentionally have no RLS policies because no API role receives table access; the remaining Auth password-protection warning and pre-existing public-schema performance notices are separate from this migration.
 
 Phase 2 remains separate: normalized activity events, server-side validation, mission claims, and achievement awards. The open decisions documented in `VELORN-TECHNICAL-ARCHITECTURE.md` remain gates for later reward issuance and Card Portal activation.
