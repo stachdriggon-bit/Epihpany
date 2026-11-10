@@ -89,7 +89,7 @@ BEGIN
     RAISE EXCEPTION 'Server answer validation returned an unexpected result: %', v_result;
   END IF;
 
-  SELECT count(*), max(evidence)
+  SELECT count(*), jsonb_agg(evidence) -> 0
     INTO v_event_count, v_event_evidence
   FROM economy_private.activity_events
   WHERE user_id = 'f3000000-0000-4000-8000-000000000021'
