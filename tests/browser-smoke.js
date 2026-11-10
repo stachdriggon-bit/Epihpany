@@ -516,6 +516,7 @@ test('main navigation tabs open without uncaught page errors', { timeout: 18 * 6
           assert.equal(await modePicker.locator('[data-think-training-mode="'+trainingMode+'"]').isVisible(), true, trainingMode+' mode should be selectable');
         }
         let guestStartRequest = null;
+        let guestAnswerRequest = null;
         await page.route('**/functions/v1/velorn-odd-one-out-guest', async route => {
           if (route.request().method() === 'OPTIONS') {
             await route.fulfill({status:204,headers:{
@@ -525,9 +526,22 @@ test('main navigation tabs open without uncaught page errors', { timeout: 18 * 6
             }});
             return;
           }
-          guestStartRequest = route.request().postDataJSON();
+          const requestBody = route.request().postDataJSON();
+          if (requestBody.action === 'answer') {
+            guestAnswerRequest = requestBody;
+            await route.fulfill({status:200,contentType:'application/json',headers:{'Access-Control-Allow-Origin':'*'},body:JSON.stringify({
+              correct:false,
+              correctIndex:3,
+              explanation:'Screwdriver is a tool, while the other three are fruits.',
+              hint:'Three words name fruit.',
+              relationship:'Category',
+              completed:false
+            })});
+            return;
+          }
+          guestStartRequest = requestBody;
           const questions = Array.from({length:8},(_,i)=>({
-            id:'SMOKE-A1-'+String(i+1).padStart(2,'0'),
+            id:'A1-CAT-'+String(i+1).padStart(2,'0'),
             words:['apple','pear','plum','screwdriver'],
             relationship:'category',
             hint:'Three words name fruit.',
@@ -581,6 +595,7 @@ test('main navigation tabs open without uncaught page errors', { timeout: 18 * 6
         assert.equal(await gameCard.locator('#tl-feedback').isVisible(), true, 'an answer should reveal feedback');
         const feedbackState = await gameCard.locator('#tl-feedback').evaluate(el => ({text:el.textContent,html:el.innerHTML,hidden:el.hidden,className:el.className}));
         assert.match(feedbackState.text, /Relationship:/, 'feedback should identify the shared relationship: ' + JSON.stringify(feedbackState));
+        assert.deepEqual(guestAnswerRequest,{action:'answer',sessionId:'00000000-0000-4000-8000-000000000001',questionIndex:0,selectedIndex:0,guestToken:'a'.repeat(64)},'guest answer must be verified with the in-memory session token');
         assert.equal(await gameCard.locator('[data-think-next]').isVisible(), true, 'feedback should unlock the next question');
         checkpoint('thinklab: feedback verified; advancing to next question');
         await gameCard.locator('[data-think-next]').click();
