@@ -200,6 +200,97 @@ These figures define the approved working balance target. They should be validat
 - **Transparent ledger:** every credit and debit records amount, transaction type, source/reason, stable event reference, timestamp, and applicable economy configuration version.
 - **XP and Shards separation:** XP and Shards must never be silently converted to or counted as Velorn.
 
+### 10.8 Daily mission bank
+
+The daily board displays **four missions**, and the player may complete **any three** for the full daily reward of 40 Velorn. Each of the first three completed eligible missions pays 10 Velorn; completing a fourth mission is optional and does not pay beyond the daily cap.
+
+The following is the reusable mission template bank. These are mission definitions for the reward design, not a claim that these missions are already live in the website.
+
+| Mission template | Qualifying condition | Reward |
+| --- | --- | ---: |
+| Learning Step | Complete one eligible learning activity and receive its validated completion outcome. | 10 Velorn |
+| Put Knowledge to Use | Complete one eligible practice activity that checks or applies a learned skill. | 10 Velorn |
+| Try Something Different | Complete an eligible activity from a different game or activity type than the player's most recently credited daily mission, where an alternative is available. | 10 Velorn |
+| Make Case Progress | Complete one meaningful, validated objective in an investigation or multi-step activity. The same objective cannot count again through replay. | 10 Velorn |
+| Solve a Challenge | Complete one eligible challenge with a validated result; merely opening or entering it does not count. | 10 Velorn |
+| Build a Learning Habit | Complete one eligible activity on a day when the player has not yet received credit for this mission. This is an activity mission, not a login reward. | 10 Velorn |
+| Explore a New Experience | Complete an eligible activity in a game the player has not previously completed, if such an experience is available to that player. | 10 Velorn |
+| Review and Improve | Complete a distinct review or retry objective that records a validated improvement, not simply a repeated attempt. | 10 Velorn |
+
+#### Daily board selection rules
+
+- Select four missions from the bank, with **any three** sufficient for the full daily reward.
+- Do not show four missions that all depend on the same game, one narrow skill, or one specific activity format.
+- Prefer a balanced set: at least two broadly available activity missions, and no more than one mission that depends on a particular game feature or progression state.
+- If a player cannot access a mission because the relevant game or content is unavailable, do not assign that mission; substitute an eligible alternative.
+- Avoid assigning a mission whose condition the player has already satisfied before the mission was issued, unless the mission explicitly states that prior progress counts.
+- Mission progress must be based on validated events. A single event may satisfy more than one mission only when the objectives are genuinely distinct; it must never produce duplicate credit for the same mission.
+- The player can choose which three missions to complete. There is no penalty for leaving the fourth mission unfinished.
+- A daily mission and its completion bonus reset on the configured daily boundary. The exact timezone and reset hour are implementation settings that must be consistent and clearly communicated in the UI.
+
+### 10.9 Weekly mission bank
+
+The weekly board displays **three missions**. Each completed mission pays 20 Velorn, and completing all three pays an additional 40 Velorn, for a maximum of 100 Velorn per weekly cycle.
+
+| Mission template | Qualifying condition | Reward |
+| --- | --- | ---: |
+| Consistent Progress | Complete eligible activities on at least three distinct days within the weekly period. | 20 Velorn |
+| Broaden Your Experience | Complete eligible activities in at least two distinct game experiences or activity types within the weekly period. | 20 Velorn |
+| Meaningful Progress | Complete a validated multi-step objective, learning milestone, or substantial challenge during the weekly period. | 20 Velorn |
+
+**Weekly completion bonus:** 40 Velorn after all three weekly missions have been completed.
+
+#### Weekly mission fairness rules
+
+- The three missions are designed to measure different forms of progress: consistency, variety, and meaningful achievement.
+- Consistent Progress requires three active days, not all seven; missing days does not reset or invalidate progress already earned.
+- Broaden Your Experience must accept equivalent activity routes when a particular game is unavailable or unsuitable. It must not require one named game.
+- Meaningful Progress must use a validated milestone appropriate to the activity. It must not assume that every game has levels, rounds, scores, or a fixed session structure.
+- Weekly progress is accumulated across the week and is not lost when the player completes a mission early.
+- The weekly bonus is paid once, only after all three mission IDs for that weekly cycle are complete.
+- Daily mission rewards and weekly mission rewards are separate. A validated event may contribute to both only when it independently meets both mission definitions; each mission can still be paid only once.
+
+### 10.10 Achievement catalogue
+
+Achievements are permanent or milestone-based rewards and are **additional** to all daily and weekly mission rewards. The following catalogue defines concrete first-release candidates and their proposed Velorn values.
+
+| Achievement | Qualifying milestone | Reward | Award limit |
+| --- | --- | ---: | --- |
+| First Steps | Complete the first eligible learning or game activity with a validated outcome. | 25 Velorn | Once per player |
+| First Challenge | Complete the first eligible challenge with a validated outcome. | 25 Velorn | Once per player |
+| Curious Explorer | Complete eligible activities in three distinct game experiences. | 50 Velorn | Once per player |
+| Steady Learner | Complete ten distinct eligible learning activities. | 50 Velorn | Once per player |
+| Case Closed | Complete one investigation/case objective sequence that has a validated final outcome. | 50 Velorn | Once per distinct eligible case |
+| Skill Builder | Reach a defined learning milestone verified by the relevant activity, such as completing a curated skill set. | 100 Velorn | Once per uniquely identified milestone |
+| Versatile Mind | Complete meaningful milestones across three distinct activity types or skill families. | 100 Velorn | Once per player for the defined milestone |
+| Mastery Milestone | Reach a formally defined mastery threshold in an eligible learning path or game mode. | 100 Velorn | Once per uniquely identified mastery milestone |
+| EPIPHANY Pathfinder | Complete a curated set of substantial milestones across multiple site sections. | 200 Velorn | Once per curated set |
+| Long-Term Dedication | Complete a long-term progression milestone with distinct, validated progress over time. | 200 Velorn | Once per defined milestone |
+
+#### Achievement award rules
+
+- Achievement IDs and, where applicable, stage IDs must be stable and unique. The award ledger enforces one payment per player and achievement/stage ID.
+- A multi-stage achievement may pay at each explicitly declared stage, but each stage is a separate one-time milestone with its own stable ID.
+- Case Closed may be repeated only across genuinely distinct cases, each with its own stable case ID and final validated outcome; replaying the same case does not pay again.
+- Counts such as ten activities must count distinct eligible completion events, not refreshes, retries, repeated submissions, or duplicate session records.
+- Achievements must not require payment, purchases, or spending Velorn.
+- Achievements must not require daily attendance streaks. Long-term milestones may measure cumulative progress without punishing absence.
+- Do not award an achievement solely for opening a page, clicking a control, entering a game, or repeating a trivial action.
+- If an achievement depends on content or a game that is unavailable to a player, it must not block access to equivalent achievements or ordinary mission earnings.
+- Achievement rewards are one-time milestone rewards, not an endlessly repeatable source of currency.
+
+### 10.11 Mission rotation and anti-repetition policy
+
+- Maintain a broad pool of mission templates and rotate assignments rather than presenting the same four daily missions every day.
+- Avoid assigning the same daily mission template on consecutive days to the same player when enough eligible alternatives exist.
+- Do not repeat the same weekly mission set in consecutive weeks when enough eligible alternatives exist; preserve the three weekly mission families of consistency, variety, and meaningful progress.
+- Rotate wording only when the underlying objective remains identical; changing the wording must not create a new reward opportunity.
+- Each issued mission has a stable mission ID, period ID, objective definition, reward amount, and status. Reissuing or refreshing the board must not create a second payable copy.
+- If the player cannot reasonably complete an assigned mission, provide a replacement without losing progress or reward already earned on other missions.
+- Never increase the daily or weekly budget because the board was refreshed, a mission was replaced, or a player changed games.
+- The board should communicate progress, reward, remaining eligible missions, and the completion bonus clearly. Do not hide important eligibility conditions in secondary text.
+- Mission content should be localized, accessible, and understandable without requiring knowledge of internal game or economy terminology.
+
 ### 10.7 Economy validation scenarios
 
 Before implementation or release, test at least these scenarios:
