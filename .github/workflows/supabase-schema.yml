@@ -48,6 +48,26 @@ jobs:
         run: |
           eval "$(supabase status -o env)"
           psql "$DB_URL" -v ON_ERROR_STOP=1 -f supabase/tests/phase0_schema_assertions.sql
+
+      - name: Compare complete local catalog with hosted reference snapshot
+        timeout-minutes: 5
+        run: |
+          set -o pipefail
+          eval "$(supabase status -o env)"
+          psql "$DB_URL" -At -v ON_ERROR_STOP=1 -f supabase/tests/phase0_catalog_snapshot.sql | jq -cS . > /tmp/epiphany-local-catalog.json
+          jq -cS . supabase/tests/phase0_expected_catalog.json > /tmp/epiphany-expected-catalog.json
+          diff -u /tmp/epiphany-expected-catalog.json /tmp/epiphany-local-catalog.json
+
+      - name: Upload catalog diff inputs on failure
+        if: failure()
+        uses: actions/upload-artifact@v6
+        with:
+          name: supabase-phase0-catalog-comparison
+          path: |
+            /tmp/epiphany-local-catalog.json
+            /tmp/epiphany-expected-catalog.json
+          if-no-files-found: ignore
+          retention-days: 7
       - name: Stop disposable local stack
         if: always()
         run: supabase stop --no-backup

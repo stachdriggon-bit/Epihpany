@@ -143,7 +143,7 @@ Its profile columns overlap with the hosted `complete_player_profile_columns` mi
 
 ### 4.3 Other root-level SQL files
 
-The former `supabase-privacy-migration.sql`, `supabase-card-image-views.sql`, and `supabase-telemetry.sql` bodies are now archived as do-not-run pointers. Their historical contents remain in Git history. The privacy-v2 behavior is represented by the reconstructed timestamped migration; telemetry and card-image framing are represented in the local-only legacy foundation. The CI contract assertions compare their resulting policy and grant boundaries with the captured live catalog.
+The former `supabase-privacy-migration.sql`, `supabase-card-image-views.sql`, and `supabase-telemetry.sql` bodies are now archived as do-not-run pointers. Their historical contents remain in Git history. The privacy-v2 behavior is represented by the reconstructed timestamped migration; telemetry and card-image framing are represented in the local-only legacy foundation. The CI contract assertions compare their resulting policy and grant boundaries with the captured live catalog. A complete redacted reference snapshot of all nine application tables, columns, constraints, indexes, public policies, Storage policies, relevant grants, RLS flags, and four Storage buckets is stored in `supabase/tests/phase0_expected_catalog.json`; CI regenerates the same snapshot locally and diffs it byte-for-byte after canonical JSON formatting.
 
 ## 5. Current access-control shape
 
@@ -198,11 +198,11 @@ Reference: [Supabase CLI v3 breaking change](https://supabase.com/changelog).
 These actions are ordered to preserve the current live data and prevent false migration history:
 
 1. **Preserve the live schema as the reference.** Obtain a full schema-only snapshot/dump of the connected project, including tables, constraints, indexes, policies, grants, functions, triggers, storage policies, and bucket configuration. Keep secrets and user data out of the snapshot.
-2. **Validate the reconstructed migrations in isolation.** The new `.github/workflows/supabase-schema.yml` starts a disposable local Supabase stack, applies `supabase/bootstrap/legacy_foundation.sql`, replays all nine migrations, and runs `supabase/tests/phase0_schema_assertions.sql`. Do not apply the historical versions to the hosted project; they are already recorded as applied.
+2. **Validate the reconstructed migrations in isolation.** The new `.github/workflows/supabase-schema.yml` starts a disposable local Supabase stack, applies `supabase/bootstrap/legacy_foundation.sql`, replays all nine migrations, runs `supabase/tests/phase0_schema_assertions.sql`, then compares the full local catalog against the redacted live reference snapshot. Do not apply the historical versions to the hosted project; they are already recorded as applied.
 3. **Canonical bootstrap baseline — implemented.** `supabase/bootstrap/legacy_foundation.sql` captures the pre-migration tables, RLS, grants, telemetry, card-image metadata, and pre-existing bucket settings. It is intentionally local/disposable only and is never applied to production. The clean-room assertions compare exact table/column/constraint/index/policy counts and critical grants against the live inventory.
 4. **Quarantine obsolete setup scripts — implemented.** The five unsafe or superseded root-level SQL entry points are now do-not-run pointers; their previous contents remain in Git history. The live 3 MiB avatar limit and privacy policies were not changed.
 5. **Local project configuration and repeatable workflow — implemented.** `supabase/config.toml` pins PostgreSQL 17 and `.github/workflows/supabase-schema.yml` pins Supabase CLI 3.1.0. The workflow explicitly starts a disposable local stack and never links or targets the hosted project.
-6. **Complete clean-room run and live/catalog comparison.** The CI workflow must pass. Then compare its recorded contract counts and assertions with the live catalog inventory in this report; any unexplained difference must be resolved before the economy migration is created. A full text-level schema diff is not claimed by the current workflow.
+6. **Complete clean-room run and live/catalog comparison.** The CI workflow must pass all assertions and the full redacted catalog snapshot diff. Any unexplained difference must be resolved before the economy migration is created.
 
 ### Phase 0 exit criteria
 

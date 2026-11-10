@@ -1,0 +1,1787 @@
+{
+  "rls": [
+    {
+      "forced": false,
+      "enabled": true,
+      "table_name": "epiphany_asset_files"
+    },
+    {
+      "forced": false,
+      "enabled": true,
+      "table_name": "epiphany_asset_usages"
+    },
+    {
+      "forced": false,
+      "enabled": true,
+      "table_name": "epiphany_assets"
+    },
+    {
+      "forced": false,
+      "enabled": true,
+      "table_name": "epiphany_card_image_views"
+    },
+    {
+      "forced": false,
+      "enabled": true,
+      "table_name": "epiphany_telemetry"
+    },
+    {
+      "forced": false,
+      "enabled": true,
+      "table_name": "player_posts"
+    },
+    {
+      "forced": false,
+      "enabled": true,
+      "table_name": "player_profiles"
+    },
+    {
+      "forced": false,
+      "enabled": true,
+      "table_name": "player_progress"
+    },
+    {
+      "forced": false,
+      "enabled": true,
+      "table_name": "player_stories"
+    }
+  ],
+  "grants": [
+    {
+      "grantee": "authenticated",
+      "privilege": "DELETE",
+      "table_name": "epiphany_asset_files"
+    },
+    {
+      "grantee": "authenticated",
+      "privilege": "INSERT",
+      "table_name": "epiphany_asset_files"
+    },
+    {
+      "grantee": "authenticated",
+      "privilege": "SELECT",
+      "table_name": "epiphany_asset_files"
+    },
+    {
+      "grantee": "authenticated",
+      "privilege": "UPDATE",
+      "table_name": "epiphany_asset_files"
+    },
+    {
+      "grantee": "anon",
+      "privilege": "SELECT",
+      "table_name": "epiphany_asset_usages"
+    },
+    {
+      "grantee": "authenticated",
+      "privilege": "DELETE",
+      "table_name": "epiphany_asset_usages"
+    },
+    {
+      "grantee": "authenticated",
+      "privilege": "INSERT",
+      "table_name": "epiphany_asset_usages"
+    },
+    {
+      "grantee": "authenticated",
+      "privilege": "SELECT",
+      "table_name": "epiphany_asset_usages"
+    },
+    {
+      "grantee": "authenticated",
+      "privilege": "UPDATE",
+      "table_name": "epiphany_asset_usages"
+    },
+    {
+      "grantee": "authenticated",
+      "privilege": "DELETE",
+      "table_name": "epiphany_assets"
+    },
+    {
+      "grantee": "authenticated",
+      "privilege": "INSERT",
+      "table_name": "epiphany_assets"
+    },
+    {
+      "grantee": "authenticated",
+      "privilege": "SELECT",
+      "table_name": "epiphany_assets"
+    },
+    {
+      "grantee": "authenticated",
+      "privilege": "UPDATE",
+      "table_name": "epiphany_assets"
+    },
+    {
+      "grantee": "anon",
+      "privilege": "SELECT",
+      "table_name": "epiphany_card_image_views"
+    },
+    {
+      "grantee": "authenticated",
+      "privilege": "INSERT",
+      "table_name": "epiphany_card_image_views"
+    },
+    {
+      "grantee": "authenticated",
+      "privilege": "SELECT",
+      "table_name": "epiphany_card_image_views"
+    },
+    {
+      "grantee": "authenticated",
+      "privilege": "UPDATE",
+      "table_name": "epiphany_card_image_views"
+    },
+    {
+      "grantee": "anon",
+      "privilege": "INSERT",
+      "table_name": "epiphany_telemetry"
+    },
+    {
+      "grantee": "authenticated",
+      "privilege": "INSERT",
+      "table_name": "epiphany_telemetry"
+    },
+    {
+      "grantee": "authenticated",
+      "privilege": "DELETE",
+      "table_name": "player_posts"
+    },
+    {
+      "grantee": "authenticated",
+      "privilege": "INSERT",
+      "table_name": "player_posts"
+    },
+    {
+      "grantee": "authenticated",
+      "privilege": "SELECT",
+      "table_name": "player_posts"
+    },
+    {
+      "grantee": "authenticated",
+      "privilege": "INSERT",
+      "table_name": "player_profiles"
+    },
+    {
+      "grantee": "authenticated",
+      "privilege": "SELECT",
+      "table_name": "player_profiles"
+    },
+    {
+      "grantee": "authenticated",
+      "privilege": "UPDATE",
+      "table_name": "player_profiles"
+    },
+    {
+      "grantee": "authenticated",
+      "privilege": "INSERT",
+      "table_name": "player_progress"
+    },
+    {
+      "grantee": "authenticated",
+      "privilege": "SELECT",
+      "table_name": "player_progress"
+    },
+    {
+      "grantee": "authenticated",
+      "privilege": "UPDATE",
+      "table_name": "player_progress"
+    },
+    {
+      "grantee": "authenticated",
+      "privilege": "DELETE",
+      "table_name": "player_stories"
+    },
+    {
+      "grantee": "authenticated",
+      "privilege": "INSERT",
+      "table_name": "player_stories"
+    },
+    {
+      "grantee": "authenticated",
+      "privilege": "SELECT",
+      "table_name": "player_stories"
+    },
+    {
+      "grantee": "authenticated",
+      "privilege": "UPDATE",
+      "table_name": "player_stories"
+    }
+  ],
+  "tables": [
+    {
+      "columns": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "default": "gen_random_uuid()",
+          "ordinal": 1,
+          "nullable": "NO"
+        },
+        {
+          "name": "asset_id",
+          "type": "uuid",
+          "default": null,
+          "ordinal": 2,
+          "nullable": "NO"
+        },
+        {
+          "name": "variant",
+          "type": "text",
+          "default": null,
+          "ordinal": 3,
+          "nullable": "NO"
+        },
+        {
+          "name": "bucket_id",
+          "type": "text",
+          "default": null,
+          "ordinal": 4,
+          "nullable": "NO"
+        },
+        {
+          "name": "object_path",
+          "type": "text",
+          "default": null,
+          "ordinal": 5,
+          "nullable": "NO"
+        },
+        {
+          "name": "visibility",
+          "type": "text",
+          "default": null,
+          "ordinal": 6,
+          "nullable": "NO"
+        },
+        {
+          "name": "mime_type",
+          "type": "text",
+          "default": null,
+          "ordinal": 7,
+          "nullable": "NO"
+        },
+        {
+          "name": "size_bytes",
+          "type": "bigint",
+          "default": null,
+          "ordinal": 8,
+          "nullable": "NO"
+        },
+        {
+          "name": "width",
+          "type": "integer",
+          "default": null,
+          "ordinal": 9,
+          "nullable": "YES"
+        },
+        {
+          "name": "height",
+          "type": "integer",
+          "default": null,
+          "ordinal": 10,
+          "nullable": "YES"
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "default": "now()",
+          "ordinal": 11,
+          "nullable": "NO"
+        }
+      ],
+      "table_name": "epiphany_asset_files"
+    },
+    {
+      "columns": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "default": "gen_random_uuid()",
+          "ordinal": 1,
+          "nullable": "NO"
+        },
+        {
+          "name": "asset_id",
+          "type": "uuid",
+          "default": null,
+          "ordinal": 2,
+          "nullable": "NO"
+        },
+        {
+          "name": "owner_type",
+          "type": "text",
+          "default": null,
+          "ordinal": 3,
+          "nullable": "NO"
+        },
+        {
+          "name": "owner_id",
+          "type": "text",
+          "default": null,
+          "ordinal": 4,
+          "nullable": "NO"
+        },
+        {
+          "name": "role",
+          "type": "text",
+          "default": null,
+          "ordinal": 5,
+          "nullable": "NO"
+        },
+        {
+          "name": "is_published",
+          "type": "boolean",
+          "default": "false",
+          "ordinal": 6,
+          "nullable": "NO"
+        },
+        {
+          "name": "published_bucket",
+          "type": "text",
+          "default": null,
+          "ordinal": 7,
+          "nullable": "YES"
+        },
+        {
+          "name": "published_original_path",
+          "type": "text",
+          "default": null,
+          "ordinal": 8,
+          "nullable": "YES"
+        },
+        {
+          "name": "published_thumbnail_path",
+          "type": "text",
+          "default": null,
+          "ordinal": 9,
+          "nullable": "YES"
+        },
+        {
+          "name": "created_by",
+          "type": "uuid",
+          "default": null,
+          "ordinal": 10,
+          "nullable": "NO"
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "default": "now()",
+          "ordinal": 11,
+          "nullable": "NO"
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "default": "now()",
+          "ordinal": 12,
+          "nullable": "NO"
+        }
+      ],
+      "table_name": "epiphany_asset_usages"
+    },
+    {
+      "columns": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "default": "gen_random_uuid()",
+          "ordinal": 1,
+          "nullable": "NO"
+        },
+        {
+          "name": "asset_type",
+          "type": "text",
+          "default": "'image'::text",
+          "ordinal": 2,
+          "nullable": "NO"
+        },
+        {
+          "name": "category",
+          "type": "text",
+          "default": null,
+          "ordinal": 3,
+          "nullable": "NO"
+        },
+        {
+          "name": "original_name",
+          "type": "text",
+          "default": null,
+          "ordinal": 4,
+          "nullable": "NO"
+        },
+        {
+          "name": "mime_type",
+          "type": "text",
+          "default": null,
+          "ordinal": 5,
+          "nullable": "NO"
+        },
+        {
+          "name": "size_bytes",
+          "type": "bigint",
+          "default": null,
+          "ordinal": 6,
+          "nullable": "NO"
+        },
+        {
+          "name": "width",
+          "type": "integer",
+          "default": null,
+          "ordinal": 7,
+          "nullable": "YES"
+        },
+        {
+          "name": "height",
+          "type": "integer",
+          "default": null,
+          "ordinal": 8,
+          "nullable": "YES"
+        },
+        {
+          "name": "status",
+          "type": "text",
+          "default": "'unassigned'::text",
+          "ordinal": 9,
+          "nullable": "NO"
+        },
+        {
+          "name": "metadata",
+          "type": "jsonb",
+          "default": "'{}'::jsonb",
+          "ordinal": 10,
+          "nullable": "NO"
+        },
+        {
+          "name": "created_by",
+          "type": "uuid",
+          "default": null,
+          "ordinal": 11,
+          "nullable": "NO"
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "default": "now()",
+          "ordinal": 12,
+          "nullable": "NO"
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "default": "now()",
+          "ordinal": 13,
+          "nullable": "NO"
+        }
+      ],
+      "table_name": "epiphany_assets"
+    },
+    {
+      "columns": [
+        {
+          "name": "character_id",
+          "type": "text",
+          "default": null,
+          "ordinal": 1,
+          "nullable": "NO"
+        },
+        {
+          "name": "position_x",
+          "type": "numeric",
+          "default": "50",
+          "ordinal": 2,
+          "nullable": "NO"
+        },
+        {
+          "name": "position_y",
+          "type": "numeric",
+          "default": "32",
+          "ordinal": 3,
+          "nullable": "NO"
+        },
+        {
+          "name": "zoom",
+          "type": "numeric",
+          "default": "1",
+          "ordinal": 4,
+          "nullable": "NO"
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "default": "now()",
+          "ordinal": 5,
+          "nullable": "NO"
+        },
+        {
+          "name": "fit",
+          "type": "text",
+          "default": "'cover'::text",
+          "ordinal": 6,
+          "nullable": "NO"
+        }
+      ],
+      "table_name": "epiphany_card_image_views"
+    },
+    {
+      "columns": [
+        {
+          "name": "id",
+          "type": "bigint",
+          "default": null,
+          "ordinal": 1,
+          "nullable": "NO"
+        },
+        {
+          "name": "session_id",
+          "type": "uuid",
+          "default": null,
+          "ordinal": 2,
+          "nullable": "NO"
+        },
+        {
+          "name": "event_name",
+          "type": "text",
+          "default": null,
+          "ordinal": 3,
+          "nullable": "NO"
+        },
+        {
+          "name": "section",
+          "type": "text",
+          "default": null,
+          "ordinal": 4,
+          "nullable": "YES"
+        },
+        {
+          "name": "app_version",
+          "type": "text",
+          "default": "'20261024k'::text",
+          "ordinal": 5,
+          "nullable": "NO"
+        },
+        {
+          "name": "details",
+          "type": "jsonb",
+          "default": "'{}'::jsonb",
+          "ordinal": 6,
+          "nullable": "NO"
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "default": "now()",
+          "ordinal": 7,
+          "nullable": "NO"
+        }
+      ],
+      "table_name": "epiphany_telemetry"
+    },
+    {
+      "columns": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "default": "gen_random_uuid()",
+          "ordinal": 1,
+          "nullable": "NO"
+        },
+        {
+          "name": "user_id",
+          "type": "uuid",
+          "default": null,
+          "ordinal": 2,
+          "nullable": "NO"
+        },
+        {
+          "name": "body",
+          "type": "text",
+          "default": null,
+          "ordinal": 3,
+          "nullable": "NO"
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "default": "now()",
+          "ordinal": 4,
+          "nullable": "NO"
+        }
+      ],
+      "table_name": "player_posts"
+    },
+    {
+      "columns": [
+        {
+          "name": "user_id",
+          "type": "uuid",
+          "default": null,
+          "ordinal": 1,
+          "nullable": "NO"
+        },
+        {
+          "name": "display_name",
+          "type": "text",
+          "default": "'English learner'::text",
+          "ordinal": 2,
+          "nullable": "NO"
+        },
+        {
+          "name": "bio",
+          "type": "text",
+          "default": "''::text",
+          "ordinal": 3,
+          "nullable": "NO"
+        },
+        {
+          "name": "avatar_url",
+          "type": "text",
+          "default": null,
+          "ordinal": 4,
+          "nullable": "YES"
+        },
+        {
+          "name": "avatar_emoji",
+          "type": "text",
+          "default": "'🦊'::text",
+          "ordinal": 5,
+          "nullable": "NO"
+        },
+        {
+          "name": "avatar_color",
+          "type": "text",
+          "default": "'#FFE08A'::text",
+          "ordinal": 6,
+          "nullable": "NO"
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "default": "now()",
+          "ordinal": 7,
+          "nullable": "NO"
+        },
+        {
+          "name": "is_private",
+          "type": "boolean",
+          "default": "true",
+          "ordinal": 8,
+          "nullable": "NO"
+        },
+        {
+          "name": "visibility",
+          "type": "text",
+          "default": "'private'::text",
+          "ordinal": 9,
+          "nullable": "NO"
+        },
+        {
+          "name": "avatar_color_2",
+          "type": "text",
+          "default": "'#F0EDFF'::text",
+          "ordinal": 10,
+          "nullable": "NO"
+        },
+        {
+          "name": "banner_style",
+          "type": "text",
+          "default": "'aurora'::text",
+          "ordinal": 11,
+          "nullable": "NO"
+        },
+        {
+          "name": "banner_url",
+          "type": "text",
+          "default": null,
+          "ordinal": 12,
+          "nullable": "YES"
+        },
+        {
+          "name": "avatar_frame",
+          "type": "text",
+          "default": "'none'::text",
+          "ordinal": 13,
+          "nullable": "NO"
+        },
+        {
+          "name": "accent_color",
+          "type": "text",
+          "default": "'#7c6cff'::text",
+          "ordinal": 14,
+          "nullable": "NO"
+        }
+      ],
+      "table_name": "player_profiles"
+    },
+    {
+      "columns": [
+        {
+          "name": "user_id",
+          "type": "uuid",
+          "default": null,
+          "ordinal": 1,
+          "nullable": "NO"
+        },
+        {
+          "name": "progress",
+          "type": "jsonb",
+          "default": "'{}'::jsonb",
+          "ordinal": 2,
+          "nullable": "NO"
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "default": "now()",
+          "ordinal": 3,
+          "nullable": "NO"
+        }
+      ],
+      "table_name": "player_progress"
+    },
+    {
+      "columns": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "default": "gen_random_uuid()",
+          "ordinal": 1,
+          "nullable": "NO"
+        },
+        {
+          "name": "user_id",
+          "type": "uuid",
+          "default": null,
+          "ordinal": 2,
+          "nullable": "NO"
+        },
+        {
+          "name": "title",
+          "type": "text",
+          "default": "'My story'::text",
+          "ordinal": 3,
+          "nullable": "NO"
+        },
+        {
+          "name": "genre",
+          "type": "text",
+          "default": "'adventure'::text",
+          "ordinal": 4,
+          "nullable": "NO"
+        },
+        {
+          "name": "level",
+          "type": "text",
+          "default": "'A1'::text",
+          "ordinal": 5,
+          "nullable": "NO"
+        },
+        {
+          "name": "pages",
+          "type": "jsonb",
+          "default": "'[]'::jsonb",
+          "ordinal": 6,
+          "nullable": "NO"
+        },
+        {
+          "name": "word_count",
+          "type": "integer",
+          "default": "0",
+          "ordinal": 7,
+          "nullable": "NO"
+        },
+        {
+          "name": "problem",
+          "type": "text",
+          "default": "''::text",
+          "ordinal": 8,
+          "nullable": "NO"
+        },
+        {
+          "name": "visibility",
+          "type": "text",
+          "default": "'private'::text",
+          "ordinal": 9,
+          "nullable": "NO"
+        },
+        {
+          "name": "reply_to",
+          "type": "uuid",
+          "default": null,
+          "ordinal": 10,
+          "nullable": "YES"
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "default": "now()",
+          "ordinal": 11,
+          "nullable": "NO"
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "default": "now()",
+          "ordinal": 12,
+          "nullable": "NO"
+        }
+      ],
+      "table_name": "player_stories"
+    }
+  ],
+  "indexes": [
+    {
+      "name": "epiphany_asset_files_asset_variant_idx",
+      "definition": "CREATE INDEX epiphany_asset_files_asset_variant_idx ON public.epiphany_asset_files USING btree (asset_id, variant)",
+      "table_name": "epiphany_asset_files"
+    },
+    {
+      "name": "epiphany_asset_files_bucket_id_object_path_key",
+      "definition": "CREATE UNIQUE INDEX epiphany_asset_files_bucket_id_object_path_key ON public.epiphany_asset_files USING btree (bucket_id, object_path)",
+      "table_name": "epiphany_asset_files"
+    },
+    {
+      "name": "epiphany_asset_files_bucket_path_idx",
+      "definition": "CREATE INDEX epiphany_asset_files_bucket_path_idx ON public.epiphany_asset_files USING btree (bucket_id, object_path)",
+      "table_name": "epiphany_asset_files"
+    },
+    {
+      "name": "epiphany_asset_files_pkey",
+      "definition": "CREATE UNIQUE INDEX epiphany_asset_files_pkey ON public.epiphany_asset_files USING btree (id)",
+      "table_name": "epiphany_asset_files"
+    },
+    {
+      "name": "epiphany_asset_usages_asset_idx",
+      "definition": "CREATE INDEX epiphany_asset_usages_asset_idx ON public.epiphany_asset_usages USING btree (asset_id)",
+      "table_name": "epiphany_asset_usages"
+    },
+    {
+      "name": "epiphany_asset_usages_one_published_role_idx",
+      "definition": "CREATE UNIQUE INDEX epiphany_asset_usages_one_published_role_idx ON public.epiphany_asset_usages USING btree (owner_type, owner_id, role) WHERE (is_published = true)",
+      "table_name": "epiphany_asset_usages"
+    },
+    {
+      "name": "epiphany_asset_usages_pkey",
+      "definition": "CREATE UNIQUE INDEX epiphany_asset_usages_pkey ON public.epiphany_asset_usages USING btree (id)",
+      "table_name": "epiphany_asset_usages"
+    },
+    {
+      "name": "epiphany_asset_usages_published_owner_idx",
+      "definition": "CREATE INDEX epiphany_asset_usages_published_owner_idx ON public.epiphany_asset_usages USING btree (owner_type, owner_id, role) WHERE (is_published = true)",
+      "table_name": "epiphany_asset_usages"
+    },
+    {
+      "name": "epiphany_assets_category_status_created_idx",
+      "definition": "CREATE INDEX epiphany_assets_category_status_created_idx ON public.epiphany_assets USING btree (category, status, created_at DESC)",
+      "table_name": "epiphany_assets"
+    },
+    {
+      "name": "epiphany_assets_pkey",
+      "definition": "CREATE UNIQUE INDEX epiphany_assets_pkey ON public.epiphany_assets USING btree (id)",
+      "table_name": "epiphany_assets"
+    },
+    {
+      "name": "epiphany_card_image_views_pkey",
+      "definition": "CREATE UNIQUE INDEX epiphany_card_image_views_pkey ON public.epiphany_card_image_views USING btree (character_id)",
+      "table_name": "epiphany_card_image_views"
+    },
+    {
+      "name": "epiphany_telemetry_created_at_idx",
+      "definition": "CREATE INDEX epiphany_telemetry_created_at_idx ON public.epiphany_telemetry USING btree (created_at DESC)",
+      "table_name": "epiphany_telemetry"
+    },
+    {
+      "name": "epiphany_telemetry_event_created_idx",
+      "definition": "CREATE INDEX epiphany_telemetry_event_created_idx ON public.epiphany_telemetry USING btree (event_name, created_at DESC)",
+      "table_name": "epiphany_telemetry"
+    },
+    {
+      "name": "epiphany_telemetry_pkey",
+      "definition": "CREATE UNIQUE INDEX epiphany_telemetry_pkey ON public.epiphany_telemetry USING btree (id)",
+      "table_name": "epiphany_telemetry"
+    },
+    {
+      "name": "player_posts_pkey",
+      "definition": "CREATE UNIQUE INDEX player_posts_pkey ON public.player_posts USING btree (id)",
+      "table_name": "player_posts"
+    },
+    {
+      "name": "player_posts_user_created_idx",
+      "definition": "CREATE INDEX player_posts_user_created_idx ON public.player_posts USING btree (user_id, created_at DESC)",
+      "table_name": "player_posts"
+    },
+    {
+      "name": "player_profiles_pkey",
+      "definition": "CREATE UNIQUE INDEX player_profiles_pkey ON public.player_profiles USING btree (user_id)",
+      "table_name": "player_profiles"
+    },
+    {
+      "name": "player_progress_pkey",
+      "definition": "CREATE UNIQUE INDEX player_progress_pkey ON public.player_progress USING btree (user_id)",
+      "table_name": "player_progress"
+    },
+    {
+      "name": "player_stories_owner_updated_idx",
+      "definition": "CREATE INDEX player_stories_owner_updated_idx ON public.player_stories USING btree (user_id, updated_at DESC)",
+      "table_name": "player_stories"
+    },
+    {
+      "name": "player_stories_pkey",
+      "definition": "CREATE UNIQUE INDEX player_stories_pkey ON public.player_stories USING btree (id)",
+      "table_name": "player_stories"
+    },
+    {
+      "name": "player_stories_public_created_idx",
+      "definition": "CREATE INDEX player_stories_public_created_idx ON public.player_stories USING btree (created_at DESC) WHERE (visibility = 'public'::text)",
+      "table_name": "player_stories"
+    }
+  ],
+  "migrations": [
+    {
+      "name": "epiphany_player_privacy_v2",
+      "version": "20261023233115"
+    },
+    {
+      "name": "add_private_and_shared_player_stories",
+      "version": "20261024122251"
+    },
+    {
+      "name": "restrict_character_art_storage_uploads",
+      "version": "20261030091511"
+    },
+    {
+      "name": "complete_player_profile_columns",
+      "version": "20261030101059"
+    },
+    {
+      "name": "asset_manager_foundation",
+      "version": "20261030201651"
+    },
+    {
+      "name": "asset_manager_public_reference_columns",
+      "version": "20261030201953"
+    },
+    {
+      "name": "asset_manager_common_image_formats",
+      "version": "20261030202518"
+    },
+    {
+      "name": "asset_manager_pending_replacement_links",
+      "version": "20261030202723"
+    },
+    {
+      "name": "restore_asset_usage_read_grants",
+      "version": "20261030221913"
+    }
+  ],
+  "constraints": [
+    {
+      "name": "epiphany_asset_files_asset_id_fkey",
+      "type": "f",
+      "definition": "FOREIGN KEY (asset_id) REFERENCES epiphany_assets(id) ON DELETE CASCADE",
+      "table_name": "epiphany_asset_files"
+    },
+    {
+      "name": "epiphany_asset_files_bucket_id_object_path_key",
+      "type": "u",
+      "definition": "UNIQUE (bucket_id, object_path)",
+      "table_name": "epiphany_asset_files"
+    },
+    {
+      "name": "epiphany_asset_files_height_check",
+      "type": "c",
+      "definition": "CHECK (((height IS NULL) OR (height > 0)))",
+      "table_name": "epiphany_asset_files"
+    },
+    {
+      "name": "epiphany_asset_files_mime_type_check",
+      "type": "c",
+      "definition": "CHECK ((mime_type = ANY (ARRAY['image/png'::text, 'image/jpeg'::text, 'image/webp'::text])))",
+      "table_name": "epiphany_asset_files"
+    },
+    {
+      "name": "epiphany_asset_files_object_path_check",
+      "type": "c",
+      "definition": "CHECK (((char_length(object_path) >= 1) AND (char_length(object_path) <= 1024)))",
+      "table_name": "epiphany_asset_files"
+    },
+    {
+      "name": "epiphany_asset_files_pkey",
+      "type": "p",
+      "definition": "PRIMARY KEY (id)",
+      "table_name": "epiphany_asset_files"
+    },
+    {
+      "name": "epiphany_asset_files_size_bytes_check",
+      "type": "c",
+      "definition": "CHECK ((size_bytes > 0))",
+      "table_name": "epiphany_asset_files"
+    },
+    {
+      "name": "epiphany_asset_files_variant_check",
+      "type": "c",
+      "definition": "CHECK ((variant = ANY (ARRAY['original'::text, 'thumbnail'::text, 'preview'::text])))",
+      "table_name": "epiphany_asset_files"
+    },
+    {
+      "name": "epiphany_asset_files_visibility_check",
+      "type": "c",
+      "definition": "CHECK ((visibility = ANY (ARRAY['private'::text, 'public'::text])))",
+      "table_name": "epiphany_asset_files"
+    },
+    {
+      "name": "epiphany_asset_files_width_check",
+      "type": "c",
+      "definition": "CHECK (((width IS NULL) OR (width > 0)))",
+      "table_name": "epiphany_asset_files"
+    },
+    {
+      "name": "epiphany_asset_usages_asset_id_fkey",
+      "type": "f",
+      "definition": "FOREIGN KEY (asset_id) REFERENCES epiphany_assets(id) ON DELETE RESTRICT",
+      "table_name": "epiphany_asset_usages"
+    },
+    {
+      "name": "epiphany_asset_usages_check",
+      "type": "c",
+      "definition": "CHECK (((NOT is_published) OR ((published_bucket IS NOT NULL) AND (published_original_path IS NOT NULL))))",
+      "table_name": "epiphany_asset_usages"
+    },
+    {
+      "name": "epiphany_asset_usages_created_by_fkey",
+      "type": "f",
+      "definition": "FOREIGN KEY (created_by) REFERENCES auth.users(id) ON DELETE RESTRICT",
+      "table_name": "epiphany_asset_usages"
+    },
+    {
+      "name": "epiphany_asset_usages_owner_id_check",
+      "type": "c",
+      "definition": "CHECK (((char_length(owner_id) >= 1) AND (char_length(owner_id) <= 120)))",
+      "table_name": "epiphany_asset_usages"
+    },
+    {
+      "name": "epiphany_asset_usages_owner_type_check",
+      "type": "c",
+      "definition": "CHECK (((char_length(owner_type) >= 1) AND (char_length(owner_type) <= 40)))",
+      "table_name": "epiphany_asset_usages"
+    },
+    {
+      "name": "epiphany_asset_usages_pkey",
+      "type": "p",
+      "definition": "PRIMARY KEY (id)",
+      "table_name": "epiphany_asset_usages"
+    },
+    {
+      "name": "epiphany_asset_usages_role_check",
+      "type": "c",
+      "definition": "CHECK (((char_length(role) >= 1) AND (char_length(role) <= 60)))",
+      "table_name": "epiphany_asset_usages"
+    },
+    {
+      "name": "epiphany_assets_category_check",
+      "type": "c",
+      "definition": "CHECK ((category = ANY (ARRAY['characters'::text, 'stories'::text, 'world'::text, 'cards'::text, 'interface'::text, 'other'::text])))",
+      "table_name": "epiphany_assets"
+    },
+    {
+      "name": "epiphany_assets_created_by_fkey",
+      "type": "f",
+      "definition": "FOREIGN KEY (created_by) REFERENCES auth.users(id) ON DELETE RESTRICT",
+      "table_name": "epiphany_assets"
+    },
+    {
+      "name": "epiphany_assets_height_check",
+      "type": "c",
+      "definition": "CHECK (((height IS NULL) OR (height > 0)))",
+      "table_name": "epiphany_assets"
+    },
+    {
+      "name": "epiphany_assets_metadata_check",
+      "type": "c",
+      "definition": "CHECK ((jsonb_typeof(metadata) = 'object'::text))",
+      "table_name": "epiphany_assets"
+    },
+    {
+      "name": "epiphany_assets_mime_type_check",
+      "type": "c",
+      "definition": "CHECK ((mime_type = ANY (ARRAY['image/png'::text, 'image/jpeg'::text, 'image/webp'::text])))",
+      "table_name": "epiphany_assets"
+    },
+    {
+      "name": "epiphany_assets_original_name_check",
+      "type": "c",
+      "definition": "CHECK (((char_length(original_name) >= 1) AND (char_length(original_name) <= 255)))",
+      "table_name": "epiphany_assets"
+    },
+    {
+      "name": "epiphany_assets_pkey",
+      "type": "p",
+      "definition": "PRIMARY KEY (id)",
+      "table_name": "epiphany_assets"
+    },
+    {
+      "name": "epiphany_assets_size_bytes_check",
+      "type": "c",
+      "definition": "CHECK (((size_bytes > 0) AND (size_bytes <= 12582912)))",
+      "table_name": "epiphany_assets"
+    },
+    {
+      "name": "epiphany_assets_status_check",
+      "type": "c",
+      "definition": "CHECK ((status = ANY (ARRAY['unassigned'::text, 'linked'::text, 'published'::text, 'issue'::text, 'archived'::text])))",
+      "table_name": "epiphany_assets"
+    },
+    {
+      "name": "epiphany_assets_width_check",
+      "type": "c",
+      "definition": "CHECK (((width IS NULL) OR (width > 0)))",
+      "table_name": "epiphany_assets"
+    },
+    {
+      "name": "epiphany_card_image_views_fit_check",
+      "type": "c",
+      "definition": "CHECK ((fit = ANY (ARRAY['cover'::text, 'contain'::text])))",
+      "table_name": "epiphany_card_image_views"
+    },
+    {
+      "name": "epiphany_card_image_views_pkey",
+      "type": "p",
+      "definition": "PRIMARY KEY (character_id)",
+      "table_name": "epiphany_card_image_views"
+    },
+    {
+      "name": "epiphany_card_image_views_position_x_check",
+      "type": "c",
+      "definition": "CHECK (((position_x >= (0)::numeric) AND (position_x <= (100)::numeric)))",
+      "table_name": "epiphany_card_image_views"
+    },
+    {
+      "name": "epiphany_card_image_views_position_y_check",
+      "type": "c",
+      "definition": "CHECK (((position_y >= (0)::numeric) AND (position_y <= (100)::numeric)))",
+      "table_name": "epiphany_card_image_views"
+    },
+    {
+      "name": "epiphany_card_image_views_zoom_check",
+      "type": "c",
+      "definition": "CHECK (((zoom >= 0.5) AND (zoom <= 2.5)))",
+      "table_name": "epiphany_card_image_views"
+    },
+    {
+      "name": "epiphany_telemetry_details_size",
+      "type": "c",
+      "definition": "CHECK ((pg_column_size(details) <= 1024))",
+      "table_name": "epiphany_telemetry"
+    },
+    {
+      "name": "epiphany_telemetry_event_name_check",
+      "type": "c",
+      "definition": "CHECK ((event_name = ANY (ARRAY['session_start'::text, 'first_session_complete'::text, 'return_day_2'::text, 'return_day_7'::text, 'section_open'::text, 'section_exit'::text, 'client_error'::text, 'web_vital'::text])))",
+      "table_name": "epiphany_telemetry"
+    },
+    {
+      "name": "epiphany_telemetry_pkey",
+      "type": "p",
+      "definition": "PRIMARY KEY (id)",
+      "table_name": "epiphany_telemetry"
+    },
+    {
+      "name": "epiphany_telemetry_section_length",
+      "type": "c",
+      "definition": "CHECK (((section IS NULL) OR (length(section) <= 40)))",
+      "table_name": "epiphany_telemetry"
+    },
+    {
+      "name": "player_posts_body_check",
+      "type": "c",
+      "definition": "CHECK (((char_length(body) >= 1) AND (char_length(body) <= 500)))",
+      "table_name": "player_posts"
+    },
+    {
+      "name": "player_posts_pkey",
+      "type": "p",
+      "definition": "PRIMARY KEY (id)",
+      "table_name": "player_posts"
+    },
+    {
+      "name": "player_posts_user_id_fkey",
+      "type": "f",
+      "definition": "FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE",
+      "table_name": "player_posts"
+    },
+    {
+      "name": "player_profiles_accent_color_check",
+      "type": "c",
+      "definition": "CHECK ((accent_color ~ '^#[0-9A-Fa-f]{6}$'::text))",
+      "table_name": "player_profiles"
+    },
+    {
+      "name": "player_profiles_avatar_color_2_check",
+      "type": "c",
+      "definition": "CHECK ((avatar_color_2 ~ '^#[0-9A-Fa-f]{6}$'::text))",
+      "table_name": "player_profiles"
+    },
+    {
+      "name": "player_profiles_avatar_color_check",
+      "type": "c",
+      "definition": "CHECK ((avatar_color ~ '^#[0-9A-Fa-f]{6}$'::text))",
+      "table_name": "player_profiles"
+    },
+    {
+      "name": "player_profiles_avatar_frame_check",
+      "type": "c",
+      "definition": "CHECK ((avatar_frame = ANY (ARRAY['none'::text, 'gold'::text, 'stars'::text])))",
+      "table_name": "player_profiles"
+    },
+    {
+      "name": "player_profiles_banner_style_check",
+      "type": "c",
+      "definition": "CHECK ((banner_style = ANY (ARRAY['aurora'::text, 'sunset'::text, 'ocean'::text, 'pattern'::text])))",
+      "table_name": "player_profiles"
+    },
+    {
+      "name": "player_profiles_bio_check",
+      "type": "c",
+      "definition": "CHECK ((char_length(bio) <= 180))",
+      "table_name": "player_profiles"
+    },
+    {
+      "name": "player_profiles_display_name_check",
+      "type": "c",
+      "definition": "CHECK (((char_length(display_name) >= 1) AND (char_length(display_name) <= 32)))",
+      "table_name": "player_profiles"
+    },
+    {
+      "name": "player_profiles_pkey",
+      "type": "p",
+      "definition": "PRIMARY KEY (user_id)",
+      "table_name": "player_profiles"
+    },
+    {
+      "name": "player_profiles_user_id_fkey",
+      "type": "f",
+      "definition": "FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE",
+      "table_name": "player_profiles"
+    },
+    {
+      "name": "player_profiles_visibility_check",
+      "type": "c",
+      "definition": "CHECK ((visibility = ANY (ARRAY['public'::text, 'friends'::text, 'private'::text])))",
+      "table_name": "player_profiles"
+    },
+    {
+      "name": "player_progress_pkey",
+      "type": "p",
+      "definition": "PRIMARY KEY (user_id)",
+      "table_name": "player_progress"
+    },
+    {
+      "name": "player_progress_user_id_fkey",
+      "type": "f",
+      "definition": "FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE",
+      "table_name": "player_progress"
+    },
+    {
+      "name": "player_stories_genre_check",
+      "type": "c",
+      "definition": "CHECK ((char_length(genre) <= 40))",
+      "table_name": "player_stories"
+    },
+    {
+      "name": "player_stories_level_check",
+      "type": "c",
+      "definition": "CHECK ((level = ANY (ARRAY['A1'::text, 'A2'::text, 'B1'::text, 'B2'::text, 'C1'::text, 'C2'::text])))",
+      "table_name": "player_stories"
+    },
+    {
+      "name": "player_stories_pages_check",
+      "type": "c",
+      "definition": "CHECK ((jsonb_typeof(pages) = 'array'::text))",
+      "table_name": "player_stories"
+    },
+    {
+      "name": "player_stories_pkey",
+      "type": "p",
+      "definition": "PRIMARY KEY (id)",
+      "table_name": "player_stories"
+    },
+    {
+      "name": "player_stories_problem_check",
+      "type": "c",
+      "definition": "CHECK ((char_length(problem) <= 300))",
+      "table_name": "player_stories"
+    },
+    {
+      "name": "player_stories_reply_to_fkey",
+      "type": "f",
+      "definition": "FOREIGN KEY (reply_to) REFERENCES player_stories(id) ON DELETE SET NULL",
+      "table_name": "player_stories"
+    },
+    {
+      "name": "player_stories_title_check",
+      "type": "c",
+      "definition": "CHECK (((char_length(title) >= 1) AND (char_length(title) <= 100)))",
+      "table_name": "player_stories"
+    },
+    {
+      "name": "player_stories_user_id_fkey",
+      "type": "f",
+      "definition": "FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE",
+      "table_name": "player_stories"
+    },
+    {
+      "name": "player_stories_visibility_check",
+      "type": "c",
+      "definition": "CHECK ((visibility = ANY (ARRAY['private'::text, 'public'::text])))",
+      "table_name": "player_stories"
+    },
+    {
+      "name": "player_stories_word_count_check",
+      "type": "c",
+      "definition": "CHECK (((word_count >= 0) AND (word_count <= 10000)))",
+      "table_name": "player_stories"
+    }
+  ],
+  "public_policies": [
+    {
+      "name": "EPIPHANY developers manage asset files",
+      "check": "(lower(COALESCE(( SELECT (auth.jwt() ->> 'email'::text)), ''::text)) = ANY (ARRAY['<developer-email>'::text, '<developer-email>'::text, '<developer-email>'::text]))",
+      "roles": [
+        "authenticated"
+      ],
+      "using": "(lower(COALESCE(( SELECT (auth.jwt() ->> 'email'::text)), ''::text)) = ANY (ARRAY['<developer-email>'::text, '<developer-email>'::text, '<developer-email>'::text]))",
+      "command": "ALL",
+      "permissive": "PERMISSIVE",
+      "table_name": "epiphany_asset_files"
+    },
+    {
+      "name": "EPIPHANY developers manage asset usages",
+      "check": "(lower(COALESCE(( SELECT (auth.jwt() ->> 'email'::text)), ''::text)) = ANY (ARRAY['<developer-email>'::text, '<developer-email>'::text, '<developer-email>'::text]))",
+      "roles": [
+        "authenticated"
+      ],
+      "using": "(lower(COALESCE(( SELECT (auth.jwt() ->> 'email'::text)), ''::text)) = ANY (ARRAY['<developer-email>'::text, '<developer-email>'::text, '<developer-email>'::text]))",
+      "command": "ALL",
+      "permissive": "PERMISSIVE",
+      "table_name": "epiphany_asset_usages"
+    },
+    {
+      "name": "Published EPIPHANY asset usages are readable",
+      "check": "",
+      "roles": [
+        "anon",
+        "authenticated"
+      ],
+      "using": "(is_published = true)",
+      "command": "SELECT",
+      "permissive": "PERMISSIVE",
+      "table_name": "epiphany_asset_usages"
+    },
+    {
+      "name": "EPIPHANY developers manage assets",
+      "check": "(lower(COALESCE(( SELECT (auth.jwt() ->> 'email'::text)), ''::text)) = ANY (ARRAY['<developer-email>'::text, '<developer-email>'::text, '<developer-email>'::text]))",
+      "roles": [
+        "authenticated"
+      ],
+      "using": "(lower(COALESCE(( SELECT (auth.jwt() ->> 'email'::text)), ''::text)) = ANY (ARRAY['<developer-email>'::text, '<developer-email>'::text, '<developer-email>'::text]))",
+      "command": "ALL",
+      "permissive": "PERMISSIVE",
+      "table_name": "epiphany_assets"
+    },
+    {
+      "name": "Card image views are readable by everyone",
+      "check": "",
+      "roles": [
+        "anon",
+        "authenticated"
+      ],
+      "using": "true",
+      "command": "SELECT",
+      "permissive": "PERMISSIVE",
+      "table_name": "epiphany_card_image_views"
+    },
+    {
+      "name": "Developers can insert card image views",
+      "check": "( SELECT (lower(COALESCE((auth.jwt() ->> 'email'::text), ''::text)) = ANY (ARRAY['<developer-email>'::text, '<developer-email>'::text, '<developer-email>'::text])))",
+      "roles": [
+        "authenticated"
+      ],
+      "using": "",
+      "command": "INSERT",
+      "permissive": "PERMISSIVE",
+      "table_name": "epiphany_card_image_views"
+    },
+    {
+      "name": "Developers can update card image views",
+      "check": "( SELECT (lower(COALESCE((auth.jwt() ->> 'email'::text), ''::text)) = ANY (ARRAY['<developer-email>'::text, '<developer-email>'::text, '<developer-email>'::text])))",
+      "roles": [
+        "authenticated"
+      ],
+      "using": "( SELECT (lower(COALESCE((auth.jwt() ->> 'email'::text), ''::text)) = ANY (ARRAY['<developer-email>'::text, '<developer-email>'::text, '<developer-email>'::text])))",
+      "command": "UPDATE",
+      "permissive": "PERMISSIVE",
+      "table_name": "epiphany_card_image_views"
+    },
+    {
+      "name": "Allow constrained anonymous telemetry inserts",
+      "check": "(session_id IS NOT NULL)",
+      "roles": [
+        "anon",
+        "authenticated"
+      ],
+      "using": "",
+      "command": "INSERT",
+      "permissive": "PERMISSIVE",
+      "table_name": "epiphany_telemetry"
+    },
+    {
+      "name": "Players create their own posts",
+      "check": "(auth.uid() = user_id)",
+      "roles": [
+        "authenticated"
+      ],
+      "using": "",
+      "command": "INSERT",
+      "permissive": "PERMISSIVE",
+      "table_name": "player_posts"
+    },
+    {
+      "name": "Players delete their own posts",
+      "check": "",
+      "roles": [
+        "authenticated"
+      ],
+      "using": "(auth.uid() = user_id)",
+      "command": "DELETE",
+      "permissive": "PERMISSIVE",
+      "table_name": "player_posts"
+    },
+    {
+      "name": "player_posts_select_visible",
+      "check": "",
+      "roles": [
+        "anon",
+        "authenticated"
+      ],
+      "using": "((auth.uid() = user_id) OR (EXISTS ( SELECT 1\n   FROM player_profiles profile\n  WHERE ((profile.user_id = player_posts.user_id) AND (profile.is_private = false)))))",
+      "command": "SELECT",
+      "permissive": "PERMISSIVE",
+      "table_name": "player_posts"
+    },
+    {
+      "name": "Players create their own profile",
+      "check": "(auth.uid() = user_id)",
+      "roles": [
+        "authenticated"
+      ],
+      "using": "",
+      "command": "INSERT",
+      "permissive": "PERMISSIVE",
+      "table_name": "player_profiles"
+    },
+    {
+      "name": "Players update their own profile",
+      "check": "(auth.uid() = user_id)",
+      "roles": [
+        "authenticated"
+      ],
+      "using": "(auth.uid() = user_id)",
+      "command": "UPDATE",
+      "permissive": "PERMISSIVE",
+      "table_name": "player_profiles"
+    },
+    {
+      "name": "player_profiles_select_visible",
+      "check": "",
+      "roles": [
+        "anon",
+        "authenticated"
+      ],
+      "using": "((is_private = false) OR (auth.uid() = user_id))",
+      "command": "SELECT",
+      "permissive": "PERMISSIVE",
+      "table_name": "player_profiles"
+    },
+    {
+      "name": "Players can read their own progress",
+      "check": "",
+      "roles": [
+        "authenticated"
+      ],
+      "using": "(auth.uid() = user_id)",
+      "command": "SELECT",
+      "permissive": "PERMISSIVE",
+      "table_name": "player_progress"
+    },
+    {
+      "name": "Players can save their own progress",
+      "check": "(auth.uid() = user_id)",
+      "roles": [
+        "authenticated"
+      ],
+      "using": "",
+      "command": "INSERT",
+      "permissive": "PERMISSIVE",
+      "table_name": "player_progress"
+    },
+    {
+      "name": "Players can update their own progress",
+      "check": "(auth.uid() = user_id)",
+      "roles": [
+        "authenticated"
+      ],
+      "using": "(auth.uid() = user_id)",
+      "command": "UPDATE",
+      "permissive": "PERMISSIVE",
+      "table_name": "player_progress"
+    },
+    {
+      "name": "Players can create own stories",
+      "check": "(( SELECT auth.uid() AS uid) = user_id)",
+      "roles": [
+        "authenticated"
+      ],
+      "using": "",
+      "command": "INSERT",
+      "permissive": "PERMISSIVE",
+      "table_name": "player_stories"
+    },
+    {
+      "name": "Players can delete own stories",
+      "check": "",
+      "roles": [
+        "authenticated"
+      ],
+      "using": "(( SELECT auth.uid() AS uid) = user_id)",
+      "command": "DELETE",
+      "permissive": "PERMISSIVE",
+      "table_name": "player_stories"
+    },
+    {
+      "name": "Players can read own or public stories",
+      "check": "",
+      "roles": [
+        "authenticated"
+      ],
+      "using": "((( SELECT auth.uid() AS uid) = user_id) OR (visibility = 'public'::text))",
+      "command": "SELECT",
+      "permissive": "PERMISSIVE",
+      "table_name": "player_stories"
+    },
+    {
+      "name": "Players can update own stories",
+      "check": "(( SELECT auth.uid() AS uid) = user_id)",
+      "roles": [
+        "authenticated"
+      ],
+      "using": "(( SELECT auth.uid() AS uid) = user_id)",
+      "command": "UPDATE",
+      "permissive": "PERMISSIVE",
+      "table_name": "player_stories"
+    }
+  ],
+  "storage_buckets": [
+    {
+      "id": "character-art",
+      "public": true,
+      "file_size_limit": 12582912,
+      "allowed_mime_types": [
+        "image/png",
+        "image/jpeg",
+        "image/webp"
+      ]
+    },
+    {
+      "id": "epiphany-assets",
+      "public": true,
+      "file_size_limit": 12582912,
+      "allowed_mime_types": [
+        "image/png",
+        "image/jpeg",
+        "image/webp"
+      ]
+    },
+    {
+      "id": "epiphany-assets-private",
+      "public": false,
+      "file_size_limit": 12582912,
+      "allowed_mime_types": [
+        "image/png",
+        "image/jpeg",
+        "image/webp"
+      ]
+    },
+    {
+      "id": "player-avatars",
+      "public": true,
+      "file_size_limit": 3145728,
+      "allowed_mime_types": [
+        "image/png",
+        "image/jpeg",
+        "image/webp"
+      ]
+    }
+  ],
+  "storage_policies": [
+    {
+      "name": "Avatar images are publicly viewable",
+      "check": "",
+      "roles": [
+        "public"
+      ],
+      "using": "(bucket_id = 'player-avatars'::text)",
+      "command": "SELECT",
+      "permissive": "PERMISSIVE"
+    },
+    {
+      "name": "Developer accounts can inspect character art objects",
+      "check": "",
+      "roles": [
+        "authenticated"
+      ],
+      "using": "((bucket_id = 'character-art'::text) AND (lower(COALESCE(( SELECT (auth.jwt() ->> 'email'::text)), ''::text)) = ANY (ARRAY['<developer-email>'::text, '<developer-email>'::text, '<developer-email>'::text])))",
+      "command": "SELECT",
+      "permissive": "PERMISSIVE"
+    },
+    {
+      "name": "Developer accounts can replace character art",
+      "check": "((bucket_id = 'character-art'::text) AND (lower(COALESCE(( SELECT (auth.jwt() ->> 'email'::text)), ''::text)) = ANY (ARRAY['<developer-email>'::text, '<developer-email>'::text, '<developer-email>'::text])))",
+      "roles": [
+        "authenticated"
+      ],
+      "using": "((bucket_id = 'character-art'::text) AND (lower(COALESCE(( SELECT (auth.jwt() ->> 'email'::text)), ''::text)) = ANY (ARRAY['<developer-email>'::text, '<developer-email>'::text, '<developer-email>'::text])))",
+      "command": "UPDATE",
+      "permissive": "PERMISSIVE"
+    },
+    {
+      "name": "Developer accounts can upload character art",
+      "check": "((bucket_id = 'character-art'::text) AND (lower(COALESCE(( SELECT (auth.jwt() ->> 'email'::text)), ''::text)) = ANY (ARRAY['<developer-email>'::text, '<developer-email>'::text, '<developer-email>'::text])))",
+      "roles": [
+        "authenticated"
+      ],
+      "using": "",
+      "command": "INSERT",
+      "permissive": "PERMISSIVE"
+    },
+    {
+      "name": "EPIPHANY developers delete character art",
+      "check": "",
+      "roles": [
+        "authenticated"
+      ],
+      "using": "((bucket_id = 'character-art'::text) AND (lower(COALESCE(( SELECT (auth.jwt() ->> 'email'::text)), ''::text)) = ANY (ARRAY['<developer-email>'::text, '<developer-email>'::text, '<developer-email>'::text])))",
+      "command": "DELETE",
+      "permissive": "PERMISSIVE"
+    },
+    {
+      "name": "EPIPHANY developers delete private assets",
+      "check": "",
+      "roles": [
+        "authenticated"
+      ],
+      "using": "((bucket_id = 'epiphany-assets-private'::text) AND (lower(COALESCE(( SELECT (auth.jwt() ->> 'email'::text)), ''::text)) = ANY (ARRAY['<developer-email>'::text, '<developer-email>'::text, '<developer-email>'::text])))",
+      "command": "DELETE",
+      "permissive": "PERMISSIVE"
+    },
+    {
+      "name": "EPIPHANY developers delete published assets",
+      "check": "",
+      "roles": [
+        "authenticated"
+      ],
+      "using": "((bucket_id = 'epiphany-assets'::text) AND (lower(COALESCE(( SELECT (auth.jwt() ->> 'email'::text)), ''::text)) = ANY (ARRAY['<developer-email>'::text, '<developer-email>'::text, '<developer-email>'::text])))",
+      "command": "DELETE",
+      "permissive": "PERMISSIVE"
+    },
+    {
+      "name": "EPIPHANY developers list published assets",
+      "check": "",
+      "roles": [
+        "authenticated"
+      ],
+      "using": "((bucket_id = 'epiphany-assets'::text) AND (lower(COALESCE(( SELECT (auth.jwt() ->> 'email'::text)), ''::text)) = ANY (ARRAY['<developer-email>'::text, '<developer-email>'::text, '<developer-email>'::text])))",
+      "command": "SELECT",
+      "permissive": "PERMISSIVE"
+    },
+    {
+      "name": "EPIPHANY developers read private assets",
+      "check": "",
+      "roles": [
+        "authenticated"
+      ],
+      "using": "((bucket_id = 'epiphany-assets-private'::text) AND (lower(COALESCE(( SELECT (auth.jwt() ->> 'email'::text)), ''::text)) = ANY (ARRAY['<developer-email>'::text, '<developer-email>'::text, '<developer-email>'::text])))",
+      "command": "SELECT",
+      "permissive": "PERMISSIVE"
+    },
+    {
+      "name": "EPIPHANY developers update private assets",
+      "check": "((bucket_id = 'epiphany-assets-private'::text) AND (lower(COALESCE(( SELECT (auth.jwt() ->> 'email'::text)), ''::text)) = ANY (ARRAY['<developer-email>'::text, '<developer-email>'::text, '<developer-email>'::text])))",
+      "roles": [
+        "authenticated"
+      ],
+      "using": "((bucket_id = 'epiphany-assets-private'::text) AND (lower(COALESCE(( SELECT (auth.jwt() ->> 'email'::text)), ''::text)) = ANY (ARRAY['<developer-email>'::text, '<developer-email>'::text, '<developer-email>'::text])))",
+      "command": "UPDATE",
+      "permissive": "PERMISSIVE"
+    },
+    {
+      "name": "EPIPHANY developers update published assets",
+      "check": "((bucket_id = 'epiphany-assets'::text) AND (lower(COALESCE(( SELECT (auth.jwt() ->> 'email'::text)), ''::text)) = ANY (ARRAY['<developer-email>'::text, '<developer-email>'::text, '<developer-email>'::text])))",
+      "roles": [
+        "authenticated"
+      ],
+      "using": "((bucket_id = 'epiphany-assets'::text) AND (lower(COALESCE(( SELECT (auth.jwt() ->> 'email'::text)), ''::text)) = ANY (ARRAY['<developer-email>'::text, '<developer-email>'::text, '<developer-email>'::text])))",
+      "command": "UPDATE",
+      "permissive": "PERMISSIVE"
+    },
+    {
+      "name": "EPIPHANY developers upload private assets",
+      "check": "((bucket_id = 'epiphany-assets-private'::text) AND (lower(COALESCE(( SELECT (auth.jwt() ->> 'email'::text)), ''::text)) = ANY (ARRAY['<developer-email>'::text, '<developer-email>'::text, '<developer-email>'::text])))",
+      "roles": [
+        "authenticated"
+      ],
+      "using": "",
+      "command": "INSERT",
+      "permissive": "PERMISSIVE"
+    },
+    {
+      "name": "EPIPHANY developers upload published assets",
+      "check": "((bucket_id = 'epiphany-assets'::text) AND (lower(COALESCE(( SELECT (auth.jwt() ->> 'email'::text)), ''::text)) = ANY (ARRAY['<developer-email>'::text, '<developer-email>'::text, '<developer-email>'::text])))",
+      "roles": [
+        "authenticated"
+      ],
+      "using": "",
+      "command": "INSERT",
+      "permissive": "PERMISSIVE"
+    },
+    {
+      "name": "Players delete their own avatar",
+      "check": "",
+      "roles": [
+        "authenticated"
+      ],
+      "using": "((bucket_id = 'player-avatars'::text) AND ((storage.foldername(name))[1] = (auth.uid())::text))",
+      "command": "DELETE",
+      "permissive": "PERMISSIVE"
+    },
+    {
+      "name": "Players update their own avatar",
+      "check": "((bucket_id = 'player-avatars'::text) AND ((storage.foldername(name))[1] = (auth.uid())::text))",
+      "roles": [
+        "authenticated"
+      ],
+      "using": "((bucket_id = 'player-avatars'::text) AND ((storage.foldername(name))[1] = (auth.uid())::text))",
+      "command": "UPDATE",
+      "permissive": "PERMISSIVE"
+    },
+    {
+      "name": "Players upload their own avatar",
+      "check": "((bucket_id = 'player-avatars'::text) AND ((storage.foldername(name))[1] = (auth.uid())::text))",
+      "roles": [
+        "authenticated"
+      ],
+      "using": "",
+      "command": "INSERT",
+      "permissive": "PERMISSIVE"
+    }
+  ]
+}
