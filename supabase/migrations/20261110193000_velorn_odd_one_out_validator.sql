@@ -215,6 +215,8 @@ REVOKE ALL ON FUNCTION economy_private.start_odd_one_out_session(uuid,uuid,text,
   FROM PUBLIC, anon, authenticated, service_role;
 REVOKE ALL ON FUNCTION public.velorn_start_odd_one_out_session(uuid,uuid,text,text,text,jsonb,timestamptz)
   FROM PUBLIC, anon, authenticated, service_role;
+GRANT EXECUTE ON FUNCTION economy_private.start_odd_one_out_session(uuid,uuid,text,text,text,jsonb,timestamptz)
+  TO service_role;
 GRANT EXECUTE ON FUNCTION public.velorn_start_odd_one_out_session(uuid,uuid,text,text,text,jsonb,timestamptz)
   TO service_role;
 
@@ -222,6 +224,8 @@ REVOKE ALL ON FUNCTION economy_private.submit_odd_one_out_answer(uuid,uuid,integ
   FROM PUBLIC, anon, authenticated, service_role;
 REVOKE ALL ON FUNCTION public.velorn_submit_odd_one_out_answer(uuid,uuid,integer,integer)
   FROM PUBLIC, anon, authenticated, service_role;
+GRANT EXECUTE ON FUNCTION economy_private.submit_odd_one_out_answer(uuid,uuid,integer,integer)
+  TO service_role;
 GRANT EXECUTE ON FUNCTION public.velorn_submit_odd_one_out_answer(uuid,uuid,integer,integer)
   TO service_role;
 
