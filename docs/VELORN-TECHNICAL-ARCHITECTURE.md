@@ -1,6 +1,6 @@
 # Velorn Economy — Technical Architecture
 
-> **Status:** Approved architecture. Phase 1 wallet/ledger foundation is deployed and verified on hosted Supabase. The Phase 2 normalized-event and claim-record foundation is committed to `main`; its clean-room CI gate is pending and it has not been deployed. No reward issuance, website integration, balance imports, or economy activation is enabled.
+> **Status (2026-11-10):** Approved architecture. Phase 1 wallet/ledger and Phase 2 normalized-event/claim-record foundations are deployed and verified on hosted Supabase. Phase 3 is beginning with a repository-wide trust and validator inventory; no game validator, mission progress writer, reward claim writer, player balance read, reward issuance, balance import, or economy activation is enabled.
 
 ## 1. Purpose and design constraints
 
