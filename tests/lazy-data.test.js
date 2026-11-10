@@ -91,9 +91,9 @@ test('feature data loader does not request large datasets until requested', asyn
   await assert.rejects(context.window.EPIPHANY_LAZY_LOAD('directions'), /Unknown feature data group/, 'the standalone Directions loader is retired; its bank loads only with Fluentia');
 
   await context.window.EPIPHANY_LAZY_LOAD('expansionVocabulary');
-  assert.deepEqual(requested.slice(28).map(src => src.split('?')[0]), ['data-expansion-translations.js','data-expansion-runtime.js','data-expansion-wotd.js','data-expansion-vocabulary.js']);
+  assert.deepEqual(requested.slice(27).map(src => src.split('?')[0]), ['data-expansion-translations.js','data-expansion-runtime.js','data-expansion-wotd.js','data-expansion-vocabulary.js']);
   await context.window.EPIPHANY_LAZY_LOAD('expansionGrammar');
-  assert.deepEqual(requested.slice(32).map(src => src.split('?')[0]), ['data-expansion-grammar.js'], 'other game banks should remain unloaded');
+  assert.deepEqual(requested.slice(31).map(src => src.split('?')[0]), ['data-expansion-grammar.js'], 'other game banks should remain unloaded');
   assert.equal(fluentiaRegistrations, 3);
 });
 
@@ -621,12 +621,12 @@ test('background optional loads pause while constrained, resume once, and never 
   policy = { ...policy, allowSpeculativePreload: false, deferNonEssentialWork: true };
   const explicit = context.window.EPIPHANY_LAZY_LOAD('world');
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[16].split('?')[0], 'data-world.js',
+  assert.equal(requested[15].split('?')[0], 'data-world.js',
     'explicit navigation must bypass background deferral');
-  scripts[16].onload();
+  scripts[15].onload();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[17].split('?')[0], 'data-world-sprites.js');
-  scripts[17].onload();
+  assert.equal(requested[16].split('?')[0], 'data-world-sprites.js');
+  scripts[16].onload();
   await explicit;
 });
 
