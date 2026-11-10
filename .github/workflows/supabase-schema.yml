@@ -29,6 +29,16 @@ jobs:
         run: |
           supabase --version
           test "$(supabase --version)" = "3.1.0"
+      - name: Disable automatic migration replay until the legacy foundation exists
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('supabase/config.toml')
+          s = p.read_text()
+          s = s.replace('[db.migrations]\nenabled = true', '[db.migrations]\nenabled = false')
+          p.write_text(s)
+          PY
+
       - name: Start disposable local Supabase stack
         timeout-minutes: 15
         run: supabase start -x studio,mail,analytics,functions,realtime,pooler
@@ -42,6 +52,13 @@ jobs:
           eval "$(supabase status -o env)"
           test -n "$DB_URL"
           psql "$DB_URL" -v ON_ERROR_STOP=1 -f supabase/bootstrap/legacy_foundation.sql
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('supabase/config.toml')
+          s = p.read_text()
+          s = s.replace('[db.migrations]\nenabled = false', '[db.migrations]\nenabled = true')
+          p.write_text(s)
+          PY
           supabase migration up
       - name: Assert clean-room schema
         timeout-minutes: 5
