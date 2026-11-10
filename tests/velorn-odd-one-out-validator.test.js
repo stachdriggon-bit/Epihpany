@@ -34,6 +34,8 @@ test("Edge Function authenticates the bearer token and never trusts a client use
   assert.match(edge, /auth\.getUser\(token\)/);
   assert.match(edge, /const userId = authData\.user\.id/);
   assert.match(edge, /SUPABASE_SERVICE_ROLE_KEY/);
+  assert.match(edge, /npm:@supabase\/supabase-js@2\.119\.0/);
+  assert.match(edge, /p_cefr_level: level/);
   assert.doesNotMatch(edge, /body\.userId|body\.rewardAmount|body\.correctCount/);
 });
 
