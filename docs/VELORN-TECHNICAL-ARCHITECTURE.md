@@ -1,6 +1,6 @@
 # Velorn Economy — Technical Architecture
 
-> **Status:** Architecture proposal approved for review and implementation planning. This document describes the target technical design only. It does not create database objects, deploy functions, change the website, migrate player balances, or activate rewards.
+> **Status:** Approved architecture with Phase 1 implementation committed to `main`. The Phase 1 migration and rollback-only PostgreSQL smoke test are in place; clean-room CI is the production gate. No production schema changes, website changes, balance imports, or reward activation have been performed.
 
 ## 1. Purpose and design constraints
 
@@ -58,7 +58,7 @@ No Velorn wallet, economy ledger, mission assignment, achievement-award, card in
 
 The inspected RLS policies restrict `player_progress` reads and writes to the owning authenticated user. That is appropriate for learning progress, but it does not provide the transaction, reward-validation, or concurrency guarantees required by an economy.
 
-The current hosted migration list contains nine entries, primarily privacy, story, and Asset Manager changes. The repository also contains root-level SQL setup files, and the checked migration list does not provide a complete versioned baseline for every existing table (including the progress/profile foundation). **Before the first economy migration, reconcile the repository's migration history with the live schema.** Do not assume the live database can safely be recreated from the current migration directory.
+Phase 0 schema reconciliation is complete. All nine hosted migration versions have matching repository files; three are explicitly labelled best-evidence reconstructions. A disposable local replay, schema assertions, and exact redacted catalog comparison passed. The Phase 1 migration is now committed in `main`, but has not yet been applied to production. The hosted database remains unchanged until its clean-room Phase 1 assertions pass.
 
 ## 3. Target architecture at a glance
 
@@ -233,7 +233,7 @@ Use a small API surface rather than exposing tables as a general-purpose economy
 
 Names are illustrative, not final function signatures.
 
-Atomic database routines should perform wallet credit/debit and related writes. A public RPC wrapper, if used, should be a narrow `SECURITY INVOKER` entry point. Any internal privileged routine must live in the non-exposed schema, explicitly validate `auth.uid()`, use a fixed empty or tightly controlled `search_path`, schema-qualify referenced objects, and have EXECUTE revoked from PUBLIC/anon. Grant only the exact required execution rights to authenticated users. Do not create a broadly callable `SECURITY DEFINER` function in the exposed schema.
+Atomic database routines perform wallet credit/debit and related writes. Phase 1 uses narrow public RPC wrappers with `SECURITY INVOKER`, executable only by `service_role`; their implementations live in the non-exposed `economy_private` schema, use a fixed empty `search_path`, schema-qualify referenced objects, and independently require the trusted `service_role` JWT claim. The service role has schema usage and exact function execution rights but no direct table privileges. No player or browser role can call these routines. When Phase 2 introduces player-facing operations, the server must authenticate the caller and derive the player ID from the verified Auth identity; never trust a client-supplied user ID. Do not create a broadly callable `SECURITY DEFINER` function in the exposed schema.
 
 Where an Edge Function is used, it must authenticate the request with the user's verified Supabase identity. The service-role key may exist only in server-side function secrets, never in the PWA. The Edge Function is not allowed to accept a user ID or reward amount as proof of authority.
 
@@ -270,7 +270,7 @@ The free daily pack uses a separate unique user/period claim and does not debit 
 - Keep all economy tables in a non-exposed schema; do not grant direct table access to `anon` or `authenticated`.
 - Enable RLS on every table as defense in depth, even in the private schema. Policies must match the intended service access model.
 - The only player-facing identity is `auth.uid()`. Never authorize using editable `user_metadata`; any staff permission must be stored in trusted server-managed app metadata or another protected authorization table.
-- Revoke default PUBLIC function execution and explicitly grant only required functions to authenticated users.
+- Revoke default PUBLIC function execution and explicitly grant only the Phase 1 server-side wrapper execution rights to `service_role`; player-facing grants require a separate reviewed API design.
 - No service-role key in HTML, JavaScript, localStorage, or client configuration.
 - Use foreign keys, unique constraints, CHECK constraints, and non-null columns to enforce invariants in the database, not only in JavaScript.
 - Use `bigint` for whole-number currency; no floating-point currency arithmetic.
@@ -340,18 +340,18 @@ The existing site supports guest learning, while the proposed wallet is account-
 
 Do not implement all components in one production migration. The economy is a financial-like integrity boundary and should be introduced behind a disabled feature flag.
 
-### Phase 0 — schema and migration reconciliation
-- Compare the live EPIPHANY database schema, policies, grants, functions, and migration history with repository SQL and migrations.
-- Establish a reproducible baseline for existing tables without dropping or rewriting player data.
-- Confirm the Data API exposed schemas and function grants.
-- Record current Auth identity behavior and guest-to-account flow.
-- No economy tables or behavior are changed in this phase.
+### Phase 0 — schema and migration reconciliation — COMPLETE
+- Reconcile the live schema, policies, grants, functions, and hosted migration history with repository SQL.
+- Establish the local-only legacy foundation and redacted live catalog reference.
+- Replay all nine hosted migrations in a disposable Supabase stack and compare the resulting catalog exactly.
+- Preserve production data and leave the hosted database unchanged.
 
-### Phase 1 — private wallet and ledger foundation
-- Create the private schema, wallet, ledger, configuration-version, and narrow read/write functions.
-- Add RLS, explicit grants/revokes, constraints, indexes, and append-only protections.
-- Add wallet/ledger reconciliation checks.
-- Keep the wallet feature disabled; no automatic grants and no user-facing balance yet.
+### Phase 1 — private wallet and ledger foundation — IMPLEMENTED IN REPOSITORY
+- Create `economy_private`, immutable configuration versions, disabled economy settings, one-wallet-per-account storage, and an append-only signed ledger.
+- Add RLS and FORCE RLS, no direct table grants, service-role-only RPC wrappers, constraints, indexes, idempotency, and atomic wallet-row locking.
+- Add snapshot and reconciliation routines.
+- Keep `economy_enabled = false`; wallets are lazy-created only for an accepted trusted transaction. No automatic grants, player-facing balance, browser integration, or Card Portal behavior.
+- Run Phase 1 assertions in the clean-room workflow. Production application remains gated on that workflow passing.
 
 ### Phase 2 — normalized events and reward claims
 - Define and test the normalized event contract.
@@ -371,7 +371,7 @@ Do not implement all components in one production migration. The economy is a fi
 - Enable for a controlled test cohort, monitor ledger reconciliation, duplicate claims, validation rejection, transaction latency, and mission completion rates.
 - Expand only after the security and economy acceptance criteria pass.
 
-Each phase needs its own migration, tests, rollback plan, and documented verification. Do not run a production migration or deploy an Edge Function as part of this architecture-only stage.
+Each phase needs its own migration, tests, rollback plan, and documented verification. Phase 1 is database-only. Do not deploy an Edge Function, change the PWA, expose player balances, or enable the economy as part of this phase.
 
 ## 11. Required acceptance tests
 
@@ -426,14 +426,15 @@ No value in this list should be silently inferred from the old local token proto
 
 ## 13. Implementation boundary
 
-This architecture is a design artifact only. At this stage:
-- No SQL migration has been applied.
-- No Supabase table, policy, RPC, or Edge Function has been created or changed.
-- No website JavaScript, HTML, or CSS has been changed.
+Phase 1 implementation status:
+- The versioned wallet/ledger migration and dedicated SQL assertions are committed to `main`.
+- A rollback-only transaction smoke test against the connected PostgreSQL 17.11 project passed; the test transaction was rolled back and a follow-up read confirmed no persistent economy schema or RPC was created.
+- Clean-room GitHub Actions verification remains the gate before applying the migration to production.
+- No production wallet, ledger, or configuration objects have been persisted; no Edge Function or website code has been changed.
 - No local token balance, card inventory, or Shards balance has been migrated.
-- No reward or Card Portal price has been activated.
+- No reward, draw, or player-facing balance has been activated.
 
-Phase 0 is complete. The next implementation task is **Phase 1: private wallet and append-only ledger foundation**, with the economy feature flag disabled and no automatic grants or user-facing balance.
+The next step is to obtain a green clean-room Phase 1 workflow, then apply and verify the additive migration on the hosted project while keeping the economy disabled.
 
 
 ## 14. Phase 0 schema reconciliation
