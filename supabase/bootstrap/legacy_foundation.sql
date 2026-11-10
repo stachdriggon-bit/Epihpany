@@ -114,8 +114,8 @@ CREATE TABLE IF NOT EXISTS public.epiphany_card_image_views (
  position_x numeric(5,2) NOT NULL DEFAULT 50 CHECK (position_x BETWEEN 0 AND 100),
  position_y numeric(5,2) NOT NULL DEFAULT 32 CHECK (position_y BETWEEN 0 AND 100),
  zoom numeric(4,3) NOT NULL DEFAULT 1 CHECK (zoom BETWEEN 0.5 AND 2.5),
- fit text NOT NULL DEFAULT 'cover' CHECK (fit IN ('cover','contain')),
- updated_at timestamptz NOT NULL DEFAULT now()
+ updated_at timestamptz NOT NULL DEFAULT now(),
+ fit text NOT NULL DEFAULT 'cover' CHECK (fit IN ('cover','contain'))
 );
 ALTER TABLE public.epiphany_card_image_views ENABLE ROW LEVEL SECURITY;
 REVOKE ALL ON TABLE public.epiphany_card_image_views FROM anon,authenticated;
