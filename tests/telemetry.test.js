@@ -28,8 +28,8 @@ test('anonymous telemetry is opt-in and uses only coarse learning events', () =>
   const telemetrySql = fs.readFileSync(path.join(root, 'supabase/bootstrap/legacy_foundation.sql'), 'utf8');
   assert.match(telemetrySql, /'web_vital'/);
   assert.match(telemetrySql, /event_name text not null check/i);
-  assert.match(telemetrySql, /details jsonb not null default '\\{\\}'::jsonb check/i);
-  assert.match(telemetrySql, /grant insert on public\\.epiphany_telemetry to anon,authenticated/i);
+  assert.ok(telemetrySql.includes("details jsonb not null default '{}'::jsonb check"));
+  assert.ok(telemetrySql.includes('GRANT INSERT ON public.epiphany_telemetry TO anon,authenticated;'));
   assert.match(html, /id="anonymous-telemetry"/);
   assert.doesNotMatch(script, /\.from\(['"]player_progress['"]\)/);
   assert.doesNotMatch(script, /safeDetails\.message = String\(details\.message/);
