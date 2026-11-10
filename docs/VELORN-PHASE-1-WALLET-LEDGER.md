@@ -56,7 +56,7 @@ The feature flag is controlled by a database administrator through the private s
 - Rejection of ledger UPDATE and DELETE.
 - Disabling the economy again and confirming that no further transaction is accepted.
 
-The SQL migration and test script were executed together inside an explicit transaction against the connected project, followed by `ROLLBACK`. The test passed after correcting a PL/pgSQL name ambiguity. A follow-up read confirmed that the private schema and public RPC wrapper do not exist in production and the hosted migration history remains at the original nine entries. This was a syntax/behavior smoke test only; it did not replace the clean-room CI run.
+The SQL migration and sequential contract test were executed together inside an explicit transaction against the connected project, followed by `ROLLBACK`. The test passed after correcting a PL/pgSQL name ambiguity. A follow-up read confirmed that the private schema and public RPC wrapper do not exist in production and the hosted migration history remains at the original nine entries. The clean-room workflow also now runs two real concurrent identical credits and two concurrent debits that compete for an insufficient balance, then verifies the final balance and ledger count. This concurrency test runs only on the disposable local Supabase stack.
 
 ## Production gate
 
