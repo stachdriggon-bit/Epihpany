@@ -709,6 +709,7 @@
     openAccountMode: openAccountFromWelcome,
     isWelcomeOpen: () => !!($('account-welcome-modal') && !$('account-welcome-modal').hidden),
     isSignedIn: () => !!currentUser,
+    getValidatorClient: () => currentUser ? client : null,
     whenReady: () => authReadyPromise,
     queueSave(progress) {
       if (!client || !currentUser) return;
