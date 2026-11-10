@@ -257,7 +257,7 @@ BEGIN
 
   INSERT INTO economy_private.wallets (user_id)
   VALUES (p_user_id)
-  ON CONFLICT (user_id) DO NOTHING;
+  ON CONFLICT ON CONSTRAINT wallets_user_id_key DO NOTHING;
 
   SELECT w.wallet_id, w.balance
     INTO v_wallet_id, v_balance
