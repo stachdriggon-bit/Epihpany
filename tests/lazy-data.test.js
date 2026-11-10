@@ -78,15 +78,15 @@ test('feature data loader does not request large datasets until requested', asyn
   ]);
   assert.ok(requested.slice(4).every(src => /\?v=.+/.test(src)));
   await context.window.EPIPHANY_LAZY_LOAD('arabic');
-  assert.deepEqual(requested.slice(24).map(src => src.split('?')[0]), [
+  assert.deepEqual(requested.slice(23).map(src => src.split('?')[0]), [
     'data-translation-ar.js',
     'data-translation-ar-fill.js'
   ]);
-  assert.ok(requested.slice(24).every(src => /\?v=.+/.test(src)));
+  assert.ok(requested.slice(23).every(src => /\?v=.+/.test(src)));
   assert.deepEqual(merged, [true]);
   await context.window.EPIPHANY_LAZY_LOAD('chronicle');
-  assert.deepEqual(requested.slice(26).map(src => src.split('?')[0]), ['data-world-registry.js', 'data-world-events.js']);
-  assert.ok(requested.slice(24).every(src => /\?v=.+/.test(src)));
+  assert.deepEqual(requested.slice(25).map(src => src.split('?')[0]), ['data-world-registry.js', 'data-world-events.js']);
+  assert.ok(requested.slice(23).every(src => /\?v=.+/.test(src)));
 
   await assert.rejects(context.window.EPIPHANY_LAZY_LOAD('directions'), /Unknown feature data group/, 'the standalone Directions loader is retired; its bank loads only with Fluentia');
 
@@ -415,11 +415,11 @@ test('optional lazy loads respect the adaptive concurrency limit', async () => {
   assert.equal(requested[12].split('?')[0], 'codebreaker.js');
   scripts[12].onload();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[14].split('?')[0], 'letter-grid-bank.js');
-  scripts[14].onload();
+  assert.equal(requested[13].split('?')[0], 'letter-grid-bank.js');
+  scripts[13].onload();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[15].split('?')[0], 'letter-grid.js');
-  scripts[15].onload();
+  assert.equal(requested[14].split('?')[0], 'letter-grid.js');
+  scripts[14].onload();
 
 });
 
@@ -502,11 +502,11 @@ test('explicit navigation bypasses and promotes queued optional loads', async ()
   assert.equal(requested[12].split('?')[0], 'codebreaker.js');
   scripts[12].onload();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[14].split('?')[0], 'letter-grid-bank.js');
-  scripts[14].onload();
+  assert.equal(requested[13].split('?')[0], 'letter-grid-bank.js');
+  scripts[13].onload();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[15].split('?')[0], 'letter-grid.js');
-  scripts[15].onload();
+  assert.equal(requested[14].split('?')[0], 'letter-grid.js');
+  scripts[14].onload();
 
   await explicit;
   scripts[0].onload();
@@ -610,11 +610,11 @@ test('background optional loads pause while constrained, resume once, and never 
   assert.equal(requested[12].split('?')[0], 'codebreaker.js');
   scripts[12].onload();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[14].split('?')[0], 'letter-grid-bank.js');
-  scripts[14].onload();
+  assert.equal(requested[13].split('?')[0], 'letter-grid-bank.js');
+  scripts[13].onload();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[15].split('?')[0], 'letter-grid.js');
-  scripts[15].onload();
+  assert.equal(requested[14].split('?')[0], 'letter-grid.js');
+  scripts[14].onload();
 
   await new Promise(resolve => setImmediate(resolve));
 
