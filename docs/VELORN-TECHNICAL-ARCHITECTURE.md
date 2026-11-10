@@ -58,7 +58,7 @@ No Velorn wallet, economy ledger, mission assignment, achievement-award, card in
 
 The inspected RLS policies restrict `player_progress` reads and writes to the owning authenticated user. That is appropriate for learning progress, but it does not provide the transaction, reward-validation, or concurrency guarantees required by an economy.
 
-Phase 0 schema reconciliation is complete. All nine hosted migration versions have matching repository files; three are explicitly labelled best-evidence reconstructions. A disposable local replay, schema assertions, and exact redacted catalog comparison passed. The Phase 1 migration is now committed in `main`, but has not yet been applied to production. The hosted database remains unchanged until its clean-room Phase 1 assertions pass.
+Phase 0 schema reconciliation is complete. All nine hosted migration versions have matching repository files; three are explicitly labelled best-evidence reconstructions. A disposable local replay, schema assertions, and exact redacted catalog comparison passed. The Phase 1 migration is committed in `main`, clean-room GitHub Actions passed, and the migration has been applied to the hosted database as version `20261110183311`.
 
 ## 3. Target architecture at a glance
 
@@ -351,7 +351,7 @@ Do not implement all components in one production migration. The economy is a fi
 - Add RLS and FORCE RLS, no direct table grants, service-role-only RPC wrappers, constraints, indexes, idempotency, and atomic wallet-row locking.
 - Add snapshot and reconciliation routines.
 - Keep `economy_enabled = false`; wallets are lazy-created only for an accepted trusted transaction. No automatic grants, player-facing balance, browser integration, or Card Portal behavior.
-- Run Phase 1 assertions in the clean-room workflow. Production application remains gated on that workflow passing.
+- The clean-room Phase 1 assertions passed. The hosted migration is applied; post-deployment checks confirmed the disabled setting, empty wallets/ledger, private schema permissions, forced RLS, append-only triggers, and service-role-only RPC execution.
 
 ### Phase 2 — normalized events and reward claims
 - Define and test the normalized event contract.
@@ -429,12 +429,12 @@ No value in this list should be silently inferred from the old local token proto
 Phase 1 implementation status:
 - The versioned wallet/ledger migration and dedicated SQL assertions are committed to `main`.
 - A rollback-only transaction smoke test against the connected PostgreSQL 17.11 project passed; the test transaction was rolled back and a follow-up read confirmed no persistent economy schema or RPC was created.
-- Clean-room GitHub Actions verification remains the gate before applying the migration to production.
+- Clean-room GitHub Actions passed before deployment; the migration was applied and verified on the hosted Supabase project.
 - No production wallet, ledger, or configuration objects have been persisted; no Edge Function or website code has been changed.
 - No local token balance, card inventory, or Shards balance has been migrated.
 - No reward, draw, or player-facing balance has been activated.
 
-The next step is to obtain a green clean-room Phase 1 workflow, then apply and verify the additive migration on the hosted project while keeping the economy disabled.
+Phase 1 is now deployed and verified on the hosted Supabase project, with the economy still disabled. The next implementation phase is Phase 2: server-validated activity events and idempotent mission/achievement claims.
 
 
 ## 14. Phase 0 schema reconciliation
