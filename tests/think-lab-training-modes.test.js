@@ -3,7 +3,6 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const vm = require('node:vm');
-const bank = require('../odd-one-out-bank.js');
 const soundMazeTools = require('../sound-maze-bank.js');
 const source = fs.readFileSync(path.join(__dirname, '..', 'think-lab.js'), 'utf8');
 const progressionSource = fs.readFileSync(path.join(__dirname, '..', 'think-lab-progression.js'), 'utf8');
@@ -65,7 +64,6 @@ function createHarness(options = {}) {
   let letterGridOpened = 0;
   const window = {
     EpiphanyAuth: {isDeveloper: () => true},
-    EPIPHANY_ODD_ONE_OUT_BANK: bank,
     EPIPHANY_SOUND_MAZE_TOOLS: soundMazeTools,
     EPIPHANY_WORD_CONNECTIONS_BANK: connectionContext.window.EPIPHANY_WORD_CONNECTIONS_BANK,
     EPIPHANY_SENTENCE_SCRAMBLE_BANK: sentenceScrambleContext.window.EPIPHANY_SENTENCE_SCRAMBLE_BANK,
@@ -142,6 +140,7 @@ test('Word Hunt opens its own level picker instead of the shared training-mode p
 
 test('each training mode is passed into the selected game instead of the adaptive default', () => {
   for (const gameId of gameIds) {
+    if (gameId === 'odd') continue; // Server-backed guest sessions are covered by the validator contract tests.
     for (const trainingMode of trainingModes) {
       const harness = createHarness(gameId === 'maze' ? {soundMazeBank:makeSoundMazeFixture()} : {});
       harness.click('[data-think-game]', {thinkGame:gameId});
@@ -345,33 +344,20 @@ test('Think Lab game skill registration is sourced from the canonical progressio
   assert.doesNotMatch(source, /const gameSkills = \{odd:/);
 });
 
-test('core Think Lab rounds resume from the next unrecorded round without replaying XP',()=>{
-  const first=createHarness();
-  first.click('[data-think-game]',{thinkGame:'odd'});
-  first.click('[data-think-training-mode]',{thinkTrainingMode:'steady',thinkTrainingGame:'odd'});
-  assert.match(first.root.innerHTML,/ROUND 1 OF/);
-  first.click('[data-think-answer]',{thinkAnswer:'0'});
-  const snapshot=first.savedSnapshots.odd;
-  assert.ok(snapshot,'the active round should be saved to the shared player profile');
-  assert.equal(snapshot.position,1,'an answered round is checkpointed at the next round');
-  const resumed=createHarness({savedSnapshots:first.savedSnapshots});
-  assert.match(resumed.root.innerHTML,/Resume session/);
-  resumed.click('[data-think-resume]',{thinkResume:'odd'});
-  assert.match(resumed.root.innerHTML,/ROUND 2 OF/);
-  assert.equal(resumed.recordedResults.length,0,'restoring must not record the previous answer or award XP again');
+test('server-validated Odd One Out does not persist guest bearer tokens or browser round snapshots',()=>{
+  assert.match(source,/velorn-odd-one-out-guest/);
+  assert.match(source,/validatorGuestToken/);
+  assert.match(source,/if \(validatorSessionId\) return false/);
+  assert.doesNotMatch(source,/localStorage\.setItem\([^)]*(?:guestToken|validatorGuestToken)/);
 });
 
 test('multiple internal games keep independent resumable sessions and restore tile placement',()=>{
   const first=createHarness();
-  first.click('[data-think-game]',{thinkGame:'odd'});
-  first.click('[data-think-training-mode]',{thinkTrainingMode:'steady',thinkTrainingGame:'odd'});
   first.click('[data-think-game]',{thinkGame:'forge'});
   first.click('[data-think-training-mode]',{thinkTrainingMode:'steady',thinkTrainingGame:'forge'});
   first.click('[data-forge-tile]',{forgeTile:'0'});
-  assert.ok(first.savedSnapshots.odd);
   assert.equal(first.savedSnapshots.forge.payload.forgePlaced[0],0);
   const resumed=createHarness({savedSnapshots:first.savedSnapshots});
-  assert.match(resumed.root.innerHTML,/data-think-resume="odd"/);
   assert.match(resumed.root.innerHTML,/data-think-resume="forge"/);
   resumed.click('[data-think-resume]',{thinkResume:'forge'});
   assert.equal(resumed.savedSnapshots.forge.payload.forgePlaced[0],0);

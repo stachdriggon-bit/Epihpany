@@ -75,7 +75,7 @@ function loadThinkLabHarness(cefrLevel = 'A1') {
 
 test('Think Lab never falls back to a browser-side Odd One Out bank', () => {
   const harness = loadThinkLabHarness('A1');
-  for (const mode of ['guided','steady','challenge']) assert.deepEqual(harness.__oddPool(mode), []);
+  for (const mode of ['guided','steady','challenge']) assert.equal(harness.__oddPool(mode).length, 0);
   assert.doesNotMatch(thinkLabSource, /EPIPHANY_ODD_ONE_OUT_BANK/);
 });
 
