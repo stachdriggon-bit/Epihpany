@@ -790,7 +790,7 @@ test('main navigation tabs open without uncaught page errors', { timeout: 18 * 6
         if (await translationToggle.getAttribute('aria-pressed') !== 'true') {
           const settingsMenu = page.locator('.tools-menu');
           if (!(await settingsMenu.evaluate(menu => menu.open))) await settingsMenu.locator('> summary').click();
-          await page.locator('#open-settings').click();
+          await page.locator('[data-settings-open="learning"]').click();
           await translationToggle.waitFor({state:'visible',timeout:3000});
           await translationToggle.click();
           await page.locator('#settings-close').click();
