@@ -53,7 +53,7 @@
   <script src="developer-mode.js?v=2" defer></script>
 <script>
   /* Returning visitors skip the landing page: it is only for the very first visit. */
-  try { if (localStorage.getItem('epiphany-landing-seen') === '1') document.documentElement.classList.add('landing-seen'); } catch (e) {}
+  try { const gate=localStorage.getItem('epiphany-auth-gate-v1')==='1'; if(!gate&&localStorage.getItem('epiphany-landing-seen')==='1') document.documentElement.classList.add('landing-seen'); } catch (e) {}
 </script>
 <style>
   /* First visit: show ONLY the landing page. Language, welcome and placement dialogs wait until the visitor presses Start,
@@ -127,9 +127,11 @@
       <span class="landing-eyebrow">ENGLISH THAT FITS REAL LIFE</span>
       <h1 id="landing-title">Real English.<br><span>Small daily quests.</span></h1>
       <p>Build confidence a little at a time. Practise useful words, make choices in short stories, play quick games and handle everyday situations — without being judged for every mistake.</p>
-      <div class="landing-actions">
-        <button type="button" class="landing-cta" id="landing-start">Try a free lesson <span aria-hidden="true">→</span></button>
-        <span class="landing-note">No account needed to begin.</span>
+      <div class="landing-actions landing-account-actions">
+        <button type="button" class="landing-cta landing-create-account" id="landing-signup">Create your account <span aria-hidden="true">→</span></button>
+        <button type="button" class="landing-secondary" id="landing-signin">I already have an account</button>
+        <button type="button" class="landing-guest" id="landing-start">Continue as guest</button>
+        <span class="landing-note">Guest progress stays on this device. You can create an account later.</span>
       </div>
     </div>
     <div class="landing-preview" aria-label="Preview of an English vocabulary question">
@@ -236,17 +238,7 @@
       <details class="tools-menu">
         <summary class="icon-btn utility-btn" aria-label="Open app settings" title="App settings">⚙</summary>
         <div class="tools-panel" aria-label="App settings">
-          <button class="tools-action" id="translation-toggle" type="button" aria-pressed="true" aria-label="Toggle Arabic translation">ع <span>Arabic translation: On</span></button>
-          <button class="tools-action" id="sound-toggle-mobile" type="button" aria-pressed="true" aria-label="Turn sound effects off">♫ <span>Sound effects: On</span></button>
-          <button class="tools-action" id="theme-toggle" type="button" aria-pressed="false" aria-label="Turn on dark mode">◐ <span>Dark mode</span></button>
-          <button class="tools-action developer-entry" id="open-developer-mode" type="button" hidden>🛠 <span>Developer Mode</span><span class="developer-entry-arrow">→</span></button>
-          <button class="tools-action" id="open-voice" type="button" aria-label="Choose reader voice">🔊 <span>Reader voice</span></button>
-          <label class="tools-action" for="low-data-toggle"><input id="low-data-toggle" type="checkbox"> <span>Save data · cached George audio only</span></label>
-          <button class="tools-action" id="export-progress" type="button" aria-label="Export progress to a file">↓ <span>Export progress</span></button>
-          <button class="tools-action" id="import-progress" type="button" aria-label="Import progress from a file">↑ <span>Import progress</span></button>
-          <label class="tools-action telemetry-setting" for="anonymous-telemetry"><input id="anonymous-telemetry" type="checkbox"> <span>Share anonymous usage & error reports (optional)</span></label>
-          <small class="telemetry-note">No name, email, answers or story text is sent. You can turn this off at any time.</small>
-          <button class="tools-action" id="install-app" type="button" aria-label="Install Epiphany app" hidden>＋ <span>Install app</span></button>
+          <button class="tools-action" id="open-settings" type="button"><span aria-hidden="true">⚙</span><span>Settings & preferences</span><span aria-hidden="true">→</span></button>
         </div>
       </details>
       <input id="import-file" type="file" accept="application/json,.json" hidden aria-label="Choose an Epiphany progress backup">
@@ -793,7 +785,6 @@ n>
         <div id="account-signed-in" hidden>
           <p class="account-welcome">Signed in as <strong id="account-email"></strong></p>
           <p class="account-note">Your progress will sync automatically while you play online.</p>
-          <button class="btn btn-ghost" id="account-signout" type="button">Sign out</button>
         </div>
       </section>
       <section class="block profile-challenges" aria-labelledby="profile-challenges-title"><div class="block-head"><h2 id="profile-challenges-title">Challenges & streak</h2><p>Daily and weekly goals, plus your streak freeze.</p></div>      <section class="motivation profile-motivation" aria-label="Daily and weekly challenges">
@@ -958,27 +949,60 @@ n>
   </section>
 </div>
 
+<div class="settings-overlay" id="settings-dialog" hidden>
+  <button class="settings-backdrop" id="settings-backdrop" type="button" aria-label="Close settings"></button>
+  <section class="settings-sheet" role="dialog" aria-modal="true" aria-labelledby="settings-title">
+    <header class="settings-head"><div><p class="settings-eyebrow">EPIPHANY · PERSONAL SPACE</p><h2 id="settings-title">Settings</h2><p>Make your learning space feel right.</p></div><button class="settings-close" id="settings-close" type="button" aria-label="Close settings">×</button></header>
+    <div class="settings-grid">
+      <section class="settings-group" aria-labelledby="settings-learning-title"><h3 id="settings-learning-title">Learning & experience</h3>
+        <button class="tools-action" id="translation-toggle" type="button" aria-pressed="true" aria-label="Toggle Arabic translation">ع <span>Arabic translation: On</span></button>
+        <button class="tools-action" id="sound-toggle-mobile" type="button" aria-pressed="true" aria-label="Turn sound effects off">♫ <span>Sound effects: On</span></button>
+        <button class="tools-action" id="theme-toggle" type="button" aria-pressed="false" aria-label="Turn on dark mode">◐ <span>Dark mode</span></button>
+        <button class="tools-action" id="open-voice" type="button" aria-label="Choose reader voice">🔊 <span>Reader voice</span></button>
+      </section>
+      <section class="settings-group" aria-labelledby="settings-account-title"><h3 id="settings-account-title">Account & security</h3><p class="settings-description" id="settings-account-description">Manage your account and saved progress.</p>
+        <button class="tools-action" id="open-account-settings" type="button"><span>Manage account</span><span aria-hidden="true">→</span></button>
+        <button class="tools-action developer-entry" id="open-developer-mode" type="button" hidden>🛠 <span>Developer Mode</span><span class="developer-entry-arrow">→</span></button>
+      </section>
+      <section class="settings-group settings-data-group" aria-labelledby="settings-data-title"><h3 id="settings-data-title">Data & privacy</h3>
+        <label class="tools-action" for="low-data-toggle"><input id="low-data-toggle" type="checkbox"> <span>Data saver · cached George audio only</span></label>
+        <div class="settings-inline-actions"><button class="tools-action" id="export-progress" type="button" aria-label="Export progress to a file">↓ <span>Export progress</span></button><button class="tools-action" id="import-progress" type="button" aria-label="Import progress from a file">↑ <span>Import progress</span></button></div>
+        <label class="tools-action telemetry-setting" for="anonymous-telemetry"><input id="anonymous-telemetry" type="checkbox"> <span>Share anonymous usage & error reports (optional)</span></label>
+        <small class="telemetry-note">No name, email, answers or story text is sent. You can turn this off at any time.</small>
+      </section>
+      <section class="settings-group" aria-labelledby="settings-about-title"><h3 id="settings-about-title">App</h3>
+        <button class="tools-action" id="install-app" type="button" aria-label="Install Epiphany app" hidden>＋ <span>Install app</span></button>
+        <button class="tools-action" type="button" data-help-open aria-haspopup="dialog" aria-controls="help-center-dialog"><span>Help & Guide</span><span aria-hidden="true">→</span></button>
+      </section>
+    </div>
+    <footer class="settings-footer"><button class="settings-signout" id="account-signout" type="button" hidden><span aria-hidden="true">↗</span> Sign out</button><p>EPIPHANY · Your learning journey, your pace.</p></footer>
+  </section>
+</div>
+
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
   (() => {
-    if (document.documentElement.classList.contains('landing-seen')) {
+    const gate = (() => { try { return localStorage.getItem('epiphany-auth-gate-v1') === '1'; } catch { return false; } })();
+    if (document.documentElement.classList.contains('landing-seen') && !gate) document.body.classList.add('epiphany-entered');
+    const enterAsGuest = () => {
+      try { localStorage.setItem('epiphany-landing-seen','1'); localStorage.removeItem('epiphany-auth-gate-v1'); } catch {}
+      document.documentElement.classList.add('landing-seen');
+      document.body.classList.remove('epiphany-auth-gate');
       document.body.classList.add('epiphany-entered');
-      const landing = document.getElementById('landing-screen');
-      if (landing) landing.remove();
-      return;
-    }
-    const start = document.getElementById('landing-start');
-    if (!start) return;
-    start.addEventListener('click', () => {
-      try { localStorage.setItem('epiphany-landing-seen', '1'); } catch (e) {}
-      document.body.classList.add('epiphany-entered');
-      const landing = document.getElementById('landing-screen');
-      if (landing) landing.remove();
-      const heading = document.getElementById('home-title');
-      if (heading) heading.focus({ preventScroll: true });
-      window.scrollTo({ top: 0, behavior: 'auto' });
-    });
+      const heading=document.getElementById('home-title'); if(heading) heading.focus({preventScroll:true});
+      window.scrollTo({top:0,behavior:'auto'});
+    };
+    document.getElementById('landing-start')?.addEventListener('click',enterAsGuest);
+    document.getElementById('landing-signin')?.addEventListener('click',()=>window.EpiphanyAuth?.openAccountMode('signin'));
+    document.getElementById('landing-signup')?.addEventListener('click',()=>window.EpiphanyAuth?.openAccountMode('signup'));
+    const settings=document.getElementById('settings-dialog');
+    const closeSettings=()=>{if(settings)settings.hidden=true;document.body.classList.remove('settings-open');document.querySelector('.tools-menu')?.removeAttribute('open');};
+    document.getElementById('open-settings')?.addEventListener('click',()=>{if(settings){settings.hidden=false;document.body.classList.add('settings-open');document.querySelector('.tools-menu')?.removeAttribute('open');document.getElementById('settings-close')?.focus();}});
+    document.getElementById('settings-close')?.addEventListener('click',closeSettings);
+    document.getElementById('settings-backdrop')?.addEventListener('click',closeSettings);
+    document.addEventListener('keydown',event=>{if(event.key==='Escape'&&settings&&!settings.hidden)closeSettings();});
+    document.getElementById('open-account-settings')?.addEventListener('click',()=>{closeSettings();document.querySelector('[data-view="profile"]')?.click();});
   })();
 </script>
 </body>

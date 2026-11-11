@@ -76,6 +76,10 @@
   }
   function openAccountFromWelcome(mode) {
     hideWelcomeModal(true);
+    try { localStorage.setItem('epiphany-landing-seen','1'); localStorage.removeItem('epiphany-auth-gate-v1'); } catch {}
+    document.documentElement.classList.add('landing-seen');
+    document.body.classList.remove('epiphany-auth-gate');
+    document.body.classList.add('epiphany-entered');
     setMode(mode);
     const profileButton = document.querySelector('[data-view="profile"]');
     if (profileButton) profileButton.click();
@@ -144,6 +148,8 @@
     const showSignedIn = !!currentUser && !recoveryMode;
     signedIn.hidden = !showSignedIn;
     signedOut.hidden = showSignedIn;
+    const signOutButton = $('account-signout');
+    if (signOutButton) signOutButton.hidden = !currentUser;
     if (email) email.textContent = currentUser ? currentUser.email || 'Signed-in player' : '';
     if (!showSignedIn && recoveryMode) setMode('newpassword');
   }
@@ -860,11 +866,12 @@
       status('Enter your account email and we will send a reset link.', 'info');
     });
     $('account-signout').addEventListener('click', async () => {
+      if (!currentUser || !window.confirm('Sign out of EPIPHANY? Your account progress will remain safely saved online.')) return;
       $('account-signout').disabled = true;
       try {
         const {error} = await client.auth.signOut();
         if (error) throw error;
-        status('Signed out. Your progress remains saved on this device.', 'info');
+        status('Signed out. Choose how you would like to continue.', 'info');
       } catch (error) {
         status(error.message || 'Could not sign out. Please try again.', 'error');
       } finally {
@@ -880,8 +887,19 @@
         pendingCloudProgress = null;
       }
       currentUser = nextUser;
-      if (event === 'SIGNED_IN') showAccountTransition('signed-in');
-      if (event === 'SIGNED_OUT') showAccountTransition('signed-out');
+      if (currentUser) {
+        try { localStorage.setItem('epiphany-landing-seen','1'); localStorage.removeItem('epiphany-auth-gate-v1'); } catch {}
+        document.documentElement.classList.add('landing-seen');
+        document.body.classList.remove('epiphany-auth-gate');
+        document.body.classList.add('epiphany-entered');
+      } else if (event === 'SIGNED_OUT') {
+        try { localStorage.removeItem('epiphany-landing-seen'); localStorage.setItem('epiphany-auth-gate-v1','1'); } catch {}
+        document.documentElement.classList.remove('landing-seen');
+        document.body.classList.remove('epiphany-entered');
+        document.body.classList.add('epiphany-auth-gate');
+        const settings=$('settings-dialog'); if(settings) settings.hidden=true;
+        document.body.classList.remove('settings-open');
+      }
       announceAuthAccess();
       if (event === 'PASSWORD_RECOVERY') recoveryMode = true;
       if (!currentUser) {

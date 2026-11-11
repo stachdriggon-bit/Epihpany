@@ -4034,3 +4034,39 @@ body[data-theme="dark"] #thinklab-view .tl-case-icon.ep-thinklab-icon{
   .epiphany-account-transition,.epiphany-account-transition__card{transition:none}
   .epiphany-account-transition__halo:before,.epiphany-account-transition__halo:after,.epiphany-account-transition__trail i{animation:none}
 }
+
+/* Account-first entry and a focused settings hub */
+.landing-account-actions{display:grid;grid-template-columns:1fr;justify-items:start;gap:10px;max-width:360px}
+.landing-account-actions .landing-cta{width:100%;justify-content:center}
+.landing-secondary{width:100%;min-height:48px;padding:12px 18px;border:1.5px solid #d8d4e8;border-radius:14px;background:rgba(255,255,255,.78);color:#332d58;font:700 15px var(--body);cursor:pointer}
+.landing-secondary:hover{border-color:#7966d8;background:#fff}
+.landing-guest{padding:8px 2px;border:0;background:transparent;color:#5d5680;font:700 14px var(--body);text-decoration:underline;text-underline-offset:4px;cursor:pointer}
+.landing-account-actions .landing-note{max-width:34ch}
+.settings-overlay[hidden]{display:none!important}
+.settings-overlay{position:fixed;inset:0;z-index:180;display:grid;place-items:center;padding:18px;overflow:auto;overscroll-behavior:contain}
+.settings-backdrop{position:fixed;inset:0;border:0;background:rgba(12,16,34,.62);backdrop-filter:blur(7px);cursor:pointer}
+.settings-sheet{position:relative;z-index:1;width:min(100%,760px);max-height:min(88dvh,900px);overflow:auto;padding:clamp(20px,4vw,32px);border:1px solid var(--line);border-radius:26px;background:var(--ground);color:var(--ink);box-shadow:0 28px 90px rgba(8,12,28,.3);animation:account-modal-in .2s ease both}
+.settings-head{display:flex;justify-content:space-between;align-items:flex-start;gap:18px;margin-bottom:22px}
+.settings-head h2{margin:2px 0 4px;font:800 clamp(27px,5vw,34px)/1.1 var(--display);letter-spacing:-.035em}
+.settings-head p:last-child{margin:0;color:var(--ink-2);font-size:14px}
+.settings-eyebrow{margin:0;color:var(--ink-2);font-size:10px;font-weight:900;letter-spacing:.13em}
+.settings-close{flex:none;width:40px;height:40px;border:0;border-radius:50%;background:var(--tone-soft);color:var(--ink-2);font-size:27px;line-height:1;cursor:pointer}
+.settings-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.settings-group{min-width:0;padding:15px;border:1px solid var(--line);border-radius:18px;background:var(--surface)}
+.settings-group h3{margin:0 0 9px;font-size:14px;font-weight:850}
+.settings-group .tools-action{min-height:42px;padding:9px 10px;font-size:13px}
+.settings-group .tools-action:hover{background:var(--navy-soft)}
+.settings-description{margin:0 0 7px;color:var(--ink-2);font-size:12px;line-height:1.5}
+.settings-data-group{grid-column:1/-1}
+.settings-inline-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.settings-group .telemetry-note{display:block;margin:2px 10px 4px;color:var(--ink-3);font-size:11px;line-height:1.5}
+.settings-footer{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-top:20px;padding-top:16px;border-top:1px solid var(--line)}
+.settings-footer p{margin:0;color:var(--ink-3);font-size:10px;font-weight:800;letter-spacing:.08em}
+.settings-signout{display:flex;align-items:center;gap:9px;min-height:42px;padding:9px 14px;border:1px solid rgba(190,65,65,.24);border-radius:12px;background:rgba(190,65,65,.07);color:#b13c3c;font:800 13px var(--body);cursor:pointer}
+.settings-signout:hover{background:rgba(190,65,65,.13)}
+.settings-signout[hidden]{display:none!important}
+body.settings-open{overflow:hidden}
+body.epiphany-auth-gate>header.top,body.epiphany-auth-gate>main#main{display:none!important}
+body.epiphany-auth-gate #landing-screen{display:block!important}
+@media(max-width:620px){.settings-overlay{padding:9px}.settings-sheet{max-height:94dvh;padding:19px 14px;border-radius:21px}.settings-grid{grid-template-columns:1fr}.settings-data-group{grid-column:auto}.settings-footer{align-items:flex-start;flex-direction:column}.settings-inline-actions{grid-template-columns:1fr 1fr}}
+@media(prefers-reduced-motion:reduce){.settings-sheet{animation:none}}

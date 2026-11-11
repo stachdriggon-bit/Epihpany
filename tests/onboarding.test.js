@@ -81,3 +81,18 @@ test('the prompt action preserves guest progress and opens the existing account 
   assert.match(app, /auth\.openAccountMode\('signup'\)/);
   assert.match(account, /isSignedIn:\s*\(\)\s*=>\s*!!currentUser/);
 });
+
+
+test('first entry offers account access or guest play, and settings are grouped into a dedicated hub', () => {
+  assert.match(html, /id="landing-signup"/);
+  assert.match(html, /id="landing-signin"/);
+  assert.match(html, /id="landing-start"[^>]*>Continue as guest/);
+  assert.match(html, /epiphany-auth-gate-v1/);
+  assert.match(html, /id="settings-dialog"/);
+  assert.match(html, /id="open-settings"/);
+  assert.match(html, /id="settings-data-title">Data &amp; privacy/);
+  assert.match(html, /id="account-signout"[^>]*hidden/);
+  assert.match(account, /localStorage\.setItem\('epiphany-auth-gate-v1','1'\)/);
+  assert.match(account, /document\.body\.classList\.add\('epiphany-auth-gate'\)/);
+  assert.match(account, /Sign out of EPIPHANY\?/);
+});
