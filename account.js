@@ -156,6 +156,27 @@
     if (email) email.textContent = currentUser ? currentUser.email || 'Signed-in player' : '';
     if (!showSignedIn && recoveryMode) setMode('newpassword');
   }
+  async function syncSettingsSignOutVisibility() {
+    const button = $('account-signout');
+    if (!button) return;
+    if (currentUser) {
+      button.hidden = false;
+      return;
+    }
+    if (!client?.auth?.getSession) {
+      button.hidden = true;
+      return;
+    }
+    try {
+      const {data, error} = await client.auth.getSession();
+      if (error) throw error;
+      currentUser = data?.session?.user || null;
+      button.hidden = !currentUser;
+    } catch (error) {
+      button.hidden = true;
+      console.warn('Could not refresh settings account state.', error);
+    }
+  }
   const PREFERENCE_KEYS = ['helpArabic', 'translationEnabled', 'sound', 'theme', 'storyReaderSettings', 'soundMazeCEFR'];
   function mergeProgress(local, cloud, root = true) {
     let merged;
@@ -767,6 +788,10 @@
   };
 
   document.addEventListener('DOMContentLoaded', () => {
+    const settingsMenu = document.querySelector('.tools-menu');
+    settingsMenu?.addEventListener('toggle', () => {
+      if (settingsMenu.open) syncSettingsSignOutVisibility();
+    });
     renderCharacterArtReport();
     const httpButton=$('developer-test-character-art-http');
     httpButton?.addEventListener('click',async()=>{httpButton.disabled=true;const status=$('developer-art-status');if(status)status.textContent='Testing cloud image URLs (up to 6 at a time)…';try{const result=await verifyCharacterArtHttpAssets(progress=>{if(status)status.textContent='HTTP test '+progress.completed+'/'+progress.total+' · '+progress.ok+' loaded · '+progress.failed+' failed';});if(status)status.textContent='Image loading test: '+result.ok+'/'+result.total+' loaded · '+result.failed+' failed.';}catch(error){if(status)status.textContent='Image test failed: '+(error?.message||String(error));}finally{httpButton.disabled=false;}});
