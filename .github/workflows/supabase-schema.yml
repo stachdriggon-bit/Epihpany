@@ -164,9 +164,13 @@ jobs:
             exit 1
           fi
 
-          WORD_FORGE_E2E_RESULT_FILE=/tmp/word-forge-e2e.json \
+          if ! WORD_FORGE_E2E_RESULT_FILE=/tmp/word-forge-e2e.json \
             SUPABASE_URL="$API_URL" SUPABASE_ANON_KEY="$ANON_KEY" SUPABASE_SERVICE_ROLE_KEY="$SERVICE_ROLE_KEY" \
-            node supabase/tests/word-forge-edge-e2e.cjs
+            node supabase/tests/word-forge-edge-e2e.cjs; then
+            echo "Word Forge Edge Function logs:"
+            cat /tmp/word-forge-edge.log || true
+            exit 1
+          fi
 
           USER_ID=$(node -p "require('/tmp/word-forge-e2e.json').userId")
           GUEST_SESSION_ID=$(node -p "require('/tmp/word-forge-e2e.json').guestSessionId")
