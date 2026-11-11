@@ -62,8 +62,17 @@ function createHarness(options = {}) {
   let wordHuntOpened = 0;
   let codebreakerOpened = 0;
   let letterGridOpened = 0;
+  const validatorClient = {functions:{async invoke(_name,{body}={}) {
+    if (body?.action === 'start') return {error:null,data:{
+      sessionId:'123e4567-e89b-42d3-a456-426614174000',
+      guestToken:'a'.repeat(64),
+      questions:Array.from({length:24},(_,index)=>({id:'WF-G-'+String(index+1).padStart(3,'0'),clue:'A reviewed word clue number '+(index+1)+'.',letters:'APPLE',prompt:'Forge the word from the letter tiles.'}))
+    }};
+    if (body?.action === 'answer') return {error:null,data:{correct:false,advance:true,attemptsRemaining:0,correctAnswer:'apple',explanation:'A complete server-verified answer.',skill:'Spelling'}};
+    return {error:{message:'unexpected action'},data:null};
+  }}};
   const window = {
-    EpiphanyAuth: {isDeveloper: () => true},
+    EpiphanyAuth: {isDeveloper: () => true, whenReady:()=>Promise.resolve(), isSignedIn:()=>false, getGuestValidatorClient:()=>validatorClient},
     EPIPHANY_SOUND_MAZE_TOOLS: soundMazeTools,
     EPIPHANY_WORD_CONNECTIONS_BANK: connectionContext.window.EPIPHANY_WORD_CONNECTIONS_BANK,
     EPIPHANY_SENTENCE_SCRAMBLE_BANK: sentenceScrambleContext.window.EPIPHANY_SENTENCE_SCRAMBLE_BANK,
@@ -97,7 +106,7 @@ function createHarness(options = {}) {
   function click(selector, dataset = {}) {
     const element = {dataset};
     assert.equal(typeof listeners.click, 'function', 'Think Lab click handler should be registered');
-    listeners.click({target:{closest: candidate => candidate === selector ? element : null}});
+    return listeners.click({target:{closest: candidate => candidate === selector ? element : null}});
   }
   return {root,click,getSavedMazeCEFR:()=>savedMazeCEFR,chainBank:window.EPIPHANY_CHAIN_REACTION_BANK,feedback,recordedResults,getCrosswordOpened:()=>crosswordOpened,getWordHuntOpened:()=>wordHuntOpened,getCodebreakerOpened:()=>codebreakerOpened,getLetterGridOpened:()=>letterGridOpened,savedSnapshots};
 }
@@ -138,13 +147,13 @@ test('Word Hunt opens its own level picker instead of the shared training-mode p
   assert.doesNotMatch(harness.root.innerHTML, /How would you like to play/);
 });
 
-test('each training mode is passed into the selected game instead of the adaptive default', () => {
+test('each training mode is passed into the selected game instead of the adaptive default', async () => {
   for (const gameId of gameIds) {
     if (gameId === 'odd') continue; // Server-backed guest sessions are covered by the validator contract tests.
     for (const trainingMode of trainingModes) {
       const harness = createHarness(gameId === 'maze' ? {soundMazeBank:makeSoundMazeFixture()} : {});
       harness.click('[data-think-game]', {thinkGame:gameId});
-      harness.click('[data-think-training-mode]', {thinkTrainingMode:trainingMode,thinkTrainingGame:gameId});
+      await harness.click('[data-think-training-mode]', {thinkTrainingMode:trainingMode,thinkTrainingGame:gameId});
       if (gameId === 'translator') {
         assert.match(harness.root.innerHTML, /CHOOSE YOUR ENGLISH LEVEL/);
         harness.click('[data-translator-level]', {translatorLevel:'A1'});
@@ -204,12 +213,12 @@ test('Sound Maze CEFR is a saved and cross-device learner preference', () => {
 });
 
 
-test('active game screen offers a direct Think Lab home route without removing difficulty back', () => {
+test('active game screen offers a direct Think Lab home route without removing difficulty back', async () => {
   for (const gameId of gameIds) {
     if (gameId === 'odd') continue; // Odd One Out now requires a live server validator.
     const harness = createHarness(gameId === 'maze' ? {soundMazeBank:makeSoundMazeFixture()} : {});
     harness.click('[data-think-game]', {thinkGame:gameId});
-    harness.click('[data-think-training-mode]', {thinkTrainingMode:'steady',thinkTrainingGame:gameId});
+    await harness.click('[data-think-training-mode]', {thinkTrainingMode:'steady',thinkTrainingGame:gameId});
     if (gameId === 'translator') {
       harness.click('[data-translator-level]', {translatorLevel:'A1'});
     } else if (gameId === 'maze') {
@@ -240,11 +249,11 @@ test('Word Connections records incorrect complete-group attempts instead of trac
   assert.match(source, /bank\.matchGroup\(chosen,selectedTrainingMode\)/);
 });
 
-test('Word Forge loads exactly 24 approved challenges for each selected training mode', () => {
+test('Word Forge loads exactly 24 server-approved challenges for each selected training mode', async () => {
   for (const trainingMode of trainingModes) {
     const harness = createHarness();
     harness.click('[data-think-game]', {thinkGame:'forge'});
-    harness.click('[data-think-training-mode]', {thinkTrainingMode:trainingMode,thinkTrainingGame:'forge'});
+    await harness.click('[data-think-training-mode]', {thinkTrainingMode:trainingMode,thinkTrainingGame:'forge'});
     assert.match(harness.root.innerHTML, /ROUND 1 OF 24/);
     assert.match(harness.root.innerHTML, /WORD CLUE/);
     assert.match(harness.root.innerHTML, /data-forge-tile=/);
@@ -253,11 +262,15 @@ test('Word Forge loads exactly 24 approved challenges for each selected training
   }
 });
 
-test('Word Forge uses the approved bank skill and records incorrect complete attempts', () => {
-  assert.match(source, /bank\.selectRound\(trainingMode\)/);
-  assert.match(source, /recordResult\('spelling','word-forge',false,false\)/);
+test('Word Forge keeps answer keys and skills server-side and records verified outcomes', () => {
+  const serverBank = fs.readFileSync(path.join(__dirname,'..','supabase','functions','velorn-word-forge','word-forge-bank.js'),'utf8');
+  assert.match(source, /recordResult\('spelling','word-forge',data\.correct,index===pool\.length-1\)/);
   assert.match(source, /Complete the word first/);
-  assert.match(source, /Skill:/);
+  assert.match(source, /data\.skill/);
+  assert.match(source, /velorn-word-forge/);
+  assert.doesNotMatch(wordForgeBankSource, /answerWord|explain|skill/);
+  assert.match(serverBank, /answerWord/);
+  assert.match(serverBank, /skill:/);
   assert.doesNotMatch(source, /rounds\.forge\s*=/);
 });
 
@@ -352,15 +365,22 @@ test('server-validated Odd One Out does not persist guest bearer tokens or brows
   assert.doesNotMatch(source,/localStorage\.setItem\([^)]*(?:guestToken|validatorGuestToken)/);
 });
 
-test('multiple internal games keep independent resumable sessions and restore tile placement',()=>{
+test('internal games keep independent resumable sessions without persisting server validator credentials',()=>{
   const first=createHarness();
-  first.click('[data-think-game]',{thinkGame:'forge'});
-  first.click('[data-think-training-mode]',{thinkTrainingMode:'steady',thinkTrainingGame:'forge'});
-  first.click('[data-forge-tile]',{forgeTile:'0'});
-  assert.equal(first.savedSnapshots.forge.payload.forgePlaced[0],0);
+  first.click('[data-think-game]',{thinkGame:'scramble'});
+  first.click('[data-think-training-mode]',{thinkTrainingMode:'steady',thinkTrainingGame:'scramble'});
+  first.click('[data-scramble-tile]',{scrambleTile:'0'});
+  assert.ok(first.savedSnapshots.scramble);
+  assert.equal(first.savedSnapshots.scramble.payload.scramblePlaced[0],0);
   const resumed=createHarness({savedSnapshots:first.savedSnapshots});
-  assert.match(resumed.root.innerHTML,/data-think-resume="forge"/);
-  resumed.click('[data-think-resume]',{thinkResume:'forge'});
-  assert.equal(resumed.savedSnapshots.forge.payload.forgePlaced[0],0);
+  assert.match(resumed.root.innerHTML,/data-think-resume="scramble"/);
+  resumed.click('[data-think-resume]',{thinkResume:'scramble'});
+  assert.equal(resumed.savedSnapshots.scramble.payload.scramblePlaced[0],0);
   assert.equal(resumed.recordedResults.length,0);
+  const forge=createHarness();
+  forge.click('[data-think-game]',{thinkGame:'forge'});
+  return forge.click('[data-think-training-mode]',{thinkTrainingMode:'steady',thinkTrainingGame:'forge'}).then(()=>{
+    forge.click('[data-forge-tile]',{forgeTile:'0'});
+    assert.equal(forge.savedSnapshots.forge,undefined,'server-backed guest sessions must not persist their bearer token or an unusable local snapshot');
+  });
 });
