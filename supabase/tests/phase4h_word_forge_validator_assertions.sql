@@ -15,6 +15,7 @@ BEGIN
  INTO qs FROM generate_series(1,24) AS gs(n);
  PERFORM public.velorn_start_word_forge_session(s,u,NULL,NULL,'word-forge-reviewed-72-20261111-v1','guided',qs,clock_timestamp()+interval '30 minutes');
  PERFORM public.velorn_start_word_forge_session(g,NULL,repeat('a',64),repeat('b',64),'word-forge-reviewed-72-20261111-v1','guided',qs,clock_timestamp()+interval '30 minutes');
+ BEGIN PERFORM public.velorn_start_word_forge_session('f4b80000-0000-4000-8000-000000000064',NULL,NULL,repeat('b',64),'word-forge-reviewed-72-20261111-v1','guided',qs,clock_timestamp()+interval '30 minutes');RAISE EXCEPTION 'Unowned guest session accepted';EXCEPTION WHEN SQLSTATE '22023' THEN NULL;END;
  PERFORM pg_sleep(0.7);
  BEGIN PERFORM public.velorn_submit_word_forge_answer(u,NULL,s,1,'apple');RAISE EXCEPTION 'Out-of-order answer accepted';EXCEPTION WHEN SQLSTATE '22023' THEN NULL;END;
  BEGIN PERFORM public.velorn_submit_word_forge_answer(u,NULL,s,NULL,'apple');RAISE EXCEPTION 'NULL question index accepted';EXCEPTION WHEN SQLSTATE '22023' THEN NULL;END;
