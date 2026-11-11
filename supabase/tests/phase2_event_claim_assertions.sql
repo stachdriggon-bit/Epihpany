@@ -80,21 +80,29 @@ BEGIN
     RAISE EXCEPTION 'No mission or achievement definition may be assignable before validator mapping';
   END IF;
 
-  IF (SELECT count(*) FROM economy_private.mission_template_versions) <> 11
+  -- Phase 2 seeds eleven original v1 mission templates. Later phases may add
+  -- immutable versions with explicit predicate mappings; Phase 4D adds only
+  -- solve_a_challenge v2 while preserving the original v1 definition.
+  IF (SELECT count(*) FROM economy_private.mission_template_versions
+      WHERE template_version = 1) <> 11
+     OR (SELECT count(*) FROM economy_private.mission_template_versions) <> 12
      OR (SELECT count(*) FROM economy_private.achievement_definitions) <> 10 THEN
-    RAISE EXCEPTION 'Expected the approved 11 mission templates and 10 achievement definitions';
+    RAISE EXCEPTION 'Expected 11 original mission templates, one mapped versioned extension, and 10 achievement definitions';
   END IF;
 
   IF EXISTS (
     SELECT 1 FROM economy_private.mission_template_versions
-    WHERE validator_mapping_status <> 'unmapped'
+    WHERE (template_id = 'solve_a_challenge' AND template_version = 2
+           AND validator_mapping_status <> 'mapped')
+       OR (NOT (template_id = 'solve_a_challenge' AND template_version = 2)
+           AND validator_mapping_status <> 'unmapped')
        OR (period_type = 'daily' AND reward_amount <> 10)
        OR (period_type = 'weekly' AND reward_amount <> 20)
   ) OR EXISTS (
     SELECT 1 FROM economy_private.achievement_definitions
     WHERE validator_mapping_status <> 'unmapped'
   ) THEN
-    RAISE EXCEPTION 'Seeded approved definitions must remain unmapped and non-assignable';
+    RAISE EXCEPTION 'Original definitions and achievements must remain unmapped; only the non-assignable solve_a_challenge v2 may be mapped';
   END IF;
 
   IF (SELECT economy_enabled FROM economy_private.economy_settings WHERE singleton)
