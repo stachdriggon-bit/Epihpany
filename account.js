@@ -90,6 +90,7 @@
     }
     try {
       localStorage.removeItem('epiphany-landing-seen');
+      localStorage.removeItem('epiphany-guest-mode-v1');
       localStorage.setItem('epiphany-auth-gate-v1','1');
     } catch {}
     document.documentElement.classList.remove('landing-seen');
@@ -1015,10 +1016,9 @@
         announceAuthAccess();
         renderAccount();
         setPlayerProfileAccess();
-        enforceSignedOutEntry();
+        const guestMode = enforceSignedOutEntry();
         status('Not signed in. Sign in, create an account, or continue as a guest.', 'info');
-          openAccountFromWelcome('signin');
-        }
+        if (!guestMode) openAccountFromWelcome('signin');
       }
       markAuthReady();
     }).catch(error => {
