@@ -52,7 +52,7 @@ test('changed scripts are versioned and the offline shell cache is refreshed', (
   assert.match(html, /app\.js\?v=fluentia-canonical-home-activities-20261109-1/);
   assert.match(html, /lazy-data\.js\?v=odd-one-out-server-only-20261110-1/);
   assert.match(html, /cards\.js\?v=account-wallet-isolation-20261111-1/);
-  assert.match(html, /account\.js\?v=auth-session-gate-20261111-2/);
+  assert.match(html, /account\.js\?v=auth-dialog-guest-migration-20261111-2/);
   assert.match(html, /style\.css\?v=auth-dialog-profile-removal-20261111-1/);
   assert.match(read('style.css'), /Helpful empty-state actions/);
   assert.match(read('lazy-data.js'), /think-lab\.js\?v=odd-one-out-server-only-20261110-1/);
