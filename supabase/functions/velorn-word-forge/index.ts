@@ -1,7 +1,7 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "npm:@supabase/supabase-js@2.119.0";
 import "./word-forge-bank.js";
-import { safeSessionQuestions, validateAnswerRequest, validateStartRequest } from "./word-forge-validator.mjs";
+import { isUserJwtBearer, safeSessionQuestions, validateAnswerRequest, validateStartRequest } from "./word-forge-validator.mjs";
 
 const VERSION="word-forge-reviewed-72-20261111-v1";
 const headers={"Access-Control-Allow-Origin":"*","Access-Control-Allow-Headers":"authorization, apikey, content-type, x-client-info","Access-Control-Allow-Methods":"POST, OPTIONS","Content-Type":"application/json","Cache-Control":"no-store, private, max-age=0"};
@@ -24,8 +24,9 @@ Deno.serve(async(req:Request)=>{
   const body=await req.json();
   if(!body||typeof body!=="object"||Array.isArray(body))return json(400,{error:"invalid_request"});
   const bearer=(req.headers.get("Authorization")||"").match(/^Bearer\s+(.+)$/i)?.[1]||"";
+  const apiKey=req.headers.get("apikey")||"";
   let userId:string|null=null;
-  if(bearer){
+  if(isUserJwtBearer(bearer,apiKey,anon)){
    const auth=createClient(url,anon,{auth:{persistSession:false,autoRefreshToken:false},global:{headers:{Authorization:"Bearer "+bearer}}});
    const {data,error}=await auth.auth.getUser(bearer);
    if(error||!data?.user?.id)return json(401,{error:"invalid_session"});

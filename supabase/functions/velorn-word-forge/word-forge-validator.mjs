@@ -30,3 +30,8 @@ export function validateBankQuestion(q) {
     letters===answer && typeof q.explain==="string" && q.explain.length>=20 &&
     typeof q.skill==="string" && q.skill.length>=2;
 }
+
+export function isUserJwtBearer(bearer, apiKey, anonKey) {
+  if (typeof bearer !== "string" || !bearer || bearer === apiKey || bearer === anonKey) return false;
+  return bearer.split(".").length === 3;
+}
