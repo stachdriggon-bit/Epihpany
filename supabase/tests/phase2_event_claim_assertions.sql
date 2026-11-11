@@ -70,39 +70,70 @@ BEGIN
     RAISE EXCEPTION 'Phase 2 event and claim history must be append-only';
   END IF;
 
+  -- Assignability is allowed only when the exact immutable template version
+  -- has a verified predicate mapping and a private service-role-only evaluator.
+  -- Achievement definitions remain non-assignable until their own evidence path exists.
   IF EXISTS (
-    SELECT 1 FROM economy_private.mission_template_versions
-    WHERE is_assignable
+    SELECT 1
+    FROM economy_private.mission_template_versions t
+    WHERE t.is_assignable
+      AND (
+        t.validator_mapping_status <> 'verified'
+        OR NOT EXISTS (
+          SELECT 1
+          FROM economy_private.mission_event_predicate_mappings m
+          JOIN pg_catalog.pg_proc p
+            ON p.oid = to_regprocedure(
+              'economy_private.evaluate_' || m.predicate_key || '(uuid)'
+            )
+          WHERE m.template_id = t.template_id
+            AND m.template_version = t.template_version
+            AND m.mapping_status = 'verified'
+            AND p.prosecdef
+            AND p.prorettype = 'boolean'::regtype
+            AND has_function_privilege('service_role', p.oid, 'EXECUTE')
+            AND NOT has_function_privilege('anon', p.oid, 'EXECUTE')
+            AND NOT has_function_privilege('authenticated', p.oid, 'EXECUTE')
+        )
+      )
   ) OR EXISTS (
     SELECT 1 FROM economy_private.achievement_definitions
     WHERE is_assignable
   ) THEN
-    RAISE EXCEPTION 'No mission or achievement definition may be assignable before validator mapping';
+    RAISE EXCEPTION 'Every assignable mission must have a verified mapping and trusted evaluator; achievements remain gated';
   END IF;
 
-  -- Phase 2 seeds eleven original v1 mission templates. Later phases may add
-  -- immutable versions with explicit predicate mappings; Phase 4D adds only
-  -- solve_a_challenge v2 while preserving the original v1 definition.
+  -- Preserve the eleven original definitions and both immutable challenge
+  -- successors: v2 mapped/non-assignable, v3 verified/assignable.
   IF (SELECT count(*) FROM economy_private.mission_template_versions
       WHERE template_version = 1) <> 11
-     OR (SELECT count(*) FROM economy_private.mission_template_versions) <> 12
-     OR (SELECT count(*) FROM economy_private.achievement_definitions) <> 10 THEN
-    RAISE EXCEPTION 'Expected 11 original mission templates, one mapped versioned extension, and 10 achievement definitions';
+     OR (SELECT count(*) FROM economy_private.mission_template_versions) <> 13
+     OR (SELECT count(*) FROM economy_private.achievement_definitions) <> 10
+     OR (SELECT count(*) FROM economy_private.mission_event_predicate_mappings) <> 2 THEN
+    RAISE EXCEPTION 'Expected 11 original missions, two challenge successors/mappings, and 10 achievement definitions';
   END IF;
 
   IF EXISTS (
     SELECT 1 FROM economy_private.mission_template_versions
     WHERE (template_id = 'solve_a_challenge' AND template_version = 2
-           AND validator_mapping_status <> 'mapped')
-       OR (NOT (template_id = 'solve_a_challenge' AND template_version = 2)
-           AND validator_mapping_status <> 'unmapped')
+           AND (validator_mapping_status <> 'mapped' OR is_assignable))
+       OR (template_id = 'solve_a_challenge' AND template_version = 3
+           AND (validator_mapping_status <> 'verified' OR NOT is_assignable))
+       OR (template_id <> 'solve_a_challenge' AND
+           (template_version <> 1 OR validator_mapping_status <> 'unmapped' OR is_assignable))
+       OR (template_id = 'solve_a_challenge' AND template_version NOT IN (1,2,3))
        OR (period_type = 'daily' AND reward_amount <> 10)
        OR (period_type = 'weekly' AND reward_amount <> 20)
   ) OR EXISTS (
+    SELECT 1 FROM economy_private.mission_event_predicate_mappings
+    WHERE (template_version = 2 AND (predicate_version <> 1 OR mapping_status <> 'mapped'))
+       OR (template_version = 3 AND (predicate_version <> 2 OR mapping_status <> 'verified'))
+       OR (template_id <> 'solve_a_challenge' OR template_version NOT IN (2,3))
+  ) OR EXISTS (
     SELECT 1 FROM economy_private.achievement_definitions
-    WHERE validator_mapping_status <> 'unmapped'
+    WHERE validator_mapping_status <> 'unmapped' OR is_assignable
   ) THEN
-    RAISE EXCEPTION 'Original definitions and achievements must remain unmapped; only the non-assignable solve_a_challenge v2 may be mapped';
+    RAISE EXCEPTION 'Mission successors, predicate mappings, rewards, or achievement gates do not match the verified Phase 4G contract';
   END IF;
 
   IF (SELECT economy_enabled FROM economy_private.economy_settings WHERE singleton)

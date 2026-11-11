@@ -66,7 +66,7 @@ BEGIN
   IF v_board IS NOT NULL OR v_status <> 'not_ready' OR v_count <> 0
   THEN RAISE EXCEPTION 'An insufficient verified weekly pool must not create a board'; END IF;
 
-  FOR v_daily_index IN 1..4 LOOP
+  FOR v_daily_index IN 1..3 LOOP
     v_template_id := format('f4f_daily_%s',v_daily_index);
     v_family := format('f4f_daily_family_%s',v_daily_index);
     v_predicate := format('f4f_daily_predicate_%s_v1',v_daily_index);
@@ -166,9 +166,18 @@ BEGIN
   THEN RAISE EXCEPTION 'Weekly board slots must be distinct and retain approved reward snapshots'; END IF;
 
   IF EXISTS (
-    SELECT 1 FROM economy_private.mission_assignments
-    WHERE template_id='solve_a_challenge' OR objective_snapshot->>'predicate_key'='solve_a_challenge_odd_one_out_v1'
-  ) THEN RAISE EXCEPTION 'Mapped but unverified Odd One Out must never be assigned'; END IF;
+    SELECT 1
+    FROM economy_private.mission_assignments a
+    JOIN economy_private.mission_template_versions t
+      ON t.template_id=a.template_id AND t.template_version=a.template_version
+    LEFT JOIN economy_private.mission_event_predicate_mappings m
+      ON m.template_id=t.template_id AND m.template_version=t.template_version
+     AND m.mapping_status='verified'
+    WHERE (t.template_id='solve_a_challenge' AND t.template_version=2)
+       OR t.validator_mapping_status <> 'verified'
+       OR NOT t.is_assignable
+       OR m.template_id IS NULL
+  ) THEN RAISE EXCEPTION 'Only verified templates and mappings may appear on generated boards'; END IF;
 
   -- Exercise the new dynamic predicate dispatcher using a temporary, trusted event.
   SELECT a.assignment_id,t.template_id,m.source_system,m.experience_id,m.activity_id,
@@ -186,6 +195,7 @@ BEGIN
     WHERE b.user_id=v_user AND b.period_type='daily'
       AND b.period_start=(SELECT min(period_start) FROM economy_private.mission_boards WHERE user_id=v_user AND period_type='daily')
   )
+    AND m.predicate_key LIKE 'f4f_daily_predicate_%'
   ORDER BY a.slot_number
   LIMIT 1;
 
