@@ -1498,7 +1498,7 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
       const gameId=trainingChoice.dataset.thinkTrainingGame;
       if(gameId==='translator') showTranslatorLevelPicker();
       else if(gameId==='maze') showMazeLevelPicker();
-      else beginGame(gameId,selectedTrainingMode);
+      else await beginGame(gameId,selectedTrainingMode);
       return;
     }
     const translatorLevel=e.target.closest('[data-translator-level]');
