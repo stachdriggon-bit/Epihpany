@@ -35,3 +35,8 @@ Phase 4E connects immutable, server-validated activity events to matching missio
 The clean-room test covers private access controls, trigger wiring, service-role-only execution, automatic processing, completion with zero correct answers, duplicate replay, rejection of Steady mode and out-of-period events, delayed board creation/backfill, append-only progress evidence, and the absence of wallet/ledger/claim/award writes.
 
 The migration must pass clean-room schema reconstruction before being applied to hosted Supabase. After deployment, use rollback-only test data and verify the same invariants while confirming the production economy remains disabled.
+
+
+## Phase 4F follow-on
+
+Phase 4F adds the server-only board generator and replaces the initial one-predicate switch with constrained dynamic dispatch. Only verified mappings backed by private SECURITY DEFINER boolean evaluators granted to `service_role` can advance assignments. The generator requires complete distinct predicate pools (four daily, three weekly), snapshots rewards and objectives, and stays dormant while the economy is disabled. See `docs/VELORN-PHASE-4F-MISSION-BOARD-GENERATION.md` for the full contract.

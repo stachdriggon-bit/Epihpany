@@ -92,3 +92,8 @@ A validated event is evidence, not a reward. The central mission/achievement eng
 The repository now includes `supabase/functions/velorn-mission-claims/index.ts`, configured with `verify_jwt = true`. The function independently verifies the bearer token using Supabase Auth and derives the player ID from `auth.getUser(token)`; it never accepts a user ID or reward amount from the client. It exposes only the two Phase 4A atomic claim RPCs, rejects unexpected fields and malformed IDs, and returns a minimal paid-claim receipt.
 
 The hosted Phase 4A database migration is applied and its live grants were verified: `anon` and `authenticated` cannot execute either claim RPC, while `service_role` can. The endpoint itself remains pending its own CI and deployment; it is not yet called by the PWA. No boards are generated and the economy remains disabled.
+
+
+## Phase 4F — safe mission board generation
+
+The Phase 4F migration adds a service-role-only generator that uses the saved account timezone policy, creates only complete four-slot daily or three-slot weekly boards, and snapshots approved objectives/rewards. It requires a verified template, verified predicate mapping, and a private service-role-only boolean evaluator for every slot. The generator returns `not_ready` without creating a partial board when the pool is insufficient, and returns existing complete boards idempotently. The progress processor now dispatches only verified private evaluators that satisfy the same security contract. The current catalog has no verified assignable pool, so no live boards are created; `economy_enabled` remains false.
