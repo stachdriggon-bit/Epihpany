@@ -1,6 +1,6 @@
 # Velorn Economy — Technical Architecture
 
-> **Status (2026-11-10):** Phase 1 wallet/ledger and Phase 2 event/claim-record foundations are deployed. The first Phase 3 Odd One Out validator is deployed and connected for signed-in play, but its public question bank still exposes answer indices; it is not reward-eligible. No mission predicate mapping, board generator, claim writer, player balance read, reward issuance, balance import, or economy activation is enabled.
+> **Status (verified 2026-11-11):** Phase 1 wallet/ledger and Phase 2 event/claim-record foundations are deployed. Odd One Out has authenticated and guest server validators; the answer-bearing bank is private to the Edge Functions and absent from public PWA assets. Guest sessions are online-validated but intentionally create no trusted economy event or wallet. No mission predicate mapping, board generator, claim writer, player balance read, reward issuance, balance import, or economy activation is enabled.
 
 ## 1. Purpose and design constraints
 
@@ -363,9 +363,11 @@ Do not implement all components in one production migration. The economy is a fi
 
 ### Phase 3 — trusted game validators — IN PROGRESS
 - Phase 3A inventory and trust contract are documented in [VELORN-PHASE-3-TRUSTED-GAME-VALIDATORS.md](VELORN-PHASE-3-TRUSTED-GAME-VALIDATORS.md).
-- The first server-owned Odd One Out session validator is deployed through `velorn-odd-one-out`; signed-in players use it, while guest play remains local and untrusted.
-- The private session table and RPCs enforce ownership, ordered answers, expiry, row locking, replay rejection, and atomic validated-event creation.
-- Important limitation: the existing public Odd One Out bank still contains answer indices. The validator is not reward-eligible until answer-bearing content is removed from public assets and rate/pacing controls are added. See [VELORN-PHASE-3C-ODD-ONE-OUT-VALIDATOR.md](VELORN-PHASE-3C-ODD-ONE-OUT-VALIDATOR.md).
+- The authenticated server-owned Odd One Out validator is deployed through `velorn-odd-one-out`; guest sessions use the separate `velorn-odd-one-out-guest` endpoint with a random 256-bit bearer token and server-stored token hash.
+- Both deployed functions match their three repository source files byte-for-byte (authenticated function version 7; guest function version 5). Both use the same rotated server-only question bank; the public PWA does not contain or cache the answer-bearing bank.
+- Authenticated sessions enforce ownership, ordered answers, expiry, row locking, replay rejection, pacing and per-user start limits, and atomic validated-event creation. Guest sessions enforce token possession, ordered answers, expiry, replay rejection, IP-based start limits and pacing.
+- Guest completions intentionally do not write trusted activity events, wallets, claims, awards or Velorn. This preserves the account-bound wallet boundary; guest-local prototype counters are not Velorn.
+- The former public answer-key blocker has been removed. Odd One Out remains unmapped and cannot earn rewards until its mission predicates and the atomic claim service are reviewed and implemented. See [VELORN-PHASE-3C-ODD-ONE-OUT-VALIDATOR.md](VELORN-PHASE-3C-ODD-ONE-OUT-VALIDATOR.md).
 - Expand to other games only after their server-owned evidence and anti-abuse rules are independently reviewed. Keep all mission/achievement mappings inactive.
 
 ### Phase 4 — Card Portal transactions
@@ -436,7 +438,7 @@ No value in this list should be silently inferred from the old local token proto
 
 Phase 1 and Phase 2 foundations are deployed and verified on the hosted Supabase project. Phase 3's first Odd One Out validator is also deployed. A rollback-only PostgreSQL smoke test exercised session creation, correct/incorrect answer evaluation, completion-event creation, and replay rejection; the transaction was rolled back and a follow-up read confirmed no test user, session, or event persisted. The hosted validator migration version is `20261110192426`.
 
-The validator created no wallet or ledger entry. No user balances, local token balances, card inventory, or Shards have been imported. Mission templates remain unmapped and unassignable, reward claims remain unwritable, and `economy_enabled = false`. The public answer-key exposure is documented as a blocker before any reward mapping.
+The validator created no wallet or ledger entry. No user balances, local token balances, card inventory, or Shards have been imported. Hosted-state verification on 2026-11-11 found zero wallets, ledger entries, activity events, validator sessions, mission boards, assignments, claims, or achievement awards; `economy_enabled = false`; all 11 mission templates and 10 achievement definitions remain non-assignable. The authenticated and guest Edge Function deployments were compared byte-for-byte with `main`. The public answer-key exposure has been resolved; reward issuance remains blocked by the unimplemented predicate mapping, board service, timezone policy, and atomic claim service.
 
 
 ## 14. Phase 0 schema reconciliation
@@ -444,3 +446,12 @@ The validator created no wallet or ledger entry. No user balances, local token b
 The Supabase inventory and migration comparison are documented in [VELORN-PHASE-0-SCHEMA-RECONCILIATION.md](VELORN-PHASE-0-SCHEMA-RECONCILIATION.md). All nine hosted application migration versions now have matching files in the repository. The three previously missing files are best-evidence reconstructions, explicitly labelled as such rather than presented as original historical SQL. A local-only legacy foundation now captures the manually created tables and policies, and the root-level SQL entry points are archived as do-not-run pointers. The automated clean-room workflow uses Supabase CLI 3.1.0 and asserts the nine-table schema, migration history, RLS policies, Storage policies and bucket limits.
 
 **Implementation gate:** Phase 0, Phase 1, and the Phase 2 database foundation are deployed and verified. Phase 3 validator work may continue while the economy remains disabled. Do not activate rewards, draws, or user-facing balances until validator eligibility, mission predicates, timezone policy, claim atomicity, and the open decisions in Section 12 are explicitly resolved.
+
+
+## 15. Guest/account wallet boundary — verified 2026-11-11
+
+- The economy's durable wallet identity is the verified Supabase Auth user ID. The server does not create a wallet from a client-supplied identifier.
+- Guest play is supported online through a distinct session-token validator, but guests do not have a durable Velorn wallet and their game completions do not enter the trusted activity-event stream.
+- Signing out switches the Card Portal prototype to its isolated guest storage namespace; signing in switches to a namespace scoped to that verified user ID. The ambiguous legacy shared local token store is migrated only when the independent progress-owner marker matches the signed-in user; otherwise it stays quarantined.
+- These local namespaces are a compatibility boundary for the old prototype only. They are not authoritative currency storage and are user-editable. Phase 5 must remove local token balances, starter grants and browser-side spending before the Card Portal can display or transact real Velorn.
+- No guest-to-account balance conversion or legacy token import is permitted by default. Any future welcome grant or conversion requires an explicit product decision and a separate server-authoritative migration design.
