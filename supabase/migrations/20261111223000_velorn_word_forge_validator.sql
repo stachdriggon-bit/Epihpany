@@ -11,7 +11,7 @@ CREATE TABLE economy_private.word_forge_validator_sessions (
  answers jsonb NOT NULL DEFAULT '[]'::jsonb CHECK(jsonb_typeof(answers)='array'),
  status text NOT NULL DEFAULT 'active' CHECK(status IN('active','completed','expired')),
  created_at timestamptz NOT NULL DEFAULT clock_timestamp(),expires_at timestamptz NOT NULL,last_answer_at timestamptz,completed_at timestamptz,
- CONSTRAINT word_forge_owner CHECK((user_id IS NOT NULL AND guest_token_hash IS NULL AND client_ip_hash IS NULL) OR (user_id IS NULL AND guest_token_hash IS NOT NULL AND client_ip_hash IS NOT NULL)),
+ CONSTRAINT word_forge_owner CHECK((user_id IS NOT NULL AND guest_token_hash IS NULL AND client_ip_hash IS NULL) OR (user_id IS NULL AND guest_token_hash IS NOT NULL AND client_ip_hash IS NOT NULL AND guest_token_hash~'^[0-9a-f]{64}$' AND client_ip_hash~'^[0-9a-f]{64}$')), 
  CONSTRAINT word_forge_expiry CHECK(expires_at>created_at AND expires_at<=created_at+interval '45 minutes')
 );
 ALTER TABLE economy_private.word_forge_validator_sessions ENABLE ROW LEVEL SECURITY;
@@ -30,7 +30,7 @@ BEGIN
  OR p_training_mode IS NULL OR p_training_mode NOT IN('guided','steady','challenge') OR jsonb_typeof(p_questions) IS DISTINCT FROM 'array'
  OR jsonb_array_length(p_questions)<>24 OR p_expires_at<=clock_timestamp() OR p_expires_at>clock_timestamp()+interval '45 minutes'
  OR NOT((p_user_id IS NOT NULL AND p_guest_token_hash IS NULL AND p_client_ip_hash IS NULL)
- OR(p_user_id IS NULL AND p_guest_token_hash~'^[0-9a-f]{64}$' AND p_client_ip_hash~'^[0-9a-f]{64}$'))
+ OR(p_user_id IS NULL AND p_guest_token_hash IS NOT NULL AND p_guest_token_hash~'^[0-9a-f]{64}$' AND p_client_ip_hash IS NOT NULL AND p_client_ip_hash~'^[0-9a-f]{64}$'))
  THEN RAISE EXCEPTION 'invalid Word Forge session parameters' USING ERRCODE='22023';END IF;
  IF (SELECT count(DISTINCT value->>'id') FROM jsonb_array_elements(p_questions))<>24 THEN RAISE EXCEPTION 'question IDs must be unique' USING ERRCODE='22023';END IF;
  FOR q IN SELECT value FROM jsonb_array_elements(p_questions) LOOP
@@ -67,7 +67,7 @@ RETURNS jsonb LANGUAGE plpgsql SECURITY DEFINER SET search_path='' AS $$
 DECLARE s economy_private.word_forge_validator_sessions%ROWTYPE;q jsonb;v_attempts integer;v_correct boolean;v_advance boolean;v_next integer;v_correct_count integer;v_done boolean;v_answer text;
 BEGIN
  IF current_setting('request.jwt.claim.role',true) IS DISTINCT FROM 'service_role' THEN RAISE EXCEPTION 'trusted server role required' USING ERRCODE='42501';END IF;
- IF p_session_id IS NULL OR p_question_index IS NULL OR p_question_index NOT BETWEEN 0 AND 23 OR COALESCE(p_submitted_word,'') !~ '^[A-Za-z]{3,14}$' OR NOT((p_user_id IS NOT NULL AND p_guest_token_hash IS NULL) OR(p_user_id IS NULL AND p_guest_token_hash~'^[0-9a-f]{64}$')) THEN RAISE EXCEPTION 'invalid Word Forge answer' USING ERRCODE='22023';END IF;
+ IF p_session_id IS NULL OR p_question_index IS NULL OR p_question_index NOT BETWEEN 0 AND 23 OR COALESCE(p_submitted_word,'') !~ '^[A-Za-z]{3,14}$' OR NOT((p_user_id IS NOT NULL AND p_guest_token_hash IS NULL) OR(p_user_id IS NULL AND p_guest_token_hash IS NOT NULL AND p_guest_token_hash~'^[0-9a-f]{64}$')) THEN RAISE EXCEPTION 'invalid Word Forge answer' USING ERRCODE='22023';END IF;
  SELECT * INTO s FROM economy_private.word_forge_validator_sessions WHERE session_id=p_session_id
  AND ((p_user_id IS NOT NULL AND user_id=p_user_id AND guest_token_hash IS NULL) OR(p_user_id IS NULL AND user_id IS NULL AND guest_token_hash=p_guest_token_hash)) FOR UPDATE;
  IF NOT FOUND THEN RAISE EXCEPTION 'Word Forge session not found' USING ERRCODE='P0002';END IF;
