@@ -79,6 +79,24 @@
     if (dialog) dialog.hidden = true;
     document.body.classList.remove('auth-dialog-open');
   }
+  function enforceSignedOutEntry() {
+    let guestMode = false;
+    try { guestMode = localStorage.getItem('epiphany-guest-mode-v1') === '1'; } catch {}
+    if (guestMode) {
+      document.documentElement.classList.add('landing-seen');
+      document.body.classList.remove('epiphany-auth-gate');
+      document.body.classList.add('epiphany-entered');
+      return true;
+    }
+    try {
+      localStorage.removeItem('epiphany-landing-seen');
+      localStorage.setItem('epiphany-auth-gate-v1','1');
+    } catch {}
+    document.documentElement.classList.remove('landing-seen');
+    document.body.classList.remove('epiphany-entered');
+    document.body.classList.add('epiphany-auth-gate');
+    return false;
+  }
   function openAccountFromWelcome(mode) {
     hideWelcomeModal();
     const dialog = $('auth-dialog');
@@ -801,6 +819,7 @@
     $('account-google-signin')?.addEventListener('click', () => signInWithProvider('google'));
     $('account-facebook-signin')?.addEventListener('click', () => signInWithProvider('facebook'));
     if (!config || !config.url || !config.publishableKey || !sdk || !sdk.createClient) {
+      enforceSignedOutEntry();
       status('Account service is not configured yet. You can still play and save on this device.', 'error');
       markAuthReady();
       return;
@@ -992,28 +1011,15 @@
         announceAuthAccess();
         renderAccount();
         setPlayerProfileAccess();
-        let guestMode = false;
-        try { guestMode = localStorage.getItem('epiphany-guest-mode-v1') === '1'; } catch {}
-        if (guestMode) {
-          document.documentElement.classList.add('landing-seen');
-          document.body.classList.remove('epiphany-auth-gate');
-          document.body.classList.add('epiphany-entered');
-        } else {
-          try {
-            localStorage.removeItem('epiphany-landing-seen');
-            localStorage.setItem('epiphany-auth-gate-v1','1');
-          } catch {}
-          document.documentElement.classList.remove('landing-seen');
-          document.body.classList.remove('epiphany-entered');
-          document.body.classList.add('epiphany-auth-gate');
-        }
+        enforceSignedOutEntry();
         status('Not signed in. Sign in, create an account, or continue as a guest.', 'info');
       }
       markAuthReady();
     }).catch(error => {
+      enforceSignedOutEntry();
       markAuthReady();
       console.error('Epiphany session check failed:', error);
-      status('Could not check your account session. You can still play offline.', 'error');
+      status('Could not check your account session. Sign in again or continue as a guest.', 'error');
     });
   });
 })();
