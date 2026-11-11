@@ -3333,14 +3333,14 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
     if(e.target.closest('#writer-read-aloud')){const text=(CREATE_STORY.publishedPages||[]).join(' ');if(!text.trim()){toast('Write or generate your story first.');return;}speak(text,{rate:0.88});return;}
     if(e.target.closest('#writer-save-story')){saveCreatedStory();return;}
     if(e.target.closest('#writer-cloud-save')){saveCreatedStoryToAccount('private');return;}
-    if(e.target.closest('#writer-publish-story')){if(window.confirm('Publish this story so other signed-in learners can read it?'))saveCreatedStoryToAccount('public');return;}
+    if(e.target.closest('#writer-publish-story')){window.EpiphanyConfirm({title:'Publish your story?',message:'Other signed-in learners will be able to read this story in the community.',confirmText:'Publish story',cancelText:'Keep it private'}).then(confirmed=>{if(confirmed)saveCreatedStoryToAccount('public');});return;}
     if(e.target.closest('#writer-load-cloud-library')){loadMyCloudStoryLibrary();return;}
     const cloudStoryPick=e.target.closest('[data-open-cloud-story]');if(cloudStoryPick){const story=(window.__epiphanyMyCloudStories||{})[cloudStoryPick.dataset.openCloudStory];if(story){CREATE_STORY.publishedPages=Array.isArray(story.pages)?story.pages:[];CREATE_STORY.drafts={opening:story.pages?.[0]||'',problem:story.pages?.[1]||'',attempt:story.pages?.[2]||'',climax:story.pages?.[3]||'',ending:story.pages?.[4]||''};CREATE_STORY.cloudStoryId=story.id;CREATE_STORY.savedTitle=story.title;CREATE_STORY.genreLabel=story.genre;CREATE_STORY.writerLevel=story.level;CREATE_STORY.mode='published';renderCreateStory();}return;}
     if(e.target.closest('#writer-load-community')){loadCommunityStoryExchange();return;}
     const exchangePick=e.target.closest('[data-exchange-story]');if(exchangePick){const source=(window.__epiphanyCommunityStories||{})[exchangePick.dataset.exchangeStory];if(source){CREATE_STORY.exchangeStory=source;CREATE_STORY.exchangeText='';CREATE_STORY.mode='exchange';renderCreateStory();}return;}
     if(e.target.closest('#writer-exchange-back')){CREATE_STORY.mode='published';renderCreateStory();return;}
     if(e.target.closest('#writer-save-exchange')){saveStoryExchange('private');return;}
-    if(e.target.closest('#writer-publish-exchange')){if(window.confirm('Share this continuation with the community?'))saveStoryExchange('public');return;}
+    if(e.target.closest('#writer-publish-exchange')){window.EpiphanyConfirm({title:'Share your continuation?',message:'The continuation will be visible to other signed-in learners in the community.',confirmText:'Share continuation',cancelText:'Keep it private'}).then(confirmed=>{if(confirmed)saveStoryExchange('public');});return;}
     if(e.target.closest('#writer-new-story')){CREATE_STORY={topic:'mystery',mode:'setup',story:null,answer:'',name:'Robin',friend:'Maya',time:'today',place:'a small town',problem:'lost',drafts:{},challengeWords:[]};renderCreateStory();return;}
     if(e.target.closest('#writer-hidden-word')){CREATE_STORY.mode='setup';renderCreateStory();return;}
     const createHint=e.target.closest('[data-create-hint]');if(createHint&&CREATE_STORY.mode==='story'){CREATE_STORY.hintLevel=Math.min(3,(CREATE_STORY.hintLevel||0)+1);renderCreateStory();return;}
@@ -3392,7 +3392,7 @@ const CREATE_STORY_TIMES={today:'Today',past:'A few years ago',future:'One day'}
       }
       const merged = {...defaults(), ...incoming};
       if (!Array.isArray(merged.completed) || !Number.isFinite(merged.streakFreezes)) throw new Error('The backup data is incomplete.');
-      if (!confirm('Import this backup and replace the progress saved on this device? Export your current progress first if you want to keep it.')) return;
+      if (!await window.EpiphanyConfirm({title:'Replace saved progress?',message:'Importing this backup will replace the progress currently saved on this device. Export a backup first if you want to keep a copy.',confirmText:'Replace progress',cancelText:'Cancel import',danger:true,icon:'!'})) return;
       state = merged;
       save();
       toast('Backup imported. Reloading your progress…');

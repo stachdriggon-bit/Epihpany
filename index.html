@@ -1003,6 +1003,56 @@ n>
   </section>
 </div>
 
+<div class="confirm-overlay" id="app-confirm-dialog" hidden>
+  <button class="confirm-backdrop" type="button" data-confirm-cancel aria-label="Close confirmation"></button>
+  <section class="confirm-card" role="alertdialog" aria-modal="true" aria-labelledby="app-confirm-title" aria-describedby="app-confirm-message">
+    <div class="confirm-icon" aria-hidden="true" id="app-confirm-icon">?</div>
+    <div class="confirm-copy"><p class="confirm-eyebrow">EPIPHANY</p><h2 id="app-confirm-title">Are you sure?</h2><p id="app-confirm-message"></p></div>
+    <div class="confirm-actions"><button type="button" class="confirm-cancel" data-confirm-cancel>Cancel</button><button type="button" class="confirm-accept" id="app-confirm-accept">Continue</button></div>
+  </section>
+</div>
+<script>
+(() => {
+  const dialog=document.getElementById('app-confirm-dialog');
+  if(!dialog)return;
+  const title=dialog.querySelector('#app-confirm-title');
+  const message=dialog.querySelector('#app-confirm-message');
+  const accept=dialog.querySelector('#app-confirm-accept');
+  const icon=dialog.querySelector('#app-confirm-icon');
+  let settle=null,previousFocus=null;
+  const finish=value=>{
+    if(!settle)return;
+    const resolve=settle;settle=null;
+    dialog.hidden=true;document.body.classList.remove('confirm-open');
+    document.removeEventListener('keydown',onKey);
+    resolve(value);
+    if(previousFocus?.isConnected)previousFocus.focus({preventScroll:true});
+  };
+  const onKey=event=>{if(event.key==='Escape'){event.preventDefault();finish(false);}else if(event.key==='Tab'){
+    const cancel=dialog.querySelector('[data-confirm-cancel]:not(.confirm-backdrop)');
+    const items=[cancel,accept];
+    if(event.shiftKey&&document.activeElement===cancel){event.preventDefault();accept.focus();}
+    else if(!event.shiftKey&&document.activeElement===accept){event.preventDefault();cancel.focus();}
+  }};
+  window.EpiphanyConfirm=options=>new Promise(resolve=>{
+    if(settle)finish(false);
+    const config=options||{};
+    previousFocus=document.activeElement;
+    title.textContent=config.title||'Are you sure?';
+    message.textContent=config.message||'Do you want to continue?';
+    accept.textContent=config.confirmText||'Continue';
+    const cancel=dialog.querySelector('[data-confirm-cancel]:not(.confirm-backdrop)');
+    cancel.textContent=config.cancelText||'Cancel';
+    accept.classList.toggle('is-danger',config.danger===true);
+    icon.textContent=config.icon||(config.danger?'!':'?');
+    settle=resolve;dialog.hidden=false;document.body.classList.add('confirm-open');
+    document.addEventListener('keydown',onKey);
+    requestAnimationFrame(()=>accept.focus({preventScroll:true}));
+  });
+  accept.addEventListener('click',()=>finish(true));
+  dialog.querySelectorAll('[data-confirm-cancel]').forEach(button=>button.addEventListener('click',()=>finish(false)));
+})();
+</script>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>

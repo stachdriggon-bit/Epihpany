@@ -112,3 +112,19 @@ test('accessibility and notification settings have working focused preference wi
   assert.match(html, /notification-settings/);
   assert.match(html, /settingsPages\.forEach\(page=>\{page\.hidden=page\.dataset\.settingsPage!==key;\}\)/);
 });
+
+
+test('consequential confirmations use EPIPHANY branded dialogs instead of browser prompts', () => {
+  assert.match(html, /id="app-confirm-dialog"/);
+  assert.match(html, /role="alertdialog"/);
+  assert.match(html, /window\.EpiphanyConfirm=options=>new Promise/);
+  assert.match(html, /data-confirm-cancel/);
+  assert.match(html, /confirm-accept/);
+  assert.doesNotMatch(account, /window\.confirm\(/);
+  assert.match(account, /title:'Sign out\?'/);
+  assert.match(account, /title:'Delete this post\?'/);
+  assert.doesNotMatch(app, /window\.confirm\(/);
+  assert.match(app, /title:'Publish your story\?'/);
+  assert.match(app, /title:'Share your continuation\?'/);
+  assert.match(app, /title:'Replace saved progress\?'/);
+});

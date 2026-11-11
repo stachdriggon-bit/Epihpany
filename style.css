@@ -4094,3 +4094,20 @@ body.reduce-motion *,body.reduce-motion *::before,body.reduce-motion *::after{an
 .settings-page .settings-description{margin:0 0 4px}
 .settings-page .settings-inline-actions{margin-top:2px}
 @media(max-width:620px){.tools-panel.settings-menu{max-height:calc(100dvh - 76px)}.settings-detail-sheet{max-height:92dvh}}
+
+/* Native-browser-free confirmation dialogs used for consequential actions. */
+.confirm-overlay[hidden]{display:none!important}
+.confirm-overlay{position:fixed;inset:0;z-index:260;display:grid;place-items:center;padding:18px;overscroll-behavior:contain}
+.confirm-backdrop{position:absolute;inset:0;width:100%;height:100%;border:0;background:rgba(9,14,35,.68);backdrop-filter:blur(8px)}
+.confirm-card{position:relative;width:min(100%,440px);padding:clamp(22px,4vw,30px);border:1px solid var(--line);border-radius:24px;background:var(--ground);color:var(--ink);box-shadow:0 28px 90px rgba(8,12,28,.34);animation:account-modal-in .18s ease both}
+.confirm-icon{display:grid;place-items:center;width:42px;height:42px;margin-bottom:18px;border-radius:14px;background:var(--tone-soft);color:var(--accent);font-size:22px;font-weight:900}
+.confirm-copy .confirm-eyebrow{margin:0 0 6px;color:var(--ink-2);font-size:10px;font-weight:900;letter-spacing:.15em}
+.confirm-copy h2{margin:0 0 9px;font:800 clamp(22px,4vw,28px)/1.15 var(--display);letter-spacing:-.03em}
+.confirm-copy>p:last-child{margin:0;color:var(--ink-2);font-size:14px;line-height:1.65}
+.confirm-actions{display:flex;justify-content:flex-end;gap:9px;margin-top:25px}
+.confirm-actions button{min-height:42px;padding:10px 17px;border:1px solid var(--line);border-radius:12px;font:750 13px var(--body);cursor:pointer}
+.confirm-cancel{background:var(--surface);color:var(--ink)}
+.confirm-accept{border-color:var(--yellow)!important;background:var(--yellow);color:var(--navy)}
+.confirm-accept.is-danger{border-color:#d84b4b!important;background:#d84b4b;color:#fff}
+body.confirm-open{overflow:hidden}
+@media(max-width:480px){.confirm-card{border-radius:20px}.confirm-actions{flex-direction:column-reverse}.confirm-actions button{width:100%}}

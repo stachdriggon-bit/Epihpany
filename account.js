@@ -599,7 +599,7 @@
     $('player-post-list')?.addEventListener('click', async event => {
       const button = event.target.closest('[data-delete-post]');
       if (!button || !client || !currentUser) return;
-      if (!window.confirm('Delete this post?')) return;
+      if (!await window.EpiphanyConfirm({title:'Delete this post?',message:'This post will be removed from the community. This action cannot be undone.',confirmText:'Delete post',cancelText:'Keep post',danger:true,icon:'!'})) return;
       button.disabled = true;
       try {
         const {error} = await client.from('player_posts').delete().eq('id',button.dataset.deletePost).eq('user_id',currentUser.id);
@@ -866,7 +866,7 @@
       status('Enter your account email and we will send a reset link.', 'info');
     });
     $('account-signout').addEventListener('click', async () => {
-      if (!currentUser || !window.confirm('Sign out of EPIPHANY? Your account progress will remain safely saved online.')) return;
+      if (!currentUser || !await window.EpiphanyConfirm({title:'Sign out?',message:'Your account progress will remain safely saved online. You can sign in again whenever you return.',confirmText:'Sign out',cancelText:'Stay signed in',danger:true,icon:'↗'})) return;
       $('account-signout').disabled = true;
       try {
         const {error} = await client.auth.signOut();
