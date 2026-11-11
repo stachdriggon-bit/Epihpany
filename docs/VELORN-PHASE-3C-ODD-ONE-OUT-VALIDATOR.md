@@ -46,24 +46,27 @@ A successful final submission records one `think_lab / think_lab / odd_one_out /
 
 - Initial database migration: `20261110193000_velorn_odd_one_out_validator.sql`, recorded in the hosted migration ledger as `20261110192426`.
 - Hardening migration: `20261110193500_velorn_odd_one_out_abuse_controls.sql`, recorded as `20261110193018`.
-- Edge Function: `velorn-odd-one-out`, active version 4, with JWT verification enabled.
-- The three deployed Edge Function files (`index.ts`, `odd-one-out-bank.js`, and `odd-one-out-validator.mjs`) were compared byte-for-byte with the current repository files and match.
+- Edge Functions: `velorn-odd-one-out` is active at version 7 with JWT verification enabled; `velorn-odd-one-out-guest` is active at version 5 with gateway JWT verification disabled by design because it uses a random 256-bit per-session bearer token whose SHA-256 hash is stored server-side.
+- All six deployed Edge Function files (three per function: `index.ts`, `odd-one-out-bank.js`, and `odd-one-out-validator.mjs`) were compared byte-for-byte with the current repository files on 2026-11-11 and match.
+- The hosted database records all six Velorn migrations. The guest session table is present, and current live-state checks found zero guest sessions, authenticated validator sessions, activity events, wallets, ledger entries, mission boards, assignments, claims, or achievement awards.
+- The hosted setting remains `economy_enabled = false`; all 11 mission templates and 10 achievement definitions remain non-assignable.
 - The live database contains the hardened `challenge_level` and `last_answer_at` columns and the updated start RPC signature.
 - Latest live-state check: zero validator sessions, zero activity events, and `economy_enabled = false`.
 - Clean-room Supabase migration replay and the Phase 3 SQL contract test passed in GitHub run `42886288805`. The test exercised private table privileges, service-only RPC access, session creation, too-fast answer rejection, server-side correctness, atomic completion event creation, replay rejection, and the absence of wallet/claim/award writes.
 
-## Important reward limitation — not reward eligible
+## Reward eligibility status
 
-The root-level public `odd-one-out-bank.js` still contains answer indices because the existing guest/client game uses that bank. The Edge Function does not return those indices in its start response, but a determined player can inspect the public static asset and discover them.
+The former public answer-bank exposure has been addressed:
 
-Therefore this validator is **constrained**, not fully reward-grade. It reliably verifies authenticated session ownership, server-side answer evaluation, answer ordering, expiry, replay protection, bounded pacing, and atomic event recording. It does **not** prove that a player independently solved the questions.
+- The root-level public `odd-one-out-bank.js` asset is absent from the repository's deployed website root.
+- The canonical answer-bearing bank exists only in the authenticated and guest Edge Function source trees; both copies are byte-identical.
+- `.vercelignore` excludes the entire `supabase/` tree, and the PWA lazy loader and service worker do not load or cache the answer bank.
+- Both Edge Function start responses use an explicit allow-list that excludes answer indices and explanations. Correct answers are returned only after the corresponding answer has been submitted.
+- The canonical bank was rotated; the current server version is `odd-one-out-rotated-20261110-v2`.
 
-Before any mission or achievement is mapped to this event:
-1. Remove answer-bearing content from every public client asset and keep the answer key server-only, or move all evaluation paths to a server-owned challenge service.
-2. Add a focused acceptance test proving no public asset or start response exposes answer keys.
-3. Review event eligibility separately; validator success alone does not choose or authorize a reward.
+Odd One Out now has a server-owned question bank and server-side answer evaluation. This removes the previously documented public answer-key blocker. It does not mean rewards are active: no mission predicate has been approved and mapped to this event, no claim writer or board service is enabled, and the economy remains disabled. The event is evidence for a future reviewed mapping, not a reward by itself.
 
-Mission templates remain unmapped and unassignable. Reward claims remain unwritable. `economy_enabled = false`.
+Guest sessions are deliberately separate from account sessions. They use a random 256-bit bearer token, store only its hash, and are rate-limited by IP and answer pacing. Guest completions do not create trusted activity events, wallets, claims, awards, or Velorn. A guest therefore cannot inherit or spend an authenticated account's wallet.
 
 ## Acceptance checks
 
@@ -97,3 +100,8 @@ The original Odd One Out bank had previously been delivered to browsers as a laz
 - Explanations and challenge explanations were revised alongside the rotated options.
 - The bank exposes the internal version `odd-one-out-rotated-20261110-v2`; both authenticated and guest validators record the same validator version.
 - The browser still receives only the safe question options. Correct indices and explanations remain server-side until each answer is submitted.
+
+
+## Guest validator contract coverage (2026-11-11)
+
+The clean-room Supabase workflow also runs `supabase/tests/phase3_guest_validator_assertions.sql`. It verifies private RLS/FORCE RLS boundaries, service-role-only RPC execution, token-hash isolation, rejection of wrong-token access, minimum answer spacing, server-side correctness, completion/replay behavior, and the absence of guest event, wallet, ledger, claim, and award writes. The economy-disabled invariant is checked in the same rollback-only test.
