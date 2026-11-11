@@ -139,6 +139,20 @@ async function main() {
   assert.ok(baseUrl && anonKey && serviceKey, 'Local Supabase environment is incomplete');
   assert.equal(bank.validateBank().valid, true, 'Canonical private Word Forge bank is invalid');
 
+  const forgedIdentity = await invoke({
+    action: 'start',
+    trainingMode: 'guided',
+    userId: '00000000-0000-4000-8000-000000000001'
+  }, { guestIp: '198.51.100.41' });
+  assert.equal(forgedIdentity.status, 400, 'Client-supplied identity must be rejected');
+
+  const missingProjectKey = await requestJson(functionUrl, {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ action: 'start', trainingMode: 'guided' })
+  });
+  assert.equal(missingProjectKey.status, 401, 'Requests without a project API key must be rejected');
+
   const guest = await completeSession({
     mode: 'guided',
     guestIp: '198.51.100.42',
