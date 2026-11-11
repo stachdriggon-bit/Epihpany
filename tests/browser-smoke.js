@@ -1211,6 +1211,7 @@ test('main navigation tabs open without uncaught page errors', { timeout: 18 * 6
     await adaptivePage.setViewportSize({ width: 800, height: 900 });
     adaptivePage.on('pageerror', error => errors.push('adaptive-home: ' + error.message));
     await adaptivePage.addInitScript(() => {
+      localStorage.setItem('epiphany-guest-mode-v2', '1');
       localStorage.setItem('epiphany-progress', JSON.stringify({
         review:[{word:'although',meaning:'despite',due:'2000-01-01',errors:0,box:1,attempts:0}],
         adaptiveSignals:{grammar:{attempts:4,errors:3,correct:1,topics:{}}},
@@ -1228,6 +1229,7 @@ test('main navigation tabs open without uncaught page errors', { timeout: 18 * 6
     await grammarReviewPage.setViewportSize({ width: 800, height: 900 });
     grammarReviewPage.on('pageerror', error => errors.push('adaptive-grammar-review: ' + error.message));
     await grammarReviewPage.addInitScript(() => {
+      localStorage.setItem('epiphany-guest-mode-v2', '1');
       localStorage.setItem('epiphany-progress', JSON.stringify({
         review:[],
         mistakeTrapSrs:{'past-simple':{attempts:4,correct:2,errors:2,box:0,streak:0,due:'2000-01-01'}},
@@ -1246,6 +1248,7 @@ test('main navigation tabs open without uncaught page errors', { timeout: 18 * 6
     const cardsPage = await browser.newPage();
     await cardsPage.setViewportSize({ width: 390, height: 844 });
     await cardsPage.addInitScript(() => {
+      localStorage.setItem('epiphany-guest-mode-v2', '1');
       // Keep the browser smoke test deterministic even when external config loading is delayed.
       window.EPIPHANY_SUPABASE_CONFIG = {url:'https://pqxkmtowialpjwehvuyb.supabase.co'};
       window.__cardLongTasks = [];
@@ -1442,6 +1445,7 @@ test('main navigation tabs open without uncaught page errors', { timeout: 18 * 6
     await offlinePage.addInitScript(() => {
       localStorage.setItem('epiphany-progress', JSON.stringify({placementDone:true,assessedLevel:'A1',level:'A1'}));
       localStorage.setItem('epiphany-landing-seen', '1');
+      localStorage.setItem('epiphany-guest-mode-v2', '1');
     });
     await offlinePage.goto(baseUrl, { waitUntil: 'domcontentloaded' });
     await dismissFirstVisitOverlays(offlinePage);
