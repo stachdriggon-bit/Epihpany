@@ -91,7 +91,7 @@ test('first entry offers account access or guest play, and settings open directl
   assert.doesNotMatch(html.slice(html.indexOf('id="profile-view"'),html.indexOf('id="trophies-view"')), /class="block account-block"/, "Profile must not contain sign-in or account-creation forms");
   assert.doesNotMatch(html, /class="landing-preview"/, "landing must not show a sample quiz");
   assert.match(html, /epiphany-auth-gate-v1/);
-  assert.match(html, /epiphany-guest-mode-v1/);
+  assert.match(html, /epiphany-guest-mode-v2/);
   assert.match(html, /id="settings-dialog"/);
   for (const page of ['appearance','learning','account','data','notifications','app']) {
     assert.match(html, new RegExp('data-settings-open="'+page+'"'));
@@ -102,8 +102,9 @@ test('first entry offers account access or guest play, and settings open directl
   assert.match(html, /id="account-signout"[^>]*hidden/);
   assert.match(account, /localStorage\.setItem\('epiphany-auth-gate-v1','1'\)/);
   assert.match(account, /function enforceSignedOutEntry\(\)/, 'session restoration failure must resolve into guest or account entry');
-  assert.match(account, /localStorage\.getItem\('epiphany-guest-mode-v1'\) === '1'/, 'only an explicitly selected guest session may bypass the auth gate');
-  assert.match(account, /localStorage\.removeItem\('epiphany-guest-mode-v1'\)/, 'authenticated and signed-out transitions clear guest mode');
+  assert.match(account, /localStorage\.getItem\('epiphany-guest-mode-v2'\) === '1'/, 'only a newly confirmed guest session may bypass the auth gate');
+  assert.doesNotMatch(account, /localStorage\.getItem\('epiphany-guest-mode-v1'/, 'legacy guest markers must not silently bypass the new sign-in gate');
+  assert.match(account, /localStorage\.removeItem\('epiphany-guest-mode-v2'\)/, 'authenticated and signed-out transitions clear guest mode');
   assert.match(account, /status\('Not signed in\. Sign in, create an account, or continue as a guest\.'/, 'a stale landing-seen flag cannot silently bypass sign-in after session restoration');
   assert.match(account, /openAccountFromWelcome\('signin'\)/,
     'a visitor without an authenticated session or explicit guest choice must see the sign-in dialog immediately');
