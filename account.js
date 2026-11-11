@@ -9,6 +9,28 @@
   const statusEl = () => $('account-status');
   let client = null;
   let currentUser = null;
+  function detectAccountTimezone() {
+    try {
+      const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      if (!timezone) return null;
+      new Intl.DateTimeFormat('en', {timeZone: timezone});
+      return timezone;
+    } catch { return null; }
+  }
+  async function syncAccountTimezone(user) {
+    const timezone = detectAccountTimezone();
+    if (!client || !user || !timezone || currentUser?.id !== user.id) return;
+    const existing = user.user_metadata && user.user_metadata.timezone_name;
+    if (existing === timezone) return;
+    try {
+      const {error} = await client.auth.updateUser({
+        data: {...(user.user_metadata || {}), timezone_name: timezone}
+      });
+      if (error) throw error;
+    } catch (error) {
+      console.warn('Could not sync the account timezone preference.', error);
+    }
+  }
   let authReady = false;
   let resolveAuthReady;
   const authReadyPromise = new Promise(resolve => { resolveAuthReady = resolve; });
@@ -935,6 +957,7 @@
         pendingCloudProgress = null;
       }
       currentUser = nextUser;
+      if (nextUser) setTimeout(() => syncAccountTimezone(nextUser), 0);
       if (currentUser) {
         try {
           localStorage.setItem('epiphany-landing-seen','1');
