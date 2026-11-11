@@ -1,5 +1,0 @@
--- ARCHIVED — DO NOT EXECUTE independently.
--- Historical evidence only; canonical tracked reconstruction:
--- supabase/migrations/20261023233115_epiphany_player_privacy_v2.sql
--- Replay through the ordered migration chain, not manually in the SQL editor.
--- Previous contents remain available in Git history.

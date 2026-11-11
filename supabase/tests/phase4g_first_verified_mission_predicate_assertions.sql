@@ -9,7 +9,7 @@ INSERT INTO auth.users (
 VALUES
   ('f4b00000-0000-4000-8000-000000000051','authenticated','authenticated','velorn-phase4g-valid@example.invalid','',now(),'{}'::jsonb,'{"timezone_name":"UTC"}'::jsonb,now(),now()),
   ('f4b00000-0000-4000-8000-000000000052','authenticated','authenticated','velorn-phase4g-invalid@example.invalid','',now(),'{}'::jsonb,'{"timezone_name":"UTC"}'::jsonb,now(),now()),
-  ('f4b00000-0000-4000-8000-000000000053','authenticated','authenticated','velorn-phase4g-board@example.invalid','{}'::jsonb,'{"timezone_name":"UTC"}'::jsonb,now(),now());
+  ('f4b00000-0000-4000-8000-000000000053','authenticated','authenticated','velorn-phase4g-board@example.invalid','',now(),'{}'::jsonb,'{"timezone_name":"UTC"}'::jsonb,now(),now());
 
 SELECT set_config('request.jwt.claim.role', 'service_role', true);
 
