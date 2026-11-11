@@ -578,7 +578,7 @@
   ]);
   const isDeveloperAccount = () => !!(currentUser && currentUser.email && DEVELOPER_EMAILS.has(String(currentUser.email).trim().toLowerCase()));
   function announceAuthAccess() {
-    document.dispatchEvent(new CustomEvent('epiphany-auth-changed', { detail: { isDeveloper: isDeveloperAccount(), email: isDeveloperAccount() ? String(currentUser.email).trim().toLowerCase() : '' } }));
+    document.dispatchEvent(new CustomEvent('epiphany-auth-changed', { detail: { userId: currentUser?.id || '', isDeveloper: isDeveloperAccount(), email: isDeveloperAccount() ? String(currentUser.email).trim().toLowerCase() : '' } }));
   }
 
   async function saveStoryToCloud(story, visibility = 'private') {
@@ -883,6 +883,7 @@
           await syncUserProgress(currentUser);
         }
       } else {
+        announceAuthAccess();
         renderAccount();
         setPlayerProfileAccess();
         status('Not signed in. Your progress is saved only on this device until you create an account.', 'info');
