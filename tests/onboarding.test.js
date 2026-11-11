@@ -106,6 +106,10 @@ test('first entry offers account access or guest play, and settings open directl
   assert.match(account, /document\.body\.classList\.add\('epiphany-auth-gate'\)/);
   assert.match(account, /window\.EpiphanyConfirm\(\{title:'Sign out\?',message:'Your account progress will remain safely saved online\./, 'sign out must use the EPIPHANY-branded confirmation dialog');
   assert.match(account, /confirmText:'Sign out',cancelText:'Stay signed in',danger:true/);
+  assert.match(account, /function syncSettingsSignOutVisibility\(\)/);
+  assert.match(account, /settingsMenu\?\.addEventListener\('toggle'/);
+  assert.match(account, /if \(settingsMenu\.open\) syncSettingsSignOutVisibility\(\)/);
+  assert.match(account, /button\.hidden = !currentUser/);
 });
 
 
