@@ -105,6 +105,10 @@ test('first entry offers account access or guest play, and settings open directl
   assert.match(account, /localStorage\.getItem\('epiphany-guest-mode-v1'\) === '1'/, 'only an explicitly selected guest session may bypass the auth gate');
   assert.match(account, /localStorage\.removeItem\('epiphany-guest-mode-v1'\)/, 'authenticated and signed-out transitions clear guest mode');
   assert.match(account, /status\('Not signed in\. Sign in, create an account, or continue as a guest\.'/, 'a stale landing-seen flag cannot silently bypass sign-in after session restoration');
+  assert.match(account, /openAccountFromWelcome\('signin'\)/,
+    'a visitor without an authenticated session or explicit guest choice must see the sign-in dialog immediately');
+  assert.match(html, /id="auth-continue-guest"/,
+    'the automatic sign-in dialog must retain a direct guest option');
   assert.ok(account.includes("function openAccountFromWelcome(mode)"));
   assert.ok(account.includes("const dialog = $('auth-dialog')"));
   assert.doesNotMatch(account, /profileButton/, 'authentication must not navigate to Profile');
