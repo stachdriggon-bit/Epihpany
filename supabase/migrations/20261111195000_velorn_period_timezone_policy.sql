@@ -28,7 +28,7 @@ BEGIN
     RAISE EXCEPTION 'Mission period resolution requires the trusted server role.'
       USING ERRCODE = '42501';
   END IF;
-  IF p_user_id IS NULL OR p_period_type NOT IN ('daily', 'weekly') OR p_reference IS NULL THEN
+  IF p_user_id IS NULL OR p_period_type IS NULL OR p_period_type NOT IN ('daily', 'weekly') OR p_reference IS NULL THEN
     RAISE EXCEPTION 'A player, supported period type, and reference time are required.'
       USING ERRCODE = '22023';
   END IF;
