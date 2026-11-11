@@ -1,6 +1,6 @@
 # Velorn Economy — Technical Architecture
 
-> **Status (verified 2026-11-11):** Phase 1 wallet/ledger and Phase 2 event/claim-record foundations are deployed. Odd One Out has authenticated and guest server validators; the answer-bearing bank is private to the Edge Functions and absent from public PWA assets. Guest sessions are online-validated but intentionally create no trusted economy event or wallet. Phase 4A atomic mission-claim RPCs are being added to the repository and remain pending clean-room verification and hosted migration. No mission predicate mapping, board generator, player balance read, reward issuance, balance import, or economy activation is enabled.
+> **Status (verified 2026-11-11):** Phase 1 wallet/ledger and Phase 2 event/claim-record foundations are deployed. Odd One Out has authenticated and guest server validators; the answer-bearing bank is private to the Edge Functions and absent from public PWA assets. Guest sessions are online-validated but intentionally create no trusted economy event or wallet. Phase 4A atomic mission-claim RPCs passed clean-room CI and are deployed to hosted Supabase. Phase 4B adds an authenticated Edge Function wrapper in the repository, pending CI and deployment. No mission predicate mapping, board generator, player balance read, reward issuance, balance import, or economy activation is enabled.
 
 ## 1. Purpose and design constraints
 

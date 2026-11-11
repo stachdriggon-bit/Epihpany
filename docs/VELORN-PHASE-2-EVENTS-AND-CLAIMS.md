@@ -86,3 +86,9 @@ The clean-room test covers daily and weekly totals, replay behavior, the optiona
 ## Safety rule
 
 A validated event is evidence, not a reward. The central mission/achievement engine decides whether that evidence satisfies a versioned objective; the wallet ledger remains the only authority for Velorn balance changes. No game, browser, local storage value, or client-supplied reward amount may bypass that chain.
+
+## Phase 4B — authenticated mission claim endpoint
+
+The repository now includes `supabase/functions/velorn-mission-claims/index.ts`, configured with `verify_jwt = true`. The function independently verifies the bearer token using Supabase Auth and derives the player ID from `auth.getUser(token)`; it never accepts a user ID or reward amount from the client. It exposes only the two Phase 4A atomic claim RPCs, rejects unexpected fields and malformed IDs, and returns a minimal paid-claim receipt.
+
+The hosted Phase 4A database migration is applied and its live grants were verified: `anon` and `authenticated` cannot execute either claim RPC, while `service_role` can. The endpoint itself remains pending its own CI and deployment; it is not yet called by the PWA. No boards are generated and the economy remains disabled.

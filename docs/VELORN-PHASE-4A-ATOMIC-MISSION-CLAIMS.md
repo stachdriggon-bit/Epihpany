@@ -36,7 +36,7 @@ Amounts come from the versioned configuration and immutable assignment snapshots
 - No timezone calculation or reset-boundary decision. The service consumes only existing board periods.
 - No mission-template activation or validator mapping changes.
 - No achievement award writer. Achievement awards need their own predicate-driven, insert-as-paid transaction path because their history is also append-only.
-- No Edge Function, browser integration, player balance read, hosted migration, or economy activation in this phase.
+- No browser integration, player balance read, or economy activation in this phase. The subsequent Phase 4B adds the authenticated Edge Function wrapper; it does not activate rewards.
 
 ## Verification
 
@@ -50,4 +50,4 @@ Amounts come from the versioned configuration and immutable assignment snapshots
 - One paid claim per ledger entry.
 - Full rollback when the wallet rejects a transaction because the economy is disabled.
 
-A later concurrency test should submit the same assignment and distinct assignments on one board in parallel and assert one payment per assignment and no cap overrun. Production deployment remains blocked until clean-room CI and hosted post-migration checks pass.
+A later concurrency test should submit the same assignment and distinct assignments on one board in parallel and assert one payment per assignment and no cap overrun. The migration passed clean-room CI and was applied to hosted Supabase on 2026-11-11. Live verification confirmed service-role-only execution and an empty wallet/claim state with the economy disabled.
