@@ -61,6 +61,7 @@ test('card wallet data is isolated by authenticated user and never loaded into g
   assert.match(cards, /const switchWalletOwner = userId =>/);
   assert.match(cards, /state = safeState\(activeStorageKey\)/);
   assert.match(cards, /localStorage\.removeItem\(STORE\)/);
+  assert.match(cards, /progressOwner === nextUserId/);
   assert.match(account, /userId: currentUser\?\.id \|\| ''/);
   assert.match(account, /if \(!currentUser\) \{\s*announceAuthAccess\(\)/);
 });
