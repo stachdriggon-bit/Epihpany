@@ -1254,7 +1254,7 @@ test('main navigation tabs open without uncaught page errors', { timeout: 18 * 6
       try { new PerformanceObserver(list => window.__cardLongTasks.push(...list.getEntries().map(entry => entry.duration))).observe({type:'longtask', buffered:true}); } catch {}
       localStorage.setItem('epiphany-landing-seen', '1');
       localStorage.setItem('epiphany-progress', JSON.stringify({placementDone:true,assessedLevel:'A1',level:'A1'}));
-      localStorage.setItem('epiphany-card-prototype-v1', JSON.stringify({
+      localStorage.setItem('epiphany-card-prototype-v1:guest', JSON.stringify({
         tokens:15, shards:0, owned:{'CHR-001':1,'CHR-002':1,'CHR-004':1,'CHR-039':1,'CHR-005':1},
         cardLevels:{}, history:[], achievementRewards:{}, initialized:true
       }));
