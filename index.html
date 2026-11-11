@@ -839,6 +839,7 @@ n>
           <p class="account-welcome">Signed in as <strong id="account-email"></strong></p>
           <p class="account-note">Your progress will sync automatically while you play online.</p>
         </div>
+        <button class="btn btn-ghost auth-guest-button" id="auth-continue-guest" type="button">Continue as guest</button>
       </section>
   </section>
 </div>
@@ -1069,6 +1070,12 @@ n>
     document.getElementById('landing-start')?.addEventListener('click',enterAsGuest);
     document.getElementById('landing-signin')?.addEventListener('click',()=>window.EpiphanyAuth?.openAccountMode('signin'));
     document.getElementById('landing-signup')?.addEventListener('click',()=>window.EpiphanyAuth?.openAccountMode('signup'));
+    document.getElementById('auth-continue-guest')?.addEventListener('click',()=>{
+      const dialog=document.getElementById('auth-dialog');
+      if(dialog)dialog.hidden=true;
+      document.body.classList.remove('auth-dialog-open');
+      enterAsGuest();
+    });
     const authDialog=document.getElementById('auth-dialog');
     const closeAuthDialog=()=>{if(authDialog)authDialog.hidden=true;document.body.classList.remove('auth-dialog-open');};
     document.getElementById('auth-dialog-close')?.addEventListener('click',closeAuthDialog);
