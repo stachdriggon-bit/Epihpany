@@ -696,12 +696,19 @@ test('main navigation tabs open without uncaught page errors', { timeout: 18 * 6
         checkpoint('thinklab: Word Forge loaded its server-approved session');
         assert.ok(requested.some(path => path.endsWith('/word-forge-bank.js')),
           'Word Forge prompt metadata should load on demand with Think Lab');
-        const publicForgeBank = await page.evaluate(() => window.EPIPHANY_WORD_FORGE_BANK);
-        assert.equal(publicForgeBank.validateBank().valid, true,
+        const publicForgeAudit = await page.evaluate(() => {
+          const bank=window.EPIPHANY_WORD_FORGE_BANK;
+          const rounds=['guided','steady','challenge'].flatMap(mode => bank.getRounds(mode));
+          return {
+            valid:bank.validateBank().valid,
+            total:rounds.length,
+            containsPrivateFields:rounds.some(round => 'answerWord' in round || 'explain' in round || 'skill' in round)
+          };
+        });
+        assert.equal(publicForgeAudit.valid,true,
           'the public Word Forge prompt metadata should validate');
-        const publicForgeRounds = ['guided','steady','challenge'].flatMap(mode => publicForgeBank.getRounds(mode));
-        assert.equal(publicForgeRounds.length,72,'the browser should receive the 72 reviewed prompt records');
-        assert.equal(publicForgeRounds.some(round => 'answerWord' in round || 'explain' in round || 'skill' in round),false,
+        assert.equal(publicForgeAudit.total,72,'the browser should receive the 72 reviewed prompt records');
+        assert.equal(publicForgeAudit.containsPrivateFields,false,
           'answer keys, explanations and skill labels must remain server-only');
         assert.deepEqual(forgeStartRequest,{action:'start',trainingMode:'guided'},
           'Word Forge start must send only the selected training mode');
