@@ -917,8 +917,10 @@
       renderAccount();
       setPlayerProfileAccess();
       hideWelcomeModal();
-      hideAuthDialog();
-      window.dispatchEvent(new CustomEvent('epiphany:auth-dialog-close'));
+      if (event !== 'PASSWORD_RECOVERY') {
+        hideAuthDialog();
+        window.dispatchEvent(new CustomEvent('epiphany:auth-dialog-close'));
+      }
       loadPlayerProfile().catch(error => console.error('Profile refresh failed:', error));
       if (event === 'PASSWORD_RECOVERY') {
         recoveryMode = true;
