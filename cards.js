@@ -4,6 +4,9 @@
 (() => {
   'use strict';
   const STORE = 'epiphany-card-prototype-v1';
+  const GUEST_STORE = STORE + ':guest';
+  const ACCOUNT_STORE_PREFIX = STORE + ':user:';
+  const LEGACY_OWNER_STORE = STORE + ':legacy-owner';
   const DAILY_COST = 5;
   const ONE_COST = 5;
   const THREE_COST = 14;
@@ -20,9 +23,9 @@
   const data = () => Array.isArray(window.EPIPHANY_CARD_DATA) ? window.EPIPHANY_CARD_DATA : [];
   const today = () => { const d = new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); };
   const reducedMotion = () => !!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
-  const safeState = () => {
+  const safeState = (storageKey = GUEST_STORE) => {
     try {
-      const parsed = JSON.parse(localStorage.getItem(STORE) || 'null');
+      const parsed = JSON.parse(localStorage.getItem(storageKey) || 'null');
       if (parsed && typeof parsed === 'object') return {
         tokens: Math.max(0, Number(parsed.tokens) || 0),
         shards: Math.max(0, Number(parsed.shards) || 0),
@@ -38,8 +41,36 @@
     } catch (_) {}
     return {tokens:STARTER_TOKENS, shards:0, owned:{}, dailyDate:'', sinceLegendary:0, adminGrantFor:'', cardLevels:{}, history:[], achievementRewards:{}, initialized:true};
   };
-  let state = safeState();
-  const save = () => { try { localStorage.setItem(STORE, JSON.stringify(state)); } catch (_) {} };
+  let activeUserId = '';
+  let activeStorageKey = GUEST_STORE;
+  let state = safeState(activeStorageKey);
+  const save = () => { try { localStorage.setItem(activeStorageKey, JSON.stringify(state)); } catch (_) {} };
+  const switchWalletOwner = userId => {
+    const nextUserId = typeof userId === 'string' ? userId.trim() : '';
+    const nextStorageKey = nextUserId ? ACCOUNT_STORE_PREFIX + nextUserId : GUEST_STORE;
+    if (nextUserId === activeUserId && nextStorageKey === activeStorageKey) return;
+    if (nextUserId) {
+      try {
+        const accountState = localStorage.getItem(nextStorageKey);
+        const legacyState = localStorage.getItem(STORE);
+        const legacyOwner = localStorage.getItem(LEGACY_OWNER_STORE) || '';
+        // The old shared wallet had no owner metadata. Claim it once for the first
+        // authenticated account after this upgrade; never expose it to guest mode
+        // or a different account after it has been claimed.
+        if (!accountState && legacyState && (!legacyOwner || legacyOwner === nextUserId)) {
+          localStorage.setItem(nextStorageKey, legacyState);
+          localStorage.setItem(LEGACY_OWNER_STORE, nextUserId);
+          localStorage.removeItem(STORE);
+        }
+      } catch (_) {}
+    }
+    activeUserId = nextUserId;
+    activeStorageKey = nextStorageKey;
+    state = safeState(activeStorageKey);
+    updateCounts();
+    renderGallery(true);
+    renderFeatured();
+  };
   const esc = (value) => String(value).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
   /* ---------- catalogue helpers ---------- */
@@ -812,7 +843,10 @@
     window.setInterval(()=>{ if (state.dailyDate === today()) updateCounts(); }, 60000);
     save();
   };
-  document.addEventListener('epiphany-auth-changed',event=>{if(event.detail?.isDeveloper&&event.detail?.email)grantAdminTestTokens(event.detail.email);});
+  document.addEventListener('epiphany-auth-changed',event=>{
+    switchWalletOwner(event.detail?.userId || '');
+    if(event.detail?.isDeveloper&&event.detail?.email)grantAdminTestTokens(event.detail.email);
+  });
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
   window.EpiphanyCards={getState:()=>({...state,owned:{...state.owned},cardLevels:{...state.cardLevels},history:[...state.history]}),awardAchievementTokens:(amount=5)=>{const n=Math.max(0,Math.floor(Number(amount)||0));state.tokens+=n;save();updateCounts();return state.tokens;}};
 })();
