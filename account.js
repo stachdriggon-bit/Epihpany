@@ -916,12 +916,20 @@
       }
       currentUser = nextUser;
       if (currentUser) {
-        try { localStorage.setItem('epiphany-landing-seen','1'); localStorage.removeItem('epiphany-auth-gate-v1'); } catch {}
+        try {
+          localStorage.setItem('epiphany-landing-seen','1');
+          localStorage.removeItem('epiphany-guest-mode-v1');
+          localStorage.removeItem('epiphany-auth-gate-v1');
+        } catch {}
         document.documentElement.classList.add('landing-seen');
         document.body.classList.remove('epiphany-auth-gate');
         document.body.classList.add('epiphany-entered');
       } else if (event === 'SIGNED_OUT') {
-        try { localStorage.removeItem('epiphany-landing-seen'); localStorage.setItem('epiphany-auth-gate-v1','1'); } catch {}
+        try {
+          localStorage.removeItem('epiphany-landing-seen');
+          localStorage.removeItem('epiphany-guest-mode-v1');
+          localStorage.setItem('epiphany-auth-gate-v1','1');
+        } catch {}
         document.documentElement.classList.remove('landing-seen');
         document.body.classList.remove('epiphany-entered');
         document.body.classList.add('epiphany-auth-gate');
@@ -961,7 +969,11 @@
       if (error) throw error;
       if (data && data.session && data.session.user) {
         currentUser = data.session.user;
-        try { localStorage.setItem('epiphany-landing-seen','1'); localStorage.removeItem('epiphany-auth-gate-v1'); } catch {}
+        try {
+          localStorage.setItem('epiphany-landing-seen','1');
+          localStorage.removeItem('epiphany-guest-mode-v1');
+          localStorage.removeItem('epiphany-auth-gate-v1');
+        } catch {}
         document.documentElement.classList.add('landing-seen');
         document.body.classList.remove('epiphany-auth-gate');
         document.body.classList.add('epiphany-entered');
@@ -980,7 +992,22 @@
         announceAuthAccess();
         renderAccount();
         setPlayerProfileAccess();
-        status('Not signed in. Your progress is saved only on this device until you create an account.', 'info');
+        let guestMode = false;
+        try { guestMode = localStorage.getItem('epiphany-guest-mode-v1') === '1'; } catch {}
+        if (guestMode) {
+          document.documentElement.classList.add('landing-seen');
+          document.body.classList.remove('epiphany-auth-gate');
+          document.body.classList.add('epiphany-entered');
+        } else {
+          try {
+            localStorage.removeItem('epiphany-landing-seen');
+            localStorage.setItem('epiphany-auth-gate-v1','1');
+          } catch {}
+          document.documentElement.classList.remove('landing-seen');
+          document.body.classList.remove('epiphany-entered');
+          document.body.classList.add('epiphany-auth-gate');
+        }
+        status('Not signed in. Sign in, create an account, or continue as a guest.', 'info');
       }
       markAuthReady();
     }).catch(error => {
