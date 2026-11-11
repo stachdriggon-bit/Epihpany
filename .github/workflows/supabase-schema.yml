@@ -176,16 +176,42 @@ jobs:
           GUEST_SESSION_ID=$(node -p "require('/tmp/word-forge-e2e.json').guestSessionId")
           AUTH_SESSION_ID=$(node -p "require('/tmp/word-forge-e2e.json').authenticatedSessionId")
 
-          AUTH_EVENTS=$(psql "$DB_URL" -At -v ON_ERROR_STOP=1 -v user_id="$USER_ID" -v session_id="$AUTH_SESSION_ID" \
-            -c "SELECT count(*) FROM economy_private.activity_events WHERE user_id=:'user_id'::uuid AND source_event_key=:'session_id'::uuid AND activity_id='word_forge' AND event_type='game_session_completed' AND validator_version='word-forge-reviewed-72-20261111-v1';")
-          GUEST_EVENTS=$(psql "$DB_URL" -At -v ON_ERROR_STOP=1 -v session_id="$GUEST_SESSION_ID" \
-            -c "SELECT count(*) FROM economy_private.activity_events WHERE source_event_key=:'session_id'::uuid;")
-          REWARD_ROWS=$(psql "$DB_URL" -At -v ON_ERROR_STOP=1 -v user_id="$USER_ID" \
-            -c "SELECT (SELECT count(*) FROM economy_private.wallets WHERE user_id=:'user_id'::uuid)+(SELECT count(*) FROM economy_private.wallet_ledger WHERE user_id=:'user_id'::uuid)+(SELECT count(*) FROM economy_private.mission_reward_claims WHERE user_id=:'user_id'::uuid)+(SELECT count(*) FROM economy_private.achievement_awards WHERE user_id=:'user_id'::uuid);")
-          GUEST_SESSIONS=$(psql "$DB_URL" -At -v ON_ERROR_STOP=1 -v session_id="$GUEST_SESSION_ID" \
-            -c "SELECT count(*) FROM economy_private.word_forge_validator_sessions WHERE session_id=:'session_id'::uuid AND user_id IS NULL AND guest_token_hash IS NOT NULL AND length(guest_token_hash)=64;")
-          AUTH_SESSIONS=$(psql "$DB_URL" -At -v ON_ERROR_STOP=1 -v user_id="$USER_ID" -v session_id="$AUTH_SESSION_ID" \
-            -c "SELECT count(*) FROM economy_private.word_forge_validator_sessions WHERE session_id=:'session_id'::uuid AND user_id=:'user_id'::uuid AND guest_token_hash IS NULL;")
+          AUTH_EVENTS=$(psql "$DB_URL" -At -v ON_ERROR_STOP=1 -v user_id="$USER_ID" -v session_id="$AUTH_SESSION_ID" <<'SQL'
+          SELECT count(*) FROM economy_private.activity_events
+          WHERE user_id=:'user_id'::uuid
+            AND source_event_key=:'session_id'::uuid
+            AND activity_id='word_forge'
+            AND event_type='game_session_completed'
+            AND validator_version='word-forge-reviewed-72-20261111-v1';
+          SQL
+          )
+          GUEST_EVENTS=$(psql "$DB_URL" -At -v ON_ERROR_STOP=1 -v session_id="$GUEST_SESSION_ID" <<'SQL'
+          SELECT count(*) FROM economy_private.activity_events
+          WHERE source_event_key=:'session_id'::uuid;
+          SQL
+          )
+          REWARD_ROWS=$(psql "$DB_URL" -At -v ON_ERROR_STOP=1 -v user_id="$USER_ID" <<'SQL'
+          SELECT (SELECT count(*) FROM economy_private.wallets WHERE user_id=:'user_id'::uuid)
+               + (SELECT count(*) FROM economy_private.wallet_ledger WHERE user_id=:'user_id'::uuid)
+               + (SELECT count(*) FROM economy_private.mission_reward_claims WHERE user_id=:'user_id'::uuid)
+               + (SELECT count(*) FROM economy_private.achievement_awards WHERE user_id=:'user_id'::uuid);
+          SQL
+          )
+          GUEST_SESSIONS=$(psql "$DB_URL" -At -v ON_ERROR_STOP=1 -v session_id="$GUEST_SESSION_ID" <<'SQL'
+          SELECT count(*) FROM economy_private.word_forge_validator_sessions
+          WHERE session_id=:'session_id'::uuid
+            AND user_id IS NULL
+            AND guest_token_hash IS NOT NULL
+            AND length(guest_token_hash)=64;
+          SQL
+          )
+          AUTH_SESSIONS=$(psql "$DB_URL" -At -v ON_ERROR_STOP=1 -v user_id="$USER_ID" -v session_id="$AUTH_SESSION_ID" <<'SQL'
+          SELECT count(*) FROM economy_private.word_forge_validator_sessions
+          WHERE session_id=:'session_id'::uuid
+            AND user_id=:'user_id'::uuid
+            AND guest_token_hash IS NULL;
+          SQL
+          )
           ECONOMY_ENABLED=$(psql "$DB_URL" -At -v ON_ERROR_STOP=1 -c "SELECT economy_enabled FROM economy_private.economy_settings WHERE singleton=true;")
 
           test "$AUTH_EVENTS" = "1"
