@@ -4070,3 +4070,8 @@ body.epiphany-auth-gate>header.top,body.epiphany-auth-gate>main#main{display:non
 body.epiphany-auth-gate #landing-screen{display:block!important}
 @media(max-width:620px){.settings-overlay{padding:9px}.settings-sheet{max-height:94dvh;padding:19px 14px;border-radius:21px}.settings-grid{grid-template-columns:1fr}.settings-data-group{grid-column:auto}.settings-footer{align-items:flex-start;flex-direction:column}.settings-inline-actions{grid-template-columns:1fr 1fr}}
 @media(prefers-reduced-motion:reduce){.settings-sheet{animation:none}}
+
+.settings-select-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:9px 10px;color:var(--ink);font-size:13px;font-weight:700}
+.settings-select-row select{max-width:130px;min-height:36px;padding:5px 9px;border:1px solid var(--line-2);border-radius:9px;background:var(--ground);color:var(--ink);font:inherit}
+body[data-text-size="large"]{font-size:17px}
+body.reduce-motion *,body.reduce-motion *::before,body.reduce-motion *::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}

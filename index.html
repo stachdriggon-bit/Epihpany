@@ -954,10 +954,14 @@ n>
   <section class="settings-sheet" role="dialog" aria-modal="true" aria-labelledby="settings-title">
     <header class="settings-head"><div><p class="settings-eyebrow">EPIPHANY · PERSONAL SPACE</p><h2 id="settings-title">Settings</h2><p>Make your learning space feel right.</p></div><button class="settings-close" id="settings-close" type="button" aria-label="Close settings">×</button></header>
     <div class="settings-grid">
+      <section class="settings-group" aria-labelledby="settings-accessibility-title"><h3 id="settings-accessibility-title">Appearance & accessibility</h3>
+        <button class="tools-action" id="theme-toggle" type="button" aria-pressed="false" aria-label="Turn on dark mode">◐ <span>Dark mode</span></button>
+        <label class="tools-action" for="reduced-motion-toggle"><input id="reduced-motion-toggle" type="checkbox"> <span>Reduce animations</span></label>
+        <label class="settings-select-row" for="text-size-setting"><span>Text size</span><select id="text-size-setting"><option value="normal">Default</option><option value="large">Large</option></select></label>
+      </section>
       <section class="settings-group" aria-labelledby="settings-learning-title"><h3 id="settings-learning-title">Learning & experience</h3>
         <button class="tools-action" id="translation-toggle" type="button" aria-pressed="true" aria-label="Toggle Arabic translation">ع <span>Arabic translation: On</span></button>
         <button class="tools-action" id="sound-toggle-mobile" type="button" aria-pressed="true" aria-label="Turn sound effects off">♫ <span>Sound effects: On</span></button>
-        <button class="tools-action" id="theme-toggle" type="button" aria-pressed="false" aria-label="Turn on dark mode">◐ <span>Dark mode</span></button>
         <button class="tools-action" id="open-voice" type="button" aria-label="Choose reader voice">🔊 <span>Reader voice</span></button>
       </section>
       <section class="settings-group" aria-labelledby="settings-account-title"><h3 id="settings-account-title">Account & security</h3><p class="settings-description" id="settings-account-description">Manage your account and saved progress.</p>
@@ -969,6 +973,10 @@ n>
         <div class="settings-inline-actions"><button class="tools-action" id="export-progress" type="button" aria-label="Export progress to a file">↓ <span>Export progress</span></button><button class="tools-action" id="import-progress" type="button" aria-label="Import progress from a file">↑ <span>Import progress</span></button></div>
         <label class="tools-action telemetry-setting" for="anonymous-telemetry"><input id="anonymous-telemetry" type="checkbox"> <span>Share anonymous usage & error reports (optional)</span></label>
         <small class="telemetry-note">No name, email, answers or story text is sent. You can turn this off at any time.</small>
+      </section>
+      <section class="settings-group" aria-labelledby="settings-notifications-title"><h3 id="settings-notifications-title">Notifications</h3>
+        <p class="settings-description">Choose how EPIPHANY keeps you updated about learning activity.</p>
+        <button class="tools-action" id="open-notification-settings" type="button"><span>Notification preferences</span><span aria-hidden="true">→</span></button>
       </section>
       <section class="settings-group" aria-labelledby="settings-about-title"><h3 id="settings-about-title">App</h3>
         <button class="tools-action" id="install-app" type="button" aria-label="Install Epiphany app" hidden>＋ <span>Install app</span></button>
@@ -1003,6 +1011,32 @@ n>
     document.getElementById('settings-backdrop')?.addEventListener('click',closeSettings);
     document.addEventListener('keydown',event=>{if(event.key==='Escape'&&settings&&!settings.hidden)closeSettings();});
     document.getElementById('open-account-settings')?.addEventListener('click',()=>{closeSettings();document.querySelector('[data-view="profile"]')?.click();});
+    const motionToggle=document.getElementById('reduced-motion-toggle');
+    const textSize=document.getElementById('text-size-setting');
+    const applyAccessibility=()=>{
+      let reduce=false,size='normal';
+      try { reduce=localStorage.getItem('epiphany-reduced-motion-v1')==='1'; size=localStorage.getItem('epiphany-text-size-v1')==='large'?'large':'normal'; } catch {}
+      document.body.classList.toggle('reduce-motion',reduce);
+      document.body.dataset.textSize=size;
+      if(motionToggle)motionToggle.checked=reduce;
+      if(textSize)textSize.value=size;
+    };
+    applyAccessibility();
+    motionToggle?.addEventListener('change',()=>{
+      document.body.classList.toggle('reduce-motion',motionToggle.checked);
+      try { localStorage.setItem('epiphany-reduced-motion-v1',motionToggle.checked?'1':'0'); } catch {}
+    });
+    textSize?.addEventListener('change',()=>{
+      const size=textSize.value==='large'?'large':'normal';
+      document.body.dataset.textSize=size;
+      try { localStorage.setItem('epiphany-text-size-v1',size); } catch {}
+    });
+    document.getElementById('open-notification-settings')?.addEventListener('click',()=>{
+      closeSettings();
+      document.getElementById('notification-bell')?.click();
+      const preferences=document.querySelector('.notification-settings');
+      if(preferences)preferences.open=true;
+    });
   })();
 </script>
 </body>

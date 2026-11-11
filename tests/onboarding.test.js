@@ -96,3 +96,14 @@ test('first entry offers account access or guest play, and settings are grouped 
   assert.match(account, /document\.body\.classList\.add\('epiphany-auth-gate'\)/);
   assert.match(account, /Sign out of EPIPHANY\?/);
 });
+
+
+test('accessibility and notification settings have working preference entry points', () => {
+  assert.match(html, /id="reduced-motion-toggle"/);
+  assert.match(html, /id="text-size-setting"/);
+  assert.match(html, /epiphany-reduced-motion-v1/);
+  assert.match(html, /epiphany-text-size-v1/);
+  assert.match(html, /id="settings-notifications-title"/);
+  assert.match(html, /id="open-notification-settings"/);
+  assert.match(html, /notification-settings/);
+});
