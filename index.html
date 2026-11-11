@@ -32,7 +32,7 @@
   <script src="data-aha.js?v=47fc5af7" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.119.0" defer></script>
   <script src="supabase-config.js?v=7a16f4a2" defer></script>
-  <script src="account.js?v=guest-validator-client-20261110-1" defer></script>
+  <script src="account.js?v=auth-dialog-profile-removal-20261111-1" defer></script>
   <script src="notifications.js?v=keyboard-dismiss-20261031-1" defer></script>
 <script src="adaptive-engine.js?v=adaptive-engine-20261031-1" defer></script>
 <script src="telemetry.js?v=e5eac23f" defer></script>
@@ -71,7 +71,7 @@
   #landing-screen { min-height:100svh; padding:clamp(24px,5vw,64px) max(22px,calc((100vw - 1160px)/2)); background:radial-gradient(circle at 90% 10%,rgba(117,87,232,.12),transparent 28%),linear-gradient(135deg,#fbfaff,#eefaf7); color:#282442; }
   .landing-top { display:flex; align-items:center; gap:12px; font-weight:800; font-size:1.35rem; letter-spacing:-.04em; }
   .landing-mark { display:grid; place-items:center; width:44px; height:44px; border-radius:15px; color:white; background:linear-gradient(135deg,#7557e8,#3ab9a6); font-size:1.5rem; }
-  .landing-grid { display:grid; grid-template-columns:minmax(0,1.1fr) minmax(280px,.9fr); align-items:center; gap:clamp(32px,6vw,84px); max-width:1160px; margin:clamp(50px,9vh,100px) auto 0; }
+  .landing-grid { display:grid; grid-template-columns:minmax(0,680px); align-items:center; justify-content:center; gap:clamp(24px,5vw,48px); max-width:760px; margin:clamp(54px,12vh,120px) auto 0; }
   .landing-eyebrow { display:inline-flex; padding:8px 12px; border-radius:999px; background:#eee9ff; color:#5e49c7; font-size:.85rem; font-weight:800; letter-spacing:.04em; }
   .landing-copy h1 { max-width:650px; margin:20px 0; font-size:clamp(2.7rem,6vw,5.3rem); line-height:.99; letter-spacing:-.065em; }
   .landing-copy h1 span { color:#7557e8; }
@@ -92,7 +92,7 @@
   .landing-feature b { display:block; margin-bottom:6px; }
   .landing-feature span { color:#6b667b; font-size:.92rem; line-height:1.55; }
   .landing-foot { max-width:1160px; margin:34px auto 0; color:#827d91; font-size:.82rem; }
-  @media(max-width:760px) { .landing-grid { grid-template-columns:1fr; margin-top:48px; gap:28px; } .landing-preview { transform:none; } .landing-feature-row { grid-template-columns:1fr; margin-top:36px; } .landing-copy h1 { max-width:540px; } }
+  @media(max-width:760px) { .landing-grid { grid-template-columns:1fr; margin-top:48px; gap:28px; } .landing-copy h1 { max-width:540px; } }
   @media(prefers-reduced-motion:reduce) { .landing-preview { transform:none; } }
 </style>
 </head>
@@ -134,22 +134,7 @@
         <span class="landing-note">Guest progress stays on this device. You can create an account later.</span>
       </div>
     </div>
-    <div class="landing-preview" aria-label="Preview of an English vocabulary question">
-      <div class="landing-preview-top"><span class="landing-preview-chip">WORD QUEST · A2</span><span>⏱ 3 min</span></div>
-      <h2>What does “resilient” mean?</h2>
-      <p>Choose the meaning that fits best.</p>
-      <div class="landing-option">Giving up when something is difficult</div>
-      <div class="landing-option is-right">Able to recover after difficulty ✓</div>
-      <div class="landing-option">Never making a mistake</div>
-      <p style="margin:18px 0 0;font-size:.9rem">Learn from each answer, then try another small quest.</p>
-    </div>
-  </div>
-  <div class="landing-feature-row">
-    <div class="landing-feature"><b>✦ Learn in context</b><span>Words and grammar inside useful sentences, not isolated lists.</span></div>
-    <div class="landing-feature"><b>↗ Make real choices</b><span>Stories and everyday scenarios where you practise communicating.</span></div>
-    <div class="landing-feature"><b>♡ Progress at your pace</b><span>Short sessions, gentle feedback and progress saved on your device.</span></div>
-  </div>
-  <p class="landing-foot">EPIPHANY · Short quests from A1 to C2 · Free to try · <a href="wotd-card.html" style="color:#6357a3;font-weight:700">Make today’s Word of the Day card ↗</a></p>
+v>
 </section>
 
 <header class="top">
@@ -767,38 +752,6 @@ n>
           <div class="profile-posts-heading"><div><h3 id="community-wall-title">From the community</h3><p>Little English moments shared by other learners.</p></div><button class="btn btn-ghost community-refresh" id="community-refresh" type="button">Refresh</button></div>
           <div class="community-post-list" id="community-post-list"><div class="profile-empty-posts">Community posts will appear here.</div></div>
         </section>
-      <section class="block account-block" aria-labelledby="account-block-title">
-        <div class="block-head"><h2 id="account-block-title">Your account</h2><p>Save your progress online and continue on another device.</p></div>
-        <p id="account-status" class="account-status" role="status" aria-live="polite">Checking account service…</p>
-        <div id="account-signed-out">
-          <div class="account-social-options">
-            <button class="account-social-button account-google-button" id="account-google-signin" type="button"><span class="social-google-mark" aria-hidden="true">G</span>Continue with Google</button>
-            <button class="account-social-button account-facebook-button" id="account-facebook-signin" type="button"><span class="social-facebook-mark" aria-hidden="true">f</span>Continue with Facebook</button>
-            <p>Or sign in with your email</p>
-          </div>
-          <form id="account-form" class="account-form">
-            <h3 id="account-form-title">Welcome back</h3>
-            <label for="account-email-input">Email address</label>
-            <input id="account-email-input" name="email" type="email" autocomplete="email" placeholder="you@example.com" required>
-            <label for="account-password">Password</label>
-            <input id="account-password" name="password" type="password" autocomplete="current-password" placeholder="Password" minlength="8" required>
-            <label id="account-otp-label" for="account-otp-input" hidden>Email verification code</label>
-            <input id="account-otp-input" name="otp" type="text" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" maxlength="6" placeholder="6-digit code" aria-describedby="account-otp-help" hidden>
-            <p class="account-otp-help" id="account-otp-help" hidden>Enter the 6-digit code from your email. You can stay on this page while checking your inbox.</p>
-            <button class="btn btn-go account-submit" id="account-submit" type="submit">Sign in</button>
-          </form>
-          <div class="account-actions">
-            <button class="btn btn-ghost" id="account-mode-toggle" type="button">New here? Create an account</button>
-            <button class="account-link" id="account-forgot" type="button">Forgot password?</button>
-            <button class="btn btn-ghost" id="account-resend-code" type="button" hidden>Resend code</button>
-            <button class="account-link" id="account-edit-email" type="button" hidden>Use a different email</button>
-          </div>
-        </div>
-        <div id="account-signed-in" hidden>
-          <p class="account-welcome">Signed in as <strong id="account-email"></strong></p>
-          <p class="account-note">Your progress will sync automatically while you play online.</p>
-        </div>
-      </section>
       <section class="block profile-challenges" aria-labelledby="profile-challenges-title"><div class="block-head"><h2 id="profile-challenges-title">Challenges & streak</h2><p>Daily and weekly goals, plus your streak freeze.</p></div>      <section class="motivation profile-motivation" aria-label="Daily and weekly challenges">
         <article class="challenge-card daily-card">
           <div class="challenge-top"><span class="challenge-icon">✦</span><span class="challenge-tag">DAILY QUEST</span><span class="challenge-date" id="daily-date">Today</span></div>
@@ -847,6 +800,48 @@ n>
     </div>
   </section>
 </main>
+
+<!-- Focused sign-in and account-creation dialog. The account form is intentionally outside Profile. -->
+<div class="auth-overlay" id="auth-dialog" hidden>
+  <button class="auth-backdrop" id="auth-backdrop" type="button" aria-label="Close sign-in"></button>
+  <section class="auth-dialog-card" role="dialog" aria-modal="true" aria-labelledby="account-block-title">
+    <button class="auth-dialog-close" id="auth-dialog-close" type="button" aria-label="Close">×</button>
+    <div class="auth-dialog-brand" aria-hidden="true">✦</div>
+    <p class="auth-dialog-eyebrow">WELCOME TO EPIPHANY</p>
+    <section class="block account-block" aria-labelledby="account-block-title">
+        <div class="block-head"><h2 id="account-block-title">Your account</h2><p>Save your progress online and continue on another device.</p></div>
+        <p id="account-status" class="account-status" role="status" aria-live="polite">Checking account service…</p>
+        <div id="account-signed-out">
+          <div class="account-social-options">
+            <button class="account-social-button account-google-button" id="account-google-signin" type="button"><span class="social-google-mark" aria-hidden="true">G</span>Continue with Google</button>
+            <button class="account-social-button account-facebook-button" id="account-facebook-signin" type="button"><span class="social-facebook-mark" aria-hidden="true">f</span>Continue with Facebook</button>
+            <p>Or sign in with your email</p>
+          </div>
+          <form id="account-form" class="account-form">
+            <h3 id="account-form-title">Welcome back</h3>
+            <label for="account-email-input">Email address</label>
+            <input id="account-email-input" name="email" type="email" autocomplete="email" placeholder="you@example.com" required>
+            <label for="account-password">Password</label>
+            <input id="account-password" name="password" type="password" autocomplete="current-password" placeholder="Password" minlength="8" required>
+            <label id="account-otp-label" for="account-otp-input" hidden>Email verification code</label>
+            <input id="account-otp-input" name="otp" type="text" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" maxlength="6" placeholder="6-digit code" aria-describedby="account-otp-help" hidden>
+            <p class="account-otp-help" id="account-otp-help" hidden>Enter the 6-digit code from your email. You can stay on this page while checking your inbox.</p>
+            <button class="btn btn-go account-submit" id="account-submit" type="submit">Sign in</button>
+          </form>
+          <div class="account-actions">
+            <button class="btn btn-ghost" id="account-mode-toggle" type="button">New here? Create an account</button>
+            <button class="account-link" id="account-forgot" type="button">Forgot password?</button>
+            <button class="btn btn-ghost" id="account-resend-code" type="button" hidden>Resend code</button>
+            <button class="account-link" id="account-edit-email" type="button" hidden>Use a different email</button>
+          </div>
+        </div>
+        <div id="account-signed-in" hidden>
+          <p class="account-welcome">Signed in as <strong id="account-email"></strong></p>
+          <p class="account-note">Your progress will sync automatically while you play online.</p>
+        </div>
+      </section>
+  </section>
+</div>
 
 <!-- Account-choice markup retained for compatibility; onboarding no longer opens this modal. -->
 <div class="account-welcome-modal" id="account-welcome-modal" hidden role="dialog" aria-modal="true" aria-labelledby="account-welcome-title">
@@ -1070,6 +1065,12 @@ n>
     document.getElementById('landing-start')?.addEventListener('click',enterAsGuest);
     document.getElementById('landing-signin')?.addEventListener('click',()=>window.EpiphanyAuth?.openAccountMode('signin'));
     document.getElementById('landing-signup')?.addEventListener('click',()=>window.EpiphanyAuth?.openAccountMode('signup'));
+    const authDialog=document.getElementById('auth-dialog');
+    const closeAuthDialog=()=>{if(authDialog)authDialog.hidden=true;document.body.classList.remove('auth-dialog-open');};
+    document.getElementById('auth-dialog-close')?.addEventListener('click',closeAuthDialog);
+    document.getElementById('auth-backdrop')?.addEventListener('click',closeAuthDialog);
+    document.addEventListener('keydown',event=>{if(event.key==='Escape'&&authDialog&&!authDialog.hidden)closeAuthDialog();});
+    window.addEventListener('epiphany:auth-dialog-close',closeAuthDialog);
     const settings=document.getElementById('settings-dialog');
     const settingsPages=[...document.querySelectorAll('[data-settings-page]')];
     const settingsTitles={appearance:['Appearance & accessibility','Adjust the way EPIPHANY looks and feels.'],learning:['Learning & experience','Choose how lessons, translations and audio behave.'],account:['Account & security','Manage your account and developer tools.'],data:['Data & privacy','Control local data, backups and optional anonymous reports.'],notifications:['Notifications','Choose how EPIPHANY keeps you updated.'],app:['App & help','Install EPIPHANY or find guidance.']};
@@ -1087,7 +1088,7 @@ n>
     document.getElementById('settings-close')?.addEventListener('click',closeSettings);
     document.getElementById('settings-backdrop')?.addEventListener('click',closeSettings);
     document.addEventListener('keydown',event=>{if(event.key==='Escape'&&settings&&!settings.hidden)closeSettings();});
-    document.getElementById('open-account-settings')?.addEventListener('click',()=>{closeSettings();document.querySelector('[data-view="profile"]')?.click();});
+    document.getElementById('open-account-settings')?.addEventListener('click',()=>{closeSettings();if(!window.EpiphanyAuth?.isSignedIn?.())window.EpiphanyAuth?.openAccountMode('signin');else document.querySelector('[data-view="profile"]')?.click();});
     const motionToggle=document.getElementById('reduced-motion-toggle');
     const textSize=document.getElementById('text-size-setting');
     const applyAccessibility=()=>{
