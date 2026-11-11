@@ -27,6 +27,42 @@
   let pendingCloudProgress = null;
   let lastSaveAt = 0;
 
+
+  let accountTransitionTimer = null;
+  function showAccountTransition(kind) {
+    if (kind !== 'signed-in' && kind !== 'signed-out') return;
+    let overlay = $('epiphany-account-transition');
+    if (!overlay) {
+      overlay = document.createElement('div');
+      overlay.id = 'epiphany-account-transition';
+      overlay.className = 'epiphany-account-transition';
+      overlay.setAttribute('role', 'status');
+      overlay.setAttribute('aria-live', 'polite');
+      overlay.setAttribute('aria-atomic', 'true');
+      overlay.innerHTML = '<div class="epiphany-account-transition__card"><div class="epiphany-account-transition__halo" aria-hidden="true"><span data-account-transition-mark>✦</span></div><p class="epiphany-account-transition__eyebrow">EPIPHANY</p><h2 data-account-transition-title></h2><p data-account-transition-copy></p><div class="epiphany-account-transition__trail" aria-hidden="true"><i></i><i></i><i></i></div></div>';
+      document.body.append(overlay);
+    }
+    if (accountTransitionTimer) clearTimeout(accountTransitionTimer);
+    const signedIn = kind === 'signed-in';
+    overlay.dataset.kind = kind;
+    overlay.querySelector('[data-account-transition-mark]').textContent = signedIn ? '✦' : '↗';
+    overlay.querySelector('[data-account-transition-title]').textContent = signedIn ? 'You’re back.' : 'Until next time.';
+    overlay.querySelector('[data-account-transition-copy]').textContent = signedIn
+      ? 'Your learning world is ready. Let’s keep moving forward.'
+      : 'Your space is safe. We’ll be right here when you return.';
+    overlay.hidden = false;
+    overlay.classList.remove('is-visible');
+    void overlay.offsetWidth;
+    overlay.classList.add('is-visible');
+    accountTransitionTimer = setTimeout(() => {
+      overlay.classList.remove('is-visible');
+      accountTransitionTimer = setTimeout(() => {
+        overlay.hidden = true;
+        accountTransitionTimer = null;
+      }, 320);
+    }, signedIn ? 1900 : 1650);
+  }
+
   function status(message, kind) {
     const el = statusEl();
     if (!el) return;
@@ -844,6 +880,8 @@
         pendingCloudProgress = null;
       }
       currentUser = nextUser;
+      if (event === 'SIGNED_IN') showAccountTransition('signed-in');
+      if (event === 'SIGNED_OUT') showAccountTransition('signed-out');
       announceAuthAccess();
       if (event === 'PASSWORD_RECOVERY') recoveryMode = true;
       if (!currentUser) {
