@@ -91,6 +91,7 @@ test('first entry offers account access or guest play, and settings open directl
   assert.doesNotMatch(html.slice(html.indexOf('id="profile-view"'),html.indexOf('id="trophies-view"')), /class="block account-block"/, "Profile must not contain sign-in or account-creation forms");
   assert.doesNotMatch(html, /class="landing-preview"/, "landing must not show a sample quiz");
   assert.match(html, /epiphany-auth-gate-v1/);
+  assert.match(html, /epiphany-guest-mode-v1/);
   assert.match(html, /id="settings-dialog"/);
   for (const page of ['appearance','learning','account','data','notifications','app']) {
     assert.match(html, new RegExp('data-settings-open="'+page+'"'));
