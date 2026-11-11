@@ -929,6 +929,10 @@
       if (error) throw error;
       if (data && data.session && data.session.user) {
         currentUser = data.session.user;
+        try { localStorage.setItem('epiphany-landing-seen','1'); localStorage.removeItem('epiphany-auth-gate-v1'); } catch {}
+        document.documentElement.classList.add('landing-seen');
+        document.body.classList.remove('epiphany-auth-gate');
+        document.body.classList.add('epiphany-entered');
         announceAuthAccess();
         renderAccount();
         setPlayerProfileAccess();
