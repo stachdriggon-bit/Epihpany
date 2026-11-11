@@ -647,6 +647,43 @@ test('main navigation tabs open without uncaught page errors', { timeout: 18 * 6
         await page.locator('#thinklab-view [data-think-back]').first().click();
         await page.locator('#thinklab-view [data-think-back]').click();
         await page.locator('#thinklab-view [data-think-back]').click();
+        let forgeStartRequest = null;
+        let forgeAnswerRequest = null;
+        const forgeSessionId = '00000000-0000-4000-8000-000000000024';
+        const forgeGuestToken = 'b'.repeat(64);
+        await page.route('**/functions/v1/velorn-word-forge', async route => {
+          if (route.request().method() === 'OPTIONS') {
+            await route.fulfill({status:204,headers:{
+              'Access-Control-Allow-Origin':'*',
+              'Access-Control-Allow-Methods':'POST, OPTIONS',
+              'Access-Control-Allow-Headers':'authorization, apikey, content-type, x-client-info'
+            }});
+            return;
+          }
+          const requestBody = route.request().postDataJSON();
+          if (requestBody.action === 'answer') {
+            forgeAnswerRequest = requestBody;
+            await route.fulfill({status:200,contentType:'application/json',headers:{'Access-Control-Allow-Origin':'*'},body:JSON.stringify({
+              correct:true,correctAnswer:'apple',
+              explanation:'An apple is a common fruit that grows on an apple tree.',
+              skill:'Food vocabulary',questionIndex:0,attemptsRemaining:2,
+              advance:true,completed:false,nextIndex:1,correctCount:1
+            })});
+            return;
+          }
+          forgeStartRequest = requestBody;
+          const questions = Array.from({length:24},(_,i)=>({
+            id:'WF-G-'+String(i+1).padStart(3,'0'),
+            clue:i===0?'A fruit that is often red or green and grows on a tree.':'A reviewed Word Forge practice clue for question '+(i+1)+'.',
+            letters:i===0?'PPLAE':'BRIDGE',
+            prompt:'Forge the word from the letter tiles.'
+          }));
+          await route.fulfill({status:200,contentType:'application/json',headers:{'Access-Control-Allow-Origin':'*'},body:JSON.stringify({
+            sessionId:forgeSessionId,guestToken:forgeGuestToken,
+            validatorVersion:'word-forge-reviewed-72-20261111-v1',
+            trainingMode:'guided',questions
+          })});
+        });
         const forgeLaunch = page.locator('#thinklab-view [data-think-game="forge"]');
         await forgeLaunch.waitFor({state:'visible',timeout:5000});
         await forgeLaunch.click();
@@ -655,38 +692,43 @@ test('main navigation tabs open without uncaught page errors', { timeout: 18 * 6
         await forgeModePicker.locator('[data-think-training-mode="guided"]').click();
         const forgeCard = page.locator('#thinklab-view .tl-game-card');
         await forgeCard.waitFor({state:'visible',timeout:5000});
-        checkpoint('thinklab: Word Forge loaded its approved bank');
+        await forgeCard.locator('.tl-game-actions').waitFor({state:'visible',timeout:5000});
+        checkpoint('thinklab: Word Forge loaded its server-approved session');
         assert.ok(requested.some(path => path.endsWith('/word-forge-bank.js')),
-          'Word Forge bank should load on demand with Think Lab');
-        assert.equal(await page.evaluate(() => window.EPIPHANY_WORD_FORGE_BANK.validateBank().valid), true,
-          'the complete approved Word Forge bank should validate in the browser');
+          'Word Forge prompt metadata should load on demand with Think Lab');
+        const publicForgeBank = await page.evaluate(() => window.EPIPHANY_WORD_FORGE_BANK);
+        assert.equal(publicForgeBank.validateBank().valid, true,
+          'the public Word Forge prompt metadata should validate');
+        const publicForgeRounds = ['guided','steady','challenge'].flatMap(mode => publicForgeBank.getRounds(mode));
+        assert.equal(publicForgeRounds.length,72,'the browser should receive the 72 reviewed prompt records');
+        assert.equal(publicForgeRounds.some(round => 'answerWord' in round || 'explain' in round || 'skill' in round),false,
+          'answer keys, explanations and skill labels must remain server-only');
+        assert.deepEqual(forgeStartRequest,{action:'start',trainingMode:'guided'},
+          'Word Forge start must send only the selected training mode');
         assert.match(await forgeCard.locator('.tl-game-actions').innerText(), /ROUND 1 OF 24/);
-        assert.equal(await forgeCard.locator('[data-forge-tile]').count() > 0, true,
-          'Word Forge should render its available letter tiles');
-        assert.equal(await forgeCard.locator('[data-forge-slot]').count() > 0, true,
+        assert.equal(await forgeCard.locator('[data-forge-tile]').count(),5,
+          'Word Forge should render the server-issued letter tiles');
+        assert.equal(await forgeCard.locator('[data-forge-slot]').count(),5,
           'Word Forge should render answer slots');
-        assert.equal(await forgeCard.locator('[data-training-hint]').count(), 1,
+        assert.equal(await forgeCard.locator('[data-training-hint]').count(),1,
           'Guided Word Forge should provide its training hint');
-        const forgeClue = await forgeCard.locator('.tl-word-clue p').innerText();
-        const forgeAnswer = await page.evaluate(clue => {
-          const item = window.EPIPHANY_WORD_FORGE_BANK.getRounds('guided').find(round => round.clue === clue);
-          return item && item.answerWord.toUpperCase();
-        }, forgeClue);
-        assert.ok(forgeAnswer, 'the displayed clue should map to one approved bank entry');
-        for (const letter of forgeAnswer) {
+        assert.match(await forgeCard.locator('.tl-word-clue p').innerText(),/fruit.*red or green/i);
+        for (const letter of 'APPLE') {
           await forgeCard.locator('[data-forge-tile]:not(:disabled)').filter({hasText:letter}).first().click();
         }
-        assert.equal(await forgeCard.locator('[data-forge-slot].is-filled').count(), forgeAnswer.length,
+        assert.equal(await forgeCard.locator('[data-forge-slot].is-filled').count(),5,
           'each answer letter should occupy one slot');
         await forgeCard.locator('[data-forge-check]').click();
-        assert.equal(await forgeCard.locator('#tl-feedback').isVisible(), true,
-          'a correct forged word should reveal educational feedback');
-        assert.match(await forgeCard.locator('#tl-feedback').innerText(), /Skill:/,
-          'successful feedback should identify the vocabulary skill');
+        await forgeCard.locator('#tl-feedback').waitFor({state:'visible',timeout:5000});
+        assert.match(await forgeCard.locator('#tl-feedback').innerText(), /Skill:.*Food vocabulary/s,
+          'successful server feedback should identify the vocabulary skill');
+        assert.deepEqual(forgeAnswerRequest,{
+          action:'answer',sessionId:forgeSessionId,questionIndex:0,answerWord:'apple',guestToken:forgeGuestToken
+        },'Word Forge answers must be checked by the server using the in-memory guest token');
         assert.equal(await forgeCard.locator('[data-think-next]').isVisible(), true,
-          'a correct answer should unlock the next challenge');
+          'a verified correct answer should unlock the next challenge');
 
-        checkpoint('thinklab: Word Forge board, answer checking and feedback verified');
+        checkpoint('thinklab: Word Forge server session, private answer check and feedback verified');
 
         await page.locator('#thinklab-view [data-think-back]').first().click();
         await page.locator('#thinklab-view [data-think-back]').click();
