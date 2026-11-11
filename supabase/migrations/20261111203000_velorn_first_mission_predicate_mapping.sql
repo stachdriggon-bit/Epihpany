@@ -143,7 +143,10 @@ BEGIN
      OR v_event.validator_version IS DISTINCT FROM 'odd-one-out-rotated-20261110-v2'
      OR v_event.occurred_at > v_event.received_at
      OR jsonb_typeof(v_event.evidence) IS DISTINCT FROM 'object'
-     OR jsonb_object_length(v_event.evidence) <> 5
+     OR (v_event.evidence - ARRAY[
+       'challenge_level', 'training_mode', 'question_count',
+       'correct_count', 'incorrect_count'
+     ]) <> '{}'::jsonb
      OR NOT (v_event.evidence ?& ARRAY[
        'challenge_level', 'training_mode', 'question_count',
        'correct_count', 'incorrect_count'
