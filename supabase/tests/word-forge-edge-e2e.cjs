@@ -117,7 +117,7 @@ async function completeSession({ mode, accessToken = null, guestIp = null, isGue
   // A replayed index must not be accepted, even with a fresh timing interval.
   await sleep(700);
   const replay = await submit(0, answers.get(session.questions[0].id));
-  assert.equal(replay.status, 400, 'Replayed question index must be rejected');
+  assert.equal(replay.status, 409, 'Replayed question index must be rejected as a session-state conflict');
   assert.equal(replay.body.error, 'answer_rejected');
 
   let last = firstCorrect;
