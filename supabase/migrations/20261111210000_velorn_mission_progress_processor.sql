@@ -99,8 +99,9 @@ BEGIN
       AND v_event.occurred_at >= b.period_start
       AND v_event.occurred_at < b.period_end
       AND t.period_type = b.period_type
-      AND t.validator_mapping_status IN ('mapped', 'verified')
-      AND m.mapping_status IN ('mapped', 'verified')
+      AND t.validator_mapping_status = 'verified'
+      AND t.is_assignable
+      AND m.mapping_status = 'verified'
       AND m.source_system = v_event.source_system
       AND m.experience_id = v_event.experience_id
       AND m.activity_id = v_event.activity_id
@@ -147,7 +148,7 @@ BEGIN
       AND m.activity_id = v_event.activity_id
       AND m.event_type = v_event.event_type
       AND m.validator_version = v_event.validator_version
-      AND m.mapping_status IN ('mapped', 'verified')
+      AND m.mapping_status = 'verified'
     ORDER BY m.predicate_version DESC
     LIMIT 1;
     IF NOT FOUND THEN
