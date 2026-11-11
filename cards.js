@@ -54,10 +54,11 @@
         const accountState = localStorage.getItem(nextStorageKey);
         const legacyState = localStorage.getItem(STORE);
         const legacyOwner = localStorage.getItem(LEGACY_OWNER_STORE) || '';
-        // The old shared wallet had no owner metadata. Claim it once for the first
-        // authenticated account after this upgrade; never expose it to guest mode
-        // or a different account after it has been claimed.
-        if (!accountState && legacyState && (!legacyOwner || legacyOwner === nextUserId)) {
+        const progressOwner = localStorage.getItem('epiphany-progress-owner') || '';
+        // The old shared wallet had no owner metadata. Only migrate it when the
+        // existing progress-owner marker independently identifies this account.
+        // Otherwise leave the ambiguous legacy data quarantined and invisible.
+        if (!accountState && legacyState && progressOwner === nextUserId && (!legacyOwner || legacyOwner === nextUserId)) {
           localStorage.setItem(nextStorageKey, legacyState);
           localStorage.setItem(LEGACY_OWNER_STORE, nextUserId);
           localStorage.removeItem(STORE);
