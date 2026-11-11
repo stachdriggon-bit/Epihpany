@@ -44,3 +44,8 @@ The rollback-only Phase 4F test checks:
 - no wallet, ledger, reward claim, or achievement writes.
 
 The test temporarily enables the economy and inserts fixtures only inside a transaction that always rolls back. Production remains disabled and no player boards are created by this migration.
+
+
+## Phase 4G follow-on
+
+Phase 4G verifies the first real predicate end-to-end. It creates immutable successor records for `solve_a_challenge` (template v3 and predicate mapping v2), leaving historical versions unchanged. The actual authenticated Odd One Out Challenge event advances the assignment; Steady mode and replay do not. This remains one daily template only, so the generator still returns `not_ready` for both periods. See [VELORN-PHASE-4G-FIRST-VERIFIED-MISSION-PREDICATE.md](VELORN-PHASE-4G-FIRST-VERIFIED-MISSION-PREDICATE.md).

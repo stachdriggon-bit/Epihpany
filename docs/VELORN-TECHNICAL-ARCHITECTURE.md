@@ -455,3 +455,8 @@ The Supabase inventory and migration comparison are documented in [VELORN-PHASE-
 - Signing out switches the Card Portal prototype to its isolated guest storage namespace; signing in switches to a namespace scoped to that verified user ID. The ambiguous legacy shared local token store is migrated only when the independent progress-owner marker matches the signed-in user; otherwise it stays quarantined.
 - These local namespaces are a compatibility boundary for the old prototype only. They are not authoritative currency storage and are user-editable. Phase 5 must remove local token balances, starter grants and browser-side spending before the Card Portal can display or transact real Velorn.
 - No guest-to-account balance conversion or legacy token import is permitted by default. Any future welcome grant or conversion requires an explicit product decision and a separate server-authoritative migration design.
+
+
+## 16. Phase 4G — first verified mission predicate
+
+The first production-backed mission predicate is verified as immutable successor template `solve_a_challenge` v3 with mapping v2, tied to the authenticated server-owned Odd One Out Challenge validator. A full rollback-only clean-room test verifies the actual event-to-assignment path, replay protection, Steady-mode rejection, and the generator's fail-closed behavior with an insufficient pool. There is one verified daily template and no verified weekly templates; no player board can be generated. The guest validator is not trusted mission evidence. No PWA economy integration, wallet/claim issuance, or activation has occurred; `economy_enabled` remains false. See [VELORN-PHASE-4G-FIRST-VERIFIED-MISSION-PREDICATE.md](VELORN-PHASE-4G-FIRST-VERIFIED-MISSION-PREDICATE.md).

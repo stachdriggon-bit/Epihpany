@@ -97,3 +97,10 @@ The hosted Phase 4A database migration is applied and its live grants were verif
 ## Phase 4F — safe mission board generation
 
 The Phase 4F migration adds a service-role-only generator that uses the saved account timezone policy, creates only complete four-slot daily or three-slot weekly boards, and snapshots approved objectives/rewards. It requires a verified template, verified predicate mapping, and a private service-role-only boolean evaluator for every slot. The generator returns `not_ready` without creating a partial board when the pool is insufficient, and returns existing complete boards idempotently. The progress processor now dispatches only verified private evaluators that satisfy the same security contract. The current catalog has no verified assignable pool, so no live boards are created; `economy_enabled` remains false.
+
+
+## Phase 4G — first verified mission predicate
+
+Phase 4G adds immutable successor records for `solve_a_challenge`: template v3 and predicate mapping v2. The mapping is verified against the deployed authenticated Odd One Out Challenge validator and the actual event-trigger-to-assignment progress path. Version 1 and the earlier mapped version 2 remain unchanged. A completed Challenge session qualifies without an accuracy threshold; Steady mode does not.
+
+This is only one verified daily template. The catalogue still has no verified weekly template and cannot fill either board. The generator returns `not_ready` rather than creating partial boards. The guest validator remains excluded from trusted activity evidence. The Phase 4G rollback-only clean-room test verifies the real template/mapping, progress, replay, insufficient-pool behavior, and absence of wallet/claim writes. The economy remains disabled. See [VELORN-PHASE-4G-FIRST-VERIFIED-MISSION-PREDICATE.md](VELORN-PHASE-4G-FIRST-VERIFIED-MISSION-PREDICATE.md).
