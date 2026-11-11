@@ -67,7 +67,7 @@ RETURNS jsonb LANGUAGE plpgsql SECURITY DEFINER SET search_path='' AS $$
 DECLARE s economy_private.word_forge_validator_sessions%ROWTYPE;q jsonb;v_attempts integer;v_correct boolean;v_advance boolean;v_next integer;v_correct_count integer;v_done boolean;v_answer text;
 BEGIN
  IF current_setting('request.jwt.claim.role',true) IS DISTINCT FROM 'service_role' THEN RAISE EXCEPTION 'trusted server role required' USING ERRCODE='42501';END IF;
- IF p_session_id IS NULL OR p_question_index IS NULL OR p_question_index NOT BETWEEN 0 AND 23 OR COALESCE(p_submitted_word,'') !~ '^[A-Za-z]{3,14}
+ IF p_session_id IS NULL OR p_question_index IS NULL OR p_question_index NOT BETWEEN 0 AND 23 OR COALESCE(p_submitted_word,'') !~ '^[A-Za-z]{3,14}$'
  OR NOT((p_user_id IS NOT NULL AND p_guest_token_hash IS NULL) OR(p_user_id IS NULL AND p_guest_token_hash~'^[0-9a-f]{64}$'))
  THEN RAISE EXCEPTION 'invalid Word Forge answer' USING ERRCODE='22023';END IF;
  SELECT * INTO s FROM economy_private.word_forge_validator_sessions WHERE session_id=p_session_id
