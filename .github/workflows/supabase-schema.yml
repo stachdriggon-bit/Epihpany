@@ -86,6 +86,12 @@ jobs:
           eval "$(supabase status -o env)"
           psql "$DB_URL" -v ON_ERROR_STOP=1 -f supabase/tests/phase3_odd_one_out_validator_assertions.sql
 
+      - name: Assert Phase 3 guest validator isolation contract
+        timeout-minutes: 5
+        run: |
+          eval "$(supabase status -o env)"
+          psql "$DB_URL" -v ON_ERROR_STOP=1 -f supabase/tests/phase3_guest_validator_assertions.sql
+
       - name: Verify concurrent wallet idempotency and debit serialization
         timeout-minutes: 5
         run: |
