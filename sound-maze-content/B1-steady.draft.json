@@ -1,0 +1,166 @@
+{
+  "level": "B1",
+  "mode": "steady",
+  "status": "draft",
+  "version": 3,
+  "pronunciation_reference": "General American",
+  "description": "Steady B1 content batch for The Sound Maze. Each target is spoken aloud; the learner selects its spelling. Draft content is not wired into the live game.",
+  "questions": [
+    {
+      "id": "SM-B1-S-001",
+      "axis": "short_vowel_contrasts",
+      "target": "velvet",
+      "options": [
+        "valid",
+        "velvet",
+        "village",
+        "volume"
+      ],
+      "answer": "velvet",
+      "explain": "Velvet has /ɛ/ in its first syllable. Valid has /æ/, village has /ɪ/, and volume has /ɑ/ in General American."
+    },
+    {
+      "id": "SM-B1-S-002",
+      "axis": "short_vowel_contrasts",
+      "target": "seldom",
+      "options": [
+        "salmon",
+        "seldom",
+        "sullen",
+        "solemn"
+      ],
+      "answer": "seldom",
+      "explain": "Seldom has /ɛ/ in its first syllable. Salmon and solemn begin with /æ/ and /ɑ/ respectively in General American, while sullen has /ʌ/."
+    },
+    {
+      "id": "SM-B1-S-003",
+      "axis": "short_vowel_contrasts",
+      "target": "flutter",
+      "options": [
+        "flatter",
+        "flitter",
+        "flutter",
+        "fluent"
+      ],
+      "answer": "flutter",
+      "explain": "Flutter has /ʌ/ in its first syllable. Flatter has /æ/, flitter has /ɪ/, and fluent has /uː/."
+    },
+    {
+      "id": "SM-B1-S-004",
+      "axis": "initial_consonant_sounds",
+      "target": "genre",
+      "options": [
+        "gentry",
+        "genre",
+        "genuine",
+        "general"
+      ],
+      "answer": "genre",
+      "explain": "Genre begins with /ʒ/ in General American. Gentry and genuine begin with /dʒ/, while general begins with /dʒ/."
+    },
+    {
+      "id": "SM-B1-S-005",
+      "axis": "initial_consonant_sounds",
+      "target": "wren",
+      "options": [
+        "tent",
+        "wren",
+        "when",
+        "then"
+      ],
+      "answer": "wren",
+      "explain": "Wren begins with /r/ because its written w is silent. Tent begins with /t/, when with /w/, and then with /ð/."
+    },
+    {
+      "id": "SM-B1-S-006",
+      "axis": "initial_consonant_sounds",
+      "target": "xylophone",
+      "options": [
+        "sylvan",
+        "xylophone",
+        "pterodactyl",
+        "pharmacy"
+      ],
+      "answer": "xylophone",
+      "explain": "Xylophone begins with /z/, the sound of initial x in this word. Sylvan begins with /s/, pterodactyl with /t/ because p is silent, and pharmacy with /f/."
+    },
+    {
+      "id": "SM-B1-S-007",
+      "axis": "final_consonant_sounds",
+      "target": "mixed",
+      "options": [
+        "mix",
+        "mist",
+        "midst",
+        "mixed"
+      ],
+      "answer": "mixed",
+      "explain": "Mixed ends with the consonant cluster /kst/. Mix ends with /ks/, mist with /st/, and midst with /dst/."
+    },
+    {
+      "id": "SM-B1-S-008",
+      "axis": "final_consonant_sounds",
+      "target": "judged",
+      "options": [
+        "judge",
+        "judged",
+        "jugs",
+        "jungle"
+      ],
+      "answer": "judged",
+      "explain": "Judged ends with /dʒd/ in careful General American pronunciation. Judge ends with /dʒ/, jugs with /ɡz/, and jungle with /ɡəl/."
+    },
+    {
+      "id": "SM-B1-S-009",
+      "axis": "final_consonant_sounds",
+      "target": "strength",
+      "options": [
+        "string",
+        "strange",
+        "strength",
+        "stretch"
+      ],
+      "answer": "strength",
+      "explain": "Strength ends with /ŋθ/. String ends with /ŋ/, strange with /ndʒ/, and stretch with /tʃ/."
+    },
+    {
+      "id": "SM-B1-S-010",
+      "axis": "basic_spelling_patterns",
+      "target": "doubtful",
+      "options": [
+        "doubtful",
+        "dutiful",
+        "doughty",
+        "dotted"
+      ],
+      "answer": "doubtful",
+      "explain": "Doubtful is pronounced with the /daʊt/ sequence and a silent b in its spelling. Dutiful, doughty, and dotted have different vowel or consonant patterns."
+    },
+    {
+      "id": "SM-B1-S-011",
+      "axis": "basic_spelling_patterns",
+      "target": "mission",
+      "options": [
+        "mission",
+        "mansion",
+        "motion",
+        "mention"
+      ],
+      "answer": "mission",
+      "explain": "Mission has the /ˈmɪʃən/ sound pattern. Mansion, motion, and mention have different stressed vowels and/or consonant sequences."
+    },
+    {
+      "id": "SM-B1-S-012",
+      "axis": "basic_spelling_patterns",
+      "target": "foreign",
+      "options": [
+        "foreign",
+        "forage",
+        "forfeit",
+        "fountain"
+      ],
+      "answer": "foreign",
+      "explain": "Foreign is pronounced /ˈfɔrən/. Forage, forfeit, and fountain have different vowel and consonant sequences, so the spoken word identifies the spelling."
+    }
+  ]
+}

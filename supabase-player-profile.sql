@@ -1,0 +1,6 @@
+-- ARCHIVED — DO NOT EXECUTE.
+-- The former root script is corrupted (repeated SQL and truncated CHECK expressions)
+-- and contains obsolete permissive public-read policies.
+-- Canonical local bootstrap: supabase/bootstrap/legacy_foundation.sql
+-- Then replay the timestamped files in supabase/migrations/.
+-- Previous contents remain available in Git history.

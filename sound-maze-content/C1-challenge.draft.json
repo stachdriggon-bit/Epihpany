@@ -1,0 +1,166 @@
+{
+  "level": "C1",
+  "mode": "challenge",
+  "status": "draft",
+  "version": 1,
+  "pronunciation_reference": "General American",
+  "description": "Challenge C1 content batch for The Sound Maze. Each target is spoken aloud; the learner selects its spelling. Draft content is not wired into the live game.",
+  "questions": [
+    {
+      "id": "SM-C1-C-001",
+      "axis": "short_vowel_contrasts",
+      "target": "myriad",
+      "options": [
+        "married",
+        "myriad",
+        "merriment",
+        "moraine"
+      ],
+      "answer": "myriad",
+      "explain": "Myriad begins with /mɪr/ in General American. Married begins with /mær/, merriment with /mɛ/, and moraine with /mə/."
+    },
+    {
+      "id": "SM-C1-C-002",
+      "axis": "short_vowel_contrasts",
+      "target": "quintessential",
+      "options": [
+        "questionable",
+        "quintessential",
+        "quarantine",
+        "quiescent"
+      ],
+      "answer": "quintessential",
+      "explain": "Quintessential begins with /kwɪn/. Questionable begins with /kwɛs/, quarantine with /kwɔr/ or /kwɑr/, and quiescent with /kwaɪ/."
+    },
+    {
+      "id": "SM-C1-C-003",
+      "axis": "short_vowel_contrasts",
+      "target": "vigilant",
+      "options": [
+        "valiant",
+        "vigilant",
+        "vagrant",
+        "voluble"
+      ],
+      "answer": "vigilant",
+      "explain": "Vigilant begins with /vɪ/. Valiant begins with /væ/, vagrant with /veɪ/, and voluble with /vɑ/."
+    },
+    {
+      "id": "SM-C1-C-004",
+      "axis": "initial_consonant_sounds",
+      "target": "psoriasis",
+      "options": [
+        "psoriasis",
+        "zoology",
+        "theory",
+        "fiscal"
+      ],
+      "answer": "psoriasis",
+      "explain": "Psoriasis begins with /s/ because the initial p is silent. Zoology begins with /z/, theory with /θ/, and fiscal with /f/."
+    },
+    {
+      "id": "SM-C1-C-005",
+      "axis": "initial_consonant_sounds",
+      "target": "pteranodon",
+      "options": [
+        "pteranodon",
+        "pivotal",
+        "theory",
+        "gnawing"
+      ],
+      "answer": "pteranodon",
+      "explain": "Pteranodon begins with /t/ because its initial p is silent. Pivotal begins with /p/, theory with /θ/, and gnawing with /n/."
+    },
+    {
+      "id": "SM-C1-C-006",
+      "axis": "initial_consonant_sounds",
+      "target": "chthonic",
+      "options": [
+        "chthonic",
+        "kinetic",
+        "shallow",
+        "gnawing"
+      ],
+      "answer": "chthonic",
+      "explain": "Chthonic begins with /θ/; the initial ch is silent and the th supplies the first sound. Kinetic begins with /k/, shallow with /ʃ/, and gnawing with /n/."
+    },
+    {
+      "id": "SM-C1-C-007",
+      "axis": "final_consonant_sounds",
+      "target": "asks",
+      "options": [
+        "ask",
+        "asks",
+        "asked",
+        "asking"
+      ],
+      "answer": "asks",
+      "explain": "Asks ends with /sks/. Ask ends with /sk/, asked with /skt/, and asking with /skɪŋ/."
+    },
+    {
+      "id": "SM-C1-C-008",
+      "axis": "final_consonant_sounds",
+      "target": "twelfths",
+      "options": [
+        "twelfth",
+        "twelfths",
+        "twelve",
+        "twelfthly"
+      ],
+      "answer": "twelfths",
+      "explain": "Twelfths ends with /lfθs/, adding /s/ to the final cluster in twelfth. Twelve ends with /lv/, and twelfthly adds a syllable."
+    },
+    {
+      "id": "SM-C1-C-009",
+      "axis": "final_consonant_sounds",
+      "target": "crisps",
+      "options": [
+        "crisp",
+        "crisps",
+        "crisis",
+        "crisped"
+      ],
+      "answer": "crisps",
+      "explain": "Crisps ends with /s/ after /sp/, producing /sps/. Crisp lacks the final /s/, crisis ends with /sɪs/, and crisped ends with /pt/."
+    },
+    {
+      "id": "SM-C1-C-010",
+      "axis": "basic_spelling_patterns",
+      "target": "hors d'oeuvre",
+      "options": [
+        "hors d'oeuvre",
+        "horsepower",
+        "hospitable",
+        "honorary"
+      ],
+      "answer": "hors d'oeuvre",
+      "explain": "Hors d'oeuvre is pronounced /ɔr ˈdɜrv/ in General American; its written French sequence is highly irregular. The other choices have different syllable and consonant patterns."
+    },
+    {
+      "id": "SM-C1-C-011",
+      "axis": "basic_spelling_patterns",
+      "target": "onomatopoeia",
+      "options": [
+        "onomatopoeia",
+        "onomastic",
+        "onomatology",
+        "onomatopoeic"
+      ],
+      "answer": "onomatopoeia",
+      "explain": "Onomatopoeia is pronounced /ˌɑnəˌmætəˈpiːə/. Onomatopoeic has a related but different ending; onomastic and onomatology have different stress and vowel sequences."
+    },
+    {
+      "id": "SM-C1-C-012",
+      "axis": "basic_spelling_patterns",
+      "target": "ecclesiastical",
+      "options": [
+        "ecclesiastical",
+        "eclectic",
+        "eccentric",
+        "ecumenical"
+      ],
+      "answer": "ecclesiastical",
+      "explain": "Ecclesiastical is pronounced /ɪˌkliːziˈæstɪkəl/. The alternatives differ in their stressed syllables and vowel-consonant sequences."
+    }
+  ]
+}

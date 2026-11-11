@@ -1,0 +1,62 @@
+name: EPIPHANY checks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: epiphany-checks-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    permissions:
+      contents: read
+    steps:
+      - name: Check out repository branch head
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ github.head_ref || github.ref_name }}
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24
+      - name: Install dependencies
+        run: npm ci
+      - name: Run fast development checks
+        timeout-minutes: 3
+        run: npm run test:fast
+      - name: Install Chromium for browser smoke tests
+        run: npx playwright install chromium
+      - name: Check syntax for every project JavaScript file
+        run: |
+          find . -type f -name '*.js' ! -path './node_modules/*' ! -path './.git/*' -print0 | xargs -0 -r -n1 node --check
+      - name: Stamp generated asset versions
+        run: npm run stamp
+      - name: Run unit and static tests
+        timeout-minutes: 12
+        run: npm run test:unit
+      - name: Run browser smoke tests
+        timeout-minutes: 20
+        run: npm run test:browser
+      - name: Upload World retention heap snapshot
+        if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: world-retention-heap-snapshot
+          path: test-results/world-retention.heapsnapshot
+          if-no-files-found: ignore
+          retention-days: 7
+      - name: Upload card dossier visual verification screenshots
+        if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: epiphany-visual-checks
+          path: |
+            test-results/card-dossier/
+            test-results/odd-one-out/
+          if-no-files-found: ignore

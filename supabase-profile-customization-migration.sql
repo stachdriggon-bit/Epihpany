@@ -1,0 +1,5 @@
+-- ARCHIVED — DO NOT EXECUTE.
+-- Canonical tracked reconstruction:
+-- supabase/migrations/20261030101059_complete_player_profile_columns.sql
+-- This root script changes player-avatars to 5 MiB; live configuration is 3 MiB.
+-- Previous contents remain available in Git history.

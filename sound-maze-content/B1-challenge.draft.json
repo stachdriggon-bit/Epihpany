@@ -1,0 +1,166 @@
+{
+  "level": "B1",
+  "mode": "challenge",
+  "status": "draft",
+  "version": 4,
+  "pronunciation_reference": "General American",
+  "description": "Challenge B1 content batch for The Sound Maze. Each target is spoken aloud; the learner selects its spelling. Draft content is not wired into the live game.",
+  "questions": [
+    {
+      "id": "SM-B1-C-001",
+      "axis": "short_vowel_contrasts",
+      "target": "fabric",
+      "options": [
+        "fabric",
+        "fever",
+        "funnel",
+        "finish"
+      ],
+      "answer": "fabric",
+      "explain": "Fabric has the stressed short /æ/ vowel. Fever has /i/, funnel has /ʌ/, and finish has /ɪ/."
+    },
+    {
+      "id": "SM-B1-C-002",
+      "axis": "short_vowel_contrasts",
+      "target": "endeavor",
+      "options": [
+        "endeavor",
+        "android",
+        "endower",
+        "under"
+      ],
+      "answer": "endeavor",
+      "explain": "Endeavor begins with /ɪn/ in General American. Android begins with /æn/, endower with /ɛn/, and under with /ʌn/."
+    },
+    {
+      "id": "SM-B1-C-003",
+      "axis": "short_vowel_contrasts",
+      "target": "compass",
+      "options": [
+        "compass",
+        "campus",
+        "composed",
+        "compost"
+      ],
+      "answer": "compass",
+      "explain": "Compass has /ʌ/ in its first syllable in General American. Campus has /æ/, composed has /oʊ/, and compost has /ɑ/."
+    },
+    {
+      "id": "SM-B1-C-004",
+      "axis": "initial_consonant_sounds",
+      "target": "pseudonym",
+      "options": [
+        "pneumonia",
+        "pseudonym",
+        "pterodactyl",
+        "pharmacy"
+      ],
+      "answer": "pseudonym",
+      "explain": "Pseudonym begins with /s/ because the initial p is silent. Pneumonia begins with /n/, pterodactyl with /t/, and pharmacy with /f/."
+    },
+    {
+      "id": "SM-B1-C-005",
+      "axis": "initial_consonant_sounds",
+      "target": "pneumonia",
+      "options": [
+        "pterodactyl",
+        "pneumonia",
+        "phenomenon",
+        "pseudonym"
+      ],
+      "answer": "pneumonia",
+      "explain": "Pneumonia begins with /n/ because its written p is silent. Pterodactyl begins with /t/, phenomenon with /f/, and pseudonym with /s/."
+    },
+    {
+      "id": "SM-B1-C-006",
+      "axis": "initial_consonant_sounds",
+      "target": "wrinkle",
+      "options": [
+        "tickle",
+        "wrinkle",
+        "winkle",
+        "nickel"
+      ],
+      "answer": "wrinkle",
+      "explain": "Wrinkle begins with /r/ because its written w is silent. Tickle begins with /t/, winkle with /w/, and nickel with /n/."
+    },
+    {
+      "id": "SM-B1-C-007",
+      "axis": "final_consonant_sounds",
+      "target": "sixths",
+      "options": [
+        "sixth",
+        "sixths",
+        "sixes",
+        "sickles"
+      ],
+      "answer": "sixths",
+      "explain": "Sixths ends with the cluster /ksθs/ in careful pronunciation. Sixth lacks the final /s/, sixes ends /ɪz/, and sickles ends /əlz/."
+    },
+    {
+      "id": "SM-B1-C-008",
+      "axis": "final_consonant_sounds",
+      "target": "debt",
+      "options": [
+        "debt",
+        "dead",
+        "den",
+        "desk"
+      ],
+      "answer": "debt",
+      "explain": "Debt ends with /t/; the written b is silent. Dead ends with /d/, den with /n/, and desk with /sk/."
+    },
+    {
+      "id": "SM-B1-C-009",
+      "axis": "final_consonant_sounds",
+      "target": "worlds",
+      "options": [
+        "word",
+        "worlds",
+        "works",
+        "worse"
+      ],
+      "answer": "worlds",
+      "explain": "Worlds ends with /ldz/. Word ends with /rd/, works with /rks/, and worse with /rs/."
+    },
+    {
+      "id": "SM-B1-C-010",
+      "axis": "basic_spelling_patterns",
+      "target": "acquaintance",
+      "options": [
+        "acquaintance",
+        "accomplishment",
+        "accommodation",
+        "acquiescence"
+      ],
+      "answer": "acquaintance",
+      "explain": "Acquaintance is the spoken target. The other real words have clearly different syllable and vowel patterns; the answer is not a choice between alternative spellings of the same sound."
+    },
+    {
+      "id": "SM-B1-C-011",
+      "axis": "basic_spelling_patterns",
+      "target": "conscience",
+      "options": [
+        "conscience",
+        "conscious",
+        "consequence",
+        "consonance"
+      ],
+      "answer": "conscience",
+      "explain": "Conscience is pronounced /ˈkɑnʃəns/. Conscious, consequence, and consonance have different endings and vowel/consonant sequences."
+    },
+    {
+      "id": "SM-B1-C-012",
+      "axis": "basic_spelling_patterns",
+      "target": "queue",
+      "options": [
+        "cute",
+        "queue",
+        "quay",
+        "quite"
+      ],
+      "answer": "queue",
+      "explain": "Queue is spelled with five letters but pronounced like /kjuː/. Cute begins with the same /kj/ sequence but has a final /t/; quay is /kiː/, and quite is /kwaɪt/."
+    }
+  ]
+}

@@ -1,0 +1,3 @@
+-- ARCHIVED — DO NOT EXECUTE independently.
+-- The legacy table/policies are now part of supabase/bootstrap/legacy_foundation.sql.
+-- Previous contents remain available in Git history.

@@ -1,0 +1,48 @@
+/* Crossword Quest — compact classic crossword board. */
+.cq-shell{max-width:920px;margin:0 auto;color:#edf2ff}
+.cq-shell .tl-game-head{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:0 0 14px}
+.cq-shell .tl-game-head .tl-eyebrow{margin-left:auto}
+.cq-panel{padding:clamp(18px,3vw,30px);border:1px solid rgba(153,177,220,.2);border-radius:22px;background:linear-gradient(145deg,#151f33,#111a2c);box-shadow:0 14px 34px rgba(5,10,24,.16)}
+.cq-kicker{font-size:11px;font-weight:800;letter-spacing:.16em;color:#a99aff}
+.cq-panel h2{margin:7px 0 9px;font-size:clamp(25px,4vw,36px);line-height:1.12;color:#f4f5ff}
+.cq-intro,.cq-instruction{color:#aebbd2;line-height:1.55}
+.cq-level-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:24px}
+.cq-level-card{display:flex;flex-direction:column;align-items:flex-start;gap:8px;min-height:128px;padding:17px;border:1px solid rgba(169,154,255,.3);border-radius:16px;background:#1b2940;color:#f4f5ff;text-align:left}
+.cq-level-card:not(:disabled){cursor:pointer;transition:border-color .16s,transform .16s}
+.cq-level-card:not(:disabled):hover{border-color:#a99aff;transform:translateY(-2px)}
+.cq-level-card:disabled{opacity:.58;cursor:not-allowed}
+.cq-level-size{font-size:12px;color:#b6aaff;font-weight:700}
+.cq-level-card strong{font-size:20px}
+.cq-level-card>span:last-child{font-size:12px;color:#aebbd2}
+.cq-bank-status{margin:20px 0 0;padding:12px 14px;border-radius:12px;background:rgba(255,198,109,.09);color:#f1d5a7;font-size:13px;line-height:1.5}
+.cq-progress{font-size:11px;font-weight:800;letter-spacing:.08em;color:#aebbd2}
+.cq-puzzle-heading{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.cq-grid-size{padding:6px 9px;border:1px solid rgba(169,154,255,.28);border-radius:9px;color:#bdb2ff;font-size:12px;font-weight:700}
+.cq-board-wrap{display:flex;justify-content:center;overflow:auto;padding:8px 0 16px}
+.cq-board{display:grid;gap:2px;width:min(100%,min(66vh,570px));aspect-ratio:1;grid-template-rows:repeat(var(--cq-size),minmax(0,1fr));background:#101728;border:2px solid #101728;touch-action:manipulation}
+.cq-row{display:grid;grid-template-columns:repeat(var(--cq-size),minmax(0,1fr));gap:2px;min-height:0}
+.cq-black{background:#090f1c;min-width:0;min-height:0}
+.cq-cell{position:relative;display:block;min-width:0;min-height:0;background:#f4f5fb;border:1px solid #d7dced}
+.cq-cell.is-word{background:#e7e3ff}
+.cq-cell.is-active{background:#c9c0ff;border-color:#8c7ae8;box-shadow:inset 0 0 0 2px #8c7ae8;z-index:1}
+.cq-cell-number{position:absolute;top:1px;left:3px;font-size:clamp(7px,.95vw,10px);line-height:1;color:#49516a;pointer-events:none}
+.cq-cell input{position:absolute;inset:0;width:100%;height:100%;min-width:0;padding:clamp(5px,1.1vw,11px) 1px 1px;border:0;outline:0;background:transparent;color:#20263a;text-align:center;text-transform:uppercase;font:700 clamp(12px,2.5vw,24px)/1 system-ui,sans-serif;caret-color:#6554c8}
+.cq-cell input:focus-visible{outline:2px solid #6554c8;outline-offset:-2px}
+.cq-clue-area{display:grid;gap:10px;margin-top:4px;padding:14px;border:1px solid rgba(153,177,220,.16);border-radius:14px;background:rgba(7,14,27,.25)}
+.cq-clue-actions,.cq-controls{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.cq-action{min-height:42px;padding:9px 14px;border:1px solid rgba(170,184,211,.28);border-radius:11px;background:#202d45;color:#e8edfb;font-weight:700;cursor:pointer}
+.cq-action:disabled{opacity:.45;cursor:not-allowed}
+.cq-primary-action{background:#e9c75a;border-color:#f2d77c;color:#29263a}
+.cq-check-action{margin-left:auto}
+.cq-clue-text{display:grid;gap:5px;color:#f2f4ff;line-height:1.5}
+.cq-clue-text span{font-size:10px;font-weight:800;letter-spacing:.1em;color:#b8adff}
+.cq-clue-placeholder{color:#9daac2;font-size:13px}
+.cq-controls{margin-top:14px}
+.cq-feedback{min-height:20px;margin:10px 0 0;color:#b7c3d8;font-size:13px}
+.cq-feedback.is-notice{color:#f1d5a7}
+.cq-feedback.is-success{color:#a6e2b9}
+.cq-finish{text-align:center;padding:clamp(28px,6vw,60px)}
+.cq-finish p{color:#b8c4d9}
+@media(max-width:680px){.cq-level-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.cq-level-card{min-height:110px;padding:14px}.cq-board{width:min(100%,min(62vh,520px))}.cq-panel{padding:16px;border-radius:17px}.cq-shell .tl-game-head{gap:8px}.cq-progress{width:100%;text-align:right}.cq-check-action{margin-left:0}}
+@media(max-width:380px){.cq-level-grid{gap:8px}.cq-level-card{padding:11px}.cq-board{gap:1px;border-width:1px}.cq-row{gap:1px}.cq-cell-number{left:2px;font-size:7px}.cq-cell input{font-size:12px}}
+@media(prefers-reduced-motion:reduce){.cq-level-card:not(:disabled){transition:none}}

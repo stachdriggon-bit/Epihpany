@@ -1,0 +1,166 @@
+{
+  "level": "A1",
+  "mode": "guided",
+  "status": "draft",
+  "version": 4,
+  "pronunciation_reference": "General American",
+  "description": "First review batch for The Sound Maze. Each target is spoken aloud; the learner selects its spelling. Draft content is not yet wired into the live game.",
+  "questions": [
+    {
+      "id": "SM-A1-G-001",
+      "axis": "short_vowel_contrasts",
+      "target": "cat",
+      "options": [
+        "cat",
+        "cut",
+        "kit",
+        "cot"
+      ],
+      "answer": "cat",
+      "explain": "Cat has /æ/. Cut has /ʌ/, kit has /ɪ/, and cot has /ɑ/ in General American."
+    },
+    {
+      "id": "SM-A1-G-002",
+      "axis": "short_vowel_contrasts",
+      "target": "pen",
+      "options": [
+        "pan",
+        "pen",
+        "pin",
+        "pun"
+      ],
+      "answer": "pen",
+      "explain": "Pen has the short /ɛ/ sound. Pan has /æ/, pin has /ɪ/, and pun has /ʌ/."
+    },
+    {
+      "id": "SM-A1-G-003",
+      "axis": "short_vowel_contrasts",
+      "target": "sit",
+      "options": [
+        "sat",
+        "set",
+        "sit",
+        "suit"
+      ],
+      "answer": "sit",
+      "explain": "Sit has the short /ɪ/ sound. Sat has /æ/, set has /ɛ/, and suit has a different vowel sound."
+    },
+    {
+      "id": "SM-A1-G-004",
+      "axis": "initial_consonant_sounds",
+      "target": "fan",
+      "options": [
+        "van",
+        "fan",
+        "man",
+        "pan"
+      ],
+      "answer": "fan",
+      "explain": "Fan begins with /f/, made without vocal-cord vibration. Van begins with /v/, while man and pan begin with /m/ and /p/."
+    },
+    {
+      "id": "SM-A1-G-005",
+      "axis": "initial_consonant_sounds",
+      "target": "ten",
+      "options": [
+        "den",
+        "then",
+        "ten",
+        "hen"
+      ],
+      "answer": "ten",
+      "explain": "Ten begins with /t/. Den begins with /d/, then begins with /ð/, and hen begins with /h/."
+    },
+    {
+      "id": "SM-A1-G-006",
+      "axis": "initial_consonant_sounds",
+      "target": "wet",
+      "options": [
+        "vet",
+        "wet",
+        "let",
+        "net"
+      ],
+      "answer": "wet",
+      "explain": "Wet begins with /w/. Vet begins with /v/, let with /l/, and net with /n/."
+    },
+    {
+      "id": "SM-A1-G-007",
+      "axis": "final_consonant_sounds",
+      "target": "bag",
+      "options": [
+        "back",
+        "bat",
+        "bad",
+        "bag"
+      ],
+      "answer": "bag",
+      "explain": "Bag ends with /g/. Back ends with /k/, bat with /t/, and bad with /d/."
+    },
+    {
+      "id": "SM-A1-G-008",
+      "axis": "final_consonant_sounds",
+      "target": "cap",
+      "options": [
+        "cab",
+        "cat",
+        "cap",
+        "can"
+      ],
+      "answer": "cap",
+      "explain": "Cap ends with the unvoiced /p/ sound. Cab ends with /b/, cat with /t/, and can with /n/."
+    },
+    {
+      "id": "SM-A1-G-009",
+      "axis": "final_consonant_sounds",
+      "target": "bus",
+      "options": [
+        "buzz",
+        "but",
+        "bus",
+        "bun"
+      ],
+      "answer": "bus",
+      "explain": "Bus ends with /s/. Buzz ends with /z/, but with /t/, and bun with /n/."
+    },
+    {
+      "id": "SM-A1-G-010",
+      "axis": "basic_spelling_patterns",
+      "target": "cake",
+      "options": [
+        "cake",
+        "cook",
+        "back",
+        "kick"
+      ],
+      "answer": "cake",
+      "explain": "Cake has a final silent e, which makes the a say its name /eɪ/. The other words have short vowel sounds."
+    },
+    {
+      "id": "SM-A1-G-011",
+      "axis": "basic_spelling_patterns",
+      "target": "bike",
+      "options": [
+        "back",
+        "bike",
+        "book",
+        "buck"
+      ],
+      "answer": "bike",
+      "explain": "Bike has the long /aɪ/ sound written with i and a final silent e. The other choices have short vowel sounds."
+    },
+    {
+      "id": "SM-A1-G-012",
+      "axis": "basic_spelling_patterns",
+      "target": "home",
+      "options": [
+        "ham",
+        "hum",
+        "home",
+        "hop"
+      ],
+      "answer": "home",
+      "explain": "Home has the long /oʊ/ sound written with o and a final silent e. Ham, hum, and hop have short vowel sounds."
+    }
+  ]
+}

@@ -1,0 +1,481 @@
+/* EPIPHANY LIFE SKILLS STUDIO — practical English, six different interaction patterns */
+(() => {
+  'use strict';
+  const root = document.getElementById('life-skills-content');
+  if (!root) return;
+  const modules = [
+    {id:'numbers',icon:'↗',tone:'sun',eyebrow:'REAL-WORLD NUMBERS',title:'Numbers in real life',desc:'Decode prices, times, dates and phone numbers the way you meet them outside a lesson.',skill:'vocabulary',format:'number'},
+    {id:'signs',icon:'⌁',tone:'mint',eyebrow:'READ THE ENVIRONMENT',title:'Signs & notices',desc:'Read a sign, understand the situation, then choose the safest or most useful next move.',skill:'reading',format:'scene'},
+    {id:'forms',icon:'▤',tone:'blue',eyebrow:'PRACTICAL PAPERWORK',title:'Form filler',desc:'Practise everyday form fields with fictional details. Nothing you enter is sent anywhere.',skill:'grammar',format:'form'},
+    {id:'polite',icon:'✳',tone:'rose',eyebrow:'TONE & SOCIAL SKILLS',title:'Say it with tact',desc:'Choose language that fits the relationship, the situation and the level of formality.',skill:'conversation',format:'tone'},
+    {id:'kitchen',icon:'♨',tone:'lime',eyebrow:'KITCHEN & SHOPPING',title:'Kitchen mission',desc:'Build a recipe in a sensible order, then handle a small shopping decision.',skill:'vocabulary',format:'sequence'},
+    {id:'phone',icon:'☏',tone:'violet',eyebrow:'SPEAKING IN REAL LIFE',title:'Phone call simulator',desc:'Take a call one turn at a time. Several replies can work; context and clarity matter.',skill:'conversation',format:'dialogue'}
+  ];
+  const data = {
+    numbers:[
+      {kind:'price',scene:'At a market',prompt:'The label says £3.75. What do you pay for one item?',options:['Three pounds and seventy-five pence','Thirty-seven pounds and five pence','Three hundred and seventy-five pounds'],answer:0,ar:'السعر هو 3.75 جنيه. كم تدفع مقابل قطعة واحدة؟',explain:'£3.75 is three pounds and seventy-five pence.'},
+      {kind:'time',scene:'Meeting a friend',prompt:'Your friend says, “Let’s meet at quarter past six.” When?',options:['6:45','6:15','5:15'],answer:1,ar:'قال صديقك: لنلتقِ عند السادسة والربع. متى؟',explain:'Quarter past six means 6:15.'},
+      {kind:'date',scene:'Booking a visit',prompt:'A form asks for your date of birth: 14/09/2002. In day/month/year format, what is it?',options:['September 14, 2002','April 9, 2002','September 2, 2014'],answer:0,ar:'تطلب الاستمارة تاريخ الميلاد بصيغة يوم/شهر/سنة.',explain:'14/09/2002 is the fourteenth of September, 2002, when the form uses day/month/year.'},
+      {kind:'phone',scene:'Leaving a message',prompt:'Someone reads “zero seven, double four, eight one two.” What does “double four” mean?',options:['44','404','14'],answer:0,ar:'ماذا تعني double four عند قراءة رقم هاتف؟',explain:'“Double four” means the digit 4 is repeated twice.'},
+      {kind:'price',scene:'Paying at a café',prompt:'Your bill is £8.40. Which phrase says the amount naturally?',options:['Eight pounds forty','Eight forty poundses','Eighty-four pounds'],answer:0,ar:'كيف تقول مبلغ 8.40 جنيه بطريقة طبيعية؟',explain:'People commonly say “eight pounds forty” or “eight pounds and forty pence”.'},
+      {kind:'time',scene:'At the station',prompt:'The display says 18:30. What is this in everyday 12-hour time?',options:['Half past six in the evening','Half past eight in the morning','Quarter to six in the evening'],answer:0,ar:'الساعة 18:30 بنظام 24 ساعة. كيف تقولها؟',explain:'18:30 is 6:30 p.m., or half past six in the evening.'},
+      {kind:'date',scene:'A deadline',prompt:'“Please submit it by the third of May.” Which date is meant?',options:['03/05','05/03','30/05'],answer:0,ar:'سلّمها بحلول الثالث من مايو. أي تاريخ هو؟',explain:'The third of May is May 3. Check the date format used in the country.'},
+      {kind:'number',scene:'Queue ticket',prompt:'Your ticket number is 308. Which is the natural reading?',options:['Three hundred and eight','Three zero eight hundred','Thirty-eight'],answer:0,ar:'كيف تقرأ الرقم 308؟',explain:'308 is “three hundred and eight” (also “three hundred eight” in some varieties).'},
+      {kind:'price',scene:'Comparing offers',prompt:'Which is cheaper: £4.20 or £4.02?',options:['£4.02','£4.20','They cost the same'],answer:0,ar:'أيهما أرخص: 4.20 أم 4.02؟',explain:'Four pounds and two pence (£4.02) is less than four pounds and twenty pence (£4.20).'},
+      {kind:'time',scene:'Running late',prompt:'You say, “I’ll be there in twenty minutes.” It is 10:10 now. When will you arrive?',options:['10:20','10:30','11:10'],answer:1,ar:'الوقت الآن 10:10 وستصل بعد عشرين دقيقة. متى؟',explain:'Ten minutes takes us to 10:20; another ten makes 10:30.'},
+      {kind:'phone',scene:'Confirming a number',prompt:'For clarity, how should you read 506 when giving a reference number?',options:['Five oh six','Fifty-six','Five hundred and sixty'],answer:0,ar:'كيف تقرأ 506 بوضوح كرقم مرجعي؟',explain:'For reference codes, “five oh six” makes each digit clear.'},
+      {kind:'number',scene:'A discount',prompt:'A £20 item has a £5 discount. What is the new price?',options:['£15','£25','£4'],answer:0,ar:'قطعة بسعر 20 جنيهًا عليها خصم 5 جنيهات. ما السعر الجديد؟',explain:'Twenty minus five is fifteen: the new price is £15.'}
+    ],
+    signs:[
+      {sign:'WET FLOOR',symbol:'⚠',place:'Supermarket entrance',prompt:'You see this sign near a freshly mopped floor. What should you do?',options:['Walk carefully and avoid the slippery area','Run before it dries','Touch the floor to check'],answer:0,ar:'ترى لافتة أرضية مبللة عند مدخل متجر. ماذا تفعل؟',explain:'A wet floor can be slippery. Slow down and use another route if possible.'},
+      {sign:'KEEP LEFT',symbol:'←',place:'Busy walkway',prompt:'What does this instruction ask people to do?',options:['Stay on the left side','Turn left immediately','Leave the building'],answer:0,ar:'ماذا تعني لافتة Keep left؟',explain:'Keep left means remain on the left side while moving.'},
+      {sign:'OUT OF ORDER',symbol:'⛔',place:'Public restroom',prompt:'The sign is on a toilet door. What is the best action?',options:['Use another facility','Push harder until it opens','Wait inside'],answer:0,ar:'لافتة Out of order على باب مرفق عام. ما التصرف الأنسب؟',explain:'Out of order means the equipment or facility is not working and should not be used.'},
+      {sign:'NO ENTRY',symbol:'🚫',place:'Staff-only corridor',prompt:'You are looking for reception. This sign is on a side door. What next?',options:['Do not enter; look for the public entrance','Go in quickly','Knock and enter anyway'],answer:0,ar:'لافتة ممنوع الدخول على ممر مخصص للموظفين.',explain:'No entry means you must not go through that entrance.'},
+      {sign:'MIND THE GAP',symbol:'↕',place:'Train platform',prompt:'What should you watch for when boarding?',options:['The space between the platform and train','A missing ticket','A low ceiling'],answer:0,ar:'ماذا تعني Mind the gap في محطة القطار؟',explain:'There may be a gap between the platform edge and the train. Step carefully.'},
+      {sign:'EMERGENCY EXIT',symbol:'↗',place:'Inside a public building',prompt:'When is this route intended to be used?',options:['To leave safely during an emergency','As a shortcut at any time','To store bags'],answer:0,ar:'متى يُستخدم مخرج الطوارئ؟',explain:'An emergency exit is a route for leaving during an emergency. Follow official instructions.'},
+      {sign:'PUSH',symbol:'⇥',place:'Office door',prompt:'The word is printed on the door. What action is expected?',options:['Push the door away from you','Pull the handle toward you','Slide it sideways'],answer:0,ar:'كلمة Push مطبوعة على الباب. ماذا تفعل؟',explain:'Push means apply force to move the door away from you.'},
+      {sign:'SOLD OUT',symbol:'×',place:'Ticket counter',prompt:'The show is marked SOLD OUT. What does this mean?',options:['No tickets are currently available','Tickets are free','The show starts now'],answer:0,ar:'ماذا تعني Sold out عند شباك التذاكر؟',explain:'Sold out means all available tickets have been sold.'},
+      {sign:'QUIET PLEASE',symbol:'♩',place:'Library',prompt:'A phone rings loudly. What is the considerate response?',options:['Silence it or speak very quietly','Turn the volume up','Start a loud conversation'],answer:0,ar:'ترى لافتة تطلب الهدوء في مكتبة. كيف تتصرف؟',explain:'The sign asks visitors to keep noise to a minimum.'},
+      {sign:'CLOSED FOR MAINTENANCE',symbol:'🛠',place:'Swimming pool',prompt:'What does the notice tell you?',options:['The facility is temporarily unavailable for repairs','The pool is open late','You must clean the pool yourself'],answer:0,ar:'المنشأة مغلقة للصيانة. ماذا يعني ذلك؟',explain:'Maintenance is work done to keep equipment or a facility in good condition.'}
+    ],
+    forms:[{ar:'أكمل الاستمارة الخيالية باستخدام بيانات غير حقيقية فقط.'}],
+    polite:[
+      {scene:'You need to interrupt a colleague',level:'Neutral → polite',prompt:'You need to ask a quick question while they are working. Choose the most considerate opening.',options:['“Excuse me, do you have a moment?”','“Listen to me now.”','“You must answer this.”'],answer:0,ar:'تحتاج إلى سؤال زميل يعمل. ما البداية الأكثر تهذيبًا؟',explain:'“Excuse me, do you have a moment?” recognises that the other person may be busy.'},
+      {scene:'You cannot attend',level:'Friendly',prompt:'A friend invites you to dinner, but you are busy. What sounds warm and clear?',options:['“Thanks for inviting me! I can’t make it tonight, but another time?”','“No. Stop asking.”','“Your dinner is impossible.”'],answer:0,ar:'دعاك صديق للعشاء لكنك مشغول. كيف ترفض بلطف؟',explain:'Thanking them first softens the refusal, while a clear answer avoids confusion.'},
+      {scene:'You disagree at work',level:'Professional',prompt:'Your teammate suggests a plan you think may fail. What is constructive?',options:['“I see your point. Could we also consider another option?”','“That idea is stupid.”','“You never understand anything.”'],answer:0,ar:'تختلف مع زميل في العمل. اختر ردًا بنّاءً.',explain:'Acknowledge the other view, then suggest an alternative without attacking the person.'},
+      {scene:'You need help in a shop',level:'Polite request',prompt:'You cannot find the right size. What should you say?',options:['“Could you help me find this in a medium, please?”','“Get me medium.”','“You, find it.”'],answer:0,ar:'لا تجد المقاس المناسب في متجر. ماذا تقول؟',explain:'Could you…? and please make a request sound courteous.'},
+      {scene:'Someone apologises for being late',level:'Friendly',prompt:'They say, “Sorry I’m late.” You were only waiting a few minutes. What fits?',options:['“No worries, thanks for letting me know.”','“I will never forgive you.”','“You are late forever.”'],answer:0,ar:'اعتذر شخص عن تأخر بسيط. ما الرد المناسب؟',explain:'“No worries” is a relaxed way to accept an apology when the issue is minor.'},
+      {scene:'You need clarification',level:'Professional',prompt:'You did not understand the instruction. What is best?',options:['“Could you clarify the last step, please?”','“That makes no sense.”','“Say it properly.”'],answer:0,ar:'لم تفهم التعليمة. كيف تطلب التوضيح؟',explain:'Ask about the specific part you missed rather than blaming the speaker.'},
+      {scene:'A salesperson offers an extra item',level:'Polite refusal',prompt:'You do not want it. Which reply is clear but courteous?',options:['“No, thank you. I’m all set.”','“Absolutely not, leave me alone!”','“Maybe” when you mean no'],answer:0,ar:'عرض عليك البائع شيئًا إضافيًا ولا تريده. كيف ترفض؟',explain:'A brief “No, thank you” is enough. You do not need to invent a reason.'},
+      {scene:'You made a small mistake',level:'Taking responsibility',prompt:'You sent the wrong attachment. What should your message say?',options:['“Sorry, I attached the wrong file. Here is the correct one.”','“The file changed itself.”','“Not my problem.”'],answer:0,ar:'أرسلت مرفقًا خاطئًا. كيف تعتذر وتصلح الخطأ؟',explain:'A useful apology names the mistake and gives the correction.'},
+      {scene:'You want to leave a conversation',level:'Friendly',prompt:'You need to go, but want to end warmly. Choose a natural phrase.',options:['“It was lovely talking to you. I should get going.”','“I am finished with you.”','“Stop talking now.”'],answer:0,ar:'تريد إنهاء الحديث والمغادرة بلطف.',explain:'This phrase shows appreciation and clearly signals that you need to leave.'},
+      {scene:'A customer complains',level:'Service English',prompt:'A customer says their order is wrong. What is a helpful first response?',options:['“I’m sorry about that. Let me check what happened.”','“You must be mistaken.”','“That is not my issue.”'],answer:0,ar:'يشكو زبون من طلب خاطئ. ما أفضل رد أولي؟',explain:'Acknowledge the concern, then investigate before promising a specific solution.'}
+    ],
+    kitchen:[
+      {title:'Make a simple cheese sandwich',scene:'Recipe sequence',steps:['Wash your hands and prepare a clean surface.','Take two slices of bread.','Add cheese and any chosen vegetables.','Put the second slice on top.','Cut the sandwich and serve it.'],ar:'رتّب خطوات إعداد شطيرة جبن بسيطة.',explain:'Prepare first, assemble the ingredients, close the sandwich, then serve.'},
+      {title:'Make a cup of tea',scene:'Recipe sequence',steps:['Fill the kettle with water.','Boil the water safely.','Put a tea bag in a cup.','Pour the hot water into the cup.','Let it steep, then remove the tea bag.'],ar:'رتّب خطوات إعداد كوب شاي.',explain:'Boil the water before pouring it over the tea bag. Handle hot water carefully.'},
+      {title:'Prepare a fruit salad',scene:'Recipe sequence',steps:['Wash the fruit.','Place a chopping board on a stable surface.','Cut the fruit into small pieces.','Put the pieces in a bowl.','Mix gently and serve.'],ar:'رتّب خطوات إعداد سلطة فواكه.',explain:'Wash before cutting, use a stable board, then mix the pieces.'},
+      {title:'Cook pasta',scene:'Recipe sequence',steps:['Fill a pot with water.','Bring the water to a boil.','Add the pasta carefully.','Cook according to the packet instructions.','Drain carefully and add the sauce.'],ar:'رتّب خطوات طهي المعكرونة.',explain:'Bring water to a boil before adding pasta; drain carefully when cooked.'},
+      {title:'Make a vegetable omelette',scene:'Recipe sequence',steps:['Wash the vegetables.','Chop the vegetables into small pieces.','Beat the eggs in a bowl.','Cook the vegetables and add the eggs.','Cook until the eggs are set.'],ar:'رتّب خطوات إعداد عجة بالخضار.',explain:'Prepare the vegetables, beat the eggs, then cook until fully set.'},
+      {title:'Shop for a recipe',scene:'Shopping choice',prompt:'The recipe needs two tomatoes, but you have none at home. What belongs on your shopping list?',options:['Two tomatoes','Two tomato cans of paint','A saucepan of water'],answer:0,ar:'تحتاج الوصفة إلى حبتَي طماطم ولا توجد لديك. ماذا تشتري؟',explain:'A shopping list records ingredients you need and do not already have.'},
+      {title:'Follow a recipe',scene:'Kitchen vocabulary',prompt:'The recipe says “stir the soup”. What do you do?',options:['Move a spoon around the soup','Cut the soup into pieces','Freeze the soup'],answer:0,ar:'ماذا يعني الفعل stir في وصفة؟',explain:'Stir means move a spoon or utensil around a liquid or mixture.'},
+      {title:'Follow a recipe',scene:'Kitchen vocabulary',prompt:'What does “chop the onions” mean?',options:['Cut them into pieces','Wash them without cutting','Boil them whole for an hour'],answer:0,ar:'ماذا يعني chop the onions؟',explain:'Chop means cut food into pieces. Use a knife carefully on a stable board.'},
+      {title:'Store leftovers',scene:'Food safety',prompt:'You have cooked food left after dinner. What is the safer general choice?',options:['Cool and refrigerate it promptly in a suitable container','Leave it out overnight','Put hot food directly on the floor'],answer:0,ar:'بقي طعام مطهو بعد العشاء. ما الخيار الأكثر أمانًا عمومًا؟',explain:'Store leftovers promptly and follow local food-safety guidance; do not leave cooked food out overnight.'},
+      {title:'Read a recipe',scene:'Kitchen vocabulary',prompt:'“Simmer for ten minutes” means…',options:['Cook gently just below a full boil','Freeze for ten minutes','Cook at the highest heat possible'],answer:0,ar:'ماذا تعني simmer for ten minutes؟',explain:'Simmer means cook gently in a liquid with small, occasional bubbles.'}
+    ],
+    phone:[
+      {scene:'Calling a clinic',turns:[{speaker:'Receptionist',line:'Good morning, Green Street Clinic. How can I help?',prompt:'You want to book a routine appointment. What is a clear opening?',options:['“Hello, I’d like to make an appointment, please.”','“Doctor. Now.”','“I need a hospital building.”'],answer:0,explain:'State your request politely and clearly. This is a routine booking, not an emergency.'},{speaker:'Receptionist',line:'Of course. Is morning or afternoon better for you?',prompt:'Either time works, but afternoon is slightly better.',options:['“Afternoon would be better, if possible.”','“You decide, I refuse.”','“Yesterday afternoon.”'],answer:0,explain:'This gives a preference while leaving room for the receptionist to check availability.'},{speaker:'Receptionist',line:'I can offer Thursday at 3:30 p.m.',prompt:'You can attend. Confirm the time.',options:['“Thursday at half past three works for me. Thank you.”','“Three thirty yesterday.”','“I cannot hear colours.”'],answer:0,explain:'Repeat the day and time to confirm you heard them correctly.'}]},
+      {scene:'Calling about a bill',turns:[{speaker:'Customer service',line:'How can I help you today?',prompt:'You think your latest bill is higher than expected.',options:['“I’m calling because my bill seems higher than usual.”','“Your office is terrible.”','“Give me free things.”'],answer:0,explain:'Explain the issue calmly and let the agent investigate.'},{speaker:'Customer service',line:'I can check the charges. Could you tell me the date on the bill?',prompt:'You have the bill in front of you.',options:['“Yes, it’s dated 12 October.”','“I will not tell you anything.”','“The date is a chair.”'],answer:0,explain:'Answer the specific question with the information requested. In a real call, share sensitive details only through verified channels.'},{speaker:'Customer service',line:'I’ll review the charges and explain them.',prompt:'You want to acknowledge the help.',options:['“Thank you. I appreciate you checking.”','“Do it faster, useless person.”','“Goodbye” while they are still speaking'],answer:0,explain:'A calm acknowledgement keeps the conversation cooperative.'}]},
+      {scene:'Calling a shop',turns:[{speaker:'Shop assistant',line:'Hello, Riverside Store. How can I help?',prompt:'You want to ask whether a jacket is available in medium.',options:['“Could you tell me if this jacket is available in a medium?”','“Send jacket now.”','“Do you sell weather?”'],answer:0,explain:'Ask a focused question and name the item and size.'},{speaker:'Shop assistant',line:'Which colour are you looking for?',prompt:'You prefer the blue one.',options:['“Blue, please, if you have it.”','“The colour of Thursday.”','“Any colour is wrong.”'],answer:0,explain:'Give the needed detail in a short, natural reply.'},{speaker:'Shop assistant',line:'We have blue in medium. Would you like us to hold it?',prompt:'You want them to keep it until this evening.',options:['“Yes, please. Could you hold it until this evening?”','“Hold the entire shop.”','“No” when you mean yes'],answer:0,explain:'A polite request with a clear time limit is easy to act on.'}]}
+    ]
+  };
+
+  // Extra challenge cards are intentionally more nuanced than the starter pool.
+  const challengeData = {
+    numbers: [
+      {kind:'price',scene:'Splitting a bill',prompt:'A £27.60 bill is split equally between 3 people. How much does each person pay?',options:['£9.20','£8.20','£12.60'],answer:0,ar:'فاتورة بقيمة 27.60 جنيه تُقسّم بالتساوي على ثلاثة أشخاص. كم يدفع كل شخص؟',arOptions:['9.20 جنيه','8.20 جنيه','12.60 جنيه'],explain:'£27.60 divided by three is £9.20.',arExplain:'27.60 ÷ 3 = 9.20 جنيه لكل شخص.'},
+      {kind:'time',scene:'Travel connection',prompt:'Your train arrives at 14:48 and the next one leaves at 15:05. How long is the connection?',options:['17 minutes','23 minutes','13 minutes'],answer:0,ar:'يصل القطار 14:48 ويغادر القطار التالي 15:05. كم مدة الانتظار؟',arOptions:['17 دقيقة','23 دقيقة','13 دقيقة'],explain:'From 14:48 to 15:00 is 12 minutes, then 5 more: 17 minutes.',arExplain:'من 14:48 إلى 15:00 اثنتا عشرة دقيقة، ثم خمس دقائق أخرى: المجموع 17 دقيقة.'},
+      {kind:'date',scene:'Booking deadline',prompt:'A booking must be cancelled at least 48 hours before Friday at 16:00. What is the latest cancellation time?',options:['Wednesday at 16:00','Thursday at 16:00','Tuesday at 16:00'],answer:0,ar:'يجب إلغاء الحجز قبل 48 ساعة على الأقل من الجمعة الساعة 16:00. ما آخر موعد للإلغاء؟',arOptions:['الأربعاء الساعة 16:00','الخميس الساعة 16:00','الثلاثاء الساعة 16:00'],explain:'Count back two full days from Friday at 16:00: Wednesday at 16:00.',arExplain:'نرجع يومين كاملين من الجمعة 16:00، فنصل إلى الأربعاء 16:00.'}
+    ],
+    signs: [
+      {sign:'STAFF ONLY',symbol:'⛔',place:'Behind a service desk',prompt:'You need help, but this door says STAFF ONLY. What should you do?',options:['Ask an employee where visitors should go','Enter to find someone','Try the handle repeatedly'],answer:0,ar:'تحتاج إلى المساعدة لكن الباب مكتوب عليه Staff Only. ماذا تفعل؟',arOptions:['اسأل موظفًا عن المكان المخصص للزوار','ادخل للبحث عن شخص','حاول فتح المقبض مرارًا'],explain:'Staff only restricts access to employees. Ask an employee for help.',arExplain:'تعني Staff only أن المكان مخصص للموظفين. اطلب المساعدة من أحدهم.'},
+      {sign:'MIND YOUR HEAD',symbol:'↘',place:'Low doorway',prompt:'The doorway is lower than usual. What does this warning mean?',options:['Watch your head as you pass','Keep your voice down','Wear a hat'],answer:0,ar:'المدخل منخفض عن المعتاد. ماذا يعني التحذير؟',arOptions:['انتبه لرأسك عند المرور','اخفض صوتك','ارتدِ قبعة'],explain:'Mind your head warns you about a low obstacle overhead.',arExplain:'تحذّرك اللافتة من عائق منخفض فوق رأسك.'},
+      {sign:'TEMPORARILY CLOSED',symbol:'◷',place:'Museum entrance',prompt:'A notice says the entrance is temporarily closed. What is the best next step?',options:['Look for an alternative entrance or reopening information','Assume it will never open again','Ignore the notice and enter'],answer:0,ar:'تقول اللافتة إن المدخل مغلق مؤقتًا. ما الخطوة الأنسب؟',arOptions:['ابحث عن مدخل بديل أو معلومات إعادة الفتح','افترض أنه لن يُفتح مجددًا','تجاهل اللافتة وادخل'],explain:'Temporarily means for a limited period, not permanently.',arExplain:'تعني temporarily أن الإغلاق لفترة محدودة وليس دائمًا.'}
+    ],
+    forms: [
+      {kind:'form',scene:'Application form',prompt:'A form says “Surname / Family name”. Which part of your name belongs there?',options:['Your family name','Your first name only','Your nickname at work'],answer:0,ar:'تطلب الاستمارة Surname / Family name. أي جزء من الاسم يُكتب هنا؟',arOptions:['اسم العائلة','الاسم الأول فقط','اللقب الذي تستخدمه في العمل'],explain:'Surname and family name refer to the name shared by family members, where applicable.',arExplain:'تعني Surname وFamily name اسم العائلة، بحسب نظام التسمية المستخدم.'},
+      {kind:'form',scene:'Contact details',prompt:'A field marked “Postcode / ZIP code” asks for…',options:['The postal code for an address','Your phone password','Your date of birth'],answer:0,ar:'ما المعلومة المطلوبة في خانة Postcode / ZIP code؟',arOptions:['الرمز البريدي للعنوان','كلمة مرور الهاتف','تاريخ الميلاد'],explain:'A postcode or ZIP code helps identify a postal delivery area.',arExplain:'يساعد الرمز البريدي على تحديد منطقة تسليم البريد.'},
+      {kind:'form',scene:'Form instructions',prompt:'The field says “Optional”. What does that tell you?',options:['You may leave it blank','You must fill it in','Only use capital letters'],answer:0,ar:'ماذا تعني كلمة Optional بجانب خانة في استمارة؟',arOptions:['يمكنك تركها فارغة','يجب ملؤها','استخدم الأحرف الكبيرة فقط'],explain:'Optional means the information is not required.',arExplain:'تعني Optional أن المعلومة غير إلزامية.'}
+    ],
+    polite: [
+      {scene:'A deadline is unrealistic',level:'Professional',prompt:'Your manager asks for a task by noon, but you need more time. What is the most constructive reply?',options:['“I can complete it by 3 p.m. Would that work?”','“Impossible. Find someone else.”','“Yes” even though you cannot do it'],answer:0,ar:'طلب منك المدير إنجاز مهمة قبل الظهر لكنك تحتاج وقتًا إضافيًا. ما الرد البنّاء؟',arOptions:['يمكنني إنجازها الساعة الثالثة. هل يناسب ذلك؟','مستحيل، ابحث عن شخص آخر','قل نعم رغم أنك لا تستطيع'],explain:'Offer a realistic alternative and check whether it meets the need.',arExplain:'اقترح موعدًا واقعيًا بديلًا واسأل إن كان مناسبًا.'},
+      {scene:'You need to correct misinformation',level:'Diplomatic',prompt:'A colleague shares a detail that you know is incorrect. How can you correct it tactfully?',options:['“I may have a different update—shall we check the latest information?”','“That is completely wrong.”','Say nothing and let the error spread'],answer:0,ar:'شارك زميل معلومة تعرف أنها غير صحيحة. كيف تصححها بلباقة؟',arOptions:['لدي معلومة مختلفة ربما؛ هل نتحقق من آخر تحديث؟','هذا خطأ تمامًا','لا تقل شيئًا ودع الخطأ ينتشر'],explain:'Invite a shared check instead of embarrassing the person.',arExplain:'اقترح التحقق معًا بدل إحراج الشخص.'},
+      {scene:'You cannot share private information',level:'Firm but polite',prompt:'Someone asks for another person’s private contact details. What is appropriate?',options:['“I can’t share their details without permission.”','“Here is their number.”','“Ask me again and see what happens.”'],answer:0,ar:'طلب منك شخص بيانات اتصال خاصة بشخص آخر. ما الرد المناسب؟',arOptions:['لا يمكنني مشاركة بياناته دون إذنه','تفضل رقمه','اسألني مرة أخرى لترى ما سيحدث'],explain:'Set a clear boundary without hostility and protect the other person’s privacy.',arExplain:'ضع حدًا واضحًا دون عدائية واحمِ خصوصية الشخص الآخر.'}
+    ],
+    kitchen: [
+      {title:'Prepare a safe chopping station',scene:'Kitchen sequence',steps:['Wash your hands and clear the work surface.','Place a stable chopping board on the counter.','Wash the vegetables.','Cut slowly with the knife pointed away from your fingers.','Clean the area and store the knife safely.'],ar:'رتّب خطوات إعداد مكان آمن لتقطيع الخضروات.',arExplain:'Clean and stabilise the work area before cutting, then put tools away safely.',explain:'Clean and stabilise the work area before cutting, then put tools away safely.'},
+      {title:'Bake from a recipe',scene:'Kitchen sequence',steps:['Read the full recipe and preheat the oven if instructed.','Measure the ingredients.','Mix the ingredients in the stated order.','Place the mixture in the prepared tin.','Bake for the stated time and check it safely.'],ar:'رتّب خطوات التحضير للخبز وفق وصفة.',explain:'Read first, measure carefully, mix in order, then bake and check safely.',arExplain:'اقرأ الوصفة أولًا، وقِس المقادير، وامزج بالترتيب، ثم اخبز وتحقق بحذر.'},
+      {title:'Compare grocery prices',scene:'Shopping decision',prompt:'A 500 g bag costs £1.20 and a 1 kg bag costs £2.10. Which has the lower price per kilogram?',options:['The 1 kg bag','The 500 g bag','They cost the same per kilogram'],answer:0,ar:'كيس 500 غرام بسعر 1.20 جنيه وكيس 1 كغ بسعر 2.10. أيهما أقل سعرًا لكل كيلوغرام؟',arOptions:['كيس 1 كغ','كيس 500 غرام','السعر متساوٍ لكل كيلوغرام'],explain:'The 500 g bag costs £2.40 per kg; the 1 kg bag costs £2.10 per kg.',arExplain:'تكلفة كيس 500 غرام تعادل 2.40 جنيه للكيلوغرام، بينما كيس 1 كغ يكلف 2.10 جنيه.'}
+    ],
+    phone: [
+      {speaker:'Receptionist',scene:'Calling a clinic',line:'I have Tuesday at 10:15 or Wednesday at 2:40 available.',prompt:'Wednesday is better. Confirm the appointment clearly.',options:['“Wednesday at twenty to three, please.”','“Tuesday at ten”','“I will come sometime”'],answer:0,ar:'المتاح الثلاثاء 10:15 أو الأربعاء 14:40. الأربعاء أفضل. أكّد الموعد بوضوح.',arOptions:['الأربعاء الساعة الثالثة إلا عشرين، من فضلك','الثلاثاء الساعة العاشرة','سآتي في وقت ما'],explain:'14:40 is twenty to three in the afternoon. Repeating the day helps avoid confusion.',arExplain:'14:40 تعني الثالثة إلا عشرين بعد الظهر. تكرار اليوم يساعد على تجنب الالتباس.'},
+      {speaker:'Customer service',scene:'Calling about a bill',line:'I can explain the charge, but first I need to understand which item you mean.',prompt:'You are unsure which line is wrong. Ask for help without sharing sensitive information.',options:['“Could you explain the items on the bill one by one?”','“I will read out my passwords.”','“Cancel everything immediately.”'],answer:0,ar:'يمكنني شرح الرسوم، لكن أحتاج إلى معرفة البند المقصود. لست متأكدًا أي بند خاطئ.',arOptions:['هل يمكنك شرح بنود الفاتورة واحدًا تلو الآخر؟','سأملي عليك كلمات المرور','ألغِ كل شيء فورًا'],explain:'Ask for an explanation of the bill. Never share passwords or one-time security codes.',arExplain:'اطلب شرح بنود الفاتورة. لا تشارك كلمات المرور أو رموز التحقق لمرة واحدة.'},
+      {speaker:'Shop assistant',scene:'Calling a shop',line:'We can hold the item for two hours.',prompt:'That works for you. Close the call politely.',options:['“That’s perfect, thank you for your help. Goodbye.”','“Hold it for a week instead.”','Hang up without responding'],answer:0,ar:'يمكننا الاحتفاظ بالمنتج ساعتين. هذا يناسبك؛ أنهِ المكالمة بأدب.',arOptions:['هذا ممتاز، شكرًا لمساعدتك. إلى اللقاء','احتفظوا به أسبوعًا بدلًا من ذلك','أغلق الخط دون رد'],explain:'Acknowledge the arrangement and close the call courteously.',arExplain:'أكد موافقتك على الترتيب وأنهِ المكالمة بلباقة.'}
+    ]
+  };
+  const guidedData = {
+    numbers: [
+      {kind:'price',scene:'At a market',prompt:'The label says £2.00. How much is it?',options:['Two pounds','Twenty pounds','Two pence'],answer:0,ar:'يظهر على الملصق السعر 2.00 جنيه. كم السعر؟',arOptions:['جنيهان','عشرون جنيهًا','بنسان'],explain:'£2.00 is two pounds.',arExplain:'2.00 جنيه تعني جنيهان.'},
+      {kind:'time',scene:'Meeting a friend',prompt:'Your friend says “six o’clock”. What time is that?',options:['6:00','6:30','7:00'],answer:0,ar:'قال صديقك six o’clock. كم الساعة؟',arOptions:['6:00','6:30','7:00'],explain:'Six o’clock is 6:00.',arExplain:'Six o’clock تعني الساعة السادسة تمامًا.'},
+      {kind:'number',scene:'Queue ticket',prompt:'Your ticket number is 12. Which number is it?',options:['Twelve','Twenty-one','Two'],answer:0,ar:'رقم تذكرتك 12. ما الرقم؟',arOptions:['اثنا عشر','واحد وعشرون','اثنان'],explain:'12 is twelve.',arExplain:'يُقرأ الرقم 12 باللغة الإنجليزية twelve.'}
+    ],
+    signs: [
+      {sign:'PUSH',symbol:'⇥',place:'Office door',prompt:'The door says PUSH. What should you do?',options:['Push the door','Pull the door','Walk away'],answer:0,ar:'كُتب على الباب PUSH. ماذا تفعل؟',arOptions:['ادفع الباب','اسحب الباب','ابتعد'],explain:'Push means move the door away from you.',arExplain:'تعني Push دفع الباب بعيدًا عنك.'},
+      {sign:'EXIT',symbol:'↗',place:'Inside a public building',prompt:'Which sign helps you find a way out?',options:['EXIT','SOLD OUT','QUIET PLEASE'],answer:0,ar:'أي لافتة تساعدك على إيجاد المخرج؟',arOptions:['مخرج','نفدت التذاكر','يرجى الهدوء'],explain:'EXIT marks a way out of a building.',arExplain:'تعني EXIT مخرجًا من المبنى.'},
+      {sign:'WET FLOOR',symbol:'⚠',place:'Supermarket entrance',prompt:'The floor may be slippery. What should you do?',options:['Walk carefully','Run','Jump'],answer:0,ar:'قد تكون الأرضية زلقة. ماذا تفعل؟',arOptions:['امشِ بحذر','اركض','اقفز'],explain:'Walk carefully on a wet floor.',arExplain:'امشِ بحذر على الأرضية المبللة.'}
+    ],
+    forms: [{ar:'أكمل الاستمارة الخيالية باستخدام بيانات افتراضية فقط.'}],
+    polite: [
+      {scene:'You need help in a shop',level:'Friendly',prompt:'You need help finding an item. What can you say?',options:['“Excuse me, could you help me?”','“Help me now!”','“Go away.”'],answer:0,ar:'تحتاج إلى المساعدة في إيجاد منتج. ماذا تقول؟',arOptions:['عذرًا، هل يمكنك مساعدتي؟','ساعدني الآن!','ابتعد'],explain:'“Excuse me” is a polite way to get someone’s attention.',arExplain:'تُستخدم Excuse me لجذب انتباه شخص بأدب.'},
+      {scene:'You cannot attend',level:'Friendly',prompt:'A friend invites you, but you are busy. What is a polite reply?',options:['“Thanks for inviting me, but I can’t today.”','“No. Stop.”','“Never ask me.”'],answer:0,ar:'دعاك صديق لكنك مشغول. ما الرد المهذب؟',arOptions:['شكرًا على دعوتي، لكنني لا أستطيع اليوم.','لا. توقف.','لا تسألني أبدًا.'],explain:'Thank the person and give a clear, kind refusal.',arExplain:'اشكر الشخص وارفض بوضوح ولطف.'},
+      {scene:'You need clarification',level:'Polite request',prompt:'You did not hear the last sentence. What can you ask?',options:['“Could you repeat that, please?”','“Speak properly.”','“Forget it.”'],answer:0,ar:'لم تسمع الجملة الأخيرة. ماذا تطلب؟',arOptions:['هل يمكنك إعادة ذلك، من فضلك؟','تحدث بشكل صحيح.','انس الأمر.'],explain:'Ask politely for repetition when you miss something.',arExplain:'اطلب إعادة الكلام بأدب عندما لا تسمعه.'}
+    ],
+    kitchen: [
+      {title:'Make a cup of tea',scene:'Recipe sequence',steps:['Fill the kettle with water.','Boil the water safely.','Put a tea bag in a cup.','Pour the hot water into the cup.','Let it steep, then remove the tea bag.'],ar:'رتّب خطوات إعداد كوب شاي.',explain:'Boil water before pouring it over the tea bag.',arExplain:'اغلِ الماء قبل سكبه على كيس الشاي.'}
+    ],
+    phone: [
+      {speaker:'Receptionist',scene:'Calling a clinic',line:'Good morning. How can I help?',prompt:'You want to book an appointment. What do you say?',options:['“I’d like to make an appointment, please.”','“Doctor now.”','“Goodbye”'],answer:0,ar:'تريد حجز موعد. ماذا تقول؟',arOptions:['أود حجز موعد، من فضلك.','الطبيب الآن.','إلى اللقاء'],explain:'State your request politely and clearly.',arExplain:'عبّر عن طلبك بوضوح وأدب.'},
+      {speaker:'Shop assistant',scene:'Calling a shop',line:'Hello, how can I help?',prompt:'You want to ask about a product. What is a good opening?',options:['“Hello, I have a question about a product.”','“Give it to me.”','“What is this place?”'],answer:0,ar:'تريد السؤال عن منتج. ما البداية المناسبة؟',arOptions:['مرحبًا، لدي سؤال عن منتج.','أعطني إياه.','ما هذا المكان؟'],explain:'A brief greeting and a clear request make a good opening.',arExplain:'التحية القصيرة والطلب الواضح بداية جيدة.'},
+      {speaker:'Customer service',scene:'Calling about a bill',line:'How can I help you?',prompt:'Your bill looks wrong. What can you say?',options:['“I’m calling to ask about a charge on my bill.”','“You are all wrong.”','“Give me your password.”'],answer:0,ar:'تبدو فاتورتك غير صحيحة. ماذا تقول؟',arOptions:['أتصل للاستفسار عن رسم في فاتورتي.','أنتم جميعًا مخطئون.','أعطني كلمة مرورك.'],explain:'Describe the issue calmly and never share passwords.',arExplain:'اشرح المشكلة بهدوء ولا تشارك كلمات المرور.'}
+    ]
+  };
+
+  // Arabic UI labels and common activity text. Unmapped text remains English, never silently misrepresented.
+  const arText = {
+    'REAL-WORLD NUMBERS':'الأرقام في الحياة اليومية','READ THE ENVIRONMENT':'قراءة اللافتات','PRACTICAL PAPERWORK':'الاستمارات العملية','TONE & SOCIAL SKILLS':'اللباقة والتواصل','KITCHEN & SHOPPING':'المطبخ والتسوق','SPEAKING IN REAL LIFE':'التحدث في الحياة اليومية',
+    'Numbers in real life':'الأرقام في الحياة اليومية','Signs & notices':'اللافتات والإعلانات','Form filler':'ملء الاستمارات','Say it with tact':'تحدث بلباقة','Kitchen mission':'مهمة المطبخ','Phone call simulator':'محاكي المكالمات',
+    'All life skills':'كل المهارات الحياتية','Arabic help':'مساعدة بالعربية','MISSION':'المهمة','GUIDED':'تدريجي','STEADY':'مستقر','CHALLENGE':'تحدٍّ','YOUR TURN':'دورك','YOUR ORDER':'ترتيبك','Shuffle steps':'إعادة خلط الخطوات','Check recipe order ↗':'تحقق من ترتيب الوصفة ↗','Review my form ↗':'راجع الاستمارة ↗','Practice only · fictional details':'للتدريب فقط · بيانات خيالية','SAMPLE FORM':'استمارة تجريبية','CASE':'حالة','Next situation →':'الموقف التالي →','Finish mission':'إنهاء المهمة','Back to Life Skills ↗':'العودة إلى المهارات الحياتية ↗','✓ NICE WORK':'✓ أحسنت','↗ TRY AGAIN':'↗ حاول مجددًا','✳ MISSION COMPLETE':'✳ اكتملت المهمة','English for the ':'الإنجليزية من أجل ','outside world.':'العالم خارج الصف.','CHOOSE YOUR PRACTICE':'اختر طريقة التدريب','Six studios. Six different ways to learn.':'ستة استوديوهات، وست طرق مختلفة للتعلم.','Enter studio ↗':'ادخل الاستوديو ↗','situations':'مواقف','Put the steps in order from first to last. Select a step to place it in the sequence.':'رتّب الخطوات من البداية إلى النهاية. اختر خطوة لتبديل مكانها.','Complete this imaginary registration form. Use a made-up name and any date; nothing is submitted.':'أكمل هذه الاستمارة الخيالية. استخدم اسمًا وتاريخًا افتراضيين؛ لن تُرسل أي بيانات.','First name':'الاسم الأول','Date of birth':'تاريخ الميلاد','Nationality':'الجنسية','Marital status':'الحالة الاجتماعية','Preferred contact method':'طريقة التواصل المفضلة','Choose…':'اختر…','e.g. Alex':'مثال: أحمد','DD / MM / YYYY':'يوم / شهر / سنة','Algerian':'جزائري','French':'فرنسي','British':'بريطاني','Canadian':'كندي','Other':'أخرى','Single':'أعزب/عزباء','Married':'متزوج/متزوجة','Prefer not to say':'أفضل عدم الإجابة','Email':'البريد الإلكتروني','Phone':'الهاتف','Text message':'رسالة نصية','⚑ Do not enter real personal or sensitive information.':'⚑ لا تدخل بيانات شخصية حقيقية أو حساسة.','Form reviewed. Your answers are complete, and the date format is clear. Remember: real forms may request DD/MM/YYYY or another format, so check the instructions.':'تمت مراجعة الاستمارة. الحقول مكتملة وتنسيق التاريخ واضح. تذكّر أن الاستمارات قد تستخدم تنسيقًا مختلفًا، لذا تحقق من التعليمات.','Check the required fields and use the requested date format, for example 14/09/2002.':'تحقق من الحقول المطلوبة واستخدم تنسيق التاريخ المطلوب، مثل 14/09/2002.','Good work. Keep practising the language you would use in real life.':'عمل جيد. واصل التدرب على اللغة التي ستستخدمها في الحياة اليومية.','Excellent sequence. ':'ترتيب ممتاز. ','Not quite. Compare what must happen first (prepare, wash or boil) with the later steps, then try the order again.':'ليس تمامًا. قارن ما يجب فعله أولًا، مثل التحضير أو الغسل أو الغلي، بالخطوات اللاحقة ثم حاول مجددًا.','A':'أ','B':'ب','C':'ج'
+  };
+  const arOptionText = {
+    'Three pounds and seventy-five pence':'ثلاثة جنيهات وخمسة وسبعون بنسًا','Thirty-seven pounds and five pence':'سبعة وثلاثون جنيهًا وخمسة بنسات','Three hundred and seventy-five pounds':'ثلاثمائة وخمسة وسبعون جنيهًا',
+    '6:45':'السادسة وخمس وأربعون دقيقة','6:15':'السادسة والربع','5:15':'الخامسة والربع','September 14, 2002':'14 سبتمبر 2002','April 9, 2002':'9 أبريل 2002','September 2, 2014':'2 سبتمبر 2014','44':'44','404':'404','14':'14','Eight pounds forty':'ثمانية جنيهات وأربعون بنسًا','Eight forty poundses':'صياغة غير صحيحة','Eighty-four pounds':'أربعة وثمانون جنيهًا','Half past six in the evening':'السادسة والنصف مساءً','Half past eight in the morning':'الثامنة والنصف صباحًا','Quarter to six in the evening':'السادسة إلا ربعًا مساءً','03/05':'3 مايو بصيغة يوم/شهر','05/03':'5 مارس بصيغة يوم/شهر','30/05':'30 مايو بصيغة يوم/شهر','Three hundred and eight':'ثلاثمائة وثمانية','Three zero eight hundred':'صياغة غير صحيحة','Thirty-eight':'ثمانية وثلاثون','£4.02':'4.02 جنيه','£4.20':'4.20 جنيه','They cost the same':'السعر متساوٍ','10:20':'10:20','10:30':'10:30','11:10':'11:10','Five oh six':'خمسة، صفر، ستة','Fifty-six':'ستة وخمسون','Five hundred and sixty':'خمسمائة وستون','£15':'15 جنيهًا','£25':'25 جنيهًا','£4':'4 جنيهات',
+    'Walk carefully and avoid the slippery area':'امشِ بحذر وتجنب المنطقة الزلقة','Run before it dries':'اركض قبل أن تجف','Touch the floor to check':'المس الأرض للتحقق','Stay on the left side':'ابقَ في الجانب الأيسر','Turn left immediately':'انعطف يسارًا فورًا','Leave the building':'غادر المبنى','Use another facility':'استخدم مرفقًا آخر','Push harder until it opens':'ادفع بقوة أكبر حتى يُفتح','Wait inside':'انتظر في الداخل','Do not enter; look for the public entrance':'لا تدخل؛ ابحث عن المدخل العام','Go in quickly':'ادخل بسرعة','Knock and enter anyway':'اطرق الباب وادخل على أي حال','The space between the platform and train':'المسافة بين الرصيف والقطار','A missing ticket':'تذكرة مفقودة','A low ceiling':'سقف منخفض','To leave safely during an emergency':'للخروج بأمان أثناء الطوارئ','As a shortcut at any time':'كطريق مختصر في أي وقت','To store bags':'لتخزين الحقائب','Push the door away from you':'ادفع الباب بعيدًا عنك','Pull the handle toward you':'اسحب المقبض نحوك','Slide it sideways':'حرّكه إلى الجانب','No tickets are currently available':'لا توجد تذاكر متاحة حاليًا','Tickets are free':'التذاكر مجانية','The show starts now':'العرض يبدأ الآن','Silence it or speak very quietly':'اكتم الصوت أو تحدث بهدوء شديد','Turn the volume up':'ارفع مستوى الصوت','Start a loud conversation':'ابدأ محادثة بصوت مرتفع','The facility is temporarily unavailable for repairs':'المرفق غير متاح مؤقتًا بسبب أعمال الإصلاح','The pool is open late':'المسبح مفتوح حتى وقت متأخر','You must clean the pool yourself':'يجب أن تنظف المسبح بنفسك',
+    '“Excuse me, do you have a moment?”':'«عذرًا، هل لديك لحظة؟»','“Listen to me now.”':'«استمع إليّ الآن»','“You must answer this.”':'«يجب أن تجيب عن هذا»','“Thanks for inviting me! I can’t make it tonight, but another time?”':'«شكرًا على دعوتي! لا أستطيع الليلة، فهل نلتقي في وقت آخر؟»','“No. Stop asking.”':'«لا. توقف عن السؤال»','“Your dinner is impossible.”':'صياغة غير طبيعية','“I see your point. Could we also consider another option?”':'«أفهم وجهة نظرك. هل يمكننا التفكير في خيار آخر أيضًا؟»','“That idea is stupid.”':'«هذه الفكرة غبية»','“You never understand anything.”':'«أنت لا تفهم شيئًا أبدًا»','“Could you help me find this in a medium, please?”':'«هل يمكنك مساعدتي في إيجاد هذا بمقاس متوسط، من فضلك؟»','“Get me medium.”':'«أحضر لي مقاسًا متوسطًا»','“You, find it.”':'«أنت، ابحث عنه»','“No worries, thanks for letting me know.”':'«لا بأس، شكرًا لإخباري»','“I will never forgive you.”':'«لن أسامحك أبدًا»','“You are late forever.”':'صياغة غير طبيعية','“Could you clarify the last step, please?”':'«هل يمكنك توضيح الخطوة الأخيرة، من فضلك؟»','“That makes no sense.”':'«هذا غير منطقي»','“Say it properly.”':'«قلها بطريقة صحيحة»','“No, thank you. I’m all set.”':'«لا، شكرًا، لا أحتاج إلى شيء آخر»','“Absolutely not, leave me alone!”':'«قطعًا لا، اتركني وشأني!»','“Maybe” when you mean no':'«ربما» بينما تقصد الرفض','“Sorry, I attached the wrong file. Here is the correct one.”':'«آسف، أرفقت الملف الخطأ. هذا هو الملف الصحيح»','“The file changed itself.”':'«الملف غيّر نفسه»','“Not my problem.”':'«ليست مشكلتي»','“It was lovely talking to you. I should get going.”':'«سعدت بالحديث معك. عليّ الانصراف الآن»','“I am finished with you.”':'«انتهيت منك»','“Stop talking now.”':'«توقف عن الكلام الآن»','“I’m sorry about that. Let me check what happened.”':'«أعتذر عن ذلك. دعني أتحقق مما حدث»','“You must be mistaken.”':'«لا بد أنك مخطئ»','“That is not my issue.”':'«هذه ليست مشكلتي»',
+    'Two tomatoes':'حبتا طماطم','Two tomato cans of paint':'علبتان من طلاء الطماطم','A saucepan of water':'قدر من الماء','Move a spoon around the soup':'حرّك الملعقة داخل الحساء','Cut the soup into pieces':'قطّع الحساء إلى قطع','Freeze the soup':'جمّد الحساء','Cut them into pieces':'قطّعها إلى قطع','Wash them without cutting':'اغسلها دون تقطيع','Boil them whole for an hour':'اسلقها كاملة لمدة ساعة','Cool and refrigerate it promptly in a suitable container':'اتركه يبرد واحفظه في الثلاجة سريعًا داخل وعاء مناسب','Leave it out overnight':'اتركه خارج الثلاجة طوال الليل','Put hot food directly on the floor':'ضع الطعام الساخن مباشرة على الأرض','Cook gently just below a full boil':'اطهه برفق قبل الغليان الكامل','Freeze for ten minutes':'جمّده لعشر دقائق','Cook at the highest heat possible':'اطهه على أعلى حرارة ممكنة',
+    '“Hello, I’d like to make an appointment, please.”':'«مرحبًا، أود حجز موعد من فضلك»','“Doctor. Now.”':'«الطبيب. الآن»','“I need a hospital building.”':'«أحتاج إلى مبنى مستشفى»','“Afternoon would be better, if possible.”':'«بعد الظهر أفضل إن أمكن»','“You decide, I refuse.”':'«أنت قرر، أنا أرفض»','“Yesterday afternoon.”':'«بعد ظهر الأمس»','“Thursday at half past three works for me. Thank you.”':'«الخميس الساعة الثالثة والنصف يناسبني. شكرًا»','“Three thirty yesterday.”':'«الثالثة والنصف أمس»','“I cannot hear colours.”':'«لا أستطيع سماع الألوان»','“I’m calling because my bill seems higher than usual.”':'«أتصل لأن فاتورتي تبدو أعلى من المعتاد»','“Your office is terrible.”':'«مكتبكم سيئ»','“Give me free things.”':'«أعطني أشياء مجانية»','“Yes, it’s dated 12 October.”':'«نعم، تاريخها 12 أكتوبر»','“I will not tell you anything.”':'«لن أخبرك بأي شيء»','“The date is a chair.”':'«التاريخ كرسي»','“Thank you. I appreciate you checking.”':'«شكرًا لك، أقدّر قيامك بالتحقق»','“Do it faster, useless person.”':'«افعل ذلك أسرع أيها عديم الفائدة»','“Goodbye” while they are still speaking':'«إلى اللقاء» بينما لا يزال يتحدث','“Could you tell me if this jacket is available in a medium?”':'«هل يمكنك إخباري إن كان هذا المعطف متوفرًا بمقاس متوسط؟»','“Send jacket now.”':'«أرسل المعطف الآن»','“Do you sell weather?”':'«هل تبيعون الطقس؟»','“Blue, please, if you have it.”':'«الأزرق من فضلك، إن كان متوفرًا»','“The colour of Thursday.”':'«لون يوم الخميس»','“Any colour is wrong.”':'«كل الألوان خاطئة»','“Yes, please. Could you hold it until this evening?”':'«نعم من فضلك. هل يمكنك الاحتفاظ به حتى هذا المساء؟»','“Hold the entire shop.”':'«احتفظ بالمتجر كله»','“No” when you mean yes':'«لا» بينما تقصد نعم'
+  };
+
+  Object.assign(arText, {
+    'You want to book a routine appointment. What is a clear opening?':'تريد حجز موعد عادي. ما البداية الواضحة المناسبة؟',
+    'Either time works, but afternoon is slightly better.':'الوقتان مناسبان، لكن فترة بعد الظهر أفضل قليلًا.',
+    'You can attend. Confirm the time.':'يمكنك الحضور. أكّد الموعد.',
+    'You think your latest bill is higher than expected.':'تعتقد أن فاتورتك الأخيرة أعلى مما توقعت.',
+    'You have the bill in front of you.':'الفاتورة أمامك.',
+    'You want to acknowledge the help.':'تريد شكر الموظف على المساعدة.',
+    'You want to ask whether a jacket is available in medium.':'تريد السؤال إن كان المعطف متوفرًا بمقاس متوسط.',
+    'You prefer the blue one.':'تفضّل اللون الأزرق.',
+    'You want them to keep it until this evening.':'تريد منهم الاحتفاظ به حتى هذا المساء.',
+    'First name':'الاسم الأول','Surname / Family name':'اسم العائلة','Postcode / ZIP code':'الرمز البريدي',
+    'At a market':'في السوق','Meeting a friend':'لقاء صديق','Booking a visit':'حجز زيارة','Leaving a message':'ترك رسالة','Paying at a café':'الدفع في مقهى','At the station':'في المحطة','A deadline':'موعد نهائي','Queue ticket':'تذكرة انتظار','Comparing offers':'مقارنة العروض','Running late':'التأخر عن الموعد','Confirming a number':'تأكيد رقم','A discount':'خصم',
+    'Supermarket entrance':'مدخل متجر','Busy walkway':'ممر مزدحم','Public restroom':'دورة مياه عامة','Staff-only corridor':'ممر مخصص للموظفين','Train platform':'رصيف القطار','Inside a public building':'داخل مبنى عام','Office door':'باب مكتب','Ticket counter':'شباك التذاكر','Library':'مكتبة','Swimming pool':'مسبح',
+    'Recipe sequence':'ترتيب الوصفة','Shopping choice':'اختيار أثناء التسوق','Kitchen vocabulary':'مفردات المطبخ','Food safety':'سلامة الطعام',
+    'Calling a clinic':'الاتصال بعيادة','Calling about a bill':'الاتصال بشأن فاتورة','Calling a shop':'الاتصال بمتجر',
+    'You need to interrupt a colleague':'تحتاج إلى مقاطعة زميل','You cannot attend':'لا يمكنك الحضور','You disagree at work':'تختلف مع زميل في العمل','You need help in a shop':'تحتاج إلى المساعدة في متجر','Someone apologises for being late':'شخص يعتذر عن التأخر','You need clarification':'تحتاج إلى توضيح','A salesperson offers an extra item':'يعرض البائع منتجًا إضافيًا','You made a small mistake':'ارتكبت خطأ بسيطًا','You want to leave a conversation':'تريد إنهاء محادثة','A customer complains':'يشكو أحد العملاء',
+    'You need to ask a quick question while they are working. Choose the most considerate opening.':'تحتاج إلى سؤال سريع بينما زميلك يعمل. اختر البداية الأكثر مراعاة.',
+    'A friend invites you to dinner, but you are busy. What sounds warm and clear?':'دعاك صديق إلى العشاء لكنك مشغول. ما الرد الودود والواضح؟',
+    'Your teammate suggests a plan you think may fail. What is constructive?':'اقترح زميلك خطة تعتقد أنها قد تفشل. ما الرد البنّاء؟',
+    'You cannot find the right size. What should you say?':'لم تجد المقاس المناسب. ماذا تقول؟',
+    'They say, “Sorry I’m late.” You were only waiting a few minutes. What fits?':'قال الشخص: «آسف على التأخر». لم تنتظر سوى دقائق. ما الرد المناسب؟',
+    'You did not understand the instruction. What is best?':'لم تفهم التعليمة. ما أفضل رد؟',
+    'You do not want it. Which reply is clear but courteous?':'لا تريد المنتج. أي رد واضح ومهذب؟',
+    'You sent the wrong attachment. What should your message say?':'أرسلت المرفق الخطأ. ماذا ينبغي أن تكتب؟',
+    'You need to go, but want to end warmly. Choose a natural phrase.':'تحتاج إلى المغادرة وتريد إنهاء الحديث بود. اختر عبارة طبيعية.',
+    'A customer says their order is wrong. What is a helpful first response?':'يقول عميل إن طلبه غير صحيح. ما الرد الأول المفيد؟',
+    'The label says £3.75. What do you pay for one item?':'يظهر على الملصق السعر 3.75 جنيه. كم تدفع مقابل قطعة واحدة؟',
+    'Your friend says, “Let’s meet at quarter past six.” When?':'قال صديقك: «لنلتقِ عند السادسة والربع». متى؟',
+    'A form asks for your date of birth: 14/09/2002. In day/month/year format, what is it?':'تطلب الاستمارة تاريخ الميلاد 14/09/2002 بصيغة يوم/شهر/سنة. ما التاريخ؟',
+    'Someone reads “zero seven, double four, eight one two.” What does “double four” mean?':'قرأ شخص رقمًا وقال double four. ماذا تعني؟',
+    'Your bill is £8.40. Which phrase says the amount naturally?':'فاتورتك 8.40 جنيه. أي عبارة تنطق المبلغ بشكل طبيعي؟',
+    'The display says 18:30. What is this in everyday 12-hour time?':'تعرض الشاشة 18:30. كيف تقول الوقت بنظام 12 ساعة؟',
+    '“Please submit it by the third of May.” Which date is meant?':'تعني عبارة «سلّمه بحلول الثالث من مايو» أي تاريخ؟',
+    'Your ticket number is 308. Which is the natural reading?':'رقم تذكرتك 308. ما القراءة الطبيعية؟',
+    'Which is cheaper: £4.20 or £4.02?':'أيهما أرخص: 4.20 أم 4.02 جنيه؟',
+    'You say, “I’ll be there in twenty minutes.” It is 10:10 now. When will you arrive?':'قلت إنك ستصل بعد عشرين دقيقة، والوقت الآن 10:10. متى تصل؟',
+    'For clarity, how should you read 506 when giving a reference number?':'لتوضيح الرقم المرجعي 506، كيف تقرأه؟',
+    'A £20 item has a £5 discount. What is the new price?':'منتج سعره 20 جنيهًا عليه خصم 5 جنيهات. ما السعر الجديد؟',
+    'You see this sign near a freshly mopped floor. What should you do?':'ترى هذه اللافتة قرب أرضية تم تنظيفها للتو. ماذا تفعل؟',
+    'What does this instruction ask people to do?':'ماذا تطلب هذه التعليمة من الناس؟',
+    'The sign is on a toilet door. What is the best action?':'اللافتة على باب دورة مياه. ما التصرف الأنسب؟',
+    'You are looking for reception. This sign is on a side door. What next?':'تبحث عن الاستقبال وترى هذه اللافتة على باب جانبي. ماذا تفعل؟',
+    'What should you watch for when boarding?':'ما الذي ينبغي الانتباه إليه عند الصعود؟',
+    'When is this route intended to be used?':'متى يُفترض استخدام هذا المسار؟',
+    'The word is printed on the door. What action is expected?':'الكلمة مكتوبة على الباب. ما التصرف المطلوب؟',
+    'The show is marked SOLD OUT. What does this mean?':'كُتب SOLD OUT على العرض. ماذا يعني ذلك؟',
+    'A phone rings loudly. What is the considerate response?':'يرن الهاتف بصوت مرتفع في المكتبة. ما التصرف المراعي للآخرين؟',
+    'What does the notice tell you?':'ماذا تخبرك هذه اللافتة؟',
+    'Wash your hands and prepare a clean surface.':'اغسل يديك وجهّز سطحًا نظيفًا.','Take two slices of bread.':'أحضر شريحتي خبز.','Add cheese and any chosen vegetables.':'أضف الجبن وأي خضروات تختارها.','Put the second slice on top.':'ضع الشريحة الثانية في الأعلى.','Cut the sandwich and serve it.':'اقطع الشطيرة وقدّمها.',
+    'Fill the kettle with water.':'املأ الغلاية بالماء.','Boil the water safely.':'اغلِ الماء بأمان.','Put a tea bag in a cup.':'ضع كيس شاي في كوب.','Pour the hot water into the cup.':'اسكب الماء الساخن في الكوب.','Let it steep, then remove the tea bag.':'اترك الشاي لينقع ثم أخرج الكيس.',
+    'Wash the fruit.':'اغسل الفاكهة.','Place a chopping board on a stable surface.':'ضع لوح التقطيع على سطح ثابت.','Cut the fruit into small pieces.':'قطّع الفاكهة إلى قطع صغيرة.','Put the pieces in a bowl.':'ضع القطع في وعاء.','Mix gently and serve.':'اخلط برفق وقدّمها.',
+    'Fill a pot with water.':'املأ قدرًا بالماء.','Bring the water to a boil.':'اترك الماء حتى يغلي.','Add the pasta carefully.':'أضف المعكرونة بحذر.','Cook according to the packet instructions.':'اطهُ وفق تعليمات العبوة.','Drain carefully and add the sauce.':'صفِّ الماء بحذر وأضف الصلصة.',
+    'Wash the vegetables.':'اغسل الخضروات.','Chop the vegetables into small pieces.':'قطّع الخضروات إلى قطع صغيرة.','Beat the eggs in a bowl.':'اخفق البيض في وعاء.','Cook the vegetables and add the eggs.':'اطهُ الخضروات ثم أضف البيض.','Cook until the eggs are set.':'اطهُ حتى يتماسك البيض.',
+    'Good morning, Green Street Clinic. How can I help?':'صباح الخير، عيادة غرين ستريت. كيف يمكنني مساعدتك؟','Of course. Is morning or afternoon better for you?':'بالتأكيد. هل يناسبك الصباح أم بعد الظهر؟','I can offer Thursday at 3:30 p.m.':'يمكنني عرض موعد الخميس الساعة 3:30 مساءً.','How can I help you today?':'كيف يمكنني مساعدتك اليوم؟','I can check the charges. Could you tell me the date on the bill?':'يمكنني التحقق من الرسوم. هل تخبرني بتاريخ الفاتورة؟','I’ll review the charges and explain them.':'سأراجع الرسوم وأشرحها لك.','Hello, Riverside Store. How can I help?':'مرحبًا، متجر ريفرسايد. كيف يمكنني مساعدتك؟','Which colour are you looking for?':'ما اللون الذي تبحث عنه؟','We have blue in medium. Would you like us to hold it?':'لدينا اللون الأزرق بمقاس متوسط. هل تريد أن نحتفظ به لك؟'
+  });
+  Object.assign(arOptionText, {
+    'Afternoon would be better, if possible.':'بعد الظهر أفضل إن أمكن.',
+    'Thursday at half past three works for me. Thank you.':'الخميس الساعة الثالثة والنصف يناسبني. شكرًا.',
+    'I’m calling because my bill seems higher than usual.':'أتصل لأن فاتورتي تبدو أعلى من المعتاد.',
+    'Yes, it’s dated 12 October.':'نعم، تاريخها 12 أكتوبر.',
+    'Thank you. I appreciate you checking.':'شكرًا لك، أقدّر قيامك بالتحقق.',
+    'Could you tell me if this jacket is available in a medium?':'هل يمكنك إخباري إن كان هذا المعطف متوفرًا بمقاس متوسط؟',
+    'Blue, please, if you have it.':'الأزرق من فضلك، إن كان متوفرًا.',
+    'Yes, please. Could you hold it until this evening?':'نعم من فضلك. هل يمكنك الاحتفاظ به حتى هذا المساء؟'
+  });
+  Object.assign(arText, {
+    'Numbers in real life':'الأرقام في الحياة اليومية',
+    'Decode prices, times, dates and phone numbers the way you meet them outside a lesson.':'افهم الأسعار والأوقات والتواريخ وأرقام الهواتف كما تظهر في الحياة اليومية.',
+    'Read a sign, understand the situation, then choose the safest or most useful next move.':'اقرأ اللافتة وافهم الموقف ثم اختر التصرف الأكثر أمانًا أو فائدة.',
+    'Practise everyday form fields with fictional details. Nothing you enter is sent anywhere.':'تدرّب على حقول الاستمارات اليومية ببيانات خيالية. لا يتم إرسال ما تدخله.',
+    'Choose language that fits the relationship, the situation and the level of formality.':'اختر تعبيرًا يناسب العلاقة والموقف ودرجة الرسمية.',
+    'Build a recipe in a sensible order, then handle a small shopping decision.':'رتّب خطوات وصفة بطريقة منطقية ثم اتخذ قرارًا بسيطًا أثناء التسوق.',
+    'Take a call one turn at a time. Several replies can work; context and clarity matter.':'أجرِ مكالمة خطوة بخطوة. قد تكون عدة إجابات مناسبة؛ المهم هو السياق والوضوح.',
+    'Enter studio ↗':'ادخل الاستوديو ↗','Next situation →':'الموقف التالي →','YOUR TURN':'دورك',
+    'Make a simple cheese sandwich':'إعداد شطيرة جبن بسيطة','Make a cup of tea':'إعداد كوب شاي','Prepare a fruit salad':'إعداد سلطة فواكه','Cook pasta':'طهي المعكرونة','Make a vegetable omelette':'إعداد عجة بالخضروات','Prepare a safe chopping station':'إعداد مكان آمن للتقطيع','Bake from a recipe':'الخبز وفق وصفة',
+    'Wash your hands and prepare a clean surface.':'اغسل يديك وجهّز سطحًا نظيفًا.','Take two slices of bread.':'أحضر شريحتي خبز.','Add cheese and any chosen vegetables.':'أضف الجبن والخضروات التي تختارها.','Put the second slice on top.':'ضع الشريحة الثانية في الأعلى.','Cut the sandwich and serve it.':'اقطع الشطيرة وقدّمها.','Fill the kettle with water.':'املأ الغلاية بالماء.','Boil the water safely.':'اغلِ الماء بأمان.','Put a tea bag in a cup.':'ضع كيس شاي في كوب.','Pour the hot water into the cup.':'اسكب الماء الساخن في الكوب.','Let it steep, then remove the tea bag.':'اترك الشاي لينقع ثم أخرج الكيس.','Wash the fruit.':'اغسل الفاكهة.','Place a chopping board on a stable surface.':'ضع لوح التقطيع على سطح ثابت.','Cut the fruit into small pieces.':'قطّع الفاكهة إلى قطع صغيرة.','Put the pieces in a bowl.':'ضع القطع في وعاء.','Mix gently and serve.':'اخلط برفق وقدّمها.','Fill a pot with water.':'املأ قدرًا بالماء.','Bring the water to a boil.':'اترك الماء حتى يغلي.','Add the pasta carefully.':'أضف المعكرونة بحذر.','Cook according to the packet instructions.':'اطهُ وفق تعليمات العبوة.','Drain carefully and add the sauce.':'صفِّ الماء بحذر وأضف الصلصة.','Wash the vegetables.':'اغسل الخضروات.','Chop the vegetables into small pieces.':'قطّع الخضروات إلى قطع صغيرة.','Beat the eggs in a bowl.':'اخفق البيض في وعاء.','Cook the vegetables and add the eggs.':'اطهُ الخضروات ثم أضف البيض.','Cook until the eggs are set.':'اطهُ حتى يتماسك البيض.',
+    'The goal is progress, not perfection.':'الهدف هو التقدم، لا الكمال.','MISSION COMPLETE':'اكتملت المهمة','Real-world confidence, one step at a time.':'ثقة في الحياة الواقعية، خطوة بخطوة.'
+  });
+  Object.assign(arText, {
+    'SAMPLE FORM':'استمارة تجريبية','Practice only · fictional details':'للتدريب فقط · بيانات خيالية','Review my form ↗':'راجع الاستمارة ↗','⚑ Do not enter real personal or sensitive information.':'⚑ لا تدخل بيانات شخصية حقيقية أو حساسة.','YOUR ORDER':'ترتيبك','Shuffle steps':'إعادة خلط الخطوات','Check recipe order ↗':'تحقق من ترتيب الوصفة ↗','CASE':'حالة','MISSION':'المهمة','All life skills':'كل المهارات الحياتية','GUIDED':'تدريجي','STEADY':'مستقر','CHALLENGE':'تحدٍّ','First name':'الاسم الأول','Date of birth':'تاريخ الميلاد','Nationality':'الجنسية','Marital status':'الحالة الاجتماعية','Preferred contact method':'طريقة التواصل المفضلة','Surname / Family name':'اسم العائلة','Postcode / ZIP code':'الرمز البريدي','Additional notes (optional)':'ملاحظات إضافية (اختياري)','e.g. Martin':'مثال: مارتن','e.g. 16000':'مثال: 16000','Leave blank if not needed':'اتركها فارغة إن لم تكن مطلوبة'
+  });
+  Object.assign(arText, {
+    'Splitting a bill':'تقسيم الفاتورة','Travel connection':'تبديل وسيلة النقل','Booking deadline':'الموعد النهائي للحجز','Behind a service desk':'خلف مكتب الخدمة','Low doorway':'مدخل منخفض','Museum entrance':'مدخل المتحف','Application form':'استمارة طلب','Contact details':'بيانات التواصل','Form instructions':'تعليمات الاستمارة','A deadline is unrealistic':'موعد نهائي غير واقعي','Diplomatic':'دبلوماسي','Firm but polite':'حازم ومهذب','Service desk':'مكتب الخدمة','Kitchen sequence':'ترتيب خطوات المطبخ','Shopping decision':'قرار تسوق','Compare grocery prices':'مقارنة أسعار البقالة','Safe chopping station':'مكان تقطيع آمن',
+    'Read the full recipe and preheat the oven if instructed.':'اقرأ الوصفة كاملة وسخّن الفرن مسبقًا إذا طُلب ذلك.','Measure the ingredients.':'قِس المكونات.','Mix the ingredients in the stated order.':'اخلط المكونات بالترتيب المذكور.','Place the mixture in the prepared tin.':'ضع الخليط في الصينية المجهزة.','Bake for the stated time and check it safely.':'اخبز للمدة المحددة وتحقق من النضج بأمان.','Clean and stabilise the work area before cutting.':'نظّف مكان العمل وثبّته قبل التقطيع.','Wash your hands and clear the work surface.':'اغسل يديك وأخلِ سطح العمل.','Place a stable chopping board on the counter.':'ضع لوح تقطيع ثابتًا على سطح العمل.','Cut slowly with the knife pointed away from your fingers.':'قطّع ببطء مع توجيه السكين بعيدًا عن أصابعك.','Clean the area and store the knife safely.':'نظّف المكان واحفظ السكين بأمان.'
+  });
+  const arExplainText = {
+    '£3.75 is three pounds and seventy-five pence.':'3.75 جنيه تعني ثلاثة جنيهات وخمسة وسبعين بنسًا.',
+    'Quarter past six means 6:15.':'السادسة والربع تعني 6:15.',
+    '14/09/2002 is the fourteenth of September, 2002, when the form uses day/month/year.':'في تنسيق يوم/شهر/سنة، يعني 14/09/2002 الرابع عشر من سبتمبر 2002.',
+    '“Double four” means the digit 4 is repeated twice.':'تعني double four تكرار الرقم 4 مرتين.',
+    'People commonly say “eight pounds forty” or “eight pounds and forty pence”.':'من الشائع قول eight pounds forty أو eight pounds and forty pence.',
+    '18:30 is 6:30 p.m., or half past six in the evening.':'18:30 تساوي 6:30 مساءً، أي السادسة والنصف مساءً.',
+    'The third of May is May 3. Check the date format used in the country.':'الثالث من مايو هو 3 مايو. تحقق من تنسيق التاريخ المستخدم في البلد.',
+    '308 is “three hundred and eight” (also “three hundred eight” in some varieties).':'يُقرأ 308: three hundred and eight، وتُستخدم أيضًا صيغة three hundred eight في بعض اللهجات القياسية.',
+    'Four pounds and two pence (£4.02) is less than four pounds and twenty pence (£4.20).':'4.02 جنيه أقل من 4.20 جنيه.',
+    'Ten minutes takes us to 10:20; another ten makes 10:30.':'بعد عشر دقائق يصبح الوقت 10:20، وبعد عشر دقائق أخرى يصبح 10:30.',
+    'For reference codes, “five oh six” makes each digit clear.':'في الأرقام المرجعية، تساعد عبارة five oh six على توضيح كل رقم.',
+    'Twenty minus five is fifteen: the new price is £15.':'عشرون ناقص خمسة يساوي خمسة عشر؛ السعر الجديد 15 جنيهًا.',
+    'A wet floor can be slippery. Slow down and use another route if possible.':'قد تكون الأرضية المبللة زلقة. تمهّل واستخدم مسارًا آخر إن أمكن.',
+    'Keep left means remain on the left side while moving.':'تعني Keep left البقاء في الجانب الأيسر أثناء الحركة.',
+    'Out of order means the equipment or facility is not working and should not be used.':'تعني Out of order أن الجهاز أو المرفق معطّل ولا ينبغي استخدامه.',
+    'No entry means you must not go through that entrance.':'تعني No entry أنه لا يجوز المرور من ذلك المدخل.',
+    'There may be a gap between the platform edge and the train. Step carefully.':'قد توجد فجوة بين حافة الرصيف والقطار. اصعد بحذر.',
+    'An emergency exit is a route for leaving during an emergency. Follow official instructions.':'مخرج الطوارئ مخصص للخروج أثناء الطوارئ. اتبع التعليمات الرسمية.',
+    'Push means apply force to move the door away from you.':'تعني Push دفع الباب بعيدًا عنك.',
+    'Sold out means all available tickets have been sold.':'تعني Sold out أن جميع التذاكر المتاحة قد بيعت.',
+    'The sign asks visitors to keep noise to a minimum.':'تطلب اللافتة من الزوار خفض الضوضاء قدر الإمكان.',
+    'Maintenance is work done to keep equipment or a facility in good condition.':'الصيانة هي أعمال تُجرى للحفاظ على المعدات أو المرافق في حالة جيدة.',
+    'Prepare first, assemble the ingredients, close the sandwich, then serve.':'جهّز الأدوات أولًا، ثم أضف المكونات وأغلق الشطيرة وقدّمها.',
+    'Boil the water before pouring it over the tea bag. Handle hot water carefully.':'اغلِ الماء قبل سكبه على كيس الشاي، وتعامل مع الماء الساخن بحذر.',
+    'Wash before cutting, use a stable board, then mix the pieces.':'اغسل الفاكهة قبل تقطيعها، واستخدم لوحًا ثابتًا، ثم اخلط القطع.',
+    'Bring water to a boil before adding pasta; drain carefully when cooked.':'اغلِ الماء قبل إضافة المعكرونة، ثم صفِّها بحذر بعد نضجها.',
+    'Prepare the vegetables, beat the eggs, then cook until fully set.':'حضّر الخضروات واخفق البيض ثم اطهه حتى يتماسك تمامًا.',
+    'A shopping list records ingredients you need and do not already have.':'تسجل قائمة التسوق المكونات التي تحتاج إليها ولا تتوفر لديك.',
+    'Stir means move a spoon or utensil around a liquid or mixture.':'تعني stir تحريك ملعقة أو أداة داخل سائل أو خليط.',
+    'Chop means cut food into pieces. Use a knife carefully on a stable board.':'تعني chop تقطيع الطعام إلى قطع. استخدم السكين بحذر وعلى لوح ثابت.',
+    'Store leftovers promptly and follow local food-safety guidance; do not leave cooked food out overnight.':'احفظ بقايا الطعام سريعًا واتبع إرشادات سلامة الغذاء المحلية؛ لا تترك الطعام المطهو خارج الثلاجة طوال الليل.',
+    'Simmer means cook gently in a liquid with small, occasional bubbles.':'تعني simmer الطهي برفق في سائل تظهر فيه فقاعات صغيرة متباعدة.'
+  };
+
+  Object.assign(arExplainText, {
+    '“Excuse me, do you have a moment?” recognises that the other person may be busy.':'تُظهر عبارة «عذرًا، هل لديك لحظة؟» مراعاة احتمال انشغال الشخص الآخر.',
+    'Thanking them first softens the refusal, while a clear answer avoids confusion.':'يخفف الشكر في البداية من حدة الرفض، بينما تمنع الإجابة الواضحة الالتباس.',
+    'Acknowledge the other view, then suggest an alternative without attacking the person.':'اعترف بوجهة النظر الأخرى ثم اقترح بديلًا دون مهاجمة الشخص.',
+    'Could you…? and please make a request sound courteous.':'تجعل عبارتا Could you…? وplease الطلب أكثر تهذيبًا.',
+    '“No worries” is a relaxed way to accept an apology when the issue is minor.':'تُستخدم No worries لقبول الاعتذار ببساطة عندما يكون الأمر بسيطًا.',
+    'Ask about the specific part you missed rather than blaming the speaker.':'اسأل عن الجزء الذي لم تفهمه بدلًا من لوم المتحدث.',
+    'A brief “No, thank you” is enough. You do not need to invent a reason.':'تكفي عبارة قصيرة مثل No, thank you. لا تحتاج إلى اختلاق سبب.',
+    'A useful apology names the mistake and gives the correction.':'يذكر الاعتذار المفيد الخطأ ويقدم التصحيح.',
+    'This phrase shows appreciation and clearly signals that you need to leave.':'تُظهر هذه العبارة التقدير وتوضح أنك بحاجة إلى المغادرة.',
+    'Acknowledge the concern, then investigate before promising a specific solution.':'أظهر تفهمك للمشكلة ثم تحقق منها قبل الوعد بحل محدد.',
+    'State your request politely and clearly. This is a routine booking, not an emergency.':'اذكر طلبك بوضوح وأدب. هذا حجز عادي وليس حالة طارئة.',
+    'This gives a preference while leaving room for the receptionist to check availability.':'توضح تفضيلك مع ترك المجال لموظف الاستقبال للتحقق من المواعيد المتاحة.',
+    'Repeat the day and time to confirm you heard them correctly.':'كرر اليوم والوقت للتأكد من أنك سمعتهما بشكل صحيح.',
+    'Explain the issue calmly and let the agent investigate.':'اشرح المشكلة بهدوء واترك للموظف فرصة التحقق منها.',
+    'Answer the specific question with the information requested. In a real call, share sensitive details only through verified channels.':'أجب عن السؤال المحدد بالمعلومة المطلوبة. في مكالمة حقيقية، شارك المعلومات الحساسة عبر قنوات موثوقة فقط.',
+    'A calm acknowledgement keeps the conversation cooperative.':'يساعد الرد الهادئ على إبقاء المحادثة تعاونية.',
+    'Ask a focused question and name the item and size.':'اطرح سؤالًا محددًا واذكر المنتج والمقاس.',
+    'Give the needed detail in a short, natural reply.':'قدّم المعلومة المطلوبة بإجابة قصيرة وطبيعية.',
+    'A polite request with a clear time limit is easy to act on.':'يسهل تنفيذ الطلب المهذب عندما يحدد مدة واضحة.'
+  });
+  Object.assign(arText, {
+    'Let’s clarify the meaning':'لنوضّح المقصود','The meaning may have changed':'قد يتغيّر المعنى','The meaning may need clarifying':'المعنى يحتاج توضيحًا','Understandable; soften the tone':'المعنى مفهوم؛ حسّن النبرة','Make it sound more natural':'يمكن جعلها أكثر طبيعية','Clear message; explore a natural alternative':'صياغة واضحة؛ تعلّم بديلًا طبيعيًا',
+    'Or write your own reply':'أو اكتب ردك بطريقتك','Write what you would naturally say…':'اكتب ما ستقوله بصورة طبيعية…','Coach my wording ↗':'ساعدني على تحسين الصياغة ↗','Different wording can work. We look for your meaning and how clearly and politely you express it.':'قد تنجح صياغات مختلفة. نهتم بالمعنى الذي تقصده وبمدى وضوحك ولباقتك.','Your intended meaning comes through, and your wording sounds considerate. Many phrasings can work—compare it with the example to learn another natural expression.':'وصل المعنى الذي تقصده، وتبدو صياغتك مراعية. توجد صيغ كثيرة مناسبة؛ قارنها بالنموذج لتتعلم تعبيرًا طبيعيًا آخر.','Your main idea seems clear. To make it more considerate, try adding a phrase such as “Could you…?”, “please”, or “thank you”, depending on the situation.':'تبدو فكرتك الأساسية واضحة. لجعلها أكثر لباقة، جرّب إضافة عبارة مثل “Could you…?” أو “please” أو “thank you” بحسب الموقف.','This does not mean your answer is wrong. It may simply use wording this practice checker cannot recognise. Check that your reply says what you want, fits the situation, and uses an appropriate tone. You can compare it with the example if helpful.':'لا يعني هذا أن إجابتك خاطئة؛ فقد تكون صياغتك مختلفة عما يستطيع هذا الفاحص البسيط التعرّف عليه. تأكد من أن ردك يوضح ما تريده ويلائم الموقف ويحافظ على نبرة مناسبة. يمكنك مقارنته بالنموذج إن رغبت.','Write a reply in your own words first. We are not looking for an exact match—we want to understand your intention and help make it clear.':'اكتب ردك بطريقتك أولًا. لا نبحث عن تطابق حرفي؛ نريد فهم قصدك ومساعدتك على توضيحه.',
+    'English for the ':'الإنجليزية من أجل ',
+    'outside world.':'العالم خارج الصف.',
+    'Real-life situations need more than picking a word. Read the room, make a decision, practise a conversation and handle everyday tasks in English.':'تتطلب المواقف الواقعية أكثر من اختيار كلمة. افهم الموقف واتخذ قرارًا وتدرّب على المحادثة وأنجز المهام اليومية بالإنجليزية.',
+    'CHOOSE YOUR PRACTICE':'اختر طريقة التدريب',
+    'Six studios. Six different ways to learn.':'ستة استوديوهات، وست طرق مختلفة للتعلم.',
+    'Each studio has its own interaction—not the same multiple-choice screen repeated.':'لكل استوديو طريقة تفاعل مختلفة، بدل تكرار شاشة الاختيار من متعدد.',
+    'Not another quiz loop.':'ليست مجرد جولة أسئلة أخرى.',
+    'Number decoding, environmental signs, a fictional form, tone decisions, recipe sequencing and a branching phone conversation each use a different interaction pattern. Arabic help is optional.':'فهم الأرقام واللافتات والاستمارات الخيالية واختيار نبرة الحديث وترتيب الوصفات والمكالمات المتسلسلة تستخدم أساليب تفاعل مختلفة. المساعدة العربية اختيارية.',
+    'Arabic help':'مساعدة بالعربية','REAL LIFE · REAL LANGUAGE · REAL CONFIDENCE':'الحياة الواقعية · لغة عملية · ثقة حقيقية',
+    '06':'06','skill studios':'استوديوهات مهارات','6':'6','different play styles':'أنماط لعب مختلفة','A1–B2':'A1–B2','practical language':'لغة عملية'
+  });
+
+  function tx(text, kind) {
+    if (!arabicOn() || !text) return text;
+    if (kind === 'option') return arOptionText[text] || text;
+    return arText[text] || text;
+  }
+  function promptText(item) { return arabicOn() ? (item.ar || arText[item.prompt] || item.prompt) : item.prompt; }
+  function explanationText(item) { return arabicOn() ? (item.arExplain || arExplainText[item.explain] || item.explain || 'واصل التدريب على استخدام الإنجليزية في المواقف اليومية.') : (item.explain || 'Good work. Keep practising the language you would use in real life.'); }
+  function optionsMarkup(item) {
+    return item.options.map((opt,i)=>'<button type="button" class="ls-choice" data-ls-answer="'+i+'"><span class="ls-choice-key">'+String.fromCharCode(65+i)+'</span><span>'+esc(arabicOn() && item.arOptions ? item.arOptions[i] : tx(opt,'option'))+'</span></button>').join('');
+  }
+
+  // Flatten the scripted calls so every caller turn plays in sequence rather than jumping between scenarios.
+  data.phone = data.phone.flatMap(call => call.turns.map(turn => ({...turn, scene:call.scene})));
+  const state = {module:null,round:0,score:0,locked:false,showArabic:false,sequence:[],feedback:null,formValues:{},pool:[],difficulty:'guided'};
+  const $ = (sel,el=root) => el.querySelector(sel);
+  const esc = s => String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const arabicOn = () => state.showArabic || document.body.classList.contains('arabic-help') || document.body.dataset.arabicHelp === 'true';
+  function chooseModule(id) {
+    state.module = id; state.round=0; state.score=0; state.locked=false; state.sequence=[]; state.feedback=null; state.formValues={};
+    const module = modules.find(m=>m.id===id);
+    if (window.EpiphanyThinkLab && window.EpiphanyThinkLab.registerGame) window.EpiphanyThinkLab.registerGame('life-'+id, module.skill);
+    const policy = window.EpiphanyThinkLab && window.EpiphanyThinkLab.getGameDifficulty
+      ? window.EpiphanyThinkLab.getGameDifficulty('life-'+id, module.skill) : {level:'guided'};
+    state.difficulty = policy.level || 'guided';
+    state.pool = id === 'forms' ? [data.forms[0]] : (state.difficulty === 'guided' ? (guidedData[id] || data[id] || []).slice() : (data[id] || []).slice());
+    if (state.difficulty === 'challenge' && id !== 'forms') state.pool = state.pool.concat(challengeData[id] || []);
+    // Keep challenge cards later in the run, so a round never changes level mid-session.
+    render();
+  }
+  function itemFor() {
+    const list=state.pool.length?state.pool:(data[state.module]||[]);
+    return list[state.round%list.length];
+  }
+  function header(m) {
+    const level = tx(state.difficulty === 'challenge' ? 'CHALLENGE' : state.difficulty === 'steady' ? 'STEADY' : 'GUIDED');
+    return '<div class="ls-workbar"><button type="button" class="ls-back" data-ls-home>'+tx('All life skills')+'</button><span class="ls-progress">'+tx('MISSION')+' '+String(state.round+1).padStart(2,'0')+' · '+level+'</span><button type="button" class="ls-help-toggle '+(state.showArabic?'is-on':'')+'" data-ls-ar aria-pressed="'+state.showArabic+'">ع <span>Arabic help</span></button></div><div class="ls-mission-head"><span class="ls-eyebrow">'+esc(tx(m.eyebrow))+'</span><h2>'+esc(tx(m.title))+'</h2><p'+(arabicOn()?' lang="ar" dir="rtl"':'')+'>'+esc(tx(m.desc))+'</p></div>';
+  }
+  function answerOptions(item) {
+    return '<div class="ls-choice-list">'+optionsMarkup(item)+'</div>';
+  }
+  function feedback(item,correct) {
+    state.locked=true;
+    state.feedback={correct,explain:explanationText(item)||'Good work. Keep practising the language you would use in real life.'};
+    const m=modules.find(x=>x.id===state.module);
+    if(window.EpiphanyThinkLab&&window.EpiphanyThinkLab.recordResult) window.EpiphanyThinkLab.recordResult(m.skill,'life-'+state.module,correct,state.round===(state.pool.length-1));
+    render();
+  }
+  function ownReplyMarkup() {
+    return '<div class="ls-own-reply"><label for="ls-own-reply">'+tx('Or write your own reply')+'</label><textarea id="ls-own-reply" data-ls-free-reply rows="2" maxlength="500" placeholder="'+tx('Write what you would naturally say…')+'"></textarea><button type="button" class="ls-secondary" data-ls-check-reply>'+tx('Coach my wording ↗')+'</button><p>'+tx('Different wording can work. We look for your meaning and how clearly and politely you express it.')+'</p></div>';
+  }
+  function coachOwnReply(item, reply) {
+    const raw = String(reply || '').trim();
+    const text = raw.toLowerCase().replace(/[^a-z0-9' ]/g,' ').replace(/\s+/g,' ').trim();
+    const scene = (item.scene || '').toLowerCase();
+    const prompt = (item.prompt || '').toLowerCase();
+    const ar = arabicOn();
+    const has = pattern => pattern.test(text);
+    const polite = has(/\b(please|could|would|thank|thanks|sorry|excuse|appreciate|may i|i'd|i would|if possible|no worries|kindly)\b/);
+    const completeEnough = text.split(' ').filter(Boolean).length >= 5 && /\b(i|we|you|it|that|this|could|would|can|will|i'm|i am|i'd|i have|please|thanks|thank)\b/.test(text);
+    const contextRules = [
+      {when:/calling a clinic|appointment|clinic|doctor/, wants:/\b(appointment|book|schedule|wednesday|tuesday|thursday|morning|afternoon|time|available|visit|see the doctor)\b/, conflict:/\b(cancel|don't want|do not want|can't come|cannot come|not coming)\b/},
+      {when:/bill|charge|customer service/, wants:/\b(bill|charge|cost|explain|check|review|payment|item|higher|dated)\b/, conflict:/\b(password|pin code|one.time code|ignore the bill)\b/},
+      {when:/shop|jacket|product|hold the item/, wants:/\b(product|item|jacket|size|medium|colour|color|hold|keep|available|buy|blue)\b/, conflict:/\b(don't want|do not want|cancel|keep it forever)\b/},
+      {when:/cannot attend|dinner|invites you|busy/, wants:/\b(thank|can't|cannot|unable|busy|another time|next time|tonight|today|sorry)\b/, conflict:/\b(yes|i'll come|i will come|definitely coming)\b/},
+      {when:/disagree|unrealistic|deadline|task|plan/, wants:/\b(could|would|alternative|option|consider|complete|finish|time|instead|work for you|check|different)\b/, conflict:/\b(stupid|idiot|shut up|you're wrong|you are wrong)\b/},
+      {when:/misinformation|incorrect/, wants:/\b(check|update|different|information|fact|verify|look at|confirm)\b/, conflict:/\b(stupid|idiot|shut up)\b/},
+      {when:/private information|private contact/, wants:/\b(can't|cannot|permission|private|share|confidential|ask them)\b/, conflict:/\b(here is|here's|i'll send|i will send|their number is)\b/},
+      {when:/help.*shop|shop.*help|right size|help finding an item/, wants:/\b(help|size|please|could|would|find|medium)\b/, conflict:/\b(go away|leave me alone|don't help|do not help)\b/},
+      {when:/apologises for being late|apologizes for being late/, wants:/\b(no worries|that's okay|it is okay|thanks|thank you|fine|don't worry|do not worry)\b/, conflict:/\b(terrible|idiot|never forgive|shut up)\b/},
+      {when:/clarification|did not understand|did not hear/, wants:/\b(repeat|clarify|explain|again|last|understand|sorry|mean)\b/, conflict:/\b(shut up|speak properly|stupid)\b/},
+      {when:/extra item|do not want it|don't want it/, wants:/\b(no|not interested|thank|don't need|do not need|all set|already have)\b/, conflict:/\b(yes|i'll take|i will take|give me)\b/},
+      {when:/small mistake|wrong attachment/, wants:/\b(sorry|apolog|wrong|correct|attach|attached|file|here is|resend)\b/, conflict:/\b(not my problem|didn't do it|did not do it)\b/},
+      {when:/leave a conversation/, wants:/\b(lovely|nice|talking|go|leave|get going|take care|goodbye|bye)\b/, conflict:/\b(shut up|finished with you|stop talking)\b/},
+      {when:/customer complains|order is wrong/, wants:/\b(sorry|check|look|fix|correct|help|order|happened|resolve)\b/, conflict:/\b(your fault|not my problem|you're wrong|you are wrong)\b/}
+    ];
+    const rule = contextRules.filter(r => r.when.test(scene) || r.when.test(prompt)).sort((a,b) => b.when.source.length-a.when.source.length)[0];
+    let kind = 'clear';
+    let message = '';
+    let label = '';
+    if (text.length < 3) {
+      kind = 'unclear';
+      label = ar ? 'لنوضّح المقصود' : 'Let’s clarify the meaning';
+      message = ar ? 'الرد قصير جدًا حتى نعرف قصدك. أضف ما تريد فعله أو طلبه، ثم جرّب مرة أخرى. هذا ليس حكمًا على مستواك.' : 'This is too short for the coach to understand your intention. Add what you want to do or ask, then try again. This is not a judgement of your level.';
+    } else if (rule && rule.conflict.test(text)) {
+      kind = 'meaning';
+      label = ar ? 'قد يتغيّر المعنى' : 'The meaning may have changed';
+      message = ar ? 'انتبه: قد يوصل هذا الرد معنى معاكسًا لما يتطلبه الموقف. راجع ما تريد تحقيقه أولًا، ثم أعد صياغته. قد لا يلتقط هذا الفاحص البسيط كل السياق، لذلك اعتبرها ملاحظة للمراجعة لا حكمًا نهائيًا.' : 'Careful: this wording may communicate the opposite of what the situation calls for. Check what you want to achieve, then rephrase it. This simple coach may miss context, so treat this as a prompt to review—not a final verdict.';
+    } else if (rule && !rule.wants.test(text)) {
+      kind = 'unclear';
+      label = ar ? 'المعنى يحتاج توضيحًا' : 'The meaning may need clarifying';
+      message = ar ? 'لم أستطع تحديد الجزء الذي يجيب عن الموقف. هذا لا يعني أن ردك خطأ؛ استخدم كلمات أوضح لطلبك أو قرارك، أو قارنه بالنموذج لترى الفكرة التي ينبغي إيصالها.' : 'I could not identify the part of your reply that addresses the situation. That does not mean it is wrong. Make your request or decision more explicit, or compare it with the example to see the message to convey.';
+    } else if (!completeEnough && text.split(' ').filter(Boolean).length <= 2) {
+      kind = 'unclear';
+      label = ar ? 'المعنى يحتاج توضيحًا' : 'The meaning may need clarifying';
+      message = ar ? 'الرد مختصر جدًا ولا يوضح الطلب أو القرار كاملًا. أضف جملة قصيرة تشرح ما تقصده، ولا تقلق بشأن مطابقة النموذج.' : 'This reply is too brief to make the request or decision clear. Add a short sentence explaining what you mean; there is no need to match the model.';
+    } else if (!polite && (rule || completeEnough)) {
+      kind = 'tone';
+      label = ar ? 'المعنى مفهوم؛ حسّن النبرة' : 'Understandable; soften the tone';
+      message = ar ? 'يبدو أن فكرتك وصلت. لتحسين النبرة، يمكنك إضافة طلب مهذب أو شكر أو اعتذار مناسب للموقف. لا تحتاج إلى نسخ الجملة النموذجية حرفيًا.' : 'Your main idea seems to come through. To improve the tone, consider adding a polite request, thanks, or an apology that fits the situation. You do not need to copy the model sentence.';
+    } else if (!completeEnough && text.split(' ').length <= 4) {
+      kind = 'natural';
+      label = ar ? 'يمكن جعلها أكثر طبيعية' : 'Make it sound more natural';
+      message = ar ? 'قد يفهم المستمع مقصدك، لكن الرد القصير جدًا قد يبدو مقتضبًا. جرّب جملة كاملة أو أضف كلمة توضح الطلب أو السبب.' : 'A listener may understand you, but a very short reply can sound abrupt. Try a complete sentence or add a word that clarifies your request or reason.';
+    } else {
+      kind = 'natural';
+      label = ar ? 'صياغة واضحة؛ تعلّم بديلًا طبيعيًا' : 'Clear message; explore a natural alternative';
+      message = ar ? 'لا حاجة إلى مطابقة النموذج. إذا كان ردك يعبّر عن قصدك، فهذا أمر جيد؛ يمكنك مقارنة الصيغتين لتتعلم تعبيرًا أكثر شيوعًا أو أنسب للموقف.' : 'There is no need to match the model exactly. If your reply expresses your intention, that is a good start; compare the two versions to learn a more common or context-appropriate expression.';
+    }
+    state.locked = true;
+    state.feedback = {correct:true, kind, label, explain:message};
+    // Free-form coaching is intentionally not scored: a heuristic cannot reliably grade meaning.
+    render();
+  }
+  function renderQuestion(item,m) {
+    if(m.id==='numbers') return '<div class="ls-number-board"><span class="ls-scene-tag">'+esc(tx(item.scene))+'</span><span class="ls-number-icon">'+(item.kind==='price'?'£':item.kind==='time'?'◷':item.kind==='date'?'▦':'#')+'</span><span class="ls-kind">'+esc(item.kind.toUpperCase())+'</span></div><h3>'+esc(promptText(item))+'</h3>'+answerOptions(item);
+    if(m.id==='signs') return '<div class="ls-sign-scene"><span class="ls-scene-tag">'+esc(tx(item.place))+'</span><div class="ls-real-sign"><span>'+esc(item.symbol)+'</span><strong>'+esc(item.sign)+'</strong></div></div><h3>'+esc(promptText(item))+'</h3>'+answerOptions(item);
+    if(m.id==='polite') return '<div class="ls-tone-card"><span class="ls-scene-tag">'+esc(tx(item.scene))+'</span><span class="ls-tone-label">'+esc(item.level)+'</span></div><h3>'+esc(promptText(item))+'</h3>'+answerOptions(item)+ownReplyMarkup();
+    if(m.id==='kitchen') {
+      if(item.steps) {
+        if(!state.sequence.length) state.sequence=item.steps.map((_,i)=>i).sort(()=>Math.random()-.5);
+        return '<div class="ls-recipe-card"><span class="ls-scene-tag">'+esc(tx(item.scene))+'</span><h3>'+esc(tx(item.title))+'</h3><p>'+(arabicOn()?'<span lang="ar" dir="rtl">'+esc(item.ar)+'</span>':'Put the steps in order from first to last. Select a step to place it in the sequence.')+'</p></div><div class="ls-sequence"><div class="ls-sequence-label">YOUR ORDER</div>'+state.sequence.map((step,pos)=>'<button type="button" class="ls-step" data-ls-step="'+step+'"><span>'+String(pos+1).padStart(2,'0')+'</span>'+esc(arabicOn() && item.arSteps ? item.arSteps[step] : tx(item.steps[step]))+'<b>↕</b></button>').join('')+'</div><div class="ls-inline-actions"><button type="button" class="ls-secondary" data-ls-shuffle>Shuffle steps</button><button type="button" class="ls-primary" data-ls-check-sequence>Check recipe order ↗</button></div>';
+      }
+      return '<div class="ls-recipe-card"><span class="ls-scene-tag">'+esc(tx(item.scene))+'</span><h3>'+esc(tx(item.title))+'</h3></div><h3>'+esc(promptText(item))+'</h3>'+answerOptions(item);
+    }
+    if(m.id==='phone') {
+      const turn=item;
+      return '<div class="ls-phone-shell"><div class="ls-phone-status"><span>● CALL IN PROGRESS</span><span>00:0'+(state.round+1)+'</span></div><div class="ls-caller"><span>☎</span><div><strong>'+esc(turn.speaker)+'</strong><small>'+esc(tx(item.scene))+'</small></div></div><blockquote class="ls-dialogue">'+esc(tx(turn.line))+'</blockquote><div class="ls-listen-label">YOUR TURN</div><h3>'+esc(promptText(turn))+'</h3>'+answerOptions(turn)+ownReplyMarkup();
+    }
+    if(m.id==='forms') {
+      const fields=[{id:'first',label:'First name',placeholder:'e.g. Alex',type:'text'},{id:'birth',label:'Date of birth',placeholder:'DD / MM / YYYY',type:'date'},{id:'nationality',label:'Nationality',options:['Algerian','French','British','Canadian','Other']},{id:'status',label:'Marital status',options:['Single','Married','Prefer not to say']},{id:'contact',label:'Preferred contact method',options:['Email','Phone','Text message']}];
+      if(state.difficulty==='challenge') fields.splice(1,0,{id:'surname',label:'Surname / Family name',placeholder:'e.g. Martin',type:'text'},{id:'postcode',label:'Postcode / ZIP code',placeholder:'e.g. 16000',type:'text'},{id:'optional',label:'Additional notes (optional)',placeholder:'Leave blank if not needed',type:'text'});
+      return '<div class="ls-form-paper"><div class="ls-form-paper-head"><span>✳ '+tx('SAMPLE FORM')+'</span><small>'+tx('Practice only · fictional details')+'</small></div><p'+(arabicOn()?' lang="ar" dir="rtl"':'')+'>'+(arabicOn()?'أكمل هذه الاستمارة الخيالية باستخدام بيانات افتراضية. لن تُرسل أي معلومات.':'Complete this imaginary registration form. Use fictional details; nothing is submitted.')+'</p><form data-ls-form>'+fields.map(f=>'<label class="ls-form-field"><span>'+esc(tx(f.label))+'</span>'+(f.options?'<select name="'+f.id+'" required><option value="">Choose…</option>'+f.options.map(o=>'<option>'+esc(tx(o))+'</option>').join('')+'</select>':'<input name="'+f.id+'" type="'+(f.type==='date'?'text':'text')+'" placeholder="'+esc(tx(f.placeholder))+'" value="'+esc(state.formValues[f.id]||'')+'" '+(f.id==='first'?'required':'')+' autocomplete="off">')+'</label>').join('')+'<button type="submit" class="ls-primary">'+tx('Review my form ↗')+'</button></form><p class="ls-privacy-note">'+tx('⚑ Do not enter real personal or sensitive information.')+'</p></div>';
+    }
+    return '';
+  }
+  function render() {
+    const m=modules.find(x=>x.id===state.module);
+    if(!m) { landing(); return; }
+    const item=itemFor();
+    root.innerHTML='<div class="ls-studio ls-'+m.tone+'">'+header(m)+'<div class="ls-stage">'+(state.feedback?'<div class="ls-feedback '+(state.feedback.correct?'is-correct':'is-wrong')+(state.feedback.kind?' ls-feedback-'+state.feedback.kind:'')+'"><span>'+esc(state.feedback.label||tx(state.feedback.correct?'✓ NICE WORK':'↗ TRY AGAIN'))+'</span><p>'+esc(state.feedback.explain)+'</p><button type="button" class="ls-primary" data-ls-next>'+(state.round>=state.pool.length-1?tx('Finish mission'):tx('Next situation →'))+'</button></div>':renderQuestion(item,m))+'</div><div class="ls-stage-foot"><span>'+esc(tx(m.eyebrow))+'</span><span>'+tx('CASE')+' '+String(state.round+1).padStart(2,'0')+' / '+state.pool.length+'</span></div></div>';
+  }
+  function landing() {
+    state.module=null;
+    root.innerHTML='<div class="ls-hero"><div class="ls-hero-copy"><span class="ls-eyebrow"><i></i> EPIPHANY · PRACTICAL ENGLISH</span><h2>'+tx('English for the ')+'<em>'+tx('outside world.')+'</em></h2><p'+(arabicOn()?' lang="ar" dir="rtl"':'')+'>'+tx('Real-life situations need more than picking a word. Read the room, make a decision, practise a conversation and handle everyday tasks in English.')+'</p><div class="ls-hero-metrics"><span><b>06</b> skill studios</span><span><b>6</b> different play styles</span><span><b>A1–B2</b> practical language</span></div></div><div class="ls-hero-art" aria-hidden="true"><div class="ls-orbit ls-orbit-one"></div><div class="ls-orbit ls-orbit-two"></div><span class="ls-art-card ls-art-number">£ 12.50</span><span class="ls-art-card ls-art-sign">KEEP LEFT ←</span><span class="ls-art-card ls-art-phone">☎ HELLO?</span><span class="ls-art-core">LIFE<br><b>SKILLS</b></span><span class="ls-art-spark">✳</span></div></div><div class="ls-landing-tools"><div><span class="ls-eyebrow">'+tx('CHOOSE YOUR PRACTICE')+'</span><h3>'+tx('Six studios. Six different ways to learn.')+'</h3><p>'+tx('Each studio has its own interaction—not the same multiple-choice screen repeated.')+'</p></div><button type="button" class="ls-help-toggle '+(state.showArabic?'is-on':'')+'" data-ls-ar aria-pressed="'+state.showArabic+'">ع <span>'+tx('Arabic help')+'</span></button></div><div class="ls-module-grid">'+modules.map((m,i)=>'<button type="button" class="ls-module ls-'+m.tone+'" data-ls-module="'+m.id+'"><span class="ls-module-top"><span class="ls-module-icon">'+m.icon+'</span><span class="ls-module-index">0'+(i+1)+' / STUDIO</span></span><span class="ls-eyebrow">'+esc(m.eyebrow)+'</span><strong>'+esc(m.title)+'</strong><span class="ls-module-desc">'+esc(m.desc)+'</span><span class="ls-module-bottom"><span>'+(data[m.id]||[]).length+' situations</span><b>Enter studio ↗</b></span></button>').join('')+'</div><div class="ls-method-note"><span>✳</span><p><strong>Not another quiz loop.</strong> Number decoding, environmental signs, a fictional form, tone decisions, recipe sequencing and a branching phone conversation each use a different interaction pattern. Arabic help is optional.</p></div>';
+  }
+  root.addEventListener('click',e=>{
+    const mod=e.target.closest('[data-ls-module]');if(mod){chooseModule(mod.dataset.lsModule);return;}
+    if(e.target.closest('[data-ls-home]')){landing();return;}
+    if(e.target.closest('[data-ls-ar]')){state.showArabic=!state.showArabic;render();return;}
+    const freeReply=e.target.closest('[data-ls-check-reply]');if(freeReply&&!state.locked){coachOwnReply(itemFor(),$('[data-ls-free-reply]')?.value || '');return;}
+    const ans=e.target.closest('[data-ls-answer]');if(ans&&!state.locked){const item=itemFor();const n=Number(ans.dataset.lsAnswer);const correct=n===item.answer;if(correct)state.score++;feedback(item,correct);return;}
+    if(e.target.closest('[data-ls-next]')){if(state.round>=state.pool.length-1){const m=modules.find(x=>x.id===state.module);root.innerHTML='<div class="ls-finish"><span>✳ MISSION COMPLETE</span><h2>Real-world confidence, one step at a time.</h2><p>You completed '+(data[m.id].length+(challengeData[m.id]||[]).length)+' practice cards and earned '+state.score+' first-choice successes. The goal is progress, not perfection.</p><button class="ls-primary" type="button" data-ls-home>Back to Life Skills ↗</button></div>';state.module=null;return;}state.round++;state.locked=false;state.feedback=null;state.sequence=[];render();return;}
+    const step=e.target.closest('[data-ls-step]');if(step){const arr=state.sequence;const i=arr.indexOf(Number(step.dataset.lsStep));if(i>0)[arr[i-1],arr[i]]=[arr[i],arr[i-1]];else if(i===0&&arr.length>1)[arr[0],arr[1]]=[arr[1],arr[0]];render();return;}
+    if(e.target.closest('[data-ls-shuffle]')){state.sequence=state.sequence.slice().sort(()=>Math.random()-.5);render();return;}
+    if(e.target.closest('[data-ls-check-sequence]')){const item=itemFor();const correctOrders = {
+        'Make a simple cheese sandwich':[0,1,2,3,4],
+        'Make a cup of tea':[0,1,2,3,4],
+        'Prepare a fruit salad':[0,1,2,3,4],
+        'Cook pasta':[0,1,2,3,4],
+        'Make a vegetable omelette':[0,1,2,3,4],
+        'Prepare a safe chopping station':[0,1,2,3,4],
+        'Bake from a recipe':[0,1,2,3,4]
+      };
+      const order=correctOrders[item.title]||item.steps.map((_,i)=>i);
+      const ok=state.sequence.every((n,i)=>n===order[i]);
+      feedback({explain:ok?(arabicOn()?(item.arExplain||'ترتيب ممتاز.'):(item.explain||'Excellent sequence.')):(arabicOn()?'ليس تمامًا. فكّر في خطوات التحضير والسلامة قبل البدء، ثم حاول مجددًا.':'Not quite. Think about preparation and safety before starting, then try again.')},ok);return;}
+  });
+  root.addEventListener('submit',e=>{
+    const form=e.target.closest('[data-ls-form]');if(!form)return;e.preventDefault();
+    const values=Object.fromEntries(new FormData(form).entries());state.formValues=values;
+    const required=['first','nationality','status','contact'];const complete=required.every(k=>String(values[k]||'').trim());
+    const birth=String(values.birth||'').trim();const validDate=!birth||/^\d{2}\s*\/\s*\d{2}\s*\/\s*\d{4}$/.test(birth);
+    feedback({explain:complete&&validDate?(arabicOn()?'تمت مراجعة الاستمارة. الحقول المطلوبة مكتملة. تحقق دائمًا من تنسيق التاريخ المطلوب.':'Form reviewed. The required fields are complete. Always check the requested date format.'):(arabicOn()?'تحقق من الحقول المطلوبة واستخدم تنسيق التاريخ المطلوب، مثل 14/09/2002.':'Check the required fields and use the requested date format, for example 14/09/2002.')},complete&&validDate);
+  });
+  // Each studio uses the shared adaptive policy, while keeping its own interaction design.
+  modules.forEach(m=>{if(window.EpiphanyThinkLab&&window.EpiphanyThinkLab.registerGame)window.EpiphanyThinkLab.registerGame('life-'+m.id,m.skill);});
+  landing();
+})();

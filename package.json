@@ -1,0 +1,17 @@
+{
+  "name": "epiphany",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "test": "npm run test:unit && npm run test:browser",
+    "test:fast": "node --test --test-force-exit --test-concurrency=1 --test-timeout=30000 tests/repository-contracts.test.js tests/content-quality.test.js tests/lazy-data.test.js tests/data-readiness.test.js tests/telemetry.test.js tests/diagnostics.test.js",
+    "stamp": "node scripts/stamp-version.js",
+    "check": "npm run stamp && npm test",
+    "test:install": "playwright install chromium",
+    "test:unit": "node --test --test-force-exit --test-concurrency=1 --test-timeout=30000 tests/*.test.js",
+    "test:browser": "node --test --test-force-exit --test-concurrency=1 tests/browser-smoke.js tests/runtime-profile.js"
+  },
+  "devDependencies": {
+    "playwright": "^1.56.1"
+  }
+}

@@ -1,0 +1,166 @@
+{
+  "level": "A2",
+  "mode": "guided",
+  "status": "draft",
+  "version": 3,
+  "pronunciation_reference": "General American",
+  "description": "Guided A2 content batch for The Sound Maze. Each target is spoken aloud; the learner selects its spelling. Draft content is not wired into the live game.",
+  "questions": [
+    {
+      "id": "SM-A2-G-001",
+      "axis": "short_vowel_contrasts",
+      "target": "map",
+      "options": [
+        "map",
+        "mop",
+        "men",
+        "mug"
+      ],
+      "answer": "map",
+      "explain": "Map has /æ/. Mop has /ɑ/, men has /ɛ/, and mug has /ʌ/."
+    },
+    {
+      "id": "SM-A2-G-002",
+      "axis": "short_vowel_contrasts",
+      "target": "neck",
+      "options": [
+        "nick",
+        "neck",
+        "knack",
+        "nook"
+      ],
+      "answer": "neck",
+      "explain": "Neck has the short /ɛ/ vowel. Nick has /ɪ/, knack has /æ/, and nook has /ʊ/."
+    },
+    {
+      "id": "SM-A2-G-003",
+      "axis": "short_vowel_contrasts",
+      "target": "dust",
+      "options": [
+        "desk",
+        "dish",
+        "dust",
+        "dote"
+      ],
+      "answer": "dust",
+      "explain": "Dust has /ʌ/. Desk has /ɛ/, dish has /ɪ/, and dote has /oʊ/."
+    },
+    {
+      "id": "SM-A2-G-004",
+      "axis": "initial_consonant_sounds",
+      "target": "shop",
+      "options": [
+        "chop",
+        "shop",
+        "spot",
+        "stop"
+      ],
+      "answer": "shop",
+      "explain": "Shop begins with /ʃ/. Chop begins with /tʃ/, while spot and stop begin with /sp/ and /st/."
+    },
+    {
+      "id": "SM-A2-G-005",
+      "axis": "initial_consonant_sounds",
+      "target": "zip",
+      "options": [
+        "sip",
+        "zip",
+        "dip",
+        "lip"
+      ],
+      "answer": "zip",
+      "explain": "Zip begins with voiced /z/. Sip begins with /s/, dip with /d/, and lip with /l/."
+    },
+    {
+      "id": "SM-A2-G-006",
+      "axis": "initial_consonant_sounds",
+      "target": "vest",
+      "options": [
+        "west",
+        "best",
+        "vest",
+        "test"
+      ],
+      "answer": "vest",
+      "explain": "Vest begins with /v/, made with vocal-cord vibration. West begins with /w/, while best and test begin with /b/ and /t/."
+    },
+    {
+      "id": "SM-A2-G-007",
+      "axis": "final_consonant_sounds",
+      "target": "peace",
+      "options": [
+        "peak",
+        "peat",
+        "peach",
+        "peace"
+      ],
+      "answer": "peace",
+      "explain": "Peace ends with /s/. Peak ends with /k/, peat with /t/, and peach with /tʃ/."
+    },
+    {
+      "id": "SM-A2-G-008",
+      "axis": "final_consonant_sounds",
+      "target": "bath",
+      "options": [
+        "back",
+        "bad",
+        "bat",
+        "bath"
+      ],
+      "answer": "bath",
+      "explain": "Bath ends with the unvoiced th sound /θ/. Back ends with /k/, bad with /d/, and bat with /t/."
+    },
+    {
+      "id": "SM-A2-G-009",
+      "axis": "final_consonant_sounds",
+      "target": "cage",
+      "options": [
+        "cake",
+        "came",
+        "cage",
+        "case"
+      ],
+      "answer": "cage",
+      "explain": "Cage ends with /dʒ/. Cake ends with /k/, came with /m/, and case with /s/."
+    },
+    {
+      "id": "SM-A2-G-010",
+      "axis": "basic_spelling_patterns",
+      "target": "train",
+      "options": [
+        "train",
+        "trail",
+        "trait",
+        "tray"
+      ],
+      "answer": "train",
+      "explain": "Train uses ai to spell the /eɪ/ vowel followed by /n/. Trail ends in /l/, trait in /t/, and tray has no final consonant."
+    },
+    {
+      "id": "SM-A2-G-011",
+      "axis": "basic_spelling_patterns",
+      "target": "cheese",
+      "options": [
+        "cheese",
+        "cheek",
+        "cheer",
+        "chess"
+      ],
+      "answer": "cheese",
+      "explain": "Cheese uses ee to spell the long /i/ sound. Cheek and cheer share that vowel but have different endings; chess has /ɛ/."
+    },
+    {
+      "id": "SM-A2-G-012",
+      "axis": "basic_spelling_patterns",
+      "target": "thumb",
+      "options": [
+        "thumb",
+        "thump",
+        "thug",
+        "hum"
+      ],
+      "answer": "thumb",
+      "explain": "Thumb begins with th pronounced /θ/ and ends with a silent b. Thump has a pronounced /p/, thug has a different ending, and hum begins with /h/."
+    }
+  ]
+}

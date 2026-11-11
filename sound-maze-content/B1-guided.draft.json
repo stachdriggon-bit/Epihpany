@@ -1,0 +1,166 @@
+{
+  "level": "B1",
+  "mode": "guided",
+  "status": "draft",
+  "version": 2,
+  "pronunciation_reference": "General American",
+  "description": "Guided B1 content batch for The Sound Maze. Each target is spoken aloud; the learner selects its spelling. Draft content is not wired into the live game.",
+  "questions": [
+    {
+      "id": "SM-B1-G-001",
+      "axis": "short_vowel_contrasts",
+      "target": "settle",
+      "options": [
+        "saddle",
+        "settle",
+        "subtle",
+        "title"
+      ],
+      "answer": "settle",
+      "explain": "Settle has the stressed short /ɛ/ vowel. Saddle has /æ/, subtle has /ʌ/, and title has /aɪ/."
+    },
+    {
+      "id": "SM-B1-G-002",
+      "axis": "short_vowel_contrasts",
+      "target": "public",
+      "options": [
+        "panic",
+        "public",
+        "picnic",
+        "pocket"
+      ],
+      "answer": "public",
+      "explain": "Public has the stressed /ʌ/ vowel. Panic has /æ/, picnic has /ɪ/, and pocket has /ɑ/."
+    },
+    {
+      "id": "SM-B1-G-003",
+      "axis": "short_vowel_contrasts",
+      "target": "damage",
+      "options": [
+        "message",
+        "muddle",
+        "damage",
+        "village"
+      ],
+      "answer": "damage",
+      "explain": "Damage has /æ/ in its first syllable. Message has /ɛ/, muddle has /ʌ/, and village has /ɪ/."
+    },
+    {
+      "id": "SM-B1-G-004",
+      "axis": "initial_consonant_sounds",
+      "target": "giant",
+      "options": [
+        "client",
+        "giant",
+        "quiet",
+        "violent"
+      ],
+      "answer": "giant",
+      "explain": "Giant begins with /dʒ/. Client begins with /kl/, quiet with /kw/, and violent with /v/."
+    },
+    {
+      "id": "SM-B1-G-005",
+      "axis": "initial_consonant_sounds",
+      "target": "chemist",
+      "options": [
+        "chemist",
+        "chest",
+        "guest",
+        "jest"
+      ],
+      "answer": "chemist",
+      "explain": "Chemist begins with /k/, although ch is written. Chest begins with /tʃ/, guest with /g/, and jest with /dʒ/."
+    },
+    {
+      "id": "SM-B1-G-006",
+      "axis": "initial_consonant_sounds",
+      "target": "psychology",
+      "options": [
+        "psychology",
+        "biology",
+        "technology",
+        "phonology"
+      ],
+      "answer": "psychology",
+      "explain": "Psychology begins with /s/ because the initial p is silent. Biology begins with /b/, technology with /t/, and phonology with /f/."
+    },
+    {
+      "id": "SM-B1-G-007",
+      "axis": "final_consonant_sounds",
+      "target": "laughed",
+      "options": [
+        "loved",
+        "laughed",
+        "laughter",
+        "loaded"
+      ],
+      "answer": "laughed",
+      "explain": "Laughed ends with /t/: the -ed ending is pronounced /t/ after the voiceless /f/ sound. Loved ends with /d/, laughter has an extra syllable, and loaded ends with /ɪd/."
+    },
+    {
+      "id": "SM-B1-G-008",
+      "axis": "final_consonant_sounds",
+      "target": "climbed",
+      "options": [
+        "climate",
+        "climbed",
+        "clamp",
+        "climb"
+      ],
+      "answer": "climbed",
+      "explain": "Climbed ends with /d/. Climate ends with /t/, clamp with /p/, and climb has no pronounced final /d/."
+    },
+    {
+      "id": "SM-B1-G-009",
+      "axis": "final_consonant_sounds",
+      "target": "breathes",
+      "options": [
+        "breath",
+        "breathes",
+        "breeds",
+        "breezes"
+      ],
+      "answer": "breathes",
+      "explain": "Breathes ends with /ðz/. Breath ends with /θ/, breeds with /dz/, and breezes with /zɪz/."
+    },
+    {
+      "id": "SM-B1-G-010",
+      "axis": "basic_spelling_patterns",
+      "target": "castle",
+      "options": [
+        "castle",
+        "cattle",
+        "cancel",
+        "hassle"
+      ],
+      "answer": "castle",
+      "explain": "Castle is spelled with a silent t: the word is pronounced /ˈkæsəl/. Cattle has a /t/ sound, cancel has /n/, and hassle begins with /h/."
+    },
+    {
+      "id": "SM-B1-G-011",
+      "axis": "basic_spelling_patterns",
+      "target": "station",
+      "options": [
+        "station",
+        "stating",
+        "stature",
+        "stagnant"
+      ],
+      "answer": "station",
+      "explain": "Station uses -tion to spell the /ʃən/ ending. Stating ends with /tɪŋ/, stature with /tʃər/, and stagnant with /ɡnənt/."
+    },
+    {
+      "id": "SM-B1-G-012",
+      "axis": "basic_spelling_patterns",
+      "target": "wrench",
+      "options": [
+        "wrench",
+        "ranch",
+        "branch",
+        "trench"
+      ],
+      "answer": "wrench",
+      "explain": "Wrench begins with /r/ because the written w is silent. Ranch begins with /r/ but has a different vowel and ending; branch and trench begin with /b/ and /t/."
+    }
+  ]
+}

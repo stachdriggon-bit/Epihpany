@@ -1,0 +1,166 @@
+{
+  "level": "A2",
+  "mode": "steady",
+  "status": "draft",
+  "version": 2,
+  "pronunciation_reference": "General American",
+  "description": "Steady A2 content batch for The Sound Maze. Each target is spoken aloud; the learner selects its spelling. Draft content is not wired into the live game.",
+  "questions": [
+    {
+      "id": "SM-A2-S-001",
+      "axis": "short_vowel_contrasts",
+      "target": "stamp",
+      "options": [
+        "stump",
+        "step",
+        "stamp",
+        "stomp"
+      ],
+      "answer": "stamp",
+      "explain": "Stamp has /æ/. Stump has /ʌ/, step has /ɛ/, and stomp has /ɑ/ in General American."
+    },
+    {
+      "id": "SM-A2-S-002",
+      "axis": "short_vowel_contrasts",
+      "target": "fresh",
+      "options": [
+        "frizz",
+        "fresh",
+        "flash",
+        "frost"
+      ],
+      "answer": "fresh",
+      "explain": "Fresh has /ɛ/. Frizz has /ɪ/, flash has /æ/, and frost has /ɔ/."
+    },
+    {
+      "id": "SM-A2-S-003",
+      "axis": "short_vowel_contrasts",
+      "target": "drum",
+      "options": [
+        "dream",
+        "drum",
+        "dram",
+        "drown"
+      ],
+      "answer": "drum",
+      "explain": "Drum has /ʌ/. Dream has /i/, while dram has /æ/; droom is not a standard spelling."
+    },
+    {
+      "id": "SM-A2-S-004",
+      "axis": "initial_consonant_sounds",
+      "target": "jacket",
+      "options": [
+        "racket",
+        "packet",
+        "jacket",
+        "bracket"
+      ],
+      "answer": "jacket",
+      "explain": "Jacket begins with /dʒ/. Racket begins with /r/, packet with /p/, and bracket with /b/."
+    },
+    {
+      "id": "SM-A2-S-005",
+      "axis": "initial_consonant_sounds",
+      "target": "three",
+      "options": [
+        "tree",
+        "free",
+        "three",
+        "see"
+      ],
+      "answer": "three",
+      "explain": "Three begins with unvoiced /θ/. Tree begins with /t/, free with /f/, and see with /s/."
+    },
+    {
+      "id": "SM-A2-S-006",
+      "axis": "initial_consonant_sounds",
+      "target": "queen",
+      "options": [
+        "clean",
+        "keen",
+        "queen",
+        "green"
+      ],
+      "answer": "queen",
+      "explain": "Queen begins with /kw/. Clean begins with /kl/, keen with /k/, and green with /gr/."
+    },
+    {
+      "id": "SM-A2-S-007",
+      "axis": "final_consonant_sounds",
+      "target": "cough",
+      "options": [
+        "cove",
+        "coat",
+        "cough",
+        "code"
+      ],
+      "answer": "cough",
+      "explain": "Cough ends with /f/. Cove ends with /v/, coat with /t/, and code with /d/."
+    },
+    {
+      "id": "SM-A2-S-008",
+      "axis": "final_consonant_sounds",
+      "target": "bench",
+      "options": [
+        "bend",
+        "bench",
+        "belt",
+        "best"
+      ],
+      "answer": "bench",
+      "explain": "Bench ends with /tʃ/, written ch. Bend ends with /d/, belt with /t/, and best with /t/ plus /s/."
+    },
+    {
+      "id": "SM-A2-S-009",
+      "axis": "final_consonant_sounds",
+      "target": "prize",
+      "options": [
+        "price",
+        "pride",
+        "prize",
+        "prime"
+      ],
+      "answer": "prize",
+      "explain": "Prize ends with voiced /z/. Price ends with /s/, pride with /d/, and prime with /m/."
+    },
+    {
+      "id": "SM-A2-S-010",
+      "axis": "basic_spelling_patterns",
+      "target": "float",
+      "options": [
+        "flock",
+        "float",
+        "flout",
+        "fleet"
+      ],
+      "answer": "float",
+      "explain": "Float uses oa to spell /oʊ/. Flout has /aʊ/, fleet has /i/, and flote is not the standard spelling."
+    },
+    {
+      "id": "SM-A2-S-011",
+      "axis": "basic_spelling_patterns",
+      "target": "bright",
+      "options": [
+        "bright",
+        "bride",
+        "brisk",
+        "brought"
+      ],
+      "answer": "bright",
+      "explain": "Bright uses igh to spell /aɪ/. Bride has /aɪ/ but ends in /d/, brisk has /ɪ/, and brought has /ɔ/."
+    },
+    {
+      "id": "SM-A2-S-012",
+      "axis": "basic_spelling_patterns",
+      "target": "knight",
+      "options": [
+        "knight",
+        "knot",
+        "know",
+        "knife"
+      ],
+      "answer": "knight",
+      "explain": "Knight begins with a silent k and has the /aɪ/ sound. Knot, know, and knife also have a silent k but different vowel sounds and endings."
+    }
+  ]
+}
