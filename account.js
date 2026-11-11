@@ -963,7 +963,10 @@
         recoveryMode = false;
         renderAccount();
         setPlayerProfileAccess();
-        if (event === 'SIGNED_OUT') status('Signed out. Your progress remains on this device.', 'info');
+        if (event === 'SIGNED_OUT') {
+          status('Signed out. Choose how you would like to continue.', 'info');
+          openAccountFromWelcome('signin');
+        }
         return;
       }
       renderAccount();
@@ -1013,6 +1016,8 @@
         setPlayerProfileAccess();
         enforceSignedOutEntry();
         status('Not signed in. Sign in, create an account, or continue as a guest.', 'info');
+          openAccountFromWelcome('signin');
+        }
       }
       markAuthReady();
     }).catch(error => {
