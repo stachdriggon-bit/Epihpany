@@ -1055,7 +1055,11 @@ n>
     const gate = (() => { try { return localStorage.getItem('epiphany-auth-gate-v1') === '1'; } catch { return false; } })();
     if (document.documentElement.classList.contains('landing-seen') && !gate) document.body.classList.add('epiphany-entered');
     const enterAsGuest = () => {
-      try { localStorage.setItem('epiphany-landing-seen','1'); localStorage.removeItem('epiphany-auth-gate-v1'); } catch {}
+      try {
+        localStorage.setItem('epiphany-landing-seen','1');
+        localStorage.setItem('epiphany-guest-mode-v1','1');
+        localStorage.removeItem('epiphany-auth-gate-v1');
+      } catch {}
       document.documentElement.classList.add('landing-seen');
       document.body.classList.remove('epiphany-auth-gate');
       document.body.classList.add('epiphany-entered');
