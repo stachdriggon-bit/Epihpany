@@ -81,7 +81,7 @@
   }
   function enforceSignedOutEntry() {
     let guestMode = false;
-    try { guestMode = localStorage.getItem('epiphany-guest-mode-v1') === '1'; } catch {}
+    try { guestMode = localStorage.getItem('epiphany-guest-mode-v2') === '1'; } catch {}
     if (guestMode) {
       document.documentElement.classList.add('landing-seen');
       document.body.classList.remove('epiphany-auth-gate');
@@ -938,6 +938,7 @@
         try {
           localStorage.setItem('epiphany-landing-seen','1');
           localStorage.removeItem('epiphany-guest-mode-v1');
+          localStorage.removeItem('epiphany-guest-mode-v2');
           localStorage.removeItem('epiphany-auth-gate-v1');
         } catch {}
         document.documentElement.classList.add('landing-seen');
@@ -946,7 +947,7 @@
       } else if (event === 'SIGNED_OUT') {
         try {
           localStorage.removeItem('epiphany-landing-seen');
-          localStorage.removeItem('epiphany-guest-mode-v1');
+          localStorage.removeItem('epiphany-guest-mode-v2');
           localStorage.setItem('epiphany-auth-gate-v1','1');
         } catch {}
         document.documentElement.classList.remove('landing-seen');
@@ -993,7 +994,7 @@
         currentUser = data.session.user;
         try {
           localStorage.setItem('epiphany-landing-seen','1');
-          localStorage.removeItem('epiphany-guest-mode-v1');
+          localStorage.removeItem('epiphany-guest-mode-v2');
           localStorage.removeItem('epiphany-auth-gate-v1');
         } catch {}
         document.documentElement.classList.add('landing-seen');
