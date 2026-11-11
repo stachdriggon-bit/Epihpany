@@ -171,25 +171,27 @@ jobs:
           USER_ID=$(node -p "require('/tmp/word-forge-e2e.json').userId")
           GUEST_SESSION_ID=$(node -p "require('/tmp/word-forge-e2e.json').guestSessionId")
           AUTH_SESSION_ID=$(node -p "require('/tmp/word-forge-e2e.json').authenticatedSessionId")
-          psql "$DB_URL" -v ON_ERROR_STOP=1 -c "
-            DO \\$verify_word_forge_e2e\\$
-            DECLARE v_user uuid := '$USER_ID'; v_guest uuid := '$GUEST_SESSION_ID'; v_auth uuid := '$AUTH_SESSION_ID';
-            BEGIN
-              IF (SELECT count(*) FROM economy_private.activity_events
-                  WHERE user_id=v_user AND source_event_key=v_auth
-                    AND activity_id='word_forge' AND event_type='game_session_completed'
-                    AND validator_version='word-forge-reviewed-72-20261111-v1') <> 1
-              THEN RAISE EXCEPTION 'Authenticated Edge Function completion event missing'; END IF;
-              IF EXISTS (SELECT 1 FROM economy_private.activity_events WHERE source_event_key=v_guest)
-              THEN RAISE EXCEPTION 'Guest Edge Function session emitted an activity event'; END IF;
-              IF EXISTS (SELECT 1 FROM economy_private.wallets WHERE user_id=v_user)
-                 OR EXISTS (SELECT 1 FROM economy_private.wallet_ledger WHERE user_id=v_user)
-                 OR EXISTS (SELECT 1 FROM economy_private.mission_reward_claims WHERE user_id=v_user)
-                 OR EXISTS (SELECT 1 FROM economy_private.achievement_awards WHERE user_id=v_user)
-              THEN RAISE EXCEPTION 'Word Forge validator created wallet or reward data'; END IF;
-              IF NOT EXISTS (SELECT 1 FROM economy_private.word_forge_validator_sessions
-                             WHERE session_id=v_guest AND user_id IS NULL
-                               AND guest_token_hash ~ '^[0-9a-f]{64}      - name: Verify concurrent wallet idempotency and debit serialization
+
+          AUTH_EVENTS=$(psql "$DB_URL" -At -v ON_ERROR_STOP=1 -v user_id="$USER_ID" -v session_id="$AUTH_SESSION_ID" \
+            -c "SELECT count(*) FROM economy_private.activity_events WHERE user_id=:'user_id'::uuid AND source_event_key=:'session_id'::uuid AND activity_id='word_forge' AND event_type='game_session_completed' AND validator_version='word-forge-reviewed-72-20261111-v1';")
+          GUEST_EVENTS=$(psql "$DB_URL" -At -v ON_ERROR_STOP=1 -v session_id="$GUEST_SESSION_ID" \
+            -c "SELECT count(*) FROM economy_private.activity_events WHERE source_event_key=:'session_id'::uuid;")
+          REWARD_ROWS=$(psql "$DB_URL" -At -v ON_ERROR_STOP=1 -v user_id="$USER_ID" \
+            -c "SELECT (SELECT count(*) FROM economy_private.wallets WHERE user_id=:'user_id'::uuid)+(SELECT count(*) FROM economy_private.wallet_ledger WHERE user_id=:'user_id'::uuid)+(SELECT count(*) FROM economy_private.mission_reward_claims WHERE user_id=:'user_id'::uuid)+(SELECT count(*) FROM economy_private.achievement_awards WHERE user_id=:'user_id'::uuid);")
+          GUEST_SESSIONS=$(psql "$DB_URL" -At -v ON_ERROR_STOP=1 -v session_id="$GUEST_SESSION_ID" \
+            -c "SELECT count(*) FROM economy_private.word_forge_validator_sessions WHERE session_id=:'session_id'::uuid AND user_id IS NULL AND guest_token_hash IS NOT NULL AND length(guest_token_hash)=64;")
+          AUTH_SESSIONS=$(psql "$DB_URL" -At -v ON_ERROR_STOP=1 -v user_id="$USER_ID" -v session_id="$AUTH_SESSION_ID" \
+            -c "SELECT count(*) FROM economy_private.word_forge_validator_sessions WHERE session_id=:'session_id'::uuid AND user_id=:'user_id'::uuid AND guest_token_hash IS NULL;")
+          ECONOMY_ENABLED=$(psql "$DB_URL" -At -v ON_ERROR_STOP=1 -c "SELECT economy_enabled FROM economy_private.economy_settings WHERE singleton=true;")
+
+          test "$AUTH_EVENTS" = "1"
+          test "$GUEST_EVENTS" = "0"
+          test "$REWARD_ROWS" = "0"
+          test "$GUEST_SESSIONS" = "1"
+          test "$AUTH_SESSIONS" = "1"
+          test "$ECONOMY_ENABLED" = "f"
+
+      - name: Verify concurrent wallet idempotency and debit serialization
         timeout-minutes: 5
         run: |
           eval "$(supabase status -o env)"
