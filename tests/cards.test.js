@@ -52,6 +52,19 @@ test('card collection is a standalone view and cached offline', () => {
   assert.match(sw, /\.\/cards\.css/);
 });
 
+test('card wallet data is isolated by authenticated user and never loaded into guest mode', () => {
+  const cards = read('cards.js');
+  const account = read('account.js');
+  assert.match(cards, /const GUEST_STORE = STORE \+ ':guest'/);
+  assert.match(cards, /const ACCOUNT_STORE_PREFIX = STORE \+ ':user:'/);
+  assert.match(cards, /let activeStorageKey = GUEST_STORE/);
+  assert.match(cards, /const switchWalletOwner = userId =>/);
+  assert.match(cards, /state = safeState\(activeStorageKey\)/);
+  assert.match(cards, /localStorage\.removeItem\(STORE\)/);
+  assert.match(account, /userId: currentUser\?\.id \|\| ''/);
+  assert.match(account, /if \(!currentUser\) \{\s*announceAuthAccess\(\)/);
+});
+
 test('collection rules keep card rewards separate from learning XP', () => {
   const js = read('cards.js');
   assert.match(js, /const STARTER_TOKENS = 15/);
