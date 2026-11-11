@@ -176,6 +176,7 @@ test('repeated feature entry and exit reports Chromium runtime lifecycle metrics
     await page.addInitScript(() => {
       localStorage.setItem('epiphany-progress', JSON.stringify({ placementDone:true, assessedLevel:'A1', level:'A1' }));
       localStorage.setItem('epiphany-landing-seen', '1');
+      localStorage.setItem('epiphany-guest-mode-v2', '1');
     });
     await page.goto(baseUrl, { waitUntil:'domcontentloaded', timeout:20000 });
     await page.waitForSelector('button[data-view="home"]', { state:'attached', timeout:10000 });

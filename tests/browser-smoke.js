@@ -29,13 +29,9 @@ async function clickView(page, view) {
 }
 
 async function dismissFirstVisitOverlays(page) {
-  // Navigation smoke tests use a returning-visitor fixture. The dedicated first-visit
-  // test below exercises the complete new onboarding path.
-  const landingStart = page.locator('#landing-start');
-  if (await landingStart.isVisible()) {
-    await landingStart.click();
-    await page.waitForTimeout(50);
-  }
+  // Navigation smoke tests seed the current returning-guest marker. The dedicated
+  // first-visit test below exercises the account gate and guest continuation.
+  await page.locator('#auth-dialog').waitFor({ state:'hidden', timeout:5000 });
   const languageChoice = page.locator('#help-language-modal [data-help-language="en"]');
   if (await languageChoice.isVisible()) await languageChoice.click();
 }
@@ -71,9 +67,10 @@ test('main navigation tabs open without uncaught page errors', { timeout: 18 * 6
     firstVisitPage.on('pageerror', error => errors.push('first-visit: ' + error.message));
     checkpoint('starting first-visit onboarding');
     await firstVisitPage.goto(baseUrl, { waitUntil: 'domcontentloaded', timeout: 20000 });
-    assert.equal(await firstVisitPage.locator('#landing-start').isVisible(), true, 'a new visitor should first see the landing screen');
-    assert.equal(await firstVisitPage.locator('#account-welcome-modal').isVisible(), false, 'account creation must not interrupt the first visit');
-    await firstVisitPage.locator('#landing-start').click();
+    await firstVisitPage.locator('#auth-dialog').waitFor({ state:'visible', timeout:7000 });
+    assert.equal(await firstVisitPage.locator('#auth-continue-guest').isVisible(), true, 'a new visitor must be able to continue as a guest from the account gate');
+    assert.equal(await firstVisitPage.locator('#account-welcome-modal').isVisible(), false, 'the legacy account welcome modal must remain unused');
+    await firstVisitPage.locator('#auth-continue-guest').click();
     await firstVisitPage.locator('#help-language-modal [data-help-language="en"]').waitFor({ state: 'visible', timeout: 5000 });
     await firstVisitPage.locator('#help-language-modal [data-help-language="en"]').click();
     await firstVisitPage.locator('#placement [data-start-level="B1"]').waitFor({ state: 'visible', timeout: 7000 });
@@ -141,6 +138,7 @@ test('main navigation tabs open without uncaught page errors', { timeout: 18 * 6
       await page.addInitScript(() => {
         localStorage.setItem('epiphany-progress', JSON.stringify({placementDone:true,assessedLevel:'A1',level:'A1'}));
         localStorage.setItem('epiphany-landing-seen', '1');
+        localStorage.setItem('epiphany-guest-mode-v2', '1');
       });
       checkpoint('view ' + view + ': navigating to app');
       await page.goto(baseUrl, { waitUntil: 'domcontentloaded', timeout: 20000 });
