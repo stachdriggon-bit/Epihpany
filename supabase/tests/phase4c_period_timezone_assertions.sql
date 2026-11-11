@@ -8,16 +8,8 @@ BEGIN
      OR NOT has_function_privilege('service_role', 'public.economy_resolve_mission_period(uuid,text,timestamptz)', 'EXECUTE') THEN
     RAISE EXCEPTION 'Period resolver must be service-role-only';
   END IF;
-  BEGIN
-    PERFORM * FROM public.economy_resolve_mission_period(
-      'f4000000-0000-4000-8000-000000000001', NULL, now()
-    );
-    RAISE EXCEPTION 'NULL period type was unexpectedly accepted';
-  EXCEPTION WHEN SQLSTATE '22023' THEN
-    NULL;
-  END;
 END;
-$;
+$$;
 
 INSERT INTO auth.users (
   id, aud, role, email, encrypted_password, email_confirmed_at,
@@ -30,6 +22,19 @@ VALUES (
 );
 
 SELECT set_config('request.jwt.claim.role', 'service_role', true);
+
+DO $$
+BEGIN
+  BEGIN
+    PERFORM * FROM public.economy_resolve_mission_period(
+      'f4000000-0000-4000-8000-000000000001', NULL, now()
+    );
+    RAISE EXCEPTION 'NULL period type was unexpectedly accepted';
+  EXCEPTION WHEN SQLSTATE '22023' THEN
+    NULL;
+  END;
+END;
+$$;
 
 DO $$
 DECLARE
