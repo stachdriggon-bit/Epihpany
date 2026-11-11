@@ -104,6 +104,12 @@ jobs:
           eval "$(supabase status -o env)"
           psql "$DB_URL" -v ON_ERROR_STOP=1 -f supabase/tests/phase4c_period_timezone_assertions.sql
 
+      - name: Assert Phase 4D trusted mission predicate mapping
+        timeout-minutes: 5
+        run: |
+          eval "$(supabase status -o env)"
+          psql "$DB_URL" -v ON_ERROR_STOP=1 -f supabase/tests/phase4d_mission_predicate_assertions.sql
+
       - name: Verify concurrent wallet idempotency and debit serialization
         timeout-minutes: 5
         run: |
