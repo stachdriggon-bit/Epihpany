@@ -87,6 +87,9 @@ test('first entry offers account access or guest play, and settings open directl
   assert.match(html, /id="landing-signup"/);
   assert.match(html, /id="landing-signin"/);
   assert.match(html, /id="landing-start"[^>]*>Continue as guest/);
+  assert.match(html, /id="auth-dialog"/);
+  assert.doesNotMatch(html.slice(html.indexOf('id="profile-view"'),html.indexOf('id="trophies-view"')), /class="block account-block"/, "Profile must not contain sign-in or account-creation forms");
+  assert.doesNotMatch(html, /class="landing-preview"/, "landing must not show a sample quiz");
   assert.match(html, /epiphany-auth-gate-v1/);
   assert.match(html, /id="settings-dialog"/);
   for (const page of ['appearance','learning','account','data','notifications','app']) {
@@ -97,6 +100,7 @@ test('first entry offers account access or guest play, and settings open directl
   assert.match(html, /id="settings-data-title">Data &amp; privacy/);
   assert.match(html, /id="account-signout"[^>]*hidden/);
   assert.match(account, /localStorage\.setItem\('epiphany-auth-gate-v1','1'\)/);
+  assert.match(account, /function openAccountFromWelcome\(mode\)[\s\S]*?const dialog = \\$\('auth-dialog'\)[\s\S]*?setMode\(mode === \'signup\' \? \'signup\' : \'signin\'\)/, "auth entry opens a dedicated dialog rather than Profile");
   assert.match(account, /document\.body\.classList\.add\('epiphany-auth-gate'\)/);
   assert.match(account, /window\.EpiphanyConfirm\(\{title:'Sign out\?',message:'Your account progress will remain safely saved online\./, 'sign out must use the EPIPHANY-branded confirmation dialog');
   assert.match(account, /confirmText:'Sign out',cancelText:'Stay signed in',danger:true/);
