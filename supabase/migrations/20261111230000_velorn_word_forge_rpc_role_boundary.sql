@@ -1,16 +1,12 @@
--- Phase 4H follow-up: the public RPC grants are the authorization boundary.
--- Avoid depending on the legacy singular JWT claim setting, which is not populated
--- consistently by newer Supabase local/API gateway versions.
+-- Phase 4H follow-up: align trusted RPC role checks with current Supabase JWT claim settings.
+
+-- EXECUTE remains restricted to service_role; browser roles retain no access.
+
 CREATE OR REPLACE FUNCTION economy_private.start_word_forge_session(p_session_id uuid,p_user_id uuid,p_guest_token_hash text,p_client_ip_hash text,p_validator_version text,p_training_mode text,p_questions jsonb,p_expires_at timestamptz)
 RETURNS void LANGUAGE plpgsql SECURITY DEFINER SET search_path='' AS $$
 DECLARE v_active integer;v_recent integer;q jsonb;v_letters text;v_answer text;
 BEGIN
- IF COALESCE(
-      NULLIF(current_setting('request.jwt.claim.role', true), ''),
-      NULLIF(current_setting('request.jwt.claims', true), '')::jsonb ->> 'role'
-    ) IS DISTINCT FROM 'service_role' THEN
-   RAISE EXCEPTION 'Word Forge session creation requires the trusted server role.' USING ERRCODE='42501';
- END IF;
+ IF COALESCE(NULLIF(current_setting('request.jwt.claim.role',true),''),NULLIF(current_setting('request.jwt.claims',true),'')::jsonb->>'role') IS DISTINCT FROM 'service_role' THEN RAISE EXCEPTION 'trusted server role required' USING ERRCODE='42501';END IF;
  IF p_session_id IS NULL OR p_validator_version IS DISTINCT FROM 'word-forge-reviewed-72-20261111-v1'
  OR p_training_mode IS NULL OR p_training_mode NOT IN('guided','steady','challenge') OR jsonb_typeof(p_questions) IS DISTINCT FROM 'array'
  OR jsonb_array_length(p_questions)<>24 OR p_expires_at<=clock_timestamp() OR p_expires_at>clock_timestamp()+interval '45 minutes'
@@ -51,12 +47,7 @@ CREATE OR REPLACE FUNCTION economy_private.submit_word_forge_answer(p_user_id uu
 RETURNS jsonb LANGUAGE plpgsql SECURITY DEFINER SET search_path='' AS $$
 DECLARE s economy_private.word_forge_validator_sessions%ROWTYPE;q jsonb;v_attempts integer;v_correct boolean;v_advance boolean;v_next integer;v_correct_count integer;v_done boolean;v_answer text;
 BEGIN
- IF COALESCE(
-      NULLIF(current_setting('request.jwt.claim.role', true), ''),
-      NULLIF(current_setting('request.jwt.claims', true), '')::jsonb ->> 'role'
-    ) IS DISTINCT FROM 'service_role' THEN
-   RAISE EXCEPTION 'Word Forge answer validation requires the trusted server role.' USING ERRCODE='42501';
- END IF;
+ IF COALESCE(NULLIF(current_setting('request.jwt.claim.role',true),''),NULLIF(current_setting('request.jwt.claims',true),'')::jsonb->>'role') IS DISTINCT FROM 'service_role' THEN RAISE EXCEPTION 'trusted server role required' USING ERRCODE='42501';END IF;
  IF p_session_id IS NULL OR p_question_index IS NULL OR p_question_index NOT BETWEEN 0 AND 23 OR COALESCE(p_submitted_word,'') !~ '^[A-Za-z]{3,14}$' OR NOT((p_user_id IS NOT NULL AND p_guest_token_hash IS NULL) OR(p_user_id IS NULL AND p_guest_token_hash IS NOT NULL AND p_guest_token_hash~'^[0-9a-f]{64}$')) THEN RAISE EXCEPTION 'invalid Word Forge answer' USING ERRCODE='22023';END IF;
  SELECT * INTO s FROM economy_private.word_forge_validator_sessions WHERE session_id=p_session_id
  AND ((p_user_id IS NOT NULL AND user_id=p_user_id AND guest_token_hash IS NULL) OR(p_user_id IS NULL AND user_id IS NULL AND guest_token_hash=p_guest_token_hash)) FOR UPDATE;
@@ -114,7 +105,7 @@ RETURNS TABLE (
 LANGUAGE plpgsql
 SECURITY DEFINER
 SET search_path = ''
-AS $
+AS $$
 DECLARE
   v_existing economy_private.activity_events%ROWTYPE;
   v_event_id uuid;
@@ -128,25 +119,10 @@ BEGIN
   END IF;
 
   IF p_user_id IS NULL OR p_source_event_key IS NULL
-     OR p_source_system IS NULL OR p_source_system !~ '^[a-z][a-z0-9_]{1,39}
-COMMENT ON FUNCTION economy_private.start_word_forge_session(uuid,uuid,text,text,text,text,jsonb,timestamptz)
- IS 'Service-role-only Word Forge session creation; EXECUTE is revoked from browser roles.';
-COMMENT ON FUNCTION economy_private.submit_word_forge_answer(uuid,text,uuid,integer,text)
- IS 'Service-role-only Word Forge answer validation; EXECUTE is revoked from browser roles.';
-
-     OR p_experience_id IS NULL OR p_experience_id !~ '^[a-z][a-z0-9_]{1,59}
-COMMENT ON FUNCTION economy_private.start_word_forge_session(uuid,uuid,text,text,text,text,jsonb,timestamptz)
- IS 'Service-role-only Word Forge session creation; EXECUTE is revoked from browser roles.';
-COMMENT ON FUNCTION economy_private.submit_word_forge_answer(uuid,text,uuid,integer,text)
- IS 'Service-role-only Word Forge answer validation; EXECUTE is revoked from browser roles.';
-
+     OR p_source_system IS NULL OR p_source_system !~ '^[a-z][a-z0-9_]{1,39}$'
+     OR p_experience_id IS NULL OR p_experience_id !~ '^[a-z][a-z0-9_]{1,59}$'
      OR p_activity_id IS NULL OR char_length(p_activity_id) NOT BETWEEN 1 AND 160
-     OR p_event_type IS NULL OR p_event_type !~ '^[a-z][a-z0-9_]{1,59}
-COMMENT ON FUNCTION economy_private.start_word_forge_session(uuid,uuid,text,text,text,text,jsonb,timestamptz)
- IS 'Service-role-only Word Forge session creation; EXECUTE is revoked from browser roles.';
-COMMENT ON FUNCTION economy_private.submit_word_forge_answer(uuid,text,uuid,integer,text)
- IS 'Service-role-only Word Forge answer validation; EXECUTE is revoked from browser roles.';
-
+     OR p_event_type IS NULL OR p_event_type !~ '^[a-z][a-z0-9_]{1,59}$'
      OR p_occurred_at IS NULL
      OR p_validator_version IS NULL OR char_length(p_validator_version) NOT BETWEEN 1 AND 80
      OR p_evidence IS NULL OR jsonb_typeof(p_evidence) <> 'object'
@@ -220,10 +196,13 @@ COMMENT ON FUNCTION economy_private.submit_word_forge_answer(uuid,text,uuid,inte
     FROM economy_private.activity_events AS e
     WHERE e.event_id = v_event_id;
 END;
-$;
+$$;
 
 NOTIFY pgrst, 'reload schema';
-COMMENT ON FUNCTION economy_private.start_word_forge_session(uuid,uuid,text,text,text,text,jsonb,timestamptz)
- IS 'Service-role-only Word Forge session creation; EXECUTE is revoked from browser roles.';
-COMMENT ON FUNCTION economy_private.submit_word_forge_answer(uuid,text,uuid,integer,text)
- IS 'Service-role-only Word Forge answer validation; EXECUTE is revoked from browser roles.';
+
+COMMENT ON FUNCTION economy_private.start_word_forge_session(uuid,uuid,text,text,text,text,jsonb,timestamptz) IS 'Service-role-only Word Forge session creation.';
+
+COMMENT ON FUNCTION economy_private.submit_word_forge_answer(uuid,text,uuid,integer,text) IS 'Service-role-only Word Forge answer validation.';
+
+COMMENT ON FUNCTION economy_private.record_validated_activity_event(uuid,uuid,text,text,text,text,timestamptz,text,jsonb) IS 'Service-role-only validated activity event ingestion.';
+
