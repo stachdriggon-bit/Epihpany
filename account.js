@@ -74,18 +74,21 @@
     if (modal) modal.hidden = true;
     document.body.classList.remove('account-modal-open');
   }
+  function hideAuthDialog() {
+    const dialog = $('auth-dialog');
+    if (dialog) dialog.hidden = true;
+    document.body.classList.remove('auth-dialog-open');
+  }
   function openAccountFromWelcome(mode) {
-    hideWelcomeModal(true);
-    try { localStorage.setItem('epiphany-landing-seen','1'); localStorage.removeItem('epiphany-auth-gate-v1'); } catch {}
-    document.documentElement.classList.add('landing-seen');
-    document.body.classList.remove('epiphany-auth-gate');
-    document.body.classList.add('epiphany-entered');
-    setMode(mode);
-    const profileButton = document.querySelector('[data-view="profile"]');
-    if (profileButton) profileButton.click();
-    const emailInput = $('account-email-input');
-    if (emailInput) emailInput.focus({preventScroll:true});
+    hideWelcomeModal();
+    const dialog = $('auth-dialog');
+    if (dialog) {
+      dialog.hidden = false;
+      document.body.classList.add('auth-dialog-open');
+    }
+    setMode(mode === 'signup' ? 'signup' : 'signin');
     status(mode === 'signup' ? 'Create an account to sync your progress across devices.' : 'Sign in to load your saved progress.', 'info');
+    requestAnimationFrame(() => $('account-email-input')?.focus({preventScroll:true}));
   }
   async function signInWithProvider(provider) {
     if (!client) {
@@ -913,7 +916,9 @@
       }
       renderAccount();
       setPlayerProfileAccess();
-      hideWelcomeModal(true);
+      hideWelcomeModal();
+      hideAuthDialog();
+      window.dispatchEvent(new CustomEvent('epiphany:auth-dialog-close'));
       loadPlayerProfile().catch(error => console.error('Profile refresh failed:', error));
       if (event === 'PASSWORD_RECOVERY') {
         recoveryMode = true;
@@ -936,7 +941,9 @@
         announceAuthAccess();
         renderAccount();
         setPlayerProfileAccess();
-        hideWelcomeModal(true);
+        hideWelcomeModal();
+        hideAuthDialog();
+        window.dispatchEvent(new CustomEvent('epiphany:auth-dialog-close'));
         loadPlayerProfile().catch(error => console.error('Profile refresh failed:', error));
         if (lastSyncedUser !== currentUser.id) {
           lastSyncedUser = currentUser.id;
