@@ -237,8 +237,20 @@
       <button class="icon-btn" id="sound-toggle" type="button" aria-pressed="true" aria-label="Turn sound effects off" title="Sound effects"><svg><use href="#i-sound"/></svg></button>
       <details class="tools-menu">
         <summary class="icon-btn utility-btn" aria-label="Open app settings" title="App settings">⚙</summary>
-        <div class="tools-panel" aria-label="App settings">
-          <button class="tools-action" id="open-settings" type="button"><span aria-hidden="true">⚙</span><span>Settings & preferences</span><span aria-hidden="true">→</span></button>
+        <div class="tools-panel settings-menu" aria-label="App settings">
+          <p class="settings-menu-heading">Appearance & accessibility</p>
+          <button class="tools-action settings-menu-item" type="button" data-settings-open="appearance">◐ <span>Appearance & accessibility</span><span aria-hidden="true">›</span></button>
+          <p class="settings-menu-heading">Learning</p>
+          <button class="tools-action settings-menu-item" type="button" data-settings-open="learning">文 <span>Learning & experience</span><span aria-hidden="true">›</span></button>
+          <p class="settings-menu-heading">Account</p>
+          <button class="tools-action settings-menu-item" type="button" data-settings-open="account">♙ <span>Account & security</span><span aria-hidden="true">›</span></button>
+          <p class="settings-menu-heading">Privacy</p>
+          <button class="tools-action settings-menu-item" type="button" data-settings-open="data">⌁ <span>Data & privacy</span><span aria-hidden="true">›</span></button>
+          <button class="tools-action settings-menu-item" type="button" data-settings-open="notifications">♧ <span>Notifications</span><span aria-hidden="true">›</span></button>
+          <p class="settings-menu-heading">More</p>
+          <button class="tools-action settings-menu-item" type="button" data-settings-open="app">✦ <span>App & help</span><span aria-hidden="true">›</span></button>
+          <div class="settings-menu-divider"></div>
+          <button class="settings-signout settings-menu-signout" id="account-signout" type="button" hidden><span aria-hidden="true">↗</span> Sign out</button>
         </div>
       </details>
       <input id="import-file" type="file" accept="application/json,.json" hidden aria-label="Choose an Epiphany progress backup">
@@ -951,39 +963,43 @@ n>
 
 <div class="settings-overlay" id="settings-dialog" hidden>
   <button class="settings-backdrop" id="settings-backdrop" type="button" aria-label="Close settings"></button>
-  <section class="settings-sheet" role="dialog" aria-modal="true" aria-labelledby="settings-title">
-    <header class="settings-head"><div><p class="settings-eyebrow">EPIPHANY · PERSONAL SPACE</p><h2 id="settings-title">Settings</h2><p>Make your learning space feel right.</p></div><button class="settings-close" id="settings-close" type="button" aria-label="Close settings">×</button></header>
-    <div class="settings-grid">
-      <section class="settings-group" aria-labelledby="settings-accessibility-title"><h3 id="settings-accessibility-title">Appearance & accessibility</h3>
-        <button class="tools-action" id="theme-toggle" type="button" aria-pressed="false" aria-label="Turn on dark mode">◐ <span>Dark mode</span></button>
-        <label class="tools-action" for="reduced-motion-toggle"><input id="reduced-motion-toggle" type="checkbox"> <span>Reduce animations</span></label>
-        <label class="settings-select-row" for="text-size-setting"><span>Text size</span><select id="text-size-setting"><option value="normal">Default</option><option value="large">Large</option></select></label>
-      </section>
-      <section class="settings-group" aria-labelledby="settings-learning-title"><h3 id="settings-learning-title">Learning & experience</h3>
-        <button class="tools-action" id="translation-toggle" type="button" aria-pressed="true" aria-label="Toggle Arabic translation">ع <span>Arabic translation: On</span></button>
-        <button class="tools-action" id="sound-toggle-mobile" type="button" aria-pressed="true" aria-label="Turn sound effects off">♫ <span>Sound effects: On</span></button>
-        <button class="tools-action" id="open-voice" type="button" aria-label="Choose reader voice">🔊 <span>Reader voice</span></button>
-      </section>
-      <section class="settings-group" aria-labelledby="settings-account-title"><h3 id="settings-account-title">Account & security</h3><p class="settings-description" id="settings-account-description">Manage your account and saved progress.</p>
-        <button class="tools-action" id="open-account-settings" type="button"><span>Manage account</span><span aria-hidden="true">→</span></button>
-        <button class="tools-action developer-entry" id="open-developer-mode" type="button" hidden>🛠 <span>Developer Mode</span><span class="developer-entry-arrow">→</span></button>
-      </section>
-      <section class="settings-group settings-data-group" aria-labelledby="settings-data-title"><h3 id="settings-data-title">Data &amp; privacy</h3>
-        <label class="tools-action" for="low-data-toggle"><input id="low-data-toggle" type="checkbox"> <span>Data saver · cached George audio only</span></label>
-        <div class="settings-inline-actions"><button class="tools-action" id="export-progress" type="button" aria-label="Export progress to a file">↓ <span>Export progress</span></button><button class="tools-action" id="import-progress" type="button" aria-label="Import progress from a file">↑ <span>Import progress</span></button></div>
-        <label class="tools-action telemetry-setting" for="anonymous-telemetry"><input id="anonymous-telemetry" type="checkbox"> <span>Share anonymous usage & error reports (optional)</span></label>
-        <small class="telemetry-note">No name, email, answers or story text is sent. You can turn this off at any time.</small>
-      </section>
-      <section class="settings-group" aria-labelledby="settings-notifications-title"><h3 id="settings-notifications-title">Notifications</h3>
-        <p class="settings-description">Choose how EPIPHANY keeps you updated about learning activity.</p>
-        <button class="tools-action" id="open-notification-settings" type="button"><span>Notification preferences</span><span aria-hidden="true">→</span></button>
-      </section>
-      <section class="settings-group" aria-labelledby="settings-about-title"><h3 id="settings-about-title">App</h3>
-        <button class="tools-action" id="install-app" type="button" aria-label="Install Epiphany app" hidden>＋ <span>Install app</span></button>
-        <button class="tools-action" type="button" data-help-open aria-haspopup="dialog" aria-controls="help-center-dialog"><span>Help & Guide</span><span aria-hidden="true">→</span></button>
-      </section>
-    </div>
-    <footer class="settings-footer"><button class="settings-signout" id="account-signout" type="button" hidden><span aria-hidden="true">↗</span> Sign out</button><p>EPIPHANY · Your learning journey, your pace.</p></footer>
+  <section class="settings-sheet settings-detail-sheet" role="dialog" aria-modal="true" aria-labelledby="settings-title">
+    <header class="settings-head"><div><p class="settings-eyebrow">EPIPHANY · PERSONAL SPACE</p><h2 id="settings-title">Settings</h2><p id="settings-subtitle">Choose what you would like to adjust.</p></div><button class="settings-close" id="settings-close" type="button" aria-label="Close settings">×</button></header>
+    <section class="settings-page" data-settings-page="appearance" hidden aria-labelledby="settings-accessibility-title">
+      <h3 id="settings-accessibility-title">Appearance & accessibility</h3>
+      <button class="tools-action" id="theme-toggle" type="button" aria-pressed="false" aria-label="Turn on dark mode">◐ <span>Dark mode</span></button>
+      <label class="tools-action" for="reduced-motion-toggle"><input id="reduced-motion-toggle" type="checkbox"> <span>Reduce animations</span></label>
+      <label class="settings-select-row" for="text-size-setting"><span>Text size</span><select id="text-size-setting"><option value="normal">Default</option><option value="large">Large</option></select></label>
+    </section>
+    <section class="settings-page" data-settings-page="learning" hidden aria-labelledby="settings-learning-title">
+      <h3 id="settings-learning-title">Learning & experience</h3>
+      <button class="tools-action" id="translation-toggle" type="button" aria-pressed="true" aria-label="Toggle Arabic translation">ع <span>Arabic translation: On</span></button>
+      <button class="tools-action" id="sound-toggle-mobile" type="button" aria-pressed="true" aria-label="Turn sound effects off">♫ <span>Sound effects: On</span></button>
+      <button class="tools-action" id="open-voice" type="button" aria-label="Choose reader voice">🔊 <span>Reader voice</span></button>
+    </section>
+    <section class="settings-page" data-settings-page="account" hidden aria-labelledby="settings-account-title">
+      <h3 id="settings-account-title">Account & security</h3>
+      <p class="settings-description" id="settings-account-description">Manage your account and saved progress.</p>
+      <button class="tools-action" id="open-account-settings" type="button"><span>Manage account</span><span aria-hidden="true">→</span></button>
+      <button class="tools-action developer-entry" id="open-developer-mode" type="button" hidden>🛠 <span>Developer Mode</span><span class="developer-entry-arrow">→</span></button>
+    </section>
+    <section class="settings-page" data-settings-page="data" hidden aria-labelledby="settings-data-title">
+      <h3 id="settings-data-title">Data &amp; privacy</h3>
+      <label class="tools-action" for="low-data-toggle"><input id="low-data-toggle" type="checkbox"> <span>Data saver · cached George audio only</span></label>
+      <div class="settings-inline-actions"><button class="tools-action" id="export-progress" type="button" aria-label="Export progress to a file">↓ <span>Export progress</span></button><button class="tools-action" id="import-progress" type="button" aria-label="Import progress from a file">↑ <span>Import progress</span></button></div>
+      <label class="tools-action telemetry-setting" for="anonymous-telemetry"><input id="anonymous-telemetry" type="checkbox"> <span>Share anonymous usage & error reports (optional)</span></label>
+      <small class="telemetry-note">No name, email, answers or story text is sent. You can turn this off at any time.</small>
+    </section>
+    <section class="settings-page" data-settings-page="notifications" hidden aria-labelledby="settings-notifications-title">
+      <h3 id="settings-notifications-title">Notifications</h3>
+      <p class="settings-description">Choose how EPIPHANY keeps you updated about learning activity.</p>
+      <button class="tools-action" id="open-notification-settings" type="button"><span>Notification preferences</span><span aria-hidden="true">→</span></button>
+    </section>
+    <section class="settings-page" data-settings-page="app" hidden aria-labelledby="settings-about-title">
+      <h3 id="settings-about-title">App & help</h3>
+      <button class="tools-action" id="install-app" type="button" aria-label="Install Epiphany app" hidden>＋ <span>Install app</span></button>
+      <button class="tools-action" type="button" data-help-open aria-haspopup="dialog" aria-controls="help-center-dialog"><span>Help & Guide</span><span aria-hidden="true">→</span></button>
+    </section>
   </section>
 </div>
 
@@ -1005,8 +1021,19 @@ n>
     document.getElementById('landing-signin')?.addEventListener('click',()=>window.EpiphanyAuth?.openAccountMode('signin'));
     document.getElementById('landing-signup')?.addEventListener('click',()=>window.EpiphanyAuth?.openAccountMode('signup'));
     const settings=document.getElementById('settings-dialog');
+    const settingsPages=[...document.querySelectorAll('[data-settings-page]')];
+    const settingsTitles={appearance:['Appearance & accessibility','Adjust the way EPIPHANY looks and feels.'],learning:['Learning & experience','Choose how lessons, translations and audio behave.'],account:['Account & security','Manage your account and developer tools.'],data:['Data & privacy','Control local data, backups and optional anonymous reports.'],notifications:['Notifications','Choose how EPIPHANY keeps you updated.'],app:['App & help','Install EPIPHANY or find guidance.']};
     const closeSettings=()=>{if(settings)settings.hidden=true;document.body.classList.remove('settings-open');document.querySelector('.tools-menu')?.removeAttribute('open');};
-    document.getElementById('open-settings')?.addEventListener('click',()=>{if(settings){settings.hidden=false;document.body.classList.add('settings-open');document.querySelector('.tools-menu')?.removeAttribute('open');document.getElementById('settings-close')?.focus();}});
+    document.querySelectorAll('[data-settings-open]').forEach(button=>button.addEventListener('click',()=>{
+      const key=button.dataset.settingsOpen,copy=settingsTitles[key];
+      if(!settings||!copy)return;
+      settingsPages.forEach(page=>{page.hidden=page.dataset.settingsPage!==key;});
+      document.getElementById('settings-title').textContent=copy[0];
+      document.getElementById('settings-subtitle').textContent=copy[1];
+      settings.hidden=false;document.body.classList.add('settings-open');
+      document.querySelector('.tools-menu')?.removeAttribute('open');
+      document.getElementById('settings-close')?.focus();
+    }));
     document.getElementById('settings-close')?.addEventListener('click',closeSettings);
     document.getElementById('settings-backdrop')?.addEventListener('click',closeSettings);
     document.addEventListener('keydown',event=>{if(event.key==='Escape'&&settings&&!settings.hidden)closeSettings();});

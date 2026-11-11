@@ -4075,3 +4075,22 @@ body.epiphany-auth-gate #landing-screen{display:block!important}
 .settings-select-row select{max-width:130px;min-height:36px;padding:5px 9px;border:1px solid var(--line-2);border-radius:9px;background:var(--ground);color:var(--ink);font:inherit}
 body[data-text-size="large"]{font-size:17px}
 body.reduce-motion *,body.reduce-motion *::before,body.reduce-motion *::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
+
+/* Direct settings dropdown with focused dialogs for each settings section. */
+.tools-panel.settings-menu{width:min(292px,calc(100vw - 24px));padding:9px;display:flex;flex-direction:column;gap:2px}
+.settings-menu-heading{margin:8px 9px 2px;color:var(--ink-3);font-size:9px;font-weight:900;letter-spacing:.12em;text-transform:uppercase}
+.settings-menu-heading:first-child{margin-top:3px}
+.tools-panel .settings-menu-item{display:flex;width:100%;min-height:40px;align-items:center;justify-content:flex-start;gap:10px;padding:9px 10px;border-radius:10px;text-align:left}
+.tools-panel .settings-menu-item>span:nth-child(2){flex:1;min-width:0}
+.tools-panel .settings-menu-item>span:last-child{color:var(--ink-3);font-size:18px}
+.settings-menu-divider{height:1px;margin:7px 4px;background:var(--line)}
+.tools-panel .settings-menu-signout{width:100%;justify-content:flex-start;min-height:40px}
+.settings-detail-sheet{width:min(100%,520px)}
+.settings-page{display:grid;gap:9px}
+.settings-page[hidden]{display:none!important}
+.settings-page h3{margin:0 0 5px;font-size:16px;font-weight:850}
+.settings-page>.tools-action{width:100%;min-height:46px;justify-content:flex-start;text-align:left}
+.settings-page>.tools-action>span:last-child{flex:1}
+.settings-page .settings-description{margin:0 0 4px}
+.settings-page .settings-inline-actions{margin-top:2px}
+@media(max-width:620px){.tools-panel.settings-menu{max-height:calc(100dvh - 76px)}.settings-detail-sheet{max-height:92dvh}}

@@ -83,13 +83,17 @@ test('the prompt action preserves guest progress and opens the existing account 
 });
 
 
-test('first entry offers account access or guest play, and settings are grouped into a dedicated hub', () => {
+test('first entry offers account access or guest play, and settings open directly from the tools dropdown', () => {
   assert.match(html, /id="landing-signup"/);
   assert.match(html, /id="landing-signin"/);
   assert.match(html, /id="landing-start"[^>]*>Continue as guest/);
   assert.match(html, /epiphany-auth-gate-v1/);
   assert.match(html, /id="settings-dialog"/);
-  assert.match(html, /id="open-settings"/);
+  for (const page of ['appearance','learning','account','data','notifications','app']) {
+    assert.match(html, new RegExp('data-settings-open="'+page+'"'));
+    assert.match(html, new RegExp('data-settings-page="'+page+'"'));
+  }
+  assert.doesNotMatch(html, /id="open-settings"/, 'there must not be an intermediate settings hub button');
   assert.match(html, /id="settings-data-title">Data &amp; privacy/);
   assert.match(html, /id="account-signout"[^>]*hidden/);
   assert.match(account, /localStorage\.setItem\('epiphany-auth-gate-v1','1'\)/);
@@ -98,7 +102,7 @@ test('first entry offers account access or guest play, and settings are grouped 
 });
 
 
-test('accessibility and notification settings have working preference entry points', () => {
+test('accessibility and notification settings have working focused preference windows', () => {
   assert.match(html, /id="reduced-motion-toggle"/);
   assert.match(html, /id="text-size-setting"/);
   assert.match(html, /epiphany-reduced-motion-v1/);
@@ -106,4 +110,5 @@ test('accessibility and notification settings have working preference entry poin
   assert.match(html, /id="settings-notifications-title"/);
   assert.match(html, /id="open-notification-settings"/);
   assert.match(html, /notification-settings/);
+  assert.match(html, /settingsPages\.forEach\(page=>\{page\.hidden=page\.dataset\.settingsPage!==key;\}\)/);
 });
