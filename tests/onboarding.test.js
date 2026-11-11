@@ -100,7 +100,9 @@ test('first entry offers account access or guest play, and settings open directl
   assert.match(html, /id="settings-data-title">Data &amp; privacy/);
   assert.match(html, /id="account-signout"[^>]*hidden/);
   assert.match(account, /localStorage\.setItem\('epiphany-auth-gate-v1','1'\)/);
-  assert.match(account, /function openAccountFromWelcome\(mode\)[\s\S]*?const dialog = \\$\('auth-dialog'\)[\s\S]*?setMode\(mode === \'signup\' \? \'signup\' : \'signin\'\)/, "auth entry opens a dedicated dialog rather than Profile");
+  assert.match(account, /function openAccountFromWelcome\\(mode\\)/);
+  assert.match(account, /const dialog = \\$\\('auth-dialog'\\)/);
+  assert.doesNotMatch(account, /profileButton/, 'authentication must not navigate to Profile');
   assert.match(account, /document\.body\.classList\.add\('epiphany-auth-gate'\)/);
   assert.match(account, /window\.EpiphanyConfirm\(\{title:'Sign out\?',message:'Your account progress will remain safely saved online\./, 'sign out must use the EPIPHANY-branded confirmation dialog');
   assert.match(account, /confirmText:'Sign out',cancelText:'Stay signed in',danger:true/);
