@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: epiphany-supabase-schema-${{ github.ref }}
+  group: epiphany-supabase-schema-${{ github.ref }}-${{ github.sha }}
   cancel-in-progress: true
 
 jobs:
@@ -212,4 +212,6 @@ jobs:
           retention-days: 7
       - name: Stop disposable local stack
         if: always()
+        timeout-minutes: 2
+        continue-on-error: true
         run: supabase stop --no-backup
