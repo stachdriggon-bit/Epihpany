@@ -651,7 +651,7 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
     if (id === 'forge') {
       const bank = window.EPIPHANY_WORD_FORGE_BANK;
       const trainingMode = ['guided','steady','challenge'].includes(level) ? level : 'steady';
-      return bank && typeof bank.selectRound === 'function' ? bank.selectRound(trainingMode) : [];
+      return [];
     }
     if (id === 'connections') {
       const bank = window.EPIPHANY_WORD_CONNECTIONS_BANK;
@@ -723,7 +723,6 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
     if (ladderWordBank && ladderWordBank.size) ids.push('wordladder');
     if (window.EPIPHANY_WORD_CONNECTIONS_BANK && typeof window.EPIPHANY_WORD_CONNECTIONS_BANK.selectRound === 'function') ids.push('connections');
     if (window.EPIPHANY_SENTENCE_SCRAMBLE_BANK?.modes?.steady?.length === 24) ids.push('scramble');
-    if (window.EPIPHANY_WORD_FORGE_BANK && typeof window.EPIPHANY_WORD_FORGE_BANK.selectRound === 'function') ids.push('forge');
     if (window.EPIPHANY_CHAIN_REACTION_BANK && typeof window.EPIPHANY_CHAIN_REACTION_BANK.selectRound === 'function') ids.push('chain');
     return ids;
   }
@@ -763,7 +762,7 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
       roundMistakes:nextItem?0:roundMistakes, clueCount:nextItem?0:clueCount, oddHintStep:nextItem?0:oddHintStep,
       ladderPath:nextItem?[]:ladderPath.slice(), ladderWordNote:nextItem?null:ladderWordNote,
       ladderMistakeRecorded:nextItem?false:ladderMistakeRecorded,
-      forgePlaced:nextItem&&mode==='forge'?Array((nextItem.answerWord||'').length).fill(null):forgePlaced.slice(),
+      forgePlaced:nextItem&&mode==='forge'?Array((nextItem.letters||'').length).fill(null):forgePlaced.slice(),
       scramblePlaced:nextItem&&mode==='scramble'?Array((nextItem.words||[]).length).fill(null):scramblePlaced.slice(),
       connectionWords:mode==='connections'&&!nextItem?[...root.querySelectorAll?.('[data-connection-tile]')||[]].filter(button=>connectionSelected.includes(Number(button.dataset.connectionTile))).map(button=>button.textContent.trim()):[],
       chainStepIndex:nextItem?0:chainStepIndex, chainPath:nextItem?[]:chainPath.slice(),
@@ -806,7 +805,7 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
     const current=p.pool[snapshot.position]||p.pool[p.pool.length-1];
     if(id==='wordladder'&&(!current||typeof current.start!=='string'||typeof current.goal!=='string'||!Array.isArray(p.ladderPath)||p.ladderPath.some(word=>typeof word!=='string')))return false;
     if(id==='chain'&&(!current||!Array.isArray(current.links)||!Number.isInteger(p.chainStepIndex)||p.chainStepIndex<0||p.chainStepIndex>=current.links.length))return false;
-    if(id==='forge'&&(!Array.isArray(p.forgePlaced)||p.forgePlaced.length!==(current.answerWord||'').length||p.forgePlaced.some(value=>value!==null&&(!Number.isInteger(value)||value<0||value>=String(current.letters||'').length))))return false;
+    if(id==='forge'&&(!Array.isArray(p.forgePlaced)||p.forgePlaced.length!==(current.letters||'').length||p.forgePlaced.some(value=>value!==null&&(!Number.isInteger(value)||value<0||value>=String(current.letters||'').length))))return false;
     if(id==='scramble'&&(!Array.isArray(p.scramblePlaced)||p.scramblePlaced.length!==(current.words||[]).length||p.scramblePlaced.some(value=>value!==null&&(!Number.isInteger(value)||value<0||value>=current.words.length))))return false;
     mode=id;pickerGameId=id;pickerStage='game';selectedTrainingMode=snapshot.trainingMode;activePool=p.pool;
     index=snapshot.position;score=p.score;roundMistakes=Math.max(0,Number(p.roundMistakes)||0);clueCount=Math.max(0,Number(p.clueCount)||0);
@@ -1158,7 +1157,7 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
           : item.hint;
       intro = '<div class="tl-ladder-targets"><div><span>START</span><strong>'+esc(item.start)+'</strong></div><span class="tl-ladder-arrow">→</span><div><span>GOAL</span><strong>'+esc(item.goal)+'</strong></div></div><p class="tl-ladder-hint">'+esc(activeHint)+'</p><div class="tl-ladder-path">'+path.map((w,i)=>'<span class="tl-ladder-word '+(i===path.length-1?'is-current':'')+'">'+esc(w)+'</span>').join('<span class="tl-ladder-step">↓</span>')+'</div>'+(ladderWordNote?'<aside class="tl-ladder-meaning" aria-live="polite"><strong>'+esc(ladderWordNote.word)+'</strong><p>'+esc(ladderWordNote.meaning||'No definition is available for this word yet.')+'</p></aside>':'')+(path[path.length-1]===item.goal?'<p class="tl-ladder-success">Ladder complete! Every move is valid.</p>':'<form class="tl-ladder-form" data-think-ladder-form><label for="tl-ladder-input">Next word</label><div><input id="tl-ladder-input" name="ladder-word" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Type the next word" required><button class="tl-next" type="submit">Make move →</button></div><small>Use a word from the game’s word bank. Change one letter and keep a route open to the goal.</small></form>');
     }
-    if (mode === 'forge') { forgePlaced=Array(item.answerWord.length).fill(null); intro='<div class="tl-word-clue"><span>WORD CLUE</span><p>'+esc(item.clue)+'</p></div>'+forgeBoard(item)+'<button class="tl-next" type="button" data-forge-check>Check word →</button><button class="tl-secondary" type="button" data-forge-reset>Reset tiles</button>'; }
+    if (mode === 'forge') { forgePlaced=Array(item.letters.length).fill(null); intro='<div class="tl-word-clue"><span>WORD CLUE</span><p>'+esc(item.clue)+'</p></div>'+forgeBoard(item)+'<button class="tl-next" type="button" data-forge-check>Check word →</button><button class="tl-secondary" type="button" data-forge-reset>Reset tiles</button>'; }
     if (mode === 'connections') { connectionSelected=[]; const tiles=connectionTiles(item); intro='<p class="tl-connection-count" aria-live="polite">Select the four words that belong together.</p><div class="tl-connection-grid tl-connection-board">'+tiles.map((w,i)=>'<button type="button" class="tl-connection-word" data-connection-tile="'+i+'" aria-pressed="false">'+esc(w)+'</button>').join('')+'</div><div class="tl-connection-controls"><span data-connection-count>0 / 4 selected</span><button class="tl-next" type="button" data-connection-check>Check group →</button><button class="tl-secondary" type="button" data-connection-reset>Clear selection</button></div>'; }
     if (mode === 'scramble') { scramblePlaced=Array(item.words.length).fill(null); intro=scrambleBoard(item)+'<button class="tl-next" type="button" data-scramble-check>Check sentence →</button><button class="tl-secondary" type="button" data-scramble-reset>Reset words</button>'; }
     if (mode === 'chain') { const steps=item.links,step=steps[chainStepIndex],path=[item.start,...chainPath]; intro='<div class="tl-chain-path">'+path.map(w=>'<span class="tl-chain-link">'+esc(w)+'</span>').join('<span class="tl-ladder-step"> → </span>')+'<span class="tl-ladder-step"> → ?</span></div><p class="tl-connection-count">LINK '+(chainStepIndex+1)+' OF '+steps.length+' · Connect “'+esc(step.from)+'” to the strongest next word.</p><div class="tl-answer-options">'+step.options.map((w,i)=>'<button type="button" class="tl-option" data-chain-answer="'+i+'"><span class="tl-option-index">'+String.fromCharCode(65+i)+'</span><strong>'+esc(w)+'</strong></button>').join('')+'</div>'; }
@@ -1285,6 +1284,20 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
           'Compare the four words in this context: '+(question.context||''),
         relationshipLabel:labels[question.relationship]||question.relationship}));
     }
+    if (id === 'forge') {
+      await (window.EpiphanyAuth?.whenReady?.() || Promise.resolve());
+      const signedIn = window.EpiphanyAuth?.isSignedIn?.() === true;
+      const validatorClient = signedIn ? window.EpiphanyAuth?.getValidatorClient?.() : window.EpiphanyAuth?.getGuestValidatorClient?.();
+      if (!validatorClient) { mode=null;activePool=null;root.innerHTML='<div class="tl-game-card"><h2>Word Forge needs an internet connection</h2><p class="tl-game-instruction">We could not prepare a secure question session. Please reconnect and try again.</p><button type="button" class="tl-back" data-think-home>Think Lab home</button></div>';return; }
+      const {data,error}=await validatorClient.functions.invoke('velorn-word-forge',{body:{action:'start',trainingMode:selectedTrainingMode}});
+      const guestTokenValid=signedIn || (typeof data?.guestToken==='string' && /^[0-9a-f]{64}$/.test(data.guestToken));
+      if(error || !data?.sessionId || !Array.isArray(data.questions) || data.questions.length!==24 || !guestTokenValid) {
+        console.error('Trusted Word Forge session could not start:',error?.message||data?.error||'invalid response');mode=null;activePool=null;
+        root.innerHTML='<div class="tl-game-card"><h2>Word Forge is unavailable</h2><p class="tl-game-instruction">The secure question session could not be created. Your attempt has not started. Please try again.</p><button type="button" class="tl-back" data-think-home>Think Lab home</button></div>';return;
+      }
+      validatorSessionId=data.sessionId;validatorClientForSession=validatorClient;validatorFunctionName='velorn-word-forge';validatorGuestToken=signedIn?null:data.guestToken;
+      activePool=data.questions.map(question=>({...question,prompt:'Forge the word from the letter tiles.'}));
+    }
     if (id === 'maze') preparedMazeCEFR = null;
     if (id === 'maze' && !activePool.length) {
       showMazeBankUnavailable();
@@ -1306,7 +1319,7 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
       root.innerHTML = '<div class="tl-game-card"><div class="tl-game-kicker">WORD CONNECTIONS</div><h2>QUESTION BANK NOT READY</h2><p class="tl-game-instruction">The reviewed Word Connections bank could not be loaded. No sample questions will be shown.</p><button type="button" class="tl-back" data-think-back>← Choose difficulty</button><button type="button" class="tl-back" data-think-home>Think Lab home</button></div>';
       return;
     }
-    if (options.daily === true && dailyChallengeActive && dailyChallengeActive.gameId === id) {
+    if (options.daily === true && id !== 'forge' && dailyChallengeActive && dailyChallengeActive.gameId === id) {
       if (!activePool.length) { dailyChallengeActive = null; root.innerHTML='<div class="tl-game-card"><h2>Daily challenge unavailable</h2><p class="tl-game-instruction">The approved question could not be prepared. Your daily attempt has not been used.</p><button type="button" class="tl-back" data-think-home>Think Lab home</button></div>'; return; }
       activePool = [activePool[0]];
     } else {
@@ -1455,17 +1468,14 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
         return;
       }
       const answer=forgePlaced.map(i=>[...item.letters][i]).join('').toLowerCase();
-      if(answer!==item.answerWord){
-        roundMistakes++;
-        if(window.EpiphanyThinkLab)window.EpiphanyThinkLab.recordResult('spelling','word-forge',false,false);
-        fb.hidden=false;fb.className='tl-feedback is-wrong';
-        fb.innerHTML='<strong>Not forged yet—try again.</strong><p>Check the clue and the order of the letters. Every tile must be used exactly once.</p>'+(roundMistakes>=2&&activeDifficulty&&activeDifficulty.hintLevel>0?'<p>'+esc(adaptiveHint('forge'))+'</p>':'');
-        saveInternalProgress(index);return;
-      }
-      score++;locked=true;if(window.EpiphanyThinkLab)window.EpiphanyThinkLab.recordResult('spelling','word-forge',true,index===pool.length-1);
-      root.querySelectorAll('[data-forge-tile],[data-forge-slot],[data-forge-check],[data-forge-reset]').forEach(el=>el.disabled=true);
-      fb.hidden=false;fb.className='tl-feedback is-correct';
-      fb.innerHTML='<strong>✓ Word forged!</strong><p><b>'+esc(item.answerWord.toUpperCase())+'</b> — '+esc(item.explain)+'</p><p><strong>Skill:</strong> '+esc(item.skill)+'</p>';
+      if(!validatorSessionId||!validatorClientForSession||validatorFunctionName!=='velorn-word-forge'||(!window.EpiphanyAuth?.isSignedIn?.()&&!validatorGuestToken)){fb.hidden=false;fb.className='tl-feedback is-wrong';fb.textContent='Your secure Word Forge session has expired. Return to Think Lab and start a new round.';return;}
+      const answerBody={action:'answer',sessionId:validatorSessionId,questionIndex:index,answerWord:answer};if(validatorGuestToken)answerBody.guestToken=validatorGuestToken;
+      const {data,error}=await validatorClientForSession.functions.invoke('velorn-word-forge',{body:answerBody});
+      if(error||!data||typeof data.correct!=='boolean'||typeof data.advance!=='boolean'){fb.hidden=false;fb.className='tl-feedback is-wrong';fb.textContent='We could not verify that word. Please check your connection and try again.';return;}
+      if(!data.advance){roundMistakes++;fb.hidden=false;fb.className='tl-feedback is-wrong';fb.innerHTML='<strong>Not forged yet—try again.</strong><p>Check the clue and letter order. You have '+data.attemptsRemaining+' '+(data.attemptsRemaining===1?'attempt':'attempts')+' remaining.</p>'+(roundMistakes>=2&&activeDifficulty&&activeDifficulty.hintLevel>0?'<p>'+esc(adaptiveHint('forge'))+'</p>':'');return;}
+      if(data.correct)score++;locked=true;root.querySelectorAll('[data-forge-tile],[data-forge-slot],[data-forge-check],[data-forge-reset]').forEach(el=>el.disabled=true);
+      if(window.EpiphanyThinkLab)window.EpiphanyThinkLab.recordResult('spelling','word-forge',data.correct,index===pool.length-1);
+      fb.hidden=false;fb.className='tl-feedback '+(data.correct?'is-correct':'is-wrong');fb.innerHTML='<strong>'+(data.correct?'✓ Word forged!':'↗ The word was revealed.')+'</strong><p><b>'+esc(String(data.correctAnswer||'').toUpperCase())+'</b> — '+esc(data.explanation||'')+'</p><p><strong>Skill:</strong> '+esc(data.skill||'Vocabulary')+'</p>';
       const next=root.querySelector('[data-think-next]');if(next)next.hidden=false;saveInternalProgress(index+1);return;
     }
     if(e.target.closest('[data-scramble-check]')){

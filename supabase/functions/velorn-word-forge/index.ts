@@ -1,0 +1,68 @@
+import "jsr:@supabase/functions-js/edge-runtime.d.ts";
+import { createClient } from "npm:@supabase/supabase-js@2.119.0";
+import "./word-forge-bank.js";
+import { safeSessionQuestions, validateAnswerRequest, validateStartRequest } from "./word-forge-validator.mjs";
+
+const VERSION="word-forge-reviewed-72-20261111-v1";
+const headers={"Access-Control-Allow-Origin":"*","Access-Control-Allow-Headers":"authorization, apikey, content-type, x-client-info","Access-Control-Allow-Methods":"POST, OPTIONS","Content-Type":"application/json","Cache-Control":"no-store, private, max-age=0"};
+const json=(status:number,body:Record<string,unknown>)=>new Response(JSON.stringify(body),{status,headers});
+function hex(b:Uint8Array){return Array.from(b,x=>x.toString(16).padStart(2,"0")).join("");}
+async function sha(v:string){return hex(new Uint8Array(await crypto.subtle.digest("SHA-256",new TextEncoder().encode(v))));}
+async function hmac(secret:string,v:string){
+ const key=await crypto.subtle.importKey("raw",new TextEncoder().encode(secret),{name:"HMAC",hash:"SHA-256"},false,["sign"]);
+ return hex(new Uint8Array(await crypto.subtle.sign("HMAC",key,new TextEncoder().encode(v))));
+}
+function address(req:Request){return req.headers.get("cf-connecting-ip")?.trim()||req.headers.get("x-real-ip")?.trim()||req.headers.get("x-forwarded-for")?.split(",")[0]?.trim()||"";}
+
+Deno.serve(async(req:Request)=>{
+ if(req.method==="OPTIONS")return new Response("ok",{headers});
+ if(req.method!=="POST")return json(405,{error:"method_not_allowed"});
+ try{
+  const url=Deno.env.get("SUPABASE_URL"),anon=Deno.env.get("SUPABASE_ANON_KEY"),secret=Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+  if(!url||!anon||!secret)return json(503,{error:"validator_not_configured"});
+  if(!req.headers.get("apikey"))return json(401,{error:"project_key_required"});
+  const body=await req.json();
+  if(!body||typeof body!=="object"||Array.isArray(body))return json(400,{error:"invalid_request"});
+  const bearer=(req.headers.get("Authorization")||"").match(/^Bearer\s+(.+)$/i)?.[1]||"";
+  let userId:string|null=null;
+  if(bearer){
+   const auth=createClient(url,anon,{auth:{persistSession:false,autoRefreshToken:false},global:{headers:{Authorization:"Bearer "+bearer}}});
+   const {data,error}=await auth.auth.getUser(bearer);
+   if(error||!data?.user?.id)return json(401,{error:"invalid_session"});
+   userId=data.user.id;
+  }
+  const service=createClient(url,secret,{auth:{persistSession:false,autoRefreshToken:false}});
+  const bank=(globalThis as typeof globalThis & {EPIPHANY_WORD_FORGE_BANK?:any}).EPIPHANY_WORD_FORGE_BANK;
+  if(body.action==="start"){
+   if(!validateStartRequest(body))return json(400,{error:"invalid_selection"});
+   if(!bank||!bank.validateBank().valid)return json(503,{error:"question_bank_unavailable"});
+   const random=()=>crypto.getRandomValues(new Uint32Array(1))[0]/4294967296;
+   const questions=bank.selectRound(body.trainingMode,random);
+   if(!Array.isArray(questions)||questions.length!==24||!questions.every((q:any)=>q.answerWord))return json(503,{error:"question_bank_incomplete"});
+   const sessionId=crypto.randomUUID(),expiresAt=new Date(Date.now()+40*60*1000).toISOString();
+   const guestToken=userId?null:hex(crypto.getRandomValues(new Uint8Array(32)));
+   const ip=guestToken?address(req):"";
+   if(guestToken&&!ip)return json(503,{error:"client_network_identity_unavailable"});
+   const {error}=await service.rpc("velorn_start_word_forge_session",{
+    p_session_id:sessionId,p_user_id:userId,p_guest_token_hash:guestToken?await sha(guestToken):null,
+    p_client_ip_hash:guestToken?await hmac(secret,ip):null,p_validator_version:VERSION,
+    p_training_mode:body.trainingMode,p_questions:questions,p_expires_at:expiresAt
+   });
+   if(error){const limited=/rate limit/i.test(error.message||"");if(!limited)console.error("Word Forge start failed:",error.message);return json(limited?429:503,{error:limited?"session_rate_limited":"session_creation_failed"});}
+   return json(200,{sessionId,guestToken,validatorVersion:VERSION,trainingMode:body.trainingMode,questions:safeSessionQuestions(questions)});
+  }
+  if(body.action==="answer"){
+   const guest=!userId;
+   if(!validateAnswerRequest(body,guest))return json(400,{error:"invalid_answer_request"});
+   const {data,error}=await service.rpc("velorn_submit_word_forge_answer",{
+    p_user_id:userId,p_guest_token_hash:guest?await sha(body.guestToken as string):null,
+    p_session_id:body.sessionId,p_question_index:body.questionIndex,p_submitted_word:body.answerWord
+   });
+   if(error||!data){const m=error?.message||"";const status=/not found/i.test(m)?404:/expired|not active|unexpected/i.test(m)?409:/too quickly/i.test(m)?429:400;return json(status,{error:"answer_rejected"});}
+   return json(200,{correct:data.correct,correctAnswer:data.correct_answer,explanation:data.explanation,skill:data.skill,
+    questionIndex:data.question_index,attemptsRemaining:data.attempts_remaining,advance:data.advance,
+    completed:data.completed,nextIndex:data.next_index,correctCount:data.correct_count});
+  }
+  return json(400,{error:"unknown_action"});
+ }catch(error){console.error("Word Forge validator failed:",error instanceof Error?error.message:"unknown");return json(400,{error:"invalid_request"});}
+});

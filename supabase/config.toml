@@ -27,3 +27,6 @@ verify_jwt = false
 
 [functions.velorn-mission-claims]
 verify_jwt = true
+
+[functions.velorn-word-forge]
+verify_jwt = false
