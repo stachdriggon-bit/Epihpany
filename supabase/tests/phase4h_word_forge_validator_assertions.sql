@@ -17,6 +17,8 @@ BEGIN
  PERFORM public.velorn_start_word_forge_session(g,NULL,repeat('a',64),repeat('b',64),'word-forge-reviewed-72-20261111-v1','guided',qs,clock_timestamp()+interval '30 minutes');
  PERFORM pg_sleep(0.7);
  BEGIN PERFORM public.velorn_submit_word_forge_answer(u,NULL,s,1,'apple');RAISE EXCEPTION 'Out-of-order answer accepted';EXCEPTION WHEN SQLSTATE '22023' THEN NULL;END;
+ BEGIN PERFORM public.velorn_submit_word_forge_answer(u,NULL,s,NULL,'apple');RAISE EXCEPTION 'NULL question index accepted';EXCEPTION WHEN SQLSTATE '22023' THEN NULL;END;
+ BEGIN PERFORM public.velorn_start_word_forge_session('f4b80000-0000-4000-8000-000000000063',u,NULL,NULL,'word-forge-reviewed-72-20261111-v1',NULL,qs,clock_timestamp()+interval '30 minutes');RAISE EXCEPTION 'NULL training mode accepted';EXCEPTION WHEN SQLSTATE '22023' THEN NULL;END;
  IF (SELECT current_index FROM economy_private.word_forge_validator_sessions WHERE session_id=s)<>0 THEN RAISE EXCEPTION 'Rejected answer changed session cursor';END IF;
  UPDATE economy_private.word_forge_validator_sessions SET current_index=23,correct_count=0,
  answers=(SELECT jsonb_agg(jsonb_build_object('question_index',n,'submitted_word','wrong','is_correct',false,'attempt_number',1,'answered_at',clock_timestamp())) FROM generate_series(0,22) AS gs(n))
