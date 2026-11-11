@@ -68,6 +68,21 @@ The clean-room workflow now includes `supabase/tests/phase2_event_claim_assertio
 
 The migration must not be applied to hosted Supabase until the complete clean-room GitHub Actions run passes. This phase-2 foundation is additive and has no website dependency. After deployment, verify all seven tables are private, no API role has direct table access, the RPC is service-role-only, `economy_enabled` remains false, and wallet/ledger/claim/award/board tables remain empty.
 
+## Phase 4A — atomic mission reward claims
+
+The additive migration `20261111182500_velorn_atomic_mission_claims.sql` adds two service-role-only RPCs:
+
+- `public.economy_claim_mission_assignment(user_id, assignment_id)`
+- `public.economy_claim_mission_board_bonus(user_id, board_id)`
+
+The private functions lock the mission board before the assignment, so concurrent claims on one board serialize before the daily/weekly paid-mission limit is evaluated. They derive the payable amount from the immutable assignment snapshot and its verified template/configuration, never from a request-supplied amount. A claim is inserted directly as `paid` only after the wallet transaction returns its ledger entry; both writes occur in the same PostgreSQL transaction. If the wallet write, claim insert, or any later statement fails, the whole operation rolls back. Stable claim keys and deterministic wallet idempotency keys make retries return the original claim.
+
+The daily cap is three mission credits (10 each) plus one 10 bonus; the weekly cap is three mission credits (20 each) plus one 40 bonus. The fourth daily slot remains optional and cannot be paid. The board bonus is a separate one-time claim and is available only after the required mission claims exist.
+
+The migration deliberately does **not** generate boards, change template mapping status, create an Edge Function, expose a player-facing balance, or enable the economy. The caller must derive `p_user_id` from verified Supabase Auth context and use the service role only on the server. The existing timezone/reset decision remains unresolved; claims operate only on already-created board periods and do not calculate period boundaries.
+
+The clean-room test covers daily and weekly totals, replay behavior, the optional fourth daily slot, service-role-only grants, bonus eligibility, one-to-one claim/ledger entries, and rollback when the economy is disabled. Hosted Supabase must not receive this migration until the clean-room workflow passes.
+
 ## Safety rule
 
 A validated event is evidence, not a reward. The central mission/achievement engine decides whether that evidence satisfies a versioned objective; the wallet ledger remains the only authority for Velorn balance changes. No game, browser, local storage value, or client-supplied reward amount may bypass that chain.

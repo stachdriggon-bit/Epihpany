@@ -1,6 +1,6 @@
 # Velorn Economy — Technical Architecture
 
-> **Status (verified 2026-11-11):** Phase 1 wallet/ledger and Phase 2 event/claim-record foundations are deployed. Odd One Out has authenticated and guest server validators; the answer-bearing bank is private to the Edge Functions and absent from public PWA assets. Guest sessions are online-validated but intentionally create no trusted economy event or wallet. No mission predicate mapping, board generator, claim writer, player balance read, reward issuance, balance import, or economy activation is enabled.
+> **Status (verified 2026-11-11):** Phase 1 wallet/ledger and Phase 2 event/claim-record foundations are deployed. Odd One Out has authenticated and guest server validators; the answer-bearing bank is private to the Edge Functions and absent from public PWA assets. Guest sessions are online-validated but intentionally create no trusted economy event or wallet. Phase 4A atomic mission-claim RPCs are being added to the repository and remain pending clean-room verification and hosted migration. No mission predicate mapping, board generator, player balance read, reward issuance, balance import, or economy activation is enabled.
 
 ## 1. Purpose and design constraints
 
@@ -358,7 +358,7 @@ Do not implement all components in one production migration. The economy is a fi
 - Seven private tables model normalized activity evidence, versioned mission/achievement definitions, stable mission boards and assignments, mission claims, and achievement awards.
 - A service-role-only, idempotent validated-event ingestion RPC accepts evidence only from trusted server validators; it does not validate browser claims itself.
 - Mission templates and achievement definitions remain inactive/unmapped. No boards, assignments, claims, or awards have been created.
-- Board generation, timezone/reset policy, and atomic claim writers remain required before rewards can be paid. See [VELORN-PHASE-2-EVENTS-AND-CLAIMS.md](VELORN-PHASE-2-EVENTS-AND-CLAIMS.md).
+- Board generation and timezone/reset policy remain required before live rewards can be paid. Phase 4A adds the atomic claim writer for already-created, verified assignments; it does not generate boards or activate rewards. See [VELORN-PHASE-2-EVENTS-AND-CLAIMS.md](VELORN-PHASE-2-EVENTS-AND-CLAIMS.md).
 - Keep production reward issuance disabled; do not enable any template until its validator mapping is verified.
 
 ### Phase 3 — trusted game validators — IN PROGRESS

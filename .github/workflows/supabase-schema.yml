@@ -80,6 +80,12 @@ jobs:
           eval "$(supabase status -o env)"
           psql "$DB_URL" -v ON_ERROR_STOP=1 -f supabase/tests/phase2_event_claim_assertions.sql
 
+      - name: Assert Phase 4A atomic mission claim contract
+        timeout-minutes: 5
+        run: |
+          eval "$(supabase status -o env)"
+          psql "$DB_URL" -v ON_ERROR_STOP=1 -f supabase/tests/phase4a_atomic_mission_claim_assertions.sql
+
       - name: Assert Phase 3 trusted game validator contract
         timeout-minutes: 5
         run: |
