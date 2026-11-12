@@ -59,6 +59,15 @@ test("Word Forge adapter preserves its 24-question retry answer contract", () =>
   assert.equal("answerWord" in projected[0], false);
   assert.equal("explain" in projected[0], false);
   assert.equal("skill" in projected[0], false);
+  const startResponse = adapter.buildStartResponse({
+    sessionId: "f4100000-0000-4000-8000-000000000051",
+    guestToken: "a".repeat(64),
+    questions: canonical,
+    body: { trainingMode: "challenge" },
+  });
+  assert.equal(startResponse.questions.length, 24);
+  assert.equal(startResponse.trainingMode, "challenge");
+  assert.equal("answerWord" in startResponse.questions[0], false);
   assert.deepEqual(adapter.answerRpcArguments({
     userId: null,
     guestTokenHash: "a".repeat(64),
@@ -97,15 +106,19 @@ test("Odd One Out adapter preserves level/mode selection and index-answer contra
   const projected = adapter.projectQuestions(canonical);
   assert.equal(projected.length, 1);
   assert.equal("answer" in projected[0], false);
-  assert.equal(adapter.validateAnswerRequest({
+  const answerBody = {
     action: "answer",
     sessionId: "f4100000-0000-4000-8000-000000000051",
     questionIndex: 0,
     selectedIndex: 2,
-  }), true);
+  };
+  assert.equal(adapter.validateAnswerRequest(answerBody, false), true);
+  assert.equal(adapter.validateAnswerRequest({ ...answerBody, guestToken: "b".repeat(64) }, true), true);
+  assert.equal(adapter.validateAnswerRequest({ ...answerBody, guestToken: "invalid" }, true), false);
   assert.deepEqual(adapter.answerRpcArguments({
     userId: "trusted-user",
-    body: { sessionId: "f4100000-0000-4000-8000-000000000051", questionIndex: 0, selectedIndex: 2 },
+    guestTokenHash: null,
+    body: answerBody,
   }), {
     p_user_id: "trusted-user",
     p_guest_token_hash: null,
@@ -114,4 +127,27 @@ test("Odd One Out adapter preserves level/mode selection and index-answer contra
     p_question_index: 0,
     p_answer: { selectedIndex: 2 },
   });
+  const guestAnswerBody = { ...answerBody, guestToken: "b".repeat(64) };
+  assert.deepEqual(adapter.answerRpcArguments({
+    userId: null,
+    guestTokenHash: "c".repeat(64),
+    body: guestAnswerBody,
+  }), {
+    p_user_id: null,
+    p_guest_token_hash: "c".repeat(64),
+    p_session_id: answerBody.sessionId,
+    p_game_id: "odd_one_out",
+    p_question_index: 0,
+    p_answer: { selectedIndex: 2 },
+  });
+  const response = adapter.buildStartResponse({
+    sessionId: answerBody.sessionId,
+    guestToken: "b".repeat(64),
+    questions: canonical,
+    body,
+    round: { target: "word", shortened: false },
+  });
+  assert.equal(response.level, "B2");
+  assert.equal(response.questions.length, 1);
+  assert.equal("answer" in response.questions[0], false);
 });
