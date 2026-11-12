@@ -2739,7 +2739,7 @@
     }));
   }
 
-  window.EPIPHANY_CHAIN_REACTION_BANK = Object.freeze({
+  globalThis.EPIPHANY_CHAIN_REACTION_BANK = Object.freeze({
     schemaVersion: 1,
     gameId: 'chain-reaction',
     modes: MODES,
