@@ -107,10 +107,10 @@ BEGIN
   -- successors: v2 mapped/non-assignable, v3 verified/assignable.
   IF (SELECT count(*) FROM economy_private.mission_template_versions
       WHERE template_version = 1) <> 11
-     OR (SELECT count(*) FROM economy_private.mission_template_versions) <> 13
+     OR (SELECT count(*) FROM economy_private.mission_template_versions) <> 14
      OR (SELECT count(*) FROM economy_private.achievement_definitions) <> 10
-     OR (SELECT count(*) FROM economy_private.mission_event_predicate_mappings) <> 2 THEN
-    RAISE EXCEPTION 'Expected 11 original missions, two challenge successors/mappings, and 10 achievement definitions';
+     OR (SELECT count(*) FROM economy_private.mission_event_predicate_mappings) <> 3 THEN
+    RAISE EXCEPTION 'Expected 11 original missions, three challenge successors/mappings, and 10 achievement definitions';
   END IF;
 
   IF EXISTS (
@@ -121,14 +121,19 @@ BEGIN
            AND (validator_mapping_status <> 'verified' OR NOT is_assignable))
        OR (template_id <> 'solve_a_challenge' AND
            (template_version <> 1 OR validator_mapping_status <> 'unmapped' OR is_assignable))
-       OR (template_id = 'solve_a_challenge' AND template_version NOT IN (1,2,3))
+       OR (template_id = 'solve_a_challenge' AND template_version = 4
+           AND (validator_mapping_status <> 'mapped' OR is_assignable))
+       OR (template_id = 'solve_a_challenge' AND template_version NOT IN (1,2,3,4))
        OR (period_type = 'daily' AND reward_amount <> 10)
        OR (period_type = 'weekly' AND reward_amount <> 20)
   ) OR EXISTS (
     SELECT 1 FROM economy_private.mission_event_predicate_mappings
     WHERE (template_version = 2 AND (predicate_version <> 1 OR mapping_status <> 'mapped'))
        OR (template_version = 3 AND (predicate_version <> 2 OR mapping_status <> 'verified'))
-       OR (template_id <> 'solve_a_challenge' OR template_version NOT IN (2,3))
+       OR (template_version = 4 AND (predicate_version <> 3 OR mapping_status <> 'mapped'
+            OR predicate_key <> 'solve_a_challenge_word_forge_v1'
+            OR validator_version <> 'word-forge-reviewed-72-20261111-v1'))
+       OR (template_id <> 'solve_a_challenge' OR template_version NOT IN (2,3,4))
   ) OR EXISTS (
     SELECT 1 FROM economy_private.achievement_definitions
     WHERE validator_mapping_status <> 'unmapped' OR is_assignable
