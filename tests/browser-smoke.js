@@ -861,7 +861,12 @@ test('main navigation tabs open without uncaught page errors', { timeout: 18 * 6
             sentenceAnswerRequests.push(requestBody);
             const question = sentencePrivateRound[requestBody.questionIndex];
             const attempt = requestBody.tileOrder.map(tile => question.words[tile]).join(' ');
-            const normalize = value => String(value).toLowerCase().replace(/[^a-z0-9 ]/g,'').replace(/ +/g,' ').trim();
+            const normalize = value => {
+        const slash = String.fromCharCode(92);
+        return String(value).toLowerCase()
+          .replace(new RegExp("[^" + slash + "p{L}" + slash + "p{N}" + slash + "s]","gu"),"")
+          .replace(new RegExp(slash + "s+","g")," ").trim();
+      };
             const correct = [question.sentence,...question.acceptedAnswers].some(answer => normalize(answer) === normalize(attempt));
             await route.fulfill({status:200,contentType:'application/json',headers:{'Access-Control-Allow-Origin':'*'},body:JSON.stringify({
               correct,questionIndex:requestBody.questionIndex,nextIndex:requestBody.questionIndex+(correct?1:0),
