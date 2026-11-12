@@ -62,12 +62,39 @@ function createHarness(options = {}) {
   let wordHuntOpened = 0;
   let codebreakerOpened = 0;
   let letterGridOpened = 0;
+  let chainPrivateRound = [];
   const validatorClient = {functions:{async invoke(_name,{body}={}) {
+    if (body?.action === 'start' && body.gameId === 'chain_reaction') {
+      chainPrivateRound = chainReactionContext.window.EPIPHANY_CHAIN_REACTION_BANK.selectRound(body.trainingMode,()=>0);
+      return {error:null,data:{
+        sessionId:'123e4567-e89b-42d3-a456-426614174001',
+        guestToken:'c'.repeat(64),
+        validatorVersion:'chain-reaction-72-20261113-v1',
+        trainingMode:body.trainingMode,
+        daily:false,
+        questions:chainPrivateRound.map(question=>({
+          id:question.id,title:question.title,start:question.start,
+          links:question.links.map(link=>({from:link.from,options:link.options.slice()}))
+        }))
+      }};
+    }
     if (body?.action === 'start') return {error:null,data:{
       sessionId:'123e4567-e89b-42d3-a456-426614174000',
       guestToken:'a'.repeat(64),
       questions:Array.from({length:24},(_,index)=>({id:'WF-G-'+String(index+1).padStart(3,'0'),clue:'A reviewed word clue number '+(index+1)+'.',letters:'APPLE',prompt:'Forge the word from the letter tiles.'}))
     }};
+    if (body?.action === 'answer' && body.gameId === 'chain_reaction') {
+      const question=chainPrivateRound[body.questionIndex],link=question.links[body.linkIndex];
+      const correct=body.selectedIndex===link.answer,finalLink=body.linkIndex===2;
+      return {error:null,data:{
+        correct,questionIndex:body.questionIndex,linkIndex:body.linkIndex,
+        nextLinkIndex:correct?(finalLink?0:body.linkIndex+1):body.linkIndex,
+        nextIndex:body.questionIndex+(correct&&finalLink?1:0),
+        challengeCompleted:correct&&finalLink,
+        completed:correct&&finalLink&&body.questionIndex===23,
+        ...(correct?{nextWord:link.to,explanation:link.explanation}:{})
+      }};
+    }
     if (body?.action === 'answer') return {error:null,data:{correct:false,advance:true,attemptsRemaining:0,correctAnswer:'apple',explanation:'A complete server-verified answer.',skill:'Spelling'}};
     return {error:{message:'unexpected action'},data:null};
   }}};
@@ -108,7 +135,7 @@ function createHarness(options = {}) {
     assert.equal(typeof listeners.click, 'function', 'Think Lab click handler should be registered');
     return listeners.click({target:{closest: candidate => candidate === selector ? element : null}});
   }
-  return {root,click,getSavedMazeCEFR:()=>savedMazeCEFR,chainBank:window.EPIPHANY_CHAIN_REACTION_BANK,feedback,recordedResults,getCrosswordOpened:()=>crosswordOpened,getWordHuntOpened:()=>wordHuntOpened,getCodebreakerOpened:()=>codebreakerOpened,getLetterGridOpened:()=>letterGridOpened,savedSnapshots};
+  return {root,click,getSavedMazeCEFR:()=>savedMazeCEFR,chainBank:window.EPIPHANY_CHAIN_REACTION_BANK,getChainRound:()=>chainPrivateRound,feedback,recordedResults,getCrosswordOpened:()=>crosswordOpened,getWordHuntOpened:()=>wordHuntOpened,getCodebreakerOpened:()=>codebreakerOpened,getLetterGridOpened:()=>letterGridOpened,savedSnapshots};
 }
 
 test('existing mode-based Think Lab games open the shared three-mode picker before play', () => {
@@ -298,7 +325,7 @@ test('Chain Reaction uses explicit multi-word starts and reveals every link expl
   harness.click('[data-think-game]', {thinkGame:'chain'});
   harness.click('[data-think-training-mode]', {thinkTrainingMode:'challenge',thinkTrainingGame:'chain'});
   const title = harness.root.innerHTML.match(/<h2>([^<]+)<\/h2>/);
-  const item = harness.chainBank.getRounds('challenge').find(entry => entry.title === (title && title[1]));
+  const item = harness.getChainRound().find(entry => entry.title === (title && title[1]));
   assert.ok(item, 'the rendered challenge title should map to an approved bank entry');
   for (let step = 0; step < 3; step++) {
     const current = item.links[step];
@@ -317,7 +344,9 @@ test('Chain Reaction does not show an empty Challenge hint and records wrong lin
   const harness = createHarness();
   harness.click('[data-think-game]', {thinkGame:'chain'});
   harness.click('[data-think-training-mode]', {thinkTrainingMode:'challenge',thinkTrainingGame:'chain'});
-  for (let attempt = 0; attempt < 2; attempt++) harness.click('[data-chain-answer]', {chainAnswer:'99'});
+  const firstChallenge = harness.getChainRound()[0];
+  const wrongOption = (firstChallenge.links[0].answer + 1) % 3;
+  for (let attempt = 0; attempt < 2; attempt++) harness.click('[data-chain-answer]', {chainAnswer:String(wrongOption)});
   assert.doesNotMatch(harness.feedback.innerHTML, /<p><\/p>/);
   assert.equal(harness.recordedResults.filter(result => result[0] === 'vocabulary' && result[1] === 'chain' && result[2] === false).length, 2);
   assert.doesNotMatch(source, /rounds\.chain\s*=/);
