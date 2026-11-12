@@ -167,7 +167,8 @@ test("Chain Reaction adapter keeps 24 challenges as units and projects no answer
   });
   const round = Array.from({length:24},(_,i)=>makeChallenge(i+1));
   assert.equal(adapter.validateStartRequest({action:"start",trainingMode:"guided"}),true);
-  assert.equal(adapter.validateStartRequest({action:"start",trainingMode:"guided",daily:true}),true);
+  assert.equal(adapter.validateStartRequest({action:"start",trainingMode:"guided",daily:true,dailySeed:123}),true);
+  assert.equal(adapter.validateStartRequest({action:"start",trainingMode:"guided",daily:true}),false);
   assert.equal(adapter.validateStartRequest({action:"start",trainingMode:"guided",daily:"yes"}),false);
   const canonical = adapter.buildCanonicalQuestions(round,{trainingMode:"guided"});
   assert.equal(canonical.length,24);
@@ -177,8 +178,18 @@ test("Chain Reaction adapter keeps 24 challenges as units and projects no answer
   assert.equal("to" in projected[0].links[0],false);
   assert.equal("answer" in projected[0].links[0],false);
   assert.equal("explanation" in projected[0].links[0],false);
-  const daily = adapter.buildCanonicalQuestions(round.slice(0,1),{trainingMode:"guided",daily:true});
+  const daily = adapter.buildCanonicalQuestions(round.slice(0,1),{trainingMode:"guided",daily:true,dailySeed:123});
   assert.equal(daily.length,1);
+  const dailyBank = { selectRound: (mode, random) => {
+    assert.equal(mode,"guided");
+    const order = Array.from({length:24},(_,i)=>i);
+    for(let i=order.length-1;i>0;i--){const j=Math.floor(random()*(i+1));[order[i],order[j]]=[order[j],order[i]];}
+    return order.map(i=>round[i]);
+  }};
+  const dailyA = adapter.selectRound(dailyBank,{trainingMode:"guided",daily:true,dailySeed:123},Math.random);
+  const dailyB = adapter.selectRound(dailyBank,{trainingMode:"guided",daily:true,dailySeed:123},Math.random);
+  assert.equal(dailyA.length,1);
+  assert.equal(dailyA[0].id,dailyB[0].id,"daily challenge selection must remain deterministic");
   assert.equal(adapter.validateAnswerRequest({
     action:"answer",sessionId:"f4100000-0000-4000-8000-000000000051",
     questionIndex:0,linkIndex:1,selectedIndex:2,
