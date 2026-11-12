@@ -5,9 +5,11 @@ const { randomBytes, randomUUID } = require('node:crypto');
 const { writeFileSync } = require('node:fs');
 require('../functions/velorn-word-forge/word-forge-bank.js');
 require('../functions/velorn-odd-one-out/odd-one-out-bank.js');
+require('../functions/velorn-chain-reaction/chain-reaction-bank.js');
 
 const wordBank = globalThis.EPIPHANY_WORD_FORGE_BANK;
 const oddBank = globalThis.EPIPHANY_ODD_ONE_OUT_BANK;
+const chainBank = globalThis.EPIPHANY_CHAIN_REACTION_BANK;
 const baseUrl = String(process.env.SUPABASE_URL || '').replace(/\/$/, '');
 const anonKey = process.env.SUPABASE_ANON_KEY || '';
 const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
@@ -61,25 +63,79 @@ function oddOneOutAnswerMap(level) {
   return new Map(oddBank.banks[level].map(q => [q.id, q.words[q.answer]]));
 }
 
-async function complete({ gameId, accessToken = null, guestIp = null, level = 'A1', mode = 'guided' }) {
+function chainReactionAnswerMap(mode) {
+  return new Map(chainBank.getRounds(mode).map(challenge => [challenge.id, challenge.links.map(link => ({
+    to: link.to,
+    explanation: link.explanation,
+  }))]));
+}
+
+async function complete({ gameId, accessToken = null, guestIp = null, level = 'A1', mode = 'guided', daily = false }) {
   const started = await invoke({
     action: 'start', gameId,
-    ...(gameId === 'word_forge' ? { trainingMode: mode } : { level, trainingMode: mode }),
+    ...(gameId === 'word_forge' ? { trainingMode: mode } :
+      gameId === 'chain_reaction' ? { trainingMode: mode, ...(daily ? {daily:true,dailySeed:123456789} : {}) } :
+      { level, trainingMode: mode }),
   }, { accessToken, guestIp });
   assert.equal(started.status, 200, gameId + ' unified start failed: ' + JSON.stringify(started.body));
   const session = started.body;
   assert.match(session.sessionId || '', /^[0-9a-f-]{36}$/i);
   assert.ok(Array.isArray(session.questions) && session.questions.length > 0);
   assert.equal(session.validatorVersion,
-    gameId === 'word_forge' ? 'word-forge-reviewed-72-20261111-v1' : 'odd-one-out-rotated-20261110-v2');
+    gameId === 'word_forge' ? 'word-forge-reviewed-72-20261111-v1' :
+    gameId === 'chain_reaction' ? 'chain-reaction-72-20261113-v1' : 'odd-one-out-rotated-20261110-v2');
+  if (gameId === 'chain_reaction') {
+    assert.equal(session.questions.length, daily ? 1 : 24);
+    assert.equal(session.daily, daily);
+  }
   if (accessToken) assert.equal(session.guestToken, null);
   else assert.match(session.guestToken || '', /^[0-9a-f]{64}$/);
 
-  const answers = gameId === 'word_forge' ? wordForgeAnswerMap(mode) : oddOneOutAnswerMap(level);
+  const answers = gameId === 'word_forge' ? wordForgeAnswerMap(mode) :
+    gameId === 'chain_reaction' ? chainReactionAnswerMap(mode) : oddOneOutAnswerMap(level);
   let last;
   for (let index = 0; index < session.questions.length; index++) {
     const question = session.questions[index];
     let answer;
+    if (gameId === 'chain_reaction') {
+      assert.equal(question.links.length,3);
+      assert.equal(Object.hasOwn(question.links[0],'to'),false,'Chain Reaction next word leaked');
+      assert.equal(Object.hasOwn(question.links[0],'answer'),false,'Chain Reaction answer index leaked');
+      assert.equal(Object.hasOwn(question.links[0],'explanation'),false,'Chain Reaction explanation leaked');
+      const correctLinks = answers.get(question.id);
+      assert.equal(correctLinks.length,3);
+      for(let linkIndex=0;linkIndex<3;linkIndex++){
+        const link=question.links[linkIndex];
+        const selectedIndex=link.options.indexOf(correctLinks[linkIndex].to);
+        assert.ok(selectedIndex>=0,'Chain Reaction correct option missing from projected choices');
+        if(index===0&&linkIndex===0){
+          await sleep(750);
+          const wrong=await invoke({
+            action:'answer',gameId,sessionId:session.sessionId,questionIndex:index,
+            linkIndex,selectedIndex:(selectedIndex+1)%3,
+            ...(!accessToken?{guestToken:session.guestToken}:{})
+          },{accessToken,guestIp});
+          assert.equal(wrong.status,200,'Chain Reaction wrong link must be retryable');
+          assert.equal(wrong.body.correct,false);
+          assert.equal(wrong.body.nextLinkIndex,0);
+          assert.equal(Object.hasOwn(wrong.body,'nextWord'),false,'Wrong Chain Reaction link must not reveal its answer');
+          assert.equal(Object.hasOwn(wrong.body,'explanation'),false,'Wrong Chain Reaction link must not reveal its explanation');
+        }
+        await sleep(750);
+        last=await invoke({
+          action:'answer',gameId,sessionId:session.sessionId,questionIndex:index,
+          linkIndex,selectedIndex,
+          ...(!accessToken?{guestToken:session.guestToken}:{})
+        },{accessToken,guestIp});
+        assert.equal(last.status,200,'Chain Reaction link '+index+'/'+linkIndex+' failed: '+JSON.stringify(last.body));
+        assert.equal(last.body.correct,true);
+        assert.equal(last.body.challengeCompleted,linkIndex===2);
+        assert.equal(last.body.completed,index===session.questions.length-1&&linkIndex===2);
+        assert.equal(last.body.nextIndex,index+(linkIndex===2?1:0));
+        assert.equal(last.body.nextLinkIndex,linkIndex===2?0:linkIndex+1);
+      }
+      continue;
+    }
     if (gameId === 'word_forge') {
       answer = { answerWord: answers.get(question.id) };
       assert.equal(Object.hasOwn(question, 'answerWord'), false, 'Word Forge answer key leaked');
@@ -110,6 +166,7 @@ async function main() {
   assert.ok(baseUrl && anonKey && serviceKey, 'Local Supabase environment is incomplete');
   assert.equal(wordBank.validateBank().valid, true, 'Word Forge bank invalid');
   assert.equal(oddBank.validateBank().valid, true, 'Odd One Out bank invalid');
+  assert.equal(chainBank.validateBank().valid, true, 'Chain Reaction bank invalid');
 
   const unknown = await invoke({ action: 'start', gameId: 'client_selected_module', trainingMode: 'guided' },
     { guestIp: '198.51.100.61' });
@@ -133,6 +190,12 @@ async function main() {
   const authOddOneOut = await complete({
     gameId: 'odd_one_out', accessToken: user.accessToken,
   });
+  const guestChainReaction = await complete({
+    gameId: 'chain_reaction', guestIp: '198.51.100.65', mode: 'guided',
+  });
+  const authDailyChainReaction = await complete({
+    gameId: 'chain_reaction', accessToken: user.accessToken, mode: 'challenge', daily: true,
+  });
 
   const result = {
     userId: user.userId,
@@ -140,6 +203,8 @@ async function main() {
     authWordForge,
     guestOddOneOut,
     authOddOneOut,
+    guestChainReaction,
+    authDailyChainReaction,
   };
   writeFileSync(resultFile, JSON.stringify(result), { mode: 0o600 });
   process.stdout.write('Unified Think Lab Edge Function guest/auth parity tests passed.\n');
