@@ -67,8 +67,9 @@ test("Word Forge adapter preserves its 24-question retry answer contract", () =>
     p_user_id: null,
     p_guest_token_hash: "a".repeat(64),
     p_session_id: "f4100000-0000-4000-8000-000000000051",
+    p_game_id: "word_forge",
     p_question_index: 2,
-    p_submitted_word: "planet",
+    p_answer: { answerWord: "planet" },
   });
 });
 
@@ -107,8 +108,10 @@ test("Odd One Out adapter preserves level/mode selection and index-answer contra
     body: { sessionId: "f4100000-0000-4000-8000-000000000051", questionIndex: 0, selectedIndex: 2 },
   }), {
     p_user_id: "trusted-user",
+    p_guest_token_hash: null,
     p_session_id: "f4100000-0000-4000-8000-000000000051",
+    p_game_id: "odd_one_out",
     p_question_index: 0,
-    p_selected_index: 2,
+    p_answer: { selectedIndex: 2 },
   });
 });
