@@ -515,7 +515,7 @@ test('main navigation tabs open without uncaught page errors', { timeout: 18 * 6
         }
         let guestStartRequest = null;
         let guestAnswerRequest = null;
-        await page.route('**/functions/v1/velorn-odd-one-out-guest', async route => {
+        await page.route('**/functions/v1/velorn-think-lab-validator', async route => {
           if (route.request().method() === 'OPTIONS') {
             await route.fulfill({status:204,headers:{
               'Access-Control-Allow-Origin':'*',
@@ -574,7 +574,7 @@ test('main navigation tabs open without uncaught page errors', { timeout: 18 * 6
         }
         await gameCard.waitFor({state:'visible',timeout:5000});
         checkpoint('thinklab: server-backed game card visible; validating prompt and choices');
-        assert.deepEqual(guestStartRequest,{action:'start',level:'A1',trainingMode:'guided'},'guest start must send only the selected level and training mode');
+        assert.deepEqual(guestStartRequest,{action:'start',gameId:'odd_one_out',level:'A1',trainingMode:'guided'},'guest start must send only the selected level and training mode');
         assert.equal(await gameCard.locator('h2').innerText(), 'Which word does not belong?', 'Odd One Out must render its question prompt after the guest validator responds');
         assert.equal(await gameCard.locator('[data-think-answer]').count(), 4, 'Odd One Out must render four answer choices');
         assert.match(await gameCard.locator('.tl-game-kicker').innerText(), /PATTERN ANALYSIS · A1/);
@@ -595,7 +595,7 @@ test('main navigation tabs open without uncaught page errors', { timeout: 18 * 6
         assert.equal(await gameCard.locator('#tl-feedback').isVisible(), true, 'a verified answer should reveal feedback');
         const feedbackState = await gameCard.locator('#tl-feedback').evaluate(el => ({text:el.textContent,html:el.innerHTML,hidden:el.hidden,className:el.className}));
         assert.match(feedbackState.text, /Relationship:/, 'feedback should identify the shared relationship: ' + JSON.stringify(feedbackState));
-        assert.deepEqual(guestAnswerRequest,{action:'answer',sessionId:'00000000-0000-4000-8000-000000000001',questionIndex:0,selectedIndex:0,guestToken:'a'.repeat(64)},'guest answer must be verified with the in-memory session token');
+        assert.deepEqual(guestAnswerRequest,{action:'answer',gameId:'odd_one_out',sessionId:'00000000-0000-4000-8000-000000000001',questionIndex:0,selectedIndex:0,guestToken:'a'.repeat(64)},'guest answer must be verified with the in-memory session token');
         assert.equal(await gameCard.locator('[data-think-next]').isVisible(), true, 'feedback should unlock the next question');
         checkpoint('thinklab: feedback verified; advancing to next question');
         await gameCard.locator('[data-think-next]').click();
@@ -651,7 +651,7 @@ test('main navigation tabs open without uncaught page errors', { timeout: 18 * 6
         const forgeAnswerRequests = [];
         const forgeSessionId = '00000000-0000-4000-8000-000000000024';
         const forgeGuestToken = 'b'.repeat(64);
-        await page.route('**/functions/v1/velorn-word-forge', async route => {
+        await page.route('**/functions/v1/velorn-think-lab-validator', async route => {
           if (route.request().method() === 'OPTIONS') {
             await route.fulfill({status:204,headers:{
               'Access-Control-Allow-Origin':'*',
@@ -711,7 +711,7 @@ test('main navigation tabs open without uncaught page errors', { timeout: 18 * 6
         assert.equal(publicForgeAudit.total,72,'the browser should receive the 72 reviewed prompt records');
         assert.equal(publicForgeAudit.containsPrivateFields,false,
           'answer keys, explanations and skill labels must remain server-only');
-        assert.deepEqual(forgeStartRequest,{action:'start',trainingMode:'guided'},
+        assert.deepEqual(forgeStartRequest,{action:'start',gameId:'word_forge',trainingMode:'guided'},
           'Word Forge start must send only the selected training mode');
         assert.match(await forgeCard.locator('.tl-game-actions').innerText(), /ROUND 1 OF 24/);
         assert.equal(await forgeCard.locator('[data-forge-tile]').count(),5,
@@ -740,7 +740,7 @@ test('main navigation tabs open without uncaught page errors', { timeout: 18 * 6
         assert.equal(forgeAnswerRequests.length,24,'the UI must submit every challenge to the trusted validator');
         assert.deepEqual(forgeAnswerRequests.map(request=>request.questionIndex),Array.from({length:24},(_,i)=>i),
           'Word Forge must submit question indices in strict sequential order');
-        assert.ok(forgeAnswerRequests.every(request=>request.action==='answer'&&request.sessionId===forgeSessionId&&request.guestToken===forgeGuestToken&&request.answerWord==='apple'),
+        assert.ok(forgeAnswerRequests.every(request=>request.action==='answer'&&request.gameId==='word_forge'&&request.sessionId===forgeSessionId&&request.guestToken===forgeGuestToken&&request.answerWord==='apple'),
           'every answer must use the same server session, in-memory guest token and submitted word');
         await forgeCard.locator('[data-think-next]').click();
         await page.locator('#thinklab-view .tl-finish').waitFor({state:'visible',timeout:5000});
