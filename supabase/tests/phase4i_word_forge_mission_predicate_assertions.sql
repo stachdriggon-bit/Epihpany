@@ -6,26 +6,26 @@ INSERT INTO auth.users (
  id,aud,role,email,encrypted_password,email_confirmed_at,
  raw_app_meta_data,raw_user_meta_data,created_at,updated_at
 ) VALUES
- ('f4i00000-0000-4000-8000-000000000051','authenticated','authenticated','velorn-f4i-valid@example.invalid','',now(),'{}','{}',now(),now()),
- ('f4i00000-0000-4000-8000-000000000052','authenticated','authenticated','velorn-f4i-guided@example.invalid','',now(),'{}','{}',now(),now()),
- ('f4i00000-0000-4000-8000-000000000053','authenticated','authenticated','velorn-f4i-malformed@example.invalid','',now(),'{}','{}',now(),now());
+ ('f4100000-0000-4000-8000-000000000051','authenticated','authenticated','velorn-f4i-valid@example.invalid','',now(),'{}','{}',now(),now()),
+ ('f4100000-0000-4000-8000-000000000052','authenticated','authenticated','velorn-f4i-guided@example.invalid','',now(),'{}','{}',now(),now()),
+ ('f4100000-0000-4000-8000-000000000053','authenticated','authenticated','velorn-f4i-malformed@example.invalid','',now(),'{}','{}',now(),now());
 
 SELECT set_config('request.jwt.claim.role','service_role',true);
 
 DO $phase4i$
 DECLARE
- u_valid uuid:='f4i00000-0000-4000-8000-000000000051';
- u_guided uuid:='f4i00000-0000-4000-8000-000000000052';
- u_bad uuid:='f4i00000-0000-4000-8000-000000000053';
- b_valid uuid:='f4i00000-0000-4000-8000-000000000061';
- b_guided uuid:='f4i00000-0000-4000-8000-000000000062';
- b_bad uuid:='f4i00000-0000-4000-8000-000000000063';
- a_valid uuid:='f4i00000-0000-4000-8000-000000000071';
- a_guided uuid:='f4i00000-0000-4000-8000-000000000072';
- a_bad uuid:='f4i00000-0000-4000-8000-000000000073';
- e_valid uuid:='f4i00000-0000-4000-8000-000000000081';
- e_guided uuid:='f4i00000-0000-4000-8000-000000000082';
- e_bad uuid:='f4i00000-0000-4000-8000-000000000083';
+ u_valid uuid:='f4100000-0000-4000-8000-000000000051';
+ u_guided uuid:='f4100000-0000-4000-8000-000000000052';
+ u_bad uuid:='f4100000-0000-4000-8000-000000000053';
+ b_valid uuid:='f4100000-0000-4000-8000-000000000061';
+ b_guided uuid:='f4100000-0000-4000-8000-000000000062';
+ b_bad uuid:='f4100000-0000-4000-8000-000000000063';
+ a_valid uuid:='f4100000-0000-4000-8000-000000000071';
+ a_guided uuid:='f4100000-0000-4000-8000-000000000072';
+ a_bad uuid:='f4100000-0000-4000-8000-000000000073';
+ e_valid uuid:='f4100000-0000-4000-8000-000000000081';
+ e_guided uuid:='f4100000-0000-4000-8000-000000000082';
+ e_bad uuid:='f4100000-0000-4000-8000-000000000083';
  v_start timestamptz:=date_trunc('day',clock_timestamp());
  v_applied integer;
 BEGIN
@@ -99,7 +99,7 @@ BEGIN
  IF NOT economy_private.evaluate_solve_a_challenge_word_forge_v1(e_valid)
  OR economy_private.evaluate_solve_a_challenge_word_forge_v1(e_guided)
  OR economy_private.evaluate_solve_a_challenge_word_forge_v1(e_bad)
- OR economy_private.evaluate_solve_a_challenge_word_forge_v1('f4i00000-0000-4000-8000-000000000099')
+ OR economy_private.evaluate_solve_a_challenge_word_forge_v1('f4100000-0000-4000-8000-000000000099')
  THEN RAISE EXCEPTION 'Word Forge predicate accepted invalid, incomplete, non-Challenge or missing evidence'; END IF;
 
  IF NOT EXISTS (
