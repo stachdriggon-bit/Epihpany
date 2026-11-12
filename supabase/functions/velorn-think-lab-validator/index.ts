@@ -27,6 +27,7 @@ type SentenceScrambleBank = {
   schemaVersion: number;
   totalChallenges: number;
   modes: Record<string, unknown[]>;
+  validateBank?: () => { valid: boolean; count: number };
 };
 
 function getBank(gameId: string) {
