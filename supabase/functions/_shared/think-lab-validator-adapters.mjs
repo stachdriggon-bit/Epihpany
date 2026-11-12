@@ -1,9 +1,11 @@
 import { wordForgeAdapter } from "../velorn-word-forge/word-forge-adapter.mjs";
 import { oddOneOutAdapter } from "../velorn-odd-one-out/odd-one-out-adapter.mjs";
+import { chainReactionAdapter } from "../velorn-chain-reaction/chain-reaction-adapter.mjs";
 
 const adapters = Object.freeze({
   [wordForgeAdapter.id]: wordForgeAdapter,
   [oddOneOutAdapter.id]: oddOneOutAdapter,
+  [chainReactionAdapter.id]: chainReactionAdapter,
 });
 
 const REQUIRED_METHODS = Object.freeze([
