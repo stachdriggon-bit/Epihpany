@@ -12,6 +12,7 @@ const REQUIRED_METHODS = Object.freeze([
   "selectRound",
   "buildCanonicalQuestions",
   "projectQuestions",
+  "buildStartResponse",
   "answerRpcArguments",
   "projectAnswer",
 ]);
