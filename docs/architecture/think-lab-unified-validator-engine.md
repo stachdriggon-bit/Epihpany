@@ -1,6 +1,6 @@
 # Think Lab Unified Validator Engine
 
-Status: approved implementation direction; Word Forge, Odd One Out, and Chain Reaction are on the unified runtime; Sentence Scramble is next.
+Status: Word Forge, Odd One Out, Chain Reaction, and Sentence Scramble are on the unified runtime; clean-room CI verified on 2026-11-12.
 Date: 2026-11-12
 
 ## Decision
@@ -25,7 +25,7 @@ Each game owns only a trusted adapter:
 - game-specific feedback (answer, explanation, skill) returned only when permitted;
 - an immutable event evidence builder with a fixed schema.
 
-The engine dispatches through a compile-time allowlisted registry (`word_forge`, `odd_one_out`, `chain_reaction`). It must never accept a client-supplied module name, table, RPC name, validator version, event contract, or reward.
+The engine dispatches through a compile-time allowlisted registry (`word_forge`, `odd_one_out`, `chain_reaction`, `sentence_scramble`). It must never accept a client-supplied module name, table, RPC name, validator version, event contract, or reward.
 
 ## Current-state findings
 
@@ -134,7 +134,7 @@ Concurrent duplicate submissions must serialize. A replay or stale index is reje
 
 
 ### Step 2 — allowlisted game adapter contract (implemented; routing migration pending)
-- Added `supabase/functions/_shared/think-lab-validator-adapters.mjs` as a compile-time registry. It accepts only the built-in `word_forge`, `odd_one_out`, and `chain_reaction` adapters; unknown/client-injected game identifiers fail closed.
+- Added `supabase/functions/_shared/think-lab-validator-adapters.mjs` as a compile-time registry. It accepts only the built-in `word_forge`, `odd_one_out`, `chain_reaction`, and `sentence_scramble` adapters; unknown/client-injected game identifiers fail closed.
 - Added per-game adapter modules. Each adapter owns its existing selection rules, canonical question construction, safe client projection, answer request validation, RPC argument mapping, and response projection.
 - Word Forge now routes its start/answer validation and projection through the adapter while retaining the existing session RPCs, database table, Edge Function URL, request/response contract, retry policy, and mission event semantics.
 - Added adapter contract tests covering allowlisting, contract completeness, Word Forge 24-item/private-answer behavior, Odd One Out level/mode/index-answer behavior, and Chain Reaction three-link challenge projection.
@@ -143,7 +143,7 @@ Concurrent duplicate submissions must serialize. A replay or stale index is reje
 
 
 ### Step 3 — unified private session storage foundation (implemented; clean-room CI passed on 2026-11-12)
-- Added additive migration `20261112203000_think_lab_unified_validator_sessions.sql`. The current allowlist also includes Chain Reaction as documented in Step 6 below.
+- Added additive migration `20261112203000_think_lab_unified_validator_sessions.sql`. The current allowlist also includes Chain Reaction and Sentence Scramble as documented in Steps 6 and 7 below.
 - New private table `economy_private.think_lab_validator_sessions` stores both authenticated and guest sessions with mutually exclusive ownership fields, a fixed game allowlist, validator-version binding, CEFR/mode metadata, canonical server-side questions, cursor, answer history, status, expiry, and timestamps.
 - New `public.velorn_start_think_lab_validator_session` RPC delegates to a service-role-only `SECURITY DEFINER` function. It validates the role from both supported JWT claim settings, rejects unknown game/version combinations, validates per-game question payload shape, enforces session lifetime and shared per-user/IP rate limits, and inserts atomically.
 - Guest bearer tokens are represented only by their SHA-256 hash; guest network identity is represented only by the server HMAC. Authenticated sessions cannot carry guest credentials, and guest sessions cannot carry a user ID.
@@ -168,7 +168,7 @@ Concurrent duplicate submissions must serialize. A replay or stale index is reje
 - Cut Word Forge and Odd One Out frontend requests over to the shared endpoint without changing their answer/feedback behavior. Browser smoke now asserts both game IDs and session tokens are sent through the same endpoint.
 - Legacy per-game Edge Functions, tables, and RPCs remain available for parity; no legacy cleanup has occurred.
 
-### Step 6 — Chain Reaction adapter and three-link substate (implemented; CI verification pending)
+### Step 6 — Chain Reaction adapter and three-link substate (implemented; clean-room CI passed on 2026-11-12)
 - Added `chain_reaction` to the shared allowlist through `supabase/functions/velorn-chain-reaction/chain-reaction-adapter.mjs`. The adapter selects only from the approved mode-specific bank and keeps each three-link challenge as one session question (24 full-round items, not 72 top-level questions).
 - The private canonical bank is bundled under `supabase/functions/velorn-chain-reaction/chain-reaction-bank.js` for the Edge runtime. The browser no longer lazy-loads or caches the answer-bearing Chain Reaction bank. It receives only challenge title/start, each link's source word, and three options; answer destinations, answer indexes, and explanations stay server-side until a correct link is accepted.
 - Added `20261112220000_think_lab_chain_reaction_adapter.sql`. The existing private session table and shared RPCs now allow Chain Reaction without creating another session table or Edge Function. Each correct link is stored as a server-side substep; the challenge cursor advances only after all three links are correct. Wrong links remain retryable, do not advance state, and do not reveal the answer or explanation; their count is aggregated in the private session and included in trusted event evidence. Row locking and the existing owner/expiry/pacing checks remain shared.
