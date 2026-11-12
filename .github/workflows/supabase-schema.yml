@@ -150,6 +150,96 @@ jobs:
           eval "$(supabase status -o env)"
           psql "$DB_URL" -v ON_ERROR_STOP=1 -f supabase/tests/phase5b_unified_answer_transition_assertions.sql
 
+      - name: Run unified Think Lab guest and authenticated Edge Function parity tests
+        timeout-minutes: 8
+        run: |
+          eval "$(supabase status -o env)"
+          cat > /tmp/think-lab-unified.env <<EOF
+          SUPABASE_URL=$API_URL
+          SUPABASE_ANON_KEY=$ANON_KEY
+          SUPABASE_SERVICE_ROLE_KEY=$SERVICE_ROLE_KEY
+          EOF
+
+          supabase functions serve velorn-think-lab-validator --no-verify-jwt --env-file /tmp/think-lab-unified.env > /tmp/think-lab-unified-edge.log 2>&1 &
+          echo $! > /tmp/think-lab-unified-edge.pid
+
+          ready=false
+          for attempt in $(seq 1 45); do
+            status=$(curl --silent --show-error --output /tmp/think-lab-unified-ready.json --write-out '%{http_code}' \
+              --request POST "$API_URL/functions/v1/velorn-think-lab-validator" \
+              --header "apikey: $ANON_KEY" \
+              --header "content-type: application/json" \
+              --data '{"action":"start","gameId":"readiness-check"}' || true)
+            if [ "$status" = "400" ]; then ready=true; break; fi
+            sleep 2
+          done
+          if [ "$ready" != "true" ]; then
+            cat /tmp/think-lab-unified-edge.log
+            cat /tmp/think-lab-unified-ready.json || true
+            echo "Unified Think Lab Edge Function did not become ready."
+            exit 1
+          fi
+
+          if ! THINK_LAB_E2E_RESULT_FILE=/tmp/think-lab-unified-e2e.json \
+            SUPABASE_URL="$API_URL" SUPABASE_ANON_KEY="$ANON_KEY" SUPABASE_SERVICE_ROLE_KEY="$SERVICE_ROLE_KEY" \
+            node supabase/tests/think-lab-unified-edge-e2e.cjs; then
+            echo "Unified Think Lab Edge Function logs:"
+            cat /tmp/think-lab-unified-edge.log || true
+            exit 1
+          fi
+
+          USER_ID=$(node -p "require('/tmp/think-lab-unified-e2e.json').userId")
+          GUEST_WF=$(node -p "require('/tmp/think-lab-unified-e2e.json').guestWordForge")
+          AUTH_WF=$(node -p "require('/tmp/think-lab-unified-e2e.json').authWordForge")
+          GUEST_OOO=$(node -p "require('/tmp/think-lab-unified-e2e.json').guestOddOneOut")
+          AUTH_OOO=$(node -p "require('/tmp/think-lab-unified-e2e.json').authOddOneOut")
+
+          AUTH_WF_EVENTS=$(psql "$DB_URL" -At -v ON_ERROR_STOP=1 -v user_id="$USER_ID" -v session_id="$AUTH_WF" <<'SQL'
+          SELECT count(*) FROM economy_private.activity_events
+          WHERE user_id=:'user_id'::uuid AND source_event_key=:'session_id'::uuid
+            AND activity_id='word_forge' AND event_type='game_session_completed'
+            AND validator_version='word-forge-reviewed-72-20261111-v1';
+          SQL
+          )
+          AUTH_OOO_EVENTS=$(psql "$DB_URL" -At -v ON_ERROR_STOP=1 -v user_id="$USER_ID" -v session_id="$AUTH_OOO" <<'SQL'
+          SELECT count(*) FROM economy_private.activity_events
+          WHERE user_id=:'user_id'::uuid AND source_event_key=:'session_id'::uuid
+            AND activity_id='odd_one_out' AND event_type='game_session_completed'
+            AND validator_version='odd-one-out-rotated-20261110-v2';
+          SQL
+          )
+          GUEST_EVENTS=$(psql "$DB_URL" -At -v ON_ERROR_STOP=1 -v wf="$GUEST_WF" -v ooo="$GUEST_OOO" <<'SQL'
+          SELECT count(*) FROM economy_private.activity_events
+          WHERE source_event_key IN (:'wf'::uuid, :'ooo'::uuid);
+          SQL
+          )
+          SESSION_OWNERSHIP=$(psql "$DB_URL" -At -v ON_ERROR_STOP=1 -v user_id="$USER_ID" -v guest_wf="$GUEST_WF" -v auth_wf="$AUTH_WF" -v guest_ooo="$GUEST_OOO" -v auth_ooo="$AUTH_OOO" <<'SQL'
+          SELECT
+            (SELECT count(*) FROM economy_private.think_lab_validator_sessions
+             WHERE session_id IN (:'guest_wf'::uuid, :'guest_ooo'::uuid)
+               AND user_id IS NULL AND guest_token_hash IS NOT NULL AND client_ip_hash IS NOT NULL)
+            || ':' ||
+            (SELECT count(*) FROM economy_private.think_lab_validator_sessions
+             WHERE session_id IN (:'auth_wf'::uuid, :'auth_ooo'::uuid)
+               AND user_id=:'user_id'::uuid AND guest_token_hash IS NULL AND client_ip_hash IS NULL);
+          SQL
+          )
+          REWARD_ROWS=$(psql "$DB_URL" -At -v ON_ERROR_STOP=1 -v user_id="$USER_ID" <<'SQL'
+          SELECT (SELECT count(*) FROM economy_private.wallets WHERE user_id=:'user_id'::uuid)
+               + (SELECT count(*) FROM economy_private.wallet_ledger WHERE user_id=:'user_id'::uuid)
+               + (SELECT count(*) FROM economy_private.mission_reward_claims WHERE user_id=:'user_id'::uuid)
+               + (SELECT count(*) FROM economy_private.achievement_awards WHERE user_id=:'user_id'::uuid);
+          SQL
+          )
+          ECONOMY_ENABLED=$(psql "$DB_URL" -At -v ON_ERROR_STOP=1 -c "SELECT economy_enabled FROM economy_private.economy_settings WHERE singleton=true;")
+
+          test "$AUTH_WF_EVENTS" = "1"
+          test "$AUTH_OOO_EVENTS" = "1"
+          test "$GUEST_EVENTS" = "0"
+          test "$SESSION_OWNERSHIP" = "2:2"
+          test "$REWARD_ROWS" = "0"
+          test "$ECONOMY_ENABLED" = "f"
+
       - name: Run Word Forge guest and authenticated Edge Function end-to-end tests
         timeout-minutes: 7
         run: |
