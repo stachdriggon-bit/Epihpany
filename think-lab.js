@@ -1258,14 +1258,14 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
       await (window.EpiphanyAuth?.whenReady?.() || Promise.resolve());
       const signedIn = window.EpiphanyAuth?.isSignedIn?.() === true;
       const validatorClient = signedIn ? window.EpiphanyAuth?.getValidatorClient?.() : window.EpiphanyAuth?.getGuestValidatorClient?.();
-      const functionName = signedIn ? 'velorn-odd-one-out' : 'velorn-odd-one-out-guest';
+      const functionName = 'velorn-think-lab-validator';
       const level = window.EpiphanyThinkLab?.getCEFRLevel?.() || 'A1';
       if (!validatorClient) {
         mode = null; activePool = null;
         root.innerHTML = '<div class="tl-game-card"><h2>Secure challenge unavailable</h2><p class="tl-game-instruction">An internet connection is required to prepare this verified challenge. Please try again.</p><button type="button" class="tl-back" data-think-home>Think Lab home</button></div>';
         return;
       }
-      const {data,error} = await validatorClient.functions.invoke(functionName,{body:{action:'start',level,trainingMode:selectedTrainingMode}});
+      const {data,error} = await validatorClient.functions.invoke(functionName,{body:{action:'start',gameId:'odd_one_out',level,trainingMode:selectedTrainingMode}});
       const guestTokenValid = signedIn || (typeof data?.guestToken === 'string' && /^[0-9a-f]{64}$/.test(data.guestToken));
       if (error || !data?.sessionId || !Array.isArray(data.questions) || !data.questions.length || !guestTokenValid) {
         console.error('Trusted Odd One Out session could not start:',error?.message||data?.error||'invalid response');
@@ -1289,13 +1289,13 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
       const signedIn = window.EpiphanyAuth?.isSignedIn?.() === true;
       const validatorClient = signedIn ? window.EpiphanyAuth?.getValidatorClient?.() : window.EpiphanyAuth?.getGuestValidatorClient?.();
       if (!validatorClient) { mode=null;activePool=null;root.innerHTML='<div class="tl-game-card"><h2>Word Forge needs an internet connection</h2><p class="tl-game-instruction">We could not prepare a secure question session. Please reconnect and try again.</p><button type="button" class="tl-back" data-think-home>Think Lab home</button></div>';return; }
-      const {data,error}=await validatorClient.functions.invoke('velorn-word-forge',{body:{action:'start',trainingMode:selectedTrainingMode}});
+      const {data,error}=await validatorClient.functions.invoke('velorn-think-lab-validator',{body:{action:'start',gameId:'word_forge',trainingMode:selectedTrainingMode}});
       const guestTokenValid=signedIn || (typeof data?.guestToken==='string' && /^[0-9a-f]{64}$/.test(data.guestToken));
       if(error || !data?.sessionId || !Array.isArray(data.questions) || data.questions.length!==24 || !guestTokenValid) {
         console.error('Trusted Word Forge session could not start:',error?.message||data?.error||'invalid response');mode=null;activePool=null;
         root.innerHTML='<div class="tl-game-card"><h2>Word Forge is unavailable</h2><p class="tl-game-instruction">The secure question session could not be created. Your attempt has not started. Please try again.</p><button type="button" class="tl-back" data-think-home>Think Lab home</button></div>';return;
       }
-      validatorSessionId=data.sessionId;validatorClientForSession=validatorClient;validatorFunctionName='velorn-word-forge';validatorGuestToken=signedIn?null:data.guestToken;
+      validatorSessionId=data.sessionId;validatorClientForSession=validatorClient;validatorFunctionName='velorn-think-lab-validator';validatorGuestToken=signedIn?null:data.guestToken;
       activePool=data.questions.map(question=>({...question,prompt:'Forge the word from the letter tiles.'}));
     }
     if (id === 'maze') preparedMazeCEFR = null;
@@ -1468,9 +1468,9 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
         return;
       }
       const answer=forgePlaced.map(i=>[...item.letters][i]).join('').toLowerCase();
-      if(!validatorSessionId||!validatorClientForSession||validatorFunctionName!=='velorn-word-forge'||(!window.EpiphanyAuth?.isSignedIn?.()&&!validatorGuestToken)){fb.hidden=false;fb.className='tl-feedback is-wrong';fb.textContent='Your secure Word Forge session has expired. Return to Think Lab and start a new round.';return;}
-      const answerBody={action:'answer',sessionId:validatorSessionId,questionIndex:index,answerWord:answer};if(validatorGuestToken)answerBody.guestToken=validatorGuestToken;
-      const {data,error}=await validatorClientForSession.functions.invoke('velorn-word-forge',{body:answerBody});
+      if(!validatorSessionId||!validatorClientForSession||validatorFunctionName!=='velorn-think-lab-validator'||(!window.EpiphanyAuth?.isSignedIn?.()&&!validatorGuestToken)){fb.hidden=false;fb.className='tl-feedback is-wrong';fb.textContent='Your secure Word Forge session has expired. Return to Think Lab and start a new round.';return;}
+      const answerBody={action:'answer',gameId:'word_forge',sessionId:validatorSessionId,questionIndex:index,answerWord:answer};if(validatorGuestToken)answerBody.guestToken=validatorGuestToken;
+      const {data,error}=await validatorClientForSession.functions.invoke('velorn-think-lab-validator',{body:answerBody});
       const validProgress=!!data&&typeof data.correct==='boolean'&&typeof data.advance==='boolean'&&data.questionIndex===index&&
         Number.isInteger(data.nextIndex)&&Number.isInteger(data.correctCount)&&data.correctCount>=0&&data.correctCount<=pool.length&&
         Number.isInteger(data.attemptsRemaining)&&data.attemptsRemaining>=0&&data.attemptsRemaining<=2;
@@ -1621,11 +1621,11 @@ root.innerHTML='<div class="tl-finish"><span class="tl-finish-mark">∴</span><s
     const chosen=Number(answer.dataset.thinkAnswer);
     let serverAnswerResult=null;
     if(mode==='odd'){
-      if(!validatorSessionId||!validatorClientForSession||!validatorFunctionName||(validatorFunctionName==='velorn-odd-one-out-guest'&&!validatorGuestToken)){
+      if(!validatorSessionId||!validatorClientForSession||validatorFunctionName!=='velorn-think-lab-validator'||(!window.EpiphanyAuth?.isSignedIn?.()&&!validatorGuestToken)){
         locked=false;const fb=root.querySelector('#tl-feedback');fb.hidden=false;fb.className='tl-feedback is-wrong';fb.textContent='Your secure session is unavailable. Please return to Think Lab and start again.';return;
       }
-      const answerBody={action:'answer',sessionId:validatorSessionId,questionIndex:index,selectedIndex:chosen};
-      if(validatorFunctionName==='velorn-odd-one-out-guest')answerBody.guestToken=validatorGuestToken;
+      const answerBody={action:'answer',gameId:'odd_one_out',sessionId:validatorSessionId,questionIndex:index,selectedIndex:chosen};
+      if(validatorGuestToken)answerBody.guestToken=validatorGuestToken;
       const {data,error}=await validatorClientForSession.functions.invoke(validatorFunctionName,{body:answerBody});
       if(error||!data||!Number.isInteger(data.correctIndex)||typeof data.correct!=='boolean'){
         locked=false;const fb=root.querySelector('#tl-feedback');fb.hidden=false;fb.className='tl-feedback is-wrong';fb.textContent='We could not verify that answer. Please retry this question.';return;
