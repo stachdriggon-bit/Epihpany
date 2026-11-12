@@ -124,10 +124,19 @@ Concurrent duplicate submissions must serialize. A replay or stale index is reje
 
 ## Implementation progress
 
-### Step 1 — shared primitive extraction (started)
+### Step 1 — shared primitive extraction (implemented; CI verification pending)
 - Added supabase/functions/_shared/think-lab-validator-engine.mjs.
 - Extracted shared response headers/envelope, bearer parsing, JWT classification, Auth getUser identity resolution, cryptographic SHA-256/HMAC helpers, random bearer generation, client network address extraction, strict object/key helpers, and UUID validation.
 - Migrated Word Forge to consume these shared primitives without changing its RPC contract, session table, question bank, answer semantics, or client response shape.
 - Added tests/think-lab-validator-engine.test.js for response headers, bearer classification, Auth identity resolution/fail-closed behavior, guest token and digest formats, network address selection, exact-key checks, and UUID validation.
 - This is an incremental extraction only. The generic session lifecycle, shared database table/RPC contract, adapter registry, and Odd One Out migration are not implemented yet.
 - No database migration or hosted deployment was performed. Economy remains disabled.
+
+
+### Step 2 — allowlisted game adapter contract (implemented; routing migration pending)
+- Added `supabase/functions/_shared/think-lab-validator-adapters.mjs` as a compile-time registry. It accepts only the built-in `word_forge` and `odd_one_out` adapters; unknown/client-injected game identifiers fail closed.
+- Added per-game adapter modules. Each adapter owns its existing selection rules, canonical question construction, safe client projection, answer request validation, RPC argument mapping, and response projection.
+- Word Forge now routes its start/answer validation and projection through the adapter while retaining the existing session RPCs, database table, Edge Function URL, request/response contract, retry policy, and mission event semantics.
+- Added adapter contract tests covering allowlisting, contract completeness, Word Forge 24-item/private-answer behavior, and Odd One Out level/mode/index-answer behavior.
+- Odd One Out still runs through its legacy authenticated and guest Edge Functions. The registry is not yet the single public runtime endpoint; guest/auth identity and lifecycle orchestration have not yet been moved into a shared database contract.
+- No SQL migration, hosted deployment, Edge Function deployment, or economy activation was performed in this step.
