@@ -124,7 +124,12 @@ async function complete({ gameId, accessToken = null, guestIp = null, level = 'A
         return tile;
       });
       if(index===0){
-        const normalize = value => String(value).toLowerCase().replace(/[^a-z0-9 ]/g,'').replace(/ +/g,' ').trim();
+        const normalize = value => {
+        const slash = String.fromCharCode(92);
+        return String(value).toLowerCase()
+          .replace(new RegExp("[^" + slash + "p{L}" + slash + "p{N}" + slash + "s]","gu"),"")
+          .replace(new RegExp(slash + "s+","g")," ").trim();
+      };
         let wrongOrder = correctOrder.slice().reverse();
         if(normalize(wrongOrder.map(tile=>question.words[tile]).join(' '))===normalize(canonical.sentence)){
           wrongOrder = correctOrder.slice();
