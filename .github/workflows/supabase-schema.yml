@@ -144,6 +144,12 @@ jobs:
           eval "$(supabase status -o env)"
           psql "$DB_URL" -v ON_ERROR_STOP=1 -f supabase/tests/phase5a_unified_validator_session_assertions.sql
 
+      - name: Assert Phase 5B unified Think Lab answer transition
+        timeout-minutes: 5
+        run: |
+          eval "$(supabase status -o env)"
+          psql "$DB_URL" -v ON_ERROR_STOP=1 -f supabase/tests/phase5b_unified_answer_transition_assertions.sql
+
       - name: Run Word Forge guest and authenticated Edge Function end-to-end tests
         timeout-minutes: 7
         run: |
