@@ -1,6 +1,6 @@
 # Think Lab Unified Validator Engine
 
-Status: approved implementation direction; design extraction in progress.
+Status: approved implementation direction; Word Forge, Odd One Out, and Chain Reaction are on the unified runtime; Sentence Scramble is next.
 Date: 2026-11-12
 
 ## Decision
@@ -25,7 +25,7 @@ Each game owns only a trusted adapter:
 - game-specific feedback (answer, explanation, skill) returned only when permitted;
 - an immutable event evidence builder with a fixed schema.
 
-The engine dispatches through a compile-time allowlisted registry. It must never accept a client-supplied module name, table, RPC name, validator version, event contract, or reward.
+The engine dispatches through a compile-time allowlisted registry (`word_forge`, `odd_one_out`, `chain_reaction`). It must never accept a client-supplied module name, table, RPC name, validator version, event contract, or reward.
 
 ## Current-state findings
 
@@ -160,3 +160,21 @@ Concurrent duplicate submissions must serialize. A replay or stale index is reje
 - The session update and authenticated completion event are one transaction. The event uses each game's exact existing evidence schema and validator version; guests never emit activity events.
 - Added rollback-only Phase 5B SQL assertions for retries, ordering, replay after completion, expiry, guest ownership, authenticated event evidence, and guest event isolation. The clean-room workflow runs these assertions immediately after Phase 5A.
 - This is still additive infrastructure. No game route has been cut over, legacy session tables/RPCs remain intact, no hosted migration or Edge deployment was performed, and the economy remains disabled.
+
+
+### Step 5 — unified Edge runtime and frontend cutover (implemented; clean-room CI passed on 2026-11-12)
+- Added `supabase/functions/velorn-think-lab-validator/index.ts` as the single start/answer endpoint for the registered games. It verifies authenticated JWTs through Auth getUser, creates one-time guest bearer tokens, hashes guest credentials, applies the shared network identity boundary, and dispatches only through the adapter allowlist.
+- Added Edge E2E coverage for guest/auth Word Forge and Odd One Out sessions, unknown games, client-supplied identity rejection, session ownership, event isolation, and no wallet/reward side effects.
+- Cut Word Forge and Odd One Out frontend requests over to the shared endpoint without changing their answer/feedback behavior. Browser smoke now asserts both game IDs and session tokens are sent through the same endpoint.
+- Legacy per-game Edge Functions, tables, and RPCs remain available for parity; no legacy cleanup has occurred.
+
+### Step 6 — Chain Reaction adapter and three-link substate (implemented; CI verification pending)
+- Added `chain_reaction` to the shared allowlist through `supabase/functions/velorn-chain-reaction/chain-reaction-adapter.mjs`. The adapter selects only from the approved mode-specific bank and keeps each three-link challenge as one session question (24 full-round items, not 72 top-level questions).
+- The private canonical bank is bundled under `supabase/functions/velorn-chain-reaction/chain-reaction-bank.js` for the Edge runtime. The browser no longer lazy-loads or caches the answer-bearing Chain Reaction bank. It receives only challenge title/start, each link's source word, and three options; answer destinations, answer indexes, and explanations stay server-side until a correct link is accepted.
+- Added `20261112220000_think_lab_chain_reaction_adapter.sql`. The existing private session table and shared RPCs now allow Chain Reaction without creating another session table or Edge Function. Each correct link is stored as a server-side substep; the challenge cursor advances only after all three links are correct. Wrong links remain retryable, do not advance state, and do not reveal the answer or explanation. Row locking and the existing owner/expiry/pacing checks remain shared.
+- Full sessions contain 24 challenges/72 links. Daily sessions contain one deterministic challenge and are explicitly identified in event evidence as `session_type: daily`; full sessions are identified as `session_type: full`. Future mission mapping must distinguish these event scopes rather than treating a one-challenge daily session as a full round.
+- Added rollback-only SQL assertions, guest/auth Edge E2E coverage (including wrong-link retry, order enforcement, answer-key isolation, daily scope, guest event isolation), adapter unit tests, Think Lab browser-smoke coverage, and lazy-loading assertions that the private bank is not shipped to the browser.
+- No hosted migration, Edge Function deployment, or economy activation was performed. The economy remains disabled.
+
+### Next implementation step
+- Add Sentence Scramble as an adapter to this same session lifecycle. It must preserve the existing 24-sentence mode-specific banks and accepted-answer normalization, store canonical accepted sentences server-side, project only safe word tiles/prompts, and emit one authenticated completion event only after the full 24-item round (or an explicitly scoped one-item daily session). Do not create a separate session table, Edge Function, or reward pipeline.
