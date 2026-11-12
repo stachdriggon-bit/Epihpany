@@ -5,24 +5,21 @@ const MODES = Object.freeze(["guided", "steady", "challenge"]);
 export function normalizeSentence(value) {
   return String(value ?? "")
     .toLowerCase()
-    .replace(/[^\\p{L}\\p{N}\\s]/gu, "")
-    .replace(/\\s+/g, " ")
+    .replace(/[^a-z0-9 ]/g, "")
+    .replace(/ +/g, " ")
     .trim();
 }
 
 function sentenceWords(sentence) {
-  return String(sentence ?? "").trim().split(/\\s+/).filter(Boolean);
+  const value = String(sentence ?? "").trim();
+  return value ? value.split(" ") : [];
 }
 
 export function safeQuestion(question) {
   if (!question || typeof question !== "object" || !Array.isArray(question.words)) {
     throw new TypeError("Canonical sentence required");
   }
-  return {
-    id: question.id,
-    prompt: question.prompt,
-    words: question.words.slice(),
-  };
+  return { id: question.id, prompt: question.prompt, words: question.words.slice() };
 }
 
 export function safeSessionQuestions(questions, expectedCount = 24) {
@@ -43,10 +40,7 @@ export function validateStartRequest(body) {
 }
 
 export function validateAnswerRequest(body, guest = false) {
-  const allowed = [
-    "action", "sessionId", "questionIndex", "tileOrder",
-    ...(guest ? ["guestToken"] : []),
-  ];
+  const allowed = ["action", "sessionId", "questionIndex", "tileOrder", ...(guest ? ["guestToken"] : [])];
   return !!body && body.action === "answer" &&
     Object.keys(body).every(key => allowed.includes(key)) &&
     typeof body.sessionId === "string" && UUID_PATTERN.test(body.sessionId) &&
@@ -66,8 +60,10 @@ export function validateCanonicalSentence(question, mode) {
       typeof question.prompt !== "string" || question.prompt !== PROMPT ||
       typeof question.sentence !== "string" || question.sentence.trim() !== question.sentence ||
       question.sentence.length < 10 || question.sentence.length > 240 ||
+      question.sentence.includes("  ") || question.sentence.includes("\n") || question.sentence.includes("\t") ||
       !Array.isArray(question.words) || question.words.length < 3 || question.words.length > 24 ||
-      !question.words.every(word => typeof word === "string" && word.length > 0 && word.length <= 40 && !/\\s/.test(word)) ||
+      !question.words.every(word => typeof word === "string" && word.length > 0 && word.length <= 40 &&
+        word.trim() === word && !word.includes(" ")) ||
       !Array.isArray(question.acceptedAnswers) || question.acceptedAnswers.length > 8 ||
       !question.acceptedAnswers.every(answer => typeof answer === "string" && answer.trim() === answer && answer.length >= 10 && answer.length <= 240) ||
       typeof question.skill !== "string" || question.skill.trim().length < 5 ||
@@ -82,22 +78,15 @@ export function validateCanonicalSentence(question, mode) {
 export function validateSentenceScrambleBank(bank) {
   if (!bank || typeof bank !== "object" || bank.schemaVersion !== 1 ||
       bank.gameId !== "sentence-scramble" || bank.totalChallenges !== 72 ||
-      !bank.modes || typeof bank.modes !== "object") {
-    return { valid: false, count: 0 };
-  }
+      !bank.modes || typeof bank.modes !== "object") return { valid: false, count: 0 };
   let count = 0;
   const ids = new Set();
   for (const mode of MODES) {
     const questions = bank.modes[mode];
     if (!Array.isArray(questions) || questions.length !== 24) return { valid: false, count };
     for (const source of questions) {
-      const canonical = {
-        ...source,
-        words: sentenceWords(source?.sentence),
-      };
-      if (!validateCanonicalSentence(canonical, mode) || ids.has(canonical.id)) {
-        return { valid: false, count };
-      }
+      const canonical = { ...source, words: sentenceWords(source?.sentence) };
+      if (!validateCanonicalSentence(canonical, mode) || ids.has(canonical.id)) return { valid: false, count };
       ids.add(canonical.id);
       count++;
     }
