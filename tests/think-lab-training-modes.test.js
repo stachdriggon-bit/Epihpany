@@ -439,10 +439,7 @@ test('Sentence Scramble verifies tile order on the server and does not persist b
     remaining.splice(remaining.indexOf(found),1);
     return found;
   });
-  const wrongOrder=correctOrder.slice();
-  let swapAt=1;
-  while(swapAt<wrongOrder.length&&question.words[wrongOrder[0]]===question.words[wrongOrder[swapAt]])swapAt++;
-  [wrongOrder[0],wrongOrder[swapAt]]=[wrongOrder[swapAt],wrongOrder[0]];
+  const wrongOrder=correctOrder.slice().reverse();
   for(const tile of wrongOrder)harness.click('[data-scramble-tile]',{scrambleTile:String(tile)});
   assert.equal(harness.savedSnapshots.scramble,undefined,'server-backed sessions must not save browser tile snapshots');
   await harness.click('[data-scramble-check]');
