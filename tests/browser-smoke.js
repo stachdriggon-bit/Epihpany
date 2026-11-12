@@ -6,6 +6,13 @@ const path = require('node:path');
 const { chromium } = require('playwright');
 
 const root = path.resolve(__dirname, '..');
+const savedWindow = global.window;
+global.window = globalThis;
+require('../chain-reaction-bank.js');
+const chainReactionBank = global.EPIPHANY_CHAIN_REACTION_BANK;
+delete global.EPIPHANY_CHAIN_REACTION_BANK;
+if (savedWindow === undefined) delete global.window;
+else global.window = savedWindow;
 
 async function clickView(page, view) {
   const activeView = page.locator('#' + view + '-view.is-active');
@@ -750,6 +757,46 @@ test('main navigation tabs open without uncaught page errors', { timeout: 18 * 6
 
         checkpoint('thinklab: complete 24-question Word Forge session, ordered server checks and final completion verified');
 
+        const chainSessionId = '00000000-0000-4000-8000-000000000025';
+        const chainGuestToken = 'c'.repeat(64);
+        let chainStartRequest = null;
+        const chainAnswerRequests = [];
+        let chainPrivateRound = [];
+        await page.route('**/functions/v1/velorn-think-lab-validator', async route => {
+          const request = route.request();
+          if (request.method() === 'OPTIONS') return route.fallback();
+          const requestBody = request.postDataJSON();
+          if (requestBody.gameId !== 'chain_reaction') return route.fallback();
+          if (requestBody.action === 'answer') {
+            chainAnswerRequests.push(requestBody);
+            const question = chainPrivateRound[requestBody.questionIndex];
+            const link = question.links[requestBody.linkIndex];
+            const correct = requestBody.selectedIndex === link.answer;
+            const finalLink = requestBody.linkIndex === 2;
+            await route.fulfill({status:200,contentType:'application/json',headers:{'Access-Control-Allow-Origin':'*'},body:JSON.stringify({
+              correct,
+              questionIndex:requestBody.questionIndex,
+              linkIndex:requestBody.linkIndex,
+              nextLinkIndex:correct?(finalLink?0:requestBody.linkIndex+1):requestBody.linkIndex,
+              nextIndex:requestBody.questionIndex+(correct&&finalLink?1:0),
+              challengeCompleted:correct&&finalLink,
+              completed:correct&&finalLink&&requestBody.questionIndex===23,
+              ...(correct?{nextWord:link.to,explanation:link.explanation}:{})
+            })});
+            return;
+          }
+          chainStartRequest = requestBody;
+          chainPrivateRound = chainReactionBank.selectRound('guided',()=>0);
+          const questions = chainPrivateRound.map(question=>({
+            id:question.id,title:question.title,start:question.start,
+            links:question.links.map(link=>({from:link.from,options:link.options.slice()}))
+          }));
+          await route.fulfill({status:200,contentType:'application/json',headers:{'Access-Control-Allow-Origin':'*'},body:JSON.stringify({
+            sessionId:chainSessionId,guestToken:chainGuestToken,
+            validatorVersion:'chain-reaction-72-20261113-v1',
+            trainingMode:'guided',daily:false,questions
+          })});
+        });
         await page.locator('#thinklab-view [data-think-back]').first().click();
         await page.locator('#thinklab-view [data-think-game="chain"]').waitFor({state:'visible',timeout:5000});
         await page.locator('#thinklab-view [data-think-game="chain"]').click();
@@ -758,14 +805,16 @@ test('main navigation tabs open without uncaught page errors', { timeout: 18 * 6
         await chainModePicker.locator('[data-think-training-mode="guided"]').click();
         const chainCard = page.locator('#thinklab-view .tl-game-card');
         await chainCard.waitFor({state:'visible',timeout:5000});
-        assert.ok(requested.some(path => path.endsWith('/chain-reaction-bank.js')),
-          'Chain Reaction bank should load on demand before Think Lab');
-        assert.equal(await page.evaluate(() => window.EPIPHANY_CHAIN_REACTION_BANK.validateBank().valid), true,
-          'the complete approved Chain Reaction bank should validate in the browser');
+        assert.equal(requested.some(path => path.endsWith('/chain-reaction-bank.js')), false,
+          'the private Chain Reaction answer bank must not load in the browser');
+        assert.equal(await page.evaluate(() => typeof window.EPIPHANY_CHAIN_REACTION_BANK), 'undefined',
+          'the browser must not receive the private Chain Reaction answer bank');
+        assert.deepEqual(chainStartRequest,{action:'start',gameId:'chain_reaction',trainingMode:'guided'},
+          'Chain Reaction start must send only the selected training mode');
         assert.match(await chainCard.locator('.tl-game-actions').innerText(), /ROUND 1 OF 24/);
         assert.match(await chainCard.locator('.tl-connection-count').innerText(), /LINK 1 OF 3/);
         const chainTitle = await chainCard.locator('h2').innerText();
-        const chainChallenge = await page.evaluate(title => window.EPIPHANY_CHAIN_REACTION_BANK.getRounds('guided').find(item => item.title === title), chainTitle);
+        const chainChallenge = chainPrivateRound.find(item => item.title === chainTitle);
         assert.ok(chainChallenge, 'the displayed chain title should map to an approved challenge');
         for (let step = 0; step < 3; step++) {
           const link = chainChallenge.links[step];
@@ -782,7 +831,15 @@ test('main navigation tabs open without uncaught page errors', { timeout: 18 * 6
           'the completed path should no longer end with an unanswered marker');
         assert.equal(await chainCard.locator('[data-think-next]').isVisible(), true,
           'completing all three links should unlock the next challenge');
-        checkpoint('thinklab: Chain Reaction three-link path and all explanations verified');
+        assert.equal(chainAnswerRequests.length,3,'the UI must submit each Chain Reaction link to the trusted validator');
+        assert.deepEqual(chainAnswerRequests.map(request=>request.linkIndex),[0,1,2],
+          'Chain Reaction links must be submitted in strict sequence');
+        assert.ok(chainAnswerRequests.every(request=>request.action==='answer'&&request.gameId==='chain_reaction'&&
+          request.sessionId===chainSessionId&&request.guestToken===chainGuestToken&&request.questionIndex===0),
+          'every Chain Reaction answer must use the same server session and in-memory guest token');
+        assert.deepEqual(chainAnswerRequests.map(request=>request.selectedIndex),chainChallenge.links.map(link=>link.answer),
+          'the UI must submit the selected option index, not a client-supplied answer key');
+        checkpoint('thinklab: Chain Reaction three-link path, server validation and answer-key isolation verified');
 
         await page.locator('#thinklab-view [data-think-back]').first().click();
         await page.locator('#thinklab-view [data-think-back]').click();
