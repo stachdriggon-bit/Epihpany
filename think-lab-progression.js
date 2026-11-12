@@ -152,6 +152,19 @@
       commit(state);
       return {saved:true,snapshot:clone(checked.snapshot)};
     }
+    function clearDailyChallengeSnapshots(gameId) {
+      if (!validId(gameId)) return 0;
+      const state = current(), records = plainObject(state.dailyChallenges) ? state.dailyChallenges : {};
+      let cleared = 0;
+      for (const record of Object.values(records)) {
+        if (plainObject(record) && record.gameId === gameId && record.snapshot) {
+          record.snapshot = null;
+          cleared++;
+        }
+      }
+      if (cleared) commit(state);
+      return cleared;
+    }
     function completeDailyChallenge(date, gameId) {
       if (!validDateKey(date) || !validId(gameId)) return {completed:false,reason:'invalid-request'};
       const state = current(), records = plainObject(state.dailyChallenges) ? state.dailyChallenges : {};
@@ -174,7 +187,7 @@
       const state = current();
       return plainObject(state.games[gameId]) ? clone(state.games[gameId]) : null;
     }
-    return Object.freeze({recordStart,saveSnapshot,getSnapshot,clearSnapshot,recordCompletion,getHistory,getGameProgress,getDailyChallenge,startDailyChallenge,saveDailyChallengeSnapshot,completeDailyChallenge});
+    return Object.freeze({recordStart,saveSnapshot,getSnapshot,clearSnapshot,recordCompletion,getHistory,getGameProgress,getDailyChallenge,startDailyChallenge,saveDailyChallengeSnapshot,clearDailyChallengeSnapshots,completeDailyChallenge});
   }
 
   function selectDailyChallenge(options = {}) {
