@@ -142,7 +142,7 @@ Concurrent duplicate submissions must serialize. A replay or stale index is reje
 - No SQL migration, hosted deployment, Edge Function deployment, or economy activation was performed in this step.
 
 
-### Step 3 — unified private session storage foundation (implemented; clean-room verification pending)
+### Step 3 — unified private session storage foundation (implemented; clean-room CI passed on 2026-11-12)
 - Added additive migration `20261112203000_think_lab_unified_validator_sessions.sql`.
 - New private table `economy_private.think_lab_validator_sessions` stores both authenticated and guest sessions with mutually exclusive ownership fields, a fixed game allowlist, validator-version binding, CEFR/mode metadata, canonical server-side questions, cursor, answer history, status, expiry, and timestamps.
 - New `public.velorn_start_think_lab_validator_session` RPC delegates to a service-role-only `SECURITY DEFINER` function. It validates the role from both supported JWT claim settings, rejects unknown game/version combinations, validates per-game question payload shape, enforces session lifetime and shared per-user/IP rate limits, and inserts atomically.
@@ -151,3 +151,12 @@ Concurrent duplicate submissions must serialize. A replay or stale index is reje
 - Added rollback-only Phase 5A SQL assertions for authenticated/guest creation across both games, ownership exclusivity, role/table boundaries, malformed payload rejection, and the absence of activity, wallet, ledger, or reward side effects.
 - The legacy Word Forge and Odd One Out tables, Edge Functions, and RPCs are intentionally untouched. The shared answer transition and runtime cutover are still pending; no live game is routed to this table yet.
 - No hosted migration or Edge Function deployment was performed; economy remains disabled.
+
+
+### Step 4 — shared transactional answer transition (implemented; clean-room verification pending)
+- Added additive migration `20261112210000_think_lab_unified_answer_transition.sql` with one service-role-only RPC for both allowlisted games.
+- The transition locks the session row, verifies owner (authenticated user or guest token hash), game binding, active state, expiry, current question index, strict adapter-specific answer shape, and minimum answer pacing before changing any state.
+- Word Forge retains its three-attempt retry rule and only advances after a correct answer or the third attempt. Odd One Out retains one-selection-per-question progression and its existing feedback contract.
+- The session update and authenticated completion event are one transaction. The event uses each game's exact existing evidence schema and validator version; guests never emit activity events.
+- Added rollback-only Phase 5B SQL assertions for retries, ordering, replay after completion, expiry, guest ownership, authenticated event evidence, and guest event isolation. The clean-room workflow runs these assertions immediately after Phase 5A.
+- This is still additive infrastructure. No game route has been cut over, legacy session tables/RPCs remain intact, no hosted migration or Edge deployment was performed, and the economy remains disabled.
