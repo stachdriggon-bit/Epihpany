@@ -3,6 +3,7 @@ import { createClient } from "npm:@supabase/supabase-js@2.119.0";
 import "../velorn-word-forge/word-forge-bank.js";
 import "../velorn-odd-one-out/odd-one-out-bank.js";
 import "../velorn-chain-reaction/chain-reaction-bank.js";
+import "../velorn-sentence-scramble/sentence-scramble-bank.js";
 import { resolveThinkLabAdapter } from "../_shared/think-lab-validator-adapters.mjs";
 import {
   THINK_LAB_CORS_HEADERS,
