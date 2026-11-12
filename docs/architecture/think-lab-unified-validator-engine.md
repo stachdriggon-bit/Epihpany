@@ -134,27 +134,27 @@ Concurrent duplicate submissions must serialize. A replay or stale index is reje
 
 
 ### Step 2 — allowlisted game adapter contract (implemented; routing migration pending)
-- Added `supabase/functions/_shared/think-lab-validator-adapters.mjs` as a compile-time registry. It accepts only the built-in `word_forge` and `odd_one_out` adapters; unknown/client-injected game identifiers fail closed.
+- Added `supabase/functions/_shared/think-lab-validator-adapters.mjs` as a compile-time registry. It accepts only the built-in `word_forge`, `odd_one_out`, and `chain_reaction` adapters; unknown/client-injected game identifiers fail closed.
 - Added per-game adapter modules. Each adapter owns its existing selection rules, canonical question construction, safe client projection, answer request validation, RPC argument mapping, and response projection.
 - Word Forge now routes its start/answer validation and projection through the adapter while retaining the existing session RPCs, database table, Edge Function URL, request/response contract, retry policy, and mission event semantics.
-- Added adapter contract tests covering allowlisting, contract completeness, Word Forge 24-item/private-answer behavior, and Odd One Out level/mode/index-answer behavior.
+- Added adapter contract tests covering allowlisting, contract completeness, Word Forge 24-item/private-answer behavior, Odd One Out level/mode/index-answer behavior, and Chain Reaction three-link challenge projection.
 - Odd One Out still runs through its legacy authenticated and guest Edge Functions. The registry is not yet the single public runtime endpoint; guest/auth identity and lifecycle orchestration have not yet been moved into a shared database contract.
 - No SQL migration, hosted deployment, Edge Function deployment, or economy activation was performed in this step.
 
 
 ### Step 3 — unified private session storage foundation (implemented; clean-room CI passed on 2026-11-12)
-- Added additive migration `20261112203000_think_lab_unified_validator_sessions.sql`.
+- Added additive migration `20261112203000_think_lab_unified_validator_sessions.sql`. The current allowlist also includes Chain Reaction as documented in Step 6 below.
 - New private table `economy_private.think_lab_validator_sessions` stores both authenticated and guest sessions with mutually exclusive ownership fields, a fixed game allowlist, validator-version binding, CEFR/mode metadata, canonical server-side questions, cursor, answer history, status, expiry, and timestamps.
 - New `public.velorn_start_think_lab_validator_session` RPC delegates to a service-role-only `SECURITY DEFINER` function. It validates the role from both supported JWT claim settings, rejects unknown game/version combinations, validates per-game question payload shape, enforces session lifetime and shared per-user/IP rate limits, and inserts atomically.
 - Guest bearer tokens are represented only by their SHA-256 hash; guest network identity is represented only by the server HMAC. Authenticated sessions cannot carry guest credentials, and guest sessions cannot carry a user ID.
 - RLS and FORCE RLS are enabled. Direct table privileges are revoked from every API role, including service_role; only the trusted definer function can mutate this storage. The public RPC itself is executable only by service_role.
 - Added rollback-only Phase 5A SQL assertions for authenticated/guest creation across both games, ownership exclusivity, role/table boundaries, malformed payload rejection, and the absence of activity, wallet, ledger, or reward side effects.
-- The legacy Word Forge and Odd One Out tables, Edge Functions, and RPCs are intentionally untouched. The shared answer transition and runtime cutover are still pending; no live game is routed to this table yet.
+- The legacy Word Forge and Odd One Out tables, Edge Functions, and RPCs are intentionally untouched. The shared answer transition and runtime cutover were pending at this phase; the later Step 5 and Step 6 entries below record the completed runtime cutover.
 - No hosted migration or Edge Function deployment was performed; economy remains disabled.
 
 
 ### Step 4 — shared transactional answer transition (implemented; clean-room verification pending)
-- Added additive migration `20261112210000_think_lab_unified_answer_transition.sql` with one service-role-only RPC for both allowlisted games.
+- Added additive migration `20261112210000_think_lab_unified_answer_transition.sql` with one service-role-only RPC for the allowlisted games.
 - The transition locks the session row, verifies owner (authenticated user or guest token hash), game binding, active state, expiry, current question index, strict adapter-specific answer shape, and minimum answer pacing before changing any state.
 - Word Forge retains its three-attempt retry rule and only advances after a correct answer or the third attempt. Odd One Out retains one-selection-per-question progression and its existing feedback contract.
 - The session update and authenticated completion event are one transaction. The event uses each game's exact existing evidence schema and validator version; guests never emit activity events.
