@@ -1127,7 +1127,8 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
     const roundTarget = mode === 'maze' ? 12 : (mode === 'forge' || mode === 'connections' || mode === 'scramble' || mode === 'chain') ? 24 : ({guided:8,steady:10,challenge:12}[difficulty.level] || 10);
     const roundNote = mode === 'odd' && pool.length < roundTarget
       ? '<p class="tl-game-instruction">This round is shorter than the '+roundTarget+'-question target because only '+pool.length+' distinct questions are currently available at this level.</p>'
-      : (mode === 'forge' || mode === 'connections' || mode === 'scramble' || mode === 'chain') && pool.length < roundTarget
+      : (mode === 'forge' || mode === 'connections' || mode === 'scramble' || mode === 'chain') && pool.length < roundTarget &&
+        !(dailyChallengeActive && dailyChallengeActive.gameId === mode)
         ? '<p class="tl-game-instruction">This round is shorter than the 24-challenge target because the selected reviewed bank has fewer questions available.</p>'
         : mode === 'translator' && item.adaptiveFallback
         ? '<p class="tl-game-instruction tl-translator-fallback" role="status">Your current level is '+esc(item.requestedCEFRLevel)+'. A '+esc(item.requestedCEFRLevel)+' question bank is not available yet, so this round uses '+esc(item.cefrLevel)+' practice for now.</p>'
