@@ -121,3 +121,13 @@ Concurrent duplicate submissions must serialize. A replay or stale index is reje
 - No rewrite of wallets, ledger, claims, mission boards, mission processor, or timezone logic.
 - No economy activation as part of this refactor.
 - No client-side answer keys, score authority, user IDs, reward amounts, or validator selection.
+
+## Implementation progress
+
+### Step 1 — shared primitive extraction (started)
+- Added supabase/functions/_shared/think-lab-validator-engine.mjs.
+- Extracted shared response headers/envelope, bearer parsing, JWT classification, Auth getUser identity resolution, cryptographic SHA-256/HMAC helpers, random bearer generation, client network address extraction, strict object/key helpers, and UUID validation.
+- Migrated Word Forge to consume these shared primitives without changing its RPC contract, session table, question bank, answer semantics, or client response shape.
+- Added tests/think-lab-validator-engine.test.js for response headers, bearer classification, Auth identity resolution/fail-closed behavior, guest token and digest formats, network address selection, exact-key checks, and UUID validation.
+- This is an incremental extraction only. The generic session lifecycle, shared database table/RPC contract, adapter registry, and Odd One Out migration are not implemented yet.
+- No database migration or hosted deployment was performed. Economy remains disabled.
