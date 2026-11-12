@@ -133,6 +133,7 @@ jobs:
         run: |
           eval "$(supabase status -o env)"
           psql "$DB_URL" -v ON_ERROR_STOP=1 -f supabase/tests/phase4h_word_forge_validator_assertions.sql
+          psql "$DB_URL" -v ON_ERROR_STOP=1 -f supabase/tests/phase4i_word_forge_mission_predicate_assertions.sql
 
       - name: Run Word Forge guest and authenticated Edge Function end-to-end tests
         timeout-minutes: 7
