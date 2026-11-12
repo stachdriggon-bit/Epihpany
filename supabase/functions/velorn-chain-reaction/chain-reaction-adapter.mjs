@@ -12,8 +12,18 @@ export const chainReactionAdapter = Object.freeze({
   validateStartRequest,
   validateAnswerRequest,
   selectRound(bank, body, random) {
-    const round = bank.selectRound(body.trainingMode, random);
-    return body.daily === true ? round.slice(0, 1) : round;
+    if (body.daily === true) {
+      let value = body.dailySeed >>> 0;
+      const seededRandom = () => {
+        value += 0x6D2B79F5;
+        let t = value;
+        t = Math.imul(t ^ (t >>> 15), t | 1);
+        t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+        return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+      };
+      return bank.selectRound(body.trainingMode, seededRandom).slice(0, 1);
+    }
+    return bank.selectRound(body.trainingMode, random);
   },
   buildCanonicalQuestions(round, body) {
     const expectedCount = body.daily === true ? 1 : 24;
