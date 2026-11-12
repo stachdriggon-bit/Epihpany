@@ -30,8 +30,9 @@ export const wordForgeAdapter = Object.freeze({
       p_user_id: userId,
       p_guest_token_hash: guestTokenHash,
       p_session_id: body.sessionId,
+      p_game_id: this.id,
       p_question_index: body.questionIndex,
-      p_submitted_word: body.answerWord,
+      p_answer: { answerWord: body.answerWord },
     };
   },
   projectAnswer(data) {
