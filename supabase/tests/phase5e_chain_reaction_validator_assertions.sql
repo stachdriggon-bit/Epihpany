@@ -66,7 +66,7 @@ BEGIN
      OR (result->>'next_index')::integer <> 0
      OR result ? 'next_word' OR result ? 'explanation'
   THEN RAISE EXCEPTION 'Wrong Chain Reaction link did not remain retryable or leaked its answer: %',result; END IF;
-  SELECT wrong_link_attempt_count INTO wrong_attempt_count
+  SELECT wrong_attempt_count INTO wrong_attempt_count
   FROM economy_private.think_lab_validator_sessions WHERE session_id=full_session;
   IF wrong_attempt_count <> 1 THEN RAISE EXCEPTION 'Wrong Chain Reaction link attempt was not aggregated'; END IF;
 
