@@ -244,8 +244,10 @@ BEGIN
       RAISE EXCEPTION 'invalid Sentence Scramble question set' USING ERRCODE = '22023';
     END IF;
     FOR q IN SELECT value FROM jsonb_array_elements(p_questions) LOOP
-      IF jsonb_typeof(q) IS DISTINCT FROM 'object'
-         OR q - ARRAY['id','prompt','sentence','acceptedAnswers','skill','explanation','words'] <> '{}'::jsonb
+      IF jsonb_typeof(q) IS DISTINCT FROM 'object' THEN
+        RAISE EXCEPTION 'Sentence Scramble question must be an object' USING ERRCODE = '22023';
+      END IF;
+      IF q - ARRAY['id','prompt','sentence','acceptedAnswers','skill','explanation','words'] <> '{}'::jsonb
          OR length(COALESCE(q ->> 'id','')) <> 8
          OR left(COALESCE(q ->> 'id',''),5) <> ('SS-' || v_mode_code || '-')
          OR substring(COALESCE(q ->> 'id','') from 6) !~ '^[0-9]{3}'
@@ -256,13 +258,16 @@ BEGIN
          OR position(chr(10) in COALESCE(q ->> 'sentence','')) > 0
          OR position(chr(9) in COALESCE(q ->> 'sentence','')) > 0
          OR jsonb_typeof(q -> 'words') IS DISTINCT FROM 'array'
-         OR jsonb_array_length(q -> 'words') NOT BETWEEN 3 AND 24
          OR jsonb_typeof(q -> 'acceptedAnswers') IS DISTINCT FROM 'array'
-         OR jsonb_array_length(q -> 'acceptedAnswers') > 8
          OR length(COALESCE(q ->> 'skill','')) < 5
          OR length(COALESCE(q ->> 'explanation','')) < 20
       THEN
         RAISE EXCEPTION 'invalid Sentence Scramble canonical question' USING ERRCODE = '22023';
+      END IF;
+      IF jsonb_array_length(q -> 'words') NOT BETWEEN 3 AND 24
+         OR jsonb_array_length(q -> 'acceptedAnswers') > 8
+      THEN
+        RAISE EXCEPTION 'Sentence Scramble question has an invalid tile or alternative count' USING ERRCODE = '22023';
       END IF;
       IF EXISTS (
         SELECT 1 FROM jsonb_array_elements(q -> 'words') AS tile(value)
@@ -644,10 +649,12 @@ BEGIN
     END IF;
 
     IF jsonb_typeof(q -> 'words') IS DISTINCT FROM 'array'
-       OR jsonb_array_length(q -> 'words') NOT BETWEEN 3 AND 24
        OR jsonb_typeof(q -> 'acceptedAnswers') IS DISTINCT FROM 'array'
     THEN
       RAISE EXCEPTION 'invalid canonical Sentence Scramble question' USING ERRCODE = '22023';
+    END IF;
+    IF jsonb_array_length(q -> 'words') NOT BETWEEN 3 AND 24 THEN
+      RAISE EXCEPTION 'invalid canonical Sentence Scramble tile count' USING ERRCODE = '22023';
     END IF;
 
     v_word_count := jsonb_array_length(q -> 'words');
