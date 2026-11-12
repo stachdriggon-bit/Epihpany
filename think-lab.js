@@ -1328,13 +1328,58 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
       chainPath = [];
       chainExplanations = [];
     }
+    if (id === 'scramble') {
+      await (window.EpiphanyAuth?.whenReady?.() || Promise.resolve());
+      const signedIn = window.EpiphanyAuth?.isSignedIn?.() === true;
+      const validatorClient = signedIn ? window.EpiphanyAuth?.getValidatorClient?.() : window.EpiphanyAuth?.getGuestValidatorClient?.();
+      const isDaily = options.daily === true && dailyChallengeActive?.gameId === 'scramble';
+      const functionName = 'velorn-think-lab-validator';
+      if (!validatorClient) {
+        mode = null; activePool = null;
+        root.innerHTML = '<div class="tl-game-card"><h2>Sentence Scramble needs an internet connection</h2><p class="tl-game-instruction">We could not prepare a secure sentence session. Please reconnect and try again.</p><button type="button" class="tl-back" data-think-home>Think Lab home</button></div>';
+        return;
+      }
+      const startBody = { action:'start', gameId:'sentence_scramble', trainingMode:selectedTrainingMode };
+      if (isDaily) {
+        if (!Number.isInteger(dailyChallengeActive.seed) || dailyChallengeActive.seed < 0 || dailyChallengeActive.seed > 0xffffffff) {
+          mode = null; activePool = null;
+          root.innerHTML = '<div class="tl-game-card"><h2>Daily challenge unavailable</h2><p class="tl-game-instruction">The saved daily challenge could not be verified. Please return to Think Lab.</p><button type="button" class="tl-back" data-think-home>Think Lab home</button></div>';
+          return;
+        }
+        startBody.daily = true;
+        startBody.dailySeed = dailyChallengeActive.seed;
+      }
+      const {data,error} = await validatorClient.functions.invoke(functionName,{body:startBody});
+      const expectedCount = isDaily ? 1 : 24;
+      const guestTokenValid = signedIn || (typeof data?.guestToken === 'string' && /^[0-9a-f]{64}$/.test(data.guestToken));
+      const safeQuestions = Array.isArray(data?.questions) && data.questions.length === expectedCount &&
+        data.questions.every(question => question && Object.keys(question).sort().join('|') === 'id|prompt|words' &&
+          typeof question.id === 'string' && /^SS-[GSC]-[0-9]{3}$/.test(question.id) &&
+          question.prompt === 'Build the sentence in the correct order.' &&
+          Array.isArray(question.words) && question.words.length >= 3 && question.words.length <= 24 &&
+          question.words.every(word => typeof word === 'string' && word.length > 0 && word.length <= 40 && word.trim() === word && !word.includes(' ')));
+      if (error || !data?.sessionId || !/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(data.sessionId) ||
+          !safeQuestions || !guestTokenValid || data.validatorVersion !== 'sentence-scramble-72-20261112-v1' ||
+          data.trainingMode !== selectedTrainingMode || data.daily !== isDaily) {
+        console.error('Trusted Sentence Scramble session could not start:',error?.message||data?.error||'invalid response');
+        mode = null; activePool = null;
+        root.innerHTML = '<div class="tl-game-card"><h2>Sentence Scramble is unavailable</h2><p class="tl-game-instruction">The secure sentence session could not be created. Your attempt has not started. Please try again.</p><button type="button" class="tl-back" data-think-home>Think Lab home</button></div>';
+        return;
+      }
+      validatorSessionId = data.sessionId;
+      validatorClientForSession = validatorClient;
+      validatorFunctionName = functionName;
+      validatorGuestToken = signedIn ? null : data.guestToken;
+      activePool = data.questions.map(question => ({id:question.id,prompt:question.prompt,words:question.words.slice()}));
+    }
     if (id === 'maze') preparedMazeCEFR = null;
     if (id === 'maze' && !activePool.length) {
       showMazeBankUnavailable();
       return;
     }
-    if (id === 'scramble' && (!activePool.length || activePool.length !== 24 || !window.EPIPHANY_SENTENCE_SCRAMBLE_BANK)) {
-      root.innerHTML = '<div class="tl-game-card"><div class="tl-game-kicker">SENTENCE SCRAMBLE</div><h2>QUESTION BANK NOT READY</h2><p class="tl-game-instruction">The reviewed Sentence Scramble bank could not be loaded completely. No sample questions will be shown.</p><button type="button" class="tl-back" data-think-back>← Choose difficulty</button><button type="button" class="tl-back" data-think-home>Think Lab home</button></div>';
+    if (id === 'scramble' && (!validatorSessionId || !Array.isArray(activePool) || !activePool.length ||
+        !activePool.every(question => question && typeof question.id === 'string' && Array.isArray(question.words) && question.words.length >= 3))) {
+      root.innerHTML = '<div class="tl-game-card"><div class="tl-game-kicker">SENTENCE SCRAMBLE</div><h2>SECURE SESSION NOT READY</h2><p class="tl-game-instruction">The trusted server did not issue a complete sentence challenge. No local or sample answers will be shown.</p><button type="button" class="tl-back" data-think-back>← Choose difficulty</button><button type="button" class="tl-back" data-think-home>Think Lab home</button></div>';
       return;
     }
     if (id === 'chain' && (!validatorSessionId || !Array.isArray(activePool) || !activePool.length ||
