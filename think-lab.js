@@ -626,23 +626,7 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
       }));
       return assignTranslatorAnswerPositions(round);
     }
-    if (id === 'scramble') {
-      const bank = window.EPIPHANY_SENTENCE_SCRAMBLE_BANK;
-      const trainingMode = ['guided','steady','challenge'].includes(level) ? level : 'steady';
-      const challenges = bank && bank.modes && Array.isArray(bank.modes[trainingMode]) ? bank.modes[trainingMode].slice() : [];
-      for (let i = challenges.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [challenges[i], challenges[j]] = [challenges[j], challenges[i]];
-      }
-      return challenges.map(item => {
-        const words = String(item.sentence || '').trim().split(/\s+/).filter(Boolean);
-        for (let i = words.length - 1; i > 0; i--) {
-          const j = Math.floor(Math.random() * (i + 1));
-          [words[i], words[j]] = [words[j], words[i]];
-        }
-        return { ...item, words, explain: item.explanation || item.skill || '' };
-      });
-    }
+    if (id === 'scramble') return []; // Sentence Scramble questions and answer keys are issued only by the trusted server validator.
     if (id === 'chain') return []; // Chain Reaction questions are issued only by the trusted server validator.
     if (id === 'forge') {
       const bank = window.EPIPHANY_WORD_FORGE_BANK;
@@ -718,7 +702,7 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
     if (window.EPIPHANY_SOUND_MAZE_BANK?.levels?.[level]?.steady?.length && window.EPIPHANY_SOUND_MAZE_TOOLS) ids.push('maze');
     if (ladderWordBank && ladderWordBank.size) ids.push('wordladder');
     if (window.EPIPHANY_WORD_CONNECTIONS_BANK && typeof window.EPIPHANY_WORD_CONNECTIONS_BANK.selectRound === 'function') ids.push('connections');
-    if (window.EPIPHANY_SENTENCE_SCRAMBLE_BANK?.modes?.steady?.length === 24) ids.push('scramble');
+    if (window.navigator?.onLine !== false) ids.push('scramble');
     if (window.navigator?.onLine !== false) ids.push('chain'); // The question bank and answer key are held by the shared server validator.
     return ids;
   }
@@ -1245,7 +1229,7 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
     const preparedMazePool = id === 'maze' && preparedMazeCEFR === selectedMazeCEFR && activePool && activePool.length ? activePool : null;
     const previousRandom = Math.random;
     if (options.daily === true && dailyChallengeActive) Math.random = seededDailyRandom(dailyChallengeActive.seed);
-    try { activePool = id === 'odd' || id === 'chain' ? [] : preparedMazePool || getRoundPool(id,selectedTrainingMode); }
+    try { activePool = id === 'odd' || id === 'chain' || id === 'scramble' ? [] : preparedMazePool || getRoundPool(id,selectedTrainingMode); }
     finally { Math.random = previousRandom; }
     validatorSessionId = null;
     validatorClientForSession = null;
