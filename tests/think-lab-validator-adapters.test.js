@@ -1,5 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
+import "../supabase/functions/velorn-sentence-scramble/sentence-scramble-bank.js";
 import {
   getThinkLabAdapter,
   listThinkLabAdapterIds,
@@ -8,10 +9,11 @@ import {
 } from "../supabase/functions/_shared/think-lab-validator-adapters.mjs";
 
 test("adapter registry is a fixed allowlist and rejects client-selected unknown games", () => {
-  assert.deepEqual(listThinkLabAdapterIds().sort(), ["chain_reaction", "odd_one_out", "word_forge"]);
+  assert.deepEqual(listThinkLabAdapterIds().sort(), ["chain_reaction", "odd_one_out", "sentence_scramble", "word_forge"]);
   assert.equal(getThinkLabAdapter("word_forge").id, "word_forge");
   assert.equal(getThinkLabAdapter("odd_one_out").id, "odd_one_out");
   assert.equal(getThinkLabAdapter("chain_reaction").id, "chain_reaction");
+  assert.equal(getThinkLabAdapter("sentence_scramble").id, "sentence_scramble");
 
   assert.equal(getThinkLabAdapter("../word-forge"), null);
 
@@ -215,4 +217,64 @@ test("Chain Reaction adapter keeps 24 challenges as units and projects no answer
     sessionId:"f4100000-0000-4000-8000-000000000051",guestToken:null,
     questions:canonical,body:{trainingMode:"guided"},
   }).questions.length,24);
+});
+
+test("Sentence Scramble adapter keeps canonical sentences private and verifies tile permutations", () => {
+  const adapter = resolveThinkLabAdapter("sentence_scramble");
+  const bank = globalThis.EPIPHANY_SENTENCE_SCRAMBLE_BANK;
+  assert.deepEqual(adapter.validateBank(bank), { valid: true, count: 72 });
+  const body = { action: "start", trainingMode: "guided" };
+  assert.equal(adapter.validateStartRequest(body), true);
+  assert.equal(adapter.validateStartRequest({ ...body, userId: "forged" }), false);
+  assert.equal(adapter.validateStartRequest({ ...body, daily: true, dailySeed: 123 }), true);
+  assert.equal(adapter.validateStartRequest({ ...body, daily: true }), false);
+
+  const round = adapter.selectRound(bank, body, () => 0.5);
+  assert.equal(round.length, 24);
+  const canonical = adapter.buildCanonicalQuestions(round, body);
+  assert.equal(canonical.length, 24);
+  const projected = adapter.projectQuestions(canonical);
+  assert.equal(projected.length, 24);
+  assert.deepEqual(Object.keys(projected[0]).sort(), ["id", "prompt", "words"]);
+  assert.equal("sentence" in projected[0], false);
+  assert.equal("acceptedAnswers" in projected[0], false);
+  assert.equal("explanation" in projected[0], false);
+  assert.equal("skill" in projected[0], false);
+
+  const dailyBody = { action: "start", trainingMode: "challenge", daily: true, dailySeed: 123 };
+  const dailyA = adapter.selectRound(bank, dailyBody, Math.random);
+  const dailyB = adapter.selectRound(bank, dailyBody, Math.random);
+  assert.equal(dailyA.length, 1);
+  assert.equal(dailyA[0].id, dailyB[0].id, "daily sentence selection and tile shuffle must be deterministic");
+  assert.equal(adapter.buildCanonicalQuestions(dailyA, dailyBody).length, 1);
+
+  const sessionId = "f4100000-0000-4000-8000-000000000051";
+  const answerBody = { action: "answer", sessionId, questionIndex: 0, tileOrder: [2, 0, 1, 3, 4] };
+  assert.equal(adapter.validateAnswerRequest(answerBody, false), true);
+  assert.equal(adapter.validateAnswerRequest({ ...answerBody, tileOrder: [2, 0, 1, 1, 4] }, false), false);
+  assert.equal(adapter.validateAnswerRequest({ ...answerBody, userId: "forged" }, false), false);
+  assert.equal(adapter.validateAnswerRequest({ ...answerBody, guestToken: "b".repeat(64) }, true), true);
+  assert.deepEqual(adapter.answerRpcArguments({
+    userId: null,
+    guestTokenHash: "c".repeat(64),
+    body: { ...answerBody, guestToken: "b".repeat(64) },
+  }), {
+    p_user_id: null,
+    p_guest_token_hash: "c".repeat(64),
+    p_session_id: sessionId,
+    p_game_id: "sentence_scramble",
+    p_question_index: 0,
+    p_answer: { tileOrder: [2, 0, 1, 3, 4] },
+  });
+  const response = adapter.projectAnswer({
+    correct: true,
+    question_index: 0,
+    next_index: 1,
+    completed: false,
+    sentence: "My sister reads a book every evening.",
+    explanation: "A sufficiently detailed explanation.",
+    skill: "word order",
+  });
+  assert.equal(response.sentence, "My sister reads a book every evening.");
+  assert.equal(adapter.normalizeAnswer("My sister reads a book every evening."), "my sister reads a book every evening");
 });
