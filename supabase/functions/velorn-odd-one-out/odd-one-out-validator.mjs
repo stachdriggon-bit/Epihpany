@@ -7,13 +7,14 @@ export function publicQuestion(question) {
   return safe;
 }
 
-export function validateAnswerRequest(body) {
-  const allowed = new Set(["action", "sessionId", "questionIndex", "selectedIndex"]);
+export function validateAnswerRequest(body, guest = false) {
+  const allowed = new Set(["action", "sessionId", "questionIndex", "selectedIndex", ...(guest ? ["guestToken"] : [])]);
   return !!body && Object.keys(body).every(key => allowed.has(key)) &&
     typeof body.sessionId === "string" &&
     /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(body.sessionId) &&
     Number.isInteger(body.questionIndex) && body.questionIndex >= 0 && body.questionIndex < 12 &&
-    Number.isInteger(body.selectedIndex) && body.selectedIndex >= 0 && body.selectedIndex < 4;
+    Number.isInteger(body.selectedIndex) && body.selectedIndex >= 0 && body.selectedIndex < 4 &&
+    (!guest || (typeof body.guestToken === "string" && /^[0-9a-f]{64}$/.test(body.guestToken)));
 }
 
 export function safeSessionQuestions(questions) {
