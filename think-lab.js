@@ -1567,13 +1567,37 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
     }
     if(e.target.closest('[data-scramble-check]')){
       if(locked)return;
-      const pool=activePool||getRoundPool('scramble'),item=pool[index%pool.length],fb=root.querySelector('#tl-feedback');
-      const attempt=scramblePlaced.every(x=>x!==null)?scramblePlaced.map(i=>item.words[i]).join(' ').toLowerCase().replace(/[^\p{L}\p{N}\s]/gu,'').replace(/\s+/g,' ').trim():'';
-      const accepted=[item.sentence,...(Array.isArray(item.acceptedAnswers)?item.acceptedAnswers:[])].map(value=>String(value||'').toLowerCase().replace(/[^\p{L}\p{N}\s]/gu,'').replace(/\s+/g,' ').trim());
-      if(!accepted.includes(attempt)){roundMistakes++;fb.hidden=false;fb.className='tl-feedback is-wrong';fb.innerHTML='<strong>Not quite—rearrange the word tiles.</strong><p>Check the subject and verb first, then place adverbs and time phrases where they sound natural.</p>'+(roundMistakes>=2?'<p>'+esc(adaptiveHint('scramble'))+'</p>':'');saveInternalProgress(index);return;}
-      score++;locked=true;if(window.EpiphanyThinkLab)window.EpiphanyThinkLab.recordResult('grammar','sentence-scramble',true,index===pool.length-1);
+      const pool=activePool||[],item=pool[index%pool.length],fb=root.querySelector('#tl-feedback');
+      if(!item || !Array.isArray(scramblePlaced) || scramblePlaced.length!==item.words.length || !scramblePlaced.every(value=>Number.isInteger(value))){
+        fb.hidden=false;fb.className='tl-feedback is-wrong';fb.innerHTML='<strong>Place every word tile first.</strong><p>Fill all the spaces before checking your sentence.</p>';return;
+      }
+      if(!validatorSessionId || !validatorClientForSession || validatorFunctionName!=='velorn-think-lab-validator' ||
+          (!window.EpiphanyAuth?.isSignedIn?.() && !validatorGuestToken)){
+        fb.hidden=false;fb.className='tl-feedback is-wrong';fb.textContent='Your secure sentence session is unavailable. Please return to Think Lab and start again.';return;
+      }
+      const answerBody={action:'answer',gameId:'sentence_scramble',sessionId:validatorSessionId,questionIndex:index,tileOrder:scramblePlaced.slice()};
+      if(validatorGuestToken)answerBody.guestToken=validatorGuestToken;
+      const {data,error}=await validatorClientForSession.functions.invoke(validatorFunctionName,{body:answerBody});
+      const correct=!!data && data.correct===true;
+      const responseValid=!error && data && typeof data.correct==='boolean' && data.questionIndex===index &&
+        data.nextIndex===(correct?index+1:index) && data.completed===(correct && index===pool.length-1) &&
+        (correct
+          ? typeof data.sentence==='string' && typeof data.explanation==='string' && typeof data.skill==='string'
+          : !Object.hasOwn(data,'sentence') && !Object.hasOwn(data,'explanation') && !Object.hasOwn(data,'skill'));
+      if(!responseValid){
+        fb.hidden=false;fb.className='tl-feedback is-wrong';fb.textContent='We could not verify this arrangement. Please retry your answer.';return;
+      }
+      if(!correct){
+        roundMistakes++;fb.hidden=false;fb.className='tl-feedback is-wrong';
+        fb.innerHTML='<strong>Not quite—rearrange the word tiles.</strong><p>Check the subject and verb first, then place adverbs and time phrases where they sound natural.</p>'+(roundMistakes>=2?'<p>'+esc(adaptiveHint('scramble'))+'</p>':'');
+        saveInternalProgress(index);return;
+      }
+      score++;locked=true;
+      if(window.EpiphanyThinkLab)window.EpiphanyThinkLab.recordResult('grammar','sentence-scramble',true,index===pool.length-1);
       root.querySelectorAll('[data-scramble-tile],[data-scramble-slot],[data-scramble-check],[data-scramble-reset]').forEach(el=>el.disabled=true);
-      fb.hidden=false;fb.className='tl-feedback is-correct';fb.innerHTML='<strong>✓ Sentence built!</strong><p>'+esc(item.sentence)+' — '+esc(item.explain)+'</p>';const next=root.querySelector('[data-think-next]');if(next)next.hidden=false;saveInternalProgress(index+1);return;
+      fb.hidden=false;fb.className='tl-feedback is-correct';
+      fb.innerHTML='<strong>✓ Sentence built!</strong><p>'+esc(data.sentence)+' — '+esc(data.explanation)+'</p>';
+      const next=root.querySelector('[data-think-next]');if(next)next.hidden=false;saveInternalProgress(index+1);return;
     }
 
     const daily=e.target.closest('[data-think-daily]');if(daily){beginDailyChallenge();return;}
