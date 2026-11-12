@@ -3,6 +3,9 @@
 -- server-side substeps in answers. No game-specific session table or RPC is added.
 
 ALTER TABLE economy_private.think_lab_validator_sessions
+  ADD COLUMN wrong_link_attempt_count integer NOT NULL DEFAULT 0 CHECK (wrong_link_attempt_count >= 0);
+
+ALTER TABLE economy_private.think_lab_validator_sessions
   DROP CONSTRAINT IF EXISTS think_lab_validator_sessions_game_id_check,
   DROP CONSTRAINT IF EXISTS think_lab_validator_game_contract,
   DROP CONSTRAINT IF EXISTS think_lab_validator_expiry;
@@ -484,7 +487,8 @@ BEGIN
     v_correct := (p_answer ->> 'selectedIndex')::integer = v_correct_index;
     IF NOT v_correct THEN
       UPDATE economy_private.think_lab_validator_sessions
-      SET last_answer_at = v_now
+      SET last_answer_at = v_now,
+          wrong_link_attempt_count = wrong_link_attempt_count + 1
       WHERE session_id = p_session_id;
       v_next_index := s.current_index;
       v_next_link_index := v_expected_link_index;
@@ -569,6 +573,7 @@ BEGIN
           'session_type', CASE WHEN jsonb_array_length(s.questions) = 1 THEN 'daily' ELSE 'full' END,
           'question_count', jsonb_array_length(s.questions),
           'link_count', jsonb_array_length(s.questions) * 3,
+          'wrong_link_attempts', s.wrong_link_attempt_count,
           'correct_count', v_correct_count,
           'incorrect_count', jsonb_array_length(s.questions) - v_correct_count
         )
@@ -642,4 +647,4 @@ GRANT EXECUTE ON FUNCTION public.velorn_submit_think_lab_validator_answer(uuid,t
 COMMENT ON TABLE economy_private.think_lab_validator_sessions IS
   'Unified private Think Lab session storage for Word Forge, Odd One Out, and Chain Reaction; Chain Reaction links are secure substeps within each challenge.';
 COMMENT ON FUNCTION economy_private.submit_think_lab_validator_answer(uuid,text,uuid,text,integer,jsonb) IS
-  'Service-role-only, row-locked Think Lab answer transition; Chain Reaction stores only correct sequential link transitions and completes one event per session.';
+  'Service-role-only, row-locked Think Lab answer transition; Chain Reaction stores correct sequential links, aggregates wrong link attempts, and completes one event per session.';
