@@ -240,6 +240,17 @@ jobs:
           test "$REWARD_ROWS" = "0"
           test "$ECONOMY_ENABLED" = "f"
 
+          # Stop the unified Edge Runtime before starting the legacy Word Forge
+          # runtime in the next step. Both `functions serve` commands otherwise
+          # compete for the same local Edge Runtime container.
+          if [ -f /tmp/think-lab-unified-edge.pid ]; then
+            unified_edge_pid=$(cat /tmp/think-lab-unified-edge.pid)
+            kill "$unified_edge_pid" 2>/dev/null || true
+            wait "$unified_edge_pid" 2>/dev/null || true
+            rm -f /tmp/think-lab-unified-edge.pid
+          fi
+          sleep 2
+
       - name: Run Word Forge guest and authenticated Edge Function end-to-end tests
         timeout-minutes: 7
         run: |
