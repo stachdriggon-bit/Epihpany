@@ -750,7 +750,7 @@ test('main navigation tabs open without uncaught page errors', { timeout: 18 * 6
         checkpoint('thinklab: complete 24-question Word Forge session, ordered server checks and final completion verified');
 
         await page.locator('#thinklab-view [data-think-back]').first().click();
-        await page.locator('#thinklab-view [data-think-back]').click();
+        await page.locator('#thinklab-view [data-think-game="chain"]').waitFor({state:'visible',timeout:5000});
         await page.locator('#thinklab-view [data-think-game="chain"]').click();
         const chainModePicker = page.locator('#thinklab-view .tl-mode-picker');
         await chainModePicker.waitFor({state:'visible',timeout:5000});
