@@ -16,12 +16,12 @@ export const wordForgeAdapter = Object.freeze({
     return round;
   },
   projectQuestions: safeSessionQuestions,
-  buildStartResponse({ sessionId, guestToken, questions }) {
+  buildStartResponse({ sessionId, guestToken, questions, body }) {
     return {
       sessionId,
       guestToken,
       validatorVersion: this.validatorVersion,
-      trainingMode: questions[0]?.trainingMode ?? null,
+      trainingMode: body.trainingMode,
       questions: this.projectQuestions(questions),
     };
   },
