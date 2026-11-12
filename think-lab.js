@@ -760,6 +760,7 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
     const history=bridge.getGameHistory(),recent=Array.isArray(history.recentGames)?history.recentGames:[];
     const cards=[];
     for(const id of recent){
+      if(['forge','odd','chain','scramble'].includes(id))continue;
       const definition=registry.getGame(id);
       if(!definition||definition.adapter!=='think-lab')continue;
       const snapshot=bridge.getGameSnapshot(id,{bankVersion:INTERNAL_SESSION_BANK_VERSION});
@@ -770,6 +771,10 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
   }
   function resumeInternalGame(id, dailyRecord = null) {
     const bridge=window.EpiphanyThinkLab,registry=window.EPIPHANY_THINK_LAB_PROGRESSION;
+    if(['forge','odd','chain','scramble'].includes(id)){
+      bridge?.clearGameSnapshot?.(id);
+      return false;
+    }
     const definition=registry?.getGame?.(id);
     const savedDaily = dailyRecord || null;
     const dailySnapshot = savedDaily && savedDaily.status === 'active' && savedDaily.gameId === id ? savedDaily.snapshot : null;
@@ -1777,5 +1782,9 @@ root.innerHTML='<div class="tl-finish"><span class="tl-finish-mark">∴</span><s
     mode = null; activePool = null; activeDifficulty = null; validatorSessionId = null; validatorClientForSession = null; validatorFunctionName = null; validatorGuestToken = null; chainExplanations = []; pickerStage = 'landing'; pickerGameId = null;
     landing();
   };
+  ['forge','odd','chain','scramble'].forEach(gameId=>{
+    window.EpiphanyThinkLab?.clearGameSnapshot?.(gameId);
+    window.EpiphanyThinkLab?.clearDailyChallengeSnapshots?.(gameId);
+  });
   landing();
 })();
