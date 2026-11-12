@@ -1,6 +1,7 @@
 import { wordForgeAdapter } from "../velorn-word-forge/word-forge-adapter.mjs";
 import { oddOneOutAdapter } from "../velorn-odd-one-out/odd-one-out-adapter.mjs";
 import { chainReactionAdapter } from "../velorn-chain-reaction/chain-reaction-adapter.mjs";
+import { sentenceScrambleAdapter } from "../velorn-sentence-scramble/sentence-scramble-adapter.mjs";
 
 const adapters = Object.freeze({
   [wordForgeAdapter.id]: wordForgeAdapter,
