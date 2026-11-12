@@ -11,8 +11,10 @@ CREATE TABLE economy_private.think_lab_validator_sessions (
   cefr_level text CHECK (cefr_level IS NULL OR cefr_level IN ('A1','A2','B1','B2','C1','C2')),
   training_mode text NOT NULL CHECK (training_mode IN ('guided','steady','challenge')),
   questions jsonb NOT NULL CHECK (
-    jsonb_typeof(questions) = 'array'
-    AND jsonb_array_length(questions) BETWEEN 1 AND 24
+    CASE WHEN jsonb_typeof(questions) = 'array'
+      THEN jsonb_array_length(questions) BETWEEN 1 AND 24
+      ELSE false
+    END
     AND octet_length(questions::text) <= 262144
   ),
   answers jsonb NOT NULL DEFAULT '[]'::jsonb CHECK (jsonb_typeof(answers) = 'array'),
@@ -111,13 +113,13 @@ BEGIN
      OR (p_game_id = 'word_forge' AND (
        p_validator_version IS DISTINCT FROM 'word-forge-reviewed-72-20261111-v1'
        OR p_cefr_level IS NOT NULL
-       OR jsonb_array_length(p_questions) <> 24
+       OR CASE WHEN jsonb_typeof(p_questions) = 'array' THEN jsonb_array_length(p_questions) <> 24 ELSE true END
        OR p_expires_at > v_now + interval '45 minutes'
      ))
      OR (p_game_id = 'odd_one_out' AND (
        p_validator_version IS DISTINCT FROM 'odd-one-out-rotated-20261110-v2'
        OR p_cefr_level IS NULL OR p_cefr_level NOT IN ('A1','A2','B1','B2','C1','C2')
-       OR jsonb_array_length(p_questions) NOT BETWEEN 1 AND 12
+       OR CASE WHEN jsonb_typeof(p_questions) = 'array' THEN jsonb_array_length(p_questions) NOT BETWEEN 1 AND 12 ELSE true END
        OR p_expires_at > v_now + interval '30 minutes'
      ))
   THEN
@@ -160,7 +162,7 @@ BEGIN
     END IF;
     FOR q IN SELECT value FROM jsonb_array_elements(p_questions) LOOP
       IF jsonb_typeof(q -> 'words') IS DISTINCT FROM 'array'
-         OR jsonb_array_length(q -> 'words') <> 4
+         OR CASE WHEN jsonb_typeof(q -> 'words') = 'array' THEN jsonb_array_length(q -> 'words') <> 4 ELSE true END
          OR COALESCE(q ->> 'answer','') !~ '^[0-3]$'
          OR COALESCE(q ->> 'id','') = ''
          OR COALESCE(q ->> 'prompt','') = ''
