@@ -303,11 +303,11 @@ test('Word Forge keeps answer keys and skills server-side and records verified o
 });
 
 
-test('Chain Reaction loads 24 distinct approved challenges for each training mode', () => {
+test('Chain Reaction loads 24 distinct approved challenges for each training mode', async () => {
   for (const trainingMode of trainingModes) {
     const harness = createHarness();
     harness.click('[data-think-game]', {thinkGame:'chain'});
-    harness.click('[data-think-training-mode]', {thinkTrainingMode:trainingMode,thinkTrainingGame:'chain'});
+    await harness.click('[data-think-training-mode]', {thinkTrainingMode:trainingMode,thinkTrainingGame:'chain'});
     assert.match(harness.root.innerHTML, /ROUND 1 OF 24/);
     assert.match(harness.root.innerHTML, /LINK 1 OF 3/);
     assert.match(harness.root.innerHTML, new RegExp('<div class="tl-level-tag">' + trainingMode.toUpperCase() + '<\\/div>'));
@@ -317,13 +317,13 @@ test('Chain Reaction loads 24 distinct approved challenges for each training mod
   }
 });
 
-test('Chain Reaction uses explicit multi-word starts and reveals every link explanation', () => {
+test('Chain Reaction uses explicit multi-word starts and reveals every link explanation', async () => {
   const harness = createHarness();
   const challenge = harness.chainBank.getRounds('challenge').find(item => item.id === 'CR-C-007');
   assert.equal(challenge.start, 'REFRACTING TELESCOPE');
   assert.equal(challenge.links[0].from, challenge.start);
   harness.click('[data-think-game]', {thinkGame:'chain'});
-  harness.click('[data-think-training-mode]', {thinkTrainingMode:'challenge',thinkTrainingGame:'chain'});
+  await harness.click('[data-think-training-mode]', {thinkTrainingMode:'challenge',thinkTrainingGame:'chain'});
   const title = harness.root.innerHTML.match(/<h2>([^<]+)<\/h2>/);
   const item = harness.getChainRound().find(entry => entry.title === (title && title[1]));
   assert.ok(item, 'the rendered challenge title should map to an approved bank entry');
@@ -332,7 +332,7 @@ test('Chain Reaction uses explicit multi-word starts and reveals every link expl
     const optionMatches = [...harness.root.innerHTML.matchAll(/data-chain-answer="(\d+)"[\s\S]*?<strong>([^<]+)<\/strong>/g)];
     const correct = optionMatches.find(match => match[2] === current.to);
     assert.ok(correct, 'the canonical answer should appear in the rendered choices');
-    harness.click('[data-chain-answer]', {chainAnswer:correct[1]});
+    await harness.click('[data-chain-answer]', {chainAnswer:correct[1]});
     assert.ok(harness.feedback.innerHTML.includes(current.explanation), 'the accepted link should reveal its explanation');
     if (step < 2) assert.match(harness.root.innerHTML, new RegExp('LINK ' + (step + 2) + ' OF 3'));
   }
@@ -340,13 +340,13 @@ test('Chain Reaction uses explicit multi-word starts and reveals every link expl
   for (const link of item.links) assert.ok(harness.feedback.innerHTML.includes(link.explanation));
 });
 
-test('Chain Reaction does not show an empty Challenge hint and records wrong links', () => {
+test('Chain Reaction does not show an empty Challenge hint and records wrong links', async () => {
   const harness = createHarness();
   harness.click('[data-think-game]', {thinkGame:'chain'});
-  harness.click('[data-think-training-mode]', {thinkTrainingMode:'challenge',thinkTrainingGame:'chain'});
+  await harness.click('[data-think-training-mode]', {thinkTrainingMode:'challenge',thinkTrainingGame:'chain'});
   const firstChallenge = harness.getChainRound()[0];
   const wrongOption = (firstChallenge.links[0].answer + 1) % 3;
-  for (let attempt = 0; attempt < 2; attempt++) harness.click('[data-chain-answer]', {chainAnswer:String(wrongOption)});
+  for (let attempt = 0; attempt < 2; attempt++) await harness.click('[data-chain-answer]', {chainAnswer:String(wrongOption)});
   assert.doesNotMatch(harness.feedback.innerHTML, /<p><\/p>/);
   assert.equal(harness.recordedResults.filter(result => result[0] === 'vocabulary' && result[1] === 'chain' && result[2] === false).length, 2);
   assert.doesNotMatch(source, /rounds\.chain\s*=/);
