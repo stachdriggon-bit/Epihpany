@@ -686,12 +686,12 @@ BEGIN
     SELECT string_agg(q -> 'words' ->> tile_index, ' ' ORDER BY ordinality)
       INTO v_attempt
       FROM unnest(v_tile_order) WITH ORDINALITY AS tile(tile_index, ordinality);
-    v_normalized_attempt := btrim(regexp_replace(regexp_replace(lower(v_attempt),'[^a-z0-9 ]','','g'),' +',' ','g'));
-    v_normalized_expected := btrim(regexp_replace(regexp_replace(lower(q ->> 'sentence'),'[^a-z0-9 ]','','g'),' +',' ','g'));
+    v_normalized_attempt := btrim(regexp_replace(regexp_replace(lower(v_attempt),'[^[:alnum:][:space:]]','','g'),'[[:space:]]+',' ','g'));
+    v_normalized_expected := btrim(regexp_replace(regexp_replace(lower(q ->> 'sentence'),'[^[:alnum:][:space:]]','','g'),'[[:space:]]+',' ','g'));
     v_correct := v_normalized_attempt = v_normalized_expected OR EXISTS (
       SELECT 1
       FROM jsonb_array_elements_text(q -> 'acceptedAnswers') AS alternative(value)
-      WHERE btrim(regexp_replace(regexp_replace(lower(value),'[^a-z0-9 ]','','g'),' +',' ','g')) = v_normalized_attempt
+      WHERE btrim(regexp_replace(regexp_replace(lower(value),'[^[:alnum:][:space:]]','','g'),'[[:space:]]+',' ','g')) = v_normalized_attempt
     );
     v_next_index := s.current_index + CASE WHEN v_correct THEN 1 ELSE 0 END;
     v_correct_count := s.correct_count + CASE WHEN v_correct THEN 1 ELSE 0 END;
