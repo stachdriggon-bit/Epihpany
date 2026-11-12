@@ -7,6 +7,7 @@ const adapters = Object.freeze({
   [wordForgeAdapter.id]: wordForgeAdapter,
   [oddOneOutAdapter.id]: oddOneOutAdapter,
   [chainReactionAdapter.id]: chainReactionAdapter,
+  [sentenceScrambleAdapter.id]: sentenceScrambleAdapter,
 });
 
 const REQUIRED_METHODS = Object.freeze([
