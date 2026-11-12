@@ -11,6 +11,9 @@ global.window = globalThis;
 require('../chain-reaction-bank.js');
 const chainReactionBank = global.EPIPHANY_CHAIN_REACTION_BANK;
 delete global.EPIPHANY_CHAIN_REACTION_BANK;
+require('../supabase/functions/velorn-sentence-scramble/sentence-scramble-bank.js');
+const sentenceScrambleBank = global.EPIPHANY_SENTENCE_SCRAMBLE_BANK;
+delete global.EPIPHANY_SENTENCE_SCRAMBLE_BANK;
 if (savedWindow === undefined) delete global.window;
 else global.window = savedWindow;
 
@@ -840,6 +843,83 @@ test('main navigation tabs open without uncaught page errors', { timeout: 18 * 6
         assert.deepEqual(chainAnswerRequests.map(request=>request.selectedIndex),chainChallenge.links.map(link=>link.answer),
           'the UI must submit the selected option index, not a client-supplied answer key');
         checkpoint('thinklab: Chain Reaction three-link path, server validation and answer-key isolation verified');
+
+        await page.locator('#thinklab-view [data-think-back]').first().click();
+        await page.locator('#thinklab-view [data-think-back]').click();
+
+        const sentenceSessionId = '00000000-0000-4000-8000-000000000026';
+        const sentenceGuestToken = 'd'.repeat(64);
+        let sentenceStartRequest = null;
+        const sentenceAnswerRequests = [];
+        let sentencePrivateRound = [];
+        await page.route('**/functions/v1/velorn-think-lab-validator', async route => {
+          const request = route.request();
+          if (request.method() === 'OPTIONS') return route.fallback();
+          const requestBody = request.postDataJSON();
+          if (requestBody.gameId !== 'sentence_scramble') return route.fallback();
+          if (requestBody.action === 'answer') {
+            sentenceAnswerRequests.push(requestBody);
+            const question = sentencePrivateRound[requestBody.questionIndex];
+            const attempt = requestBody.tileOrder.map(tile => question.words[tile]).join(' ');
+            const normalize = value => String(value).toLowerCase().replace(/[^a-z0-9 ]/g,'').replace(/ +/g,' ').trim();
+            const correct = [question.sentence,...question.acceptedAnswers].some(answer => normalize(answer) === normalize(attempt));
+            await route.fulfill({status:200,contentType:'application/json',headers:{'Access-Control-Allow-Origin':'*'},body:JSON.stringify({
+              correct,questionIndex:requestBody.questionIndex,nextIndex:requestBody.questionIndex+(correct?1:0),
+              completed:correct&&requestBody.questionIndex===sentencePrivateRound.length-1,
+              ...(correct?{sentence:question.sentence,explanation:question.explanation,skill:question.skill}:{})
+            })});
+            return;
+          }
+          sentenceStartRequest = requestBody;
+          sentencePrivateRound = sentenceScrambleBank.modes[requestBody.trainingMode].map(question=>({
+            ...question,words:question.sentence.split(' ').reverse()
+          }));
+          const questions = sentencePrivateRound.map(question=>({id:question.id,prompt:question.prompt,words:question.words.slice()}));
+          await route.fulfill({status:200,contentType:'application/json',headers:{'Access-Control-Allow-Origin':'*'},body:JSON.stringify({
+            sessionId:sentenceSessionId,guestToken:sentenceGuestToken,
+            validatorVersion:'sentence-scramble-72-20261112-v1',
+            trainingMode:requestBody.trainingMode,daily:false,questions
+          })});
+        });
+        await page.locator('#thinklab-view [data-think-game="scramble"]').click();
+        const sentenceModePicker = page.locator('#thinklab-view .tl-mode-picker');
+        await sentenceModePicker.waitFor({state:'visible',timeout:5000});
+        await sentenceModePicker.locator('[data-think-training-mode="guided"]').click();
+        const sentenceCard = page.locator('#thinklab-view .tl-game-card');
+        await sentenceCard.waitFor({state:'visible',timeout:5000});
+        assert.equal(requested.some(path => path.endsWith('/sentence-scramble-bank.js')), false,
+          'the private Sentence Scramble answer bank must not load in the browser');
+        assert.equal(await page.evaluate(() => typeof window.EPIPHANY_SENTENCE_SCRAMBLE_BANK), 'undefined',
+          'the browser must not receive the private Sentence Scramble answer bank');
+        assert.deepEqual(sentenceStartRequest,{action:'start',gameId:'sentence_scramble',trainingMode:'guided'},
+          'Sentence Scramble start must send only the selected training mode');
+        assert.match(await sentenceCard.locator('.tl-game-actions').innerText(),/ROUND 1 OF 24/);
+        const sentenceChallenge = sentencePrivateRound[0];
+        const remainingTiles = sentenceChallenge.words.map((_,index)=>index);
+        const correctTileOrder = sentenceChallenge.sentence.split(' ').map(word=>{
+          const tile = remainingTiles.find(index=>sentenceChallenge.words[index]===word);
+          assert.notEqual(tile,undefined,'each canonical sentence token must have one server-issued tile');
+          remainingTiles.splice(remainingTiles.indexOf(tile),1);
+          return tile;
+        });
+        const wrongTileOrder = correctTileOrder.slice().reverse();
+        for(const tile of wrongTileOrder) await sentenceCard.locator('[data-scramble-tile="'+tile+'"]').click();
+        await sentenceCard.locator('[data-scramble-check]').click();
+        await sentenceCard.locator('#tl-feedback').waitFor({state:'visible',timeout:5000});
+        assert.equal((await sentenceCard.locator('#tl-feedback').innerText()).includes(sentenceChallenge.sentence),false,
+          'a wrong tile order must not reveal the canonical sentence');
+        await sentenceCard.locator('[data-scramble-reset]').click();
+        for(const tile of correctTileOrder) await sentenceCard.locator('[data-scramble-tile="'+tile+'"]').click();
+        await sentenceCard.locator('[data-scramble-check]').click();
+        await sentenceCard.locator('#tl-feedback').getByText(sentenceChallenge.sentence,{exact:false}).waitFor({state:'visible',timeout:5000});
+        assert.match(await sentenceCard.locator('#tl-feedback').innerText(),/Sentence built!/);
+        assert.equal(sentenceAnswerRequests.length,2,'the UI must submit wrong and correct tile orders to the trusted validator');
+        assert.deepEqual(sentenceAnswerRequests.map(request=>request.tileOrder),[wrongTileOrder,correctTileOrder],
+          'the client must submit tile indices, never a client-computed sentence answer');
+        assert.ok(sentenceAnswerRequests.every(request=>request.action==='answer'&&request.gameId==='sentence_scramble'&&
+          request.sessionId===sentenceSessionId&&request.guestToken===sentenceGuestToken&&request.questionIndex===0),
+          'every Sentence Scramble answer must use the same server session and in-memory guest token');
+        checkpoint('thinklab: Sentence Scramble server validation, retry and answer-key isolation verified');
 
         await page.locator('#thinklab-view [data-think-back]').first().click();
         await page.locator('#thinklab-view [data-think-back]').click();
