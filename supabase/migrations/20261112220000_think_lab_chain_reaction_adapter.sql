@@ -176,20 +176,40 @@ BEGIN
         RAISE EXCEPTION 'Chain Reaction challenge must be an object' USING ERRCODE = '22023';
       ELSIF q - ARRAY['id','title','start','links'] <> '{}'::jsonb THEN
         RAISE EXCEPTION 'Chain Reaction challenge has unexpected keys' USING ERRCODE = '22023';
-      ELSIF COALESCE(q ->> 'id','') !~ ('^CR-' || v_mode_code || '-[0-9]{3}
+      ELSIF length(COALESCE(q ->> 'id','')) <> 9
+         OR left(COALESCE(q ->> 'id',''),5) <> ('CR-' || v_mode_code || '-')
+         OR substring(COALESCE(q ->> 'id','') from 6) !~ '^[0-9]{3}' THEN
+        RAISE EXCEPTION 'Chain Reaction challenge ID does not match training mode: %, expected mode %',q ->> 'id',v_mode_code USING ERRCODE = '22023';
+      ELSIF length(COALESCE(q ->> 'title','')) < 3 THEN
+        RAISE EXCEPTION 'Chain Reaction challenge title is invalid' USING ERRCODE = '22023';
+      ELSIF length(COALESCE(q ->> 'start','')) NOT BETWEEN 2 AND 40
+         OR (q ->> 'start') ~ '[^A-Z -]' THEN
+        RAISE EXCEPTION 'Chain Reaction start word is invalid: %',q ->> 'start' USING ERRCODE = '22023';
+      ELSIF jsonb_typeof(q -> 'links') IS DISTINCT FROM 'array' THEN
+        RAISE EXCEPTION 'Chain Reaction links must be an array' USING ERRCODE = '22023';
+      ELSIF jsonb_array_length(q -> 'links') <> 3 THEN
+        RAISE EXCEPTION 'Chain Reaction challenge must contain exactly three links' USING ERRCODE = '22023';
+      END IF;
       v_previous := q ->> 'start';
       FOR v_link_index IN 0..2 LOOP
         v_link := q -> 'links' -> v_link_index;
         IF jsonb_typeof(v_link) IS DISTINCT FROM 'object'
            OR v_link - ARRAY['from','to','options','answer','explanation'] <> '{}'::jsonb
            OR v_link ->> 'from' IS DISTINCT FROM v_previous
-           OR COALESCE(v_link ->> 'to','') !~ '^[A-Z][A-Z -]{1,39}$'
+           OR length(COALESCE(v_link ->> 'to','')) NOT BETWEEN 2 AND 40
+           OR (v_link ->> 'to') ~ '[^A-Z -]'
            OR jsonb_typeof(v_link -> 'options') IS DISTINCT FROM 'array'
            OR jsonb_array_length(v_link -> 'options') <> 3
-           OR COALESCE(v_link ->> 'answer','') !~ '^[0-2]$'
-           OR COALESCE(v_link ->> 'explanation','') !~ '.{8,}'
+           OR COALESCE(v_link ->> 'answer','') NOT IN ('0','1','2')
+           OR length(COALESCE(v_link ->> 'explanation','')) < 8
         THEN
           RAISE EXCEPTION 'invalid Chain Reaction link contract' USING ERRCODE = '22023';
+        END IF;
+        IF EXISTS (
+          SELECT 1 FROM jsonb_array_elements_text(v_link -> 'options') AS option_row(option_value)
+          WHERE length(option_value) NOT BETWEEN 2 AND 40 OR option_value ~ '[^A-Z -]'
+        ) THEN
+          RAISE EXCEPTION 'Chain Reaction option contains invalid text' USING ERRCODE = '22023';
         END IF;
         SELECT count(DISTINCT value) INTO v_distinct_options
           FROM jsonb_array_elements_text(v_link -> 'options');
