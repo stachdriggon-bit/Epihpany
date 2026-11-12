@@ -6,10 +6,12 @@ const { writeFileSync } = require('node:fs');
 require('../functions/velorn-word-forge/word-forge-bank.js');
 require('../functions/velorn-odd-one-out/odd-one-out-bank.js');
 require('../functions/velorn-chain-reaction/chain-reaction-bank.js');
+require('../functions/velorn-sentence-scramble/sentence-scramble-bank.js');
 
 const wordBank = globalThis.EPIPHANY_WORD_FORGE_BANK;
 const oddBank = globalThis.EPIPHANY_ODD_ONE_OUT_BANK;
 const chainBank = globalThis.EPIPHANY_CHAIN_REACTION_BANK;
+const sentenceBank = globalThis.EPIPHANY_SENTENCE_SCRAMBLE_BANK;
 const baseUrl = String(process.env.SUPABASE_URL || '').replace(/\/$/, '');
 const anonKey = process.env.SUPABASE_ANON_KEY || '';
 const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
@@ -70,11 +72,20 @@ function chainReactionAnswerMap(mode) {
   }))]));
 }
 
+function sentenceScrambleAnswerMap(mode) {
+  return new Map(sentenceBank.modes[mode].map(question => [question.id, {
+    sentence: question.sentence,
+    acceptedAnswers: question.acceptedAnswers,
+    explanation: question.explanation,
+    skill: question.skill,
+  }]));
+}
+
 async function complete({ gameId, accessToken = null, guestIp = null, level = 'A1', mode = 'guided', daily = false }) {
   const started = await invoke({
     action: 'start', gameId,
     ...(gameId === 'word_forge' ? { trainingMode: mode } :
-      gameId === 'chain_reaction' ? { trainingMode: mode, ...(daily ? {daily:true,dailySeed:123456789} : {}) } :
+      (gameId === 'chain_reaction' || gameId === 'sentence_scramble') ? { trainingMode: mode, ...(daily ? {daily:true,dailySeed:123456789} : {}) } :
       { level, trainingMode: mode }),
   }, { accessToken, guestIp });
   assert.equal(started.status, 200, gameId + ' unified start failed: ' + JSON.stringify(started.body));
@@ -83,8 +94,9 @@ async function complete({ gameId, accessToken = null, guestIp = null, level = 'A
   assert.ok(Array.isArray(session.questions) && session.questions.length > 0);
   assert.equal(session.validatorVersion,
     gameId === 'word_forge' ? 'word-forge-reviewed-72-20261111-v1' :
-    gameId === 'chain_reaction' ? 'chain-reaction-72-20261112-v1' : 'odd-one-out-rotated-20261110-v2');
-  if (gameId === 'chain_reaction') {
+    gameId === 'chain_reaction' ? 'chain-reaction-72-20261112-v1' :
+    gameId === 'sentence_scramble' ? 'sentence-scramble-72-20261112-v1' : 'odd-one-out-rotated-20261110-v2');
+  if (gameId === 'chain_reaction' || gameId === 'sentence_scramble') {
     assert.equal(session.questions.length, daily ? 1 : 24);
     assert.equal(session.daily, daily);
   }
@@ -92,11 +104,53 @@ async function complete({ gameId, accessToken = null, guestIp = null, level = 'A
   else assert.match(session.guestToken || '', /^[0-9a-f]{64}$/);
 
   const answers = gameId === 'word_forge' ? wordForgeAnswerMap(mode) :
-    gameId === 'chain_reaction' ? chainReactionAnswerMap(mode) : oddOneOutAnswerMap(level);
+    gameId === 'chain_reaction' ? chainReactionAnswerMap(mode) :
+    gameId === 'sentence_scramble' ? sentenceScrambleAnswerMap(mode) : oddOneOutAnswerMap(level);
   let last;
   for (let index = 0; index < session.questions.length; index++) {
     const question = session.questions[index];
     let answer;
+    if (gameId === 'sentence_scramble') {
+      assert.deepEqual(Object.keys(question).sort(),['id','prompt','words'],'Sentence Scramble must expose only safe sentence tiles');
+      assert.equal(question.prompt,'Build the sentence in the correct order.');
+      assert.ok(Array.isArray(question.words)&&question.words.length>=3);
+      const canonical = answers.get(question.id);
+      assert.ok(canonical,'Sentence Scramble canonical answer missing from private bank');
+      const remaining = question.words.map((_,tile)=>tile);
+      const correctOrder = canonical.sentence.split(' ').map(word=>{
+        const tile = remaining.find(index=>question.words[index]===word);
+        assert.notEqual(tile,undefined,'Sentence Scramble canonical token missing from safe tiles');
+        remaining.splice(remaining.indexOf(tile),1);
+        return tile;
+      });
+      if(index===0){
+        const wrongOrder = correctOrder.slice().reverse();
+        await sleep(750);
+        const wrong = await invoke({
+          action:'answer',gameId,sessionId:session.sessionId,questionIndex:index,tileOrder:wrongOrder,
+          ...(!accessToken?{guestToken:session.guestToken}:{})
+        },{accessToken,guestIp});
+        assert.equal(wrong.status,200,'Sentence Scramble wrong arrangement must remain retryable');
+        assert.equal(wrong.body.correct,false);
+        assert.equal(wrong.body.nextIndex,0);
+        assert.equal(Object.hasOwn(wrong.body,'sentence'),false,'Wrong Sentence Scramble order must not reveal its sentence');
+        assert.equal(Object.hasOwn(wrong.body,'explanation'),false,'Wrong Sentence Scramble order must not reveal its explanation');
+        assert.equal(Object.hasOwn(wrong.body,'skill'),false,'Wrong Sentence Scramble order must not reveal its skill');
+      }
+      await sleep(750);
+      last=await invoke({
+        action:'answer',gameId,sessionId:session.sessionId,questionIndex:index,tileOrder:correctOrder,
+        ...(!accessToken?{guestToken:session.guestToken}:{})
+      },{accessToken,guestIp});
+      assert.equal(last.status,200,'Sentence Scramble answer '+index+' failed: '+JSON.stringify(last.body));
+      assert.equal(last.body.correct,true);
+      assert.equal(last.body.sentence,canonical.sentence);
+      assert.equal(last.body.explanation,canonical.explanation);
+      assert.equal(last.body.skill,canonical.skill);
+      assert.equal(last.body.completed,index===session.questions.length-1);
+      assert.equal(last.body.nextIndex,index+1);
+      continue;
+    }
     if (gameId === 'chain_reaction') {
       assert.equal(question.links.length,3);
       assert.equal(Object.hasOwn(question.links[0],'to'),false,'Chain Reaction next word leaked');
@@ -167,6 +221,11 @@ async function main() {
   assert.equal(wordBank.validateBank().valid, true, 'Word Forge bank invalid');
   assert.equal(oddBank.validateBank().valid, true, 'Odd One Out bank invalid');
   assert.equal(chainBank.validateBank().valid, true, 'Chain Reaction bank invalid');
+  assert.equal(sentenceBank.schemaVersion,1,'Sentence Scramble bank schema invalid');
+  assert.equal(sentenceBank.gameId,'sentence-scramble','Sentence Scramble bank identity invalid');
+  assert.equal(sentenceBank.totalChallenges,72,'Sentence Scramble bank total invalid');
+  assert.deepEqual(['guided','steady','challenge'].map(mode=>sentenceBank.modes[mode]?.length),[24,24,24],
+    'Sentence Scramble bank must contain 24 approved sentences per mode');
 
   const unknown = await invoke({ action: 'start', gameId: 'client_selected_module', trainingMode: 'guided' },
     { guestIp: '198.51.100.61' });
@@ -196,6 +255,12 @@ async function main() {
   const authDailyChainReaction = await complete({
     gameId: 'chain_reaction', accessToken: user.accessToken, mode: 'challenge', daily: true,
   });
+  const guestSentenceScramble = await complete({
+    gameId: 'sentence_scramble', guestIp: '198.51.100.66', mode: 'guided',
+  });
+  const authDailySentenceScramble = await complete({
+    gameId: 'sentence_scramble', accessToken: user.accessToken, mode: 'challenge', daily: true,
+  });
 
   const result = {
     userId: user.userId,
@@ -205,6 +270,8 @@ async function main() {
     authOddOneOut,
     guestChainReaction,
     authDailyChainReaction,
+    guestSentenceScramble,
+    authDailySentenceScramble,
   };
   writeFileSync(resultFile, JSON.stringify(result), { mode: 0o600 });
   process.stdout.write('Unified Think Lab Edge Function guest/auth parity tests passed.\n');
