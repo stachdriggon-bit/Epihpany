@@ -172,7 +172,6 @@ BEGIN
          OR jsonb_array_length(q -> 'words') <> 4
          OR COALESCE(q ->> 'answer','') !~ '^[0-3]$'
          OR COALESCE(q ->> 'id','') = ''
-         OR COALESCE(q ->> 'prompt','') = ''
       THEN
         RAISE EXCEPTION 'invalid Odd One Out canonical question' USING ERRCODE = '22023';
       END IF;
