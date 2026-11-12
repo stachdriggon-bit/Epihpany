@@ -69,7 +69,7 @@ function createHarness(options = {}) {
       return {error:null,data:{
         sessionId:'123e4567-e89b-42d3-a456-426614174001',
         guestToken:'c'.repeat(64),
-        validatorVersion:'chain-reaction-72-20261113-v1',
+        validatorVersion:'chain-reaction-72-20261112-v1',
         trainingMode:body.trainingMode,
         daily:false,
         questions:chainPrivateRound.map(question=>({
