@@ -369,7 +369,7 @@
   function canChooseThinkLabCEFR(level) {
     return THINK_LAB_CEFR_LEVELS.includes(level) && (hasThinkLabDeveloperAccess() || availableThinkLabCEFRLevels().includes(level));
   }
-  let mode = null, index = 0, score = 0, locked = false, clueCount = 0, oddHintStep = 0, ladderPath = [], ladderWordNote = null, ladderMistakeRecorded = false, roundMistakes = 0, activePool = null, activeDifficulty = null, forgePlaced = [], scramblePlaced = [], connectionSelected = [], chainStepIndex = 0, chainPath = [];
+  let mode = null, index = 0, score = 0, locked = false, clueCount = 0, oddHintStep = 0, ladderPath = [], ladderWordNote = null, ladderMistakeRecorded = false, roundMistakes = 0, activePool = null, activeDifficulty = null, forgePlaced = [], scramblePlaced = [], connectionSelected = [], chainStepIndex = 0, chainPath = [], chainExplanations = [];
 
   rounds.wordladder = [
     {start:'cat',goal:'dog',path:['cot','dot','dog'],hint:'Change exactly one letter at each step. Every step must be a real English word.',explain:'cat → cot → dot → dog changes one letter at each step, and every step forms a real word.'},
@@ -1242,7 +1242,7 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
     pickerGameId = id;
     pickerStage = 'game';
     selectedTrainingMode = ['guided','steady','challenge'].includes(trainingMode) ? trainingMode : 'steady';
-    mode=id; index=0; score=0; chainStepIndex=0; chainPath=[]; clueCount=0; roundMistakes=0; ladderPath=[]; ladderWordNote=null; ladderMistakeRecorded=false; oddHintStep=0;
+    mode=id; index=0; score=0; chainStepIndex=0; chainPath=[]; chainExplanations=[]; clueCount=0; roundMistakes=0; ladderPath=[]; ladderWordNote=null; ladderMistakeRecorded=false; oddHintStep=0;
     const hintLevel = selectedTrainingMode === 'guided' ? 2 : selectedTrainingMode === 'steady' ? 1 : 0;
     activeDifficulty = Object.assign({}, difficultyForMode(id), {level:selectedTrainingMode,hintLevel});
     const preparedMazePool = id === 'maze' && preparedMazeCEFR === selectedMazeCEFR && activePool && activePool.length ? activePool : null;
@@ -1297,6 +1297,55 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
       }
       validatorSessionId=data.sessionId;validatorClientForSession=validatorClient;validatorFunctionName='velorn-think-lab-validator';validatorGuestToken=signedIn?null:data.guestToken;
       activePool=data.questions.map(question=>({...question,prompt:'Forge the word from the letter tiles.'}));
+    }
+    if (id === 'chain') {
+      await (window.EpiphanyAuth?.whenReady?.() || Promise.resolve());
+      const signedIn = window.EpiphanyAuth?.isSignedIn?.() === true;
+      const validatorClient = signedIn ? window.EpiphanyAuth?.getValidatorClient?.() : window.EpiphanyAuth?.getGuestValidatorClient?.();
+      const isDaily = options.daily === true && dailyChallengeActive?.gameId === 'chain';
+      const functionName = 'velorn-think-lab-validator';
+      if (!validatorClient) {
+        mode = null; activePool = null;
+        root.innerHTML = '<div class="tl-game-card"><h2>Chain Reaction needs an internet connection</h2><p class="tl-game-instruction">We could not prepare a secure challenge session. Please reconnect and try again.</p><button type="button" class="tl-back" data-think-home>Think Lab home</button></div>';
+        return;
+      }
+      const startBody = { action:'start', gameId:'chain_reaction', trainingMode:selectedTrainingMode };
+      if (isDaily) {
+        if (!Number.isInteger(dailyChallengeActive.seed) || dailyChallengeActive.seed < 0 || dailyChallengeActive.seed > 0xffffffff) {
+          mode = null; activePool = null;
+          root.innerHTML = '<div class="tl-game-card"><h2>Daily challenge unavailable</h2><p class="tl-game-instruction">The saved daily challenge could not be verified. Please return to Think Lab.</p><button type="button" class="tl-back" data-think-home>Think Lab home</button></div>';
+          return;
+        }
+        startBody.daily = true;
+        startBody.dailySeed = dailyChallengeActive.seed;
+      }
+      const {data,error} = await validatorClient.functions.invoke(functionName,{body:startBody});
+      const expectedCount = isDaily ? 1 : 24;
+      const guestTokenValid = signedIn || (typeof data?.guestToken === 'string' && /^[0-9a-f]{64}$/.test(data.guestToken));
+      const safeQuestions = Array.isArray(data?.questions) && data.questions.length === expectedCount &&
+        data.questions.every(question => question && typeof question.title === 'string' &&
+          typeof question.start === 'string' && Array.isArray(question.links) && question.links.length === 3 &&
+          question.links.every(link => link && typeof link.from === 'string' &&
+            Array.isArray(link.options) && link.options.length === 3 &&
+            !Object.hasOwn(link,'to') && !Object.hasOwn(link,'answer') && !Object.hasOwn(link,'explanation')));
+      if (error || !data?.sessionId || !safeQuestions || !guestTokenValid ||
+          data.validatorVersion !== 'chain-reaction-72-20261113-v1' || data.trainingMode !== selectedTrainingMode) {
+        console.error('Trusted Chain Reaction session could not start:',error?.message||data?.error||'invalid response');
+        mode = null; activePool = null;
+        root.innerHTML = '<div class="tl-game-card"><h2>Chain Reaction is unavailable</h2><p class="tl-game-instruction">The secure challenge session could not be created. Your attempt has not started. Please try again.</p><button type="button" class="tl-back" data-think-home>Think Lab home</button></div>';
+        return;
+      }
+      validatorSessionId = data.sessionId;
+      validatorClientForSession = validatorClient;
+      validatorFunctionName = functionName;
+      validatorGuestToken = signedIn ? null : data.guestToken;
+      activePool = data.questions.map(question => ({
+        id:question.id,title:question.title,start:question.start,
+        links:question.links.map(link => ({from:link.from,options:link.options.slice()})),
+      }));
+      chainStepIndex = 0;
+      chainPath = [];
+      chainExplanations = [];
     }
     if (id === 'maze') preparedMazeCEFR = null;
     if (id === 'maze' && !activePool.length) {
@@ -1563,7 +1612,7 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
     if(e.target.closest('[data-translator-hint]')&&mode==='translator'&&!locked){const pool=activePool||getRoundPool('translator'),item=pool[index%pool.length],hint=root.querySelector('[data-translator-hint-text]'),button=root.querySelector('[data-translator-hint]');if(hint){hint.hidden=false;hint.textContent=item.hint;}if(button){button.disabled=true;button.textContent='Hint revealed';}saveInternalProgress(index);return;}
     if(e.target.closest('[data-training-hint]')&&mode&&!locked){const hint=root.querySelector('[data-training-hint-text]'),button=root.querySelector('[data-training-hint]');if(hint){hint.hidden=false;hint.textContent=guidedHint(mode);}if(button){button.disabled=true;button.textContent='Hint revealed';}saveInternalProgress(index);return;}
     if(e.target.closest('[data-think-clue]')){clueCount=Math.min((activePool || getRoundPool('detective'))[index%(activePool || getRoundPool('detective')).length].clues.length-1,clueCount+1);renderGame();return;}
-    if(e.target.closest('[data-think-next]')){window.EpiphanySpeech?.stop?.();index++;oddHintStep=0;chainStepIndex=0;chainPath=[];connectionSelected=[];clueCount=0;roundMistakes=0;ladderPath=[];ladderWordNote=null;ladderMistakeRecorded=false;if(index>=(activePool || getRoundPool(mode)).length){const finished=mode;const totalRounds=(activePool || getRoundPool(finished)).length;const finishingDaily=dailyChallengeActive&&dailyChallengeActive.gameId===finished;
+    if(e.target.closest('[data-think-next]')){window.EpiphanySpeech?.stop?.();index++;oddHintStep=0;chainStepIndex=0;chainPath=[];chainExplanations=[];connectionSelected=[];clueCount=0;roundMistakes=0;ladderPath=[];ladderWordNote=null;ladderMistakeRecorded=false;if(index>=(activePool || getRoundPool(mode)).length){const finished=mode;const totalRounds=(activePool || getRoundPool(finished)).length;const finishingDaily=dailyChallengeActive&&dailyChallengeActive.gameId===finished;
 if(!finishingDaily)window.EpiphanyThinkLab?.clearGameSnapshot?.(finished);
 window.EpiphanyThinkLab?.recordGameCompletion?.(finished,'session');
 if(finishingDaily){const result=window.EpiphanyThinkLab?.completeDailyChallenge?.(dailyChallengeActive.date,finished);if(result?.completed)dailyChallengeActive=null;}
@@ -1573,19 +1622,44 @@ root.innerHTML='<div class="tl-finish"><span class="tl-finish-mark">∴</span><s
     const chainAnswer=e.target.closest('[data-chain-answer]');
     if(chainAnswer&&mode==='chain'&&!locked){
       const pool=activePool||getRoundPool('chain'),item=pool[index%pool.length],steps=item.links,step=steps[chainStepIndex],chosen=Number(chainAnswer.dataset.chainAnswer);
-      if(chosen!==step.answer){
+      const fb=root.querySelector('#tl-feedback');
+      if(!validatorSessionId||!validatorClientForSession||validatorFunctionName!=='velorn-think-lab-validator'||(!window.EpiphanyAuth?.isSignedIn?.()&&!validatorGuestToken)){
+        fb.hidden=false;fb.className='tl-feedback is-wrong';fb.textContent='Your secure Chain Reaction session is unavailable. Return to Think Lab and start again.';return;
+      }
+      const answerBody={action:'answer',gameId:'chain_reaction',sessionId:validatorSessionId,questionIndex:index,linkIndex:chainStepIndex,selectedIndex:chosen};
+      if(validatorGuestToken)answerBody.guestToken=validatorGuestToken;
+      const {data,error}=await validatorClientForSession.functions.invoke(validatorFunctionName,{body:answerBody});
+      const validResponse=!!data&&typeof data.correct==='boolean'&&data.questionIndex===index&&
+        data.linkIndex===chainStepIndex&&Number.isInteger(data.nextLinkIndex)&&
+        Number.isInteger(data.nextIndex)&&typeof data.challengeCompleted==='boolean'&&typeof data.completed==='boolean';
+      if(error||!validResponse){
+        fb.hidden=false;fb.className='tl-feedback is-wrong';fb.textContent='We could not verify this link. Please check your connection and try again.';return;
+      }
+      if(!data.correct){
+        if(data.nextLinkIndex!==chainStepIndex||data.nextIndex!==index||data.challengeCompleted||data.completed||data.nextWord!=null||data.explanation!=null){
+          fb.hidden=false;fb.className='tl-feedback is-wrong';fb.textContent='The secure session returned an inconsistent link state. Please restart Chain Reaction.';return;
+        }
         roundMistakes++;
         if(window.EpiphanyThinkLab)window.EpiphanyThinkLab.recordResult('vocabulary','chain',false,false);
-        const fb=root.querySelector('#tl-feedback');fb.hidden=false;fb.className='tl-feedback is-wrong';
         const hint=roundMistakes>=2?adaptiveHint('chain'):'';
+        fb.hidden=false;fb.className='tl-feedback is-wrong';
         fb.innerHTML='<strong>That link is possible, but not the strongest fit.</strong><p>Try a word that connects more directly to “'+esc(step.from)+'”.</p>'+(hint?'<p>'+esc(hint)+'</p>':'');
         saveInternalProgress(index);return;
       }
-      chainPath.push(step.to);
+      const finalLink=chainStepIndex===steps.length-1;
+      const finalChallenge=index===pool.length-1;
+      if(data.nextLinkIndex!==(finalLink?0:chainStepIndex+1)||
+         data.nextIndex!==index+(finalLink?1:0)||
+         data.challengeCompleted!==finalLink||
+         data.completed!==(finalLink&&finalChallenge)||
+         typeof data.nextWord!=='string'||typeof data.explanation!=='string'||!data.explanation){
+        fb.hidden=false;fb.className='tl-feedback is-wrong';fb.textContent='The secure session did not confirm the expected link progression. Please restart Chain Reaction.';return;
+      }
+      chainPath.push(data.nextWord);
+      chainExplanations.push(data.explanation);
       roundMistakes=0;
-      const fb=root.querySelector('#tl-feedback');
-      if(chainStepIndex<steps.length-1){
-        const explanation='<p><strong>Link '+(chainStepIndex+1)+':</strong> '+esc(step.explanation)+'</p>';
+      if(!finalLink){
+        const explanation='<p><strong>Link '+(chainStepIndex+1)+':</strong> '+esc(data.explanation)+'</p>';
         chainStepIndex++;
         renderGame();
         const updated=root.querySelector('#tl-feedback');
@@ -1598,7 +1672,7 @@ root.innerHTML='<div class="tl-finish"><span class="tl-finish-mark">∴</span><s
       root.querySelectorAll('[data-chain-answer]').forEach(button=>button.disabled=true);
       if(window.EpiphanyThinkLab)window.EpiphanyThinkLab.recordResult('vocabulary','chain',true,index===pool.length-1);
       fb.hidden=false;fb.className='tl-feedback is-correct';
-      fb.innerHTML='<strong>✓ Chain complete!</strong>'+steps.map((part,i)=>'<p><strong>Link '+(i+1)+':</strong> '+esc(part.from)+' → '+esc(part.to)+'. '+esc(part.explanation)+'</p>').join('');
+      fb.innerHTML='<strong>✓ Chain complete!</strong>'+steps.map((part,i)=>'<p><strong>Link '+(i+1)+':</strong> '+esc(part.from)+' → '+esc(chainPath[i])+'. '+esc(chainExplanations[i])+'</p>').join('');
       const next=root.querySelector('[data-think-next]');if(next)next.hidden=false;saveInternalProgress(index+1);return;
     }
     if(e.target.closest('[data-odd-hint]') && mode === 'odd' && !locked) {
@@ -1649,7 +1723,7 @@ root.innerHTML='<div class="tl-finish"><span class="tl-finish-mark">∴</span><s
   });
   window.EPIPHANY_THINK_LAB_HOME = function () {
     window.EpiphanySpeech?.stop?.();
-    mode = null; activePool = null; activeDifficulty = null; validatorSessionId = null; validatorClientForSession = null; validatorFunctionName = null; validatorGuestToken = null; pickerStage = 'landing'; pickerGameId = null;
+    mode = null; activePool = null; activeDifficulty = null; validatorSessionId = null; validatorClientForSession = null; validatorFunctionName = null; validatorGuestToken = null; chainExplanations = []; pickerStage = 'landing'; pickerGameId = null;
     landing();
   };
   landing();
