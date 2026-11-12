@@ -77,22 +77,22 @@ test('feature data loader does not request large datasets until requested', asyn
   ]);
   assert.ok(requested.slice(4).every(src => /\?v=.+/.test(src)));
   await context.window.EPIPHANY_LAZY_LOAD('arabic');
-  assert.deepEqual(requested.slice(23).map(src => src.split('?')[0]), [
+  assert.deepEqual(requested.slice(22).map(src => src.split('?')[0]), [
     'data-translation-ar.js',
     'data-translation-ar-fill.js'
   ]);
-  assert.ok(requested.slice(23).every(src => /\?v=.+/.test(src)));
+  assert.ok(requested.slice(22).every(src => /\?v=.+/.test(src)));
   assert.deepEqual(merged, [true]);
   await context.window.EPIPHANY_LAZY_LOAD('chronicle');
-  assert.deepEqual(requested.slice(25).map(src => src.split('?')[0]), ['data-world-registry.js', 'data-world-events.js']);
-  assert.ok(requested.slice(23).every(src => /\?v=.+/.test(src)));
+  assert.deepEqual(requested.slice(24).map(src => src.split('?')[0]), ['data-world-registry.js', 'data-world-events.js']);
+  assert.ok(requested.slice(22).every(src => /\?v=.+/.test(src)));
 
   await assert.rejects(context.window.EPIPHANY_LAZY_LOAD('directions'), /Unknown feature data group/, 'the standalone Directions loader is retired; its bank loads only with Fluentia');
 
   await context.window.EPIPHANY_LAZY_LOAD('expansionVocabulary');
-  assert.deepEqual(requested.slice(27).map(src => src.split('?')[0]), ['data-expansion-translations.js','data-expansion-runtime.js','data-expansion-wotd.js','data-expansion-vocabulary.js']);
+  assert.deepEqual(requested.slice(26).map(src => src.split('?')[0]), ['data-expansion-translations.js','data-expansion-runtime.js','data-expansion-wotd.js','data-expansion-vocabulary.js']);
   await context.window.EPIPHANY_LAZY_LOAD('expansionGrammar');
-  assert.deepEqual(requested.slice(31).map(src => src.split('?')[0]), ['data-expansion-grammar.js'], 'other game banks should remain unloaded');
+  assert.deepEqual(requested.slice(30).map(src => src.split('?')[0]), ['data-expansion-grammar.js'], 'other game banks should remain unloaded');
   assert.equal(fluentiaRegistrations, 3);
 });
 
