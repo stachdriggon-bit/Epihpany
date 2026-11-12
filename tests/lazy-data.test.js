@@ -63,7 +63,6 @@ test('feature data loader does not request large datasets until requested', asyn
     'fluentia-soundscape-bank.js',
     'fluentia-practice-bank.js',
     'word-connections-bank.js',
-    'sentence-scramble-bank.js',
     'word-forge-bank.js',
     'word-hunt-bank.js',
     'think-lab-progression.js',
@@ -77,22 +76,22 @@ test('feature data loader does not request large datasets until requested', asyn
   ]);
   assert.ok(requested.slice(4).every(src => /\?v=.+/.test(src)));
   await context.window.EPIPHANY_LAZY_LOAD('arabic');
-  assert.deepEqual(requested.slice(22).map(src => src.split('?')[0]), [
+  assert.deepEqual(requested.slice(21).map(src => src.split('?')[0]), [
     'data-translation-ar.js',
     'data-translation-ar-fill.js'
   ]);
-  assert.ok(requested.slice(22).every(src => /\?v=.+/.test(src)));
+  assert.ok(requested.slice(21).every(src => /\?v=.+/.test(src)));
   assert.deepEqual(merged, [true]);
   await context.window.EPIPHANY_LAZY_LOAD('chronicle');
-  assert.deepEqual(requested.slice(24).map(src => src.split('?')[0]), ['data-world-registry.js', 'data-world-events.js']);
-  assert.ok(requested.slice(22).every(src => /\?v=.+/.test(src)));
+  assert.deepEqual(requested.slice(23).map(src => src.split('?')[0]), ['data-world-registry.js', 'data-world-events.js']);
+  assert.ok(requested.slice(21).every(src => /\?v=.+/.test(src)));
 
   await assert.rejects(context.window.EPIPHANY_LAZY_LOAD('directions'), /Unknown feature data group/, 'the standalone Directions loader is retired; its bank loads only with Fluentia');
 
   await context.window.EPIPHANY_LAZY_LOAD('expansionVocabulary');
-  assert.deepEqual(requested.slice(26).map(src => src.split('?')[0]), ['data-expansion-translations.js','data-expansion-runtime.js','data-expansion-wotd.js','data-expansion-vocabulary.js']);
+  assert.deepEqual(requested.slice(25).map(src => src.split('?')[0]), ['data-expansion-translations.js','data-expansion-runtime.js','data-expansion-wotd.js','data-expansion-vocabulary.js']);
   await context.window.EPIPHANY_LAZY_LOAD('expansionGrammar');
-  assert.deepEqual(requested.slice(30).map(src => src.split('?')[0]), ['data-expansion-grammar.js'], 'other game banks should remain unloaded');
+  assert.deepEqual(requested.slice(29).map(src => src.split('?')[0]), ['data-expansion-grammar.js'], 'other game banks should remain unloaded');
   assert.equal(fluentiaRegistrations, 3);
 });
 
@@ -152,14 +151,14 @@ test('initial HTML defers stories and World data and keeps loader in offline she
   const lazy = fs.readFileSync(path.join(root, 'lazy-data.js'), 'utf8');
   assert.ok(lazy.includes("spot: ['data-spot.js"));
   assert.ok(lazy.includes("typing: ['data-typing.js"));
-  for (const asset of ['data-stories.js', 'data-world.js', 'data-world-sprites.js', 'fluentia-textwise-bank.js', 'fluentia-soundscape-bank.js', 'sound-maze-bank.js', 'sound-maze-content.js', 'sentence-scramble-bank.js', 'word-forge-bank.js', 'think-lab.js', 'think-lab-progression.js', 'word-hunt-bank.js', 'word-hunt.js', 'codebreaker-bank.js', 'codebreaker.js', 'letter-grid-bank.js', 'letter-grid.js', 'fluentia-practice-bank.js', 'life-skills.js', 'data-translation-ar.js', 'data-translation-ar-fill.js']) {
+  for (const asset of ['data-stories.js', 'data-world.js', 'data-world-sprites.js', 'fluentia-textwise-bank.js', 'fluentia-soundscape-bank.js', 'sound-maze-bank.js', 'sound-maze-content.js', 'word-forge-bank.js', 'think-lab.js', 'think-lab-progression.js', 'word-hunt-bank.js', 'word-hunt.js', 'codebreaker-bank.js', 'codebreaker.js', 'letter-grid-bank.js', 'letter-grid.js', 'fluentia-practice-bank.js', 'life-skills.js', 'data-translation-ar.js', 'data-translation-ar-fill.js']) {
     assert.ok(!coreAssets.includes("'./" + asset + "'"), asset + ' should not be a core startup asset');
   }
   for (const asset of ['resonance.css', 'life-skills.css', 'word-hunt.css', 'codebreaker.css', 'letter-grid.css']) {
     assert.ok(!coreAssets.includes("'./" + asset + "'"), asset + ' must not be part of the core cache');
     assert.ok(lazyAssets.includes("'./" + asset + "'"), asset + ' should be cached as a lazy offline asset');
   }
-  for (const asset of ['fluentia-textwise-bank.js', 'fluentia-soundscape-bank.js', 'data-stories.js', 'data-world.js', 'data-world-registry.js', 'data-world-events.js', 'data-world-sprites.js', 'sound-maze-bank.js', 'sound-maze-content.js', 'sentence-scramble-bank.js', 'word-forge-bank.js', 'think-lab.js', 'word-hunt-bank.js', 'word-hunt.js', 'codebreaker-bank.js', 'codebreaker.js', 'letter-grid-bank.js', 'letter-grid.js', 'fluentia-practice-bank.js', 'life-skills.js', 'language-detective-investigation.js']) {
+  for (const asset of ['fluentia-textwise-bank.js', 'fluentia-soundscape-bank.js', 'data-stories.js', 'data-world.js', 'data-world-registry.js', 'data-world-events.js', 'data-world-sprites.js', 'sound-maze-bank.js', 'sound-maze-content.js', 'word-forge-bank.js', 'think-lab.js', 'word-hunt-bank.js', 'word-hunt.js', 'codebreaker-bank.js', 'codebreaker.js', 'letter-grid-bank.js', 'letter-grid.js', 'fluentia-practice-bank.js', 'life-skills.js', 'language-detective-investigation.js']) {
     assert.ok(lazyAssets.includes("'./" + asset + "'"), asset + ' should be cached as a lazy offline asset');
   }
   assert.ok(!lazyAssets.includes("'./chain-reaction-bank.js'"), 'the private Chain Reaction answer bank must never be cached in the browser');
@@ -388,35 +387,33 @@ test('optional lazy loads respect the adaptive concurrency limit', async () => {
   assert.equal(requested[3].split('?')[0], 'word-connections-bank.js');
   scripts[3].onload();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[4].split('?')[0], 'sentence-scramble-bank.js');
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(requested[4].split('?')[0], 'word-forge-bank.js');
   scripts[4].onload();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[5].split('?')[0], 'word-forge-bank.js');
+  assert.equal(requested[5].split('?')[0], 'word-hunt-bank.js');
   scripts[5].onload();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[6].split('?')[0], 'word-hunt-bank.js');
+  assert.equal(requested[6].split('?')[0], 'think-lab-progression.js');
   scripts[6].onload();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[7].split('?')[0], 'think-lab-progression.js');
+  assert.equal(requested[7].split('?')[0], 'think-lab.js');
   scripts[7].onload();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[8].split('?')[0], 'think-lab.js');
+  assert.equal(requested[8].split('?')[0], 'word-hunt.js');
   scripts[8].onload();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[9].split('?')[0], 'word-hunt.js');
+  assert.equal(requested[9].split('?')[0], 'codebreaker-bank.js');
   scripts[9].onload();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[10].split('?')[0], 'codebreaker-bank.js');
+  assert.equal(requested[10].split('?')[0], 'codebreaker.js');
   scripts[10].onload();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[11].split('?')[0], 'codebreaker.js');
+  assert.equal(requested[11].split('?')[0], 'letter-grid-bank.js');
   scripts[11].onload();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[12].split('?')[0], 'letter-grid-bank.js');
+  assert.equal(requested[12].split('?')[0], 'letter-grid.js');
   scripts[12].onload();
-  await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[13].split('?')[0], 'letter-grid.js');
-  scripts[13].onload();
   await new Promise(resolve => setImmediate(resolve));
 
 
@@ -474,35 +471,33 @@ test('explicit navigation bypasses and promotes queued optional loads', async ()
   assert.equal(requested[3].split('?')[0], 'word-connections-bank.js');
   scripts[3].onload();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[4].split('?')[0], 'sentence-scramble-bank.js');
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(requested[4].split('?')[0], 'word-forge-bank.js');
   scripts[4].onload();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[5].split('?')[0], 'word-forge-bank.js');
+  assert.equal(requested[5].split('?')[0], 'word-hunt-bank.js');
   scripts[5].onload();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[6].split('?')[0], 'word-hunt-bank.js');
+  assert.equal(requested[6].split('?')[0], 'think-lab-progression.js');
   scripts[6].onload();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[7].split('?')[0], 'think-lab-progression.js');
+  assert.equal(requested[7].split('?')[0], 'think-lab.js');
   scripts[7].onload();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[8].split('?')[0], 'think-lab.js');
+  assert.equal(requested[8].split('?')[0], 'word-hunt.js');
   scripts[8].onload();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[9].split('?')[0], 'word-hunt.js');
+  assert.equal(requested[9].split('?')[0], 'codebreaker-bank.js');
   scripts[9].onload();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[10].split('?')[0], 'codebreaker-bank.js');
+  assert.equal(requested[10].split('?')[0], 'codebreaker.js');
   scripts[10].onload();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[11].split('?')[0], 'codebreaker.js');
+  assert.equal(requested[11].split('?')[0], 'letter-grid-bank.js');
   scripts[11].onload();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[12].split('?')[0], 'letter-grid-bank.js');
+  assert.equal(requested[12].split('?')[0], 'letter-grid.js');
   scripts[12].onload();
-  await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[13].split('?')[0], 'letter-grid.js');
-  scripts[13].onload();
   await new Promise(resolve => setImmediate(resolve));
 
 
@@ -581,35 +576,33 @@ test('background optional loads pause while constrained, resume once, and never 
   assert.equal(requested[3].split('?')[0], 'word-connections-bank.js');
   scripts[3].onload();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[4].split('?')[0], 'sentence-scramble-bank.js');
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(requested[4].split('?')[0], 'word-forge-bank.js');
   scripts[4].onload();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[5].split('?')[0], 'word-forge-bank.js');
+  assert.equal(requested[5].split('?')[0], 'word-hunt-bank.js');
   scripts[5].onload();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[6].split('?')[0], 'word-hunt-bank.js');
+  assert.equal(requested[6].split('?')[0], 'think-lab-progression.js');
   scripts[6].onload();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[7].split('?')[0], 'think-lab-progression.js');
+  assert.equal(requested[7].split('?')[0], 'think-lab.js');
   scripts[7].onload();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[8].split('?')[0], 'think-lab.js');
+  assert.equal(requested[8].split('?')[0], 'word-hunt.js');
   scripts[8].onload();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[9].split('?')[0], 'word-hunt.js');
+  assert.equal(requested[9].split('?')[0], 'codebreaker-bank.js');
   scripts[9].onload();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[10].split('?')[0], 'codebreaker-bank.js');
+  assert.equal(requested[10].split('?')[0], 'codebreaker.js');
   scripts[10].onload();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[11].split('?')[0], 'codebreaker.js');
+  assert.equal(requested[11].split('?')[0], 'letter-grid-bank.js');
   scripts[11].onload();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[12].split('?')[0], 'letter-grid-bank.js');
+  assert.equal(requested[12].split('?')[0], 'letter-grid.js');
   scripts[12].onload();
-  await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[13].split('?')[0], 'letter-grid.js');
-  scripts[13].onload();
   await new Promise(resolve => setImmediate(resolve));
 
 
@@ -618,12 +611,12 @@ test('background optional loads pause while constrained, resume once, and never 
   policy = { ...policy, allowSpeculativePreload: false, deferNonEssentialWork: true };
   const explicit = context.window.EPIPHANY_LAZY_LOAD('world');
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[14].split('?')[0], 'data-world.js',
+  assert.equal(requested[13].split('?')[0], 'data-world.js',
     'explicit navigation must bypass background deferral');
-  scripts[14].onload();
+  scripts[13].onload();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[15].split('?')[0], 'data-world-sprites.js');
-  scripts[15].onload();
+  assert.equal(requested[14].split('?')[0], 'data-world-sprites.js');
+  scripts[14].onload();
   await explicit;
 });
 
