@@ -16,7 +16,7 @@ DECLARE
   i integer;
   link_no integer;
   event_count integer;
-  wrong_attempt_count integer;
+  observed_wrong_attempt_count integer;
   expected_next_index integer;
   expected_next_link integer;
   expected_challenge_completed boolean;
@@ -66,9 +66,9 @@ BEGIN
      OR (result->>'next_index')::integer <> 0
      OR result ? 'next_word' OR result ? 'explanation'
   THEN RAISE EXCEPTION 'Wrong Chain Reaction link did not remain retryable or leaked its answer: %',result; END IF;
-  SELECT wrong_attempt_count INTO wrong_attempt_count
+  SELECT wrong_attempt_count INTO observed_wrong_attempt_count
   FROM economy_private.think_lab_validator_sessions WHERE session_id=full_session;
-  IF wrong_attempt_count <> 1 THEN RAISE EXCEPTION 'Wrong Chain Reaction link attempt was not aggregated'; END IF;
+  IF observed_wrong_attempt_count <> 1 THEN RAISE EXCEPTION 'Wrong Chain Reaction link attempt was not aggregated'; END IF;
 
   -- A later link cannot be submitted before the expected link.
   UPDATE economy_private.think_lab_validator_sessions
