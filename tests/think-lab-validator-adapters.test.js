@@ -8,12 +8,13 @@ import {
 } from "../supabase/functions/_shared/think-lab-validator-adapters.mjs";
 
 test("adapter registry is a fixed allowlist and rejects client-selected unknown games", () => {
-  assert.deepEqual(listThinkLabAdapterIds().sort(), ["odd_one_out", "word_forge"]);
+  assert.deepEqual(listThinkLabAdapterIds().sort(), ["chain_reaction", "odd_one_out", "word_forge"]);
   assert.equal(getThinkLabAdapter("word_forge").id, "word_forge");
   assert.equal(getThinkLabAdapter("odd_one_out").id, "odd_one_out");
-  assert.equal(getThinkLabAdapter("chain_reaction"), null);
+  assert.equal(getThinkLabAdapter("chain_reaction").id, "chain_reaction");
+
   assert.equal(getThinkLabAdapter("../word-forge"), null);
-  assert.throws(() => resolveThinkLabAdapter("chain_reaction"), /Unsupported Think Lab game/);
+
 });
 
 test("registered adapters satisfy the same server-side contract", () => {
@@ -150,4 +151,57 @@ test("Odd One Out adapter preserves level/mode selection and index-answer contra
   assert.equal(response.level, "B2");
   assert.equal(response.questions.length, 1);
   assert.equal("answer" in response.questions[0], false);
+});
+
+test("Chain Reaction adapter keeps 24 challenges as units and projects no answer material", () => {
+  const adapter = resolveThinkLabAdapter("chain_reaction");
+  const makeChallenge = (n) => ({
+    id: `CR-G-${String(n).padStart(3, "0")}`,
+    title: "A valid chain",
+    start: "BEE",
+    links: [
+      { from: "BEE", to: "HONEY", options: ["HONEY", "MILK", "BREAD"], answer: 0, explanation: "Bees produce honey." },
+      { from: "HONEY", to: "JAR", options: ["BOX", "JAR", "PLATE"], answer: 1, explanation: "Honey is stored in a jar." },
+      { from: "JAR", to: "LID", options: ["LID", "HANDLE", "WHEEL"], answer: 0, explanation: "A jar has a lid." },
+    ],
+  });
+  const round = Array.from({length:24},(_,i)=>makeChallenge(i+1));
+  assert.equal(adapter.validateStartRequest({action:"start",trainingMode:"guided"}),true);
+  assert.equal(adapter.validateStartRequest({action:"start",trainingMode:"guided",daily:true}),true);
+  assert.equal(adapter.validateStartRequest({action:"start",trainingMode:"guided",daily:"yes"}),false);
+  const canonical = adapter.buildCanonicalQuestions(round,{trainingMode:"guided"});
+  assert.equal(canonical.length,24);
+  const projected = adapter.projectQuestions(canonical);
+  assert.equal(projected.length,24);
+  assert.equal(projected[0].links.length,3);
+  assert.equal("to" in projected[0].links[0],false);
+  assert.equal("answer" in projected[0].links[0],false);
+  assert.equal("explanation" in projected[0].links[0],false);
+  const daily = adapter.buildCanonicalQuestions(round.slice(0,1),{trainingMode:"guided",daily:true});
+  assert.equal(daily.length,1);
+  assert.equal(adapter.validateAnswerRequest({
+    action:"answer",sessionId:"f4100000-0000-4000-8000-000000000051",
+    questionIndex:0,linkIndex:1,selectedIndex:2,
+  },false),true);
+  assert.equal(adapter.validateAnswerRequest({
+    action:"answer",sessionId:"f4100000-0000-4000-8000-000000000051",
+    questionIndex:0,linkIndex:3,selectedIndex:2,
+  },false),false);
+  assert.deepEqual(adapter.answerRpcArguments({
+    userId:null,guestTokenHash:"a".repeat(64),
+    body:{sessionId:"f4100000-0000-4000-8000-000000000051",questionIndex:4,linkIndex:2,selectedIndex:1},
+  }),{
+    p_user_id:null,p_guest_token_hash:"a".repeat(64),
+    p_session_id:"f4100000-0000-4000-8000-000000000051",
+    p_game_id:"chain_reaction",p_question_index:4,
+    p_answer:{linkIndex:2,selectedIndex:1},
+  });
+  assert.equal(adapter.projectAnswer({
+    correct:true,question_index:4,link_index:2,next_link_index:0,next_index:5,
+    challenge_completed:true,completed:false,next_word:"LID",explanation:"A jar has a lid.",
+  }).nextWord,"LID");
+  assert.equal(adapter.buildStartResponse({
+    sessionId:"f4100000-0000-4000-8000-000000000051",guestToken:null,
+    questions:canonical,body:{trainingMode:"guided"},
+  }).questions.length,24);
 });
