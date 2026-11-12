@@ -63,7 +63,25 @@ function createHarness(options = {}) {
   let codebreakerOpened = 0;
   let letterGridOpened = 0;
   let chainPrivateRound = [];
+  let sentencePrivateRound = [];
   const validatorClient = {functions:{async invoke(_name,{body}={}) {
+    if (body?.action === 'start' && body.gameId === 'sentence_scramble') {
+      const bank = sentenceScrambleContext.window.EPIPHANY_SENTENCE_SCRAMBLE_BANK;
+      sentencePrivateRound = bank.modes[body.trainingMode].map(item => {
+        const words = item.sentence.trim().split(' ');
+        for (let i = words.length - 1; i > 0; i--) [words[i], words[0]] = [words[0], words[i]];
+        return { ...item, words };
+      });
+      if (body.daily === true) sentencePrivateRound = sentencePrivateRound.slice(0, 1);
+      return {error:null,data:{
+        sessionId:'123e4567-e89b-42d3-a456-426614174002',
+        guestToken:'d'.repeat(64),
+        validatorVersion:'sentence-scramble-72-20261112-v1',
+        trainingMode:body.trainingMode,
+        daily:body.daily === true,
+        questions:sentencePrivateRound.map(question=>({id:question.id,prompt:question.prompt,words:question.words.slice()}))
+      }};
+    }
     if (body?.action === 'start' && body.gameId === 'chain_reaction') {
       chainPrivateRound = chainReactionContext.window.EPIPHANY_CHAIN_REACTION_BANK.selectRound(body.trainingMode,()=>0);
       return {error:null,data:{
@@ -83,6 +101,17 @@ function createHarness(options = {}) {
       guestToken:'a'.repeat(64),
       questions:Array.from({length:24},(_,index)=>({id:'WF-G-'+String(index+1).padStart(3,'0'),clue:'A reviewed word clue number '+(index+1)+'.',letters:'APPLE',prompt:'Forge the word from the letter tiles.'}))
     }};
+    if (body?.action === 'answer' && body.gameId === 'sentence_scramble') {
+      const question = sentencePrivateRound[body.questionIndex];
+      const attempt = body.tileOrder.map(tile => question.words[tile]).join(' ');
+      const normalize = value => String(value).toLowerCase().replace(/[^a-z0-9 ]/g,'').replace(/ +/g,' ').trim();
+      const correct = [question.sentence,...question.acceptedAnswers].some(answer => normalize(answer) === normalize(attempt));
+      return {error:null,data:{
+        correct,questionIndex:body.questionIndex,nextIndex:body.questionIndex+(correct?1:0),
+        completed:correct&&body.questionIndex===sentencePrivateRound.length-1,
+        ...(correct?{sentence:question.sentence,explanation:question.explanation,skill:question.skill}:{})
+      }};
+    }
     if (body?.action === 'answer' && body.gameId === 'chain_reaction') {
       const question=chainPrivateRound[body.questionIndex],link=question.links[body.linkIndex];
       const correct=body.selectedIndex===link.answer,finalLink=body.linkIndex===2;
@@ -102,7 +131,6 @@ function createHarness(options = {}) {
     EpiphanyAuth: {isDeveloper: () => true, whenReady:()=>Promise.resolve(), isSignedIn:()=>false, getGuestValidatorClient:()=>validatorClient},
     EPIPHANY_SOUND_MAZE_TOOLS: soundMazeTools,
     EPIPHANY_WORD_CONNECTIONS_BANK: connectionContext.window.EPIPHANY_WORD_CONNECTIONS_BANK,
-    EPIPHANY_SENTENCE_SCRAMBLE_BANK: sentenceScrambleContext.window.EPIPHANY_SENTENCE_SCRAMBLE_BANK,
     EPIPHANY_WORD_FORGE_BANK: wordForgeContext.window.EPIPHANY_WORD_FORGE_BANK,
     EPIPHANY_CHAIN_REACTION_BANK: chainReactionContext.window.EPIPHANY_CHAIN_REACTION_BANK,
     EPIPHANY_CROSSWORD_QUEST: { open() { crosswordOpened++; root.innerHTML = 'crossword-level-picker'; } },
@@ -135,7 +163,7 @@ function createHarness(options = {}) {
     assert.equal(typeof listeners.click, 'function', 'Think Lab click handler should be registered');
     return listeners.click({target:{closest: candidate => candidate === selector ? element : null}});
   }
-  return {root,click,getSavedMazeCEFR:()=>savedMazeCEFR,chainBank:window.EPIPHANY_CHAIN_REACTION_BANK,getChainRound:()=>chainPrivateRound,feedback,recordedResults,getCrosswordOpened:()=>crosswordOpened,getWordHuntOpened:()=>wordHuntOpened,getCodebreakerOpened:()=>codebreakerOpened,getLetterGridOpened:()=>letterGridOpened,savedSnapshots};
+  return {root,click,getSavedMazeCEFR:()=>savedMazeCEFR,chainBank:window.EPIPHANY_CHAIN_REACTION_BANK,getChainRound:()=>chainPrivateRound,getSentenceRound:()=>sentencePrivateRound,feedback,recordedResults,getCrosswordOpened:()=>crosswordOpened,getWordHuntOpened:()=>wordHuntOpened,getCodebreakerOpened:()=>codebreakerOpened,getLetterGridOpened:()=>letterGridOpened,savedSnapshots};
 }
 
 test('existing mode-based Think Lab games open the shared three-mode picker before play', () => {
