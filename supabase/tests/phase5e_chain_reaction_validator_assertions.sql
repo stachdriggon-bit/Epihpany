@@ -50,7 +50,7 @@ BEGIN
     full_questions,clock_timestamp()+interval '35 minutes'
   );
   PERFORM public.velorn_start_think_lab_validator_session(
-    daily_guest,'chain_reaction',NULL,repeat('a',64),repeat('b',64),'chain-reaction-72-20261112-v1',NULL,'challenge',
+    daily_guest,'chain_reaction',NULL,repeat('a',64),repeat('b',64),'chain-reaction-72-20261112-v1',NULL,'guided',
     daily_questions,clock_timestamp()+interval '35 minutes'
   );
 
