@@ -394,7 +394,7 @@ test('optional lazy loads respect the adaptive concurrency limit', async () => {
   assert.equal(requested[5].split('?')[0], 'word-forge-bank.js');
   scripts[5].onload();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[6].split('?')[0], );
+  assert.equal(requested[6].split('?')[0], 'word-hunt-bank.js');
   scripts[6].onload();
   await new Promise(resolve => setImmediate(resolve));
   assert.equal(requested[7].split('?')[0], 'think-lab-progression.js');
@@ -481,7 +481,7 @@ test('explicit navigation bypasses and promotes queued optional loads', async ()
   assert.equal(requested[5].split('?')[0], 'word-forge-bank.js');
   scripts[5].onload();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[6].split('?')[0], );
+  assert.equal(requested[6].split('?')[0], 'word-hunt-bank.js');
   scripts[6].onload();
   await new Promise(resolve => setImmediate(resolve));
   assert.equal(requested[7].split('?')[0], 'think-lab-progression.js');
@@ -589,7 +589,7 @@ test('background optional loads pause while constrained, resume once, and never 
   assert.equal(requested[5].split('?')[0], 'word-forge-bank.js');
   scripts[5].onload();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[6].split('?')[0], );
+  assert.equal(requested[6].split('?')[0], 'word-hunt-bank.js');
   scripts[6].onload();
   await new Promise(resolve => setImmediate(resolve));
   assert.equal(requested[7].split('?')[0], 'think-lab-progression.js');
