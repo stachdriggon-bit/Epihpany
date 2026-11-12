@@ -120,7 +120,7 @@ test('server-backed game migration clears legacy daily snapshots without complet
   const other = progression.selectDailyChallenge({date:'2026-11-08',level:'A1',availableGameIds:['maze']});
   store.startDailyChallenge(sentence);
   store.startDailyChallenge(other);
-  const snapshot = {bankVersion:'legacy-local-sentence-v1',level:'steady',trainingMode:'steady',position:0,payload:{pool:[{sentence:'private answer'}],score:0}};
+  const snapshot = {bankVersion:'legacy-local-sentence-v1',level:'A1',trainingMode:'steady',position:0,payload:{pool:[{sentence:'private answer'}]}};
   assert.equal(store.saveDailyChallengeSnapshot(sentence.date,sentence.gameId,snapshot).saved,true);
   assert.equal(store.saveDailyChallengeSnapshot(other.date,other.gameId,snapshot).saved,true);
   assert.equal(store.clearDailyChallengeSnapshots('scramble'),1);
