@@ -409,17 +409,16 @@ test('optional lazy loads respect the adaptive concurrency limit', async () => {
   assert.equal(requested[10].split('?')[0], 'codebreaker-bank.js');
   scripts[10].onload();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[11].split('?')[0], 'codebreaker-bank.js');
+  assert.equal(requested[11].split('?')[0], 'codebreaker.js');
   scripts[11].onload();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[12].split('?')[0], 'codebreaker.js');
+  assert.equal(requested[12].split('?')[0], 'letter-grid-bank.js');
   scripts[12].onload();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[13].split('?')[0], 'letter-grid-bank.js');
+  assert.equal(requested[13].split('?')[0], 'letter-grid.js');
   scripts[13].onload();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[14].split('?')[0], 'letter-grid.js');
-  scripts[14].onload();
+
 
 });
 
@@ -496,17 +495,16 @@ test('explicit navigation bypasses and promotes queued optional loads', async ()
   assert.equal(requested[10].split('?')[0], 'codebreaker-bank.js');
   scripts[10].onload();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[11].split('?')[0], 'codebreaker-bank.js');
+  assert.equal(requested[11].split('?')[0], 'codebreaker.js');
   scripts[11].onload();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[12].split('?')[0], 'codebreaker.js');
+  assert.equal(requested[12].split('?')[0], 'letter-grid-bank.js');
   scripts[12].onload();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[13].split('?')[0], 'letter-grid-bank.js');
+  assert.equal(requested[13].split('?')[0], 'letter-grid.js');
   scripts[13].onload();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[14].split('?')[0], 'letter-grid.js');
-  scripts[14].onload();
+
 
   await explicit;
   scripts[0].onload();
@@ -604,17 +602,16 @@ test('background optional loads pause while constrained, resume once, and never 
   assert.equal(requested[10].split('?')[0], 'codebreaker-bank.js');
   scripts[10].onload();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[11].split('?')[0], 'codebreaker-bank.js');
+  assert.equal(requested[11].split('?')[0], 'codebreaker.js');
   scripts[11].onload();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[12].split('?')[0], 'codebreaker.js');
+  assert.equal(requested[12].split('?')[0], 'letter-grid-bank.js');
   scripts[12].onload();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[13].split('?')[0], 'letter-grid-bank.js');
+  assert.equal(requested[13].split('?')[0], 'letter-grid.js');
   scripts[13].onload();
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal(requested[14].split('?')[0], 'letter-grid.js');
-  scripts[14].onload();
+
 
   await new Promise(resolve => setImmediate(resolve));
 
