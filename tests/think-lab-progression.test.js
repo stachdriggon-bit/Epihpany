@@ -113,6 +113,23 @@ test('daily challenge is persisted separately, resumes safely, and can complete 
   assert.equal(state.quests,3);
 });
 
+test('server-backed game migration clears legacy daily snapshots without completing the challenge', () => {
+  const state = {};
+  const store = progression.createStore(() => state.thinkLabProgress, value => { state.thinkLabProgress = value; }, () => '2026-11-09T10:00:00.000Z');
+  const sentence = progression.selectDailyChallenge({date:'2026-11-09',level:'A1',availableGameIds:['scramble']});
+  const other = progression.selectDailyChallenge({date:'2026-11-08',level:'A1',availableGameIds:['maze']});
+  store.startDailyChallenge(sentence);
+  store.startDailyChallenge(other);
+  const snapshot = {bankVersion:'legacy-local-sentence-v1',level:'steady',trainingMode:'steady',position:0,payload:{pool:[{sentence:'private answer'}],score:0}};
+  assert.equal(store.saveDailyChallengeSnapshot(sentence.date,sentence.gameId,snapshot).saved,true);
+  assert.equal(store.saveDailyChallengeSnapshot(other.date,other.gameId,snapshot).saved,true);
+  assert.equal(store.clearDailyChallengeSnapshots('scramble'),1);
+  assert.equal(store.getDailyChallenge(sentence.date).snapshot,null);
+  assert.equal(store.getDailyChallenge(sentence.date).status,'active');
+  assert.deepEqual(store.getDailyChallenge(other.date).snapshot.payload.pool,snapshot.payload.pool);
+  assert.equal(store.clearDailyChallengeSnapshots('scramble'),0);
+});
+
 test('daily challenge history is date-scoped and keeps yesterday separate from today', () => {
   const state = {};
   const store = progression.createStore(() => state.thinkLabProgress, value => { state.thinkLabProgress = value; }, () => '2026-11-09T10:00:00.000Z');
