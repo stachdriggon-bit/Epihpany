@@ -156,6 +156,12 @@ jobs:
           eval "$(supabase status -o env)"
           psql "$DB_URL" -v ON_ERROR_STOP=1 -f supabase/tests/phase5e_chain_reaction_validator_assertions.sql
 
+      - name: Assert Phase 5F Sentence Scramble unified validator
+        timeout-minutes: 5
+        run: |
+          eval "$(supabase status -o env)"
+          psql "$DB_URL" -v ON_ERROR_STOP=1 -f supabase/tests/phase5f_sentence_scramble_validator_assertions.sql
+
       - name: Run unified Think Lab guest and authenticated Edge Function parity tests
         timeout-minutes: 8
         run: |
@@ -201,6 +207,8 @@ jobs:
           AUTH_OOO=$(node -p "require('/tmp/think-lab-unified-e2e.json').authOddOneOut")
           GUEST_CHAIN=$(node -p "require('/tmp/think-lab-unified-e2e.json').guestChainReaction")
           AUTH_DAILY_CHAIN=$(node -p "require('/tmp/think-lab-unified-e2e.json').authDailyChainReaction")
+          GUEST_SENTENCE=$(node -p "require('/tmp/think-lab-unified-e2e.json').guestSentenceScramble")
+          AUTH_DAILY_SENTENCE=$(node -p "require('/tmp/think-lab-unified-e2e.json').authDailySentenceScramble")
 
           AUTH_WF_EVENTS=$(psql "$DB_URL" -At -v ON_ERROR_STOP=1 -v user_id="$USER_ID" -v session_id="$AUTH_WF" <<'SQL'
           SELECT count(*) FROM economy_private.activity_events
@@ -225,19 +233,28 @@ jobs:
             AND evidence->>'link_count'='3' AND evidence->>'wrong_link_attempts'='1';
           SQL
           )
-          GUEST_EVENTS=$(psql "$DB_URL" -At -v ON_ERROR_STOP=1 -v wf="$GUEST_WF" -v ooo="$GUEST_OOO" -v chain="$GUEST_CHAIN" <<'SQL'
+          AUTH_SENTENCE_EVENTS=$(psql "$DB_URL" -At -v ON_ERROR_STOP=1 -v user_id="$USER_ID" -v session_id="$AUTH_DAILY_SENTENCE" <<'SQL'
           SELECT count(*) FROM economy_private.activity_events
-          WHERE source_event_key IN (:'wf'::uuid, :'ooo'::uuid, :'chain'::uuid);
+          WHERE user_id=:'user_id'::uuid AND source_event_key=:'session_id'::uuid
+            AND activity_id='sentence_scramble' AND event_type='game_session_completed'
+            AND validator_version='sentence-scramble-72-20261112-v1'
+            AND evidence->>'session_type'='daily' AND evidence->>'question_count'='1'
+            AND evidence->>'wrong_attempts'='1';
           SQL
           )
-          SESSION_OWNERSHIP=$(psql "$DB_URL" -At -v ON_ERROR_STOP=1 -v user_id="$USER_ID" -v guest_wf="$GUEST_WF" -v auth_wf="$AUTH_WF" -v guest_ooo="$GUEST_OOO" -v auth_ooo="$AUTH_OOO" -v guest_chain="$GUEST_CHAIN" -v auth_chain="$AUTH_DAILY_CHAIN" <<'SQL'
+          GUEST_EVENTS=$(psql "$DB_URL" -At -v ON_ERROR_STOP=1 -v wf="$GUEST_WF" -v ooo="$GUEST_OOO" -v chain="$GUEST_CHAIN" -v sentence="$GUEST_SENTENCE" <<'SQL'
+          SELECT count(*) FROM economy_private.activity_events
+          WHERE source_event_key IN (:'wf'::uuid, :'ooo'::uuid, :'chain'::uuid, :'sentence'::uuid);
+          SQL
+          )
+          SESSION_OWNERSHIP=$(psql "$DB_URL" -At -v ON_ERROR_STOP=1 -v user_id="$USER_ID" -v guest_wf="$GUEST_WF" -v auth_wf="$AUTH_WF" -v guest_ooo="$GUEST_OOO" -v auth_ooo="$AUTH_OOO" -v guest_chain="$GUEST_CHAIN" -v auth_chain="$AUTH_DAILY_CHAIN" -v guest_sentence="$GUEST_SENTENCE" -v auth_sentence="$AUTH_DAILY_SENTENCE" <<'SQL'
           SELECT
             (SELECT count(*) FROM economy_private.think_lab_validator_sessions
-             WHERE session_id IN (:'guest_wf'::uuid, :'guest_ooo'::uuid, :'guest_chain'::uuid)
+             WHERE session_id IN (:'guest_wf'::uuid, :'guest_ooo'::uuid, :'guest_chain'::uuid, :'guest_sentence'::uuid)
                AND user_id IS NULL AND guest_token_hash IS NOT NULL AND client_ip_hash IS NOT NULL)
             || ':' ||
             (SELECT count(*) FROM economy_private.think_lab_validator_sessions
-             WHERE session_id IN (:'auth_wf'::uuid, :'auth_ooo'::uuid, :'auth_chain'::uuid)
+             WHERE session_id IN (:'auth_wf'::uuid, :'auth_ooo'::uuid, :'auth_chain'::uuid, :'auth_sentence'::uuid)
                AND user_id=:'user_id'::uuid AND guest_token_hash IS NULL AND client_ip_hash IS NULL);
           SQL
           )
@@ -253,8 +270,9 @@ jobs:
           test "$AUTH_WF_EVENTS" = "1"
           test "$AUTH_OOO_EVENTS" = "1"
           test "$AUTH_CHAIN_EVENTS" = "1"
+          test "$AUTH_SENTENCE_EVENTS" = "1"
           test "$GUEST_EVENTS" = "0"
-          test "$SESSION_OWNERSHIP" = "3:3"
+          test "$SESSION_OWNERSHIP" = "4:4"
           test "$REWARD_ROWS" = "0"
           test "$ECONOMY_ENABLED" = "f"
 
