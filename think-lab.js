@@ -719,7 +719,7 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
     if (ladderWordBank && ladderWordBank.size) ids.push('wordladder');
     if (window.EPIPHANY_WORD_CONNECTIONS_BANK && typeof window.EPIPHANY_WORD_CONNECTIONS_BANK.selectRound === 'function') ids.push('connections');
     if (window.EPIPHANY_SENTENCE_SCRAMBLE_BANK?.modes?.steady?.length === 24) ids.push('scramble');
-    ids.push('chain'); // The question bank and answer key are held by the shared server validator.
+    if (window.navigator?.onLine !== false) ids.push('chain'); // The question bank and answer key are held by the shared server validator.
     return ids;
   }
   function todayDailyChallenge() {
