@@ -360,7 +360,7 @@ test('Think Lab game skill registration is sourced from the canonical progressio
 });
 
 test('server-validated Odd One Out does not persist guest bearer tokens or browser round snapshots',()=>{
-  assert.match(source,/functions\.invoke\('velorn-think-lab-validator',\{body:\{action:'start',gameId:'odd_one_out'/);
+  assert.match(source,/const functionName = 'velorn-think-lab-validator';[\s\S]*?validatorClient\.functions\.invoke\(functionName,\{body:\{action:'start',gameId:'odd_one_out'/);
   assert.match(source,/action:'answer',gameId:'odd_one_out'/);
   assert.match(source,/validatorGuestToken/);
   assert.match(source,/if \(validatorSessionId \|\| restoringInternalSession/);
