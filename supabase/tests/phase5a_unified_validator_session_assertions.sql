@@ -42,7 +42,6 @@ BEGIN
 
   ooo_questions := jsonb_build_array(jsonb_build_object(
     'id','OOO-TEST-001',
-    'prompt','Choose the word that does not belong.',
     'why','One item belongs to a different category.',
     'words',jsonb_build_array('apple','pear','carrot','plum'),
     'answer',2,
