@@ -27,12 +27,26 @@ export const oddOneOutAdapter = Object.freeze({
     }));
   },
   projectQuestions: safeSessionQuestions,
-  answerRpcArguments({ userId, body }) {
+  answerRpcArguments({ userId, guestTokenHash, body }) {
     return {
       p_user_id: userId,
+      p_guest_token_hash: guestTokenHash,
       p_session_id: body.sessionId,
+      p_game_id: this.id,
       p_question_index: body.questionIndex,
-      p_selected_index: body.selectedIndex,
+      p_answer: { selectedIndex: body.selectedIndex },
+    };
+  },
+  buildStartResponse({ sessionId, guestToken, questions, body, round }) {
+    return {
+      sessionId,
+      guestToken,
+      validatorVersion: this.validatorVersion,
+      level: body.level,
+      trainingMode: body.trainingMode,
+      target: round.target,
+      shortened: round.shortened,
+      questions: this.projectQuestions(questions),
     };
   },
   projectAnswer(data) {
