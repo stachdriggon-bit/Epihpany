@@ -16,6 +16,7 @@ DECLARE
   i integer;
   link_no integer;
   event_count integer;
+  wrong_attempt_count integer;
   expected_next_index integer;
   expected_next_link integer;
   expected_challenge_completed boolean;
@@ -65,6 +66,9 @@ BEGIN
      OR (result->>'next_index')::integer <> 0
      OR result ? 'next_word' OR result ? 'explanation'
   THEN RAISE EXCEPTION 'Wrong Chain Reaction link did not remain retryable or leaked its answer: %',result; END IF;
+  SELECT wrong_link_attempt_count INTO wrong_attempt_count
+  FROM economy_private.think_lab_validator_sessions WHERE session_id=full_session;
+  IF wrong_attempt_count <> 1 THEN RAISE EXCEPTION 'Wrong Chain Reaction link attempt was not aggregated'; END IF;
 
   -- A later link cannot be submitted before the expected link.
   UPDATE economy_private.think_lab_validator_sessions
@@ -117,7 +121,7 @@ BEGIN
     AND validator_version='chain-reaction-72-20261112-v1'
     AND evidence=jsonb_build_object(
       'training_mode','guided','session_type','full','question_count',24,
-      'link_count',72,'correct_count',24,'incorrect_count',0
+      'link_count',72,'wrong_link_attempts',1,'correct_count',24,'incorrect_count',0
     );
   IF event_count <> 1 THEN RAISE EXCEPTION 'Full Chain Reaction must emit exactly one trusted completion event; found %',event_count; END IF;
 
