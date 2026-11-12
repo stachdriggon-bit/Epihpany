@@ -44,6 +44,27 @@ BEGIN
      AND predicate_version=3 AND mapping_status='mapped'
  ) THEN RAISE EXCEPTION 'Word Forge mapping was activated before verification'; END IF;
 
+ -- Temporary verified fixture: it exercises the real processor without opening
+ -- the production Word Forge template or mapping. This transaction rolls back.
+ INSERT INTO economy_private.mission_template_versions(
+  template_id,template_version,period_type,mission_family,reward_amount,
+  objective_definition,validator_mapping_status,is_assignable
+ ) VALUES(
+  'f4i_word_forge_test',1,'daily','f4i_word_forge_test_family',10,
+  '{"summary":"Temporary Word Forge predicate test","predicate_key":"solve_a_challenge_word_forge_v1"}',
+  'verified',true
+ );
+ INSERT INTO economy_private.mission_event_predicate_mappings(
+  template_id,template_version,predicate_version,predicate_key,
+  source_system,experience_id,activity_id,event_type,validator_version,
+  mapping_status,predicate_definition
+ ) VALUES(
+  'f4i_word_forge_test',1,1,'solve_a_challenge_word_forge_v1',
+  'think_lab','think_lab','word_forge','game_session_completed',
+  'word-forge-reviewed-72-20261111-v1','verified',
+  '{"requires_training_mode":"challenge","question_count":24}'::jsonb
+ );
+
  INSERT INTO economy_private.mission_boards(
   board_id,user_id,period_type,period_start,period_end,timezone_name,config_version,template_bank_version
  ) VALUES
@@ -54,11 +75,11 @@ BEGIN
  INSERT INTO economy_private.mission_assignments(
   assignment_id,board_id,user_id,slot_number,template_id,template_version,objective_snapshot,reward_snapshot
  )
- SELECT a.assignment_id,a.board_id,a.user_id,1,t.template_id,4,t.objective_definition,10
+ SELECT a.assignment_id,a.board_id,a.user_id,1,t.template_id,1,t.objective_definition,10
  FROM (VALUES (a_valid,b_valid,u_valid),(a_guided,b_guided,u_guided),(a_bad,b_bad,u_bad))
  AS a(assignment_id,board_id,user_id)
  CROSS JOIN economy_private.mission_template_versions t
- WHERE t.template_id='solve_a_challenge' AND t.template_version=4;
+ WHERE t.template_id='f4i_word_forge_test' AND t.template_version=1;
 
  -- The real validator emits this exact authenticated event shape after question 24.
  INSERT INTO economy_private.activity_events(
