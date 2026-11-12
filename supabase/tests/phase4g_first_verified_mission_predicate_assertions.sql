@@ -48,6 +48,12 @@ BEGIN
       AND m.validator_version='odd-one-out-rotated-20261110-v2'
   ) THEN RAISE EXCEPTION 'The real Odd One Out template/mapping successor must be verified'; END IF;
 
+  IF NOT EXISTS (
+    SELECT 1 FROM economy_private.mission_template_versions
+    WHERE template_id='solve_a_challenge' AND template_version=4
+      AND validator_mapping_status='mapped' AND NOT is_assignable
+  ) THEN RAISE EXCEPTION 'Word Forge must remain outside the verified pool during Phase 4G'; END IF;
+
   -- Even with the economy gate opened inside this rollback-only test, one verified
   -- daily template and zero weekly templates must never produce partial boards.
   UPDATE economy_private.economy_settings SET economy_enabled=true WHERE singleton;
