@@ -150,6 +150,12 @@ jobs:
           eval "$(supabase status -o env)"
           psql "$DB_URL" -v ON_ERROR_STOP=1 -f supabase/tests/phase5b_unified_answer_transition_assertions.sql
 
+      - name: Assert Phase 5E Chain Reaction unified validator
+        timeout-minutes: 5
+        run: |
+          eval "$(supabase status -o env)"
+          psql "$DB_URL" -v ON_ERROR_STOP=1 -f supabase/tests/phase5e_chain_reaction_validator_assertions.sql
+
       - name: Run unified Think Lab guest and authenticated Edge Function parity tests
         timeout-minutes: 8
         run: |
@@ -193,6 +199,8 @@ jobs:
           AUTH_WF=$(node -p "require('/tmp/think-lab-unified-e2e.json').authWordForge")
           GUEST_OOO=$(node -p "require('/tmp/think-lab-unified-e2e.json').guestOddOneOut")
           AUTH_OOO=$(node -p "require('/tmp/think-lab-unified-e2e.json').authOddOneOut")
+          GUEST_CHAIN=$(node -p "require('/tmp/think-lab-unified-e2e.json').guestChainReaction")
+          AUTH_DAILY_CHAIN=$(node -p "require('/tmp/think-lab-unified-e2e.json').authDailyChainReaction")
 
           AUTH_WF_EVENTS=$(psql "$DB_URL" -At -v ON_ERROR_STOP=1 -v user_id="$USER_ID" -v session_id="$AUTH_WF" <<'SQL'
           SELECT count(*) FROM economy_private.activity_events
@@ -208,19 +216,28 @@ jobs:
             AND validator_version='odd-one-out-rotated-20261110-v2';
           SQL
           )
-          GUEST_EVENTS=$(psql "$DB_URL" -At -v ON_ERROR_STOP=1 -v wf="$GUEST_WF" -v ooo="$GUEST_OOO" <<'SQL'
+          AUTH_CHAIN_EVENTS=$(psql "$DB_URL" -At -v ON_ERROR_STOP=1 -v user_id="$USER_ID" -v session_id="$AUTH_DAILY_CHAIN" <<'SQL'
           SELECT count(*) FROM economy_private.activity_events
-          WHERE source_event_key IN (:'wf'::uuid, :'ooo'::uuid);
+          WHERE user_id=:'user_id'::uuid AND source_event_key=:'session_id'::uuid
+            AND activity_id='chain_reaction' AND event_type='game_session_completed'
+            AND validator_version='chain-reaction-72-20261113-v1'
+            AND evidence->>'session_type'='daily' AND evidence->>'question_count'='1'
+            AND evidence->>'link_count'='3';
           SQL
           )
-          SESSION_OWNERSHIP=$(psql "$DB_URL" -At -v ON_ERROR_STOP=1 -v user_id="$USER_ID" -v guest_wf="$GUEST_WF" -v auth_wf="$AUTH_WF" -v guest_ooo="$GUEST_OOO" -v auth_ooo="$AUTH_OOO" <<'SQL'
+          GUEST_EVENTS=$(psql "$DB_URL" -At -v ON_ERROR_STOP=1 -v wf="$GUEST_WF" -v ooo="$GUEST_OOO" -v chain="$GUEST_CHAIN" <<'SQL'
+          SELECT count(*) FROM economy_private.activity_events
+          WHERE source_event_key IN (:'wf'::uuid, :'ooo'::uuid, :'chain'::uuid);
+          SQL
+          )
+          SESSION_OWNERSHIP=$(psql "$DB_URL" -At -v ON_ERROR_STOP=1 -v user_id="$USER_ID" -v guest_wf="$GUEST_WF" -v auth_wf="$AUTH_WF" -v guest_ooo="$GUEST_OOO" -v auth_ooo="$AUTH_OOO" -v guest_chain="$GUEST_CHAIN" -v auth_chain="$AUTH_DAILY_CHAIN" <<'SQL'
           SELECT
             (SELECT count(*) FROM economy_private.think_lab_validator_sessions
-             WHERE session_id IN (:'guest_wf'::uuid, :'guest_ooo'::uuid)
+             WHERE session_id IN (:'guest_wf'::uuid, :'guest_ooo'::uuid, :'guest_chain'::uuid)
                AND user_id IS NULL AND guest_token_hash IS NOT NULL AND client_ip_hash IS NOT NULL)
             || ':' ||
             (SELECT count(*) FROM economy_private.think_lab_validator_sessions
-             WHERE session_id IN (:'auth_wf'::uuid, :'auth_ooo'::uuid)
+             WHERE session_id IN (:'auth_wf'::uuid, :'auth_ooo'::uuid, :'auth_chain'::uuid)
                AND user_id=:'user_id'::uuid AND guest_token_hash IS NULL AND client_ip_hash IS NULL);
           SQL
           )
@@ -235,8 +252,9 @@ jobs:
 
           test "$AUTH_WF_EVENTS" = "1"
           test "$AUTH_OOO_EVENTS" = "1"
+          test "$AUTH_CHAIN_EVENTS" = "1"
           test "$GUEST_EVENTS" = "0"
-          test "$SESSION_OWNERSHIP" = "2:2"
+          test "$SESSION_OWNERSHIP" = "3:3"
           test "$REWARD_ROWS" = "0"
           test "$ECONOMY_ENABLED" = "f"
 
