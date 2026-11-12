@@ -83,7 +83,7 @@ BEGIN
 
   IF s.game_id = 'word_forge' THEN
     IF s.validator_version IS DISTINCT FROM 'word-forge-reviewed-72-20261111-v1'
-       OR jsonb_object_length(p_answer) <> 1
+       OR (SELECT count(*) FROM jsonb_object_keys(p_answer)) <> 1
        OR p_answer - ARRAY['answerWord'] <> '{}'::jsonb
        OR jsonb_typeof(p_answer -> 'answerWord') IS DISTINCT FROM 'string'
        OR COALESCE(p_answer ->> 'answerWord','') !~ '^[A-Za-z]{3,14}$'
@@ -140,7 +140,7 @@ BEGIN
 
   ELSE
     IF s.validator_version IS DISTINCT FROM 'odd-one-out-rotated-20261110-v2'
-       OR jsonb_object_length(p_answer) <> 1
+       OR (SELECT count(*) FROM jsonb_object_keys(p_answer)) <> 1
        OR p_answer - ARRAY['selectedIndex'] <> '{}'::jsonb
        OR jsonb_typeof(p_answer -> 'selectedIndex') IS DISTINCT FROM 'number'
        OR COALESCE(p_answer ->> 'selectedIndex','') !~ '^[0-3]$'
