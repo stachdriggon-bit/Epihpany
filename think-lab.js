@@ -643,11 +643,7 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
         return { ...item, words, explain: item.explanation || item.skill || '' };
       });
     }
-    if (id === 'chain') {
-      const bank = window.EPIPHANY_CHAIN_REACTION_BANK;
-      const trainingMode = ['guided','steady','challenge'].includes(level) ? level : 'steady';
-      return bank && typeof bank.selectRound === 'function' ? bank.selectRound(trainingMode) : [];
-    }
+    if (id === 'chain') return []; // Chain Reaction questions are issued only by the trusted server validator.
     if (id === 'forge') {
       const bank = window.EPIPHANY_WORD_FORGE_BANK;
       const trainingMode = ['guided','steady','challenge'].includes(level) ? level : 'steady';
@@ -723,7 +719,7 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
     if (ladderWordBank && ladderWordBank.size) ids.push('wordladder');
     if (window.EPIPHANY_WORD_CONNECTIONS_BANK && typeof window.EPIPHANY_WORD_CONNECTIONS_BANK.selectRound === 'function') ids.push('connections');
     if (window.EPIPHANY_SENTENCE_SCRAMBLE_BANK?.modes?.steady?.length === 24) ids.push('scramble');
-    if (window.EPIPHANY_CHAIN_REACTION_BANK && typeof window.EPIPHANY_CHAIN_REACTION_BANK.selectRound === 'function') ids.push('chain');
+    ids.push('chain'); // The question bank and answer key are held by the shared server validator.
     return ids;
   }
   function todayDailyChallenge() {
@@ -1248,7 +1244,7 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
     const preparedMazePool = id === 'maze' && preparedMazeCEFR === selectedMazeCEFR && activePool && activePool.length ? activePool : null;
     const previousRandom = Math.random;
     if (options.daily === true && dailyChallengeActive) Math.random = seededDailyRandom(dailyChallengeActive.seed);
-    try { activePool = id === 'odd' ? [] : preparedMazePool || getRoundPool(id,selectedTrainingMode); }
+    try { activePool = id === 'odd' || id === 'chain' ? [] : preparedMazePool || getRoundPool(id,selectedTrainingMode); }
     finally { Math.random = previousRandom; }
     validatorSessionId = null;
     validatorClientForSession = null;
@@ -1356,8 +1352,9 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
       root.innerHTML = '<div class="tl-game-card"><div class="tl-game-kicker">SENTENCE SCRAMBLE</div><h2>QUESTION BANK NOT READY</h2><p class="tl-game-instruction">The reviewed Sentence Scramble bank could not be loaded completely. No sample questions will be shown.</p><button type="button" class="tl-back" data-think-back>← Choose difficulty</button><button type="button" class="tl-back" data-think-home>Think Lab home</button></div>';
       return;
     }
-    if (id === 'chain' && (!activePool.length || activePool.length !== 24 || !window.EPIPHANY_CHAIN_REACTION_BANK || typeof window.EPIPHANY_CHAIN_REACTION_BANK.validateBank !== 'function' || !window.EPIPHANY_CHAIN_REACTION_BANK.validateBank().valid)) {
-      root.innerHTML = '<div class="tl-game-card"><div class="tl-game-kicker">CHAIN REACTION</div><h2>QUESTION BANK NOT READY</h2><p class="tl-game-instruction">The approved 72-challenge Chain Reaction bank could not be loaded or validated. No legacy or sample questions will be shown.</p><button type="button" class="tl-back" data-think-back>← Choose difficulty</button><button type="button" class="tl-back" data-think-home>Think Lab home</button></div>';
+    if (id === 'chain' && (!validatorSessionId || !Array.isArray(activePool) || !activePool.length ||
+        !activePool.every(question => question && Array.isArray(question.links) && question.links.length === 3))) {
+      root.innerHTML = '<div class="tl-game-card"><div class="tl-game-kicker">CHAIN REACTION</div><h2>SECURE SESSION NOT READY</h2><p class="tl-game-instruction">The trusted server did not issue a complete three-link challenge. No local or sample questions will be shown.</p><button type="button" class="tl-back" data-think-back>← Choose difficulty</button><button type="button" class="tl-back" data-think-home>Think Lab home</button></div>';
       return;
     }
     if (id === 'forge' && (!activePool.length || activePool.length !== 24 || !window.EPIPHANY_WORD_FORGE_BANK || typeof window.EPIPHANY_WORD_FORGE_BANK.validateBank !== 'function' || !window.EPIPHANY_WORD_FORGE_BANK.validateBank().valid)) {
