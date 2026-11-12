@@ -23,7 +23,7 @@ export function isPlainObject(value) {
 
 export function getBearerToken(authorization) {
   return (typeof authorization === "string"
-    ? authorization.match(/^Bearer\\s+(.+)$/i)?.[1]
+    ? authorization.match(/^Bearer\s+(.+)$/i)?.[1]
     : null) || "";
 }
 
