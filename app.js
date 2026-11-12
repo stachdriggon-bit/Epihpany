@@ -538,6 +538,7 @@
     getDailyChallenge(date) { const store = getThinkLabProgressStore(); return store ? store.getDailyChallenge(date) : null; },
     startDailyChallenge(challenge) { const store = getThinkLabProgressStore(); return store ? store.startDailyChallenge(challenge) : false; },
     saveDailyChallengeSnapshot(date,gameId,snapshot) { const store = getThinkLabProgressStore(); return store ? store.saveDailyChallengeSnapshot(date,gameId,snapshot) : {saved:false,reason:'progression-unavailable'}; },
+    clearDailyChallengeSnapshots(gameId) { const store = getThinkLabProgressStore(); return store ? store.clearDailyChallengeSnapshots(gameId) : 0; },
     completeDailyChallenge(date,gameId) { const store = getThinkLabProgressStore(); return store ? store.completeDailyChallenge(date,gameId) : {completed:false,reason:'progression-unavailable'}; },
     getCEFRLevel() {
       const level = currentLevel();
