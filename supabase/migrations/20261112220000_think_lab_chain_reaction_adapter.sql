@@ -3,7 +3,7 @@
 -- server-side substeps in answers. No game-specific session table or RPC is added.
 
 ALTER TABLE economy_private.think_lab_validator_sessions
-  ADD COLUMN wrong_link_attempt_count integer NOT NULL DEFAULT 0 CHECK (wrong_link_attempt_count >= 0);
+  ADD COLUMN wrong_attempt_count integer NOT NULL DEFAULT 0 CHECK (wrong_attempt_count >= 0);
 
 ALTER TABLE economy_private.think_lab_validator_sessions
   DROP CONSTRAINT IF EXISTS think_lab_validator_sessions_game_id_check,
@@ -488,7 +488,7 @@ BEGIN
     IF NOT v_correct THEN
       UPDATE economy_private.think_lab_validator_sessions
       SET last_answer_at = v_now,
-          wrong_link_attempt_count = wrong_link_attempt_count + 1
+          wrong_attempt_count = wrong_attempt_count + 1
       WHERE session_id = p_session_id;
       v_next_index := s.current_index;
       v_next_link_index := v_expected_link_index;
@@ -573,7 +573,7 @@ BEGIN
           'session_type', CASE WHEN jsonb_array_length(s.questions) = 1 THEN 'daily' ELSE 'full' END,
           'question_count', jsonb_array_length(s.questions),
           'link_count', jsonb_array_length(s.questions) * 3,
-          'wrong_link_attempts', s.wrong_link_attempt_count,
+          'wrong_link_attempts', s.wrong_attempt_count,
           'correct_count', v_correct_count,
           'incorrect_count', jsonb_array_length(s.questions) - v_correct_count
         )
