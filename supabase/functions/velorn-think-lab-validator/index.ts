@@ -2,6 +2,7 @@ import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "npm:@supabase/supabase-js@2.119.0";
 import "../velorn-word-forge/word-forge-bank.js";
 import "../velorn-odd-one-out/odd-one-out-bank.js";
+import "../velorn-chain-reaction/chain-reaction-bank.js";
 import { resolveThinkLabAdapter } from "../_shared/think-lab-validator-adapters.mjs";
 import {
   THINK_LAB_CORS_HEADERS,
@@ -24,9 +25,11 @@ function getBank(gameId: string) {
   const root = globalThis as typeof globalThis & {
     EPIPHANY_WORD_FORGE_BANK?: any;
     EPIPHANY_ODD_ONE_OUT_BANK?: any;
+    EPIPHANY_CHAIN_REACTION_BANK?: any;
   };
   return gameId === "word_forge" ? root.EPIPHANY_WORD_FORGE_BANK :
-    gameId === "odd_one_out" ? root.EPIPHANY_ODD_ONE_OUT_BANK : null;
+    gameId === "odd_one_out" ? root.EPIPHANY_ODD_ONE_OUT_BANK :
+    gameId === "chain_reaction" ? root.EPIPHANY_CHAIN_REACTION_BANK : null;
 }
 
 Deno.serve(async (req: Request) => {
