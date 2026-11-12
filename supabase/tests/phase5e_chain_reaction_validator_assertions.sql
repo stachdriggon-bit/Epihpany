@@ -40,11 +40,11 @@ BEGIN
   daily_questions := jsonb_build_array(full_questions -> 0);
 
   PERFORM public.velorn_start_think_lab_validator_session(
-    full_session,'chain_reaction',u,NULL,NULL,'chain-reaction-72-20261113-v1',NULL,'guided',
+    full_session,'chain_reaction',u,NULL,NULL,'chain-reaction-72-20261112-v1',NULL,'guided',
     full_questions,clock_timestamp()+interval '35 minutes'
   );
   PERFORM public.velorn_start_think_lab_validator_session(
-    daily_guest,'chain_reaction',NULL,repeat('a',64),repeat('b',64),'chain-reaction-72-20261113-v1',NULL,'challenge',
+    daily_guest,'chain_reaction',NULL,repeat('a',64),repeat('b',64),'chain-reaction-72-20261112-v1',NULL,'challenge',
     daily_questions,clock_timestamp()+interval '35 minutes'
   );
 
@@ -99,7 +99,7 @@ BEGIN
   WHERE user_id=u AND source_event_key=full_session
     AND source_system='think_lab' AND experience_id='think_lab'
     AND activity_id='chain_reaction' AND event_type='game_session_completed'
-    AND validator_version='chain-reaction-72-20261113-v1'
+    AND validator_version='chain-reaction-72-20261112-v1'
     AND evidence=jsonb_build_object(
       'training_mode','guided','session_type','full','question_count',24,
       'link_count',72,'correct_count',24,'incorrect_count',0
