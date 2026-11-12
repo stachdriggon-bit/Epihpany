@@ -22,15 +22,24 @@ import {
 const headers = THINK_LAB_CORS_HEADERS;
 const json = jsonResponse;
 
+type SentenceScrambleBank = {
+  gameId: string;
+  schemaVersion: number;
+  totalChallenges: number;
+  modes: Record<string, unknown[]>;
+};
+
 function getBank(gameId: string) {
   const root = globalThis as typeof globalThis & {
     EPIPHANY_WORD_FORGE_BANK?: any;
     EPIPHANY_ODD_ONE_OUT_BANK?: any;
     EPIPHANY_CHAIN_REACTION_BANK?: any;
+    EPIPHANY_SENTENCE_SCRAMBLE_BANK?: SentenceScrambleBank;
   };
   return gameId === "word_forge" ? root.EPIPHANY_WORD_FORGE_BANK :
     gameId === "odd_one_out" ? root.EPIPHANY_ODD_ONE_OUT_BANK :
-    gameId === "chain_reaction" ? root.EPIPHANY_CHAIN_REACTION_BANK : null;
+    gameId === "chain_reaction" ? root.EPIPHANY_CHAIN_REACTION_BANK :
+    gameId === "sentence_scramble" ? root.EPIPHANY_SENTENCE_SCRAMBLE_BANK : null;
 }
 
 Deno.serve(async (req: Request) => {
@@ -76,7 +85,10 @@ Deno.serve(async (req: Request) => {
     if (body.action === "start") {
       if (!adapter.validateStartRequest(body)) return json(400, { error: "invalid_selection" });
       const bank = getBank(adapter.id);
-      if (!bank || typeof bank.validateBank !== "function" || !bank.validateBank().valid) {
+      const bankValidation = typeof bank?.validateBank === "function"
+        ? bank.validateBank()
+        : typeof adapter.validateBank === "function" ? adapter.validateBank(bank) : null;
+      if (!bank || !bankValidation?.valid) {
         return json(503, { error: "question_bank_unavailable" });
       }
       const random = () => crypto.getRandomValues(new Uint32Array(1))[0] / 4294967296;
