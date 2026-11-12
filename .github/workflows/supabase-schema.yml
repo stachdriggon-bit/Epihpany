@@ -39,6 +39,9 @@ jobs:
           p.write_text(s)
           PY
 
+      - name: Validate SQL fixture UUID literals before starting Supabase
+        run: node --test tests/sql-uuid-fixtures.test.js
+
       - name: Start disposable local Supabase stack
         timeout-minutes: 15
         run: supabase start -x studio,mail,analytics,realtime,pooler
