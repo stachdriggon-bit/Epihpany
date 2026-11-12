@@ -1,7 +1,7 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "npm:@supabase/supabase-js@2.119.0";
 import "./word-forge-bank.js";
-import { safeSessionQuestions, validateAnswerRequest, validateStartRequest } from "./word-forge-validator.mjs";
+import { wordForgeAdapter } from "./word-forge-adapter.mjs";
 import {
   THINK_LAB_CORS_HEADERS,
   InvalidAuthSessionError,
@@ -14,7 +14,8 @@ import {
   sha256Hex,
 } from "../_shared/think-lab-validator-engine.mjs";
 
-const VERSION="word-forge-reviewed-72-20261111-v1";
+const adapter=wordForgeAdapter;
+const VERSION=adapter.validatorVersion;
 const headers=THINK_LAB_CORS_HEADERS;
 const json=jsonResponse;
 
@@ -42,11 +43,12 @@ Deno.serve(async(req:Request)=>{
   const service=createClient(url,secret,{auth:{persistSession:false,autoRefreshToken:false}});
   const bank=(globalThis as typeof globalThis & {EPIPHANY_WORD_FORGE_BANK?:any}).EPIPHANY_WORD_FORGE_BANK;
   if(body.action==="start"){
-   if(!validateStartRequest(body))return json(400,{error:"invalid_selection"});
+   if(!adapter.validateStartRequest(body))return json(400,{error:"invalid_selection"});
    if(!bank||!bank.validateBank().valid)return json(503,{error:"question_bank_unavailable"});
    const random=()=>crypto.getRandomValues(new Uint32Array(1))[0]/4294967296;
-   const questions=bank.selectRound(body.trainingMode,random);
-   if(!Array.isArray(questions)||questions.length!==24||!questions.every((q:any)=>q.answerWord))return json(503,{error:"question_bank_incomplete"});
+   const selected=adapter.selectRound(bank,body,random);
+   let questions:any[];
+   try{questions=adapter.buildCanonicalQuestions(selected,body);}catch{return json(503,{error:"question_bank_incomplete"});}
    const sessionId=crypto.randomUUID(),expiresAt=new Date(Date.now()+40*60*1000).toISOString();
    const guestToken=userId?null:createRandomHex(32);
    const ip=guestToken?getClientNetworkAddress(req):"";
@@ -57,19 +59,15 @@ Deno.serve(async(req:Request)=>{
     p_training_mode:body.trainingMode,p_questions:questions,p_expires_at:expiresAt
    });
    if(error){const limited=/rate limit/i.test(error.message||"");if(!limited)console.error("Word Forge start failed:",error.message);return json(limited?429:503,{error:limited?"session_rate_limited":"session_creation_failed"});}
-   return json(200,{sessionId,guestToken,validatorVersion:VERSION,trainingMode:body.trainingMode,questions:safeSessionQuestions(questions)});
+   return json(200,{sessionId,guestToken,validatorVersion:VERSION,trainingMode:body.trainingMode,questions:adapter.projectQuestions(questions)});
   }
   if(body.action==="answer"){
    const guest=!userId;
-   if(!validateAnswerRequest(body,guest))return json(400,{error:"invalid_answer_request"});
-   const {data,error}=await service.rpc("velorn_submit_word_forge_answer",{
-    p_user_id:userId,p_guest_token_hash:guest?await sha256Hex(body.guestToken as string):null,
-    p_session_id:body.sessionId,p_question_index:body.questionIndex,p_submitted_word:body.answerWord
-   });
+   if(!adapter.validateAnswerRequest(body,guest))return json(400,{error:"invalid_answer_request"});
+   const args=adapter.answerRpcArguments({userId,guestTokenHash:guest?await sha256Hex(body.guestToken as string):null,body});
+   const {data,error}=await service.rpc("velorn_submit_word_forge_answer",args);
    if(error||!data){const m=error?.message||"";const status=/not found/i.test(m)?404:/expired|not active|unexpected/i.test(m)?409:/too quickly/i.test(m)?429:400;return json(status,{error:"answer_rejected"});}
-   return json(200,{correct:data.correct,correctAnswer:data.correct_answer,explanation:data.explanation,skill:data.skill,
-    questionIndex:data.question_index,attemptsRemaining:data.attempts_remaining,advance:data.advance,
-    completed:data.completed,nextIndex:data.next_index,correctCount:data.correct_count});
+   return json(200,adapter.projectAnswer(data));
   }
   return json(400,{error:"unknown_action"});
  }catch(error){console.error("Word Forge validator failed:",error instanceof Error?error.message:"unknown");return json(400,{error:"invalid_request"});}
