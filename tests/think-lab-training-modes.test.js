@@ -440,13 +440,13 @@ test('Sentence Scramble verifies tile order on the server and does not persist b
     return found;
   });
   const wrongOrder=correctOrder.slice().reverse();
-  for(const tile of wrongOrder)harness.click('[data-scramble-tile]',{scrambleTile:String(tile)});
+  for(const tile of wrongOrder)await harness.click('[data-scramble-tile]',{scrambleTile:String(tile)});
   assert.equal(harness.savedSnapshots.scramble,undefined,'server-backed sessions must not save browser tile snapshots');
   await harness.click('[data-scramble-check]');
   assert.equal(harness.feedback.className,'tl-feedback is-wrong');
   assert.equal(harness.feedback.innerHTML.includes(question.sentence),false,'wrong answers must not reveal the canonical sentence');
-  harness.click('[data-scramble-reset]');
-  for(const tile of correctOrder)harness.click('[data-scramble-tile]',{scrambleTile:String(tile)});
+  await harness.click('[data-scramble-reset]');
+  for(const tile of correctOrder)await harness.click('[data-scramble-tile]',{scrambleTile:String(tile)});
   await harness.click('[data-scramble-check]');
   assert.equal(harness.feedback.className,'tl-feedback is-correct');
   assert.equal(harness.feedback.innerHTML.includes(question.sentence),true);
