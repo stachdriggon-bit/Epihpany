@@ -104,7 +104,12 @@ function createHarness(options = {}) {
     if (body?.action === 'answer' && body.gameId === 'sentence_scramble') {
       const question = sentencePrivateRound[body.questionIndex];
       const attempt = body.tileOrder.map(tile => question.words[tile]).join(' ');
-      const normalize = value => String(value).toLowerCase().replace(/[^a-z0-9 ]/g,'').replace(/ +/g,' ').trim();
+      const normalize = value => {
+        const slash = String.fromCharCode(92);
+        return String(value).toLowerCase()
+          .replace(new RegExp("[^" + slash + "p{L}" + slash + "p{N}" + slash + "s]","gu"),"")
+          .replace(new RegExp(slash + "s+","g")," ").trim();
+      };
       const correct = [question.sentence,...question.acceptedAnswers].some(answer => normalize(answer) === normalize(attempt));
       return {error:null,data:{
         correct,questionIndex:body.questionIndex,nextIndex:body.questionIndex+(correct?1:0),
