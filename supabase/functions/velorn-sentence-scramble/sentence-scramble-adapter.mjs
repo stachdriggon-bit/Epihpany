@@ -43,7 +43,7 @@ export const sentenceScrambleAdapter = Object.freeze({
     return selected.map(item => ({
       ...item,
       acceptedAnswers: Array.isArray(item.acceptedAnswers) ? item.acceptedAnswers.slice() : [],
-      words: shuffle(String(item.sentence).trim().split(/\\s+/).filter(Boolean), rng),
+      words: shuffle(String(item.sentence).trim().split(" ").filter(Boolean), rng),
     }));
   },
   buildCanonicalQuestions(round, body) {
