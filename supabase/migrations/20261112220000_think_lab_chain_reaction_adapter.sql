@@ -176,7 +176,7 @@ BEGIN
         RAISE EXCEPTION 'Chain Reaction challenge must be an object' USING ERRCODE = '22023';
       ELSIF q - ARRAY['id','title','start','links'] <> '{}'::jsonb THEN
         RAISE EXCEPTION 'Chain Reaction challenge has unexpected keys' USING ERRCODE = '22023';
-      ELSIF length(COALESCE(q ->> 'id','')) <> 9
+      ELSIF length(COALESCE(q ->> 'id','')) <> 8
          OR left(COALESCE(q ->> 'id',''),5) <> ('CR-' || v_mode_code || '-')
          OR substring(COALESCE(q ->> 'id','') from 6) !~ '^[0-9]{3}' THEN
         RAISE EXCEPTION 'Chain Reaction challenge ID does not match training mode: %, expected mode %',q ->> 'id',v_mode_code USING ERRCODE = '22023';
