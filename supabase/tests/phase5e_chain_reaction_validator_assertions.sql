@@ -16,6 +16,11 @@ DECLARE
   i integer;
   link_no integer;
   event_count integer;
+  expected_next_index integer;
+  expected_next_link integer;
+  expected_challenge_completed boolean;
+  expected_completed boolean;
+  selected_index integer;
 BEGIN
   IF has_function_privilege('anon','public.velorn_start_think_lab_validator_session(uuid,text,uuid,text,text,text,text,text,jsonb,timestamptz)','EXECUTE')
      OR has_function_privilege('authenticated','public.velorn_submit_think_lab_validator_answer(uuid,text,uuid,text,integer,jsonb)','EXECUTE')
@@ -76,19 +81,29 @@ BEGIN
   -- Each challenge stays one session item and advances only after all three links.
   FOR i IN 0..23 LOOP
     FOR link_no IN 0..2 LOOP
+      expected_challenge_completed := link_no = 2;
+      expected_completed := i = 23 AND link_no = 2;
+      expected_next_index := i;
+      expected_next_link := link_no + 1;
+      selected_index := 0;
+      IF link_no = 1 THEN selected_index := 1; END IF;
+      IF link_no = 2 THEN
+        expected_next_index := i + 1;
+        expected_next_link := 0;
+      END IF;
       UPDATE economy_private.think_lab_validator_sessions
         SET last_answer_at = clock_timestamp()-interval '1 second'
         WHERE session_id = full_session;
       result := public.velorn_submit_think_lab_validator_answer(
         u,NULL,full_session,'chain_reaction',i,
-        jsonb_build_object('linkIndex',link_no,'selectedIndex',CASE link_no WHEN 1 THEN 1 ELSE 0 END)
+        jsonb_build_object('linkIndex',link_no,'selectedIndex',selected_index)
       );
       IF (result->>'correct')::boolean IS DISTINCT FROM true
          OR (result->>'link_index')::integer <> link_no
-         OR (result->>'challenge_completed')::boolean IS DISTINCT FROM (link_no=2)
-         OR (result->>'completed')::boolean IS DISTINCT FROM (i=23 AND link_no=2)
-         OR (result->>'next_index')::integer <> i + CASE WHEN link_no=2 THEN 1 ELSE 0 END
-         OR (result->>'next_link_index')::integer <> CASE WHEN link_no=2 THEN 0 ELSE link_no+1 END
+         OR (result->>'challenge_completed')::boolean IS DISTINCT FROM expected_challenge_completed
+         OR (result->>'completed')::boolean IS DISTINCT FROM expected_completed
+         OR (result->>'next_index')::integer <> expected_next_index
+         OR (result->>'next_link_index')::integer <> expected_next_link
          OR result->>'explanation' IS NULL
       THEN RAISE EXCEPTION 'Chain Reaction progression failed at challenge %, link %: %',i,link_no,result; END IF;
     END LOOP;
