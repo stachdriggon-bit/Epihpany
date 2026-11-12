@@ -793,7 +793,7 @@ test('main navigation tabs open without uncaught page errors', { timeout: 18 * 6
           }));
           await route.fulfill({status:200,contentType:'application/json',headers:{'Access-Control-Allow-Origin':'*'},body:JSON.stringify({
             sessionId:chainSessionId,guestToken:chainGuestToken,
-            validatorVersion:'chain-reaction-72-20261113-v1',
+            validatorVersion:'chain-reaction-72-20261112-v1',
             trainingMode:'guided',daily:false,questions
           })});
         });
