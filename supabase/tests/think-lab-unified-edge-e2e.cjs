@@ -83,7 +83,7 @@ async function complete({ gameId, accessToken = null, guestIp = null, level = 'A
   assert.ok(Array.isArray(session.questions) && session.questions.length > 0);
   assert.equal(session.validatorVersion,
     gameId === 'word_forge' ? 'word-forge-reviewed-72-20261111-v1' :
-    gameId === 'chain_reaction' ? 'chain-reaction-72-20261113-v1' : 'odd-one-out-rotated-20261110-v2');
+    gameId === 'chain_reaction' ? 'chain-reaction-72-20261112-v1' : 'odd-one-out-rotated-20261110-v2');
   if (gameId === 'chain_reaction') {
     assert.equal(session.questions.length, daily ? 1 : 24);
     assert.equal(session.daily, daily);
