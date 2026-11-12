@@ -424,22 +424,43 @@ test('server-validated Odd One Out does not persist guest bearer tokens or brows
   assert.doesNotMatch(source,/localStorage\.setItem\([^)]*(?:guestToken|validatorGuestToken)/);
 });
 
-test('internal games keep independent resumable sessions without persisting server validator credentials',()=>{
-  const first=createHarness();
-  first.click('[data-think-game]',{thinkGame:'scramble'});
-  first.click('[data-think-training-mode]',{thinkTrainingMode:'steady',thinkTrainingGame:'scramble'});
-  first.click('[data-scramble-tile]',{scrambleTile:'0'});
-  assert.ok(first.savedSnapshots.scramble);
-  assert.equal(first.savedSnapshots.scramble.payload.scramblePlaced[0],0);
-  const resumed=createHarness({savedSnapshots:first.savedSnapshots});
-  assert.match(resumed.root.innerHTML,/data-think-resume="scramble"/);
-  resumed.click('[data-think-resume]',{thinkResume:'scramble'});
-  assert.equal(resumed.savedSnapshots.scramble.payload.scramblePlaced[0],0);
-  assert.equal(resumed.recordedResults.length,0);
+test('Sentence Scramble verifies tile order on the server and does not persist browser answer snapshots',async()=>{
+  const harness=createHarness();
+  harness.click('[data-think-game]',{thinkGame:'scramble'});
+  await harness.click('[data-think-training-mode]',{thinkTrainingMode:'steady',thinkTrainingGame:'scramble'});
+  const round=harness.getSentenceRound();
+  assert.equal(round.length,24);
+  assert.doesNotMatch(source,/EPIPHANY_SENTENCE_SCRAMBLE_BANK/);
+  const question=round[0];
+  const remaining=question.words.map((_,index)=>index);
+  const correctOrder=question.sentence.split(' ').map(word=>{
+    const found=remaining.find(index=>question.words[index]===word);
+    assert.notEqual(found,undefined,'every canonical sentence token must have a matching tile');
+    remaining.splice(remaining.indexOf(found),1);
+    return found;
+  });
+  const wrongOrder=correctOrder.slice();
+  let swapAt=1;
+  while(swapAt<wrongOrder.length&&question.words[wrongOrder[0]]===question.words[wrongOrder[swapAt]])swapAt++;
+  [wrongOrder[0],wrongOrder[swapAt]]=[wrongOrder[swapAt],wrongOrder[0]];
+  for(const tile of wrongOrder)harness.click('[data-scramble-tile]',{scrambleTile:String(tile)});
+  assert.equal(harness.savedSnapshots.scramble,undefined,'server-backed sessions must not save browser tile snapshots');
+  await harness.click('[data-scramble-check]');
+  assert.equal(harness.feedback.className,'tl-feedback is-wrong');
+  assert.equal(harness.feedback.innerHTML.includes(question.sentence),false,'wrong answers must not reveal the canonical sentence');
+  harness.click('[data-scramble-reset]');
+  for(const tile of correctOrder)harness.click('[data-scramble-tile]',{scrambleTile:String(tile)});
+  await harness.click('[data-scramble-check]');
+  assert.equal(harness.feedback.className,'tl-feedback is-correct');
+  assert.equal(harness.feedback.innerHTML.includes(question.sentence),true);
+  assert.equal(harness.savedSnapshots.scramble,undefined);
+  assert.ok(harness.recordedResults.some(result=>result[0]==='grammar'&&result[1]==='sentence-scramble'&&result[2]===true));
+});
+
+test('Word Forge secure guest sessions do not persist bearer tokens or browser answer snapshots',async()=>{
   const forge=createHarness();
   forge.click('[data-think-game]',{thinkGame:'forge'});
-  return forge.click('[data-think-training-mode]',{thinkTrainingMode:'steady',thinkTrainingGame:'forge'}).then(()=>{
-    forge.click('[data-forge-tile]',{forgeTile:'0'});
-    assert.equal(forge.savedSnapshots.forge,undefined,'server-backed guest sessions must not persist their bearer token or an unusable local snapshot');
-  });
+  await forge.click('[data-think-training-mode]',{thinkTrainingMode:'steady',thinkTrainingGame:'forge'});
+  forge.click('[data-forge-tile]',{forgeTile:'0'});
+  assert.equal(forge.savedSnapshots.forge,undefined,'server-backed guest sessions must not persist their bearer token or an unusable local snapshot');
 });
