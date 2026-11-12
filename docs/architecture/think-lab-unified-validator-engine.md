@@ -140,3 +140,14 @@ Concurrent duplicate submissions must serialize. A replay or stale index is reje
 - Added adapter contract tests covering allowlisting, contract completeness, Word Forge 24-item/private-answer behavior, and Odd One Out level/mode/index-answer behavior.
 - Odd One Out still runs through its legacy authenticated and guest Edge Functions. The registry is not yet the single public runtime endpoint; guest/auth identity and lifecycle orchestration have not yet been moved into a shared database contract.
 - No SQL migration, hosted deployment, Edge Function deployment, or economy activation was performed in this step.
+
+
+### Step 3 — unified private session storage foundation (implemented; clean-room verification pending)
+- Added additive migration `20261112203000_think_lab_unified_validator_sessions.sql`.
+- New private table `economy_private.think_lab_validator_sessions` stores both authenticated and guest sessions with mutually exclusive ownership fields, a fixed game allowlist, validator-version binding, CEFR/mode metadata, canonical server-side questions, cursor, answer history, status, expiry, and timestamps.
+- New `public.velorn_start_think_lab_validator_session` RPC delegates to a service-role-only `SECURITY DEFINER` function. It validates the role from both supported JWT claim settings, rejects unknown game/version combinations, validates per-game question payload shape, enforces session lifetime and shared per-user/IP rate limits, and inserts atomically.
+- Guest bearer tokens are represented only by their SHA-256 hash; guest network identity is represented only by the server HMAC. Authenticated sessions cannot carry guest credentials, and guest sessions cannot carry a user ID.
+- RLS and FORCE RLS are enabled. Direct table privileges are revoked from every API role, including service_role; only the trusted definer function can mutate this storage. The public RPC itself is executable only by service_role.
+- Added rollback-only Phase 5A SQL assertions for authenticated/guest creation across both games, ownership exclusivity, role/table boundaries, malformed payload rejection, and the absence of activity, wallet, ledger, or reward side effects.
+- The legacy Word Forge and Odd One Out tables, Edge Functions, and RPCs are intentionally untouched. The shared answer transition and runtime cutover are still pending; no live game is routed to this table yet.
+- No hosted migration or Edge Function deployment was performed; economy remains disabled.
