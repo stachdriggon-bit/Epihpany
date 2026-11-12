@@ -1325,7 +1325,7 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
             Array.isArray(link.options) && link.options.length === 3 &&
             !Object.hasOwn(link,'to') && !Object.hasOwn(link,'answer') && !Object.hasOwn(link,'explanation')));
       if (error || !data?.sessionId || !safeQuestions || !guestTokenValid ||
-          data.validatorVersion !== 'chain-reaction-72-20261112-v1' || data.trainingMode !== selectedTrainingMode) {
+          data.validatorVersion !== 'chain-reaction-72-20261112-v1' || data.trainingMode !== selectedTrainingMode || data.daily !== isDaily) {
         console.error('Trusted Chain Reaction session could not start:',error?.message||data?.error||'invalid response');
         mode = null; activePool = null;
         root.innerHTML = '<div class="tl-game-card"><h2>Chain Reaction is unavailable</h2><p class="tl-game-instruction">The secure challenge session could not be created. Your attempt has not started. Please try again.</p><button type="button" class="tl-back" data-think-home>Think Lab home</button></div>';
