@@ -124,7 +124,14 @@ async function complete({ gameId, accessToken = null, guestIp = null, level = 'A
         return tile;
       });
       if(index===0){
-        const wrongOrder = correctOrder.slice().reverse();
+        const normalize = value => String(value).toLowerCase().replace(/[^a-z0-9 ]/g,'').replace(/ +/g,' ').trim();
+        let wrongOrder = correctOrder.slice().reverse();
+        if(normalize(wrongOrder.map(tile=>question.words[tile]).join(' '))===normalize(canonical.sentence)){
+          wrongOrder = correctOrder.slice();
+          [wrongOrder[0],wrongOrder[1]]=[wrongOrder[1],wrongOrder[0]];
+        }
+        assert.notEqual(normalize(wrongOrder.map(tile=>question.words[tile]).join(' ')),normalize(canonical.sentence),
+          'E2E wrong permutation must differ from the canonical sentence');
         await sleep(750);
         const wrong = await invoke({
           action:'answer',gameId,sessionId:session.sessionId,questionIndex:index,tileOrder:wrongOrder,
