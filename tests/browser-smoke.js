@@ -855,7 +855,7 @@ test('main navigation tabs open without uncaught page errors', { timeout: 18 * 6
         await page.route('**/functions/v1/velorn-think-lab-validator', async route => {
           const request = route.request();
           if (request.method() === 'OPTIONS') return route.fallback();
-          const requestBody = request.postDataJSON();
+          const requestBody = request.postDataJSON() || {};
           if (requestBody.gameId !== 'sentence_scramble') return route.fallback();
           if (requestBody.action === 'answer') {
             sentenceAnswerRequests.push(requestBody);
