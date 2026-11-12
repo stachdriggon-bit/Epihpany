@@ -55,7 +55,7 @@ test('changed scripts are versioned and the offline shell cache is refreshed', (
   assert.match(html, /account\.js\?v=auth-dialog-guest-migration-20261111-2/);
   assert.match(html, /style\.css\?v=auth-dialog-profile-removal-20261111-1/);
   assert.match(read('style.css'), /Helpful empty-state actions/);
-  assert.match(read('lazy-data.js'), /think-lab\.js\?v=chain-reaction-unified-validator-20261112-5/);
+  assert.match(read('lazy-data.js'), /think-lab\.js\?v=sentence-scramble-unified-validator-20261112-1/);
   assert.match(read('lazy-data.js'), /think-lab-progression\.js\?v=think-lab-daily-20261109-1/);
   assert.match(read('lazy-data.js'), /word-hunt\.js\?v=word-hunt-engine-20261109-2/);
   assert.match(read('lazy-data.js'), /codebreaker\.js\?v=codebreaker-engine-20261109-2/);
