@@ -3,11 +3,10 @@ const PROMPT = "Build the sentence in the correct order.";
 const MODES = Object.freeze(["guided", "steady", "challenge"]);
 
 export function normalizeSentence(value) {
-  return String(value ?? "")
-    .toLowerCase()
-    .replace(/[^a-z0-9 ]/g, "")
-    .replace(/ +/g, " ")
-    .trim();
+  const slash = String.fromCharCode(92);
+  const stripPunctuation = new RegExp("[^" + slash + "p{L}" + slash + "p{N}" + slash + "s]", "gu");
+  const collapseWhitespace = new RegExp(slash + "s+", "g");
+  return String(value ?? "").toLowerCase().replace(stripPunctuation, "").replace(collapseWhitespace, " ").trim();
 }
 
 function sentenceWords(sentence) {
