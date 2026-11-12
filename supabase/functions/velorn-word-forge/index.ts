@@ -64,8 +64,15 @@ Deno.serve(async(req:Request)=>{
   if(body.action==="answer"){
    const guest=!userId;
    if(!adapter.validateAnswerRequest(body,guest))return json(400,{error:"invalid_answer_request"});
-   const args=adapter.answerRpcArguments({userId,guestTokenHash:guest?await sha256Hex(body.guestToken as string):null,body});
-   const {data,error}=await service.rpc("velorn_submit_word_forge_answer",args);
+   // This legacy endpoint intentionally keeps its legacy RPC contract until
+   // the frontend is cut over to the shared Think Lab validator endpoint.
+   const {data,error}=await service.rpc("velorn_submit_word_forge_answer",{
+    p_user_id:userId,
+    p_guest_token_hash:guest?await sha256Hex(body.guestToken as string):null,
+    p_session_id:body.sessionId,
+    p_question_index:body.questionIndex,
+    p_submitted_word:body.answerWord
+   });
    if(error||!data){const m=error?.message||"";const status=/not found/i.test(m)?404:/expired|not active|unexpected/i.test(m)?409:/too quickly/i.test(m)?429:400;return json(status,{error:"answer_rejected"});}
    return json(200,adapter.projectAnswer(data));
   }
