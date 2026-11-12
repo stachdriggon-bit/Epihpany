@@ -1471,8 +1471,19 @@ cat bat bet bed bad bag bog dog cot dot hot pot top mop map cap cop cup cut cold
       if(!validatorSessionId||!validatorClientForSession||validatorFunctionName!=='velorn-word-forge'||(!window.EpiphanyAuth?.isSignedIn?.()&&!validatorGuestToken)){fb.hidden=false;fb.className='tl-feedback is-wrong';fb.textContent='Your secure Word Forge session has expired. Return to Think Lab and start a new round.';return;}
       const answerBody={action:'answer',sessionId:validatorSessionId,questionIndex:index,answerWord:answer};if(validatorGuestToken)answerBody.guestToken=validatorGuestToken;
       const {data,error}=await validatorClientForSession.functions.invoke('velorn-word-forge',{body:answerBody});
-      if(error||!data||typeof data.correct!=='boolean'||typeof data.advance!=='boolean'){fb.hidden=false;fb.className='tl-feedback is-wrong';fb.textContent='We could not verify that word. Please check your connection and try again.';return;}
-      if(!data.advance){roundMistakes++;fb.hidden=false;fb.className='tl-feedback is-wrong';fb.innerHTML='<strong>Not forged yet—try again.</strong><p>Check the clue and letter order. You have '+data.attemptsRemaining+' '+(data.attemptsRemaining===1?'attempt':'attempts')+' remaining.</p>'+(roundMistakes>=2&&activeDifficulty&&activeDifficulty.hintLevel>0?'<p>'+esc(adaptiveHint('forge'))+'</p>':'');return;}
+      const validProgress=!!data&&typeof data.correct==='boolean'&&typeof data.advance==='boolean'&&data.questionIndex===index&&
+        Number.isInteger(data.nextIndex)&&Number.isInteger(data.correctCount)&&data.correctCount>=0&&data.correctCount<=pool.length&&
+        Number.isInteger(data.attemptsRemaining)&&data.attemptsRemaining>=0&&data.attemptsRemaining<=2;
+      if(error||!validProgress){fb.hidden=false;fb.className='tl-feedback is-wrong';fb.textContent='We could not verify that word. Please check your connection and try again.';return;}
+      if(!data.advance){
+        if(data.nextIndex!==index||data.completed!==false){fb.hidden=false;fb.className='tl-feedback is-wrong';fb.textContent='The secure session returned an inconsistent question state. Please restart Word Forge.';return;}
+        roundMistakes++;fb.hidden=false;fb.className='tl-feedback is-wrong';fb.innerHTML='<strong>Not forged yet—try again.</strong><p>Check the clue and letter order. You have '+data.attemptsRemaining+' '+(data.attemptsRemaining===1?'attempt':'attempts')+' remaining.</p>'+(roundMistakes>=2&&activeDifficulty&&activeDifficulty.hintLevel>0?'<p>'+esc(adaptiveHint('forge'))+'</p>':'');return;
+      }
+      const finalQuestion=index===pool.length-1;
+      if(data.nextIndex!==index+1||data.completed!==finalQuestion||
+        ((data.correct||data.advance)&&(!data.correctAnswer||typeof data.explanation!=='string'||typeof data.skill!=='string'))){
+        fb.hidden=false;fb.className='tl-feedback is-wrong';fb.textContent='The secure session did not confirm the expected progress. Please restart Word Forge.';return;
+      }
       if(data.correct)score++;locked=true;root.querySelectorAll('[data-forge-tile],[data-forge-slot],[data-forge-check],[data-forge-reset]').forEach(el=>el.disabled=true);
       if(window.EpiphanyThinkLab)window.EpiphanyThinkLab.recordResult('spelling','word-forge',data.correct,index===pool.length-1);
       fb.hidden=false;fb.className='tl-feedback '+(data.correct?'is-correct':'is-wrong');fb.innerHTML='<strong>'+(data.correct?'✓ Word forged!':'↗ The word was revealed.')+'</strong><p><b>'+esc(String(data.correctAnswer||'').toUpperCase())+'</b> — '+esc(data.explanation||'')+'</p><p><strong>Skill:</strong> '+esc(data.skill||'Vocabulary')+'</p>';
