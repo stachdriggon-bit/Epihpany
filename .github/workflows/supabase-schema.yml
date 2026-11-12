@@ -220,7 +220,7 @@ jobs:
           SELECT count(*) FROM economy_private.activity_events
           WHERE user_id=:'user_id'::uuid AND source_event_key=:'session_id'::uuid
             AND activity_id='chain_reaction' AND event_type='game_session_completed'
-            AND validator_version='chain-reaction-72-20261113-v1'
+            AND validator_version='chain-reaction-72-20261112-v1'
             AND evidence->>'session_type'='daily' AND evidence->>'question_count'='1'
             AND evidence->>'link_count'='3';
           SQL
