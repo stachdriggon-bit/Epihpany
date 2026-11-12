@@ -20,9 +20,12 @@ export function safeSessionQuestions(questions, expectedCount = 24) {
 
 export function validateStartRequest(body) {
   return !!body && body.action === "start" &&
-    Object.keys(body).every(key => ["action", "trainingMode", "daily"].includes(key)) &&
+    Object.keys(body).every(key => ["action", "trainingMode", "daily", "dailySeed"].includes(key)) &&
     ["guided", "steady", "challenge"].includes(body.trainingMode) &&
-    (body.daily === undefined || typeof body.daily === "boolean");
+    (body.daily === undefined || typeof body.daily === "boolean") &&
+    (body.daily === true
+      ? Number.isInteger(body.dailySeed) && body.dailySeed >= 0 && body.dailySeed <= 0xffffffff
+      : body.dailySeed === undefined);
 }
 
 export function validateAnswerRequest(body, guest = false) {
