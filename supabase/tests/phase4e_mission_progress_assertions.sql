@@ -66,7 +66,8 @@ BEGIN
     template_id,template_version,period_type,mission_family,reward_amount,
     objective_definition,validator_mapping_status,is_assignable
   )
-  SELECT template_id,4,period_type,mission_family,reward_amount,
+  SELECT 'f4e_odd_one_out_test',1,period_type,
+         'f4e_odd_one_out_test_family',reward_amount,
          objective_definition,'verified',true
   FROM economy_private.mission_template_versions
   WHERE template_id='solve_a_challenge' AND template_version=2;
@@ -76,7 +77,7 @@ BEGIN
     source_system,experience_id,activity_id,event_type,validator_version,
     mapping_status,predicate_definition
   )
-  SELECT template_id,4,predicate_version,predicate_key,
+  SELECT 'f4e_odd_one_out_test',1,predicate_version,predicate_key,
          source_system,experience_id,activity_id,event_type,validator_version,
          'verified',predicate_definition
   FROM economy_private.mission_event_predicate_mappings
@@ -84,7 +85,7 @@ BEGIN
 
   SELECT objective_definition INTO v_snapshot
   FROM economy_private.mission_template_versions
-  WHERE template_id='solve_a_challenge' AND template_version=4;
+  WHERE template_id='f4e_odd_one_out_test' AND template_version=1;
   IF v_snapshot ->> 'predicate_key' <> 'solve_a_challenge_odd_one_out_v1' THEN
     RAISE EXCEPTION 'Mission assignment snapshot must retain the exact predicate key';
   END IF;
@@ -99,8 +100,8 @@ BEGIN
     assignment_id,board_id,user_id,slot_number,template_id,template_version,
     objective_snapshot,reward_snapshot
   ) VALUES
-    (v_assignment_a,v_board_a,'f4e00000-0000-4000-8000-000000000051',1,'solve_a_challenge',4,v_snapshot,10),
-    (v_assignment_b,v_board_b,'f4e00000-0000-4000-8000-000000000052',1,'solve_a_challenge',4,v_snapshot,10);
+    (v_assignment_a,v_board_a,'f4e00000-0000-4000-8000-000000000051',1,'f4e_odd_one_out_test',1,v_snapshot,10),
+    (v_assignment_b,v_board_b,'f4e00000-0000-4000-8000-000000000052',1,'f4e_odd_one_out_test',1,v_snapshot,10);
 
   -- An event inserted after its board exists is processed automatically by the trigger.
   INSERT INTO economy_private.activity_events (
@@ -172,7 +173,7 @@ BEGIN
     objective_snapshot,reward_snapshot
   ) VALUES (
     v_assignment_c,v_board_c,'f4e00000-0000-4000-8000-000000000053',1,
-    'solve_a_challenge',4,v_snapshot,10
+    'f4e_odd_one_out_test',1,v_snapshot,10
   );
 
   v_result := economy_private.process_mission_board_events(v_board_c);
