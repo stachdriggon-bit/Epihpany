@@ -7,7 +7,7 @@ import {
 
 export const chainReactionAdapter = Object.freeze({
   id: "chain_reaction",
-  validatorVersion: "chain-reaction-72-20261113-v1",
+  validatorVersion: "chain-reaction-72-20261112-v1",
   sessionLifetimeMs: 40 * 60 * 1000,
   validateStartRequest,
   validateAnswerRequest,
