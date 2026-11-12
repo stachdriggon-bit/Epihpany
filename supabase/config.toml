@@ -30,3 +30,6 @@ verify_jwt = true
 
 [functions.velorn-word-forge]
 verify_jwt = false
+
+[functions.velorn-think-lab-validator]
+verify_jwt = false
