@@ -473,6 +473,113 @@ jobs:
           $velorn_phase1$;
           SQL
 
+      - name: Assert Phase 6H generated-board concurrent mission claims
+        timeout-minutes: 8
+        run: |
+          eval "$(supabase status -o env)"
+          USER_ID="f6a80000-0000-4000-8000-000000000001"
+          cleanup_economy() {
+            psql "$DB_URL" -v ON_ERROR_STOP=1 -c "UPDATE economy_private.economy_settings SET economy_enabled=false, updated_at=clock_timestamp() WHERE singleton=true;" >/dev/null 2>&1 || true
+          }
+          trap cleanup_economy EXIT
+
+          psql "$DB_URL" -v ON_ERROR_STOP=1 -f supabase/tests/phase6h_generated_board_concurrency_setup.sql
+
+          DAILY_BOARD=$(psql "$DB_URL" -At -v ON_ERROR_STOP=1 -c "SELECT board_id FROM economy_private.mission_boards WHERE user_id='$USER_ID'::uuid AND period_type='daily';")
+          WEEKLY_BOARD=$(psql "$DB_URL" -At -v ON_ERROR_STOP=1 -c "SELECT board_id FROM economy_private.mission_boards WHERE user_id='$USER_ID'::uuid AND period_type='weekly';")
+          DAILY_1=$(psql "$DB_URL" -At -v ON_ERROR_STOP=1 -c "SELECT assignment_id FROM economy_private.mission_assignments WHERE board_id='$DAILY_BOARD'::uuid AND slot_number=1;")
+          DAILY_2=$(psql "$DB_URL" -At -v ON_ERROR_STOP=1 -c "SELECT assignment_id FROM economy_private.mission_assignments WHERE board_id='$DAILY_BOARD'::uuid AND slot_number=2;")
+          DAILY_3=$(psql "$DB_URL" -At -v ON_ERROR_STOP=1 -c "SELECT assignment_id FROM economy_private.mission_assignments WHERE board_id='$DAILY_BOARD'::uuid AND slot_number=3;")
+          DAILY_4=$(psql "$DB_URL" -At -v ON_ERROR_STOP=1 -c "SELECT assignment_id FROM economy_private.mission_assignments WHERE board_id='$DAILY_BOARD'::uuid AND slot_number=4;")
+
+          CLAIM_SQL="SELECT set_config('request.jwt.claim.role','service_role',false); SELECT out_claim_id || '|' || out_replayed::text FROM public.economy_claim_mission_assignment('$USER_ID'::uuid, '$DAILY_1'::uuid);"
+          psql "$DB_URL" -v ON_ERROR_STOP=1 -c "$CLAIM_SQL" > /tmp/phase6h-duplicate-a.log 2>&1 &
+          duplicate_a=$!
+          psql "$DB_URL" -v ON_ERROR_STOP=1 -c "$CLAIM_SQL" > /tmp/phase6h-duplicate-b.log 2>&1 &
+          duplicate_b=$!
+          wait "$duplicate_a"; duplicate_a_status=$?
+          wait "$duplicate_b"; duplicate_b_status=$?
+          if [ "$duplicate_a_status" -ne 0 ] || [ "$duplicate_b_status" -ne 0 ]; then
+            cat /tmp/phase6h-duplicate-a.log /tmp/phase6h-duplicate-b.log
+            echo "Concurrent retries of one assignment must both return successfully."
+            exit 1
+          fi
+
+          psql "$DB_URL" -v ON_ERROR_STOP=1 -c "SELECT set_config('request.jwt.claim.role','service_role',false); SELECT * FROM public.economy_claim_mission_assignment('$USER_ID'::uuid, '$DAILY_2'::uuid);" >/tmp/phase6h-daily-second.log 2>&1
+
+          CAP_SQL_A="SELECT set_config('request.jwt.claim.role','service_role',false); SELECT * FROM public.economy_claim_mission_assignment('$USER_ID'::uuid, '$DAILY_3'::uuid);"
+          CAP_SQL_B="SELECT set_config('request.jwt.claim.role','service_role',false); SELECT * FROM public.economy_claim_mission_assignment('$USER_ID'::uuid, '$DAILY_4'::uuid);"
+          psql "$DB_URL" -v ON_ERROR_STOP=1 -c "$CAP_SQL_A" > /tmp/phase6h-cap-a.log 2>&1 &
+          cap_a=$!
+          psql "$DB_URL" -v ON_ERROR_STOP=1 -c "$CAP_SQL_B" > /tmp/phase6h-cap-b.log 2>&1 &
+          cap_b=$!
+          set +e
+          wait "$cap_a"; cap_a_status=$?
+          wait "$cap_b"; cap_b_status=$?
+          set -e
+          if { [ "$cap_a_status" -eq 0 ] && [ "$cap_b_status" -eq 0 ]; } || { [ "$cap_a_status" -ne 0 ] && [ "$cap_b_status" -ne 0 ]; }; then
+            cat /tmp/phase6h-cap-a.log /tmp/phase6h-cap-b.log
+            echo "With two daily claims already paid, exactly one of two concurrent claims may win the final slot."
+            exit 1
+          fi
+
+          BONUS_SQL="SELECT set_config('request.jwt.claim.role','service_role',false); SELECT out_claim_id || '|' || out_replayed::text FROM public.economy_claim_mission_board_bonus('$USER_ID'::uuid, '$DAILY_BOARD'::uuid);"
+          psql "$DB_URL" -v ON_ERROR_STOP=1 -c "$BONUS_SQL" > /tmp/phase6h-bonus-a.log 2>&1 &
+          bonus_a=$!
+          psql "$DB_URL" -v ON_ERROR_STOP=1 -c "$BONUS_SQL" > /tmp/phase6h-bonus-b.log 2>&1 &
+          bonus_b=$!
+          wait "$bonus_a"; bonus_a_status=$?
+          wait "$bonus_b"; bonus_b_status=$?
+          if [ "$bonus_a_status" -ne 0 ] || [ "$bonus_b_status" -ne 0 ]; then
+            cat /tmp/phase6h-bonus-a.log /tmp/phase6h-bonus-b.log
+            echo "Concurrent daily bonus retries must both return successfully."
+            exit 1
+          fi
+
+          for assignment_id in $(psql "$DB_URL" -At -v ON_ERROR_STOP=1 -c "SELECT assignment_id FROM economy_private.mission_assignments WHERE board_id='$WEEKLY_BOARD'::uuid ORDER BY slot_number;"); do
+            psql "$DB_URL" -v ON_ERROR_STOP=1 -c "SELECT set_config('request.jwt.claim.role','service_role',false); SELECT * FROM public.economy_claim_mission_assignment('$USER_ID'::uuid, '$assignment_id'::uuid);" >/dev/null
+          done
+          psql "$DB_URL" -v ON_ERROR_STOP=1 -c "SELECT set_config('request.jwt.claim.role','service_role',false); SELECT * FROM public.economy_claim_mission_board_bonus('$USER_ID'::uuid, '$WEEKLY_BOARD'::uuid);" >/tmp/phase6h-weekly-bonus.log
+
+          cleanup_economy
+          trap - EXIT
+          psql "$DB_URL" -v ON_ERROR_STOP=1 <<'SQL'
+          DO $phase6h_verify$
+          DECLARE
+            v_user uuid := 'f6a80000-0000-4000-8000-000000000001';
+            v_balance bigint;
+            v_claims integer;
+            v_ledger integer;
+            v_daily_paid integer;
+            v_weekly_paid integer;
+          BEGIN
+            SELECT balance INTO v_balance FROM economy_private.wallets WHERE user_id=v_user;
+            SELECT count(*) INTO v_claims FROM economy_private.mission_reward_claims WHERE user_id=v_user;
+            SELECT count(*) INTO v_ledger FROM economy_private.wallet_ledger WHERE user_id=v_user;
+            SELECT count(*) INTO v_daily_paid
+            FROM economy_private.mission_reward_claims c
+            JOIN economy_private.mission_assignments a ON a.assignment_id=c.assignment_id
+            WHERE a.user_id=v_user AND a.board_id IN (
+              SELECT board_id FROM economy_private.mission_boards WHERE user_id=v_user AND period_type='daily'
+            ) AND c.claim_status='paid';
+            SELECT count(*) INTO v_weekly_paid
+            FROM economy_private.mission_reward_claims c
+            JOIN economy_private.mission_assignments a ON a.assignment_id=c.assignment_id
+            WHERE a.user_id=v_user AND a.board_id IN (
+              SELECT board_id FROM economy_private.mission_boards WHERE user_id=v_user AND period_type='weekly'
+            ) AND c.claim_status='paid';
+            IF v_balance <> 140 OR v_claims <> 8 OR v_ledger <> 8
+               OR v_daily_paid <> 3 OR v_weekly_paid <> 3 THEN
+              RAISE EXCEPTION 'Phase 6H concurrent claim totals mismatch: balance %, claims %, ledger %, daily %, weekly %',
+                v_balance,v_claims,v_ledger,v_daily_paid,v_weekly_paid;
+            END IF;
+            IF (SELECT economy_enabled FROM economy_private.economy_settings WHERE singleton) IS DISTINCT FROM false THEN
+              RAISE EXCEPTION 'Phase 6H must leave the economy disabled';
+            END IF;
+          END;
+          $phase6h_verify$;
+          SQL
+
       - name: Compare complete local catalog with hosted reference snapshot
         timeout-minutes: 5
         run: |
