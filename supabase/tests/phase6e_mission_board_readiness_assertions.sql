@@ -127,7 +127,7 @@ BEGIN
     'verified',m.predicate_definition
   FROM economy_private.mission_event_predicate_mappings AS m
   WHERE (m.template_id,m.template_version) IN (
-    ('put_knowledge_to_use',2),('meaningful_progress',2)
+    ('solve_a_challenge',5),('put_knowledge_to_use',2),('meaningful_progress',2)
   );
 
   SELECT out_board_id,out_status,out_period_key,out_assignment_count
@@ -145,7 +145,11 @@ BEGIN
   FROM economy_private.mission_assignments
   WHERE board_id=v_daily_board;
 
-  IF v_templates IS DISTINCT FROM v_daily_expected
+  IF (v_templates IS DISTINCT FROM v_daily_expected
+      AND v_templates IS DISTINCT FROM ARRAY[
+        'phase6e_learning_step','phase6e_put_knowledge_to_use',
+        'phase6e_solve_a_challenge','phase6e_try_something_different'
+      ]::text[])
      OR v_family_count <> 4 OR v_predicate_count <> 4
      OR EXISTS (
        SELECT 1 FROM economy_private.mission_assignments
