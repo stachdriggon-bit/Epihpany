@@ -30,7 +30,7 @@ DECLARE
   v_predicate_count integer;
   v_daily_expected text[] := ARRAY[
     'phase6e_learning_step','phase6e_put_knowledge_to_use',
-    'phase6e_solve_a_challenge','phase6e_try_something_different'
+    'solve_a_challenge','phase6e_try_something_different'
   ]::text[];
   v_weekly_expected text[] := ARRAY[
     'phase6e_broaden_your_experience','phase6e_consistent_progress',
@@ -48,7 +48,7 @@ BEGIN
     RAISE EXCEPTION 'Board generation must remain service-role-only';
   END IF;
 
-  -- Insert only five verified test candidates first: three daily and two weekly.
+  -- Insert only four verified test candidates first: two daily and two weekly.
   -- The source catalog is append-only and remains unchanged.
   INSERT INTO economy_private.mission_template_versions (
     template_id,template_version,period_type,mission_family,reward_amount,
@@ -60,8 +60,7 @@ BEGIN
   FROM economy_private.mission_template_versions AS t
   WHERE (t.template_id,t.template_version) IN (
     ('learning_step',2),('try_something_different',2),
-    ('solve_a_challenge',5),('consistent_progress',2),
-    ('broaden_your_experience',2)
+    ('consistent_progress',2),('broaden_your_experience',2)
   );
 
   INSERT INTO economy_private.mission_event_predicate_mappings (
@@ -76,8 +75,7 @@ BEGIN
   FROM economy_private.mission_event_predicate_mappings AS m
   WHERE (m.template_id,m.template_version) IN (
     ('learning_step',2),('try_something_different',2),
-    ('solve_a_challenge',5),('consistent_progress',2),
-    ('broaden_your_experience',2)
+    ('consistent_progress',2),('broaden_your_experience',2)
   );
 
   -- Generator's economy gate is opened only in this rolled-back test transaction.
@@ -90,7 +88,7 @@ BEGIN
   FROM public.economy_generate_mission_board(v_user,'daily',v_reference);
 
   IF v_daily_board IS NOT NULL OR v_status <> 'not_ready' OR v_count <> 0 THEN
-    RAISE EXCEPTION 'Three eligible daily templates must return not_ready without a partial board';
+    RAISE EXCEPTION 'Two eligible daily templates must return not_ready without a partial board';
   END IF;
 
   SELECT out_board_id,out_status,out_period_key,out_assignment_count
@@ -105,7 +103,7 @@ BEGIN
     RAISE EXCEPTION 'Insufficient candidate pools must not leave partial mission boards';
   END IF;
 
-  -- Append the remaining two verified test candidates to complete the exact 4+3 pool.
+  -- Append the remaining three verified test candidates to complete the exact 4+3 pool.
   INSERT INTO economy_private.mission_template_versions (
     template_id,template_version,period_type,mission_family,reward_amount,
     objective_definition,validator_mapping_status,is_assignable
@@ -115,7 +113,7 @@ BEGIN
     t.reward_amount,t.objective_definition,'verified',true
   FROM economy_private.mission_template_versions AS t
   WHERE (t.template_id,t.template_version) IN (
-    ('put_knowledge_to_use',2),('meaningful_progress',2)
+    ('solve_a_challenge',5),('put_knowledge_to_use',2),('meaningful_progress',2)
   );
 
   INSERT INTO economy_private.mission_event_predicate_mappings (
