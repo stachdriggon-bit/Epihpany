@@ -49,7 +49,9 @@ test('empty card discovery history points to the daily discovery action', () => 
 test('changed scripts are versioned and the offline shell cache is refreshed', () => {
   const html = read('index.html');
   const sw = read('service-worker.js');
-  assert.match(html, /app\.js\?v=fluentia-canonical-home-activities-20261109-1/);
+  const appVersion = html.match(/app\.js\?v=([^'"]+)/)?.[1];
+  assert.ok(appVersion, 'app.js must use a cache-busting version');
+  assert.ok(sw.includes(appVersion), 'the offline shell cache must include the current app.js version');
   assert.match(html, /lazy-data\.js\?v=word-forge-validator-20261111-1/);
   assert.match(html, /cards\.js\?v=account-wallet-isolation-20261111-1/);
   assert.match(html, /account\.js\?v=auth-dialog-guest-migration-20261111-2/);
