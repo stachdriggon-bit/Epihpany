@@ -155,6 +155,12 @@ jobs:
           eval "$(supabase status -o env)"
           psql "$DB_URL" -v ON_ERROR_STOP=1 -f supabase/tests/phase6f_generated_board_event_pipeline_assertions.sql
 
+      - name: Assert Phase 6G generated-board atomic claims
+        timeout-minutes: 5
+        run: |
+          eval "$(supabase status -o env)"
+          psql "$DB_URL" -v ON_ERROR_STOP=1 -f supabase/tests/phase6g_generated_board_atomic_claim_assertions.sql
+
       - name: Assert Phase 4F safe mission board generation
         timeout-minutes: 5
         run: |
