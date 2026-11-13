@@ -59,7 +59,7 @@ jobs:
           if-no-files-found: ignore
           retention-days: 1
       - name: Upload card dossier visual verification screenshots
-        if: failure()
+        if: failure() && github.event_name == 'workflow_dispatch' && inputs.upload_debug_artifacts == true
         uses: actions/upload-artifact@v6
         with:
           name: epiphany-visual-checks
