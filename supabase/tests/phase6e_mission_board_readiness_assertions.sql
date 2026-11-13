@@ -1,5 +1,6 @@
 -- Phase 6E: prove the seven approved Think Lab missions can fill complete boards safely.
--- All activation below is transactional test data and is rolled back at the end.
+-- Immutable catalog rows are never modified: verified candidates are isolated test copies.
+-- The economy gate is enabled only inside this transaction and is rolled back at the end.
 BEGIN;
 
 INSERT INTO auth.users (
@@ -28,10 +29,12 @@ DECLARE
   v_family_count integer;
   v_predicate_count integer;
   v_daily_expected text[] := ARRAY[
-    'learning_step','put_knowledge_to_use','solve_a_challenge','try_something_different'
+    'phase6e_learning_step','phase6e_put_knowledge_to_use',
+    'phase6e_solve_a_challenge','phase6e_try_something_different'
   ]::text[];
   v_weekly_expected text[] := ARRAY[
-    'broaden_your_experience','consistent_progress','meaningful_progress'
+    'phase6e_broaden_your_experience','phase6e_consistent_progress',
+    'phase6e_meaningful_progress'
   ]::text[];
 BEGIN
   IF (SELECT economy_enabled FROM economy_private.economy_settings WHERE singleton)
@@ -45,30 +48,42 @@ BEGIN
     RAISE EXCEPTION 'Board generation must remain service-role-only';
   END IF;
 
-  -- Keep the candidate pool isolated to the seven Phase 6B definitions.
-  UPDATE economy_private.mission_template_versions
-  SET is_assignable = false;
+  -- Insert only five verified test candidates first: three daily and two weekly.
+  -- The source catalog is append-only and remains unchanged.
+  INSERT INTO economy_private.mission_template_versions (
+    template_id,template_version,period_type,mission_family,reward_amount,
+    objective_definition,validator_mapping_status,is_assignable
+  )
+  SELECT
+    'phase6e_' || t.template_id,t.template_version,t.period_type,t.mission_family,
+    t.reward_amount,t.objective_definition,'verified',true
+  FROM economy_private.mission_template_versions AS t
+  WHERE (t.template_id,t.template_version) IN (
+    ('learning_step',2),('try_something_different',2),
+    ('solve_a_challenge',5),('consistent_progress',2),
+    ('broaden_your_experience',2)
+  );
 
+  INSERT INTO economy_private.mission_event_predicate_mappings (
+    template_id,template_version,predicate_version,predicate_key,
+    source_system,experience_id,activity_id,event_type,validator_version,
+    mapping_status,predicate_definition
+  )
+  SELECT
+    'phase6e_' || m.template_id,m.template_version,m.predicate_version,m.predicate_key,
+    m.source_system,m.experience_id,m.activity_id,m.event_type,m.validator_version,
+    'verified',m.predicate_definition
+  FROM economy_private.mission_event_predicate_mappings AS m
+  WHERE (m.template_id,m.template_version) IN (
+    ('learning_step',2),('try_something_different',2),
+    ('solve_a_challenge',5),('consistent_progress',2),
+    ('broaden_your_experience',2)
+  );
+
+  -- Generator's economy gate is opened only in this rolled-back test transaction.
   UPDATE economy_private.economy_settings
-  SET economy_enabled = true
+  SET economy_enabled=true
   WHERE singleton;
-
-  -- Five eligible templates are insufficient: neither board may be partially created.
-  UPDATE economy_private.mission_template_versions
-  SET validator_mapping_status='verified', is_assignable=true
-  WHERE (template_id,template_version) IN (
-    ('learning_step',2),('try_something_different',2),
-    ('solve_a_challenge',5),('consistent_progress',2),
-    ('broaden_your_experience',2)
-  );
-
-  UPDATE economy_private.mission_event_predicate_mappings
-  SET mapping_status='verified'
-  WHERE (template_id,template_version) IN (
-    ('learning_step',2),('try_something_different',2),
-    ('solve_a_challenge',5),('consistent_progress',2),
-    ('broaden_your_experience',2)
-  );
 
   SELECT out_board_id,out_status,out_period_key,out_assignment_count
   INTO v_daily_board,v_status,v_key,v_count
@@ -90,23 +105,31 @@ BEGIN
     RAISE EXCEPTION 'Insufficient candidate pools must not leave partial mission boards';
   END IF;
 
-  -- Complete the exact approved pool: four daily and three weekly definitions.
-  UPDATE economy_private.mission_template_versions
-  SET validator_mapping_status='verified', is_assignable=true
-  WHERE (template_id,template_version) IN (
-    ('learning_step',2),('try_something_different',2),
-    ('solve_a_challenge',5),('put_knowledge_to_use',2),
-    ('consistent_progress',2),('broaden_your_experience',2),
-    ('meaningful_progress',2)
+  -- Append the remaining two verified test candidates to complete the exact 4+3 pool.
+  INSERT INTO economy_private.mission_template_versions (
+    template_id,template_version,period_type,mission_family,reward_amount,
+    objective_definition,validator_mapping_status,is_assignable
+  )
+  SELECT
+    'phase6e_' || t.template_id,t.template_version,t.period_type,t.mission_family,
+    t.reward_amount,t.objective_definition,'verified',true
+  FROM economy_private.mission_template_versions AS t
+  WHERE (t.template_id,t.template_version) IN (
+    ('put_knowledge_to_use',2),('meaningful_progress',2)
   );
 
-  UPDATE economy_private.mission_event_predicate_mappings
-  SET mapping_status='verified'
-  WHERE (template_id,template_version) IN (
-    ('learning_step',2),('try_something_different',2),
-    ('solve_a_challenge',5),('put_knowledge_to_use',2),
-    ('consistent_progress',2),('broaden_your_experience',2),
-    ('meaningful_progress',2)
+  INSERT INTO economy_private.mission_event_predicate_mappings (
+    template_id,template_version,predicate_version,predicate_key,
+    source_system,experience_id,activity_id,event_type,validator_version,
+    mapping_status,predicate_definition
+  )
+  SELECT
+    'phase6e_' || m.template_id,m.template_version,m.predicate_version,m.predicate_key,
+    m.source_system,m.experience_id,m.activity_id,m.event_type,m.validator_version,
+    'verified',m.predicate_definition
+  FROM economy_private.mission_event_predicate_mappings AS m
+  WHERE (m.template_id,m.template_version) IN (
+    ('put_knowledge_to_use',2),('meaningful_progress',2)
   );
 
   SELECT out_board_id,out_status,out_period_key,out_assignment_count
