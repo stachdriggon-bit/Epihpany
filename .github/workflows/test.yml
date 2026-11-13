@@ -44,15 +44,15 @@ jobs:
         timeout-minutes: 20
         run: npm run test:browser
       - name: Upload World retention heap snapshot
-        if: always()
+        if: failure()
         uses: actions/upload-artifact@v6
         with:
           name: world-retention-heap-snapshot
           path: test-results/world-retention.heapsnapshot
           if-no-files-found: ignore
-          retention-days: 7
+          retention-days: 1
       - name: Upload card dossier visual verification screenshots
-        if: always()
+        if: failure()
         uses: actions/upload-artifact@v6
         with:
           name: epiphany-visual-checks
@@ -60,3 +60,4 @@ jobs:
             test-results/card-dossier/
             test-results/odd-one-out/
           if-no-files-found: ignore
+          retention-days: 1
