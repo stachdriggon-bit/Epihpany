@@ -125,6 +125,12 @@ jobs:
           eval "$(supabase status -o env)"
           psql "$DB_URL" -v ON_ERROR_STOP=1 -f supabase/tests/phase6a_cumulative_mission_evidence_assertions.sql
 
+      - name: Assert Phase 6B seven mission Think Lab mappings
+        timeout-minutes: 5
+        run: |
+          eval "$(supabase status -o env)"
+          psql "$DB_URL" -v ON_ERROR_STOP=1 -f supabase/tests/phase6b_seven_mission_think_lab_mapping_assertions.sql
+
       - name: Assert Phase 4F safe mission board generation
         timeout-minutes: 5
         run: |
