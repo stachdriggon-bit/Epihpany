@@ -59,20 +59,29 @@ test('Sentence Scramble bank contains 72 unique reviewed challenges in three equ
   assert.equal(new Set(sentences).size, 72, 'sentences must not be duplicated');
 });
 
-test('Sentence Scramble is lazy-loaded before Think Lab and its session uses the full selected mode', () => {
+test('Sentence Scramble and Chain Reaction answer banks stay server-side while Think Lab uses secure sessions', () => {
   const lazy = fs.readFileSync(path.join(root, 'lazy-data.js'), 'utf8');
   const think = fs.readFileSync(path.join(root, 'think-lab.js'), 'utf8');
   const worker = fs.readFileSync(path.join(root, 'service-worker.js'), 'utf8');
+  const edge = fs.readFileSync(path.join(root, 'supabase/functions/velorn-think-lab-validator/index.ts'), 'utf8');
 
-  assert.match(lazy, /sentence-scramble-bank\.js\?v=[^'"]+/);
-  const bankIndex = lazy.indexOf('sentence-scramble-bank.js');
-  const thinkLabIndex = lazy.indexOf('think-lab.js');
-  assert.ok(bankIndex >= 0 && thinkLabIndex > bankIndex, 'bank must load before the Think Lab runtime');
-  assert.match(worker, /'\.\/sentence-scramble-bank\.js'/);
-  assert.match(think, /EPIPHANY_SENTENCE_SCRAMBLE_BANK/);
-  assert.match(think, /mode === 'forge' \|\| mode === 'connections' \|\| mode === 'scramble' \|\| mode === 'chain'\) \? 24/);
-  assert.match(think, /accepted=\[item\.sentence/);
-  const checkBlock = think.split("if(e.target.closest('[data-scramble-check]'))")[1]?.split("const recommended=")[0] || '';
-  assert.ok(checkBlock, 'Sentence Scramble check handler should exist');
-  assert.doesNotMatch(checkBlock, /item\.options\[item\.answer\]/);
+  // Canonical answers must never be shipped to or cached by the browser.
+  assert.doesNotMatch(lazy, /sentence-scramble-bank\\.js/);
+  assert.doesNotMatch(lazy, /chain-reaction-bank\\.js/);
+  assert.doesNotMatch(worker, /'\\.\\/sentence-scramble-bank\\.js'/);
+  assert.doesNotMatch(worker, /'\\.\\/chain-reaction-bank\\.js'/);
+  assert.match(edge, /import "\\.\\.\\/velorn-sentence-scramble\\/sentence-scramble-bank\\.js"/);
+  assert.match(edge, /import "\\.\\.\\/velorn-chain-reaction\\/chain-reaction-bank\\.js"/);
+
+  // The browser receives only server-projected tiles/links and submits answers for verification.
+  assert.doesNotMatch(think, /EPIPHANY_SENTENCE_SCRAMBLE_BANK/);
+  assert.doesNotMatch(think, /EPIPHANY_CHAIN_REACTION_BANK/);
+  assert.match(think, /gameId:'sentence_scramble'/);
+  assert.match(think, /gameId:'chain_reaction'/);
+  assert.match(think, /action:'answer',gameId:'sentence_scramble'/);
+  assert.match(think, /action:'answer',gameId:'chain_reaction'/);
+  const scrambleCheck = think.split("if(e.target.closest('[data-scramble-check]'))")[1]?.split("if(e.target.closest('[data-chain-answer]'))")[0] || '';
+  assert.ok(scrambleCheck, 'Sentence Scramble check handler should exist');
+  assert.match(scrambleCheck, /validatorClientForSession\\.functions\\.invoke/);
+  assert.doesNotMatch(scrambleCheck, /item\\.options\\[item\\.answer\\]/);
 });
