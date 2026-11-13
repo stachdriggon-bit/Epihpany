@@ -66,22 +66,22 @@ test('Sentence Scramble and Chain Reaction answer banks stay server-side while T
   const edge = fs.readFileSync(path.join(root, 'supabase/functions/velorn-think-lab-validator/index.ts'), 'utf8');
 
   // Canonical answers must never be shipped to or cached by the browser.
-  assert.doesNotMatch(lazy, /sentence-scramble-bank\\.js/);
-  assert.doesNotMatch(lazy, /chain-reaction-bank\\.js/);
-  assert.doesNotMatch(worker, /'\\.\\/sentence-scramble-bank\\.js'/);
-  assert.doesNotMatch(worker, /'\\.\\/chain-reaction-bank\\.js'/);
-  assert.match(edge, /import "\\.\\.\\/velorn-sentence-scramble\\/sentence-scramble-bank\\.js"/);
-  assert.match(edge, /import "\\.\\.\\/velorn-chain-reaction\\/chain-reaction-bank\\.js"/);
+  assert.equal(lazy.includes('sentence-scramble-bank.js'), false);
+  assert.equal(lazy.includes('chain-reaction-bank.js'), false);
+  assert.equal(worker.includes("'./sentence-scramble-bank.js'"), false);
+  assert.equal(worker.includes("'./chain-reaction-bank.js'"), false);
+  assert.ok(edge.includes('import "../velorn-sentence-scramble/sentence-scramble-bank.js";'));
+  assert.ok(edge.includes('import "../velorn-chain-reaction/chain-reaction-bank.js";'));
 
   // The browser receives only server-projected tiles/links and submits answers for verification.
-  assert.doesNotMatch(think, /EPIPHANY_SENTENCE_SCRAMBLE_BANK/);
-  assert.doesNotMatch(think, /EPIPHANY_CHAIN_REACTION_BANK/);
-  assert.match(think, /gameId:'sentence_scramble'/);
-  assert.match(think, /gameId:'chain_reaction'/);
-  assert.match(think, /action:'answer',gameId:'sentence_scramble'/);
-  assert.match(think, /action:'answer',gameId:'chain_reaction'/);
+  assert.equal(think.includes('EPIPHANY_SENTENCE_SCRAMBLE_BANK'), false);
+  assert.equal(think.includes('EPIPHANY_CHAIN_REACTION_BANK'), false);
+  assert.ok(think.includes("gameId:'sentence_scramble'"));
+  assert.ok(think.includes("gameId:'chain_reaction'"));
+  assert.ok(think.includes("action:'answer',gameId:'sentence_scramble'"));
+  assert.ok(think.includes("action:'answer',gameId:'chain_reaction'"));
   const scrambleCheck = think.split("if(e.target.closest('[data-scramble-check]'))")[1]?.split("if(e.target.closest('[data-chain-answer]'))")[0] || '';
   assert.ok(scrambleCheck, 'Sentence Scramble check handler should exist');
-  assert.match(scrambleCheck, /validatorClientForSession\\.functions\\.invoke/);
-  assert.doesNotMatch(scrambleCheck, /item\\.options\\[item\\.answer\\]/);
+  assert.ok(scrambleCheck.includes('validatorClientForSession.functions.invoke'));
+  assert.equal(scrambleCheck.includes('item.options[item.answer]'), false);
 });
