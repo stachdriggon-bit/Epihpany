@@ -5,6 +5,13 @@ on:
     branches: [main]
   pull_request:
     branches: [main]
+  workflow_dispatch:
+    inputs:
+      upload_debug_artifacts:
+        description: Upload diagnostic screenshots and heap snapshot (requires available artifact storage)
+        required: false
+        default: false
+        type: boolean
 
 concurrency:
   group: epiphany-checks-${{ github.ref }}
@@ -44,7 +51,7 @@ jobs:
         timeout-minutes: 20
         run: npm run test:browser
       - name: Upload World retention heap snapshot
-        if: failure()
+        if: failure() && github.event_name == 'workflow_dispatch' && inputs.upload_debug_artifacts == true
         uses: actions/upload-artifact@v6
         with:
           name: world-retention-heap-snapshot
