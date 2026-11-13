@@ -80,7 +80,7 @@ test('Sentence Scramble and Chain Reaction answer banks stay server-side while T
   assert.ok(think.includes("gameId:'chain_reaction'"));
   assert.ok(think.includes("action:'answer',gameId:'sentence_scramble'"));
   assert.ok(think.includes("action:'answer',gameId:'chain_reaction'"));
-  const scrambleCheck = think.split("if(e.target.closest('[data-scramble-check]'))")[1]?.split("if(e.target.closest('[data-chain-answer]'))")[0] || '';
+  const scrambleCheck = think.split("if(e.target.closest('[data-scramble-check]'))")[1]?.split("const chainAnswer=e.target.closest('[data-chain-answer]')")[0] || '';
   assert.ok(scrambleCheck, 'Sentence Scramble check handler should exist');
   assert.ok(scrambleCheck.includes('validatorClientForSession.functions.invoke'));
   assert.equal(scrambleCheck.includes('item.options[item.answer]'), false);
