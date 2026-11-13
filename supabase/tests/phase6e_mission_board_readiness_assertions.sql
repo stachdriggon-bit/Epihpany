@@ -153,7 +153,10 @@ BEGIN
        SELECT 1 FROM economy_private.mission_assignments
        WHERE board_id=v_daily_board AND reward_snapshot <> 10
      ) THEN
-    RAISE EXCEPTION 'Daily board must contain the four distinct approved families/predicates with the approved reward snapshot';
+    RAISE EXCEPTION 'Daily board assertion failed: templates=%, families=%, predicates=%, reward_mismatches=%',
+      v_templates, v_family_count, v_predicate_count,
+      (SELECT count(*) FROM economy_private.mission_assignments
+       WHERE board_id=v_daily_board AND reward_snapshot <> 10);
   END IF;
 
   SELECT out_board_id,out_status,out_period_key,out_assignment_count
