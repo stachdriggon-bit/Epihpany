@@ -7,7 +7,7 @@ INSERT INTO auth.users (
   id,aud,role,email,encrypted_password,email_confirmed_at,
   raw_app_meta_data,raw_user_meta_data,created_at,updated_at
 ) VALUES (
-  'f6g00000-0000-4000-8000-000000000001',
+  'f6a70000-0000-4000-8000-000000000001',
   'authenticated','authenticated','velorn-phase6g@example.invalid','',now(),
   '{}'::jsonb,'{"timezone_name":"UTC"}'::jsonb,now(),now()
 );
@@ -17,7 +17,7 @@ SELECT set_config('request.jwt.claims','{"role":"service_role"}',true);
 
 DO $phase6g$
 DECLARE
-  v_user uuid := 'f6g00000-0000-4000-8000-000000000001';
+  v_user uuid := 'f6a70000-0000-4000-8000-000000000001';
   v_reference timestamptz := '2026-11-13 12:00:00+00';
   v_daily_board uuid;
   v_weekly_board uuid;
@@ -129,15 +129,15 @@ BEGIN
     event_type,occurred_at,received_at,validator_version,evidence
   ) VALUES
   (
-    'f6g00000-0000-4000-8000-000000000011',v_user,
-    'f6g00000-0000-4000-8000-000000000101','think_lab','think_lab','odd_one_out',
+    'f6a70000-0000-4000-8000-000000000011',v_user,
+    'f6a70000-0000-4000-8000-000000000101','think_lab','think_lab','odd_one_out',
     'game_session_completed','2026-11-11 09:00:00+00',now(),
     'odd-one-out-rotated-20261110-v2',
     '{"challenge_level":"B1","training_mode":"steady","question_count":8,"correct_count":7,"incorrect_count":1}'::jsonb
   ),
   (
-    'f6g00000-0000-4000-8000-000000000012',v_user,
-    'f6g00000-0000-4000-8000-000000000102','think_lab','think_lab','word_forge',
+    'f6a70000-0000-4000-8000-000000000012',v_user,
+    'f6a70000-0000-4000-8000-000000000102','think_lab','think_lab','word_forge',
     'game_session_completed','2026-11-12 09:00:00+00',now(),
     'word-forge-reviewed-72-20261111-v1',
     '{"training_mode":"steady","question_count":12,"correct_count":10,"incorrect_count":2}'::jsonb
@@ -149,22 +149,22 @@ BEGIN
     event_type,occurred_at,received_at,validator_version,evidence
   ) VALUES
   (
-    'f6g00000-0000-4000-8000-000000000013',v_user,
-    'f6g00000-0000-4000-8000-000000000103','think_lab','think_lab','odd_one_out',
+    'f6a70000-0000-4000-8000-000000000013',v_user,
+    'f6a70000-0000-4000-8000-000000000103','think_lab','think_lab','odd_one_out',
     'game_session_completed','2026-11-13 08:00:00+00',now(),
     'odd-one-out-rotated-20261110-v2',
     '{"challenge_level":"B2","training_mode":"challenge","question_count":12,"correct_count":10,"incorrect_count":2}'::jsonb
   ),
   (
-    'f6g00000-0000-4000-8000-000000000014',v_user,
-    'f6g00000-0000-4000-8000-000000000104','think_lab','think_lab','word_forge',
+    'f6a70000-0000-4000-8000-000000000014',v_user,
+    'f6a70000-0000-4000-8000-000000000104','think_lab','think_lab','word_forge',
     'game_session_completed','2026-11-13 09:00:00+00',now(),
     'word-forge-reviewed-72-20261111-v1',
     '{"training_mode":"steady","question_count":24,"correct_count":22,"incorrect_count":2}'::jsonb
   ),
   (
-    'f6g00000-0000-4000-8000-000000000015',v_user,
-    'f6g00000-0000-4000-8000-000000000105','think_lab','think_lab','chain_reaction',
+    'f6a70000-0000-4000-8000-000000000015',v_user,
+    'f6a70000-0000-4000-8000-000000000105','think_lab','think_lab','chain_reaction',
     'game_session_completed','2026-11-13 10:00:00+00',now(),
     'chain-reaction-72-20261112-v1',
     '{"training_mode":"steady","session_type":"full","question_count":24,"link_count":72,"wrong_link_attempts":3,"correct_count":21,"incorrect_count":3}'::jsonb
@@ -224,7 +224,7 @@ BEGIN
 
   -- A replay of the last accepted event must not create more progress.
   v_last_progress := economy_private.process_mission_event(
-    'f6g00000-0000-4000-8000-000000000015'
+    'f6a70000-0000-4000-8000-000000000015'
   );
   IF v_last_progress <> 0 THEN
     RAISE EXCEPTION 'Replaying an already processed generated-board event must be a no-op';
