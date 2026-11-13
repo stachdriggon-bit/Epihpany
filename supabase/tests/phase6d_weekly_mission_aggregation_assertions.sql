@@ -163,7 +163,7 @@ BEGIN
     RAISE EXCEPTION 'Day 1 should advance daily diversity and activity variety only';
   END IF;
 
-  -- Day 2: Word Forge, a different game and a second distinct day.
+  -- Day 2: A partial Word Forge session, a different game and a second distinct day.
   INSERT INTO economy_private.activity_events (
     event_id,user_id,source_event_key,source_system,experience_id,activity_id,
     event_type,occurred_at,received_at,validator_version,evidence
@@ -172,7 +172,7 @@ BEGIN
     'f6d00000-0000-4000-8000-000000000042','think_lab','think_lab','word_forge',
     'game_session_completed',v_start+interval '2 days 10 hours',now(),
     'word-forge-reviewed-72-20261111-v1',
-    '{"training_mode":"steady","question_count":24,"correct_count":20,"incorrect_count":4}'::jsonb
+    '{"training_mode":"steady","question_count":12,"correct_count":10,"incorrect_count":2}'::jsonb
   );
 
   IF NOT EXISTS (
