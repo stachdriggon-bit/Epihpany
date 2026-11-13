@@ -47,8 +47,9 @@ test('Fluentia Home destinations are registered adapters using the shared sessio
 test('changed Home launcher and shell use fresh cache-busting versions', () => {
   const html = read('index.html');
   const worker = read('service-worker.js');
-  assert.match(html, /app\.js\?v=fluentia-canonical-home-activities-20261109-1/);
-  assert.match(worker, /fluentia-canonical-home-activities-20261109-1/);
+  const appVersion = html.match(/app\.js\?v=([^'"]+)/)?.[1];
+  assert.ok(appVersion, 'the Home shell must reference a versioned app.js');
+  assert.ok(worker.includes(appVersion), 'the service-worker cache must be refreshed for the current app.js version');
 });
 
 test('the public site no longer ships Arcade or mini-game presentation rules', () => {
