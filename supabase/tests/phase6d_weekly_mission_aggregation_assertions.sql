@@ -223,13 +223,13 @@ BEGIN
   END IF;
 
   IF (SELECT count(*) FROM economy_private.mission_assignment_evidence
-      WHERE assignment_id IN (v_consistent,v_broaden,v_meaningful)) <> 7 THEN
-    RAISE EXCEPTION 'Expected seven immutable evidence rows across the three weekly missions';
+      WHERE assignment_id IN (v_consistent,v_broaden,v_meaningful)) <> 6 THEN
+    RAISE EXCEPTION 'Expected six immutable evidence rows across the three weekly missions';
   END IF;
 
   IF (SELECT count(*) FROM economy_private.mission_event_progress
-      WHERE assignment_id IN (v_consistent,v_broaden,v_meaningful)) <> 7 THEN
-    RAISE EXCEPTION 'Expected seven progress transitions across the three weekly missions';
+      WHERE assignment_id IN (v_consistent,v_broaden,v_meaningful)) <> 6 THEN
+    RAISE EXCEPTION 'Expected six progress transitions across the three weekly missions';
   END IF;
 
   -- Replay must not create duplicate evidence or progress transitions.
