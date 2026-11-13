@@ -149,6 +149,11 @@ Deno.serve(async (req: Request) => {
       const { data, error } = await service.rpc("velorn_submit_think_lab_validator_answer", args);
       if (error || !data) {
         const message = error?.message || "";
+        if (error) console.error("Unified Think Lab answer RPC rejected:", {
+          gameId: adapter.id,
+          code: error.code || null,
+          message,
+        });
         const status = /not found/i.test(message) ? 404 :
           /expired|not active|unexpected/i.test(message) ? 409 :
           /too quickly|rate limit/i.test(message) ? 429 : 400;
