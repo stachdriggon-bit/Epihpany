@@ -262,7 +262,7 @@ DECLARE
   v_question_count integer;
   v_correct_count integer;
   v_incorrect_count integer;
-  v_wrong_count integer;
+  v_wrong_count integer := 0;
   v_link_count integer;
   v_full boolean := false;
 BEGIN
@@ -353,8 +353,8 @@ BEGIN
     v_wrong_count := (v_evidence->>'wrong_link_attempts')::integer;
     v_correct_count := (v_evidence->>'correct_count')::integer;
     v_incorrect_count := (v_evidence->>'incorrect_count')::integer;
-    IF v_evidence->>'session_type' IS DISTINCT FROM
-         CASE WHEN v_question_count = 1 THEN 'daily' ELSE 'full' END
+    IF (v_question_count = 1 AND v_evidence->>'session_type' <> 'daily')
+       OR (v_question_count <> 1 AND v_evidence->>'session_type' <> 'full')
        OR v_link_count <> v_question_count * 3 THEN
       RETURN false;
     END IF;
@@ -380,8 +380,8 @@ BEGIN
     v_correct_count := (v_evidence->>'correct_count')::integer;
     v_incorrect_count := (v_evidence->>'incorrect_count')::integer;
     v_wrong_count := (v_evidence->>'wrong_attempts')::integer;
-    IF v_evidence->>'session_type' IS DISTINCT FROM
-         CASE WHEN v_question_count = 1 THEN 'daily' ELSE 'full' END THEN
+    IF (v_question_count = 1 AND v_evidence->>'session_type' <> 'daily')
+       OR (v_question_count <> 1 AND v_evidence->>'session_type' <> 'full') THEN
       RETURN false;
     END IF;
     v_full := v_question_count = 24 AND v_evidence->>'session_type' = 'full';
@@ -396,6 +396,9 @@ BEGIN
     RETURN false;
   END IF;
 
+  IF v_evidence->>'training_mode' NOT IN ('guided','steady','challenge') THEN
+    RETURN false;
+  END IF;
   IF p_require_challenge AND v_evidence->>'training_mode' IS DISTINCT FROM 'challenge' THEN
     RETURN false;
   END IF;
