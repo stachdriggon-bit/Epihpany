@@ -30,7 +30,7 @@ DECLARE
   v_predicate_count integer;
   v_daily_expected text[] := ARRAY[
     'phase6e_learning_step','phase6e_put_knowledge_to_use',
-    'solve_a_challenge','phase6e_try_something_different'
+    'phase6e_try_something_different','solve_a_challenge'
   ]::text[];
   v_weekly_expected text[] := ARRAY[
     'phase6e_broaden_your_experience','phase6e_consistent_progress',
@@ -148,7 +148,7 @@ BEGIN
   IF (v_templates IS DISTINCT FROM v_daily_expected
       AND v_templates IS DISTINCT FROM ARRAY[
         'phase6e_learning_step','phase6e_put_knowledge_to_use',
-        'phase6e_solve_a_challenge','phase6e_try_something_different'
+        'phase6e_try_something_different','phase6e_solve_a_challenge'
       ]::text[])
      OR v_family_count <> 4 OR v_predicate_count <> 4
      OR EXISTS (
