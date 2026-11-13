@@ -138,7 +138,7 @@ BEGIN
     RAISE EXCEPTION 'All three weekly fixture assignments must be created';
   END IF;
 
-  -- Day 1: Odd One Out, a 12-question validated session (not a full-round requirement).
+  -- Day 1: Odd One Out, a valid partial 8-question session (not a full round).
   INSERT INTO economy_private.activity_events (
     event_id,user_id,source_event_key,source_system,experience_id,activity_id,
     event_type,occurred_at,received_at,validator_version,evidence
@@ -147,7 +147,7 @@ BEGIN
     'f6d00000-0000-4000-8000-000000000041','think_lab','think_lab','odd_one_out',
     'game_session_completed',v_start+interval '1 day 10 hours',now(),
     'odd-one-out-rotated-20261110-v2',
-    '{"challenge_level":"B1","training_mode":"steady","question_count":12,"correct_count":10,"incorrect_count":2}'::jsonb
+    '{"challenge_level":"B1","training_mode":"steady","question_count":8,"correct_count":7,"incorrect_count":1}'::jsonb
   );
 
   IF NOT EXISTS (
