@@ -20,8 +20,8 @@ Each selected template must have four exact Think Lab activity mappings, a disti
 
 ## Predicate distinctions
 
-- **Put Knowledge to Use:** a fully completed 24-question round in Guided or Steady mode. Challenge mode does not count for this practice objective.
-- **Meaningful Progress:** a fully completed 24-question round in any supported training mode. Its weekly aggregation represents a substantial multi-step milestone.
+- **Put Knowledge to Use:** a fully completed 24-question round in Guided or Steady mode. The 12-question Odd One Out round and Challenge mode do not count for this practice objective.
+- **Meaningful Progress:** a fully completed game-defined round in any supported training mode (12 questions for Odd One Out; 24 for the other three games). Its weekly aggregation represents a substantial multi-step milestone.
 - **Solve a Challenge:** a validated completion in Challenge mode.
 - Other templates retain their distinct evidence metrics: event count, different-from-last-daily-activity, distinct days, and distinct activities.
 
