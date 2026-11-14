@@ -143,8 +143,8 @@ BEGIN
   END;
   BEGIN
     PERFORM * FROM public.economy_post_wallet_transaction(
-      v_user,5,'credit','test','phase6k-untrusted',
-      'f6c10000-0000-4000-8000-000000000301','untrusted attempt',NULL,'{}'::jsonb
+      v_user,5::bigint,'credit','test','phase6k-untrusted',
+      'f6c10000-0000-4000-8000-000000000301','untrusted attempt',NULL::smallint,'{}'::jsonb
     );
     RAISE EXCEPTION 'Untrusted JWT role must not post a wallet transaction';
   EXCEPTION WHEN SQLSTATE '42501' THEN
@@ -207,9 +207,9 @@ BEGIN
   -- Reusing the wallet idempotency key with a different payload must be rejected.
   BEGIN
     PERFORM * FROM public.economy_post_wallet_transaction(
-      v_user,11,'credit','mission_reward',v_assignment::text,
+      v_user,11::bigint,'credit','mission_reward',v_assignment::text,
       md5('velorn:mission_assignment:'||v_assignment::text)::uuid,
-      'Completed mission reward',1,
+      'Completed mission reward',1::smallint,
       jsonb_build_object('board_id',v_board,'assignment_id',v_assignment,
         'period_type','daily','template_id','phase6k_daily_security','template_version',1)
     );
@@ -303,8 +303,8 @@ BEGIN
 
   BEGIN
     PERFORM * FROM public.economy_post_wallet_transaction(
-      v_user,5,'credit','test','phase6k-disabled-write',
-      'f6c10000-0000-4000-8000-000000000302','disabled test',NULL,'{}'::jsonb
+      v_user,5::bigint,'credit','test','phase6k-disabled-write',
+      'f6c10000-0000-4000-8000-000000000302','disabled test',NULL::smallint,'{}'::jsonb
     );
     RAISE EXCEPTION 'Wallet writes must be blocked after disabling the economy';
   EXCEPTION WHEN SQLSTATE '55000' THEN
