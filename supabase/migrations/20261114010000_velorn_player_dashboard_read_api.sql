@@ -43,6 +43,10 @@ BEGIN
        JOIN economy_private.mission_assignments pa ON pa.assignment_id=paid.assignment_id
        WHERE pa.board_id=b.board_id AND paid.claim_status='paid')
        >= COALESCE((v_config #>> '{daily_mission,rewarded_mission_limit}')::integer,2147483647)
+      AND (SELECT count(*) FROM economy_private.mission_assignments board_rows WHERE board_rows.board_id=b.board_id)
+        = COALESCE((v_config #>> '{daily_mission,board_size}')::integer,0)
+      AND (SELECT count(*) FROM economy_private.mission_assignments board_rows WHERE board_rows.board_id=b.board_id)
+        = COALESCE((v_config #>> '{weekly_mission,board_size}')::integer,0)
       AND NOT EXISTS(SELECT 1 FROM economy_private.mission_reward_claims bc WHERE bc.board_id=b.board_id)),
     'assignments',COALESCE((
       SELECT jsonb_agg(jsonb_build_object(
@@ -53,7 +57,29 @@ BEGIN
         'target',COALESCE(NULLIF(a.objective_snapshot->>'target_count',''),'1'),
         'status',a.assignment_status,'rewardAmount',a.reward_snapshot::text,
         'completedAt',a.completed_at,'claimStatus',c.claim_status,'claimedAt',c.paid_at,
-        'canClaim',(a.assignment_status='completed' AND c.claim_id IS NULL)
+        'canClaim',(
+          a.assignment_status='completed'
+          AND c.claim_id IS NULL
+          AND t.is_assignable
+          AND t.validator_mapping_status='verified'
+          AND t.period_type=b.period_type
+          AND a.reward_snapshot=t.reward_amount
+          AND a.reward_snapshot=CASE b.period_type
+            WHEN 'daily' THEN COALESCE((v_config #>> '{daily_mission,per_mission}')::bigint,0)
+            ELSE COALESCE((v_config #>> '{weekly_mission,per_mission}')::bigint,0)
+          END
+          AND (SELECT count(*) FROM economy_private.mission_assignments board_rows
+               WHERE board_rows.board_id=b.board_id)=CASE b.period_type
+            WHEN 'daily' THEN COALESCE((v_config #>> '{daily_mission,board_size}')::integer,0)
+            ELSE COALESCE((v_config #>> '{weekly_mission,board_size}')::integer,0)
+          END
+          AND (SELECT count(*) FROM economy_private.mission_reward_claims paid
+               JOIN economy_private.mission_assignments pa ON pa.assignment_id=paid.assignment_id
+               WHERE pa.board_id=b.board_id AND paid.claim_status='paid')<CASE b.period_type
+            WHEN 'daily' THEN COALESCE((v_config #>> '{daily_mission,rewarded_mission_limit}')::integer,0)
+            ELSE COALESCE((v_config #>> '{weekly_mission,board_size}')::integer,0)
+          END
+        )
       ) ORDER BY a.slot_number)
       FROM economy_private.mission_assignments a
       JOIN economy_private.mission_template_versions t ON t.template_id=a.template_id AND t.template_version=a.template_version
@@ -89,7 +115,29 @@ BEGIN
         'target',COALESCE(NULLIF(a.objective_snapshot->>'target_count',''),'1'),
         'status',a.assignment_status,'rewardAmount',a.reward_snapshot::text,
         'completedAt',a.completed_at,'claimStatus',c.claim_status,'claimedAt',c.paid_at,
-        'canClaim',(a.assignment_status='completed' AND c.claim_id IS NULL)
+        'canClaim',(
+          a.assignment_status='completed'
+          AND c.claim_id IS NULL
+          AND t.is_assignable
+          AND t.validator_mapping_status='verified'
+          AND t.period_type=b.period_type
+          AND a.reward_snapshot=t.reward_amount
+          AND a.reward_snapshot=CASE b.period_type
+            WHEN 'daily' THEN COALESCE((v_config #>> '{daily_mission,per_mission}')::bigint,0)
+            ELSE COALESCE((v_config #>> '{weekly_mission,per_mission}')::bigint,0)
+          END
+          AND (SELECT count(*) FROM economy_private.mission_assignments board_rows
+               WHERE board_rows.board_id=b.board_id)=CASE b.period_type
+            WHEN 'daily' THEN COALESCE((v_config #>> '{daily_mission,board_size}')::integer,0)
+            ELSE COALESCE((v_config #>> '{weekly_mission,board_size}')::integer,0)
+          END
+          AND (SELECT count(*) FROM economy_private.mission_reward_claims paid
+               JOIN economy_private.mission_assignments pa ON pa.assignment_id=paid.assignment_id
+               WHERE pa.board_id=b.board_id AND paid.claim_status='paid')<CASE b.period_type
+            WHEN 'daily' THEN COALESCE((v_config #>> '{daily_mission,rewarded_mission_limit}')::integer,0)
+            ELSE COALESCE((v_config #>> '{weekly_mission,board_size}')::integer,0)
+          END
+        )
       ) ORDER BY a.slot_number)
       FROM economy_private.mission_assignments a
       JOIN economy_private.mission_template_versions t ON t.template_id=a.template_id AND t.template_version=a.template_version

@@ -16,6 +16,18 @@ DECLARE
 BEGIN
   UPDATE economy_private.economy_settings SET economy_enabled=true,updated_at=clock_timestamp() WHERE singleton=true;
   INSERT INTO economy_private.wallets(user_id,balance,version) VALUES(v_user,0,0);
+  INSERT INTO economy_private.mission_template_versions(
+    template_id,template_version,period_type,mission_family,reward_amount,
+    objective_definition,validator_mapping_status,is_assignable
+  ) VALUES
+  ('phase6m_daily_1',1,'daily','phase6m_daily_1',10,'{"summary":"Complete a learning activity"}','verified',true),
+  ('phase6m_daily_2',1,'daily','phase6m_daily_2',10,'{"summary":"Try a different activity"}','verified',true),
+  ('phase6m_daily_3',1,'daily','phase6m_daily_3',10,'{"summary":"Solve a challenge"}','verified',true),
+  ('phase6m_daily_4',1,'daily','phase6m_daily_4',10,'{"summary":"Apply what you learned"}','verified',true),
+  ('phase6m_weekly_1',1,'weekly','phase6m_weekly_1',20,'{"summary":"Make progress on three days"}','verified',true),
+  ('phase6m_weekly_2',1,'weekly','phase6m_weekly_2',20,'{"summary":"Explore two activities"}','verified',true),
+  ('phase6m_weekly_3',1,'weekly','phase6m_weekly_3',20,'{"summary":"Complete a meaningful milestone"}','verified',true);
+
   INSERT INTO economy_private.mission_boards(board_id,user_id,period_type,period_start,period_end,timezone_name,config_version,template_bank_version)
   VALUES
   (v_daily,v_user,'daily',clock_timestamp()-interval '1 hour',clock_timestamp()+interval '1 hour','UTC',1,1),
@@ -24,13 +36,13 @@ BEGIN
     assignment_id,board_id,user_id,slot_number,template_id,template_version,objective_snapshot,
     reward_snapshot,progress_value,assignment_status,completed_at
   ) VALUES
-  ('f6d00000-0000-4000-8000-000000000201',v_daily,v_user,1,'learning_step',2,'{"summary":"Complete a learning activity","target_count":1}',10,1,'completed',clock_timestamp()),
-  ('f6d00000-0000-4000-8000-000000000202',v_daily,v_user,2,'try_something_different',2,'{"summary":"Try a different activity","target_count":1}',10,0,'active',NULL),
-  ('f6d00000-0000-4000-8000-000000000203',v_daily,v_user,3,'solve_a_challenge',5,'{"summary":"Solve a challenge","target_count":1}',10,0,'active',NULL),
-  ('f6d00000-0000-4000-8000-000000000204',v_daily,v_user,4,'put_knowledge_to_use',2,'{"summary":"Apply what you learned","target_count":1}',10,0,'active',NULL),
-  ('f6d00000-0000-4000-8000-000000000211',v_weekly,v_user,1,'consistent_progress',2,'{"summary":"Make progress on three days","target_count":3}',20,1,'active',NULL),
-  ('f6d00000-0000-4000-8000-000000000212',v_weekly,v_user,2,'broaden_your_experience',2,'{"summary":"Explore two activities","target_count":2}',20,0,'active',NULL),
-  ('f6d00000-0000-4000-8000-000000000213',v_weekly,v_user,3,'meaningful_progress',2,'{"summary":"Complete a meaningful milestone","target_count":1}',20,0,'active',NULL);
+  ('f6d00000-0000-4000-8000-000000000201',v_daily,v_user,1,'phase6m_daily_1',1,'{"summary":"Complete a learning activity","target_count":1}',10,1,'completed',clock_timestamp()),
+  ('f6d00000-0000-4000-8000-000000000202',v_daily,v_user,2,'phase6m_daily_2',1,'{"summary":"Try a different activity","target_count":1}',10,0,'active',NULL),
+  ('f6d00000-0000-4000-8000-000000000203',v_daily,v_user,3,'phase6m_daily_3',1,'{"summary":"Solve a challenge","target_count":1}',10,0,'active',NULL),
+  ('f6d00000-0000-4000-8000-000000000204',v_daily,v_user,4,'phase6m_daily_4',1,'{"summary":"Apply what you learned","target_count":1}',10,0,'active',NULL),
+  ('f6d00000-0000-4000-8000-000000000211',v_weekly,v_user,1,'phase6m_weekly_1',1,'{"summary":"Make progress on three days","target_count":3}',20,1,'active',NULL),
+  ('f6d00000-0000-4000-8000-000000000212',v_weekly,v_user,2,'phase6m_weekly_2',1,'{"summary":"Explore two activities","target_count":2}',20,0,'active',NULL),
+  ('f6d00000-0000-4000-8000-000000000213',v_weekly,v_user,3,'phase6m_weekly_3',1,'{"summary":"Complete a meaningful milestone","target_count":1}',20,0,'active',NULL);
   v_data := public.economy_get_player_dashboard(v_user);
   IF v_data->>'enabled' IS DISTINCT FROM 'true' OR v_data->>'balance' IS DISTINCT FROM '0'
      OR jsonb_array_length(v_data->'ledger')<>0 THEN RAISE EXCEPTION 'Wallet dashboard contract incorrect: %',v_data; END IF;
