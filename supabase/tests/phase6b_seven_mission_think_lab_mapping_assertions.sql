@@ -18,6 +18,7 @@ DECLARE
   v_event_chain uuid := 'f6b00000-0000-4000-8000-000000000013';
   v_event_sentence uuid := 'f6b00000-0000-4000-8000-000000000014';
   v_event_guided uuid := 'f6b00000-0000-4000-8000-000000000015';
+  v_event_practice uuid := 'f6b00000-0000-4000-8000-000000000016';
   v_template_count integer;
   v_mapping_count integer;
 BEGIN
@@ -84,6 +85,12 @@ BEGIN
     'think_lab','think_lab','odd_one_out','game_session_completed',now(),now(),
     'odd-one-out-rotated-20261110-v2',
     '{"challenge_level":"A2","training_mode":"guided","question_count":12,"correct_count":12,"incorrect_count":0}'::jsonb
+  ),
+  (
+    v_event_practice,'f6b00000-0000-4000-8000-000000000001',v_event_practice,
+    'think_lab','think_lab','word_forge','game_session_completed',now(),now(),
+    'word-forge-reviewed-72-20261111-v1',
+    '{"training_mode":"steady","question_count":24,"correct_count":22,"incorrect_count":2}'::jsonb
   );
 
   IF NOT economy_private.evaluate_learning_step_think_lab_v1(v_event_ooo)
@@ -99,11 +106,13 @@ BEGIN
      OR economy_private.evaluate_solve_a_challenge_think_lab_v1(v_event_guided)
   THEN RAISE EXCEPTION 'Solve a Challenge must require Challenge mode across all four games'; END IF;
 
-  IF NOT economy_private.evaluate_put_knowledge_to_use_think_lab_v1(v_event_ooo)
-     OR NOT economy_private.evaluate_put_knowledge_to_use_think_lab_v1(v_event_wf)
-     OR NOT economy_private.evaluate_put_knowledge_to_use_think_lab_v1(v_event_chain)
-     OR NOT economy_private.evaluate_put_knowledge_to_use_think_lab_v1(v_event_sentence)
-  THEN RAISE EXCEPTION 'Put Knowledge to Use must accept only completed full-round contracts'; END IF;
+  IF NOT economy_private.evaluate_put_knowledge_to_use_think_lab_v1(v_event_practice)
+     OR economy_private.evaluate_put_knowledge_to_use_think_lab_v1(v_event_ooo)
+     OR economy_private.evaluate_put_knowledge_to_use_think_lab_v1(v_event_wf)
+     OR economy_private.evaluate_put_knowledge_to_use_think_lab_v1(v_event_chain)
+     OR economy_private.evaluate_put_knowledge_to_use_think_lab_v1(v_event_sentence)
+     OR economy_private.evaluate_put_knowledge_to_use_think_lab_v1(v_event_guided)
+  THEN RAISE EXCEPTION 'Put Knowledge to Use must accept only completed 24-question Guided/Steady practice rounds'; END IF;
 
   IF NOT economy_private.evaluate_meaningful_progress_think_lab_v1(v_event_ooo)
      OR NOT economy_private.evaluate_meaningful_progress_think_lab_v1(v_event_wf)
