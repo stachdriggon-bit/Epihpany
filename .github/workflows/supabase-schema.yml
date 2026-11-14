@@ -693,6 +693,18 @@ jobs:
           eval "$(supabase status -o env)"
           psql "$DB_URL" -v ON_ERROR_STOP=1 -f supabase/tests/phase6k_economy_security_assertions.sql
 
+      - name: Assert Phase 6L production readiness and disabled-economy recovery gate
+        timeout-minutes: 6
+        run: |
+          eval "$(supabase status -o env)"
+          psql "$DB_URL" -v ON_ERROR_STOP=1 -f supabase/tests/phase6l_production_readiness_assertions.sql
+
+      - name: Assert Phase 6M authenticated player dashboard integration
+        timeout-minutes: 6
+        run: |
+          eval "$(supabase status -o env)"
+          psql "$DB_URL" -v ON_ERROR_STOP=1 -f supabase/tests/phase6m_player_dashboard_assertions.sql
+
       - name: Compare complete local catalog with hosted reference snapshot
         timeout-minutes: 5
         run: |

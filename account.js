@@ -816,6 +816,22 @@
     openAccountMode: openAccountFromWelcome,
     isWelcomeOpen: () => !!($('account-welcome-modal') && !$('account-welcome-modal').hidden),
     isSignedIn: () => !!currentUser,
+    async loadVelornDashboard() {
+      if (!client || !currentUser) throw new Error('A signed-in account is required.');
+      const {data,error} = await client.functions.invoke('velorn-player-dashboard', {body:{}});
+      if (error) throw error;
+      return data;
+    },
+    async claimVelornMission(action, targetId) {
+      if (!client || !currentUser) throw new Error('A signed-in account is required.');
+      let body;
+      if (action === 'claim_assignment' && typeof targetId === 'string') body = {action,assignmentId:targetId};
+      else if (action === 'claim_board_bonus' && typeof targetId === 'string') body = {action,boardId:targetId};
+      else throw new Error('Invalid mission claim request.');
+      const {data,error} = await client.functions.invoke('velorn-mission-claims', {body});
+      if (error) throw error;
+      return data;
+    },
     getValidatorClient: () => currentUser ? client : null,
     getGuestValidatorClient: () => client,
     whenReady: () => authReadyPromise,
@@ -957,6 +973,9 @@
         pendingCloudProgress = null;
       }
       currentUser = nextUser;
+      window.dispatchEvent(new CustomEvent('epiphany:auth-state', {
+        detail: {isSignedIn: !!currentUser}
+      }));
       if (nextUser) setTimeout(() => syncAccountTimezone(nextUser), 0);
       if (currentUser) {
         try {

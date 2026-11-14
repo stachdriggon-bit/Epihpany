@@ -25,14 +25,15 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Cairo:wght@500;700&family=DM+Sans:wght@400;500;700&family=Cinzel:wght@600;700&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=auth-dialog-profile-removal-20261111-1"><link rel="stylesheet" href="guidance.css?v=contextual-tips-20261031-1"><link rel="stylesheet" href="help-center.css?v=help-center-wallet-20261031-1"><link rel="stylesheet" href="cards.css?v=interface-polish-20261030-2"><link rel="stylesheet" href="fluentia-ui.css?v=word-match-pairs-20261109-1">
+  <link rel="stylesheet" href="style.css?v=velorn-6lm-20261114-1"><link rel="stylesheet" href="guidance.css?v=contextual-tips-20261031-1"><link rel="stylesheet" href="help-center.css?v=help-center-wallet-20261031-1"><link rel="stylesheet" href="cards.css?v=interface-polish-20261030-2"><link rel="stylesheet" href="fluentia-ui.css?v=word-match-pairs-20261109-1">
   <script src="data.js?v=7f0faa36" defer></script>
   <script src="data-mistakes.js?v=e7fd865a" defer></script>
   <script src="data-wotd.js?v=baf8d44d" defer></script>
   <script src="data-aha.js?v=47fc5af7" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.119.0" defer></script>
   <script src="supabase-config.js?v=7a16f4a2" defer></script>
-  <script src="account.js?v=auth-dialog-guest-migration-20261111-2" defer></script>
+  <script src="account.js?v=velorn-auth-20261114-1" defer></script>
+  <script src="velorn.js?v=velorn-dashboard-20261114-1" defer></script>
   <script src="notifications.js?v=keyboard-dismiss-20261031-1" defer></script>
 <script src="adaptive-engine.js?v=adaptive-engine-20261031-1" defer></script>
 <script src="telemetry.js?v=e5eac23f" defer></script>
@@ -516,6 +517,16 @@
         <div class="daily-session-copy"><p class="kicker">YOUR DAILY SPARK · 10 MIN</p><h2 id="daily-session-title">Start today’s session</h2><p>Review a few words, practise one skill, then enjoy a short story. Small steps, every day.</p>
           <div class="daily-session-steps" aria-label="Session plan"><span><b>1</b> Review · 3 min</span><span><b>2</b> Lesson · 4 min</span><span><b>3</b> Story · 3 min</span></div>
         </div><button class="btn daily-session-start" id="daily-session-start" type="button"><span aria-hidden="true">▶</span> Start session</button>
+      </section>
+
+      <section class="velorn-panel" id="velorn-panel" hidden aria-labelledby="velorn-title">
+        <header class="velorn-panel-head">
+          <div><p class="kicker">YOUR REWARDS · ACCOUNT WALLET</p><h2 id="velorn-title">Velorn missions</h2></div>
+          <button class="velorn-refresh" id="velorn-refresh" type="button">Refresh</button>
+        </header>
+        <p class="velorn-status" id="velorn-status" role="status" aria-live="polite">Checking your account…</p>
+        <div class="velorn-wallet" id="velorn-wallet" hidden></div>
+        <div class="velorn-boards" id="velorn-boards" hidden></div>
       </section>
 
       <div class="focus home-focus">

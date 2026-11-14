@@ -4131,3 +4131,39 @@ body.auth-dialog-open{overflow:hidden}
 .confirm-accept.is-danger{border-color:#d84b4b!important;background:#d84b4b;color:#fff}
 body.confirm-open{overflow:hidden}
 @media(max-width:480px){.confirm-card{border-radius:20px}.confirm-actions{flex-direction:column-reverse}.confirm-actions button{width:100%}}
+
+
+/* Velorn player dashboard — compact, gated and account-only. */
+.velorn-panel{margin:0 0 28px;padding:20px 22px;border:1px solid var(--line);border-radius:22px;background:var(--surface);box-shadow:0 8px 24px rgba(27,32,60,.045)}
+.velorn-panel[hidden],.velorn-wallet[hidden],.velorn-boards[hidden]{display:none}
+.velorn-panel-head{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.velorn-panel-head .kicker{margin:0 0 5px;color:var(--focus);font-size:10px;font-weight:900;letter-spacing:.1em}
+.velorn-panel-head h2{margin:0;font-size:clamp(20px,2.5vw,26px)}
+.velorn-refresh{min-height:38px;padding:0 13px;border:1px solid var(--line);border-radius:11px;background:var(--tone-soft);color:var(--ink);font:700 12px var(--body);cursor:pointer}
+.velorn-refresh:disabled{opacity:.55;cursor:wait}
+.velorn-status{margin:12px 0 0;color:var(--ink-2);font-size:13px;line-height:1.55}
+.velorn-wallet{display:flex;align-items:baseline;gap:9px;margin-top:15px;padding:13px 16px;border:1px solid var(--line);border-radius:15px;background:var(--violet-soft);color:var(--ink)}
+.velorn-wallet span{font-size:10px;font-weight:850;letter-spacing:.09em;color:var(--ink-2)}
+.velorn-wallet strong{font-size:clamp(24px,4vw,32px);font-weight:900;line-height:1}
+.velorn-wallet small{font-size:10px;font-weight:900;letter-spacing:.1em;color:var(--focus)}
+.velorn-boards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:16px}
+.velorn-board{min-width:0;padding:15px;border:1px solid var(--line);border-radius:16px;background:var(--surface)}
+.velorn-board h3{margin:0 0 10px;font-size:16px}
+.velorn-board-note{margin:-5px 0 11px;color:var(--muted);font-size:11px}
+.velorn-mission-list{display:grid;gap:8px}
+.velorn-mission{padding:11px;border:1px solid var(--line);border-radius:12px;background:var(--tone-soft)}
+.velorn-mission-head{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
+.velorn-mission-title{font-size:13px;font-weight:850;line-height:1.35}
+.velorn-mission-reward{flex:none;color:var(--focus);font-size:11px;font-weight:900}
+.velorn-mission-summary{margin:5px 0;color:var(--ink-2);font-size:11px;line-height:1.45}
+.velorn-mission-meta{display:flex;align-items:center;justify-content:space-between;gap:8px;color:var(--muted);font-size:10px}
+.velorn-mission-state{font-weight:800;color:var(--ink-2)}
+.velorn-mission-state.is-complete{color:var(--focus)}
+.velorn-claim{min-height:34px;margin-top:8px;padding:0 11px;border:0;border-radius:9px;background:var(--spark);color:var(--ink);font:800 11px var(--body);cursor:pointer}
+.velorn-claim:disabled{opacity:.55;cursor:wait}
+.velorn-board-bonus{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:10px;padding-top:10px;border-top:1px solid var(--line);font-size:11px;font-weight:800}
+.velorn-empty{padding:14px;border:1px dashed var(--line-2);border-radius:12px;color:var(--ink-2);font-size:12px;line-height:1.5}
+body[data-theme="dark"] .velorn-panel,body[data-theme="dark"] .velorn-board{background:var(--surface)}
+body[data-theme="dark"] .velorn-wallet{background:#302c4c}
+@media(max-width:700px){.velorn-panel{padding:16px;border-radius:18px}.velorn-boards{grid-template-columns:1fr}.velorn-board{padding:13px}}
+@media(prefers-reduced-motion:reduce){.velorn-panel *{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
