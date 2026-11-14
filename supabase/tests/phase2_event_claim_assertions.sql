@@ -113,7 +113,7 @@ BEGIN
          WHERE (template_id IN ('learning_step','try_something_different','put_knowledge_to_use',
                                 'consistent_progress','broaden_your_experience','meaningful_progress')
                 AND template_version IN (2,3))
-            OR (template_id = 'solve_a_challenge' AND template_version IN (2,3,4,5,6))) <> 14
+            OR (template_id = 'solve_a_challenge' AND template_version IN (5,6))) <> 14
      OR (SELECT count(*) FROM economy_private.mission_template_versions) <> 28
      OR (SELECT count(*) FROM economy_private.achievement_definitions) <> 10
      OR (SELECT count(*) FROM economy_private.mission_event_predicate_mappings
