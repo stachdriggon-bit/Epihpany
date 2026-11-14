@@ -14,6 +14,7 @@ AS $function$
        FROM economy_private.activity_events AS e
        WHERE e.event_id = p_event_id
          AND e.evidence ->> 'training_mode' IN ('guided', 'steady')
+         AND e.evidence ->> 'question_count' = '24'
      );
 $function$;
 
