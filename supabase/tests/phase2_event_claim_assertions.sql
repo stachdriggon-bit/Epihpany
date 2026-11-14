@@ -103,17 +103,27 @@ BEGIN
     RAISE EXCEPTION 'Every assignable mission must have a verified mapping and trusted evaluator; achievements remain gated';
   END IF;
 
-  -- Preserve the eleven original definitions and both immutable challenge
-  -- successors: v2 mapped/non-assignable, v3 verified/assignable.
+  -- Preserve the original catalog and every immutable successor generation:
+  -- legacy challenge v2-v4, Phase 6B v2/v5, and Phase 6N verified successors.
   IF (SELECT count(*) FROM economy_private.mission_template_versions
       WHERE template_version = 1) <> 11
      OR (SELECT count(*) FROM economy_private.mission_template_versions
          WHERE template_id = 'solve_a_challenge' AND template_version IN (2,3,4)) <> 3
-     OR (SELECT count(*) FROM economy_private.mission_template_versions) <> 21
+     OR (SELECT count(*) FROM economy_private.mission_template_versions
+         WHERE (template_id IN ('learning_step','try_something_different','put_knowledge_to_use',
+                                'consistent_progress','broaden_your_experience','meaningful_progress')
+                AND template_version IN (2,3))
+            OR (template_id = 'solve_a_challenge' AND template_version IN (2,3,4,5,6))) <> 14
+     OR (SELECT count(*) FROM economy_private.mission_template_versions) <> 28
      OR (SELECT count(*) FROM economy_private.achievement_definitions) <> 10
      OR (SELECT count(*) FROM economy_private.mission_event_predicate_mappings
-         WHERE template_id = 'solve_a_challenge' AND template_version IN (2,3,4)) <> 3 THEN
-    RAISE EXCEPTION 'Expected the 11 original missions, three legacy challenge successors/mappings, seven additive Phase 6B versions, and 10 achievement definitions';
+         WHERE template_id = 'solve_a_challenge' AND template_version IN (2,3,4)) <> 3
+     OR (SELECT count(*) FROM economy_private.mission_event_predicate_mappings
+         WHERE (template_id IN ('learning_step','try_something_different','put_knowledge_to_use',
+                                'consistent_progress','broaden_your_experience','meaningful_progress')
+                AND template_version IN (2,3))
+            OR (template_id = 'solve_a_challenge' AND template_version IN (5,6))) <> 56 THEN
+    RAISE EXCEPTION 'Expected 11 original missions, 3 legacy challenge successors, 7 Phase 6B versions, 7 Phase 6N successors with 56 additive Think Lab mappings, and 10 achievements';
   END IF;
 
   IF EXISTS (
@@ -126,8 +136,12 @@ BEGIN
            AND (validator_mapping_status <> 'unmapped' OR is_assignable))
        OR (template_id = 'solve_a_challenge' AND template_version = 4
            AND (validator_mapping_status <> 'mapped' OR is_assignable))
-       OR (template_id = 'solve_a_challenge' AND template_version NOT IN (1,2,3,4,5))
-       OR (template_id <> 'solve_a_challenge' AND template_version NOT IN (1,2))
+       OR (template_id = 'solve_a_challenge' AND template_version NOT IN (1,2,3,4,5,6))
+       OR (template_id <> 'solve_a_challenge' AND template_version NOT IN (1,2,3))
+       OR (template_id = 'solve_a_challenge' AND template_version = 6
+           AND (validator_mapping_status <> 'verified' OR is_assignable))
+       OR (template_id <> 'solve_a_challenge' AND template_version = 3
+           AND (validator_mapping_status <> 'verified' OR is_assignable))
        OR (period_type = 'daily' AND reward_amount <> 10)
        OR (period_type = 'weekly' AND reward_amount <> 20)
   ) OR EXISTS (
@@ -144,8 +158,8 @@ BEGIN
        AND NOT (
          (template_id IN ('learning_step','try_something_different','put_knowledge_to_use',
                           'consistent_progress','broaden_your_experience','meaningful_progress')
-          AND template_version = 2)
-         OR (template_id = 'solve_a_challenge' AND template_version = 5)
+          AND template_version IN (2,3))
+         OR (template_id = 'solve_a_challenge' AND template_version IN (5,6))
        )
   ) OR EXISTS (
     SELECT 1 FROM economy_private.achievement_definitions
