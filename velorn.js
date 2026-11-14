@@ -8,6 +8,8 @@
   const wallet = $('velorn-wallet');
   const boards = $('velorn-boards');
   const refreshButton = $('velorn-refresh');
+  // Closed until Phase 6N explicitly deploys the Edge Function and authorizes activation.
+  const CLIENT_GATE_OPEN = false;
   let requestVersion = 0;
   let busy = false;
   const missionTitles = {
@@ -134,6 +136,14 @@
     if (!auth?.isSignedIn?.()) { resetForGuest(); return; }
     const version = ++requestVersion;
     panel.hidden = false;
+    if (!CLIENT_GATE_OPEN) {
+      wallet.hidden = true;
+      boards.hidden = true;
+      wallet.replaceChildren();
+      boards.replaceChildren();
+      setStatus('Velorn is being prepared. It is not active yet; no balances or rewards are being issued.');
+      return;
+    }
     setBusy(true);
     setStatus('Loading your Velorn account…');
     try {

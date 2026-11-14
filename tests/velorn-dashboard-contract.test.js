@@ -33,6 +33,7 @@ test("Browser uses only narrow authenticated Velorn dashboard and claim methods"
   assert.match(auth, /client\.functions\.invoke\('velorn-player-dashboard'/);
   assert.match(auth, /client\.functions\.invoke\('velorn-mission-claims'/);
   assert.match(auth, /epiphany:auth-state/);
+  assert.match(ui, /const CLIENT_GATE_OPEN = false/);
   assert.match(ui, /loadVelornDashboard/);
   assert.match(ui, /claimVelornMission/);
   assert.match(ui, /assignment\.canClaim === true/);
