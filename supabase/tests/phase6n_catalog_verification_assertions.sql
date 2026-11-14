@@ -21,17 +21,17 @@ BEGIN
   INTO v_daily,v_weekly,v_verified_templates,v_assignable_templates
   FROM economy_private.mission_template_versions
   WHERE (template_id,template_version) IN (
-    ('learning_step',2),('try_something_different',2),('solve_a_challenge',5),
-    ('put_knowledge_to_use',2),('consistent_progress',2),
-    ('broaden_your_experience',2),('meaningful_progress',2)
+    ('learning_step',3),('try_something_different',3),('solve_a_challenge',6),
+    ('put_knowledge_to_use',3),('consistent_progress',3),
+    ('broaden_your_experience',3),('meaningful_progress',3)
   );
 
   SELECT count(*) INTO v_verified_mappings
   FROM economy_private.mission_event_predicate_mappings
   WHERE (template_id,template_version) IN (
-    ('learning_step',2),('try_something_different',2),('solve_a_challenge',5),
-    ('put_knowledge_to_use',2),('consistent_progress',2),
-    ('broaden_your_experience',2),('meaningful_progress',2)
+    ('learning_step',3),('try_something_different',3),('solve_a_challenge',6),
+    ('put_knowledge_to_use',3),('consistent_progress',3),
+    ('broaden_your_experience',3),('meaningful_progress',3)
   ) AND mapping_status='verified';
 
   IF (v_daily,v_weekly,v_verified_templates,v_assignable_templates,v_verified_mappings)
@@ -53,6 +53,24 @@ BEGIN
       AND p.prosecdef AND p.proconfig @> ARRAY['search_path=""']
   ) THEN
     RAISE EXCEPTION 'Put Knowledge to Use evaluator must be SECURITY DEFINER with empty search_path';
+  END IF;
+
+  IF EXISTS (
+    SELECT 1 FROM economy_private.mission_template_versions
+    WHERE (template_id,template_version) IN (
+      ('learning_step',2),('try_something_different',2),('solve_a_challenge',5),
+      ('put_knowledge_to_use',2),('consistent_progress',2),
+      ('broaden_your_experience',2),('meaningful_progress',2)
+    ) AND (validator_mapping_status <> 'mapped' OR is_assignable)
+  ) OR EXISTS (
+    SELECT 1 FROM economy_private.mission_event_predicate_mappings
+    WHERE (template_id,template_version) IN (
+      ('learning_step',2),('try_something_different',2),('solve_a_challenge',5),
+      ('put_knowledge_to_use',2),('consistent_progress',2),
+      ('broaden_your_experience',2),('meaningful_progress',2)
+    ) AND mapping_status <> 'mapped'
+  ) THEN
+    RAISE EXCEPTION 'Original immutable source versions must remain mapped and non-assignable';
   END IF;
 
   -- The production economy gate and all financial records remain untouched.
