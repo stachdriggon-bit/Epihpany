@@ -8,13 +8,13 @@ This phase verifies the seven selected mission template versions without enablin
 
 | Period | Template | Version | Predicate |
 |---|---|---:|---|
-| Daily | Learning Step | 2 | `learning_step_think_lab_v1` |
-| Daily | Try Something Different | 2 | `try_something_different_think_lab_v1` |
-| Daily | Solve a Challenge | 5 | `solve_a_challenge_think_lab_v1` |
-| Daily | Put Knowledge to Use | 2 | `put_knowledge_to_use_think_lab_v1` |
-| Weekly | Consistent Progress | 2 | `consistent_progress_think_lab_v1` |
-| Weekly | Broaden Your Experience | 2 | `broaden_your_experience_think_lab_v1` |
-| Weekly | Meaningful Progress | 2 | `meaningful_progress_think_lab_v1` |
+| Daily | Learning Step | 3 | `learning_step_think_lab_v1` |
+| Daily | Try Something Different | 3 | `try_something_different_think_lab_v1` |
+| Daily | Solve a Challenge | 6 | `solve_a_challenge_think_lab_v1` |
+| Daily | Put Knowledge to Use | 3 | `put_knowledge_to_use_think_lab_v1` |
+| Weekly | Consistent Progress | 3 | `consistent_progress_think_lab_v1` |
+| Weekly | Broaden Your Experience | 3 | `broaden_your_experience_think_lab_v1` |
+| Weekly | Meaningful Progress | 3 | `meaningful_progress_think_lab_v1` |
 
 Each selected template must have four exact Think Lab activity mappings, a distinct mission family and predicate key within its board period, and a private SECURITY DEFINER evaluator executable only by `service_role`.
 
@@ -29,8 +29,8 @@ Each selected template must have four exact Think Lab activity mappings, a disti
 
 - Migration: `20261114020000_velorn_verified_mission_catalog.sql`
 - Assertions: `supabase/tests/phase6n_catalog_verification_assertions.sql`
-- The migration fails closed unless exactly four daily and three weekly templates and all 28 mapping contracts pass its preflight.
-- Only the seven explicitly listed versions and their 28 mappings are promoted to `verified`; no other template is changed.
+- The migration fails closed unless the seven source templates and all 28 source mapping contracts pass preflight, the successor versions do not already exist, and the postflight confirms exactly seven verified assignable successors with 28 verified mappings.
+- Seven immutable successor versions (Learning Step v3, Try Something Different v3, Solve a Challenge v6, Put Knowledge to Use v3, and the three weekly v3 templates) and their 28 successor mappings are appended as `verified`. The original mapped versions and mappings remain unchanged.
 - The SQL assertion test is rollback-only.
 
 ## Safety boundaries
