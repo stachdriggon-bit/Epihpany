@@ -40,9 +40,16 @@ DECLARE
   v_claim_count integer;
   v_ledger_count integer;
 BEGIN
+  -- Normalize the disposable clean-room fixture before the test. Earlier SQL
+  -- assertions may leave the singleton gate changed if they abort outside their
+  -- own transaction; the Phase 6H setup owns and verifies its starting state.
+  UPDATE economy_private.economy_settings
+  SET economy_enabled=false,updated_at=clock_timestamp()
+  WHERE singleton=true;
+
   IF (SELECT economy_enabled FROM economy_private.economy_settings WHERE singleton)
      IS DISTINCT FROM false THEN
-    RAISE EXCEPTION 'Phase 6F must start with the economy disabled';
+    RAISE EXCEPTION 'Phase 6H must establish a disabled economy before board generation';
   END IF;
 
   -- Clone the six Think Lab templates needed to complete the two generated boards.
