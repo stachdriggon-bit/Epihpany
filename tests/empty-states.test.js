@@ -54,7 +54,7 @@ test('changed scripts are versioned and the offline shell cache is refreshed', (
   assert.ok(sw.includes(appVersion), 'the offline shell cache must include the current app.js version');
   assert.match(html, /lazy-data\.js\?v=word-forge-validator-20261111-1/);
   assert.match(html, /cards\.js\?v=account-wallet-isolation-20261111-1/);
-  assert.match(html, /account\.js\?v=auth-dialog-guest-migration-20261111-2/);
+  assert.match(html, /account\\.js\\?v=velorn-auth-20261114-1/);
   assert.match(html, /style\.css\?v=auth-dialog-profile-removal-20261111-1/);
   assert.match(read('style.css'), /Helpful empty-state actions/);
   assert.match(read('lazy-data.js'), /think-lab\.js\?v=sentence-scramble-unified-validator-20261112-1/);
