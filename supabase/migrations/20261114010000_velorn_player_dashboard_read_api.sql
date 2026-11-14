@@ -45,8 +45,6 @@ BEGIN
        >= COALESCE((v_config #>> '{daily_mission,rewarded_mission_limit}')::integer,2147483647)
       AND (SELECT count(*) FROM economy_private.mission_assignments board_rows WHERE board_rows.board_id=b.board_id)
         = COALESCE((v_config #>> '{daily_mission,board_size}')::integer,0)
-      AND (SELECT count(*) FROM economy_private.mission_assignments board_rows WHERE board_rows.board_id=b.board_id)
-        = COALESCE((v_config #>> '{weekly_mission,board_size}')::integer,0)
       AND NOT EXISTS(SELECT 1 FROM economy_private.mission_reward_claims bc WHERE bc.board_id=b.board_id)),
     'assignments',COALESCE((
       SELECT jsonb_agg(jsonb_build_object(
@@ -105,6 +103,8 @@ BEGIN
        JOIN economy_private.mission_assignments pa ON pa.assignment_id=paid.assignment_id
        WHERE pa.board_id=b.board_id AND paid.claim_status='paid')
        >= COALESCE((v_config #>> '{weekly_mission,board_size}')::integer,2147483647)
+      AND (SELECT count(*) FROM economy_private.mission_assignments board_rows WHERE board_rows.board_id=b.board_id)
+        = COALESCE((v_config #>> '{weekly_mission,board_size}')::integer,0)
       AND NOT EXISTS(SELECT 1 FROM economy_private.mission_reward_claims bc WHERE bc.board_id=b.board_id)),
     'assignments',COALESCE((
       SELECT jsonb_agg(jsonb_build_object(
