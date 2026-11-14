@@ -45,7 +45,7 @@ BEGIN
     id,aud,role,email,encrypted_password,email_confirmed_at,
     raw_app_meta_data,raw_user_meta_data,created_at,updated_at
   ) VALUES (
-    'f6n00000-0000-4000-8000-000000000001',
+    'f6d00000-0000-4000-8000-000000000001',
     'authenticated','authenticated','velorn-phase6n@example.invalid','',now(),
     '{}'::jsonb,'{}'::jsonb,now(),now()
   );
@@ -55,41 +55,41 @@ BEGIN
     event_type,occurred_at,received_at,validator_version,evidence
   ) VALUES
   (
-    'f6n00000-0000-4000-8000-000000000011',
-    'f6n00000-0000-4000-8000-000000000001',
-    'f6n00000-0000-4000-8000-000000000111',
+    'f6d00000-0000-4000-8000-000000000011',
+    'f6d00000-0000-4000-8000-000000000001',
+    'f6d00000-0000-4000-8000-000000000111',
     'think_lab','think_lab','word_forge','game_session_completed',
     clock_timestamp()-interval '2 minutes',clock_timestamp(),
     'word-forge-reviewed-72-20261111-v1',
     '{"training_mode":"steady","question_count":24,"correct_count":22,"incorrect_count":2}'::jsonb
   ),
   (
-    'f6n00000-0000-4000-8000-000000000012',
-    'f6n00000-0000-4000-8000-000000000001',
-    'f6n00000-0000-4000-8000-000000000112',
+    'f6d00000-0000-4000-8000-000000000012',
+    'f6d00000-0000-4000-8000-000000000001',
+    'f6d00000-0000-4000-8000-000000000112',
     'think_lab','think_lab','word_forge','game_session_completed',
     clock_timestamp()-interval '1 minute',clock_timestamp(),
     'word-forge-reviewed-72-20261111-v1',
     '{"training_mode":"challenge","question_count":24,"correct_count":20,"incorrect_count":4}'::jsonb
   ),
   (
-    'f6n00000-0000-4000-8000-000000000013',
-    'f6n00000-0000-4000-8000-000000000001',
-    'f6n00000-0000-4000-8000-000000000113',
+    'f6d00000-0000-4000-8000-000000000013',
+    'f6d00000-0000-4000-8000-000000000001',
+    'f6d00000-0000-4000-8000-000000000113',
     'think_lab','think_lab','odd_one_out','game_session_completed',
     clock_timestamp()-interval '30 seconds',clock_timestamp(),
     'odd-one-out-rotated-20261110-v2',
     '{"challenge_level":"B1","training_mode":"steady","question_count":12,"correct_count":10,"incorrect_count":2}'::jsonb
   );
 
-  IF economy_private.is_valid_think_lab_practice_round_v1('f6n00000-0000-4000-8000-000000000011') IS DISTINCT FROM true
-     OR economy_private.is_valid_think_lab_practice_round_v1('f6n00000-0000-4000-8000-000000000012') IS DISTINCT FROM false
-     OR economy_private.is_valid_think_lab_practice_round_v1('f6n00000-0000-4000-8000-000000000013') IS DISTINCT FROM false THEN
+  IF economy_private.is_valid_think_lab_practice_round_v1('f6d00000-0000-4000-8000-000000000011') IS DISTINCT FROM true
+     OR economy_private.is_valid_think_lab_practice_round_v1('f6d00000-0000-4000-8000-000000000012') IS DISTINCT FROM false
+     OR economy_private.is_valid_think_lab_practice_round_v1('f6d00000-0000-4000-8000-000000000013') IS DISTINCT FROM false THEN
     RAISE EXCEPTION 'Put Knowledge to Use must accept only full 24-question Guided/Steady rounds';
   END IF;
 
-  IF economy_private.evaluate_meaningful_progress_think_lab_v1('f6n00000-0000-4000-8000-000000000012') IS DISTINCT FROM true
-     OR economy_private.evaluate_meaningful_progress_think_lab_v1('f6n00000-0000-4000-8000-000000000013') IS DISTINCT FROM true THEN
+  IF economy_private.evaluate_meaningful_progress_think_lab_v1('f6d00000-0000-4000-8000-000000000012') IS DISTINCT FROM true
+     OR economy_private.evaluate_meaningful_progress_think_lab_v1('f6d00000-0000-4000-8000-000000000013') IS DISTINCT FROM true THEN
     RAISE EXCEPTION 'Meaningful Progress must accept full rounds in any supported mode, including the 12-question Odd One Out round';
   END IF;
 
