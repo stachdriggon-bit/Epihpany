@@ -580,6 +580,107 @@ jobs:
           $phase6h_verify$;
           SQL
 
+      - name: Assert Phase 6I concurrent mission board generation
+        timeout-minutes: 8
+        run: |
+          eval "$(supabase status -o env)"
+          USER_ID="f6b90000-0000-4000-8000-000000000001"
+          cleanup_economy() {
+            psql "$DB_URL" -v ON_ERROR_STOP=1 -c "UPDATE economy_private.economy_settings SET economy_enabled=false, updated_at=clock_timestamp() WHERE singleton=true;" >/dev/null 2>&1 || true
+          }
+          trap cleanup_economy EXIT
+
+          psql "$DB_URL" -v ON_ERROR_STOP=1 -f supabase/tests/phase6i_concurrent_mission_board_generation_setup.sql
+
+          DAILY_SQL="SELECT set_config('request.jwt.claim.role','service_role',false); SELECT out_board_id || '|' || out_status || '|' || out_assignment_count::text FROM public.economy_generate_mission_board('$USER_ID'::uuid,'daily','2026-11-14 12:00:00+00'::timestamptz);"
+          WEEKLY_SQL="SELECT set_config('request.jwt.claim.role','service_role',false); SELECT out_board_id || '|' || out_status || '|' || out_assignment_count::text FROM public.economy_generate_mission_board('$USER_ID'::uuid,'weekly','2026-11-14 12:00:00+00'::timestamptz);"
+
+          psql "$DB_URL" -At -v ON_ERROR_STOP=1 -c "$DAILY_SQL" > /tmp/phase6i-daily-a.log 2>&1 &
+          daily_a_pid=$!
+          psql "$DB_URL" -At -v ON_ERROR_STOP=1 -c "$DAILY_SQL" > /tmp/phase6i-daily-b.log 2>&1 &
+          daily_b_pid=$!
+          psql "$DB_URL" -At -v ON_ERROR_STOP=1 -c "$WEEKLY_SQL" > /tmp/phase6i-weekly-a.log 2>&1 &
+          weekly_a_pid=$!
+          psql "$DB_URL" -At -v ON_ERROR_STOP=1 -c "$WEEKLY_SQL" > /tmp/phase6i-weekly-b.log 2>&1 &
+          weekly_b_pid=$!
+
+          set +e
+          wait "$daily_a_pid"; daily_a_status=$?
+          wait "$daily_b_pid"; daily_b_status=$?
+          wait "$weekly_a_pid"; weekly_a_status=$?
+          wait "$weekly_b_pid"; weekly_b_status=$?
+          set -e
+
+          if [ "$daily_a_status" -ne 0 ] || [ "$daily_b_status" -ne 0 ] || [ "$weekly_a_status" -ne 0 ] || [ "$weekly_b_status" -ne 0 ]; then
+            cat /tmp/phase6i-daily-a.log /tmp/phase6i-daily-b.log /tmp/phase6i-weekly-a.log /tmp/phase6i-weekly-b.log
+            echo "All concurrent daily and weekly board generation calls must succeed."
+            exit 1
+          fi
+
+          daily_a=$(tail -n 1 /tmp/phase6i-daily-a.log)
+          daily_b=$(tail -n 1 /tmp/phase6i-daily-b.log)
+          weekly_a=$(tail -n 1 /tmp/phase6i-weekly-a.log)
+          weekly_b=$(tail -n 1 /tmp/phase6i-weekly-b.log)
+
+          daily_a_id=$(printf '%s' "$daily_a" | cut -d'|' -f1)
+          daily_b_id=$(printf '%s' "$daily_b" | cut -d'|' -f1)
+          weekly_a_id=$(printf '%s' "$weekly_a" | cut -d'|' -f1)
+          weekly_b_id=$(printf '%s' "$weekly_b" | cut -d'|' -f1)
+
+          if [ "$daily_a_id" != "$daily_b_id" ] || [ "$weekly_a_id" != "$weekly_b_id" ]; then
+            printf '%s\n' "$daily_a" "$daily_b" "$weekly_a" "$weekly_b"
+            echo "Concurrent requests for one period must converge on one board ID."
+            exit 1
+          fi
+
+          if ! { { [ "$(printf '%s' "$daily_a" | cut -d'|' -f2)" = "created" ] && [ "$(printf '%s' "$daily_b" | cut -d'|' -f2)" = "existing" ]; } || { [ "$(printf '%s' "$daily_b" | cut -d'|' -f2)" = "created" ] && [ "$(printf '%s' "$daily_a" | cut -d'|' -f2)" = "existing" ]; }; }; then
+            printf '%s\n' "$daily_a" "$daily_b"
+            echo "Exactly one concurrent daily generation call must create the board."
+            exit 1
+          fi
+          if ! { { [ "$(printf '%s' "$weekly_a" | cut -d'|' -f2)" = "created" ] && [ "$(printf '%s' "$weekly_b" | cut -d'|' -f2)" = "existing" ]; } || { [ "$(printf '%s' "$weekly_b" | cut -d'|' -f2)" = "created" ] && [ "$(printf '%s' "$weekly_a" | cut -d'|' -f2)" = "existing" ]; }; }; then
+            printf '%s\n' "$weekly_a" "$weekly_b"
+            echo "Exactly one concurrent weekly generation call must create the board."
+            exit 1
+          fi
+
+          [ "$(printf '%s' "$daily_a" | cut -d'|' -f3)" = "4" ] && [ "$(printf '%s' "$daily_b" | cut -d'|' -f3)" = "4" ]
+          [ "$(printf '%s' "$weekly_a" | cut -d'|' -f3)" = "3" ] && [ "$(printf '%s' "$weekly_b" | cut -d'|' -f3)" = "3" ]
+
+          # A later retry must resolve to the same complete boards.
+          psql "$DB_URL" -At -v ON_ERROR_STOP=1 -c "$DAILY_SQL" > /tmp/phase6i-daily-retry.log
+          psql "$DB_URL" -At -v ON_ERROR_STOP=1 -c "$WEEKLY_SQL" > /tmp/phase6i-weekly-retry.log
+          daily_retry=$(tail -n 1 /tmp/phase6i-daily-retry.log)
+          weekly_retry=$(tail -n 1 /tmp/phase6i-weekly-retry.log)
+          [ "$(printf '%s' "$daily_retry" | cut -d'|' -f1)" = "$daily_a_id" ]
+          [ "$(printf '%s' "$daily_retry" | cut -d'|' -f2)" = "existing" ]
+          [ "$(printf '%s' "$weekly_retry" | cut -d'|' -f1)" = "$weekly_a_id" ]
+          [ "$(printf '%s' "$weekly_retry" | cut -d'|' -f2)" = "existing" ]
+
+          cleanup_economy
+          trap - EXIT
+          psql "$DB_URL" -v ON_ERROR_STOP=1 <<'SQL'
+          DO $phase6i_verify$
+          DECLARE
+            v_user uuid := 'f6b90000-0000-4000-8000-000000000001';
+          BEGIN
+            IF (SELECT count(*) FROM economy_private.mission_boards WHERE user_id=v_user) <> 2
+               OR (SELECT count(*) FROM economy_private.mission_assignments WHERE user_id=v_user) <> 7 THEN
+              RAISE EXCEPTION 'Phase 6I must retain exactly two complete boards and seven assignments';
+            END IF;
+            IF EXISTS (SELECT 1 FROM economy_private.wallets WHERE user_id=v_user)
+               OR EXISTS (SELECT 1 FROM economy_private.wallet_ledger WHERE user_id=v_user)
+               OR EXISTS (SELECT 1 FROM economy_private.mission_reward_claims WHERE user_id=v_user)
+               OR EXISTS (SELECT 1 FROM economy_private.achievement_awards WHERE user_id=v_user) THEN
+              RAISE EXCEPTION 'Board generation must not create financial or achievement records';
+            END IF;
+            IF (SELECT economy_enabled FROM economy_private.economy_settings WHERE singleton) IS DISTINCT FROM false THEN
+              RAISE EXCEPTION 'Phase 6I must leave the economy disabled';
+            END IF;
+          END;
+          $phase6i_verify$;
+          SQL
+
       - name: Compare complete local catalog with hosted reference snapshot
         timeout-minutes: 5
         run: |
