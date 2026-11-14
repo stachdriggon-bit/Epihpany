@@ -687,6 +687,12 @@ jobs:
           eval "$(supabase status -o env)"
           psql "$DB_URL" -v ON_ERROR_STOP=1 -f supabase/tests/phase6j_mission_period_lifecycle_assertions.sql
 
+      - name: Assert Phase 6K adversarial economy security and integrity
+        timeout-minutes: 6
+        run: |
+          eval "$(supabase status -o env)"
+          psql "$DB_URL" -v ON_ERROR_STOP=1 -f supabase/tests/phase6k_economy_security_assertions.sql
+
       - name: Compare complete local catalog with hosted reference snapshot
         timeout-minutes: 5
         run: |
