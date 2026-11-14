@@ -39,6 +39,8 @@ DECLARE
   v_templates integer;
   v_mappings integer;
   v_bad integer;
+  v_target_templates integer;
+  v_target_mappings integer;
 BEGIN
   IF (SELECT economy_enabled FROM economy_private.economy_settings WHERE singleton) IS DISTINCT FROM false THEN
     RAISE EXCEPTION 'Phase 6N catalog verification requires the production economy gate to remain disabled';
@@ -68,8 +70,35 @@ BEGIN
     ('broaden_your_experience',2),('meaningful_progress',2)
   );
 
-  IF v_mappings <> 28 THEN
-    RAISE EXCEPTION 'Expected 28 exact Think Lab mappings; found %',v_mappings;
+  IF v_mappings <> 28 OR EXISTS (
+    SELECT 1 FROM economy_private.mission_event_predicate_mappings
+    WHERE (template_id,template_version) IN (
+      ('learning_step',2),('try_something_different',2),('solve_a_challenge',5),
+      ('put_knowledge_to_use',2),('consistent_progress',2),
+      ('broaden_your_experience',2),('meaningful_progress',2)
+    ) AND mapping_status <> 'mapped'
+  ) THEN
+    RAISE EXCEPTION 'Expected exactly 28 immutable mapped Think Lab records; found % or an unexpected status',v_mappings;
+  END IF;
+
+  -- The approved source versions and their mappings are immutable. Verification
+  -- must be represented by new successor versions, never UPDATE/DELETE.
+  SELECT count(*) INTO v_target_templates
+  FROM economy_private.mission_template_versions
+  WHERE (template_id,template_version) IN (
+    ('learning_step',3),('try_something_different',3),('solve_a_challenge',6),
+    ('put_knowledge_to_use',3),('consistent_progress',3),
+    ('broaden_your_experience',3),('meaningful_progress',3)
+  );
+  SELECT count(*) INTO v_target_mappings
+  FROM economy_private.mission_event_predicate_mappings
+  WHERE (template_id,template_version) IN (
+    ('learning_step',3),('try_something_different',3),('solve_a_challenge',6),
+    ('put_knowledge_to_use',3),('consistent_progress',3),
+    ('broaden_your_experience',3),('meaningful_progress',3)
+  );
+  IF v_target_templates <> 0 OR v_target_mappings <> 0 THEN
+    RAISE EXCEPTION 'Phase 6N successor versions already exist; refusing ambiguous catalog promotion';
   END IF;
 
   -- Each slot has its own family and predicate. Every supported activity contract
@@ -150,21 +179,110 @@ BEGIN
 END;
 $phase6n_catalog_preflight$;
 
-UPDATE economy_private.mission_event_predicate_mappings
-SET mapping_status='verified'
-WHERE (template_id,template_version) IN (
+-- Append verified successor templates. Historical mapped versions remain untouched.
+INSERT INTO economy_private.mission_template_versions (
+  template_id, template_version, period_type, mission_family,
+  reward_amount, objective_definition, validator_mapping_status, is_assignable
+)
+SELECT
+  t.template_id,
+  t.template_version + 1,
+  t.period_type,
+  t.mission_family,
+  t.reward_amount,
+  t.objective_definition || jsonb_build_object(
+    'verification_note',
+    'Phase 6N verified successor: all four Think Lab event contracts and the server-owned predicate evaluator were checked.'
+  ),
+  'verified',
+  true
+FROM economy_private.mission_template_versions AS t
+WHERE (t.template_id,t.template_version) IN (
   ('learning_step',2),('try_something_different',2),('solve_a_challenge',5),
   ('put_knowledge_to_use',2),('consistent_progress',2),
   ('broaden_your_experience',2),('meaningful_progress',2)
 );
 
-UPDATE economy_private.mission_template_versions
-SET validator_mapping_status='verified',
-    is_assignable=true
-WHERE (template_id,template_version) IN (
+-- Append verified successor mappings using the same exact event contracts.
+INSERT INTO economy_private.mission_event_predicate_mappings (
+  template_id, template_version, predicate_version, predicate_key,
+  source_system, experience_id, activity_id, event_type, validator_version,
+  mapping_status, predicate_definition
+)
+SELECT
+  m.template_id,
+  m.template_version + 1,
+  m.predicate_version,
+  m.predicate_key,
+  m.source_system,
+  m.experience_id,
+  m.activity_id,
+  m.event_type,
+  m.validator_version,
+  'verified',
+  m.predicate_definition || jsonb_build_object(
+    'verification_phase', '6N',
+    'verification_scope', 'immutable successor catalog with service-role-only evaluator checks'
+  )
+FROM economy_private.mission_event_predicate_mappings AS m
+WHERE (m.template_id,m.template_version) IN (
   ('learning_step',2),('try_something_different',2),('solve_a_challenge',5),
   ('put_knowledge_to_use',2),('consistent_progress',2),
   ('broaden_your_experience',2),('meaningful_progress',2)
 );
+
+DO $phase6n_catalog_postflight$
+DECLARE
+  v_templates integer;
+  v_mappings integer;
+BEGIN
+  SELECT count(*) INTO v_templates
+  FROM economy_private.mission_template_versions
+  WHERE (template_id,template_version) IN (
+    ('learning_step',3),('try_something_different',3),('solve_a_challenge',6),
+    ('put_knowledge_to_use',3),('consistent_progress',3),
+    ('broaden_your_experience',3),('meaningful_progress',3)
+  )
+    AND validator_mapping_status='verified'
+    AND is_assignable;
+
+  SELECT count(*) INTO v_mappings
+  FROM economy_private.mission_event_predicate_mappings
+  WHERE (template_id,template_version) IN (
+    ('learning_step',3),('try_something_different',3),('solve_a_challenge',6),
+    ('put_knowledge_to_use',3),('consistent_progress',3),
+    ('broaden_your_experience',3),('meaningful_progress',3)
+  )
+    AND mapping_status='verified';
+
+  IF v_templates <> 7 OR v_mappings <> 28 THEN
+    RAISE EXCEPTION 'Phase 6N successor catalog incomplete: verified templates %, verified mappings %',
+      v_templates,v_mappings;
+  END IF;
+
+  IF EXISTS (
+    SELECT 1 FROM economy_private.mission_template_versions
+    WHERE (template_id,template_version) IN (
+      ('learning_step',2),('try_something_different',2),('solve_a_challenge',5),
+      ('put_knowledge_to_use',2),('consistent_progress',2),
+      ('broaden_your_experience',2),('meaningful_progress',2)
+    )
+      AND (validator_mapping_status <> 'mapped' OR is_assignable)
+  ) OR EXISTS (
+    SELECT 1 FROM economy_private.mission_event_predicate_mappings
+    WHERE (template_id,template_version) IN (
+      ('learning_step',2),('try_something_different',2),('solve_a_challenge',5),
+      ('put_knowledge_to_use',2),('consistent_progress',2),
+      ('broaden_your_experience',2),('meaningful_progress',2)
+    ) AND mapping_status <> 'mapped'
+  ) THEN
+    RAISE EXCEPTION 'Phase 6N must preserve every original immutable mapped source record';
+  END IF;
+
+  IF (SELECT economy_enabled FROM economy_private.economy_settings WHERE singleton) IS DISTINCT FROM false THEN
+    RAISE EXCEPTION 'Phase 6N must leave the economy disabled';
+  END IF;
+END;
+$phase6n_catalog_postflight$;
 
 COMMIT;
