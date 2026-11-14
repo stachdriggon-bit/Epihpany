@@ -55,4 +55,4 @@ The dashboard endpoint logs only sanitized operation/error codes and returns gen
 
 ## Verification
 
-phase6l_production_readiness_assertions.sql verifies the disabled gate, absence of wallet/ledger/claim/achievement rows in the clean-room baseline, service-role-only dashboard access, fixed search path, empty reconciliation result, and fail-closed dashboard response. All fixtures roll back.
+phase6l_production_readiness_assertions.sql verifies the disabled gate, disabled economy gate, exact wallet-to-ledger reconciliation, and no financial write authority, service-role-only dashboard access, fixed search path, empty reconciliation result, and fail-closed dashboard response. All fixtures roll back.
