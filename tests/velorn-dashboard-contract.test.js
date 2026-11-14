@@ -46,5 +46,5 @@ test("Home dashboard is account-only, accessible, and keeps prototype Tokens sep
   assert.match(css, /\.velorn-panel/);
   assert.match(css, /prefers-reduced-motion/);
   assert.match(html, /TOKENS/);
-  assert.match(html, /VELORN/);
+  assert.match(html, /Velorn/i);
 });
