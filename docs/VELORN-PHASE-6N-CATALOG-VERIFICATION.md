@@ -29,13 +29,14 @@ Each selected template must have four exact Think Lab activity mappings, a disti
 
 - Migration: `20261114020000_velorn_verified_mission_catalog.sql`
 - Assertions: `supabase/tests/phase6n_catalog_verification_assertions.sql`
-- The migration fails closed unless the seven source templates and all 28 source mapping contracts pass preflight, the successor versions do not already exist, and the postflight confirms exactly seven verified assignable successors with 28 verified mappings.
-- Seven immutable successor versions (Learning Step v3, Try Something Different v3, Solve a Challenge v6, Put Knowledge to Use v3, and the three weekly v3 templates) and their 28 successor mappings are appended as `verified`. The original mapped versions and mappings remain unchanged.
+- The migration fails closed unless the seven source templates and all 28 source mapping contracts pass preflight, the successor versions do not already exist, and the postflight confirms exactly seven verified non-assignable successors with 28 verified mappings.
+- Seven immutable successor versions (Learning Step v3, Try Something Different v3, Solve a Challenge v6, Put Knowledge to Use v3, and the three weekly v3 templates) and their 28 successor mappings are appended as `verified` but remain non-assignable. The original mapped versions and mappings remain unchanged.
 - The SQL assertion test is rollback-only.
 
 ## Safety boundaries
 
 - `economy_enabled` remains `false`.
+- The verified successor templates remain `is_assignable = false`; board generation therefore remains unavailable until the separate controlled activation gate is explicitly completed.
 - No wallet, ledger, board, assignment, claim, or award rows are created.
 - No board generation is invoked.
 - No Edge Function or Vercel deployment is authorized by this phase.
