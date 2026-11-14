@@ -43,7 +43,7 @@
   function setBusy(value) {
     busy = value;
     if (refreshButton) refreshButton.disabled = value;
-    panel.querySelectorAll('.velorn-claim').forEach(button => { if (value) button.disabled = true; });
+    panel.querySelectorAll('.velorn-claim').forEach(button => { button.disabled = value; });
   }
   function resetForGuest() {
     requestVersion += 1;

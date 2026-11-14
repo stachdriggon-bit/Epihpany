@@ -42,7 +42,7 @@ test("Browser uses only narrow authenticated Velorn dashboard and claim methods"
 test("Home dashboard is account-only, accessible, and keeps prototype Tokens separate", () => {
   assert.match(html, /id="velorn-panel"[^>]*hidden/);
   assert.match(html, /id="velorn-status"[^>]*aria-live="polite"/);
-  assert.match(html, /id="velorn-balance"/);
+  assert.match(html, /id="velorn-wallet"/);
   assert.match(css, /\.velorn-panel/);
   assert.match(css, /prefers-reduced-motion/);
   assert.match(html, /TOKENS/);
