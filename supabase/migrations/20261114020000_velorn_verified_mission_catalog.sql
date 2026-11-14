@@ -195,7 +195,7 @@ SELECT
     'Phase 6N verified successor: all four Think Lab event contracts and the server-owned predicate evaluator were checked.'
   ),
   'verified',
-  true
+  false
 FROM economy_private.mission_template_versions AS t
 WHERE (t.template_id,t.template_version) IN (
   ('learning_step',2),('try_something_different',2),('solve_a_challenge',5),
@@ -244,7 +244,7 @@ BEGIN
     ('broaden_your_experience',3),('meaningful_progress',3)
   )
     AND validator_mapping_status='verified'
-    AND is_assignable;
+    AND NOT is_assignable;
 
   SELECT count(*) INTO v_mappings
   FROM economy_private.mission_event_predicate_mappings
@@ -256,7 +256,7 @@ BEGIN
     AND mapping_status='verified';
 
   IF v_templates <> 7 OR v_mappings <> 28 THEN
-    RAISE EXCEPTION 'Phase 6N successor catalog incomplete: verified templates %, verified mappings %',
+    RAISE EXCEPTION 'Phase 6N successor catalog incomplete: verified non-assignable templates %, verified mappings %',
       v_templates,v_mappings;
   END IF;
 
