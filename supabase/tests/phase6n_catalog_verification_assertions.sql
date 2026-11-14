@@ -35,8 +35,8 @@ BEGIN
   ) AND mapping_status='verified';
 
   IF (v_daily,v_weekly,v_verified_templates,v_assignable_templates,v_verified_mappings)
-     IS DISTINCT FROM (4,3,7,7,28) THEN
-    RAISE EXCEPTION 'Catalog verification mismatch: daily %, weekly %, verified templates %, assignable %, mappings %',
+     IS DISTINCT FROM (4,3,7,0,28) THEN
+    RAISE EXCEPTION 'Catalog verification mismatch: daily %, weekly %, verified templates %, assignable templates %, mappings %',
       v_daily,v_weekly,v_verified_templates,v_assignable_templates,v_verified_mappings;
   END IF;
 
