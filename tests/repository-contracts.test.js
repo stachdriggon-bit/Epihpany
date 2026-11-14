@@ -26,6 +26,8 @@ test('every local script and stylesheet referenced by the app exists', () => {
     .filter(item => item.file && !fs.existsSync(item.file))
     .map(item => item.value);
   assert.deepEqual(missing, [], 'Missing local app assets: ' + missing.join(', '));
+  assert.ok(parseArray(read('service-worker.js'), 'CORE_ASSETS').includes('velorn.js'),
+    'the account dashboard script must be available offline with the app shell');
 });
 
 test('every navigation destination has exactly one matching view container', () => {
